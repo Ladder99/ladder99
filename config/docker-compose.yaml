@@ -1,0 +1,234 @@
+# from https://app.clickup.com/t/h4wwje
+
+version: "2.4"
+
+services:
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce
+    restart: always
+    networks:
+      - l99_bridge
+    ports:
+      - "9000:9000"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    logging:
+      driver: "none"
+
+  #pigpiod:
+  #  container_name: pigpiod
+  #  container_name: pigpiod
+  #  image: mriiotllc/ladder99:ccs001-pigpiod-1.0.4
+  #  command: >
+  #    sh -c "rm -f /var/run/pigpio.pid && 
+  #           taskset -c 2 ionice -c 1 -n 0 /usr/local/bin/pigpiod -g -a 1 -s 10"
+  #  restart: always
+  #  networks:
+  #    - l99_bridge
+  #  depends_on:
+  #    portainer:
+  #      condition: service_started
+  #  ports:
+  #    - "8888:8888"
+  #  privileged: true
+  #  volumes:
+  #    - /etc/localtime:/etc/localtime:ro
+  #    - /etc/timezone:/etc/timezone:ro
+  #  stop_grace_period: 45s
+  #  stop_signal: SIGTERM
+  #  logging:
+  #    driver: "json-file"
+  #    options:
+  #      max-file: "5"
+  #      max-size: "1m"
+
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto
+    restart: always
+    networks:
+      - l99_bridge
+    depends_on:
+      portainer:
+        condition: service_started
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - mosquitto_config:/mosquitto/config:ro
+      - mosquitto_data:/mosquitto/data:rw
+      - mosquitto_log:/mosquitto/log:rw
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "1m"
+
+  l99_loi:
+    container_name: l99_loi
+    image: mriiotllc/ladder99:ccs001-loi-1.0.17
+    restart: always
+    networks:
+      - l99_bridge
+    depends_on:
+      mosquitto:
+        condition: service_started
+    ports:
+      - "80:80"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - nginx_conf:/etc/nginx:rw
+      - l99_loi_html:/var/www/html:rw
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "1m"
+  
+  influxdb:
+    container_name: influxdb
+    image: influxdb:1.8
+    environment:
+      - INFLUXDB_UDP_ENABLED=true
+      - INFLUXDB_HTTP_FLUX_ENABLED=true
+    restart: always
+    networks:
+      - l99_bridge
+    depends_on:
+      mosquitto:
+        condition: service_started
+    ports:
+      - "8086:8086/tcp"
+      - "8089:8089/udp"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - influx_data:/var/lib/influxdb:rw
+      - influx_conf:/etc/influxdb:rw
+
+  chronograf:
+    container_name: chronograf
+    image: chronograf
+    restart: always
+    networks:
+      - l99_bridge
+    depends_on:
+      influxdb:
+        condition: service_started
+    ports:
+      - "8888:8888/tcp"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - chronograf_data:/var/lib/chronograf:rw
+
+  telegraf:
+    container_name: telegraf
+    image: telegraf
+    restart: always
+    networks:
+      - l99_bridge
+    depends_on:
+      influxdb:
+        condition: service_started
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - telegraf_conf:/etc/telegraf:rw
+
+  l99_plc:
+    container_name: l99_plc
+    image: mriiotllc/ladder99:ccs001-plc-1.3.0.3
+    command: taskset -c 3 chrt 99 ionice -c 1 -n 0 python -u main.py
+    environment:
+      - BUILD_NO=1.3.0.3
+      - GC_DISABLE=0
+      - DBG_PRINT_TRAPS=1
+      - DEADLINE_TASK=0
+      - NO_PIG=1
+      - PIG_STY=2.000
+      - TASK_CYCLE=15.000
+      - TASK_SPIN=0.001
+      - TASK_SYNC=0.050
+      - LOG_CYCLE=0.100
+      - LOG_SPIN=0.001
+      - LOG_SYNC=0.050
+      - LOG_SEVERITY=6
+      - MQTT_CYCLE=0.100
+      - MQTT_SPIN=0.001
+      - MQTT_SYNC=0.050
+      - MQTT_BASE=l99/ccs
+      - MQTT_QOS=1
+      - MQTT_ID=ccs001_plc
+      - MQTT_HOST=mosquitto
+      - MQTT_PORT=1883
+      - MQTT_KA=60
+      - MQTT_PUBLISH_OFFSET=0
+      - MQTT_INJECT_OFFSET=0
+      - MQTT_PUBLISH_TIMESTAMP=1
+      - MQTT_INJECT_TIMESTAMP=1
+      - CMD_CYCLE=0.250
+      - CMD_SPIN=0.001
+      - CMD_SYNC=0.050
+      - PLC_CYCLE=0.010
+      - PLC_SPIN=0.001
+      - PLC_SYNC=0.005
+      - SX_CONFIG=1
+      - SX_ADDRESS1=0x3E
+      - SX_BANK1_DATA1=00000000
+      - SX_BANK2_DATA1=00000000
+      - SX_ADDRESS2=0x3F
+      - SX_BANK1_DATA2=00000000
+      - SX_BANK2_DATA2=00001011
+      - SX_WATCHDOG=0
+      - ADS_CONFIG=0
+      - ADS_ADDRESS1=0x48
+      - ADS_ADDRESS2=0x49
+      - PIG_HOST=pigpiod
+      - PIG_PORT=8888
+      - PLC_PGM=pgm0
+    restart: always
+    networks:
+      - l99_bridge
+    depends_on:
+      l99_loi:
+        condition: service_started
+    privileged: true
+    devices:
+      - "/dev/i2c-1:/dev/i2c-1"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - l99_plc_volume1:/usr/src/app/volume1:rw
+    stop_grace_period: 45s
+    stop_signal: SIGTERM
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"
+        max-size: "1m"
+
+volumes:
+  portainer_data:
+  mosquitto_config:
+  mosquitto_data:
+  mosquitto_log:
+  nginx_conf:
+  influx_data:
+  influx_conf:
+  chronograf_data:
+  telegraf_conf:
+  l99_loi_html:
+  l99_plc_volume1:
+
+networks:
+  l99_bridge:
+    name: l99_bridge
