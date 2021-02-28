@@ -17,7 +17,7 @@ MTConnect standardizes factory device data flow - it was designed by UC Berkeley
 
 ### Data flow
 
-![arch](docs/architecture2021-02-24.dot.svg)
+![arch](docs/architecture.dot.svg)
 
 Messages from factory devices go to an MQTT Broker (Aedes, a NodeJS program). PLC4X communicates with old machines via proprietary protocols and translates them to MQTT (correct?).MQTT is a simple publish/subscribe message protocol.
 
