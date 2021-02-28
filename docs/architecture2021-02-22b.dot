@@ -1,0 +1,67 @@
+digraph "ladder99-adapter" {
+
+  // styles
+  graph [ label="Ladder99 MTConnect data flow"; color=lightgray ];
+  node [ color=lightgray; fillcolor=lightblue; style=filled ];
+  edge [ color=lightgray, fontcolor=gray ];
+  rankdir=LR; // left-to-right
+
+  // nodes
+  PLC1 [ fillcolor=lavender; label="PLC" ];
+  PLC2 [ fillcolor=lavender; label="PLC" ];
+
+  PLC4X [ fillcolor=greenyellow; label="PLC4X\n(Java)" ];
+  Broker;
+  Adapter [ label="Adapter\n(NodeJS)" ];
+  Receiver [ fillcolor=white; label="Data Diode\n(NodeJS)" ];
+  Agent [ label="Agent\n(C++)" ];
+
+  Application [ label="Application\n(NodeJS)" ];
+  LOI [ label="LOI\n(SvelteJS)" ];
+  Database [ label="Database\n(InfluxDB/TimescaleDB)" ];
+  Visualizer [ label="Visualizer\n(Grafana/Superset)" ];
+  Cloud [ fillcolor=white; label="Cloud Storage\n(AWS/GCP)" ];
+  Operator [ fillcolor=lightyellow ];
+  Admin [ fillcolor=lightyellow ];
+
+  // edges
+  PLC2 -> Adapter [ label="JSON/\nMQTT" ];
+  PLC1 -> PLC4X [ label="native\nprotocol" ];
+  PLC4X -> Adapter [ label="JSON/\nMQTT" ];
+  Adapter -> Receiver [ label="SHDR/\nUDP" ];
+  Receiver -> Agent [ label="SHDR/\nTCP" ];
+  Agent -> Application [ label="XML/\nHTTP" ];
+  Application -> Database;
+  Database -> Visualizer;
+  Database -> Cloud;
+  Application -> LOI;
+  LOI -> Operator;
+  Visualizer -> Admin;
+
+  // subgraphs
+  subgraph cluster1a {
+    graph [ label="New Machine" ];
+    PLC2;
+  }
+  subgraph cluster1b {
+    graph [ label="Old Machine" ];
+    PLC1;
+  }
+  subgraph cluster2 {
+    graph [ label="Raspberry Pi 1" ];
+    PLC4X;
+    Adapter;
+    Receiver;
+    Agent;
+  }
+  subgraph cluster4 {
+    graph [ label="Raspberry Pi 2" ];
+    Application;
+    Database;
+    Visualizer;
+    LOI;
+    { rank=same; Application Database };
+  }
+
+  { rank=same; Operator Admin Cloud };
+}

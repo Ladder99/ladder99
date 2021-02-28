@@ -1,0 +1,81 @@
+digraph "ladder99-adapter" {
+
+  // styles
+  graph [ label="Ladder99 MTConnect data flow\n "; color=lightgray; ];
+  graph [ fontsize=20 ];
+  graph [ labelloc=t ];
+  graph [ ranksep=0.2 ];
+  graph [ nodesep=0.35 ];
+  graph [ rankdir=LR; ] // left-to-right
+  node [ color=lightgray; fillcolor=white; style=filled ];
+  edge [ color=gray85 ];
+  edge [ fontsize=12; fontcolor=gray40; ];
+
+  // nodes
+  OldMachine [ fillcolor=lavender; label="Old Machine" ];
+  NewMachine [ fillcolor=lavender; label="New Machine" ];
+  PLC4X [ label="PLC4X\n(Java)" ];
+  Broker [ label="MQTT Broker\n(NodeJS/Aedes)" ];
+  Adapter [ fillcolor=white; label="MTConnect\nAdapter\n(NodeJS)" ];
+  DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
+  DiodeReceiver [ label="Diode Receiver\n(Java+RabbitMQ)" ];
+  Agent [ fillcolor=white; label="MTConnect\nAgent\n(C++/cppagent)" ];
+  Application [ fillcolor=white; label="MTConnect\nApplication\n(NodeJS)" ];
+  Database [ label="Database\n(InfluxDB/TimescaleDB)" ];
+  Visualizer [ label="Visualizer\n(Grafana/Superset)" ];
+  Cloud [ label="Cloud Storage\n(AWS/GCP)" ];
+  Admin [ fillcolor=lightyellow ];
+  // LOI [ label="LOI\n(SvelteJS)" ];
+  // Operator [ fillcolor=lightyellow ];
+
+  // edges
+  OldMachine -> PLC4X [ label="proprietary\nprotocol" ];
+  NewMachine -> Broker [ label="JSON / \nMQTT" ];
+  PLC4X -> Broker [ label="JSON /  \nMQTT  " ];
+  Broker -> Adapter [ label="JSON /  \nMQTT  " ];
+  Adapter -> DiodeSender [ label="SHDR /   \nTCP 7878      " ];
+  DiodeSender -> DiodeReceiver [ label="UDP    " ];
+  DiodeReceiver -> Agent [ label="SHDR /   \nTCP  " ];
+  Agent -> Application [ dir=both; label="XML /  \nHTTP 5000  " ];
+  Application -> Database [ dir=both ];
+  Database -> Visualizer [ dir=both ];
+  Database -> Cloud;
+  Visualizer -> Admin [ dir=both ];
+  // Application -> LOI;
+  // LOI -> Operator;
+
+  // rank
+  { rank=same; OldMachine NewMachine };
+  // { rank=same; PLC4X Broker };
+  { rank=same; PLC4X Broker Adapter DiodeSender DiodeReceiver Agent };
+  // { rank=same; Operator Admin Cloud };
+  // { rank=same; Admin Cloud };
+  { rank=same; Application Database Visualizer };
+
+  // subgraphs
+  // subgraph cluster1a {
+  //   graph [ label="New Machine" ];
+  //   NewMachine;
+  // }
+  // subgraph cluster1b {
+  //   graph [ label="Old Machine" ];
+  //   OldMachine;
+  // }
+  // subgraph cluster2 {
+  //   graph [ label="Raspberry Pi 1" ];
+  //   PLC4X;
+  //   Broker;
+  //   Adapter;
+  //   Diode;
+  //   Agent;
+  //   // { rank=same; Diode Agent };
+  // }
+  // subgraph cluster4 {
+  //   graph [ label="Raspberry Pi 2" ];
+  //   Application;
+  //   Database;
+  //   Visualizer;
+  //   // LOI;
+  //   // { rank=same; Application Database Visualizer };
+  // }
+}

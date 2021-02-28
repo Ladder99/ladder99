@@ -1,0 +1,51 @@
+digraph "ladder99-adapter" {
+
+  // styles
+  graph [ label="Ladder99 MTConnect"; color=lightgray ];
+  node [ color=lightgray; fillcolor=lightblue; style=filled ];
+  edge [ color=lightgray, fontcolor=gray ];
+  rankdir=LR; // left-to-right
+
+  // nodes
+  Device2 [ fillcolor=lavender; label="Old Device" ];
+  Device1 [ fillcolor=lavender; label="New Device" ];
+  Adapter [ label="Adapter\n(NodeJS)" ];
+  Receiver [ fillcolor=white; label="Receiver\n(NodeJS)" ];
+  Agent [ label="Agent\n(C++)" ];
+  Application [ label="Application\n(SvelteJS)" ];
+  PLC4X [ fillcolor=lightyellow ];
+  User [ fillcolor=greenyellow ];
+
+  // edges
+  Device1 -> Adapter [ label="MQTT\nJSON" ];
+  Device2 -> PLC4X [ label="?" ];
+  PLC4X -> Adapter [ label="MQTT\nJSON" ];
+  Adapter -> Receiver [ label="UDP\nSHDR" ];
+  Receiver -> Agent [ label="TCP\nSHDR" ];
+  Agent -> Application [ label="HTTP\nXML" ];
+  Application -> User;
+
+  // subgraphs
+  // subgraph cluster1a {
+  //   graph [ label="New Machine" ];
+  //   Device1;
+  // }
+  // subgraph cluster1b {
+  //   graph [ label="Old Machine" ];
+  //   Device2;
+  // }
+  subgraph cluster2 {
+    graph [ label="Raspberry Pi 1" ];
+    PLC4X;
+    Adapter;
+    Receiver;
+    Agent;
+  }
+  subgraph cluster4 {
+    graph [ label="Raspberry Pi 2" ];
+    Application;
+  }
+
+  // ranks
+  { rank=same; };
+}
