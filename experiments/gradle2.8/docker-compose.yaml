@@ -1,9 +1,0 @@
-# docker-compose is more for putting together a network of services though, eh?
-# use Dockerfile to do the building
-
-version: "3.7"
-
-services:
-  gradle:
-    build: . # path to Dockerfile
-
