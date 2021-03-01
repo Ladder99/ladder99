@@ -9,7 +9,7 @@ import mqttlib from 'mqtt'
 // import config from './config.js'
 import transforms from './transforms.js'
 
-const host = process.env.MQTT_HOST || 'localhost'
+const host = process.env.MQTT_HOST || 'broker'
 const port = process.env.MQTT_PORT || 1883
 const config = { host, port }
 
@@ -17,8 +17,8 @@ console.log(`MTConnect Adapter`)
 console.log(`Subscribes to MQTT topics, transforms to SHDR, sends to diode.`)
 console.log(`----------------------------------------------------------------`)
 
-console.log(`Connecting to MQTT broker on`, config.mqtt, `...`)
-const mqtt = mqttlib.connect([config.mqtt]) // pass { host, port }
+console.log(`Connecting to MQTT broker on`, config, `...`)
+const mqtt = mqttlib.connect([config]) // pass { host, port }
 
 // console.log(`Creating UDP socket...`)
 // const udp = dgram.createSocket('udp4')

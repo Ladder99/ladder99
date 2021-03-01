@@ -2,22 +2,48 @@ version: '3.7'
 
 services:
   broker:
+    container_name: broker
     build:
       context: .
       dockerfile: docker/broker/Dockerfile
     volumes:
       - ./etc/broker:/etc/broker
       - ./data/broker:/var/lib/broker
+    networks:
+      - l99_bridge
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce
+    restart: always
+    networks:
+      - l99_bridge
+    ports:
+      - '9000:9000'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    logging:
+      driver: 'none'
 
   adapter:
+    container_name: adapter
     build:
       context: .
       dockerfile: docker/adapter/Dockerfile
     volumes:
       - ./etc/adapter:/etc/mtconnect/adapter
       - ./data/adapter:/var/lib/adapter
+    networks:
+      - l99_bridge
+    depends_on:
+      broker:
+        condition: service_started
 
   agent:
+    container_name: agent
     image: raymondhub/mtconnect:v1.5
     ports:
       - 5000:5000
@@ -25,6 +51,8 @@ services:
       - ./etc/agent:/etc/mtconnect/agent
       - ./data/agent:/var/lib/agent
     command: 'agent debug /etc/mtconnect/agent/agent.cfg'
+    networks:
+      - l99_bridge
 
   # client:
   #   build:
@@ -87,3 +115,20 @@ services:
   #     - ./etc/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
   #     - ./data/mosquitto:/mosquitto/data
   #     - ./var/log/mosquitto:/mosquitto/log
+
+volumes:
+  portainer_data:
+  mosquitto_config:
+  mosquitto_data:
+  mosquitto_log:
+  nginx_conf:
+  influx_data:
+  influx_conf:
+  chronograf_data:
+  telegraf_conf:
+  l99_loi_html:
+  l99_plc_volume1:
+
+networks:
+  l99_bridge:
+    name: l99_bridge

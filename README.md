@@ -39,7 +39,7 @@ The data diode uses RabbitMQ (a message queue that uses AMQP - Advanced Message 
 
 Run the system - start plc4x, mqtt broker, mtconnect adapter, mtconnect agent, data diode, mtconnect application, database, visualizer -
 
-    docker-compose up
+    docker-compose up -d
 
 Run the device simulator (sends test messages to mqtt broker) -
 
