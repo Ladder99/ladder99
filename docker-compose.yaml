@@ -5,6 +5,8 @@ services:
     container_name: portainer
     image: portainer/portainer-ce
     restart: always
+    logging:
+      driver: 'none'
     networks:
       - ladder99
     ports:
@@ -14,45 +16,59 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
-    logging:
-      driver: 'none'
 
   broker:
     container_name: broker
     build:
       context: .
       dockerfile: docker/broker/Dockerfile
+    networks:
+      - ladder99
     volumes:
       - ./etc/broker:/etc/broker
       - ./data/broker:/var/lib/broker
+
+  aedes:
+    container_name: aedes
+    image: moscajs/aedes:latest
+    restart: always
+    stop_signal: SIGINT
     networks:
       - ladder99
+    ports:
+      - '1883:1883'
+      - '3000:3000'
+      - '4000:4000'
+      - '8883:8883'
+    # command: --config /data/mongodbConfig.js # add here the options to pass to aedes
+    volumes:
+      - ./data/broker:/data # map the local folder to aedes
 
   adapter:
     container_name: adapter
     build:
       context: .
       dockerfile: docker/adapter/Dockerfile
-    volumes:
-      - ./etc/adapter:/etc/mtconnect/adapter
-      - ./data/adapter:/var/lib/adapter
-    networks:
-      - ladder99
     depends_on:
       broker:
         condition: service_started
+    networks:
+      - ladder99
+    volumes:
+      - ./etc/adapter:/etc/mtconnect/adapter
+      - ./data/adapter:/var/lib/adapter
 
   agent:
     container_name: agent
     image: raymondhub/mtconnect:v1.5
+    networks:
+      - ladder99
     ports:
       - 5000:5000
     volumes:
       - ./etc/agent:/etc/mtconnect/agent
       - ./data/agent:/var/lib/agent
     command: 'agent debug /etc/mtconnect/agent/agent.cfg'
-    networks:
-      - ladder99
 
   # client:
   #   build:
@@ -116,6 +132,10 @@ services:
   #     - ./data/mosquitto:/mosquitto/data
   #     - ./var/log/mosquitto:/mosquitto/log
 
+networks:
+  ladder99:
+    name: ladder99
+
 volumes:
   portainer_data:
   mosquitto_config:
@@ -128,7 +148,3 @@ volumes:
   telegraf_conf:
   l99_loi_html:
   l99_plc_volume1:
-
-networks:
-  ladder99:
-    name: ladder99
