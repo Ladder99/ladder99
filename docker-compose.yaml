@@ -12,7 +12,10 @@ services:
       - ./data/adapter:/var/lib/adapter
 
   agent:
-    image: raymondhub/mtconnect:v1.5
+    # image: raymondhub/mtconnect:v1.5
+    build:
+      context: .
+      dockerfile: docker/agent/Dockerfile
     ports:
       - 5000:5000
       - 7878:7878
