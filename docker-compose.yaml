@@ -1,4 +1,5 @@
 version: '3.7'
+
 services:
   broker:
     build:
@@ -8,13 +9,13 @@ services:
       - ./etc/broker:/etc/broker
       - ./data/broker:/var/lib/broker
 
-  # adapter:
-  #   build:
-  #     context: .
-  #     dockerfile: docker/adapter/Dockerfile
-  #   volumes:
-  #     - ./etc/adapter:/etc/mtconnect/adapter
-  #     - ./data/adapter:/var/lib/adapter
+  adapter:
+    build:
+      context: .
+      dockerfile: docker/adapter/Dockerfile
+    volumes:
+      - ./etc/adapter:/etc/mtconnect/adapter
+      - ./data/adapter:/var/lib/adapter
 
   agent:
     image: raymondhub/mtconnect:v1.5
