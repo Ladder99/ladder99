@@ -91,9 +91,18 @@ services:
   #     - ./data/influx:/var/lib/influxdb
 
   # telegraf:
+  #   container_name: telegraf
   #   image: telegraf
+  #   restart: always
+  #   networks:
+  #     - l99_bridge
+  #   depends_on:
+  #     influxdb:
+  #       condition: service_started
   #   volumes:
-  #     - ./etc/telegraf:/etc/telegraf
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /etc/timezone:/etc/timezone:ro
+  #     - telegraf_conf:/etc/telegraf:rw
 
   # chronograf:
   #   image: chronograf
@@ -127,13 +136,4 @@ networks:
 
 volumes:
   portainer_data:
-  mosquitto_config:
-  mosquitto_data:
-  mosquitto_log:
-  nginx_conf:
-  influx_data:
-  influx_conf:
-  chronograf_data:
   telegraf_conf:
-  l99_loi_html:
-  l99_plc_volume1:
