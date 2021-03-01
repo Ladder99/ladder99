@@ -7,10 +7,10 @@ MTConnect standardizes factory device data flow - it was designed by UC Berkeley
 
 ## Goals
 
-- connect factory devices to database and visualizations
-- use MTConnect Adapter, Agent, Application scheme
-- enforce one-way dataflow via a data diode
-- secure communication between devices via encrypted UDP transmission
+- Connect factory devices to database and visualizations
+- Use MTConnect Adapter, Agent, Application scheme
+- Enforce one-way dataflow via a data diode
+- Secure communication between devices via encrypted UDP transmission
 
 
 ## Architecture
@@ -37,30 +37,19 @@ The data diode uses RabbitMQ (a message queue that uses AMQP - Advanced Message 
 
 ## Usage
 
-In separate terminals, 
+Run the system - plc4x, mqtt broker, mtconnect adapter, mtconnect agent, data diode, mtconnect application, database, visualizer -
 
-Run the MQTT Broker (aedes - a nodejs broker) - 
-
-    yarn broker
-
-Run the adapter
-
-    yarn adapter
-
-Run the diode
-
-(to be replaced by the Java+RabbitMQ diode)
-
-    yarn diode
+    docker-compose up
 
 Run the device simulator
 
-    yarn device
+    npm run device
 
 In the adapter terminal you should get output like this -
 
     MTConnect Adapter
     Subscribes to MQTT topics, transforms to SHDR, sends to diode.
+    ------------------------------------------------------------------
     Connecting to MQTT broker on { host: 'localhost', port: 1883 } ...
     Creating UDP socket...
     Hit ctrl-c to stop adapter.

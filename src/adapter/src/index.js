@@ -81,7 +81,7 @@ function shutdown() {
   console.log(`Exiting...`)
   // console.log(`Closing UDP...`)
   // udp.close()
-  console.log(`Closing TCP...`)
+  // console.log(`Closing TCP...`)
   // tcpSocket.close()
   console.log(`Closing MQTT connection...`)
   mqtt.end()
