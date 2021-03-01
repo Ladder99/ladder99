@@ -1,23 +1,12 @@
 version: '3.7'
 
 services:
-  broker:
-    container_name: broker
-    build:
-      context: .
-      dockerfile: docker/broker/Dockerfile
-    volumes:
-      - ./etc/broker:/etc/broker
-      - ./data/broker:/var/lib/broker
-    networks:
-      - l99_bridge
-
   portainer:
     container_name: portainer
     image: portainer/portainer-ce
     restart: always
     networks:
-      - l99_bridge
+      - ladder99
     ports:
       - '9000:9000'
     volumes:
@@ -28,6 +17,17 @@ services:
     logging:
       driver: 'none'
 
+  broker:
+    container_name: broker
+    build:
+      context: .
+      dockerfile: docker/broker/Dockerfile
+    volumes:
+      - ./etc/broker:/etc/broker
+      - ./data/broker:/var/lib/broker
+    networks:
+      - ladder99
+
   adapter:
     container_name: adapter
     build:
@@ -37,7 +37,7 @@ services:
       - ./etc/adapter:/etc/mtconnect/adapter
       - ./data/adapter:/var/lib/adapter
     networks:
-      - l99_bridge
+      - ladder99
     depends_on:
       broker:
         condition: service_started
@@ -52,7 +52,7 @@ services:
       - ./data/agent:/var/lib/agent
     command: 'agent debug /etc/mtconnect/agent/agent.cfg'
     networks:
-      - l99_bridge
+      - ladder99
 
   # client:
   #   build:
@@ -130,5 +130,5 @@ volumes:
   l99_plc_volume1:
 
 networks:
-  l99_bridge:
-    name: l99_bridge
+  ladder99:
+    name: ladder99
