@@ -21,6 +21,7 @@ function getTimestamp(ts) {
   return new Date().toISOString()
 }
 
+// transform status messages
 export function status(json) {
   const timestamp = getTimestamp(json._ts)
   const shdr = `
@@ -35,6 +36,7 @@ ${timestamp}
   return shdr
 }
 
+// transform read (address) messages
 function read(json) {
   const timestamp = getTimestamp()
   if (!Array.isArray(json)) {
@@ -45,6 +47,7 @@ function read(json) {
   return shdr
 }
 
+// map mqtt topics to transform functions
 const transforms = {
   'l99/ccs/evt/status': status,
   'l99/ccs/evt/read': read,
