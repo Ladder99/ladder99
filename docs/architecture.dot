@@ -32,7 +32,7 @@ digraph "ladder99-adapter" {
   OldMachine -> PLC4X [ label="proprietary\nprotocol" ];
   NewMachine -> Broker [ label="JSON / \nMQTT" ];
   PLC4X -> Broker [ label="JSON /  \nMQTT  " ];
-  Broker -> Adapter [ label="JSON /  \nMQTT  " ];
+  Broker -> Adapter [ label="JSON /    \nMQTT 1883           " ];
   Adapter -> DiodeSender [ label="SHDR /   \nTCP 7878      " ];
   DiodeSender -> DiodeReceiver [ label="UDP    " ];
   DiodeReceiver -> Agent [ label="SHDR /   \nTCP  " ];

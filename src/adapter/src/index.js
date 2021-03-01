@@ -6,8 +6,12 @@
 // import dgram from 'dgram'
 // import net from 'net'
 import mqttlib from 'mqtt'
-import config from './config.js'
+// import config from './config.js'
 import transforms from './transforms.js'
+
+const host = process.env.MQTT_HOST || 'localhost'
+const port = process.env.MQTT_PORT || 1883
+const config = { host, port }
 
 console.log(`MTConnect Adapter`)
 console.log(`Subscribes to MQTT topics, transforms to SHDR, sends to diode.`)

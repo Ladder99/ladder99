@@ -6,8 +6,8 @@ WORKDIR /usr/src/app
 COPY src/broker/package*.json ./
 RUN npm ci --production
 
-# install source
+# copy source
 COPY src/broker/src ./src
 
-# default command on run container
+# default command when run container
 CMD ["npm", "start"]

@@ -1,12 +1,17 @@
 version: '3.7'
 services:
+  broker:
+    build:
+      context: .
+      dockerfile: docker/broker/Dockerfile
+    volumes:
+      - ./etc/broker:/etc/broker
+      - ./data/broker:/var/lib/broker
+
   # adapter:
   #   build:
   #     context: .
   #     dockerfile: docker/adapter/Dockerfile
-  #   # ports:
-  #   #   - 1883:1883
-  #   #   - 7878:7878
   #   volumes:
   #     - ./etc/adapter:/etc/mtconnect/adapter
   #     - ./data/adapter:/var/lib/adapter
@@ -19,18 +24,6 @@ services:
       - ./etc/agent:/etc/mtconnect/agent
       - ./data/agent:/var/lib/agent
     command: 'agent debug /etc/mtconnect/agent/agent.cfg'
-
-  # broker:
-  #   build:
-  #     context: .
-  #     dockerfile: docker/broker/Dockerfile
-  #   # ports:
-  #   #   - 1883:1883
-  #   # environment:
-  #   #   - PORT=1883
-  #   volumes:
-  #     - ./etc/broker:/etc/broker
-  #     - ./data/broker:/var/lib/broker
 
   # client:
   #   build:

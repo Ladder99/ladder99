@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "description": "MQTT broker using aedes",
   "scripts": {
-    "start": "src/index.js"
+    "start": "node src/index.js"
   },
+  "type": "module",
   "keywords": [],
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "Proprietary",
