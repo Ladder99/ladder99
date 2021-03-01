@@ -1,0 +1,16 @@
+{
+  "name": "ladder99-mtconnect",
+  "version": "0.1.0",
+  "description": "transfers data from factory devices to a database and end-user visualizations",
+  "scripts": {
+    "device": "cd src/device && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bburns/ladder99-mtconnect.git"
+  },
+  "author": "Brian Burns <bburns.km@gmail.com>",
+  "license": "Proprietary",
+  "private": true,
+  "homepage": "https://github.com/bburns/ladder99-mtconnect"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "ladder99-device",
+  "version": "0.1.0",
+  "description": "send test device messages to mqtt broker",
+  "scripts": {
+    "start": "node src/index.js"
+  },
+  "keywords": [],
+  "author": "Brian Burns <bburns.km@gmail.com>",
+  "license": "Proprietary",
+  "private": true,
+  "dependencies": {
+    "mqtt": "^4.2.6"
+  }
+}

@@ -1,17 +1,19 @@
 // device simulator
-// publishes sample messages to mqtt.
-// run with `node src/device`
+// publishes sample messages to mqtt
 
 import mqtt from 'mqtt'
-import config from '../config.js'
 import messages from './messages.js'
+
+const host = process.env.HOST || 'localhost'
+const port = process.env.PORT || 1883
+const config = { host, port }
 
 console.log(`Device`)
 console.log(`Simulates a device sending MQTT messages.`)
 console.log(`------------------------------------------------------------`)
 
-console.log(`Connecting to MQTT broker on`, config.mqtt)
-const client = mqtt.connect(config.mqtt)
+console.log(`Connecting to MQTT broker on`, config)
+const client = mqtt.connect(config)
 
 client.on('connect', function onConnect() {
   console.log(`Publishing messages...`)
