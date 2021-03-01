@@ -6,7 +6,7 @@ services:
       - 5000:5000
       - 7878:7878
     volumes:
-      - ./etc/agent:/etc/agent
+      - ./etc/agent:/etc/mtconnect/agent
       - ./data/agent:/var/lib/agent
     # volumes:
     #   - ./etc/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf
