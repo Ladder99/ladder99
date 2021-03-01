@@ -5,11 +5,11 @@
 
 run container
 
-    docker run -it -p 5000:5000 -p 7878:7878 raymondhub/mtconnect:v1.5 /bin/bash
+    docker run -it -p 5000:5000 -p 7878:7878 raymondhub/mtconnect /bin/bash
 
 test agent
 
-    cd ~/agent/cppagent/agent/
+    cd /etc/mtconnect/agent
     agent debug agent.cfg
 
 run adapter
