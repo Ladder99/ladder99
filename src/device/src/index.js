@@ -1,5 +1,5 @@
 // device simulator
-// publishes sample messages to mqtt
+// publishes sample messages to mqtt broker
 
 import mqtt from 'mqtt'
 import messages from './messages.js'

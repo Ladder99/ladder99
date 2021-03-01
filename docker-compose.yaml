@@ -1,21 +1,21 @@
 version: '3.7'
 
 services:
-  portainer:
-    container_name: portainer
-    image: portainer/portainer-ce
-    restart: always
-    logging:
-      driver: 'none'
-    networks:
-      - ladder99
-    ports:
-      - '9000:9000'
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
+  # portainer:
+  #   container_name: portainer
+  #   image: portainer/portainer-ce
+  #   restart: always
+  #   logging:
+  #     driver: 'none'
+  #   networks:
+  #     - ladder99
+  #   ports:
+  #     - '9000:9000'
+  #   volumes:
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /etc/timezone:/etc/timezone:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - portainer_data:/data
 
   broker:
     container_name: broker
@@ -26,38 +26,38 @@ services:
       - ladder99
     ports:
       - '1883:1883'
-      - '3000:3000'
-      - '4000:4000'
-      - '8883:8883'
+    #   # - '3000:3000'
+    #   # - '4000:4000'
+    #   # - '8883:8883'
     # volumes:
     #   - ./data/broker:/data
     # command: --config /data/config.js
 
-  adapter:
-    container_name: adapter
-    build:
-      context: .
-      dockerfile: docker/adapter/Dockerfile
-    depends_on:
-      broker:
-        condition: service_started
-    networks:
-      - ladder99
-    volumes:
-      - ./etc/adapter:/etc/mtconnect/adapter
-      - ./data/adapter:/var/lib/adapter
+  # adapter:
+  #   container_name: adapter
+  #   build:
+  #     context: .
+  #     dockerfile: docker/adapter/Dockerfile
+  #   depends_on:
+  #     broker:
+  #       condition: service_started
+  #   networks:
+  #     - ladder99
+  #   volumes:
+  #     - ./etc/adapter:/etc/mtconnect/adapter
+  #     - ./data/adapter:/var/lib/adapter
 
-  agent:
-    container_name: agent
-    image: raymondhub/mtconnect:v1.5
-    networks:
-      - ladder99
-    ports:
-      - 5000:5000
-    volumes:
-      - ./etc/agent:/etc/mtconnect/agent
-      - ./data/agent:/var/lib/agent
-    command: 'agent debug /etc/mtconnect/agent/agent.cfg'
+  # agent:
+  #   container_name: agent
+  #   image: raymondhub/mtconnect:v1.5
+  #   networks:
+  #     - ladder99
+  #   ports:
+  #     - 5000:5000
+  #   volumes:
+  #     - ./etc/agent:/etc/mtconnect/agent
+  #     - ./data/agent:/var/lib/agent
+  #   command: 'agent debug /etc/mtconnect/agent/agent.cfg'
 
   # client:
   #   build:
