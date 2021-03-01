@@ -3,7 +3,8 @@
 
 import net from 'net'
 import aedes from 'aedes'
-import config from '../config.js'
+
+const port = process.env.PORT || 1883
 
 console.log(`MQTT Broker`)
 console.log(`Listens for topic messages and sends them to subscribed clients.`)
@@ -32,6 +33,6 @@ server.on('connection', function (socket) {
   })
 })
 
-server.listen(config.mqtt.port, function () {
-  console.log(`MQTT Broker started - listening on ${config.mqtt.port}...`)
+server.listen(port, function () {
+  console.log(`MQTT Broker started - listening on ${port}...`)
 })

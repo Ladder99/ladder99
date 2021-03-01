@@ -1,0 +1,15 @@
+{
+  "name": "ladder99-broker",
+  "version": "0.1.0",
+  "description": "MQTT broker using aedes",
+  "scripts": {
+    "start": "src/index.js"
+  },
+  "keywords": [],
+  "author": "Brian Burns <bburns.km@gmail.com>",
+  "license": "Proprietary",
+  "private": true,
+  "dependencies": {
+    "aedes": "^0.44.2"
+  }
+}
