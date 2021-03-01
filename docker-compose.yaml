@@ -4,17 +4,14 @@ services:
     build:
       context: .
       dockerfile: docker/adapter/Dockerfile
-    ports:
-      - 1883:1883
-      - 7878:7878
+    # ports:
+    #   - 1883:1883
+    #   - 7878:7878
     volumes:
       - ./etc/adapter:/etc/mtconnect/adapter
       - ./data/adapter:/var/lib/adapter
 
   agent:
-    # build:
-    #   context: .
-    #   dockerfile: docker/agent/Dockerfile
     image: raymondhub/mtconnect:v1.5
     ports:
       - 5000:5000
@@ -27,10 +24,10 @@ services:
     build:
       context: .
       dockerfile: docker/broker/Dockerfile
-    ports:
-      - 1883:1883
-    environment:
-      - PORT=1883
+    # ports:
+    #   - 1883:1883
+    # environment:
+    #   - PORT=1883
     volumes:
       - ./etc/broker:/etc/broker
       - ./data/broker:/var/lib/broker

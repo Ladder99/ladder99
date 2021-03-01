@@ -2,6 +2,10 @@
 # following instructions from
 # http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu
 
+# status - nearly works but got cd confused at some point and broke build,
+# takes a long time to go through build process, so abandoned for 
+# the prebuilt image.
+
 # get base
 FROM ubuntu:20.04 AS temp_build_image
 
