@@ -1,6 +1,8 @@
 // broker
 // mqtt broker that listens for messages and transmits them to subscribed clients
 
+// not needed - can run an aedes image directly from docker-compose
+
 import net from 'net'
 import aedes from 'aedes'
 

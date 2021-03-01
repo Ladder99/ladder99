@@ -1,3 +1,5 @@
+# status - works but simpler to just use predefined image in docker-compose
+
 FROM node
 
 WORKDIR /usr/src/app

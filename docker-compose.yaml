@@ -19,17 +19,6 @@ services:
 
   broker:
     container_name: broker
-    build:
-      context: .
-      dockerfile: docker/broker/Dockerfile
-    networks:
-      - ladder99
-    volumes:
-      - ./etc/broker:/etc/broker
-      - ./data/broker:/var/lib/broker
-
-  aedes:
-    container_name: aedes
     image: moscajs/aedes:latest
     restart: always
     stop_signal: SIGINT
@@ -40,9 +29,9 @@ services:
       - '3000:3000'
       - '4000:4000'
       - '8883:8883'
-    # command: --config /data/mongodbConfig.js # add here the options to pass to aedes
-    volumes:
-      - ./data/broker:/data # map the local folder to aedes
+    # volumes:
+    #   - ./data/broker:/data
+    # command: --config /data/config.js
 
   adapter:
     container_name: adapter
