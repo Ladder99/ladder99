@@ -1,0 +1,57 @@
+version: '3.7'
+services:
+  client:
+    build:
+      context: .
+      dockerfile: docker/client/Dockerfile
+    ports:
+      - 8080:80
+    environment:
+      - NGINX_PORT=80
+      - SERVER_HOST=server
+      - SERVER_PORT=80
+  server:
+    build:
+      context: .
+      dockerfile: docker/server/Dockerfile
+    ports:
+      - 3000:80
+    environment:
+      - PORT=80
+      - MQTT_PORT=1883
+      - MQTT_HOST=mosquitto
+  influx:
+    image: influxdb
+    ports:
+      - 8086:8086
+      - 2003:2003
+    volumes:
+      - ./etc/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf
+      - ./data/influx:/var/lib/influxdb
+  telegraf:
+    image: telegraf
+    volumes:
+      - ./etc/telegraf:/etc/telegraf
+  chronograf:
+    image: chronograf
+    ports:
+      - 8888:8888
+    volumes:
+      - ./data/chronograf:/var/lib/chronograf
+  kapacitor:
+    image: kapacitor
+    ports:
+      - 9092:9092
+    volumes:
+      - ./etc/kapacitor/kapacitor.conf:/etc/kapacitor/kapacitor.conf
+      - ./data/kapacitor:/var/lib/kapacitor
+      - ./etc/kapacitor/load:/etc/kapacitor/load
+  mosquitto:
+    image: eclipse-mosquitto
+    ports:
+      - 1883:1883
+      - 9001:9001
+    volumes:
+      - ./etc/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./data/mosquitto:/mosquitto/data
+      - ./var/log/mosquitto:/mosquitto/log
