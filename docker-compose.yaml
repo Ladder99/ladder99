@@ -17,21 +17,32 @@ services:
   #     - /var/run/docker.sock:/var/run/docker.sock
   #     - portainer_data:/data
 
-  broker:
-    container_name: broker
-    image: moscajs/aedes:latest
-    restart: always
-    stop_signal: SIGINT
-    networks:
-      - ladder99
+  # broker:
+  #   container_name: broker
+  #   image: moscajs/aedes:latest
+  #   restart: always
+  #   stop_signal: SIGINT
+  #   networks:
+  #     - ladder99
+  #   ports:
+  #     - '1883:1883'
+  #   #   # - '3000:3000'
+  #   #   # - '4000:4000'
+  #   #   # - '8883:8883'
+  #   # volumes:
+  #   #   - ./data/broker:/data
+  #   # command: --config /data/config.js
+
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto
     ports:
-      - '1883:1883'
-    #   # - '3000:3000'
-    #   # - '4000:4000'
-    #   # - '8883:8883'
-    # volumes:
-    #   - ./data/broker:/data
-    # command: --config /data/config.js
+      - 1883:1883
+      - 9001:9001
+    volumes:
+      - ./etc/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./data/mosquitto:/mosquitto/data
+      - ./var/log/mosquitto:/mosquitto/log
 
   # adapter:
   #   container_name: adapter
