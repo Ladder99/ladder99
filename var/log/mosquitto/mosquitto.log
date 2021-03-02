@@ -1,8 +1,0 @@
-1614678455: mosquitto version 2.0.7 starting
-1614678455: Config loaded from /mosquitto/config/mosquitto.conf.
-1614678455: Starting in local only mode. Connections will only be possible from clients running on this machine.
-1614678455: Create a configuration file which defines a listener to allow remote access.
-1614678455: Opening ipv4 listen socket on port 1883.
-1614678455: Opening ipv6 listen socket on port 1883.
-1614678455: Error: Address not available
-1614678455: mosquitto version 2.0.7 running

@@ -38,11 +38,10 @@ services:
     image: eclipse-mosquitto
     ports:
       - 1883:1883
-      - 9001:9001
     volumes:
       - ./etc/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
       - ./data/mosquitto:/mosquitto/data
-      - ./var/log/mosquitto:/mosquitto/log
+      - ./data/mosquitto:/mosquitto/log
 
   # adapter:
   #   container_name: adapter
@@ -140,11 +139,10 @@ services:
   #     - ./etc/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
   #     - ./data/mosquitto:/mosquitto/data
   #     - ./var/log/mosquitto:/mosquitto/log
+# networks:
+#   ladder99:
+#     name: ladder99
 
-networks:
-  ladder99:
-    name: ladder99
-
-volumes:
-  portainer_data:
-  telegraf_conf:
+# volumes:
+#   portainer_data:
+#   telegraf_conf:
