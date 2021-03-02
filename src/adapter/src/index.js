@@ -23,7 +23,7 @@ const mqtt = mqttlib.connect([config]) // pass { host, port }
 // console.log(`Creating UDP socket...`)
 // const udp = dgram.createSocket('udp4')
 
-// console.log(`Creading TCP socket to diode`)
+// console.log(`Creating TCP socket to diode`)
 // let tcpSocket = null
 // const tcp = net.createServer(socket => {
 //   tcpSocket = socket
