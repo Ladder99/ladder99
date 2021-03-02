@@ -1,4 +1,4 @@
-// note: topics must match those in transform.js
+// note: topics must match those in adapter's transform.js
 const messages = [
   {
     topic: 'l99/ccs/evt/status',
