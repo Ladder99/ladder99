@@ -7,10 +7,6 @@
     "stop": "docker-compose down",
     "device": "cd src/device && npm start"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bburns/ladder99-mtconnect.git"
-  },
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "Proprietary",
   "private": true,

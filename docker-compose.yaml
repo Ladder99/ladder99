@@ -6,8 +6,6 @@ services:
     image: eclipse-mosquitto
     networks:
       - ladder99
-    ports:
-      - '1883:1883'
     volumes:
       - ./etc/broker/mosquitto:/mosquitto/config
       - ./data/broker/mosquitto:/mosquitto/data
@@ -29,19 +27,19 @@ services:
     volumes:
       - ./etc/adapter:/etc/mtconnect/adapter
 
-  # device:
-  #   container_name: device
-  #   build:
-  #     context: .
-  #     dockerfile: docker/device/Dockerfile
-  #   environment:
-  #     - MQTT_HOST=broker
-  #     - MQTT_PORT=1883
-  #   depends_on:
-  #     adapter:
-  #       condition: service_started
-  #   networks:
-  #     - ladder99
+  device:
+    container_name: device
+    build:
+      context: .
+      dockerfile: docker/device/Dockerfile
+    environment:
+      - MQTT_HOST=broker
+      - MQTT_PORT=1883
+    depends_on:
+      adapter:
+        condition: service_started
+    networks:
+      - ladder99
 
   # agent:
   #   container_name: agent
