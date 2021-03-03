@@ -5,7 +5,7 @@
 
 // import dgram from 'dgram'
 // import net from 'net'
-import mqttlib from 'mqtt'
+import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import transforms from './transforms.js'
 
 const mqttHost = process.env.MQTT_HOST || 'localhost'
@@ -17,7 +17,9 @@ console.log(`Subscribes to MQTT topics, transforms to SHDR, sends to diode.`)
 console.log(`----------------------------------------------------------------`)
 
 console.log(`Connecting to MQTT broker on`, mqttConfig, `...`)
-const mqtt = mqttlib.connect([mqttConfig]) // pass { host, port }
+// const mqtt = mqttlib.connect([mqttConfig]) // pass { host, port }
+const url = 'mqtt://' + mqttHost + ':' + mqttPort
+const mqtt = mqttlib.connect(url) // pass { host, port }
 
 // console.log(`Creating UDP socket...`)
 // const udp = dgram.createSocket('udp4')
@@ -40,7 +42,7 @@ process.on('SIGINT', shutdown)
 
 // handle mqtt connection
 mqtt.on('connect', function onConnect() {
-  console.log(`Connected to MQTT broker on`, mqttConfig)
+  console.log(`Connected to MQTT broker on`, { url })
   console.log(`Subscribing to MQTT topics...`)
   for (const topic of Object.keys(transforms)) {
     console.log(`Subscribing to topic ${topic}...`)
