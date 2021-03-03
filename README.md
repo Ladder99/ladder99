@@ -34,7 +34,7 @@ RabbitMQ uses a protocol called AMQP (Advanced Message Queuing Protocol), which 
 
 ![rabbitmq](docs/rabbitmq.png)
 
-UDP has limited packet size, so data must be chopped up by a cutter and reassembled on the other side:
+UDP has limited packet size (standard is 1500 bytes), so data must be chopped up by a cutter and reassembled on the other side:
 
 ![diode1](docs/diode1.jpg)
 
@@ -149,3 +149,19 @@ LDAP
 
     https://rabbitblack/#/
     https://rabbitred/#/
+
+
+Run black and red testers
+
+    brew install gradle
+    cd src/diode/application/datadiode/black
+    gradle run
+
+but we need gradle 2.8, not 7.0
+
+Well, let's make our own testers
+
+tcp to 5673 rabbitblack
+udp over 4321
+tcp out on 5674 rabbitred
+
