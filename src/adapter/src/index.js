@@ -24,69 +24,54 @@ console.log(`Connecting to MQTT broker on`, mqttConfig, `...`)
 const url = 'mqtt://' + mqttHost + ':' + mqttPort
 const mqtt = mqttlib.connect(url) // pass { host, port }
 
-console.log(`Creating TCP socket to diode`)
-// let tcpSocket = null
-// const tcp = net.createServer(socket => {
-//   // tcpSocket = socket
-// })
-// net.connect({ port, host }, () => {
-//   // If there is no error, the server has accepted the request and created a new
-//   // socket dedicated to us.
-//   console.log('TCP connection established with the server.')
-//   // The client can now send data to the server by writing to its socket.
-//   // client.write('Hello, server.');
-// })
-
+console.log(`Creating TCP output socket`)
 const socket = new net.Socket()
-console.log(`Connecting to server`, outputConfig, `...`)
+console.log(`Connecting to output socket`, outputConfig, `...`)
 socket.connect(outputConfig, () => {
-  console.log(`Sending text...`)
-  socket.write('Hello, server')
-  // console.log(`Ending socket...`)
-  // socket.end()
-})
+  // console.log(`Sending text...`)
+  // socket.write('Hello, server')
 
-console.log(`Hit ctrl-c to stop adapter.`)
-process.on('SIGINT', shutdown)
+  // handle mqtt connection
+  mqtt.on('connect', function onConnect() {
+    console.log(`Connected to MQTT broker on`, { url })
+    console.log(`Subscribing to MQTT topics...`)
+    for (const topic of Object.keys(transforms)) {
+      console.log(`Subscribing to topic ${topic}...`)
+      mqtt.subscribe(topic)
+    }
+    console.log(`Hit ctrl-c to stop adapter.`)
+    process.on('SIGINT', shutdown)
+    console.log(`Listening for MQTT messages...`)
+  })
 
-// handle mqtt connection
-mqtt.on('connect', function onConnect() {
-  console.log(`Connected to MQTT broker on`, { url })
-  console.log(`Subscribing to MQTT topics...`)
-  for (const topic of Object.keys(transforms)) {
-    console.log(`Subscribing to topic ${topic}...`)
-    mqtt.subscribe(topic)
-  }
-  console.log(`Listening for MQTT messages...`)
-})
-
-// handle mqtt message
-mqtt.on('message', function onMessage(topic, messageBuffer) {
-  const message = messageBuffer.toString()
-  console.log(
-    `Received MQTT message on topic ${topic}: ${message.slice(0, 20)}...`
-  )
-  const json = JSON.parse(message)
-  const transformFn = transforms[topic]
-  if (transformFn) {
-    console.log(`Transforming MQTT message to SHDR...`)
-    const shdr = transformFn(json)
-    console.log(shdr)
-    sendToDiode(shdr)
-  } else {
-    console.error(`No transformer for topic ${topic}.`)
-  }
+  // handle mqtt message
+  mqtt.on('message', function onMessage(topic, messageBuffer) {
+    const message = messageBuffer.toString()
+    console.log(
+      `Received MQTT message on topic ${topic}: ${message.slice(0, 20)}...`
+    )
+    const json = JSON.parse(message)
+    const transformFn = transforms[topic]
+    if (transformFn) {
+      console.log(`Transforming MQTT message to SHDR...`)
+      const shdr = transformFn(json)
+      console.log(shdr)
+      sendToDiode(shdr)
+    } else {
+      console.error(`No transformer for topic ${topic}.`)
+    }
+  })
 })
 
 // pass message on to diode
 function sendToDiode(str) {
-  console.log(`Sending SHDR to diode over TCP at`, outputConfig, `...`)
+  console.log(`Sending SHDR to output TCP at`, outputConfig, `...`)
   socket.write(str)
 }
 
 function shutdown() {
   console.log(`Exiting...`)
-  console.log(`Closing TCP...`)
+  console.log(`Closing TCP output socket...`)
   socket.end()
   console.log(`Closing MQTT connection...`)
   mqtt.end()
