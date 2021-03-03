@@ -1,18 +1,30 @@
 version: '3.7'
 
 services:
+  # broker:
+  #   container_name: broker
+  #   image: moscajs/aedes:latest
+  #   restart: always
+  #   stop_signal: SIGINT
+  #   networks:
+  #     - ladder99
+  #   ports:
+  #     - '1883:1883'
+  #   volumes:
+  #     - ./etc/broker/aedes:/etc
+  #   command: --config /etc/config.js
+
   broker:
     container_name: broker
-    image: moscajs/aedes:latest
-    restart: always
-    stop_signal: SIGINT
+    image: eclipse-mosquitto
     networks:
       - ladder99
     ports:
       - '1883:1883'
     volumes:
-      - ./etc/broker:/etc
-    command: --config /etc/config.js
+      - ./etc/broker/mosquitto:/mosquitto/config
+      - ./data/broker/mosquitto:/mosquitto/data
+      - ./var/log/broker/mosquitto:/mosquitto/log
 
   adapter:
     container_name: adapter
