@@ -129,10 +129,7 @@ Bring up all the services -
     cd src/diode/application/datadiode/contrib/docker
     docker-compose up
 
-Visit the RabbitMQ management consoles here (user guest, pw guest) -
-
-    http://rabbitblack/#/exchanges
-    http://rabbitred/#/exchanges
+Visit the RabbitMQ management consoles here (user guest, pw guest) - http://rabbitblack/#/exchanges and http://rabbitred/#/exchanges.
 
 Publish and receive some data -
 
@@ -140,9 +137,9 @@ Publish and receive some data -
     npm install  # just need to do once
     node src/send.js
 
-You can see the message go by in the RabbitMQ consoles -
+You can see the message go by in the RabbitMQ console - http://rabbitblack/#/queues/%2F/hello. 
 
-
+It's not yet setup to pass through the diode though.
 
 Node-red
 
