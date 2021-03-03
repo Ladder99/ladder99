@@ -10,6 +10,7 @@ services:
       - NGINX_PORT=80
       - SERVER_HOST=server
       - SERVER_PORT=80
+
   server:
     build:
       context: .
@@ -20,6 +21,7 @@ services:
       - PORT=80
       - MQTT_PORT=1883
       - MQTT_HOST=mosquitto
+
   influx:
     image: influxdb
     ports:
@@ -28,16 +30,19 @@ services:
     volumes:
       - ./etc/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf
       - ./data/influx:/var/lib/influxdb
+
   telegraf:
     image: telegraf
     volumes:
       - ./etc/telegraf:/etc/telegraf
+
   chronograf:
     image: chronograf
     ports:
       - 8888:8888
     volumes:
       - ./data/chronograf:/var/lib/chronograf
+
   kapacitor:
     image: kapacitor
     ports:
@@ -46,6 +51,7 @@ services:
       - ./etc/kapacitor/kapacitor.conf:/etc/kapacitor/kapacitor.conf
       - ./data/kapacitor:/var/lib/kapacitor
       - ./etc/kapacitor/load:/etc/kapacitor/load
+
   mosquitto:
     image: eclipse-mosquitto
     ports:

@@ -10,7 +10,7 @@ import mqttlib from 'mqtt'
 import transforms from './transforms.js'
 
 const mqttHost = process.env.MQTT_HOST || 'localhost'
-const mqttPort = process.env.MQTT_PORT || 1883
+const mqttPort = Number(process.env.MQTT_PORT || 1883)
 const mqttConfig = { host: mqttHost, port: mqttPort }
 
 console.log(`MTConnect Adapter`)

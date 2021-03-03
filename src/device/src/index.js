@@ -4,16 +4,16 @@
 import mqtt from 'mqtt'
 import messages from './messages.js'
 
-const host = process.env.HOST || 'localhost'
-const port = process.env.PORT || 1883
-const config = { host, port }
+const mqttHost = process.env.MQTT_HOST || 'localhost'
+const mqttPort = Number(process.env.MQTT_PORT || 1883)
+const mqttConfig = { host: mqttHost, port: mqttPort }
 
 console.log(`Device`)
 console.log(`Simulates a device sending MQTT messages.`)
 console.log(`------------------------------------------------------------`)
 
-console.log(`Connecting to MQTT broker on`, config)
-const client = mqtt.connect(config)
+console.log(`Connecting to MQTT broker on`, mqttConfig)
+const client = mqtt.connect(mqttConfig)
 
 client.on('connect', function onConnect() {
   console.log(`Publishing messages...`)

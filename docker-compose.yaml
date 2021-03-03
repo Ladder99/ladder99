@@ -1,6 +1,65 @@
 version: '3.7'
 
 services:
+  broker:
+    container_name: broker
+    image: moscajs/aedes:latest
+    restart: always
+    stop_signal: SIGINT
+    networks:
+      - ladder99
+    ports:
+      - '1883:1883'
+    volumes:
+      - ./etc/broker:/etc
+    command: --config /etc/config.js
+
+  adapter:
+    container_name: adapter
+    build:
+      context: .
+      dockerfile: docker/adapter/Dockerfile
+    environment:
+      - MQTT_HOST=broker
+      - MQTT_PORT=1883
+    depends_on:
+      broker:
+        condition: service_started
+    networks:
+      - ladder99
+    volumes:
+      - ./etc/adapter:/etc/mtconnect/adapter
+      - ./data/adapter:/var/lib/adapter
+
+  device:
+    container_name: device
+    build:
+      context: .
+      dockerfile: docker/device/Dockerfile
+    environment:
+      - MQTT_HOST=broker
+      - MQTT_PORT=1883
+    depends_on:
+      adapter:
+        condition: service_started
+    networks:
+      - ladder99
+    # volumes:
+    #   - ./etc/adapter:/etc/mtconnect/adapter
+    #   - ./data/adapter:/var/lib/adapter
+
+  # agent:
+  #   container_name: agent
+  #   image: raymondhub/mtconnect:v1.5
+  #   networks:
+  #     - ladder99
+  #   ports:
+  #     - 5000:5000
+  #   volumes:
+  #     - ./etc/agent:/etc/mtconnect/agent
+  #     - ./data/agent:/var/lib/agent
+  #   command: 'agent debug /etc/mtconnect/agent/agent.cfg'
+
   # portainer:
   #   container_name: portainer
   #   image: portainer/portainer-ce
@@ -17,130 +76,9 @@ services:
   #     - /var/run/docker.sock:/var/run/docker.sock
   #     - portainer_data:/data
 
-  broker:
-    container_name: broker
-    image: moscajs/aedes:latest
-    restart: always
-    stop_signal: SIGINT
-    networks:
-      - ladder99
-    ports:
-      - '1883:1883'
-    #   # - '3000:3000'
-    #   # - '4000:4000'
-    #   # - '8883:8883'
-    # volumes:
-    #   - ./data/broker:/data
-    # command: --config /data/config.js
-
-  # mosquitto:
-  #   container_name: mosquitto
-  #   image: eclipse-mosquitto
-  #   environment:
-  #     - MQTT_HOST=mosquitto
-  #     - MQTT_PORT=7879
-  #   networks:
-  #     - ladder99
-  #   ports:
-  #     - 1883:1883
-  #   volumes:
-  #     - ./etc/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
-  #     - ./data/mosquitto:/mosquitto/data
-  #     - ./data/mosquitto:/mosquitto/log
-
-  adapter:
-    container_name: adapter
-    build:
-      context: .
-      dockerfile: docker/adapter/Dockerfile
-    environment:
-      - MQTT_HOST=broker
-      - MQTT_PORT=7879
-    depends_on:
-      broker:
-        condition: service_started
-    networks:
-      - ladder99
-    volumes:
-      - ./etc/adapter:/etc/mtconnect/adapter
-      - ./data/adapter:/var/lib/adapter
-
-  # agent:
-  #   container_name: agent
-  #   image: raymondhub/mtconnect:v1.5
-  #   networks:
-  #     - ladder99
-  #   ports:
-  #     - 5000:5000
-  #   volumes:
-  #     - ./etc/agent:/etc/mtconnect/agent
-  #     - ./data/agent:/var/lib/agent
-  #   command: 'agent debug /etc/mtconnect/agent/agent.cfg'
-
-  # client:
-  #   build:
-  #     context: .
-  #     dockerfile: docker/client/Dockerfile
-  #   ports:
-  #     - 8080:80
-  #   environment:
-  #     - NGINX_PORT=80
-  #     - SERVER_HOST=server
-  #     - SERVER_PORT=80
-
-  # server:
-  #   build:
-  #     context: .
-  #     dockerfile: docker/server/Dockerfile
-  #   ports:
-  #     - 3000:80
-  #   environment:
-  #     - PORT=80
-  #     - MQTT_PORT=1883
-  #     - MQTT_HOST=mosquitto
-
-  # influx:
-  #   image: influxdb
-  #   ports:
-  #     - 8086:8086
-  #     - 2003:2003
-  #   volumes:
-  #     - ./etc/influxdb/influxdb.conf:/etc/influxdb/influxdb.conf
-  #     - ./data/influx:/var/lib/influxdb
-
-  # telegraf:
-  #   container_name: telegraf
-  #   image: telegraf
-  #   restart: always
-  #   networks:
-  #     - l99_bridge
-  #   depends_on:
-  #     influxdb:
-  #       condition: service_started
-  #   volumes:
-  #     - /etc/localtime:/etc/localtime:ro
-  #     - /etc/timezone:/etc/timezone:ro
-  #     - telegraf_conf:/etc/telegraf:rw
-
-  # chronograf:
-  #   image: chronograf
-  #   ports:
-  #     - 8888:8888
-  #   volumes:
-  #     - ./data/chronograf:/var/lib/chronograf
-
-  # kapacitor:
-  #   image: kapacitor
-  #   ports:
-  #     - 9092:9092
-  #   volumes:
-  #     - ./etc/kapacitor/kapacitor.conf:/etc/kapacitor/kapacitor.conf
-  #     - ./data/kapacitor:/var/lib/kapacitor
-  #     - ./etc/kapacitor/load:/etc/kapacitor/load
-
-networks:
-  ladder99:
-    name: ladder99
 # volumes:
 #   portainer_data:
 #   telegraf_conf:
+
+networks:
+  ladder99:
