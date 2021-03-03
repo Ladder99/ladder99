@@ -3,14 +3,17 @@
 // passes json messages to topic handler fns to get shdr string,
 // then passes shdr on to the mtconnect agent via data diode.
 
-// import dgram from 'dgram'
-// import net from 'net'
+import net from 'net'
 import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import transforms from './transforms.js'
 
 const mqttHost = process.env.MQTT_HOST || 'localhost'
 const mqttPort = Number(process.env.MQTT_PORT || 1883)
 const mqttConfig = { host: mqttHost, port: mqttPort }
+
+const outputHost = process.env.OUTPUT_HOST || 'rabbitblack'
+const outputPort = Number(process.env.OUTPUT_PORT || 5673)
+const outputConfig = { host: outputHost, port: outputPort }
 
 console.log(`MTConnect Adapter`)
 console.log(`Subscribes to MQTT topics, transforms to SHDR, sends to diode.`)
@@ -21,13 +24,10 @@ console.log(`Connecting to MQTT broker on`, mqttConfig, `...`)
 const url = 'mqtt://' + mqttHost + ':' + mqttPort
 const mqtt = mqttlib.connect(url) // pass { host, port }
 
-// console.log(`Creating UDP socket...`)
-// const udp = dgram.createSocket('udp4')
-
-// console.log(`Creating TCP socket to diode`)
+console.log(`Creating TCP socket to diode`)
 // let tcpSocket = null
 // const tcp = net.createServer(socket => {
-//   tcpSocket = socket
+//   // tcpSocket = socket
 // })
 // net.connect({ port, host }, () => {
 //   // If there is no error, the server has accepted the request and created a new
@@ -36,6 +36,15 @@ const mqtt = mqttlib.connect(url) // pass { host, port }
 //   // The client can now send data to the server by writing to its socket.
 //   // client.write('Hello, server.');
 // })
+
+const socket = new net.Socket()
+console.log(`Connecting to server`, outputConfig, `...`)
+socket.connect(outputConfig, () => {
+  console.log(`Sending text...`)
+  socket.write('Hello, server')
+  // console.log(`Ending socket...`)
+  // socket.end()
+})
 
 console.log(`Hit ctrl-c to stop adapter.`)
 process.on('SIGINT', shutdown)
@@ -71,23 +80,14 @@ mqtt.on('message', function onMessage(topic, messageBuffer) {
 
 // pass message on to diode
 function sendToDiode(str) {
-  // console.log(`Sending SHDR to diode over UDP at`, config.diode, `...`)
-  // // see https://nodejs.org/api/dgram.html#dgram_socket_send_msg_offset_length_port_address_callback
-  // udp.send(str, config.diode.port, config.diode.host, err => {
-  //   if (err) {
-  //     console.log(`UDP error:`, err)
-  //   }
-  // })
-  // console.log(`Sending SHDR to diode over TCP at`, config.diodeSender, `...`)
-  // tcpSocket.write(str)
+  console.log(`Sending SHDR to diode over TCP at`, outputConfig, `...`)
+  socket.write(str)
 }
 
 function shutdown() {
   console.log(`Exiting...`)
-  // console.log(`Closing UDP...`)
-  // udp.close()
-  // console.log(`Closing TCP...`)
-  // tcpSocket.close()
+  console.log(`Closing TCP...`)
+  socket.end()
   console.log(`Closing MQTT connection...`)
   mqtt.end()
   process.exit()
