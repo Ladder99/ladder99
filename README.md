@@ -116,3 +116,39 @@ In the terminal you should get output like this -
     Gracefully stopping... (press Ctrl+C again to force)
     Stopping adapter ... done
     Stopping broker  ... done
+
+
+## Running the diode
+
+Edit your `/etc/hosts` with `sudo nano /etc/hosts`, and add the line:
+
+    127.0.0.1 rabbitred rabbitblack nodered
+
+Bring up all the services -
+
+    cd src/diode/application/datadiode/contrib/docker
+    docker-compose up
+
+Visit the RabbitMQ management consoles here (user guest, pw guest) -
+
+    http://rabbitblack/#/exchanges
+    http://rabbitred/#/exchanges
+
+Publish and receive some data -
+
+    cd src/diode/application/datadiode/contrib/nodejs
+    npm install  # just need to do once
+    node src/send.js
+
+You can see the message go by in the RabbitMQ consoles -
+
+
+
+Node-red
+
+    http://localhost:1880
+
+LDAP
+
+    https://rabbitblack/#/
+    https://rabbitred/#/
