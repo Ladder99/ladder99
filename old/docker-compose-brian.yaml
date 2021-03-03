@@ -1,0 +1,13 @@
+services:
+  # broker:
+  #   container_name: broker
+  #   image: moscajs/aedes:latest
+  #   restart: always
+  #   stop_signal: SIGINT
+  #   networks:
+  #     - ladder99
+  #   ports:
+  #     - '1883:1883'
+  #   volumes:
+  #     - ./etc/broker/aedes:/etc
+  #   command: --config /etc/config.js

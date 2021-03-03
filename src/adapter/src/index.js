@@ -6,7 +6,6 @@
 // import dgram from 'dgram'
 // import net from 'net'
 import mqttlib from 'mqtt'
-// import config from './config.js'
 import transforms from './transforms.js'
 
 const mqttHost = process.env.MQTT_HOST || 'localhost'
