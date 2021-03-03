@@ -1,5 +1,3 @@
-# multi-stage build
-
 # build javadiode using gradle
 # -------------------------------------
 
@@ -17,16 +15,16 @@ WORKDIR /home/app
 RUN ./gradlew
 
 
-# run javadiode using jre8
-# -------------------------------------
+# # run javadiode using jre8
+# # -------------------------------------
 
-# get java 8 runtime engine
-FROM openjdk:8-jre-slim
+# # get java 8 runtime engine
+# FROM openjdk:8-jre-slim
 
-# EXPOSE 8080
-# RUN mkdir /app
-# COPY --from=TEMP_BUILD_IMAGE /home/gradle/src/build/libs/foo.jar /app
+# # EXPOSE 8080
+# # RUN mkdir /app
+# # COPY --from=TEMP_BUILD_IMAGE /home/gradle/src/build/libs/foo.jar /app
 
-COPY --from=TEMP_BUILD_IMAGE /home/app /home/app
-# CMD ["java", "-jar", "/home/app/foo.jar"]  
+# COPY --from=TEMP_BUILD_IMAGE /home/app /home/app
+# # CMD ["java", "-jar", "/home/app/foo.jar"]  
 

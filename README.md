@@ -28,9 +28,23 @@ The diode receiver then sends them on to an MTConnect Agent (C++/cppagent), and 
 
 ### Data diode
 
-![diode](docs/diode.png)
+The data diode uses RabbitMQ (a message queue that uses AMQP - Advanced Message Queuing Protocol) and Java applications to transfer data via a one-way UDP connection. 
 
-The data diode uses RabbitMQ (a message queue that uses AMQP - Advanced Message Queuing Protocol) and Java applications to transfer data unidirectionally and securely via a UDP connection.
+RabbitMQ is similar to MQTT, but allows different topologies:
+
+![rabbitmq](docs/rabbitmq.png)
+
+UDP has limited packet size, so data must be chopped up by a cutter and reassembled on the other side:
+
+![diode1](docs/diode1.jpg)
+
+Data can also be encrypted before being cut up:
+
+![diode2](docs/diode2.jpg)
+
+The complete pipeline - the X's are exchanges (input ports) - the green X is an unencrypted exchange:
+
+![diode3](docs/diode3.png)
 
 [2016 paper](https://arxiv.org/abs/1602.07467) and [original source code](https://github.com/marcelmaatkamp/rabbitmq-applications/tree/master/application/datadiode)
 
