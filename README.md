@@ -28,9 +28,9 @@ The diode receiver then sends them on to an MTConnect Agent (C++/cppagent), and 
 
 ### Data diode
 
-The data diode uses RabbitMQ (a message queue that uses AMQP - Advanced Message Queuing Protocol) and Java applications to transfer data via a one-way UDP connection. 
+The data diode uses RabbitMQ and a Java application to transfer data via a one-way UDP connection. 
 
-RabbitMQ is similar to MQTT, but allows different topologies:
+RabbitMQ uses a protocol called AMQP (Advanced Message Queuing Protocol), which is similar to MQTT, but allows different topologies:
 
 ![rabbitmq](docs/rabbitmq.png)
 
@@ -51,32 +51,68 @@ The complete pipeline - the X's are exchanges (input ports) - the green X is an 
 
 ## Usage
 
-Run the system - start plc4x, mqtt broker, mtconnect adapter, mtconnect agent, data diode, mtconnect application, database, visualizer -
+Run the system with
 
-    docker-compose up -d
+    docker-compose up
+    
+this will start plc4x, the mqtt broker, adapter, agent, diode, application, database, and visualizer - and send some test messages from a simulated device - 
 
-Run the device simulator (sends test messages to mqtt broker) -
+In the terminal you should get output like this -
 
-    npm run device
-
-In the adapter terminal you should get output like this -
-
-    MTConnect Adapter
-    Subscribes to MQTT topics, transforms to SHDR, sends to diode.
-    ------------------------------------------------------------------
-    Connecting to MQTT broker on { host: 'localhost', port: 1883 } ...
-    Creating UDP socket...
-    Hit ctrl-c to stop adapter.
-    Connected to MQTT broker on { host: 'localhost', port: 1883 }
-    Subscribing to MQTT topics...
-    Subscribing to topic update-mtconnect-test...
-    Listening for MQTT messages...
-    Received MQTT message on topic update-mtconnect-test: {"connection":"onlin...
-    Transforming MQTT message to SHDR...
-    2021-01-05T01:21:46.196Z|connection|AVAILABLE
-    2021-01-05T01:21:46.196Z|state|ACTIVE
-    2021-01-05T01:21:46.196Z|program|pgm0
-    2021-01-05T01:21:46.196Z|step|step1
-    Sending SHDR to diode over UDP at { host: 'localhost', port: 4999 } ...
-
-The diode terminal should show the message being received and transmitted to the agent.
+    $ docker-compose up --remove-orphans
+    Removing orphan container "diode"
+    Creating broker ... done
+    Creating adapter ... done
+    Creating device  ... done
+    Attaching to broker, adapter, device
+    broker     | 2021-03-03T07:04:53: mosquitto version 2.0.7 starting
+    adapter    |
+    adapter    | > ladder99-adapter@0.1.0 start
+    adapter    | > node src/index.js
+    adapter    |
+    device     |
+    device     | > ladder99-device@0.1.0 start
+    device     | > node src/index.js
+    device     |
+    device     | Device
+    device     | Simulates a device sending MQTT messages.
+    device     | ------------------------------------------------------------
+    adapter    | MTConnect Adapter
+    device     | Connecting to MQTT broker on { host: 'broker', port: 1883 }
+    adapter    | Subscribes to MQTT topics, transforms to SHDR, sends to diode.
+    adapter    | ----------------------------------------------------------------
+    adapter    | Connecting to MQTT broker on { host: 'broker', port: 1883 } ...
+    adapter    | Hit ctrl-c to stop adapter.
+    device     | Publishing messages...
+    device     | Topic l99/ccs/evt/status: {"connection":"online","state":400,"prog...
+    device     | Topic l99/ccs/evt/read: [{"address":"%Q0.1","keys":["OUT2","outp...
+    device     | Topic l99/ccs/evt/read: {"address":"%Q0.7","keys":["OUT8","outpu...
+    device     | Closing MQTT connection...
+    broker     | 2021-03-03T07:04:53: Config loaded from /mosquitto/config/mosquitto.conf.
+    broker     | 2021-03-03T07:04:53: Opening ipv4 listen socket on port 1883.
+    broker     | 2021-03-03T07:04:53: mosquitto version 2.0.7 running
+    broker     | 2021-03-03T07:04:56: New connection from 172.29.0.4:47774 on port 1883.
+    broker     | 2021-03-03T07:04:56: New client connected from 172.29.0.4:47774 as mqttjs_4193fb70 (p2, c1, k60).
+    broker     | 2021-03-03T07:04:56: No will message specified.
+    broker     | 2021-03-03T07:04:56: Sending CONNACK to mqttjs_4193fb70 (0, 0)
+    broker     | 2021-03-03T07:04:56: Received PUBLISH from mqttjs_4193fb70 (d0, q0, r0, m0, 'l99/ccs/evt/status', ... (177 bytes))
+    broker     | 2021-03-03T07:04:56: Received PUBLISH from mqttjs_4193fb70 (d0, q0, r0, m0, 'l99/ccs/evt/read', ... (115 bytes))
+    broker     | 2021-03-03T07:04:56: Received PUBLISH from mqttjs_4193fb70 (d0, q0, r0, m0, 'l99/ccs/evt/read', ... (56 bytes))
+    broker     | 2021-03-03T07:04:56: Received DISCONNECT from mqttjs_4193fb70
+    broker     | 2021-03-03T07:04:56: Client mqttjs_4193fb70 disconnected.
+    broker     | 2021-03-03T07:04:56: New connection from 172.29.0.3:40256 on port 1883.
+    adapter    | Connected to MQTT broker on { host: 'broker', port: 1883 } mqtt://broker:1883
+    adapter    | Subscribing to MQTT topics...
+    adapter    | Subscribing to topic l99/ccs/evt/status...
+    adapter    | Subscribing to topic l99/ccs/evt/read...
+    adapter    | Listening for MQTT messages...
+    device     | npm notice
+    device     | npm notice New minor version of npm available! 7.5.3 -> 7.6.0
+    device     | npm notice Changelog: <https://github.com/npm/cli/releases/tag/v7.6.0>
+    device     | npm notice Run `npm install -g npm@7.6.0` to update!
+    device     | npm notice
+    device exited with code 0
+    ^C
+    Gracefully stopping... (press Ctrl+C again to force)
+    Stopping adapter ... done
+    Stopping broker  ... done

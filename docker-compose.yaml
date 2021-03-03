@@ -1,53 +1,53 @@
 version: '3.7'
 
 services:
-  # broker:
-  #   container_name: broker
-  #   image: eclipse-mosquitto
-  #   networks:
-  #     - ladder99
-  #   volumes:
-  #     - ./etc/broker/mosquitto:/mosquitto/config
-  #     - ./data/broker/mosquitto:/mosquitto/data
-  #     - ./var/log/broker/mosquitto:/mosquitto/log
-
-  # adapter:
-  #   container_name: adapter
-  #   build:
-  #     context: .
-  #     dockerfile: docker/adapter/Dockerfile
-  #   environment:
-  #     - MQTT_HOST=broker
-  #     - MQTT_PORT=1883
-  #   depends_on:
-  #     broker:
-  #       condition: service_started
-  #   networks:
-  #     - ladder99
-  #   volumes:
-  #     - ./etc/adapter:/etc/mtconnect/adapter
-
-  # device:
-  #   container_name: device
-  #   build:
-  #     context: .
-  #     dockerfile: docker/device/Dockerfile
-  #   environment:
-  #     - MQTT_HOST=broker
-  #     - MQTT_PORT=1883
-  #   depends_on:
-  #     adapter:
-  #       condition: service_started
-  #   networks:
-  #     - ladder99
-
-  diode:
-    container_name: diode
-    build:
-      context: .
-      dockerfile: docker/diode/Dockerfile
+  broker:
+    container_name: broker
+    image: eclipse-mosquitto
     networks:
       - ladder99
+    volumes:
+      - ./etc/broker/mosquitto:/mosquitto/config
+      - ./data/broker/mosquitto:/mosquitto/data
+      - ./var/log/broker/mosquitto:/mosquitto/log
+
+  adapter:
+    container_name: adapter
+    build:
+      context: .
+      dockerfile: docker/adapter/Dockerfile
+    environment:
+      - MQTT_HOST=broker
+      - MQTT_PORT=1883
+    depends_on:
+      broker:
+        condition: service_started
+    networks:
+      - ladder99
+    volumes:
+      - ./etc/adapter:/etc/mtconnect/adapter
+
+  device:
+    container_name: device
+    build:
+      context: .
+      dockerfile: docker/device/Dockerfile
+    environment:
+      - MQTT_HOST=broker
+      - MQTT_PORT=1883
+    depends_on:
+      adapter:
+        condition: service_started
+    networks:
+      - ladder99
+
+  # diode:
+  #   container_name: diode
+  #   build:
+  #     context: .
+  #     dockerfile: docker/diode/Dockerfile
+  #   networks:
+  #     - ladder99
 
   # agent:
   #   container_name: agent
