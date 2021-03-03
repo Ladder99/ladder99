@@ -41,7 +41,6 @@ services:
       - ladder99
     volumes:
       - ./etc/adapter:/etc/mtconnect/adapter
-      - ./data/adapter:/var/lib/adapter
 
   device:
     container_name: device
