@@ -4,7 +4,7 @@
 # docker-compose stop; docker-compose rm -f; sudo rm -rf volumes; \
 # git pull; docker-compose pull; docker-compose build; docker-compose up
 
-version: '3.5'
+version: '3.7'
 
 services:
   # a minimal container for persisted data
