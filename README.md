@@ -124,7 +124,7 @@ Edit your `/etc/hosts` with `sudo nano /etc/hosts`, and add the line:
 
     127.0.0.1 rabbitred rabbitblack nodered
 
-Bring up all the services -
+Bring up the RabbitMQ queues -
 
     cd src/diode/application/datadiode/contrib/docker
     docker-compose up
@@ -151,20 +151,7 @@ LDAP
     https://rabbitred/#/
 
 
-Run black and red testers
-
-    brew install gradle
-    cd src/diode/application/datadiode/black
-    gradle run
-
-but we need gradle 2.8, not 7.0
-
-Well, let's make our own testers
-
-tcp to 5673 rabbitblack
-udp over 4321
-tcp out on 5674 rabbitred
-
+Run black and red Java applications - these listen to the RabbitMQ queues and manipulate the data - 
 
     $ cd src/diode
     $ docker build -t diode .
@@ -254,18 +241,6 @@ tcp out on 5674 rabbitred
     properties - Displays the properties of root project 'app'.
     tasks - Displays the tasks runnable from root project 'app' (some of the displayed tasks may belong to subprojects).
 
-    IDE tasks
-    ---------
-    cleanEclipse - Cleans all Eclipse files.
-    cleanIdea - Cleans IDEA project files (IML, IPR)
-    eclipse - Generates all Eclipse files.
-    idea - Generates IDEA project files (IML, IPR, IWS)
-
-    Verification tasks
-    ------------------
-    check - Runs all checks.
-    test - Runs the unit tests.
-
     Other tasks
     -----------
     cleanIdeaWorkspace
@@ -291,6 +266,8 @@ tcp out on 5674 rabbitred
     Total time: 10.782 secs
 
 ----
+
+Run the Java code (black side) - 
 
     $ docker run diode /bin/bash -c "cd application/datadiode/black && gradle run"
     Starting a new Gradle Daemon for this build (subsequent builds will be faster).

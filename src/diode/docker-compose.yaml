@@ -1,0 +1,7 @@
+# experiment 2021-03-04
+
+services:
+  black:
+    build:
+      context: application/datadiode/black
+      dockerfile: Dockerfile
