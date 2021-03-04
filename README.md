@@ -295,5 +295,14 @@ tcp out on 5674 rabbitred
     $ docker run diode /bin/bash -c "cd application/datadiode/black && gradle run"
     Starting a new Gradle Daemon for this build (subsequent builds will be faster).
     ...
-    [errored at "<<<<<<" in java file]
+
+get error - 
+
+> Factory method 'declaredExchanges' threw exception; nested exception is org.springframework.web.client.
+> ResourceAccessException: I/O error on GET request for "http://rabbitblack:80/api/exchanges/":
+> Connect to rabbitblack:80 [rabbitblack/127.0.0.1] failed: 
+> Connection refused; nested exception is org.apache.http.conn.HttpHostConnectException: 
+> Connect to rabbitblack:80 [rabbitblack/127.0.0.1] failed: 
+> Connection refused
+
 

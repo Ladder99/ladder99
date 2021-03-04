@@ -1,5 +1,13 @@
 # experiment 2021-03-04
 
+# build with
+#   docker build -t diode .
+# run with
+#   docker run diode <command>
+# eg
+#   docker run diode /bin/bash -c "cd application/datadiode/black && gradle run"
+
+
 # get gradle (version 2.8 specified in .gradleversion file)
 # source: https://github.com/bivas/docker-gradle/tree/master/jdk8-gradle-2.8
 FROM bivas/gradle:8-onbuild
@@ -8,6 +16,6 @@ WORKDIR /home/app
 
 COPY . .
 
-RUN ./gradlew
+RUN ./gradlew tasks
 
 # CMD ./gradlew tasks
