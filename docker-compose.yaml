@@ -83,3 +83,4 @@ services:
 
 networks:
   ladder99:
+    name: ladder99
