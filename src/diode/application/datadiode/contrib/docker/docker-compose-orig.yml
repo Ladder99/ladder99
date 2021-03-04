@@ -47,20 +47,20 @@ ldap:
 #    LDAP_ORGANIZATION: "Example Ltd."
 #    LDAP_ROOTPASS: toor
 
-# # https://github.com/osixia/docker-phpLDAPadmin
-# webldap:
-#   container_name: webldap
-#   image: osixia/phpldapadmin
-#   environment:
-#     PHPLDAPADMIN_LDAP_HOSTS: ldap
-#   links:
-#     - ldap
-#     - proxy
-#   expose:
-#     - '443'
-#     - '80'
-#   ports:
-#     - '443:443'
+# https://github.com/osixia/docker-phpLDAPadmin
+webldap:
+  container_name: webldap
+  image: osixia/phpldapadmin
+  environment:
+    PHPLDAPADMIN_LDAP_HOSTS: ldap
+  links:
+    - ldap
+    - proxy
+  expose:
+    - '443'
+    - '80'
+  ports:
+    - '443:443'
 
 # 'outside' rabbitmq
 rabbitblack:
@@ -106,18 +106,19 @@ rabbitred:
     - '15672'
   links:
     - proxy
-# # and something to generate messages to rabbitblack (outside)
-# nodered:
-#   container_name: nodered
-#   image: beevelop/node-red
-#   environment:
-#     VIRTUAL_HOST: nodered
-#     VIRTUAL_PORT: 1880
-#   expose:
-#     - '1880'
-#   volumes_from:
-#     - 'vols'
-#   restart: always
-#   links:
-#     - rabbitblack
-#     - proxy
+
+# and something to generate messages to rabbitblack (outside)
+nodered:
+  container_name: nodered
+  image: beevelop/node-red
+  environment:
+    VIRTUAL_HOST: nodered
+    VIRTUAL_PORT: 1880
+  expose:
+    - '1880'
+  volumes_from:
+    - 'vols'
+  restart: always
+  links:
+    - rabbitblack
+    - proxy
