@@ -24,7 +24,6 @@ allprojects {
 // apply plugin: "scala"
 
     jar {
-
         version = "0.1"
     }
 
@@ -86,15 +85,18 @@ allprojects {
     // applicationDefaultJvmArgs = ["-Dfile.encoding=UTF-8"]
 }
 
-project(":application") {
 
+project(":application") {
 }
+
 // datadiode
 project(":application:datadiode") {
     dependencies {
         compile project(':application')
     }
 }
+
+// black
 project(":application:datadiode:black") {
     apply plugin: "docker"
     dependencies {
@@ -102,32 +104,28 @@ project(":application:datadiode:black") {
         compile project(':application:datadiode:encryption:encrypt')
         compile project(':application:datadiode:cutter:cut')
         compile project(':application:datadiode:udp:external')
-
     }
     bootRun {
         // mainClass = "org.application.rabbitmq.datadiode.DatadiodeBlackStarter"
         main = "org.application.rabbitmq.datadiode.DatadiodeBlackStarter"
         jvmArgs = ["-d64", "-Xmx8g", "-XX:+PrintGCTimeStamps", "-verbose:gc"]
-    }
-
-   
+    }   
 }
+
+// red
 project(":application:datadiode:red") {
     dependencies {
         compile project(':application:datadiode')
         compile project(':application:datadiode:encryption:decrypt')
-        compile project(':application:datadiode:cutter:merge')
-        
+        compile project(':application:datadiode:cutter:merge')        
         // use the dedicated c version without packet loss
         // compile project(':application:datadiode:udp:internal')
     }
     // springBoot { mainClass = "org.application.rabbitmq.datadiode.DatadiodeRedStarter" }
-
     bootRun {
         main = "org.application.rabbitmq.datadiode.DatadiodeRedStarter"
         jvmArgs = ["-d64", "-Xmx8g", "-XX:+PrintGCTimeStamps", "-verbose:gc"]
     }
-
 }
 
 // encryption
@@ -307,8 +305,6 @@ project(":application:fileshare:external") {
         compile "org.springframework.integration:spring-integration-core:$springIntegrationVersion"
         // compile 'org.springframework.integration:spring-integration-flow:1.0.0.RELEASE'
         compile 'org.springframework.integration:spring-integration-java-dsl:1.1.1.RELEASE'
-
-
     }
     springBoot {
         mainClass = "org.search.producer.SearchProducerStarter"
@@ -327,9 +323,9 @@ project(":application:fileshare:internal") {
 project(":application:sensor") {
     dependencies {
         compile project(':application')
-
     }
 }
+
 // temperature
 project(":application:sensor:temperature") {
     dependencies {
@@ -339,6 +335,7 @@ project(":application:sensor:temperature") {
         mainClass = "org.application.rabbitmq.splitter.split.SplitterSplitStarter"
     }
 }
+
 // temperature sender
 project(":application:sensor:temperature:sender") {
     dependencies {
@@ -360,7 +357,6 @@ project(":application:sensor:temperature:receiver") {
 
 // library
 project(":library") {
-
 }
 project(":library:encryption") {
     dependencies {
@@ -369,7 +365,6 @@ project(":library:encryption") {
         compile "org.bouncycastle:bcpg-jdk15on:$bouncycastleVersion"
     }
 }
-
 project(":library:encryption:encrypt") {
     dependencies {
         compile project(':library:encryption')
@@ -393,4 +388,3 @@ project(":library:esper") {
         compile "com.espertech:esperio-socket:$esperVersion"
     }
 }
-
