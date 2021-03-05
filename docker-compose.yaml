@@ -7,15 +7,15 @@ services:
     networks:
       - ladder99
     volumes:
-      - ./etc/broker/mosquitto:/mosquitto/config
-      - ./data/broker/mosquitto:/mosquitto/data
-      - ./var/log/broker/mosquitto:/mosquitto/log
+      - ./parts/broker/mosquitto/config:/mosquitto/config
+      - ./parts/broker/mosquitto/volume/data:/mosquitto/data
+      - ./parts/broker/mosquitto/volume/log:/mosquitto/log
 
   adapter:
     container_name: adapter
     build:
       context: .
-      dockerfile: docker/adapter/Dockerfile
+      dockerfile: parts/adapter/Dockerfile
     environment:
       - MQTT_HOST=broker
       - MQTT_PORT=1883
@@ -25,13 +25,13 @@ services:
     networks:
       - ladder99
     volumes:
-      - ./etc/adapter:/etc/mtconnect/adapter
+      - ./parts/adapter/config:/etc/mtconnect/adapter
 
   device:
     container_name: device
     build:
       context: .
-      dockerfile: docker/device/Dockerfile
+      dockerfile: parts/device/Dockerfile
     environment:
       - MQTT_HOST=broker
       - MQTT_PORT=1883
@@ -45,7 +45,7 @@ services:
   #   container_name: diode
   #   build:
   #     context: .
-  #     dockerfile: docker/diode/Dockerfile
+  #     dockerfile: parts/diode/Dockerfile
   #   networks:
   #     - ladder99
 
@@ -57,8 +57,8 @@ services:
   #   ports:
   #     - 5000:5000
   #   volumes:
-  #     - ./etc/agent:/etc/mtconnect/agent
-  #     - ./data/agent:/var/lib/agent
+  #     - ./parts/agent/config:/etc/mtconnect/agent
+  #     - ./parts/agent/volume:/var/lib/agent
   #   command: 'agent debug /etc/mtconnect/agent/agent.cfg'
 
   # portainer:
