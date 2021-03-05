@@ -19,10 +19,14 @@ services:
     environment:
       - MQTT_HOST=broker
       - MQTT_PORT=1883
-      - OUTPUT_HOST=rabbitblack
-      - OUTPUT_PORT=5673
+      # - OUTPUT_HOST=rabbitblack
+      # - OUTPUT_PORT=5673
+      - OUTPUT_HOST=agent
+      - OUTPUT_PORT=7878
     depends_on:
       broker:
+        condition: service_started
+      agent:
         condition: service_started
     networks:
       - ladder99
