@@ -1,13 +1,17 @@
 FROM node
 
-WORKDIR /usr/src/app
+# WORKDIR /usr/src/app
+WORKDIR /home/node/app
 
 # install javascript dependencies
-COPY src/adapter/package*.json ./
+COPY parts/adapter/code/package*.json ./
 RUN npm ci --production
 
 # install source
-COPY src/adapter/src ./src
+COPY parts/adapter/code/src ./src
 
 # default command on run container
-CMD ["npm", "start"]
+# CMD ["npm", "start"]
+CMD ["node", "src/index.js"]
+
+USER node
