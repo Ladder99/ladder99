@@ -7,9 +7,9 @@ services:
     networks:
       - ladder99
     volumes:
-      - ./parts/broker/mosquitto/config:/mosquitto/config
-      - ./parts/broker/mosquitto/volume/data:/mosquitto/data
-      - ./parts/broker/mosquitto/volume/log:/mosquitto/log
+      - ./parts/broker/config:/mosquitto/config
+      - ./parts/broker/volume/data:/mosquitto/data
+      - ./parts/broker/volume/log:/mosquitto/log
 
   adapter:
     container_name: adapter
