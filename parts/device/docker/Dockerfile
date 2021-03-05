@@ -1,13 +1,23 @@
 FROM node
 
-WORKDIR /usr/src/app
+WORKDIR /home/node/app
 
 # install javascript dependencies
-COPY src/device/package*.json ./
+COPY src/parts/device/code/package*.json ./
 RUN npm ci --production
 
 # install source
-COPY src/device/src ./src
+COPY src/parts/device/code/src ./src
 
 # default command on run container
-CMD ["npm", "start"]
+# CMD ["npm", "start"]
+
+# When creating an image, you can bypass the package.json's start 
+# command and bake it directly into the image itself. First off this 
+# reduces the number of processes running inside of your container. 
+# Secondly it causes exit signals such as SIGTERM and SIGINT to be 
+# received by the Node.js process instead of npm swallowing them.
+CMD ["node","src/index.js"]
+
+# see https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#non-root-user
+USER node

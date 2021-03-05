@@ -7,7 +7,6 @@
   },
   "type": "module",
   "author": "Brian Burns <bburns.km@gmail.com>",
-  "license": "Proprietary",
   "private": true,
   "dependencies": {
     "mqtt": "^4.2.6"
