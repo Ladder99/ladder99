@@ -9,31 +9,27 @@ import transforms from './transforms.js'
 
 const mqttHost = process.env.MQTT_HOST || 'localhost'
 const mqttPort = Number(process.env.MQTT_PORT || 1883)
-const mqttConfig = { host: mqttHost, port: mqttPort }
+const mqttUrl = `mqtt://${mqttHost}:${mqttPort}`
 
-const outputHost = process.env.OUTPUT_HOST || 'rabbitblack'
-const outputPort = Number(process.env.OUTPUT_PORT || 5673)
+const outputHost = process.env.OUTPUT_HOST || 'localhost'
+const outputPort = Number(process.env.OUTPUT_PORT || 7878)
 const outputConfig = { host: outputHost, port: outputPort }
 
 console.log(`MTConnect Adapter`)
 console.log(`Subscribes to MQTT topics, transforms to SHDR, sends to diode.`)
 console.log(`----------------------------------------------------------------`)
 
-console.log(`Connecting to MQTT broker on`, mqttConfig, `...`)
-// const mqtt = mqttlib.connect([mqttConfig]) // pass { host, port }
-const url = 'mqtt://' + mqttHost + ':' + mqttPort
-const mqtt = mqttlib.connect(url) // pass { host, port }
+console.log(`Connecting to MQTT broker on`, mqttUrl, `...`)
+const mqtt = mqttlib.connect(mqttUrl)
 
 console.log(`Creating TCP output socket`)
 const socket = new net.Socket()
+
 console.log(`Connecting to output socket`, outputConfig, `...`)
 socket.connect(outputConfig, () => {
-  // console.log(`Sending text...`)
-  // socket.write('Hello, server')
-
   // handle mqtt connection
   mqtt.on('connect', function onConnect() {
-    console.log(`Connected to MQTT broker on`, { url })
+    console.log(`Connected to MQTT broker on`, mqttUrl)
     console.log(`Subscribing to MQTT topics...`)
     for (const topic of Object.keys(transforms)) {
       console.log(`Subscribing to topic ${topic}...`)

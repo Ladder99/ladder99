@@ -14,11 +14,10 @@ const states = {
   200: 'STOPPED',
 }
 
-function getTimestamp(ts) {
-  if (ts) {
-    return new Date(ts).toISOString()
-  }
-  return new Date().toISOString()
+// map mqtt topics to transform functions
+const transforms = {
+  'l99/ccs/evt/status': status,
+  'l99/ccs/evt/read': read,
 }
 
 // transform status messages
@@ -47,10 +46,12 @@ function read(json) {
   return shdr
 }
 
-// map mqtt topics to transform functions
-const transforms = {
-  'l99/ccs/evt/status': status,
-  'l99/ccs/evt/read': read,
+// get a timestamp as ISO string eg '2021-03-05T05:28:00'
+function getTimestamp(ts) {
+  if (ts) {
+    return new Date(ts).toISOString()
+  }
+  return new Date().toISOString()
 }
 
 export default transforms
