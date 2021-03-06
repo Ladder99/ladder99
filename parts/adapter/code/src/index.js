@@ -61,9 +61,10 @@ setTimeout(() => {
   //-------------------
 
   console.log(`TCP creating socket...`)
-  const tcp = net.createServer()
+  const tcp = net.createServer(socket => {
+    // })
 
-  tcp.on('connection', socket => {
+    // tcp.on('connection', socket => {
     tcpSocket = tcp
 
     const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
