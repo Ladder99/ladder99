@@ -4,9 +4,6 @@ services:
   device:
     container_name: device
     build: parts/device
-    # build:
-    #   context: .
-    #   dockerfile: parts/device/docker/Dockerfile
     environment:
       - MQTT_HOST=broker
       - MQTT_PORT=1883
