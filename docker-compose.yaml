@@ -27,10 +27,6 @@ services:
 
   adapter:
     container_name: adapter
-    hostname: adapter
-    # build:
-    #   context: .
-    #   dockerfile: parts/adapter/docker/Dockerfile
     build: parts/adapter
     environment:
       - MQTT_HOST=broker
@@ -59,8 +55,7 @@ services:
 
   agent:
     container_name: agent
-    hostname: agent
-    image: raymondhub/mtconnect:v1.5
+    build: parts/agent
     networks:
       - ladder99
     ports:
@@ -68,7 +63,6 @@ services:
     volumes:
       - ./parts/agent/config:/etc/mtconnect/agent
       - ./parts/agent/data:/var/lib/agent
-    command: 'agent debug /etc/mtconnect/agent/agent.cfg'
 
   portainer:
     container_name: portainer
