@@ -12,4 +12,5 @@ COPY code/src ./src
 # default command on run container
 CMD ["node", "src/index.js"]
 
-USER node
+# this causes permission denied error when connecting to agent
+# USER node
