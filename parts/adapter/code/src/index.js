@@ -65,20 +65,23 @@ setTimeout(() => {
 
   tcp.on('connection', socket => {
     tcpSocket = tcp
+
     const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
     console.log('TCP new client connection from', remoteAddress)
+
     socket.on('data', chunk => {
       const str = chunk.toString().trim()
-      // if (str === '* PING') {
-      //   const response = '* PONG 10000'
-      //   console.log(`TCP received PING - sending PONG:`, response)
-      //   socket.write(response + '\n')
-      // } else {
-      console.log('TCP connection data from %s: %j', remoteAddress, chunk)
-      console.log(`TCP data as string:`, str)
-      // udpSocket.write(chunk)
-      // }
+      if (str === '* PING') {
+        const response = '* PONG 10000'
+        console.log(`TCP received PING - sending PONG:`, response)
+        socket.write(response + '\n')
+      } else {
+        console.log('TCP connection data from %s: %j', remoteAddress, chunk)
+        console.log(`TCP data as string:`, str)
+        // udpSocket.write(chunk)
+      }
     })
+
     socket.on('end', () => {
       console.log('TCP connection closing...')
     })
@@ -90,17 +93,17 @@ setTimeout(() => {
     })
   })
 
-  tcp.on('close', () => {
-    console.log(`TCP server - all connections closed.`)
+  console.log(`TCP try listening to socket at`, outputUrl, `...`)
+  tcp.listen(outputUrl, () => {
+    console.log('TCP listening to', tcp.address())
   })
 
   tcp.on('listening', () => {
     console.log('TCP server is listening...')
   })
 
-  console.log(`TCP listening to socket at`, outputUrl, `...`)
-  tcp.listen(outputUrl, () => {
-    console.log('TCP listening to', tcp.address())
+  tcp.on('close', () => {
+    console.log(`TCP server - all connections closed.`)
   })
 
   // console.log(`Creating TCP output socket`)
@@ -113,16 +116,20 @@ setTimeout(() => {
 
   // pass message on to diode
   function sendToDiode(str) {
-    console.log(`Sending SHDR to output TCP at`, outputUrl, `...`)
-    tcpSocket.write(str)
+    if (tcpSocket) {
+      console.log(`Sending SHDR to output TCP at`, outputUrl, `...`)
+      tcpSocket.write(str)
+    }
   }
 
   function shutdown() {
     console.log(`Exiting...`)
-    console.log(`Closing TCP output socket...`)
-    tcpSocket.end()
+    if (tcpSocket) {
+      console.log(`Closing TCP output socket...`)
+      tcpSocket.end()
+    }
     console.log(`Closing MQTT connection...`)
     mqtt.end()
     process.exit()
   }
-}, 5000)
+}, 0) //.
