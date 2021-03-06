@@ -28,9 +28,10 @@ services:
   adapter:
     container_name: adapter
     hostname: adapter
-    build:
-      context: .
-      dockerfile: parts/adapter/docker/Dockerfile
+    # build:
+    #   context: .
+    #   dockerfile: parts/adapter/docker/Dockerfile
+    build: parts/adapter
     environment:
       - MQTT_HOST=broker
       - MQTT_PORT=1883
