@@ -3,11 +3,11 @@ FROM node
 WORKDIR /home/node/app
 
 # install javascript dependencies
-COPY src/parts/device/code/package*.json ./
+COPY parts/device/code/package*.json ./
 RUN npm ci --production
 
 # install source
-COPY src/parts/device/code/src ./src
+COPY parts/device/code/src ./src
 
 # default command on run container
 # CMD ["npm", "start"]

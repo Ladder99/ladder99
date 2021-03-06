@@ -22,41 +22,43 @@ console.log(`----------------------------------------------------------------`)
 console.log(`Connecting to MQTT broker on`, mqttUrl, `...`)
 const mqtt = mqttlib.connect(mqttUrl)
 
+// handle mqtt connection
+mqtt.on('connect', function onConnect() {
+  console.log(`Connected to MQTT broker on`, mqttUrl)
+  console.log(`Subscribing to MQTT topics...`)
+  for (const topic of Object.keys(transforms)) {
+    console.log(`Subscribing to topic ${topic}...`)
+    mqtt.subscribe(topic)
+  }
+  console.log(`Hit ctrl-c to stop adapter.`)
+  process.on('SIGINT', shutdown)
+  console.log(`Listening for MQTT messages...`)
+})
+
+// handle mqtt message
+mqtt.on('message', function onMessage(topic, messageBuffer) {
+  const message = messageBuffer.toString()
+  console.log(
+    `Received MQTT message on topic ${topic}: ${message.slice(0, 20)}...`
+  )
+  const json = JSON.parse(message)
+  const transformFn = transforms[topic]
+  if (transformFn) {
+    console.log(`Transforming MQTT message to SHDR...`)
+    const shdr = transformFn(json)
+    console.log(shdr)
+    sendToDiode(shdr)
+  } else {
+    console.error(`No transformer for topic ${topic}.`)
+  }
+})
+
 console.log(`Creating TCP output socket`)
 const socket = new net.Socket()
 
 console.log(`Connecting to output socket`, outputConfig, `...`)
-socket.connect(outputConfig, () => {
-  // handle mqtt connection
-  mqtt.on('connect', function onConnect() {
-    console.log(`Connected to MQTT broker on`, mqttUrl)
-    console.log(`Subscribing to MQTT topics...`)
-    for (const topic of Object.keys(transforms)) {
-      console.log(`Subscribing to topic ${topic}...`)
-      mqtt.subscribe(topic)
-    }
-    console.log(`Hit ctrl-c to stop adapter.`)
-    process.on('SIGINT', shutdown)
-    console.log(`Listening for MQTT messages...`)
-  })
-
-  // handle mqtt message
-  mqtt.on('message', function onMessage(topic, messageBuffer) {
-    const message = messageBuffer.toString()
-    console.log(
-      `Received MQTT message on topic ${topic}: ${message.slice(0, 20)}...`
-    )
-    const json = JSON.parse(message)
-    const transformFn = transforms[topic]
-    if (transformFn) {
-      console.log(`Transforming MQTT message to SHDR...`)
-      const shdr = transformFn(json)
-      console.log(shdr)
-      sendToDiode(shdr)
-    } else {
-      console.error(`No transformer for topic ${topic}.`)
-    }
-  })
+socket.connect(outputPort, outputHost, () => {
+  console.log(`Connected to TCP output socket`)
 })
 
 // pass message on to diode

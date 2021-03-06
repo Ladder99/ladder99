@@ -1,6 +1,20 @@
 version: '3.7'
 
 services:
+  device:
+    container_name: device
+    build:
+      context: .
+      dockerfile: parts/device/docker/Dockerfile
+    environment:
+      - MQTT_HOST=broker
+      - MQTT_PORT=1883
+    depends_on:
+      adapter:
+        condition: service_started
+    networks:
+      - ladder99
+
   broker:
     container_name: broker
     image: eclipse-mosquitto
@@ -13,6 +27,7 @@ services:
 
   adapter:
     container_name: adapter
+    hostname: adapter
     build:
       context: .
       dockerfile: parts/adapter/docker/Dockerfile
@@ -33,30 +48,17 @@ services:
     volumes:
       - ./parts/adapter/config:/etc/mtconnect/adapter
 
-  device:
-    container_name: device
-    build:
-      context: .
-      dockerfile: parts/device/docker/Dockerfile
-    environment:
-      - MQTT_HOST=broker
-      - MQTT_PORT=1883
-    depends_on:
-      adapter:
-        condition: service_started
-    networks:
-      - ladder99
-
   # diode:
   #   container_name: diode
   #   build:
   #     context: .
-  #     dockerfile: parts/diode/Dockerfile
+  #     dockerfile: parts/diode/docker/Dockerfile
   #   networks:
   #     - ladder99
 
   agent:
     container_name: agent
+    hostname: agent
     image: raymondhub/mtconnect:v1.5
     networks:
       - ladder99
