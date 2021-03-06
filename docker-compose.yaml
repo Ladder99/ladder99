@@ -17,7 +17,7 @@ services:
 
   broker:
     container_name: broker
-    image: eclipse-mosquitto
+    build: parts/broker
     networks:
       - ladder99
     volumes:
