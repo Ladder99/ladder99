@@ -1,7 +1,9 @@
-<!-- get image
+# agent
+
+
+get image
 
     docker pull raymondhub/mtconnect:v1.5 
--->
 
 run container
 
@@ -25,7 +27,7 @@ check log data
 
     cat /var/log/mtc_agent.log
 
-
+---
 
     "start": "/Users/bburns/Desktop/cppagent-1.6.0.7/build/agent/agent run src/agent/agent.cfg",
     "start-debug": "/Users/bburns/Desktop/cppagent-1.6.0.7/build/agent/agent debug src/agent/agent.cfg"
