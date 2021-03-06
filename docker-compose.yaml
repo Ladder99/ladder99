@@ -3,9 +3,10 @@ version: '3.7'
 services:
   device:
     container_name: device
-    build:
-      context: .
-      dockerfile: parts/device/docker/Dockerfile
+    build: parts/device
+    # build:
+    #   context: .
+    #   dockerfile: parts/device/docker/Dockerfile
     environment:
       - MQTT_HOST=broker
       - MQTT_PORT=1883
