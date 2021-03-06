@@ -17,120 +17,113 @@ const outputUrl = `${outputHost}:${outputPort}`
 
 let tcpSocket
 
-setTimeout(() => {
-  console.log(`MTConnect Adapter`)
-  console.log(`Subscribes to MQTT topics, transforms to SHDR, sends to diode.`)
+console.log(`MTConnect Adapter`)
+console.log(`Subscribes to MQTT topics, transforms to SHDR, sends to diode.`)
+console.log(`----------------------------------------------------------------`)
+
+console.log(`Connecting to MQTT broker on`, mqttUrl, `...`)
+const mqtt = mqttlib.connect(mqttUrl)
+
+// handle mqtt connection
+mqtt.on('connect', function onConnect() {
+  console.log(`Connected to MQTT broker on`, mqttUrl)
+  console.log(`Subscribing to MQTT topics...`)
+  for (const topic of Object.keys(transforms)) {
+    console.log(`Subscribing to topic ${topic}...`)
+    mqtt.subscribe(topic)
+  }
+  console.log(`Hit ctrl-c to stop adapter.`)
+  process.on('SIGINT', shutdown)
+  console.log(`Listening for MQTT messages...`)
+})
+
+// handle mqtt message
+mqtt.on('message', function onMessage(topic, messageBuffer) {
+  const message = messageBuffer.toString()
   console.log(
-    `----------------------------------------------------------------`
+    `Received MQTT message on topic ${topic}: ${message.slice(0, 20)}...`
   )
+  const json = JSON.parse(message)
+  const transformFn = transforms[topic]
+  if (transformFn) {
+    console.log(`Transforming MQTT message to SHDR...`)
+    const shdr = transformFn(json)
+    console.log(shdr)
+    sendToDiode(shdr)
+  } else {
+    console.error(`No transformer for topic ${topic}.`)
+  }
+})
 
-  console.log(`Connecting to MQTT broker on`, mqttUrl, `...`)
-  const mqtt = mqttlib.connect(mqttUrl)
+//-------------------
 
-  // handle mqtt connection
-  mqtt.on('connect', function onConnect() {
-    console.log(`Connected to MQTT broker on`, mqttUrl)
-    console.log(`Subscribing to MQTT topics...`)
-    for (const topic of Object.keys(transforms)) {
-      console.log(`Subscribing to topic ${topic}...`)
-      mqtt.subscribe(topic)
-    }
-    console.log(`Hit ctrl-c to stop adapter.`)
-    process.on('SIGINT', shutdown)
-    console.log(`Listening for MQTT messages...`)
-  })
+console.log(`TCP creating socket...`)
+const tcp = net.createServer(socket => {
+  const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
+  console.log('TCP new client connection from', remoteAddress)
 
-  // handle mqtt message
-  mqtt.on('message', function onMessage(topic, messageBuffer) {
-    const message = messageBuffer.toString()
-    console.log(
-      `Received MQTT message on topic ${topic}: ${message.slice(0, 20)}...`
-    )
-    const json = JSON.parse(message)
-    const transformFn = transforms[topic]
-    if (transformFn) {
-      console.log(`Transforming MQTT message to SHDR...`)
-      const shdr = transformFn(json)
-      console.log(shdr)
-      sendToDiode(shdr)
+  tcpSocket = socket
+
+  socket.on('data', chunk => {
+    const str = chunk.toString().trim()
+    if (str === '* PING') {
+      const response = '* PONG 10000'
+      console.log(`TCP received PING - sending PONG:`, response)
+      socket.write(response + '\n')
     } else {
-      console.error(`No transformer for topic ${topic}.`)
+      console.log('TCP connection data from %s: %j', remoteAddress, chunk)
+      console.log(`TCP data as string:`, str)
+      // udpSocket.write(chunk)
     }
   })
 
-  //-------------------
-
-  console.log(`TCP creating socket...`)
-  const tcp = net.createServer(socket => {
-    // })
-
-    // tcp.on('connection', socket => {
-    tcpSocket = tcp
-
-    const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
-    console.log('TCP new client connection from', remoteAddress)
-
-    socket.on('data', chunk => {
-      const str = chunk.toString().trim()
-      if (str === '* PING') {
-        const response = '* PONG 10000'
-        console.log(`TCP received PING - sending PONG:`, response)
-        socket.write(response + '\n')
-      } else {
-        console.log('TCP connection data from %s: %j', remoteAddress, chunk)
-        console.log(`TCP data as string:`, str)
-        // udpSocket.write(chunk)
-      }
-    })
-
-    socket.on('end', () => {
-      console.log('TCP connection closing...')
-    })
-    socket.once('close', () => {
-      console.log('TCP connection closed', remoteAddress)
-    })
-    socket.on('error', err => {
-      console.error('TCP connection error', remoteAddress, err)
-    })
+  socket.on('end', () => {
+    console.log('TCP connection closing...')
   })
-
-  console.log(`TCP try listening to socket at`, outputUrl, `...`)
-  tcp.listen(outputUrl, () => {
-    console.log('TCP listening to', tcp.address())
+  socket.once('close', () => {
+    console.log('TCP connection closed', remoteAddress)
   })
-
-  tcp.on('listening', () => {
-    console.log('TCP server is listening...')
+  socket.on('error', err => {
+    console.error('TCP connection error', remoteAddress, err)
   })
+})
 
-  tcp.on('close', () => {
-    console.log(`TCP server - all connections closed.`)
-  })
+console.log(`TCP try listening to socket at`, outputUrl, `...`)
+tcp.listen(outputUrl, () => {
+  console.log('TCP listening to', tcp.address())
+})
 
-  // console.log(`Creating TCP output socket`)
-  // const socket = new net.Socket()
+tcp.on('listening', () => {
+  console.log('TCP server is listening...')
+})
 
-  // console.log(`Connecting to output socket`, outputUrl, `...`)
-  // socket.connect(outputUrl, () => {
-  //   console.log(`Connected to TCP output socket`)
-  // })
+tcp.on('close', () => {
+  console.log(`TCP server - all connections closed.`)
+})
 
-  // pass message on to diode
-  function sendToDiode(str) {
-    if (tcpSocket) {
-      console.log(`Sending SHDR to output TCP at`, outputUrl, `...`)
-      tcpSocket.write(str)
-    }
+// console.log(`Creating TCP output socket`)
+// const socket = new net.Socket()
+
+// console.log(`Connecting to output socket`, outputUrl, `...`)
+// socket.connect(outputUrl, () => {
+//   console.log(`Connected to TCP output socket`)
+// })
+
+// pass message on to diode
+function sendToDiode(str) {
+  if (tcpSocket) {
+    console.log(`Sending SHDR to output TCP at`, outputUrl, `...`)
+    tcpSocket.write(str)
   }
+}
 
-  function shutdown() {
-    console.log(`Exiting...`)
-    if (tcpSocket) {
-      console.log(`Closing TCP output socket...`)
-      tcpSocket.end()
-    }
-    console.log(`Closing MQTT connection...`)
-    mqtt.end()
-    process.exit()
+function shutdown() {
+  console.log(`Exiting...`)
+  if (tcpSocket) {
+    console.log(`Closing TCP output socket...`)
+    tcpSocket.end()
   }
-}, 0) //.
+  console.log(`Closing MQTT connection...`)
+  mqtt.end()
+  process.exit()
+}
