@@ -3,11 +3,11 @@
 
 get image
 
-    docker pull raymondhub/mtconnect:v1.5 
+    docker pull raymondhub/mtconnect:v1.5
 
 run container
 
-    docker run -it -p 5000:5000 -p 7878:7878 raymondhub/mtconnect /bin/bash
+    docker run -it -p 5000:5000 -p 7878:7878 raymondhub/mtconnect:v1.5 /bin/bash
 
 test agent
 
@@ -29,6 +29,9 @@ check log data
 
 ---
 
-    "start": "/Users/bburns/Desktop/cppagent-1.6.0.7/build/agent/agent run src/agent/agent.cfg",
-    "start-debug": "/Users/bburns/Desktop/cppagent-1.6.0.7/build/agent/agent debug src/agent/agent.cfg"
+to run agent locally,
+
+    cd parts/agent/config
+    /Users/bburns/Desktop/cppagent-1.6.0.7/build/agent/agent run agent-old.cfg
+
 
