@@ -8,7 +8,6 @@ import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import transforms from './transforms.js'
 
 const mqttUrl = process.env.MQTT_URL || 'localhost:1883'
-// const outputUrl = process.env.OUTPUT_URL || 'localhost:7878'
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)
 const outputHost = process.env.OUTPUT_HOST || 'localhost'
 
