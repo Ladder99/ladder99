@@ -11,9 +11,10 @@ const mqttHost = process.env.MQTT_HOST || 'localhost'
 const mqttPort = Number(process.env.MQTT_PORT || 1883)
 const mqttUrl = `mqtt://${mqttHost}:${mqttPort}`
 
-const outputHost = process.env.OUTPUT_HOST || 'localhost'
-const outputPort = Number(process.env.OUTPUT_PORT || 7878)
-const outputUrl = `${outputHost}:${outputPort}`
+// const outputHost = process.env.OUTPUT_HOST || 'localhost'
+// const outputPort = Number(process.env.OUTPUT_PORT || 7878)
+// const outputUrl = `tcp//:${outputHost}:${outputPort}`
+const outputUrl = process.env.OUTPUT_URL || 'localhost:7878'
 
 let tcpSocket
 
