@@ -34,8 +34,9 @@ services:
     build: parts/adapter
     environment:
       - MQTT_URL=mqtt://broker:1883
-      - OUTPUT_URL=adapter:7878
-      # - OUTPUT_URL=rabbitblack:5673
+      - OUTPUT_HOST=adapter
+      - OUTPUT_PORT=7878
+      # - OUTPUT_PORT=5673
     depends_on:
       broker:
         condition: service_started
