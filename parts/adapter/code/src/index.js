@@ -44,9 +44,9 @@ mqtt.on('message', function onMessage(topic, messageBuffer) {
   const transformFn = transforms[topic]
   if (transformFn) {
     console.log(`Transforming JSON message to SHDR...`)
-    const shdr = transformFn(json)
+    const shdr = transformFn(json) // json to shdr
     console.log(shdr)
-    sendToDiode(shdr)
+    sendToOutput(shdr)
   } else {
     console.error(`No transformer for topic ${topic}.`)
   }
@@ -61,15 +61,14 @@ tcp.on('connection', socket => {
   tcpSocket = socket
   const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
   console.log('TCP new client connection from', remoteAddress)
-  socket.on('data', chunk => {
-    const str = chunk.toString().trim()
+  socket.on('data', buffer => {
+    const str = buffer.toString().trim()
     if (str === '* PING') {
       const response = '* PONG 10000'
       console.log(`TCP received PING - sending PONG:`, response)
       socket.write(response + '\n')
     } else {
-      console.log('TCP connection data from %s: %j', remoteAddress, chunk)
-      console.log(`TCP data as string:`, str)
+      console.log('TCP received data:', str.slice(0, 20), '...')
     }
   })
 })
@@ -77,10 +76,10 @@ tcp.on('connection', socket => {
 console.log(`TCP try listening to socket at`, outputPort, outputHost, `...`)
 tcp.listen(outputPort, outputHost)
 
-// pass message on to diode
-function sendToDiode(str) {
+// pass message on to output (agent or diode)
+function sendToOutput(str) {
   if (tcpSocket) {
-    console.log(`TCP sending SHDR...`)
+    console.log(`TCP sending string...`)
     tcpSocket.write(str)
   }
 }
@@ -88,7 +87,7 @@ function sendToDiode(str) {
 function shutdown() {
   console.log(`Exiting...`)
   if (tcpSocket) {
-    console.log(`TCP closing output socket...`)
+    console.log(`TCP closing socket...`)
     tcpSocket.end()
   }
   console.log(`MQTT closing connection...`)
