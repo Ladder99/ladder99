@@ -1,19 +1,13 @@
 // adapter
 // subscribes to different mqtt topics,
 // passes json messages to topic handler fns to get shdr string,
-// then passes shdr on to the mtconnect agent via data diode.
+// then passes shdr on to the mtconnect agent via tcp.
 
 import net from 'net'
 import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import transforms from './transforms.js'
 
-const mqttHost = process.env.MQTT_HOST || 'localhost'
-const mqttPort = Number(process.env.MQTT_PORT || 1883)
-const mqttUrl = `mqtt://${mqttHost}:${mqttPort}`
-
-// const outputHost = process.env.OUTPUT_HOST || 'localhost'
-// const outputPort = Number(process.env.OUTPUT_PORT || 7878)
-// const outputUrl = `tcp//:${outputHost}:${outputPort}`
+const mqttUrl = process.env.MQTT_URL || 'localhost:1883'
 const outputUrl = process.env.OUTPUT_URL || 'localhost:7878'
 
 let tcpSocket
