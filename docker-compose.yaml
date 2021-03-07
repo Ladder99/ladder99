@@ -12,6 +12,9 @@ services:
         condition: service_started
     networks:
       - ladder99
+    logging:
+      options:
+        max-size: '1m'
 
   broker:
     container_name: broker
@@ -22,6 +25,9 @@ services:
       - ./parts/broker/config:/mosquitto/config
       - ./parts/broker/data:/mosquitto/data
       - ./parts/broker/log:/mosquitto/log
+    logging:
+      options:
+        max-size: '1m'
 
   adapter:
     container_name: adapter
@@ -36,12 +42,15 @@ services:
     depends_on:
       broker:
         condition: service_started
-      agent:
-        condition: service_started
+      # agent:
+      #   condition: service_started
     networks:
       - ladder99
     volumes:
       - ./parts/adapter/config:/etc/mtconnect/adapter
+    logging:
+      options:
+        max-size: '1m'
 
   # diode:
   #   container_name: diode
@@ -50,6 +59,9 @@ services:
   #     dockerfile: parts/diode/docker/Dockerfile
   #   networks:
   #     - ladder99
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
   agent:
     container_name: agent
@@ -58,9 +70,15 @@ services:
       - ladder99
     ports:
       - 5000:5000
+    depends_on:
+      adapter:
+        condition: service_started
     volumes:
       - ./parts/agent/config:/etc/mtconnect/agent
       - ./parts/agent/data:/var/lib/agent
+    logging:
+      options:
+        max-size: '1m'
 
   portainer:
     container_name: portainer
