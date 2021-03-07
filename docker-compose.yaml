@@ -34,13 +34,11 @@ services:
     build: parts/adapter
     environment:
       - MQTT_URL=mqtt://broker:1883
-      - OUTPUT_URL=localhost:7878
+      - OUTPUT_URL=adapter:7878
       # - OUTPUT_URL=rabbitblack:5673
     depends_on:
       broker:
         condition: service_started
-      # agent:
-      #   condition: service_started
     networks:
       - ladder99
     volumes:
