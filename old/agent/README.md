@@ -31,7 +31,7 @@ check log data
 
 to run agent locally,
 
-    cd parts/agent/config
-    /Users/bburns/Desktop/cppagent-1.6.0.7/build/agent/agent run agent-old.cfg
+    cd old/agent
+    /Users/bburns/Desktop/cppagent-1.6.0.7/build/agent/agent run agent.cfg
 
 
