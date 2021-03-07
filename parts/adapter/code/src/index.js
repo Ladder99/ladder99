@@ -21,32 +21,33 @@ console.log(`MTConnect Adapter`)
 console.log(`Subscribes to MQTT topics, transforms to SHDR, sends to diode.`)
 console.log(`----------------------------------------------------------------`)
 
-console.log(`Connecting to MQTT broker on`, mqttUrl, `...`)
+console.log(`Hit ctrl-c to stop adapter.`)
+process.on('SIGINT', shutdown)
+
+console.log(`MQTT connecting to broker on`, mqttUrl, `...`)
 const mqtt = mqttlib.connect(mqttUrl)
 
 // handle mqtt connection
 mqtt.on('connect', function onConnect() {
-  console.log(`Connected to MQTT broker on`, mqttUrl)
-  console.log(`Subscribing to MQTT topics...`)
+  console.log(`MQTT connected to broker on`, mqttUrl)
+  console.log(`MQTT subscribing to topics...`)
   for (const topic of Object.keys(transforms)) {
-    console.log(`Subscribing to topic ${topic}...`)
+    console.log(`MQTT subscribing to topic ${topic}...`)
     mqtt.subscribe(topic)
   }
-  console.log(`Hit ctrl-c to stop adapter.`)
-  process.on('SIGINT', shutdown)
-  console.log(`Listening for MQTT messages...`)
+  console.log(`MQTT listening for messages...`)
 })
 
 // handle mqtt message
 mqtt.on('message', function onMessage(topic, messageBuffer) {
   const message = messageBuffer.toString()
   console.log(
-    `Received MQTT message on topic ${topic}: ${message.slice(0, 20)}...`
+    `MQTT received message on topic ${topic}: ${message.slice(0, 20)}...`
   )
   const json = JSON.parse(message)
   const transformFn = transforms[topic]
   if (transformFn) {
-    console.log(`Transforming MQTT message to SHDR...`)
+    console.log(`Transforming JSON message to SHDR...`)
     const shdr = transformFn(json)
     console.log(shdr)
     sendToDiode(shdr)
@@ -112,7 +113,7 @@ tcp.on('close', () => {
 // pass message on to diode
 function sendToDiode(str) {
   if (tcpSocket) {
-    console.log(`Sending SHDR to output TCP at`, outputUrl, `...`)
+    console.log(`TCP sending SHDR to output at`, outputUrl, `...`)
     tcpSocket.write(str)
   }
 }
@@ -120,10 +121,10 @@ function sendToDiode(str) {
 function shutdown() {
   console.log(`Exiting...`)
   if (tcpSocket) {
-    console.log(`Closing TCP output socket...`)
+    console.log(`TCP closing output socket...`)
     tcpSocket.end()
   }
-  console.log(`Closing MQTT connection...`)
+  console.log(`MQTT closing connection...`)
   mqtt.end()
   process.exit()
 }
