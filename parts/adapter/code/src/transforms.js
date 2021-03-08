@@ -23,15 +23,16 @@ const transforms = {
 // transform status messages
 export function status(json) {
   const timestamp = getTimestamp(json._ts)
-  const shdr = `
+  const shdr =
+    `
 ${timestamp}
 |connection|${connections[json.connection]}
 |state|${states[json.state]}
 |program|${json.program}
 |step|${json.step}
 `
-    .trim()
-    .replace(/\n/g, '')
+      .trim()
+      .replace(/\n/g, '') + '\n'
   return shdr
 }
 
@@ -42,7 +43,9 @@ function read(json) {
     json = [json]
   }
   const shdr =
-    timestamp + json.map(item => `|${item.address}|${item.value}`).join('')
+    timestamp +
+    json.map(item => `|${item.address}|${item.value}`).join('') +
+    '\n'
   return shdr
 }
 
