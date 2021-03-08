@@ -77,10 +77,10 @@ console.log(`TCP try listening to socket at`, outputPort, outputHost, `...`)
 tcp.listen(outputPort, outputHost)
 
 // pass message on to output (agent or diode)
-function sendToOutput(str) {
+function sendToOutput(shdr) {
   if (tcpSocket) {
-    console.log(`TCP sending string...`)
-    tcpSocket.write(str)
+    console.log(`TCP sending string with LF terminator...`)
+    tcpSocket.write(shdr + '\n')
   }
 }
 
