@@ -3,9 +3,8 @@
   "version": "0.1.0",
   "description": "transfers data from factory devices to database and end-user visualizations",
   "scripts": {
-    "start": "docker-compose up --remove-orphans",
-    "stop": "docker-compose down",
-    "device": "cd src/device && npm start"
+    "start": "docker-compose down && docker-compose up --build",
+    "stop": "docker-compose down"
   },
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "Proprietary",
