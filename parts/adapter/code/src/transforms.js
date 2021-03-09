@@ -20,29 +20,41 @@ const transforms = {
   'l99/ccs/evt/read': read,
 }
 
-// transform status messages
-export function status(json) {
-  const timestamp = getTimestamp(json._ts)
+/**
+ * status message transform
+ * @param {object} msg - status message, eg
+ *   { _ts, connection, state, program, step }
+ * @returns {string} SHDR string, eg
+ *   2021-03-09T12:42:00.000Z|connection|AVAILABLE
+ *   2021-03-09T12:42:00.000Z|state|ACTIVE
+ *   ...
+ */
+export function status(msg) {
+  const timestamp = getTimestamp(msg._ts)
   const shdr = `
-${timestamp}
-|connection|${connections[json.connection]}
-|state|${states[json.state]}
-|program|${json.program}
-|step|${json.step}
-`
-    .trim()
-    .replace(/\n/g, '')
+${timestamp}|connection|${connections[msg.connection]}
+${timestamp}|state|${states[msg.state]}
+${timestamp}|program|${msg.program}
+${timestamp}|step|${msg.step}
+`.trim()
   return shdr
 }
 
-// transform read (address) messages
-function read(json) {
+/**
+ * read/address message transform
+ * @param {object|object[]} msg - [{address,value},...]
+ * @returns {string} SHDR string, eg
+ *   2021-03-09T12:42:00.000Z|%Q0.1|0
+ *   2021-03-09T12:42:00.000Z|%Q0.7|1
+ */
+function read(msg) {
   const timestamp = getTimestamp()
-  if (!Array.isArray(json)) {
-    json = [json]
+  if (!Array.isArray(msg)) {
+    msg = [msg]
   }
-  const shdr =
-    timestamp + json.map(item => `|${item.address}|${item.value}`).join('')
+  const shdr = msg
+    .map(item => `${timestamp}|${item.address}|${item.value}`)
+    .join('\n')
   return shdr
 }
 
