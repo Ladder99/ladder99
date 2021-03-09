@@ -22,7 +22,7 @@ const transforms = {
 
 /**
  * status message transform
- * @param {object} msg - status message, eg
+ * @param {object} msg - status message
  *   { _ts, connection, state, program, step }
  * @returns {string} SHDR string, eg
  *   2021-03-09T12:42:00.000Z|connection|AVAILABLE
@@ -44,18 +44,41 @@ ${timestamp}|step|${msg.step}
  * read/address message transform
  * @param {object|object[]} msg - [{address,value},...]
  * @returns {string} SHDR string, eg
- *   2021-03-09T12:42:00.000Z|%Q0.1|0
- *   2021-03-09T12:42:00.000Z|%Q0.7|1
+ *   2021-03-09T12:42:00.000Z|%Q0.4|ACTIVE
+ *   2021-03-09T12:42:00.000Z|%Q0.5|INACTIVE
  */
 function read(msg) {
   const timestamp = getTimestamp()
   if (!Array.isArray(msg)) {
     msg = [msg]
   }
+  // const shdr = msg
+  //   .map(item => `${timestamp}|${item.address}|${item.value}`)
+  //   .join('\n')
   const shdr = msg
-    .map(item => `${timestamp}|${item.address}|${item.value}`)
+    .map(item => {
+      const { address, value } = item
+      const type = addresses[address].type
+      const typeTransform = typeTransforms[type]
+      const transformedValue = typeTransform(value)
+      return `${timestamp}|${address}|${transformedValue}`
+    })
     .join('\n')
   return shdr
+}
+
+const addresses = {
+  '%Q0.4': { type: 'ACTUATOR_STATE' },
+  '%Q0.5': { type: 'ACTUATOR_STATE' },
+  '%Q0.6': { type: 'ACTUATOR_STATE' },
+}
+
+const typeTransforms = {
+  ACTUATOR_STATE: getActuatorState,
+}
+
+function getActuatorState(value) {
+  return value === 0 ? 'INACTIVE' : 'ACTIVE'
 }
 
 // get a timestamp as ISO string eg '2021-03-05T05:28:00'
