@@ -17,13 +17,13 @@ const messages = [
   {
     topic: 'l99/ccs/evt/read',
     json: [
-      { address: '%Q0.1', keys: ['OUT2', 'output.2'], value: 0 },
-      { address: '%Q0.7', keys: ['OUT8', 'output.8'], value: 1 },
+      { address: '%Q0.4', value: 0 },
+      { address: '%Q0.5', value: 1 },
     ],
   },
   {
     topic: 'l99/ccs/evt/read',
-    json: { address: '%Q0.7', keys: ['OUT8', 'output.8'], value: 0 },
+    json: { address: '%Q0.6', value: 0 },
   },
 ]
 

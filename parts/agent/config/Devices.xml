@@ -21,12 +21,15 @@
           <DataItem category="EVENT" id="state" type="EXECUTION"/>
           <DataItem category="EVENT" id="program" name="program" type="PROGRAM" />
           <DataItem category="EVENT" id="step" name="step" type="BLOCK"/>
+          <DataItem category="EVENT" id="%Q0.4" name="Tamp, Air Assist" type="ACTUATOR_STATE" />
+          <DataItem category="EVENT" id="%Q0.5" name="Tamp, Vacuum" type="ACTUATOR_STATE" />
+          <DataItem category="EVENT" id="%Q0.6" name="Tamp, Cylinder" type="ACTUATOR_STATE" />
         </DataItems>
         <!-- <Components>
           <Pneumatic id="foo" name="foo">
             <DataItems>
-              <DataItem category="SAMPLE" id="%Q0.1" nativeUnits="?" subType="?" type="?" units="?"/>
-              <DataItem category="SAMPLE" id="%Q0.7" nativeUnits="?" subType="?" type="?" units="?"/>              
+              <DataItem category="SAMPLE" id="%Q0.4" name="" nativeUnits="?" subType="?" type="?" units="?"/>
+              <DataItem category="SAMPLE" id="%Q0.5" name="" nativeUnits="?" subType="?" type="?" units="?"/>              
             </DataItems>
           </Pneumatic>
         </Components> -->
