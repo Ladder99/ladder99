@@ -102,7 +102,6 @@
                   <DataItem category="EVENT" id="pc_good" subType="GOOD" type="PART_COUNT"/>
                   -->
 
-                  <!--bb
                   <DataItem category="SAMPLE" id="clk_time" type="CLOCK_TIME">
                     <Source>status.utc_time</Source>
                   </DataItem>
@@ -117,7 +116,7 @@
                   </DataItem>
                   <DataItem category="SAMPLE" id="life_count" type="COUNT">
                     <Source>%M55.0</Source>
-                  </DataItem> -->
+                  </DataItem>
 
                 </DataItems>
               </Path>
@@ -166,7 +165,6 @@
             </Electric>
             -->
 
-            <!--bb
             <EndEffector id="end_effector">
               <DataItems>
                 <DataItem category="CONDITION" id="end_eff_cond" type="SYSTEM"/>
@@ -202,9 +200,8 @@
                 <Composition id="assist" type="FAN"/>
                 <Composition id="vacuum" type="FAN"/>
               </Compositions>
-            </EndEffector> -->
+            </EndEffector>
 
-            <!--bb 
             <Feeder id="feeder">
               <DataItems>
                 <DataItem category="CONDITION" id="feed_cond" type="SYSTEM"/>
@@ -260,7 +257,7 @@
                   <Composition id="web" type="REEL"/>
                 </Compositions>
               </DataItems>
-            </Feeder> -->
+            </Feeder>
 
 
             <!--
