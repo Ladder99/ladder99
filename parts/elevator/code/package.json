@@ -1,0 +1,14 @@
+{
+  "name": "ladder99-elevator",
+  "version": "0.1.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {},
+  "keywords": [],
+  "author": "Brian Burns <bburns.km@gmail.com>",
+  "license": "Proprietary",
+  "private": true,
+  "dependencies": {
+    "js-yaml": "^4.0.0"
+  }
+}
