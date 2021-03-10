@@ -1,8 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.1" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.1 http://www.mtconnect.org/schemas/MTConnectDevices_1.1.xsd">
-  <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.1"/>
+  <Header 
+    creationTime="2021-02-23T18:44:40+00:00" 
+    sender="localhost" 
+    instanceId="1267728234" 
+    bufferSize="131072" 
+    version="1.1"
+  />
   <Devices>
-    <Device id="dev" iso841Class="6" name="CCS-PA" sampleInterval="10" uuid="000">
+    <Device 
+      id="dev" 
+      iso841Class="6" 
+      name="CCS-PA" 
+      sampleInterval="10" 
+      uuid="000"
+    >
       <Description manufacturer="CCS"/>
         <DataItems>
           <DataItem category="EVENT" id="connection" type="AVAILABILITY"/>
@@ -10,14 +22,15 @@
           <DataItem category="EVENT" id="program" name="program" type="PROGRAM" />
           <DataItem category="EVENT" id="step" name="step" type="BLOCK"/>
         </DataItems>
-        <!-- <Components>
+        <Components>
           <Pneumatic id="foo" name="foo">
             <DataItems>
-              <DataItem category="SAMPLE" id="%Q0.1" nativeUnits="?" subType="?" type="?" units="?"/>
-              <DataItem category="SAMPLE" id="%Q0.7" nativeUnits="?" subType="?" type="?" units="?"/>              
+              <DataItem category="EVENT" id="%Q0.4" name="Tamp, Air Assist" type="ACTUATOR_STATE" />
+              <DataItem category="EVENT" id="%Q0.5" name="Tamp, Vacuum" type="ACTUATOR_STATE" />
+              <DataItem category="EVENT" id="%Q0.6" name="Tamp, Cylinder" type="ACTUATOR_STATE" />
             </DataItems>
           </Pneumatic>
-        </Components> -->
+        </Components>
       <!-- <Components>
         <Axes id="ax" name="Axes">
           <Components>
