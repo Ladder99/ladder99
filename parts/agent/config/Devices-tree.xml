@@ -22,146 +22,146 @@
       >
         Emergent Next Generation Print and Apply
       </Description>
-        
-        <DataItems>
-        </DataItems>
+      
+      <DataItems>
+      </DataItems>
+
+      <Components>
+
+        <Controller id="controller" nativeName="plc">
+          <Description>Electronic board set responsible for coordinating all machine function.</Description>
+    
+          <!-- empty element caused code 139/segfault -->
+          <!-- <Configuration/> -->
+
+          <DataItems>
+          </DataItems>
+
+          <Components>
+            <Path id="path1" name="path">
+              <DataItems>
+              </DataItems>
+            </Path>
+            <!--
+            <Compositions>
+              <Composition id="base_board" type="?"/>
+              <Composition id="top_board" type="?"/>
+              <Composition id="compute" type="?"/>
+              <Composition id="rtc" type="?"/>
+            </Compositions>
+          -->
+          </Components>
+        </Controller>
+      </Components>
+
+      <Systems id="systems">
 
         <Components>
 
-          <Controller id="controller" nativeName="plc">
-            <Description>Electronic board set responsible for coordinating all machine function.</Description>
-      
-            <!-- empty element caused code 139/segfault -->
-            <!-- <Configuration/> -->
+          <!--
+          <Hydraulic/>
+          <Coolant/>
+          <Lubrication/>
+          <Enclosure/>
+          <Protective/>
+          <ProcessPower/>
+          <Dielectric/>
+          <WorkEnvelope/>
+          -->
 
+          <!--
+          <Pneumatic id="pneumatic">
+            <DataItems>
+              <DataItem category="CONDITION" id="pneu_cond" type="SYSTEM"/>
+              <DataItem category="EVENT" id="message" name="message" type="MESSAGE" />
+            </DataItems>
+          </Pneumatic>
+          -->
+
+          <!--
+          <Electric id="electric">
+            <DataItems>
+              <DataItem category="CONDITION" id="elec_cond" type="SYSTEM"/>
+              <DataItem category="EVENT" id="message" name="message" type="MESSAGE" />
+            </DataItems>
+          </Electric>
+          -->
+
+          <EndEffector id="end_effector">
             <DataItems>
             </DataItems>
+            <Compositions>
+              <Composition id="headup" type="SENSING_ELEMENT"/>
+              <Composition id="cylinder" type="ACTUATOR"/>
+              <Composition id="assist" type="FAN"/>
+              <Composition id="vacuum" type="FAN"/>
+            </Compositions>
+          </EndEffector>
 
+          <Feeder id="feeder">
+            <DataItems>
+              <Compositions>
+                <Composition id="printer" type="ACTUATOR"/>
+                <Composition id="takeup" type="MOTOR"/>
+                <Composition id="dancer" type="PULLEY"/>
+                <Composition id="tension" type="SENSING_ELEMENT"/>
+                <Composition id="label" type="REEL"/>
+                <Composition id="web" type="REEL"/>
+              </Compositions>
+            </DataItems>
+          </Feeder>
+
+
+          <!--
+          <Resources id="resources" name="resources">
             <Components>
-              <Path id="path1" name="path">
+              <Personnel id="personnel" name="personnel">
                 <DataItems>
+                  <DataItem category="EVENT" id="operator" subType="OPERATOR" type="USER"/>
                 </DataItems>
-              </Path>
-              <!--
-              <Compositions>
-                <Composition id="base_board" type="?"/>
-                <Composition id="top_board" type="?"/>
-                <Composition id="compute" type="?"/>
-                <Composition id="rtc" type="?"/>
-              </Compositions>
-            -->
+              </Personnel>
+              <Materials id="materials" name="materials">
+                <Components>
+                  <Stock id="procstock" name="stock">
+                    <DataItems>
+                      <DataItem category="EVENT" id="stock" type="MATERIAL"/>
+                    </DataItems>
+                  </Stock>
+                </Components>
+              </Materials>
             </Components>
-          </Controller>
+          </Resources>
+          -->
+          <!--
+          <Axes id="axes">
+            <Components>
+              <Linear id="y"/>
+            </Components>
+          </Axes>
+          -->
+          <!--
+          <Auxilaries>
+            <Systems?>
+              <Loader/>
+              <WasteDisposal/>
+              <ToolingDelivery/>
+              <BarFeeder/>
+              <Environmental/>
+              <Sensor/>
+              <Deposition/>
+            </Systems>
+          </Auxilaries>
+          -->
+          <!--
+          <Interfaces/>
+          -->
         </Components>
-
-        <Systems id="systems">
-
-          <Components>
-
-            <!--
-            <Hydraulic/>
-            <Coolant/>
-            <Lubrication/>
-            <Enclosure/>
-            <Protective/>
-            <ProcessPower/>
-            <Dielectric/>
-            <WorkEnvelope/>
-            -->
-
-            <!--
-            <Pneumatic id="pneumatic">
-              <DataItems>
-                <DataItem category="CONDITION" id="pneu_cond" type="SYSTEM"/>
-                <DataItem category="EVENT" id="message" name="message" type="MESSAGE" />
-              </DataItems>
-            </Pneumatic>
-            -->
-
-            <!--
-            <Electric id="electric">
-              <DataItems>
-                <DataItem category="CONDITION" id="elec_cond" type="SYSTEM"/>
-                <DataItem category="EVENT" id="message" name="message" type="MESSAGE" />
-              </DataItems>
-            </Electric>
-            -->
-
-            <EndEffector id="end_effector">
-              <DataItems>
-              </DataItems>
-              <Compositions>
-                <Composition id="headup" type="SENSING_ELEMENT"/>
-                <Composition id="cylinder" type="ACTUATOR"/>
-                <Composition id="assist" type="FAN"/>
-                <Composition id="vacuum" type="FAN"/>
-              </Compositions>
-            </EndEffector>
-
-            <Feeder id="feeder">
-              <DataItems>
-                <Compositions>
-                  <Composition id="printer" type="ACTUATOR"/>
-                  <Composition id="takeup" type="MOTOR"/>
-                  <Composition id="dancer" type="PULLEY"/>
-                  <Composition id="tension" type="SENSING_ELEMENT"/>
-                  <Composition id="label" type="REEL"/>
-                  <Composition id="web" type="REEL"/>
-                </Compositions>
-              </DataItems>
-            </Feeder>
-
-
-            <!--
-            <Resources id="resources" name="resources">
-              <Components>
-                <Personnel id="personnel" name="personnel">
-                  <DataItems>
-                    <DataItem category="EVENT" id="operator" subType="OPERATOR" type="USER"/>
-                  </DataItems>
-                </Personnel>
-                <Materials id="materials" name="materials">
-                  <Components>
-                    <Stock id="procstock" name="stock">
-                      <DataItems>
-                        <DataItem category="EVENT" id="stock" type="MATERIAL"/>
-                      </DataItems>
-                    </Stock>
-                  </Components>
-                </Materials>
-              </Components>
-            </Resources>
-            -->
-            <!--
-            <Axes id="axes">
-              <Components>
-                <Linear id="y"/>
-              </Components>
-            </Axes>
-            -->
-            <!--
-            <Auxilaries>
-              <Systems?>
-                <Loader/>
-                <WasteDisposal/>
-                <ToolingDelivery/>
-                <BarFeeder/>
-                <Environmental/>
-                <Sensor/>
-                <Deposition/>
-              </Systems>
-            </Auxilaries>
-            -->
-            <!--
-            <Interfaces/>
-            -->
-          </Components>
-        </Systems>
-        <!--
-        <Door/>
-        <Actuator/>
-        <Sensor/>
-        -->
+      </Systems>
+      <!--
+      <Door/>
+      <Actuator/>
+      <Sensor/>
+      -->
     </Device>
   </Devices>
 </MTConnectDevices>
