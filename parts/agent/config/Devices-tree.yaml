@@ -1,39 +1,50 @@
-devices: 
+devices:
+  device:
+    attribs:
+      id: dev
+      name: CCS-PA
+      uuid: 000
+      sampleInterval: 10
+    values:
+      description:
+        manufacturer: CCS
+        model: Emergent-PA-Pneumatic
+        serialNumber: 000
+        values: Emergent Next Generation Print and Apply
+      dataitems: []
+      components:
+        values:
+          controller:
+            attribs:
+              id: controller
+              nativeName: plc
+            values:
+              description: Electronic board set responsible for coordinating all machine function.
+              dataitems: []
+              components:
+                values:
+                  path:
+                    attribs:
+                      id: path1
+                      name: path
+                    values:
+                      dataitems: []
 
-  device: 
-    id: dev
-    name: CCS-PA
-    uuid: 000
-    sampleInterval: 10
-
-    description: 
-      manufacturer: CCS
-      model: Emergent-PA-Pneumatic
-      text: Emergent Next Generation Print and Apply
-      serialNumber: 000
-      
-    dataitems: []
-
-    components:
-      controller: 
-        id: controller
-        nativeName: plc
-        description: Electronic board set responsible for coordinating all machine function.
-        dataitems: []
-        components: []
-        path: 
-          id: path1
-          name: path
-          dataitems: []
-
-    systems: 
-      id: systems
-      components: 
-        endeffector: 
-        dataitems: []
-        compositions: []
-        feeder: 
-          id: feeder
-        dataitems: []
-          compositions: 
-          composition: 
+      systems:
+        attribs:
+          id: systems
+        values:
+          components:
+            values:
+              endeffector:
+                attribs:
+                  id: end_effector
+                values:
+                  dataitems: []
+                  compositions: []
+              feeder:
+                attribs:
+                  id: feeder
+                values:
+                  dataitems: []
+                  compositions: []
