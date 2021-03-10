@@ -1,4 +1,37 @@
-devices:
-  id: 'dev'
-  name: 'CCS-PA'
-  description:
+devices: 
+
+  device: 
+    id: dev
+    name: CCS-PA
+    uuid: 000
+    sampleInterval: 10
+
+    description: 
+      manufacturer: CCS
+      model: Emergent-PA-Pneumatic
+      text: Emergent Next Generation Print and Apply
+      serialNumber: 000
+      
+    dataitems: []
+    components: []
+    controller: 
+      id: controller
+      nativeName: plc
+      description: Electronic board set responsible for coordinating all machine function.
+      dataitems: []
+      components: []
+      path: 
+        id: path1
+        name: path
+        dataitems: []
+    systems: 
+      id: systems
+    components: 
+      endeffector: 
+      dataitems: []
+      compositions: []
+      feeder: 
+        id: feeder
+      dataitems: []
+        compositions: 
+        composition: 
