@@ -35,22 +35,31 @@
           <DataItem category="EVENT" id="fw_mfg" subType="MANUFACTURER" type="FIRMWARE"/>
           -->
         </DataItems>
+
+
         <Components>
+
           <Controller id="controller" nativeName="plc">
+
             <Description>Electronic board set responsible for coordinating all machine function.</Description>
+
             <Configuration/>
-            <DataItem category="CONDITION" id="comms_cond" type="COMMUNICATIONS">
-              <Source>?</Source>
-            </DataItem>
-            <DataItem category="CONDITION" id="system_cond" type="SYSTEM">
-              <Source>?</Source>
-            </DataItem>
-            <DataItem category="EVENT" id="message" name="message" type="MESSAGE">
-              <Source>?</Source>
-            </DataItem>
-            <DataItem category="EVENT" id="estop" type="EMERGENCY_STOP">
-              <Source>%I0.10 OR status.faults 10</Source>
-            </DataItem>
+
+            <DataItems>
+              <DataItem category="CONDITION" id="comms_cond" type="COMMUNICATIONS">
+                <Source>?</Source>
+              </DataItem>
+              <DataItem category="CONDITION" id="system_cond" type="SYSTEM">
+                <Source>?</Source>
+              </DataItem>
+              <DataItem category="EVENT" id="message" name="message" type="MESSAGE">
+                <Source>?</Source>
+              </DataItem>
+              <DataItem category="EVENT" id="estop" type="EMERGENCY_STOP">
+                <Source>%I0.10 OR status.faults 10</Source>
+              </DataItem>
+            </DataItems>
+
             <Components>
               <Path id="path1" name="path">
                 <DataItems>
@@ -66,6 +75,7 @@
                   <DataItem category="EVENT" id="step" type="BLOCK">
                     <Source>status.step</Source>
                   </DataItem>
+
                   <!--
                   <DataItem category="EVENT" id="active_axes" type="ACTIVE_AXES">
                   </DataItem>
@@ -86,6 +96,8 @@
                   <DataItem category="EVENT" id="pc_bad" subType="BAD" type="PART_COUNT"/>
                   <DataItem category="EVENT" id="pc_good" subType="GOOD" type="PART_COUNT"/>
                   -->
+
+                  <!--bb
                   <DataItem category="SAMPLE" id="clk_time" type="CLOCK_TIME">
                     <Source>status.utc_time</Source>
                   </DataItem>
@@ -100,7 +112,8 @@
                   </DataItem>
                   <DataItem category="SAMPLE" id="life_count" type="COUNT">
                     <Source>%M55.0</Source>
-                  </DataItem>
+                  </DataItem> -->
+
                 </DataItems>
               </Path>
               <!--
@@ -111,10 +124,14 @@
                 <Composition id="rtc" type="?"/>
               </Compositions>
             -->
+            </Components>
           </Controller>
         </Components>
+
         <Systems id="systems">
+
           <Components>
+
             <!--
             <Hydraulic/>
             <Coolant/>
@@ -125,6 +142,7 @@
             <Dielectric/>
             <WorkEnvelope/>
             -->
+
             <!--
             <Pneumatic id="pneumatic">
               <DataItems>
@@ -133,6 +151,7 @@
               </DataItems>
             </Pneumatic>
             -->
+
             <!--
             <Electric id="electric">
               <DataItems>
@@ -141,6 +160,8 @@
               </DataItems>
             </Electric>
             -->
+
+            <!--bb
             <EndEffector id="end_effector">
               <DataItems>
                 <DataItem category="CONDITION" id="end_eff_cond" type="SYSTEM"/>
@@ -176,7 +197,9 @@
                 <Composition id="assist" type="FAN"/>
                 <Composition id="vacuum" type="FAN"/>
               </Compositions>
-            </EndEffector>
+            </EndEffector> -->
+
+            <!--bb 
             <Feeder id="feeder">
               <DataItems>
                 <DataItem category="CONDITION" id="feed_cond" type="SYSTEM"/>
@@ -232,7 +255,9 @@
                   <Composition id="web" type="REEL"/>
                 </Compositions>
               </DataItems>
-            </Feeder>
+            </Feeder> -->
+
+
             <!--
             <Resources id="resources" name="resources">
               <Components>
