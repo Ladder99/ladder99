@@ -9,26 +9,31 @@ try {
   console.log(e)
 }
 
-const js = { attributes: { x: 3 }, text: 'pokpok', elements: [] }
-const xml = convert.js2xml(js)
-console.log({ xml })
-
 const input = {
-  _xmlDeclaration: {
-    _attr: {
+  _declaration: {
+    _attributes: {
       version: '1.0',
       encoding: 'UTF-8',
-      standalone: 'no',
     },
   },
-  data: { foo: 'bar' },
+  element: [{ _attributes: { x: 2 } }],
 }
-
 const xmlString = convert.js2xml(input, {
   compact: true,
-  attributesKey: '_attr',
-  declarationKey: '_xmlDeclaration',
 })
 
-// <?xml version="1.0" encoding="UTF-8" standalone="no"?><data><foo>bar</foo></data>
+// const input = {
+//   declaration: {
+//     attributes: {
+//       version: '1.0',
+//       encoding: 'UTF-8',
+//     },
+//   },
+//   elements: [
+//     { instruction: 'ljjj', name: 'lkm', type: 'element', attributes: { x: 2 } },
+//   ],
+// }
+// const xmlString = convert.js2xml(input)
+
+// <?xml version="1.0" encoding="UTF-8"?><data><foo>bar</foo></data>
 console.log(xmlString)
