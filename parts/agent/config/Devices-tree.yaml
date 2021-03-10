@@ -1,5 +1,4 @@
 devices:
-
   device:
     id: dev
     name: CCS-PA
@@ -12,14 +11,21 @@ devices:
       serialNumber: 000
       text: Emergent Next Generation Print and Apply
 
-    dataitems: []
+    dataitems:
+      - source: '%Q0.0'
+        id: printer_start_print
+        category: event
+        type: actuator_state
+      - source: '%Q0.1'
+        id: printer_feed
+        category: event
+        type: actuator_state
 
     components:
-
       controller:
         id: controller
         nativeName: plc
-        description: 
+        description:
           text: Electronic board set responsible for coordinating all machine function.
         dataitems: []
         components:
