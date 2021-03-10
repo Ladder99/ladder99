@@ -13,25 +13,27 @@ devices:
       serialNumber: 000
       
     dataitems: []
-    components: []
-    controller: 
-      id: controller
-      nativeName: plc
-      description: Electronic board set responsible for coordinating all machine function.
-      dataitems: []
-      components: []
-      path: 
-        id: path1
-        name: path
+
+    components:
+      controller: 
+        id: controller
+        nativeName: plc
+        description: Electronic board set responsible for coordinating all machine function.
         dataitems: []
+        components: []
+        path: 
+          id: path1
+          name: path
+          dataitems: []
+
     systems: 
       id: systems
-    components: 
-      endeffector: 
-      dataitems: []
-      compositions: []
-      feeder: 
-        id: feeder
-      dataitems: []
-        compositions: 
-        composition: 
+      components: 
+        endeffector: 
+        dataitems: []
+        compositions: []
+        feeder: 
+          id: feeder
+        dataitems: []
+          compositions: 
+          composition: 

@@ -40,7 +40,6 @@
       </DataItems>
 
       <Components>
-
         <Controller id="controller" nativeName="plc">
           <Description>Electronic board set responsible for coordinating all machine function.</Description>
     
