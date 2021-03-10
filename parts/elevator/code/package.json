@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "description": "",
   "main": "src/index.js",
-  "scripts": {},
+  "scripts": {
+    "start": "node src/index.js"
+  },
   "keywords": [],
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "Proprietary",
   "private": true,
   "dependencies": {
-    "js-yaml": "^4.0.0"
+    "js-yaml": "^4.0.0",
+    "xml-js": "^1.6.11"
   }
 }
