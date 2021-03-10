@@ -64,9 +64,7 @@
 
           <Components>
             <Path id="path1" name="path">
-
               <DataItems>
-
                 <DataItem category="EVENT" id="state" type="EXECUTION">
                   <Source>status.state 400 ACTIVE; status.code 200 READY; status.state 50,100,250,300 WAIT</Source>
                 </DataItem>
@@ -116,7 +114,6 @@
                 <DataItem category="SAMPLE" id="life_count" type="COUNT">
                   <Source>%M55.0</Source>
                 </DataItem>
-
               </DataItems>
             </Path>
             <!--
@@ -132,9 +129,7 @@
       </Components>
 
       <Systems id="systems">
-
         <Components>
-
           <!--
           <Hydraulic/>
           <Coolant/>
@@ -145,7 +140,6 @@
           <Dielectric/>
           <WorkEnvelope/>
           -->
-
           <!--
           <Pneumatic id="pneumatic">
             <DataItems>
@@ -154,7 +148,6 @@
             </DataItems>
           </Pneumatic>
           -->
-
           <!--
           <Electric id="electric">
             <DataItems>
@@ -163,7 +156,6 @@
             </DataItems>
           </Electric>
           -->
-
           <EndEffector id="end_effector">
             <DataItems>
               <DataItem category="CONDITION" id="end_eff_cond" type="SYSTEM"/>
@@ -200,7 +192,6 @@
               <Composition id="vacuum" type="FAN"/>
             </Compositions>
           </EndEffector>
-
           <Feeder id="feeder">
             <DataItems>
               <DataItem category="CONDITION" id="feed_cond" type="SYSTEM"/>
@@ -257,8 +248,6 @@
               </Compositions>
             </DataItems>
           </Feeder>
-
-
           <!--
           <Resources id="resources" name="resources">
             <Components>
