@@ -19,7 +19,11 @@
         manufacturer="CCS"
         model="Emergent-PA-Pneumatic"
         serialNumber="000"
-        station="">Emergent Next Generation Print and Apply</Description>
+        station=""
+      >
+        Emergent Next Generation Print and Apply
+      </Description>
+        
         <DataItems>
           <DataItem category="EVENT" id="connection" type="AVAILABILITY">
             <Source>status.connection</Source>
@@ -36,14 +40,13 @@
           -->
         </DataItems>
 
-
         <Components>
 
           <Controller id="controller" nativeName="plc">
-
             <Description>Electronic board set responsible for coordinating all machine function.</Description>
-
-            <Configuration/>
+      
+            <!-- empty element caused code 139/segfault -->
+            <!-- <Configuration/> -->
 
             <DataItems>
               <DataItem category="CONDITION" id="comms_cond" type="COMMUNICATIONS">
@@ -62,7 +65,9 @@
 
             <Components>
               <Path id="path1" name="path">
+
                 <DataItems>
+
                   <DataItem category="EVENT" id="state" type="EXECUTION">
                     <Source>status.state 400 ACTIVE; status.code 200 READY; status.state 50,100,250,300 WAIT</Source>
                   </DataItem>
