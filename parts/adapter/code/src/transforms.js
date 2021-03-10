@@ -5,15 +5,6 @@
 // note: if using the device simulator in device/messages.js those message
 // topics should match these exported function names.
 
-const connections = {
-  online: 'AVAILABLE',
-  offline: 'UNAVAILABLE',
-}
-const states = {
-  400: 'ACTIVE',
-  200: 'STOPPED',
-}
-
 // map mqtt topics to transform functions
 const transforms = {
   'l99/ccs/evt/status': status,
@@ -52,9 +43,6 @@ function read(msg) {
   if (!Array.isArray(msg)) {
     msg = [msg]
   }
-  // const shdr = msg
-  //   .map(item => `${timestamp}|${item.address}|${item.value}`)
-  //   .join('\n')
   const shdr = msg
     .map(item => {
       const { address, value } = item
@@ -79,6 +67,16 @@ const typeTransforms = {
 
 function getActuatorState(value) {
   return value === 0 ? 'INACTIVE' : 'ACTIVE'
+}
+
+const connections = {
+  online: 'AVAILABLE',
+  offline: 'UNAVAILABLE',
+}
+
+const states = {
+  400: 'ACTIVE',
+  200: 'STOPPED',
 }
 
 // get a timestamp as ISO string eg '2021-03-05T05:28:00'
