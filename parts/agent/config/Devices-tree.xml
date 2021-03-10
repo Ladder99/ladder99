@@ -10,10 +10,9 @@
   <Devices>
     <Device 
       id="dev" 
-      iso841Class="6" 
       name="CCS-PA" 
-      sampleInterval="10" 
       uuid="000"
+      sampleInterval="10" 
     >
       <Description 
         manufacturer="CCS"
