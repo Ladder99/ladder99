@@ -15,16 +15,23 @@ sampleInterval
 manufacturer
 model
 serialNumber
+category
+type
+subType
 `
 const attributesSet = new Set(attributes.trim().split('\n'))
+
+const values = `
+text
+source
+`
+const valuesSet = new Set(values.trim().split('\n'))
 
 const ystr = fs.readFileSync(sourcefile, 'utf8')
 const ydoc = yaml.load(ystr)
 console.log(ydoc)
 
 // walk ydoc recursively, translate elements and add to xdoc
-// const devices = []
-// translate(ydoc, devices)
 const devices = translate(ydoc['devices'])
 console.log(devices)
 
@@ -55,35 +62,34 @@ const xdoc = {
   ],
 }
 
+const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
+console.log(xstr)
+
 // translate yaml tree to xml tree recursively
 function translate(ytree) {
   if (Array.isArray(ytree)) {
-    const xels = ytree.map(el => translate(el))
-    return xels
+    return ytree.map(el => translate(el))
   } else if (typeof ytree === 'object') {
-    const attributes = {}
+    const obj = {}
+    const attrs = {}
     const elements = {}
     const keys = Object.keys(ytree)
     for (const key of keys) {
       const el = ytree[key]
       if (attributesSet.has(key)) {
-        attributes[key] = el
+        attrs[key] = el
+      } else if (valuesSet.has(key)) {
+        obj._text = el
       } else {
         const element = translate(el)
-        // elements.push(element)
         elements[capitalize(key)] = element
       }
     }
-    return { _attributes: attributes, ...elements }
+    return { _attributes: attrs, ...elements, ...obj }
   } else {
-    // handle elements
     return null
   }
 }
-
-// console.log(xdoc)
-const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
-console.log(xstr.slice(0, 700))
 
 function capitalize(str) {
   return str.slice(0, 1).toUpperCase() + str.slice(1)
