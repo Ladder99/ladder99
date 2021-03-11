@@ -15,13 +15,14 @@ digraph "ladder99-adapter" {
   OldMachine [ fillcolor=lavender; label="Old Machine" ];
   NewMachine [ fillcolor=lavender; label="New Machine" ];
   PLC4X [ label="PLC4X\n(Java)" ];
-  Broker [ label="MQTT Broker\n(Mosquitto)" ];
+  Broker1 [ label="MQTT Broker 1\n(Mosquitto)" ];
+  Broker2 [ label="MQTT Broker 2\n(Mosquitto)" ];
   Adapter [ fillcolor=white; label="MTConnect\nAdapter\n(NodeJS)" ];
-  DevicesYaml [ label="Devices.yaml" ];
+  DevicesYaml [ label="devices.yaml" ];
   DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
   DiodeReceiver [ label="Diode Receiver\n(Java+RabbitMQ)" ];
   Agent [ fillcolor=white; label="MTConnect\nAgent\n(C++/cppagent)" ];
-  DevicesXml [ label="Devices.xml" ];
+  DevicesXml [ label="devices.xml" ];
   Application [ fillcolor=white; label="MTConnect\nApplication\n(NodeJS)" ];
   Database [ label="Database\n(InfluxDB/\nTimescaleDB)" ];
   Visualizer [ label="Visualizer\n(Grafana/\nSuperset)" ];
@@ -32,9 +33,10 @@ digraph "ladder99-adapter" {
 
   // edges
   OldMachine -> PLC4X [ label="proprietary\nprotocol" ];
-  NewMachine -> Broker [ label="JSON / \nMQTT" ];
-  PLC4X -> Broker [ label="JSON /  \nMQTT  " ];
-  Broker -> Adapter [ label="JSON /    \nMQTT 1883           " ];
+  PLC4X -> Broker1 [ label="JSON / \nMQTT" ];
+  NewMachine -> Broker2 [ label="JSON / \nMQTT" ];
+  Broker1 -> Adapter [ label="JSON /    \nMQTT 1883           " ];
+  Broker2 -> Adapter [ label="JSON /    \nMQTT 1883           " ];
   Adapter -> DiodeSender [ label="SHDR /   \nTCP 7878      " ];
   DevicesYaml -> Adapter [ ];
   DevicesYaml -> DevicesXml [ ];
@@ -42,7 +44,7 @@ digraph "ladder99-adapter" {
   DiodeReceiver -> Agent [ label="SHDR /   \nTCP  " ];
   // Adapter -> Agent [ label="SHDR/\nTCP 7878" ];
   Agent -> Application [ dir=both; label="XML /\nHTTP 5000" ];
-  DevicesXml -> Agent [ ];
+  DevicesXml -> Agent [ label="used by" ];
   Application -> Database [ dir=both ];
   Database -> Visualizer [ dir=both ];
   Database -> Cloud;
@@ -51,6 +53,9 @@ digraph "ladder99-adapter" {
   // LOI -> Operator;
 
   // rank
-  { rank=same; OldMachine NewMachine DevicesYaml DevicesXml };
-  { rank=same; PLC4X Broker Adapter DiodeSender DiodeReceiver Agent Application Database Visualizer };
+  { rank=same; OldMachine NewMachine };
+  { rank=same; Broker1 Broker2 };
+  // { rank=same; DevicesYaml DevicesXml };
+  // { rank=same; PLC4X Broker Adapter DiodeSender DiodeReceiver Agent Application Database Visualizer };
+  { rank=same; Adapter DiodeSender DiodeReceiver Agent Application Database Visualizer };
 }
