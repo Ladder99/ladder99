@@ -1,48 +1,52 @@
 devices:
   device:
-    id: dev
-    name: CCS-PA
-    uuid: 000
-    sampleInterval: 10
+    - id: dev
+      name: CCS-PA
+      uuid: 000
+      sampleInterval: 10
 
-    description:
-      manufacturer: CCS
-      model: Emergent-PA-Pneumatic
-      serialNumber: 000
-      text: Emergent Next Generation Print and Apply
+      description:
+        manufacturer: CCS
+        model: Emergent-PA-Pneumatic
+        serialNumber: 000
+        text: Emergent Next Generation Print and Apply
 
-    dataItems:
-      dataItem:
-        - source: '%Q0.0'
-          id: printer_start_print
-          category: event
-          type: actuator_state
-        - source: '%Q0.1'
-          id: printer_feed
-          category: event
-          type: actuator_state
+      dataItems:
+        dataItem:
+          - source: '%Q0.0'
+            id: printer_start_print
+            category: event
+            type: actuator_state
+          - source: '%Q0.1'
+            id: printer_feed
+            category: event
+            type: actuator_state
 
-    components:
-      controller:
-        id: controller
-        nativeName: plc
-        description:
-          text: Electronic board set responsible for coordinating all machine function.
-        dataItems: []
-        components:
-          path:
-            id: path1
-            name: path
-            dataItems: []
-
-    systems:
-      id: systems
       components:
-        endEffector:
-          id: end_effector
-          dataItems: []
-          compositions: []
-        feeder:
-          id: feeder
-          dataItems: []
-          compositions: []
+        controller:
+          id: controller
+          nativeName: plc
+          description:
+            text: Electronic board set responsible for coordinating all machine function.
+          dataItems:
+            dataItem: []
+          components:
+            path:
+              id: path1
+              name: path
+              dataItems:
+                dataItem: []
+
+      systems:
+        id: systems
+        components:
+          endEffector:
+            id: end_effector
+            dataItems:
+              dataItem: []
+            compositions: []
+          feeder:
+            id: feeder
+            dataItems:
+              dataItem: []
+            compositions: []
