@@ -70,7 +70,7 @@ services:
       adapter:
         condition: service_started
     volumes:
-      - ./parts/agent/config:/etc/mtconnect/agent
+      - ./parts/agent/config:/etc/mtconnect/agent2
       - ./parts/agent/data:/var/lib/agent
     logging:
       options:
