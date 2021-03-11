@@ -1,5 +1,6 @@
 devices:
-  - id: dev
+  device:
+    id: dev
     name: CCS-PA
     uuid: 000
     sampleInterval: 10
@@ -11,11 +12,13 @@ devices:
       text: Emergent Next Generation Print and Apply
 
     dataItems:
-      - source: '%Q0.0'
+      dataItem:
+        source: '%Q0.0'
         id: printer_start_print
         category: event
         type: actuator_state
-      - source: '%Q0.1'
+      dataItem:
+        source: '%Q0.1'
         id: printer_feed
         category: event
         type: actuator_state
