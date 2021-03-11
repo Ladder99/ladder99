@@ -30,11 +30,11 @@ const valuesSet = new Set(values.trim().split('\n'))
 
 const ystr = fs.readFileSync(sourcefile, 'utf8')
 const ydoc = yaml.load(ystr)
-console.log(ydoc)
+// console.log(ydoc)
 
 // walk ydoc recursively, translate elements and add to xdoc
 const devices = translate(ydoc['devices'])
-console.log(devices)
+// console.log(devices)
 
 const xdoc = {
   _declaration: {
