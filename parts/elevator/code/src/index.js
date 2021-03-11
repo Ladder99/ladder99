@@ -6,6 +6,7 @@ const yaml = require('js-yaml') // https://github.com/nodeca/js-yaml
 const convert = require('xml-js') // https://github.com/nashwaan/xml-js
 
 const sourcefile = '../config/devices.yaml'
+const attributes = new Set('id,name'.split(','))
 
 const ystr = fs.readFileSync(sourcefile, 'utf8')
 const ydoc = yaml.load(ystr)

@@ -13,15 +13,14 @@ devices:
 
     dataItems:
       dataItem:
-        source: '%Q0.0'
-        id: printer_start_print
-        category: event
-        type: actuator_state
-      dataItem:
-        source: '%Q0.1'
-        id: printer_feed
-        category: event
-        type: actuator_state
+        - source: '%Q0.0'
+          id: printer_start_print
+          category: event
+          type: actuator_state
+        - source: '%Q0.1'
+          id: printer_feed
+          category: event
+          type: actuator_state
 
     components:
       controller:
