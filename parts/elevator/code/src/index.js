@@ -11,11 +11,9 @@ const ystr = fs.readFileSync(sourcefile, 'utf8')
 const ydoc = yaml.load(ystr)
 console.log(ydoc)
 
-const attributes = new Set('id,name'.split(','))
-
 // walk ydoc recursively, translate elements and add to xdoc
-// const devices = ydoc['devices']
-const devices = translate(ydoc['devices'])
+const devices = []
+translate(ydoc['devices'], devices)
 
 const xdoc = {
   _declaration: {
@@ -44,9 +42,20 @@ const xdoc = {
   ],
 }
 
+// translate
+function translate(el, output) {
+  const subelkeys = Object.keys(el)
+  const attrs = {}
+  for (const subelkey of subelkeys) {
+    const subel = el[subelkey]
+    if (attributes.has(subelkey)) {
+      attrs[subelkey] = subel
+    } else {
+      output.push(subel)
+    }
+  }
+  output._attributes = attrs
+}
+
 const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
 console.log(xstr)
-
-function translate(el) {
-  // const subkeys = Object.keys(el)
-}
