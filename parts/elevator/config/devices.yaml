@@ -1,14 +1,31 @@
 devices:
   events:
     fw_ver: &fw_ver
-      type: FIRMWARE.VERSION
+      id: fw_ver
+      category: EVENT
+      type: FIRMWARE
+      subType: VERSION
       source: l99/ccs/status+build_no
     state: &state
+      id: state
+      category: EVENT
       type: EXECUTION
       source: execution.lua
     wait_state: &wait_state
+      id: wait_state
+      category: EVENT
       type: WAIT_STATE
       source: wait_state.lua
+    printer_start_print: &printer_start_print
+      id: printer_start_print
+      category: EVENT
+      type: ACTUATOR_STATE
+      source: '%Q0.0'
+    printer_feed: &printer_feed
+      id: printer_feed
+      category: EVENT
+      type: ACTUATOR_STATE
+      source: '%Q0.1'
 
   device:
     - id: dev
@@ -25,14 +42,8 @@ devices:
       dataItems:
         dataItem:
           - *fw_ver
-          - source: '%Q0.0'
-            id: printer_start_print
-            category: event
-            type: actuator_state
-          - source: '%Q0.1'
-            id: printer_feed
-            category: event
-            type: actuator_state
+          - *printer_start_print
+          - *printer_feed
 
       components:
         controller:
