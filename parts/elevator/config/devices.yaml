@@ -4,13 +4,13 @@ devices:
     uuid: 000
     sampleInterval: 10
 
-    Description:
+    description:
       manufacturer: CCS
       model: Emergent-PA-Pneumatic
       serialNumber: 000
       text: Emergent Next Generation Print and Apply
 
-    DataItems:
+    dataItems:
       - source: '%Q0.0'
         id: printer_start_print
         category: event
@@ -20,27 +20,27 @@ devices:
         category: event
         type: actuator_state
 
-    Components:
-      Controller:
+    components:
+      controller:
         id: controller
         nativeName: plc
-        Description:
+        description:
           text: Electronic board set responsible for coordinating all machine function.
-        DataItems: []
-        Components:
-          Path:
+        dataItems: []
+        components:
+          path:
             id: path1
             name: path
-            DataItems: []
+            dataItems: []
 
-    Systems:
+    systems:
       id: systems
-      Components:
-        EndEffector:
+      components:
+        endEffector:
           id: end_effector
-          DataItems: []
-          Compositions: []
-        Feeder:
+          dataItems: []
+          compositions: []
+        feeder:
           id: feeder
-          DataItems: []
-          Compositions: []
+          dataItems: []
+          compositions: []
