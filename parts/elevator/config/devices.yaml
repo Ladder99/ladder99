@@ -20,12 +20,12 @@ devices:
       id: printer_start_print
       category: EVENT
       type: ACTUATOR_STATE
-      source: '%Q0.0'
+      source: l99/ccs/evt/read+%Q0.0
     printer_feed: &printer_feed
       id: printer_feed
       category: EVENT
       type: ACTUATOR_STATE
-      source: '%Q0.1'
+      source: l99/ccs/evt/read+%Q0.1
 
   device:
     - id: dev
