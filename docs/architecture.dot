@@ -17,7 +17,8 @@ digraph "ladder99-adapter" {
   PLC4X [ label="PLC4X\n(Java)" ];
   Broker1 [ label="MQTT Broker 1\n(Mosquitto)" ];
   Broker2 [ label="MQTT Broker 2\n(Mosquitto)" ];
-  Adapter [ fillcolor=white; label="MTConnect\nAdapter\n(NodeJS)" ];
+  Adapter1 [ fillcolor=white; label="MTConnect\nAdapter 1\n(NodeJS)" ];
+  Adapter2 [ fillcolor=white; label="MTConnect\nAdapter 2\n(NodeJS)" ];
   DevicesYaml [ label="devices.yaml" ];
   DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
   DiodeReceiver [ label="Diode Receiver\n(Java+RabbitMQ)" ];
@@ -35,11 +36,12 @@ digraph "ladder99-adapter" {
   OldMachine -> PLC4X [ label="proprietary\nprotocol" ];
   PLC4X -> Broker1 [ label="JSON / \nMQTT" ];
   NewMachine -> Broker2 [ label="JSON / \nMQTT" ];
-  Broker1 -> Adapter [ label="JSON /    \nMQTT 1883           " ];
-  Broker2 -> Adapter [ label="JSON /    \nMQTT 1883           " ];
-  Adapter -> DiodeSender [ label="SHDR /   \nTCP 7878      " ];
+  Broker1 -> Adapter1 [ label="JSON /    \nMQTT 1883           " ];
+  Broker2 -> Adapter2 [ label="JSON /    \nMQTT 1883           " ];
+  Adapter1 -> DiodeSender [ label="SHDR /   \nTCP 7878      " ];
+  Adapter2 -> Agent [ label="SHDR /   \nTCP 7878      " ];
   DevicesYaml -> Adapter [ ];
-  DevicesYaml -> DevicesXml [ ];
+  DevicesYaml -> DevicesXml [ label="generates" ];
   DiodeSender -> DiodeReceiver [ label="UDP    " ];
   DiodeReceiver -> Agent [ label="SHDR /   \nTCP  " ];
   // Adapter -> Agent [ label="SHDR/\nTCP 7878" ];

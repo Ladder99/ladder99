@@ -28,6 +28,12 @@ devices:
       category: EVENT
       type: ACTUATOR_STATE
       source: l99/ccs/evt/read+%Q0.1
+    printer_pause: &printer_pause
+      id: '%Q0.2'
+      name: printer_pause
+      category: EVENT
+      type: ACTUATOR_STATE
+      source: l99/ccs/evt/read+%Q0.2
 
   device:
     - id: dev
@@ -46,6 +52,7 @@ devices:
           - *fw_ver
           - *printer_start_print
           - *printer_feed
+          - *printer_pause
 
       components:
         controller:

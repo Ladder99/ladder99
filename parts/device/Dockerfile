@@ -16,7 +16,7 @@ COPY code/src ./src
 # reduces the number of processes running inside of your container. 
 # Secondly it causes exit signals such as SIGTERM and SIGINT to be 
 # received by the Node.js process instead of npm swallowing them.
-CMD ["node","src/index.js"]
+CMD ["node", "src/index.js"]
 
 # see https://github.com/nodejs/docker-node/blob/master/docs/BestPractices.md#non-root-user
 USER node

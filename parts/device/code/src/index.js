@@ -2,7 +2,7 @@
 // publishes sample messages to mqtt broker
 
 import mqtt from 'mqtt'
-import messages from './messages.js'
+import messages from '../../config/messages.js'
 
 const mqttHost = process.env.MQTT_HOST || 'localhost'
 const mqttPort = Number(process.env.MQTT_PORT || 1883)

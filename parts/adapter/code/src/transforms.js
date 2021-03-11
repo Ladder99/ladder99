@@ -55,6 +55,10 @@ function read(msg) {
 }
 
 const addresses = {
+  '%Q0.0': { type: 'ACTUATOR_STATE' },
+  '%Q0.1': { type: 'ACTUATOR_STATE' },
+  '%Q0.2': { type: 'ACTUATOR_STATE' },
+  '%Q0.3': { type: 'ACTUATOR_STATE' },
   '%Q0.4': { type: 'ACTUATOR_STATE' },
   '%Q0.5': { type: 'ACTUATOR_STATE' },
   '%Q0.6': { type: 'ACTUATOR_STATE' },
