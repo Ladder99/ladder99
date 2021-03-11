@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
+  <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.6.0.7"/>
+  <Devices>
+    <Device id="dev" name="CCS-PA" uuid="0" sampleInterval="10">
+      <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="0">Emergent Next Generation Print and Apply</Description>
+      <DataItems>
+        <DataItem id="printer_start_print" category="event" type="actuator_state">%Q0.0</DataItem>
+        <DataItem id="printer_feed" category="event" type="actuator_state">%Q0.1</DataItem>
+      </DataItems>
+      <Components>
+        <Controller id="controller" nativeName="plc">
+          <Description>Electronic board set responsible for coordinating all machine function.</Description>
+          <DataItems>
+          </DataItems>
+          <Components>
+            <Path id="path1" name="path">
+              <DataItems>
+              </DataItems>
+            </Path>
+          </Components>
+        </Controller>
+      </Components>
+      <Systems id="systems">
+        <Components>
+          <EndEffector id="end_effector">
+            <DataItems>
+            </DataItems>
+          </EndEffector>
+          <Feeder id="feeder">
+            <DataItems>
+            </DataItems>
+          </Feeder>
+        </Components>
+      </Systems>
+    </Device>
+  </Devices>
+</MTConnectDevices>

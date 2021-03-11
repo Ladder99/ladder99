@@ -10,6 +10,7 @@ const sourcefile = '../config/devices.yaml'
 const attributes = `
 id
 name
+nativeName
 uuid
 sampleInterval
 manufacturer
