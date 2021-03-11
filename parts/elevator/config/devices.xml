@@ -2,13 +2,6 @@
 <MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
   <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.6.0.7"/>
   <Devices>
-    <Events>
-      <Fw_ver id="fw_ver" category="EVENT" type="FIRMWARE" subType="VERSION">l99/ccs/status+build_no</Fw_ver>
-      <State id="state" category="EVENT" type="EXECUTION">execution.lua</State>
-      <Wait_state id="wait_state" category="EVENT" type="WAIT_STATE">wait_state.lua</Wait_state>
-      <Printer_start_print id="%Q0.0" name="printer_start_print" category="EVENT" type="ACTUATOR_STATE">l99/ccs/evt/read+%Q0.0</Printer_start_print>
-      <Printer_feed id="%Q0.1" name="printer_feed" category="EVENT" type="ACTUATOR_STATE">l99/ccs/evt/read+%Q0.1</Printer_feed>
-    </Events>
     <Device id="dev" name="CCS-PA" uuid="000" sampleInterval="10">
       <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="000">Emergent Next Generation Print and Apply</Description>
       <DataItems>

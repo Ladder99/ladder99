@@ -5,8 +5,8 @@ const fs = require('fs') // node lib
 const yaml = require('js-yaml') // https://github.com/nodeca/js-yaml
 const convert = require('xml-js') // https://github.com/nashwaan/xml-js
 
-// source yaml
-const sourcefile = '../config/devices.yaml'
+// source yaml file
+const sourcefile = process.argv[2] || '../config/devices.yaml'
 
 const attributes = `
 id
@@ -28,6 +28,8 @@ text
 source
 `
 const valuesSet = new Set(values.trim().split('\n'))
+
+const hiddenSet = new Set('events'.split(','))
 
 // read yaml
 const ystr = fs.readFileSync(sourcefile, 'utf8')
@@ -86,6 +88,8 @@ function translate(ytree) {
         attrs[key] = el
       } else if (valuesSet.has(key)) {
         obj._text = el
+      } else if (hiddenSet.has(key)) {
+        //
       } else {
         const element = translate(el)
         elements[capitalize(key)] = element
