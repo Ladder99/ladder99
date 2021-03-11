@@ -41,7 +41,10 @@ devices:
           description:
             text: Electronic board set responsible for coordinating all machine function.
           dataItems:
-            dataItem: []
+            dataItem:
+              - *state
+              - *wait_state
+
           components:
             path:
               id: path1
