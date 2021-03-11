@@ -15,7 +15,7 @@ digraph "ladder99-adapter" {
   OldMachine [ fillcolor=lavender; label="Old Machine" ];
   NewMachine [ fillcolor=lavender; label="New Machine" ];
   PLC4X [ label="PLC4X\n(Java)" ];
-  Broker [ label="MQTT Broker\n(NodeJS/Aedes)" ];
+  Broker [ label="MQTT Broker\n(Mosquitto)" ];
   Adapter [ fillcolor=white; label="MTConnect\nAdapter\n(NodeJS)" ];
   DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
   DiodeReceiver [ label="Diode Receiver\n(Java+RabbitMQ)" ];
@@ -37,6 +37,7 @@ digraph "ladder99-adapter" {
   DiodeSender -> DiodeReceiver [ label="UDP    " ];
   DiodeReceiver -> Agent [ label="SHDR /   \nTCP  " ];
   Agent -> Application [ dir=both; label="XML /  \nHTTP 5000  " ];
+  Adapter -> Agent [ label="SHDR/\nTCP 7878" ];
   Application -> Database [ dir=both ];
   Database -> Visualizer [ dir=both ];
   Database -> Cloud;
