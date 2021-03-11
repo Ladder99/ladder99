@@ -7,9 +7,9 @@ digraph "ladder99-adapter" {
   graph [ ranksep=0.2 ];
   graph [ nodesep=0.35 ];
   graph [ rankdir=LR; ] // left-to-right
-  node [ color=lightgray; fillcolor=white; style=filled ];
-  edge [ color=gray85 ];
-  edge [ fontsize=12; fontcolor=gray40; ];
+  node [ color=gray; fillcolor=white; style=filled ];
+  edge [ color=gray ];
+  edge [ fontsize=12; fontcolor=gray30; ];
 
   // nodes
   OldMachine [ fillcolor=lavender; label="Old Machine" ];
@@ -40,7 +40,8 @@ digraph "ladder99-adapter" {
   Broker2 -> Adapter2 [ label="JSON /    \nMQTT 1883           " ];
   Adapter1 -> DiodeSender [ label="SHDR /   \nTCP 7878      " ];
   Adapter2 -> Agent [ label="SHDR /   \nTCP 7878      " ];
-  DevicesYaml -> Adapter [ ];
+  DevicesYaml -> Adapter1 [ label="used by" ];
+  DevicesYaml -> Adapter2 [ ];
   DevicesYaml -> DevicesXml [ label="generates" ];
   DiodeSender -> DiodeReceiver [ label="UDP    " ];
   DiodeReceiver -> Agent [ label="SHDR /   \nTCP  " ];
@@ -56,8 +57,9 @@ digraph "ladder99-adapter" {
 
   // rank
   { rank=same; OldMachine NewMachine };
-  { rank=same; Broker1 Broker2 };
-  // { rank=same; DevicesYaml DevicesXml };
+  { rank=same; Broker1 Broker2 DevicesYaml };
+  { rank=same; DevicesYaml DevicesXml };
   // { rank=same; PLC4X Broker Adapter DiodeSender DiodeReceiver Agent Application Database Visualizer };
-  { rank=same; Adapter DiodeSender DiodeReceiver Agent Application Database Visualizer };
+  { rank=same; Adapter1 Adapter2 DevicesXml };
+  { rank=same; DiodeSender DiodeReceiver Agent Application Database Visualizer };
 }
