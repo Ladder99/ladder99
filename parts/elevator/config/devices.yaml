@@ -24,6 +24,7 @@ devices:
 
       dataItems:
         dataItem:
+          - *fw_ver
           - source: '%Q0.0'
             id: printer_start_print
             category: event
