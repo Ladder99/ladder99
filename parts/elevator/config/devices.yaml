@@ -1,4 +1,15 @@
 devices:
+  events:
+    fw_ver: &fw_ver
+      type: FIRMWARE.VERSION
+      source: l99/ccs/status+build_no
+    state: &state
+      type: EXECUTION
+      source: execution.lua
+    wait_state: &wait_state
+      type: WAIT_STATE
+      source: wait_state.lua
+
   device:
     - id: dev
       name: CCS-PA
