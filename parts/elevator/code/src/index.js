@@ -5,6 +5,7 @@ const fs = require('fs') // node lib
 const yaml = require('js-yaml') // https://github.com/nodeca/js-yaml
 const convert = require('xml-js') // https://github.com/nashwaan/xml-js
 
+// source yaml
 const sourcefile = '../config/devices.yaml'
 
 const attributes = `
@@ -28,14 +29,16 @@ source
 `
 const valuesSet = new Set(values.trim().split('\n'))
 
+// read yaml
 const ystr = fs.readFileSync(sourcefile, 'utf8')
+
+// convert yaml to js tree
 const ydoc = yaml.load(ystr)
-// console.log(ydoc)
 
-// walk ydoc recursively, translate elements and add to xdoc
+// walk yaml tree and translate elements to xml tree recursively
 const devices = translate(ydoc['devices'])
-// console.log(devices)
 
+// define xml document root
 const xdoc = {
   _declaration: {
     _attributes: { version: '1.0', encoding: 'UTF-8' },
@@ -58,11 +61,13 @@ const xdoc = {
           version: '1.6.0.7',
         },
       },
+      // attach devices here
       Devices: devices,
     },
   ],
 }
 
+// convert xml tree to string
 const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
 console.log(xstr)
 
