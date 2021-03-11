@@ -1,302 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
-  <Header 
-    creationTime="2021-02-23T18:44:40+00:00" 
-    sender="localhost" 
-    instanceId="1267728234" 
-    bufferSize="131072" 
-    version="1.6.0.7"
-  />
+  <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.6.0.7"/>
   <Devices>
-    <Device 
-      id="dev" 
-      name="CCS-PA" 
-      uuid="000"
-      sampleInterval="10"
-    >
-      <Description 
-        manufacturer="CCS"
-        model="Emergent-PA-Pneumatic"
-        serialNumber="000"
-        station=""
-      >
-        Emergent Next Generation Print and Apply
-      </Description>
-      
+    <Events>
+      <Fw_ver id="fw_ver" category="EVENT" type="FIRMWARE" subType="VERSION">l99/ccs/status+build_no</Fw_ver>
+      <State id="state" category="EVENT" type="EXECUTION">execution.lua</State>
+      <Wait_state id="wait_state" category="EVENT" type="WAIT_STATE">wait_state.lua</Wait_state>
+      <Printer_start_print id="%Q0.0" name="printer_start_print" category="EVENT" type="ACTUATOR_STATE">l99/ccs/evt/read+%Q0.0</Printer_start_print>
+      <Printer_feed id="%Q0.1" name="printer_feed" category="EVENT" type="ACTUATOR_STATE">l99/ccs/evt/read+%Q0.1</Printer_feed>
+    </Events>
+    <Device id="dev" name="CCS-PA" uuid="000" sampleInterval="10">
+      <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="000">Emergent Next Generation Print and Apply</Description>
       <DataItems>
-        <DataItem category="EVENT" id="connection" type="AVAILABILITY">
-          <Source>status.connection</Source>
-        </DataItem>
-        <DataItem category="EVENT" id="asset_changed" type="ASSET_CHANGED"/>
-        <DataItem category="EVENT" id="asset_removed" type="ASSET_REMOVED"/>
-        <DataItem category="EVENT" id="fw_ver" subType="VERSION" type="FIRMWARE">
-          <Source>status.build_no</Source>
-        </DataItem>
-        <!--
-        <DataItem category="EVENT" id="hw_ver" subType="VERSION" type="HARDWARE"/>
-        <DataItem category="EVENT" id="hw_mfg" subType="MANUFACTURER" type="HARDWARE"/>
-        <DataItem category="EVENT" id="fw_mfg" subType="MANUFACTURER" type="FIRMWARE"/>
-        -->
+        <DataItem id="fw_ver" category="EVENT" type="FIRMWARE" subType="VERSION">l99/ccs/status+build_no</DataItem>
+        <DataItem id="%Q0.0" name="printer_start_print" category="EVENT" type="ACTUATOR_STATE">l99/ccs/evt/read+%Q0.0</DataItem>
+        <DataItem id="%Q0.1" name="printer_feed" category="EVENT" type="ACTUATOR_STATE">l99/ccs/evt/read+%Q0.1</DataItem>
       </DataItems>
-
       <Components>
         <Controller id="controller" nativeName="plc">
           <Description>Electronic board set responsible for coordinating all machine function.</Description>
-    
-          <!-- empty element caused code 139/segfault -->
-          <!-- <Configuration/> -->
-
           <DataItems>
-            <DataItem category="CONDITION" id="comms_cond" type="COMMUNICATIONS">
-              <Source>?</Source>
-            </DataItem>
-            <DataItem category="CONDITION" id="system_cond" type="SYSTEM">
-              <Source>?</Source>
-            </DataItem>
-            <DataItem category="EVENT" id="message" name="message" type="MESSAGE">
-              <Source>?</Source>
-            </DataItem>
-            <DataItem category="EVENT" id="estop" type="EMERGENCY_STOP">
-              <Source>%I0.10 OR status.faults 10</Source>
-            </DataItem>
+            <DataItem id="state" category="EVENT" type="EXECUTION">execution.lua</DataItem>
+            <DataItem id="wait_state" category="EVENT" type="WAIT_STATE">wait_state.lua</DataItem>
           </DataItems>
-
           <Components>
             <Path id="path1" name="path">
               <DataItems>
-                <DataItem category="EVENT" id="state" type="EXECUTION">
-                  <Source>status.state 400 ACTIVE; status.code 200 READY; status.state 50,100,250,300 WAIT</Source>
-                </DataItem>
-                <DataItem category="EVENT" id="wait_state" type="WAIT_STATE">
-                  <Source>status.state 50,100 PAUSING; status.state 250,300 RESUMING; ?</Source>
-                </DataItem>
-                <DataItem category="EVENT" id="program" subType="MAIN" type="PROGRAM">
-                  <Source>status.program</Source>
-                </DataItem>
-                <DataItem category="EVENT" id="step" type="BLOCK">
-                  <Source>status.step</Source>
-                </DataItem>
-
-                <!--
-                <DataItem category="EVENT" id="active_axes" type="ACTIVE_AXES">
-                </DataItem>
-                -->
-                <!--
-                <DataItem category="EVENT" id="pgm_location" subType="MAIN" type="PROGRAM_LOCATION"/>
-                <DataItem category="EVENT" id="pgm_location_type" subType="MAIN" type="PROGRAM_LOCATION_TYPE"/>
-                -->
-                <!--
-                <DataItem category="EVENT" id="net_ip" subType="IPV4_ADDRESS" type="NETWORK"/>
-                <DataItem category="EVENT" id="net_gw" subType="GATEWAY" type="NETWORK"/>
-                <DataItem category="EVENT" id="net_mask" subType="SUBNET_MASK" type="NETWORK"/>
-                <DataItem category="EVENT" id="net_mac" subType="MAC_ADDRESS" type="NETWORK"/>
-                <DataItem category="EVENT" id="net_wifi" subType="WIRELESS" type="NETWORK"/>
-                -->
-                <!--
-                <DataItem category="EVENT" id="pc_all" subType="ALL" type="PART_COUNT"/>
-                <DataItem category="EVENT" id="pc_bad" subType="BAD" type="PART_COUNT"/>
-                <DataItem category="EVENT" id="pc_good" subType="GOOD" type="PART_COUNT"/>
-                -->
-
-                <DataItem category="SAMPLE" id="clk_time" type="CLOCK_TIME">
-                  <Source>status.utc_time</Source>
-                </DataItem>
-                <DataItem category="SAMPLE" id="up_time" subType="OPERATING" type="EQUIPMENT_TIMER">
-                  <Source>status.cpu_time</Source>
-                </DataItem>
-                <DataItem category="SAMPLE" id="fault_count" type="COUNT">
-                  <Source>%M55.2</Source>
-                </DataItem>
-                <DataItem category="SAMPLE" id="cycle_count" type="COUNT">
-                  <Source>%M55.1</Source>
-                </DataItem>
-                <DataItem category="SAMPLE" id="life_count" type="COUNT">
-                  <Source>%M55.0</Source>
-                </DataItem>
               </DataItems>
             </Path>
-            <!--
-            <Compositions>
-              <Composition id="base_board" type="?"/>
-              <Composition id="top_board" type="?"/>
-              <Composition id="compute" type="?"/>
-              <Composition id="rtc" type="?"/>
-            </Compositions>
-          -->
           </Components>
         </Controller>
       </Components>
-
       <Systems id="systems">
         <Components>
-          <!--
-          <Hydraulic/>
-          <Coolant/>
-          <Lubrication/>
-          <Enclosure/>
-          <Protective/>
-          <ProcessPower/>
-          <Dielectric/>
-          <WorkEnvelope/>
-          -->
-          <!--
-          <Pneumatic id="pneumatic">
-            <DataItems>
-              <DataItem category="CONDITION" id="pneu_cond" type="SYSTEM"/>
-              <DataItem category="EVENT" id="message" name="message" type="MESSAGE" />
-            </DataItems>
-          </Pneumatic>
-          -->
-          <!--
-          <Electric id="electric">
-            <DataItems>
-              <DataItem category="CONDITION" id="elec_cond" type="SYSTEM"/>
-              <DataItem category="EVENT" id="message" name="message" type="MESSAGE" />
-            </DataItems>
-          </Electric>
-          -->
           <EndEffector id="end_effector">
             <DataItems>
-              <DataItem category="CONDITION" id="end_eff_cond" type="SYSTEM"/>
-              <DataItem category="EVENT" id="message" name="message" type="MESSAGE" />
-              <DataItem category="EVENT" id="tamp_part_detect" type="PART_DETECT">
-                <Source>%I0.9, but only if %M56.19</Source>
-              </DataItem>
-              <DataItem category="EVENT" id="tamp_air_assist" type="ACTUATOR_STATE">
-                <Source>%Q0.4</Source>
-              </DataItem>
-              <DataItem category="EVENT" id="tamp_vacuum" type="ACTUATOR_STATE">
-                <Source>%Q0.5</Source>
-              </DataItem>
-              <DataItem category="EVENT" id="tamp_cylinder" type="ACTUATOR_STATE">
-                <Source>%Q0.6</Source>
-              </DataItem>
-              <DataItem category="SAMPLE" id="metric_cylinder_extend_time" subType="WORKING" type="EQUIPMENT_TIMER">
-                <Source>%M55.9</Source>
-              </DataItem>
-              <DataItem category="SAMPLE" id="metric_cylinder_home_disengage_time" subType="WORKING" type="EQUIPMENT_TIMER">
-                <Source>%M55.8</Source>
-              </DataItem>
-              <DataItem category="SAMPLE" id="metric_cylinder_travel_time" subType="WORKING" type="EQUIPMENT_TIMER">
-                <Source>%M55.7</Source>
-              </DataItem>
-              <DataItem category="SAMPLE" id="cfg_tamp_vacuum_delay" subType="DELAY" type="EQUIPMENT_TIMER">
-                <Source>%M56.0</Source>
-              </DataItem>
             </DataItems>
-            <Compositions>
-              <Composition id="headup" type="SENSING_ELEMENT"/>
-              <Composition id="cylinder" type="ACTUATOR"/>
-              <Composition id="assist" type="FAN"/>
-              <Composition id="vacuum" type="FAN"/>
-            </Compositions>
           </EndEffector>
           <Feeder id="feeder">
             <DataItems>
-              <DataItem category="CONDITION" id="feed_cond" type="SYSTEM"/>
-              <DataItem category="EVENT" id="message" name="message" type="MESSAGE" />
-              <DataItem category="EVENT" id="feed_part_detect" type="PART_DETECT">
-                <Source>%I0.6, but could be different based on PA mode of operation, and also depends on leading or trailing edge config</Source>
-              </DataItem>
-              <DataItem category="EVENT" id="web_take_up_motor_state" type="ACTUATOR_STATE">
-                <Source>%Q1.0</Source>
-              </DataItem>
-              <DataItem category="EVENT" id="printer_reprint" type="ACTUATOR_STATE">
-                <Source>%Q0.3</Source>
-              </DataItem>
-              <DataItem category="EVENT" id="printer_pause" type="ACTUATOR_STATE">
-                <Source>%Q0.2</Source>
-              </DataItem>
-              <DataItem category="EVENT" id="printer_feed" type="ACTUATOR_STATE">
-                <Source>%Q0.1</Source>
-              </DataItem>
-              <DataItem category="EVENT" id="printer_start_print" type="ACTUATOR_STATE">
-                <Source>%Q0.0</Source>
-              </DataItem>
-              <DataItem category="SAMPLE" id="metric_print_signal_time" subType="WORKING" type="EQUIPMENT_TIMER">
-                <Source>%M55.10</Source>
-              </DataItem>
-              <DataItem category="SAMPLE" id="metric_printer_time" subType="WORKING" type="EQUIPMENT_TIMER">
-                <Source>%M55.5</Source>
-              </DataItem>
-              <DataItem category="SAMPLE" id="metric_transport_time" subType="WORKING" type="EQUIPMENT_TIMER">
-                <Source>%M55.4</Source>
-              </DataItem>
-              <DataItem category="SAMPLE" id="metric_idle_time" subType="WORKING" type="EQUIPMENT_TIMER">
-                <Source>%M55.3</Source>
-              </DataItem>
-              <DataItem category="SAMPLE" id="cfg_printer_start_print" subType="WORKING" type="EQUIPMENT_TIMER">
-                <Source>%M56.1</Source>
-              </DataItem>
-              <DataItem category="SAMPLE" id="cfg_printer_end_print_wait" subType="DELAY" type="EQUIPMENT_TIMER">
-                <Source>%M56.2</Source>
-              </DataItem>
-              <DataItem category="SAMPLE" id="cfg_product_sensor_one_edge_trigger" type="?">
-                <Source>%M56.3</Source>
-              </DataItem>
-              <DataItem category="SAMPLE" id="cfg_product_sensor_one_debounce" subType="DELAY" type="EQUIPMENT_TIMER">
-                <Source>%M56.4</Source>
-              </DataItem>
-              <Compositions>
-                <Composition id="printer" type="ACTUATOR"/>
-                <Composition id="takeup" type="MOTOR"/>
-                <Composition id="dancer" type="PULLEY"/>
-                <Composition id="tension" type="SENSING_ELEMENT"/>
-                <Composition id="label" type="REEL"/>
-                <Composition id="web" type="REEL"/>
-              </Compositions>
             </DataItems>
           </Feeder>
-          <!--
-          <Resources id="resources" name="resources">
-            <Components>
-              <Personnel id="personnel" name="personnel">
-                <DataItems>
-                  <DataItem category="EVENT" id="operator" subType="OPERATOR" type="USER"/>
-                </DataItems>
-              </Personnel>
-              <Materials id="materials" name="materials">
-                <Components>
-                  <Stock id="procstock" name="stock">
-                    <DataItems>
-                      <DataItem category="EVENT" id="stock" type="MATERIAL"/>
-                    </DataItems>
-                  </Stock>
-                </Components>
-              </Materials>
-            </Components>
-          </Resources>
-          -->
-          <!--
-          <Axes id="axes">
-            <Components>
-              <Linear id="y"/>
-            </Components>
-          </Axes>
-          -->
-          <!--
-          <Auxilaries>
-            <Systems?>
-              <Loader/>
-              <WasteDisposal/>
-              <ToolingDelivery/>
-              <BarFeeder/>
-              <Environmental/>
-              <Sensor/>
-              <Deposition/>
-            </Systems>
-          </Auxilaries>
-          -->
-          <!--
-          <Interfaces/>
-          -->
         </Components>
       </Systems>
-      <!--
-      <Door/>
-      <Actuator/>
-      <Sensor/>
-      -->
     </Device>
   </Devices>
 </MTConnectDevices>
