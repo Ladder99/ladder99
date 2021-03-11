@@ -1,3 +1,6 @@
+// elevator
+// translate a yaml devices file to xml
+
 const fs = require('fs') // node lib
 const yaml = require('js-yaml') // https://github.com/nodeca/js-yaml
 const convert = require('xml-js') // https://github.com/nashwaan/xml-js
@@ -8,8 +11,11 @@ const ystr = fs.readFileSync(sourcefile, 'utf8')
 const ydoc = yaml.load(ystr)
 console.log(ydoc)
 
+const attributes = new Set('id,name'.split(','))
+
 // walk ydoc recursively, translate elements and add to xdoc
-const devices = ydoc['devices']
+// const devices = ydoc['devices']
+const devices = translate(ydoc['devices'])
 
 const xdoc = {
   _declaration: {
@@ -41,4 +47,6 @@ const xdoc = {
 const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
 console.log(xstr)
 
-function walk() {}
+function translate(el) {
+  // const subkeys = Object.keys(el)
+}

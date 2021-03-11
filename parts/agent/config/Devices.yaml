@@ -11,7 +11,7 @@ devices:
       serialNumber: 000
       text: Emergent Next Generation Print and Apply
 
-    dataitems:
+    dataItems:
       - source: '%Q0.0'
         id: printer_start_print
         category: event
