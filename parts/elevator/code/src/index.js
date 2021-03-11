@@ -14,8 +14,10 @@ const ydoc = yaml.load(ystr)
 console.log(ydoc)
 
 // walk ydoc recursively, translate elements and add to xdoc
-const devices = []
-translate(ydoc, devices)
+// const devices = []
+// translate(ydoc, devices)
+const devices = translate(ydoc)
+console.log(devices)
 
 const xdoc = {
   _declaration: {
@@ -44,20 +46,45 @@ const xdoc = {
   ],
 }
 
-// translate
-function translate(el, output) {
-  const subelkeys = Object.keys(el)
-  const attrs = {}
-  for (const subelkey of subelkeys) {
-    const subel = el[subelkey]
-    if (attributes.has(subelkey)) {
-      attrs[subelkey] = subel
-    } else {
-      output.push(subel)
+// translate yaml tree to xml tree recursively
+function translate(ytree) {
+  // handle arrays
+  if (Array.isArray(ytree)) {
+    for (const el of ytree) {
+      console.log(el)
+      // return translate(el)
     }
+    return 'array'
+  } else if (typeof ytree === 'object') {
+    // handle dicts
+    const attrs = {}
+    const elements = []
+    const keys = Object.keys(ytree)
+    for (const key of keys) {
+      const el = ytree[key]
+      console.log({ key, el })
+      if (attributes.has(key)) {
+        attrs[key] = el
+      } else {
+        // xtree.push(el)
+        console.log('capitalize', key)
+        elements.push(capitalize(key))
+      }
+    }
+    console.log({ attrs })
+    console.log({ elements })
+    // xtree._attributes = attrs
+    return 'obj'
+  } else {
+    // handle elements
+    return null
   }
-  output._attributes = attrs
 }
 
+// console.log(xdoc)
 const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
-console.log(xstr)
+console.log(xstr.slice(0, 500))
+
+function capitalize(str) {
+  return str.slice(0, 1).toUpperCase() + str.slice(1)
+}
