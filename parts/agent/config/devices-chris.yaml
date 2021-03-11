@@ -1,0 +1,65 @@
+devices:
+
+  samples:
+
+  events:
+    fw_ver: &fw_ver
+      type: FIRMWARE.VERSION
+      source:
+        topic: l99/ccs/status
+        query: build_no
+    state: &state
+      type: EXECUTION
+      source:
+        script: execution.lua
+    wait_state: &wait_state
+      type: WAIT_STATE
+      source:
+        script: wait_state.lua
+
+  conditions:
+
+  device:
+    id: dev
+    name: CCS-PA
+    uuid: 000
+    sampleInterval: 10
+
+    description:
+      manufacturer: CCS
+      model: Emergent-PA-Pneumatic
+      serialNumber: 000
+      text: Emergent Next Generation Print and Apply
+
+    dataitems: [
+      *fw_ver
+    ]
+
+    components:
+
+      controller:
+        id: controller
+        nativeName: plc
+        description: 
+          text: Electronic board set responsible for coordinating all machine function.
+        dataitems: [
+          *state,
+          *wait_state
+        ]
+        components:
+          path:
+            id: path1
+            name: path
+            dataitems: []
+
+    systems:
+      id: systems
+      components:
+        endeffector:
+          id: end_effector
+          dataitems: []
+          compositions: []
+        feeder:
+          id: feeder
+          dataitems: []
+          compositions: []
