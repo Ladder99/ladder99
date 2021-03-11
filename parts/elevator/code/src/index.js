@@ -7,7 +7,16 @@ const convert = require('xml-js') // https://github.com/nashwaan/xml-js
 
 const sourcefile = '../config/devices.yaml'
 
-const attributes = new Set('id,name'.split(','))
+const attributes = `
+id
+name
+uuid
+sampleInterval
+manufacturer
+model
+serialNumber
+`
+const attributesSet = new Set(attributes.trim().split('\n'))
 
 const ystr = fs.readFileSync(sourcefile, 'utf8')
 const ydoc = yaml.load(ystr)
@@ -16,7 +25,7 @@ console.log(ydoc)
 // walk ydoc recursively, translate elements and add to xdoc
 // const devices = []
 // translate(ydoc, devices)
-const devices = translate(ydoc)
+const devices = translate(ydoc['devices'])
 console.log(devices)
 
 const xdoc = {
@@ -48,33 +57,24 @@ const xdoc = {
 
 // translate yaml tree to xml tree recursively
 function translate(ytree) {
-  // handle arrays
   if (Array.isArray(ytree)) {
-    for (const el of ytree) {
-      console.log(el)
-      // return translate(el)
-    }
-    return 'array'
+    const xels = ytree.map(el => translate(el))
+    return xels
   } else if (typeof ytree === 'object') {
-    // handle dicts
-    const attrs = {}
-    const elements = []
+    const attributes = {}
+    const elements = {}
     const keys = Object.keys(ytree)
     for (const key of keys) {
       const el = ytree[key]
-      console.log({ key, el })
-      if (attributes.has(key)) {
-        attrs[key] = el
+      if (attributesSet.has(key)) {
+        attributes[key] = el
       } else {
-        // xtree.push(el)
-        console.log('capitalize', key)
-        elements.push(capitalize(key))
+        const element = translate(el)
+        // elements.push(element)
+        elements[capitalize(key)] = element
       }
     }
-    console.log({ attrs })
-    console.log({ elements })
-    // xtree._attributes = attrs
-    return 'obj'
+    return { _attributes: attributes, ...elements }
   } else {
     // handle elements
     return null
@@ -83,7 +83,7 @@ function translate(ytree) {
 
 // console.log(xdoc)
 const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
-console.log(xstr.slice(0, 500))
+console.log(xstr.slice(0, 700))
 
 function capitalize(str) {
   return str.slice(0, 1).toUpperCase() + str.slice(1)
