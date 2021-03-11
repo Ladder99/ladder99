@@ -27,21 +27,21 @@ devices:
         nativeName: plc
         description:
           text: Electronic board set responsible for coordinating all machine function.
-        dataitems: []
+        dataItems: []
         components:
           path:
             id: path1
             name: path
-            dataitems: []
+            dataItems: []
 
     systems:
       id: systems
       components:
-        endeffector:
+        endEffector:
           id: end_effector
-          dataitems: []
+          dataItems: []
           compositions: []
         feeder:
           id: feeder
-          dataitems: []
+          dataItems: []
           compositions: []
