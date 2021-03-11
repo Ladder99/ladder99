@@ -17,12 +17,14 @@ devices:
       type: WAIT_STATE
       source: wait_state.lua
     printer_start_print: &printer_start_print
-      id: printer_start_print
+      id: '%Q0.0'
+      name: printer_start_print
       category: EVENT
       type: ACTUATOR_STATE
       source: l99/ccs/evt/read+%Q0.0
     printer_feed: &printer_feed
-      id: printer_feed
+      id: '%Q0.1'
+      name: printer_feed
       category: EVENT
       type: ACTUATOR_STATE
       source: l99/ccs/evt/read+%Q0.1

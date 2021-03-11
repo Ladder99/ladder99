@@ -13,8 +13,7 @@ const transforms = {
 
 /**
  * status message transform
- * @param {object} msg - status message
- *   { _ts, connection, state, program, step }
+ * @param {object} msg - status message - { _ts, connection, state, program, step }
  * @returns {string} SHDR string, eg
  *   2021-03-09T12:42:00.000Z|connection|AVAILABLE
  *   2021-03-09T12:42:00.000Z|state|ACTIVE
