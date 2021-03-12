@@ -22,13 +22,14 @@ device:
         id: state
         category: EVENT
         type: EXECUTION
-        source: execution.lua
-        # <Source>status.state 400 ACTIVE; status.code 200 READY; status.state 50,100,250,300 WAIT</Source>
+        # source: execution.lua
         docs: |
           EXECUTION	The execution status of the Controller. READY, ACTIVE, INTERRUPTED, FEED_HOLD, STOPPED, OPTIONAL_STOP, PROGRAM_STOPPED, or PROGRAM_COMPLETED
           http://mtcup.org/wiki/Data_Item_Types:_EVENT
+        # <Source>status.state 400 ACTIVE; 200 READY; 50,100,250,300 WAIT</Source>
+        #. need more succinct code here - pattern matching lib?
         javascript: |
-          cache => {
+          function(cache) {
             const states = {
               50: 'WAIT',
               100: 'WAIT',
@@ -38,17 +39,18 @@ device:
               400: 'ACTIVE',
             }
             const msg = cache.getMsg('l99/ccs/evt/status')
-            const value = msg.state
-            const str = states[value]
-            const shdr = `${msg.timestamp}|state|${str}`
+            const stateValue = msg.state
+            const stateName = states[stateValue]
+            const shdr = `${msg.timestamp}|state|${stateName}`
+            return shdr
           }
 
       wait_state: &wait_state
         id: wait_state
         category: EVENT
         type: WAIT_STATE
-        source: wait_state.lua
-        # <Source>status.state 50,100 PAUSING; status.state 250,300 RESUMING; ?</Source>
+        # source: wait_state.lua
+        # <Source>status.state 50,100 PAUSING; 250,300 RESUMING; ?</Source>
 
       program: &program
         id: program
