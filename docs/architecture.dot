@@ -56,7 +56,7 @@ digraph "ladder99-adapter" {
   DiodeSender -> DiodeReceiver [ label="UDP    " ];
   DiodeReceiver -> Agent [ label="SHDR /    \nTCP 7878        " ];
   // Adapter -> Agent [ label="SHDR/\nTCP 7878" ];
-  Agent -> Application [ dir=both; label="XML /\nHTTP 5000" ];
+  Agent -> Application [ dir=both; label="XML  /\nHTTP 5000          " ];
   DevicesXml -> Agent [ label="used by" ];
   Application -> Database [ dir=both ];
   Database -> Visualizer [ dir=both ];
