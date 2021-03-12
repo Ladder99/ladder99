@@ -31,8 +31,8 @@ device:
           http://mtcup.org/wiki/Data_Item_Types:_EVENT
         # <Source>status.state 400 ACTIVE; 200 READY; 50,100,250,300 WAIT</Source>
         javascript: |
-          // need more succinct code here - pattern matching lib or helper fns
-          function(cache) {
+          //. need more succinct code here - pattern matching lib or helper fns
+          function(msgs, shdrs) {
             const names = {
               50: 'WAIT',
               100: 'WAIT',
@@ -43,12 +43,17 @@ device:
             }
             const topic = 'l99/ccs/evt/status'
             const prop = 'state'
-            const msg = cache.get(topic)
-            const value = msg[prop]
-            const name = states[value]
-            const shdr = `${msg.timestamp}|${prop}|${name}`
-            cache.set(topic, shdr)
-            return shdr
+            return lookup(msgs, shdrs, topic, prop, names)
+            //. define elsewhere - 
+            function lookup(msgs, shdrs, topic, prop, names) {
+              const msg = msgs.get(topic)
+              const value = msg[prop]
+              const name = states[value]
+              const shdr = `${msg.timestamp}|${prop}|${name}`
+              const key = topic + '/' + prop
+              shdrs.set(key, shdr)
+              return shdr
+            }
           }
 
       wait_state: &wait_state
