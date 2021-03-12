@@ -16,6 +16,8 @@
           <DataItems>
             <DataItem id="state" category="EVENT" type="EXECUTION">execution.lua</DataItem>
             <DataItem id="wait_state" category="EVENT" type="WAIT_STATE">wait_state.lua</DataItem>
+            <DataItem id="program" category="EVENT" type="EXECUTION"/>
+            <DataItem id="step" category="EVENT" type="EXECUTION"/>
           </DataItems>
           <Components>
             <Path id="path1" name="path">

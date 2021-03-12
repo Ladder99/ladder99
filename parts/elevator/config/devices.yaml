@@ -12,12 +12,20 @@ devices:
       type: EXECUTION
       source: execution.lua
       # <Source>status.state 400 ACTIVE; status.code 200 READY; status.state 50,100,250,300 WAIT</Source>
-      # source:
     wait_state: &wait_state
       id: wait_state
       category: EVENT
       type: WAIT_STATE
       source: wait_state.lua
+      # <Source>status.state 50,100 PAUSING; status.state 250,300 RESUMING; ?</Source>
+    program: &program
+      id: program
+      category: EVENT
+      type: EXECUTION
+    step: &step
+      id: step
+      category: EVENT
+      type: EXECUTION
     printer_start_print: &printer_start_print
       id: '%Q0.0'
       name: printer_start_print
@@ -66,6 +74,8 @@ devices:
             dataItem:
               - *state
               - *wait_state
+              - *program
+              - *step
 
           components:
             path:
