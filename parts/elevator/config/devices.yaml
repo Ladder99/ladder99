@@ -17,7 +17,7 @@ devices:
         EXECUTION	The execution status of the Controller. READY, ACTIVE, INTERRUPTED, FEED_HOLD, STOPPED, OPTIONAL_STOP, PROGRAM_STOPPED, or PROGRAM_COMPLETED
         http://mtcup.org/wiki/Data_Item_Types:_EVENT
       javascript: |
-        topics => {
+        cache => {
           const states = {
             50: 'WAIT',
             100: 'WAIT',
@@ -26,7 +26,6 @@ devices:
             300: 'WAIT',
             400: 'ACTIVE',
           }
-          // const msg = topics['l99/ccs/evt/status'] || {}
           const msg = cache.getMsg('l99/ccs/evt/status')
           const value = msg.state
           const str = states[value]

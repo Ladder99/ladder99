@@ -35,8 +35,9 @@ mqtt.on('connect', function onConnect() {
 })
 
 // handle mqtt message
-mqtt.on('message', function onMessage(topic, messageBuffer) {
-  const message = messageBuffer.toString()
+mqtt.on('message', function onMessage(topic, payloadBuffer) {
+  //. get extractor based on topic - might not be a string
+  const message = payloadBuffer.toString()
   console.log(
     `MQTT received message on topic ${topic}: ${message.slice(0, 20)}...`
   )
