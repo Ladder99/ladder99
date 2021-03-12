@@ -41,10 +41,12 @@ device:
               300: 'WAIT',
               400: 'ACTIVE',
             }
-            const msg = cache.getMsg('l99/ccs/evt/status')
+            const topic = 'l99/ccs/evt/status'
+            const msg = cache.getMsg(topic)
             const stateValue = msg.state
             const stateName = states[stateValue]
             const shdr = `${msg.timestamp}|state|${stateName}`
+            cache.setMsg(topic, shdr)
             return shdr
           }
 
