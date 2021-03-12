@@ -49,11 +49,25 @@ The complete pipeline - the X's are exchanges (input ports) - the green X is an 
 [2016 paper](https://arxiv.org/abs/1602.07467) and [original source code](https://github.com/marcelmaatkamp/rabbitmq-applications/tree/master/application/datadiode)
 
 
+## Installation
+
+Install **just**, which is a task runner
+
+    brew install just
+
+
+## Developing
+
+Edit `parts/elevator/config/devices.yaml`, then generate the corresponding xml file and copy it to parts/agent/config with -
+
+    just make
+
+
 ## Usage
 
 Run the system with
 
-    docker-compose up
+    just up
     
 this will start plc4x, the mqtt broker, adapter, agent, diode, application, database, and visualizer - and send some test messages from a simulated device - 
 
