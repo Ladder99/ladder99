@@ -30,10 +30,10 @@ device:
           PROGRAM_STOPPED, or PROGRAM_COMPLETED
           http://mtcup.org/wiki/Data_Item_Types:_EVENT
         # <Source>status.state 400 ACTIVE; 200 READY; 50,100,250,300 WAIT</Source>
-        #. need more succinct code here - pattern matching lib?
         javascript: |
+          // need more succinct code here - pattern matching lib or helper fns
           function(cache) {
-            const states = {
+            const names = {
               50: 'WAIT',
               100: 'WAIT',
               200: 'PROGRAM_STOPPED',
@@ -42,11 +42,12 @@ device:
               400: 'ACTIVE',
             }
             const topic = 'l99/ccs/evt/status'
-            const msg = cache.getMsg(topic)
-            const stateValue = msg.state
-            const stateName = states[stateValue]
-            const shdr = `${msg.timestamp}|state|${stateName}`
-            cache.setMsg(topic, shdr)
+            const prop = 'state'
+            const msg = cache.get(topic)
+            const value = msg[prop]
+            const name = states[value]
+            const shdr = `${msg.timestamp}|${prop}|${name}`
+            cache.set(topic, shdr)
             return shdr
           }
 
