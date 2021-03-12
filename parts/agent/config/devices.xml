@@ -43,5 +43,8 @@
         </Components>
       </Systems>
     </Device>
+    <Device id="foo" name="Foo" uuid="001" sampleInterval="10">
+      <Description manufacturer="CCS" model="Emergent-Foo" serialNumber="001">Emergent Next Generation Foo</Description>
+    </Device>
   </Devices>
 </MTConnectDevices>

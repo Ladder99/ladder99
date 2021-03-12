@@ -1,124 +1,123 @@
-devices:
-  device:
-    - id: dev
-      name: CCS-PA
-      uuid: '000'
-      sampleInterval: 10
+device:
+  - id: dev
+    name: CCS-PA
+    uuid: '000'
+    sampleInterval: 10
 
-      description:
-        manufacturer: CCS
-        model: Emergent-PA-Pneumatic
-        serialNumber: '000'
-        text: Emergent Next Generation Print and Apply
+    description:
+      manufacturer: CCS
+      model: Emergent-PA-Pneumatic
+      serialNumber: '000'
+      text: Emergent Next Generation Print and Apply
 
-      events:
-        fw_ver: &fw_ver
-          id: fw_ver
-          category: EVENT
-          type: FIRMWARE
-          subType: VERSION
-          source: l99/ccs/evt/status+build_no
+    events:
+      fw_ver: &fw_ver
+        id: fw_ver
+        category: EVENT
+        type: FIRMWARE
+        subType: VERSION
+        source: l99/ccs/evt/status+build_no
 
-        state: &state
-          id: state
-          category: EVENT
-          type: EXECUTION
-          source: execution.lua
-          # <Source>status.state 400 ACTIVE; status.code 200 READY; status.state 50,100,250,300 WAIT</Source>
-          docs: |
-            EXECUTION	The execution status of the Controller. READY, ACTIVE, INTERRUPTED, FEED_HOLD, STOPPED, OPTIONAL_STOP, PROGRAM_STOPPED, or PROGRAM_COMPLETED
-            http://mtcup.org/wiki/Data_Item_Types:_EVENT
-          javascript: |
-            cache => {
-              const states = {
-                50: 'WAIT',
-                100: 'WAIT',
-                200: 'READY', // not STOPPED?
-                250: 'WAIT',
-                300: 'WAIT',
-                400: 'ACTIVE',
-              }
-              const msg = cache.getMsg('l99/ccs/evt/status')
-              const value = msg.state
-              const str = states[value]
-              const shdr = `${msg.timestamp}|state|${str}`
+      state: &state
+        id: state
+        category: EVENT
+        type: EXECUTION
+        source: execution.lua
+        # <Source>status.state 400 ACTIVE; status.code 200 READY; status.state 50,100,250,300 WAIT</Source>
+        docs: |
+          EXECUTION	The execution status of the Controller. READY, ACTIVE, INTERRUPTED, FEED_HOLD, STOPPED, OPTIONAL_STOP, PROGRAM_STOPPED, or PROGRAM_COMPLETED
+          http://mtcup.org/wiki/Data_Item_Types:_EVENT
+        javascript: |
+          cache => {
+            const states = {
+              50: 'WAIT',
+              100: 'WAIT',
+              200: 'READY', // not STOPPED?
+              250: 'WAIT',
+              300: 'WAIT',
+              400: 'ACTIVE',
             }
+            const msg = cache.getMsg('l99/ccs/evt/status')
+            const value = msg.state
+            const str = states[value]
+            const shdr = `${msg.timestamp}|state|${str}`
+          }
 
-        wait_state: &wait_state
-          id: wait_state
-          category: EVENT
-          type: WAIT_STATE
-          source: wait_state.lua
-          # <Source>status.state 50,100 PAUSING; status.state 250,300 RESUMING; ?</Source>
+      wait_state: &wait_state
+        id: wait_state
+        category: EVENT
+        type: WAIT_STATE
+        source: wait_state.lua
+        # <Source>status.state 50,100 PAUSING; status.state 250,300 RESUMING; ?</Source>
 
-        program: &program
-          id: program
-          category: EVENT
-          type: EXECUTION
+      program: &program
+        id: program
+        category: EVENT
+        type: EXECUTION
 
-        step: &step
-          id: step
-          category: EVENT
-          type: EXECUTION
+      step: &step
+        id: step
+        category: EVENT
+        type: EXECUTION
 
-        printer_start_print: &printer_start_print
-          id: '%Q0.0'
-          name: printer_start_print
-          category: EVENT
-          type: ACTUATOR_STATE
-          source: l99/ccs/evt/read+%Q0.0
+      printer_start_print: &printer_start_print
+        id: '%Q0.0'
+        name: printer_start_print
+        category: EVENT
+        type: ACTUATOR_STATE
+        source: l99/ccs/evt/read+%Q0.0
 
-        printer_feed: &printer_feed
-          id: '%Q0.1'
-          name: printer_feed
-          category: EVENT
-          type: ACTUATOR_STATE
-          source: l99/ccs/evt/read+%Q0.1
+      printer_feed: &printer_feed
+        id: '%Q0.1'
+        name: printer_feed
+        category: EVENT
+        type: ACTUATOR_STATE
+        source: l99/ccs/evt/read+%Q0.1
 
-        printer_pause: &printer_pause
-          id: '%Q0.2'
-          name: printer_pause
-          category: EVENT
-          type: ACTUATOR_STATE
-          source: l99/ccs/evt/read+%Q0.2
+      printer_pause: &printer_pause
+        id: '%Q0.2'
+        name: printer_pause
+        category: EVENT
+        type: ACTUATOR_STATE
+        source: l99/ccs/evt/read+%Q0.2
 
-      dataItems:
-        dataItem:
-          - *fw_ver
-          - *printer_start_print
-          - *printer_feed
-          - *printer_pause
+    dataItems:
+      dataItem:
+        - *fw_ver
+        - *printer_start_print
+        - *printer_feed
+        - *printer_pause
 
-      components:
-        controller:
-          id: controller
-          nativeName: plc
-          description:
-            text: Electronic board set responsible for coordinating all machine function.
-          dataItems:
-            dataItem:
-              - *state
-              - *wait_state
-              - *program
-              - *step
+    components:
+      controller:
+        id: controller
+        nativeName: plc
+        description:
+          text: Electronic board set responsible for coordinating all machine function.
+        dataItems:
+          dataItem:
+            - *state
+            - *wait_state
+            - *program
+            - *step
 
-          components:
-            path:
-              id: path1
-              name: path
-              dataItems:
-                dataItem: []
-
-      systems:
-        id: systems
         components:
-          endEffector:
-            id: end_effector
+          path:
+            id: path1
+            name: path
             dataItems:
               dataItem: []
-            compositions: []
-          feeder:
-            id: feeder
-            dataItems:
-              dataItem: []
-            compositions: []
+
+    systems:
+      id: systems
+      components:
+        endEffector:
+          id: end_effector
+          dataItems:
+            dataItem: []
+          compositions: []
+        feeder:
+          id: feeder
+          dataItems:
+            dataItem: []
+          compositions: []

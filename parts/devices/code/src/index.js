@@ -7,6 +7,7 @@ const convert = require('xml-js') // https://github.com/nashwaan/xml-js
 
 const sourcefiles = process.argv.slice(2) // eg ['config/device-ccs-pa.yaml']
 
+// treat these yaml elements as attributes
 const attributes = `
 id
 name
@@ -22,16 +23,18 @@ subType
 `
 const attributesSet = new Set(attributes.trim().split('\n'))
 
+// enclose these yaml elements
 const values = `
 text
 source
 `
 const valuesSet = new Set(values.trim().split('\n'))
 
+// hide these yaml elements
 const hiddenSet = new Set('events'.split(','))
 
+// get yaml devices
 const devices = []
-
 for (const sourcefile of sourcefiles) {
   // read yaml
   const ystr = fs.readFileSync(sourcefile, 'utf8')
@@ -40,9 +43,11 @@ for (const sourcefile of sourcefiles) {
   const ydoc = yaml.load(ystr)
 
   // walk yaml tree and translate elements to xml tree recursively
-  const device = translate(ydoc['devices'])
+  const x = translate(ydoc)
 
-  devices.push(device)
+  // extract the device and add to list
+  const xdevice = x.Device[0]
+  devices.push(xdevice)
 }
 
 // define xml document root
@@ -69,7 +74,9 @@ const xdoc = {
         },
       },
       // attach devices here
-      Devices: devices,
+      Devices: {
+        Device: devices,
+      },
     },
   ],
 }

@@ -1,0 +1,11 @@
+device:
+  - id: foo
+    name: Foo
+    uuid: '001'
+    sampleInterval: 10
+
+    description:
+      manufacturer: CCS
+      model: Emergent-Foo
+      serialNumber: '001'
+      text: Emergent Next Generation Foo
