@@ -1,12 +1,11 @@
 // elevator
-// translate a yaml devices file to xml
+// translate yaml device files to devices.xml
 
 const fs = require('fs') // node lib
 const yaml = require('js-yaml') // https://github.com/nodeca/js-yaml
 const convert = require('xml-js') // https://github.com/nashwaan/xml-js
 
-// source yaml file
-const sourcefile = process.argv[2] || '../config/devices.yaml'
+const sourcefiles = process.argv.slice(2) // eg ['config/device-ccs-pa.yaml']
 
 const attributes = `
 id
@@ -31,14 +30,20 @@ const valuesSet = new Set(values.trim().split('\n'))
 
 const hiddenSet = new Set('events'.split(','))
 
-// read yaml
-const ystr = fs.readFileSync(sourcefile, 'utf8')
+const devices = []
 
-// convert yaml to js tree
-const ydoc = yaml.load(ystr)
+for (const sourcefile of sourcefiles) {
+  // read yaml
+  const ystr = fs.readFileSync(sourcefile, 'utf8')
 
-// walk yaml tree and translate elements to xml tree recursively
-const devices = translate(ydoc['devices'])
+  // convert yaml to js tree
+  const ydoc = yaml.load(ystr)
+
+  // walk yaml tree and translate elements to xml tree recursively
+  const device = translate(ydoc['device'])
+
+  devices.push(device)
+}
 
 // define xml document root
 const xdoc = {
@@ -72,6 +77,8 @@ const xdoc = {
 // convert xml tree to string
 const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
 console.log(xstr)
+
+// helpers
 
 // translate yaml tree to xml tree recursively
 function translate(ytree) {
