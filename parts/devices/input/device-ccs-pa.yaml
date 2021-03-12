@@ -1,5 +1,5 @@
 device:
-  - id: dev
+  - id: ccs-pa
     name: CCS-PA
     uuid: '000'
     sampleInterval: 10
@@ -12,14 +12,14 @@ device:
 
     events:
       fw_ver: &fw_ver
-        id: fw_ver
+        id: ccs-pa-fw_ver
         category: EVENT
         type: FIRMWARE
         subType: VERSION
         source: l99/ccs/evt/status+build_no
 
       state: &state
-        id: state
+        id: ccs-pa-state
         category: EVENT
         type: EXECUTION
         # source: execution.lua
@@ -49,38 +49,38 @@ device:
           }
 
       wait_state: &wait_state
-        id: wait_state
+        id: ccs-pa-wait_state
         category: EVENT
         type: WAIT_STATE
         # source: wait_state.lua
         # <Source>status.state 50,100 PAUSING; 250,300 RESUMING; ?</Source>
 
       program: &program
-        id: program
+        id: ccs-pa-program
         category: EVENT
         type: EXECUTION
 
       step: &step
-        id: step
+        id: ccs-pa-step
         category: EVENT
         type: EXECUTION
 
       printer_start_print: &printer_start_print
-        id: '%Q0.0'
+        id: ccs-pa-%Q0.0
         name: printer_start_print
         category: EVENT
         type: ACTUATOR_STATE
         source: l99/ccs/evt/read+%Q0.0
 
       printer_feed: &printer_feed
-        id: '%Q0.1'
+        id: ccs-pa-%Q0.1
         name: printer_feed
         category: EVENT
         type: ACTUATOR_STATE
         source: l99/ccs/evt/read+%Q0.1
 
       printer_pause: &printer_pause
-        id: '%Q0.2'
+        id: ccs-pa-%Q0.2
         name: printer_pause
         category: EVENT
         type: ACTUATOR_STATE
@@ -95,7 +95,7 @@ device:
 
     components:
       controller:
-        id: controller
+        id: ccs-pa-controller
         nativeName: plc
         description:
           text: Electronic board set responsible for coordinating all machine function.
@@ -108,21 +108,21 @@ device:
 
         components:
           path:
-            id: path1
+            id: ccs-pa-path1
             name: path
             dataItems:
               dataItem: []
 
     systems:
-      id: systems
+      id: ccs-pa-systems
       components:
         endEffector:
-          id: end_effector
+          id: ccs-pa-end_effector
           dataItems:
             dataItem: []
           compositions: []
         feeder:
-          id: feeder
+          id: ccs-pa-feeder
           dataItems:
             dataItem: []
           compositions: []

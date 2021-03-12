@@ -2,38 +2,38 @@
 <MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
   <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.6.0.7"/>
   <Devices>
-    <Device id="dev" name="CCS-PA" uuid="000" sampleInterval="10">
+    <Device id="ccs-pa" name="CCS-PA" uuid="000" sampleInterval="10">
       <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="000">Emergent Next Generation Print and Apply</Description>
       <DataItems>
-        <DataItem id="fw_ver" category="EVENT" type="FIRMWARE" subType="VERSION">l99/ccs/evt/status+build_no</DataItem>
-        <DataItem id="%Q0.0" name="printer_start_print" category="EVENT" type="ACTUATOR_STATE">l99/ccs/evt/read+%Q0.0</DataItem>
-        <DataItem id="%Q0.1" name="printer_feed" category="EVENT" type="ACTUATOR_STATE">l99/ccs/evt/read+%Q0.1</DataItem>
-        <DataItem id="%Q0.2" name="printer_pause" category="EVENT" type="ACTUATOR_STATE">l99/ccs/evt/read+%Q0.2</DataItem>
+        <DataItem id="ccs-pa-fw_ver" category="EVENT" type="FIRMWARE" subType="VERSION">l99/ccs/evt/status+build_no</DataItem>
+        <DataItem id="ccs-pa-%Q0.0" name="printer_start_print" category="EVENT" type="ACTUATOR_STATE">l99/ccs/evt/read+%Q0.0</DataItem>
+        <DataItem id="ccs-pa-%Q0.1" name="printer_feed" category="EVENT" type="ACTUATOR_STATE">l99/ccs/evt/read+%Q0.1</DataItem>
+        <DataItem id="ccs-pa-%Q0.2" name="printer_pause" category="EVENT" type="ACTUATOR_STATE">l99/ccs/evt/read+%Q0.2</DataItem>
       </DataItems>
       <Components>
-        <Controller id="controller" nativeName="plc">
+        <Controller id="ccs-pa-controller" nativeName="plc">
           <Description>Electronic board set responsible for coordinating all machine function.</Description>
           <DataItems>
-            <DataItem id="state" category="EVENT" type="EXECUTION"/>
-            <DataItem id="wait_state" category="EVENT" type="WAIT_STATE"/>
-            <DataItem id="program" category="EVENT" type="EXECUTION"/>
-            <DataItem id="step" category="EVENT" type="EXECUTION"/>
+            <DataItem id="ccs-pa-state" category="EVENT" type="EXECUTION"/>
+            <DataItem id="ccs-pa-wait_state" category="EVENT" type="WAIT_STATE"/>
+            <DataItem id="ccs-pa-program" category="EVENT" type="EXECUTION"/>
+            <DataItem id="ccs-pa-step" category="EVENT" type="EXECUTION"/>
           </DataItems>
           <Components>
-            <Path id="path1" name="path">
+            <Path id="ccs-pa-path1" name="path">
               <DataItems>
               </DataItems>
             </Path>
           </Components>
         </Controller>
       </Components>
-      <Systems id="systems">
+      <Systems id="ccs-pa-systems">
         <Components>
-          <EndEffector id="end_effector">
+          <EndEffector id="ccs-pa-end_effector">
             <DataItems>
             </DataItems>
           </EndEffector>
-          <Feeder id="feeder">
+          <Feeder id="ccs-pa-feeder">
             <DataItems>
             </DataItems>
           </Feeder>
