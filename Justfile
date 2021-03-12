@@ -4,7 +4,7 @@ help:
     @just --list
 
 # convert device.yamls to xml
-make:
+devices:
     cd parts/devices && node code/src/index.js config/devices.yaml > config/devices.xml
     cp parts/devices/config/devices.xml parts/agent/config
 
@@ -16,5 +16,6 @@ up:
 down:
     docker-compose down
 
-device:
-    docker-compose run device
+# run device simulator
+simulator:
+    docker-compose run simulator
