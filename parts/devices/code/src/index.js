@@ -94,23 +94,23 @@ function translate(ytree) {
     return ytree.map(el => translate(el))
   } else if (typeof ytree === 'object') {
     const obj = {}
-    const attrs = {}
+    const attributes = {}
     const elements = {}
     const keys = Object.keys(ytree)
     for (const key of keys) {
       const el = ytree[key]
       if (attributesSet.has(key)) {
-        attrs[key] = el
+        attributes[key] = el
       } else if (valuesSet.has(key)) {
         obj._text = el
       } else if (hiddenSet.has(key)) {
-        //
+        // ignore
       } else {
         const element = translate(el)
         elements[capitalize(key)] = element
       }
     }
-    return { _attributes: attrs, ...elements, ...obj }
+    return { _attributes: attributes, ...elements, ...obj }
   } else {
     return null
   }
