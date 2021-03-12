@@ -43,14 +43,14 @@ digraph "ladder99-adapter" {
   Broker2 -> Adapter2 [ label="JSON /    \nMQTT 1883           " ];
   Adapter1 -> DiodeSender [ label="SHDR /   \nTCP 7878      " ];
   Adapter2 -> Agent [ label="SHDR /   \nTCP 7878      " ];
-  Device1Yaml -> Device1Js;
+  Device1Yaml -> Device1Js [ label="generates" ];
   Device1Js -> Adapter1 [ label="used by" ];
-  Device2Yaml -> Device2Js;
-  Device2Js -> Adapter2 [ ];
+  Device2Yaml -> Device2Js [ label="generates" ];
+  Device2Js -> Adapter2 [ label="used by" ];
   Device1Yaml -> DevicesXml [ label="generates" ];
   Device2Yaml -> DevicesXml [ label="generates" ];
   DiodeSender -> DiodeReceiver [ label="UDP    " ];
-  DiodeReceiver -> Agent [ label="SHDR /   \nTCP  " ];
+  DiodeReceiver -> Agent [ label="SHDR /    \nTCP 7878        " ];
   // Adapter -> Agent [ label="SHDR/\nTCP 7878" ];
   Agent -> Application [ dir=both; label="XML /\nHTTP 5000" ];
   DevicesXml -> Agent [ label="used by" ];
@@ -69,4 +69,5 @@ digraph "ladder99-adapter" {
   // { rank=same; Adapter1 Adapter2 DevicesXml };
   // { rank=same; DiodeSender DiodeReceiver Agent Application Database Visualizer };
   { rank=same; DiodeSender DiodeReceiver Agent Application Database Visualizer };
+  { rank=same; Adapter1 Adapter2 Cloud Admin };
 }
