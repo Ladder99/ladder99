@@ -7,8 +7,8 @@ help:
 
 # convert device.yamls to devices.xml
 devices:
-    cd parts/devices && node code/src/index.js config/*.yaml | tee config/devices.xml
-    cp parts/devices/config/devices.xml parts/agent/config
+    cd parts/devices && node code/src/index.js input/*.yaml | tee output/devices.xml
+    cp parts/devices/output/devices.xml parts/agent/config
 
 # start containers
 up:

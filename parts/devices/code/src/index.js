@@ -5,7 +5,7 @@ const fs = require('fs') // node lib
 const yaml = require('js-yaml') // https://github.com/nodeca/js-yaml
 const convert = require('xml-js') // https://github.com/nashwaan/xml-js
 
-const sourcefiles = process.argv.slice(2) // eg ['config/device-ccs-pa.yaml']
+const sourcefiles = process.argv.slice(2) // eg ['input/device-ccs-pa.yaml']
 
 // treat these yaml elements as attributes
 const attributes = `
@@ -23,7 +23,7 @@ subType
 `
 const attributesSet = new Set(attributes.trim().split('\n'))
 
-// enclose these yaml elements
+// enclose these yaml elements as contents
 const values = `
 text
 source
@@ -38,13 +38,13 @@ javascript
 `
 const hiddenSet = new Set(hidden.trim().split('\n'))
 
-// get yaml devices
+// get devices from yaml files
 const devices = []
 for (const sourcefile of sourcefiles) {
-  // read yaml
+  // read yaml string
   const ystr = fs.readFileSync(sourcefile, 'utf8')
 
-  // convert yaml to js tree
+  // convert to yaml tree
   const ytree = yaml.load(ystr)
 
   // walk yaml tree and translate elements to xml tree recursively
@@ -86,11 +86,11 @@ const xdoc = {
   ],
 }
 
-// convert xml tree to string
+// convert xml tree to string and output
 const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
 console.log(xstr)
 
-// helpers
+// helper fns
 
 // translate yaml tree to xml tree recursively
 function translate(ytree) {

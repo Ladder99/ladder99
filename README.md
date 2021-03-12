@@ -51,7 +51,7 @@ The complete pipeline - the X's are exchanges (input ports) - the green X is an 
 
 ## Installation
 
-Install **just**, which is a task runner
+Install [just](https://github.com/casey/just), which is a task runner
 
     brew install just
 
