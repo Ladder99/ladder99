@@ -19,7 +19,10 @@ digraph "ladder99-adapter" {
   Broker2 [ label="MQTT Broker 2\n(Mosquitto)" ];
   Adapter1 [ fillcolor=white; label="MTConnect\nAdapter 1\n(NodeJS)" ];
   Adapter2 [ fillcolor=white; label="MTConnect\nAdapter 2\n(NodeJS)" ];
-  DevicesYaml [ label="devices.yaml" ];
+  Device1Yaml [ label="device1.yaml" ];
+  Device1Js [ label="device1.js" ];
+  Device2Yaml [ label="device2.yaml" ];
+  Device2Js [ label="device2.js" ];
   DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
   DiodeReceiver [ label="Diode Receiver\n(Java+RabbitMQ)" ];
   Agent [ fillcolor=white; label="MTConnect\nAgent\n(C++/cppagent)" ];
@@ -40,9 +43,12 @@ digraph "ladder99-adapter" {
   Broker2 -> Adapter2 [ label="JSON /    \nMQTT 1883           " ];
   Adapter1 -> DiodeSender [ label="SHDR /   \nTCP 7878      " ];
   Adapter2 -> Agent [ label="SHDR /   \nTCP 7878      " ];
-  DevicesYaml -> Adapter1 [ label="used by" ];
-  DevicesYaml -> Adapter2 [ ];
-  DevicesYaml -> DevicesXml [ label="generates" ];
+  Device1Yaml -> Device1Js;
+  Device1Js -> Adapter1 [ label="used by" ];
+  Device2Yaml -> Device2Js;
+  Device2Js -> Adapter2 [ ];
+  Device1Yaml -> DevicesXml [ label="generates" ];
+  Device2Yaml -> DevicesXml [ label="generates" ];
   DiodeSender -> DiodeReceiver [ label="UDP    " ];
   DiodeReceiver -> Agent [ label="SHDR /   \nTCP  " ];
   // Adapter -> Agent [ label="SHDR/\nTCP 7878" ];
@@ -56,10 +62,11 @@ digraph "ladder99-adapter" {
   // LOI -> Operator;
 
   // rank
-  { rank=same; OldMachine NewMachine };
-  { rank=same; Broker1 Broker2 DevicesYaml };
-  { rank=same; DevicesYaml DevicesXml };
+  // { rank=same; OldMachine NewMachine };
+  // { rank=same; Broker1 Broker2 Device1Yaml };
+  // { rank=same; Device1Yaml DevicesXml };
   // { rank=same; PLC4X Broker Adapter DiodeSender DiodeReceiver Agent Application Database Visualizer };
-  { rank=same; Adapter1 Adapter2 DevicesXml };
+  // { rank=same; Adapter1 Adapter2 DevicesXml };
+  // { rank=same; DiodeSender DiodeReceiver Agent Application Database Visualizer };
   { rank=same; DiodeSender DiodeReceiver Agent Application Database Visualizer };
 }
