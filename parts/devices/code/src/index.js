@@ -40,7 +40,7 @@ for (const sourcefile of sourcefiles) {
   const ydoc = yaml.load(ystr)
 
   // walk yaml tree and translate elements to xml tree recursively
-  const device = translate(ydoc['device'])
+  const device = translate(ydoc['devices'])
 
   devices.push(device)
 }
