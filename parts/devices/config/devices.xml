@@ -14,11 +14,8 @@
         <Controller id="controller" nativeName="plc">
           <Description>Electronic board set responsible for coordinating all machine function.</Description>
           <DataItems>
-            <DataItem id="state" category="EVENT" type="EXECUTION">
-              <Docs/>
-              <Javascript/>execution.lua
-            </DataItem>
-            <DataItem id="wait_state" category="EVENT" type="WAIT_STATE">wait_state.lua</DataItem>
+            <DataItem id="state" category="EVENT" type="EXECUTION"/>
+            <DataItem id="wait_state" category="EVENT" type="WAIT_STATE"/>
             <DataItem id="program" category="EVENT" type="EXECUTION"/>
             <DataItem id="step" category="EVENT" type="EXECUTION"/>
           </DataItems>

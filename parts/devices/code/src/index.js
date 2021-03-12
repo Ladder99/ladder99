@@ -31,7 +31,12 @@ source
 const valuesSet = new Set(values.trim().split('\n'))
 
 // hide these yaml elements
-const hiddenSet = new Set('events'.split(','))
+const hidden = `
+events
+docs
+javascript
+`
+const hiddenSet = new Set(hidden.trim().split('\n'))
 
 // get yaml devices
 const devices = []
