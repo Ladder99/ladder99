@@ -83,13 +83,19 @@ function getDevices(sourcefiles) {
 }
 
 function main(sourcefiles) {
-  // get devices and attach to xml tree
-  const devices = getDevices(sourcefiles)
-  xdoc.MTConnectDevices[0].Devices.Device = devices
+  try {
+    // get devices and attach to xml tree
+    const devices = getDevices(sourcefiles)
+    xdoc.MTConnectDevices[0].Devices.Device = devices
 
-  // convert xml tree to string and output
-  const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
-  console.log(xstr)
+    // convert xml tree to string and output
+    const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
+    console.log(xstr)
+    return 0
+  } catch (e) {
+    console.error(e)
+    return 1
+  }
 }
 
 // helper fns
