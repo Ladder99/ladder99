@@ -58,9 +58,9 @@ Install **just**, which is a task runner
 
 ## Developing
 
-Edit `parts/elevator/config/devices.yaml`, then generate the corresponding xml file and copy it to parts/agent/config with -
+Edit `parts/devices/config/devices.yaml`, then generate the corresponding xml file and copy it to parts/agent/config with -
 
-    just make
+    just devices
 
 
 ## Usage
