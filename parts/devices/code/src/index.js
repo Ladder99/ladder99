@@ -40,13 +40,13 @@ for (const sourcefile of sourcefiles) {
   const ystr = fs.readFileSync(sourcefile, 'utf8')
 
   // convert yaml to js tree
-  const ydoc = yaml.load(ystr)
+  const ytree = yaml.load(ystr)
 
   // walk yaml tree and translate elements to xml tree recursively
-  const x = translate(ydoc)
+  const xtree = translate(ytree)
 
   // extract the device and add to list
-  const xdevice = x.Device[0]
+  const xdevice = xtree.Device[0]
   devices.push(xdevice)
 }
 
