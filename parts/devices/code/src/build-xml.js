@@ -1,7 +1,5 @@
-// translate yaml device files to devices.xml
+// translate device.yaml files to devices.xml
 
-const fs = require('fs') // node lib
-const yaml = require('js-yaml') // https://github.com/nodeca/js-yaml
 const convert = require('xml-js') // https://github.com/nashwaan/xml-js
 
 // define xml document root
@@ -62,19 +60,12 @@ docs
 javascript
 `)
 
-// get devices from yaml files
-function getDevices(sourcefiles) {
+// get devices from yaml trees
+function getDevices(ytrees) {
   const devices = []
-  for (const sourcefile of sourcefiles) {
-    // read yaml string
-    const ystr = fs.readFileSync(sourcefile, 'utf8')
-
-    // convert to yaml tree
-    const ytree = yaml.load(ystr)
-
+  for (const { ytree } of ytrees) {
     // walk yaml tree and translate elements to xml tree recursively
     const xtree = translate(ytree)
-
     // extract the device and add to list
     const xdevice = xtree.Device[0]
     devices.push(xdevice)
