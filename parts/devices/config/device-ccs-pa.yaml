@@ -24,7 +24,10 @@ device:
         type: EXECUTION
         # source: execution.lua
         docs: |
-          EXECUTION	The execution status of the Controller. READY, ACTIVE, INTERRUPTED, FEED_HOLD, STOPPED, OPTIONAL_STOP, PROGRAM_STOPPED, or PROGRAM_COMPLETED
+          EXECUTION
+          The execution status of the Controller. 
+          READY, ACTIVE, INTERRUPTED, FEED_HOLD, STOPPED, OPTIONAL_STOP, 
+          PROGRAM_STOPPED, or PROGRAM_COMPLETED
           http://mtcup.org/wiki/Data_Item_Types:_EVENT
         # <Source>status.state 400 ACTIVE; 200 READY; 50,100,250,300 WAIT</Source>
         #. need more succinct code here - pattern matching lib?
@@ -33,7 +36,7 @@ device:
             const states = {
               50: 'WAIT',
               100: 'WAIT',
-              200: 'READY', // not STOPPED?
+              200: 'PROGRAM_STOPPED',
               250: 'WAIT',
               300: 'WAIT',
               400: 'ACTIVE',
