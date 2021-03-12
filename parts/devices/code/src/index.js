@@ -1,4 +1,3 @@
-// elevator
 // translate yaml device files to devices.xml
 
 const fs = require('fs') // node lib
@@ -8,7 +7,7 @@ const convert = require('xml-js') // https://github.com/nashwaan/xml-js
 const sourcefiles = process.argv.slice(2) // eg ['input/device-ccs-pa.yaml']
 
 // treat these yaml elements as attributes
-const attributes = `
+const attributesSet = getSet(`
 id
 name
 nativeName
@@ -20,23 +19,20 @@ serialNumber
 category
 type
 subType
-`
-const attributesSet = new Set(attributes.trim().split('\n'))
+`)
 
 // enclose these yaml elements as contents
-const values = `
+const valuesSet = getSet(`
 text
 source
-`
-const valuesSet = new Set(values.trim().split('\n'))
+`)
 
 // hide these yaml elements
-const hidden = `
+const hiddenSet = getSet(`
 events
 docs
 javascript
-`
-const hiddenSet = new Set(hidden.trim().split('\n'))
+`)
 
 // get devices from yaml files
 const devices = []
@@ -122,4 +118,8 @@ function translate(ytree) {
 
 function capitalize(str) {
   return str.slice(0, 1).toUpperCase() + str.slice(1)
+}
+
+function getSet(str) {
+  return new Set(str.trim().split('\n'))
 }
