@@ -1,5 +1,5 @@
-// device simulator
-// publishes sample messages to mqtt broker
+// simulator
+// simulates a device and publishes sample messages to mqtt broker
 
 import mqtt from 'mqtt'
 import messages from './messages.js'
@@ -8,7 +8,7 @@ const mqttHost = process.env.MQTT_HOST || 'localhost'
 const mqttPort = Number(process.env.MQTT_PORT || 1883)
 const mqttConfig = { host: mqttHost, port: mqttPort }
 
-console.log(`Device`)
+console.log(`Simulator`)
 console.log(`Simulates a device sending MQTT messages.`)
 console.log(`------------------------------------------------------------`)
 

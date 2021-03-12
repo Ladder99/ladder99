@@ -1,9 +1,9 @@
 version: '3.7'
 
 services:
-  device:
-    container_name: device
-    build: parts/device
+  simulator:
+    container_name: simulator
+    build: parts/simulator
     environment:
       - MQTT_HOST=broker
       - MQTT_PORT=1883
