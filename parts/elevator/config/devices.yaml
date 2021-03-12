@@ -11,6 +11,8 @@ devices:
       category: EVENT
       type: EXECUTION
       source: execution.lua
+      # <Source>status.state 400 ACTIVE; status.code 200 READY; status.state 50,100,250,300 WAIT</Source>
+      # source:
     wait_state: &wait_state
       id: wait_state
       category: EVENT

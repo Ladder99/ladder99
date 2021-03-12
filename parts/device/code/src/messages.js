@@ -19,15 +19,11 @@ const messages = [
     json: [
       { address: '%Q0.0', value: 1 },
       { address: '%Q0.1', value: 1 },
-      { address: '%Q0.2', value: 1 },
-      { address: '%Q0.3', value: 1 },
-      { address: '%Q0.4', value: 1 },
-      { address: '%Q0.5', value: 1 },
     ],
   },
   {
     topic: 'l99/ccs/evt/read',
-    json: { address: '%Q0.6', value: 1 },
+    json: { address: '%Q0.2', value: 1 },
   },
   {
     topic: 'l99/ccs/evt/status',

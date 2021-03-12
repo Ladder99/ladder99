@@ -11,3 +11,10 @@ make:
 # start containers
 up:
     docker-compose down && docker-compose up --build
+
+# stop containers
+down:
+    docker-compose down
+
+device:
+    docker-compose run device
