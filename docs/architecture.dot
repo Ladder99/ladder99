@@ -44,7 +44,7 @@ digraph "ladder99-adapter" {
   Broker1 -> Adapter1 [ label="JSON /    \nMQTT 1883           " ];
   Broker2 -> Adapter2 [ label="JSON /    \nMQTT 1883           " ];
   Adapter1 -> DiodeSender [ label="SHDR /   \nTCP 7878      " ];
-  Adapter2 -> Agent [ label="SHDR /   \nTCP 7878      " ];
+  Adapter2 -> Agent [ label="SHDR /   \nTCP 7879      " ];
   Device1Sheet -> Device1Yaml [ label="feeds into" ];
   Device1Yaml -> Device1Js [ label="generates" ];
   Device1Js -> Adapter1 [ label="used by" ];
