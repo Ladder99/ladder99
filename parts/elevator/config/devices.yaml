@@ -5,7 +5,7 @@ devices:
       category: EVENT
       type: FIRMWARE
       subType: VERSION
-      source: l99/ccs/status+build_no
+      source: l99/ccs/evt/status+build_no
     state: &state
       id: state
       category: EVENT
