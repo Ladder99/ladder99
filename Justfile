@@ -17,10 +17,11 @@ getxml:
 # build device*.js files from device*.yaml files
 getjs:
     cd parts/devices && \
-    for filename in input/*.yaml; do \
-        node code/src/getjs.js "$filename" | tee "output/$(basename filename .yaml).js" \
+    for filename in input/*.yaml; \
+    do \
+        node code/src/getjs.js "$filename" | tee "output/$(basename $filename .yaml).js" ; \
     done
-    cp parts/devices/output/*.js parts/adapter/plugins \
+    cp parts/devices/output/*.js parts/adapter/plugins
 
 # start containers
 up:
