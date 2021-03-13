@@ -1,18 +1,18 @@
-// get extractor for given topic
-export function getExtractor(topic) {
-  return extract // same for all topics
+// get getData for given mqtt topic
+export function getGetData(topic) {
+  return getData // same for all topics
 }
 // get payload data from payload buffer/array
-function extract(payloadBuffer) {
-  return JSON.parse(payloadBuffer.toString())
+function getData(buffer) {
+  return JSON.parse(buffer.toString())
 }
 
-// get transform for given topic
-export function getTransformer(topic) {
-  return transformRead
+// get shdr transform for given topic
+export function getGetShdr(topic) {
+  return getShdr
 }
 // get shdr for given payload data
-function transformRead(payloadData) {}
+function getShdr(payloadData) {}
 
 export function getState(lookup) {
   const topic = 'l99/ccs/evt/status'
