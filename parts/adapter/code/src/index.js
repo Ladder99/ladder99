@@ -7,7 +7,10 @@ import net from 'net'
 import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import transforms from './transforms.js'
 
-process.
+const pluginfile = process.argv[2] // eg './plugins/device-ccs-pa.js'
+
+// @ts-ignore
+const plugin = await import(pluginfile)
 
 const mqttUrl = process.env.MQTT_URL || 'localhost:1883'
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)

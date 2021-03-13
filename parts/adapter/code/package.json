@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "MTConnect Adapter",
   "type": "module",
+  "target": "es2017",
   "scripts": {
     "start": "node src/index.js"
   },
