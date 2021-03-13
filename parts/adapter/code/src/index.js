@@ -40,16 +40,16 @@ mqtt.on('connect', function onConnect() {
 })
 
 // handle mqtt message
-mqtt.on('message', function onMessage(topic, payload) {
+mqtt.on('message', function onMessage(topic, payloadBuffer) {
   console.log(`MQTT received message on topic ${topic}`)
   // get extractor based on topic - might not be a string
-  const extractor = plugin.extractors[topic]
-  if (extractor) {
-    const json = extractor(payload)
-    const transformFn = transforms[topic]
-    if (transformFn) {
+  const extract = plugin.getExtract(topic)
+  if (extract) {
+    const payloadData = extract(payloadBuffer) // eg parse json string array
+    const transform = plugin.getTransform(topic)
+    if (transform) {
       console.log(`Transforming JSON message to SHDR...`)
-      const shdr = transformFn(json) // json to shdr
+      const shdr = transform(payloadData) // data to shdr
       console.log(shdr)
       sendToOutput(shdr)
     } else {

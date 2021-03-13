@@ -1,11 +1,18 @@
-function extractor(msg) {
-  return JSON.parse(msg.payload.toString())
+// get extractor for given topic
+function getExtract(topic) {
+  return extract // same for all topics
+}
+// get payload data from payload buffer/array
+function extract(payloadBuffer) {
+  return JSON.parse(payloadBuffer.toString())
 }
 
-const extractors = {
-  'l99/ccs/evt/read': extractor,
-  'l99/ccs/evt/status': extractor,
+// get transform for given topic
+function getTransform(topic) {
+  return transformRead
 }
+// get shdr for given payload data
+function transformRead(payloadData) {}
 
 export function getState(lookup) {
   const topic = 'l99/ccs/evt/status'
