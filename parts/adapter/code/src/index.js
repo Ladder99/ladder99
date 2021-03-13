@@ -40,21 +40,23 @@ mqtt.on('connect', function onConnect() {
 })
 
 // handle mqtt message
-mqtt.on('message', function onMessage(topic, payloadBuffer) {
-  //. get extractor based on topic - might not be a string
-  const message = payloadBuffer.toString()
-  console.log(
-    `MQTT received message on topic ${topic}: ${message.slice(0, 20)}...`
-  )
-  const json = JSON.parse(message)
-  const transformFn = transforms[topic]
-  if (transformFn) {
-    console.log(`Transforming JSON message to SHDR...`)
-    const shdr = transformFn(json) // json to shdr
-    console.log(shdr)
-    sendToOutput(shdr)
+mqtt.on('message', function onMessage(topic, payload) {
+  console.log(`MQTT received message on topic ${topic}`)
+  // get extractor based on topic - might not be a string
+  const extractor = plugin.extractors[topic]
+  if (extractor) {
+    const json = extractor(payload)
+    const transformFn = transforms[topic]
+    if (transformFn) {
+      console.log(`Transforming JSON message to SHDR...`)
+      const shdr = transformFn(json) // json to shdr
+      console.log(shdr)
+      sendToOutput(shdr)
+    } else {
+      console.error(`No transformer for topic ${topic}.`)
+    }
   } else {
-    console.error(`No transformer for topic ${topic}.`)
+    console.error(`No extractor for topic ${topic}.`)
   }
 })
 
