@@ -4,6 +4,8 @@ const fs = require('fs') // node lib filesys
 const yaml = require('js-yaml') // https://github.com/nodeca/js-yaml
 const convert = require('xml-js') // https://github.com/nashwaan/xml-js
 
+const sourcefiles = process.argv.slice(2) // eg ['input/device-foo.yaml']
+
 // define xml document root
 const xdoc = {
   _declaration: {
@@ -64,9 +66,8 @@ javascript
 `)
 
 function main() {
-  const ytrees = getYtrees()
   // get devices and attach to xml tree
-  const devices = getDevices(ytrees)
+  const devices = getDevices()
   xdoc.MTConnectDevices[0].Devices.Device = devices
   // convert xml tree to string and output
   const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
@@ -76,9 +77,13 @@ function main() {
 // helper fns
 
 // get devices from yaml trees
-function getDevices(ytrees) {
+function getDevices() {
   const devices = []
-  for (const { ytree } of ytrees) {
+  for (const sourcefile of sourcefiles) {
+    // read yaml string
+    const ystr = fs.readFileSync(sourcefile, 'utf8')
+    // convert to yaml tree
+    const ytree = yaml.load(ystr)
     // walk yaml tree and translate elements to xml tree recursively
     const xtree = translate(ytree)
     // extract the device and add to list
