@@ -4,3 +4,4 @@ node_modules
 .gradle
 *.log
 *.db
+.firebase

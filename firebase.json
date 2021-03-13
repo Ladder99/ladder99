@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "sphinx/build/html",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
