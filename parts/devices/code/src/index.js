@@ -15,11 +15,8 @@ function main() {
     const ytree = yaml.load(ystr)
     ytrees.push({ sourcefile, ytree })
   }
-
-  if (buildXml(ytrees)) {
-    if (buildJs(ytrees)) {
-      process.exit(0)
-    }
+  if (buildXml(ytrees) && buildJs(ytrees)) {
+    process.exit(0)
   }
   process.exit(1)
 }

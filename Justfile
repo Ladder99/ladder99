@@ -5,10 +5,18 @@
 help:
     @just --list
 
-# convert device.yamls to devices.xml
-devices:
-    cd parts/devices && node code/src/index.js input/*.yaml | tee output/devices.xml
+# process device.yaml files to devices.xml and device*.js files
+devices: getxml getjs
+
+# build devices.xml from device.yaml files
+getxml:
+    cd parts/devices && node code/src/index.js input/*.yaml output && \
     cp parts/devices/output/devices.xml parts/agent/config
+
+# build device*.js files from device.yaml files
+getjs:
+    cd parts/devices && node code/src/getjs.js input/*.yaml output && \
+    cp parts/devices/output/*.js parts/adapter/plugins
 
 # start containers
 up:
