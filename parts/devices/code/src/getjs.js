@@ -1,6 +1,10 @@
 // build js from code entries in the yaml trees
 
-function main(ytrees) {
+const lib = require('./lib.js')
+
+const sourcefiles = process.argv.slice(2) // eg ['input/device-foo.yaml']
+
+function main() {
   for (const { sourcefile, ytree } of ytrees) {
     // console.log(ytree)
     // console.dir(ytree, { depth: null })

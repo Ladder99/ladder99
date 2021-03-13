@@ -5,21 +5,22 @@
 help:
     @just --list
 
-# process device.yaml files to devices.xml and device*.js files
-devices:
-    cd parts/devices && node code/src/getxml.js input/*.yaml output && \
-    cp parts/devices/output/devices.xml parts/agent/config && \
-    cp parts/devices/output/*.js parts/adapter/plugins
+# build devices.xml and device*.js files from device*.yaml files
+devices: getxml getjs
 
-# build devices.xml from device.yaml files
+# build devices.xml from device*.yaml files
 getxml:
-    cd parts/devices && node code/src/getxml.js input/*.yaml output && \
+    cd parts/devices && \
+    node code/src/getxml.js input/*.yaml | tee output/devices.xml && \
     cp parts/devices/output/devices.xml parts/agent/config
 
-# build device*.js files from device.yaml files
+# build device*.js files from device*.yaml files
 getjs:
-    cd parts/devices && node code/src/getjs.js input/*.yaml output && \
-    cp parts/devices/output/*.js parts/adapter/plugins
+    cd parts/devices && \
+    for filename in input/*.yaml; do \
+        node code/src/getjs.js filename | tee output/${basename filename .yaml}.js \
+    done
+    cp parts/devices/output/*.js parts/adapter/plugins \
 
 # start containers
 up:
