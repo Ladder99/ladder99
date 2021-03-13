@@ -22,7 +22,7 @@ getjs:
         node code/src/getjs.js "$filename" | \
           tee "output/$(basename $filename .yaml).js" ; \
     done
-    cp parts/devices/output/*.js parts/adapter/plugins
+    cp parts/devices/output/*.js parts/adapter/code/src/plugins
 
 # start containers
 up:
