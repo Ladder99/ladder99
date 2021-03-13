@@ -1,5 +1,7 @@
 // translate device.yaml files to devices.xml
 
+const fs = require('fs') // node lib filesys
+const yaml = require('js-yaml') // https://github.com/nodeca/js-yaml
 const convert = require('xml-js') // https://github.com/nashwaan/xml-js
 
 // define xml document root
@@ -17,6 +19,7 @@ const xdoc = {
           'urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd',
       },
       Header: {
+        //. values?
         _attributes: {
           creationTime: '2021-02-23T18:44:40+00:00',
           sender: 'localhost',
@@ -60,19 +63,14 @@ docs
 javascript
 `)
 
-function main(sourcefiles) {
-  try {
-    // get devices and attach to xml tree
-    const devices = getDevices(sourcefiles)
-    xdoc.MTConnectDevices[0].Devices.Device = devices
-    // convert xml tree to string and output
-    const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
-    console.log(xstr)
-    return true
-  } catch (e) {
-    console.error(e)
-    return false
-  }
+function main() {
+  const ytrees = getYtrees()
+  // get devices and attach to xml tree
+  const devices = getDevices(ytrees)
+  xdoc.MTConnectDevices[0].Devices.Device = devices
+  // convert xml tree to string and output
+  const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
+  console.log(xstr)
 }
 
 // helper fns
@@ -122,8 +120,8 @@ function capitalize(str) {
   return str.slice(0, 1).toUpperCase() + str.slice(1)
 }
 
-function getSet(str) {
-  return new Set(str.trim().split('\n'))
+function getSet(lines) {
+  return new Set(lines.trim().split('\n'))
 }
 
-module.exports = main
+main()

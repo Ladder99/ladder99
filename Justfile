@@ -6,11 +6,14 @@ help:
     @just --list
 
 # process device.yaml files to devices.xml and device*.js files
-devices: getxml getjs
+devices:
+    cd parts/devices && node code/src/getxml.js input/*.yaml output && \
+    cp parts/devices/output/devices.xml parts/agent/config && \
+    cp parts/devices/output/*.js parts/adapter/plugins
 
 # build devices.xml from device.yaml files
 getxml:
-    cd parts/devices && node code/src/index.js input/*.yaml output && \
+    cd parts/devices && node code/src/getxml.js input/*.yaml output && \
     cp parts/devices/output/devices.xml parts/agent/config
 
 # build device*.js files from device.yaml files

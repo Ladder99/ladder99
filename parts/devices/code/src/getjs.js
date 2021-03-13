@@ -33,4 +33,4 @@ function getCode(ytree) {
   }
 }
 
-module.exports = main
+main()
