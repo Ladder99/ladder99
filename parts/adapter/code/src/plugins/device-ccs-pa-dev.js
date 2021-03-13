@@ -1,5 +1,5 @@
 // get extractor for given topic
-function getExtract(topic) {
+export function getExtractor(topic) {
   return extract // same for all topics
 }
 // get payload data from payload buffer/array
@@ -8,7 +8,7 @@ function extract(payloadBuffer) {
 }
 
 // get transform for given topic
-function getTransform(topic) {
+export function getTransformer(topic) {
   return transformRead
 }
 // get shdr for given payload data

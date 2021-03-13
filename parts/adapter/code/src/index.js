@@ -43,14 +43,17 @@ mqtt.on('connect', function onConnect() {
 mqtt.on('message', function onMessage(topic, payloadBuffer) {
   console.log(`MQTT received message on topic ${topic}`)
   // get extractor based on topic - might not be a string
-  const extract = plugin.getExtract(topic)
+  const extract = plugin.getExtractor(topic)
   if (extract) {
     const payloadData = extract(payloadBuffer) // eg parse json string array
-    const transform = plugin.getTransform(topic)
+    //. decompose data, add each item to item cache
+    const transform = plugin.getTransformer(topic)
     if (transform) {
       console.log(`Transforming JSON message to SHDR...`)
+      //. don't transform data directly - pass it the item cache
       const shdr = transform(payloadData) // data to shdr
       console.log(shdr)
+      //. add shdr to shdr cache
       sendToOutput(shdr)
     } else {
       console.error(`No transformer for topic ${topic}.`)
