@@ -18,7 +18,7 @@ getxml:
 getjs:
     cd parts/devices && \
     for filename in input/*.yaml; do \
-        node code/src/getjs.js filename | tee output/${basename filename .yaml}.js \
+        node code/src/getjs.js "$filename" | tee "output/$(basename filename .yaml).js" \
     done
     cp parts/devices/output/*.js parts/adapter/plugins \
 

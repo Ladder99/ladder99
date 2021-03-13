@@ -10,33 +10,39 @@ function main() {
   const ystr = fs.readFileSync(sourcefile, 'utf8')
   // convert to yaml tree
   const ytree = yaml.load(ystr)
-  console.dir(ytree, { depth: null })
-  // const s = flatten(arr).join('')
-  // extract js
-  // const js = getCode(ytree)
-  // console.log(js)
+  // console.dir(ytree, { depth: null })
+  // console.log('---')
+  // let arr = []
+  // getCode(ytree, arr)
+  // const js = arr.join('\n')
+  const dict = {}
+  getCode(ytree, dict)
+  const js = Object.values(dict).join('\n')
+  console.log(js)
 }
 
-// // find all code entries and extract as string
-// function getCode(ytree) {
-//   if (Array.isArray(ytree)) {
-//     return ytree.map(el => getCode(el))
-//   } else if (typeof ytree === 'object') {
-//     const elements = []
-//     const keys = Object.keys(ytree)
-//     for (const key of keys) {
-//       const el = ytree[key]
-//       if (key === 'javascript') {
-//         elements.push({ key, el })
-//       } else {
-//         const element = getCode(el)
-//         elements.push(element)
-//       }
-//     }
-//     return elements
-//   } else {
-//     return ytree
-//   }
-// }
+// find all code entries and extract as string
+function getCode(ytree, dict) {
+  if (Array.isArray(ytree)) {
+    for (const el of ytree) {
+      getCode(el, dict)
+    }
+  } else if (typeof ytree === 'object') {
+    const keys = Object.keys(ytree)
+    let id
+    for (const key of keys) {
+      const el = ytree[key]
+      if (key === 'id') {
+        id = key
+      } else if (key === 'javascript') {
+        dict[id] = el
+      } else {
+        getCode(el, dict)
+      }
+    }
+  } else {
+    // ignore atoms
+  }
+}
 
 main()
