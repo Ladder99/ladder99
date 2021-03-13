@@ -1,18 +1,18 @@
 // get getData for given mqtt topic
 export function getGetData(topic) {
-  return getData // same for all topics
+  return getData // same for all topics for this device
 }
 // get payload data from payload buffer/array
 function getData(buffer) {
   return JSON.parse(buffer.toString())
 }
 
-// get shdr transform for given topic
-export function getGetShdr(topic) {
-  return getShdr
+// get output transform for given topic
+export function getGetOutput(topic) {
+  return getOutput
 }
-// get shdr for given payload data
-function getShdr(payloadData) {}
+// get output for given item and cache
+function getOutput(cache, item) {}
 
 export function getState(lookup) {
   const topic = 'l99/ccs/evt/status'
