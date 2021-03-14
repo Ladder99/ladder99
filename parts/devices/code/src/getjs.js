@@ -3,7 +3,7 @@
 const fs = require('fs') // node lib filesys
 const yaml = require('js-yaml') // https://github.com/nodeca/js-yaml
 
-const sourcefile = process.argv[2] // eg 'input/device-foo.yaml'
+const sourcefile = process.argv[2] // eg 'input/foo/device.yaml'
 
 function main() {
   // read yaml string and convert to yaml tree
