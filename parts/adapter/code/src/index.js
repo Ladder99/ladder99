@@ -1,21 +1,16 @@
 // adapter
 // subscribes to different mqtt topics,
-// passes json messages to topic handler fns to get shdr string,
-// then passes shdr on to the mtconnect agent via tcp.
+// passes messages to topic handler fns to get shdr output string,
+// then passes output on to the mtconnect agent via tcp.
 
 import net from 'net' // node lib for tcp
 import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
-// get device plugin keys, eg ['ccs-pa', 'foo']
 const deviceKeys = (process.env.DEVICE_PLUGINS || '').split(' ')
-
-// get mqtt input ports, eg ['mqtt://broker1:1883', 'mqtt://broker2:1883']
 const mqttUrls = (process.env.MQTT_URLS || 'localhost:1883').split(' ')
-
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)
 const outputHost = process.env.OUTPUT_HOST || 'localhost'
 
-// import plugins
 const plugins = {}
 for (const deviceKey of deviceKeys) {
   const path = './plugins/' + deviceKey + '/adapter-dev.js' //. -dev for now
@@ -36,7 +31,7 @@ process.on('SIGINT', shutdown)
 // const mqtts = []
 for (const mqttUrl of mqttUrls) {
   console.log(`MQTT connecting to broker on`, mqttUrl, `...`)
-  const mqtt = mqttlib.connect(mqttUrl) // returns an instance of mqtt Client
+  const mqtt = mqttlib.connect(mqttUrl) // returns instance of mqtt Client
   const clientId = mqtt.options.clientId
   console.log({ clientId })
 
