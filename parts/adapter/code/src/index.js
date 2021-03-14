@@ -6,13 +6,12 @@
 import net from 'net' // node lib for tcp
 import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
-// const folders = process.argv.slice(2) // eg ['./plugins/ccs-pa']
+// get device plugin keys, eg ['ccs-pa', 'foo']
 const deviceKeys = (process.env.DEVICE_PLUGINS || '').split(' ')
 
 // get mqtt input ports, eg ['mqtt://broker1:1883', 'mqtt://broker2:1883']
 const mqttUrls = (process.env.MQTT_URLS || 'localhost:1883').split(' ')
 
-// get tcp output port
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)
 const outputHost = process.env.OUTPUT_HOST || 'localhost'
 
@@ -34,12 +33,16 @@ console.log(`----------------------------------------------------------------`)
 console.log(`Hit ctrl-c to stop adapter.`)
 process.on('SIGINT', shutdown)
 
+// const mqtts = []
 for (const mqttUrl of mqttUrls) {
   console.log(`MQTT connecting to broker on`, mqttUrl, `...`)
   const mqtt = mqttlib.connect(mqttUrl) // returns an instance of mqtt Client
+  console.log(mqtt)
 
-  const key = 'ccs-pa' //. where get this?
-  const plugin = plugins[key]
+  // mqtts.push(mqtt)
+
+  // const key = 'ccs-pa' //. where get this?
+  // const plugin = plugins[key]
 
   // handle mqtt connection
   mqtt.on('connect', function onConnect(packet) {
