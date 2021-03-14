@@ -1,0 +1,129 @@
+version: '3.7'
+
+services:
+  simulator1:
+    container_name: simulator1
+    build: parts/simulator
+    environment:
+      - MQTT_HOST=broker1
+      - MQTT_PORT=1883
+    depends_on:
+      adapter:
+        condition: service_started
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
+  simulator2:
+    container_name: simulator2
+    build: parts/simulator
+    environment:
+      - MQTT_HOST=broker2
+      - MQTT_PORT=1884
+    depends_on:
+      adapter:
+        condition: service_started
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
+  broker1:
+    container_name: broker1
+    build: parts/broker
+    networks:
+      - ladder99
+    volumes:
+      - ./parts/broker/config1:/mosquitto/config
+      - ./parts/broker/data1:/mosquitto/data
+      - ./parts/broker/log1:/mosquitto/log
+    logging:
+      options:
+        max-size: '1m'
+
+  broker2:
+    container_name: broker2
+    build: parts/broker
+    networks:
+      - ladder99
+    volumes:
+      - ./parts/broker/config2:/mosquitto/config
+      - ./parts/broker/data2:/mosquitto/data
+      - ./parts/broker/log2:/mosquitto/log
+    logging:
+      options:
+        max-size: '1m'
+
+  adapter:
+    container_name: adapter
+    build: parts/adapter
+    environment:
+      # - MQTT_URL=mqtt://broker:1883
+      - OUTPUT_HOST=adapter
+      - OUTPUT_PORT=7878
+      # - OUTPUT_PORT=5673
+    depends_on:
+      broker:
+        condition: service_started
+    networks:
+      - ladder99
+    volumes:
+      - ./parts/adapter/config:/etc/mtconnect/adapter
+    logging:
+      options:
+        max-size: '1m'
+
+  # diode:
+  #   container_name: diode
+  #   build:
+  #     context: .
+  #     dockerfile: parts/diode/docker/Dockerfile
+  #   networks:
+  #     - ladder99
+  #   logging:
+  #     options:
+  #       max-size: '1m'
+
+  agent:
+    container_name: agent
+    build: parts/agent
+    networks:
+      - ladder99
+    ports:
+      - 5000:5000
+    depends_on:
+      adapter:
+        condition: service_started
+    volumes:
+      - ./parts/agent/config:/etc/mtconnect/agent-custom
+      - ./parts/agent/data:/var/lib/agent
+    logging:
+      options:
+        max-size: '1m'
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce
+    restart: always
+    logging:
+      driver: 'none'
+    networks:
+      - ladder99
+    ports:
+      - '9000:9000'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+
+volumes:
+  portainer_data:
+  telegraf_conf:
+
+networks:
+  ladder99:
+    name: ladder99

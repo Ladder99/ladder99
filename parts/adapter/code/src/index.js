@@ -9,6 +9,10 @@ import transforms from './transforms.js'
 
 const folders = process.argv.slice(2) // eg ['./plugins/ccs-pa']
 
+const mqttUrl = process.env.MQTT_URL || 'localhost:1883'
+const outputPort = Number(process.env.OUTPUT_PORT || 7878)
+const outputHost = process.env.OUTPUT_HOST || 'localhost'
+
 // import plugins
 const plugins = {}
 for (const folder of folders) {
@@ -18,10 +22,6 @@ for (const folder of folders) {
   plugins[key] = plugin
   // plugin.init(mqtt, adapter)
 }
-
-const mqttUrl = process.env.MQTT_URL || 'localhost:1883'
-const outputPort = Number(process.env.OUTPUT_PORT || 7878)
-const outputHost = process.env.OUTPUT_HOST || 'localhost'
 
 let tcpSocket
 

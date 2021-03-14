@@ -519,6 +519,7 @@ const messages = [
       },
     ],
   },
+
   {
     topic: 'l99/ccs/evt/status',
     json: {
@@ -533,6 +534,7 @@ const messages = [
       _ts: 1609809706196, // msec since 1970-01-01
     },
   },
+
   {
     topic: 'l99/ccs/evt/read',
     json: [
@@ -540,10 +542,12 @@ const messages = [
       { address: '%Q0.1', value: 1 },
     ],
   },
+
   {
     topic: 'l99/ccs/evt/read',
-    json: { address: '%Q0.2', value: 1 },
+    json: { address: '%I0.10', value: 1 }, // emerg stop
   },
+
   {
     topic: 'l99/ccs/evt/status',
     json: {
