@@ -4,6 +4,8 @@ const device = 'ccs-pa'
 const topicQuerySend = 'l99/ccs/cmd/query'
 const topicQueryResult = 'l99/ccs/evt/query'
 
+// initialize the client plugin.
+// queries the device for address space definitions.
 export function init(broker, adapter) {
   broker.subscribe(topicQueryResult, onQueryResult)
   broker.send(topicQuerySend, '{}')
@@ -16,6 +18,7 @@ export function init(broker, adapter) {
   }
 }
 
+// get unpack function
 // (can ignore topic as all messages from this device are the same)
 export function getUnpack(topic) {
   return function (msg) {
