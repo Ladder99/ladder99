@@ -3,14 +3,26 @@
 // passes json messages to topic handler fns to get shdr string,
 // then passes shdr on to the mtconnect agent via tcp.
 
-import net from 'net'
+import net from 'net' // node lib for tcp
 import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import transforms from './transforms.js'
 
-const pluginfile = process.argv[2] // eg './plugins/device-ccs-pa.js'
+// const pluginfile = process.argv[2] // eg './plugins/device-ccs-pa.js'
 
-// @ts-ignore
-const plugin = await import(pluginfile)
+// // @ts-ignore
+// const plugin = await import(pluginfile)
+
+const folders = process.argv.slice(2)
+
+// import plugins
+const plugins = {}
+for (const folder of folders) {
+  // @ts-ignore
+  const plugin = await import(folder + '/client.js')
+  const key = plugin.key // eg 'ccs-pa'
+  plugins[key] = plugin
+  plugin.init(mqtt, adapter)
+}
 
 const mqttUrl = process.env.MQTT_URL || 'localhost:1883'
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)
