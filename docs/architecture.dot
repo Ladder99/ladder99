@@ -19,10 +19,10 @@ digraph "ladder99-adapter" {
   Broker2 [ label="MQTT Broker 2\n(Mosquitto)" ];
   Adapter1 [ label="MTConnect\nAdapter 1\n(NodeJS)" ];
   Adapter2 [ label="MTConnect\nAdapter 2\n(NodeJS)" ];
-  Device1Sheet [ fillcolor=greenyellow; label="device1.gsheet" ];
+  Device1Sheet [ fillcolor=greenyellow; label="device1.sheet" ];
   Device1Yaml [ fillcolor=greenyellow; label="device1.yaml" ];
   Device1Js [ label="device1.js" ];
-  Device2Sheet [ fillcolor=greenyellow; label="device2.gsheet" ];
+  Device2Sheet [ fillcolor=greenyellow; label="device2.sheet" ];
   Device2Yaml [ fillcolor=greenyellow; label="device2.yaml" ];
   Device2Js [ label="device2.js" ];
   DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
@@ -56,7 +56,7 @@ digraph "ladder99-adapter" {
   DiodeSender -> DiodeReceiver [ label="UDP    " ];
   DiodeReceiver -> Agent [ label="SHDR /    \nTCP 7878        " ];
   // Adapter -> Agent [ label="SHDR/\nTCP 7878" ];
-  Agent -> Application [ dir=both; label="XML  /\nHTTP 5000          " ];
+  Agent -> Application [ dir=both; label="XML / \nHTTP 5000          " ];
   DevicesXml -> Agent [ label="used by" ];
   Application -> Database [ dir=both ];
   Database -> Visualizer [ dir=both ];
