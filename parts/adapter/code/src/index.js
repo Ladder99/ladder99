@@ -29,14 +29,14 @@ console.log(`----------------------------------------------------------------`)
 console.log(`Hit ctrl-c to stop adapter.`)
 process.on('SIGINT', shutdown)
 
-// const mqtts = []
+const mqtts = []
 for (const mqttUrl of mqttUrls) {
   console.log(`MQTT connecting to broker on`, mqttUrl, `...`)
   const mqtt = mqttlib.connect(mqttUrl) // returns instance of mqtt Client
+  mqtts.push(mqtt)
+
   // const clientId = mqtt.options.clientId
   // console.log({ clientId })
-
-  // mqtts.push(mqtt)
 
   // const key = 'ccs-pa' //. where get this?
   // const plugin = plugins[key]
@@ -45,8 +45,9 @@ for (const mqttUrl of mqttUrls) {
     console.log(`MQTT connected to broker on`, mqttUrl)
 
     //. first call plugin init fn - which plugin?
+    // plugin.init(mqtt, outputSocket) //?
 
-    //. subscribe to topics - what topics?
+    //. subscribe to topics - what topics? get from plugin
     // console.log(`MQTT subscribing to topics...`)
     // for (const topic of Object.keys(transforms)) {
     //   console.log(`MQTT subscribing to topic ${topic}...`)
@@ -115,7 +116,9 @@ function shutdown() {
     console.log(`TCP closing socket...`)
     outputSocket.end()
   }
-  // console.log(`MQTT closing connection...`)
-  // mqtt.end()
+  console.log(`MQTT closing connections...`)
+  for (const mqtt of mqtts) {
+    mqtt.end()
+  }
   process.exit()
 }
