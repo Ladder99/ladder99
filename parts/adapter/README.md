@@ -1,2 +1,3 @@
-ladder99-adapter
+# Adapter
 
+plugins folder is currently copied from the parts/devices/output folder
