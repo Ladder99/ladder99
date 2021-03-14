@@ -9,8 +9,7 @@ import transforms from './transforms.js'
 
 const folders = process.argv.slice(2) // eg ['./plugins/ccs-pa']
 
-// const mqttUrl = process.env.MQTT_URL || 'localhost:1883'
-const mqttUrls = process.env.MQTT_URLS || ['localhost:1883']
+const mqttUrls = (process.env.MQTT_URLS || 'localhost:1883').split(' ')
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)
 const outputHost = process.env.OUTPUT_HOST || 'localhost'
 
@@ -32,41 +31,47 @@ console.log(`----------------------------------------------------------------`)
 console.log(`Hit ctrl-c to stop adapter.`)
 process.on('SIGINT', shutdown)
 
-console.log(`MQTT connecting to broker on`, mqttUrl, `...`)
-const mqtt = mqttlib.connect(mqttUrl) // returns an instance of Client
+for (const mqttUrl of mqttUrls) {
+  console.log(`MQTT connecting to broker on`, mqttUrl, `...`)
+  const mqtt = mqttlib.connect(mqttUrl) // returns an instance of mqtt Client
 
-// handle mqtt connection
-mqtt.on('connect', function onConnect() {
-  console.log(`MQTT connected to broker on`, mqttUrl)
-  console.log(`MQTT subscribing to topics...`)
-  for (const topic of Object.keys(transforms)) {
-    console.log(`MQTT subscribing to topic ${topic}...`)
-    mqtt.subscribe(topic)
-  }
-  console.log(`MQTT listening for messages...`)
-})
+  const key = 'ccs-pa' //. where get this?
+  const plugin = plugins[key]
 
-// handle mqtt message
-mqtt.on('message', function onMessage(topic, buffer) {
-  console.log(`MQTT message received on topic ${topic}`)
-  const getData = plugin.getGetData(topic)
-  if (getData) {
-    const data = getData(buffer) // eg parse json string to js array
-    const getOutput = plugin.getGetOutput(topic)
-    if (getOutput) {
-      console.log(`Transforming data to output...`)
-      //. don't transform data directly - pass it the data cache
-      const output = getOutput(data) // data to output (eg shdr)
-      console.log(output)
-      //. add output to output cache
-      sendToOutput(output)
-    } else {
-      console.error(`No getOutput fn for topic ${topic}.`)
-    }
-  } else {
-    console.error(`No getData fn for topic ${topic}.`)
-  }
-})
+  // handle mqtt connection
+  mqtt.on('connect', function onConnect(packet) {
+    console.log(`MQTT connected to broker on`, mqttUrl)
+    console.log({ packet })
+    // console.log(`MQTT subscribing to topics...`)
+    // for (const topic of Object.keys(transforms)) {
+    //   console.log(`MQTT subscribing to topic ${topic}...`)
+    //   mqtt.subscribe(topic)
+    // }
+    // console.log(`MQTT listening for messages...`)
+  })
+
+  // // handle mqtt message
+  // mqtt.on('message', function onMessage(topic, buffer) {
+  //   console.log(`MQTT message received on topic ${topic}`)
+  //   const getData = plugin.getGetData(topic)
+  //   if (getData) {
+  //     const data = getData(buffer) // eg parse json string to js array
+  //     const getOutput = plugin.getGetOutput(topic)
+  //     if (getOutput) {
+  //       console.log(`Transforming data to output...`)
+  //       //. don't transform data directly - pass it the data cache
+  //       const output = getOutput(data) // data to output (eg shdr)
+  //       console.log(output)
+  //       //. add output to output cache
+  //       sendToOutput(output)
+  //     } else {
+  //       console.error(`No getOutput fn for topic ${topic}.`)
+  //     }
+  //   } else {
+  //     console.error(`No getData fn for topic ${topic}.`)
+  //   }
+  // })
+}
 
 //-------------------
 
@@ -106,7 +111,7 @@ function shutdown() {
     console.log(`TCP closing socket...`)
     outputSocket.end()
   }
-  console.log(`MQTT closing connection...`)
-  mqtt.end()
+  // console.log(`MQTT closing connection...`)
+  // mqtt.end()
   process.exit()
 }

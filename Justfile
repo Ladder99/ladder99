@@ -28,9 +28,10 @@ getjs:
 up:
     docker-compose down && docker-compose up --build
 
-# start containers with 2 simulators
-up2:
-    docker-compose down && docker-compose up --build --file docker-compose-twosims.yaml
+# # start containers with 2 simulators
+# up2:
+#     docker-compose down --file docker-compose-twosims.yaml && \
+#     docker-compose up --build --file docker-compose-twosims.yaml
 
 # stop containers
 down:

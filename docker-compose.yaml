@@ -1,11 +1,11 @@
 version: '3.7'
 
 services:
-  simulator:
-    container_name: simulator
+  simulator1:
+    container_name: simulator1
     build: parts/simulator
     environment:
-      - MQTT_HOST=broker
+      - MQTT_HOST=broker1
       - MQTT_PORT=1883
     depends_on:
       adapter:
@@ -16,22 +16,12 @@ services:
       options:
         max-size: '1m'
 
-  broker:
-    container_name: broker
-    build: parts/broker
-    networks:
-      - ladder99
-    volumes:
-      - ./parts/broker/config:/mosquitto/config
-      - ./parts/broker/data:/mosquitto/data
-      - ./parts/broker/log:/mosquitto/log
-    logging:
-      options:
-        max-size: '1m'
-
-  client:
-    container_name: client
-    build: parts/client
+  simulator2:
+    container_name: simulator2
+    build: parts/simulator
+    environment:
+      - MQTT_HOST=broker2
+      - MQTT_PORT=1884
     depends_on:
       adapter:
         condition: service_started
@@ -41,16 +31,45 @@ services:
       options:
         max-size: '1m'
 
+  broker1:
+    container_name: broker1
+    build: parts/broker
+    networks:
+      - ladder99
+    volumes:
+      - ./parts/broker/config/1:/mosquitto/config
+      - ./parts/broker/data/1:/mosquitto/data
+      - ./parts/broker/log/1:/mosquitto/log
+    logging:
+      options:
+        max-size: '1m'
+
+  broker2:
+    container_name: broker2
+    build: parts/broker
+    networks:
+      - ladder99
+    volumes:
+      - ./parts/broker/config/2:/mosquitto/config
+      - ./parts/broker/data/2:/mosquitto/data
+      - ./parts/broker/log/2:/mosquitto/log
+    logging:
+      options:
+        max-size: '1m'
+
   adapter:
     container_name: adapter
     build: parts/adapter
     environment:
-      - MQTT_URL=mqtt://broker:1883
+      # - MQTT_URL=mqtt://broker:1883
+      - MQTT_URLS=mqtt://broker1:1883 mqtt://broker2:1883
       - OUTPUT_HOST=adapter
       - OUTPUT_PORT=7878
       # - OUTPUT_PORT=5673
     depends_on:
-      broker:
+      broker1:
+        condition: service_started
+      broker2:
         condition: service_started
     networks:
       - ladder99
