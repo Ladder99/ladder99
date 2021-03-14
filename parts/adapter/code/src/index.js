@@ -37,7 +37,8 @@ process.on('SIGINT', shutdown)
 for (const mqttUrl of mqttUrls) {
   console.log(`MQTT connecting to broker on`, mqttUrl, `...`)
   const mqtt = mqttlib.connect(mqttUrl) // returns an instance of mqtt Client
-  console.log(mqtt)
+  const clientId = mqtt.options.clientId
+  console.log(clientId)
 
   // mqtts.push(mqtt)
 

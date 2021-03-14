@@ -7,6 +7,7 @@ services:
     environment:
       - MQTT_HOST=broker1
       - MQTT_PORT=1883
+      - MQTT_CLIENTID=ccs-pa1
     depends_on:
       adapter:
         condition: service_started
@@ -22,6 +23,7 @@ services:
     environment:
       - MQTT_HOST=broker2
       - MQTT_PORT=1884
+      - MQTT_CLIENTID=ccs-pa2
     depends_on:
       adapter:
         condition: service_started

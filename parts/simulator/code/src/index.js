@@ -1,27 +1,28 @@
 // simulator
 // simulates a device and publishes sample messages to mqtt broker
 
-import mqtt from 'mqtt'
+import mqttlib from 'mqtt'
 import messages from './messages.js'
 
 const mqttHost = process.env.MQTT_HOST || 'localhost'
 const mqttPort = Number(process.env.MQTT_PORT || 1883)
-const mqttConfig = { host: mqttHost, port: mqttPort }
+const mqttClientId = process.env.MQTT_CLIENTID || 'simulator-' + Math.random()
+const mqttConfig = { host: mqttHost, port: mqttPort, clientId: mqttClientId }
 
 console.log(`Simulator`)
 console.log(`Simulates a device sending MQTT messages.`)
 console.log(`------------------------------------------------------------`)
 
 console.log(`Connecting to MQTT broker on`, mqttConfig)
-const client = mqtt.connect(mqttConfig)
+const mqtt = mqttlib.connect(mqttConfig)
 
-client.on('connect', function onConnect() {
+mqtt.on('connect', function onConnect() {
   console.log(`Publishing messages...`)
   for (const message of messages) {
     const s = JSON.stringify(message.json)
     console.log(`Topic ${message.topic}: ${s.slice(0, 40)}...`)
-    client.publish(message.topic, s)
+    mqtt.publish(message.topic, s)
   }
   console.log(`Closing MQTT connection...`)
-  client.end()
+  mqtt.end()
 })
