@@ -5,21 +5,24 @@
 
 import net from 'net' // node lib for tcp
 import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
-import transforms from './transforms.js'
 
-const folders = process.argv.slice(2) // eg ['./plugins/ccs-pa']
+// const folders = process.argv.slice(2) // eg ['./plugins/ccs-pa']
+const deviceKeys = (process.env.DEVICE_PLUGINS || '').split(' ')
 
+// get mqtt input ports, eg ['mqtt://broker1:1883', 'mqtt://broker2:1883']
 const mqttUrls = (process.env.MQTT_URLS || 'localhost:1883').split(' ')
+
+// get tcp output port
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)
 const outputHost = process.env.OUTPUT_HOST || 'localhost'
 
 // import plugins
 const plugins = {}
-for (const folder of folders) {
+for (const deviceKey of deviceKeys) {
+  const path = './plugins/' + deviceKey + '/adapter-dev.js' //. -dev for now
   // @ts-ignore top-level await warning
-  const plugin = await import(folder + '/adapter.js')
-  const key = plugin.key // eg 'ccs-pa'
-  plugins[key] = plugin
+  const plugin = await import(path)
+  plugins[deviceKey] = plugin
 }
 
 let outputSocket

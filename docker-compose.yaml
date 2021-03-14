@@ -63,6 +63,7 @@ services:
     environment:
       # - MQTT_URL=mqtt://broker:1883
       - MQTT_URLS=mqtt://broker1:1883 mqtt://broker2:1883
+      - DEVICE_PLUGINS=css-pa foo
       - OUTPUT_HOST=adapter
       - OUTPUT_PORT=7878
       # - OUTPUT_PORT=5673
