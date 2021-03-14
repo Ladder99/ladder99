@@ -42,7 +42,6 @@ mqtt.on('connect', function onConnect() {
 // handle mqtt message
 mqtt.on('message', function onMessage(topic, buffer) {
   console.log(`MQTT message received on topic ${topic}`)
-  // get getData based on topic - might not be a string
   const getData = plugin.getGetData(topic)
   if (getData) {
     const data = getData(buffer) // eg parse json string to js array
@@ -55,10 +54,10 @@ mqtt.on('message', function onMessage(topic, buffer) {
       //. add output to output cache
       sendToOutput(output)
     } else {
-      console.error(`No getOutput for topic ${topic}.`)
+      console.error(`No getOutput fn for topic ${topic}.`)
     }
   } else {
-    console.error(`No getData for topic ${topic}.`)
+    console.error(`No getData fn for topic ${topic}.`)
   }
 })
 
@@ -87,10 +86,10 @@ console.log(`TCP try listening to socket at`, outputPort, outputHost, `...`)
 tcp.listen(outputPort, outputHost)
 
 // pass message on to output (agent or diode)
-function sendToOutput(shdr) {
+function sendToOutput(output) {
   if (tcpSocket) {
     console.log(`TCP sending string with LF terminator...`)
-    tcpSocket.write(shdr + '\n')
+    tcpSocket.write(output + '\n')
   }
 }
 
