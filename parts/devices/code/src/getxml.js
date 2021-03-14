@@ -4,7 +4,7 @@ const fs = require('fs') // node lib filesys
 const yaml = require('js-yaml') // https://github.com/nodeca/js-yaml
 const convert = require('xml-js') // https://github.com/nashwaan/xml-js
 
-const sourcefiles = process.argv.slice(2) // eg ['input/device-foo.yaml']
+const sourcefiles = process.argv.slice(2) // eg ['input/foo/device.yaml']
 
 // define xml document root
 const xdoc = {
@@ -87,8 +87,8 @@ function getDevices() {
     // walk yaml tree and translate elements to xml tree recursively
     const xtree = translate(ytree)
     // extract the device and add to list
-    const xdevice = xtree.Device[0]
-    devices.push(xdevice)
+    const device = xtree.Device[0]
+    devices.push(device)
   }
   return devices
 }
