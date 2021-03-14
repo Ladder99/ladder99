@@ -19,9 +19,6 @@ digraph "ladder99-adapter" {
   Broker1 [ label="MQTT Broker 1\n(Mosquitto)" ];
   Broker2 [ label="MQTT Broker 2\n(Mosquitto)" ];
   Broker3 [ label="MQTT Broker 3\n(Mosquitto)" ];
-  Proxy1 [ label="MQTT Proxy 1\n(NodeJS)" ];
-  Proxy2 [ label="MQTT Proxy 2\n(NodeJS)" ];
-  Proxy3 [ label="MQTT Proxy 3\n(NodeJS)" ];
   Adapter [ label="MTConnect\nAdapter\n(NodeJS)" ];
   // Device1Sheet [ fillcolor=greenyellow; label="device1.sheet" ];
   // Device1Yaml [ fillcolor=greenyellow; label="device1.yaml" ];
@@ -42,17 +39,14 @@ digraph "ladder99-adapter" {
   // Operator [ fillcolor=lightyellow ];
 
   // edges
-  PA1 -> Broker1 [ label="TCP?" ];
-  PA2 -> Broker2 [ label="TCP?" ];
+  PA1 -> Broker1 [ label="TCP?", dir=both ];
+  PA2 -> Broker2 [ label="TCP?", dir=both ];
   OldMachine -> PLC4X [ label="proprietary\nprotocol" ];
   PLC4X -> Broker3 [ label="?" ];
-  Broker1 -> Proxy1 [ label="MQTT\nTCP 1883" ];
-  Broker2 -> Proxy2 [ label="MQTT\nTCP 1883" ];
-  Broker3 -> Proxy3 [ label="MQTT\nTCP 1883" ];
-  Proxy1 -> Adapter [ label="JSON\nTCP 1883" ];
-  Proxy2 -> Adapter [ label="JSON\nTCP 1884" ];
-  Proxy3 -> Adapter [ label="JSON\nTCP 1885" ];
-  Adapter -> Agent [ label="SHDR /   \nTCP 7878      " ];
+  Broker1 -> Adapter [ label="MQTT\nTCP 1883", dir=both ];
+  Broker2 -> Adapter [ label="MQTT\nTCP 1884", dir=both ];
+  Broker3 -> Adapter [ label="MQTT\nTCP 1885", dir=both ];
+  Adapter -> Agent [ label="SHDR /   \nTCP 7878      ", dir=both ];
   // Device1Sheet -> Device1Yaml [ label="feeds into" ];
   // Device1Yaml -> Device1Js [ label="generates" ];
   // Device1Js -> Proxy1 [ label="used by" ];
