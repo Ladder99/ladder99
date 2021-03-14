@@ -7,21 +7,16 @@ import net from 'net' // node lib for tcp
 import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import transforms from './transforms.js'
 
-// const pluginfile = process.argv[2] // eg './plugins/device-ccs-pa.js'
-
-// // @ts-ignore
-// const plugin = await import(pluginfile)
-
-const folders = process.argv.slice(2)
+const folders = process.argv.slice(2) // eg ['./plugins/ccs-pa']
 
 // import plugins
 const plugins = {}
 for (const folder of folders) {
-  // @ts-ignore
-  const plugin = await import(folder + '/client.js')
+  // @ts-ignore top-level await warning
+  const plugin = await import(folder + '/adapter.js')
   const key = plugin.key // eg 'ccs-pa'
   plugins[key] = plugin
-  plugin.init(mqtt, adapter)
+  // plugin.init(mqtt, adapter)
 }
 
 const mqttUrl = process.env.MQTT_URL || 'localhost:1883'

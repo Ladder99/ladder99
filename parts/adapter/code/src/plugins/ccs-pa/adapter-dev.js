@@ -1,3 +1,5 @@
+//. this is experimental for development
+
 // get getData for given mqtt topic
 export function getGetData(topic) {
   return getData // same for all topics for this device
