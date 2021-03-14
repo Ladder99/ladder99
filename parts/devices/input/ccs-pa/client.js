@@ -1,9 +1,9 @@
 // client sits between broker and adapter
 
-export function init(broker, adapter) {
-  const topicQuerySend = 'l99/ccs/cmd/query'
-  const topicQueryResult = 'l99/ccs/evt/query'
+const topicQuerySend = 'l99/ccs/cmd/query'
+const topicQueryResult = 'l99/ccs/evt/query'
 
+export function init(broker, adapter) {
   broker.subscribe(topicQueryResult, onQueryResult)
   broker.send(topicQuerySend, '{}')
 
