@@ -42,10 +42,10 @@ digraph "ladder99-adapter" {
   OldMachine -> PLC4X [ label="proprietary\nprotocol" ];
   PLC4X -> Broker1 [ label="MQTT" ];
   NewMachine -> Broker2 [ label="MQTT" ];
-  Broker1 -> Client1 [ label="MQTT 1883" ];
-  Broker2 -> Client2 [ label="MQTT 1883" ];
-  Client1 -> Adapter [ label="MQTT 1883" ];
-  Client2 -> Adapter [ label="MQTT 1883" ];
+  Broker1 -> Client1 [ label="MQTT\nTCP 1883" ];
+  Broker2 -> Client2 [ label="MQTT\nTCP 1883" ];
+  Client1 -> Adapter [ label="MQTT\nTCP 1883" ];
+  Client2 -> Adapter [ label="MQTT\nTCP 1883" ];
   Adapter -> Agent [ label="SHDR /   \nTCP 7878      " ];
   // Device1Sheet -> Device1Yaml [ label="feeds into" ];
   // Device1Yaml -> Device1Js [ label="generates" ];
@@ -69,6 +69,6 @@ digraph "ladder99-adapter" {
 
   // rank
   // { rank=same; DiodeSender DiodeReceiver Agent Application Database Visualizer };
-  { rank=same; Client1 Adapter Agent Application Database Visualizer };
+  { rank=same; Adapter Agent Application Database Visualizer };
   { rank=same; Cloud Admin };
 }
