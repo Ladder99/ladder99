@@ -10,6 +10,9 @@ const deviceKeys = (process.env.DEVICE_PLUGINS || '').split(' ')
 const mqttUrls = (process.env.MQTT_URLS || 'localhost:1883').split(' ')
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)
 const outputHost = process.env.OUTPUT_HOST || 'localhost'
+const devicePluginsUrls = (process.env.DEVICE_PLUGINS_URLS || '')
+  .split(', ')
+  .map(pair => pair.split(' '))
 
 // import plugin code
 const plugins = {}

@@ -7,7 +7,7 @@ services:
     environment:
       - MQTT_HOST=broker1
       - MQTT_PORT=1883
-      - MQTT_CLIENTID=ccs-pa1
+      # - MQTT_CLIENTID=ccs-pa1
     depends_on:
       adapter:
         condition: service_started
@@ -23,7 +23,7 @@ services:
     environment:
       - MQTT_HOST=broker2
       - MQTT_PORT=1884
-      - MQTT_CLIENTID=ccs-pa2
+      # - MQTT_CLIENTID=ccs-pa2
     depends_on:
       adapter:
         condition: service_started
@@ -64,8 +64,10 @@ services:
     build: parts/adapter
     environment:
       # - MQTT_URL=mqtt://broker:1883
-      - MQTT_URLS=mqtt://broker1:1883 mqtt://broker2:1883
-      - DEVICE_PLUGINS=ccs-pa foo
+      # - MQTT_URLS=mqtt://broker1:1883 mqtt://broker2:1883
+      # - MQTT_URLS=broker1:1883 broker2:1883
+      # - DEVICE_PLUGINS=ccs-pa foo
+      - DEVICE_PLUGINS_URLS=ccs-pa broker1:1883, ccs-pa broker2:1883
       - OUTPUT_HOST=adapter
       - OUTPUT_PORT=7878
       # - OUTPUT_PORT=5673
