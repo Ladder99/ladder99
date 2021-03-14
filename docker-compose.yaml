@@ -29,6 +29,18 @@ services:
       options:
         max-size: '1m'
 
+  client:
+    container_name: client
+    build: parts/client
+    depends_on:
+      adapter:
+        condition: service_started
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
   adapter:
     container_name: adapter
     build: parts/adapter
