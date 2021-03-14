@@ -11,6 +11,7 @@ const mqttUrls = (process.env.MQTT_URLS || 'localhost:1883').split(' ')
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)
 const outputHost = process.env.OUTPUT_HOST || 'localhost'
 
+// import plugin code
 const plugins = {}
 for (const deviceKey of deviceKeys) {
   const path = './plugins/' + deviceKey + '/adapter-dev.js' //. -dev for now
@@ -32,18 +33,20 @@ process.on('SIGINT', shutdown)
 for (const mqttUrl of mqttUrls) {
   console.log(`MQTT connecting to broker on`, mqttUrl, `...`)
   const mqtt = mqttlib.connect(mqttUrl) // returns instance of mqtt Client
-  const clientId = mqtt.options.clientId
-  console.log({ clientId })
+  // const clientId = mqtt.options.clientId
+  // console.log({ clientId })
 
   // mqtts.push(mqtt)
 
   // const key = 'ccs-pa' //. where get this?
   // const plugin = plugins[key]
 
-  // handle mqtt connection
-  mqtt.on('connect', function onConnect(packet) {
+  mqtt.on('connect', function onConnect() {
     console.log(`MQTT connected to broker on`, mqttUrl)
-    console.log({ packet })
+
+    //. first call plugin init fn - which plugin?
+
+    //. subscribe to topics - what topics?
     // console.log(`MQTT subscribing to topics...`)
     // for (const topic of Object.keys(transforms)) {
     //   console.log(`MQTT subscribing to topic ${topic}...`)
@@ -52,7 +55,6 @@ for (const mqttUrl of mqttUrls) {
     // console.log(`MQTT listening for messages...`)
   })
 
-  // // handle mqtt message
   // mqtt.on('message', function onMessage(topic, buffer) {
   //   console.log(`MQTT message received on topic ${topic}`)
   //   const getData = plugin.getGetData(topic)
