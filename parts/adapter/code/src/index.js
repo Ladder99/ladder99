@@ -40,26 +40,25 @@ mqtt.on('connect', function onConnect() {
 })
 
 // handle mqtt message
-mqtt.on('message', function onMessage(topic, payloadBuffer) {
-  console.log(`MQTT received message on topic ${topic}`)
-  // get extractor based on topic - might not be a string
-  const extract = plugin.getExtractor(topic)
-  if (extract) {
-    const payloadData = extract(payloadBuffer) // eg parse json string array
-    //. decompose data, add each item to item cache
-    const transform = plugin.getTransformer(topic)
-    if (transform) {
-      console.log(`Transforming JSON message to SHDR...`)
-      //. don't transform data directly - pass it the item cache
-      const shdr = transform(payloadData) // data to shdr
-      console.log(shdr)
-      //. add shdr to shdr cache
-      sendToOutput(shdr)
+mqtt.on('message', function onMessage(topic, buffer) {
+  console.log(`MQTT message received on topic ${topic}`)
+  // get getData based on topic - might not be a string
+  const getData = plugin.getGetData(topic)
+  if (getData) {
+    const data = getData(buffer) // eg parse json string to js array
+    const getOutput = plugin.getGetOutput(topic)
+    if (getOutput) {
+      console.log(`Transforming data to output...`)
+      //. don't transform data directly - pass it the data cache
+      const output = getOutput(data) // data to output (eg shdr)
+      console.log(output)
+      //. add output to output cache
+      sendToOutput(output)
     } else {
-      console.error(`No transformer for topic ${topic}.`)
+      console.error(`No getOutput for topic ${topic}.`)
     }
   } else {
-    console.error(`No extractor for topic ${topic}.`)
+    console.error(`No getData for topic ${topic}.`)
   }
 })
 
