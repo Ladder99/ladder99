@@ -37,9 +37,9 @@ services:
     networks:
       - ladder99
     volumes:
-      - ./parts/broker/config1:/mosquitto/config
-      - ./parts/broker/data1:/mosquitto/data
-      - ./parts/broker/log1:/mosquitto/log
+      - ./parts/broker/config/1:/mosquitto/config
+      - ./parts/broker/data/1:/mosquitto/data
+      - ./parts/broker/log/1:/mosquitto/log
     logging:
       options:
         max-size: '1m'
@@ -50,9 +50,9 @@ services:
     networks:
       - ladder99
     volumes:
-      - ./parts/broker/config2:/mosquitto/config
-      - ./parts/broker/data2:/mosquitto/data
-      - ./parts/broker/log2:/mosquitto/log
+      - ./parts/broker/config/2:/mosquitto/config
+      - ./parts/broker/data/2:/mosquitto/data
+      - ./parts/broker/log/2:/mosquitto/log
     logging:
       options:
         max-size: '1m'
@@ -62,6 +62,7 @@ services:
     build: parts/adapter
     environment:
       # - MQTT_URL=mqtt://broker:1883
+      - MQTT_URLS=mqtt://broker1:1883 mqtt://broker2:1883
       - OUTPUT_HOST=adapter
       - OUTPUT_PORT=7878
       # - OUTPUT_PORT=5673
