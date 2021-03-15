@@ -35,17 +35,10 @@ for (const device of devices) {
   const mqtt = mqttlib.connect(url)
   mqtts.push(mqtt)
 
-  // const clientId = mqtt.options.clientId //. use this?
-  // console.log({ clientId })
-
   mqtt.on('connect', function onConnect() {
     console.log(`MQTT connected to broker on`, url)
     console.log(`MQTT calling plugin init...`)
     plugin.init(mqtt, cache)
-
-    console.log(`MQTT subscribing to topics...`)
-    plugin.subscribe(mqtt, cache)
-
     console.log(`MQTT listening for messages...`)
   })
 }

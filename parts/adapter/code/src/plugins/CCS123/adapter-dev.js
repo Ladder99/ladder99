@@ -32,14 +32,13 @@ export function init(mqtt, cache) {
     mqtt.unsubscribe(topics.receiveQuery, onQueryResult)
     const obj = unpack(topic, payload)
     cache.save(obj)
-  }
-}
 
-// subscribe and handle topics
-export function subscribe(mqtt, cache) {
-  // alternative is to say mqtt.subscribe(topic), and mqtt.on('message', (topic, buffer)=>...)
-  mqtt.subscribe(topics.receiveStatus, onStatusMessage)
-  mqtt.subscribe(topics.receiveRead, onReadMessage)
+    //. best to subscribe to topics at this point,
+    // in case status or read messages come in BEFORE this message is delivered.
+    // alternative is to say mqtt.subscribe(topic), and mqtt.on('message', (topic, buffer)=>...)
+    mqtt.subscribe(topics.receiveStatus, onStatusMessage)
+    mqtt.subscribe(topics.receiveRead, onReadMessage)
+  }
 
   function onStatusMessage(topic, payload) {
     const obj = unpack(topic, payload)
@@ -51,3 +50,20 @@ export function subscribe(mqtt, cache) {
     cache.save(obj)
   }
 }
+
+// // subscribe and handle topics
+// function subscribe(mqtt, cache) {
+//   // alternative is to say mqtt.subscribe(topic), and mqtt.on('message', (topic, buffer)=>...)
+//   mqtt.subscribe(topics.receiveStatus, onStatusMessage)
+//   mqtt.subscribe(topics.receiveRead, onReadMessage)
+
+//   function onStatusMessage(topic, payload) {
+//     const obj = unpack(topic, payload)
+//     cache.save(obj)
+//   }
+
+//   function onReadMessage(topic, payload) {
+//     const obj = unpack(topic, payload)
+//     cache.save(obj)
+//   }
+// }
