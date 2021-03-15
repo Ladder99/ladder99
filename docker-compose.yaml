@@ -63,8 +63,6 @@ services:
     container_name: adapter
     build: parts/adapter
     environment:
-      # - DEVICE_SERIAL_NUMBERS=CCS123 CCS124
-      # - DEVICE_URLS=broker1:1883 broker2:1883
       - DEVICES=CCS123@broker1:1883 CCS124@broker2:1883
       - OUTPUT_HOST=adapter
       - OUTPUT_PORT=7878
