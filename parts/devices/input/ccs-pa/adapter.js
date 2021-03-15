@@ -4,7 +4,7 @@ const topicQueryResult = 'l99/ccs/evt/query'
 
 // initialize the client plugin.
 // queries the device for address space definitions.
-export function init(broker, adapter) {
+export function init(broker, cache) {
   broker.subscribe(topicQueryResult, onQueryResult)
   broker.send(topicQuerySend, '{}')
 
@@ -12,19 +12,20 @@ export function init(broker, adapter) {
     broker.unsubscribe(topicQueryResult, onQueryResult)
     const unpack = getUnpack()
     const obj = unpack(msg)
-    adapter.send(obj) //.
+    cache.set(obj) //.
   }
 }
 
 // get unpack function
 // (can ignore topic as all messages from this device are the same)
 export function getUnpack(topic) {
-  // unpack a message payload (eg JSON string to js) and append some metadata.
+  // unpack a message payload and append some metadata.
+  // eg converts JSON string payload to js.
   return function unpack(msg) {
     const obj = { ...msg }
+    obj.data = JSON.parse(msg.payload.toString())
     obj.device = device
     obj.received = new Date()
-    obj.data = JSON.parse(msg.payload.toString())
     return obj
   }
 }
