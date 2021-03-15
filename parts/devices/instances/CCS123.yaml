@@ -6,7 +6,7 @@ adapter:
   sequences:
     startup: ccs-startup.js
     shutdown: ccs-shutdown.js
-  subscriptionTopics:
+  topics:
     read: l99/CCS123/evt/read
     status: l99/CCS123/evt/status
   config:
