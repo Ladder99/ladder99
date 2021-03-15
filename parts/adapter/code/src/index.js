@@ -57,6 +57,12 @@ for (const mqttUrl of mqttUrls) {
     //   mqtt.subscribe(topic)
     // }
     // console.log(`MQTT listening for messages...`)
+
+    for (const key of Object.keys(plugin.topics)) {
+      const topic = plugin.topics[key]
+      const handler = plugin.handlers[key]
+      mqtt.subscribe(topic, handler)
+    }
   })
 
   // mqtt.on('message', function onMessage(topic, buffer) {

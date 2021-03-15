@@ -1,26 +1,32 @@
 device:
   - id: ccs-pa
     name: CCS-PA
-    uuid: ${adapter.properties.uuid} # eg 'e05363af-95d1-4354-b749-8fbb09d3499e'
+    uuid: ${uuid} # eg 'e05363af-95d1-4354-b749-8fbb09d3499e'
     sampleInterval: 10
 
     description:
       manufacturer: CCS
       model: Emergent-PA-Pneumatic
-      serialNumber: ${adapter.properties.serialNumber} # eg 'CCS123'
+      serialNumber: ${serialNumber} # eg 'CCS123'
       text: Emergent Next Generation Print and Apply
 
     events:
       fw_ver: &fw_ver
-        id: fw_ver
+        id: ${serialNumber}-fw_ver # eg 'CCS123-fw_ver'
         category: EVENT
         type: FIRMWARE
         subType: VERSION
         # source: l99/ccs/evt/status+build_no
-        value: shdr(topic('status').valueOf('build_no'))
+        # source: shdr(topic('status').valueOf('build_no'))
+        # the adapter would just publish shdr like
+        #   "<timestamp>|CCS123-fw_ver|3.1.2"
+        # and the agent would insert the value into this element by finding that id.
+        # so the adapter needs to know where to get the value for that id, eg 
+        # source: get('status', 'build_no') # topic, data key if any
+        # where is the cache in this? cache.get('CCS123-fw_ver') ?
 
       state: &state
-        id: state
+        id: ${serialNumber}-state
         category: EVENT
         type: EXECUTION
         # source: execution.lua
@@ -58,38 +64,38 @@ device:
           }
 
       wait_state: &wait_state
-        id: wait_state
+        id: ${serialNumber}-wait_state
         category: EVENT
         type: WAIT_STATE
         # source: wait_state.lua
         # <Source>status.state 50,100 PAUSING; 250,300 RESUMING; ?</Source>
 
       program: &program
-        id: program
+        id: ${serialNumber}-program
         category: EVENT
         type: EXECUTION
 
       step: &step
-        id: step
+        id: ${serialNumber}-step
         category: EVENT
         type: EXECUTION
 
       printer_start_print: &printer_start_print
-        id: %Q0.0
+        id: ${serialNumber}-%Q0.0
         name: printer_start_print
         category: EVENT
         type: ACTUATOR_STATE
         source: l99/ccs/evt/read+%Q0.0
 
       printer_feed: &printer_feed
-        id: %Q0.1
+        id: ${serialNumber}-%Q0.1
         name: printer_feed
         category: EVENT
         type: ACTUATOR_STATE
         source: l99/ccs/evt/read+%Q0.1
 
       printer_pause: &printer_pause
-        id: %Q0.2
+        id: ${serialNumber}-%Q0.2
         name: printer_pause
         category: EVENT
         type: ACTUATOR_STATE
@@ -104,7 +110,7 @@ device:
 
     components:
       controller:
-        id: controller
+        id: ${serialNumber}-controller
         nativeName: plc
         description:
           text: Electronic board set responsible for coordinating all machine function.
@@ -117,21 +123,21 @@ device:
 
         components:
           path:
-            id: path1
+            id: ${serialNumber}-path1
             name: path
             dataItems:
               dataItem: []
 
     systems:
-      id: systems
+      id: ${serialNumber}-systems
       components:
         endEffector:
-          id: end_effector
+          id: ${serialNumber}-end_effector
           dataItems:
             dataItem: []
           compositions: []
         feeder:
-          id: feeder
+          id: ${serialNumber}-feeder
           dataItems:
             dataItem: []
           compositions: []
