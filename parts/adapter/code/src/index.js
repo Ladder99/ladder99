@@ -6,16 +6,15 @@
 import net from 'net' // node lib for tcp
 import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
-const serialNumbers = (process.env.DEVICE_SERIAL_NUMBERS || '').split(' ')
-const urls = (process.env.DEVICE_URLS || 'localhost:1883').split(' ')
+// get device defs, eg DEVICES=CCS123@broker1:1883 CCS124@broker2:1883
+const deviceDefs = (process.env.DEVICES || '').split(' ').map(d => d.split('@'))
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)
 const outputHost = process.env.OUTPUT_HOST || 'localhost'
 
 // define devices, incl plugin code
 const devices = []
-for (let i = 0; i < urls.length; i++) {
-  const serialNumber = serialNumbers[i]
-  const url = urls[i]
+for (const deviceDef of deviceDefs) {
+  const [serialNumber, url] = deviceDef
   const path = './plugins/' + serialNumber + '/adapter-dev.js' //. -dev for now
   // @ts-ignore top-level await warning
   const plugin = await import(path) // import plugin code
@@ -36,10 +35,10 @@ for (const device of devices) {
   console.log(`MQTT connecting to broker on`, device.url, `...`)
 
   const mqtt = mqttlib.connect(device.url) // returns instance of mqtt Client
-  device.mqtt = mqtt
+  const plugin = device.plugin
+
   // const clientId = mqtt.options.clientId //.
   // console.log({ clientId })
-  const plugin = device.plugin
 
   mqtt.on('connect', function onConnect() {
     console.log(`MQTT connected to broker on`, device.url)
