@@ -23,6 +23,7 @@ for (const deviceDef of deviceDefs) {
 }
 
 let outputSocket
+const cache = new Map() // a map lets you use set and get
 
 console.log(`MTConnect Adapter`)
 console.log(`Subscribes to MQTT topics, transforms to SHDR, posts to TCP.`)
@@ -36,6 +37,7 @@ for (const device of devices) {
 
   const mqtt = mqttlib.connect(device.url) // returns instance of mqtt Client
   const plugin = device.plugin
+  device.mqtt = mqtt // remember so can shut down
 
   // const clientId = mqtt.options.clientId //.
   // console.log({ clientId })
@@ -55,23 +57,35 @@ for (const device of devices) {
     console.log(`MQTT listening for messages...`)
   })
 
-  // this form is better than passing the handler to mqtt broker as above -
-  // we can pass the handler the cache etc
-
+  // this form is better than passing the handler to mqtt broker above,
+  // as we can use the cache etc.
   mqtt.on('message', function onMessage(topic, buffer) {
     console.log(`MQTT message received on topic ${topic}`)
-    const data = plugin.getData(buffer) // eg parse json string to js array
-    const getOutput = plugin.getGetOutput(topic)
-    if (getOutput) {
-      console.log(`Transforming data to output...`)
-      //. don't transform data directly - pass it the data cache
-      const output = getOutput(data) // data to output (eg shdr)
-      console.log(output)
-      //. add output to output cache
-      sendToOutput(output)
-    } else {
-      console.error(`No getOutput fn for topic ${topic}.`)
-    }
+
+    // const data = plugin.getData(buffer) // eg parse json string to js array
+    const obj = plugin.unpack(topic, buffer) // eg parse json string to js array
+
+    //. iterate through the data values and add them to the cache,
+    // then when done, call the shdr update fn,
+    // which for each shdr value change calls sendToOutput.
+    // for (const datum of obj.data) {
+    //   cache.set(datum.key, datum)
+    // }
+
+    // updateShdr()
+
+    // this is obsolete...
+    // const getOutput = plugin.getGetOutput(topic)
+    // if (getOutput) {
+    //   console.log(`Transforming data to output...`)
+    //   //. don't transform data directly - pass it the data cache
+    //   const output = getOutput(data) // data to output (eg shdr)
+    //   console.log(output)
+    //   //. add output to output cache
+    //   sendToOutput(output)
+    // } else {
+    //   console.error(`No getOutput fn for topic ${topic}.`)
+    // }
   })
 }
 
@@ -114,8 +128,10 @@ function shutdown() {
     outputSocket.end()
   }
   console.log(`MQTT closing connections...`)
-  for (const mqtt of mqtts) {
-    mqtt.end()
+  for (const device of devices) {
+    if (device.mqtt) {
+      device.mqtt.end()
+    }
   }
   process.exit()
 }

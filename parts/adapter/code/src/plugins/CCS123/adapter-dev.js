@@ -6,21 +6,22 @@ export const handlers = {
 }
 
 function status() {}
+
 function read() {}
 
-// // get getData for given mqtt topic
-// export function getGetData(topic) {
-//   return getData // same for all topics for this device
-// }
-// // get payload data from payload buffer/array
-// function getData(buffer) {
-//   return JSON.parse(buffer.toString())
-// }
+export function getData(buffer) {
+  let data = JSON.parse(buffer.toString())
+  if (!Array.isArray(data)) {
+    data = [data]
+  }
+  return data
+}
 
 // // get output transform for given topic
 // export function getGetOutput(topic) {
 //   return getOutput
 // }
+
 // // get output for given item and cache
 // function getOutput(cache, item) {}
 

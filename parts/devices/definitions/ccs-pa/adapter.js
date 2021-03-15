@@ -40,7 +40,10 @@ export function init(broker, cache) {
 // unpack a message payload and append some metadata.
 // eg converts JSON string payload to js.
 export function unpack(topic, payload) {
-  const data = JSON.parse(payload.toString())
+  let data = JSON.parse(payload.toString())
+  if (!Array.isArray(data)) {
+    data = [data]
+  }
   const received = new Date()
   const obj = { device, topic, data, received }
   return obj
