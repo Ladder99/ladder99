@@ -5,18 +5,7 @@ const yaml = require('js-yaml') // https://github.com/nodeca/js-yaml
 
 const sourcefile = process.argv[2] // eg 'input/foo/device.yaml'
 
-function main() {
-  // read yaml string and convert to yaml tree
-  const ystr = fs.readFileSync(sourcefile, 'utf8')
-  const ytree = yaml.load(ystr)
-  // console.dir(ytree, { depth: null })
-  const dict = {}
-  getCode(ytree, dict)
-  const js = Object.values(dict).join('\n')
-  console.log(js)
-}
-
-// find all code entries and extract as string.
+// find all code entries in the yaml tree and add as strings to output dict, recursively.
 // note: js entries can be duplicated because they might appear as references,
 // so need to use a dict to key on the element id.
 function getCode(ytree, dict) {
@@ -40,6 +29,18 @@ function getCode(ytree, dict) {
   } else {
     // ignore atoms
   }
+}
+
+// ----------------
+
+function main() {
+  const ystr = fs.readFileSync(sourcefile, 'utf8')
+  const ytree = yaml.load(ystr) // parse yaml
+  // console.dir(ytree, { depth: null })
+  const dict = {}
+  getCode(ytree, dict)
+  const js = Object.values(dict).join('\n')
+  console.log(js)
 }
 
 main()
