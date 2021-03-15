@@ -28,7 +28,6 @@ for (const device of devices) {
 
   console.log(`Importing code for device ${serialNumber}...`)
   const pluginPath = `./plugins/${serialNumber}/adapter-dev.js` //. -dev for now
-
   // @ts-ignore (top-level await warning)
   const plugin = await import(pluginPath)
 
@@ -45,21 +44,9 @@ for (const device of devices) {
     plugin.init(mqtt, cache)
 
     console.log(`MQTT subscribing to topics...`)
-    for (const topic of Object.keys(plugin.handlers)) {
-      console.log(`MQTT subscribing to topic ${topic}...`)
-      mqtt.subscribe(topic)
-    }
+    plugin.subscribe(mqtt, cache)
+
     console.log(`MQTT listening for messages...`)
-  })
-
-  mqtt.on('message', function onMessage(topic, buffer) {
-    console.log(`MQTT message received on topic ${topic}`)
-
-    const obj = plugin.unpack(topic, buffer)
-    cache.save(obj)
-
-    // call the shdr update fn - for each shdr value change calls sendToOutput
-    // updateShdr()
   })
 }
 

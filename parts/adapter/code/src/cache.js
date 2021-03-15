@@ -6,5 +6,7 @@ export class Cache {
     for (const datum of obj.data) {
       this._map.set(datum.key, datum)
     }
+    //. call the shdr update fn - for each shdr value change calls sendToOutput
+    // updateShdr()
   }
 }
