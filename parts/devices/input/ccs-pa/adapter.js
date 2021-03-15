@@ -1,31 +1,47 @@
+// adapter plugin code
+
 const device = 'ccs-pa'
-const topicQuerySend = 'l99/ccs/cmd/query'
-const topicQueryResult = 'l99/ccs/evt/query'
+const topics = {
+  sendQuery: 'l99/ccs/cmd/query',
+  receiveQuery: 'l99/ccs/evt/query',
+  receiveStatus: 'l99/ccs/evt/status',
+  receiveRead: 'l99/ccs/evt/read',
+}
 
 // initialize the client plugin.
-// queries the device for address space definitions.
+// queries the device for address space definitions, subscribes to topics.
 export function init(broker, cache) {
-  broker.subscribe(topicQueryResult, onQueryResult)
-  broker.send(topicQuerySend, '{}')
+  broker.subscribe(topics.receiveQuery, onQueryResult)
+  broker.send(topics.sendQuery, '{}')
 
   function onQueryResult(msg) {
-    broker.unsubscribe(topicQueryResult, onQueryResult)
-    const unpack = getUnpack()
+    broker.unsubscribe(topics.receiveQuery, onQueryResult)
     const obj = unpack(msg)
     cache.set(obj) //.
   }
+
+  // subscribe to topics
+  broker.subscribe(topics.receiveStatus, onStatusMessage)
+  broker.subscribe(topics.receiveRead, onReadMessage)
+
+  function onStatusMessage(topic, payload) {
+    const obj = unpack(topic, payload)
+    cache.set(obj)
+  }
+
+  function onReadMessage(topic, payload) {
+    const obj = unpack(topic, payload)
+    cache.set(obj)
+  }
 }
 
-// get unpack function
-// (can ignore topic as all messages from this device are the same)
-export function getUnpack(topic) {
-  // unpack a message payload and append some metadata.
-  // eg converts JSON string payload to js.
-  return function unpack(msg) {
-    const obj = { ...msg }
-    obj.data = JSON.parse(msg.payload.toString())
-    obj.device = device
-    obj.received = new Date()
-    return obj
-  }
+// helpers
+
+// unpack a message payload and append some metadata.
+// eg converts JSON string payload to js.
+export function unpack(topic, payload) {
+  const data = JSON.parse(payload.toString())
+  const received = new Date()
+  const obj = { topic, data, device, received }
+  return obj
 }
