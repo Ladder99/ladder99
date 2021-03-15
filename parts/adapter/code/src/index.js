@@ -5,6 +5,7 @@
 
 import net from 'net' // node lib for tcp
 import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
+import { Cache } from './cache'
 
 // eg DEVICES=CCS123@broker1:1883 CCS124@broker2:1883
 const deviceDefs = (process.env.DEVICES || '').split(' ').map(d => d.split('@'))
@@ -21,12 +22,7 @@ process.on('SIGINT', shutdown)
 
 let outputSocket
 
-//. this will store address space values.
-//. needs a save method to iterate over object data items.
-// for (const datum of obj.data) {
-//   cache.set(datum.key, datum)
-// }
-const cache = new Map()
+const cache = new Cache()
 
 const mqtts = []
 for (const deviceDef of deviceDefs) {
@@ -65,12 +61,8 @@ for (const deviceDef of deviceDefs) {
   mqtt.on('message', function onMessage(topic, buffer) {
     console.log(`MQTT message received on topic ${topic}`)
 
-    // const data = plugin.getData(buffer) // eg parse json string to js array
     const obj = plugin.unpack(topic, buffer) // eg parse json string to js array
-
-    //. iterates through the data values and adds them to the cache.
-    // saveToCache(obj, cache)
-    cache.save(obj)
+    cache.save(obj) // saves data items to cache
 
     // call the shdr update fn,
     // which for each shdr value change calls sendToOutput.
