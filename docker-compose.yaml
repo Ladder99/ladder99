@@ -63,11 +63,8 @@ services:
     container_name: adapter
     build: parts/adapter
     environment:
-      # - MQTT_URL=mqtt://broker:1883
-      # - MQTT_URLS=mqtt://broker1:1883 mqtt://broker2:1883
-      # - MQTT_URLS=broker1:1883 broker2:1883
-      # - DEVICE_PLUGINS=ccs-pa foo
-      - DEVICE_PLUGINS_URLS=ccs-pa broker1:1883, ccs-pa broker2:1883
+      - DEVICE_SERIAL_NUMBERS=CCS123 CCS124
+      - DEVICE_URLS=broker1:1883 broker2:1883
       - OUTPUT_HOST=adapter
       - OUTPUT_PORT=7878
       # - OUTPUT_PORT=5673
