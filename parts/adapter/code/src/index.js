@@ -11,13 +11,16 @@ const urls = (process.env.DEVICE_URLS || 'localhost:1883').split(' ')
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)
 const outputHost = process.env.OUTPUT_HOST || 'localhost'
 
-// import plugin code
-const plugins = {}
-for (const serialNumber of serialNumbers) {
+// define devices, incl plugin code
+const devices = []
+for (let i = 0; i < urls.length; i++) {
+  const serialNumber = serialNumbers[i]
+  const url = urls[i]
   const path = './plugins/' + serialNumber + '/adapter-dev.js' //. -dev for now
   // @ts-ignore top-level await warning
-  const plugin = await import(path)
-  plugins[serialNumber] = plugin
+  const plugin = await import(path) // import plugin code
+  const device = { serialNumber, url, plugin }
+  devices.push(device)
 }
 
 let outputSocket
@@ -29,58 +32,48 @@ console.log(`----------------------------------------------------------------`)
 console.log(`Hit ctrl-c to stop adapter.`)
 process.on('SIGINT', shutdown)
 
-const mqtts = []
-for (const url of urls) {
-  console.log(`MQTT connecting to broker on`, url, `...`)
-  const mqtt = mqttlib.connect(url) // returns instance of mqtt Client
-  mqtts.push(mqtt)
+for (const device of devices) {
+  console.log(`MQTT connecting to broker on`, device.url, `...`)
 
-  // const clientId = mqtt.options.clientId
+  const mqtt = mqttlib.connect(device.url) // returns instance of mqtt Client
+  device.mqtt = mqtt
+  // const clientId = mqtt.options.clientId //.
   // console.log({ clientId })
-
-  // const plugin = plugins[key]
+  const plugin = device.plugin
 
   mqtt.on('connect', function onConnect() {
-    console.log(`MQTT connected to broker on`, url)
+    console.log(`MQTT connected to broker on`, device.url)
 
-    //. first call plugin init fn - which plugin?
-    // plugin.init(mqtt, outputSocket) //?
+    // call plugin init fn
+    plugin.init(mqtt, outputSocket)
 
-    //. subscribe to topics - what topics? get from plugin
-    // console.log(`MQTT subscribing to topics...`)
-    // for (const topic of Object.keys(transforms)) {
-    //   console.log(`MQTT subscribing to topic ${topic}...`)
-    //   mqtt.subscribe(topic)
-    // }
-    // console.log(`MQTT listening for messages...`)
-
-    for (const key of Object.keys(plugin.topics)) {
-      const topic = plugin.topics[key]
-      const handler = plugin.handlers[key]
-      mqtt.subscribe(topic, handler)
+    // subscribe to topics - get from plugin
+    console.log(`MQTT subscribing to topics...`)
+    for (const topic of Object.keys(plugin.handlers)) {
+      console.log(`MQTT subscribing to topic ${topic}...`)
+      mqtt.subscribe(topic)
     }
+    console.log(`MQTT listening for messages...`)
   })
 
-  // mqtt.on('message', function onMessage(topic, buffer) {
-  //   console.log(`MQTT message received on topic ${topic}`)
-  //   const getData = plugin.getGetData(topic)
-  //   if (getData) {
-  //     const data = getData(buffer) // eg parse json string to js array
-  //     const getOutput = plugin.getGetOutput(topic)
-  //     if (getOutput) {
-  //       console.log(`Transforming data to output...`)
-  //       //. don't transform data directly - pass it the data cache
-  //       const output = getOutput(data) // data to output (eg shdr)
-  //       console.log(output)
-  //       //. add output to output cache
-  //       sendToOutput(output)
-  //     } else {
-  //       console.error(`No getOutput fn for topic ${topic}.`)
-  //     }
-  //   } else {
-  //     console.error(`No getData fn for topic ${topic}.`)
-  //   }
-  // })
+  // this form is better than passing the handler to mqtt broker as above -
+  // we can pass the handler the cache etc
+
+  mqtt.on('message', function onMessage(topic, buffer) {
+    console.log(`MQTT message received on topic ${topic}`)
+    const data = plugin.getData(buffer) // eg parse json string to js array
+    const getOutput = plugin.getGetOutput(topic)
+    if (getOutput) {
+      console.log(`Transforming data to output...`)
+      //. don't transform data directly - pass it the data cache
+      const output = getOutput(data) // data to output (eg shdr)
+      console.log(output)
+      //. add output to output cache
+      sendToOutput(output)
+    } else {
+      console.error(`No getOutput fn for topic ${topic}.`)
+    }
+  })
 }
 
 //-------------------

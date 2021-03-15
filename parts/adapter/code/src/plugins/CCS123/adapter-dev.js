@@ -1,5 +1,13 @@
 //. this is experimental for development
 
+export const handlers = {
+  'l99/CCS123/evt/status': status,
+  'l99/CCS123/evt/read': read,
+}
+
+function status() {}
+function read() {}
+
 // // get getData for given mqtt topic
 // export function getGetData(topic) {
 //   return getData // same for all topics for this device
