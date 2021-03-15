@@ -14,10 +14,10 @@ export function init(broker, cache) {
   broker.subscribe(topics.receiveQuery, onQueryResult)
   broker.send(topics.sendQuery, '{}')
 
-  function onQueryResult(msg) {
+  function onQueryResult(topic, payload) {
     broker.unsubscribe(topics.receiveQuery, onQueryResult)
-    const obj = unpack(msg)
-    cache.set(obj) //.
+    const obj = unpack(topic, payload)
+    cache.set(obj)
   }
 
   // subscribe to topics
