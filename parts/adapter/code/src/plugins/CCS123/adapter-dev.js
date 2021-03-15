@@ -11,17 +11,6 @@ const topics = {
   receiveRead: 'l99/CCS123/evt/read',
 }
 
-// unpack a message payload byte buffer and append some metadata.
-export function unpack(topic, payloadBuffer) {
-  let data = JSON.parse(payloadBuffer.toString())
-  if (!Array.isArray(data)) {
-    data = [data]
-  }
-  const received = new Date()
-  const obj = { topic, data, received }
-  return obj
-}
-
 // initialize the client plugin.
 // queries the device for address space definitions, subscribes to topics.
 export function init(mqtt, cache) {
@@ -33,9 +22,9 @@ export function init(mqtt, cache) {
     const obj = unpack(topic, payload)
     cache.save(obj)
 
-    //. best to subscribe to topics at this point,
-    // in case status or read messages come in BEFORE this message is delivered.
-    // alternative is to say mqtt.subscribe(topic), and mqtt.on('message', (topic, buffer)=>...)
+    // best to subscribe to topics at this point,
+    // in case status or read messages come in BEFORE this message is delivered,
+    // which might wipe them out.
     mqtt.subscribe(topics.receiveStatus, onStatusMessage)
     mqtt.subscribe(topics.receiveRead, onReadMessage)
   }
@@ -51,19 +40,13 @@ export function init(mqtt, cache) {
   }
 }
 
-// // subscribe and handle topics
-// function subscribe(mqtt, cache) {
-//   // alternative is to say mqtt.subscribe(topic), and mqtt.on('message', (topic, buffer)=>...)
-//   mqtt.subscribe(topics.receiveStatus, onStatusMessage)
-//   mqtt.subscribe(topics.receiveRead, onReadMessage)
-
-//   function onStatusMessage(topic, payload) {
-//     const obj = unpack(topic, payload)
-//     cache.save(obj)
-//   }
-
-//   function onReadMessage(topic, payload) {
-//     const obj = unpack(topic, payload)
-//     cache.save(obj)
-//   }
-// }
+// unpack a message payload byte buffer and append some metadata.
+function unpack(topic, payloadBuffer) {
+  let data = JSON.parse(payloadBuffer.toString())
+  if (!Array.isArray(data)) {
+    data = [data]
+  }
+  const received = new Date()
+  const obj = { topic, data, received }
+  return obj
+}
