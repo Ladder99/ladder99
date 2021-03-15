@@ -66,7 +66,6 @@ services:
       - DEVICES=CCS123@broker1:1883 CCS124@broker2:1883
       - OUTPUT_HOST=adapter
       - OUTPUT_PORT=7878
-      # - OUTPUT_PORT=5673
     depends_on:
       broker1:
         condition: service_started

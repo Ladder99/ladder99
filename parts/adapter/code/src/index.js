@@ -8,22 +8,9 @@ import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
 // get device defs, eg DEVICES=CCS123@broker1:1883 CCS124@broker2:1883
 const deviceDefs = (process.env.DEVICES || '').split(' ').map(d => d.split('@'))
+
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)
 const outputHost = process.env.OUTPUT_HOST || 'localhost'
-
-// define devices, incl plugin code
-const devices = []
-for (const deviceDef of deviceDefs) {
-  const [serialNumber, url] = deviceDef
-  const path = './plugins/' + serialNumber + '/adapter-dev.js' //. -dev for now
-  // @ts-ignore top-level await warning
-  const plugin = await import(path) // import plugin code
-  const device = { serialNumber, url, plugin }
-  devices.push(device)
-}
-
-let outputSocket
-const cache = new Map() // a map lets you use set and get
 
 console.log(`MTConnect Adapter`)
 console.log(`Subscribes to MQTT topics, transforms to SHDR, posts to TCP.`)
@@ -32,20 +19,28 @@ console.log(`----------------------------------------------------------------`)
 console.log(`Hit ctrl-c to stop adapter.`)
 process.on('SIGINT', shutdown)
 
-for (const device of devices) {
-  console.log(`MQTT connecting to broker on`, device.url, `...`)
+let outputSocket
+const cache = new Map() // a map lets you use set and get
 
-  const mqtt = mqttlib.connect(device.url) // returns instance of mqtt Client
-  const plugin = device.plugin
-  device.mqtt = mqtt // remember so can shut down
+const mqtts = []
+for (const deviceDef of deviceDefs) {
+  const [serialNumber, url] = deviceDef
 
-  // const clientId = mqtt.options.clientId //.
+  console.log(`Importing code for device ${serialNumber}...`)
+  const pluginPath = `./plugins/${serialNumber}/adapter-dev.js` //. -dev for now
+  // @ts-ignore top-level await warning
+  const plugin = await import(pluginPath) // import plugin code
+
+  console.log(`MQTT connecting to broker on`, url, `...`)
+  const mqtt = mqttlib.connect(url) // get instance of mqtt Client
+  mqtts.push(mqtt)
+  // const clientId = mqtt.options.clientId //.?
   // console.log({ clientId })
 
   mqtt.on('connect', function onConnect() {
-    console.log(`MQTT connected to broker on`, device.url)
+    console.log(`MQTT connected to broker on`, url)
 
-    // call plugin init fn
+    console.log(`MQTT call plugin init`)
     plugin.init(mqtt, outputSocket)
 
     // subscribe to topics - get from plugin
@@ -128,10 +123,8 @@ function shutdown() {
     outputSocket.end()
   }
   console.log(`MQTT closing connections...`)
-  for (const device of devices) {
-    if (device.mqtt) {
-      device.mqtt.end()
-    }
+  for (const mqtt of mqtts) {
+    mqtt.end()
   }
   process.exit()
 }

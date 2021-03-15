@@ -6,7 +6,6 @@ export const handlers = {
 }
 
 function status() {}
-
 function read() {}
 
 export function getData(buffer) {
