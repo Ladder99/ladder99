@@ -2,7 +2,6 @@
 // see that for the dev version.
 // get it working there, then move it here.
 
-//. will need text substitution here
 const topics = {
   sendQuery: 'l99/${serialNumber}/cmd/query',
   receiveQuery: 'l99/${serialNumber}/evt/query',

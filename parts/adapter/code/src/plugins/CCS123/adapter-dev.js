@@ -3,17 +3,21 @@
 
 //. this is experimental for development
 
-// const device = 'ccs-pa'
 const topics = {
-  sendQuery: 'l99/CCS123/cmd/query',
-  receiveQuery: 'l99/CCS123/evt/query',
-  receiveStatus: 'l99/CCS123/evt/status',
-  receiveRead: 'l99/CCS123/evt/read',
+  sendQuery: 'l99/${serialNumber}/cmd/query',
+  receiveQuery: 'l99/${serialNumber}/evt/query',
+  receiveStatus: 'l99/${serialNumber}/evt/status',
+  receiveRead: 'l99/${serialNumber}/evt/read',
 }
 
 // initialize the client plugin.
 // queries the device for address space definitions, subscribes to topics.
-export function init(mqtt, cache) {
+export function init(mqtt, cache, serialNumber) {
+  // add serialNumber to topics
+  for (const k of Object.keys(topics)) {
+    topics[k] = topics[k].replace('${serialNumber}', serialNumber)
+  }
+
   mqtt.subscribe(topics.receiveQuery, onQueryResult)
   mqtt.send(topics.sendQuery, '{}')
 
