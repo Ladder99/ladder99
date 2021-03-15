@@ -37,7 +37,7 @@ for (const device of devices) {
 
   mqtt.on('connect', function onConnect() {
     console.log(`MQTT connected to broker on`, url)
-    console.log(`MQTT calling plugin init...`)
+    console.log(`MQTT calling plugin init and subscribing to topics...`)
     plugin.init(mqtt, cache, serialNumber)
     console.log(`MQTT listening for messages...`)
   })

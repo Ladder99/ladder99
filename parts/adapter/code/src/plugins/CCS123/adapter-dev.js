@@ -27,8 +27,8 @@ export function init(mqtt, cache, serialNumber) {
     cache.save(obj)
 
     // best to subscribe to topics at this point,
-    // in case status or read messages come in BEFORE this message is delivered,
-    // which might wipe them out.
+    // in case status or read messages come in BEFORE query results are delivered,
+    // which would clobber these values.
     mqtt.subscribe(topics.receiveStatus, onStatusMessage)
     mqtt.subscribe(topics.receiveRead, onReadMessage)
   }
