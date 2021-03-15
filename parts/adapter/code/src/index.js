@@ -8,7 +8,7 @@ import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { Cache } from './cache'
 
 // eg DEVICES=CCS123@broker1:1883 CCS124@broker2:1883
-const deviceDefs = (process.env.DEVICES || '').split(' ').map(d => d.split('@'))
+const devices = (process.env.DEVICES || '').split(' ').map(d => d.split('@'))
 
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)
 const outputHost = process.env.OUTPUT_HOST || 'localhost'
@@ -16,17 +16,15 @@ const outputHost = process.env.OUTPUT_HOST || 'localhost'
 console.log(`MTConnect Adapter`)
 console.log(`Subscribes to MQTT topics, transforms to SHDR, posts to TCP.`)
 console.log(`----------------------------------------------------------------`)
-
 console.log(`Hit ctrl-c to stop adapter.`)
 process.on('SIGINT', shutdown)
 
 let outputSocket
-
 const cache = new Cache()
 
 const mqtts = []
-for (const deviceDef of deviceDefs) {
-  const [serialNumber, url] = deviceDef
+for (const device of devices) {
+  const [serialNumber, url] = device
 
   console.log(`Importing code for device ${serialNumber}...`)
   const pluginPath = `./plugins/${serialNumber}/adapter-dev.js` //. -dev for now
@@ -35,16 +33,15 @@ for (const deviceDef of deviceDefs) {
   const plugin = await import(pluginPath)
 
   console.log(`MQTT connecting to broker on`, url, `...`)
-  const mqtt = mqttlib.connect(url) // get instance of mqtt Client
+  const mqtt = mqttlib.connect(url)
   mqtts.push(mqtt)
 
-  // const clientId = mqtt.options.clientId //.?
+  // const clientId = mqtt.options.clientId //. use this?
   // console.log({ clientId })
 
   mqtt.on('connect', function onConnect() {
     console.log(`MQTT connected to broker on`, url)
-
-    console.log(`MQTT call plugin init`)
+    console.log(`MQTT calling plugin init...`)
     plugin.init(mqtt, cache)
 
     console.log(`MQTT subscribing to topics...`)
@@ -58,11 +55,10 @@ for (const deviceDef of deviceDefs) {
   mqtt.on('message', function onMessage(topic, buffer) {
     console.log(`MQTT message received on topic ${topic}`)
 
-    const obj = plugin.unpack(topic, buffer) // eg parse json string to js array
-    cache.save(obj) // saves data items to cache
+    const obj = plugin.unpack(topic, buffer)
+    cache.save(obj)
 
-    // call the shdr update fn,
-    // which for each shdr value change calls sendToOutput.
+    // call the shdr update fn - for each shdr value change calls sendToOutput
     // updateShdr()
   })
 }
