@@ -42,6 +42,6 @@ export function init(broker, cache) {
 export function unpack(topic, payload) {
   const data = JSON.parse(payload.toString())
   const received = new Date()
-  const obj = { topic, data, device, received }
+  const obj = { device, topic, data, received }
   return obj
 }
