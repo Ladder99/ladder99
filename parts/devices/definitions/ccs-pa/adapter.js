@@ -1,4 +1,5 @@
 // adapter plugin code
+// derived from parts/devices/definitions/ccs-pa and instances/CCS123.yaml etc
 
 const device = 'ccs-pa'
 const topics = {
