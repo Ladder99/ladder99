@@ -65,28 +65,15 @@ docs
 javascript
 `)
 
-function main() {
-  // get devices and attach to xml tree
-  const devices = getDevices()
-  xdoc.MTConnectDevices[0].Devices.Device = devices
-  // convert xml tree to string and output
-  const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
-  console.log(xstr)
-}
-
 // helper fns
 
-// get devices from yaml trees
+// get list of devices from device.yaml files
 function getDevices() {
   const devices = []
   for (const sourcefile of sourcefiles) {
-    // read yaml string
     const ystr = fs.readFileSync(sourcefile, 'utf8')
-    // convert to yaml tree
-    const ytree = yaml.load(ystr)
-    // walk yaml tree and translate elements to xml tree recursively
-    const xtree = translate(ytree)
-    // extract the device and add to list
+    const ytree = yaml.load(ystr) // parse yaml
+    const xtree = translate(ytree) // recurses
     const device = xtree.Device[0]
     devices.push(device)
   }
@@ -127,6 +114,15 @@ function capitalize(str) {
 
 function getSet(lines) {
   return new Set(lines.trim().split('\n'))
+}
+
+// ----------------
+
+function main() {
+  const devices = getDevices()
+  xdoc.MTConnectDevices[0].Devices.Device = devices
+  const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
+  console.log(xstr)
 }
 
 main()
