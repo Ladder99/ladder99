@@ -47,7 +47,6 @@ for (const deviceDef of deviceDefs) {
     console.log(`MQTT call plugin init`)
     plugin.init(mqtt, cache)
 
-    // subscribe to topics - get from plugin
     console.log(`MQTT subscribing to topics...`)
     for (const topic of Object.keys(plugin.handlers)) {
       console.log(`MQTT subscribing to topic ${topic}...`)
@@ -56,8 +55,6 @@ for (const deviceDef of deviceDefs) {
     console.log(`MQTT listening for messages...`)
   })
 
-  // this form is better than passing the handler to mqtt broker above,
-  // as we can use the cache etc.
   mqtt.on('message', function onMessage(topic, buffer) {
     console.log(`MQTT message received on topic ${topic}`)
 
@@ -67,19 +64,6 @@ for (const deviceDef of deviceDefs) {
     // call the shdr update fn,
     // which for each shdr value change calls sendToOutput.
     // updateShdr()
-
-    // this is obsolete - shdr will calculate based on values in cache.
-    // const getOutput = plugin.getGetOutput(topic)
-    // if (getOutput) {
-    //   console.log(`Transforming data to output...`)
-    //   //. don't transform data directly - pass it the data cache
-    //   const output = getOutput(data) // data to output (eg shdr)
-    //   console.log(output)
-    //   //. add output to output cache
-    //   sendToOutput(output)
-    // } else {
-    //   console.error(`No getOutput fn for topic ${topic}.`)
-    // }
   })
 }
 
