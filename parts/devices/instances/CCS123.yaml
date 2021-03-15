@@ -1,0 +1,13 @@
+adapter:
+  definition: definitions/ccs-pa/device.yaml
+  properties:
+    uuid: e05363af-95d1-4354-b749-8fbb09d3499e
+    serialNumber: CCS123
+  sequences:
+    startup: ccs-startup.js
+    shutdown: ccs-shutdown.js
+  subscriptionTopics:
+    read: l99/CCS123/evt/read
+    status: l99/CCS123/evt/status
+  config:
+    prefixDataItems: true
