@@ -16,11 +16,6 @@ export function getData(buffer) {
   return data
 }
 
-// // get output transform for given topic
-// export function getGetOutput(topic) {
-//   return getOutput
-// }
-
 // // get output for given item and cache
 // function getOutput(cache, item) {}
 

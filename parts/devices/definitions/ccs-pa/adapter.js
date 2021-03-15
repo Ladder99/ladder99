@@ -11,28 +11,30 @@ const topics = {
 
 // initialize the client plugin.
 // queries the device for address space definitions, subscribes to topics.
-export function init(broker, cache) {
-  broker.subscribe(topics.receiveQuery, onQueryResult)
-  broker.send(topics.sendQuery, '{}')
+export function init(mqtt, cache) {
+  mqtt.subscribe(topics.receiveQuery, onQueryResult)
+  mqtt.send(topics.sendQuery, '{}')
 
   function onQueryResult(topic, payload) {
-    broker.unsubscribe(topics.receiveQuery, onQueryResult)
+    mqtt.unsubscribe(topics.receiveQuery, onQueryResult)
     const obj = unpack(topic, payload)
-    cache.set(obj)
+    //. this will iterate over data items in the object,
+    // save them to the cache, and call the shdr update fn.
+    cache.save(obj)
   }
 
   // subscribe to topics
-  broker.subscribe(topics.receiveStatus, onStatusMessage)
-  broker.subscribe(topics.receiveRead, onReadMessage)
+  mqtt.subscribe(topics.receiveStatus, onStatusMessage)
+  mqtt.subscribe(topics.receiveRead, onReadMessage)
 
   function onStatusMessage(topic, payload) {
     const obj = unpack(topic, payload)
-    cache.set(obj)
+    cache.save(obj)
   }
 
   function onReadMessage(topic, payload) {
     const obj = unpack(topic, payload)
-    cache.set(obj)
+    cache.save(obj)
   }
 }
 

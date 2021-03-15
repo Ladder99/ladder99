@@ -6,7 +6,7 @@
 import net from 'net' // node lib for tcp
 import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
-// get device defs, eg DEVICES=CCS123@broker1:1883 CCS124@broker2:1883
+// eg DEVICES=CCS123@broker1:1883 CCS124@broker2:1883
 const deviceDefs = (process.env.DEVICES || '').split(' ').map(d => d.split('@'))
 
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)
@@ -20,7 +20,13 @@ console.log(`Hit ctrl-c to stop adapter.`)
 process.on('SIGINT', shutdown)
 
 let outputSocket
-const cache = new Map() // a map lets you use set and get
+
+//. this will store address space values.
+//. needs a save method to iterate over object data items.
+// for (const datum of obj.data) {
+//   cache.set(datum.key, datum)
+// }
+const cache = new Map()
 
 const mqtts = []
 for (const deviceDef of deviceDefs) {
@@ -28,12 +34,14 @@ for (const deviceDef of deviceDefs) {
 
   console.log(`Importing code for device ${serialNumber}...`)
   const pluginPath = `./plugins/${serialNumber}/adapter-dev.js` //. -dev for now
-  // @ts-ignore top-level await warning
-  const plugin = await import(pluginPath) // import plugin code
+
+  // @ts-ignore (top-level await warning)
+  const plugin = await import(pluginPath)
 
   console.log(`MQTT connecting to broker on`, url, `...`)
   const mqtt = mqttlib.connect(url) // get instance of mqtt Client
   mqtts.push(mqtt)
+
   // const clientId = mqtt.options.clientId //.?
   // console.log({ clientId })
 
@@ -41,7 +49,7 @@ for (const deviceDef of deviceDefs) {
     console.log(`MQTT connected to broker on`, url)
 
     console.log(`MQTT call plugin init`)
-    plugin.init(mqtt, outputSocket)
+    plugin.init(mqtt, cache)
 
     // subscribe to topics - get from plugin
     console.log(`MQTT subscribing to topics...`)
@@ -60,16 +68,15 @@ for (const deviceDef of deviceDefs) {
     // const data = plugin.getData(buffer) // eg parse json string to js array
     const obj = plugin.unpack(topic, buffer) // eg parse json string to js array
 
-    //. iterate through the data values and add them to the cache,
-    // then when done, call the shdr update fn,
-    // which for each shdr value change calls sendToOutput.
-    // for (const datum of obj.data) {
-    //   cache.set(datum.key, datum)
-    // }
+    //. iterates through the data values and adds them to the cache.
+    // saveToCache(obj, cache)
+    cache.save(obj)
 
+    // call the shdr update fn,
+    // which for each shdr value change calls sendToOutput.
     // updateShdr()
 
-    // this is obsolete...
+    // this is obsolete - shdr will calculate based on values in cache.
     // const getOutput = plugin.getGetOutput(topic)
     // if (getOutput) {
     //   console.log(`Transforming data to output...`)
