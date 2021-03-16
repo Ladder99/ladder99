@@ -37,9 +37,8 @@ device:
           PROGRAM_STOPPED, or PROGRAM_COMPLETED
           http://mtcup.org/wiki/Data_Item_Types:_EVENT
         # <Source>status.state 400 ACTIVE; 200 READY; 50,100,250,300 WAIT</Source>
-        javascript: |
-          //. need more succinct code here - pattern matching lib or helper fns
-          function(msgs, shdrs) {
+        value: |
+          cache => {
             const names = {
               50: 'WAIT',
               100: 'WAIT',
@@ -48,19 +47,7 @@ device:
               300: 'WAIT',
               400: 'ACTIVE',
             }
-            const topic = 'l99/ccs/evt/status'
-            const prop = 'state'
-            return lookup(msgs, shdrs, topic, prop, names)
-            //. define elsewhere - 
-            function lookup(msgs, shdrs, topic, prop, names) {
-              const msg = msgs.get(topic)
-              const value = msg[prop]
-              const name = names[value]
-              const shdr = `${msg.timestamp}|${prop}|${name}`
-              const key = topic + '/' + prop
-              shdrs.set(key, shdr)
-              return shdr
-            }
+            return names[cache['${serialNumber}-state']]
           }
 
       wait_state: &wait_state
@@ -85,6 +72,11 @@ device:
         name: printer_start_print
         category: EVENT
         type: ACTUATOR_STATE
+        docs: |
+          ACTUATOR_STATE
+          Represents the operational state of an apparatus for moving or 
+          controlling a mechanism or system.
+          The valid data value MUST be ACTIVE or INACTIVE
         # source: l99/ccs/evt/read+%Q0.0
         # shdr: ${shdr(topic('read').valueOf('%Q0.0'))}
 
