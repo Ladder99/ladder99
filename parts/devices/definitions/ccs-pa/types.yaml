@@ -12,3 +12,9 @@ types:
     250: WAIT
     300: WAIT
     400: ACTIVE
+  WAIT_STATE:
+    50: PAUSING
+    100: PAUSING
+    250: RESUMING
+    300: RESUMING
+
