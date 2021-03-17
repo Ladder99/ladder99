@@ -16,18 +16,29 @@ const aliases = {}
 // queries the device for address space definitions, subscribes to topics.
 export function init(mqtt, cache, serialNumber) {
   // add serialNumber to topics
-  for (const k of Object.keys(topics)) {
-    topics[k] = topics[k].replace('${serialNumber}', serialNumber)
+  for (const key of Object.keys(topics)) {
+    topics[key] = topics[key].replace('${serialNumber}', serialNumber)
   }
+  console.log({ topics })
 
-  mqtt.subscribe(topics.receiveQuery, onQueryMessage)
+  // mqtt.subscribe(topics.receiveQuery, onQueryMessage)
+  mqtt.subscribe(topics.receiveQuery)
   mqtt.publish(topics.sendQuery, '{}')
 
-  function onQueryMessage(topic, payload) {
+  mqtt.on('message', onMessage)
+
+  function onMessage(topic, buffer) {
+    if (topic === topics.receiveQuery) {
+      onQueryMessage(topic, buffer)
+    }
+  }
+
+  function onQueryMessage(topic, buffer) {
+    console.log('onquery', { topic, buffer })
     mqtt.unsubscribe(topics.receiveQuery, onQueryMessage)
-    const msg = unpack(topic, payload)
+    const msg = unpack(topic, buffer)
     console.log({ msg })
-    for (const item of msg.data) {
+    for (const item of msg.payload) {
       const key = serialNumber + '-' + item.keys[0] // eg 'CCS123-%I0.10'
       console.log('setcache', { key, item })
       cache.set(key, item)
@@ -45,30 +56,30 @@ export function init(mqtt, cache, serialNumber) {
     // mqtt.subscribe(topics.receiveRead, onReadMessage)
   }
 
-  function onStatusMessage(topic, payload) {
-    const obj = unpack(topic, payload)
-    cache.save(obj)
-  }
+  // function onStatusMessage(topic, buffer) {
+  //   const obj = unpack(topic, buffer)
+  //   cache.save(obj)
+  // }
 
-  function onReadMessage(topic, payload) {
-    const obj = unpack(topic, payload)
-    if (!Array.isArray(obj.data)) {
-      obj.data = [obj.data]
-    }
-    // cache.save(obj)
-    for (const item of obj.data) {
-      const key = serialNumber + '-' + item.address
-      const value = 0
-      cache.set(key, value)
-    }
-  }
+  // function onReadMessage(topic, buffer) {
+  //   const obj = unpack(topic, buffer)
+  //   if (!Array.isArray(obj.data)) {
+  //     obj.data = [obj.data]
+  //   }
+  //   // cache.save(obj)
+  //   for (const item of obj.data) {
+  //     const key = serialNumber + '-' + item.address
+  //     const value = 0
+  //     cache.set(key, value)
+  //   }
+  // }
 }
 
 // unpack a message payload byte buffer and append some metadata.
-function unpack(topic, payload) {
-  console.log({ topic, payload })
-  const data = JSON.parse(payload.toString())
+function unpack(topic, buffer) {
+  console.log('unpack', { topic, buffer })
+  const payload = JSON.parse(buffer.toString())
   const received = new Date()
-  const msg = { topic, data, received }
+  const msg = { topic, payload, received }
   return msg
 }
