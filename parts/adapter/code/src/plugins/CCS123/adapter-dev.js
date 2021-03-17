@@ -28,6 +28,7 @@ export function init(mqtt, cache, serialNumber) {
   mqtt.on('message', onMessage)
 
   function onMessage(topic, buffer) {
+    console.log('onMessage', { topic, buffer })
     if (topic === topics.receiveQuery) {
       onQueryMessage(topic, buffer)
     }
