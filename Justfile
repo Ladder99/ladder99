@@ -40,3 +40,10 @@ down:
 # run device simulator
 simulator:
     docker-compose run simulator
+
+# make docs
+# needs sphinx - `pip install -U Sphinx`
+# needs http-server - `npm install -g http-server`
+docs:
+    cd sphinx && make html && http-server build/html
+

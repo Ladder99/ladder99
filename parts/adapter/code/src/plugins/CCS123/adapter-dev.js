@@ -40,16 +40,21 @@ export function init(mqtt, cache, serialNumber) {
 
   function onReadMessage(topic, payload) {
     const obj = unpack(topic, payload)
-    cache.save(obj)
+    if (!Array.isArray(obj.data)) {
+      obj.data = [obj.data]
+    }
+    // cache.save(obj)
+    for (const item of obj.data) {
+      const key = serialNumber + '-' + item.address
+      const value = 0
+      cache.set(key, value)
+    }
   }
 }
 
 // unpack a message payload byte buffer and append some metadata.
 function unpack(topic, payloadBuffer) {
-  let data = JSON.parse(payloadBuffer.toString())
-  if (!Array.isArray(data)) {
-    data = [data]
-  }
+  const data = JSON.parse(payloadBuffer.toString())
   const received = new Date()
   const obj = { topic, data, received }
   return obj
