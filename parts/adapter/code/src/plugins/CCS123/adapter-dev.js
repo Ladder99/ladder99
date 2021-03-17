@@ -14,7 +14,9 @@ const aliases = {}
 
 // initialize the client plugin.
 // queries the device for address space definitions, subscribes to topics.
-export function init(mqtt, cache, serialNumber) {
+export function init(mqtt, cache, serialNumber, outputSocket) {
+  console.log('init', { serialNumber })
+
   // add serialNumber to topics
   for (const key of Object.keys(topics)) {
     topics[key] = topics[key].replace('${serialNumber}', serialNumber)
@@ -25,7 +27,6 @@ export function init(mqtt, cache, serialNumber) {
   mqtt.publish(topics.sendQuery, '{}')
 
   mqtt.on('message', onMessage)
-
   function onMessage(topic, buffer) {
     console.log('MQTT onMessage', { topic })
     if (topic === topics.receiveQuery) {
@@ -39,16 +40,19 @@ export function init(mqtt, cache, serialNumber) {
     const msg = unpack(topic, buffer)
     for (const item of msg.payload) {
       const address = item.keys[0]
+      const others = item.keys.slice(1)
       const key = serialNumber + '-' + address // eg 'CCS123-%I0.10'
-      cache.set(key, item.default)
+      cache.set(key, item.default) //.
       // add other keys to aliases
-      for (const alias of item.keys.slice(1)) {
+      for (const alias of others) {
         aliases[alias] = item
       }
     }
     console.log('MQTT', { cache })
 
-    updateOutputs(cache)
+    const output = getOutput(cache)
+    outputSocket.write(output)
+
     // // best to subscribe to topics at this point,
     // // in case status or read messages come in BEFORE query results are delivered,
     // // which would clobber these values.
@@ -92,12 +96,23 @@ const calcs = [
   },
 ]
 
-function updateOutputs(cache) {
+function getOutput(cache) {
+  const output = []
   for (const calc of calcs) {
     const timestamp = new Date().toISOString()
     const key = calc.key
     const value = calc.value(cache)
-    const output = `${timestamp}|${key}|${value}`
-    console.log(output)
+    const shdr = `${timestamp}|${key}|${value}`
+    console.log(shdr)
+    output.push(shdr)
   }
+  return output.join('\n') + '\n'
 }
+
+// // pass message on to output (agent or diode)
+// function sendToOutput(output) {
+//   if (outputSocket) {
+//     console.log(`TCP sending string with LF terminator...`)
+//     outputSocket.write(output + '\n')
+//   }
+// }

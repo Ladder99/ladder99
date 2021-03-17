@@ -19,36 +19,15 @@ console.log(`----------------------------------------------------------------`)
 console.log(`Hit ctrl-c to stop adapter.`)
 process.on('SIGINT', shutdown)
 
-let outputSocket
-const cache = new Cache()
-
-const mqtts = []
-for (const device of devices) {
-  const [serialNumber, url] = device
-
-  console.log(`Importing code for device ${serialNumber}...`)
-  const pluginPath = `./plugins/${serialNumber}/adapter-dev.js` //. -dev for now
-  // @ts-ignore (top-level await warning)
-  const plugin = await import(pluginPath)
-
-  console.log(`MQTT connecting to broker on`, url, `...`)
-  const mqtt = mqttlib.connect(url)
-
-  mqtt.on('connect', function onConnect() {
-    console.log(`MQTT connected to broker on`, url)
-    console.log(`MQTT calling plugin init and subscribing to topics...`)
-    plugin.init(mqtt, cache, serialNumber)
-    console.log(`MQTT listening for messages...`)
-  })
-  mqtts.push(mqtt)
-}
-
 //-------------------
 
 console.log(`TCP creating server for agent...`)
 const tcp = net.createServer()
 
-tcp.on('connection', socket => {
+let outputSocket
+const mqtts = []
+
+tcp.on('connection', async socket => {
   outputSocket = socket
   const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
   console.log('TCP new client connection from', remoteAddress)
@@ -62,18 +41,39 @@ tcp.on('connection', socket => {
       console.log('TCP received data:', str.slice(0, 20), '...')
     }
   })
+
+  const cache = new Cache()
+
+  for (const device of devices) {
+    const [serialNumber, url] = device
+
+    console.log(`Importing code for device ${serialNumber}...`)
+    const pluginPath = `./plugins/${serialNumber}/adapter-dev.js` //. -dev for now
+    const plugin = await import(pluginPath)
+
+    console.log(`MQTT connecting to broker on`, url, `...`)
+    const mqtt = mqttlib.connect(url)
+
+    mqtt.on('connect', function onConnect() {
+      console.log(`MQTT connected to broker on`, url)
+      console.log(`MQTT calling plugin init and subscribing to topics...`)
+      plugin.init(mqtt, cache, serialNumber, socket)
+      console.log(`MQTT listening for messages...`)
+    })
+    mqtts.push(mqtt)
+  }
 })
 
 console.log(`TCP try listening to socket at`, outputPort, outputHost, `...`)
 tcp.listen(outputPort, outputHost)
 
-// pass message on to output (agent or diode)
-function sendToOutput(output) {
-  if (outputSocket) {
-    console.log(`TCP sending string with LF terminator...`)
-    outputSocket.write(output + '\n')
-  }
-}
+// // pass message on to output (agent or diode)
+// function sendToOutput(output) {
+//   if (outputSocket) {
+//     console.log(`TCP sending string with LF terminator...`)
+//     outputSocket.write(output + '\n')
+//   }
+// }
 
 function shutdown() {
   console.log(`Exiting...`)
