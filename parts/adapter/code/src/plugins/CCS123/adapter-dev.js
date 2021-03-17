@@ -18,19 +18,21 @@ export function init(mqtt, cache, serialNumber) {
     topics[k] = topics[k].replace('${serialNumber}', serialNumber)
   }
 
-  mqtt.subscribe(topics.receiveQuery, onQueryResult)
+  mqtt.subscribe(topics.receiveQuery, onQueryMessage)
   mqtt.send(topics.sendQuery, '{}')
 
-  function onQueryResult(topic, payload) {
-    mqtt.unsubscribe(topics.receiveQuery, onQueryResult)
-    const obj = unpack(topic, payload)
-    cache.save(obj)
+  function onQueryMessage(topic, payload) {
+    mqtt.unsubscribe(topics.receiveQuery, onQueryMessage)
+    const msg = unpack(topic, payload)
+    // cache.save(msg)
+    for (const item of msg.payload) {
+    }
 
-    // best to subscribe to topics at this point,
-    // in case status or read messages come in BEFORE query results are delivered,
-    // which would clobber these values.
-    mqtt.subscribe(topics.receiveStatus, onStatusMessage)
-    mqtt.subscribe(topics.receiveRead, onReadMessage)
+    // // best to subscribe to topics at this point,
+    // // in case status or read messages come in BEFORE query results are delivered,
+    // // which would clobber these values.
+    // mqtt.subscribe(topics.receiveStatus, onStatusMessage)
+    // mqtt.subscribe(topics.receiveRead, onReadMessage)
   }
 
   function onStatusMessage(topic, payload) {
@@ -54,8 +56,8 @@ export function init(mqtt, cache, serialNumber) {
 
 // unpack a message payload byte buffer and append some metadata.
 function unpack(topic, payloadBuffer) {
-  const data = JSON.parse(payloadBuffer.toString())
+  const payload = JSON.parse(payloadBuffer.toString())
   const received = new Date()
-  const obj = { topic, data, received }
-  return obj
+  const msg = { topic, payload, received }
+  return msg
 }
