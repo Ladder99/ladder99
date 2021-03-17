@@ -28,27 +28,26 @@ export function init(mqtt, cache, serialNumber) {
   mqtt.on('message', onMessage)
 
   function onMessage(topic, buffer) {
-    console.log('onMessage', { topic, buffer })
+    console.log('onMessage', { topic })
     if (topic === topics.receiveQuery) {
       onQueryMessage(topic, buffer)
     }
   }
 
   function onQueryMessage(topic, buffer) {
-    console.log('onquery', { topic, buffer })
+    console.log('onQueryMessage', { topic })
     mqtt.unsubscribe(topics.receiveQuery, onQueryMessage)
     const msg = unpack(topic, buffer)
-    console.log({ msg })
     for (const item of msg.payload) {
       const key = serialNumber + '-' + item.keys[0] // eg 'CCS123-%I0.10'
-      console.log('setcache', { key, item })
+      console.log('setCache', { key })
       cache.set(key, item)
       // add other keys to aliases
       for (const alias of item.keys.slice(1)) {
         aliases[alias] = item
       }
     }
-    console.log({ cache, aliases })
+    console.log({ cache })
 
     // // best to subscribe to topics at this point,
     // // in case status or read messages come in BEFORE query results are delivered,
@@ -78,7 +77,7 @@ export function init(mqtt, cache, serialNumber) {
 
 // unpack a message payload byte buffer and append some metadata.
 function unpack(topic, buffer) {
-  console.log('unpack', { topic, buffer })
+  // console.log('unpack', { topic, buffer })
   const payload = JSON.parse(buffer.toString())
   const received = new Date()
   const msg = { topic, payload, received }
