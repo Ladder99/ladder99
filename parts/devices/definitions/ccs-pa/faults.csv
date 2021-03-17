@@ -1,0 +1,14 @@
+Severity,Number,Verbage,System Affected
+Hard,4,take up motor operation changed,controller
+Hard,10,e-stop activated,controller
+Hard,15,take up motor timeout,feeder
+Hard,5,smart tamp out of position,end-effector
+Hard,1,print end signal not received,feeder
+Hard,11,out of media,feeder
+Hard,12,out of ribbon,feeder
+Hard,13,printer service required,feeder
+Hard,14,no printer data,feeder
+Soft,50,low ribbon,feeder
+Soft,51,media low,feeder
+Hard,2,cylinder did not leave home (head up),end-effector
+Hard,3,cylinder did not return home (head down),end-effector
