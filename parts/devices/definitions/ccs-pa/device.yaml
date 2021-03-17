@@ -36,11 +36,13 @@ device:
         id: ${serialNumber}-program
         category: EVENT
         type: EXECUTION
+        value: cache.get('${serialNumber}-program')
 
       step: &step
         id: ${serialNumber}-step
         category: EVENT
         type: EXECUTION
+        value: cache.get('${serialNumber}-step')
 
       printer_start_print: &printer_start_print
         id: ${serialNumber}-%Q0.0
@@ -63,7 +65,6 @@ device:
         type: ACTUATOR_STATE
         value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.2')]
 
-    conditions:
       end_eff_cond: &end_eff_cond
         id: ${serialNumber}-end_eff_cond
         # q. is id really needed?  what if id is always the name of the yaml parent?
@@ -80,14 +81,15 @@ device:
         type: MESSAGE
         value: cache.get('${serialNumber}-faults').first([2,3,5]).property('description').value
 
-    samples: {}
-
     dataItems:
       dataItem:
         - *fw_ver
         - *printer_start_print
         - *printer_feed
         - *printer_pause
+        #. move elsewhere
+        - *end_eff_cond
+        - *end_eff_message
 
     components:
       controller:
