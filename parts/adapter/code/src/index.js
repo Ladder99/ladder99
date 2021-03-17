@@ -45,7 +45,7 @@ for (const device of devices) {
 
 //-------------------
 
-console.log(`TCP creating server...`)
+console.log(`TCP creating server for agent...`)
 const tcp = net.createServer()
 
 tcp.on('connection', socket => {

@@ -86,18 +86,17 @@ function unpack(topic, buffer) {
 
 const calcs = [
   {
-    cacheKeys: ['CCS123-%Q0.0'],
-    outputKey: 'CCS123-%Q0.0',
-    outputValue: cache =>
-      cache.get('CCS123-%Q0.0') === 0 ? 'INACTIVE' : 'ACTIVE',
+    dependsOn: ['CCS123-%Q0.0'],
+    key: 'CCS123-%Q0.0',
+    value: cache => (cache.get('CCS123-%Q0.0') === 0 ? 'INACTIVE' : 'ACTIVE'),
   },
 ]
 
 function updateOutputs(cache) {
   for (const calc of calcs) {
-    const timestamp = new Date()
-    const key = calc.outputKey
-    const value = calc.outputValue(cache)
+    const timestamp = new Date().toISOString()
+    const key = calc.key
+    const value = calc.value(cache)
     const output = `${timestamp}|${key}|${value}`
     console.log(output)
   }
