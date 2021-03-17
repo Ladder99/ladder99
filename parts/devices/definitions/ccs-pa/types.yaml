@@ -1,10 +1,14 @@
+# these types can be used in device.yaml
+
 types:
   ACTUATOR_STATE:
     0: INACTIVE
     1: ACTIVE
+
   EMERGENCY_STOP:
     0: ARMED
     1: TRIGGERED
+
   EXECUTION:
     50: WAIT
     100: WAIT
@@ -12,9 +16,9 @@ types:
     250: WAIT
     300: WAIT
     400: ACTIVE
+
   WAIT_STATE:
     50: PAUSING
     100: PAUSING
     250: RESUMING
     300: RESUMING
-

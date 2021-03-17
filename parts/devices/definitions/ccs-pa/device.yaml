@@ -16,8 +16,6 @@ device:
         category: EVENT
         type: FIRMWARE
         subType: VERSION
-        # value: l99/ccs/evt/status+build_no
-        # value: shdr(topic('status').valueOf('build_no'))
         value: cache.get('${serialNumber}-status-build_no')
 
       state: &state
@@ -30,7 +28,6 @@ device:
           READY, ACTIVE, INTERRUPTED, FEED_HOLD, STOPPED, OPTIONAL_STOP, 
           PROGRAM_STOPPED, or PROGRAM_COMPLETED
           http://mtcup.org/wiki/Data_Item_Types:_EVENT
-        # source: execution.lua
         # <Source>status.state 400 ACTIVE; 200 READY; 50,100,250,300 WAIT</Source>
         # value: |
         #   {
@@ -45,12 +42,11 @@ device:
         #     return names[cache['${serialNumber}-state']]
         #   }
         value: types.EXECUTION[cache.get('${serialNumber}-state')]
-        
+
       wait_state: &wait_state
         id: ${serialNumber}-wait_state
         category: EVENT
         type: WAIT_STATE
-        # source: wait_state.lua
         # <Source>status.state 50,100 PAUSING; 250,300 RESUMING; ?</Source>
         value: types.WAIT_STATE[cache.get('${serialNumber}-wait_state')]
 
@@ -93,15 +89,15 @@ device:
 
     conditions:
       end_eff_cond: &end_eff_cond
-        id: ${serialNumber}-end_eff_cond 
+        id: ${serialNumber}-end_eff_cond
         # q. is id really needed?  what if id is always the name of the yaml parent?
-        # serialNumber prefix could be a configurable setting at adapter level, 
+        # serialNumber prefix could be a configurable setting at adapter level,
         # prefix is only needed when multiple Device will be present in devices.xml to prevent collision.
         category: CONDITION
         type: SYSTEM
         # value needs quotes here because has : in expression
         value: "(cache.get('${serialNumber}-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
-      
+
       end_eff_message: &end_eff_message
         id: ${serialNumber}-end_eff_message
         category: EVENT
