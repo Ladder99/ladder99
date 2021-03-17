@@ -18,22 +18,22 @@ device:
         subType: VERSION
         # value: l99/ccs/evt/status+build_no
         # value: shdr(topic('status').valueOf('build_no'))
-        value: cache => cache.get('${serialNumber}-status-build_no')
+        value: cache.get('${serialNumber}-status-build_no')
 
       state: &state
         id: ${serialNumber}-state
         category: EVENT
         type: EXECUTION
-        # source: execution.lua
         docs: |
           EXECUTION
           The execution status of the Controller. 
           READY, ACTIVE, INTERRUPTED, FEED_HOLD, STOPPED, OPTIONAL_STOP, 
           PROGRAM_STOPPED, or PROGRAM_COMPLETED
           http://mtcup.org/wiki/Data_Item_Types:_EVENT
+        # source: execution.lua
         # <Source>status.state 400 ACTIVE; 200 READY; 50,100,250,300 WAIT</Source>
         # value: |
-        #   cache => {
+        #   {
         #     const names = {
         #       50: 'WAIT',
         #       100: 'WAIT',
@@ -44,7 +44,7 @@ device:
         #     }
         #     return names[cache['${serialNumber}-state']]
         #   }
-        value: cache => types.EXECUTION[cache.get('${serialNumber}-state')]
+        value: types.EXECUTION[cache.get('${serialNumber}-state')]
         
       wait_state: &wait_state
         id: ${serialNumber}-wait_state
@@ -52,7 +52,7 @@ device:
         type: WAIT_STATE
         # source: wait_state.lua
         # <Source>status.state 50,100 PAUSING; 250,300 RESUMING; ?</Source>
-        value: cache => types.WAIT_STATE[cache.get('${serialNumber}-wait_state')]
+        value: types.WAIT_STATE[cache.get('${serialNumber}-wait_state')]
 
       program: &program
         id: ${serialNumber}-program
@@ -74,22 +74,39 @@ device:
           Represents the operational state of an apparatus for moving or 
           controlling a mechanism or system.
           The valid data value MUST be ACTIVE or INACTIVE
-        # value: "cache => cache['${serialNumber}-%Q0.0']===0 ? 'INACTIVE' : 'ACTIVE'"
-        value: cache => types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.0')]
+        # value: "cache['${serialNumber}-%Q0.0']===0 ? 'INACTIVE' : 'ACTIVE'"
+        value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.0')]
 
       printer_feed: &printer_feed
         id: ${serialNumber}-%Q0.1
         name: printer_feed
         category: EVENT
         type: ACTUATOR_STATE
-        value: cache => types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.1')]
+        value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.1')]
 
       printer_pause: &printer_pause
         id: ${serialNumber}-%Q0.2
         name: printer_pause
         category: EVENT
         type: ACTUATOR_STATE
-        value: cache => types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.2')]
+        value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.2')]
+
+    conditions:
+      end_eff_cond: &end_eff_cond
+        id: ${serialNumber}-end_eff_cond 
+        # q. is id really needed?  what if id is always the name of the yaml parent?
+        # serialNumber prefix could be a configurable setting at adapter level, 
+        # prefix is only needed when multiple Device will be present in devices.xml to prevent collision.
+        category: CONDITION
+        type: SYSTEM
+        # value needs quotes here because has : in expression
+        value: "(cache.get('CCS123-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
+      
+      end_eff_message: &end_eff_message
+        id: ${serialNumber}-end_eff_message
+        category: EVENT
+        type: MESSAGE
+        value: cache.get('CCS123-faults').first([2,3,5]).property('description').value
 
     dataItems:
       dataItem:
