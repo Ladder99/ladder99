@@ -26,7 +26,9 @@ getjs:
 
 # start containers
 up:
-    docker-compose down && docker-compose up --build
+    docker-compose down && \
+    docker-compose up --build --remove-orphans && \
+    docker-compose rm -fsv
 
 # # start containers with 2 simulators
 # up2:

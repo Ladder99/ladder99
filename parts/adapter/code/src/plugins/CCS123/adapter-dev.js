@@ -21,13 +21,15 @@ export function init(mqtt, cache, serialNumber) {
   }
 
   mqtt.subscribe(topics.receiveQuery, onQueryMessage)
-  mqtt.send(topics.sendQuery, '{}')
+  mqtt.publish(topics.sendQuery, '{}')
 
   function onQueryMessage(topic, payload) {
     mqtt.unsubscribe(topics.receiveQuery, onQueryMessage)
     const msg = unpack(topic, payload)
-    for (const item of msg.payload) {
+    console.log({ msg })
+    for (const item of msg.data) {
       const key = serialNumber + '-' + item.keys[0] // eg 'CCS123-%I0.10'
+      console.log('setcache', { key, item })
       cache.set(key, item)
       // add other keys to aliases
       for (const alias of item.keys.slice(1)) {
@@ -63,9 +65,10 @@ export function init(mqtt, cache, serialNumber) {
 }
 
 // unpack a message payload byte buffer and append some metadata.
-function unpack(topic, payloadBuffer) {
-  const payload = JSON.parse(payloadBuffer.toString())
+function unpack(topic, payload) {
+  console.log({ topic, payload })
+  const data = JSON.parse(payload.toString())
   const received = new Date()
-  const msg = { topic, payload, received }
+  const msg = { topic, data, received }
   return msg
 }
