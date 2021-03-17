@@ -31,7 +31,6 @@ for (const device of devices) {
   // @ts-ignore (top-level await warning)
   const plugin = await import(pluginPath)
 
-  // setTimeout(() => {
   console.log(`MQTT connecting to broker on`, url, `...`)
   const mqtt = mqttlib.connect(url)
 
@@ -42,7 +41,6 @@ for (const device of devices) {
     console.log(`MQTT listening for messages...`)
   })
   mqtts.push(mqtt)
-  // }, 1000)
 }
 
 //-------------------

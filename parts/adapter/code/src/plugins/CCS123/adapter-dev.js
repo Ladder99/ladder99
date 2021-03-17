@@ -34,12 +34,13 @@ export function init(mqtt, cache, serialNumber) {
   }
 
   function onQueryMessage(topic, buffer) {
-    console.log('MQTT onQueryMessage', { topic })
+    console.log('MQTT onQueryMessage')
     mqtt.unsubscribe(topics.receiveQuery)
     const msg = unpack(topic, buffer)
     for (const item of msg.payload) {
-      const key = serialNumber + '-' + item.keys[0] // eg 'CCS123-%I0.10'
-      cache.set(key, item)
+      const address = item.keys[0]
+      const key = serialNumber + '-' + address // eg 'CCS123-%I0.10'
+      cache.set(key, item.default)
       // add other keys to aliases
       for (const alias of item.keys.slice(1)) {
         aliases[alias] = item
@@ -47,6 +48,7 @@ export function init(mqtt, cache, serialNumber) {
     }
     console.log('MQTT', { cache })
 
+    updateOutputs(cache)
     // // best to subscribe to topics at this point,
     // // in case status or read messages come in BEFORE query results are delivered,
     // // which would clobber these values.
@@ -80,4 +82,23 @@ function unpack(topic, buffer) {
   const received = new Date()
   const msg = { topic, payload, received }
   return msg
+}
+
+const calcs = [
+  {
+    cacheKeys: ['CCS123-%Q0.0'],
+    outputKey: 'CCS123-%Q0.0',
+    outputValue: cache =>
+      cache.get('CCS123-%Q0.0') === 0 ? 'INACTIVE' : 'ACTIVE',
+  },
+]
+
+function updateOutputs(cache) {
+  for (const calc of calcs) {
+    const timestamp = new Date()
+    const key = calc.outputKey
+    const value = calc.outputValue(cache)
+    const output = `${timestamp}|${key}|${value}`
+    console.log(output)
+  }
 }
