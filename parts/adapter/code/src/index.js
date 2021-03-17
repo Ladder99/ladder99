@@ -5,7 +5,7 @@
 
 import net from 'net' // node lib for tcp
 import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
-import { Cache } from './cache'
+import { Cache } from './cache.js'
 
 // eg DEVICES=CCS123@broker1:1883 CCS124@broker2:1883
 const devices = (process.env.DEVICES || '').split(' ').map(d => d.split('@'))

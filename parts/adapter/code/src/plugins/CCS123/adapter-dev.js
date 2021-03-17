@@ -10,6 +10,8 @@ const topics = {
   receiveRead: 'l99/${serialNumber}/evt/read',
 }
 
+const aliases = {}
+
 // initialize the client plugin.
 // queries the device for address space definitions, subscribes to topics.
 export function init(mqtt, cache, serialNumber) {
@@ -24,9 +26,15 @@ export function init(mqtt, cache, serialNumber) {
   function onQueryMessage(topic, payload) {
     mqtt.unsubscribe(topics.receiveQuery, onQueryMessage)
     const msg = unpack(topic, payload)
-    // cache.save(msg)
     for (const item of msg.payload) {
+      const key = serialNumber + '-' + item.keys[0] // eg 'CCS123-%I0.10'
+      cache.set(key, item)
+      // add other keys to aliases
+      for (const alias of item.keys.slice(1)) {
+        aliases[alias] = item
+      }
     }
+    console.log({ cache, aliases })
 
     // // best to subscribe to topics at this point,
     // // in case status or read messages come in BEFORE query results are delivered,
