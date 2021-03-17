@@ -19,35 +19,33 @@ export function init(mqtt, cache, serialNumber) {
   for (const key of Object.keys(topics)) {
     topics[key] = topics[key].replace('${serialNumber}', serialNumber)
   }
-  console.log({ topics })
+  console.log('MQTT topics', { topics })
 
-  // mqtt.subscribe(topics.receiveQuery, onQueryMessage)
   mqtt.subscribe(topics.receiveQuery)
   mqtt.publish(topics.sendQuery, '{}')
 
   mqtt.on('message', onMessage)
 
   function onMessage(topic, buffer) {
-    console.log('onMessage', { topic })
+    console.log('MQTT onMessage', { topic })
     if (topic === topics.receiveQuery) {
       onQueryMessage(topic, buffer)
     }
   }
 
   function onQueryMessage(topic, buffer) {
-    console.log('onQueryMessage', { topic })
-    mqtt.unsubscribe(topics.receiveQuery, onQueryMessage)
+    console.log('MQTT onQueryMessage', { topic })
+    mqtt.unsubscribe(topics.receiveQuery)
     const msg = unpack(topic, buffer)
     for (const item of msg.payload) {
       const key = serialNumber + '-' + item.keys[0] // eg 'CCS123-%I0.10'
-      console.log('setCache', { key })
       cache.set(key, item)
       // add other keys to aliases
       for (const alias of item.keys.slice(1)) {
         aliases[alias] = item
       }
     }
-    console.log({ cache })
+    console.log('MQTT', { cache })
 
     // // best to subscribe to topics at this point,
     // // in case status or read messages come in BEFORE query results are delivered,

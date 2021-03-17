@@ -25,6 +25,10 @@ getjs:
     cp parts/devices/output/*.js parts/adapter/code/src/plugins
 
 # start containers
+# rm options:
+# -f, --force   Don't ask to confirm removal
+# -s, --stop    Stop the containers, if required, before removing
+# -v            Remove any anonymous volumes attached to containers
 up:
     docker-compose down && \
     docker-compose up --build --remove-orphans && \
