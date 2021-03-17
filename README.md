@@ -17,7 +17,7 @@ MTConnect standardizes factory device data flow - it was designed by UC Berkeley
 
 ### Data flow
 
-![arch](docs/architecture.dot.svg)
+![arch](design/architecture.dot.svg)
 
 MQTT is a simple publish/subscribe message protocol. Messages from factory devices go to an MQTT Broker (Mosquitto). PLC4X communicates with old machines via proprietary protocols and translates them to MQTT (correct?). 
 

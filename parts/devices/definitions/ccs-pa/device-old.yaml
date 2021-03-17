@@ -1,0 +1,146 @@
+device:
+  - id: ccs-pa
+    name: CCS-PA
+    uuid: ${uuid} # eg 'e05363af-95d1-4354-b749-8fbb09d3499e'
+    sampleInterval: 10
+
+    description:
+      manufacturer: CCS
+      model: Emergent-PA-Pneumatic
+      serialNumber: ${serialNumber} # eg 'CCS123'
+      text: Emergent Next Generation Print and Apply
+
+    events:
+      fw_ver: &fw_ver
+        id: ${serialNumber}-fw_ver # eg 'CCS123-fw_ver'
+        category: EVENT
+        type: FIRMWARE
+        subType: VERSION
+        value: cache.get('${serialNumber}-status-build_no')
+
+      state: &state
+        id: ${serialNumber}-state
+        category: EVENT
+        type: EXECUTION
+        docs: |
+          EXECUTION
+          The execution status of the Controller. 
+          READY, ACTIVE, INTERRUPTED, FEED_HOLD, STOPPED, OPTIONAL_STOP, 
+          PROGRAM_STOPPED, or PROGRAM_COMPLETED
+          http://mtcup.org/wiki/Data_Item_Types:_EVENT
+        # <Source>status.state 400 ACTIVE; 200 READY; 50,100,250,300 WAIT</Source>
+        # value: |
+        #   {
+        #     const names = {
+        #       50: 'WAIT',
+        #       100: 'WAIT',
+        #       200: 'PROGRAM_STOPPED',
+        #       250: 'WAIT',
+        #       300: 'WAIT',
+        #       400: 'ACTIVE',
+        #     }
+        #     return names[cache['${serialNumber}-state']]
+        #   }
+        value: types.EXECUTION[cache.get('${serialNumber}-state')]
+
+      wait_state: &wait_state
+        id: ${serialNumber}-wait_state
+        category: EVENT
+        type: WAIT_STATE
+        # <Source>status.state 50,100 PAUSING; 250,300 RESUMING; ?</Source>
+        value: types.WAIT_STATE[cache.get('${serialNumber}-wait_state')]
+
+      program: &program
+        id: ${serialNumber}-program
+        category: EVENT
+        type: EXECUTION
+
+      step: &step
+        id: ${serialNumber}-step
+        category: EVENT
+        type: EXECUTION
+
+      printer_start_print: &printer_start_print
+        id: ${serialNumber}-%Q0.0
+        name: printer_start_print
+        category: EVENT
+        type: ACTUATOR_STATE
+        docs: |
+          ACTUATOR_STATE
+          Represents the operational state of an apparatus for moving or 
+          controlling a mechanism or system.
+          The valid data value MUST be ACTIVE or INACTIVE
+        # value: "cache['${serialNumber}-%Q0.0']===0 ? 'INACTIVE' : 'ACTIVE'"
+        value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.0')]
+
+      printer_feed: &printer_feed
+        id: ${serialNumber}-%Q0.1
+        name: printer_feed
+        category: EVENT
+        type: ACTUATOR_STATE
+        value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.1')]
+
+      printer_pause: &printer_pause
+        id: ${serialNumber}-%Q0.2
+        name: printer_pause
+        category: EVENT
+        type: ACTUATOR_STATE
+        value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.2')]
+
+    conditions:
+      end_eff_cond: &end_eff_cond
+        id: ${serialNumber}-end_eff_cond
+        # q. is id really needed?  what if id is always the name of the yaml parent?
+        # serialNumber prefix could be a configurable setting at adapter level,
+        # prefix is only needed when multiple Device will be present in devices.xml to prevent collision.
+        category: CONDITION
+        type: SYSTEM
+        # value needs quotes here because has : in expression
+        value: "(cache.get('${serialNumber}-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
+
+      end_eff_message: &end_eff_message
+        id: ${serialNumber}-end_eff_message
+        category: EVENT
+        type: MESSAGE
+        value: cache.get('${serialNumber}-faults').first([2,3,5]).property('description').value
+
+    dataItems:
+      dataItem:
+        - *fw_ver
+        - *printer_start_print
+        - *printer_feed
+        - *printer_pause
+
+    components:
+      controller:
+        id: ${serialNumber}-controller
+        nativeName: plc
+        description:
+          text: Electronic board set responsible for coordinating all machine function.
+        dataItems:
+          dataItem:
+            - *state
+            - *wait_state
+            - *program
+            - *step
+
+        components:
+          path:
+            id: ${serialNumber}-path1
+            name: path
+            dataItems:
+              dataItem: []
+
+    systems:
+      id: ${serialNumber}-systems
+      components:
+        endEffector:
+          id: ${serialNumber}-end_effector
+          dataItems:
+            dataItem: []
+          compositions: []
+        feeder:
+          id: ${serialNumber}-feeder
+          dataItems:
+            dataItem: []
+          compositions: []
