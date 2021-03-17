@@ -1,0 +1,24 @@
+  <DataItems>
+    <DataItem category="CONDITION" id="end_eff_cond" type="SYSTEM"/>
+    <DataItem category="EVENT" id="end_eff_message" type="MESSAGE" />
+
+  Hard	2	cylinder did not leave home (head up)		end-effector
+	Hard	3	cylinder did not return home (head down)	end-effector
+	Hard	5	smart tamp out of position					end-effector
+
+  device.yaml:
+   
+   end_eff_cond: &end_eff_cond
+    id: ${serialNumber}-end_eff_cond 
+    # is id really needed?  what if id is always the name of the yaml parent?
+    # serialNumber prefix could be a configurable setting at adapter level, 
+    # prefix is only needed when multiple Device will be present in devices.xml to prevent collision
+    category: CONDITION
+    type: SYSTEM
+    value: cache => (cache.get('CCS123-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'
+   
+   end_eff_message: &end_eff_message
+    id: ${serialNumber}-end_eff_message
+    category: EVENT
+    type: MESSAGE
+    value: cache => cache.get('CCS123-faults').first([2,3,5]).property('description').value
