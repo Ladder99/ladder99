@@ -59,7 +59,7 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     const output = getOutput(cache)
 
     // send shdr to agent via tcp socket
-    console.log(`TCP sending string with LF terminator...`)
+    console.log(`TCP sending string`, output.slice(0, 20), `...`)
     outputSocket.write(output)
 
     // // best to subscribe to topics at this point,
