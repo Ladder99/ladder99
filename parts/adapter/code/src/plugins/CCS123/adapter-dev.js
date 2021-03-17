@@ -39,16 +39,18 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     mqtt.unsubscribe(topics.receiveQuery)
     const msg = unpack(topic, buffer)
     for (const item of msg.payload) {
-      const address = item.keys[0]
-      const others = item.keys.slice(1)
-      const key = serialNumber + '-' + address // eg 'CCS123-%I0.10'
+      // const address = item.keys[0]
+      // const others = item.keys.slice(1)
+      const [address, ...others] = item.keys
+      const key = `${serialNumber}-${address}` // eg 'CCS123-%I0.10'
       cache.set(key, item.default) //.
       // add other keys to aliases
       for (const alias of others) {
-        aliases[alias] = item
+        const key2 = `${serialNumber}-${alias}`
+        aliases[key2] = item
       }
     }
-    console.log('MQTT', { cache })
+    // console.log({ cache })
 
     const output = getOutput(cache)
     outputSocket.write(output)
