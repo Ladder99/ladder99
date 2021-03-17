@@ -46,4 +46,4 @@ down:
 # needs sphinx - `pip install -U Sphinx`
 # needs http-server - `npm install -g http-server`
 docs:
-    cd sphinx && make html && http-server build/html
+    cd docs && make html && http-server build/html

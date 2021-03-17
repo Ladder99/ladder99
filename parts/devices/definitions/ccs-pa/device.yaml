@@ -1,3 +1,5 @@
+# this code defines the xml that will get included in devices.xml
+
 device:
   - id: ccs-pa
     name: CCS-PA
@@ -22,32 +24,12 @@ device:
         id: ${serialNumber}-state
         category: EVENT
         type: EXECUTION
-        docs: |
-          EXECUTION
-          The execution status of the Controller. 
-          READY, ACTIVE, INTERRUPTED, FEED_HOLD, STOPPED, OPTIONAL_STOP, 
-          PROGRAM_STOPPED, or PROGRAM_COMPLETED
-          http://mtcup.org/wiki/Data_Item_Types:_EVENT
-        # <Source>status.state 400 ACTIVE; 200 READY; 50,100,250,300 WAIT</Source>
-        # value: |
-        #   {
-        #     const names = {
-        #       50: 'WAIT',
-        #       100: 'WAIT',
-        #       200: 'PROGRAM_STOPPED',
-        #       250: 'WAIT',
-        #       300: 'WAIT',
-        #       400: 'ACTIVE',
-        #     }
-        #     return names[cache['${serialNumber}-state']]
-        #   }
         value: types.EXECUTION[cache.get('${serialNumber}-state')]
 
       wait_state: &wait_state
         id: ${serialNumber}-wait_state
         category: EVENT
         type: WAIT_STATE
-        # <Source>status.state 50,100 PAUSING; 250,300 RESUMING; ?</Source>
         value: types.WAIT_STATE[cache.get('${serialNumber}-wait_state')]
 
       program: &program
@@ -65,12 +47,6 @@ device:
         name: printer_start_print
         category: EVENT
         type: ACTUATOR_STATE
-        docs: |
-          ACTUATOR_STATE
-          Represents the operational state of an apparatus for moving or 
-          controlling a mechanism or system.
-          The valid data value MUST be ACTIVE or INACTIVE
-        # value: "cache['${serialNumber}-%Q0.0']===0 ? 'INACTIVE' : 'ACTIVE'"
         value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.0')]
 
       printer_feed: &printer_feed
@@ -95,7 +71,7 @@ device:
         # prefix is only needed when multiple Device will be present in devices.xml to prevent collision.
         category: CONDITION
         type: SYSTEM
-        # value needs quotes here because has : in expression
+        # value needs quotes here because has ':' in expression
         value: "(cache.get('${serialNumber}-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
 
       end_eff_message: &end_eff_message
@@ -103,6 +79,8 @@ device:
         category: EVENT
         type: MESSAGE
         value: cache.get('${serialNumber}-faults').first([2,3,5]).property('description').value
+
+    samples: {}
 
     dataItems:
       dataItem:
