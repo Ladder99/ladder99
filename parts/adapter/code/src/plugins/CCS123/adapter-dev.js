@@ -31,16 +31,20 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     console.log('MQTT onMessage', { topic })
     if (topic === topics.receiveQuery) {
       onQueryMessage(topic, buffer)
+    } else {
+      console.log(`MQTT WARNING: no handler for topic`, topic)
     }
   }
 
   function onQueryMessage(topic, buffer) {
     console.log('MQTT onQueryMessage')
+
     mqtt.unsubscribe(topics.receiveQuery)
+
     const msg = unpack(topic, buffer)
+
+    // add each item in message to cache
     for (const item of msg.payload) {
-      // const address = item.keys[0]
-      // const others = item.keys.slice(1)
       const [address, ...others] = item.keys
       const key = `${serialNumber}-${address}` // eg 'CCS123-%I0.10'
       cache.set(key, item.default) //.
@@ -50,9 +54,12 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
         aliases[key2] = item
       }
     }
-    // console.log({ cache })
 
+    // get shdr strings
     const output = getOutput(cache)
+
+    // send shdr to agent via tcp socket
+    console.log(`TCP sending string with LF terminator...`)
     outputSocket.write(output)
 
     // // best to subscribe to topics at this point,
@@ -83,12 +90,13 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
 
 // unpack a message payload byte buffer and append some metadata.
 function unpack(topic, buffer) {
-  // console.log('unpack', { topic, buffer })
   const payload = JSON.parse(buffer.toString())
   const received = new Date()
   const msg = { topic, payload, received }
   return msg
 }
+
+//. move these to calcs.js
 
 const calcs = [
   {
@@ -110,11 +118,3 @@ function getOutput(cache) {
   }
   return output.join('\n') + '\n'
 }
-
-// // pass message on to output (agent or diode)
-// function sendToOutput(output) {
-//   if (outputSocket) {
-//     console.log(`TCP sending string with LF terminator...`)
-//     outputSocket.write(output + '\n')
-//   }
-// }
