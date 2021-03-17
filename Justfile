@@ -34,22 +34,16 @@ up:
     docker-compose up --build --remove-orphans && \
     docker-compose rm -fsv
 
-# # start containers with 2 simulators
-# up2:
-#     docker-compose down --file docker-compose-twosims.yaml && \
-#     docker-compose up --build --file docker-compose-twosims.yaml
-
 # stop containers
 down:
     docker-compose down
 
-# run device simulator
-simulator:
-    docker-compose run simulator
+# # run device simulator
+# simulator:
+#     docker-compose run simulator
 
 # make docs
 # needs sphinx - `pip install -U Sphinx`
 # needs http-server - `npm install -g http-server`
 docs:
     cd sphinx && make html && http-server build/html
-
