@@ -3,7 +3,10 @@ version: '3.7'
 services:
   broker1:
     container_name: broker1
-    build: parts/broker
+    # build: parts/broker
+    build:
+      context: .
+      dockerfile: parts/broker/Dockerfile
     networks:
       - ladder99
     volumes:
@@ -16,7 +19,10 @@ services:
 
   broker2:
     container_name: broker2
-    build: parts/broker
+    # build: parts/broker
+    build:
+      context: .
+      dockerfile: parts/broker/Dockerfile
     networks:
       - ladder99
     volumes:
@@ -29,7 +35,10 @@ services:
 
   adapter:
     container_name: adapter
-    build: parts/adapter
+    # build: parts/adapter
+    build:
+      context: .
+      dockerfile: parts/adapter/Dockerfile
     environment:
       - DEVICES=CCS123@mqtt://broker1:1883 CCS124@mqtt://broker2:1883
       - OUTPUT_HOST=adapter
@@ -49,7 +58,10 @@ services:
 
   simulator1:
     container_name: simulator1
-    build: parts/simulator
+    # build: parts/simulator
+    build:
+      context: .
+      dockerfile: parts/simulator/Dockerfile
     environment:
       - MQTT_HOST=broker1
       - MQTT_PORT=1883
@@ -67,7 +79,10 @@ services:
 
   simulator2:
     container_name: simulator2
-    build: parts/simulator
+    # build: parts/simulator
+    build:
+      context: .
+      dockerfile: parts/simulator/Dockerfile
     environment:
       - MQTT_HOST=broker2
       - MQTT_PORT=1883
@@ -96,7 +111,10 @@ services:
 
   agent:
     container_name: agent
-    build: parts/agent
+    # build: parts/agent
+    build:
+      context: .
+      dockerfile: parts/agent/Dockerfile
     networks:
       - ladder99
     ports:
