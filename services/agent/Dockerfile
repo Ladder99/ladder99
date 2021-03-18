@@ -1,4 +1,5 @@
-# https://hub.docker.com/r/raymondhub/mtconnect
+# see https://hub.docker.com/r/raymondhub/mtconnect
+
 FROM raymondhub/mtconnect:v1.5
 
 EXPOSE 5000
