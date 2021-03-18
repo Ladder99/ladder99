@@ -1,6 +1,8 @@
 # use with https://github.com/casey/just
 # like make, but just a command runner
 
+default_setup := 'demo'
+
 # list targets
 help:
     @just --list
@@ -15,16 +17,16 @@ install:
     cd services/simulator/code && npm install
 
 # build devices.xml and device*.js files from device*.yaml files
-build: buildxml buildjs
+build: _buildxml _buildjs
 
 # build devices.xml from device*.yaml files
-buildxml:
+_buildxml:
     node services/builder/code/src/buildXml.js setups/demo/devices/*.yaml | \
     tee setups/demo/devices.xml
     cp setups/demo/devices.xml setups/demo/volumes/agent/config
 
 # build device*.js files from device*.yaml files
-buildjs:
+_buildjs:
     for filename in setups/demo/devices/*.yaml; \
     do \
         node services/builder/code/src/buildJs.js "$filename" | \
@@ -40,8 +42,8 @@ buildjs:
 # -v            Remove any anonymous volumes attached to containers
 #. run SETUP: build
 
-# start a setup with all services, e.g. `just run demo`
-run SETUP:
+# start a setup with all services, e.g. `just run` or `just run demo`
+run SETUP=default_setup:
     FILE=setups/{{SETUP}}/docker-compose.yaml && \
     docker-compose --file $FILE down && \
     docker-compose --file $FILE up --build --remove-orphans && \
@@ -52,11 +54,10 @@ docs:
     cd docs && make html && http-server build/html
     cd docs && firebase deploy
 
-# replay ccs p&a mqtt recording
-#   --host broker1 \
-replay:
+# replay ccs p&a mqtt recording - https://github.com/rpdswtk/mqtt_recorder
+replay SETUP=default_setup:
     mqtt-recorder \
       --host localhost \
       --port 1883 \
       --mode replay \
-      --file setups/demo/mqtt-recording.csv
+      --file setups/{{SETUP}}/mqtt-recording.csv
