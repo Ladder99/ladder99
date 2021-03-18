@@ -42,6 +42,7 @@ tcp.on('connection', async socket => {
     }
   })
 
+  // define cache shared across devices
   const cache = new Cache()
 
   for (const device of devices) {
@@ -66,14 +67,6 @@ tcp.on('connection', async socket => {
 
 console.log(`TCP try listening to socket at`, outputPort, outputHost, `...`)
 tcp.listen(outputPort, outputHost)
-
-// // pass message on to output (agent or diode)
-// function sendToOutput(output) {
-//   if (outputSocket) {
-//     console.log(`TCP sending string with LF terminator...`)
-//     outputSocket.write(output + '\n')
-//   }
-// }
 
 function shutdown() {
   console.log(`Exiting...`)
