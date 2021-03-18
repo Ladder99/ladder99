@@ -4,7 +4,7 @@ export class Cache {
   }
   set(key, value) {
     this._map.set(key, value)
-    //. call the shdr update fn - for each shdr value change calls sendToOutput
+    //. call the shdr update fn to update dependent shdr values
     // updateShdr()
   }
   get(key) {

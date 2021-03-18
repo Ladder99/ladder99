@@ -1,5 +1,5 @@
 // adapter plugin code
-// derived from parts/devices/definitions/ccs-pa and instances/CCS123.yaml etc
+// derived from models/ccs-pa and setups/demo/devices/CCS123.yaml etc
 
 //. this is experimental for development
 
@@ -47,7 +47,8 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     for (const item of msg.payload) {
       const [address, ...others] = item.keys
       const key = `${serialNumber}-${address}` // eg 'CCS123-%I0.10'
-      cache.set(key, item.default) //.
+      item.value = item.default
+      cache.set(key, item)
       // add other keys to aliases
       for (const alias of others) {
         const key2 = `${serialNumber}-${alias}`
@@ -96,16 +97,17 @@ function unpack(topic, buffer) {
   return msg
 }
 
-//. move these to calcs.js
-
+// define list of calculations to run on cache values to get shdr key/value pairs
 const calcs = [
   {
     dependsOn: ['CCS123-%Q0.0'],
     key: 'CCS123-%Q0.0',
-    value: cache => (cache.get('CCS123-%Q0.0') === 0 ? 'INACTIVE' : 'ACTIVE'),
+    value: cache =>
+      cache.get('CCS123-%Q0.0').value === 0 ? 'INACTIVE' : 'ACTIVE',
   },
 ]
 
+// get all shdr outputs for the cache values
 function getOutput(cache) {
   const output = []
   for (const calc of calcs) {
