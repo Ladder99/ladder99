@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- generated file - do not edit -->
+<!-- copied from setups/demo to setups/demo/volumes/agent -->
 <MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
   <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.6.0.7"/>
   <Devices>
     <Device id="ccs-pa" name="CCS-PA" uuid="000" sampleInterval="10">
-      <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="CCS123">Emergent Next Generation Print and Apply</Description>
+      <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="CCS123">
+        Emergent Next Generation Print and Apply
+      </Description>
       <DataItems>
         <DataItem id="CCS123-fw_ver" category="EVENT" type="FIRMWARE" subType="VERSION">l99/ccs/evt/status+build_no</DataItem>
         <DataItem id="CCS123-%Q0.0" name="printer_start_print" category="EVENT" type="ACTUATOR_STATE">l99/ccs/evt/read+%Q0.0</DataItem>
         <DataItem id="CCS123-%Q0.1" name="printer_feed" category="EVENT" type="ACTUATOR_STATE">l99/ccs/evt/read+%Q0.1</DataItem>
         <DataItem id="CCS123-%Q0.2" name="printer_pause" category="EVENT" type="ACTUATOR_STATE">l99/ccs/evt/read+%Q0.2</DataItem>
+        <DataItem id="CCS123-estop" name="estop" category="EVENT" type="EMERGENCY_STOP"></DataItem>
       </DataItems>
       <Components>
         <Controller id="CCS123-controller" nativeName="plc">
