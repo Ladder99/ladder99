@@ -6,44 +6,44 @@ version: '3.7'
 services:
   broker1:
     container_name: broker1
-    # build: parts/broker
+    # build: services/broker
     # build:
     #   context: .
-    #   dockerfile: parts/broker/Dockerfile
+    #   dockerfile: services/broker/Dockerfile
     image: eclipse-mosquitto
     networks:
       - ladder99
     volumes:
-      - ./parts/broker/config/1:/mosquitto/config
-      - ./parts/broker/data/1:/mosquitto/data
-      - ./parts/broker/log/1:/mosquitto/log
+      - ./services/broker/config/1:/mosquitto/config
+      - ./services/broker/data/1:/mosquitto/data
+      - ./services/broker/log/1:/mosquitto/log
     logging:
       options:
         max-size: '1m'
 
   broker2:
     container_name: broker2
-    # build: parts/broker
+    # build: services/broker
     # build:
     #   context: .
-    #   dockerfile: parts/broker/Dockerfile
+    #   dockerfile: services/broker/Dockerfile
     image: eclipse-mosquitto
     networks:
       - ladder99
     volumes:
-      - ./parts/broker/config/2:/mosquitto/config
-      - ./parts/broker/data/2:/mosquitto/data
-      - ./parts/broker/log/2:/mosquitto/log
+      - ./services/broker/config/2:/mosquitto/config
+      - ./services/broker/data/2:/mosquitto/data
+      - ./services/broker/log/2:/mosquitto/log
     logging:
       options:
         max-size: '1m'
 
   adapter:
     container_name: adapter
-    # build: parts/adapter
+    # build: services/adapter
     build:
       context: .
-      dockerfile: parts/adapter/Dockerfile
+      dockerfile: services/adapter/Dockerfile
     environment:
       - DEVICES=CCS123@mqtt://broker1:1883 CCS124@mqtt://broker2:1883
       - OUTPUT_HOST=adapter
@@ -56,17 +56,17 @@ services:
     networks:
       - ladder99
     volumes:
-      - ./parts/adapter/config:/etc/mtconnect/adapter
+      - ./services/adapter/config:/etc/mtconnect/adapter
     logging:
       options:
         max-size: '1m'
 
   simulator1:
     container_name: simulator1
-    # build: parts/simulator
+    # build: services/simulator
     build:
       context: .
-      dockerfile: parts/simulator/Dockerfile
+      dockerfile: services/simulator/Dockerfile
     environment:
       - MQTT_HOST=broker1
       - MQTT_PORT=1883
@@ -84,10 +84,10 @@ services:
 
   simulator2:
     container_name: simulator2
-    # build: parts/simulator
+    # build: services/simulator
     build:
       context: .
-      dockerfile: parts/simulator/Dockerfile
+      dockerfile: services/simulator/Dockerfile
     environment:
       - MQTT_HOST=broker2
       - MQTT_PORT=1883
@@ -107,7 +107,7 @@ services:
   #   container_name: diode
   #   build:
   #     context: .
-  #     dockerfile: parts/diode/docker/Dockerfile
+  #     dockerfile: services/diode/docker/Dockerfile
   #   networks:
   #     - ladder99
   #   logging:
@@ -116,10 +116,10 @@ services:
 
   agent:
     container_name: agent
-    # build: parts/agent
+    # build: services/agent
     build:
       context: .
-      dockerfile: parts/agent/Dockerfile
+      dockerfile: services/agent/Dockerfile
     networks:
       - ladder99
     ports:
@@ -128,8 +128,8 @@ services:
       adapter:
         condition: service_started
     volumes:
-      - ./parts/agent/config:/etc/mtconnect/agent-custom
-      - ./parts/agent/data:/var/lib/agent
+      - ./services/agent/config:/etc/mtconnect/agent-custom
+      - ./services/agent/data:/var/lib/agent
     logging:
       options:
         max-size: '1m'
