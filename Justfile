@@ -30,9 +30,9 @@ buildjs:
 # -s, --stop    Stop the containers, if required, before removing
 # -v            Remove any anonymous volumes attached to containers
 # docker-compose up --build --remove-orphans && \
-run setup:
-    CONFIG=config/setups/{{setup}}/generated/docker-compose.yaml \
-    docker-compose down && \
+# docker-compose down && \
+run SETUP:
+    CONFIG=config/setups/{{SETUP}}/generated/docker-compose.yaml && \
     docker-compose --file $CONFIG up --build --remove-orphans && \
     docker-compose rm -fsv
 
