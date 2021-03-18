@@ -3,6 +3,7 @@ adapter:
   properties:
     uuid: e05363af-95d1-4354-b749-8fbb09d3499f
     serialNumber: CCS124
+    prefix: CCS124
   # sequences:
   #   startup: ccs-startup.js
   #   shutdown: ccs-shutdown.js
