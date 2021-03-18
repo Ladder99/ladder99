@@ -1,5 +1,5 @@
 # generated file - do not edit
-#. well, will be - edit this for now
+#. well, it will be - edit this for now
 
 version: '3.7'
 
@@ -27,7 +27,7 @@ services:
       # - ./volumes/broker/config/2:/mosquitto/config
       # - ./volumes/broker/data/2:/mosquitto/data
       # - ./volumes/broker/log/2:/mosquitto/log
-      - ./volumes/broker1:/mosquitto
+      - ./volumes/broker2:/mosquitto
     logging:
       options:
         max-size: '1m'
