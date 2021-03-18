@@ -9,6 +9,8 @@ services:
     image: eclipse-mosquitto
     networks:
       - ladder99
+    ports:
+      - 1883:1883
     volumes:
       - ./volumes/broker1:/mosquitto
     logging:

@@ -9,6 +9,7 @@ help:
 install:
     pip install -U Sphinx
     npm install -g http-server
+    pip install mqtt-recorder
     cd services/adapter/code && npm install
     cd services/builder/code && npm install
     cd services/simulator/code && npm install
@@ -18,17 +19,16 @@ build: buildxml buildjs
 
 # build devices.xml from device*.yaml files
 buildxml:
-    node services/builder/code/src/buildXml.js config/models/*.yaml | \
-    tee services/builder/output/devices.xml
-    cp services/builder/output/devices.xml services/agent/config
+    node services/builder/code/src/buildXml.js setups/demo/devices/*.yaml | \
+    tee setups/demo/devices.xml
+    cp setups/demo/devices.xml setups/demo/volumes/agent/config
 
 # build device*.js files from device*.yaml files
 buildjs:
-    cd services/builder && \
-    for filename in input/*.yaml; \
+    for filename in setups/demo/devices/*.yaml; \
     do \
-        node code/src/buildJs.js "$filename" | \
-          tee "output/$(basename $filename .yaml).js" ; \
+        node services/builder/code/src/buildJs.js "$filename" | \
+          tee "setups/demo/devices/$(basename $filename .yaml).js" ; \
     done
     cp services/builder/output/*.js services/adapter/code/src/plugins
 
@@ -51,3 +51,12 @@ run SETUP:
 docs:
     cd docs && make html && http-server build/html
     cd docs && firebase deploy
+
+# replay ccs p&a mqtt recording
+#   --host broker1 \
+replay:
+    mqtt-recorder \
+      --host localhost \
+      --port 1883 \
+      --mode replay \
+      --file setups/demo/mqtt-recording.csv
