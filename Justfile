@@ -25,6 +25,7 @@ buildjs:
     cp services/builder/output/*.js services/adapter/code/src/plugins
 
 # start containers
+# eg `just run demo`
 # rm options:
 # -f, --force   Don't ask to confirm removal
 # -s, --stop    Stop the containers, if required, before removing
