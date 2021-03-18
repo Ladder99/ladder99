@@ -6,37 +6,35 @@ help:
     @just --list
 
 # build devices.xml and device*.js files from device*.yaml files
-devices: getxml getjs
+devices: buildxml buildjs
 
 # build devices.xml from device*.yaml files
-getxml:
-    cd parts/devices && \
-    node code/src/getxml.js input/*.yaml | tee output/devices.xml
-    cp parts/devices/output/devices.xml parts/agent/config
+buildxml:
+    node services/builder/code/src/buildXml.js config/models/*.yaml | \
+    tee services/builder/output/devices.xml
+    cp services/builder/output/devices.xml services/agent/config
 
 # build device*.js files from device*.yaml files
-getjs:
-    cd parts/devices && \
+buildjs:
+    cd services/builder && \
     for filename in input/*.yaml; \
     do \
-        node code/src/getjs.js "$filename" | \
+        node code/src/buildJs.js "$filename" | \
           tee "output/$(basename $filename .yaml).js" ; \
     done
-    cp parts/devices/output/*.js parts/adapter/code/src/plugins
+    cp services/builder/output/*.js services/adapter/code/src/plugins
 
 # start containers
 # rm options:
 # -f, --force   Don't ask to confirm removal
 # -s, --stop    Stop the containers, if required, before removing
 # -v            Remove any anonymous volumes attached to containers
-up:
+# docker-compose up --build --remove-orphans && \
+run setup:
+    CONFIG=config/setups/{{setup}}/generated/docker-compose.yaml \
     docker-compose down && \
-    docker-compose up --build --remove-orphans && \
+    docker-compose --file $CONFIG up --build --remove-orphans && \
     docker-compose rm -fsv
-
-# stop containers
-down:
-    docker-compose down
 
 # # run device simulator
 # simulator:
