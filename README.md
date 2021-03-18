@@ -115,4 +115,3 @@ In the terminal you should get output like this -
     Gracefully stopping... (press Ctrl+C again to force)
     Stopping adapter ... done
     Stopping broker  ... done
-
