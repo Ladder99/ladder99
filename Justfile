@@ -61,4 +61,4 @@ replay SETUP=default_setup:
       --port 1883 \
       --mode replay \
       --loop true \
-      --file setups/{{SETUP}}/simulations/mqtt-recording.csv
+      --file setups/{{SETUP}}/volumes/simulator/mqtt-recording.csv
