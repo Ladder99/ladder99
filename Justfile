@@ -31,11 +31,12 @@ buildjs:
 # -f, --force   Don't ask to confirm removal
 # -s, --stop    Stop the containers, if required, before removing
 # -v            Remove any anonymous volumes attached to containers
+# --project-directory .
 run SETUP:
     FILE=setups/{{SETUP}}/docker-compose.yaml && \
-    docker-compose --file $FILE --project-directory . down && \
-    docker-compose --file $FILE --project-directory . up --build --remove-orphans && \
-    docker-compose --file $FILE --project-directory . rm -fsv
+    docker-compose --file $FILE down && \
+    docker-compose --file $FILE up --build --remove-orphans && \
+    docker-compose --file $FILE rm -fsv
 
 # make sphinx docs
 # needs sphinx - `pip install -U Sphinx`

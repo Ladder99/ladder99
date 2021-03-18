@@ -10,9 +10,10 @@ services:
     networks:
       - ladder99
     volumes:
-      - ./volumes/broker/config/1:/mosquitto/config
-      - ./volumes/broker/data/1:/mosquitto/data
-      - ./volumes/broker/log/1:/mosquitto/log
+      # - ./volumes/broker/config/1:/mosquitto/config
+      # - ./volumes/broker/data/1:/mosquitto/data
+      # - ./volumes/broker/log/1:/mosquitto/log
+      - ./volumes/broker1:/mosquitto
     logging:
       options:
         max-size: '1m'
@@ -23,16 +24,18 @@ services:
     networks:
       - ladder99
     volumes:
-      - ./volumes/broker/config/2:/mosquitto/config
-      - ./volumes/broker/data/2:/mosquitto/data
-      - ./volumes/broker/log/2:/mosquitto/log
+      # - ./volumes/broker/config/2:/mosquitto/config
+      # - ./volumes/broker/data/2:/mosquitto/data
+      # - ./volumes/broker/log/2:/mosquitto/log
+      - ./volumes/broker1:/mosquitto
     logging:
       options:
         max-size: '1m'
 
   adapter:
     container_name: adapter
-    build: services/adapter
+    build:
+      context: ../../services/adapter
     environment:
       - DEVICES=CCS123@mqtt://broker1:1883 CCS124@mqtt://broker2:1883
       - OUTPUT_HOST=adapter
@@ -52,7 +55,7 @@ services:
 
   simulator1:
     container_name: simulator1
-    build: services/simulator
+    build: ../../services/simulator
     environment:
       - MQTT_HOST=broker1
       - MQTT_PORT=1883
@@ -70,7 +73,7 @@ services:
 
   simulator2:
     container_name: simulator2
-    build: services/simulator
+    build: ../../services/simulator
     environment:
       - MQTT_HOST=broker2
       - MQTT_PORT=1883
@@ -97,7 +100,7 @@ services:
 
   agent:
     container_name: agent
-    build: services/agent
+    build: ../../services/agent
     networks:
       - ladder99
     ports:
