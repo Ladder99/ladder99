@@ -5,8 +5,7 @@
 help:
     @just --list
 
-# install dependencies
-#. also python, node/npm
+# install all dependencies #. also python, node/npm
 install:
     pip install -U Sphinx
     npm install -g http-server
@@ -15,7 +14,7 @@ install:
     cd services/simulator/code && npm install
 
 # build devices.xml and device*.js files from device*.yaml files
-devices: buildxml buildjs
+build: buildxml buildjs
 
 # build devices.xml from device*.yaml files
 buildxml:
@@ -33,15 +32,15 @@ buildjs:
     done
     cp services/builder/output/*.js services/adapter/code/src/plugins
 
-# start a setup with all services
-# eg `just run demo`
+# run
 # SETUP is a variable, the name of the setup folder to use
 # rm options:
 # -f, --force   Don't ask to confirm removal
 # -s, --stop    Stop the containers, if required, before removing
 # -v            Remove any anonymous volumes attached to containers
-# --project-directory .
-run SETUP:
+
+# start a setup with all services, e.g. `just run demo`
+run SETUP: build
     FILE=setups/{{SETUP}}/docker-compose.yaml && \
     docker-compose --file $FILE down && \
     docker-compose --file $FILE up --build --remove-orphans && \
