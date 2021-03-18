@@ -10,9 +10,9 @@ services:
     networks:
       - ladder99
     volumes:
-      - ./services/broker/config/1:/mosquitto/config
-      - ./services/broker/data/1:/mosquitto/data
-      - ./services/broker/log/1:/mosquitto/log
+      - ./volumes/broker/config/1:/mosquitto/config
+      - ./volumes/broker/data/1:/mosquitto/data
+      - ./volumes/broker/log/1:/mosquitto/log
     logging:
       options:
         max-size: '1m'
@@ -23,9 +23,9 @@ services:
     networks:
       - ladder99
     volumes:
-      - ./services/broker/config/2:/mosquitto/config
-      - ./services/broker/data/2:/mosquitto/data
-      - ./services/broker/log/2:/mosquitto/log
+      - ./volumes/broker/config/2:/mosquitto/config
+      - ./volumes/broker/data/2:/mosquitto/data
+      - ./volumes/broker/log/2:/mosquitto/log
     logging:
       options:
         max-size: '1m'
@@ -45,7 +45,7 @@ services:
     networks:
       - ladder99
     volumes:
-      - ./services/adapter/config:/etc/mtconnect/adapter
+      - ./volumes/adapter/config:/etc/mtconnect/adapter
     logging:
       options:
         max-size: '1m'
@@ -88,9 +88,7 @@ services:
 
   # diode:
   #   container_name: diode
-  #   build:
-  #     context: .
-  #     dockerfile: services/diode/docker/Dockerfile
+  #   build: services/diode/docker
   #   networks:
   #     - ladder99
   #   logging:
@@ -108,8 +106,8 @@ services:
       adapter:
         condition: service_started
     volumes:
-      - ./services/agent/config:/etc/mtconnect/agent-custom
-      - ./services/agent/data:/var/lib/agent
+      - ./volumes/agent/config:/etc/mtconnect/agent-custom
+      - ./volumes/agent/data:/var/lib/agent
     logging:
       options:
         max-size: '1m'
@@ -132,7 +130,6 @@ services:
 
 volumes:
   portainer_data:
-  # telegraf_conf:
 
 networks:
   ladder99:
