@@ -61,8 +61,9 @@ source
 // hide these yaml elements
 const hiddenSet = getSet(`
 events
-docs
-javascript
+samples
+conditions
+value
 `)
 
 // helper fns
