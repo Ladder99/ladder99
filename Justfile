@@ -26,12 +26,11 @@ buildjs:
 
 # start containers
 # eg `just run demo`
+# SETUP is a variable, the name of the setup folder to use
 # rm options:
 # -f, --force   Don't ask to confirm removal
 # -s, --stop    Stop the containers, if required, before removing
 # -v            Remove any anonymous volumes attached to containers
-# docker-compose up --build --remove-orphans && \
-# SETUP is a variable, the name of the setup folder to use
 run SETUP:
     FILE=config/setups/{{SETUP}}/generated/docker-compose.yaml && \
     docker-compose --file $FILE --project-directory . down && \
