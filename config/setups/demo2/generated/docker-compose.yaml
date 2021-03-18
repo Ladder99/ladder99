@@ -6,11 +6,6 @@ version: '3.7'
 services:
   broker1:
     container_name: broker1
-    # build: .
-    # build: ../../../../services/broker
-    build:
-      context: .
-      dockerfile: services/broker/Dockerfile
     image: eclipse-mosquitto
     networks:
       - ladder99
@@ -22,22 +17,18 @@ services:
       options:
         max-size: '1m'
 
-  # broker2:
-  #   container_name: broker2
-  #   # build: services/broker
-  #   # build:
-  #   #   context: .
-  #   #   dockerfile: services/broker/Dockerfile
-  #   image: eclipse-mosquitto
-  #   networks:
-  #     - ladder99
-  #   volumes:
-  #     - ./services/broker/config/2:/mosquitto/config
-  #     - ./services/broker/data/2:/mosquitto/data
-  #     - ./services/broker/log/2:/mosquitto/log
-  #   logging:
-  #     options:
-  #       max-size: '1m'
+  broker2:
+    container_name: broker2
+    image: eclipse-mosquitto
+    networks:
+      - ladder99
+    volumes:
+      - ./services/broker/config/2:/mosquitto/config
+      - ./services/broker/data/2:/mosquitto/data
+      - ./services/broker/log/2:/mosquitto/log
+    logging:
+      options:
+        max-size: '1m'
 
   # adapter:
   #   container_name: adapter
