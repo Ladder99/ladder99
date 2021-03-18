@@ -42,8 +42,12 @@ down:
 # simulator:
 #     docker-compose run simulator
 
-# make docs
+# make sphinx docs
 # needs sphinx - `pip install -U Sphinx`
 # needs http-server - `npm install -g http-server`
 docs:
     cd docs && make html && http-server build/html
+
+# deploy sphinx docs
+docs-upload:
+    cd docs && firebase deploy
