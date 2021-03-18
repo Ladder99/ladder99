@@ -30,28 +30,25 @@ services:
       options:
         max-size: '1m'
 
-  # adapter:
-  #   container_name: adapter
-  #   # build: services/adapter
-  #   build:
-  #     context: .
-  #     dockerfile: ./services/adapter/Dockerfile
-  #   environment:
-  #     - DEVICES=CCS123@mqtt://broker1:1883 CCS124@mqtt://broker2:1883
-  #     - OUTPUT_HOST=adapter
-  #     - OUTPUT_PORT=7878
-  #   depends_on:
-  #     broker1:
-  #       condition: service_started
-  #     broker2:
-  #       condition: service_started
-  #   networks:
-  #     - ladder99
-  #   volumes:
-  #     - ./services/adapter/config:/etc/mtconnect/adapter
-  #   logging:
-  #     options:
-  #       max-size: '1m'
+  adapter:
+    container_name: adapter
+    build: services/adapter
+    environment:
+      - DEVICES=CCS123@mqtt://broker1:1883 CCS124@mqtt://broker2:1883
+      - OUTPUT_HOST=adapter
+      - OUTPUT_PORT=7878
+    depends_on:
+      broker1:
+        condition: service_started
+      broker2:
+        condition: service_started
+    networks:
+      - ladder99
+    volumes:
+      - ./services/adapter/config:/etc/mtconnect/adapter
+    logging:
+      options:
+        max-size: '1m'
 
   # simulator1:
   #   container_name: simulator1
