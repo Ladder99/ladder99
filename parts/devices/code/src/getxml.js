@@ -122,6 +122,8 @@ function main() {
   const devices = getDevices()
   xdoc.MTConnectDevices[0].Devices.Device = devices
   const xstr = convert.js2xml(xdoc, { compact: true, spaces: 2 })
+  //. insert comment at/near top -
+  // <!-- generated file - do not edit -->
   console.log(xstr)
 }
 
