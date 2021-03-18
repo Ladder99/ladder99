@@ -10,9 +10,6 @@ services:
     networks:
       - ladder99
     volumes:
-      # - ./volumes/broker/config/1:/mosquitto/config
-      # - ./volumes/broker/data/1:/mosquitto/data
-      # - ./volumes/broker/log/1:/mosquitto/log
       - ./volumes/broker1:/mosquitto
     logging:
       options:
@@ -24,9 +21,6 @@ services:
     networks:
       - ladder99
     volumes:
-      # - ./volumes/broker/config/2:/mosquitto/config
-      # - ./volumes/broker/data/2:/mosquitto/data
-      # - ./volumes/broker/log/2:/mosquitto/log
       - ./volumes/broker2:/mosquitto
     logging:
       options:
@@ -48,7 +42,7 @@ services:
     networks:
       - ladder99
     volumes:
-      - ./volumes/adapter/config:/etc/mtconnect/adapter
+      - ./volumes/adapter:/etc/mtconnect/adapter
     logging:
       options:
         max-size: '1m'
@@ -109,7 +103,7 @@ services:
       adapter:
         condition: service_started
     volumes:
-      - ./volumes/agent/config:/etc/mtconnect/agent-custom
+      - ./volumes/agent:/etc/mtconnect/agent-custom
       - ./volumes/agent/data:/var/lib/agent
     logging:
       options:
