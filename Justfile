@@ -32,14 +32,10 @@ buildjs:
 # docker-compose up --build --remove-orphans && \
 # SETUP is a variable, the name of the setup folder to use
 run SETUP:
-    CONFIG=config/setups/{{SETUP}}/generated/docker-compose.yaml && \
-    docker-compose --file $CONFIG --project-directory . down && \
-    docker-compose --file $CONFIG --project-directory . up --build --remove-orphans && \
-    docker-compose --file $CONFIG --project-directory . rm -fsv
-
-# # run device simulator
-# simulator:
-#     docker-compose run simulator
+    FILE=config/setups/{{SETUP}}/generated/docker-compose.yaml && \
+    docker-compose --file $FILE --project-directory . down && \
+    docker-compose --file $FILE --project-directory . up --build --remove-orphans && \
+    docker-compose --file $FILE --project-directory . rm -fsv
 
 # make sphinx docs
 # needs sphinx - `pip install -U Sphinx`
