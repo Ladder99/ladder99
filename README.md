@@ -32,86 +32,38 @@ Install [just](https://github.com/casey/just), which is a task runner
 
     brew install just
 
+Install all dependencies with
 
-(need to gather node dependencies here, eg
+    just install
 
-    cd parts/devices/code
-    npm install
-    
-?)
+
+## Documentation
+
+Build and deploy the docs with
+
+    just docs
+
+Then visit https://ladder99-mtconnect.web.app/
+
+(could make a local server for development also)
 
 
 ## Developing
 
-Edit `parts/devices/config/devices.yaml`, then generate the corresponding xml file and copy it to parts/agent/config with -
+The device models are defined in `models`, eg the ccs-pa model has adapter.js and device.yaml. 
 
-    just devices
+The device instances are defined in the `setups` folder, eg the demo setup has a list of instances in the devices subfolder there. 
 
+Edit these as needed - then generate the `setups/demo/devices.xml` and `docker-compose.yaml` files, run docker-compose up, and start the device simulations with -
 
-## Usage
+    just run demo
 
-Run the system with
+You can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
 
-    just up
-    
-this will start plc4x, the mqtt broker, adapter, agent, diode, application, database, and visualizer - and send some test messages from a simulated device - 
+To see the xml the agent generates visit
 
-In the terminal you should get output like this -
+    localhost:5000/current
 
-    $ docker-compose up --remove-orphans
-    Removing orphan container "diode"
-    Creating broker ... done
-    Creating adapter ... done
-    Creating device  ... done
-    Attaching to broker, adapter, device
-    broker     | 2021-03-03T07:04:53: mosquitto version 2.0.7 starting
-    adapter    |
-    adapter    | > ladder99-adapter@0.1.0 start
-    adapter    | > node src/index.js
-    adapter    |
-    device     |
-    device     | > ladder99-device@0.1.0 start
-    device     | > node src/index.js
-    device     |
-    device     | Device
-    device     | Simulates a device sending MQTT messages.
-    device     | ------------------------------------------------------------
-    adapter    | MTConnect Adapter
-    device     | Connecting to MQTT broker on { host: 'broker', port: 1883 }
-    adapter    | Subscribes to MQTT topics, transforms to SHDR, sends to diode.
-    adapter    | ----------------------------------------------------------------
-    adapter    | Connecting to MQTT broker on { host: 'broker', port: 1883 } ...
-    adapter    | Hit ctrl-c to stop adapter.
-    device     | Publishing messages...
-    device     | Topic l99/ccs/evt/status: {"connection":"online","state":400,"prog...
-    device     | Topic l99/ccs/evt/read: [{"address":"%Q0.1","keys":["OUT2","outp...
-    device     | Topic l99/ccs/evt/read: {"address":"%Q0.7","keys":["OUT8","outpu...
-    device     | Closing MQTT connection...
-    broker     | 2021-03-03T07:04:53: Config loaded from /mosquitto/config/mosquitto.conf.
-    broker     | 2021-03-03T07:04:53: Opening ipv4 listen socket on port 1883.
-    broker     | 2021-03-03T07:04:53: mosquitto version 2.0.7 running
-    broker     | 2021-03-03T07:04:56: New connection from 172.29.0.4:47774 on port 1883.
-    broker     | 2021-03-03T07:04:56: New client connected from 172.29.0.4:47774 as mqttjs_4193fb70 (p2, c1, k60).
-    broker     | 2021-03-03T07:04:56: No will message specified.
-    broker     | 2021-03-03T07:04:56: Sending CONNACK to mqttjs_4193fb70 (0, 0)
-    broker     | 2021-03-03T07:04:56: Received PUBLISH from mqttjs_4193fb70 (d0, q0, r0, m0, 'l99/ccs/evt/status', ... (177 bytes))
-    broker     | 2021-03-03T07:04:56: Received PUBLISH from mqttjs_4193fb70 (d0, q0, r0, m0, 'l99/ccs/evt/read', ... (115 bytes))
-    broker     | 2021-03-03T07:04:56: Received PUBLISH from mqttjs_4193fb70 (d0, q0, r0, m0, 'l99/ccs/evt/read', ... (56 bytes))
-    broker     | 2021-03-03T07:04:56: Received DISCONNECT from mqttjs_4193fb70
-    broker     | 2021-03-03T07:04:56: Client mqttjs_4193fb70 disconnected.
-    broker     | 2021-03-03T07:04:56: New connection from 172.29.0.3:40256 on port 1883.
-    adapter    | Connected to MQTT broker on { host: 'broker', port: 1883 } mqtt://broker:1883
-    adapter    | Subscribing to MQTT topics...
-    adapter    | Subscribing to topic l99/ccs/evt/status...
-    adapter    | Subscribing to topic l99/ccs/evt/read...
-    adapter    | Listening for MQTT messages...
-    device     | npm notice
-    device     | npm notice New minor version of npm available! 7.5.3 -> 7.6.0
-    device     | npm notice Changelog: <https://github.com/npm/cli/releases/tag/v7.6.0>
-    device     | npm notice Run `npm install -g npm@7.6.0` to update!
-    device     | npm notice
-    device exited with code 0
-    ^C
-    Gracefully stopping... (press Ctrl+C again to force)
-    Stopping adapter ... done
-    Stopping broker  ... done
+etc
+
+(later use telegraf to shovel data from localhost:5000 to database and visualizer)

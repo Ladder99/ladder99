@@ -5,6 +5,15 @@
 help:
     @just --list
 
+# install dependencies
+#. also python, node/npm
+install:
+    pip install -U Sphinx
+    npm install -g http-server
+    cd services/adapter/code && npm install
+    cd services/builder/code && npm install
+    cd services/simulator/code && npm install
+
 # build devices.xml and device*.js files from device*.yaml files
 devices: buildxml buildjs
 
@@ -24,7 +33,7 @@ buildjs:
     done
     cp services/builder/output/*.js services/adapter/code/src/plugins
 
-# start containers
+# start a setup with all services
 # eg `just run demo`
 # SETUP is a variable, the name of the setup folder to use
 # rm options:
@@ -38,12 +47,7 @@ run SETUP:
     docker-compose --file $FILE up --build --remove-orphans && \
     docker-compose --file $FILE rm -fsv
 
-# make sphinx docs
-# needs sphinx - `pip install -U Sphinx`
-# needs http-server - `npm install -g http-server`
+# make and deploy sphinx docs
 docs:
     cd docs && make html && http-server build/html
-
-# deploy sphinx docs
-docs-upload:
     cd docs && firebase deploy
