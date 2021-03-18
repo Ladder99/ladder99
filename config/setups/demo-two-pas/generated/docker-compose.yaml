@@ -1,12 +1,16 @@
+# generated file - do not edit
+#. well, will be - edit this for now
+
 version: '3.7'
 
 services:
   broker1:
     container_name: broker1
     # build: parts/broker
-    build:
-      context: .
-      dockerfile: parts/broker/Dockerfile
+    # build:
+    #   context: .
+    #   dockerfile: parts/broker/Dockerfile
+    image: eclipse-mosquitto
     networks:
       - ladder99
     volumes:
@@ -20,9 +24,10 @@ services:
   broker2:
     container_name: broker2
     # build: parts/broker
-    build:
-      context: .
-      dockerfile: parts/broker/Dockerfile
+    # build:
+    #   context: .
+    #   dockerfile: parts/broker/Dockerfile
+    image: eclipse-mosquitto
     networks:
       - ladder99
     volumes:
