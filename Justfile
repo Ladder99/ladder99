@@ -38,9 +38,10 @@ buildjs:
 # -f, --force   Don't ask to confirm removal
 # -s, --stop    Stop the containers, if required, before removing
 # -v            Remove any anonymous volumes attached to containers
+#. run SETUP: build
 
 # start a setup with all services, e.g. `just run demo`
-run SETUP: build
+run SETUP:
     FILE=setups/{{SETUP}}/docker-compose.yaml && \
     docker-compose --file $FILE down && \
     docker-compose --file $FILE up --build --remove-orphans && \
