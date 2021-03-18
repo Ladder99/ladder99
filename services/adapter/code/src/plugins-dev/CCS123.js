@@ -105,6 +105,12 @@ const calcs = [
     value: cache =>
       cache.get('CCS123-%Q0.0').value === 0 ? 'INACTIVE' : 'ACTIVE',
   },
+  {
+    dependsOn: ['CCS123-%Q0.0'],
+    key: 'CCS123-%Q0.0',
+    value: cache =>
+      cache.get('CCS123-%Q0.0').value === 0 ? 'INACTIVE' : 'ACTIVE',
+  },
 ]
 
 // get all shdr outputs for the cache values
