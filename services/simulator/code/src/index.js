@@ -1,15 +1,21 @@
 // simulator
 // simulates a device and publishes sample messages to mqtt broker
 
-import mqttlib from 'mqtt'
-import messages from './messages.js'
+// import mqttlib from 'mqtt'
+const mqttlib = require('mqtt')
+// import messages from './messages.js'
 
 const host = process.env.MQTT_HOST || 'localhost'
 const port = Number(process.env.MQTT_PORT || 1883)
-const clientId = process.env.MQTT_CLIENTID || 'simulator-' + Math.random()
+const serialNumber = process.env.SERIAL_NUMBER // eg 'CCS123'
+const clientId = serialNumber || 'simulator-' + Math.random()
 const config = { host, port, clientId }
+const messagesFile = process.env.MESSAGES_FILE
 
-const serialNumber = clientId // eg 'CCS123'
+// @ts-ignore top-level await okay
+// const messages = await import(messagesFile)
+const messages = require(messagesFile)
+console.log({ messages })
 
 console.log(`Simulator`)
 console.log(`Simulates a device sending MQTT messages.`)

@@ -55,7 +55,8 @@ services:
     environment:
       - MQTT_HOST=broker1
       - MQTT_PORT=1883
-      - MQTT_CLIENTID=CCS123
+      - SERIAL_NUMBER=CCS123
+      - MESSAGES_FILE=/etc/simulator/messages.js
     depends_on:
       broker1:
         condition: service_started
@@ -63,6 +64,8 @@ services:
         condition: service_started
     networks:
       - ladder99
+    volumes:
+      - ./volumes/simulator:/etc/simulator
     logging:
       options:
         max-size: '1m'
@@ -73,12 +76,15 @@ services:
     environment:
       - MQTT_HOST=broker2
       - MQTT_PORT=1883
-      - MQTT_CLIENTID=CCS124
+      - SERIAL_NUMBER=CCS124
+      - MESSAGES_FILE=/etc/simulator/messages.js
     depends_on:
       broker2:
         condition: service_started
       adapter:
         condition: service_started
+    volumes:
+      - ./volumes/simulator:/etc/simulator
     networks:
       - ladder99
     logging:
