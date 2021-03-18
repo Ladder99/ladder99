@@ -116,6 +116,7 @@ const messages = [
           value: [0, 1],
         },
       },
+
       {
         keys: ['%Q0.0', 'OUT1', 'printer.start_print', 'J2.7', 'SX2.P0'],
         remote_allow: false,
@@ -260,6 +261,7 @@ const messages = [
           value: [0, 1],
         },
       },
+
       {
         keys: ['%Q1.0', 'web.take_up_motor_state'],
         remote_allow: false,
@@ -309,6 +311,7 @@ const messages = [
         remote_allow: false,
         default: 'wait_for_printer_data_ready',
       },
+
       {
         keys: ['%M55.0', 'metric.life_count'],
         remote_allow: false,
@@ -361,6 +364,7 @@ const messages = [
         default: 0,
         rate_limit: 500,
       },
+
       {
         keys: ['%M56.0', 'tamp.vacuum.delay'],
         remote_allow: true,
