@@ -1,5 +1,5 @@
 adapter:
-  definition: definitions/ccs-pa/device.yaml
+  definition: ccs-pa
   properties:
     uuid: e05363af-95d1-4354-b749-8fbb09d3499e
     serialNumber: CCS123
