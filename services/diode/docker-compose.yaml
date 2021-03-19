@@ -3,5 +3,5 @@
 services:
   black:
     build:
-      context: application/datadiode/black
+      context: code/application/datadiode/black
       dockerfile: Dockerfile

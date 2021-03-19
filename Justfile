@@ -70,6 +70,7 @@ rabbitmq:
 
 # start data diode
 diode:
-    @echo do `export DOCKER_BUILDKIT=0 && export COMPOSE_DOCKER_CLI_BUILD=0` first
+    echo must do `export DOCKER_BUILDKIT=0 && export COMPOSE_DOCKER_CLI_BUILD=0` first
     cd services/diode && \
-    docker build -t diode .
+    docker build -t diode . && \
+    docker run diode /bin/bash -c "cd application/datadiode/black && gradle run"
