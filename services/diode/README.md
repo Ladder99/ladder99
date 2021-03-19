@@ -58,8 +58,8 @@ LDAP
 
 Run black and red Java applications - these listen to the RabbitMQ queues and manipulate the data - 
 
-    $ cd src/diode
-    $ docker build -t diode .
+    cd services/diode
+    docker build -t diode .
 
     Sending build context to Docker daemon  729.5MB
     Step 1/4 : FROM bivas/gradle:8-onbuild

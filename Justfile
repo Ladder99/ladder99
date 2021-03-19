@@ -62,3 +62,13 @@ replay SETUP=default_setup:
       --mode replay \
       --loop true \
       --file setups/{{SETUP}}/mqtt-recorder/recording.csv
+
+# start rabbitmq message queues
+_rabbitmq:
+    cd services/diode/code/application/datadiode/contrib/docker
+    docker-compose up
+
+# start data diode
+diode: _rabbitmq
+    cd services/diode
+    docker build -t diode .
