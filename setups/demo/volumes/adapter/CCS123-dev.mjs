@@ -145,12 +145,12 @@ const calcs = [
   },
   {
     // <Source>%I0.10 OR status.faults 10</Source>
-    dependsOn: ['CCS123-%I0.10', 'CCS123-faults'],
+    dependsOn: ['CCS123-%I0.10', 'CCS123-status-faults'],
     key: 'CCS123-estop',
     value: cache => {
       const i010 = cache.get('CCS123-%I0.10').value
       const faults = cache.get('CCS123-status-faults')
-      return i010 || (faults && faults[10]) ? 'ARMED' : 'TRIGGERED'
+      return i010 || (faults && faults[10]) ? 'TRIGGERED' : 'ARMED'
     },
   },
 ]
