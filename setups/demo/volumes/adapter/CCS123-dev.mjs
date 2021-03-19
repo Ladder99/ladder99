@@ -3,6 +3,7 @@
 
 //. this is experimental for development
 
+// mqtt topics
 const topics = {
   sendQuery: 'l99/${serialNumber}/cmd/query',
   receiveQuery: 'l99/${serialNumber}/evt/query',
@@ -10,6 +11,7 @@ const topics = {
   receiveRead: 'l99/${serialNumber}/evt/read',
 }
 
+// map from aliases to items, e.g. "CCS123-IN10" -> { address: "%I0.9", ... }
 const aliases = {}
 
 // initialize the client plugin.
@@ -23,15 +25,16 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
   }
   console.log('MQTT topics', { topics })
 
+  mqtt.on('message', onMessage)
+
+  // ask for initial query message
   mqtt.subscribe(topics.receiveQuery)
-  // mqtt.subscribe(topics.receiveStatus)
-  // mqtt.subscribe(topics.receiveRead)
   mqtt.publish(topics.sendQuery, '{}')
 
-  mqtt.on('message', onMessage)
+  // handle all incoming messages
   function onMessage(topic, buffer) {
     console.log('MQTT onMessage', { topic })
-
+    const msg = unpack(topic, buffer)
     const handlers = {
       [topics.receiveQuery]: onQueryMessage,
       [topics.receiveStatus]: onStatusMessage,
@@ -39,18 +42,17 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     }
     const handler = handlers[topic]
     if (handler) {
-      handler(topic, buffer)
+      handler(msg)
     } else {
       console.log(`MQTT WARNING: no handler for topic`, topic)
     }
   }
 
-  function onQueryMessage(topic, buffer) {
+  // handle initial query message
+  function onQueryMessage(msg) {
     console.log('MQTT onQueryMessage')
 
     mqtt.unsubscribe(topics.receiveQuery)
-
-    const msg = unpack(topic, buffer)
 
     // add each item in message to cache
     for (const item of msg.payload) {
@@ -79,23 +81,11 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     mqtt.subscribe(topics.receiveRead)
   }
 
-  function onStatusMessage(topic, buffer) {
+  // handle status messages
+  function onStatusMessage(msg) {
     console.log('MQTT onStatusMessage')
-    const msg = unpack(topic, buffer)
     console.log({ msg })
-
-    // payload eg:
-    // connection: 'online',
-    // state: 400, // 200 stopped, 400 running
-    // program: 'pgm0',
-    // step: 'step1',
-    // faults: {},
-    // cpu_time: 691322.50763624,
-    // utc_time: 1.6098097061826477e9,
-    // build_no: '1.3.0.3',
-    // _ts: 1609809706196, // msec since 1970-01-01
-
-    // add msg parts to cache
+    // add parts to cache
     const keys = `connection,state,program,step,faults,cpu_time,utc_time,build_no,_ts`.split(
       ','
     )
@@ -103,21 +93,21 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
       const value = msg.payload[key]
       cache.set(`${serialNumber}-status-${key}`, value)
     }
-
     // get shdr strings
     const output = getOutput(cache)
-
     // send shdr to agent via tcp socket
     console.log(`TCP sending string`, output.slice(0, 40), `...`)
     outputSocket.write(output)
   }
 
-  function onReadMessage(topic, buffer) {
+  // handle read messages
+  function onReadMessage(msg) {
     console.log('MQTT onReadMessage')
-    const msg = unpack(topic, buffer)
+    // make sure we have an array
     if (!Array.isArray(msg.payload)) {
       msg.payload = [msg.payload]
     }
+    // add items to cache
     for (const item of msg.payload) {
       const key = `${serialNumber}-${item.address}`
       cache.set(key, item) // item has { address, value }
