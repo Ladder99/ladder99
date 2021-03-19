@@ -21,20 +21,24 @@ MTConnect standardizes factory device data flow - it was designed by UC Berkeley
 
 MQTT is a simple publish/subscribe message protocol. Messages from factory devices go to an MQTT Broker (Mosquitto). PLC4X communicates with old machines via proprietary protocols and translates them to MQTT (correct?). 
 
-Our MTConnect Adapter (a NodeJS program) subscribes and listens to those messages, translates them to SHDR (Simple Hierarchical Data Representation, eg "2021-02-28T02:40:00|key|value"), and sends them on to the MTConnect Agent (cppagent) via an optional one-way diode (Java + RabbitMQ). 
+Our MTConnect Adapter (a NodeJS program) subscribes and listens to those messages, translates them to SHDR (Simple Hierarchical Data Representation, eg "2021-02-28T02:40:00|key|value"), and sends them on to the MTConnect Agent (cppagent) via an optional one-way data diode (Java + RabbitMQ). 
 
 An MTConnect Application then consumes the data as XML over HTTP, and feeds it to a database and visualizer. 
 
 
 ## Installation
 
-Install [just](https://github.com/casey/just), which is a task runner
+Install [just](https://github.com/casey/just), which is a task runner, using `Justfile` for command scripts - 
 
     brew install just
 
 Install all dependencies with
 
     just install
+
+You can see all the commands you can run with
+
+    just
 
 
 ## Documentation
@@ -50,13 +54,13 @@ Then visit https://ladder99-mtconnect.web.app/
 
 ## Developing
 
-The device models are defined in `models`, eg the ccs-pa model has adapter.js and device.yaml. 
+The device models are defined in `models`, eg the ccs-pa model has adapter.js, device.yaml, and calcs.yaml. 
 
-The device instances are defined in the `setups` folder, eg the demo setup has a list of instances in the devices subfolder there. 
+The device instances are defined in the `setups` folder, eg the `demo` setup has a list of instances in the devices subfolder there. 
 
-Edit these as needed - then generate the `setups/demo/devices.xml` and `docker-compose.yaml` files, run docker-compose up, and start the device simulations with -
+Edit these as needed - then generate the `setups/demo/volumes/agent/devices.xml` and `setups/demo/docker-compose.yaml` files, run docker-compose up, and start the device simulations with -
 
-    just run demo
+    just run
 
 You can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
 
@@ -65,5 +69,9 @@ To see the xml the agent generates visit
     localhost:5000/current
 
 etc
+
+To replay some more mqtt messages,
+
+    just replay
 
 (later use telegraf to shovel data from localhost:5000 to database and visualizer)
