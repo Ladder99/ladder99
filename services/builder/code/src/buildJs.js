@@ -6,12 +6,10 @@ const yaml = require('js-yaml') // https://github.com/nodeca/js-yaml
 const sourcefile = process.argv[2] // eg 'input/foo/device.yaml'
 
 // find all value entries in the yaml tree and add as strings to output dict, recursively.
-// note: js entries can be duplicated because they might appear as references,
-// so need to use a dict to key on the element id.
-function getCode(ytree, dict) {
+function getCode(ytree, values) {
   if (Array.isArray(ytree)) {
     for (const el of ytree) {
-      getCode(el, dict)
+      getCode(el, values)
     }
   } else if (typeof ytree === 'object') {
     const keys = Object.keys(ytree)
@@ -21,9 +19,10 @@ function getCode(ytree, dict) {
       if (key === 'id') {
         id = key
       } else if (key === 'value') {
-        dict[id] = el
+        // dict[id] = el
+        values.push(el)
       } else {
-        getCode(el, dict)
+        getCode(el, values)
       }
     }
   } else {
@@ -33,14 +32,10 @@ function getCode(ytree, dict) {
 
 // ----------------
 
-function main() {
-  const ystr = fs.readFileSync(sourcefile, 'utf8')
-  const ytree = yaml.load(ystr) // parse yaml
-  // console.dir(ytree, { depth: null })
-  const dict = {}
-  getCode(ytree, dict)
-  const js = Object.values(dict).join('\n')
-  console.log(js)
-}
-
-main()
+const yamlStr = fs.readFileSync(sourcefile, 'utf8')
+const yamlTree = yaml.load(yamlStr) // parse
+// console.dir(yamlTree, { depth: null })
+const values = []
+getCode(yamlTree, values)
+const jsStr = values.join('\n')
+console.log(jsStr)

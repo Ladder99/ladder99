@@ -1,7 +1,6 @@
 // adapter
-// subscribes to different mqtt topics,
-// passes messages to topic handler fns to get shdr output string,
-// then passes output on to the mtconnect agent via tcp.
+// subscribe to mqtt topics, pass messages to topic handler fns
+// to get shdr output string, pass that to the mtconnect agent via tcp.
 
 import net from 'net' // node lib for tcp
 import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt

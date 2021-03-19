@@ -4,6 +4,8 @@ FROM raymondhub/mtconnect:v1.5
 
 EXPOSE 5000
 
+#. might need this dockerfile to handle the custom stylesheets?
+
 # WORKDIR /etc/mtconnect/agent
 
 # COPY config/* .
