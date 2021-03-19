@@ -548,10 +548,15 @@ module.exports = [
     ],
   },
 
-  // {
-  //   topic: 'l99/${serialNumber}/evt/read',
-  //   json: { address: '%I0.10', value: 1 }, // emerg stop
-  // },
+  {
+    topic: 'l99/${serialNumber}/evt/read',
+    json: { address: '%I0.10', value: 1 }, // emerg stop on
+  },
+
+  {
+    topic: 'l99/${serialNumber}/evt/read',
+    json: { address: '%I0.10', value: 0 }, // emerg stop off
+  },
 
   {
     topic: 'l99/${serialNumber}/evt/status',
@@ -562,7 +567,7 @@ module.exports = [
       step: 'step1',
       faults: {
         1: { description: 'hard fault', hard: true, count: 1 },
-        10: { description: 'another hard fault', hard: true, count: 1 },
+        10: { description: 'another hard fault', hard: true, count: 1 }, // estop
         50: { description: 'soft fault', hard: false, count: 1 },
       },
       cpu_time: 691322.50763624,

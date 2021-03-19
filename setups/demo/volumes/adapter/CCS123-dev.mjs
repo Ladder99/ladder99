@@ -35,7 +35,7 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     const handlers = {
       [topics.receiveQuery]: onQueryMessage,
       [topics.receiveStatus]: onStatusMessage,
-      // [topics.receiveRead]: onReadMessage,
+      [topics.receiveRead]: onReadMessage,
     }
     const handler = handlers[topic]
     if (handler) {
@@ -76,7 +76,7 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     // in case status or read messages come in BEFORE query results are delivered,
     // which would clobber these values.
     mqtt.subscribe(topics.receiveStatus)
-    // mqtt.subscribe(topics.receiveRead)
+    mqtt.subscribe(topics.receiveRead)
   }
 
   function onStatusMessage(topic, buffer) {
@@ -112,19 +112,23 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     outputSocket.write(output)
   }
 
-  // function onReadMessage(topic, buffer) {
-  //   console.log('MQTT onStatusMessage', { topic, buffer })
-  //   const msg = unpack(topic, buffer)
-  //   if (!Array.isArray(msg.data)) {
-  //     msg.data = [msg.data]
-  //   }
-  //   // cache.save(msg)
-  //   for (const item of msg.data) {
-  //     const key = serialNumber + '-' + item.address
-  //     const value = 0
-  //     cache.set(key, value)
-  //   }
-  // }
+  function onReadMessage(topic, buffer) {
+    console.log('MQTT onReadMessage')
+    const msg = unpack(topic, buffer)
+    if (!Array.isArray(msg.payload)) {
+      msg.payload = [msg.payload]
+    }
+    // item has { address, value }
+    for (const item of msg.payload) {
+      const key = `${serialNumber}-${item.address}`
+      cache.set(key, item)
+    }
+    // get shdr strings
+    const output = getOutput(cache)
+    // send shdr to agent via tcp socket
+    console.log(`TCP sending string`, output.slice(0, 40), `...`)
+    outputSocket.write(output)
+  }
 }
 
 // unpack a message payload byte buffer and append some metadata.
