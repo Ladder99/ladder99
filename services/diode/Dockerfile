@@ -15,6 +15,4 @@ WORKDIR /home/app
 
 COPY code .
 
-# RUN ./gradlew tasks
-
 CMD ["./gradlew", "tasks"]

@@ -2,6 +2,10 @@
 
 services:
   black:
-    build:
-      context: code/application/datadiode/black
-      dockerfile: Dockerfile
+    build: .
+    volumes:
+      - diode_data:/root/
+    command: gradlew tasks
+
+volumes:
+  diode_data:

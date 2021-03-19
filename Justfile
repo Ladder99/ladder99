@@ -68,9 +68,18 @@ rabbitmq:
     cd services/diode/code/application/datadiode/contrib/docker && \
     docker-compose up
 
-# start data diode
-diode:
-    echo must do `export DOCKER_BUILDKIT=0 && export COMPOSE_DOCKER_CLI_BUILD=0` first
+# build data diode
+build-diode:
+    @echo must do
+    @echo   export DOCKER_BUILDKIT=0
+    @echo   export COMPOSE_DOCKER_CLI_BUILD=0
+    @echo first - see https://stackoverflow.com/a/66695181/243392
     cd services/diode && \
-    docker build -t diode . && \
-    docker run diode /bin/bash -c "cd application/datadiode/black && gradle run"
+    docker build -t diode .
+
+# start data diode receiver and sender
+diode:
+    cd services/diode && \
+    docker-compose up
+
+#docker run diode /bin/bash -c "cd application/datadiode/black && gradle run"
