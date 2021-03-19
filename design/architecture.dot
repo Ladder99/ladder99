@@ -26,8 +26,8 @@ digraph "ladder99-adapter" {
   // Device2Sheet [ fillcolor=greenyellow; label="device2.sheet" ];
   // Device2Yaml [ fillcolor=greenyellow; label="device2.yaml" ];
   // Device2Js [ label="device2.js" ];
-  // DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
-  // DiodeReceiver [ label="Diode Receiver\n(Java+RabbitMQ)" ];
+  DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
+  DiodeReceiver [ label="Diode Receiver\n(Java+RabbitMQ)" ];
   // DevicesXml [ label="devices.xml" ];
   Agent [ label="MTConnect\nAgent\n(C++/cppagent)" ];
   Application [ label="MTConnect\nApplication\n(NodeJS)" ];
