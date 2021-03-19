@@ -44,7 +44,7 @@ services:
     networks:
       - ladder99
     volumes:
-      - ./volumes/adapter:/etc/mtconnect/adapter
+      - ./volumes/adapter:/etc/adapter
     logging:
       options:
         max-size: '1m'

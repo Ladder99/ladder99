@@ -49,7 +49,7 @@ tcp.on('connection', async socket => {
     const [serialNumber, url] = device
 
     console.log(`Importing code for device ${serialNumber}...`)
-    const pluginPath = `./plugins-dev/${serialNumber}.js` //. -dev for now
+    const pluginPath = `/etc/adapter/${serialNumber}-dev.mjs` //. -dev for now
     const plugin = await import(pluginPath)
 
     console.log(`MQTT connecting to broker on`, url, `...`)
