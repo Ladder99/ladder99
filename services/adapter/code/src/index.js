@@ -19,22 +19,22 @@ console.log(`----------------------------------------------------------------`)
 console.log(`Hit ctrl-c to stop adapter.`)
 process.on('SIGINT', shutdown)
 
-//-------------------
-
 console.log(`TCP creating server for agent...`)
 const tcp = net.createServer()
 
 let outputSocket
-const mqtts = []
+const mqtts = [] // mqtt connections - remember them so can end nicely
 
+// handle tcp connection
 tcp.on('connection', async socket => {
   outputSocket = socket
   const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
   console.log('TCP new client connection from', remoteAddress)
+  // handle incoming data - get PING from agent, return PONG
   socket.on('data', buffer => {
     const str = buffer.toString().trim()
     if (str === '* PING') {
-      const response = '* PONG 10000'
+      const response = '* PONG 10000' //. msec
       console.log(`TCP received PING - sending PONG:`, response)
       socket.write(response + '\n')
     } else {
@@ -45,16 +45,18 @@ tcp.on('connection', async socket => {
   // define cache shared across devices
   const cache = new Cache()
 
+  // connect to devices through mqtt brokers
   for (const device of devices) {
-    const [serialNumber, url] = device
+    const [serialNumber, url] = device // eg 'CCS123', 'mqtt://broker1:1883'
 
+    // get plugin code
     console.log(`Importing code for device ${serialNumber}...`)
     const pluginPath = `/etc/adapter/${serialNumber}-dev.mjs` //. -dev for now
     const plugin = await import(pluginPath)
 
+    // connect to broker and call plugin init
     console.log(`MQTT connecting to broker on`, url, `...`)
     const mqtt = mqttlib.connect(url)
-
     mqtt.on('connect', function onConnect() {
       console.log(`MQTT connected to broker on`, url)
       console.log(`MQTT calling plugin init and subscribing to topics...`)
@@ -68,6 +70,7 @@ tcp.on('connection', async socket => {
 console.log(`TCP try listening to socket at`, outputPort, outputHost, `...`)
 tcp.listen(outputPort, outputHost)
 
+// exit nicely
 function shutdown() {
   console.log(`Exiting...`)
   if (outputSocket) {
