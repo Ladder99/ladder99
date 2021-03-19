@@ -118,10 +118,9 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     if (!Array.isArray(msg.payload)) {
       msg.payload = [msg.payload]
     }
-    // item has { address, value }
     for (const item of msg.payload) {
       const key = `${serialNumber}-${item.address}`
-      cache.set(key, item)
+      cache.set(key, item) // item has { address, value }
     }
     // get shdr strings
     const output = getOutput(cache)
