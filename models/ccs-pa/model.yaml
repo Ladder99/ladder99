@@ -1,7 +1,7 @@
 # this code defines the xml that will get included in devices.xml
 
 device:
-  - id: ccs-pa
+  - id: ${serialNumber} # ?
     name: CCS-PA
     uuid: ${uuid} # eg 'e05363af-95d1-4354-b749-8fbb09d3499e'
     sampleInterval: 10
@@ -24,25 +24,25 @@ device:
         id: ${serialNumber}-state
         category: EVENT
         type: EXECUTION
-        value: types.EXECUTION[cache.get('${serialNumber}-state')]
+        value: types.EXECUTION[cache.get('${serialNumber}-status-state')]
 
       wait_state: &wait_state
         id: ${serialNumber}-wait_state
         category: EVENT
         type: WAIT_STATE
-        value: types.WAIT_STATE[cache.get('${serialNumber}-wait_state')]
+        value: types.WAIT_STATE[cache.get('${serialNumber}-status-wait_state')]
 
       program: &program
         id: ${serialNumber}-program
         category: EVENT
         type: EXECUTION
-        value: cache.get('${serialNumber}-program')
+        value: cache.get('${serialNumber}-status-program')
 
       step: &step
         id: ${serialNumber}-step
         category: EVENT
         type: EXECUTION
-        value: cache.get('${serialNumber}-step')
+        value: cache.get('${serialNumber}-status-step')
 
       printer_start_print: &printer_start_print
         id: ${serialNumber}-%Q0.0
@@ -67,19 +67,20 @@ device:
 
       end_eff_cond: &end_eff_cond
         id: ${serialNumber}-end_eff_cond
-        # q. is id really needed?  what if id is always the name of the yaml parent?
+        #. q. is id really needed?  what if id is always the name of the yaml parent?
         # serialNumber prefix could be a configurable setting at adapter level,
-        # prefix is only needed when multiple Device will be present in devices.xml to prevent collision.
+        # prefix is only needed when multiple Device will be present in devices.xml
+        # to prevent collision.
         category: CONDITION
         type: SYSTEM
         # value needs quotes here because has ':' in expression
-        value: "(cache.get('${serialNumber}-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
+        value: "(cache.get('${serialNumber}-status-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
 
       end_eff_message: &end_eff_message
         id: ${serialNumber}-end_eff_message
         category: EVENT
         type: MESSAGE
-        value: cache.get('${serialNumber}-faults').first([2,3,5]).property('description').value
+        value: cache.get('${serialNumber}-status-faults').first([2,3,5]).property('description').value
 
     dataItems:
       dataItem:
@@ -87,9 +88,6 @@ device:
         - *printer_start_print
         - *printer_feed
         - *printer_pause
-        #. move elsewhere
-        - *end_eff_cond
-        - *end_eff_message
 
     components:
       controller:
@@ -117,7 +115,9 @@ device:
         endEffector:
           id: ${serialNumber}-end_effector
           dataItems:
-            dataItem: []
+            dataItem:
+              - *end_eff_cond
+              - *end_eff_message
           compositions: []
         feeder:
           id: ${serialNumber}-feeder

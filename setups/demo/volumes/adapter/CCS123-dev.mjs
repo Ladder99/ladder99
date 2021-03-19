@@ -58,7 +58,7 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     for (const item of msg.payload) {
       const [address, ...others] = item.keys
       const key = `${serialNumber}-${address}` // eg 'CCS123-%I0.10'
-      item.value = item.default
+      item.value = item.default // use default value, if any
       cache.set(key, item)
       // add other keys to aliases
       for (const alias of others) {
@@ -91,7 +91,7 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     )
     for (const key of keys) {
       const value = msg.payload[key]
-      cache.set(`${serialNumber}-status-${key}`, value)
+      cache.set(`${serialNumber}-status-${key}`, value) // eg 'CCS123-status-faults'
     }
     // get shdr strings
     const output = getOutput(cache)
@@ -109,7 +109,7 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     }
     // add items to cache
     for (const item of msg.payload) {
-      const key = `${serialNumber}-${item.address}`
+      const key = `${serialNumber}-${item.address}` // eg 'CCS123-%Q0.0'
       cache.set(key, item) // item has { address, value }
     }
     // get shdr strings
