@@ -1,4 +1,4 @@
-# these types can be used in device.yaml
+# these types can be used in calcs.yaml
 
 types:
   ACTUATOR_STATE:

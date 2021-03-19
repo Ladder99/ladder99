@@ -12,82 +12,12 @@ device:
       serialNumber: ${serialNumber} # eg 'CCS123'
       text: Emergent Next Generation Print and Apply
 
-    events:
-      fw_ver: &fw_ver
-        id: ${serialNumber}-fw_ver # eg 'CCS123-fw_ver'
-        category: EVENT
-        type: FIRMWARE
-        subType: VERSION
-        value: cache.get('${serialNumber}-status-build_no')
-
-      state: &state
-        id: ${serialNumber}-state
-        category: EVENT
-        type: EXECUTION
-        value: types.EXECUTION[cache.get('${serialNumber}-status-state')]
-
-      wait_state: &wait_state
-        id: ${serialNumber}-wait_state
-        category: EVENT
-        type: WAIT_STATE
-        value: types.WAIT_STATE[cache.get('${serialNumber}-status-wait_state')]
-
-      program: &program
-        id: ${serialNumber}-program
-        category: EVENT
-        type: EXECUTION
-        value: cache.get('${serialNumber}-status-program')
-
-      step: &step
-        id: ${serialNumber}-step
-        category: EVENT
-        type: EXECUTION
-        value: cache.get('${serialNumber}-status-step')
-
-      printer_start_print: &printer_start_print
-        id: ${serialNumber}-%Q0.0
-        name: printer_start_print
-        category: EVENT
-        type: ACTUATOR_STATE
-        value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.0')]
-
-      printer_feed: &printer_feed
-        id: ${serialNumber}-%Q0.1
-        name: printer_feed
-        category: EVENT
-        type: ACTUATOR_STATE
-        value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.1')]
-
-      printer_pause: &printer_pause
-        id: ${serialNumber}-%Q0.2
-        name: printer_pause
-        category: EVENT
-        type: ACTUATOR_STATE
-        value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.2')]
-
-      end_eff_cond: &end_eff_cond
-        id: ${serialNumber}-end_eff_cond
-        #. q. is id really needed?  what if id is always the name of the yaml parent?
-        # serialNumber prefix could be a configurable setting at adapter level,
-        # prefix is only needed when multiple Device will be present in devices.xml
-        # to prevent collision.
-        category: CONDITION
-        type: SYSTEM
-        # value needs quotes here because has ':' in expression
-        value: "(cache.get('${serialNumber}-status-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
-
-      end_eff_message: &end_eff_message
-        id: ${serialNumber}-end_eff_message
-        category: EVENT
-        type: MESSAGE
-        value: cache.get('${serialNumber}-status-faults').first([2,3,5]).property('description').value
-
     dataItems:
       dataItem:
-        - *fw_ver
-        - *printer_start_print
-        - *printer_feed
-        - *printer_pause
+        - fw_ver
+        - printer_start_print
+        - printer_feed
+        - printer_pause
 
     components:
       controller:
@@ -97,10 +27,10 @@ device:
           text: Electronic board set responsible for coordinating all machine function.
         dataItems:
           dataItem:
-            - *state
-            - *wait_state
-            - *program
-            - *step
+            - state
+            - wait_state
+            - program
+            - step
 
         components:
           path:
@@ -116,8 +46,8 @@ device:
           id: ${serialNumber}-end_effector
           dataItems:
             dataItem:
-              - *end_eff_cond
-              - *end_eff_message
+              - end_eff_cond
+              - end_eff_message
           compositions: []
         feeder:
           id: ${serialNumber}-feeder
