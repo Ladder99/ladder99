@@ -80,7 +80,7 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
   }
 
   function onStatusMessage(topic, buffer) {
-    console.log('MQTT onStatusMessage', { topic, buffer })
+    console.log('MQTT onStatusMessage')
     const msg = unpack(topic, buffer)
     console.log({ msg })
 
