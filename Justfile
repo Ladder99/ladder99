@@ -7,7 +7,7 @@ default_setup := 'demo'
 help:
     @just --list
 
-# install all dependencies #. also python, node/npm
+# install all dependencies (also need python, node/npm, docker)
 install:
     pip install -U Sphinx
     npm install -g http-server

@@ -21,7 +21,7 @@ The complete pipeline - the X's are exchanges (input ports) - the green X is an 
 [2016 paper](https://arxiv.org/abs/1602.07467) and [original source code](https://github.com/marcelmaatkamp/rabbitmq-applications/tree/master/application/datadiode)
 
 
-## Running the diode
+## Starting the RabbitMQ queues
 
 Edit your `/etc/hosts` with `sudo nano /etc/hosts`, and add the line:
 
@@ -29,14 +29,14 @@ Edit your `/etc/hosts` with `sudo nano /etc/hosts`, and add the line:
 
 Bring up the RabbitMQ queues -
 
-    cd src/diode/application/datadiode/contrib/docker
+    cd services/diode/code/application/datadiode/contrib/docker
     docker-compose up
 
 Visit the RabbitMQ management consoles here (user guest, pw guest) - http://rabbitblack/#/exchanges and http://rabbitred/#/exchanges.
 
 Publish and receive some data -
 
-    cd src/diode/application/datadiode/contrib/nodejs
+    cd services/diode/code/application/datadiode/contrib/nodejs
     npm install  # just need to do once
     node src/send.js
 
@@ -53,6 +53,8 @@ LDAP
     https://rabbitblack/#/
     https://rabbitred/#/
 
+
+## Starting the Diode Receiver and Sender
 
 Run black and red Java applications - these listen to the RabbitMQ queues and manipulate the data - 
 
@@ -184,5 +186,4 @@ get error -
 > Connection refused; nested exception is org.apache.http.conn.HttpHostConnectException: 
 > Connect to rabbitblack:80 [rabbitblack/127.0.0.1] failed: 
 > Connection refused
-
 

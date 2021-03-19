@@ -28,11 +28,13 @@ An MTConnect Application then consumes the data as XML over HTTP, and feeds it t
 
 ## Installation
 
-Install [just](https://github.com/casey/just), which is a task runner, using `Justfile` for command scripts - 
+Install Docker, Node, and Python3 from their installers. 
+
+Install [just](https://github.com/casey/just), which is a task runner, using `Justfile` for command scripts - if on Mac, 
 
     brew install just
 
-Install all dependencies with
+Install all other dependencies with
 
     just install
 
