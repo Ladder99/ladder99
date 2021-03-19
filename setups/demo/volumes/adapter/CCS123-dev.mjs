@@ -29,8 +29,15 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
   mqtt.on('message', onMessage)
   function onMessage(topic, buffer) {
     console.log('MQTT onMessage', { topic })
-    if (topic === topics.receiveQuery) {
-      onQueryMessage(topic, buffer)
+
+    const handlers = {
+      [topics.receiveQuery]: onQueryMessage,
+      [topics.receiveStatus]: onStatusMessage,
+      // [topics.receiveRead]: onReadMessage,
+    }
+    const handler = handlers[topic]
+    if (handler) {
+      handler(topic, buffer)
     } else {
       console.log(`MQTT WARNING: no handler for topic`, topic)
     }
@@ -60,28 +67,56 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     const output = getOutput(cache)
 
     // send shdr to agent via tcp socket
-    console.log(`TCP sending string`, output.slice(0, 20), `...`)
+    console.log(`TCP sending string`, output.slice(0, 40), `...`)
     outputSocket.write(output)
 
     // best to subscribe to topics at this point,
     // in case status or read messages come in BEFORE query results are delivered,
     // which would clobber these values.
-    mqtt.subscribe(topics.receiveStatus, onStatusMessage)
-    // mqtt.subscribe(topics.receiveRead, onReadMessage)
+    mqtt.subscribe(topics.receiveStatus)
+    // mqtt.subscribe(topics.receiveRead)
   }
 
   function onStatusMessage(topic, buffer) {
-    const obj = unpack(topic, buffer)
-    cache.save(obj)
+    console.log({ topic, buffer })
+    const msg = unpack(topic, buffer)
+    console.log({ msg })
+
+    // payload eg:
+    // connection: 'online',
+    // state: 400, // 200 stopped, 400 running
+    // program: 'pgm0',
+    // step: 'step1',
+    // faults: {},
+    // cpu_time: 691322.50763624,
+    // utc_time: 1.6098097061826477e9,
+    // build_no: '1.3.0.3',
+    // _ts: 1609809706196, // msec since 1970-01-01
+
+    // add msg parts to cache
+    const keys = `connection,state,program,step,faults,cpu_time,utc_time,build_no,_ts`.split(
+      ','
+    )
+    for (const key of keys) {
+      const value = msg.payload[key]
+      cache.set(`${serialNumber}-status-${key}`, value)
+    }
+
+    // get shdr strings
+    const output = getOutput(cache)
+
+    // send shdr to agent via tcp socket
+    console.log(`TCP sending string`, output.slice(0, 40), `...`)
+    outputSocket.write(output)
   }
 
   // function onReadMessage(topic, buffer) {
-  //   const obj = unpack(topic, buffer)
-  //   if (!Array.isArray(obj.data)) {
-  //     obj.data = [obj.data]
+  //   const msg = unpack(topic, buffer)
+  //   if (!Array.isArray(msg.data)) {
+  //     msg.data = [msg.data]
   //   }
-  //   // cache.save(obj)
-  //   for (const item of obj.data) {
+  //   // cache.save(msg)
+  //   for (const item of msg.data) {
   //     const key = serialNumber + '-' + item.address
   //     const value = 0
   //     cache.set(key, value)
@@ -111,7 +146,7 @@ const calcs = [
     key: 'CCS123-estop',
     value: cache => {
       const i010 = cache.get('CCS123-%I0.10').value
-      const faults = cache.get('CCS123-faults')
+      const faults = cache.get('CCS123-status-faults')
       return i010 || (faults && faults.get(10)) ? 'ARMED' : 'TRIGGERED'
     },
   },
