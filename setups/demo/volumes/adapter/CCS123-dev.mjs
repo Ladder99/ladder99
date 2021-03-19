@@ -63,17 +63,17 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     console.log(`TCP sending string`, output.slice(0, 20), `...`)
     outputSocket.write(output)
 
-    // // best to subscribe to topics at this point,
-    // // in case status or read messages come in BEFORE query results are delivered,
-    // // which would clobber these values.
-    // mqtt.subscribe(topics.receiveStatus, onStatusMessage)
+    // best to subscribe to topics at this point,
+    // in case status or read messages come in BEFORE query results are delivered,
+    // which would clobber these values.
+    mqtt.subscribe(topics.receiveStatus, onStatusMessage)
     // mqtt.subscribe(topics.receiveRead, onReadMessage)
   }
 
-  // function onStatusMessage(topic, buffer) {
-  //   const obj = unpack(topic, buffer)
-  //   cache.save(obj)
-  // }
+  function onStatusMessage(topic, buffer) {
+    const obj = unpack(topic, buffer)
+    cache.save(obj)
+  }
 
   // function onReadMessage(topic, buffer) {
   //   const obj = unpack(topic, buffer)
