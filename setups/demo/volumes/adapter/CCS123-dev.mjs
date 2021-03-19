@@ -24,6 +24,8 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
   console.log('MQTT topics', { topics })
 
   mqtt.subscribe(topics.receiveQuery)
+  // mqtt.subscribe(topics.receiveStatus)
+  // mqtt.subscribe(topics.receiveRead)
   mqtt.publish(topics.sendQuery, '{}')
 
   mqtt.on('message', onMessage)
@@ -78,7 +80,7 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
   }
 
   function onStatusMessage(topic, buffer) {
-    console.log({ topic, buffer })
+    console.log('MQTT onStatusMessage', { topic, buffer })
     const msg = unpack(topic, buffer)
     console.log({ msg })
 
@@ -111,6 +113,7 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
   }
 
   // function onReadMessage(topic, buffer) {
+  //   console.log('MQTT onStatusMessage', { topic, buffer })
   //   const msg = unpack(topic, buffer)
   //   if (!Array.isArray(msg.data)) {
   //     msg.data = [msg.data]
@@ -147,7 +150,7 @@ const calcs = [
     value: cache => {
       const i010 = cache.get('CCS123-%I0.10').value
       const faults = cache.get('CCS123-status-faults')
-      return i010 || (faults && faults.get(10)) ? 'ARMED' : 'TRIGGERED'
+      return i010 || (faults && faults[10]) ? 'ARMED' : 'TRIGGERED'
     },
   },
 ]
