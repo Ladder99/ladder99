@@ -20,13 +20,14 @@ console.log(`------------------------------------------------------------`)
 console.log(`Connecting to MQTT broker on`, config)
 const mqtt = mqttlib.connect(config)
 
-mqtt.on('connect', function onConnect() {
+mqtt.on('connect', async function onConnect() {
   console.log(`Publishing messages...`)
   for (const message of messages) {
     const topic = message.topic.replace('${serialNumber}', serialNumber)
     const payload = JSON.stringify(message.json)
     console.log(`Topic ${topic}: ${payload.slice(0, 40)}...`)
     mqtt.publish(topic, payload)
+    await new Promise(resolve => setTimeout(resolve, 500))
   }
   console.log(`Closing MQTT connection...`)
   mqtt.end()
