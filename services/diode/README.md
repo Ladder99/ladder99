@@ -1,6 +1,6 @@
 # Data diode
 
-The data diode uses RabbitMQ and a Java application to transfer data via a one-way UDP connection. 
+The data diode is based on a project by Marcel Maatkamp - it uses RabbitMQ and a Java application to transfer data via a one-way UDP connection. The original paper from 2016 is [here](https://arxiv.org/abs/1602.07467) and GitHub repo is [here](https://github.com/marcelmaatkamp/rabbitmq-applications/tree/master/application/datadiode).
 
 RabbitMQ uses a protocol called AMQP (Advanced Message Queuing Protocol), which is similar to MQTT, but allows different topologies:
 
@@ -18,7 +18,10 @@ The complete pipeline - the X's are exchanges (input ports) - the green X is an 
 
 ![diode3](design/diode3.png)
 
-[2016 paper](https://arxiv.org/abs/1602.07467) and [original source code](https://github.com/marcelmaatkamp/rabbitmq-applications/tree/master/application/datadiode)
+
+## Original Readme
+
+The original readme for the data diode is [here](code/application/datadiode).
 
 
 ## Starting the RabbitMQ queues
@@ -31,9 +34,11 @@ Bring up the RabbitMQ queues -
 
     just rabbit
 
+<!-- 
 old - 
     cd services/diode/code/application/datadiode/contrib/docker
     docker-compose up
+-->
 
 Visit the RabbitMQ management consoles here (user guest, pw guest) - http://rabbitblack/#/exchanges and http://rabbitred/#/exchanges.
 
