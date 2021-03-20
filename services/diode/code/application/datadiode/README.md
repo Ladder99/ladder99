@@ -29,20 +29,25 @@ To enable strong encryption (AES-256) see
 * [Java-8 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html)
  
 Install unzip the JCE and place the jars in $JAVA_HOME/jre/lib/security:
-```
- cp *.jar $JAVA_HOME/jre/lib/security
-```
+
+   cp *.jar $JAVA_HOME/jre/lib/security
+
+<!-- 
 Install both outside (black) and inside (red) packages
-```
- git clone https://github.com/marcelmaatkamp/rabbitmq-applications
-```
+
+   git clone https://github.com/marcelmaatkamp/rabbitmq-applications 
+-->
+
 
 # Start
 
 First start both test rabbitmqs on a host called 'rabbitmq': 
-
+<!-- 
     cd application/datadiode/contrib/docker
     docker-compose up
+ -->
+
+   just rabbit
 
 This will start the following setup:
 
@@ -54,22 +59,32 @@ Validate by visiting the following pages:
 * [rabbitmq on black side](http://rabbitmq:15673)
 * [rabbitmq on red side](http://rabbitmq:15674) 
 * -->
->> should be
 * [rabbitmq on black side](http://rabbitblack/#/exchanges)
 * [rabbitmq on red side](http://rabbitred/#/exchanges)
 
 with username/pw guest/guest
 
 
+<!-- 
 Start outside 
 
-    cd docker-spring-datadiode-black
-    gradle run
+   cd docker-spring-datadiode-black
+   gradle run
 
 Start inside:
 
-    cd docker-spring-datadiode-red
-    gradle run
+   cd docker-spring-datadiode-red
+   gradle run 
+-->
+
+Start outside/black:
+
+   just black
+
+start inside/red in another terminal
+
+   just red
+
 
 Console output on the outside (black):
 
@@ -162,16 +177,20 @@ Which produces the following message in the "sensor" exchange:
 ```
 
 Should this setup not work, properties to adjust can be found in:
+
 * [application.properties (black)](black/src/main/resources/application.properties)
 * [application.properties (red)](red/src/main/resources/application.properties)
 
-# from encrypted sensor to encrypted sites
+
+# From encrypted sensor to encrypted sites
+
 ![encrypted sensor](documentation/images/rmq_dd_sensor_encr.png)
 ![encrypted sensor exchange](documentation/images/rmq_dd_sensor_encr_ex.png)
 ![encrypted exchange](documentation/images/rmq_dd_encr_ex.png)
 
 
 # Encrypted RabbitMQ streams between 2 sites
+
 A site has a DMZ where data is shoveled between the red and black, for incoming and outgoing data:
 ![rmq outside dmz inside](documentation/images/rmq_dd_out_dmz_in.png)
 
