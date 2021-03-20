@@ -63,6 +63,21 @@ replay SETUP=default_setup:
       --loop true \
       --file setups/{{SETUP}}/mqtt-recorder/recording.csv
 
+# install java8
+# install gradle2.8
+
+# install JCE
+# To enable strong encryption (AES-256) see 
+# * [Java-6 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html)
+# * [Java-7 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
+# * [Java-8 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html)
+# Install unzip the JCE and place the jars in $JAVA_HOME/jre/lib/security:
+#     cp *.jar $JAVA_HOME/jre/lib/security
+install-jce:
+    cd ~/Desktop/UnlimitedJCEPolicyJDK8 && \
+    sudo cp *.jar $JAVA_HOME/jre/lib/security
+
+
 # start rabbitmq message queues
 rabbitmq:
     cd services/diode/code/application/datadiode/contrib/docker && \

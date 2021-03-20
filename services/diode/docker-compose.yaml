@@ -1,11 +1,13 @@
 # experiment 2021-03-04
 
+# volumes:
+#   diode_data:
+
 services:
   black:
-    build: .
-    volumes:
-      - diode_data:/root/
-    command: gradlew tasks
-
-volumes:
-  diode_data:
+    # build: .
+    build: ./code/application/datadiode/black
+    # volumes:
+    #   - diode_data:/root/
+    # command: gradlew tasks
+    command: gradle run

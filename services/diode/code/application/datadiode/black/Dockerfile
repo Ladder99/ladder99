@@ -5,8 +5,7 @@
 # source: https://github.com/bivas/docker-gradle/tree/master/jdk8-gradle-2.8
 FROM bivas/gradle:8-2.8
 
-COPY contrib /home/app
-COPY src /home/app
+COPY . /home/app
 
 WORKDIR /home/app
 
