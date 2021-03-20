@@ -25,6 +25,8 @@ Our MTConnect Adapter (a NodeJS program) subscribes and listens to those message
 
 An MTConnect Application then consumes the data as XML over HTTP, and feeds it to a database and visualizer. 
 
+For more on the data diode, see the service [here](services/diode).
+
 
 ## Installation
 
