@@ -78,10 +78,18 @@ install-jce:
     sudo cp *.jar $JAVA_HOME/jre/lib/security
 
 
-# start rabbitmq message queues
-rabbitmq:
+# start rabbitmq message queues - then visit 
+rabbit:
     cd services/diode/code/application/datadiode/contrib/docker && \
     docker-compose up
+
+send:
+    cd services/diode/code/application/datadiode/contrib/nodejs && \
+    npm install && \
+    node src/send.js
+
+# or
+# docker-compose --file services/diode/code/application/datadiode/contrib/docker/docker-compose.yml up
 
 # build data diode
 build-diode:
@@ -93,8 +101,12 @@ build-diode:
     docker build -t diode .
 
 # start data diode receiver and sender
-diode:
-    cd services/diode && \
-    docker-compose up
-
+# cd services/diode && docker-compose up
 #docker run diode /bin/bash -c "cd application/datadiode/black && gradle run"
+
+black:
+    cd services/diode/code/application/datadiode/black && gradle run
+
+red:
+    cd services/diode/code/application/datadiode/red && gradle run
+
