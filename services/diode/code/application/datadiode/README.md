@@ -227,7 +227,7 @@ Mac:
 
 Validate MTU 1500:
 
-    $ ping -s 1476 docker
+    $ ping -s 1476 docker   # should be `ping -s 1476 rabbitblack` ?
     PING rabbitmq (192.168.178.18): 1476 data bytes
 
 To fake a data diode run a udp2udp tunnel with socat on another machine:

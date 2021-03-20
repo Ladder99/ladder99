@@ -40,7 +40,10 @@ old -
     docker-compose up
 -->
 
-Visit the RabbitMQ management consoles here (user guest, pw guest) - http://rabbitblack/#/exchanges and http://rabbitred/#/exchanges.
+Visit the RabbitMQ management consoles here (user guest, pw guest) -
+
+- http://rabbitblack/#/exchanges 
+- http://rabbitred/#/exchanges
 
 Publish and receive some data -
 
@@ -52,14 +55,14 @@ You can see the message go by in the RabbitMQ console - http://rabbitblack/#/que
 
 It's not yet setup to pass through the diode though.
 
-Node-red
+Node-red 
 
-    http://localhost:1880
+- http://localhost:1880
 
-LDAP
+LDAP 
 
-    https://rabbitblack/#/
-    https://rabbitred/#/
+- https://rabbitblack/#/ 
+- https://rabbitred/#/
 
 
 ## Starting the Diode Receiver and Sender
