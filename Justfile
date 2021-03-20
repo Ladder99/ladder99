@@ -63,7 +63,8 @@ replay SETUP=default_setup:
       --loop true \
       --file setups/{{SETUP}}/mqtt-recorder/recording.csv
 
-# install java8
+
+# install openjdk8
 # install gradle2.8
 
 # install JCE
@@ -77,36 +78,39 @@ install-jce:
     cd ~/Desktop/UnlimitedJCEPolicyJDK8 && \
     sudo cp *.jar $JAVA_HOME/jre/lib/security
 
-
 # start rabbitmq message queues - then visit 
+# or
+# docker-compose --file services/diode/code/application/datadiode/contrib/docker/docker-compose.yml up
 rabbit:
     cd services/diode/code/application/datadiode/contrib/docker && \
     docker-compose up
 
+# send a test message to rabbitmq
 send:
     cd services/diode/code/application/datadiode/contrib/nodejs && \
     npm install && \
     node src/send.js
 
-# or
-# docker-compose --file services/diode/code/application/datadiode/contrib/docker/docker-compose.yml up
 
-# build data diode
-build-diode:
-    @echo must do this first - 
-    @echo   export DOCKER_BUILDKIT=0
-    @echo   export COMPOSE_DOCKER_CLI_BUILD=0
-    @echo see https://stackoverflow.com/a/66695181/243392
-    cd services/diode && \
-    docker build -t diode .
+#. do we need this?
+# # build data diode
+# build-diode:
+#     @echo must do this first - 
+#     @echo   export DOCKER_BUILDKIT=0
+#     @echo   export COMPOSE_DOCKER_CLI_BUILD=0
+#     @echo see https://stackoverflow.com/a/66695181/243392
+#     cd services/diode && \
+#     docker build -t diode .
 
 # start data diode receiver and sender
 # cd services/diode && docker-compose up
 #docker run diode /bin/bash -c "cd application/datadiode/black && gradle run"
 
 black:
-    cd services/diode/code/application/datadiode/black && gradle run
+    cd services/diode/code/application/datadiode/black && \
+    gradle run
 
 red:
-    cd services/diode/code/application/datadiode/red && gradle run
+    cd services/diode/code/application/datadiode/red && \
+    gradle run
 
