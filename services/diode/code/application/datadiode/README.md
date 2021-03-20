@@ -30,12 +30,12 @@ To enable strong encryption (AES-256) see
  
 Install unzip the JCE and place the jars in $JAVA_HOME/jre/lib/security:
 
-   cp *.jar $JAVA_HOME/jre/lib/security
+    cp *.jar $JAVA_HOME/jre/lib/security
 
 <!-- 
 Install both outside (black) and inside (red) packages
 
-   git clone https://github.com/marcelmaatkamp/rabbitmq-applications 
+    git clone https://github.com/marcelmaatkamp/rabbitmq-applications 
 -->
 
 
@@ -47,7 +47,7 @@ First start both test rabbitmqs on a host called 'rabbitmq':
     docker-compose up
  -->
 
-   just rabbit
+    just rabbit
 
 This will start the following setup:
 
@@ -68,22 +68,22 @@ with username/pw guest/guest
 <!-- 
 Start outside 
 
-   cd docker-spring-datadiode-black
-   gradle run
+    cd docker-spring-datadiode-black
+    gradle run
 
 Start inside:
 
-   cd docker-spring-datadiode-red
-   gradle run 
+    cd docker-spring-datadiode-red
+    gradle run 
 -->
 
 Start outside/black:
 
-   just black
+    just black
 
 start inside/red in another terminal
 
-   just red
+    just red
 
 
 Console output on the outside (black):
@@ -216,91 +216,91 @@ The contents on the latest rabbitmq can be shoveled because it has been validate
 
 Enable jumbo frames to get UDP packages of 9K or even 16K, see [Ubuntu Jumbo frames](http://www.cyberciti.biz/faq/rhel-centos-debian-ubuntu-jumbo-frames-configuration)
 
-   sudo ethtool -K eth0 sg off
-   sudo ifconfig eth0 mtu 9000 or
-   sudo ifconfig eth0 mtu 16110
-   ip link show eth0
+    sudo ethtool -K eth0 sg off
+    sudo ifconfig eth0 mtu 9000 or
+    sudo ifconfig eth0 mtu 16110
+    ip link show eth0
 
 Mac:
 
-   sudo sysctl -w net.inet.raw.maxdgram=16384
+    sudo sysctl -w net.inet.raw.maxdgram=16384
 
 Validate MTU 1500:
 
-   $ ping -s 1476 docker
-   PING rabbitmq (192.168.178.18): 1476 data bytes
+    $ ping -s 1476 docker
+    PING rabbitmq (192.168.178.18): 1476 data bytes
 
 To fake a data diode run a udp2udp tunnel with socat on another machine:
 
-   socat UDP4-RECVFROM:1234,fork udp-datagram:<client ip>:1234,broadcast
+    socat UDP4-RECVFROM:1234,fork udp-datagram:<client ip>:1234,broadcast
 
 Or on a real data diode on black:
 
-   socat UDP4-RECVFROM:1234,fork udp-datagram:172.16.99.255:1235,broadcast
+    socat UDP4-RECVFROM:1234,fork udp-datagram:172.16.99.255:1235,broadcast
 
 and on the red side:
 
-   socat UDP4-RECVFROM:1235,fork UDP4-SENDTO:172.16.128.4:1234
+    socat UDP4-RECVFROM:1235,fork UDP4-SENDTO:172.16.128.4:1234
 
 Optimize
 
-   #!/bin/bash
+    #!/bin/bash
 
-   sudo sysctl -w \
-   net.core.rmem_max=26214400 \
-   net.core.wmem_max=16777216 \
-   net.core.rmem_default=524288 \
-   net.core.wmem_default=524288 \
-   fs.file-max=100000 \
-   vm.swappiness=10 \
-   net.core.optmem_max=40960 \
-   net.core.netdev_max_backlog=50000 \
-   net.ipv4.udp_rmem_min=8192 \
-   net.ipv4.udp_wmem_min=8192 \
-   net.ipv4.conf.all.send_redirects=0 \
-   net.ipv4.conf.all.accept_redirects=0 \
-   net.ipv4.conf.all.accept_source_route=0 \
-   net.ipv4.conf.all.log_martians=1 \
-   net.ipv4.neigh.default.gc_thresh1=1024 \
-   net.ipv4.neigh.default.gc_thresh1=2048 \
-   net.ipv4.neigh.default.gc_thresh1=4096 \
+    sudo sysctl -w \
+    net.core.rmem_max=26214400 \
+    net.core.wmem_max=16777216 \
+    net.core.rmem_default=524288 \
+    net.core.wmem_default=524288 \
+    fs.file-max=100000 \
+    vm.swappiness=10 \
+    net.core.optmem_max=40960 \
+    net.core.netdev_max_backlog=50000 \
+    net.ipv4.udp_rmem_min=8192 \
+    net.ipv4.udp_wmem_min=8192 \
+    net.ipv4.conf.all.send_redirects=0 \
+    net.ipv4.conf.all.accept_redirects=0 \
+    net.ipv4.conf.all.accept_source_route=0 \
+    net.ipv4.conf.all.log_martians=1 \
+    net.ipv4.neigh.default.gc_thresh1=1024 \
+    net.ipv4.neigh.default.gc_thresh1=2048 \
+    net.ipv4.neigh.default.gc_thresh1=4096 \
 
 No packet loss anymore at ~113MB/sec
 
-   ^Cmarcel@marcel-desktop:~/projects/rabbitmq-applications/application/datadiode/red$ sudo iperf -s -u -l 8972
-   ------------------------------------------------------------
-   Server listening on UDP port 5001
-   Receiving 8972 byte datagrams
-   UDP buffer size: 1.00 MByte (default)
-   ------------------------------------------------------------
-   [  3] local 192.168.178.18 port 5001 connected with 192.168.178.17 port 63202
-   [ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
-   [  3]  0.0-10.0 sec  1.15 GBytes   991 Mbits/sec   0.017 ms 2615/140839 (1.9%)
-   [  3]  0.0-10.0 sec  1 datagrams received out-of-order
+    ^Cmarcel@marcel-desktop:~/projects/rabbitmq-applications/application/datadiode/red$ sudo iperf -s -u -l 8972
+    ------------------------------------------------------------
+    Server listening on UDP port 5001
+    Receiving 8972 byte datagrams
+    UDP buffer size: 1.00 MByte (default)
+    ------------------------------------------------------------
+    [  3] local 192.168.178.18 port 5001 connected with 192.168.178.17 port 63202
+    [ ID] Interval       Transfer     Bandwidth        Jitter   Lost/Total Datagrams
+    [  3]  0.0-10.0 sec  1.15 GBytes   991 Mbits/sec   0.017 ms 2615/140839 (1.9%)
+    [  3]  0.0-10.0 sec  1 datagrams received out-of-order
 
-   MacBook-Pro-van-marcel:~ marcel$ iperf -c docker -u -b 1000M  -l 8972 -i1 -t10
-   ------------------------------------------------------------
-   Client connecting to docker, UDP port 5001
-   Sending 8972 byte datagrams
-   UDP buffer size: 9.00 KByte (default)
-   ------------------------------------------------------------
-   [  5] local 192.168.178.17 port 63202 connected with 192.168.178.18 port 5001
-   [ ID] Interval       Transfer     Bandwidth
-   [  5]  0.0- 1.0 sec   121 MBytes  1.01 Gbits/sec
-   [  5]  1.0- 2.0 sec   117 MBytes   980 Mbits/sec
-   [  5]  2.0- 3.0 sec   121 MBytes  1.01 Gbits/sec
-   [  5]  3.0- 4.0 sec   117 MBytes   980 Mbits/sec
-   [  5]  4.0- 5.0 sec   121 MBytes  1.01 Gbits/sec
-   [  5]  5.0- 6.0 sec   117 MBytes   980 Mbits/sec
-   [  5]  6.0- 7.0 sec   117 MBytes   979 Mbits/sec
-   [  5]  7.0- 8.0 sec   121 MBytes  1.01 Gbits/sec
-   [  5]  8.0- 9.0 sec   117 MBytes   979 Mbits/sec
-   [  5]  9.0-10.0 sec   117 MBytes   980 Mbits/sec
-   [  5]  0.0-10.0 sec  1.15 GBytes   992 Mbits/sec
-   [  5] Sent 140840 datagrams
-   [  5] Server Report:
-   [  5]  0.0-10.0 sec  1.15 GBytes   991 Mbits/sec   0.016 ms 2615/140839 (1.9%)
-   [  5]  0.0-10.0 sec  1 datagrams received out-of-order
+    MacBook-Pro-van-marcel:~ marcel$ iperf -c docker -u -b 1000M  -l 8972 -i1 -t10
+    ------------------------------------------------------------
+    Client connecting to docker, UDP port 5001
+    Sending 8972 byte datagrams
+    UDP buffer size: 9.00 KByte (default)
+    ------------------------------------------------------------
+    [  5] local 192.168.178.17 port 63202 connected with 192.168.178.18 port 5001
+    [ ID] Interval       Transfer     Bandwidth
+    [  5]  0.0- 1.0 sec   121 MBytes  1.01 Gbits/sec
+    [  5]  1.0- 2.0 sec   117 MBytes   980 Mbits/sec
+    [  5]  2.0- 3.0 sec   121 MBytes  1.01 Gbits/sec
+    [  5]  3.0- 4.0 sec   117 MBytes   980 Mbits/sec
+    [  5]  4.0- 5.0 sec   121 MBytes  1.01 Gbits/sec
+    [  5]  5.0- 6.0 sec   117 MBytes   980 Mbits/sec
+    [  5]  6.0- 7.0 sec   117 MBytes   979 Mbits/sec
+    [  5]  7.0- 8.0 sec   121 MBytes  1.01 Gbits/sec
+    [  5]  8.0- 9.0 sec   117 MBytes   979 Mbits/sec
+    [  5]  9.0-10.0 sec   117 MBytes   980 Mbits/sec
+    [  5]  0.0-10.0 sec  1.15 GBytes   992 Mbits/sec
+    [  5] Sent 140840 datagrams
+    [  5] Server Report:
+    [  5]  0.0-10.0 sec  1.15 GBytes   991 Mbits/sec   0.016 ms 2615/140839 (1.9%)
+    [  5]  0.0-10.0 sec  1 datagrams received out-of-order
 
 For example:
 • 9.5 KB equals 9.5 x 1024 = 9728 bytes 
@@ -310,4 +310,4 @@ For example:
 
 # Restrictions
 
-* there is a lot of overhead in a message, this can be optimized
+There is a lot of overhead in a message, this can be optimized

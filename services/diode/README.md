@@ -21,7 +21,7 @@ The complete pipeline - the X's are exchanges (input ports) - the green X is an 
 
 ## Original Readme
 
-The original readme for the data diode is [here](code/application/datadiode).
+The original readme for the data diode is [here](code/application/datadiode), slightly updated. 
 
 
 ## Starting the RabbitMQ queues
