@@ -57,7 +57,9 @@ It's not yet setup to pass through the diode though.
 
 Node-red 
 
-- http://localhost:1880
+<!-- - http://localhost:1880 -->
+
+- http://nodered
 
 LDAP 
 
