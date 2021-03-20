@@ -1,20 +1,27 @@
 # use with https://github.com/casey/just
 # like make, but just a command runner
 
-# default_setup := 'demo'
 
 # list targets
 help:
     @just --list
 
-# install all dependencies (also need python, node/npm, docker)
+
+# install all dependencies (also need python, node/npm, docker, openjdk8, gradle2.8)
 install:
-    pip install -U Sphinx
-    npm install -g http-server
     pip install mqtt-recorder
+    npm install -g http-server
     cd services/adapter/code && npm install
     cd services/builder/code && npm install
     cd services/simulator/code && npm install
+    cd services/diode/code/application/datadiode/contrib/nodejs && npm install
+
+
+# install development tools
+install-dev:
+    brew install netcat
+    pip install -U Sphinx
+
 
 # build devices.xml and device*.js files from device*.yaml files
 build: _buildxml _buildjs
@@ -34,6 +41,7 @@ _buildjs:
     done
     cp services/builder/output/*.js services/adapter/code/src/plugins
 
+
 # run
 # SETUP is a variable, the name of the setup folder to use
 # rm options:
@@ -49,10 +57,12 @@ run SETUP='demo':
     docker-compose --file $FILE up --build --remove-orphans && \
     docker-compose --file $FILE rm -fsv
 
+
 # make and deploy sphinx docs
 docs:
     cd docs && make html && http-server build/html
     cd docs && firebase deploy
+
 
 # replay ccs p&a mqtt recording - https://github.com/rpdswtk/mqtt_recorder
 replay SETUP='demo':
@@ -66,7 +76,6 @@ replay SETUP='demo':
 
 # install openjdk8
 # install gradle2.8
-
 
 # To enable strong encryption (AES-256) see 
 # * [Java-6 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html)
@@ -83,10 +92,12 @@ install-jce:
 # or
 # docker-compose --file services/diode/code/application/datadiode/contrib/docker/docker-compose.yml up
 
+
 # start rabbitmq message queues
 rabbit:
     cd services/diode/code/application/datadiode/contrib/docker && \
     docker-compose up
+
 
 # send a test message to rabbitmq
 send:
