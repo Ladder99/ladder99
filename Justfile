@@ -1,7 +1,7 @@
 # use with https://github.com/casey/just
 # like make, but just a command runner
 
-default_setup := 'demo'
+# default_setup := 'demo'
 
 # list targets
 help:
@@ -43,7 +43,7 @@ _buildjs:
 #. run SETUP: build
 
 # start a setup with all services, e.g. `just run` or `just run demo`
-run SETUP=default_setup:
+run SETUP='demo':
     FILE=setups/{{SETUP}}/docker-compose.yaml && \
     docker-compose --file $FILE down && \
     docker-compose --file $FILE up --build --remove-orphans && \
@@ -55,7 +55,7 @@ docs:
     cd docs && firebase deploy
 
 # replay ccs p&a mqtt recording - https://github.com/rpdswtk/mqtt_recorder
-replay SETUP=default_setup:
+replay SETUP='demo':
     mqtt-recorder \
       --host localhost \
       --port 1883 \
@@ -67,20 +67,23 @@ replay SETUP=default_setup:
 # install openjdk8
 # install gradle2.8
 
-# install JCE
+
 # To enable strong encryption (AES-256) see 
 # * [Java-6 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html)
 # * [Java-7 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
 # * [Java-8 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html)
 # Install unzip the JCE and place the jars in $JAVA_HOME/jre/lib/security:
 #     cp *.jar $JAVA_HOME/jre/lib/security
+
+# install JCE
 install-jce:
     cd ~/Desktop/UnlimitedJCEPolicyJDK8 && \
     sudo cp *.jar $JAVA_HOME/jre/lib/security
 
-# start rabbitmq message queues - then visit 
 # or
 # docker-compose --file services/diode/code/application/datadiode/contrib/docker/docker-compose.yml up
+
+# start rabbitmq message queues
 rabbit:
     cd services/diode/code/application/datadiode/contrib/docker && \
     docker-compose up
@@ -102,15 +105,19 @@ send:
 #     cd services/diode && \
 #     docker build -t diode .
 
-# start data diode receiver and sender
 # cd services/diode && docker-compose up
-#docker run diode /bin/bash -c "cd application/datadiode/black && gradle run"
+# docker run diode /bin/bash -c "cd application/datadiode/black && gradle run"
 
-black:
+# start diode sender and receiver
+diode: _black _red
+
+# start diode sender
+_black:
     cd services/diode/code/application/datadiode/black && \
     gradle run
 
-red:
+# start diode receiver
+_red:
     cd services/diode/code/application/datadiode/red && \
     gradle run
 
