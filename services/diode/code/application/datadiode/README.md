@@ -50,16 +50,17 @@ This will start the following setup:
 
 Validate by visiting the following pages:
 
+<!-- 
 * [rabbitmq on black side](http://rabbitmq:15673)
-* [rabbitmq on red side](http://rabbitmq:15674)
-
+* [rabbitmq on red side](http://rabbitmq:15674) 
+* -->
 >> should be
-http://rabbitblack/#/exchanges
-http://rabbitred/#/exchanges
-?
+* [rabbitmq on black side](http://rabbitblack/#/exchanges)
+* [rabbitmq on red side](http://rabbitred/#/exchanges)
+
+with username/pw guest/guest
 
 
-?
 Start outside 
 
     cd docker-spring-datadiode-black

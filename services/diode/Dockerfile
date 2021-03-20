@@ -15,4 +15,4 @@ WORKDIR /home/app
 
 COPY code .
 
-CMD ["./gradlew", "tasks"]
+CMD ["code/gradlew", "tasks"]

@@ -70,10 +70,10 @@ rabbitmq:
 
 # build data diode
 build-diode:
-    @echo must do
+    @echo must do this first - 
     @echo   export DOCKER_BUILDKIT=0
     @echo   export COMPOSE_DOCKER_CLI_BUILD=0
-    @echo first - see https://stackoverflow.com/a/66695181/243392
+    @echo see https://stackoverflow.com/a/66695181/243392
     cd services/diode && \
     docker build -t diode .
 
