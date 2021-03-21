@@ -21,11 +21,24 @@ The complete pipeline - the X's are exchanges (input ports) - the green X is an 
 
 ## Installing
 
-Edit your `/etc/hosts` with `sudo nano /etc/hosts`, and add the line:
+Install OpenJDK 8 - this is a free alternative to Oracle's JDK. Add this to your ~/.zshrc file and restart the terminal -
+
+    export JAVA_HOME=$(/usr/libexec/java_home)
+
+Install JCE for security (otherwise tries to do automatically for Java15) - [Java-8 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html). Unzip the JCE and place the jars in $JAVA_HOME/jre/lib/security - e.g.
+
+    cd ~/Desktop/UnlimitedJCEPolicyJDK8 && \
+    sudo cp *.jar $JAVA_HOME/jre/lib/security
+
+Install Gradle 2.8 - this is a Java builder
+
+    export PATH="/Users/bburns/apps/gradle-2.8/bin:$PATH"
+
+Then edit your `/etc/hosts` with `sudo nano /etc/hosts`, and add the line:
 
     127.0.0.1 rabbitred rabbitblack nodered
 
-(can this be done in a docker-compose setup?)
+(can this all be done in a docker-compose setup?)
 
 
 ## Starting the RabbitMQ queues
@@ -58,7 +71,7 @@ in another terminal
 
     just red
 
-(get stuck at 97%)
+(both get stuck at 97%)
 
 
 ## Sending data across Diode
