@@ -94,7 +94,7 @@ install-jce:
 
 
 # start rabbitmq message queues
-rabbit:
+rabbits:
     cd services/diode/code/application/datadiode/contrib/docker && \
     docker-compose up
 
@@ -120,15 +120,15 @@ send:
 # docker run diode /bin/bash -c "cd application/datadiode/black && gradle run"
 
 # start diode sender and receiver
-diode: _black _red
+# diode: _black _red
 
 # start diode sender
-_black:
+black:
     cd services/diode/code/application/datadiode/black && \
     gradle run
 
 # start diode receiver
-_red:
+red:
     cd services/diode/code/application/datadiode/red && \
     gradle run
 

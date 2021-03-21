@@ -19,52 +19,33 @@ The complete pipeline - the X's are exchanges (input ports) - the green X is an 
 ![diode3](design/diode3.png)
 
 
-## Original Readme
-
-The original readme for the data diode is [here](code/application/datadiode), slightly updated. 
-
-
-## Starting the RabbitMQ queues
+## Installing
 
 Edit your `/etc/hosts` with `sudo nano /etc/hosts`, and add the line:
 
     127.0.0.1 rabbitred rabbitblack nodered
 
+(can this be done in a docker-compose setup?)
+
+
+## Starting the RabbitMQ queues
+
 Bring up the RabbitMQ queues -
 
     just rabbit
-
-<!-- 
-old - 
-    cd services/diode/code/application/datadiode/contrib/docker
-    docker-compose up
--->
 
 Visit the RabbitMQ management consoles here (user guest, pw guest) -
 
 - http://rabbitblack/#/exchanges 
 - http://rabbitred/#/exchanges
 
-Publish and receive some data -
+Publish and receive some data - this runs the nodejs program [here](code/application/datadiode/contrib/nodejs/src/send.js).
 
-    cd services/diode/code/application/datadiode/contrib/nodejs
-    npm install  # just need to do once
-    node src/send.js
+    just send
 
 You can see the message go by in the RabbitMQ console - http://rabbitblack/#/queues/%2F/hello. 
 
-It's not yet setup to pass through the diode though.
-
-Node-red 
-
-<!-- - http://localhost:1880 -->
-
-- http://nodered
-
-LDAP 
-
-- https://rabbitblack/#/ 
-- https://rabbitred/#/
+The diode is not fully setup yet though - the Java programs listen to the message queues and transform it. 
 
 
 ## Starting the Diode Receiver and Sender
@@ -76,4 +57,29 @@ Run black and red Java applications - these listen to the RabbitMQ queues and ma
 in another terminal
 
     just red
+
+(get stuck at 97%)
+
+
+## Sending data across Diode
+
+Goto node-red and setup a timestamp feeding to an mqtt output. 
+
+- http://nodered
+
+This should send a timestamp across the diode. 
+
+
+LDAP 
+
+- https://rabbitblack/#/ 
+- https://rabbitred/#/
+
+(what's this for?)
+
+
+## Original Readme
+
+The original readme for the data diode is [here](code/application/datadiode), slightly updated. 
+
 
