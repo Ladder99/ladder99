@@ -1,11 +1,9 @@
 # use with https://github.com/casey/just
 # like make, but just a command runner
 
-
 # list targets
 help:
     @just --list
-
 
 # install all dependencies (also need python, node/npm, docker, openjdk8, gradle2.8)
 install:
@@ -16,12 +14,10 @@ install:
     cd services/simulator/code && npm install
     cd services/diode/code/application/datadiode/contrib/nodejs && npm install
 
-
 # install development tools
 install-dev:
     brew install netcat
     pip install -U Sphinx
-
 
 # build devices.xml and device*.js files from device*.yaml files
 build: _buildxml _buildjs
@@ -41,7 +37,6 @@ _buildjs:
     done
     cp services/builder/output/*.js services/adapter/code/src/plugins
 
-
 # run
 # SETUP is a variable, the name of the setup folder to use
 # rm options:
@@ -49,7 +44,6 @@ _buildjs:
 # -s, --stop    Stop the containers, if required, before removing
 # -v            Remove any anonymous volumes attached to containers
 #. run SETUP: build
-
 # start a setup with all services, e.g. `just run` or `just run demo`
 run SETUP='demo':
     FILE=setups/{{SETUP}}/docker-compose.yaml && \
@@ -57,12 +51,10 @@ run SETUP='demo':
     docker-compose --file $FILE up --build --remove-orphans && \
     docker-compose --file $FILE rm -fsv
 
-
 # make and deploy sphinx docs
 docs:
     cd docs && make html && http-server build/html
     cd docs && firebase deploy
-
 
 # replay ccs p&a mqtt recording - https://github.com/rpdswtk/mqtt_recorder
 replay SETUP='demo':
@@ -74,53 +66,17 @@ replay SETUP='demo':
       --file setups/{{SETUP}}/mqtt-recorder/recording.csv
 
 
-# install openjdk8
-# install gradle2.8
-
-# To enable strong encryption (AES-256) see 
-# * [Java-6 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce-6-download-429243.html)
-# * [Java-7 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
-# * [Java-8 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html)
-# Install unzip the JCE and place the jars in $JAVA_HOME/jre/lib/security:
-#     cp *.jar $JAVA_HOME/jre/lib/security
-
-# install JCE
-install-jce:
-    cd ~/Desktop/UnlimitedJCEPolicyJDK8 && \
-    sudo cp *.jar $JAVA_HOME/jre/lib/security
-
-# or
-# docker-compose --file services/diode/code/application/datadiode/contrib/docker/docker-compose.yml up
-
+# ----------- diode -------------
 
 # start rabbitmq message queues
 rabbits:
     cd services/diode/code/application/datadiode/contrib/docker && \
     docker-compose up
 
-
 # send a test message to rabbitmq
 send:
     cd services/diode/code/application/datadiode/contrib/nodejs && \
-    npm install && \
     node src/send.js
-
-
-#. do we need this?
-# # build data diode
-# build-diode:
-#     @echo must do this first - 
-#     @echo   export DOCKER_BUILDKIT=0
-#     @echo   export COMPOSE_DOCKER_CLI_BUILD=0
-#     @echo see https://stackoverflow.com/a/66695181/243392
-#     cd services/diode && \
-#     docker build -t diode .
-
-# cd services/diode && docker-compose up
-# docker run diode /bin/bash -c "cd application/datadiode/black && gradle run"
-
-# start diode sender and receiver
-# diode: _black _red
 
 # start diode sender
 black:
@@ -131,4 +87,3 @@ black:
 red:
     cd services/diode/code/application/datadiode/red && \
     gradle run
-
