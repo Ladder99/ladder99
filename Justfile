@@ -19,6 +19,11 @@ install-dev:
     brew install netcat
     pip install -U Sphinx
 
+# make and deploy sphinx docs
+docs:
+    cd docs && make html && http-server build/html
+    cd docs && firebase deploy
+
 # build devices.xml and device*.js files from device*.yaml files
 build: _buildxml _buildjs
 
@@ -51,11 +56,6 @@ run SETUP='demo':
     docker-compose --file $FILE up --build --remove-orphans && \
     docker-compose --file $FILE rm -fsv
 
-# make and deploy sphinx docs
-docs:
-    cd docs && make html && http-server build/html
-    cd docs && firebase deploy
-
 # replay ccs p&a mqtt recording - https://github.com/rpdswtk/mqtt_recorder
 replay SETUP='demo':
     mqtt-recorder \
@@ -67,6 +67,7 @@ replay SETUP='demo':
 
 
 # ----------- diode -------------
+
 
 # start rabbitmq message queues
 rabbits:
@@ -87,3 +88,4 @@ black:
 red:
     cd services/diode/code/application/datadiode/red && \
     gradle run
+
