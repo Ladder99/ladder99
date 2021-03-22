@@ -21,29 +21,31 @@ The complete pipeline - the X's are exchanges (input ports) - the green X is an 
 
 ## Installing
 
-Install OpenJDK 8 - this is a free alternative to Oracle's JDK. Add this to your ~/.zshrc file and restart the terminal -
+Install OpenJDK 8 - this is a free alternative to Oracle's JDK. 
+
+Then add this to your ~/.zshrc file and restart the terminal -
 
     export JAVA_HOME=$(/usr/libexec/java_home)
 
-Install JCE for security (otherwise tries to do automatically for Java15) - [Java-8 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html). Unzip the JCE and place the jars in $JAVA_HOME/jre/lib/security - e.g.
+Install JCE for security (otherwise tries to do automatically for JDK 15) - [Java-8 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html). Unzip the JCE and place the jars in $JAVA_HOME/jre/lib/security - 
 
     cd ~/Desktop/UnlimitedJCEPolicyJDK8 && \
     sudo cp *.jar $JAVA_HOME/jre/lib/security
 
-Install Gradle 2.8 - this is a Java builder
+Install Gradle 2.8 - this is a Java builder. Unzip it and put the folder somewhere and add the path to your ~/.zshrc like so and restart the terminal - 
 
-    export PATH="/Users/bburns/apps/gradle-2.8/bin:$PATH"
+    export PATH="~/gradle-2.8/bin:$PATH"
 
 Then edit your `/etc/hosts` with `sudo nano /etc/hosts`, and add the line:
 
     127.0.0.1 rabbitred rabbitblack nodered
 
-(can this all be done in a docker-compose setup?)
+(can all this be done in a docker-compose setup?)
 
 
 ## Starting the RabbitMQ queues
 
-Bring up the RabbitMQ queues -
+Bring up the RabbitMQ queues via docker-compose - 
 
     just rabbit
 
@@ -52,47 +54,46 @@ Visit the RabbitMQ management consoles here (user guest, pw guest) -
 - http://rabbitblack/#/exchanges 
 - http://rabbitred/#/exchanges
 
-Publish and receive some data - this runs the nodejs program [here](code/application/datadiode/contrib/nodejs/src/send.js).
+Publish and receive some data - this runs the nodejs program [here](code/application/datadiode/contrib/nodejs/src/send.js) to publish a string to the 'hello' exchange -
 
     just send
 
 You can see the message go by in the RabbitMQ console - http://rabbitblack/#/queues/%2F/hello. 
 
-The diode is not fully setup yet though - the Java programs listen to the message queues and transform it. 
+The diode is not fully setup yet though - the Java programs will listen to the rabbit messages and transform them. 
 
 
 ## Starting the Diode Receiver and Sender
 
-Run black and red Java applications - these listen to the RabbitMQ queues and manipulate the data - 
+Run the black (receiver) and red (sender) Java applications - these listen to the RabbitMQ queues and manipulate the data - 
 
     just black
 
-in another terminal
+and in another terminal
 
     just red
 
-(both get stuck at 97%)
+(but both get stuck at 97%)
 
 
 ## Sending data across Diode
 
-Goto node-red and setup a timestamp feeding to an mqtt output. 
+As directed in the paper's appendix, goto node-red and setup a timestamp feeding to an mqtt output. Set the url to rabbitblack:1883 and leave the topic blank - 
 
 - http://nodered
 
-This should send a timestamp across the diode. 
+This should send a timestamp across the diode. (but doesn't)
 
 
-LDAP 
+## LDAP
+
+(what's this for?)
 
 - https://rabbitblack/#/ 
 - https://rabbitred/#/
-
-(what's this for?)
 
 
 ## Original Readme
 
 The original readme for the data diode is [here](code/application/datadiode), slightly updated. 
-
 
