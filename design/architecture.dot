@@ -14,7 +14,7 @@ digraph "ladder99-adapter" {
   // nodes
   PA1 [ fillcolor=lavender; label="CCS P&A 1" ];
   PA2 [ fillcolor=lavender; label="CCS P&A 2" ];
-  OldMachine [ fillcolor=lavender; label="Old Machine" ];
+  OldMachine [ fillcolor=lavender; label="Old Machine 1" ];
   PLC4X [ label="PLC4X\n(Java)" ];
   OldMachine2 [ fillcolor=lavender; label="Old Machine 2" ];
   Kepware [ label="Kepware\n(Windows)"];
@@ -22,6 +22,7 @@ digraph "ladder99-adapter" {
   Broker2 [ label="MQTT Broker 2\n(Mosquitto)" ];
   Broker3 [ label="MQTT Broker 3\n(Mosquitto)" ];
   Broker4 [ label="MQTT Broker 4\n(Mosquitto)" ];
+  OldMachine3 [ fillcolor=lavender; label="Old Machine 3" ];
   Adapter [ label="MTConnect\nAdapter\n(NodeJS)" ];
   // Device1Sheet [ fillcolor=greenyellow; label="device1.sheet" ];
   // Device1Yaml [ fillcolor=greenyellow; label="device1.yaml" ];
@@ -48,6 +49,7 @@ digraph "ladder99-adapter" {
   PLC4X -> Broker3 [ label="?" ];
   OldMachine2 -> Kepware [ label="proprietary\nprotocol" ];
   Kepware -> Broker4 [ label="TCP" ];
+  OldMachine3 -> Adapter [ label="text\nTCP 1887" ];
   Broker1 -> Adapter [ label="MQTT\nTCP 1883", dir=both ];
   Broker2 -> Adapter [ label="MQTT\nTCP 1884", dir=both ];
   Broker3 -> Adapter [ label="MQTT\nTCP 1885", dir=both ];
