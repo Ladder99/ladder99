@@ -58,7 +58,7 @@ digraph "ladder99-adapter" {
   Adapter -> Agent [ label="SHDR /   \nTCP 7878      ", dir=both ];
 
   Adapter -> DiodeSender [ label="SHDR /   \nTCP 7878      ", dir=both, style=dotted ];
-  DiodeSender -> DiodeReceiver [ label="UDP    " ];
+  DiodeSender -> DiodeReceiver [ label="UDP    ", style=dotted ];
   DiodeReceiver -> Agent [ label="SHDR /    \nTCP 7878        ", style=dotted ];
   
   // Device1Sheet -> Device1Yaml [ label="feeds into" ];

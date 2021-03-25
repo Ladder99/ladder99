@@ -42,19 +42,21 @@ Then edit your `/etc/hosts` with `sudo nano /etc/hosts`, and add the line:
 
 (can all this be done in a docker-compose setup?)
 
+(eventually upgrade these to latest Java and Gradle)
+
 
 ## Starting the RabbitMQ queues
 
 Bring up the RabbitMQ queues via docker-compose - 
 
-    just rabbit
+    just rabbits
 
 Visit the RabbitMQ management consoles here (user guest, pw guest) -
 
 - http://rabbitblack/#/exchanges 
 - http://rabbitred/#/exchanges
 
-Publish and receive some data - this runs the nodejs program [here](code/application/datadiode/contrib/nodejs/src/send.js) to publish a string to the 'hello' exchange -
+In another terminal, publish and receive some data - this runs the nodejs program [here](code/application/datadiode/contrib/nodejs/src/send.js) to publish a string to the 'hello' exchange -
 
     just send
 
