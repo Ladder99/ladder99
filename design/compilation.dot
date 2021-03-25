@@ -1,0 +1,36 @@
+digraph "ladder99-compilation" {
+
+  // styles
+  graph [ label="Ladder99 Compilation Steps\n "; color=lightgray; ];
+  graph [ fontsize=20 ];
+  graph [ labelloc=t ];
+  // graph [ ranksep=0.2 ];
+  // graph [ nodesep=0.35 ];
+  // graph [ rankdir=LR; ] // left-to-right
+  node [ color=gray; fillcolor=white; style=filled ];
+  edge [ color=gray ];
+  edge [ fontsize=12; fontcolor=gray30; ];
+
+  // nodes
+  Device1Sheet [ fillcolor="greenyellow"; label="device1.sheet" ];
+  DeviceYaml [ label="device.yaml" ];
+  Device1Yaml [ fillcolor="greenyellow"; label="device1.yaml" ];
+  DeviceJs [ label="device.js" ];
+  Device1Js [ label="device1.js" ];
+  DevicesXml [ label="Devices.xml" ];
+  DevicesYaml [ label="Devices.yaml" ];
+
+  // edges
+  DeviceYaml -> Device1Yaml [ label="structures" ];
+  Device1Sheet -> DeviceYaml [ label="feeds into" ];
+  Device1Yaml -> Device1Js [ label="helps generate" ];
+  DeviceJs -> Device1Js [ label="structures" ];
+  Device1Js -> Adapter [ label="plugs into" ];
+  Device1Yaml -> DevicesXml [ label="feeds into" ];
+  Adapter -> Agent [ label="SHDR/\nTCP 7878" ];
+  DevicesYaml -> DevicesXml [ label="structures" ];
+  DevicesXml -> Agent [ label="used by" ];
+
+  // rank
+  // { rank=same; DiodeSender DiodeReceiver Agent Application Database Visualizer };
+}
