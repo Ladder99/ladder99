@@ -5,6 +5,10 @@ types:
     0: INACTIVE
     1: ACTIVE
 
+  AVAILABILITY:
+    online: AVAILABLE
+    offline: UNAVAILABLE
+
   EMERGENCY_STOP:
     false: ARMED
     true: TRIGGERED
