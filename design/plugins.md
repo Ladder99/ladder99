@@ -1,3 +1,5 @@
+See https://mermaid-js.github.io/mermaid/#/sequenceDiagram
+
 MQTT Plugin (passive)
 
 ```mermaid
