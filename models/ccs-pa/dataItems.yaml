@@ -3,102 +3,91 @@
 dataItems:
   connection:
     # id: ${serialNumber}-connection
+    #. q. is id really needed?  what if id is always the name of the yaml parent?
+    # serialNumber prefix could be a configurable setting at adapter level,
+    # prefix is only needed when multiple Device will be present in devices.xml
+    # to prevent collision.
     category: EVENT
     type: AVAILABILITY
     value: types.AVAILABILITY[cache.get('${serialNumber}-status-connection')]
 
   asset_changed:
-    # id: ${serialNumber}-asset_changed
     category: EVENT
     type: ASSET_CHANGED
     value:
 
   asset_removed:
-    # id: ${serialNumber}-asset_removed
     category: EVENT
     type: ASSET_REMOVED
     value:
 
   dev_cond:
-    # id: ${serialNumber}-dev_cond
     category: CONDITION
     type: SYSTEM
     value: any hard faults? = Fault, any soft faults? = Warning, no faults = Normal
 
   dev_msg:
-    # id: ${serialNumber}-dev_msg
     category: EVENT
     type: MESSAGE
     representation: DATA_SET # set of kv pairs, part2 7.2.2.12
     value: # fault_id:fault_value, fault_id:fault_value, ...
 
   fw_ver:
-    # id: ${serialNumber}-fw_ver # eg 'CCS123-fw_ver'
     category: EVENT
     type: FIRMWARE
     subType: VERSION
     value: cache.get('${serialNumber}-status-build_no')
 
   e_stop:
-    # id: ${serialNumber}-e_stop
     category: EVENT
     type: EMERGENCY_STOP
     #value: types.EMERGENCY_STOP[cache.get('${serialNumber}-%I0.10')]
     value: "(cache.get('${serialNumber}-status-faults').any([10])) ? 'TRIGGERED' : 'ARMED'"
 
   state:
-    # id: ${serialNumber}-state
     category: EVENT
     type: EXECUTION
     value: types.EXECUTION[cache.get('${serialNumber}-status-state')]
 
   wait_state:
-    # id: ${serialNumber}-wait_state
     category: EVENT
     type: WAIT_STATE
     value: types.WAIT_STATE[cache.get('${serialNumber}-status-state')]
     # what value goes here when status.state is not WAIT?
 
   program:
-    # id: ${serialNumber}-program
     category: EVENT
     type: PROGRAM
     subType: MAIN
     value: cache.get('${serialNumber}-status-program')
 
   step:
-    # id: ${serialNumber}-step
     category: EVENT
     type: BLOCK
     value: cache.get('${serialNumber}-status-step')
 
   clk_time:
-    # id: ${serialNumber}-clk_time
     category: SAMPLE
     type: CLOCK_TIME
     value: cache.get('${serialNumber}-status-utc_time')
 
   up_time:
-    # id: ${serialNumber}-up_time
     category: SAMPLE
     type: EQUIPMENT_TIMER
     subType: OPERATING
     value: cache.get('${serialNumber}-status-cpu_time')
 
   fault_count:
-    # id: ${serialNumber}-fault_count
     category: SAMPLE
     type: COUNT
     value: cache.get('${serialNumber}-%M55.2')
 
   cycle_count:
-    # id: ${serialNumber}-cycle_count
     category: SAMPLE
     type: COUNT
     value: cache.get('${serialNumber}-%M55.1')
 
   life_count:
-    # id: ${serialNumber}-life_count
     category: SAMPLE
     type: COUNT
     value: cache.get('${serialNumber}-%M55.0')
@@ -112,32 +101,24 @@ dataItems:
     value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.0')]
 
   printer_feed:
-    # id: ${serialNumber}-%Q0.1
     name: printer_feed
     category: EVENT
     type: ACTUATOR_STATE
     value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.1')]
 
   printer_pause:
-    # id: ${serialNumber}-%Q0.2
     name: printer_pause
     category: EVENT
     type: ACTUATOR_STATE
     value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.2')]
 
   end_eff_cond:
-    # id: ${serialNumber}-end_eff_cond
-    #. q. is id really needed?  what if id is always the name of the yaml parent?
-    # serialNumber prefix could be a configurable setting at adapter level,
-    # prefix is only needed when multiple Device will be present in devices.xml
-    # to prevent collision.
     category: CONDITION
     type: SYSTEM
     # value needs quotes here because has ':' in expression
     value: "(cache.get('${serialNumber}-status-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
 
   end_eff_message:
-    # id: ${serialNumber}-end_eff_message
     category: EVENT
     type: MESSAGE
     value: cache.get('${serialNumber}-status-faults').first([2,3,5]).property('description').value
