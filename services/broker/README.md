@@ -1,3 +1,3 @@
-# Broker
+# ladder99-broker
 
-uses mosquitto - see setups/demo folder
+uses mosquitto mqtt broker - see setups/demo/volumes/broker* folders
