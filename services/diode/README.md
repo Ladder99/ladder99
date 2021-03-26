@@ -25,6 +25,8 @@ Uninstall/remove any Java/JDK you have locally, then install OpenJDK 8 - this is
 
     brew cask install adoptopenjdk8
 
+(from https://apple.stackexchange.com/questions/334384/how-can-i-install-java-openjdk-8-on-high-sierra-or-newer-macos)
+
 Then add this to your ~/.zshrc file and restart the terminal -
 
     export JAVA_HOME=$(/usr/libexec/java_home)
