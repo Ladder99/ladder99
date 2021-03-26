@@ -1,5 +1,4 @@
-# this code defines the xml that will get included in devices.xml.
-# dataitems are defined in dataItems.yaml.
+# this code defines the xml that will get included in devices.xml
 
 device:
   - id: ${serialNumber} # ?
@@ -15,10 +14,16 @@ device:
 
     dataItems:
       dataItem:
+        - connection
+        - asset_changed
+        - asset_removed
+        - dev_cond
+        - dev_msg
         - fw_ver
-        - printer_start_print
-        - printer_feed
-        - printer_pause
+
+        #- printer_start_print
+        #- printer_feed
+        #- printer_pause
 
     components:
       controller:
@@ -28,18 +33,23 @@ device:
           text: Electronic board set responsible for coordinating all machine function.
         dataItems:
           dataItem:
-            - state
-            - wait_state
-            - program
-            - step
-            - estop
+            - e_stop
 
         components:
           path:
             id: ${serialNumber}-path1
             name: path
             dataItems:
-              dataItem: []
+              dataItem:
+                - state
+                - wait_state
+                - program
+                - step
+                - clk_time
+                - up_time
+                - fault_count
+                - cycle_count
+                - life_count
 
     systems:
       id: ${serialNumber}-systems
