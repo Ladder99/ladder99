@@ -12,9 +12,9 @@ digraph "ladder99-compilation" {
   edge [ fontsize=12; fontcolor=gray30; ];
 
   // nodes
-  Device1Sheet [ fillcolor="greenyellow"; label="device1.gsheet" ];
+  Device1Sheet [ label="device1.gsheet" ];
   DeviceYaml [ label="device.yaml" ];
-  Device1Yaml [ fillcolor="greenyellow"; label="device1.yaml" ];
+  Device1Yaml [ label="device1.yaml" ];
   DeviceJs [ label="device.js" ];
   Device1Js [ label="device1.js" ];
   DevicesXml [ label="Devices.xml" ];
