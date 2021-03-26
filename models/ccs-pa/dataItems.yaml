@@ -11,20 +11,24 @@ dataItems:
     type: AVAILABILITY
     value: types.AVAILABILITY[cache.get('${serialNumber}-status-connection')]
 
+  # see std pt 4 line 347
   asset_changed:
     category: EVENT
     type: ASSET_CHANGED
-    value:
+    value: ?
 
+  # see std pt 4 line 357
   asset_removed:
     category: EVENT
     type: ASSET_REMOVED
-    value:
+    value: ?
 
+  # An indication of a fault associated with a piece of equipment
+  # or component that cannot be classified as a specific type.
   dev_cond:
     category: CONDITION
     type: SYSTEM
-    value: any hard faults? = Fault, any soft faults? = Warning, no faults = Normal
+    value: any hard faults? = FAULT, any soft faults? = WARNING, no faults = NORMAL
 
   dev_msg:
     category: EVENT
