@@ -10,7 +10,7 @@ dataItems:
     # to prevent collision.
     category: EVENT
     type: AVAILABILITY
-    key:
+    key: ____
     value: types.AVAILABILITY[cache.get('${serialNumber}-status-connection')]
 
   # see std pt 4 line 347
