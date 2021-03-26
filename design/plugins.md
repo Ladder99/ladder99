@@ -1,3 +1,5 @@
+MQTT Plugin (passive)
+
 ```mermaid
 sequenceDiagram
 
@@ -20,6 +22,8 @@ cache -->> agent: SHDR string
 agent -->> user: XML <DataItem />
 
 ```
+
+Text Plugin (active)
 
 ```mermaid
 sequenceDiagram
