@@ -21,6 +21,11 @@ types:
     300: WAIT
     400: ACTIVE
 
+  # An indication of the reason that EXECUTION is reporting a value of WAIT.
+  # The Valid Data Value MUST be POWERING_UP, POWERING_DOWN,
+  # PART_LOAD, PART_UNLOAD, TOOL_LOAD, TOOL_UNLOAD, MATERIAL_LOAD,
+  # MATERIAL_UNLOAD, SECONDARY_PROCESS, PAUSING, or RESUMING.
+  # see pt3 pg138 for details on values.
   WAIT_STATE:
     50: PAUSING
     100: PAUSING

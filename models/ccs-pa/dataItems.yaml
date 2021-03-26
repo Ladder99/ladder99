@@ -23,8 +23,6 @@ dataItems:
     type: ASSET_REMOVED
     value: ?
 
-  # An indication of a fault associated with a piece of equipment
-  # or component that cannot be classified as a specific type.
   dev_cond:
     category: CONDITION
     type: SYSTEM
