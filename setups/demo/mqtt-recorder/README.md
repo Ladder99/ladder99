@@ -6,11 +6,11 @@ run2 - setup, setting changes, attempt start without data
 
 run3 - try print with printer offline
 
-run4 - 	pneumatic failure
+run4 - pneumatic failure
 
 run5 - printer failure
 
 run6 - motor failure
 
-
+run7 - multiple faults
 
