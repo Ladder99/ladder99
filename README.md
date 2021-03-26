@@ -30,6 +30,11 @@ For more on the data diode, see the service [here](services/diode).
 
 ## Installation
 
+Clone this repo
+
+    git clone https://github.com/bburns/ladder99-mtconnect
+    cd ladder99-mtconnect
+
 Install Docker, Node, and Python3 from their installers. 
 
 Install [just](https://github.com/casey/just), which is a task runner, using `Justfile` for command scripts - if on Mac, 
