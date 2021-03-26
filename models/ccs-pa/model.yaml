@@ -1,6 +1,6 @@
 # this code defines the xml that will get included in devices.xml
 
-device:
+model:
   - id: ${serialNumber} # ?
     name: CCS-PA
     uuid: ${uuid} # eg 'e05363af-95d1-4354-b749-8fbb09d3499e'
