@@ -56,14 +56,14 @@ run SETUP='demo':
     docker-compose --file $FILE up --build --remove-orphans && \
     docker-compose --file $FILE rm -fsv
 
-# replay ccs p&a mqtt recording - https://github.com/rpdswtk/mqtt_recorder
-replay SETUP='demo':
+# replay ccs-pa mqtt recording - https://github.com/rpdswtk/mqtt_recorder
+replay SETUP='demo' RUN='run0':
     mqtt-recorder \
       --host localhost \
       --port 1883 \
       --mode replay \
       --loop true \
-      --file setups/{{SETUP}}/mqtt-recorder/recording.csv
+      --file setups/{{SETUP}}/mqtt-recorder/{{RUN}}.csv
 
 
 # ----------- diode -------------
