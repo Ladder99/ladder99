@@ -1,4 +1,5 @@
-# this code defines the xml that will get included in devices.xml
+# this code defines the xml that will get included in devices.xml.
+# dataitems are defined in calcs.yaml.
 
 device:
   - id: ${serialNumber} # ?
