@@ -6,8 +6,8 @@ types:
     1: ACTIVE
 
   EMERGENCY_STOP:
-    0: ARMED
-    1: TRIGGERED
+    false: ARMED
+    true: TRIGGERED
 
   EXECUTION:
     50: WAIT
