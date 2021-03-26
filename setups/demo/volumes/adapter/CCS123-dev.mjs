@@ -131,7 +131,7 @@ function unpack(topic, buffer) {
 // ------------
 
 // define list of calculations to run on cache values to get shdr key/value pairs.
-// this is extracted from dataItems.yaml.
+// this is extracted/compiled from dataItems.yaml.
 
 const calcs = [
   {
