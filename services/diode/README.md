@@ -23,9 +23,9 @@ The complete pipeline - the X's are exchanges (input ports) - the green X is an 
 
 Uninstall/remove any Java/JDK you have locally, then install OpenJDK 8 - this is a free alternative to Oracle's JDK. 
 
-    brew cask install adoptopenjdk8
-
 (from https://apple.stackexchange.com/questions/334384/how-can-i-install-java-openjdk-8-on-high-sierra-or-newer-macos)
+
+    brew cask install adoptopenjdk8
 
 Then add this to your ~/.zshrc file and restart the terminal -
 
