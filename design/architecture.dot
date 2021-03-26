@@ -43,14 +43,14 @@ digraph "ladder99-adapter" {
   // Operator [ fillcolor=lightyellow ];
 
   // edges
-  PA1 -> Broker1 [ label="TCP?", dir=both ];
-  PA1 -> Kepware [ label="", dir=both ];
-  PA2 -> Broker2 [ label="TCP?", dir=both ];
+  PA1 -> Broker1 [ label="  TCP  ", dir=both ];
+  // PA1 -> Kepware [ label="", dir=both ];
+  PA2 -> Broker2 [ label="  TCP  ", dir=both ];
   OldMachine -> PLC4X [ label="proprietary\nprotocol" ];
-  PLC4X -> Broker3 [ label="?" ];
+  PLC4X -> Broker3 [ label="" ];
   // OldMachine2 -> Kepware [ label="proprietary\nprotocol" ];
   // Kepware -> Broker4 [ label="TCP" ];
-  Kepware -> Adapter [ label="text" ];
+  Kepware -> Adapter [ label="text\nTCP" ];
   OldMachine3 -> Adapter [ label="text\nTCP 1887" ];
   Broker1 -> Adapter [ label="MQTT\nTCP 1883", dir=both ];
   Broker2 -> Adapter [ label="MQTT\nTCP 1884", dir=both ];
