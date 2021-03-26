@@ -21,13 +21,15 @@ The complete pipeline - the X's are exchanges (input ports) - the green X is an 
 
 ## Installing
 
-Install OpenJDK 8 - this is a free alternative to Oracle's JDK. 
+Uninstall/remove any Java/JDK you have locally, then install OpenJDK 8 - this is a free alternative to Oracle's JDK. 
+
+    brew cask install adoptopenjdk8
 
 Then add this to your ~/.zshrc file and restart the terminal -
 
     export JAVA_HOME=$(/usr/libexec/java_home)
 
-Install JCE for security (otherwise tries to do automatically for JDK 15) - [Java-8 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html). Unzip the JCE and place the jars in $JAVA_HOME/jre/lib/security - 
+Install JCE for security (otherwise it will try to do automatically for JDK 15) - [Java-8 JCE](http://www.oracle.com/technetwork/java/javase/downloads/jce8-download-2133166.html). Unzip the JCE and place the jars in $JAVA_HOME/jre/lib/security - 
 
     cd ~/Desktop/UnlimitedJCEPolicyJDK8 && \
     sudo cp *.jar $JAVA_HOME/jre/lib/security
@@ -98,4 +100,3 @@ This should send a timestamp across the diode. (but doesn't)
 ## Original Readme
 
 The original readme for the data diode is [here](code/application/datadiode), slightly updated. 
-
