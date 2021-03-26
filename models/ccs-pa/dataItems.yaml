@@ -105,21 +105,21 @@ dataItems:
 
   ##
   printer_start_print:
-    id: ${serialNumber}-%Q0.0
+    # id: ${serialNumber}-%Q0.0
     name: printer_start_print
     category: EVENT
     type: ACTUATOR_STATE
     value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.0')]
 
   printer_feed:
-    id: ${serialNumber}-%Q0.1
+    # id: ${serialNumber}-%Q0.1
     name: printer_feed
     category: EVENT
     type: ACTUATOR_STATE
     value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.1')]
 
   printer_pause:
-    id: ${serialNumber}-%Q0.2
+    # id: ${serialNumber}-%Q0.2
     name: printer_pause
     category: EVENT
     type: ACTUATOR_STATE

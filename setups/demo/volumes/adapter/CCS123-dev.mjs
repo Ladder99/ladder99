@@ -132,10 +132,12 @@ function unpack(topic, buffer) {
 
 // define list of calculations to run on cache values to get shdr key/value pairs.
 // this is extracted from dataItems.yaml.
+
 const calcs = [
   {
     dependsOn: ['CCS123-%Q0.0'],
-    key: 'CCS123-%Q0.0',
+    // key: 'CCS123-%Q0.0',
+    key: 'CCS123-printer_start_print',
     value: cache =>
       cache.get('CCS123-%Q0.0').value === 0 ? 'INACTIVE' : 'ACTIVE',
     // types.ACTUATOR_STATE[cache.get('CCS123-%Q0.0')],
@@ -159,7 +161,7 @@ function getOutput(cache) {
   for (const calc of calcs) {
     const timestamp = new Date().toISOString()
     const key = calc.key
-    const value = calc.value(cache)
+    const value = calc.value(cache) // do calculation
     const shdr = `${timestamp}|${key}|${value}`
     console.log(shdr)
     output.push(shdr)
