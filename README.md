@@ -45,20 +45,9 @@ You can see all the commands you can run with
     just
 
 
-## Documentation
-
-Build and deploy the docs with
-
-    just docs
-
-Then visit https://ladder99-mtconnect.web.app/
-
-(could make a local server for development also)
-
-
 ## Developing
 
-The device models are defined in `models`, eg the ccs-pa model has adapter.js, device.yaml, and calcs.yaml. 
+The device models are defined in `models`, e.g. the ccs-pa model has adapter.js, device.yaml, and calcs.yaml. 
 
 The device instances are defined in the `setups` folder, eg the `demo` setup has a list of instances in the devices subfolder there. 
 
@@ -79,3 +68,14 @@ To replay some more mqtt messages,
     just replay
 
 (later use telegraf to shovel data from localhost:5000 to database and visualizer)
+
+
+## Documentation
+
+Build and deploy the docs with
+
+    just docs
+
+Then visit https://ladder99-mtconnect.web.app/
+
+(could make a local server for development also)
