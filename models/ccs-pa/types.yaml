@@ -1,4 +1,4 @@
-# these types can be used in calcs.yaml
+# these types can be used in dataItems.yaml
 
 types:
   ACTUATOR_STATE:
