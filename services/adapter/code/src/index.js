@@ -55,6 +55,7 @@ tcp.on('connection', async socket => {
 
     // connect to broker and call plugin init
     console.log(`MQTT connecting to broker on`, url, `...`)
+    //. put mqtt stuff inside plugin
     const mqtt = mqttlib.connect(url)
     mqtt.on('connect', function onConnect() {
       console.log(`MQTT connected to broker on`, url)
