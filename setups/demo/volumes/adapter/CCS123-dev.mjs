@@ -128,6 +128,8 @@ function unpack(topic, buffer) {
   return msg
 }
 
+// ------------
+
 // define list of calculations to run on cache values to get shdr key/value pairs
 const calcs = [
   {

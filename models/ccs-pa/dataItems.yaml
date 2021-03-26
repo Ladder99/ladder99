@@ -1,4 +1,7 @@
-calcs:
+# these are used in model.yaml, and the values compiled to javascript
+# for the adapter plugin.
+
+dataItems:
   fw_ver:
     id: ${serialNumber}-fw_ver # eg 'CCS123-fw_ver'
     category: EVENT
