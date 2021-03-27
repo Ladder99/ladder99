@@ -1,17 +1,23 @@
-# these are placed in the model.yaml tree and define the shdr key-value pairs.
+# these items are placed in the model.yaml tree and
+# define the shdr key-value pairs.
+
+# the item's key (eg 'connection') becomes its id in the xml,
+# with an optional prefix (eg 'CCS123-connection').
+# that id is also the shdr key, and the value defined with
+# the pseudojs is the shdr value.
 
 dataItems:
   connection:
-    # id: ${serialNumber}-connection
+    # id: ${serialNumber}connection
     # id: ${prefix}connection
     #. q. is id really needed?  what if id is always the name of the yaml parent?
-    # serialNumber prefix could be a configurable setting at adapter level,
+    # serialNumber/prefix could be a configurable setting at adapter level,
     # prefix is only needed when multiple Device will be present in devices.xml
     # to prevent collision.
     category: EVENT
     type: AVAILABILITY
-    key: ____
-    value: types.AVAILABILITY[cache.get('${serialNumber}-status-connection')]
+    # key: ${prefix}connection
+    value: types.AVAILABILITY[cache.get('${prefix}status-connection')]
 
   # see std pt 4 line 347
   # eg change tool to a drill etc - irrelevant to pa
@@ -41,89 +47,89 @@ dataItems:
     category: EVENT
     type: FIRMWARE
     subType: VERSION
-    value: cache.get('${serialNumber}-status-build_no')
+    value: cache.get('${prefix}status-build_no')
 
   e_stop:
     category: EVENT
     type: EMERGENCY_STOP
-    #value: types.EMERGENCY_STOP[cache.get('${serialNumber}-%I0.10')]
-    value: "(cache.get('${serialNumber}-status-faults').any([10])) ? 'TRIGGERED' : 'ARMED'"
+    #value: types.EMERGENCY_STOP[cache.get('${prefix}%I0.10')]
+    value: "(cache.get('${prefix}status-faults').any([10])) ? 'TRIGGERED' : 'ARMED'"
 
   state:
     category: EVENT
     type: EXECUTION
-    value: types.EXECUTION[cache.get('${serialNumber}-status-state')]
+    value: types.EXECUTION[cache.get('${prefix}status-state')]
 
   wait_state:
     category: EVENT
     type: WAIT_STATE
-    value: types.WAIT_STATE[cache.get('${serialNumber}-status-state')]
+    value: types.WAIT_STATE[cache.get('${prefix}status-state')]
     # what value goes here when status.state is not WAIT?
 
   program:
     category: EVENT
     type: PROGRAM
     subType: MAIN
-    value: cache.get('${serialNumber}-status-program')
+    value: cache.get('${prefix}status-program')
 
   step:
     category: EVENT
     type: BLOCK
-    value: cache.get('${serialNumber}-status-step')
+    value: cache.get('${prefix}status-step')
 
   clk_time:
     category: SAMPLE
     type: CLOCK_TIME
-    value: cache.get('${serialNumber}-status-utc_time')
+    value: cache.get('${prefix}status-utc_time')
 
   up_time:
     category: SAMPLE
     type: EQUIPMENT_TIMER
     subType: OPERATING
-    value: cache.get('${serialNumber}-status-cpu_time')
+    value: cache.get('${prefix}status-cpu_time')
 
   fault_count:
     category: SAMPLE
     type: COUNT
-    value: cache.get('${serialNumber}-%M55.2')
+    value: cache.get('${prefix}%M55.2')
 
   cycle_count:
     category: SAMPLE
     type: COUNT
-    value: cache.get('${serialNumber}-%M55.1')
+    value: cache.get('${prefix}%M55.1')
 
   life_count:
     category: SAMPLE
     type: COUNT
-    value: cache.get('${serialNumber}-%M55.0')
+    value: cache.get('${prefix}%M55.0')
 
   ##
   printer_start_print:
-    # id: ${serialNumber}-%Q0.0
+    # id: ${prefix}%Q0.0
     name: printer_start_print
     category: EVENT
     type: ACTUATOR_STATE
-    value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.0')]
+    value: types.ACTUATOR_STATE[cache.get('${prefix}%Q0.0')]
 
   printer_feed:
     name: printer_feed
     category: EVENT
     type: ACTUATOR_STATE
-    value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.1')]
+    value: types.ACTUATOR_STATE[cache.get('${prefix}%Q0.1')]
 
   printer_pause:
     name: printer_pause
     category: EVENT
     type: ACTUATOR_STATE
-    value: types.ACTUATOR_STATE[cache.get('${serialNumber}-%Q0.2')]
+    value: types.ACTUATOR_STATE[cache.get('${prefix}%Q0.2')]
 
   end_eff_cond:
     category: CONDITION
     type: SYSTEM
     # value needs quotes here because has ':' in expression
-    value: "(cache.get('${serialNumber}-status-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
+    value: "(cache.get('${prefix}status-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
 
   end_eff_message:
     category: EVENT
     type: MESSAGE
-    value: cache.get('${serialNumber}-status-faults').first([2,3,5]).property('description').value
+    value: cache.get('${prefix}status-faults').first([2,3,5]).property('description').value
