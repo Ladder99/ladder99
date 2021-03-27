@@ -48,7 +48,7 @@ _buildjs:
 # -f, --force   Don't ask to confirm removal
 # -s, --stop    Stop the containers, if required, before removing
 # -v            Remove any anonymous volumes attached to containers
-#. run SETUP: build
+
 # start a setup with all services, e.g. `just run` or `just run demo`
 run SETUP='demo':
     FILE=setups/{{SETUP}}/docker-compose.yaml && \
@@ -56,19 +56,16 @@ run SETUP='demo':
     docker-compose --file $FILE up --build --remove-orphans && \
     docker-compose --file $FILE rm -fsv
 
-# replay ccs-pa mqtt recording - https://github.com/rpdswtk/mqtt_recorder
-# eg `just replay demo run2`
+# replay mqtt recording - https://github.com/rpdswtk/mqtt_recorder
 replay SETUP='demo' RUN='run0' PORT='1883':
     mqtt-recorder \
       --host localhost \
       --port {{PORT}} \
       --mode replay \
       --loop true \
-      --file setups/{{SETUP}}/mqtt-recorder/{{RUN}}.csv
-
+      --file setups/{{SETUP}}/recordings/mqtt/{{RUN}}.csv
 
 # ----------- diode -------------
-
 
 # start rabbitmq message queues
 rabbits:
@@ -89,4 +86,3 @@ black:
 red:
     cd services/diode/code/application/datadiode/red && \
     gradle run
-
