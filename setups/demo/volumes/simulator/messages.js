@@ -1,9 +1,9 @@
 // note: topics must match those in adapter's transform.js
-// %I0 and %Q0 are as of 2019-09-01 per chris
+// %I0* and %Q0* are as of 2019-09-01 per chris
 
 module.exports = [
   {
-    topic: 'l99/${serialNumber}/evt/query',
+    topic: 'l99/${deviceId}/evt/query',
     json: [
       {
         keys: ['%I0.0', 'IN1', 'printer.ribbon_low', 'J2.1', 'SX1.P0'],
@@ -526,7 +526,7 @@ module.exports = [
   },
 
   {
-    topic: 'l99/${serialNumber}/evt/status',
+    topic: 'l99/${deviceId}/evt/status',
     json: {
       connection: 'online',
       state: 400, // 200 stopped, 400 running
@@ -541,7 +541,7 @@ module.exports = [
   },
 
   {
-    topic: 'l99/${serialNumber}/evt/read',
+    topic: 'l99/${deviceId}/evt/read',
     json: [
       { address: '%Q0.0', value: 1 },
       { address: '%Q0.1', value: 1 },
@@ -549,17 +549,17 @@ module.exports = [
   },
 
   {
-    topic: 'l99/${serialNumber}/evt/read',
+    topic: 'l99/${deviceId}/evt/read',
     json: { address: '%I0.10', value: 1 }, // emerg stop on
   },
 
   {
-    topic: 'l99/${serialNumber}/evt/read',
+    topic: 'l99/${deviceId}/evt/read',
     json: { address: '%I0.10', value: 0 }, // emerg stop off
   },
 
   {
-    topic: 'l99/${serialNumber}/evt/status',
+    topic: 'l99/${deviceId}/evt/status',
     json: {
       connection: 'online',
       state: 200, // 200 stopped, 400 running

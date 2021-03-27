@@ -5,10 +5,10 @@
 
 // mqtt topics
 const topics = {
-  sendQuery: 'l99/${serialNumber}/cmd/query',
-  receiveQuery: 'l99/${serialNumber}/evt/query',
-  receiveStatus: 'l99/${serialNumber}/evt/status',
-  receiveRead: 'l99/${serialNumber}/evt/read',
+  sendQuery: 'l99/${deviceId}/cmd/query',
+  receiveQuery: 'l99/${deviceId}/evt/query',
+  receiveStatus: 'l99/${deviceId}/evt/status',
+  receiveRead: 'l99/${deviceId}/evt/read',
 }
 
 // map from aliases to items, e.g. "CCS123-IN10" -> { address: "%I0.9", ... }
@@ -16,12 +16,12 @@ const aliases = {}
 
 // initialize the client plugin.
 // queries the device for address space definitions, subscribes to topics.
-export function init(mqtt, cache, serialNumber, outputSocket) {
-  console.log('init', { serialNumber })
+export function init(mqtt, cache, deviceId, outputSocket) {
+  console.log('init', { deviceId })
 
-  // add serialNumber to topics
+  // add deviceId to topics
   for (const key of Object.keys(topics)) {
-    topics[key] = topics[key].replace('${serialNumber}', serialNumber)
+    topics[key] = topics[key].replace('${deviceId}', deviceId)
   }
   console.log('MQTT topics', { topics })
 
@@ -57,12 +57,12 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     // add each item in message to cache
     for (const item of msg.payload) {
       const [address, ...others] = item.keys
-      const key = `${serialNumber}-${address}` // eg 'CCS123-%I0.10'
+      const key = `${deviceId}-${address}` // eg 'CCS123-%I0.10'
       item.value = item.default // use default value, if any
       cache.set(key, item)
       // add other keys to aliases
       for (const alias of others) {
-        const key2 = `${serialNumber}-${alias}`
+        const key2 = `${deviceId}-${alias}`
         aliases[key2] = item
       }
     }
@@ -91,7 +91,7 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     )
     for (const key of keys) {
       const value = msg.payload[key]
-      cache.set(`${serialNumber}-status-${key}`, value) // eg 'CCS123-status-faults'
+      cache.set(`${deviceId}-status-${key}`, value) // eg 'CCS123-status-faults'
     }
     // get shdr strings
     const output = getOutput(cache)
@@ -109,7 +109,7 @@ export function init(mqtt, cache, serialNumber, outputSocket) {
     }
     // add items to cache
     for (const item of msg.payload) {
-      const key = `${serialNumber}-${item.address}` // eg 'CCS123-%Q0.0'
+      const key = `${deviceId}-${item.address}` // eg 'CCS123-%Q0.0'
       cache.set(key, item) // item has { address, value }
     }
     // get shdr strings
