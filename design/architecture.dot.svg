@@ -90,22 +90,22 @@
 <!-- Various -->
 <g id="node5" class="node">
 <title>Various</title>
-<ellipse fill="#ffffff" stroke="#c0c0c0" cx="68.9618" cy="-662.295" rx="64.1561" ry="29.3315"/>
-<text text-anchor="middle" x="68.9618" y="-666.495" font-family="Times,serif" font-size="14.00" fill="#000000">Operator,</text>
-<text text-anchor="middle" x="68.9618" y="-649.695" font-family="Times,serif" font-size="14.00" fill="#000000">Database, etc</text>
+<ellipse fill="#ffffff" stroke="#c0c0c0" cx="68.9618" cy="-692.295" rx="64.1561" ry="29.3315"/>
+<text text-anchor="middle" x="68.9618" y="-696.495" font-family="Times,serif" font-size="14.00" fill="#000000">Operator,</text>
+<text text-anchor="middle" x="68.9618" y="-679.695" font-family="Times,serif" font-size="14.00" fill="#000000">Database, etc</text>
 </g>
 <!-- Kepware -->
 <g id="node6" class="node">
 <title>Kepware</title>
-<ellipse fill="#ffffff" stroke="#c0c0c0" cx="266.0251" cy="-662.295" rx="55.6916" ry="29.3315"/>
-<text text-anchor="middle" x="266.0251" y="-666.495" font-family="Times,serif" font-size="14.00" fill="#000000">Kepware</text>
-<text text-anchor="middle" x="266.0251" y="-649.695" font-family="Times,serif" font-size="14.00" fill="#000000">(Windows)</text>
+<ellipse fill="#ffffff" stroke="#c0c0c0" cx="266.0251" cy="-692.295" rx="55.6916" ry="29.3315"/>
+<text text-anchor="middle" x="266.0251" y="-696.495" font-family="Times,serif" font-size="14.00" fill="#000000">Kepware</text>
+<text text-anchor="middle" x="266.0251" y="-679.695" font-family="Times,serif" font-size="14.00" fill="#000000">(Windows)</text>
 </g>
 <!-- Various&#45;&gt;Kepware -->
 <g id="edge5" class="edge">
 <title>Various&#45;&gt;Kepware</title>
-<path fill="none" stroke="#c0c0c0" d="M133.215,-662.295C154.6436,-662.295 178.5433,-662.295 200.0971,-662.295"/>
-<polygon fill="#c0c0c0" stroke="#c0c0c0" points="200.1419,-665.7951 210.1419,-662.295 200.1419,-658.7951 200.1419,-665.7951"/>
+<path fill="none" stroke="#c0c0c0" d="M133.215,-692.295C154.6436,-692.295 178.5433,-692.295 200.0971,-692.295"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" points="200.1419,-695.7951 210.1419,-692.295 200.1419,-688.7951 200.1419,-695.7951"/>
 </g>
 <!-- OPC -->
 <g id="node7" class="node">
@@ -116,32 +116,20 @@
 <!-- Kepware&#45;&gt;OPC -->
 <g id="edge6" class="edge">
 <title>Kepware&#45;&gt;OPC</title>
-<path fill="none" stroke="#c0c0c0" d="M313.8062,-678.0041C342.3322,-687.3825 378.3462,-699.2229 406.3965,-708.445"/>
-<polygon fill="#c0c0c0" stroke="#c0c0c0" points="405.3679,-711.7911 415.9608,-711.5895 407.5542,-705.1412 405.3679,-711.7911"/>
-</g>
-<!-- CPC -->
-<g id="node8" class="node">
-<title>CPC</title>
-<ellipse fill="#ffffff" stroke="#c0c0c0" cx="451.5649" cy="-662.295" rx="50.4587" ry="18"/>
-<text text-anchor="middle" x="451.5649" y="-658.095" font-family="Times,serif" font-size="14.00" fill="#000000">ASC CPC</text>
-</g>
-<!-- Kepware&#45;&gt;CPC -->
-<g id="edge7" class="edge">
-<title>Kepware&#45;&gt;CPC</title>
-<path fill="none" stroke="#c0c0c0" d="M321.9448,-662.295C343.5913,-662.295 368.4341,-662.295 390.5417,-662.295"/>
-<polygon fill="#c0c0c0" stroke="#c0c0c0" points="390.816,-665.7951 400.816,-662.295 390.8159,-658.7951 390.816,-665.7951"/>
+<path fill="none" stroke="#c0c0c0" d="M319.6909,-701.2615C344.6182,-705.4264 374.156,-710.3616 398.9513,-714.5044"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" points="398.4654,-717.9716 408.9055,-716.1675 399.6191,-711.0673 398.4654,-717.9716"/>
 </g>
 <!-- Gateway -->
 <g id="node9" class="node">
 <title>Gateway</title>
-<ellipse fill="#ffffff" stroke="#c0c0c0" cx="451.5649" cy="-601.295" rx="61.9176" ry="18"/>
-<text text-anchor="middle" x="451.5649" y="-597.095" font-family="Times,serif" font-size="14.00" fill="#000000">IoT Gateway</text>
+<ellipse fill="#ffffff" stroke="#c0c0c0" cx="451.5649" cy="-662.295" rx="61.9176" ry="18"/>
+<text text-anchor="middle" x="451.5649" y="-658.095" font-family="Times,serif" font-size="14.00" fill="#000000">IoT Gateway</text>
 </g>
 <!-- Kepware&#45;&gt;Gateway -->
-<g id="edge8" class="edge">
+<g id="edge7" class="edge">
 <title>Kepware&#45;&gt;Gateway</title>
-<path fill="none" stroke="#c0c0c0" d="M313.8062,-646.586C340.4863,-637.8144 373.7168,-626.8892 400.8554,-617.9668"/>
-<polygon fill="#c0c0c0" stroke="#c0c0c0" points="402.1482,-621.2262 410.5548,-614.7779 399.9619,-614.5763 402.1482,-621.2262"/>
+<path fill="none" stroke="#c0c0c0" d="M319.6909,-683.6178C340.8518,-680.1963 365.3353,-676.2375 387.4195,-672.6667"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" points="388.0638,-676.1081 397.3769,-671.0567 386.9464,-669.1978 388.0638,-676.1081"/>
 </g>
 <!-- Adapter -->
 <g id="node14" class="node">
@@ -154,25 +142,33 @@
 <text text-anchor="middle" x="667.4664" y="-563.495" font-family="Times,serif" font-size="14.00" fill="#000000">(NodeJS)</text>
 </g>
 <!-- OPC&#45;&gt;Adapter -->
-<g id="edge9" class="edge">
+<g id="edge8" class="edge">
 <title>OPC&#45;&gt;Adapter</title>
-<path fill="none" stroke="#c0c0c0" d="M486.633,-711.3692C499.9577,-706.3793 515.0994,-700.1439 528.3063,-693.295 556.1351,-678.8636 585.3084,-660.1892 609.7146,-643.4396"/>
-<polygon fill="#c0c0c0" stroke="#c0c0c0" points="611.9103,-646.1763 618.1385,-637.6054 607.9248,-640.4217 611.9103,-646.1763"/>
+<path fill="none" stroke="#c0c0c0" d="M486.6026,-711.3103C499.9236,-706.3131 515.0706,-700.0882 528.3063,-693.295 556.1956,-678.9809 585.3783,-660.3246 609.7751,-643.5568"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" points="611.9741,-646.2911 618.1949,-637.7148 607.9837,-640.5398 611.9741,-646.2911"/>
+</g>
+<!-- CPC -->
+<g id="node8" class="node">
+<title>CPC</title>
+<ellipse fill="#ffffff" stroke="#c0c0c0" cx="451.5649" cy="-601.295" rx="50.4587" ry="18"/>
+<text text-anchor="middle" x="451.5649" y="-597.095" font-family="Times,serif" font-size="14.00" fill="#000000">ASC CPC</text>
 </g>
 <!-- CPC&#45;&gt;Adapter -->
-<g id="edge10" class="edge">
+<g id="edge9" class="edge">
 <title>CPC&#45;&gt;Adapter</title>
-<path fill="none" stroke="#c0c0c0" d="M491.1646,-651.1067C521.5425,-642.5238 564.188,-630.4749 599.9271,-620.3774"/>
-<polygon fill="#c0c0c0" stroke="#c0c0c0" points="601.1366,-623.6727 609.8082,-617.5856 599.2333,-616.9364 601.1366,-623.6727"/>
+<path fill="none" stroke="#c0c0c0" d="M502.1842,-601.295C530.6267,-601.295 566.5495,-601.295 597.6341,-601.295"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" points="597.9727,-604.7951 607.9726,-601.295 597.9726,-597.7951 597.9727,-604.7951"/>
+<text text-anchor="middle" x="560.8085" y="-604.895" font-family="Times,serif" font-size="12.00" fill="#4d4d4d">text</text>
 </g>
 <!-- Gateway&#45;&gt;Adapter -->
-<g id="edge11" class="edge">
+<g id="edge10" class="edge">
 <title>Gateway&#45;&gt;Adapter</title>
-<path fill="none" stroke="#c0c0c0" d="M513.4336,-601.295C539.8409,-601.295 570.7774,-601.295 597.9694,-601.295"/>
-<polygon fill="#c0c0c0" stroke="#c0c0c0" points="598.1904,-604.7951 608.1904,-601.295 598.1904,-597.7951 598.1904,-604.7951"/>
+<path fill="none" stroke="#c0c0c0" d="M496.038,-649.7298C526.0359,-641.2543 566.1765,-629.9131 600.074,-620.3359"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" points="601.2424,-623.6428 609.914,-617.5557 599.3391,-616.9065 601.2424,-623.6428"/>
+<text text-anchor="middle" x="560.8085" y="-639.895" font-family="Times,serif" font-size="12.00" fill="#4d4d4d">MQTT</text>
 </g>
 <!-- Broker1&#45;&gt;Adapter -->
-<g id="edge13" class="edge">
+<g id="edge12" class="edge">
 <title>Broker1&#45;&gt;Adapter</title>
 <path fill="none" stroke="#c0c0c0" d="M509.2692,-767.2383C515.9004,-763.2145 522.3949,-758.8736 528.3063,-754.295 563.6158,-726.9468 597.4657,-690.0545 622.9385,-659.349"/>
 <polygon fill="#c0c0c0" stroke="#c0c0c0" points="507.0691,-764.4689 500.1839,-772.5215 510.588,-770.5201 507.0691,-764.4689"/>
@@ -181,7 +177,7 @@
 <text text-anchor="middle" x="560.8085" y="-750.895" font-family="Times,serif" font-size="12.00" fill="#4d4d4d">TCP 1883</text>
 </g>
 <!-- Broker2&#45;&gt;Adapter -->
-<g id="edge14" class="edge">
+<g id="edge13" class="edge">
 <title>Broker2&#45;&gt;Adapter</title>
 <path fill="none" stroke="#c0c0c0" d="M525.7917,-548.1008C545.3096,-553.5455 566.235,-559.8335 585.3107,-566.495 591.1649,-568.5394 597.197,-570.7953 603.2084,-573.1467"/>
 <polygon fill="#c0c0c0" stroke="#c0c0c0" points="526.6057,-544.6947 516.0354,-545.4156 524.7481,-551.4438 526.6057,-544.6947"/>
@@ -190,7 +186,7 @@
 <text text-anchor="middle" x="560.8085" y="-569.895" font-family="Times,serif" font-size="12.00" fill="#4d4d4d">TCP 1884</text>
 </g>
 <!-- Broker3&#45;&gt;Adapter -->
-<g id="edge15" class="edge">
+<g id="edge14" class="edge">
 <title>Broker3&#45;&gt;Adapter</title>
 <path fill="none" stroke="#c0c0c0" d="M511.1044,-471.9804C535.1709,-484.0179 562.5747,-499.382 585.3107,-516.495 597.0207,-525.3089 608.5982,-535.8144 619.2039,-546.379"/>
 <polygon fill="#c0c0c0" stroke="#c0c0c0" points="512.5789,-468.8053 502.0608,-467.5331 509.4899,-475.0868 512.5789,-468.8053"/>
@@ -205,12 +201,12 @@
 <text text-anchor="middle" x="451.5649" y="-369.095" font-family="Times,serif" font-size="14.00" fill="#000000">Old Machine 3</text>
 </g>
 <!-- OldMachine3&#45;&gt;Adapter -->
-<g id="edge12" class="edge">
+<g id="edge11" class="edge">
 <title>OldMachine3&#45;&gt;Adapter</title>
-<path fill="none" stroke="#c0c0c0" d="M495.0035,-387.3255C506.2142,-391.7309 518.0145,-397.0929 528.3063,-403.295 556.9706,-420.569 568.6304,-423.4813 585.3107,-452.495 594.9559,-469.2718 585.8174,-477.453 593.3107,-495.295 600.5017,-512.4171 610.7839,-529.5371 621.4101,-544.8701"/>
-<polygon fill="#c0c0c0" stroke="#c0c0c0" points="618.6825,-547.0739 627.3315,-553.1932 624.3863,-543.016 618.6825,-547.0739"/>
-<text text-anchor="middle" x="560.8085" y="-471.295" font-family="Times,serif" font-size="12.00" fill="#4d4d4d">text</text>
-<text text-anchor="middle" x="560.8085" y="-456.895" font-family="Times,serif" font-size="12.00" fill="#4d4d4d">TCP 1887</text>
+<path fill="none" stroke="#c0c0c0" d="M494.9611,-387.3963C506.1721,-391.8011 517.9832,-397.1451 528.3063,-403.295 556.8098,-420.2757 568.6879,-422.7815 585.3107,-451.495 595.2252,-468.6209 585.6858,-477.0343 593.3107,-495.295 600.4664,-512.4319 610.736,-529.5572 621.3615,-544.8905"/>
+<polygon fill="#c0c0c0" stroke="#c0c0c0" points="618.6342,-547.0946 627.2836,-553.2133 624.3377,-543.0362 618.6342,-547.0946"/>
+<text text-anchor="middle" x="560.8085" y="-469.295" font-family="Times,serif" font-size="12.00" fill="#4d4d4d">text</text>
+<text text-anchor="middle" x="560.8085" y="-454.895" font-family="Times,serif" font-size="12.00" fill="#4d4d4d">TCP 1887</text>
 </g>
 <!-- DiodeSender -->
 <g id="node15" class="node">
@@ -220,7 +216,7 @@
 <text text-anchor="middle" x="914.0462" y="-578.695" font-family="Times,serif" font-size="14.00" fill="#000000">(Java+RabbitMQ)</text>
 </g>
 <!-- Adapter&#45;&gt;DiodeSender -->
-<g id="edge17" class="edge">
+<g id="edge16" class="edge">
 <title>Adapter&#45;&gt;DiodeSender</title>
 <path fill="none" stroke="#c0c0c0" stroke-dasharray="1,5" d="M736.9546,-598.477C762.9796,-597.4215 792.9833,-596.2047 820.8116,-595.0761"/>
 <polygon fill="#c0c0c0" stroke="#c0c0c0" points="736.6922,-594.9846 726.8422,-598.8871 736.9759,-601.9789 736.6922,-594.9846"/>
@@ -237,7 +233,7 @@
 <text text-anchor="middle" x="667.4664" y="-420.295" font-family="Times,serif" font-size="14.00" fill="#000000">(C++/cppagent)</text>
 </g>
 <!-- Adapter&#45;&gt;Agent -->
-<g id="edge16" class="edge">
+<g id="edge15" class="edge">
 <title>Adapter&#45;&gt;Agent</title>
 <path fill="none" stroke="#c0c0c0" d="M667.4664,-525.8793C667.4664,-514.7846 667.4664,-503.572 667.4664,-493.0987"/>
 <polygon fill="#c0c0c0" stroke="#c0c0c0" points="663.9665,-526.0105 667.4664,-536.0105 670.9665,-526.0105 663.9665,-526.0105"/>
@@ -253,19 +249,19 @@
 <text text-anchor="middle" x="914.0462" y="-457.695" font-family="Times,serif" font-size="14.00" fill="#000000">(Java+RabbitMQ)</text>
 </g>
 <!-- DiodeSender&#45;&gt;DiodeReceiver -->
-<g id="edge18" class="edge">
+<g id="edge17" class="edge">
 <title>DiodeSender&#45;&gt;DiodeReceiver</title>
 <path fill="none" stroke="#c0c0c0" stroke-dasharray="1,5" d="M914.0462,-561.5813C914.0462,-546.0355 914.0462,-526.7924 914.0462,-509.9881"/>
 <polygon fill="#c0c0c0" stroke="#c0c0c0" points="917.5463,-509.8949 914.0462,-499.895 910.5463,-509.895 917.5463,-509.8949"/>
 <text text-anchor="middle" x="903.8462" y="-527.195" font-family="Times,serif" font-size="12.00" fill="#4d4d4d">UDP &#160;&#160;&#160;</text>
 </g>
 <!-- DiodeReceiver&#45;&gt;Agent -->
-<g id="edge19" class="edge">
+<g id="edge18" class="edge">
 <title>DiodeReceiver&#45;&gt;Agent</title>
 <path fill="none" stroke="#c0c0c0" stroke-dasharray="1,5" d="M834.5951,-460.9509C807.6774,-457.7851 777.5544,-454.2424 750.3748,-451.0458"/>
 <polygon fill="#c0c0c0" stroke="#c0c0c0" points="750.4552,-447.5312 740.1148,-449.8391 749.6375,-454.4833 750.4552,-447.5312"/>
-<text text-anchor="middle" x="786.1243" y="-477.295" font-family="Times,serif" font-size="12.00" fill="#4d4d4d">SHDR / &#160;&#160;&#160;</text>
-<text text-anchor="middle" x="786.1243" y="-462.895" font-family="Times,serif" font-size="12.00" fill="#4d4d4d">TCP 7878 &#160;&#160;&#160;&#160;&#160;&#160;&#160;</text>
+<text text-anchor="middle" x="786.1243" y="-476.295" font-family="Times,serif" font-size="12.00" fill="#4d4d4d">SHDR / &#160;&#160;&#160;</text>
+<text text-anchor="middle" x="786.1243" y="-461.895" font-family="Times,serif" font-size="12.00" fill="#4d4d4d">TCP 7878 &#160;&#160;&#160;&#160;&#160;&#160;&#160;</text>
 </g>
 <!-- Application -->
 <g id="node18" class="node">
@@ -276,7 +272,7 @@
 <text text-anchor="middle" x="667.4664" y="-284.295" font-family="Times,serif" font-size="14.00" fill="#000000">(NodeJS)</text>
 </g>
 <!-- Agent&#45;&gt;Application -->
-<g id="edge20" class="edge">
+<g id="edge19" class="edge">
 <title>Agent&#45;&gt;Application</title>
 <path fill="none" stroke="#c0c0c0" d="M667.4664,-389.503C667.4664,-378.817 667.4664,-367.564 667.4664,-356.8852"/>
 <polygon fill="#c0c0c0" stroke="#c0c0c0" points="663.9665,-389.5373 667.4664,-399.5373 670.9665,-389.5374 663.9665,-389.5373"/>
@@ -293,7 +289,7 @@
 <text text-anchor="middle" x="667.4664" y="-152.295" font-family="Times,serif" font-size="14.00" fill="#000000">TimescaleDB)</text>
 </g>
 <!-- Application&#45;&gt;Database -->
-<g id="edge21" class="edge">
+<g id="edge20" class="edge">
 <title>Application&#45;&gt;Database</title>
 <path fill="none" stroke="#c0c0c0" d="M667.4664,-253.639C667.4664,-244.1484 667.4664,-234.6577 667.4664,-225.1671"/>
 <polygon fill="#c0c0c0" stroke="#c0c0c0" points="663.9665,-253.9372 667.4664,-263.9373 670.9665,-253.9373 663.9665,-253.9372"/>
@@ -308,7 +304,7 @@
 <text text-anchor="middle" x="667.4664" y="-20.295" font-family="Times,serif" font-size="14.00" fill="#000000">Superset)</text>
 </g>
 <!-- Database&#45;&gt;Visualizer -->
-<g id="edge22" class="edge">
+<g id="edge21" class="edge">
 <title>Database&#45;&gt;Visualizer</title>
 <path fill="none" stroke="#c0c0c0" d="M667.4664,-121.639C667.4664,-112.1484 667.4664,-102.6577 667.4664,-93.1671"/>
 <polygon fill="#c0c0c0" stroke="#c0c0c0" points="663.9665,-121.9372 667.4664,-131.9373 670.9665,-121.9373 663.9665,-121.9372"/>
@@ -322,7 +318,7 @@
 <text text-anchor="middle" x="914.0462" y="-160.695" font-family="Times,serif" font-size="14.00" fill="#000000">(AWS/GCP)</text>
 </g>
 <!-- Database&#45;&gt;Cloud -->
-<g id="edge23" class="edge">
+<g id="edge22" class="edge">
 <title>Database&#45;&gt;Cloud</title>
 <path fill="none" stroke="#c0c0c0" d="M736.8088,-173.295C767.5287,-173.295 803.8147,-173.295 835.5275,-173.295"/>
 <polygon fill="#c0c0c0" stroke="#c0c0c0" points="835.6504,-176.7951 845.6504,-173.295 835.6503,-169.7951 835.6504,-176.7951"/>
@@ -334,7 +330,7 @@
 <text text-anchor="middle" x="914.0462" y="-37.095" font-family="Times,serif" font-size="14.00" fill="#000000">Admin</text>
 </g>
 <!-- Visualizer&#45;&gt;Admin -->
-<g id="edge24" class="edge">
+<g id="edge23" class="edge">
 <title>Visualizer&#45;&gt;Admin</title>
 <path fill="none" stroke="#c0c0c0" d="M729.6169,-41.295C771.8374,-41.295 826.8657,-41.295 865.7909,-41.295"/>
 <polygon fill="#c0c0c0" stroke="#c0c0c0" points="729.4584,-37.7951 719.4584,-41.295 729.4583,-44.7951 729.4584,-37.7951"/>

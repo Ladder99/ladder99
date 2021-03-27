@@ -57,11 +57,11 @@ digraph "ladder99-adapter" {
   // Kepware -> Adapter [ label="text\nTCP" ];
   Various -> Kepware;
   Kepware -> OPC;
-  Kepware -> CPC;
+  // Kepware -> CPC;
   Kepware -> Gateway;
   OPC -> Adapter;
-  CPC -> Adapter;
-  Gateway -> Adapter;
+  CPC -> Adapter [ label="text" ];
+  Gateway -> Adapter [ label="MQTT" ];
   OldMachine3 -> Adapter [ label="text\nTCP 1887" ];
   Broker1 -> Adapter [ label="MQTT\nTCP 1883", dir=both ];
   Broker2 -> Adapter [ label="MQTT\nTCP 1884", dir=both ];
