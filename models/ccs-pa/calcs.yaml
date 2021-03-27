@@ -1,10 +1,13 @@
 # these items are placed in the model.yaml tree and define the
-# shdr key-value pairs that are calculated and sent to the agent.
+# shdr strings that are calculated and sent to the agent.
 
 # the item's key (eg 'connection') with an optional prefix (eg 'CCS123-')
 # will become its id in the xml (eg 'CCS123-connection').
-# the shdr key is the same as that id.
+# the shdr key is the same as the id.
 # the shdr value is defined with the pseudojs item value.
+
+# the value calculations are gathered together into a calcs.js file,
+# which is imported to the adapter plugin.
 
 items:
   connection:

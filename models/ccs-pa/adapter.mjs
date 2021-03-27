@@ -1,4 +1,4 @@
-// will develop adapter plugin skeleton here,
+// develop adapter plugin skeleton here -
 // compiler will append calcs to end and copy it all to
 // setups/demo/volumes/adapter/<deviceId>.mjs
 //. or choose the plugin skeletons to use for each model?
