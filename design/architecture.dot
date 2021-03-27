@@ -14,29 +14,21 @@ digraph "ladder99-adapter" {
   // nodes
   PA1 [ fillcolor=lavender; label="CCS P&A 1" ];
   PA2 [ fillcolor=lavender; label="CCS P&A 2" ];
+  Kepware1 [ label="Kepware\n(Windows)"];
+  Kepware2 [ label="Kepware\n(Windows)"];
+  CPC [ label="ASC CPC", fillcolor=lavender ];
+  Gateway [ label="IoT Gateway"];
+  Broker1 [ label="MQTT Broker\n(Mosquitto)" ];
+  Broker2 [ label="MQTT Broker\n(Mosquitto)" ];
+  Broker3 [ label="MQTT Broker\n(Mosquitto)" ];
+  Broker4 [ label="MQTT Broker\n(Mosquitto)" ];
   OldMachine1 [ fillcolor=lavender; label="Old Machine 1" ];
   PLC4X [ label="PLC4X\n(Java)" ];
-  // OldMachine2 [ fillcolor=lavender; label="Old Machine 2" ];
-  Various [ label="Operator,\nDatabase, etc"];
-  Kepware [ label="Kepware\n(Windows)"];
-  OPC [ label="OPC/UA" ];
-  CPC [ label="ASC CPC" ];
-  Gateway [ label="IoT Gateway"];
-  Broker1 [ label="MQTT Broker 1\n(Mosquitto)" ];
-  Broker2 [ label="MQTT Broker 2\n(Mosquitto)" ];
-  Broker3 [ label="MQTT Broker 3\n(Mosquitto)" ];
-  // Broker4 [ label="MQTT Broker 4\n(Mosquitto)" ];
-  OldMachine3 [ fillcolor=lavender; label="Old Machine 3" ];
+
   Adapter [ label="MTConnect\nAdapter\nwith cache\nand plugins\n(NodeJS)" ];
-  // Device1Sheet [ fillcolor=greenyellow; label="device1.sheet" ];
-  // Device1Yaml [ fillcolor=greenyellow; label="device1.yaml" ];
-  // Device1Js [ label="device1.js" ];
-  // Device2Sheet [ fillcolor=greenyellow; label="device2.sheet" ];
-  // Device2Yaml [ fillcolor=greenyellow; label="device2.yaml" ];
-  // Device2Js [ label="device2.js" ];
   DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
   DiodeReceiver [ label="Diode Receiver\n(Java+RabbitMQ)" ];
-  // DevicesXml [ label="devices.xml" ];
+
   Agent [ label="MTConnect\nAgent\n(C++/cppagent)" ];
   Application [ label="MTConnect\nApplication\n(NodeJS)" ];
   Database [ label="Database\n(InfluxDB/\nTimescaleDB)" ];
@@ -48,25 +40,17 @@ digraph "ladder99-adapter" {
 
   // edges
   PA1 -> Broker1 [ label="  TCP  ", dir=both ];
-  // PA1 -> Kepware [ label="", dir=both ];
   PA2 -> Broker2 [ label="  TCP  ", dir=both ];
-  OldMachine1 -> PLC4X [ label="proprietary\nprotocol" ];
+  Broker1 -> Adapter [ label="MQTT", dir=both ];
+  Broker2 -> Adapter [ label="MQTT", dir=both ];
+  Broker3 -> Adapter [ label="MQTT", dir=both ];
+  Broker4 -> Adapter [ label="MQTT", dir=both ];
+  OldMachine1 -> PLC4X; // [ label="proprietary\nprotocol" ];
   PLC4X -> Broker3 [ label="" ];
-  // OldMachine2 -> Kepware [ label="proprietary\nprotocol" ];
-  // Kepware -> Broker4 [ label="TCP" ];
-  // Kepware -> Adapter [ label="text\nTCP" ];
-  Various -> Kepware;
-  Kepware -> OPC;
-  // Kepware -> CPC;
-  Kepware -> Gateway;
-  OPC -> Adapter;
+  Kepware1 -> Adapter [ label="OPC/UA" ];
+  Kepware2 -> Gateway;
   CPC -> Adapter [ label="text" ];
-  Gateway -> Adapter [ label="MQTT" ];
-  OldMachine3 -> Adapter [ label="text\nTCP 1887" ];
-  Broker1 -> Adapter [ label="MQTT\nTCP 1883", dir=both ];
-  Broker2 -> Adapter [ label="MQTT\nTCP 1884", dir=both ];
-  Broker3 -> Adapter [ label="MQTT\nTCP 1885", dir=both ];
-  // Broker4 -> Adapter [ label="MQTT\nTCP 1886", dir=both ];
+  Gateway -> Broker4 [ label="MQTT" ];
   
   Adapter -> Agent [ label="SHDR /   \nTCP 7878      ", dir=both ];
 
@@ -74,18 +58,6 @@ digraph "ladder99-adapter" {
   DiodeSender -> DiodeReceiver [ label="UDP    ", style=dotted ];
   DiodeReceiver -> Agent [ label="SHDR /    \nTCP 7878        ", style=dotted ];
   
-  // Device1Sheet -> Device1Yaml [ label="feeds into" ];
-  // Device1Yaml -> Device1Js [ label="generates" ];
-  // Device1Js -> Proxy1 [ label="used by" ];
-  // Device2Sheet -> Device2Yaml [ label="feeds into" ];
-  // Device2Yaml -> Device2Js [ label="generates" ];
-  // Device2Js -> Proxy2 [ label="used by" ];
-  // Device1Yaml -> DevicesXml [ label="generates" ];
-  // Device2Yaml -> DevicesXml [ label="generates" ];
-  // DiodeSender -> DiodeReceiver [ label="UDP    " ];
-  // DiodeReceiver -> Agent [ label="SHDR /    \nTCP 7878        " ];
-  // Adapter -> Agent [ label="SHDR/\nTCP 7878" ];
-  // DevicesXml -> Agent [ label="used by" ];
   Agent -> Application [ dir=both; label="XML / \nHTTP 5000          " ];
   Application -> Database [ dir=both ];
   Database -> Visualizer [ dir=both ];
@@ -95,7 +67,6 @@ digraph "ladder99-adapter" {
   // LOI -> Operator;
 
   // rank
-  // { rank=same; DiodeSender DiodeReceiver Agent Application Database Visualizer };
   { rank=same; Adapter Agent Application Database Visualizer };
   { rank=same; DiodeSender DiodeReceiver Cloud Admin };
 }
