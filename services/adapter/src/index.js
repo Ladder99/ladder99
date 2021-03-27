@@ -1,19 +1,19 @@
 // adapter
-// subscribe to mqtt topics, pass messages to topic handler fns
-// to get shdr output string, pass that to the mtconnect agent via tcp.
+// subscribe to data, pass messages to topic handler fns
+// to get shdr output string, pass to agent via tcp.
 
-import net from 'net' // node lib for tcp
 import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
+import net from 'net' // node lib for tcp
 import { Cache } from './cache.js'
 
-// eg DEVICES=CCS123@broker1:1883 CCS124@broker2:1883
-const devices = (process.env.DEVICES || '').split(' ').map(d => d.split('@'))
+// // eg DEVICES=CCS123@broker1:1883 CCS124@broker2:1883
+// const devices = (process.env.DEVICES || '').split(' ').map(d => d.split('@'))
 
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)
 const outputHost = process.env.OUTPUT_HOST || 'localhost'
 
 console.log(`MTConnect Adapter`)
-console.log(`Subscribes to MQTT topics, transforms to SHDR, posts to TCP.`)
+console.log(`Subscribes to data, transforms to SHDR, posts to TCP.`)
 console.log(`----------------------------------------------------------------`)
 console.log(`Hit ctrl-c to stop adapter.`)
 process.on('SIGINT', shutdown)
@@ -22,7 +22,7 @@ console.log(`TCP creating server for agent...`)
 const tcp = net.createServer()
 
 let outputSocket
-const mqtts = [] // mqtt connections - remember them so can end nicely
+const plugins = [] // plugins - remember them so can end nicely
 
 // handle tcp connection
 tcp.on('connection', async socket => {
@@ -46,26 +46,29 @@ tcp.on('connection', async socket => {
 
   // connect to devices through mqtt brokers
   for (const device of devices) {
-    const [serialNumber, url] = device // eg 'CCS123', 'mqtt://broker1:1883'
+    const [deviceId, url] = device // eg 'CCS123', 'mqtt://broker1:1883'
 
     // get plugin code
-    console.log(`Importing code for device ${serialNumber}...`)
-    const pluginPath = `/etc/adapter/${serialNumber}-dev.mjs` //. -dev for now
+    console.log(`Importing code for device ${deviceId}...`)
+    const pluginPath = `/etc/adapter/${deviceId}.mjs`
     const plugin = await import(pluginPath)
 
-    // connect to broker and call plugin init
-    console.log(`MQTT connecting to broker on`, url, `...`)
-    //. put mqtt stuff inside plugin
-    const mqtt = mqttlib.connect(url)
-    mqtt.on('connect', function onConnect() {
-      console.log(`MQTT connected to broker on`, url)
-      console.log(`MQTT calling plugin init and subscribing to topics...`)
-      // for example, see setups/demo/volumes/adapter/CCS123-dev.mjs
-      plugin.init(mqtt, cache, serialNumber, socket)
-      console.log(`MQTT listening for messages...`)
-    })
-    mqtts.push(mqtt)
-  }
+    plugin.init({ cache, deviceId, socket, mqttlib })
+    plugins.push(plugin)
+
+  //   // connect to broker and call plugin init
+  //   console.log(`MQTT connecting to broker on`, url, `...`)
+  //   //. put mqtt stuff inside plugin
+  //   const mqtt = mqttlib.connect(url)
+  //   mqtt.on('connect', function onConnect() {
+  //     console.log(`MQTT connected to broker on`, url)
+  //     console.log(`MQTT calling plugin init and subscribing to topics...`)
+  //     // for example, see setups/demo/volumes/adapter/CCS123-dev.mjs
+  //     plugin.init(mqtt, cache, serialNumber, socket)
+  //     console.log(`MQTT listening for messages...`)
+  //   })
+  //   mqtts.push(mqtt)
+  // }
 })
 
 console.log(`TCP try listening to socket at`, outputPort, outputHost, `...`)
@@ -78,9 +81,10 @@ function shutdown() {
     console.log(`TCP closing socket...`)
     outputSocket.end()
   }
-  console.log(`MQTT closing connections...`)
-  for (const mqtt of mqtts) {
-    mqtt.end()
-  }
+  // console.log(`MQTT closing connections...`)
+  // for (const mqtt of mqtts) {
+  //   mqtt.end()
+  // }
+  console.log(`Closing plugins`)
   process.exit()
 }

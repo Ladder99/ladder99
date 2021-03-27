@@ -16,8 +16,21 @@ const aliases = {}
 
 // initialize the client plugin.
 // queries the device for address space definitions, subscribes to topics.
-export function init(mqtt, cache, deviceId, outputSocket) {
-  console.log('init', { deviceId })
+export function init({ cache, deviceId, socket, mqttlib }) {
+  // connect to broker and call plugin init
+  console.log(`MQTT connecting to broker on`, url, `...`)
+  //. put mqtt stuff inside plugin
+  const mqtt = mqttlib.connect(url)
+  mqtt.on('connect', function onConnect() {
+    console.log(`MQTT connected to broker on`, url)
+    // console.log(`MQTT calling plugin init and subscribing to topics...`)
+    // for example, see setups/demo/volumes/adapter/CCS123-dev.mjs
+    // plugin.init(mqtt, cache, serialNumber, socket)
+    // console.log(`MQTT listening for messages...`)
+  })
+  // mqtts.push(mqtt)
+
+  // console.log('init', { deviceId })
 
   // add deviceId to topics
   for (const key of Object.keys(topics)) {

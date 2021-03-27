@@ -1,0 +1,12 @@
+# specify devices/plugins to load here?
+
+devices:
+  - id: ccs-pa-123
+    plugins:
+      -
+  - id: ccs-pa-124
+    plugins:
+      -
+  - id: foo-111
+    plugins:
+      -
