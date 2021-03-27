@@ -1,36 +1,57 @@
 digraph "ladder99-compilation" {
 
   // styles
-  graph [ label="Ladder99 Compilation Steps\n "; color=lightgray; ];
+  graph [ label="Ladder99 MTConnect Compilation\n "; color=lightgray; ];
   graph [ fontsize=20 ];
   graph [ labelloc=t ];
   // graph [ ranksep=0.2 ];
   // graph [ nodesep=0.35 ];
-  // graph [ rankdir=LR; ] // left-to-right
+  graph [ rankdir=LR; ] // left-to-right
   node [ color=gray; fillcolor=white; style=filled ];
   edge [ color=gray ];
   edge [ fontsize=12; fontcolor=gray30; ];
 
   // nodes
-  Device1Sheet [ label="device1.gsheet" ];
+  // DeviceSheet [ label="device.gsheet" ];
+  ModelYaml [ label="model.yaml" ];
+  CalcsYaml [ label="calcs.yaml" ];
+  TypesYaml [ label="types.yaml" ];
   DeviceYaml [ label="device.yaml" ];
-  Device1Yaml [ label="device1.yaml" ];
-  DeviceJs [ label="device.js" ];
-  Device1Js [ label="device1.js" ];
+  // DevicesYaml [ label="Devices.yaml\n(structure)" ];
+
+  Compiler [ label="Compiler" ];
+
+  DeviceJs [ label="Adapter plugin\n(device.js)" ];
   DevicesXml [ label="Devices.xml" ];
-  DevicesYaml [ label="Devices.yaml" ];
+
+  Adapter [ label="Adapter\nwith cache\n(NodeJS)" ];
+  Agent [ label="Agent\n(C++/cppagent)" ];
 
   // edges
-  DeviceYaml -> Device1Yaml [ label="structures" ];
-  Device1Sheet -> DeviceYaml [ label="feeds into" ];
-  Device1Yaml -> Device1Js [ label="helps generate" ];
-  DeviceJs -> Device1Js [ label="structures" ];
-  Device1Js -> Adapter [ label="plugs into" ];
-  Device1Yaml -> DevicesXml [ label="feeds into" ];
-  Adapter -> Agent [ label="SHDR/\nTCP 7878" ];
-  DevicesYaml -> DevicesXml [ label="structures" ];
-  DevicesXml -> Agent [ label="used by" ];
+  // DeviceSheet -> Compiler;
+  ModelYaml -> Compiler;
+  CalcsYaml -> Compiler;
+  TypesYaml -> Compiler;
+  DeviceYaml -> Compiler;
+  // DevicesYaml -> Compiler;
+
+  Compiler -> DeviceJs;
+  Compiler -> DevicesXml;
+
+  DeviceJs -> Adapter;
+  DevicesXml -> Agent;
+
+  Adapter -> Agent [ label="SHDR" ];
+
+  // ModelYaml -> DeviceYaml [ label="structures" ];
+  // DeviceSheet -> ModelYaml [ label="feeds into" ];
+  // DeviceYaml -> DeviceJs [ label="helps generate" ];
+  // DeviceJs -> Adapter [ label="plugs into" ];
+  // DeviceYaml -> DevicesXml [ label="feeds into" ];
+  // Adapter -> Agent [ label="SHDR/\nTCP 7878" ];
+  // DevicesYaml -> DevicesXml [ label="structures" ];
+  // DevicesXml -> Agent [ label="used by" ];
 
   // rank
-  // { rank=same; DiodeSender DiodeReceiver Agent Application Database Visualizer };
+  { rank=same; Adapter Agent };
 }
