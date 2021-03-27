@@ -1,7 +1,7 @@
 # these items are placed in the model.yaml tree and define the
 # shdr strings that are calculated and sent to the agent.
 
-# the item's key (eg 'connection') with an optional prefix (eg 'CCS123-')
+# the item's key (eg 'connection') together with the deviceId (eg 'CCS123')
 # will become its id in the xml (eg 'CCS123-connection').
 # the shdr key is the same as the id.
 # the shdr value is defined with the pseudojs item value.
@@ -13,7 +13,7 @@ items:
   connection:
     category: EVENT
     type: AVAILABILITY
-    value: types.AVAILABILITY[cache.get('${prefix}status-connection')]
+    value: types.AVAILABILITY[cache.get('${deviceId}-status-connection')]
 
   # see std pt 4 line 347
   # eg change tool to a drill etc - irrelevant to p&a
@@ -43,89 +43,89 @@ items:
     category: EVENT
     type: FIRMWARE
     subType: VERSION
-    value: cache.get('${prefix}status-build_no')
+    value: cache.get('${deviceId}-status-build_no')
 
   e_stop:
     category: EVENT
     type: EMERGENCY_STOP
-    #value: types.EMERGENCY_STOP[cache.get('${prefix}%I0.10')]
-    value: "(cache.get('${prefix}status-faults').any([10])) ? 'TRIGGERED' : 'ARMED'"
+    #value: types.EMERGENCY_STOP[cache.get('${deviceId}-%I0.10')]
+    value: "(cache.get('${deviceId}-status-faults').any([10])) ? 'TRIGGERED' : 'ARMED'"
 
   state:
     category: EVENT
     type: EXECUTION
-    value: types.EXECUTION[cache.get('${prefix}status-state')]
+    value: types.EXECUTION[cache.get('${deviceId}-status-state')]
 
   wait_state:
     category: EVENT
     type: WAIT_STATE
-    value: types.WAIT_STATE[cache.get('${prefix}status-state')]
+    value: types.WAIT_STATE[cache.get('${deviceId}-status-state')]
     # what value goes here when status.state is not WAIT?
 
   program:
     category: EVENT
     type: PROGRAM
     subType: MAIN
-    value: cache.get('${prefix}status-program')
+    value: cache.get('${deviceId}-status-program')
 
   step:
     category: EVENT
     type: BLOCK
-    value: cache.get('${prefix}status-step')
+    value: cache.get('${deviceId}-status-step')
 
   clk_time:
     category: SAMPLE
     type: CLOCK_TIME
-    value: cache.get('${prefix}status-utc_time')
+    value: cache.get('${deviceId}-status-utc_time')
 
   up_time:
     category: SAMPLE
     type: EQUIPMENT_TIMER
     subType: OPERATING
-    value: cache.get('${prefix}status-cpu_time')
+    value: cache.get('${deviceId}-status-cpu_time')
 
   fault_count:
     category: SAMPLE
     type: COUNT
-    value: cache.get('${prefix}%M55.2')
+    value: cache.get('${deviceId}-%M55.2')
 
   cycle_count:
     category: SAMPLE
     type: COUNT
-    value: cache.get('${prefix}%M55.1')
+    value: cache.get('${deviceId}-%M55.1')
 
   life_count:
     category: SAMPLE
     type: COUNT
-    value: cache.get('${prefix}%M55.0')
+    value: cache.get('${deviceId}-%M55.0')
 
   ##
   printer_start_print:
-    # id: ${prefix}%Q0.0
+    # id: ${deviceId}-%Q0.0
     name: printer_start_print
     category: EVENT
     type: ACTUATOR_STATE
-    value: types.ACTUATOR_STATE[cache.get('${prefix}%Q0.0')]
+    value: types.ACTUATOR_STATE[cache.get('${deviceId}-%Q0.0')]
 
   printer_feed:
     name: printer_feed
     category: EVENT
     type: ACTUATOR_STATE
-    value: types.ACTUATOR_STATE[cache.get('${prefix}%Q0.1')]
+    value: types.ACTUATOR_STATE[cache.get('${deviceId}-%Q0.1')]
 
   printer_pause:
     name: printer_pause
     category: EVENT
     type: ACTUATOR_STATE
-    value: types.ACTUATOR_STATE[cache.get('${prefix}%Q0.2')]
+    value: types.ACTUATOR_STATE[cache.get('${deviceId}-%Q0.2')]
 
   end_eff_cond:
     category: CONDITION
     type: SYSTEM
     # value needs quotes here because has ':' in expression
-    value: "(cache.get('${prefix}status-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
+    value: "(cache.get('${deviceId}-status-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
 
   end_eff_message:
     category: EVENT
     type: MESSAGE
-    value: cache.get('${prefix}status-faults').first([2,3,5]).property('description').value
+    value: cache.get('${deviceId}-status-faults').first([2,3,5]).property('description').value

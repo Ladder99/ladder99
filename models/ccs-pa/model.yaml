@@ -1,7 +1,7 @@
-# this defines the xml that will get included in devices.xml
+# this defines the structure of the xml that will get included in devices.xml.
 
 model:
-  - id: ${serialNumber} # ?
+  - id: ${deviceId} #. was serialNumber but that's not necces unique
     name: CCS-PA
     uuid: ${uuid} # eg 'e05363af-95d1-4354-b749-8fbb09d3499e'
     sampleInterval: 10
@@ -27,7 +27,7 @@ model:
 
     components:
       controller:
-        id: ${serialNumber}-controller
+        id: ${deviceId}-controller
         nativeName: plc
         description:
           text: Electronic board set responsible for coordinating all machine function.
@@ -37,7 +37,7 @@ model:
 
         components:
           path:
-            id: ${serialNumber}-path1
+            id: ${deviceId}-path1
             name: path
             dataItems:
               dataItem:
@@ -52,17 +52,17 @@ model:
                 - life_count
 
     systems:
-      id: ${serialNumber}-systems
+      id: ${deviceId}-systems
       components:
         endEffector:
-          id: ${serialNumber}-end_effector
+          id: ${deviceId}-end_effector
           dataItems:
             dataItem:
               - end_eff_cond
               - end_eff_message
           compositions: []
         feeder:
-          id: ${serialNumber}-feeder
+          id: ${deviceId}-feeder
           dataItems:
             dataItem: []
           compositions: []
