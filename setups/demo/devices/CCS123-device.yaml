@@ -1,12 +1,15 @@
 device:
+  id: ccs-pa-123 # eg brand-model-serialnumber?
   model: ccs-pa
   properties:
     uuid: e05363af-95d1-4354-b749-8fbb09d3499e
     serialNumber: CCS123
-    prefix: CCS123-
+    # prefix: CCS123
   source:
     name: ccs-mqtt
     # connection info here
+    host: broker1
+    port: 1883
 
   # sequences:
   #   startup: ccs-startup.js
