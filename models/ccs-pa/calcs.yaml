@@ -1,26 +1,19 @@
-# these items are placed in the model.yaml tree and
-# define the shdr key-value pairs.
+# these items are placed in the model.yaml tree and define the
+# shdr key-value pairs that are calculated and sent to the agent.
 
-# the item's key (eg 'connection') becomes its id in the xml,
-# with an optional prefix (eg 'CCS123-connection').
-# that id is also the shdr key, and the value defined with
-# the pseudojs is the shdr value.
+# the item's key (eg 'connection') with an optional prefix (eg 'CCS123-')
+# will become its id in the xml (eg 'CCS123-connection').
+# the shdr key is the same as that id.
+# the shdr value is defined with the pseudojs item value.
 
-dataItems:
+items:
   connection:
-    # id: ${serialNumber}connection
-    # id: ${prefix}connection
-    #. q. is id really needed?  what if id is always the name of the yaml parent?
-    # serialNumber/prefix could be a configurable setting at adapter level,
-    # prefix is only needed when multiple Device will be present in devices.xml
-    # to prevent collision.
     category: EVENT
     type: AVAILABILITY
-    # key: ${prefix}connection
     value: types.AVAILABILITY[cache.get('${prefix}status-connection')]
 
   # see std pt 4 line 347
-  # eg change tool to a drill etc - irrelevant to pa
+  # eg change tool to a drill etc - irrelevant to p&a
   asset_changed:
     category: EVENT
     type: ASSET_CHANGED
