@@ -98,24 +98,22 @@ items:
   life_count:
     category: SAMPLE
     type: COUNT
-    value: cache.get('${deviceId}-%M55.0')
+    # value: cache.get('${deviceId}-%M55.0')
+    value: <%M55.0>
 
   ##
   printer_start_print:
     # id: ${deviceId}-%Q0.0
-    name: printer_start_print
     category: EVENT
     type: ACTUATOR_STATE
     value: types.ACTUATOR_STATE[cache.get('${deviceId}-%Q0.0')]
 
   printer_feed:
-    name: printer_feed
     category: EVENT
     type: ACTUATOR_STATE
     value: types.ACTUATOR_STATE[cache.get('${deviceId}-%Q0.1')]
 
   printer_pause:
-    name: printer_pause
     category: EVENT
     type: ACTUATOR_STATE
     value: types.ACTUATOR_STATE[cache.get('${deviceId}-%Q0.2')]
@@ -124,7 +122,8 @@ items:
     category: CONDITION
     type: SYSTEM
     # value needs quotes here because has ':' in expression
-    value: "(cache.get('${deviceId}-status-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
+    # value: "(cache.get('${deviceId}-status-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
+    value: types.CONDITION[<status-faults>.any([2,3,5]))]
 
   end_eff_message:
     category: EVENT
