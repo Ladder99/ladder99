@@ -3,8 +3,9 @@
 
 # the item's key (eg 'connection') together with the deviceId (eg 'CCS123')
 # will become its id in the xml (eg 'CCS123-connection').
+
 # the shdr key is the same as the id.
-# the shdr value is defined with the pseudojs item value.
+# the shdr value is defined with the item value code.
 
 # the value calculations are gathered together into a calcs.js file,
 # which is imported to the adapter plugin.
@@ -20,13 +21,13 @@ items:
   asset_changed:
     category: EVENT
     type: ASSET_CHANGED
-    value: ''
+    value:
 
   # see std pt 4 line 357
   asset_removed:
     category: EVENT
     type: ASSET_REMOVED
-    value: ''
+    value:
 
   dev_cond:
     category: CONDITION
@@ -48,7 +49,7 @@ items:
   e_stop:
     category: EVENT
     type: EMERGENCY_STOP
-    #value: types.EMERGENCY_STOP[cache.get('${deviceId}-%I0.10')]
+    #value: types.EMERGENCY_STOP[cache.get('${deviceId}-%I0.10') || ...]
     value: "(cache.get('${deviceId}-status-faults').any([10])) ? 'TRIGGERED' : 'ARMED'"
 
   state:
