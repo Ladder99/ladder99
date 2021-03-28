@@ -1,9 +1,9 @@
 device:
+  id: asc-cpc-234
   model: cpc-socket
   properties:
     uuid: e05363af-95d1-4354-b749-8fbb09d3499e
-    serialNumber: ASC123
-    prefix: ASC123
+    serialNumber: 234
   # sequences:
   #   startup: cpc-startup.js
   #   shutdown: cpc-shutdown.js

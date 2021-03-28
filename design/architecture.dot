@@ -12,20 +12,22 @@ digraph "ladder99-adapter" {
   edge [ fontsize=12; fontcolor=gray30; ];
 
   // nodes
-  PA1 [ fillcolor=lavender; label="CCS P&A 1" ];
-  PA2 [ fillcolor=lavender; label="CCS P&A 2" ];
+  PA1 [ fillcolor=lavender; label="CCS P&A" ];
+  // PA2 [ fillcolor=lavender; label="CCS P&A 2" ];
+  OldMachine2 [ fillcolor=lavender; label="Device" ];
+  OldMachine3 [ fillcolor=lavender; label="Device" ];
   Kepware1 [ label="Kepware\n(Windows)"];
-  Kepware2 [ label="Kepware\n(Windows)"];
+  Kepware2 [ label="Kepware+\nIoT Gateway\n(Windows)"];
   CPC [ label="ASC CPC", fillcolor=lavender ];
-  Gateway [ label="IoT Gateway"];
+  // Gateway [ label="IoT Gateway"];
   Broker1 [ label="MQTT Broker\n(Mosquitto)" ];
-  Broker2 [ label="MQTT Broker\n(Mosquitto)" ];
-  Broker3 [ label="MQTT Broker\n(Mosquitto)" ];
+  // Broker2 [ label="MQTT Broker\n(Mosquitto)" ];
+  // Broker3 [ label="MQTT Broker\n(Mosquitto)" ];
   Broker4 [ label="MQTT Broker\n(Mosquitto)" ];
-  OldMachine1 [ fillcolor=lavender; label="Old Machine 1" ];
-  PLC4X [ label="PLC4X\n(Java)" ];
+  // OldMachine1 [ fillcolor=lavender; label="Old Machine 1" ];
+  // PLC4X [ label="PLC4X\n(Java)" ];
 
-  Adapter [ label="MTConnect\nAdapter\nwith cache\nand plugins\n(NodeJS)" ];
+  Adapter [ label="MTConnect\nAdapter\nwith plugins\n(NodeJS)" ];
   DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
   DiodeReceiver [ label="Diode Receiver\n(Java+RabbitMQ)" ];
 
@@ -40,17 +42,20 @@ digraph "ladder99-adapter" {
 
   // edges
   PA1 -> Broker1 [ label="  TCP  ", dir=both ];
-  PA2 -> Broker2 [ label="  TCP  ", dir=both ];
+  // PA2 -> Broker2 [ label="  TCP  ", dir=both ];
   Broker1 -> Adapter [ label="MQTT", dir=both ];
-  Broker2 -> Adapter [ label="MQTT", dir=both ];
-  Broker3 -> Adapter [ label="MQTT", dir=both ];
+  // Broker2 -> Adapter [ label="MQTT", dir=both ];
+  // Broker3 -> Adapter [ label="MQTT", dir=both ];
   Broker4 -> Adapter [ label="MQTT", dir=both ];
-  OldMachine1 -> PLC4X; // [ label="proprietary\nprotocol" ];
-  PLC4X -> Broker3 [ label="" ];
+  // OldMachine1 -> PLC4X; // [ label="proprietary\nprotocol" ];
+  // PLC4X -> Broker3 [ label="" ];
+  OldMachine2 -> Kepware1;
   Kepware1 -> Adapter [ label="OPC/UA" ];
-  Kepware2 -> Gateway;
+  // Kepware2 -> Gateway;
   CPC -> Adapter [ label="text" ];
-  Gateway -> Broker4 [ label="MQTT" ];
+  // Gateway -> Broker4 [ label="MQTT" ];
+  OldMachine3 -> Kepware2;
+  Kepware2 -> Broker4 [ label="MQTT" ];
   
   Adapter -> Agent [ label="SHDR /   \nTCP 7878      ", dir=both ];
 
