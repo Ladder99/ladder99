@@ -3,6 +3,7 @@
 // updates shdr strings, passes them to agent via tcp.
 
 import net from 'net' // node lib for tcp
+const yamllib = require('js-yaml') // https://github.com/nodeca/js-yaml
 import { Cache } from './cache.js'
 
 //. instead of this, load the devices.yaml config file as specified on cmdline.

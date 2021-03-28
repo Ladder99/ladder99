@@ -12,6 +12,7 @@
   "license": "Proprietary",
   "private": true,
   "dependencies": {
+    "js-yaml": "^4.0.0",
     "mqtt": "^4.2.6"
   }
 }
