@@ -41,21 +41,17 @@ tcp.on('connection', async socket => {
     }
   })
 
-  // define cache shared across devices
+  // define cache shared across plugins
   const cache = new Cache()
 
-  // connect to devices through mqtt brokers
+  // load plugins and init
   for (const device of devices) {
     const [deviceId, url] = device // eg 'CCS123', 'mqtt://broker1:1883'
-
-    // get plugin code
     console.log(`Importing code for device ${deviceId}...`)
     const pluginPath = `/etc/adapter/${deviceId}.mjs`
     const plugin = await import(pluginPath)
-
     plugin.init({ cache, deviceId, socket, mqttlib })
     plugins.push(plugin)
-
 })
 
 console.log(`TCP try listening to socket at`, outputPort, outputHost, `...`)
@@ -68,11 +64,9 @@ function shutdown() {
     console.log(`TCP closing socket...`)
     outputSocket.end()
   }
-  // console.log(`MQTT closing connections...`)
-  // for (const mqtt of mqtts) {
-  //   mqtt.end()
-  // }
   console.log(`Closing plugins`)
-  //.
+  for (const plugin of plugins) {
+    plugin.end()
+  }
   process.exit()
 }
