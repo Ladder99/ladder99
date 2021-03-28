@@ -4,15 +4,15 @@
 
 model:
   - id: ${deviceId}
-    name: ASC CPC
+    name: ASC Econoclave
     uuid: ${uuid}
     sampleInterval: 10
 
     description:
       manufacturer: ASC
-      model: CPC
+      model: EC1X2
       serialNumber: ${serialNumber}
-      text: ASC CPC
+      text: ASC Econoclave 1x2ft
 
     dataItems:
       dataItem:
