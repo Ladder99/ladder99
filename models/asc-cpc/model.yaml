@@ -1,0 +1,19 @@
+# this defines the structure of the xml that will get included in devices.xml.
+
+model:
+  - id: ${deviceId}
+    name: ASC CPC
+    uuid: ${uuid}
+    sampleInterval: 10
+
+    description:
+      manufacturer: ASC
+      model: CPC
+      serialNumber: ${serialNumber}
+      text: ASC CPC
+
+    dataItems:
+      dataItem:
+        - connection
+        - asset_changed
+        - asset_removed
