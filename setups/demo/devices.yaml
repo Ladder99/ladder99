@@ -1,4 +1,4 @@
-# specify devices here to define the devices.xml structure.
+# this defines the devices.xml structure.
 
 devices:
 
@@ -9,8 +9,9 @@ devices:
       serialNumber: 001
     sources:
       - name: ccs-mqtt
-        host: broker1
-        port: 1883
+        url: mqtt://broker1:1883
+        # host: broker1
+        # port: 1883
     # sequences:
     #   startup: ccs-startup.js
     #   shutdown: ccs-shutdown.js
