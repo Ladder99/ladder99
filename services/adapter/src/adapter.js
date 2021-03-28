@@ -1,8 +1,7 @@
 // adapter
-// subscribe to data, pass messages to topic handler fns
-// to get shdr output string, pass to agent via tcp.
+// polls or subscribes to data via plugins, updates cache,
+// updates shdr strings, passes them to agent via tcp.
 
-import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import net from 'net' // node lib for tcp
 import { Cache } from './cache.js'
 

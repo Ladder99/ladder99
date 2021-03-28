@@ -1,7 +1,5 @@
 # this defines the devices.xml structure.
 
-#... do not edit - devel has moved to services/adapter/src/volume
-
 devices:
 
   ccs-pa-001:
