@@ -16,10 +16,10 @@
       </DataItems>
     </Device>
 
-    <Device id="foo111" name="Foo" uuid="001" sampleInterval="10">
-      <Description manufacturer="CCS" model="Emergent-Foo" serialNumber="111">Next Generation Foo</Description>
+    <Device id="ccs-camera-001" name="CCS-Camera" uuid="001" sampleInterval="10">
+      <Description manufacturer="CCS" model="Pi Camera" serialNumber="111">CCS Pi Camera</Description>
       <DataItems>
-        <DataItem id="foo111-state" category="EVENT" type="EXECUTION"/>
+        <DataItem id="ccs-camera-001-state" category="EVENT" type="EXECUTION"/>
       </DataItems>
     </Device>
 
