@@ -10,7 +10,7 @@ import { Cache } from './cache.js'
 //. instead of this, load the devices.yaml config file as specified on cmdline.
 // // eg DEVICES=CCS123@broker1:1883 CCS124@broker2:1883
 // const devices = (process.env.DEVICES || '').split(' ').map(d => d.split('@'))
-const sourcefile = './volume/devices.yaml'
+const sourcefile = 'src/volume/devices.yaml'
 const yaml = fs.readFileSync(sourcefile, 'utf8')
 const yamltree = yamllib.load(yaml) // parse yaml
 console.log(yamltree)

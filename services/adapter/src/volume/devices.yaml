@@ -1,7 +1,6 @@
 # this defines the devices.xml structure.
 
 devices:
-
   ccs-pa-001:
     model: ccs-pa
     properties:
@@ -65,19 +64,19 @@ devices:
             port: 9999
             poll: 5
           # failover condition?
-            # socket timeout
-            # other?
-            #   http://www.aschome.com/administrator/images/support/pdf/CPC%20-%20ServerBackup%20and%20PCA%20-%20PCB%20switching%20configuration.pdf
-            #   http://www.aschome.com/administrator/images/support/pdf/67721.pdf
-    batches:
-      batch:
-        - air_temp
-        - alarm1
-      batch:
-        - alarm2
-        - tc_1
-      # purpose of batches is to limit the number of items requested each polling interval.  
-      #  we might run into an issue whre polling 70 items at once is not possible
+          # socket timeout
+          # other?
+          #   http://www.aschome.com/administrator/images/support/pdf/CPC%20-%20ServerBackup%20and%20PCA%20-%20PCB%20switching%20configuration.pdf
+          #   http://www.aschome.com/administrator/images/support/pdf/67721.pdf
+    # batches:
+    #   batch:
+    #     - air_temp
+    #     - alarm1
+    #   batch:
+    #     - alarm2
+    #     - tc_1
+    #   # purpose of batches is to limit the number of items requested each polling interval.
+    #   #  we might run into an issue whre polling 70 items at once is not possible
 
   ccs-pa-kepware1:
     model: ccs-pa
