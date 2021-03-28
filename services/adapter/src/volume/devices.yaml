@@ -9,6 +9,7 @@ devices:
     sources:
       - source: ccs-mqtt
         url: mqtt://broker1:1883
+    # calcs: ccs-pa-001-calcs.js
     # sequences:
     #   startup: ccs-startup.js
     #   shutdown: ccs-shutdown.js

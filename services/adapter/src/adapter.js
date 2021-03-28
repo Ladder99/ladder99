@@ -48,8 +48,9 @@ tcp.on('connection', async socket => {
   const cache = new Cache()
 
   // load plugins and init
+  // @ts-ignore
   const devices = yamltree.devices
-  console.log(devices)
+  // console.log(devices)
   for (const device of devices) {
     console.log(device)
     //. iterate over sources, load plugin factory assoc with each,
