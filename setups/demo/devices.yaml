@@ -1,12 +1,8 @@
-# specify devices/plugins to load here?
+# specify devices and subcomponents(?) here.
+# this defines the devices.xml structure.
 
 devices:
-  - id: ccs-pa-123
-    plugins:
-      -
-  - id: ccs-pa-124
-    plugins:
-      -
-  - id: foo-111
-    plugins:
-      -
+  ccs-pa-001:
+  ccs-camera-001:
+  ccs-pa-002:
+  asc-econoclave:

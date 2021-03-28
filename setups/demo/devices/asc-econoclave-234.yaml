@@ -1,6 +1,7 @@
 device:
-  id: asc-cpc-234
-  model: cpc-socket
+  id: asc-econoclave-234
+  model: asc-econoclave
+  source: cpc-socket
   properties:
     uuid: e05363af-95d1-4354-b749-8fbb09d3499e
     serialNumber: 234
