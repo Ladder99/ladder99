@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- handmade version for development -->
+<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
+  <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.6.0.7"/>
+  <Devices>
+
+    <Device id="ccs123" name="CCS-PA" uuid="000" sampleInterval="10">
+      <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="123">
+        Emergent Next Generation Print and Apply
+      </Description>
+      <DataItems>
+        <DataItem id="ccs123-fw_ver" category="EVENT" type="FIRMWARE" subType="VERSION"/>
+        <DataItem id="ccs123-%Q0.0" category="EVENT" type="ACTUATOR_STATE"/>
+        <DataItem id="ccs123-state" category="EVENT" type="EXECUTION"/>
+        <DataItem id="ccs123-estop" category="EVENT" type="EMERGENCY_STOP"/>
+      </DataItems>
+    </Device>
+
+    <Device id="foo111" name="Foo" uuid="001" sampleInterval="10">
+      <Description manufacturer="CCS" model="Emergent-Foo" serialNumber="111">Next Generation Foo</Description>
+      <DataItems>
+        <DataItem id="foo111-state" category="EVENT" type="EXECUTION"/>
+      </DataItems>
+    </Device>
+
+  </Devices>
+</MTConnectDevices>
