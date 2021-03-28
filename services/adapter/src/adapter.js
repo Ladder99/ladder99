@@ -56,19 +56,6 @@ tcp.on('connection', async socket => {
     plugin.init({ cache, deviceId, socket, mqttlib })
     plugins.push(plugin)
 
-  //   // connect to broker and call plugin init
-  //   console.log(`MQTT connecting to broker on`, url, `...`)
-  //   //. put mqtt stuff inside plugin
-  //   const mqtt = mqttlib.connect(url)
-  //   mqtt.on('connect', function onConnect() {
-  //     console.log(`MQTT connected to broker on`, url)
-  //     console.log(`MQTT calling plugin init and subscribing to topics...`)
-  //     // for example, see setups/demo/volumes/adapter/CCS123-dev.mjs
-  //     plugin.init(mqtt, cache, serialNumber, socket)
-  //     console.log(`MQTT listening for messages...`)
-  //   })
-  //   mqtts.push(mqtt)
-  // }
 })
 
 console.log(`TCP try listening to socket at`, outputPort, outputHost, `...`)
@@ -86,5 +73,6 @@ function shutdown() {
   //   mqtt.end()
   // }
   console.log(`Closing plugins`)
+  //.
   process.exit()
 }

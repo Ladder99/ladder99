@@ -5,7 +5,7 @@
   "type": "module",
   "target": "es2017",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/adapter.js"
   },
   "keywords": [],
   "author": "Brian Burns <bburns.km@gmail.com>",

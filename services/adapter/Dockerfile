@@ -10,7 +10,7 @@ RUN npm ci --production
 COPY src ./src
 
 # default command on run container
-CMD ["node", "src/index.js"]
+CMD ["node", "src/adapter.js"]
 
 # this causes permission denied error when connecting to agent
 # USER node
