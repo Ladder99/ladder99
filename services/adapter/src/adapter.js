@@ -2,13 +2,18 @@
 // polls or subscribes to data via plugins, updates cache,
 // updates shdr strings, passes them to agent via tcp.
 
+import fs from 'fs' // node lib for filesys
 import net from 'net' // node lib for tcp
-const yamllib = require('js-yaml') // https://github.com/nodeca/js-yaml
+import yamllib from 'js-yaml' // https://github.com/nodeca/js-yaml
 import { Cache } from './cache.js'
 
 //. instead of this, load the devices.yaml config file as specified on cmdline.
 // // eg DEVICES=CCS123@broker1:1883 CCS124@broker2:1883
 // const devices = (process.env.DEVICES || '').split(' ').map(d => d.split('@'))
+const sourcefile = './volume/devices.yaml'
+const yaml = fs.readFileSync(sourcefile, 'utf8')
+const yamltree = yamllib.load(yaml) // parse yaml
+console.log(yamltree)
 
 const outputPort = Number(process.env.OUTPUT_PORT || 7878)
 const outputHost = process.env.OUTPUT_HOST || 'localhost'
@@ -45,14 +50,15 @@ tcp.on('connection', async socket => {
   // define cache shared across plugins
   const cache = new Cache()
 
-  // load plugins and init
-  for (const device of devices) {
-    const [deviceId, url] = device // eg 'CCS123', 'mqtt://broker1:1883'
-    console.log(`Importing code for device ${deviceId}...`)
-    const pluginPath = `/etc/adapter/${deviceId}.mjs`
-    const plugin = await import(pluginPath)
-    plugin.init({ cache, deviceId, socket, mqttlib })
-    plugins.push(plugin)
+  // // load plugins and init
+  // for (const device of devices) {
+  //   const [deviceId, url] = device // eg 'CCS123', 'mqtt://broker1:1883'
+  //   console.log(`Importing code for device ${deviceId}...`)
+  //   const pluginPath = `/etc/adapter/${deviceId}.mjs`
+  //   const plugin = await import(pluginPath)
+  //   plugin.init({ cache, deviceId, socket, mqttlib })
+  //   plugins.push(plugin)
+  // }
 })
 
 console.log(`TCP try listening to socket at`, outputPort, outputHost, `...`)
