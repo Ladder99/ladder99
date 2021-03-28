@@ -1,0 +1,44 @@
+# these items are placed in the model.yaml tree and define the
+# shdr strings that are calculated and sent to the agent.
+# the item's key (eg 'connection') together with the deviceId (eg 'CCS123')
+# will become its id in the xml (eg 'CCS123-connection').
+# the shdr key is the same as the id.
+# the shdr value is defined with the item value code.
+# the value calculations are gathered together into a calcs.js file,
+# which is imported to the adapter plugin.
+
+items:
+  connection:
+    category: EVENT
+    type: AVAILABILITY
+    value: types.AVAILABILITY[cache.get('${deviceId}-status-connection')]
+
+  # see std pt 4 line 347
+  # eg change tool to a drill etc - irrelevant to camera
+  asset_changed:
+    category: EVENT
+    type: ASSET_CHANGED
+    value:
+
+  # see std pt 4 line 357
+  asset_removed:
+    category: EVENT
+    type: ASSET_REMOVED
+    value:
+
+  dev_cond:
+    category: CONDITION
+    type: SYSTEM
+    value: any hard faults? = FAULT, any soft faults? = WARNING, no faults = NORMAL
+
+  dev_msg:
+    category: EVENT
+    type: MESSAGE
+    representation: DATA_SET # set of kv pairs, part2 7.2.2.12
+    value: # fault_id:fault_value, fault_id:fault_value, ...
+
+  fw_ver:
+    category: EVENT
+    type: FIRMWARE
+    subType: VERSION
+    value: cache.get('${deviceId}-status-build_no')
