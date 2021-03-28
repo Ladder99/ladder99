@@ -27,7 +27,7 @@ const tcp = net.createServer()
 let outputSocket
 const plugins = [] // plugins - remember them so can end nicely
 
-// handle tcp connection
+// handle tcp connection from agent or diode
 tcp.on('connection', async socket => {
   outputSocket = socket
   const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
@@ -49,13 +49,21 @@ tcp.on('connection', async socket => {
 
   // load plugins and init
   const devices = yamltree.devices
+  console.log(devices)
   for (const device of devices) {
-    const [deviceId, url] = device // eg 'CCS123', 'mqtt://broker1:1883'
-    console.log(`Importing code for device ${deviceId}...`)
-    const pluginPath = `/etc/adapter/${deviceId}.mjs`
-    const plugin = await import(pluginPath)
-    plugin.init({ cache, deviceId, socket, mqttlib })
-    plugins.push(plugin)
+    console.log(device)
+    //. iterate over sources, load plugin factory assoc with each,
+    // construct new plugin for that source, call init on it.
+    //. load calcs for this device, pass to... where?
+
+    // const [deviceId, url] = device // eg 'CCS123', 'mqtt://broker1:1883'
+    // const { deviceId } = device
+    // const url = device.sources[0].url //.
+    // console.log(`Importing code for device ${deviceId}...`)
+    // const pluginPath = `/etc/adapter/${deviceId}.mjs`
+    // const plugin = await import(pluginPath)
+    // plugin.init({ cache, deviceId, socket })
+    // plugins.push(plugin)
   }
 })
 

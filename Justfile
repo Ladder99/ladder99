@@ -42,9 +42,9 @@ _buildjs:
     done
     cp services/builder/output/*.js services/adapter/code/src/plugins
 
-adapter:
-    cd services/adapter && \
-    npm start
+# adapter:
+#     cd services/adapter && \
+#     npm start
 
 
 # run
