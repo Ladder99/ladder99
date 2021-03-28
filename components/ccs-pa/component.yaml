@@ -2,7 +2,7 @@
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from the device yaml.
 
-model:
+device:
   - id: ${deviceId}
     name: CCS-PA
     uuid: ${uuid} # eg 'e05363af-95d1-4354-b749-8fbb09d3499e'
