@@ -7,11 +7,9 @@ devices:
     properties:
       uuid: e05363af-95d1-4354-b749-8fbb09d3499e
       serialNumber: 001
-    sources:
-      - name: ccs-mqtt
-        url: mqtt://broker1:1883
-        # host: broker1
-        # port: 1883
+    source:
+      name: ccs-mqtt
+      url: mqtt://broker1:1883
     # sequences:
     #   startup: ccs-startup.js
     #   shutdown: ccs-shutdown.js
@@ -26,30 +24,24 @@ devices:
     properties:
       uuid: e05363af-95d1-4354-b749-8fbb09d3499f
       serialNumber: 001
-    sources:
-      - name: ccs-mqtt
-        host: broker2
-        port: 1883
+    source:
+      name: ccs-mqtt
+      url: mqtt://broker2:1883
 
   ccs-pa-002:
     model: ccs-pa
     properties:
       uuid: e05363af-95d1-4354-b749-8fbb09d349a0
       serialNumber: 002
-    sources:
-      - name: ccs-mqtt
-        host: broker3
-        port: 1883
+    source:
+      name: ccs-mqtt
+      url: mqtt://broker3:1883
 
   asc-econoclave-001:
     model: asc-econoclave
     properties:
       uuid: e05363af-95d1-4354-b749-8fbb09d349a1
       serialNumber: 001
-    sources:
-      - name: cpc-socket
-        host: cpc
-        port: 1883
     tags:
       - key: .Autoclave.some.path\Value
         batch: 1
@@ -59,6 +51,10 @@ devices:
     # config:
     #   prefixDataItems: true
     #   http://www.aschome.com/administrator/images/support/pdf/CPC%20-%20TCP%20Talker%20and%20Listener.pdf
+    source:
+      name: cpc-socket
+      host: cpc
+      port: 1883
     sockets:
       primary:
         ip: 192.168.2.2
