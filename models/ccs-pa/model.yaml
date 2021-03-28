@@ -1,7 +1,9 @@
 # this defines the structure of the xml that will get included in devices.xml.
+# text substitution is performed, eg ${deviceId} is replaced by
+# that value from the device yaml.
 
 model:
-  - id: ${deviceId} #. was serialNumber but that's not necces unique
+  - id: ${deviceId}
     name: CCS-PA
     uuid: ${uuid} # eg 'e05363af-95d1-4354-b749-8fbb09d3499e'
     sampleInterval: 10
