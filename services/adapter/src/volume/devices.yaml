@@ -1,7 +1,7 @@
 # this defines the devices.xml structure.
 
 devices:
-  ccs-pa-001:
+  - id: ccs-pa-001
     model: ccs-pa
     properties:
       uuid: e05363af-95d1-4354-b749-8fbb09d3499e
@@ -18,7 +18,7 @@ devices:
     # config:
     #   prefixDataItems: true
 
-  ccs-pa-002:
+  - id: ccs-pa-002
     model: ccs-pa
     properties:
       uuid: e05363af-95d1-4354-b749-8fbb09d349a0
@@ -27,7 +27,7 @@ devices:
       - source: ccs-mqtt
         url: mqtt://broker2:1883
 
-  ccs-camera-001:
+  - id: ccs-camera-001
     model: ccs-camera
     properties:
       uuid: e05363af-95d1-4354-b749-8fbb09d3499f
@@ -36,7 +36,7 @@ devices:
       - name: ccs-mqtt
         url: mqtt://broker3:1883
 
-  asc-econoclave-001:
+  - id: asc-econoclave-001
     model: asc-econoclave
     properties:
       uuid: e05363af-95d1-4354-b749-8fbb09d349a1
@@ -78,7 +78,7 @@ devices:
     #   # purpose of batches is to limit the number of items requested each polling interval.
     #   #  we might run into an issue whre polling 70 items at once is not possible
 
-  ccs-pa-kepware1:
+  - id: ccs-pa-kepware1
     model: ccs-pa
     properties:
       uuid: e05363af-95d1-4354-b749-8fbb09d3499e
@@ -89,7 +89,7 @@ devices:
     tags:
       - ns=1; s=[PLC]B3:3.6
 
-  ccs-pa-kepware2:
+  - id: ccs-pa-kepware2
     model: ccs-pa
     properties:
       uuid: e05363af-95d1-4354-b749-8fbb09d3499e
