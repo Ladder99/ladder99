@@ -56,7 +56,6 @@ agent -->> user: XML <DataItems />
 ```mermaid
 sequenceDiagram
 
-participant device as Device
 participant server as ASC CPC
 participant adapter as Adapter
 participant plugin as CPC Plugin
@@ -64,7 +63,6 @@ participant cache as Cache
 participant agent as Agent
 participant user as User
 
-device -->> server: register
 adapter -->> plugin: init
 plugin -->> server: query
 server -->> plugin: CPC msg
