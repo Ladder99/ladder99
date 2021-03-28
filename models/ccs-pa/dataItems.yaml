@@ -1,4 +1,4 @@
-# these dataitems are placed in the component.yaml tree and define the
+# these dataitems are placed in the device.yaml tree and define the
 # shdr strings that are calculated and sent to the agent.
 # the item's key (eg 'connection') together with the deviceId (eg 'CCS123')
 # will become its id in the xml (eg 'CCS123-connection').
