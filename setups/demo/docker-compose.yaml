@@ -1,5 +1,6 @@
 # generated file - do not edit
 #. well, it will be - edit this for now
+# eventually will compile this from devices.yaml etc
 
 version: '3.7'
 
@@ -17,34 +18,34 @@ services:
       options:
         max-size: '1m'
 
-  # broker2:
-  #   container_name: broker2
-  #   image: eclipse-mosquitto
-  #   networks:
-  #     - ladder99
-  #   volumes:
-  #     - ./volumes/broker2:/mosquitto
-  #   logging:
-  #     options:
-  #       max-size: '1m'
+  broker2:
+    container_name: broker2
+    image: eclipse-mosquitto
+    networks:
+      - ladder99
+    ports:
+      - 1884:1883
+    volumes:
+      - ./volumes/broker2:/mosquitto
+    logging:
+      options:
+        max-size: '1m'
 
-  adapter:
-    container_name: adapter
+  adapter1:
+    container_name: adapter1
     build:
       context: ../../services/adapter
-    environment:
-      - OUTPUT_HOST=adapter
-      - OUTPUT_PORT=7878
-      # - DEVICES=CCS123@mqtt://broker1:1883 CCS124@mqtt://broker2:1883
+    # environment:
+    #   - OUTPUT_HOST=adapter
+    #   - OUTPUT_PORT=7878
+    #   # - DEVICES=CCS123@mqtt://broker1:1883 CCS124@mqtt://broker2:1883
     depends_on:
       broker1:
         condition: service_started
-      #... broker2:
-      #   condition: service_started
     networks:
       - ladder99
     volumes:
-      - ./volumes/adapter:/etc/adapter
+      - ./volumes/adapter1:/etc/adapter
     logging:
       options:
         max-size: '1m'
