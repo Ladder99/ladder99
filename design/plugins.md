@@ -2,7 +2,7 @@
 
 Lifecycles of Adapter plugins
 
-## MQTT Plugin (passive)
+## MQTT Plugin
 
 ```mermaid
 sequenceDiagram
@@ -28,7 +28,7 @@ agent -->> user: XML <DataItems />
 
 ```
 
-## Kepware OPC Plugin (active?)
+## Kepware OPC Plugin
 
 ```mermaid
 sequenceDiagram
@@ -51,7 +51,7 @@ agent -->> user: XML <DataItems />
 
 ```
 
-## ASC CPC Plugin (active)
+## ASC CPC Plugin
 
 ```mermaid
 sequenceDiagram
