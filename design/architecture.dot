@@ -12,17 +12,18 @@ digraph "ladder99-adapter" {
   edge [ fontsize=12; fontcolor=gray30; ];
 
   // nodes
-  PA1 [ fillcolor=lavender; label="CCS P&A" ];
-  // PA2 [ fillcolor=lavender; label="CCS P&A 2" ];
+  PA1 [ fillcolor=lavender; label="CCS P&A 1" ];
+  PA2 [ fillcolor=lavender; label="CCS P&A 2" ];
   OldMachine2 [ fillcolor=lavender; label="Device" ];
   OldMachine3 [ fillcolor=lavender; label="Device" ];
+  Camera [ fillcolor=lavender; label="Camera" ];
   Kepware1 [ label="Kepware\n(Windows)"];
   Kepware2 [ label="Kepware+\nIoT Gateway\n(Windows)"];
-  CPC [ label="ASC CPC", fillcolor=lavender ];
-  // Gateway [ label="IoT Gateway"];
+  Autoclave [ label="Autoclave", fillcolor=lavender ];
+  CPC [ label="ASC CPC" ];
   Broker1 [ label="MQTT Broker\n(Mosquitto)" ];
-  // Broker2 [ label="MQTT Broker\n(Mosquitto)" ];
-  // Broker3 [ label="MQTT Broker\n(Mosquitto)" ];
+  Broker2 [ label="MQTT Broker\n(Mosquitto)" ];
+  Broker3 [ label="MQTT Broker\n(Mosquitto)" ];
   Broker4 [ label="MQTT Broker\n(Mosquitto)" ];
   // OldMachine1 [ fillcolor=lavender; label="Old Machine 1" ];
   // PLC4X [ label="PLC4X\n(Java)" ];
@@ -42,10 +43,12 @@ digraph "ladder99-adapter" {
 
   // edges
   PA1 -> Broker1 [ label="  TCP  ", dir=both ];
-  // PA2 -> Broker2 [ label="  TCP  ", dir=both ];
+  PA2 -> Broker2 [ label="  TCP  ", dir=both ];
+  Camera -> Broker3 [ label="  TCP  ", dir=both ];
+  Autoclave -> CPC [ dir=both ];
   Broker1 -> Adapter [ label="MQTT", dir=both ];
-  // Broker2 -> Adapter [ label="MQTT", dir=both ];
-  // Broker3 -> Adapter [ label="MQTT", dir=both ];
+  Broker2 -> Adapter [ label="MQTT", dir=both ];
+  Broker3 -> Adapter [ label="MQTT", dir=both ];
   Broker4 -> Adapter [ label="MQTT", dir=both ];
   // OldMachine1 -> PLC4X; // [ label="proprietary\nprotocol" ];
   // PLC4X -> Broker3 [ label="" ];
