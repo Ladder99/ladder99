@@ -13,7 +13,7 @@ const yamltree = libyaml.load(yaml)
 // @ts-ignore
 const { device } = yamltree
 console.log(device)
-const { output } = device
+const { id, output } = device
 
 console.log(`MTConnect Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
@@ -50,17 +50,17 @@ tcp.on('connection', async socket => {
   const cache = new Cache()
 
   // load sources and init
+  //. iterate over sources, load plugin factory assoc with each,
+  // construct new plugin for that source, call init on it.
+  //. also load calcs for this device, pass to... where?
   const { sources } = device
   for (const source of sources) {
     console.log(source)
-    //. iterate over sources, load plugin factory assoc with each,
-    // construct new plugin for that source, call init on it.
-    //. also load calcs for this device, pass to... where?
-
-    // const path = `./volume/ccs-mqtt.js`
-    const path = `./volume/${source.name}.js`
+    const { name, url } = source
+    const path = `./sources/${name}.js` // eg /sources/ccs-mqtt.js
     const plugin = await import(path)
     console.log(plugin)
+    plugin.init({ url, cache, deviceId: id, socket })
 
     // const [deviceId, url] = device // eg 'CCS123', 'mqtt://broker1:1883'
     // const { deviceId } = device
@@ -68,7 +68,7 @@ tcp.on('connection', async socket => {
     // console.log(`Importing code for device ${deviceId}...`)
     // const pluginPath = `/etc/adapter/${deviceId}.mjs`
     // const plugin = await import(pluginPath)
-    // plugin.init({ cache, deviceId, socket })
+    // plugin.init({ url, cache, deviceId, socket })
     // plugins.push(plugin)
   }
 })

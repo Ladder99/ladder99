@@ -1,9 +1,6 @@
 // adapter plugin code
-// derived from models/ccs-pa and setups/demo/devices/CCS123.yaml etc
 
-//. this is experimental for development
-
-import mqttlib from 'mqtt' // see https://www.npmjs.com/package/mqtt
+import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
 // mqtt topics
 const topics = {
@@ -18,11 +15,11 @@ const aliases = {}
 
 // initialize the client plugin.
 // queries the device for address space definitions, subscribes to topics.
-export function init({ cache, deviceId, socket }) {
+export function init({ url, cache, deviceId, socket }) {
   // connect to broker and call plugin init
   console.log(`MQTT connecting to broker on`, url, `...`)
   //. put mqtt stuff inside plugin
-  const mqtt = mqttlib.connect(url)
+  const mqtt = libmqtt.connect(url)
   mqtt.on('connect', function onConnect() {
     console.log(`MQTT connected to broker on`, url)
     // console.log(`MQTT calling plugin init and subscribing to topics...`)
@@ -82,12 +79,13 @@ export function init({ cache, deviceId, socket }) {
       }
     }
 
-    // get shdr strings
-    const output = getOutput(cache)
+    //...
+    // // get shdr strings
+    // const output = getOutput(cache)
 
-    // send shdr to agent via tcp socket
-    console.log(`TCP sending string`, output.slice(0, 40), `...`)
-    outputSocket.write(output)
+    // // send shdr to agent via tcp socket
+    // console.log(`TCP sending string`, output.slice(0, 40), `...`)
+    // outputSocket.write(output)
 
     // best to subscribe to topics at this point,
     // in case status or read messages come in BEFORE query results are delivered,
@@ -108,11 +106,12 @@ export function init({ cache, deviceId, socket }) {
       const value = msg.payload[key]
       cache.set(`${deviceId}-status-${key}`, value) // eg 'CCS123-status-faults'
     }
-    // get shdr strings
-    const output = getOutput(cache)
-    // send shdr to agent via tcp socket
-    console.log(`TCP sending string`, output.slice(0, 40), `...`)
-    outputSocket.write(output)
+    //...
+    // // get shdr strings
+    // const output = getOutput(cache)
+    // // send shdr to agent via tcp socket
+    // console.log(`TCP sending string`, output.slice(0, 40), `...`)
+    // outputSocket.write(output)
   }
 
   // handle read messages
@@ -127,11 +126,12 @@ export function init({ cache, deviceId, socket }) {
       const key = `${deviceId}-${item.address}` // eg 'CCS123-%Q0.0'
       cache.set(key, item) // item has { address, value }
     }
-    // get shdr strings
-    const output = getOutput(cache)
-    // send shdr to agent via tcp socket
-    console.log(`TCP sending string`, output.slice(0, 40), `...`)
-    outputSocket.write(output)
+    //...
+    // // get shdr strings
+    // const output = getOutput(cache)
+    // // send shdr to agent via tcp socket
+    // console.log(`TCP sending string`, output.slice(0, 40), `...`)
+    // outputSocket.write(output)
   }
 }
 
@@ -142,5 +142,3 @@ function unpack(topic, buffer) {
   const msg = { topic, payload, received }
   return msg
 }
-
-// ------------
