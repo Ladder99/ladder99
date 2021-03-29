@@ -12,11 +12,12 @@ const yaml = fs.readFileSync(yamlfile, 'utf8')
 const yamltree = libyaml.load(yaml)
 console.log(yamltree)
 
-const outputPort = Number(process.env.OUTPUT_PORT || 7878)
-const outputHost = process.env.OUTPUT_HOST || 'localhost'
+// const outputPort = Number(process.env.OUTPUT_PORT || 7878)
+// const outputHost = process.env.OUTPUT_HOST || 'localhost'
 
 console.log(`MTConnect Adapter`)
-console.log(`Polls/subscribes to data, transforms to SHDR, posts to TCP.`)
+console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
+console.log(`posts to TCP.`)
 console.log(`----------------------------------------------------------------`)
 console.log(`Hit ctrl-c to stop adapter.`)
 process.on('SIGINT', shutdown)
@@ -25,7 +26,7 @@ console.log(`TCP creating server for agent...`)
 const tcp = net.createServer()
 
 let outputSocket
-const plugins = [] // plugins - remember them so can end nicely
+const sources = [] // remember so can end nicely
 
 // handle tcp connection from agent or diode
 tcp.on('connection', async socket => {
@@ -33,7 +34,8 @@ tcp.on('connection', async socket => {
   const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
   console.log('TCP new client connection from', remoteAddress)
   // handle incoming data - get PING from agent, return PONG
-  socket.on('data', buffer => {
+  socket.on('data', pingpong)
+  function pingpong(buffer) {
     const str = buffer.toString().trim()
     if (str === '* PING') {
       const response = '* PONG 10000' //. msec
@@ -42,7 +44,7 @@ tcp.on('connection', async socket => {
     } else {
       console.log('TCP received data:', str.slice(0, 20), '...')
     }
-  })
+  }
 
   // define cache shared across plugins
   const cache = new Cache()
@@ -68,8 +70,9 @@ tcp.on('connection', async socket => {
   }
 })
 
-console.log(`TCP try listening to socket at`, outputPort, outputHost, `...`)
-tcp.listen(outputPort, outputHost)
+// console.log(`TCP try listening to socket at`, outputPort, outputHost, `...`)
+// tcp.listen(outputPort, outputHost)
+tcp.listen(7878, 'adapter1')
 
 // exit nicely
 function shutdown() {
@@ -78,9 +81,9 @@ function shutdown() {
     console.log(`TCP closing socket...`)
     outputSocket.end()
   }
-  console.log(`Closing plugins`)
-  for (const plugin of plugins) {
-    plugin.end()
-  }
+  // console.log(`Closing plugins`)
+  // for (const plugin of plugins) {
+  //   plugin.end()
+  // }
   process.exit()
 }
