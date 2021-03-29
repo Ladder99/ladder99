@@ -1,0 +1,119 @@
+inputs:
+
+ - ccs-mqtt-1:
+ 	id: ccs-mqtt-1
+	type: ccs-mqtt
+	url: mqtt://broker1:1883
+	user: ...
+	pass: ...
+	tls: false
+
+ - autoclaveB4433:
+ 	id: autoclaveB4433
+ 	type: cpc
+	primary:
+	 ip: 192.168.2.2
+ 	 port: 9999
+	 poll: 5
+	secondary:
+	 ip: 192.168.2.3
+	 port: 9999
+	 poll: 5
+	tags:
+	 air_tc: 
+	  alias: B4433-air_tc
+	  path: .Autoclave.AIR_TC\Value
+	  batch: 1
+	 temp_alarm: 
+	  alias: B4433-temp_alarm
+	  path: .Autoclave.alarms.TEMP\Active
+	  batch: 1
+
+ - kepware1:
+ 	id: kepware1
+ 	type: opc
+ 	connection: ...
+ 	poll: 5 # poll or sub?
+ 	tags:
+ 	 B4433-motion-alarm:
+ 	  alias: B4433-motion-alarm
+ 	  path: ns=1;B3:5
+ 	 B7744-motion-alarm:
+ 	  alias: B7744-motion-alarm
+ 	  path: ns=1;B7:4
+
+- kepware2:
+ 	id: kepware2
+ 	type: opc
+ 	connection: ...
+ 	poll: 5 # poll or sub?
+ 	tags:
+ 	 B4433-operator_id:
+ 	  alias: B4433-operator_id
+ 	  path: ns=1;B3:5
+ 	 B4433-operator_name:
+ 	  alias: B4433-operator_name
+ 	  path: ns=1;B7:4
+
+outputs:
+
+ - id: adapter1-7878
+ 	type: shdr
+ 	host: adapter1
+ 	port: 7878
+
+ - id: adapter1-7879
+ 	type: shdr
+ 	host: adapter1
+ 	port: 7879
+
+ - id: adapter1-7880
+ 	type: shdr
+ 	host: adapter1
+ 	port: 7880
+
+devices:
+
+  - id: ccs-pa-001
+    model: ccs-pa
+    properties:
+      uuid: e05363af-95d1-4354-b749-8fbb09d3499e
+      serialNumber: 001
+    inputs:
+      - ccs-mqtt-1
+    outputs:
+      - adapter1-7878
+
+  - id: autoclave-with-a-bunch-of-stuff
+    model: model123
+    properties:
+      uuid: e05363af-95d1-4354-b749-8fbb09d3499e
+      serialNumber: 001
+    # definition of inputs is kinda unnecessary with a global cache,
+    # other than knowing what to instantiate and manage
+    inputs:	
+      - autoclaveB4433
+      - kepware1
+      - kepware2
+    outputs:
+      - adapter1-7879
+
+  - id: some-other-device
+    model: model456
+    properties:
+      uuid: e05363af-95d1-4354-b749-8fbb09d3499e
+      serialNumber: 001
+    inputs:	
+      - kepware1
+    outputs:
+      - adapter1-7880
+
+autoclave-with-a-bunch-of-stuff calcs
+	air_tc = cache.get('B4433-air_tc')
+	temp_alarm = cache.get('B4433-temp_alarm')
+	motion_alarm = cache.get('B4433-motion-alarm')
+	operator_id = cache.get('B4433-operator_id')
+	operator_name = cache.get('B4433-operator_name')
+
+some-other-device calcs
+	air_tc = cache.get('B7744-motion-alarm')
