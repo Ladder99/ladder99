@@ -18,18 +18,18 @@ services:
       options:
         max-size: '1m'
 
-  broker2:
-    container_name: broker2
-    image: eclipse-mosquitto
-    networks:
-      - ladder99
-    ports:
-      - 1884:1883
-    volumes:
-      - ./volumes/broker2:/mosquitto
-    logging:
-      options:
-        max-size: '1m'
+  # broker2:
+  #   container_name: broker2
+  #   image: eclipse-mosquitto
+  #   networks:
+  #     - ladder99
+  #   ports:
+  #     - 1884:1883
+  #   volumes:
+  #     - ./volumes/broker2:/mosquitto
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
   adapter1:
     container_name: adapter1
@@ -56,25 +56,25 @@ services:
       options:
         max-size: '1m'
 
-  adapter2:
-    container_name: adapter2
-    # build:
-    #   context: ../../services/adapter
-    image: node:latest
-    user: node
-    working_dir: /home/node/app
-    volumes:
-      # - ./volumes/adapter2:/etc/adapter
-      - ../../services/adapter:/home/node/app
-    command: 'npm start'
-    depends_on:
-      broker2:
-        condition: service_started
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '1m'
+  # adapter2:
+  #   container_name: adapter2
+  #   # build:
+  #   #   context: ../../services/adapter
+  #   image: node:latest
+  #   user: node
+  #   working_dir: /home/node/app
+  #   volumes:
+  #     # - ./volumes/adapter2:/etc/adapter
+  #     - ../../services/adapter:/home/node/app
+  #   command: 'npm start'
+  #   depends_on:
+  #     broker2:
+  #       condition: service_started
+  #   networks:
+  #     - ladder99
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
   # simulator1:
   #   container_name: simulator1
@@ -137,8 +137,8 @@ services:
     depends_on:
       adapter1:
         condition: service_started
-      adapter2:
-        condition: service_started
+      # adapter2:
+      #   condition: service_started
     volumes:
       - ./volumes/agent:/etc/mtconnect/agent-custom
       - ./volumes/agent/data:/var/lib/agent

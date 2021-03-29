@@ -1,4 +1,4 @@
-# this defines the devices.xml structure.
+# this defines the devices.xml structure and agent.cfg.
 #. this will eventually be in setups/demo/devices.yaml
 
 devices:
@@ -8,7 +8,7 @@ devices:
       uuid: e05363af-95d1-4354-b749-8fbb09d3499e
       serialNumber: 001
     sources:
-      - source: ccs-mqtt
+      - name: ccs-mqtt
         url: mqtt://broker1:1883
     output:
       host: adapter1
@@ -23,17 +23,17 @@ devices:
     # config:
     #   prefixDataItems: true
 
-  - id: ccs-camera-001
-    model: ccs-camera
-    properties:
-      uuid: e05363af-95d1-4354-b749-8fbb09d3499f
-      serialNumber: 001
-    sources:
-      - name: ccs-mqtt
-        url: mqtt://broker2:1883
-    output:
-      host: adapter2
-      port: 7878
+  # - id: ccs-camera-001
+  #   model: ccs-camera
+  #   properties:
+  #     uuid: e05363af-95d1-4354-b749-8fbb09d3499f
+  #     serialNumber: 001
+  #   sources:
+  #     - name: ccs-mqtt
+  #       url: mqtt://broker2:1883
+  #   output:
+  #     host: adapter2
+  #     port: 7878
 
   # - id: asc-econoclave-001
   #   model: asc-econoclave
