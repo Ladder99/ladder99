@@ -36,6 +36,8 @@ services:
     # build:
     #   context: ../../services/adapter
     image: node:latest
+    user: node
+    working_dir: /home/node/app
     # environment:
     #   - OUTPUT_HOST=adapter
     #   - OUTPUT_PORT=7878
@@ -46,10 +48,12 @@ services:
     networks:
       - ladder99
     volumes:
-      - ./volumes/adapter1:/etc/adapter
+      # - ./volumes/adapter1:/etc/adapter
+      - ../../services/adapter:/home/node/app
     logging:
       options:
         max-size: '1m'
+    command: 'npm start'
 
   adapter2:
     container_name: adapter2
