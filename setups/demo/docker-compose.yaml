@@ -50,6 +50,21 @@ services:
       options:
         max-size: '1m'
 
+  adapter2:
+    container_name: adapter2
+    build:
+      context: ../../services/adapter
+    depends_on:
+      broker2:
+        condition: service_started
+    networks:
+      - ladder99
+    volumes:
+      - ./volumes/adapter2:/etc/adapter
+    logging:
+      options:
+        max-size: '1m'
+
   # simulator1:
   #   container_name: simulator1
   #   build: ../../services/simulator
@@ -109,7 +124,9 @@ services:
     ports:
       - 5000:5000
     depends_on:
-      adapter:
+      adapter1:
+        condition: service_started
+      adapter2:
         condition: service_started
     volumes:
       - ./volumes/agent:/etc/mtconnect/agent-custom
