@@ -2,18 +2,18 @@
 // polls or subscribes to data via plugins, updates cache,
 // updates shdr strings, passes them to agent via tcp.
 
-import fs from 'fs' // node lib for filesys
 import net from 'net' // node lib for tcp
-import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
+// import fs from 'fs' // node lib for filesys
+// import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
 import { Cache } from './cache.js'
 
-const yamlfile = 'src/volume/devices.yaml' //. specify on cmdline
-const yaml = fs.readFileSync(yamlfile, 'utf8')
-const yamltree = libyaml.load(yaml)
-console.log(yamltree)
+// const yamlfile = 'src/volume/devices.yaml' //. specify on cmdline
+// const yaml = fs.readFileSync(yamlfile, 'utf8')
+// const yamltree = libyaml.load(yaml)
+// console.log(yamltree)
 
-// const outputPort = Number(process.env.OUTPUT_PORT || 7878)
-// const outputHost = process.env.OUTPUT_HOST || 'localhost'
+const outputPort = Number(process.env.OUTPUT_PORT || 7878)
+const outputHost = process.env.OUTPUT_HOST || 'localhost'
 
 console.log(`MTConnect Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
@@ -46,33 +46,31 @@ tcp.on('connection', async socket => {
     }
   }
 
-  // define cache shared across plugins
+  // define cache shared across sources
   const cache = new Cache()
 
-  // load plugins and init
-  // @ts-ignore
-  const devices = yamltree.devices
-  // console.log(devices)
-  for (const device of devices) {
-    console.log(device)
-    //. iterate over sources, load plugin factory assoc with each,
-    // construct new plugin for that source, call init on it.
-    //. load calcs for this device, pass to... where?
+  // // load sources and init
+  // const devices = yamltree.devices
+  // // console.log(devices)
+  // for (const device of devices) {
+  //   console.log(device)
+  //   //. iterate over sources, load plugin factory assoc with each,
+  //   // construct new plugin for that source, call init on it.
+  //   //. load calcs for this device, pass to... where?
 
-    // const [deviceId, url] = device // eg 'CCS123', 'mqtt://broker1:1883'
-    // const { deviceId } = device
-    // const url = device.sources[0].url //.
-    // console.log(`Importing code for device ${deviceId}...`)
-    // const pluginPath = `/etc/adapter/${deviceId}.mjs`
-    // const plugin = await import(pluginPath)
-    // plugin.init({ cache, deviceId, socket })
-    // plugins.push(plugin)
-  }
+  //   // const [deviceId, url] = device // eg 'CCS123', 'mqtt://broker1:1883'
+  //   // const { deviceId } = device
+  //   // const url = device.sources[0].url //.
+  //   // console.log(`Importing code for device ${deviceId}...`)
+  //   // const pluginPath = `/etc/adapter/${deviceId}.mjs`
+  //   // const plugin = await import(pluginPath)
+  //   // plugin.init({ cache, deviceId, socket })
+  //   // plugins.push(plugin)
+  // }
 })
 
-// console.log(`TCP try listening to socket at`, outputPort, outputHost, `...`)
-// tcp.listen(outputPort, outputHost)
-tcp.listen(7878, 'adapter1')
+console.log(`TCP try listening to socket at`, outputPort, outputHost, `...`)
+tcp.listen(outputPort, outputHost)
 
 // exit nicely
 function shutdown() {

@@ -1,6 +1,4 @@
-# generated file - do not edit
-#. well, it will be - edit this for now
-# eventually will compile this from devices.yaml etc
+#. eventually will compile this from devices.yaml etc
 
 version: '3.7'
 
@@ -39,10 +37,10 @@ services:
     image: node:latest
     user: node
     working_dir: /home/node/app
-    # environment:
-    #   - OUTPUT_HOST=adapter
-    #   - OUTPUT_PORT=7878
-    #   # - DEVICES=CCS123@mqtt://broker1:1883 CCS124@mqtt://broker2:1883
+    environment:
+      - OUTPUT_HOST=adapter1
+      - OUTPUT_PORT=7878
+      # - DEVICES=CCS123@mqtt://broker1:1883 CCS124@mqtt://broker2:1883
     volumes:
       # - ./volumes/adapter1:/etc/adapter
       - ../../services/adapter:/home/node/app
