@@ -17,21 +17,8 @@ const aliases = {}
 
 // initialize the client plugin.
 // queries the device for address space definitions, subscribes to topics.
-export function init({ url, cache, deviceId, socket }) {
-  // connect to broker and call plugin init
-  console.log(`MQTT connecting to broker on`, url, `...`)
-  //. put mqtt stuff inside plugin
-  const mqtt = libmqtt.connect(url)
-  mqtt.on('connect', function onConnect() {
-    console.log(`MQTT connected to broker on`, url)
-    // console.log(`MQTT calling plugin init and subscribing to topics...`)
-    // for example, see setups/demo/volumes/adapter/CCS123-dev.mjs
-    // plugin.init(mqtt, cache, serialNumber, socket)
-    // console.log(`MQTT listening for messages...`)
-  })
-  // mqtts.push(mqtt)
-
-  // console.log('init', { deviceId })
+export function init({ url, cache, deviceId }) {
+  console.log('init', { deviceId })
 
   // add deviceId to topics
   for (const key of Object.keys(topics)) {
@@ -39,11 +26,16 @@ export function init({ url, cache, deviceId, socket }) {
   }
   console.log('MQTT topics', { topics })
 
-  mqtt.on('message', onMessage)
-
-  // ask for initial query message
-  mqtt.subscribe(topics.receiveQuery)
-  mqtt.publish(topics.sendQuery, '{}')
+  console.log(`MQTT connecting to broker on`, url, `...`)
+  const mqtt = libmqtt.connect(url)
+  mqtt.on('connect', function onConnect() {
+    console.log(`MQTT connected to broker on`, url)
+    mqtt.on('message', onMessage)
+    // ask for initial query message
+    mqtt.subscribe(topics.receiveQuery)
+    mqtt.publish(topics.sendQuery, '{}')
+    console.log(`MQTT listening for messages...`)
+  })
 
   // handle all incoming messages
   function onMessage(topic, buffer) {
@@ -81,14 +73,6 @@ export function init({ url, cache, deviceId, socket }) {
       }
     }
 
-    //...
-    // // get shdr strings
-    // const output = getOutput(cache)
-
-    // // send shdr to agent via tcp socket
-    // console.log(`TCP sending string`, output.slice(0, 40), `...`)
-    // outputSocket.write(output)
-
     // best to subscribe to topics at this point,
     // in case status or read messages come in BEFORE query results are delivered,
     // which would clobber these values.
@@ -108,12 +92,6 @@ export function init({ url, cache, deviceId, socket }) {
       const value = msg.payload[key]
       cache.set(`${deviceId}-status-${key}`, value) // eg 'CCS123-status-faults'
     }
-    //...
-    // // get shdr strings
-    // const output = getOutput(cache)
-    // // send shdr to agent via tcp socket
-    // console.log(`TCP sending string`, output.slice(0, 40), `...`)
-    // outputSocket.write(output)
   }
 
   // handle read messages
@@ -128,12 +106,6 @@ export function init({ url, cache, deviceId, socket }) {
       const key = `${deviceId}-${item.address}` // eg 'CCS123-%Q0.0'
       cache.set(key, item) // item has { address, value }
     }
-    //...
-    // // get shdr strings
-    // const output = getOutput(cache)
-    // // send shdr to agent via tcp socket
-    // console.log(`TCP sending string`, output.slice(0, 40), `...`)
-    // outputSocket.write(output)
   }
 }
 

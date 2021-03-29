@@ -60,7 +60,7 @@ tcp.on('connection', async socket => {
     console.log(`Importing plugin code: ${path}...`)
     const plugin = await import(path)
     console.log(`Initializing plugin...`)
-    plugin.init({ url, cache, deviceId, socket })
+    plugin.init({ url, cache, deviceId })
     plugins.push(plugin)
   }
 })
