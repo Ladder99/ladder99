@@ -48,19 +48,17 @@ tcp.on('connection', async socket => {
   }
 
   // define cache shared across sources
-  const cache = new Cache()
+  const cache = new Cache(socket)
 
   // load sources and init
   // iterate over sources, load plugin for that source, call init on it.
   //. also load calcs for this device, pass to plugin?
   const { sources } = device
   for (const source of sources) {
-    console.log(source)
     const { name, url } = source
     const path = `./sources/${name}.js` // eg './sources/ccs-mqtt.js' - must start with .
     console.log(`Importing plugin code: ${path}...`)
     const plugin = await import(path)
-    console.log(plugin)
     console.log(`Initializing plugin...`)
     plugin.init({ url, cache, deviceId, socket })
     plugins.push(plugin)

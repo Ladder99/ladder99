@@ -1,4 +1,6 @@
 // adapter plugin code
+// subscribes to ladder99 mqtt topics, receives messages,
+// parses them out, updates cache.
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 

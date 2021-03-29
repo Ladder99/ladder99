@@ -22,17 +22,3 @@ const calcs = [
     },
   },
 ]
-
-// get all shdr outputs for the cache values
-function getOutput(cache) {
-  const output = []
-  for (const calc of calcs) {
-    const timestamp = new Date().toISOString()
-    const key = calc.key
-    const value = calc.value(cache) // do calculation
-    const shdr = `${timestamp}|${key}|${value}`
-    console.log(shdr)
-    output.push(shdr)
-  }
-  return output.join('\n') + '\n'
-}
