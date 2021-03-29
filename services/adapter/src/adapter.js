@@ -57,10 +57,11 @@ tcp.on('connection', async socket => {
   for (const source of sources) {
     console.log(source)
     const { name, url } = source
-    const path = `./sources/${name}.js` // eg /sources/ccs-mqtt.js
-    console.log(`Importing code for device ${deviceId}...`)
+    const path = `./sources/${name}.js` // eg './sources/ccs-mqtt.js' - must start with .
+    console.log(`Importing plugin code: ${path}...`)
     const plugin = await import(path)
     console.log(plugin)
+    console.log(`Initializing plugin...`)
     plugin.init({ url, cache, deviceId, socket })
     plugins.push(plugin)
   }
