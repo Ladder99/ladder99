@@ -1,5 +1,5 @@
 # this defines the devices.xml structure and agent.cfg.
-#. this will eventually be in setups/demo/devices.yaml
+# device.yamls are extracted and put in volumes/adapter1 etc
 
 devices:
   - id: ccs-pa-001

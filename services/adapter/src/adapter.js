@@ -7,17 +7,13 @@ import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
 import net from 'net' // node lib for tcp
 import { Cache } from './cache.js'
 
-// const yamlfile = 'src/volume/devices.yaml' //. specify on cmdline
 const yamlfile = '/etc/adapter/device.yaml' //. specify on cmdline?
 const yaml = fs.readFileSync(yamlfile, 'utf8')
 const yamltree = libyaml.load(yaml)
-// console.log(yamltree)
 // @ts-ignore
 const { device } = yamltree
 console.log(device)
-
-const outputPort = Number(process.env.OUTPUT_PORT || 7878)
-const outputHost = process.env.OUTPUT_HOST || 'localhost'
+const { output } = device
 
 console.log(`MTConnect Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
@@ -61,6 +57,11 @@ tcp.on('connection', async socket => {
     // construct new plugin for that source, call init on it.
     //. also load calcs for this device, pass to... where?
 
+    // const path = `./volume/ccs-mqtt.js`
+    const path = `./volume/${source.name}.js`
+    const plugin = await import(path)
+    console.log(plugin)
+
     // const [deviceId, url] = device // eg 'CCS123', 'mqtt://broker1:1883'
     // const { deviceId } = device
     // const url = device.sources[0].url //.
@@ -72,8 +73,8 @@ tcp.on('connection', async socket => {
   }
 })
 
-console.log(`TCP try listening to socket at`, outputPort, outputHost, `...`)
-tcp.listen(outputPort, outputHost)
+console.log(`TCP try listening to socket at`, output, `...`)
+tcp.listen(output.port, output.host)
 
 // exit nicely
 function shutdown() {
@@ -82,9 +83,9 @@ function shutdown() {
     console.log(`TCP closing socket...`)
     outputSocket.end()
   }
-  // console.log(`Closing plugins`)
-  // for (const plugin of plugins) {
-  //   plugin.end()
+  // console.log(`Closing sources`)
+  // for (const source of sources) {
+  //   source.end()
   // }
   process.exit()
 }
