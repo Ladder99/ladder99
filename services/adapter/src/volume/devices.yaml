@@ -33,7 +33,7 @@ devices:
         url: mqtt://broker2:1883
     output:
       host: adapter2
-      port: 7879
+      port: 7878
 
   # - id: asc-econoclave-001
   #   model: asc-econoclave

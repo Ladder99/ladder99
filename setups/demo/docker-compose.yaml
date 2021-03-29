@@ -33,8 +33,9 @@ services:
 
   adapter1:
     container_name: adapter1
-    build:
-      context: ../../services/adapter
+    # build:
+    #   context: ../../services/adapter
+    image: node:latest
     # environment:
     #   - OUTPUT_HOST=adapter
     #   - OUTPUT_PORT=7878
