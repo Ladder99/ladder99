@@ -1,3 +1,5 @@
+#. switched from this to using prebuilt node image - faster docker-compose
+
 FROM node
 
 WORKDIR /home/node/app
