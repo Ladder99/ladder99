@@ -35,6 +35,7 @@ services:
     container_name: adapter1
     # build:
     #   context: ../../services/adapter
+    # https://github.com/nodejs/docker-node/blob/main/README.md#how-to-use-this-image
     image: node:latest
     user: node
     working_dir: /home/node/app
