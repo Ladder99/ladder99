@@ -1,3 +1,5 @@
+// import mobx
+
 export class Cache {
   constructor(socket) {
     this._map = new Map()
