@@ -40,10 +40,11 @@ services:
     environment:
       - OUTPUT_HOST=adapter1
       - OUTPUT_PORT=7878
+      - SOURCES=foo
       # - DEVICES=CCS123@mqtt://broker1:1883 CCS124@mqtt://broker2:1883
     volumes:
-      # - ./volumes/adapter1:/etc/adapter
       - ../../services/adapter:/home/node/app
+      - ./volumes/adapter1:/etc/adapter
     command: 'npm start'
     depends_on:
       broker1:
@@ -65,6 +66,9 @@ services:
   #     # - ./volumes/adapter2:/etc/adapter
   #     - ../../services/adapter:/home/node/app
   #   command: 'npm start'
+  #   environment:
+  #     - OUTPUT_HOST=adapter2
+  #     - OUTPUT_PORT=7878
   #   depends_on:
   #     broker2:
   #       condition: service_started
