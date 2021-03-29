@@ -43,30 +43,35 @@ services:
     #   - OUTPUT_HOST=adapter
     #   - OUTPUT_PORT=7878
     #   # - DEVICES=CCS123@mqtt://broker1:1883 CCS124@mqtt://broker2:1883
+    volumes:
+      # - ./volumes/adapter1:/etc/adapter
+      - ../../services/adapter:/home/node/app
+    command: 'npm start'
     depends_on:
       broker1:
         condition: service_started
     networks:
       - ladder99
-    volumes:
-      # - ./volumes/adapter1:/etc/adapter
-      - ../../services/adapter:/home/node/app
     logging:
       options:
         max-size: '1m'
-    command: 'npm start'
 
   adapter2:
     container_name: adapter2
-    build:
-      context: ../../services/adapter
+    # build:
+    #   context: ../../services/adapter
+    image: node:latest
+    user: node
+    working_dir: /home/node/app
+    volumes:
+      # - ./volumes/adapter2:/etc/adapter
+      - ../../services/adapter:/home/node/app
+    command: 'npm start'
     depends_on:
       broker2:
         condition: service_started
     networks:
       - ladder99
-    volumes:
-      - ./volumes/adapter2:/etc/adapter
     logging:
       options:
         max-size: '1m'
