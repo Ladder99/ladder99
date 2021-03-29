@@ -10,7 +10,7 @@ const topics = {
   receiveRead: 'l99/${deviceId}/evt/read',
 }
 
-// map from aliases to items, e.g. "CCS123-IN10" -> { address: "%I0.9", ... }
+// map from aliases to items, e.g. "ccs-pa-001-IN10" -> { address: "%I0.9", ... }
 const aliases = {}
 
 // initialize the client plugin.

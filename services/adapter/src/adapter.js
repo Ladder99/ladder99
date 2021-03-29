@@ -14,6 +14,7 @@ const yamltree = libyaml.load(yaml)
 const { device } = yamltree
 console.log(device)
 const { id, output } = device
+const deviceId = id
 
 console.log(`MTConnect Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
@@ -26,7 +27,7 @@ console.log(`TCP creating server for agent...`)
 const tcp = net.createServer()
 
 let outputSocket
-// const sources = [] // remember so can end nicely
+const plugins = [] // remember so can end nicely
 
 // handle tcp connection from agent or diode
 tcp.on('connection', async socket => {
@@ -50,26 +51,18 @@ tcp.on('connection', async socket => {
   const cache = new Cache()
 
   // load sources and init
-  //. iterate over sources, load plugin factory assoc with each,
-  // construct new plugin for that source, call init on it.
-  //. also load calcs for this device, pass to... where?
+  // iterate over sources, load plugin for that source, call init on it.
+  //. also load calcs for this device, pass to plugin?
   const { sources } = device
   for (const source of sources) {
     console.log(source)
     const { name, url } = source
     const path = `./sources/${name}.js` // eg /sources/ccs-mqtt.js
+    console.log(`Importing code for device ${deviceId}...`)
     const plugin = await import(path)
     console.log(plugin)
-    plugin.init({ url, cache, deviceId: id, socket })
-
-    // const [deviceId, url] = device // eg 'CCS123', 'mqtt://broker1:1883'
-    // const { deviceId } = device
-    // const url = device.sources[0].url //.
-    // console.log(`Importing code for device ${deviceId}...`)
-    // const pluginPath = `/etc/adapter/${deviceId}.mjs`
-    // const plugin = await import(pluginPath)
-    // plugin.init({ url, cache, deviceId, socket })
-    // plugins.push(plugin)
+    plugin.init({ url, cache, deviceId, socket })
+    plugins.push(plugin)
   }
 })
 
@@ -83,9 +76,9 @@ function shutdown() {
     console.log(`TCP closing socket...`)
     outputSocket.end()
   }
-  // console.log(`Closing sources`)
-  // for (const source of sources) {
-  //   source.end()
-  // }
+  console.log(`Closing plugins`)
+  for (const plugin of plugins) {
+    plugin.end()
+  }
   process.exit()
 }
