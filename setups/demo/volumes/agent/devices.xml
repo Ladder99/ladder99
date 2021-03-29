@@ -20,6 +20,9 @@
       <Description manufacturer="CCS" model="Pi Camera" serialNumber="001">CCS Pi Camera</Description>
       <DataItems>
         <DataItem id="ccs-camera-001-state" category="EVENT" type="EXECUTION"/>
+        <!-- see pt2 pg130 -->
+        <!-- need subtype = ALL, GOOD, BAD etc -->
+        <!-- <DataItem id="ccs-camera-001-part_count" category="EVENT" type="PART_COUNT" discrete="true"/> -->
       </DataItems>
     </Device>
 

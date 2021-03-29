@@ -1,4 +1,5 @@
 # this defines the devices.xml structure.
+#. this will eventually be in setups/demo/devices.yaml
 
 devices:
   - id: ccs-pa-001
@@ -10,7 +11,7 @@ devices:
       - source: ccs-mqtt
         url: mqtt://broker1:1883
     output:
-      host: adapter
+      host: adapter1
       port: 7878
     # calcs: ccs-pa-001-calcs.js
     # sequences:
@@ -29,7 +30,10 @@ devices:
       serialNumber: 001
     sources:
       - name: ccs-mqtt
-        url: mqtt://broker3:1883
+        url: mqtt://broker2:1883
+    output:
+      host: adapter2
+      port: 7879
 
   # - id: asc-econoclave-001
   #   model: asc-econoclave
