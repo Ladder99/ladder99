@@ -1,6 +1,3 @@
-// cache to be shared across devices
-// might want something more sophisticated eventually
-
 export class Cache {
   constructor(socket) {
     this._map = new Map()
