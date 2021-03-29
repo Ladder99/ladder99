@@ -1,10 +1,11 @@
+# moved from this to just using image in docker-compose - faster.
+#. might need this dockerfile to handle the custom stylesheets?
+
 # see https://hub.docker.com/r/raymondhub/mtconnect
 
 FROM raymondhub/mtconnect:v1.5
 
 EXPOSE 5000
-
-#. might need this dockerfile to handle the custom stylesheets?
 
 # WORKDIR /etc/mtconnect/agent
 
