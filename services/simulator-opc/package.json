@@ -6,5 +6,8 @@
     "start": "node src/index.js"
   },
   "author": "Brian Burns <bburns.km@gmail.com>",
-  "private": true
+  "private": true,
+  "dependencies": {
+    "node-opcua": "^2.36.0"
+  }
 }
