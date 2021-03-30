@@ -14,8 +14,9 @@ export default [
   {
     dependsOn: ['ccs-pa-001-status-connection'],
     key: 'ccs-pa-001-connection',
+    //. note - no .value after cache.get
     value: cache =>
-      types.AVAILABILITY[cache.get('ccs-pa-001-status-connection').value],
+      types.AVAILABILITY[cache.get('ccs-pa-001-status-connection')],
   },
   {
     dependsOn: ['ccs-pa-001-%Q0.0'],

@@ -3,6 +3,7 @@ export class Cache {
     this._map = new Map()
     this._mapKeyToCalcs = {}
   }
+
   addCalcs(calcs, socket) {
     for (const calc of calcs) {
       console.log({ calc })
@@ -16,6 +17,7 @@ export class Cache {
       }
     }
   }
+
   set(key, item) {
     console.log('set', key, item)
     this._map.set(key, item)
@@ -29,6 +31,7 @@ export class Cache {
       calc.socket.write(shdr + '\n')
     }
   }
+
   get(key) {
     console.log('get', { key })
     return this._map.get(key)
