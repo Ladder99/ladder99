@@ -4,30 +4,49 @@
 
 import fs from 'fs' // node lib for filesys
 import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
-// import net from 'net' // node lib for tcp
-// import { Cache } from './cache.js'
+import net from 'net' // node lib for tcp
+import { Cache } from './cache.js'
 
 const yamlfile = '/etc/adapter/devices.yaml' // see setups/demo/volumes/adapter
 const yaml = fs.readFileSync(yamlfile, 'utf8')
 const yamltree = libyaml.load(yaml)
 // @ts-ignore
 const { devices } = yamltree
-console.log(devices)
+// console.log(devices)
 // const { id, output } = device
 // const deviceId = id
 
-// console.log(`MTConnect Adapter`)
-// console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
-// console.log(`posts to TCP.`)
-// console.log(`----------------------------------------------------------------`)
-// console.log(`Hit ctrl-c to stop adapter.`)
-// process.on('SIGINT', shutdown)
+console.log(`MTConnect Adapter`)
+console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
+console.log(`posts to TCP.`)
+console.log(`----------------------------------------------------------------`)
+console.log(`Hit ctrl-c to stop adapter.`)
+process.on('SIGINT', shutdown)
 
-// console.log(`TCP creating server for agent...`)
-// const tcp = net.createServer()
+// define cache shared across sources
+const cache = new Cache()
 
-// let outputSocket
-// const plugins = [] // remember so can end nicely
+const plugins = [] // remember so can end nicely
+for (const device of devices) {
+  let outputSocket
+  console.log({ device })
+  // load sources and init
+  // iterate over sources, load plugin for that source, call init on it.
+  //. also load calcs for this device, pass to plugin?
+  const { sources } = device
+  const { deviceId } = device.properties
+  for (const source of sources) {
+    const { type, url } = source
+    const path = `./sources/${type}.js` // eg './sources/ccs-mqtt.js' - must start with ./
+    console.log(`Importing plugin code: ${path}...`)
+    const plugin = await import(path)
+    // console.log(`Initializing plugin...`)
+    // plugin.init({ url, cache, deviceId })
+    plugins.push(plugin)
+  }
+  // console.log(`TCP creating server for agent...`)
+  // const tcp = net.createServer()
+}
 
 // // handle tcp connection from agent or diode
 // tcp.on('connection', async socket => {
@@ -47,37 +66,21 @@ console.log(devices)
 //     }
 //   }
 
-//   // define cache shared across sources
-//   const cache = new Cache(socket)
-
-//   // load sources and init
-//   // iterate over sources, load plugin for that source, call init on it.
-//   //. also load calcs for this device, pass to plugin?
-//   const { sources } = device
-//   for (const source of sources) {
-//     const { name, url } = source
-//     const path = `./sources/${name}.js` // eg './sources/ccs-mqtt.js' - must start with .
-//     console.log(`Importing plugin code: ${path}...`)
-//     const plugin = await import(path)
-//     console.log(`Initializing plugin...`)
-//     plugin.init({ url, cache, deviceId })
-//     plugins.push(plugin)
-//   }
 // })
 
 // console.log(`TCP try listening to socket at`, output, `...`)
 // tcp.listen(output.port, output.host)
 
-// // exit nicely
-// function shutdown() {
-//   console.log(`Exiting...`)
-//   if (outputSocket) {
-//     console.log(`TCP closing socket...`)
-//     outputSocket.end()
-//   }
-//   console.log(`Closing plugins`)
-//   for (const plugin of plugins) {
-//     plugin.end()
-//   }
-//   process.exit()
-// }
+// exit nicely
+function shutdown() {
+  console.log(`Exiting...`)
+  // if (outputSocket) {
+  //   console.log(`TCP closing socket...`)
+  //   outputSocket.end()
+  // }
+  // console.log(`Closing plugins`)
+  // for (const plugin of plugins) {
+  //   plugin.end()
+  // }
+  process.exit()
+}
