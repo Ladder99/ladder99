@@ -21,6 +21,7 @@ services:
     image: node:latest
     user: node
     working_dir: /home/node/app
+    command: 'npm start'
     depends_on:
       broker-ccs-pa-001:
         condition: service_started
