@@ -6,7 +6,6 @@ import fs from 'fs' // node lib for filesys
 import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
 import net from 'net' // node lib for tcp
 import { Cache } from './cache.js'
-// import calcs from './calcs'
 
 // load devices.yaml
 const yamlfile = '/etc/adapter/devices.yaml' // see setups/demo/volumes/adapter
@@ -28,15 +27,15 @@ for (const device of devices) {
   // load sources and init
   // iterate over sources, load plugin for that source, call init on it.
   //. also load calcs for this device, pass to plugin or cache
-  const { sources } = device
-  const { deviceId } = device.properties
-  for (const source of sources) {
-    const { type, url } = source
+  const deviceId = device.id
+  const { inputs } = device
+  for (const input of inputs) {
+    const { type, url } = input
     const path = `./plugins/${type}.js` // eg './plugins/mqtt-ccs.js' - must start with ./
-    console.log(`Importing plugin code: ${path}...`)
+    console.log(`Adapter importing plugin code: ${path}...`)
     // @ts-ignore top level await okay
     const plugin = await import(path)
-    console.log(`Initializing plugin...`)
+    console.log(`Adapter initializing plugin...`)
     plugin.init({ url, cache, deviceId })
   }
 
@@ -62,7 +61,8 @@ for (const device of devices) {
       }
     }
   })
-  const { output } = device
-  console.log(`TCP try listening to socket at`, output, `...`)
+  const { outputs } = device
+  const output = outputs[0] //. just handles one for now
+  console.log(`TCP try listening to socket at`, outputs, `...`)
   tcp.listen(output.port, output.host)
 }

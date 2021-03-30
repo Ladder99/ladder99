@@ -1,16 +1,25 @@
 # this defines the devices.xml structure, along with the model yamls.
 
-#. refactor - put id back at top, sources->inputs, output->outputs with type:shdr
-
 devices:
-  - model: ccs-pa
+  - id: ccs-pa-001
+    model: ccs-pa
     properties:
-      deviceId: ccs-pa-001
       uuid: e05363af-95d1-4354-b749-8fbb09d3499e
       serialNumber: '001'
-    sources:
+    inputs:
       - type: mqtt-ccs
         url: mqtt://broker-ccs-pa-001:1883
-    output:
-      host: adapter
-      port: 7878
+    outputs:
+      - type: shdr
+        host: adapter
+        port: 7878
+
+  # - some-other-device:
+  #   model: model456
+  #   properties:
+  #     uuid: e05363af-95d1-4354-b749-8fbb09d3499e
+  #     serialNumber: 1
+  #   inputs:
+  #     - *kepware1
+  #   outputs:
+  #     - *adapter-7880
