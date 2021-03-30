@@ -43,10 +43,6 @@ _buildjs:
     done
     cp services/builder/output/*.js services/adapter/code/src/plugins
 
-# adapter:
-#     cd services/adapter && \
-#     npm start
-
 
 # run
 # SETUP is a variable, the name of the setup folder to use
