@@ -1,9 +1,9 @@
 # this defines the structure of the xml that will get included in devices.xml.
 # text substitution is performed, eg ${deviceId} is replaced by
-# that value from the device yaml.
+# that value from devices.yaml.
 
 model:
-  - id: ${deviceId}
+  - id: ${deviceId} # eg 'ccs-pa-001'
     name: CCS-PA
     uuid: ${uuid} # eg 'e05363af-95d1-4354-b749-8fbb09d3499e'
     sampleInterval: 10
@@ -11,7 +11,7 @@ model:
     description:
       manufacturer: CCS
       model: Emergent-PA-Pneumatic
-      serialNumber: ${serialNumber} # eg 'CCS123'
+      serialNumber: ${serialNumber} # eg '001'
       text: Emergent Next Generation Print and Apply
 
     dataItems:

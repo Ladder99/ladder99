@@ -1,14 +1,14 @@
 # this defines the devices.xml structure, along with the model yamls.
 
 devices:
-  - id: ccs-pa-001
-    model: ccs-pa
+  - model: ccs-pa
     properties:
+      deviceId: ccs-pa-001
       uuid: e05363af-95d1-4354-b749-8fbb09d3499e
-      serialNumber: 001
+      serialNumber: '001'
     sources:
       - type: ccs-mqtt
-        url: mqtt://broker1:1883
+        url: mqtt://broker-css-ps-001:1883
     output:
       host: adapter
       port: 7878
