@@ -7,14 +7,12 @@ import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
 import net from 'net' // node lib for tcp
 import { Cache } from './cache.js'
 
+// get devices.yaml
 const yamlfile = '/etc/adapter/devices.yaml' // see setups/demo/volumes/adapter
 const yaml = fs.readFileSync(yamlfile, 'utf8')
 const yamltree = libyaml.load(yaml)
 // @ts-ignore okay to cast here
 const { devices } = yamltree
-// console.log(devices)
-// const { id, output } = device
-// const deviceId = id
 
 console.log(`MTConnect Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
@@ -26,13 +24,13 @@ console.log(`----------------------------------------------------------------`)
 // define cache shared across sources
 const cache = new Cache()
 
-const plugins = [] // remember so can end nicely
+// const plugins = [] // remember so can end nicely
 for (const device of devices) {
   let outputSocket
   console.log({ device })
   // load sources and init
   // iterate over sources, load plugin for that source, call init on it.
-  //. also load calcs for this device, pass to plugin?
+  //. also load calcs for this device, pass to plugin or cache
   const { sources } = device
   const { deviceId } = device.properties
   for (const source of sources) {
@@ -41,9 +39,9 @@ for (const device of devices) {
     console.log(`Importing plugin code: ${path}...`)
     // @ts-ignore top level await okay
     const plugin = await import(path)
-    // console.log(`Initializing plugin...`)
-    // plugin.init({ url, cache, deviceId })
-    plugins.push(plugin)
+    console.log(`Initializing plugin...`)
+    plugin.init({ url, cache, deviceId })
+    // plugins.push(plugin)
   }
   // console.log(`TCP creating server for agent...`)
   // const tcp = net.createServer()
