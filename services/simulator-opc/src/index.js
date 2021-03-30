@@ -1,4 +1,5 @@
 const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
+const os = require('os')
 
 // the endpoint urn of our server will be
 //   opc.tcp://<hostname>:4334/UA/MyLittleServer
@@ -51,5 +52,52 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
       get: () => new Variant({ dataType: DataType.Double, value: variable1 }),
     },
   })
-  // _"start the server"
+
+  // add a read/write variable named MyVariable2 to the newly created
+  // folder "MyDevice".
+  let variable2 = 10.0
+  namespace.addVariable({
+    componentOf: device,
+    nodeId: 'ns=1;b=1020FFAA', // some opaque NodeId in namespace 4
+    browseName: 'MyVariable2',
+    dataType: 'Double',
+    value: {
+      get: () => new Variant({ dataType: DataType.Double, value: variable2 }),
+      set: variant => {
+        variable2 = parseFloat(variant.value)
+        return StatusCodes.Good
+      },
+    },
+  })
+
+  namespace.addVariable({
+    componentOf: device,
+    nodeId: 's=free_memory', // a string nodeID
+    browseName: 'FreeMemory',
+    dataType: 'Double',
+    value: {
+      get: () =>
+        new Variant({ dataType: DataType.Double, value: available_memory() }),
+    },
+  })
+
+  // start the server
+  server.start(function () {
+    console.log('Server is now listening ... ( press CTRL+C to stop)')
+    console.log('port ', server.endpoints[0].port)
+    // display endpoint url
+    const endpointUrl = server.endpoints[0].endpointDescriptions()[0]
+      .endpointUrl
+    console.log(' the primary server endpoint url is ', endpointUrl)
+  })
 })()
+
+/**
+ * returns the percentage of free memory on the running machine
+ * @return {Number}
+ */
+function available_memory() {
+  // var value = process.memoryUsage().heapUsed / 1000000;
+  const percentageMemUsed = (os.freemem() / os.totalmem()) * 100.0
+  return percentageMemUsed
+}
