@@ -1,4 +1,4 @@
-# this defines the devices.xml structure.
+# this defines the devices.xml structure, along with the model yamls.
 
 devices:
   - id: ccs-pa-001
@@ -7,93 +7,8 @@ devices:
       uuid: e05363af-95d1-4354-b749-8fbb09d3499e
       serialNumber: 001
     sources:
-      - name: ccs-mqtt
+      - type: ccs-mqtt
         url: mqtt://broker1:1883
     output:
-      host: adapter1
+      host: adapter
       port: 7878
-    # calcs: ccs-pa-001-calcs.js
-    # sequences:
-    #   startup: ccs-startup.js
-    #   shutdown: ccs-shutdown.js
-    # topics:
-    #   read: l99/CCS123/evt/read
-    #   status: l99/CCS123/evt/status
-    # config:
-    #   prefixDataItems: true
-
-  # - id: ccs-camera-001
-  #   model: ccs-camera
-  #   properties:
-  #     uuid: e05363af-95d1-4354-b749-8fbb09d3499f
-  #     serialNumber: 001
-  #   sources:
-  #     - name: ccs-mqtt
-  #       url: mqtt://broker2:1883
-  #   output:
-  #     host: adapter2
-  #     port: 7878
-
-  # - id: asc-econoclave-001
-  #   model: asc-econoclave
-  #   properties:
-  #     uuid: e05363af-95d1-4354-b749-8fbb09d349a1
-  #     serialNumber: 001
-  #   tags:
-  #     - key: .Autoclave.some.path\Value
-  #       batch: 1
-  #   # sequences:
-  #   #   startup: cpc-startup.js
-  #   #   shutdown: cpc-shutdown.js
-  #   # config:
-  #   #   prefixDataItems: true
-  #   #   http://www.aschome.com/administrator/images/support/pdf/CPC%20-%20TCP%20Talker%20and%20Listener.pdf
-  #   sources:
-  #     - name: cpc-socket
-  #       host: cpc
-  #       port: 1883
-  #       sockets:
-  #         primary:
-  #           ip: 192.168.2.2
-  #           port: 9999
-  #           poll: 5
-  #         secondary:
-  #           ip: 192.168.2.3
-  #           port: 9999
-  #           poll: 5
-  #         # failover condition?
-  #         # socket timeout
-  #         # other?
-  #         #   http://www.aschome.com/administrator/images/support/pdf/CPC%20-%20ServerBackup%20and%20PCA%20-%20PCB%20switching%20configuration.pdf
-  #         #   http://www.aschome.com/administrator/images/support/pdf/67721.pdf
-  #   # batches:
-  #   #   batch:
-  #   #     - air_temp
-  #   #     - alarm1
-  #   #   batch:
-  #   #     - alarm2
-  #   #     - tc_1
-  #   #   # purpose of batches is to limit the number of items requested each polling interval.
-  #   #   #  we might run into an issue whre polling 70 items at once is not possible
-
-  # - id: ccs-pa-kepware1
-  #   model: ccs-pa
-  #   properties:
-  #     uuid: e05363af-95d1-4354-b749-8fbb09d3499e
-  #     serialNumber: 001
-  #   sources:
-  #     - name: kepware-opc
-  #       connection: ___
-  #   tags:
-  #     - ns=1; s=[PLC]B3:3.6
-
-  # - id: ccs-pa-kepware2
-  #   model: ccs-pa
-  #   properties:
-  #     uuid: e05363af-95d1-4354-b749-8fbb09d3499e
-  #     serialNumber: 001
-  #   sources:
-  #     - name: kepware-opc
-  #       connection: ___
-  #   tags:
-  #     - ns=1; s=[PLC]B3:3.62
