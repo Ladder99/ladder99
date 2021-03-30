@@ -7,11 +7,11 @@ import {
   makeBrowsePath,
   ClientSubscription,
   TimestampsToReturn,
-  MonitoringParametersOptions,
-  ReadValueIdLike,
   ClientMonitoredItem,
-  DataValue,
-} from 'node-opcua'
+  // MonitoringParametersOptions,
+  // ReadValueIdLike,
+  // DataValue,
+} from 'node-opcua-client'
 
 // client instantiation
 
