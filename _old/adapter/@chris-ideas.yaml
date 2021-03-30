@@ -8,7 +8,7 @@ inputs:
     active: true
     # plugin specific configuration
     configuration:
-      url: "mqtt://broker1:1883"
+      url: mqtt://broker1:1883
       user: ...
       pass: ...
       tls: false
@@ -66,22 +66,22 @@ inputs:
 # outputs.yaml
 # outputs are unique outputs of post-processed data
 outputs:
-  - adapter1-7878: &adapter1-7878
+  - adapter-7878: &adapter-7878
     type: shdr
     configuration:
-      host: adapter1
+      host: adapter
       port: 7878
 
-  - adapter1-7879: &adapter1-7879
+  - adapter-7879: &adapter-7879
     type: shdr
     configuration:
-      host: adapter1
+      host: adapter
       port: 7879
 
-  - adapter1-7880: &adapter1-7880
+  - adapter-7880: &adapter-7880
     type: shdr
     configuration:
-      host: adapter1
+      host: adapter
       port: 7880
 
 # devices.yaml
@@ -98,7 +98,7 @@ devices:
     inputs:
       - *ccs-mqtt-1
     outputs:
-      - *adapter1-7878
+      - *adapter-7878
 
   - autoclave-with-a-bunch-of-stuff:
     model: model123
@@ -110,7 +110,7 @@ devices:
       - *kepware1
       - *kepware2
     outputs:
-      - *adapter1-7879
+      - *adapter-7879
 
   - some-other-device:
     model: model456
@@ -120,9 +120,9 @@ devices:
     inputs:
       - *kepware1
     outputs:
-      - *adapter1-7880
+      - *adapter-7880
 
-# models\ccs-pa\model.yaml
+# models/ccs-pa/model.yaml
 model:
   - id: ${deviceId} # eg 'ccs-pa-001'
     name: CCS-PA
@@ -144,18 +144,18 @@ model:
         - dev_msg
         - fw_ver
 
-# models\ccs-pa\calcs.yaml
+# models/ccs-pa/calcs.yaml
 calcs:
   ...
 
 
 # notes
 autoclave-with-a-bunch-of-stuff calcs
-  air_tc = cache.get('B4433-air_tc')
-  temp_alarm = cache.get('B4433-temp_alarm')
-  motion_alarm = cache.get('B4433-motion-alarm')
-  operator_id = cache.get('B4433-operator_id')
-  operator_name = cache.get('B4433-operator_name')
+  air_tc = <B4433-air_tc>
+  temp_alarm = <B4433-temp_alarm>
+  motion_alarm = <B4433-motion-alarm>
+  operator_id = <B4433-operator_id>
+  operator_name = <B4433-operator_name>
 
 some-other-device calcs
-  air_tc = cache.get('B7744-motion-alarm')
+  air_tc = <B7744-motion-alarm>
