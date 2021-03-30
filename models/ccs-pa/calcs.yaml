@@ -10,6 +10,13 @@
 # which is imported to the adapter plugin.
 # or this file is iterated over and items are added to the cache calcs.
 
+# #. might be more readable with key specified, like this?
+# calcs:
+#   - key: connection
+#     value: types.AVAILABILITY[cache.get('${deviceId}-status-connection')]
+#     category: EVENT
+#     type: AVAILABILITY
+
 calcs:
   connection:
     category: EVENT
