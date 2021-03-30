@@ -24,7 +24,10 @@ export class Cache {
     for (const calc of calcs) {
       console.log({ calc })
       const shdr = getShdr(this, calc)
-      console.log({ shdr })
+      // console.log({ shdr })
+      // calc.socket.write(shdr)
+      // send shdr to agent via tcp socket
+      console.log(`TCP sending string`, shdr.slice(0, 40), `...`)
       calc.socket.write(shdr)
     }
   }

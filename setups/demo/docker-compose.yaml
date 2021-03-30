@@ -2,6 +2,8 @@
 
 version: '3.7'
 
+# order of startup: broker, adapter, agent, simulator
+
 services:
   broker-ccs-pa-001:
     container_name: broker-ccs-pa-001
@@ -25,6 +27,8 @@ services:
     depends_on:
       broker-ccs-pa-001:
         condition: service_started
+      # agent:
+      #   condition: service_started
     networks:
       - ladder99
     volumes:
@@ -43,6 +47,8 @@ services:
     ports:
       - 5000:5000
     depends_on:
+      # broker-ccs-pa-001:
+      #   condition: service_started
       adapter:
         condition: service_started
     volumes:
@@ -64,9 +70,9 @@ services:
       - DEVICE_ID=ccs-pa-001
       - MESSAGES_FILE=/etc/simulator/messages.js
     depends_on:
-      broker-ccs-pa-001:
-        condition: service_started
-      adapter:
+      # broker-ccs-pa-001:
+      #   condition: service_started
+      agent:
         condition: service_started
     networks:
       - ladder99
