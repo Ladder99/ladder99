@@ -83,6 +83,30 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
     },
   })
 
+  let nodeId = 'ns=1;B3:5'
+  console.log(`OPC server add ${nodeId}...`)
+  namespace.addVariable({
+    componentOf: device,
+    nodeId,
+    browseName: 'B4433-motion-alarm',
+    dataType: 'Double',
+    value: {
+      get: () => new Variant({ dataType: DataType.Double, value: 1.1 }),
+    },
+  })
+
+  nodeId = 'ns=1;B7:4'
+  console.log(`OPC server add ${nodeId}...`)
+  namespace.addVariable({
+    componentOf: device,
+    nodeId,
+    browseName: 'B7744-motion-alarm',
+    dataType: 'Double',
+    value: {
+      get: () => new Variant({ dataType: DataType.Double, value: 2.2 }),
+    },
+  })
+
   // start the server
   console.log(`OPC server start...`)
   server.start(function () {
