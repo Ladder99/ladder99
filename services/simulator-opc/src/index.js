@@ -9,34 +9,31 @@ const os = require('os')
 const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
 
 ;(async () => {
-  // create an instance of OPCUAServer
+  console.log(`OPC server create...`)
   const server = new OPCUAServer({
     port: 4334, // the port of the listening socket of the server
     resourcePath: '/UA/LittleServer', // this path will be added to the endpoint resource name
     buildInfo: {
       productName: 'SampleServer1',
       buildNumber: '7658',
-      buildDate: new Date(2014, 5, 2),
+      buildDate: new Date(2021, 2, 30),
     },
   })
 
-  // server initialisation
+  console.log('OPC server initialize...')
   await server.initialize()
-  console.log('initialized')
 
-  // post initialisation
   // The addressSpace is used to customize the object model that our server
   // will expose to the external world.
   const addressSpace = server.engine.addressSpace
   const namespace = addressSpace.getOwnNamespace()
 
   // add a new object into the objects folder
+  console.log(`OPC server add MyDevice...`)
   const device = namespace.addObject({
     organizedBy: addressSpace.rootFolder.objects,
     browseName: 'MyDevice',
   })
-
-  // add some variables
 
   // add a variable named MyVariable1 to the newly created folder "MyDevice".
   // Adding a read-only variable inside the server namespace requires
@@ -47,6 +44,7 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
   let variable1 = 1
   // emulate variable1 changing every 500 ms
   setInterval(() => (variable1 += 1), 500)
+  console.log(`OPC server add MyVariable1...`)
   namespace.addVariable({
     componentOf: device,
     browseName: 'MyVariable1',
@@ -58,6 +56,7 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
 
   // add a read/write variable to the newly created folder "MyDevice".
   let variable2 = 10.0
+  console.log(`OPC server add MyVariable2...`)
   namespace.addVariable({
     componentOf: device,
     nodeId: 'ns=1;b=1020FFAA', // some opaque NodeId in namespace 4
@@ -72,6 +71,7 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
     },
   })
 
+  console.log(`OPC server add FreeMemory...`)
   namespace.addVariable({
     componentOf: device,
     nodeId: 's=free_memory', // a string nodeID
@@ -84,13 +84,14 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
   })
 
   // start the server
+  console.log(`OPC server start...`)
   server.start(function () {
-    console.log('Server is now listening ... ( press CTRL+C to stop)')
-    console.log('port ', server.endpoints[0].port)
+    console.log('OPC server is now listening ... (press CTRL+C to stop)')
+    console.log('OPC server port', server.endpoints[0].port)
     // display endpoint url
     const endpointUrl = server.endpoints[0].endpointDescriptions()[0]
       .endpointUrl
-    console.log('the primary server endpoint url is ', endpointUrl)
+    console.log('OPS server primary endpoint is', endpointUrl)
   })
 })()
 
