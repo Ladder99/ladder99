@@ -8,15 +8,22 @@ const types = {
     online: 'AVAILABLE',
     offline: 'UNAVAILABLE',
   },
+  EXECUTION: {
+    50: 'WAIT',
+    100: 'WAIT',
+    200: 'PROGRAM_STOPPED',
+    250: 'WAIT',
+    300: 'WAIT',
+    400: 'ACTIVE',
+  },
 }
 
 export default [
   {
     dependsOn: ['ccs-pa-001-status-connection'],
     key: 'ccs-pa-001-connection',
-    //. note - no .value after cache.get
     value: cache =>
-      types.AVAILABILITY[cache.get('ccs-pa-001-status-connection')],
+      types.AVAILABILITY[cache.get('ccs-pa-001-status-connection').value],
   },
   {
     dependsOn: ['ccs-pa-001-%Q0.0'],
@@ -25,15 +32,20 @@ export default [
       cache.get('ccs-pa-001-%Q0.0').value ? 'ACTIVE' : 'INACTIVE',
     // types.ACTUATOR_STATE[cache.get('ccs-pa-001-%Q0.0')],
   },
-  // {
-  //   // <Source>%I0.10 OR status.faults 10</Source>
-  //   dependsOn: ['ccs-pa-001-%I0.10', 'ccs-pa-001-status-faults'],
-  //   key: 'ccs-pa-001-estop',
-  //   value: cache => {
-  //     const i010 = cache.get('ccs-pa-001-%I0.10').value
-  //     const faults = cache.get('ccs-pa-001-status-faults')
-  //     return i010 || (faults && faults[10]) ? 'TRIGGERED' : 'ARMED'
-  //     // return types.EMERGENCY_STOP[i010 || (faults && faults[10])]
-  //   },
-  // },
+  {
+    // <Source>%I0.10 OR status.faults 10</Source>
+    dependsOn: ['ccs-pa-001-%I0.10', 'ccs-pa-001-status-faults'],
+    key: 'ccs-pa-001-e_stop',
+    value: cache => {
+      const i010 = cache.get('ccs-pa-001-%I0.10').value
+      const faults = cache.get('ccs-pa-001-status-faults')
+      return i010 || (faults && faults[10]) ? 'TRIGGERED' : 'ARMED'
+      // return types.EMERGENCY_STOP[i010 || (faults && faults[10])]
+    },
+  },
+  {
+    dependsOn: ['ccs-pa-001-status-state'],
+    key: 'ccs-pa-001-state',
+    value: cache => types.EXECUTION[cache.get('ccs-pa-001-status-state').value],
+  },
 ]

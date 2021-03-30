@@ -86,12 +86,13 @@ export function init({ url, cache, deviceId }) {
     console.log('MQTT onStatusMessage')
     console.log({ msg })
     // add parts to cache
-    const keys = `connection,state,program,step,faults,cpu_time,utc_time,build_no,_ts`.split(
+    const parts = `connection,state,program,step,faults,cpu_time,utc_time,build_no,_ts`.split(
       ','
     )
-    for (const key of keys) {
-      const value = msg.payload[key]
-      cache.set(`${deviceId}-status-${key}`, value) // eg 'ccs-pa-001-status-faults'
+    for (const part of parts) {
+      const key = `${deviceId}-status-${part}`
+      const item = { value: msg.payload[part] }
+      cache.set(key, item) // eg 'ccs-pa-001-status-faults'
     }
   }
 

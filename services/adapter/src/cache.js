@@ -33,8 +33,9 @@ export class Cache {
   }
 
   get(key) {
-    console.log('get', { key })
-    return this._map.get(key)
+    const item = this._map.get(key) || {}
+    console.log('get', key, item)
+    return item
   }
 }
 
