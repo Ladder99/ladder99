@@ -83,13 +83,30 @@ services:
     user: node
     working_dir: /home/node/app
     command: npm start
+    volumes:
+      - ../../services/simulator-opc:/home/node/app
     depends_on:
       agent:
         condition: service_started
     networks:
       - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
+  opc-client:
+    container_name: opc-client
+    image: node:latest
+    user: node
+    working_dir: /home/node/app
+    command: node src/plugins/opc.js
     volumes:
-      - ../../services/simulator-opc:/home/node/app
+      - ../../services/adapter:/home/node/app
+    depends_on:
+      simulator-opc:
+        condition: service_started
+    networks:
+      - ladder99
     logging:
       options:
         max-size: '1m'

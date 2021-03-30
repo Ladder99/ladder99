@@ -25,6 +25,7 @@ const connectionStrategy = {
   initialDelay: 1000,
   maxRetry: 1,
 }
+console.log(`OPC create client...`)
 const client = OPCUAClient.create({
   applicationName: 'MyClient',
   connectionStrategy: connectionStrategy,
@@ -33,7 +34,8 @@ const client = OPCUAClient.create({
   endpoint_must_exist: false,
 })
 //const endpointUrl = "opc.tcp://opcuademo.sterfive.com:26543";
-const endpointUrl = 'opc.tcp://' + os.hostname() + ':4334/UA/MyLittleServer'
+// const endpointUrl = 'opc.tcp://' + os.hostname() + ':4334/UA/LittleServer'
+const endpointUrl = 'opc.tcp://simulator-opc:4334/UA/LittleServer'
 
 async function main() {
   try {
