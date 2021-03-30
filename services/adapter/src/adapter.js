@@ -39,6 +39,7 @@ for (const device of devices) {
     const { type, url } = source
     const path = `./sources/${type}.js` // eg './sources/ccs-mqtt.js' - must start with ./
     console.log(`Importing plugin code: ${path}...`)
+    // @ts-ignore
     const plugin = await import(path)
     // console.log(`Initializing plugin...`)
     // plugin.init({ url, cache, deviceId })

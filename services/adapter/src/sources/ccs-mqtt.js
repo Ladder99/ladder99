@@ -63,7 +63,7 @@ export function init({ url, cache, deviceId }) {
     // add each item in message to cache
     for (const item of msg.payload) {
       const [address, ...others] = item.keys
-      const key = `${deviceId}-${address}` // eg 'CCS123-%I0.10'
+      const key = `${deviceId}-${address}` // eg 'ccs-pa-001-%I0.10'
       item.value = item.default // use default value, if any
       cache.set(key, item)
       // add other keys to aliases
@@ -90,7 +90,7 @@ export function init({ url, cache, deviceId }) {
     )
     for (const key of keys) {
       const value = msg.payload[key]
-      cache.set(`${deviceId}-status-${key}`, value) // eg 'CCS123-status-faults'
+      cache.set(`${deviceId}-status-${key}`, value) // eg 'ccs-pa-001-status-faults'
     }
   }
 
@@ -103,7 +103,7 @@ export function init({ url, cache, deviceId }) {
     }
     // add items to cache
     for (const item of msg.payload) {
-      const key = `${deviceId}-${item.address}` // eg 'CCS123-%Q0.0'
+      const key = `${deviceId}-${item.address}` // eg 'ccs-pa-001-%Q0.0'
       cache.set(key, item) // item has { address, value }
     }
   }

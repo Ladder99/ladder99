@@ -1,13 +1,16 @@
-# these dataitems are placed in the model.yaml tree and define the
+# these items are placed in the model.yaml tree and define the
 # shdr strings that are calculated and sent to the agent.
-# the item's key (eg 'connection') together with the deviceId (eg 'CCS123')
-# will become its id in the xml (eg 'CCS123-connection').
+
+# the item's key (eg 'connection') together with the deviceId (eg 'ccs-pa-001')
+# will become its id in the xml (eg 'ccs-pa-001-connection').
 # the shdr key is the same as the id.
 # the shdr value is defined with the item value code.
+
 # the value calculations are gathered together into a calcs.js file,
 # which is imported to the adapter plugin.
+#. or this file is iterated over and items are added to the cache calcs.
 
-dataItems:
+calcs:
   connection:
     category: EVENT
     type: AVAILABILITY
