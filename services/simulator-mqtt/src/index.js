@@ -1,4 +1,4 @@
-// simulator
+// simulator-mqtt
 // simulates a device and publishes sample messages to mqtt broker
 
 const mqttlib = require('mqtt')
@@ -14,7 +14,7 @@ const loop = Boolean(process.env.LOOP || false)
 const messages = require(messagesFile)
 console.log({ messages })
 
-console.log(`Simulator`)
+console.log(`Simulator-mqtt`)
 console.log(`Simulates a device sending MQTT messages.`)
 console.log(`------------------------------------------------------------`)
 

@@ -1,5 +1,5 @@
 {
-  "name": "ladder99-device",
+  "name": "ladder99-simulator-mqtt",
   "version": "0.1.0",
   "description": "send test device messages to mqtt broker",
   "scripts": {

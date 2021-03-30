@@ -58,8 +58,8 @@ services:
       options:
         max-size: '1m'
 
-  simulator:
-    container_name: simulator
+  simulator-mqtt:
+    container_name: simulator-mqtt
     image: node:latest
     user: node
     working_dir: /home/node/app
@@ -68,18 +68,16 @@ services:
       - MQTT_HOST=broker-ccs-pa-001
       - MQTT_PORT=1883
       - DEVICE_ID=ccs-pa-001
-      - MESSAGES_FILE=/etc/simulator/messages.js
+      - MESSAGES_FILE=/etc/simulator-mqtt/messages.js
       - LOOP=true
     depends_on:
-      # broker-ccs-pa-001:
-      #   condition: service_started
       agent:
         condition: service_started
     networks:
       - ladder99
     volumes:
-      - ../../services/simulator:/home/node/app
-      - ./volumes/simulator:/etc/simulator
+      - ../../services/simulator-mqtt:/home/node/app
+      - ./volumes/simulator-mqtt:/etc/simulator-mqtt
     logging:
       options:
         max-size: '1m'
