@@ -8,7 +8,7 @@
 
 # the value calculations are gathered together into a calcs.js file,
 # which is imported to the adapter plugin.
-#. or this file is iterated over and items are added to the cache calcs.
+# or this file is iterated over and items are added to the cache calcs.
 
 calcs:
   connection:

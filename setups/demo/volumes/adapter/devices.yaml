@@ -7,7 +7,7 @@ devices:
       uuid: e05363af-95d1-4354-b749-8fbb09d3499e
       serialNumber: '001'
     sources:
-      - type: ccs-mqtt
+      - type: mqtt-ccs
         url: mqtt://broker-css-ps-001:1883
     output:
       host: adapter

@@ -4,6 +4,11 @@ export class Cache {
   constructor() {
     this._map = new Map()
   }
+  addCalcs(calcs) {
+    for (const calc of calcs) {
+      console.log({ calc })
+    }
+  }
   set(key, value) {
     this._map.set(key, value)
     //. call the shdr update fn to update dependent shdr values
