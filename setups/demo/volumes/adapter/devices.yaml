@@ -9,7 +9,6 @@ devices:
     sources:
       - type: mqtt-ccs
         url: mqtt://broker-ccs-pa-001:1883
-        # url: broker-ccs-pa-001:1883
     output:
       host: adapter
       port: 7878
