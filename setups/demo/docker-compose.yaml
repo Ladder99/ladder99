@@ -1,5 +1,4 @@
-# generated file - do not edit
-#. well, it will be - edit this for now
+# this will be generated from devices.yaml, but edit manually for now
 
 version: '3.7'
 
@@ -21,40 +20,13 @@ services:
     container_name: adapter
     build:
       context: ../../services/adapter
-    # environment:
-    #   - OUTPUT_HOST=adapter
-    #   - OUTPUT_PORT=7878
-    #   # - DEVICES=CCS123@mqtt://broker1:1883 CCS124@mqtt://broker2:1883
     depends_on:
       broker-ccs-pa-001:
         condition: service_started
-      # broker2:
-      #   condition: service_started
     networks:
       - ladder99
     volumes:
       - ./volumes/adapter:/etc/adapter
-    logging:
-      options:
-        max-size: '1m'
-
-  simulator1:
-    container_name: simulator1
-    build: ../../services/simulator
-    environment:
-      - MQTT_HOST=broker-ccs-pa-001
-      - MQTT_PORT=1883
-      - DEVICE_ID=ccs-pa-001
-      - MESSAGES_FILE=/etc/simulator/messages.js
-    depends_on:
-      broker-ccs-pa-001:
-        condition: service_started
-      adapter:
-        condition: service_started
-    networks:
-      - ladder99
-    volumes:
-      - ./volumes/simulator:/etc/simulator
     logging:
       options:
         max-size: '1m'
