@@ -11,7 +11,8 @@ install:
     npm install -g http-server
     cd services/adapter/code && npm install
     cd services/builder/code && npm install
-    cd services/simulator/code && npm install
+    cd services/simulator-mqtt/code && npm install
+    cd services/simulator-opc/code && npm install
     cd services/diode/code/application/datadiode/contrib/nodejs && npm install
 
 # install development tools
