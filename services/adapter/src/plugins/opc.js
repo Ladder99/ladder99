@@ -64,6 +64,9 @@ export async function init({ url, cache, deviceId }) {
     })
     console.log(`OPC read ${nodeId}:`, dataValue2)
 
+    //..
+    cache.set('beckhoff-mc-001-status-connection', { value: 3.3 })
+
     // // step 4' : read a variable with read
     // const maxAge = 0
     // nodeId = 'ns=3;s=Scalar_Simulation_String'

@@ -26,5 +26,14 @@
       </DataItems>
     </Device> -->
 
+    <Device id="beckhoff-mc-001" name="beckhoff-mc-001" uuid="beckhoff-mc-001" sampleInterval="10">
+      <Description manufacturer="Beckhoff" model="Beckhoff Motion Capture" serialNumber="001">
+        Beckhoff Motion Capture
+      </Description>
+      <DataItems>
+        <DataItem id="beckhoff-mc-001-connection" category="EVENT" type="AVAILABILITY"/>
+      </DataItems>
+    </Device>
+
   </Devices>
 </MTConnectDevices>

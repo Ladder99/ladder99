@@ -47,4 +47,11 @@ export default [
     key: 'ccs-pa-001-state',
     value: cache => types.EXECUTION[cache.get('ccs-pa-001-status-state').value],
   },
+
+  {
+    dependsOn: ['beckhoff-mc-001-status-connection'],
+    key: 'beckhoff-mc-001-connection',
+    value: cache =>
+      types.AVAILABILITY[cache.get('beckhoff-mc-001-status-connection').value],
+  },
 ]
