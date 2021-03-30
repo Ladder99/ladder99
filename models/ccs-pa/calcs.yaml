@@ -10,6 +10,8 @@
 # which is imported to the adapter plugin.
 # or this file is iterated over and items are added to the cache calcs.
 
+# for values, <foo> is shorthand for cache.get('${deviceId}-foo').value
+
 calcs:
   connection:
     category: EVENT
