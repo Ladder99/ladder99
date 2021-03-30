@@ -39,6 +39,8 @@ const endpointUrl = 'opc.tcp://simulator-opc:4334/UA/LittleServer'
 
 async function main() {
   try {
+    await timeout(9000) // let server get started
+
     // step 1 : connect
     console.log('OPC connecting...')
     await client.connect(endpointUrl)
@@ -141,6 +143,7 @@ async function main() {
     console.log('OPC an error has occured:', err)
   }
 }
+
 main()
 
 async function timeout(ms) {

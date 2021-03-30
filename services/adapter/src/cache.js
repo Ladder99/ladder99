@@ -19,7 +19,7 @@ export class Cache {
   }
 
   set(key, item) {
-    console.log('set', key, item)
+    console.log('set', key) //, item)
     this._map.set(key, item)
     // calc and send dependent shdr values
     const calcs = this._mapKeyToCalcs[key] || []
@@ -34,7 +34,7 @@ export class Cache {
 
   get(key) {
     const item = this._map.get(key) || {}
-    console.log('get', key, item)
+    console.log('get', key)
     return item
   }
 }
