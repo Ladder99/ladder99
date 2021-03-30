@@ -1,16 +1,34 @@
-import {
+// import {
+//   OPCUAClient,
+//   // MessageSecurityMode,
+//   // SecurityPolicy,
+//   // AttributeIds,
+//   // makeBrowsePath,
+//   // ClientSubscription,
+//   // TimestampsToReturn,
+//   // ClientMonitoredItem,
+//   // MonitoringParametersOptions,
+//   // ReadValueIdLike,
+//   // DataValue,
+// } from 'node-opcua-client'
+
+// import { OPCUAClient } from 'node-opcua-client'
+import pkg from 'node-opcua-client'
+const {
   OPCUAClient,
-  // MessageSecurityMode,
-  // SecurityPolicy,
-  // AttributeIds,
-  // makeBrowsePath,
-  // ClientSubscription,
-  // TimestampsToReturn,
-  // ClientMonitoredItem,
+  MessageSecurityMode,
+  SecurityPolicy,
+  AttributeIds,
+  makeBrowsePath,
+  ClientSubscription,
+  TimestampsToReturn,
+  ClientMonitoredItem,
   // MonitoringParametersOptions,
   // ReadValueIdLike,
   // DataValue,
-} from 'node-opcua-client'
+} = pkg
+
+import os from 'os'
 
 // client instantiation
 // by default, the node-opcua client will continuously try to connect to the endpoint.
@@ -26,8 +44,7 @@ const client = OPCUAClient.create({
   endpoint_must_exist: false,
 })
 //const endpointUrl = "opc.tcp://opcuademo.sterfive.com:26543";
-const endpointUrl =
-  'opc.tcp://' + require('os').hostname() + ':4334/UA/MyLittleServer'
+const endpointUrl = 'opc.tcp://' + os.hostname() + ':4334/UA/MyLittleServer'
 
 async function main() {
   try {
