@@ -1,26 +1,23 @@
-// declaration
 import {
   OPCUAClient,
-  MessageSecurityMode,
-  SecurityPolicy,
-  AttributeIds,
-  makeBrowsePath,
-  ClientSubscription,
-  TimestampsToReturn,
-  ClientMonitoredItem,
+  // MessageSecurityMode,
+  // SecurityPolicy,
+  // AttributeIds,
+  // makeBrowsePath,
+  // ClientSubscription,
+  // TimestampsToReturn,
+  // ClientMonitoredItem,
   // MonitoringParametersOptions,
   // ReadValueIdLike,
   // DataValue,
 } from 'node-opcua-client'
 
 // client instantiation
-
 // by default, the node-opcua client will continuously try to connect to the endpoint.
 const connectionStrategy = {
   initialDelay: 1000,
   maxRetry: 1,
 }
-
 const client = OPCUAClient.create({
   applicationName: 'MyClient',
   connectionStrategy: connectionStrategy,
@@ -31,10 +28,6 @@ const client = OPCUAClient.create({
 //const endpointUrl = "opc.tcp://opcuademo.sterfive.com:26543";
 const endpointUrl =
   'opc.tcp://' + require('os').hostname() + ':4334/UA/MyLittleServer'
-
-// setting up a series of asynchronous operations
-
-// utility function
 
 async function main() {
   try {
@@ -123,10 +116,10 @@ async function main() {
     const productNameNodeId = result.targets[0].targetId
     console.log(' Product Name nodeId = ', productNameNodeId.toString())
 
-    // close session
+    // step 7. close session
     await session.close()
 
-    // disconnecting
+    // step 8. disconnecting
     await client.disconnect()
     console.log('done !')
   } catch (err) {
