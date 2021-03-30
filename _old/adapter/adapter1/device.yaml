@@ -1,4 +1,4 @@
-#. this is extracted from devices.yaml and placed here for adapter.js to load.
+#. this is extracted from devices.yaml and placed here for adapter1 to load.
 
 device:
   id: ccs-pa-001

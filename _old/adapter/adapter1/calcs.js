@@ -1,4 +1,4 @@
-// define list of calculations to run on cache values to get shdr key/value pairs.
+// list of calculations to run on cache values to get shdr key/value pairs.
 // this is extracted/compiled from calcs.yaml.
 
 const calcs = [
