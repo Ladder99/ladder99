@@ -7,13 +7,13 @@ import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
 import net from 'net' // node lib for tcp
 import { Cache } from './cache.js'
 
-const yamlfile = '/etc/adapter/devices.yaml' //. specify on cmdline?
+const yamlfile = '/etc/adapter/device.yaml' //. specify on cmdline?
 const yaml = fs.readFileSync(yamlfile, 'utf8')
 const yamltree = libyaml.load(yaml)
 // @ts-ignore
-const { devices } = yamltree
-console.log(devices)
-// const { id, output } = device
+const { device } = yamltree
+console.log(device)
+const { id, output } = device
 const deviceId = id
 
 console.log(`MTConnect Adapter`)
