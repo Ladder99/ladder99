@@ -21,7 +21,8 @@ calcs:
   connection:
     category: EVENT
     type: AVAILABILITY
-    value: types.AVAILABILITY[cache.get('${deviceId}-status-connection')]
+    # value: types.AVAILABILITY[cache.get('${deviceId}-status-connection')]
+    value: types.AVAILABILITY[<status-connection>]
 
   # see std pt 4 line 347
   # eg change tool to a drill etc - irrelevant to p&a
@@ -39,68 +40,78 @@ calcs:
   dev_cond:
     category: CONDITION
     type: SYSTEM
-    value: any hard faults? = FAULT, any soft faults? = WARNING, no faults = NORMAL
+    # value: any hard faults? = FAULT, any soft faults? = WARNING, no faults = NORMAL
 
   dev_msg:
     category: EVENT
     type: MESSAGE
     representation: DATA_SET # set of kv pairs, part2 7.2.2.12
-    value: # fault_id:fault_value, fault_id:fault_value, ...
+    # value: fault_id:fault_value, fault_id:fault_value, ...
 
   fw_ver:
     category: EVENT
     type: FIRMWARE
     subType: VERSION
-    value: cache.get('${deviceId}-status-build_no')
+    # value: cache.get('${deviceId}-status-build_no')
+    value: <status-build_no>
 
   e_stop:
     category: EVENT
     type: EMERGENCY_STOP
     #value: types.EMERGENCY_STOP[cache.get('${deviceId}-%I0.10') || ...]
-    value: "(cache.get('${deviceId}-status-faults').any([10])) ? 'TRIGGERED' : 'ARMED'"
+    # value: "(cache.get('${deviceId}-status-faults').any([10])) ? 'TRIGGERED' : 'ARMED'"
+    # value: "(<status-faults>.any([10])) ? 'TRIGGERED' : 'ARMED'"
 
   state:
     category: EVENT
     type: EXECUTION
-    value: types.EXECUTION[cache.get('${deviceId}-status-state')]
+    # value: types.EXECUTION[cache.get('${deviceId}-status-state')]
+    value: types.EXECUTION[<status-state>]
 
   wait_state:
     category: EVENT
     type: WAIT_STATE
-    value: types.WAIT_STATE[cache.get('${deviceId}-status-state')]
-    # what value goes here when status.state is not WAIT?
+    #. what value goes here when status.state is not WAIT?
+    # value: types.WAIT_STATE[cache.get('${deviceId}-status-state')]
+    value: types.WAIT_STATE[<status-state>]
 
   program:
     category: EVENT
     type: PROGRAM
     subType: MAIN
-    value: cache.get('${deviceId}-status-program')
+    # value: cache.get('${deviceId}-status-program')
+    value: <status-program>
 
   step:
     category: EVENT
     type: BLOCK
-    value: cache.get('${deviceId}-status-step')
+    # value: cache.get('${deviceId}-status-step')
+    value: <status-step>
 
   clk_time:
     category: SAMPLE
     type: CLOCK_TIME
-    value: cache.get('${deviceId}-status-utc_time')
+    # value: cache.get('${deviceId}-status-utc_time')
+    value: <status-utc_time>
 
   up_time:
     category: SAMPLE
     type: EQUIPMENT_TIMER
     subType: OPERATING
-    value: cache.get('${deviceId}-status-cpu_time')
+    # value: cache.get('${deviceId}-status-cpu_time')
+    value: <status-cpu_time>
 
   fault_count:
     category: SAMPLE
     type: COUNT
-    value: cache.get('${deviceId}-%M55.2')
+    # value: cache.get('${deviceId}-%M55.2')
+    value: <%M55.2>
 
   cycle_count:
     category: SAMPLE
     type: COUNT
-    value: cache.get('${deviceId}-%M55.1')
+    # value: cache.get('${deviceId}-%M55.1')
+    value: <%M55.1>
 
   life_count:
     category: SAMPLE
@@ -110,29 +121,29 @@ calcs:
 
   ##
   printer_start_print:
-    # id: ${deviceId}-%Q0.0
     category: EVENT
     type: ACTUATOR_STATE
-    value: types.ACTUATOR_STATE[cache.get('${deviceId}-%Q0.0')]
+    value: types.ACTUATOR_STATE[<%Q0.0>]
 
   printer_feed:
     category: EVENT
     type: ACTUATOR_STATE
-    value: types.ACTUATOR_STATE[cache.get('${deviceId}-%Q0.1')]
+    value: types.ACTUATOR_STATE[<%Q0.1>]
 
   printer_pause:
     category: EVENT
     type: ACTUATOR_STATE
-    value: types.ACTUATOR_STATE[cache.get('${deviceId}-%Q0.2')]
+    value: types.ACTUATOR_STATE[<%Q0.2>]
 
   end_eff_cond:
     category: CONDITION
     type: SYSTEM
     # value needs quotes here because has ':' in expression
     # value: "(cache.get('${deviceId}-status-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
-    value: types.CONDITION[<status-faults>.any([2,3,5]))]
+    # value: types.CONDITION[<status-faults>.any([2,3,5]))]
 
   end_eff_message:
     category: EVENT
     type: MESSAGE
-    value: cache.get('${deviceId}-status-faults').first([2,3,5]).property('description').value
+    # value: cache.get('${deviceId}-status-faults').first([2,3,5]).property('description').value
+    # value: <status-faults>.first([2,3,5]).property('description').value
