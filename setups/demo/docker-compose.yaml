@@ -54,7 +54,6 @@ services:
 
   simulator:
     container_name: simulator
-    # build: ../../services/simulator
     image: node:latest
     user: node
     working_dir: /home/node/app
