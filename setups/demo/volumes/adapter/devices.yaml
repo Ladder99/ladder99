@@ -1,5 +1,7 @@
 # this defines the devices.xml structure, along with the model yamls.
 
+#. refactor - put id back at top, sources->inputs, output->outputs with type:shdr
+
 devices:
   - model: ccs-pa
     properties:

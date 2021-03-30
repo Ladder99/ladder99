@@ -17,38 +17,38 @@ devices:
         host: adapter
         port: 7878
 
-  - ccs-pa-001:
-    model: ccs-pa
-    properties:
-      uuid: e05363af-95d1-4354-b749-8fbb09d3499e
-      serialNumber: 1
-    # referencing inputs per device seems unneccessary.
-    # data from inputs will end up in cache,
-    # maybe it is relevant if we want a specific device 
-    # to react on data change?
-    inputs:
-      - *ccs-mqtt-1
-    outputs:
-      - *adapter-7878
+  # - ccs-pa-001:
+  #   model: ccs-pa
+  #   properties:
+  #     uuid: e05363af-95d1-4354-b749-8fbb09d3499e
+  #     serialNumber: 1
+  #   # referencing inputs per device seems unneccessary.
+  #   # data from inputs will end up in cache,
+  #   # maybe it is relevant if we want a specific device
+  #   # to react on data change?
+  #   inputs:
+  #     - *ccs-mqtt-1
+  #   outputs:
+  #     - *adapter-7878
 
-  - autoclave-with-a-bunch-of-stuff:
-    model: model123
-    properties:
-      uuid: e05363af-95d1-4354-b749-8fbb09d3499e
-      serialNumber: 1
-    inputs:
-      - *autoclaveB4433
-      - *kepware1
-      - *kepware2
-    outputs:
-      - *adapter-7879
+  # - autoclave-with-a-bunch-of-stuff:
+  #   model: model123
+  #   properties:
+  #     uuid: e05363af-95d1-4354-b749-8fbb09d3499e
+  #     serialNumber: 1
+  #   inputs:
+  #     - *autoclaveB4433
+  #     - *kepware1
+  #     - *kepware2
+  #   outputs:
+  #     - *adapter-7879
 
-  - some-other-device:
-    model: model456
-    properties:
-      uuid: e05363af-95d1-4354-b749-8fbb09d3499e
-      serialNumber: 1
-    inputs:
-      - *kepware1
-    outputs:
-      - *adapter-7880
+  # - some-other-device:
+  #   model: model456
+  #   properties:
+  #     uuid: e05363af-95d1-4354-b749-8fbb09d3499e
+  #     serialNumber: 1
+  #   inputs:
+  #     - *kepware1
+  #   outputs:
+  #     - *adapter-7880
