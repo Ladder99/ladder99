@@ -82,6 +82,30 @@ services:
       options:
         max-size: '1m'
 
+  simulator-opc:
+    container_name: simulator-opc
+    image: node:latest
+    user: node
+    working_dir: /home/node/app
+    command: npm start
+    # environment:
+    # - MQTT_HOST=broker-ccs-pa-001
+    # - MQTT_PORT=1883
+    # - DEVICE_ID=ccs-pa-001
+    # - MESSAGES_FILE=/etc/simulator-mqtt/messages.js
+    # - LOOP=true
+    depends_on:
+      agent:
+        condition: service_started
+    networks:
+      - ladder99
+    volumes:
+      - ../../services/simulator-opc:/home/node/app
+      # - ./volumes/simulator-opc:/etc/simulator-opc
+    logging:
+      options:
+        max-size: '1m'
+
   portainer:
     container_name: portainer
     image: portainer/portainer-ce
