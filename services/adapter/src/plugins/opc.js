@@ -1,18 +1,9 @@
-// import {
-//   OPCUAClient,
-//   // MessageSecurityMode,
-//   // SecurityPolicy,
-//   // AttributeIds,
-//   // makeBrowsePath,
-//   // ClientSubscription,
-//   // TimestampsToReturn,
-//   // ClientMonitoredItem,
-//   // MonitoringParametersOptions,
-//   // ReadValueIdLike,
-//   // DataValue,
-// } from 'node-opcua-client'
+// opc
+// client for opc server
 
-// import { OPCUAClient } from 'node-opcua-client'
+import os from 'os'
+
+// note: multiline named import fails so must do this
 import pkg from 'node-opcua-client'
 const {
   OPCUAClient,
@@ -27,8 +18,6 @@ const {
   // ReadValueIdLike,
   // DataValue,
 } = pkg
-
-import os from 'os'
 
 // client instantiation
 // by default, the node-opcua client will continuously try to connect to the endpoint.
