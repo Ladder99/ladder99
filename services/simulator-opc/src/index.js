@@ -1,9 +1,12 @@
-const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
-const os = require('os')
+// simulator-opc
+// simulates an opc server
 
 // the endpoint urn of our server will be
 //   opc.tcp://<hostname>:4334/UA/MyLittleServer
 // where hostname shall be replaced with your computer name or fully qualified domain name.
+
+const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
+const os = require('os')
 
 ;(async () => {
   // create an instance of OPCUAServer
@@ -27,7 +30,6 @@ const os = require('os')
   const addressSpace = server.engine.addressSpace
   const namespace = addressSpace.getOwnNamespace()
 
-  // declare a new object
   // add a new object into the objects folder
   const device = namespace.addObject({
     organizedBy: addressSpace.rootFolder.objects,
@@ -35,15 +37,16 @@ const os = require('os')
   })
 
   // add some variables
+
+  // add a variable named MyVariable1 to the newly created folder "MyDevice".
   // Adding a read-only variable inside the server namespace requires
   // only a getter function. This function returns a Variant containing the
   // value of the variable to scan.
-  // add a variable named MyVariable1 to the newly created folder "MyDevice"
+  // Note that we haven't specified a NodeId for the variable. The server will
+  // automatically assign a new nodeId for us.
   let variable1 = 1
   // emulate variable1 changing every 500 ms
   setInterval(() => (variable1 += 1), 500)
-  // Note that we haven't specified a NodeId for the variable. The server will
-  // automatically assign a new nodeId for us.
   namespace.addVariable({
     componentOf: device,
     browseName: 'MyVariable1',
@@ -53,8 +56,7 @@ const os = require('os')
     },
   })
 
-  // add a read/write variable named MyVariable2 to the newly created
-  // folder "MyDevice".
+  // add a read/write variable to the newly created folder "MyDevice".
   let variable2 = 10.0
   namespace.addVariable({
     componentOf: device,
@@ -88,7 +90,7 @@ const os = require('os')
     // display endpoint url
     const endpointUrl = server.endpoints[0].endpointDescriptions()[0]
       .endpointUrl
-    console.log(' the primary server endpoint url is ', endpointUrl)
+    console.log('the primary server endpoint url is ', endpointUrl)
   })
 })()
 
