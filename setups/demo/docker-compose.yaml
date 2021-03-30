@@ -21,7 +21,7 @@ services:
     image: node:latest
     user: node
     working_dir: /home/node/app
-    command: 'npm start'
+    command: npm start
     depends_on:
       broker-ccs-pa-001:
         condition: service_started
@@ -48,6 +48,32 @@ services:
     volumes:
       - ./volumes/agent:/etc/mtconnect/agent-custom
       - ./volumes/agent/data:/var/lib/agent
+    logging:
+      options:
+        max-size: '1m'
+
+  simulator:
+    container_name: simulator
+    # build: ../../services/simulator
+    image: node:latest
+    user: node
+    working_dir: /home/node/app
+    command: npm start
+    environment:
+      - MQTT_HOST=broker-ccs-pa-001
+      - MQTT_PORT=1883
+      - DEVICE_ID=ccs-pa-001
+      - MESSAGES_FILE=/etc/simulator/messages.js
+    depends_on:
+      broker-ccs-pa-001:
+        condition: service_started
+      adapter:
+        condition: service_started
+    networks:
+      - ladder99
+    volumes:
+      - ../../services/simulator:/home/node/app
+      - ./volumes/simulator:/etc/simulator
     logging:
       options:
         max-size: '1m'

@@ -1,3 +1,4 @@
+// list of mqtt json messages
 // note: topics must match those in adapter plugins.
 // %I0* and %Q0* are as of 2019-09-01 per chris
 

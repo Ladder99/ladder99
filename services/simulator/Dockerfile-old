@@ -1,3 +1,5 @@
+# don't need this anymore - using node image in docker-compose
+
 FROM node
 
 WORKDIR /home/node/app

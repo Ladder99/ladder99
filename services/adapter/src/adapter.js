@@ -10,7 +10,7 @@ import { Cache } from './cache.js'
 const yamlfile = '/etc/adapter/devices.yaml' // see setups/demo/volumes/adapter
 const yaml = fs.readFileSync(yamlfile, 'utf8')
 const yamltree = libyaml.load(yaml)
-// @ts-ignore
+// @ts-ignore okay to cast here
 const { devices } = yamltree
 // console.log(devices)
 // const { id, output } = device
@@ -20,8 +20,8 @@ console.log(`MTConnect Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
 console.log(`posts to TCP.`)
 console.log(`----------------------------------------------------------------`)
-console.log(`Hit ctrl-c to stop adapter.`)
-process.on('SIGINT', shutdown)
+// console.log(`Hit ctrl-c to stop adapter.`)
+// process.on('SIGINT', shutdown)
 
 // define cache shared across sources
 const cache = new Cache()
@@ -39,7 +39,7 @@ for (const device of devices) {
     const { type, url } = source
     const path = `./plugins/${type}.js` // eg './plugins/ccs-mqtt.js' - must start with ./
     console.log(`Importing plugin code: ${path}...`)
-    // @ts-ignore
+    // @ts-ignore top level await okay
     const plugin = await import(path)
     // console.log(`Initializing plugin...`)
     // plugin.init({ url, cache, deviceId })
@@ -47,41 +47,38 @@ for (const device of devices) {
   }
   // console.log(`TCP creating server for agent...`)
   // const tcp = net.createServer()
+  // // handle tcp connection from agent or diode
+  // tcp.on('connection', async socket => {
+  //   outputSocket = socket
+  //   const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
+  //   console.log('TCP new client connection from', remoteAddress)
+  //   // handle incoming data - get PING from agent, return PONG
+  //   socket.on('data', pingpong)
+  //   function pingpong(buffer) {
+  //     const str = buffer.toString().trim()
+  //     if (str === '* PING') {
+  //       const response = '* PONG 10000' //. msec
+  //       console.log(`TCP received PING - sending PONG:`, response)
+  //       socket.write(response + '\n')
+  //     } else {
+  //       console.log('TCP received data:', str.slice(0, 20), '...')
+  //     }
+  //   }
+  // })
+  // console.log(`TCP try listening to socket at`, output, `...`)
+  // tcp.listen(output.port, output.host)
 }
 
-// // handle tcp connection from agent or diode
-// tcp.on('connection', async socket => {
-//   outputSocket = socket
-//   const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
-//   console.log('TCP new client connection from', remoteAddress)
-//   // handle incoming data - get PING from agent, return PONG
-//   socket.on('data', pingpong)
-//   function pingpong(buffer) {
-//     const str = buffer.toString().trim()
-//     if (str === '* PING') {
-//       const response = '* PONG 10000' //. msec
-//       console.log(`TCP received PING - sending PONG:`, response)
-//       socket.write(response + '\n')
-//     } else {
-//       console.log('TCP received data:', str.slice(0, 20), '...')
-//     }
-//   }
-
-// })
-
-// console.log(`TCP try listening to socket at`, output, `...`)
-// tcp.listen(output.port, output.host)
-
-// exit nicely
-function shutdown() {
-  console.log(`Exiting...`)
-  // if (outputSocket) {
-  //   console.log(`TCP closing socket...`)
-  //   outputSocket.end()
-  // }
-  // console.log(`Closing plugins`)
-  // for (const plugin of plugins) {
-  //   plugin.end()
-  // }
-  process.exit()
-}
+// // exit nicely
+// function shutdown() {
+//   console.log(`Exiting...`)
+//   // if (outputSocket) {
+//   //   console.log(`TCP closing socket...`)
+//   //   outputSocket.end()
+//   // }
+//   // console.log(`Closing plugins`)
+//   // for (const plugin of plugins) {
+//   //   plugin.end()
+//   // }
+//   process.exit()
+// }

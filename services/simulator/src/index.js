@@ -5,8 +5,8 @@ const mqttlib = require('mqtt')
 
 const host = process.env.MQTT_HOST || 'localhost'
 const port = Number(process.env.MQTT_PORT || 1883)
-const serialNumber = process.env.SERIAL_NUMBER // eg 'CCS123'
-const clientId = serialNumber || 'simulator-' + Math.random()
+const deviceId = process.env.DEVICE_ID // eg 'ccs-pa-001'
+const clientId = deviceId || 'simulator-' + Math.random()
 const config = { host, port, clientId }
 const messagesFile = process.env.MESSAGES_FILE
 
@@ -23,7 +23,7 @@ const mqtt = mqttlib.connect(config)
 mqtt.on('connect', async function onConnect() {
   console.log(`Publishing messages...`)
   for (const message of messages) {
-    const topic = message.topic.replace('${serialNumber}', serialNumber)
+    const topic = message.topic.replace('${deviceId}', deviceId)
     const payload = JSON.stringify(message.json)
     console.log(`Topic ${topic}: ${payload.slice(0, 40)}...`)
     mqtt.publish(topic, payload)

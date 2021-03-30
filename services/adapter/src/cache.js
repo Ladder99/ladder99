@@ -1,9 +1,8 @@
 // import mobx
 
 export class Cache {
-  constructor(socket) {
+  constructor() {
     this._map = new Map()
-    this._socket = socket
   }
   set(key, value) {
     this._map.set(key, value)
