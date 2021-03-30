@@ -2,7 +2,7 @@
 // simulates an opc server
 
 // the endpoint urn of our server will be
-//   opc.tcp://<hostname>:4334/UA/MyLittleServer
+//   opc.tcp://<hostname>:4334/UA/LittleServer
 // where hostname shall be replaced with your computer name or fully qualified domain name.
 
 const os = require('os')
@@ -12,9 +12,9 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
   // create an instance of OPCUAServer
   const server = new OPCUAServer({
     port: 4334, // the port of the listening socket of the server
-    resourcePath: '/UA/MyLittleServer', // this path will be added to the endpoint resource name
+    resourcePath: '/UA/LittleServer', // this path will be added to the endpoint resource name
     buildInfo: {
-      productName: 'MySampleServer1',
+      productName: 'SampleServer1',
       buildNumber: '7658',
       buildDate: new Date(2014, 5, 2),
     },
