@@ -17,16 +17,16 @@ export class Cache {
     }
   }
   set(key, item) {
-    console.log('set', { key, item })
+    console.log('set', key, item)
     this._map.set(key, item)
     // calc and send dependent shdr values
-    const calcs = this._mapKeyToCalcs[key]
+    const calcs = this._mapKeyToCalcs[key] || []
     for (const calc of calcs) {
-      console.log({ calc })
+      console.log(calc.key)
       const shdr = getShdr(this, calc)
       // send shdr to agent via tcp socket
-      console.log(`TCP sending string`, shdr.slice(0, 40), `...`)
-      calc.socket.write(shdr)
+      console.log(`TCP sending string`, shdr.slice(0, 60), `...`)
+      calc.socket.write(shdr + '\n')
     }
   }
   get(key) {

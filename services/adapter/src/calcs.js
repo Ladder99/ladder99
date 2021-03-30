@@ -17,13 +17,13 @@ export default [
     value: cache =>
       types.AVAILABILITY[cache.get('ccs-pa-001-status-connection').value],
   },
-  // {
-  //   dependsOn: ['ccs-pa-001-%Q0.0'],
-  //   key: 'ccs-pa-001-printer_start_print',
-  //   value: cache =>
-  //     cache.get('ccs-pa-001-%Q0.0').value ? 'ACTIVE' : 'INACTIVE',
-  //   // types.ACTUATOR_STATE[cache.get('ccs-pa-001-%Q0.0')],
-  // },
+  {
+    dependsOn: ['ccs-pa-001-%Q0.0'],
+    key: 'ccs-pa-001-printer_start_print',
+    value: cache =>
+      cache.get('ccs-pa-001-%Q0.0').value ? 'ACTIVE' : 'INACTIVE',
+    // types.ACTUATOR_STATE[cache.get('ccs-pa-001-%Q0.0')],
+  },
   // {
   //   // <Source>%I0.10 OR status.faults 10</Source>
   //   dependsOn: ['ccs-pa-001-%I0.10', 'ccs-pa-001-status-faults'],

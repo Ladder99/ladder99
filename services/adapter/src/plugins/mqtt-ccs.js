@@ -32,11 +32,10 @@ export function init({ url, cache, deviceId }) {
   mqtt.on('connect', function onConnect() {
     console.log(`MQTT connected to broker on`, url)
     mqtt.on('message', onMessage)
-    // ask for initial query message
+    // ask for initial query message - handler at onQueryMessage
     mqtt.subscribe(topics.receiveQuery)
     mqtt.publish(topics.sendQuery, '{}')
     console.log(`MQTT listening for messages...`)
-    // see onQueryMessage
   })
 
   // handle all incoming messages
