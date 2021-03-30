@@ -10,13 +10,6 @@
 # which is imported to the adapter plugin.
 # or this file is iterated over and items are added to the cache calcs.
 
-# #. might be more readable with key specified, like this?
-# calcs:
-#   - key: connection
-#     value: types.AVAILABILITY[cache.get('${deviceId}-status-connection')]
-#     category: EVENT
-#     type: AVAILABILITY
-
 calcs:
   connection:
     category: EVENT
@@ -52,71 +45,60 @@ calcs:
     category: EVENT
     type: FIRMWARE
     subType: VERSION
-    # value: cache.get('${deviceId}-status-build_no')
     value: <status-build_no>
 
   e_stop:
     category: EVENT
     type: EMERGENCY_STOP
-    #value: types.EMERGENCY_STOP[cache.get('${deviceId}-%I0.10') || ...]
-    # value: "(cache.get('${deviceId}-status-faults').any([10])) ? 'TRIGGERED' : 'ARMED'"
+    #value: types.EMERGENCY_STOP[<%I0.10> || ...]
     # value: "(<status-faults>.any([10])) ? 'TRIGGERED' : 'ARMED'"
 
   state:
     category: EVENT
     type: EXECUTION
-    # value: types.EXECUTION[cache.get('${deviceId}-status-state')]
     value: types.EXECUTION[<status-state>]
 
   wait_state:
     category: EVENT
     type: WAIT_STATE
     #. what value goes here when status.state is not WAIT?
-    # value: types.WAIT_STATE[cache.get('${deviceId}-status-state')]
     value: types.WAIT_STATE[<status-state>]
 
   program:
     category: EVENT
     type: PROGRAM
     subType: MAIN
-    # value: cache.get('${deviceId}-status-program')
     value: <status-program>
 
   step:
     category: EVENT
     type: BLOCK
-    # value: cache.get('${deviceId}-status-step')
     value: <status-step>
 
   clk_time:
     category: SAMPLE
     type: CLOCK_TIME
-    # value: cache.get('${deviceId}-status-utc_time')
     value: <status-utc_time>
 
   up_time:
     category: SAMPLE
     type: EQUIPMENT_TIMER
     subType: OPERATING
-    # value: cache.get('${deviceId}-status-cpu_time')
     value: <status-cpu_time>
 
   fault_count:
     category: SAMPLE
     type: COUNT
-    # value: cache.get('${deviceId}-%M55.2')
     value: <%M55.2>
 
   cycle_count:
     category: SAMPLE
     type: COUNT
-    # value: cache.get('${deviceId}-%M55.1')
     value: <%M55.1>
 
   life_count:
     category: SAMPLE
     type: COUNT
-    # value: cache.get('${deviceId}-%M55.0')
     value: <%M55.0>
 
   ##
