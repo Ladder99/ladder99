@@ -33,7 +33,6 @@ export default [
     // types.ACTUATOR_STATE[cache.get('ccs-pa-001-%Q0.0')],
   },
   {
-    // <Source>%I0.10 OR status.faults 10</Source>
     dependsOn: ['ccs-pa-001-%I0.10', 'ccs-pa-001-status-faults'],
     key: 'ccs-pa-001-e_stop',
     value: cache => {
