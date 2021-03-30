@@ -11,19 +11,12 @@ const types = {
 }
 
 export default [
-  // from calcs.yaml:
-  // connection:
-  //   category: EVENT
-  //   type: AVAILABILITY
-  //   value: types.AVAILABILITY[<status-connection>]
-  // becomes:
   {
     dependsOn: ['ccs-pa-001-status-connection'],
     key: 'ccs-pa-001-connection',
     value: cache =>
       types.AVAILABILITY[cache.get('ccs-pa-001-status-connection').value],
   },
-
   // {
   //   dependsOn: ['ccs-pa-001-%Q0.0'],
   //   key: 'ccs-pa-001-printer_start_print',

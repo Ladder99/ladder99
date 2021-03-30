@@ -1,31 +1,37 @@
-const calcs = [{}]
-
 export class Cache {
   constructor() {
     this._map = new Map()
+    this._mapKeyToCalcs = {}
   }
-  // addCalcs(calcs) {
-  //   for (const calc of calcs) {
-  //     console.log({ calc })
-  //   }
-  // }
+  addCalcs(calcs, socket) {
+    for (const calc of calcs) {
+      console.log({ calc })
+      calc.socket = socket
+      for (const key of calc.dependsOn) {
+        if (this._mapKeyToCalcs[key]) {
+          this._mapKeyToCalcs[key].push(calc)
+        } else {
+          this._mapKeyToCalcs[key] = [calc]
+        }
+      }
+    }
+  }
   set(key, value) {
+    console.log('set', { key, value })
     this._map.set(key, value)
-    //. call the shdr update fn to update dependent shdr values
-    // updateShdr(key)
+    // calc and send dependent shdr values
+    const calcs = this._mapKeyToCalcs[key]
+    for (const calc of calcs) {
+      console.log({ calc })
+      const shdr = getShdr(this, calc)
+      console.log({ shdr })
+      calc.socket.write(shdr)
+    }
   }
   get(key) {
     return this._map.get(key)
   }
 }
-
-// connection:
-// category: EVENT
-// type: AVAILABILITY
-// # value: types.AVAILABILITY[cache.get('${deviceId}-status-connection')]
-// value: types.AVAILABILITY[<status-connection>]
-
-const calcs = [{}]
 
 // // get all shdr outputs for the cache values
 // function getOutput(cache) {
@@ -40,3 +46,11 @@ const calcs = [{}]
 //   }
 //   return output.join('\n') + '\n'
 // }
+
+function getShdr(cache, calc) {
+  const timestamp = new Date().toISOString()
+  const key = calc.key
+  const value = calc.value(cache) // do calculation
+  const shdr = `${timestamp}|${key}|${value}`
+  return shdr
+}

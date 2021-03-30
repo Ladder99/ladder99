@@ -6,6 +6,7 @@ import fs from 'fs' // node lib for filesys
 import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
 import net from 'net' // node lib for tcp
 import { Cache } from './cache.js'
+// import calcs from './calcs'
 
 // load devices.yaml
 const yamlfile = '/etc/adapter/devices.yaml' // see setups/demo/volumes/adapter
@@ -47,6 +48,10 @@ for (const device of devices) {
     outputSocket = socket
     const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
     console.log('TCP new client connection from', remoteAddress)
+    //. import calcs and pass to cache
+    // import calcs from './calcs'
+    const calcs = await import('./calcs.js')
+    cache.addCalcs(calcs, socket)
     // handle incoming data - get PING from agent, return PONG
     socket.on('data', pingpong)
     function pingpong(buffer) {
