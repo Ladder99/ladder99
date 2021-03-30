@@ -1,14 +1,14 @@
-// import mobx
+const calcs = [{}]
 
 export class Cache {
   constructor() {
     this._map = new Map()
   }
-  addCalcs(calcs) {
-    for (const calc of calcs) {
-      console.log({ calc })
-    }
-  }
+  // addCalcs(calcs) {
+  //   for (const calc of calcs) {
+  //     console.log({ calc })
+  //   }
+  // }
   set(key, value) {
     this._map.set(key, value)
     //. call the shdr update fn to update dependent shdr values
@@ -18,6 +18,14 @@ export class Cache {
     return this._map.get(key)
   }
 }
+
+// connection:
+// category: EVENT
+// type: AVAILABILITY
+// # value: types.AVAILABILITY[cache.get('${deviceId}-status-connection')]
+// value: types.AVAILABILITY[<status-connection>]
+
+const calcs = [{}]
 
 // // get all shdr outputs for the cache values
 // function getOutput(cache) {
