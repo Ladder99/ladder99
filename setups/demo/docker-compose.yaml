@@ -1,8 +1,7 @@
-# this will be generated from devices.yaml, but edit manually for now
+#. this will be generated from devices.yaml, but edit manually for now
+# order of startup: broker, adapter, agent, simulators
 
 version: '3.7'
-
-# order of startup: broker, adapter, agent, simulator
 
 services:
   broker-ccs-pa-001:
@@ -27,8 +26,6 @@ services:
     depends_on:
       broker-ccs-pa-001:
         condition: service_started
-      # agent:
-      #   condition: service_started
     networks:
       - ladder99
     volumes:
@@ -47,8 +44,6 @@ services:
     ports:
       - 5000:5000
     depends_on:
-      # broker-ccs-pa-001:
-      #   condition: service_started
       adapter:
         condition: service_started
     volumes:
@@ -88,12 +83,6 @@ services:
     user: node
     working_dir: /home/node/app
     command: npm start
-    # environment:
-    # - MQTT_HOST=broker-ccs-pa-001
-    # - MQTT_PORT=1883
-    # - DEVICE_ID=ccs-pa-001
-    # - MESSAGES_FILE=/etc/simulator-mqtt/messages.js
-    # - LOOP=true
     depends_on:
       agent:
         condition: service_started
@@ -101,7 +90,6 @@ services:
       - ladder99
     volumes:
       - ../../services/simulator-opc:/home/node/app
-      # - ./volumes/simulator-opc:/etc/simulator-opc
     logging:
       options:
         max-size: '1m'
