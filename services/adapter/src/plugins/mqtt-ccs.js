@@ -90,9 +90,9 @@ export function init({ url, cache, deviceId }) {
       ','
     )
     for (const part of parts) {
-      const key = `${deviceId}-status-${part}`
+      const key = `${deviceId}-status-${part}` // eg 'ccs-pa-001-status-faults'
       const item = { value: msg.payload[part] }
-      cache.set(key, item) // eg 'ccs-pa-001-status-faults'
+      cache.set(key, item)
     }
   }
 
