@@ -5,8 +5,8 @@
 //   opc.tcp://<hostname>:4334/UA/MyLittleServer
 // where hostname shall be replaced with your computer name or fully qualified domain name.
 
-const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
 const os = require('os')
+const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
 
 ;(async () => {
   // create an instance of OPCUAServer

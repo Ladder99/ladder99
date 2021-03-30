@@ -37,36 +37,38 @@ const endpointUrl = 'opc.tcp://' + os.hostname() + ':4334/UA/MyLittleServer'
 
 async function main() {
   try {
-    // step 1 : connect to
+    // step 1 : connect
+    console.log('OPC connecting...')
     await client.connect(endpointUrl)
-    console.log('connected !')
 
     // step 2 : createSession
+    console.log('OPC creating session...')
     const session = await client.createSession()
-    console.log('session created !')
 
     // step 3 : browse the root folder
     const browseResult = await session.browse('RootFolder')
-    console.log('references of RootFolder :')
+    console.log('OPC references of RootFolder :')
     for (const reference of browseResult.references) {
-      console.log('   -> ', reference.browseName.toString())
+      console.log('  -> ', reference.browseName.toString())
     }
 
     // step 4 : read a variable with readVariableValue
+    let nodeId = 'ns=1;s=free_memory'
     const dataValue2 = await session.read({
-      nodeId: 'ns=1;s=free_memory',
+      nodeId,
       attributeId: AttributeIds.Value,
     })
-    console.log(' value = ', dataValue2.toString())
+    console.log(`OPC read ${nodeId}:`, dataValue2)
 
     // step 4' : read a variable with read
     const maxAge = 0
+    nodeId = 'ns=3;s=Scalar_Simulation_String'
     const nodeToRead = {
-      nodeId: 'ns=3;s=Scalar_Simulation_String',
+      nodeId,
       attributeId: AttributeIds.Value,
     }
     const dataValue = await session.read(nodeToRead, maxAge)
-    console.log(' value ', dataValue.toString())
+    console.log(`OPC read ${nodeId}:`, dataValue)
 
     // step 5: install a subscription and install a monitored item for 10 seconds
     const subscription = ClientSubscription.create(session, {
@@ -80,15 +82,15 @@ async function main() {
     subscription
       .on('started', function () {
         console.log(
-          'subscription started for 2 seconds - subscriptionId=',
+          'OPC subscription started for 2 seconds - subscriptionId=',
           subscription.subscriptionId
         )
       })
       .on('keepalive', function () {
-        console.log('keepalive')
+        console.log('OPC subscription keepalive')
       })
       .on('terminated', function () {
-        console.log('terminated')
+        console.log('OPC subscription terminated')
       })
     // install monitored item
     const itemToMonitor = {
@@ -107,10 +109,13 @@ async function main() {
       TimestampsToReturn.Both
     )
     monitoredItem.on('changed', dataValue => {
-      console.log(' value has changed : ', dataValue.value.toString())
+      console.log(
+        'OPC free_memory value has changed:',
+        dataValue.value.toString()
+      )
     })
-    await timeout(10000)
-    console.log('now terminating subscription')
+    await timeout(4000)
+    console.log('OPC now terminating subscription')
     await subscription.terminate()
 
     // step 6: finding the nodeId of a node by Browse name
@@ -120,16 +125,18 @@ async function main() {
     )
     const result = await session.translateBrowsePath(browsePath)
     const productNameNodeId = result.targets[0].targetId
-    console.log(' Product Name nodeId = ', productNameNodeId.toString())
+    console.log('OPC product name nodeId:', productNameNodeId.toString())
 
     // step 7. close session
+    console.log(`OPC closing session...`)
     await session.close()
 
     // step 8. disconnecting
+    console.log(`OPC disconnecting...`)
     await client.disconnect()
-    console.log('done !')
+    console.log('OPC done.')
   } catch (err) {
-    console.log('An error has occured : ', err)
+    console.log('OPC an error has occured:', err)
   }
 }
 main()
