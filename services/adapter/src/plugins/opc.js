@@ -18,7 +18,6 @@ const {
 export async function init({ url, cache, deviceId }) {
   console.log('OPC init', { deviceId })
 
-  // create client
   console.log(`OPC create client...`)
   const connectionStrategy = {
     initialDelay: 1000,
@@ -34,36 +33,26 @@ export async function init({ url, cache, deviceId }) {
   // const endpointUrl = "opc.tcp://opcuademo.sterfive.com:26543";
   // const endpointUrl = 'opc.tcp://' + os.hostname() + ':4334/UA/LittleServer'
   // const endpointUrl = 'opc.tcp://simulator-opc:4334/UA/LittleServer'
-  const endpointUrl = url
+  // const endpointUrl = url
 
   try {
     await timeout(10000) // let server get started (slowish)
 
-    console.log(`OPC connecting to server at`, endpointUrl, `...`)
-    await client.connect(endpointUrl)
+    console.log(`OPC connecting to server at ${url}...`)
+    await client.connect(url)
 
     console.log('OPC creating session...')
     const session = await client.createSession()
 
-    // // read a variable
-    // // let nodeId = 'ns=1;s=free_memory'
-    // let nodeId = 'ns=1;s=B3:5'
-    // const dataValue2 = await session.read({
-    //   nodeId,
-    //   attributeId: AttributeIds.Value,
-    // })
-    // console.log(`OPC read ${nodeId}:`, dataValue2.value) // a variant
-
-    // read a variable
+    // read operator
     let nodeId = 'ns=1;s=Operator'
     const dataValue3 = await session.read({
       nodeId,
       attributeId: AttributeIds.Value,
     })
     console.log(`OPC read ${nodeId}:`, dataValue3.value) // a variant
-    //. better way to get variant string value?
-    const operator = dataValue3.value.value
-    console.log(`setting cache value`)
+    const operator = dataValue3.value.value //. better way?
+    console.log(`OPC setting cache value`)
     cache.set('ccs-pa-001-operator', { value: operator })
 
     // // subscribe and monitor item for n seconds

@@ -64,6 +64,14 @@ async function main() {
     })
     console.log(`OPC read ${nodeId}:`, dataValue2)
 
+    // // read a variable
+    // let nodeId = 'ns=1;s=B3:5'
+    // const dataValue2 = await session.read({
+    //   nodeId,
+    //   attributeId: AttributeIds.Value,
+    // })
+    // console.log(`OPC read ${nodeId}:`, dataValue2.value) // a variant
+
     // step 4' : read a variable with read
     const maxAge = 0
     nodeId = 'ns=3;s=Scalar_Simulation_String'
