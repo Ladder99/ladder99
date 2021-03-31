@@ -21,9 +21,10 @@ devices:
       - inputs: rockwell-hmi
         type: opc
         active: true
-        configuration:
-          url: opc.tcp://simulator-opc:4334/UA/LittleServer
-          poll: 5
+        url: opc.tcp://simulator-opc:4334/UA/LittleServer
+        # configuration:
+        #   url: opc.tcp://simulator-opc:4334/UA/LittleServer
+        #   poll: 5
 
       # - inputs: lapond-vfd
       #   type: opc
