@@ -19,7 +19,7 @@ console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
 console.log(`posts to TCP.`)
 console.log(`----------------------------------------------------------------`)
 
-// define cache shared across sources
+// define cache shared across devices and sources
 const cache = new Cache()
 
 for (const device of devices) {
@@ -45,7 +45,7 @@ for (const device of devices) {
   tcp.on('connection', async socket => {
     const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
     console.log('TCP new client connection from', remoteAddress)
-    // import calcs and pass to cache
+    //. import calcs and pass to cache
     const calcs = (await import('./calcs.js')).default
     cache.addCalcs(calcs, socket)
     // handle incoming data - get PING from agent, return PONG
