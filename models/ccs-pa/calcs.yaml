@@ -61,8 +61,11 @@ calcs:
   e_stop:
     category: EVENT
     type: EMERGENCY_STOP
-    #value: types.EMERGENCY_STOP[<%I0.10> || ...]
-    # value: "(<status-faults>.any([10])) ? 'TRIGGERED' : 'ARMED'"
+    # value: "<status-faults>.any([10]) ? 'TRIGGERED' : 'ARMED'"
+    value: |
+      const nums = Object.keys(<status-faults>)
+      const str = types.EMERGENCY_STOP[nums.some(num => num===10)]
+      return str
 
   state:
     category: EVENT
@@ -112,7 +115,6 @@ calcs:
     type: COUNT
     value: <%M55.0>
 
-  ##
   printer_start_print:
     category: EVENT
     type: ACTUATOR_STATE
