@@ -52,8 +52,11 @@ export async function init({ url, cache, deviceId }) {
     })
     console.log(`OPC read ${nodeId}:`, dataValue3.value) // a variant
     const operator = dataValue3.value.value //. better way?
-    console.log(`OPC setting cache value`)
-    cache.set('ccs-pa-001-operator', { value: operator })
+    // cache.set('ccs-pa-001-operator', { value: operator })
+    const key = `${deviceId}-operator`
+    const item = { value: operator }
+    console.log(`OPC setting cache ${key}:`, item)
+    cache.set(key, item)
 
     // // subscribe and monitor item for n seconds
     // const subscription = ClientSubscription.create(session, {

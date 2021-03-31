@@ -1,4 +1,4 @@
 
-Eventually these could be separate packages,
+Eventually these should be separate packages,
 to isolate dependencies etc. 
 
