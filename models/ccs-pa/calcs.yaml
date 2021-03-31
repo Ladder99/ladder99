@@ -143,6 +143,7 @@ calcs:
     # value: cache.get('${deviceId}-status-faults').first([2,3,5]).property('description').value
     # value: <status-faults>.first([2,3,5]).property('description').value
 
+  #. should this go here or elsewhere?
   operator:
     category: EVENT
     type: USER

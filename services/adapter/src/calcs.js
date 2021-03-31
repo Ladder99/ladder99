@@ -48,12 +48,7 @@ export default [
     value: cache => types.EXECUTION[cache.get('ccs-pa-001-status-state').value],
   },
 
-  // # <DataItem category="EVENT" id="ccs-pa-001-operator" type="USER" subType="OPERATOR"/>
-  // operator:
-  //   category: EVENT
-  //   type: USER
-  //   subType: OPERATOR
-  //   value: <operator>
+  // these come from
   {
     dependsOn: ['ccs-pa-001-operator'],
     key: 'ccs-pa-001-operator',
