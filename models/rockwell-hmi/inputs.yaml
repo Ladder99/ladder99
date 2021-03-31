@@ -1,0 +1,5 @@
+#
+
+inputs:
+  - key: operator
+    value: /foo/operator

@@ -1,5 +1,7 @@
-calcs:
-  operator:
+# id is formed from deviceId + key, eg 'ccs-pa-001-operator'
+
+outputs:
+  - key: operator
     category: EVENT
     type: USER
     subType: OPERATOR
