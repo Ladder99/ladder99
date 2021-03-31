@@ -1,4 +1,4 @@
-# calcs
+# (was calcs.yaml)
 
 # these items are placed in the model.yaml tree and define the
 # shdr strings that are calculated and sent to the agent.
@@ -14,7 +14,7 @@
 
 # for values, <foo> is shorthand for cache.get('${deviceId}-foo').value
 
-calcs:
+outputs:
   connection:
     category: EVENT
     type: AVAILABILITY
