@@ -15,12 +15,12 @@ devices:
       - type: opc
         active: true
         url: opc.tcp://simulator-opc:4334/UA/LittleServer
-        poll: 5
-        tags:
-          B4433-motion-alarm:
-            path: 'ns=1;B3:5'
-          B7744-motion-alarm:
-            path: 'ns=1;B7:4'
+        # poll: 5
+        # tags:
+        #   B4433-motion-alarm:
+        #     path: 'ns=1;B3:5'
+        #   B7744-motion-alarm:
+        #     path: 'ns=1;B7:4'
     outputs:
       - type: shdr
         host: adapter

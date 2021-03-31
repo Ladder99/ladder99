@@ -57,7 +57,8 @@ export async function init({ url, cache, deviceId }) {
 
     // step 4 : read a variable with readVariableValue
     // let nodeId = 'ns=1;s=free_memory'
-    let nodeId = 'ns=1;B3:5'
+    // let nodeId = 'ns=1;B3:5'
+    let nodeId = 'ns=1;B35'
     const dataValue2 = await session.read({
       nodeId,
       attributeId: AttributeIds.Value,
@@ -65,7 +66,7 @@ export async function init({ url, cache, deviceId }) {
     console.log(`OPC read ${nodeId}:`, dataValue2)
 
     //..
-    cache.set('beckhoff-mc-001-status-connection', { value: 3.3 })
+    // cache.set('ccs-pa-001-foo', { value: 3.3 })
 
     // // step 4' : read a variable with read
     // const maxAge = 0
