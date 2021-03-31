@@ -83,8 +83,6 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
     },
   })
 
-  // let nodeId = 'ns=1;B3:5'
-  // let nodeId = 'ns=1;B35'
   let nodeId = 'ns=1;s=B3:5'
   console.log(`OPC server add ${nodeId}...`)
   namespace.addVariable({
@@ -97,16 +95,16 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
     },
   })
 
-  // nodeId = 'ns=1;B7:4'
-  nodeId = 'ns=1;s=B7:4'
+  nodeId = 'ns=1;s=Operator'
   console.log(`OPC server add ${nodeId}...`)
   namespace.addVariable({
     componentOf: device,
     nodeId,
-    browseName: 'B7744-motion-alarm',
-    dataType: 'Double',
+    browseName: 'Operator',
+    dataType: 'String',
     value: {
-      get: () => new Variant({ dataType: DataType.Double, value: 2.2 }),
+      get: () =>
+        new Variant({ dataType: DataType.String, value: 'Amanda Davis' }),
     },
   })
 

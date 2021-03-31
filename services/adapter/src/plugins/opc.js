@@ -55,8 +55,13 @@ export async function init({ url, cache, deviceId }) {
     //   console.log('  -> ', reference.browseName.toString())
     // }
 
-    // // step 4 : read a variable with readVariableValue
-    // // let nodeId = 'ns=1;s=free_memory'
+    // step 4 : read a variable with readVariableValue
+    // deprecated
+    // await session.readVariableValue("ns=1;s=variable_1")
+    // console.log(dataValue.toString());
+
+    // step 4 : read a variable
+    // let nodeId = 'ns=1;s=free_memory'
     let nodeId = 'ns=1;s=B3:5'
     const dataValue2 = await session.read({
       nodeId,
@@ -64,8 +69,16 @@ export async function init({ url, cache, deviceId }) {
     })
     console.log(`OPC read ${nodeId}:`, dataValue2)
 
+    // step 4 : read a variable
+    nodeId = 'ns=1;s=Operator'
+    const dataValue3 = await session.read({
+      nodeId,
+      attributeId: AttributeIds.Value,
+    })
+    console.log(`OPC read ${nodeId}:`, dataValue3)
+
     console.log(`setting a cache value`)
-    cache.set('ccs-pa-001-operator', { value: 'Zoey Burns' })
+    cache.set('ccs-pa-001-operator', { value: dataValue3 })
 
     // // step 4' : read a variable with read
     // const maxAge = 0
