@@ -48,10 +48,15 @@ export default [
     value: cache => types.EXECUTION[cache.get('ccs-pa-001-status-state').value],
   },
 
+  // # <DataItem category="EVENT" id="ccs-pa-001-operator" type="USER" subType="OPERATOR"/>
+  // operator:
+  //   category: EVENT
+  //   type: USER
+  //   subType: OPERATOR
+  //   value: <operator>
   {
-    dependsOn: ['beckhoff-mc-001-status-connection'],
-    key: 'beckhoff-mc-001-connection',
-    value: cache =>
-      types.AVAILABILITY[cache.get('beckhoff-mc-001-status-connection').value],
+    dependsOn: ['ccs-pa-001-operator'],
+    key: 'ccs-pa-001-operator',
+    value: cache => cache.get('ccs-pa-001-operator').value,
   },
 ]

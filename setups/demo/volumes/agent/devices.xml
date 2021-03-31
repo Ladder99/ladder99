@@ -11,10 +11,24 @@
       </Description>
       <DataItems>
         <DataItem id="ccs-pa-001-connection" category="EVENT" type="AVAILABILITY"/>
-        <DataItem id="ccs-pa-001-printer_start_print" category="EVENT" type="ACTUATOR_STATE"/>
         <DataItem id="ccs-pa-001-state" category="EVENT" type="EXECUTION"/>
         <DataItem id="ccs-pa-001-e_stop" category="EVENT" type="EMERGENCY_STOP"/>
+        <DataItem id="ccs-pa-001-printer_start_print" category="EVENT" type="ACTUATOR_STATE"/>
       </DataItems>
+
+      <Systems id="systems">
+        <Components>
+          <Resources id="resources" name="resources">
+            <Components>
+              <Personnel id="personnel" name="personnel">
+                <DataItems>
+                  <DataItem category="EVENT" id="ccs-pa-001-operator" type="USER" subType="OPERATOR"/>
+                </DataItems>
+              </Personnel>
+            </Components>
+          </Resources>
+        </Components>
+      </Systems>
     </Device>
 
     <!-- for 'quality' need subtype = ALL, GOOD, BAD etc. see pt2 pg130 -->
@@ -34,6 +48,6 @@
         <DataItem id="beckhoff-mc-001-connection" category="EVENT" type="AVAILABILITY"/>
       </DataItems>
     </Device> -->
-    
+
   </Devices>
 </MTConnectDevices>
