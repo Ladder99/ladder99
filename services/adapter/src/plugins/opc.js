@@ -44,6 +44,9 @@ export async function init({ url, cache, deviceId }) {
     console.log('OPC creating session...')
     const session = await client.createSession()
 
+    //. here we'll iterate over inputs, fetch or subscribe to them,
+    // and set the cache key-value pairs.
+
     // read operator
     let nodeId = 'ns=1;s=Operator'
     const dataValue3 = await session.read({
