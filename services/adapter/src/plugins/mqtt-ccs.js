@@ -26,11 +26,11 @@ export function init({ url, cache, deviceId }) {
   }
   console.log('MQTT topics', { topics })
 
-  console.log(`MQTT connecting to broker on`, url, `...`)
+  console.log(`MQTT connecting to broker on ${url}...`)
   const mqtt = libmqtt.connect(url)
 
   mqtt.on('connect', function onConnect() {
-    console.log(`MQTT connected to broker on`, url)
+    console.log(`MQTT connected to broker on ${url}`)
     mqtt.on('message', onMessage)
     // ask for initial query message - handler at onQueryMessage
     mqtt.subscribe(topics.receiveQuery)

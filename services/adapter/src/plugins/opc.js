@@ -57,12 +57,12 @@ export async function init({ url, cache, deviceId }) {
 
     // // step 4 : read a variable with readVariableValue
     // // let nodeId = 'ns=1;s=free_memory'
-    // let nodeId = 'ns=1;B3:5' //. error
-    // const dataValue2 = await session.read({
-    //   nodeId,
-    //   attributeId: AttributeIds.Value,
-    // })
-    // console.log(`OPC read ${nodeId}:`, dataValue2)
+    let nodeId = 'ns=1;s=B3:5'
+    const dataValue2 = await session.read({
+      nodeId,
+      attributeId: AttributeIds.Value,
+    })
+    console.log(`OPC read ${nodeId}:`, dataValue2)
 
     console.log(`setting a cache value`)
     cache.set('ccs-pa-001-operator', { value: 'Zoey Burns' })

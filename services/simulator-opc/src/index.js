@@ -84,7 +84,8 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
   })
 
   // let nodeId = 'ns=1;B3:5'
-  let nodeId = 'ns=1;B35'
+  // let nodeId = 'ns=1;B35'
+  let nodeId = 'ns=1;s=B3:5'
   console.log(`OPC server add ${nodeId}...`)
   namespace.addVariable({
     componentOf: device,
@@ -97,7 +98,7 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
   })
 
   // nodeId = 'ns=1;B7:4'
-  nodeId = 'ns=1;B74'
+  nodeId = 'ns=1;s=B7:4'
   console.log(`OPC server add ${nodeId}...`)
   namespace.addVariable({
     componentOf: device,
