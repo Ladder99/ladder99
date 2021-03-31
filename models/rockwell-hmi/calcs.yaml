@@ -1,0 +1,6 @@
+calcs:
+  operator:
+    category: EVENT
+    type: USER
+    subType: OPERATOR
+    value: <operator>
