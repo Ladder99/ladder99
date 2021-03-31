@@ -1,14 +1,15 @@
 # this defines the devices.xml structure, along with the model yamls.
+#. see also devices-new.yaml for future dev
 
 devices:
-  - id: ccs-pa-001
-    model: ccs-pa
-    properties:
+  - id: ccs-pa-001 # this is substituted into the model yaml and inputs
+    model: ccs-pa # see models/ccs-pa/device.yaml for structure
+    properties: # these are substituted into the model yaml
       uuid: e05363af-95d1-4354-b749-8fbb09d3499e
       serialNumber: '001'
 
     sources:
-      - inputs: ccs-pa # not really needed as empty
+      - inputs: ccs-pa # not really needed as empty for ccs mqtt
         type: mqtt-ccs # type of plugin - manages protocol and payload
         active: true # should this data source be initialized on adapter startup?
         url: mqtt://broker-ccs-pa-001:1883
@@ -18,7 +19,7 @@ devices:
         active: true
         url: opc.tcp://simulator-opc:4334/UA/LittleServer
 
-    destinations:
+    destinations: # where to post output
       - type: shdr
         host: adapter
         port: 7878
