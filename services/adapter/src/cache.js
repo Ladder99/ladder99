@@ -1,13 +1,18 @@
+// cache of key-value pairs.
+// when key-value is set, will perform any associated calcs and
+// send shdr output to attached tcp socket.
+
 export class Cache {
   constructor() {
     this._map = new Map()
     this._mapKeyToCalcs = {}
   }
 
+  // each key can have multiple calculations associated with it.
+  // this builds a map from key to list of calcs.
   addCalcs(calcs, socket) {
     for (const calc of calcs) {
-      console.log({ calc })
-      calc.socket = socket
+      calc.socket = socket // attach tcp socket to calc also
       for (const key of calc.dependsOn) {
         if (this._mapKeyToCalcs[key]) {
           this._mapKeyToCalcs[key].push(calc)
@@ -19,12 +24,11 @@ export class Cache {
   }
 
   set(key, item) {
-    console.log('set', key) //, item)
+    console.log('set', key)
     this._map.set(key, item)
     // calc and send dependent shdr values
     const calcs = this._mapKeyToCalcs[key] || []
     for (const calc of calcs) {
-      console.log(calc.key)
       const shdr = getShdr(this, calc)
       // send shdr to agent via tcp socket
       console.log(`TCP sending string`, shdr.slice(0, 60), `...`)
@@ -34,7 +38,6 @@ export class Cache {
 
   get(key) {
     const item = this._map.get(key) || {}
-    console.log('get', key)
     return item
   }
 }
