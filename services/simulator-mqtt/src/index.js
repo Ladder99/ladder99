@@ -29,9 +29,9 @@ mqtt.on('connect', async function onConnect() {
       const payload = JSON.stringify(message.json)
       console.log(`Topic ${topic}: ${payload.slice(0, 40)}...`)
       mqtt.publish(topic, payload)
-      await new Promise(resolve => setTimeout(resolve, 500))
+      await new Promise(resolve => setTimeout(resolve, 1000))
     }
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    await new Promise(resolve => setTimeout(resolve, 3000))
   }
   console.log(`Closing MQTT connection...`)
   mqtt.end()
