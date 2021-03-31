@@ -28,9 +28,9 @@ for (const device of devices) {
   // iterate over sources, load plugin for that source, call init on it.
   //. also load calcs for this device, pass to plugin or cache
   const deviceId = device.id
-  const { inputs } = device
-  for (const input of inputs) {
-    const { type, url } = input
+  const { sources } = device
+  for (const source of sources) {
+    const { type, url } = source
     const path = `./plugins/${type}.js` // eg './plugins/mqtt-ccs.js' - must start with ./
     console.log(`Adapter importing plugin code: ${path}...`)
     // @ts-ignore top level await okay

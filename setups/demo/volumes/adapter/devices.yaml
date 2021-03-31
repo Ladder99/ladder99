@@ -6,7 +6,7 @@ devices:
     properties:
       uuid: e05363af-95d1-4354-b749-8fbb09d3499e
       serialNumber: '001'
-    inputs:
+    sources:
       - type: mqtt-ccs
         url: mqtt://broker-ccs-pa-001:1883
         user:
