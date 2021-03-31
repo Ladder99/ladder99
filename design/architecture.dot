@@ -12,9 +12,9 @@ digraph "ladder99-adapter" {
   edge [ fontsize=12; fontcolor=gray30; ];
 
   // nodes
-  PA1 [ fillcolor=lavender; label="CCS P&A 1" ];
-  PA2 [ fillcolor=lavender; label="CCS P&A 2" ];
-  OldMachine2 [ fillcolor=lavender; label="Device" ];
+  PA [ fillcolor=lavender; label="CCS P&A" ];
+  HMI [ fillcolor=lavender; label="Rockwell HMI" ];
+  Motor [ fillcolor=lavender; label="VFD Motor" ];
   OldMachine3 [ fillcolor=lavender; label="Device" ];
   Camera [ fillcolor=lavender; label="Camera" ];
   Kepware1 [ label="Kepware\n(Windows)"];
@@ -22,15 +22,14 @@ digraph "ladder99-adapter" {
   Autoclave [ label="Autoclave", fillcolor=lavender ];
   CPC [ label="ASC CPC" ];
   Broker1 [ label="MQTT Broker\n(Mosquitto)" ];
-  Broker2 [ label="MQTT Broker\n(Mosquitto)" ];
   Broker3 [ label="MQTT Broker\n(Mosquitto)" ];
   Broker4 [ label="MQTT Broker\n(Mosquitto)" ];
   // OldMachine1 [ fillcolor=lavender; label="Old Machine 1" ];
   // PLC4X [ label="PLC4X\n(Java)" ];
 
   Adapter [ label="MTConnect\nAdapter\nwith plugins\n(NodeJS)" ];
-  DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
-  DiodeReceiver [ label="Diode Receiver\n(Java+RabbitMQ)" ];
+  // DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
+  // DiodeReceiver [ label="Diode Receiver\n(Java+RabbitMQ)" ];
 
   Agent [ label="MTConnect\nAgent\n(C++/cppagent)" ];
   Application [ label="MTConnect\nApplication\n(NodeJS)" ];
@@ -42,17 +41,16 @@ digraph "ladder99-adapter" {
   // Operator [ fillcolor=lightyellow ];
 
   // edges
-  PA1 -> Broker1 [ label="  TCP  ", dir=both ];
-  PA2 -> Broker2 [ label="  TCP  ", dir=both ];
+  PA -> Broker1 [ label="  TCP  ", dir=both ];
   Camera -> Broker3 [ label="  TCP  ", dir=both ];
   Autoclave -> CPC [ dir=both ];
   Broker1 -> Adapter [ label="MQTT", dir=both ];
-  Broker2 -> Adapter [ label="MQTT", dir=both ];
   Broker3 -> Adapter [ label="MQTT", dir=both ];
   Broker4 -> Adapter [ label="MQTT", dir=both ];
   // OldMachine1 -> PLC4X; // [ label="proprietary\nprotocol" ];
   // PLC4X -> Broker3 [ label="" ];
-  OldMachine2 -> Kepware1;
+  HMI -> Kepware1 [ label="ethernet/ip" ];
+  Motor -> Kepware1 [ label="modbus" ];
   Kepware1 -> Adapter [ label="OPC/UA" ];
   // Kepware2 -> Gateway;
   CPC -> Adapter [ label="text" ];
@@ -60,11 +58,11 @@ digraph "ladder99-adapter" {
   OldMachine3 -> Kepware2;
   Kepware2 -> Broker4 [ label="MQTT" ];
   
-  Adapter -> Agent [ label="SHDR /   \nTCP 7878      ", dir=both ];
+  Adapter -> Agent [ label="SHDR /   \nTCP 7878+         ", dir=both ];
 
-  Adapter -> DiodeSender [ label="SHDR /   \nTCP 7878      ", dir=both, style=dotted ];
-  DiodeSender -> DiodeReceiver [ label="UDP    ", style=dotted ];
-  DiodeReceiver -> Agent [ label="SHDR /    \nTCP 7878        ", style=dotted ];
+  // Adapter -> DiodeSender [ label="SHDR /   \nTCP 7878      ", dir=both, style=dotted ];
+  // DiodeSender -> DiodeReceiver [ label="UDP    ", style=dotted ];
+  // DiodeReceiver -> Agent [ label="SHDR /    \nTCP 7878        ", style=dotted ];
   
   Agent -> Application [ dir=both; label="XML / \nHTTP 5000          " ];
   Application -> Database [ dir=both ];
@@ -76,5 +74,6 @@ digraph "ladder99-adapter" {
 
   // rank
   { rank=same; Adapter Agent Application Database Visualizer };
-  { rank=same; DiodeSender DiodeReceiver Cloud Admin };
+  // { rank=same; DiodeSender DiodeReceiver Cloud Admin };
+  { rank=same; Cloud Admin };
 }
