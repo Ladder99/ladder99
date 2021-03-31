@@ -3,3 +3,5 @@
 inputs:
   - key: x-axis
     path: /foo/x-axis
+  - key: y-axis
+    path: /foo/y-axis

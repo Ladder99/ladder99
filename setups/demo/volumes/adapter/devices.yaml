@@ -17,16 +17,22 @@ devices:
         inputs: rockwell-hmi
         active: true
         url: opc.tcp://simulator-opc:4334/UA/LittleServer
-        # poll: 5
-        # tags:
-        #   B4433-motion-alarm:
-        #     path: 'ns=1;B3:5'
-        #   B7744-motion-alarm:
-        #     path: 'ns=1;B7:4'
+        poll: 5
       - type: opc
-        inputs: vfd-motor
+        inputs: lapond-vfd
         active: true
         url: opc.tcp://simulator-opc:4334/UA/LittleServer
+        poll: 5
+      - type: opc
+        inputs: beckhoff-mc
+        active: true
+        url: opc.tcp://simulator-opc:4334/UA/LittleServer
+        poll: 5
+      - type: text
+        inputs: cognex-camera
+        active: true
+        url:
+        poll: 5
     destinations:
       - type: shdr
         host: adapter
