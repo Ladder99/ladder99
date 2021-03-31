@@ -1,4 +1,4 @@
-Number,Severity,Verbage,System Affected
+Number,Severity,Description,System Affected
 1,Hard,print end signal not received,feeder
 2,Hard,cylinder did not leave home (head up),end-effector
 3,Hard,cylinder did not return home (head down),end-effector

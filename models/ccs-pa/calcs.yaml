@@ -1,3 +1,5 @@
+# calcs
+
 # these items are placed in the model.yaml tree and define the
 # shdr strings that are calculated and sent to the agent.
 
@@ -16,32 +18,39 @@ calcs:
   connection:
     category: EVENT
     type: AVAILABILITY
-    # value: types.AVAILABILITY[cache.get('${deviceId}-status-connection').value]
     value: types.AVAILABILITY[<status-connection>]
 
-  # see std pt 4 line 347
   # eg change tool to a drill etc - irrelevant to p&a
   asset_changed:
     category: EVENT
-    type: ASSET_CHANGED
+    type: ASSET_CHANGED # see std pt 4 line 347
     value:
 
-  # see std pt 4 line 357
   asset_removed:
     category: EVENT
-    type: ASSET_REMOVED
+    type: ASSET_REMOVED # see std pt 4 line 357
     value:
 
   dev_cond:
     category: CONDITION
     type: SYSTEM
-    # value: any hard faults? = FAULT, any soft faults? = WARNING, no faults = NORMAL
+    # any hard faults? = FAULT, any soft faults? = WARNING, no faults = NORMAL
+    value: |
+      const nums = Object.keys(<status-faults>)
+      const hard = nums.some(num => num < 50)
+      const soft = nums.some(num => num >= 50)
+      const str = hard ? 'FAULT' : soft ? 'WARNING' : 'NORMAL'
+      return str
 
   dev_msg:
     category: EVENT
     type: MESSAGE
-    representation: DATA_SET # set of kv pairs, part2 7.2.2.12
+    representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
     # value: fault_id:fault_value, fault_id:fault_value, ...
+    value: |
+      const faults = Object.values(<status-faults>)
+      const str = faults.map(fault => fault.id + ':' + fault.description).join(', ')
+      return str
 
   fw_ver:
     category: EVENT
