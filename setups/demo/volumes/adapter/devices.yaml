@@ -3,7 +3,7 @@
 
 devices:
   - id: ccs-pa-001 # this is substituted into the model yaml and inputs
-    model: ccs-pa # see models/ccs-pa/device.yaml for structure
+    model: ccs-pa # for xml structure - see models/ccs-pa/device.yaml
     properties: # these are substituted into the model yaml
       uuid: e05363af-95d1-4354-b749-8fbb09d3499e
       serialNumber: '001'
