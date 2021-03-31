@@ -1,5 +1,6 @@
 inputs:
   - key: B4433-motion-alarm
     path: 'ns=1;s=B3:5'
+
   - key: B7744-motion-alarm
     path: 'ns=1;s=B7:4'
