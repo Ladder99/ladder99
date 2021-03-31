@@ -1,0 +1,11 @@
+# output / cache id is deviceId + key, eg 'ccs-pa-001-B4433-operator_name'
+
+inputs:
+  - key: operator
+    path: /foo/operator
+
+  - key: B4433-operator_id
+    path: 'ns=1;B3:5'
+
+  - key: B4433-operator_name
+    path: 'ns=1;B7:4'

@@ -1,54 +1,94 @@
 # this defines the devices.xml structure, along with the model yamls.
 
 devices:
-  - model: ccs-pa
+  - id: ccs-pa-001
+    model: ccs-pa
     properties:
-      deviceId: ccs-pa-001
       uuid: e05363af-95d1-4354-b749-8fbb09d3499e
       serialNumber: '001'
-    inputs:
-      - type: mqtt-ccs
+
+    sources:
+      - inputs: ccs-pa # not really needed as empty
+        type: mqtt-ccs # type of plugin - manages protocol and payload
+        active: true # should this data source be initialized on adapter startup?
         url: mqtt://broker-ccs-pa-001:1883
-        user:
-        password:
-        tls: false
-    outputs:
+        # configuration:
+        #   url: mqtt://broker-ccs-pa-001:1883
+        #   user:
+        #   password:
+        #   tls: false
+
+      - inputs: rockwell-hmi
+        type: opc
+        active: true
+        url: opc.tcp://simulator-opc:4334/UA/LittleServer
+        # configuration:
+        #   url: opc.tcp://simulator-opc:4334/UA/LittleServer
+        #   poll: 5
+
+      # - inputs: lapond-vfd
+      #   type: opc
+      #   active: true
+      #   url: opc.tcp://simulator-opc:4334/UA/LittleServer
+      #   poll: 5
+
+      # - inputs: beckhoff-mc
+      #   type: opc
+      #   active: true
+      #   url: opc.tcp://simulator-opc:4334/UA/LittleServer
+      #   poll: 5
+
+      # - inputs: cognex-camera
+      #   type: text
+      #   active: true
+      #   url:
+      #   poll: 5
+
+      # - inputs: asc-econoclave
+      #   type: cpc
+      #   active: true
+      #   configuration:
+      #     primary:
+      #       ip: 192.168.2.2
+      #       port: 9999
+      #       poll: 5
+      #     secondary:
+      #       ip: 192.168.2.3
+      #       port: 9999
+      #       poll: 5
+
+    destinations:
       - type: shdr
         host: adapter
         port: 7878
 
-  # - ccs-pa-001:
-  #   model: ccs-pa
-  #   properties:
-  #     uuid: e05363af-95d1-4354-b749-8fbb09d3499e
-  #     serialNumber: 1
-  #   # referencing inputs per device seems unneccessary.
-  #   # data from inputs will end up in cache,
-  #   # maybe it is relevant if we want a specific device
-  #   # to react on data change?
-  #   inputs:
-  #     - *ccs-mqtt-1
-  #   outputs:
-  #     - *adapter-7878
-
-  # - autoclave-with-a-bunch-of-stuff:
+  # - id: autoclave-with-a-bunch-of-stuff
   #   model: model123
   #   properties:
-  #     uuid: e05363af-95d1-4354-b749-8fbb09d3499e
+  #     uuid: e05363af-95d1-4354-b749-8fbb09d349be
   #     serialNumber: 1
-  #   inputs:
+  #   sources:
   #     - *autoclaveB4433
   #     - *kepware1
   #     - *kepware2
-  #   outputs:
+  #   destinations:
   #     - *adapter-7879
+# calcs
+#   air_tc = <B4433-air_tc>
+#   temp_alarm = <B4433-temp_alarm>
+#   motion_alarm = <B4433-motion-alarm>
+#   operator_id = <B4433-operator_id>
+#   operator_name = <B4433-operator_name>
 
-  # - some-other-device:
-  #   model: model456
-  #   properties:
-  #     uuid: e05363af-95d1-4354-b749-8fbb09d3499e
-  #     serialNumber: 1
-  #   inputs:
-  #     - *kepware1
-  #   outputs:
-  #     - *adapter-7880
+# - id: some-other-device
+#   model: model456
+#   properties:
+#     uuid: e05363af-95d1-4354-b749-8fbb09d349c7
+#     serialNumber: 1
+#   sources:
+#     - *kepware1
+#   destinations:
+#     - *adapter-7880
+
+# calcs
+#   air_tc = <B7744-motion-alarm>
