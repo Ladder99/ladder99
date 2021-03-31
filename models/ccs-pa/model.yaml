@@ -69,3 +69,9 @@ model:
           dataItems:
             dataItem: []
           compositions: []
+      resources:
+        components:
+          personnel:
+            dataItems:
+              dataItem:
+                - operator

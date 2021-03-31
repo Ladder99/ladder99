@@ -132,7 +132,6 @@ calcs:
     # value: cache.get('${deviceId}-status-faults').first([2,3,5]).property('description').value
     # value: <status-faults>.first([2,3,5]).property('description').value
 
-  # <DataItem category="EVENT" id="ccs-pa-001-operator" type="USER" subType="OPERATOR"/>
   operator:
     category: EVENT
     type: USER
