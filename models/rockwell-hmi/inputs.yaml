@@ -1,4 +1,4 @@
-# destination / cache id is deviceId + key, eg 'ccs-pa-001-operator'
+# output / cache id is deviceId + key, eg 'ccs-pa-001-operator'
 
 inputs:
   - key: operator
