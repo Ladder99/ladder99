@@ -56,7 +56,7 @@ async function main() {
       console.log('  -> ', reference.browseName.toString())
     }
 
-    // step 4 : read a variable with readVariableValue
+    // step 4 : read a variable with readVariableValue (rvv is deprecated - use read)
     let nodeId = 'ns=1;s=free_memory'
     const dataValue2 = await session.read({
       nodeId,

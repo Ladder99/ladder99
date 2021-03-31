@@ -8,22 +8,21 @@ const {
   MessageSecurityMode,
   SecurityPolicy,
   AttributeIds,
-  makeBrowsePath,
-  ClientSubscription,
-  TimestampsToReturn,
-  ClientMonitoredItem,
+  // makeBrowsePath,
+  // ClientSubscription,
+  // TimestampsToReturn,
+  // ClientMonitoredItem,
 } = pkg
 
 // initialize the client plugin
 export async function init({ url, cache, deviceId }) {
   console.log('OPC init', { deviceId })
 
-  // instantiate client
-  // by default, the node-opcua client will continuously try to connect to the endpoint.
+  // create client
   console.log(`OPC create client...`)
   const connectionStrategy = {
     initialDelay: 1000,
-    maxRetry: 1,
+    maxRetry: 1, // default is infinite
   }
   const client = OPCUAClient.create({
     applicationName: 'MyClient',
@@ -40,58 +39,34 @@ export async function init({ url, cache, deviceId }) {
   try {
     await timeout(10000) // let server get started (slowish)
 
-    // step 1 connect
     console.log(`OPC connecting to server at`, endpointUrl, `...`)
     await client.connect(endpointUrl)
 
-    // step 2 createSession
     console.log('OPC creating session...')
     const session = await client.createSession()
 
-    // // step 3 browse the root folder
-    // const browseResult = await session.browse('RootFolder')
-    // console.log('OPC references of RootFolder :')
-    // for (const reference of browseResult.references) {
-    //   console.log('  -> ', reference.browseName.toString())
-    // }
+    // // read a variable
+    // // let nodeId = 'ns=1;s=free_memory'
+    // let nodeId = 'ns=1;s=B3:5'
+    // const dataValue2 = await session.read({
+    //   nodeId,
+    //   attributeId: AttributeIds.Value,
+    // })
+    // console.log(`OPC read ${nodeId}:`, dataValue2.value) // a variant
 
-    // step 4 : read a variable with readVariableValue
-    // deprecated
-    // await session.readVariableValue("ns=1;s=variable_1")
-    // console.log(dataValue.toString());
-
-    // step 4 : read a variable
-    // let nodeId = 'ns=1;s=free_memory'
-    let nodeId = 'ns=1;s=B3:5'
-    const dataValue2 = await session.read({
-      nodeId,
-      attributeId: AttributeIds.Value,
-    })
-    console.log(`OPC read ${nodeId}:`, dataValue2.value) // a variant
-
-    // step 4 : read a variable
-    nodeId = 'ns=1;s=Operator'
+    // read a variable
+    let nodeId = 'ns=1;s=Operator'
     const dataValue3 = await session.read({
       nodeId,
       attributeId: AttributeIds.Value,
     })
     console.log(`OPC read ${nodeId}:`, dataValue3.value) // a variant
     //. better way to get variant string value?
-    console.log(`setting a cache value`)
     const operator = dataValue3.value.value
+    console.log(`setting cache value`)
     cache.set('ccs-pa-001-operator', { value: operator })
 
-    // // step 4' : read a variable with read
-    // const maxAge = 0
-    // nodeId = 'ns=3;s=Scalar_Simulation_String'
-    // const nodeToRead = {
-    //   nodeId,
-    //   attributeId: AttributeIds.Value,
-    // }
-    // const dataValue = await session.read(nodeToRead, maxAge)
-    // console.log(`OPC read ${nodeId}:`, dataValue)
-
-    // // step 5: install a subscription and install a monitored item for 10 seconds
+    // // subscribe and monitor item for n seconds
     // const subscription = ClientSubscription.create(session, {
     //   requestedPublishingInterval: 1000,
     //   requestedLifetimeCount: 100,
@@ -139,20 +114,9 @@ export async function init({ url, cache, deviceId }) {
     // console.log('OPC now terminating subscription')
     // await subscription.terminate()
 
-    // // step 6 find the nodeId of a node by Browse name
-    // const browsePath = makeBrowsePath(
-    //   'RootFolder',
-    //   '/Objects/Server.ServerStatus.BuildInfo.ProductName'
-    // )
-    // const result = await session.translateBrowsePath(browsePath)
-    // const productNameNodeId = result.targets[0].targetId
-    // console.log('OPC product name nodeId:', productNameNodeId.toString())
-
-    // step 7 close session
     console.log(`OPC closing session...`)
     await session.close()
 
-    // step 8 disconnect
     console.log(`OPC disconnecting...`)
     await client.disconnect()
 
