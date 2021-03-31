@@ -95,6 +95,7 @@ devices:
     # data from inputs will end up in cache,
     # maybe it is relevant if we want a specific device 
     # to react on data change?
+    # yes - inputs need to be marked with the deviceId
     inputs:
       - *ccs-mqtt-1
     outputs:
