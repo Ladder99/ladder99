@@ -67,7 +67,7 @@ export async function init({ url, cache, deviceId }) {
       nodeId,
       attributeId: AttributeIds.Value,
     })
-    console.log(`OPC read ${nodeId}:`, dataValue2)
+    console.log(`OPC read ${nodeId}:`, dataValue2.value) // a variant
 
     // step 4 : read a variable
     nodeId = 'ns=1;s=Operator'
@@ -75,10 +75,11 @@ export async function init({ url, cache, deviceId }) {
       nodeId,
       attributeId: AttributeIds.Value,
     })
-    console.log(`OPC read ${nodeId}:`, dataValue3)
-
+    console.log(`OPC read ${nodeId}:`, dataValue3.value) // a variant
+    //. better way to get variant string value?
     console.log(`setting a cache value`)
-    cache.set('ccs-pa-001-operator', { value: dataValue3 })
+    const operator = dataValue3.value.value
+    cache.set('ccs-pa-001-operator', { value: operator })
 
     // // step 4' : read a variable with read
     // const maxAge = 0
