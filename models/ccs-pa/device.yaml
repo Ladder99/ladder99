@@ -3,7 +3,7 @@
 # that value from devices.yaml.
 # dataitems are defined in calcs.yaml.
 
-model:
+device:
   - id: ${deviceId} # eg 'ccs-pa-001'
     name: CCS-PA
     uuid: ${uuid} # eg 'e05363af-95d1-4354-b749-8fbb09d3499e'
