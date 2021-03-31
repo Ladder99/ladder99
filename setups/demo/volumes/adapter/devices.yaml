@@ -21,7 +21,7 @@ devices:
         #     path: 'ns=1;B3:5'
         #   B7744-motion-alarm:
         #     path: 'ns=1;B7:4'
-    outputs:
+    destinations:
       - type: shdr
         host: adapter
         port: 7878

@@ -61,8 +61,8 @@ for (const device of devices) {
       }
     }
   })
-  const { outputs } = device
-  const output = outputs[0] //. just handles one for now
-  console.log(`TCP try listening to socket at`, outputs, `...`)
-  tcp.listen(output.port, output.host)
+  const { destinations } = device
+  const destination = destinations[0] //. just handles one for now
+  console.log(`TCP try listening to socket at`, destinations, `...`)
+  tcp.listen(destination.port, destination.host)
 }
