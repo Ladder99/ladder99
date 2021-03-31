@@ -1,37 +1,32 @@
-# (was calcs.yaml)
-
-# these items are placed in the model.yaml tree and define the
+# these outputs are placed in the model.yaml tree and define the
 # shdr strings that are calculated and sent to the agent.
 
 # the item's key (eg 'connection') together with the deviceId (eg 'ccs-pa-001')
-# will become its id in the xml (eg 'ccs-pa-001-connection').
+# forms its id in the xml (eg 'ccs-pa-001-connection').
 # the shdr key is the same as the id.
 # the shdr value is defined with the item value code.
 
-# the value calculations are gathered together into a calcs.js file,
-# which is imported to the adapter plugin.
-# or this file is iterated over and items are added to the cache calcs.
-
-# for values, <foo> is shorthand for cache.get('${deviceId}-foo').value
+# value is javascript
+# <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
 
 outputs:
-  connection:
+  - key: connection
     category: EVENT
     type: AVAILABILITY
     value: types.AVAILABILITY[<status-connection>]
 
   # eg change tool to a drill etc - irrelevant to p&a
-  asset_changed:
+  - key: asset_changed
     category: EVENT
     type: ASSET_CHANGED # see std pt 4 line 347
     value:
 
-  asset_removed:
+  - key: asset_removed
     category: EVENT
     type: ASSET_REMOVED # see std pt 4 line 357
     value:
 
-  dev_cond:
+  - key: dev_cond
     category: CONDITION
     type: SYSTEM
     # any hard faults? = FAULT, any soft faults? = WARNING, no faults = NORMAL
@@ -42,7 +37,7 @@ outputs:
       const str = hard ? 'FAULT' : soft ? 'WARNING' : 'NORMAL'
       return str
 
-  dev_msg:
+  - key: dev_msg
     category: EVENT
     type: MESSAGE
     representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
@@ -52,13 +47,13 @@ outputs:
       const str = faults.map(fault => fault.id + ':' + fault.description).join(', ')
       return str
 
-  fw_ver:
+  - key: fw_ver
     category: EVENT
     type: FIRMWARE
     subType: VERSION
     value: <status-build_no>
 
-  e_stop:
+  - key: e_stop
     category: EVENT
     type: EMERGENCY_STOP
     # value: "<status-faults>.any([10]) ? 'TRIGGERED' : 'ARMED'"
@@ -67,77 +62,77 @@ outputs:
       const str = types.EMERGENCY_STOP[nums.some(num => num===10)]
       return str
 
-  state:
+  - key: state
     category: EVENT
     type: EXECUTION
     value: types.EXECUTION[<status-state>]
 
-  wait_state:
+  - key: wait_state
     category: EVENT
     type: WAIT_STATE
     #. what value goes here when status.state is not WAIT?
     value: types.WAIT_STATE[<status-state>]
 
-  program:
+  - key: program
     category: EVENT
     type: PROGRAM
     subType: MAIN
     value: <status-program>
 
-  step:
+  - key: step
     category: EVENT
     type: BLOCK
     value: <status-step>
 
-  clk_time:
+  - key: clk_time
     category: SAMPLE
     type: CLOCK_TIME
     value: <status-utc_time>
 
-  up_time:
+  - key: up_time
     category: SAMPLE
     type: EQUIPMENT_TIMER
     subType: OPERATING
     value: <status-cpu_time>
 
-  fault_count:
+  - key: fault_count
     category: SAMPLE
     type: COUNT
     value: <%M55.2>
 
-  cycle_count:
+  - key: cycle_count
     category: SAMPLE
     type: COUNT
     value: <%M55.1>
 
-  life_count:
+  - key: life_count
     category: SAMPLE
     type: COUNT
     value: <%M55.0>
 
-  printer_start_print:
+  - key: printer_start_print
     category: EVENT
     type: ACTUATOR_STATE
     value: types.ACTUATOR_STATE[<%Q0.0>]
 
-  printer_feed:
+  - key: printer_feed
     category: EVENT
     type: ACTUATOR_STATE
     value: types.ACTUATOR_STATE[<%Q0.1>]
 
-  printer_pause:
+  - key: printer_pause
     category: EVENT
     type: ACTUATOR_STATE
     value: types.ACTUATOR_STATE[<%Q0.2>]
 
-  end_eff_cond:
+  - key: end_eff_cond
     category: CONDITION
     type: SYSTEM
     # value needs quotes here because has ':' in expression
     # value: "(cache.get('${deviceId}-status-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
     # value: types.CONDITION[<status-faults>.any([2,3,5]))]
 
-  end_eff_message:
+  - key: end_eff_message
     category: EVENT
     type: MESSAGE
     # value: cache.get('${deviceId}-status-faults').first([2,3,5]).property('description').value

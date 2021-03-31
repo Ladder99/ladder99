@@ -1,7 +1,7 @@
 # this defines the structure of the xml that will get included in devices.xml.
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from devices.yaml.
-# dataitems are defined in calcs.yaml.
+# dataitems are defined in outputs.yaml.
 
 device:
   - id: ${deviceId} # eg 'ccs-pa-001'
