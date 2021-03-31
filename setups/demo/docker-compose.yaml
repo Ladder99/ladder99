@@ -94,23 +94,6 @@ services:
       options:
         max-size: '1m'
 
-  # opc-client:
-  #   container_name: opc-client
-  #   image: node:latest
-  #   user: node
-  #   working_dir: /home/node/app
-  #   command: node src/plugins/opc.js
-  #   volumes:
-  #     - ../../services/adapter:/home/node/app
-  #   depends_on:
-  #     simulator-opc:
-  #       condition: service_started
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '1m'
-
   portainer:
     container_name: portainer
     image: portainer/portainer-ce
