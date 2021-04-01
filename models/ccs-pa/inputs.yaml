@@ -1,3 +1,6 @@
 # inputs
 
 # inputs for this are pulled from mqtt json - see services/adapter/plugins/mqtt-ccs.js
+
+#. we could define input transformations using jpath or similar,
+# instead of the mqtt-ccs.js plugin code.
