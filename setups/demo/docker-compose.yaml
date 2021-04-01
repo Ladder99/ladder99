@@ -4,95 +4,95 @@
 version: '3.7'
 
 services:
-  broker-ccs-pa-001:
-    container_name: broker-ccs-pa-001
-    image: eclipse-mosquitto
-    networks:
-      - ladder99
-    ports:
-      - 1883:1883
-    volumes:
-      - ./volumes/broker-ccs-pa-001:/mosquitto
-    logging:
-      options:
-        max-size: '1m'
+  # broker-ccs-pa-001:
+  #   container_name: broker-ccs-pa-001
+  #   image: eclipse-mosquitto
+  #   networks:
+  #     - ladder99
+  #   ports:
+  #     - 1883:1883
+  #   volumes:
+  #     - ./volumes/broker-ccs-pa-001:/mosquitto
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
-  adapter:
-    container_name: adapter
-    image: node:latest
-    user: node
-    working_dir: /home/node/app
-    command: npm start
-    depends_on:
-      broker-ccs-pa-001:
-        condition: service_started
-    networks:
-      - ladder99
-    volumes:
-      - ../../services/adapter:/home/node/app
-      - ./volumes/adapter:/etc/adapter
-    logging:
-      options:
-        max-size: '1m'
+  # adapter:
+  #   container_name: adapter
+  #   image: node:latest
+  #   user: node
+  #   working_dir: /home/node/app
+  #   command: npm start
+  #   depends_on:
+  #     broker-ccs-pa-001:
+  #       condition: service_started
+  #   networks:
+  #     - ladder99
+  #   volumes:
+  #     - ../../services/adapter:/home/node/app
+  #     - ./volumes/adapter:/etc/adapter
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
-  agent:
-    container_name: agent
-    image: raymondhub/mtconnect:v1.5
-    command: agent debug /etc/mtconnect/agent-custom/agent.cfg
-    networks:
-      - ladder99
-    ports:
-      - 5000:5000
-    depends_on:
-      adapter:
-        condition: service_started
-    volumes:
-      - ./volumes/agent:/etc/mtconnect/agent-custom
-      - ./volumes/agent/data:/var/lib/agent
-    logging:
-      options:
-        max-size: '1m'
+  # agent:
+  #   container_name: agent
+  #   image: raymondhub/mtconnect:v1.5
+  #   command: agent debug /etc/mtconnect/agent-custom/agent.cfg
+  #   networks:
+  #     - ladder99
+  #   ports:
+  #     - 5000:5000
+  #   depends_on:
+  #     adapter:
+  #       condition: service_started
+  #   volumes:
+  #     - ./volumes/agent:/etc/mtconnect/agent-custom
+  #     - ./volumes/agent/data:/var/lib/agent
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
-  simulator-mqtt:
-    container_name: simulator-mqtt
-    image: node:latest
-    user: node
-    working_dir: /home/node/app
-    command: npm start
-    environment:
-      - MQTT_HOST=broker-ccs-pa-001
-      - MQTT_PORT=1883
-      - DEVICE_ID=ccs-pa-001
-      - MESSAGES_FILE=/etc/simulator-mqtt/messages.js
-      # - LOOP=true
-    depends_on:
-      agent:
-        condition: service_started
-    networks:
-      - ladder99
-    volumes:
-      - ../../services/simulator-mqtt:/home/node/app
-      - ./volumes/simulator-mqtt:/etc/simulator-mqtt
-    logging:
-      options:
-        max-size: '1m'
+  # simulator-mqtt:
+  #   container_name: simulator-mqtt
+  #   image: node:latest
+  #   user: node
+  #   working_dir: /home/node/app
+  #   command: npm start
+  #   environment:
+  #     - MQTT_HOST=broker-ccs-pa-001
+  #     - MQTT_PORT=1883
+  #     - DEVICE_ID=ccs-pa-001
+  #     - MESSAGES_FILE=/etc/simulator-mqtt/messages.js
+  #     # - LOOP=true
+  #   depends_on:
+  #     agent:
+  #       condition: service_started
+  #   networks:
+  #     - ladder99
+  #   volumes:
+  #     - ../../services/simulator-mqtt:/home/node/app
+  #     - ./volumes/simulator-mqtt:/etc/simulator-mqtt
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
-  simulator-opc:
-    container_name: simulator-opc
-    image: node:latest
-    user: node
-    working_dir: /home/node/app
-    command: npm start
-    volumes:
-      - ../../services/simulator-opc:/home/node/app
-    depends_on:
-      agent:
-        condition: service_started
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '1m'
+  # simulator-opc:
+  #   container_name: simulator-opc
+  #   image: node:latest
+  #   user: node
+  #   working_dir: /home/node/app
+  #   command: npm start
+  #   volumes:
+  #     - ../../services/simulator-opc:/home/node/app
+  #   depends_on:
+  #     agent:
+  #       condition: service_started
+  #   networks:
+  #     - ladder99
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
   timescaledb:
     container_name: timescaledb
@@ -103,6 +103,8 @@ services:
       - db-data:/var/lib/postgresql/data
     ports:
       - '5433:5432' # 5432 was taken by... ?
+    networks:
+      - ladder99
 
   grafana:
     container_name: grafana
@@ -117,6 +119,8 @@ services:
     depends_on:
       timescaledb:
         condition: service_started
+    networks:
+      - ladder99
 
   portainer:
     container_name: portainer
