@@ -104,6 +104,15 @@ services:
     ports:
       - '5433:5432' # 5432 was taken by... ?
 
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    ports:
+      - '3001:3000' # 3000 taken by my tallieo
+    volumes:
+      - ./volumes/grafana/config/grafana.ini:/etc/grafana/grafana.ini
+      - grafana_data:/var/lib/grafana
+
   portainer:
     container_name: portainer
     image: portainer/portainer-ce
@@ -124,6 +133,7 @@ volumes:
   portainer_data:
   db-data:
     driver: local
+  grafana_data:
 
 networks:
   ladder99:
