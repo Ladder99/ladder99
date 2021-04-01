@@ -64,7 +64,7 @@ services:
       - MQTT_PORT=1883
       - DEVICE_ID=ccs-pa-001
       - MESSAGES_FILE=/etc/simulator-mqtt/messages.js
-      - LOOP=true
+      # - LOOP=true
     depends_on:
       agent:
         condition: service_started
@@ -96,7 +96,7 @@ services:
 
   timescaledb:
     container_name: timescaledb
-    image: timescale/timescaledb:latest-pg13
+    image: timescale/timescaledb:latest-pg12
     environment:
       POSTGRES_PASSWORD: 'gralgrut'
     volumes:
@@ -110,8 +110,13 @@ services:
     ports:
       - '3001:3000' # 3000 taken by my tallieo
     volumes:
-      - ./volumes/grafana/config/grafana.ini:/etc/grafana/grafana.ini
+      # - ./volumes/grafana/config/grafana.ini:/etc/grafana/grafana.ini
+      - ./volumes/grafana:/etc/grafana
       - grafana_data:/var/lib/grafana
+      # - grafana_conf:/etc/grafana
+    depends_on:
+      timescaledb:
+        condition: service_started
 
   portainer:
     container_name: portainer
@@ -134,6 +139,7 @@ volumes:
   db-data:
     driver: local
   grafana_data:
+  # grafana_conf:
 
 networks:
   ladder99:
