@@ -52,10 +52,10 @@ _buildjs:
 # -v            Remove any anonymous volumes attached to containers
 
 # start a setup with all services, e.g. `just run` or `just run demo`
-run SETUP='demo':
+run SETUP='demo' SERVICE='':
     FILE=setups/{{SETUP}}/docker-compose.yaml && \
     docker-compose --file $FILE down && \
-    docker-compose --file $FILE up --build --remove-orphans && \
+    docker-compose --file $FILE up --build --remove-orphans {{SERVICE}} && \
     docker-compose --file $FILE rm -fsv
 
 # replay mqtt recording - https://github.com/rpdswtk/mqtt_recorder

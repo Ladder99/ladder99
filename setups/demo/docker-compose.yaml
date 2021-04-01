@@ -94,6 +94,16 @@ services:
       options:
         max-size: '1m'
 
+  timescaledb:
+    container_name: timescaledb
+    image: timescale/timescaledb:latest-pg13
+    environment:
+      POSTGRES_PASSWORD: 'gralgrut'
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - '5433:5432' # 5432 was taken by... ?
+
   portainer:
     container_name: portainer
     image: portainer/portainer-ce
@@ -112,6 +122,8 @@ services:
 
 volumes:
   portainer_data:
+  db-data:
+    driver: local
 
 networks:
   ladder99:
