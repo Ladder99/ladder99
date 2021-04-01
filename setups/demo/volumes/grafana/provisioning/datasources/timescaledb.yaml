@@ -1,3 +1,5 @@
+# see https://grafana.com/docs/grafana/latest/administration/provisioning/#data-sources
+
 # config file version
 apiVersion: 1
 
@@ -35,6 +37,7 @@ datasources:
       tlsAuth: false
       tlsAuthWithCACert: false
       postgresVersion: 1200 # v12
+      sslmode: disable
       timescaledb: true
     # <string> json object of data that will be encrypted.
     secureJsonData:
