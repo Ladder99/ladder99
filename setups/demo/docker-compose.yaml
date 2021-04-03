@@ -66,9 +66,9 @@ services:
         condition: service_started
     networks:
       - ladder99
-    # volumes:
-    #   - ../../services/simulator-mqtt:/home/node/app
-    #   - ./volumes/simulator-mqtt:/etc/simulator-mqtt
+    volumes:
+      - ../../services/application:/home/node/app
+    #   - ./volumes/application:/etc/application
     logging:
       options:
         max-size: '1m'
