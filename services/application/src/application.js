@@ -20,6 +20,16 @@ async function shovel() {
       const events = component.ComponentStream.Events
       for (const event of events) {
         console.log(event)
+        // eg
+        //   application          | {
+        //   application          |   User: {
+        //   application          |     '@dataItemId': 'ccs-pa-001-operator',
+        //   application          |     '@sequence': 8,
+        //   application          |     '@subType': 'OPERATOR',
+        //   application          |     '@timestamp': '2021-04-03T14:45:25.643Z',
+        //   application          |     Value: 'AMANDA DAVIS'
+        //   application          |   }
+        //   application          | }
       }
     }
   }
