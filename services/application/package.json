@@ -1,0 +1,14 @@
+{
+  "name": "ladder99-application",
+  "version": "0.1.0",
+  "description": "MTConnect Application",
+  "type": "module",
+  "target": "es2017",
+  "scripts": {
+    "start": "node src/application.js"
+  },
+  "keywords": [],
+  "author": "Brian Burns <bburns.km@gmail.com>",
+  "license": "Proprietary",
+  "private": true
+}
