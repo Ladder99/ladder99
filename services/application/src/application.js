@@ -2,11 +2,27 @@ import fetch from 'node-fetch'
 
 const url = 'http://agent:5000/current'
 
-fetch(url, {
-  method: 'GET',
-  headers: {
-    Accept: 'application/json',
-  },
-})
-  .then(response => response.json())
-  .then(json => console.log(json))
+async function shovel() {
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: {
+      Accept: 'application/json',
+    },
+  })
+  const json = await response.json()
+  console.log(json)
+  const streams = json.MTConnectStreams.Streams
+  for (const stream of streams) {
+    const device = stream.DeviceStream
+    const components = device.ComponentStreams
+    for (const component of components) {
+      console.log(component)
+      const events = component.ComponentStream.Events
+      for (const event of events) {
+        console.log(event)
+      }
+    }
+  }
+}
+
+setInterval(shovel, 2000)
