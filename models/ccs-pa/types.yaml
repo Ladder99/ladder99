@@ -1,4 +1,4 @@
-# these types can be used in calcs.yaml
+# these types can be used in inputs.yaml
 
 types:
   ACTUATOR_STATE:

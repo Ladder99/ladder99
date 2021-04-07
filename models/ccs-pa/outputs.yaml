@@ -198,7 +198,7 @@ outputs:
   - key: web_take_up_motor_state
     category: EVENT
     type: ACTUATOR_STATE
-    # TODO: commanded? 
+    # TODO: commanded?
     value: types.ACTUATOR_STATE[<web_take_up_motor_state>]
 
   - key: printer_reprint
@@ -273,10 +273,3 @@ outputs:
     subType: DELAY
     unit: SECOND
     value: <product_sensor_one_debounce>
-
-
-
-
-
-
-
