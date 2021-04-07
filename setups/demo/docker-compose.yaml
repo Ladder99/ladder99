@@ -61,6 +61,7 @@ services:
     command: npm start
     environment:
       - URL=http://agent:5000/sample
+      - INTERVAL=2000
     depends_on:
       agent:
         condition: service_started

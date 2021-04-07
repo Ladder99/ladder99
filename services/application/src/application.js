@@ -1,6 +1,7 @@
 import fetch from 'node-fetch'
 
 const url = process.env.URL || 'http://agent:5000/sample'
+const interval = Number(process.env.INTERVAL || 2000) // msec
 
 async function shovel() {
   const response = await fetch(url, {
@@ -26,4 +27,4 @@ async function shovel() {
   // }
 }
 
-setInterval(shovel, 2000)
+setInterval(shovel, interval)
