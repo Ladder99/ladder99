@@ -4,7 +4,7 @@
 
 inputs:
   topics:
-    l99/${serialNumber}/evt/status:
+    l99/${deviceId}/evt/status:
       - key: status-connection
         path: $.connection
 
@@ -30,7 +30,7 @@ inputs:
         path: $.faults
 
       - key: status-has-no-faults
-        path: Object.keys($.faults).length == 0
+        path: Object.keys($.faults).length === 0
 
       - key: status-has-faults
         path: Object.keys($.faults).length > 0
@@ -53,215 +53,215 @@ inputs:
       - key: status-has-feed-warning
         path: Object.keys($.faults).map(f=>['50','51'].includes(f)).some(bool=>bool)
 
-    l99/${serialNumber}/evt/read: &read_topic
+    l99/${deviceId}/evt/read: &read_topic
       - key: printer_ribbon_low
-        path: $.find(a=>a.address='%I0.0').value
+        path: $.find(a=>a.address==='%I0.0').value
 
       - key: printer_service_required
-        path: $.find(a=>a.address='%I0.1').value
+        path: $.find(a=>a.address==='%I0.1').value
 
       - key: printer_print_end
-        path: $.find(a=>a.address='%I0.2').value
+        path: $.find(a=>a.address==='%I0.2').value
 
       - key: printer_media_out
-        path: $.find(a=>a.address='%I0.3').value
+        path: $.find(a=>a.address==='%I0.3').value
 
       - key: printer_ribbon_out
-        path: $.find(a=>a.address='%I0.4').value
+        path: $.find(a=>a.address==='%I0.4').value
 
       - key: printer_data_ready
-        path: $.find(a=>a.address='%I0.5').value
+        path: $.find(a=>a.address==='%I0.5').value
 
       - key: product_sensor_one
-        path: $.find(a=>a.address='%I0.6').value
+        path: $.find(a=>a.address==='%I0.6').value
 
       - key: tamp_head_up
-        path: $.find(a=>a.address='%I0.7').value
+        path: $.find(a=>a.address==='%I0.7').value
 
       - key: input_9
-        path: $.find(a=>a.address='%I0.8').value
+        path: $.find(a=>a.address==='%I0.8').value
 
       - key: smart_tamp_proximity
-        path: $.find(a=>a.address='%I0.9').value
+        path: $.find(a=>a.address==='%I0.9').value
 
       - key: safety_e_stop
-        path: $.find(a=>a.address='%I0.10').value
+        path: $.find(a=>a.address==='%I0.10').value
 
       - key: product_sensor_aux
-        path: $.find(a=>a.address='%I0.11').value
+        path: $.find(a=>a.address==='%I0.11').value
 
       - key: web_media_low
-        path: $.find(a=>a.address='%I0.12').value
+        path: $.find(a=>a.address==='%I0.12').value
 
       - key: web_dancer_arm
-        path: $.find(a=>a.address='%I0.13').value
+        path: $.find(a=>a.address==='%I0.13').value
 
       - key: input_15
-        path: $.find(a=>a.address='%I0.14').value
+        path: $.find(a=>a.address==='%I0.14').value
 
       - key: input_16
-        path: $.find(a=>a.address='%I0.15').value
+        path: $.find(a=>a.address==='%I0.15').value
 
       - key: printer_start_print
-        path: $.find(a=>a.address='%Q0.0').value
+        path: $.find(a=>a.address==='%Q0.0').value
 
       - key: printer_feed
-        path: $.find(a=>a.address='%Q0.1').value
+        path: $.find(a=>a.address==='%Q0.1').value
 
       - key: printer_pause
-        path: $.find(a=>a.address='%Q0.2').value
+        path: $.find(a=>a.address==='%Q0.2').value
 
       - key: printer_reprint
-        path: $.find(a=>a.address='%Q0.3').value
+        path: $.find(a=>a.address==='%Q0.3').value
 
       - key: tamp_air_assist
-        path: $.find(a=>a.address='%Q0.4').value
+        path: $.find(a=>a.address==='%Q0.4').value
 
       - key: tamp_vacuum
-        path: $.find(a=>a.address='%Q0.5').value
+        path: $.find(a=>a.address==='%Q0.5').value
 
       - key: tamp_cylinder
-        path: $.find(a=>a.address='%Q0.6').value
+        path: $.find(a=>a.address==='%Q0.6').value
 
       - key: output_8
-        path: $.find(a=>a.address='%Q0.7').value
+        path: $.find(a=>a.address==='%Q0.7').value
 
       - key: output_9
-        path: $.find(a=>a.address='%Q0.8').value
+        path: $.find(a=>a.address==='%Q0.8').value
 
       - key: andon_green
-        path: $.find(a=>a.address='%Q0.9').value
+        path: $.find(a=>a.address==='%Q0.9').value
 
       - key: andon_red
-        path: $.find(a=>a.address='%Q0.10').value
+        path: $.find(a=>a.address==='%Q0.10').value
 
       - key: andon_yellow
-        path: $.find(a=>a.address='%Q0.11').value
+        path: $.find(a=>a.address==='%Q0.11').value
 
       - key: output_13
-        path: $.find(a=>a.address='%Q0.12').value
+        path: $.find(a=>a.address==='%Q0.12').value
 
       - key: output_14
-        path: $.find(a=>a.address='%Q0.13').value
+        path: $.find(a=>a.address==='%Q0.13').value
 
       - key: output_15
-        path: $.find(a=>a.address='%Q0.14').value
+        path: $.find(a=>a.address==='%Q0.14').value
 
       - key: output_16
-        path: $.find(a=>a.address='%Q0.15').value
+        path: $.find(a=>a.address==='%Q0.15').value
 
       - key: web_take_up_motor_state
-        path: $.find(a=>a.address='%Q1.0').value
+        path: $.find(a=>a.address==='%Q1.0').value
 
       - key: life_count
-        path: $.find(a=>a.address='%M55.0').value
+        path: $.find(a=>a.address==='%M55.0').value
 
       - key: cycle_count
-        path: $.find(a=>a.address='%M55.1').value
+        path: $.find(a=>a.address==='%M55.1').value
 
       - key: fault_count
-        path: $.find(a=>a.address='%M55.2').value
+        path: $.find(a=>a.address==='%M55.2').value
 
       - key: idle_time
-        path: $.find(a=>a.address='%M55.3').value
+        path: $.find(a=>a.address==='%M55.3').value
 
       - key: transport_time
-        path: $.find(a=>a.address='%M55.4').value
+        path: $.find(a=>a.address==='%M55.4').value
 
       - key: printer_time
-        path: $.find(a=>a.address='%M55.5').value
+        path: $.find(a=>a.address==='%M55.5').value
 
       - key: labels_applied
-        path: $.find(a=>a.address='%M55.6').value
+        path: $.find(a=>a.address==='%M55.6').value
 
       - key: cylinder_travel_time
-        path: $.find(a=>a.address='%M55.7').value
+        path: $.find(a=>a.address==='%M55.7').value
 
       - key: cylinder_home_disengage_time
-        path: $.find(a=>a.address='%M55.8').value
+        path: $.find(a=>a.address==='%M55.8').value
 
       - key: cylinder_extend_time
-        path: $.find(a=>a.address='%M55.9').value
+        path: $.find(a=>a.address==='%M55.9').value
 
       - key: print_signal_time
-        path: $.find(a=>a.address='%M55.10').value
+        path: $.find(a=>a.address==='%M55.10').value
 
       - key: tamp_vacuum_delay
-        path: $.find(a=>a.address='%M56.0').value
+        path: $.find(a=>a.address==='%M56.0').value
 
       - key: printer_start_print_duration
-        path: $.find(a=>a.address='%M56.1').value
+        path: $.find(a=>a.address==='%M56.1').value
 
       - key: printer_end_print_wait
-        path: $.find(a=>a.address='%M56.2').value
+        path: $.find(a=>a.address==='%M56.2').value
 
       - key: product_sensor_one_edge_trigger
-        path: $.find(a=>a.address='%M56.3').value
+        path: $.find(a=>a.address==='%M56.3').value
 
       - key: product_sensor_one_debounce
-        path: $.find(a=>a.address='%M56.4').value
+        path: $.find(a=>a.address==='%M56.4').value
 
       - key: product_sensor_one_delay
-        path: $.find(a=>a.address='%M56.5').value
+        path: $.find(a=>a.address==='%M56.5').value
 
       - key: tamp_cylinder_extend_duration
-        path: $.find(a=>a.address='%M56.6').value
+        path: $.find(a=>a.address==='%M56.6').value
 
       - key: tamp_cylinder_travel_duration_multiplier
-        path: $.find(a=>a.address='%M56.7').value
+        path: $.find(a=>a.address==='%M56.7').value
 
       - key: tamp_head_up_wait_duration
-        path: $.find(a=>a.address='%M56.8').value
+        path: $.find(a=>a.address==='%M56.8').value
 
       - key: multi_feed_count
-        path: $.find(a=>a.address='%M56.9').value
+        path: $.find(a=>a.address==='%M56.9').value
 
       - key: multi_feed_delay
-        path: $.find(a=>a.address='%M56.10').value
+        path: $.find(a=>a.address==='%M56.10').value
 
       - key: product_sensor_aux_enabled
-        path: $.find(a=>a.address='%M56.11').value
+        path: $.find(a=>a.address==='%M56.11').value
 
       - key: product_sensor_aux_edge_trigger
-        path: $.find(a=>a.address='%M56.12').value
+        path: $.find(a=>a.address==='%M56.12').value
 
       - key: product_sensor_aux_debounce
-        path: $.find(a=>a.address='%M56.13').value
+        path: $.find(a=>a.address==='%M56.13').value
 
       - key: product_sensor_aux_delay
-        path: $.find(a=>a.address='%M56.14').value
+        path: $.find(a=>a.address==='%M56.14').value
 
       - key: machine_operating_mode
-        path: $.find(a=>a.address='%M56.15').value
+        path: $.find(a=>a.address==='%M56.15').value
 
       - key: web_take_up_motor_timeout
-        path: $.find(a=>a.address='%M56.16').value
+        path: $.find(a=>a.address==='%M56.16').value
 
       - key: web_take_up_motor_operating_mode
-        path: $.find(a=>a.address='%M56.17').value
+        path: $.find(a=>a.address==='%M56.17').value
 
       - key: web_take_up_motor_start_delay
-        path: $.find(a=>a.address='%M56.18').value
+        path: $.find(a=>a.address==='%M56.18').value
 
       - key: smart_tamp_enabled
-        path: $.find(a=>a.address='%M56.19').value
+        path: $.find(a=>a.address==='%M56.19').value
 
       - key: product_sensor_one_bypass
-        path: $.find(a=>a.address='%M56.20').value
+        path: $.find(a=>a.address==='%M56.20').value
 
       - key: printer_make
-        path: $.find(a=>a.address='%M56.21').value
+        path: $.find(a=>a.address==='%M56.21').value
 
       - key: web_take_up_motor_anti_twitch_enabled
-        path: $.find(a=>a.address='%M56.22').value
+        path: $.find(a=>a.address==='%M56.22').value
 
       - key: web_take_up_motor_anti_twitch_count
-        path: $.find(a=>a.address='%M56.23').value
+        path: $.find(a=>a.address==='%M56.23').value
 
       - key: web_take_up_motor_anti_twitch_counter
-        path: $.find(a=>a.address='%Z55.0').value
+        path: $.find(a=>a.address==='%Z55.0').value
 
       - key: web_take_up_motor_anti_twitch_active
-        path: $.find(a=>a.address='%Z55.1').value
+        path: $.find(a=>a.address==='%Z55.1').value
 
-    l99/${serialNumber}/evt/query: *read_topic
+    l99/${deviceId}/evt/query: *read_topic
