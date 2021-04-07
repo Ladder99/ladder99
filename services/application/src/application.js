@@ -1,6 +1,6 @@
 import fetch from 'node-fetch'
 
-const url = process.env.URL || 'http://agent:5000/current'
+const url = process.env.URL || 'http://agent:5000/sample'
 
 async function shovel() {
   const response = await fetch(url, {
