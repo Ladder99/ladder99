@@ -13,6 +13,10 @@ types:
     false: ARMED
     true: TRIGGERED
 
+  FUNCTIONAL_MODE:
+    false: MAINTENANCE
+    true: PRODUCTION
+
   EXECUTION:
     50: WAIT
     100: WAIT
@@ -30,5 +34,24 @@ types:
   WAIT_STATE:
     50: PAUSING
     100: PAUSING
+    200: UNAVAILABLE
     250: RESUMING
     300: RESUMING
+    400: UNAVAILABLE
+
+  CONDITION_TRIPLE:
+    2: NORMAL
+    1: WARNING
+    0: FAULT
+
+  FAULT_CONDITION:
+    false: NORMAL
+    true: FAULT
+
+  WARN_CONDITION:
+    false: NORMAL
+    true: WARNING
+
+  PART_DETECT:
+    0: NOT_PRESENT
+    1: PRESENT

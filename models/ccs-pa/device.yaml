@@ -24,10 +24,7 @@ device:
         - dev_cond
         - dev_msg
         - fw_ver
-
-        #- printer_start_print
-        #- printer_feed
-        #- printer_pause
+        - func_mode
 
     components:
       controller:
@@ -64,15 +61,41 @@ device:
             dataItem:
               - end_eff_cond
               - end_eff_message
-          compositions: []
+              - smart_tamp_part_detect
+              - tamp_air_assist
+              - tamp_vacuum
+              - tamp_cylinder
+              - cylinder_extend_time
+              - cylinder_home_disengage_time
+              - cylinder_travel_time
+              - tamp_vacuum_delay
+
+          #compositions: []
         feeder:
           id: ${deviceId}-feeder
           dataItems:
-            dataItem: []
-          compositions: []
-      resources:
-        components:
-          personnel:
-            dataItems:
-              dataItem:
-                - operator
+            dataItem: 
+              - feed_cond
+              - feed_message
+              - feed_part_detect
+              - web_take_up_motor_state
+              - printer_reprint
+              - printer_pause
+              - printer_feed
+              - printer_start_print
+              - print_signal_time
+              - print_time
+              - transport_time
+              - idle_time
+              - printer_start_print_duration
+              - printer_end_print_wait
+              - product_sensor_one_edge_trigger
+              - product_sensor_one_debounce
+
+          #compositions: []
+      #resources:
+      #  components:
+      #    personnel:
+      #      dataItems:
+      #        dataItem:
+      #          - operator

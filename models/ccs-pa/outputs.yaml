@@ -29,19 +29,15 @@ outputs:
   - key: dev_cond
     category: CONDITION
     type: SYSTEM
-    # any hard faults? = FAULT, any soft faults? = WARNING, no faults = NORMAL
-    value: |
-      const nums = Object.keys(<status-faults>)
-      const hard = nums.some(num => num < 50)
-      const soft = nums.some(num => num >= 50)
-      const str = hard ? 'FAULT' : soft ? 'WARNING' : 'NORMAL'
-      return str
+    #value: |
+    #  const str = <status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'
+    #  return str
+    value: types.CONDITION_TRIPLE[[<status-has-hard-faults>, <status-has-soft-faults>, <status-has-no-faults>].indexOf(true)]
 
   - key: dev_msg
     category: EVENT
     type: MESSAGE
     representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
-    # value: fault_id:fault_value, fault_id:fault_value, ...
     value: |
       const faults = Object.values(<status-faults>)
       const str = faults.map(fault => fault.id + ':' + fault.description).join(', ')
@@ -53,13 +49,16 @@ outputs:
     subType: VERSION
     value: <status-build_no>
 
+  - key: func_mode
+    category: EVENT
+    type: FUNCTIONAL_MODE
+    value: types.FUNCTIONAL_MODE[<status-has-faults>]
+
   - key: e_stop
     category: EVENT
     type: EMERGENCY_STOP
-    # value: "<status-faults>.any([10]) ? 'TRIGGERED' : 'ARMED'"
     value: |
-      const nums = Object.keys(<status-faults>)
-      const str = types.EMERGENCY_STOP[nums.some(num => num===10)]
+      const str = types.EMERGENCY_STOP[<status-has-fault-ten>]
       return str
 
   - key: state
@@ -98,42 +97,186 @@ outputs:
   - key: fault_count
     category: SAMPLE
     type: COUNT
-    value: <%M55.2>
+    value: <fault_count>
 
   - key: cycle_count
     category: SAMPLE
     type: COUNT
-    value: <%M55.1>
+    value: <cycle_count>
 
   - key: life_count
     category: SAMPLE
     type: COUNT
-    value: <%M55.0>
-
-  - key: printer_start_print
-    category: EVENT
-    type: ACTUATOR_STATE
-    value: types.ACTUATOR_STATE[<%Q0.0>]
-
-  - key: printer_feed
-    category: EVENT
-    type: ACTUATOR_STATE
-    value: types.ACTUATOR_STATE[<%Q0.1>]
-
-  - key: printer_pause
-    category: EVENT
-    type: ACTUATOR_STATE
-    value: types.ACTUATOR_STATE[<%Q0.2>]
+    value: <life_count>
 
   - key: end_eff_cond
     category: CONDITION
     type: SYSTEM
-    # value needs quotes here because has ':' in expression
-    # value: "(cache.get('${deviceId}-status-faults').any([2,3,5])) ? 'FAULT' : 'NORMAL'"
-    # value: types.CONDITION[<status-faults>.any([2,3,5]))]
+    #value: types.FAULT_CONDITION[<status-has-tamp-fault>]
+    value: types.CONDITION_TRIPLE[[<status-has-tamp-fault>, false, true].indexOf(true)]
 
   - key: end_eff_message
     category: EVENT
     type: MESSAGE
-    # value: cache.get('${deviceId}-status-faults').first([2,3,5]).property('description').value
-    # value: <status-faults>.first([2,3,5]).property('description').value
+    representation: DATA_SET
+    value: |
+      const str = Object.keys(<status-faults>).filter(key => key in [2,3,5]).map(key => key + ':' + $.faults[key].description).join(', ')
+      return str
+
+  - key: smart_tamp_part_detect
+    category: EVENT
+    type: PART_DETECT
+    value: |
+      const str = <smart_tamp_enabled> ? types.PART_DETECT[<tamp_part_detect>] : 'UNAVAILABLE'
+      return str
+
+  - key: tamp_air_assist
+    category: EVENT
+    type: ACTUATOR_STATE
+    value: types.ACTUATOR_STATE[<tamp_air_assist>]
+
+  - key: tamp_vacuum
+    category: EVENT
+    type: ACTUATOR_STATE
+    value: types.ACTUATOR_STATE[<tamp_vacuum>]
+
+  - key: tamp_cylinder
+    category: EVENT
+    type: ACTUATOR_STATE
+    value: types.ACTUATOR_STATE[<tamp_cylinder>]
+
+  - key: cylinder_extend_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: WORKING
+    unit: SECOND
+    value: <cylinder_extend_time>
+
+  - key: cylinder_home_disengage_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: WORKING
+    unit: SECOND
+    value: <cylinder_home_disengage_time>
+
+  - key: cylinder_travel_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: WORKING
+    unit: SECOND
+    value: <cylinder_travel_time>
+
+  - key: tamp_vacuum_delay
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: DELAY
+    unit: SECOND
+    value: <tamp_vacuum_delay>
+
+  - key: feed_cond
+    category: CONDITION
+    type: SYSTEM
+    #value: |
+    #  const str = <status-has-feed-fault> ? 'FAULT' : <status-has-feed-warning> ? 'WARNING' : 'NORMAL'
+    #  return str
+    value: types.CONDITION_TRIPLE[[<status-has-feed-fault>, <status-has-feed-warning>, true].indexOf(true)]
+
+  - key: feed_message
+    category: EVENT
+    type: MESSAGE
+    representation: DATA_SET
+    value: |
+      const str = Object.keys(<status-faults>).filter(key => key in [1,11,12,13,14,15,50,51]).map(key => key + ':' + $.faults[key].description).join(', ')
+      return str
+
+  - key: feed_part_detect
+    category: EVENT
+    type: PART_DETECT
+    # TODO: depends on mode of operation and trigger edge
+    value: types.PART_DETECT[<product_sensor_one>]
+
+  - key: web_take_up_motor_state
+    category: EVENT
+    type: ACTUATOR_STATE
+    # TODO: commanded? 
+    value: types.ACTUATOR_STATE[<web_take_up_motor_state>]
+
+  - key: printer_reprint
+    category: EVENT
+    type: ACTUATOR_STATE
+    value: types.ACTUATOR_STATE[<printer_reprint>]
+
+  - key: printer_pause
+    category: EVENT
+    type: ACTUATOR_STATE
+    value: types.ACTUATOR_STATE[<printer_pause>]
+
+  - key: printer_feed
+    category: EVENT
+    type: ACTUATOR_STATE
+    value: types.ACTUATOR_STATE[<printer_feed>]
+
+  - key: printer_start_print
+    category: EVENT
+    type: ACTUATOR_STATE
+    value: types.ACTUATOR_STATE[<printer_start_print>]
+
+  - key: print_signal_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: DELAY
+    unit: SECOND
+    value: <print_signal_time>
+
+  - key: print_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: WORKING
+    unit: SECOND
+    value: <print_time>
+
+  - key: transport_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: DELAY
+    unit: SECOND
+    value: <transport_time>
+
+  - key: idle_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: DELAY
+    unit: SECOND
+    value: <idle_time>
+
+  - key: printer_start_print_duration
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: DELAY
+    unit: SECOND
+    value: <printer_start_print_duration>
+
+  - key: printer_end_print_wait
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: DELAY
+    unit: SECOND
+    value: <printer_end_print_wait>
+
+  - key: product_sensor_one_edge_trigger
+    category: SAMPLE
+    value: <product_sensor_one_edge_trigger>
+
+  - key: product_sensor_one_debounce
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: DELAY
+    unit: SECOND
+    value: <product_sensor_one_debounce>
+
+
+
+
+
+
+
