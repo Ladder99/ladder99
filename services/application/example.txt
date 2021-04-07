@@ -1,3 +1,5 @@
+// this is example json data from mtconnect agent
+
 MTConnectStreams: {
   Header: {
     '@bufferSize': 131072,

@@ -60,7 +60,7 @@ services:
     working_dir: /home/node/app
     command: npm start
     environment:
-      - URL=agent:5000/current
+      - URL=http://agent:5000/current
     depends_on:
       agent:
         condition: service_started
