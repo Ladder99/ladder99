@@ -2,6 +2,9 @@
 // subscribes to ladder99 mqtt topics, receives messages,
 // parses them out, updates cache.
 
+//. this will be replaced by a generic mqtt plugin that extracts inputs according
+// to an inputs.yaml file.
+
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
 // mqtt topics
