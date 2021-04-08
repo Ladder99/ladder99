@@ -12,6 +12,7 @@
   "license": "Proprietary",
   "private": true,
   "dependencies": {
+    "influx": "^5.8.0",
     "node-fetch": "^2.6.1"
   }
 }
