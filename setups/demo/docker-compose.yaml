@@ -85,7 +85,7 @@ services:
       - MQTT_PORT=1883
       - DEVICE_ID=ccs-pa-001
       - MESSAGES_FILE=/etc/simulator-mqtt/messages.js
-      # - LOOP=true
+      - LOOP=true
     depends_on:
       application:
         condition: service_started
