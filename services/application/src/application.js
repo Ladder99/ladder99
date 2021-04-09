@@ -1,6 +1,21 @@
 import fetch from 'node-fetch'
 // import Influx from 'influx'
 
+import { Sequelize } from 'sequelize'
+
+const connect = 'postgres://bburns:gralgrut@timescaledb:5432/timescaledb'
+const sequelize = new Sequelize(connect, {
+  dialect: 'postgres',
+  protocol: 'postgres',
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false,
+    },
+  },
+})
+console.log(sequelize)
+
 const url = process.env.URL || 'http://agent:5000/sample'
 const interval = Number(process.env.INTERVAL || 2000) // msec
 
