@@ -1,28 +1,28 @@
 import fetch from 'node-fetch'
 import { Sequelize } from 'sequelize'
 
-const username = 'postgres'
-const password = 'gralgrut'
-const host = 'timescaledb'
-const port = '5432'
-const database = 'tutorial'
-const connect = `postgres://${username}:${password}@${host}:${port}/${database}`
+// const username = 'postgres'
+// const password = 'gralgrut'
+// const host = 'timescaledb'
+// const port = '5432'
+// const database = 'tutorial'
+// const connect = `postgres://${username}:${password}@${host}:${port}/${database}`
 
-const sequelize = new Sequelize(connect, {
-  dialect: 'postgres',
-  protocol: 'postgres',
-  dialectOptions: {},
-})
-console.log(sequelize)
+// const sequelize = new Sequelize(connect, {
+//   dialect: 'postgres',
+//   protocol: 'postgres',
+//   dialectOptions: {},
+// })
+// console.log(sequelize)
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('Connection has been established successfully.')
-  })
-  .catch(err => {
-    console.error('Unable to connect to the database:', err)
-  })
+// sequelize
+//   .authenticate()
+//   .then(() => {
+//     console.log('Connection has been established successfully.')
+//   })
+//   .catch(err => {
+//     console.error('Unable to connect to the database:', err)
+//   })
 
 const url = process.env.URL || 'http://agent:5000/sample'
 const interval = Number(process.env.INTERVAL || 2000) // msec
@@ -52,4 +52,4 @@ async function shovel() {
   // }
 }
 
-// setInterval(shovel, interval)
+setInterval(shovel, interval)

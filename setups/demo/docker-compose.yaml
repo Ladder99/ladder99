@@ -115,50 +115,20 @@ services:
       options:
         max-size: '1m'
 
-  timescaledb:
-    container_name: timescaledb
-    image: timescale/timescaledb:2.1.1-pg12
-    environment:
-      POSTGRES_PASSWORD: 'gralgrut'
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    ports:
-      - '5433:5432' # 5432 was taken by... ?
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '1m'
-
-  # influxdb:
-  #   container_name: influxdb
-  #   image: influxdb:2.0-alpine
+  # timescaledb:
+  #   container_name: timescaledb
+  #   image: timescale/timescaledb:2.1.1-pg12
+  #   environment:
+  #     POSTGRES_PASSWORD: 'gralgrut'
   #   volumes:
-  #     - influxdbv2:/.influxdbv2
+  #     - db-data:/var/lib/postgresql/data
   #   ports:
-  #     - '8086:8086'
+  #     - '5433:5432' # 5432 was taken by... ?
   #   networks:
   #     - ladder99
   #   logging:
   #     options:
   #       max-size: '1m'
-
-  # # Use the influx cli to set up an influxdb instance.
-  # influxdb_cli:
-  #   container_name: influxdb_cli
-  #   image: influxdb:2.0-alpine
-  #   # The influx setup command walks through the initial InfluxDB OSS setup
-  #   # process, creating a default user, organization, and bucket.
-  #   # Use these same configurations parameters in your telegraf configuration,
-  #   # mytelegraf.conf.
-  #   entrypoint: influx setup --bucket ladder99 -t influxtoken -o ladder99 --username=bburns --password=whatisthis --host=http://influxdb:8086 -f
-  #   # Wait for the influxd service in the influxdb container has fully bootstrapped
-  #   # before trying to setup an influxdb instance with the influxdb_cli service.
-  #   restart: on-failure:10
-  #   networks:
-  #     - ladder99
-  #   depends_on:
-  #     - influxdb
 
   # telegraf:
   #   image: telegraf
@@ -211,8 +181,8 @@ volumes:
   portainer_data:
   db-data:
     driver: local
-  influxdbv2:
-  grafana_data:
+  # influxdbv2:
+  # grafana_data:
   # grafana_conf:
 
 networks:

@@ -1,0 +1,30 @@
+  # influxdb:
+  #   container_name: influxdb
+  #   image: influxdb:2.0-alpine
+  #   volumes:
+  #     - influxdbv2:/.influxdbv2
+  #   ports:
+  #     - '8086:8086'
+  #   networks:
+  #     - ladder99
+  #   logging:
+  #     options:
+  #       max-size: '1m'
+
+  # # Use the influx cli to set up an influxdb instance.
+  # influxdb_cli:
+  #   container_name: influxdb_cli
+  #   image: influxdb:2.0-alpine
+  #   # The influx setup command walks through the initial InfluxDB OSS setup
+  #   # process, creating a default user, organization, and bucket.
+  #   # Use these same configurations parameters in your telegraf configuration,
+  #   # mytelegraf.conf.
+  #   entrypoint: influx setup --bucket ladder99 -t influxtoken -o ladder99 --username=bburns --password=whatisthis --host=http://influxdb:8086 -f
+  #   # Wait for the influxd service in the influxdb container has fully bootstrapped
+  #   # before trying to setup an influxdb instance with the influxdb_cli service.
+  #   restart: on-failure:10
+  #   networks:
+  #     - ladder99
+  #   depends_on:
+  #     - influxdb
+
