@@ -1,0 +1,37 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "gralgrut",
+    "database": "tutorial",
+    "host": "timescaledb",
+    "port": "5432",
+    "dialect": "postgres",
+    "protocol": "postgres",
+    "dialectOptions": {}
+  },
+  "test": {
+    "username": "postgres",
+    "password": "gralgrut",
+    "database": "tutorial",
+    "host": "timescaledb",
+    "port": "5432",
+    "dialect": "postgres",
+    "protocol": "postgres",
+    "dialectOptions": {}
+  },
+  "production": {
+    "username": "postgres",
+    "password": "gralgrut",
+    "database": "tutorial",
+    "host": "timescaledb",
+    "port": "5432",
+    "dialect": "postgres",
+    "protocol": "postgres",
+    "dialectOptions": {
+      "ssl": {
+        "require": true,
+        "rejectUnauthorized": false
+      }
+    }
+  }
+}
