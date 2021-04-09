@@ -3,18 +3,22 @@ import fetch from 'node-fetch'
 
 import { Sequelize } from 'sequelize'
 
-const connect = 'postgres://bburns:gralgrut@timescaledb:5432/timescaledb'
+const connect = 'postgres://postgres:gralgrut@timescaledb:5432/tutorial'
 const sequelize = new Sequelize(connect, {
   dialect: 'postgres',
   protocol: 'postgres',
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    },
-  },
+  dialectOptions: {},
 })
 console.log(sequelize)
+
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.')
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err)
+  })
 
 const url = process.env.URL || 'http://agent:5000/sample'
 const interval = Number(process.env.INTERVAL || 2000) // msec
@@ -56,4 +60,4 @@ async function shovel() {
   // }
 }
 
-setInterval(shovel, interval)
+// setInterval(shovel, interval)
