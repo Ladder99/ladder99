@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <xsl:stylesheet version="1.0" 
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
@@ -18,8 +19,8 @@
 			
 				<title>MTConnect Devices</title>
 					
-				<link href="/styles/bootstrap.min.css" rel="stylesheet"></link>
-				<link href="/styles/Custom.css" rel="stylesheet"></link>
+				<link href="/styles/css/bootstrap.min.css" rel="stylesheet"></link>
+				<link href="/styles/css/Custom.css" rel="stylesheet"></link>
 					
 			</head>
 			
@@ -38,7 +39,7 @@
 					  </button>
 					  
 					  <a class="navbar-brand" style="padding: 5px 20px;" href="http://www.mtconnect.org">
-						<img alt="Brand" src="/styles/MTConnect-Logo.png" height="40"/>
+						<img alt="Brand" src="/styles/LadderLogo.png" height="40"/>
 					  </a>
 					  
 					</div>
@@ -83,29 +84,21 @@
 				</div>
 				
 				<footer class="footer" style="margin-top: 20px; margin-bottom: 20px;">
-				
 				  <div class="container">
-				  
-					<div class="row">
-					
-						<p class="col-md-3 text-muted">This template is designed by Feenux LLC and is available for use through the MIT license.</p>
-						
-						<p class="col-md-3 text-muted">Source code for this template is available at 
-							<a href="https://github.com/TrakHound/MTConnect-Agent-Stylesheet">GitHub</a>
-						</p>
-					
-						<p class="col-md-3 text-muted">© 2016 Feenux LLC, All Rights Reserved</p>
-
-					</div>
-
+						<!-- <div class="row">
+							<p class="col-md-3 text-muted">This template is designed by Feenux LLC and is available for use through the MIT license.</p>
+							<p class="col-md-3 text-muted">Source code for this template is available at 
+								<a href="https://github.com/TrakHound/MTConnect-Agent-Stylesheet">GitHub</a>
+							</p>
+							<p class="col-md-3 text-muted">© 2016 Feenux LLC, All Rights Reserved</p>
+						</div> -->
 				  </div>
-				  
 				</footer>
 				
 				
-				<script src="/styles/jquery-1.12.4.min.js"></script>
-				<script src="/styles/bootstrap.min.js"></script>
-				<script src="/styles/GetSample.js"></script>
+				<script src="/styles/js/jquery-1.12.4.min.js"></script>
+				<script src="/styles/js/bootstrap.min.js"></script>
+				<script src="/styles/js/GetSample.js"></script>
 											
 			</body>
 			

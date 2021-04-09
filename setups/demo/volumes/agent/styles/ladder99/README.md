@@ -1,6 +1,6 @@
 # MTConnect-Agent-Stylesheet
 
-Custom stylesheets for Ladder99, based on https://github.com/TrakHound/MTConnect-Agent-Stylesheet.
+Adapted for Ladder99 from https://github.com/TrakHound/MTConnect-Agent-Stylesheet.
 
 XML Stylesheet for MTConnect Agents using [Bootstrap](http://getbootstrap.com/). This provides a better appearance than the default stylesheet and also adds the ability to switch between Probe, Current, and Sample requests.
 
