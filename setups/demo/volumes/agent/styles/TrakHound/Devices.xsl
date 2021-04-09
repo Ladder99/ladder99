@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet version="1.0" 
-xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
-xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-xmlns:fn="http://www.w3.org/2005/xpath-functions" 
-xmlns:m="urn:mtconnect.org:MTConnectDevices:1.3"
+	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+	xmlns:fn="http://www.w3.org/2005/xpath-functions" 
+	xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6"
 >
 
 	<xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/>
@@ -12,7 +12,7 @@ xmlns:m="urn:mtconnect.org:MTConnectDevices:1.3"
 	
 			<head>
 			
-			    <meta charset="utf-8"></meta>
+				<meta charset="utf-8"></meta>
 				<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
 				<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
 			
