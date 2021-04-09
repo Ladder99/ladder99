@@ -2,7 +2,7 @@
   "development": {
     "username": "postgres",
     "password": "gralgrut",
-    "database": "tutorial",
+    "database": "ladder99_development",
     "host": "timescaledb",
     "port": "5432",
     "dialect": "postgres",
@@ -12,7 +12,7 @@
   "test": {
     "username": "postgres",
     "password": "gralgrut",
-    "database": "tutorial",
+    "database": "ladder99_test",
     "host": "timescaledb",
     "port": "5432",
     "dialect": "postgres",
@@ -22,7 +22,7 @@
   "production": {
     "username": "postgres",
     "password": "gralgrut",
-    "database": "tutorial",
+    "database": "ladder99_production",
     "host": "timescaledb",
     "port": "5432",
     "dialect": "postgres",

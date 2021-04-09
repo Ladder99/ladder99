@@ -1,9 +1,13 @@
 import fetch from 'node-fetch'
-// import Influx from 'influx'
-
 import { Sequelize } from 'sequelize'
 
-const connect = 'postgres://postgres:gralgrut@timescaledb:5432/tutorial'
+const username = 'postgres'
+const password = 'gralgrut'
+const host = 'timescaledb'
+const port = '5432'
+const database = 'tutorial'
+const connect = `postgres://${username}:${password}@${host}:${port}/${database}`
+
 const sequelize = new Sequelize(connect, {
   dialect: 'postgres',
   protocol: 'postgres',
@@ -22,18 +26,6 @@ sequelize
 
 const url = process.env.URL || 'http://agent:5000/sample'
 const interval = Number(process.env.INTERVAL || 2000) // msec
-
-// const influx = new Influx.InfluxDB({
-//   host: 'influxdb',
-//   database: 'ocean_tides',
-//   schema: [
-//     {
-//       measurement: 'tide',
-//       fields: { height: Influx.FieldType.FLOAT },
-//       tags: ['unit', 'location'],
-//     },
-//   ],
-// })
 
 async function shovel() {
   const response = await fetch(url, {
