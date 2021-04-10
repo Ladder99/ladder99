@@ -14,6 +14,7 @@
         <DataItem id="ccs-pa-001-state" category="EVENT" type="EXECUTION"/>
         <DataItem id="ccs-pa-001-e_stop" category="EVENT" type="EMERGENCY_STOP"/>
         <DataItem id="ccs-pa-001-printer_start_print" category="EVENT" type="ACTUATOR_STATE"/>
+        <DataItem id="ccs-pa-001-status-cycle_time" category="SAMPLE" units="SECOND" type="TIME"/>
       </DataItems>
 
       <Systems id="systems">

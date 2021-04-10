@@ -1,4 +1,5 @@
 # this defines the devices.xml structure, along with the model yamls.
+# read by services/adapter/src/adapter.js.
 #. see also devices-new.yaml for future dev
 
 devices:

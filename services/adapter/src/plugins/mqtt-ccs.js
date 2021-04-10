@@ -18,6 +18,9 @@ const topics = {
 // map from aliases to items, e.g. "ccs-pa-001-IN10" -> { address: "%I0.9", ... }
 const aliases = {}
 
+// timing
+let cycleStart = null
+
 // initialize the client plugin.
 // queries the device for address space definitions, subscribes to topics.
 export function init({ url, cache, deviceId }) {
@@ -96,6 +99,17 @@ export function init({ url, cache, deviceId }) {
       const key = `${deviceId}-status-${part}` // eg 'ccs-pa-001-status-faults'
       const item = { value: msg.payload[part] }
       cache.set(key, item)
+    }
+    // check for step transitions to get timing info
+    const step = msg.payload.step
+    if (step === 'Waiting') {
+      //
+    } else if (step === 'Cycle_Start') {
+      cycleStart = new Date().getTime() // ms
+    } else if (step === 'Cycle_Finish') {
+      const cycleTime = new Date().getTime() - cycleStart
+      cache.set(`${deviceId}-status-cycle_time`, cycleTime) // ms
+      cycleStart = null
     }
   }
 
