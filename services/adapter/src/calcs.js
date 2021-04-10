@@ -47,6 +47,11 @@ export default [
     key: 'ccs-pa-001-state',
     value: cache => types.EXECUTION[cache.get('ccs-pa-001-status-state').value],
   },
+  {
+    dependsOn: ['ccs-pa-001-status-cycle_time'],
+    key: 'ccs-pa-001-status-cycle_time',
+    value: cache => cache.get('ccs-pa-001-status-cycle_time').value,
+  },
 
   // these come from
   {
