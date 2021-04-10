@@ -1,3 +1,7 @@
 .panel-default > .panel-heading {
   padding: 5px 15px;
 }
+
+.navbar {
+  background: black;
+}
