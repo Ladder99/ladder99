@@ -9,7 +9,9 @@ const deviceId = process.env.DEVICE_ID // eg 'ccs-pa-001'
 const clientId = deviceId || 'simulator-' + Math.random()
 const config = { host, port, clientId }
 const messagesFile = process.env.MESSAGES_FILE
+const messageDelay = Number(process.env.MESSAGE_DELAY || 1000)
 const loop = Boolean(process.env.LOOP || false)
+const loopDelay = Number(process.env.LOOP_DELAY || 3000)
 
 const messages = require(messagesFile)
 console.log({ messages })
@@ -29,9 +31,9 @@ mqtt.on('connect', async function onConnect() {
       const payload = JSON.stringify(message.json)
       console.log(`Topic ${topic}: ${payload.slice(0, 40)}...`)
       mqtt.publish(topic, payload)
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      await new Promise(resolve => setTimeout(resolve, messageDelay))
     }
-    await new Promise(resolve => setTimeout(resolve, 3000))
+    await new Promise(resolve => setTimeout(resolve, loopDelay))
   }
   console.log(`Closing MQTT connection...`)
   mqtt.end()
