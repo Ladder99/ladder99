@@ -83,6 +83,12 @@ outputs:
     type: BLOCK
     value: <status-step>
 
+  - key: cycle_time
+    category: SAMPLE
+    type: PROCESS_TIMER
+    subType: PROCESS
+    value: <status-cycle_time>
+
   - key: clk_time
     category: SAMPLE
     type: CLOCK_TIME

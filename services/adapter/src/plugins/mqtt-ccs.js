@@ -107,8 +107,8 @@ export function init({ url, cache, deviceId }) {
     } else if (step === 'Cycle_Start') {
       cycleStart = new Date().getTime() // ms
     } else if (step === 'Cycle_Finish') {
-      const cycleTime = new Date().getTime() - cycleStart
-      cache.set(`${deviceId}-status-cycle_time`, { value: cycleTime }) // ms
+      const cycleTime = (new Date().getTime() - cycleStart) / 1000 // sec
+      cache.set(`${deviceId}-status-cycle_time`, { value: cycleTime }) // sec
       cycleStart = null
     }
   }
