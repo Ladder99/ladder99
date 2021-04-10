@@ -87,6 +87,7 @@ outputs:
     category: SAMPLE
     type: PROCESS_TIMER
     subType: PROCESS
+    units: SECONDS
     value: <status-cycle_time>
 
   - key: clk_time
