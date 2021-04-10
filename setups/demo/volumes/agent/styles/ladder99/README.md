@@ -7,14 +7,6 @@ XML Stylesheet for MTConnect Agents using [Bootstrap](http://getbootstrap.com/).
 
 ## About
 
-### Desktop
-
-![Agent Stylesheet PC] (http://www.feenux.com/github/images/agent_stylesheet/agent_stylesheet_01.png)
-
-### Mobile
-
-![Agent Stylesheet Mobile] (http://www.feenux.com/github/images/agent_stylesheet/agent_stylesheet_02.png)
-
 ### File Size
 
 Just over 300 KB. This Includes the necessary files for jQuery, Bootstrap, and the logo image.
@@ -50,6 +42,10 @@ StreamsStyle { Location = /styles/Streams.xsl }
 
 
 ## Customization
+
+Changes should be made to BOTH Devices.xsl and Streams.xsl, where applicable.
+
+The MTConnect cppagent doesn't seem to allow using subfolders in the styles. 
 
 This stylesheet is easily customizable using the Custom.css file. Customizations can include any overrides of the standard bootstrap styles such as changing the colors of the panel headers. The logo and link can be changed by editing the following lines in both Devices.xsl and Streams.xsl as shown below:
 
