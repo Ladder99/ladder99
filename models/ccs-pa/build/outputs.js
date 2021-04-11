@@ -8,17 +8,11 @@ const outputTemplates = [
   {
     dependsOn: ['${deviceId}-status-connection'],
     key: '${deviceId}-connection',
-    // value: cache =>
-    //   types.AVAILABILITY[cache.get('${deviceId}-status-connection').value],
     value: 'types.AVAILABILITY[<status-connection>]',
   },
   {
     dependsOn: ['${deviceId}-%Q0.0'],
     key: '${deviceId}-printer_start_print',
-    // value: cache =>
-    //   cache.get('${deviceId}-%Q0.0').value ? 'ACTIVE' : 'INACTIVE',
-    // types.ACTUATOR_STATE[cache.get('${deviceId}-%Q0.0')],
-    // value: "<%Q0.0> ? 'ACTIVE' : 'INACTIVE",
     value: 'types.ACTUATOR_STATE[<%Q0.0>]',
   },
   {
@@ -35,14 +29,11 @@ const outputTemplates = [
   {
     dependsOn: ['${deviceId}-status-state'],
     key: '${deviceId}-state',
-    // value: cache =>
-    //   types.EXECUTION[cache.get('${deviceId}-status-state').value],
     value: 'types.EXECUTION[<status-state>]',
   },
   {
     dependsOn: ['${deviceId}-status-cycle_time'],
     key: '${deviceId}-status-cycle_time',
-    // value: cache => cache.get('${deviceId}-status-cycle_time').value,
     value: '<status-cycle_time>',
   },
 
@@ -50,7 +41,6 @@ const outputTemplates = [
   // {
   //   dependsOn: ['${deviceId}-operator'],
   //   key: '${deviceId}-operator',
-  //   value: cache => cache.get('${deviceId}-operator').value,
   //   value: <operator>,
   // },
 ]
@@ -66,5 +56,6 @@ export function getOutputs({ cache, deviceId }) {
     }
     return output
   })
+  console.log({ outputs })
   return outputs
 }
