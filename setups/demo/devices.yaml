@@ -1,6 +1,6 @@
 # this defines the devices.xml structure, along with the model yamls.
 # read by services/adapter/src/adapter.js.
-#. see also devices-new.yaml for future dev.
+#. see also devices-future.yaml for future dev.
 
 devices:
   - id: ccs-pa-001 # this is substituted into the model yaml and inputs

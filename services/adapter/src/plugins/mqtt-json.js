@@ -1,6 +1,6 @@
-// mqtt
+// mqtt-json
 // adapter plugiin - subscribes to mqtt topics, receives messages,
-// parses them out, updates cache.
+// parses them out as json, updates cache.
 
 //. wip
 
