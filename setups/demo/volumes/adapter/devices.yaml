@@ -10,17 +10,17 @@ devices:
       serialNumber: '001'
 
     sources:
-      - inputs: ccs-pa # not really needed as empty for ccs mqtt
+      - model: ccs-pa # model defines inputs and outputs via yaml files
         type: mqtt-ccs # type of plugin - manages protocol and payload
-        active: true # should this data source be initialized on adapter startup?
         url: mqtt://broker-ccs-pa-001:1883
+        # active: true # should this data source be initialized on adapter startup?
 
-      - inputs: rockwell-hmi
+      - model: rockwell-hmi
         type: opc
-        active: true
         url: opc.tcp://simulator-opc:4334/UA/LittleServer
+        # active: true
 
-    destinations: # where to post output
+    destinations: # where to post output - just handles one for now
       - type: shdr
         host: adapter
         port: 7878

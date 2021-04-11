@@ -1,6 +1,6 @@
-// list of calculations to run on cache values to get shdr key/value pairs.
+// list of output calculations to run on cache values to get SHDR key/value pairs.
 
-//. this will be extracted/compiled from outputs and types yamls.
+//. this will be extracted/compiled from outputs.yaml.
 
 import fs from 'fs' // node lib for filesys
 import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml

@@ -46,8 +46,10 @@ for (const device of devices) {
     const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
     console.log('TCP new client connection from', remoteAddress)
     //. import outputs calcs from each model and pass to cache
-    const outputs = (await import('./outputs.js')).default
-    // outputs.forEach(output => output.socket = socket)
+    // const path = `./models/${model}/build/outputs.js`
+    const path = './outputs.js'
+    const outputs = (await import(path)).default
+    // outputs.forEach(output => output.socket = socket) // didnt help warning
     // @ts-ignore
     cache.addOutputs(outputs, socket)
     // handle incoming data - get PING from agent, return PONG
@@ -63,6 +65,7 @@ for (const device of devices) {
       }
     }
   })
+  // start tcp connection
   const { destinations } = device
   const destination = destinations[0] //. just handles one for now
   console.log(`TCP try listening to socket at`, destinations, `...`)
