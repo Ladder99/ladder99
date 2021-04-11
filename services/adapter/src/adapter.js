@@ -101,7 +101,8 @@ for (const device of devices) {
 function getOutputs({ outputTemplates, types, deviceId }) {
   const outputs = outputTemplates.map(template => {
     //. build up dependsOn array during parse also - what cache keys are seen?
-    const dependsOn = [deviceId + '-status-step']
+    // const dependsOn = [deviceId + '-status-cycle_time'] //...
+    const dependsOn = []
     // m will be undefined if no match, or array with elements 1,2,3 with contents
     //. also check if str is multiline - then need to wrap in braces?
     //. handle multiple <>'s in a string also - how do? .* needs to be greedy for one thing
@@ -112,16 +113,19 @@ function getOutputs({ outputTemplates, types, deviceId }) {
     if (m) {
       const str = m[1] + `cache.get('${deviceId}-${m[2]}').value` + m[3]
       value = cache => eval(str) // evaluate the cache access string
+      //. assume each starts with deviceId?
+      const dependency = `${deviceId}-${m[2]}`
+      dependsOn.push(dependency)
     }
     const output = {
-      //. assume each starts with deviceId?
       // dependsOn: template.dependsOn.map(s =>
       //   s.replace('${deviceId}', deviceId)
       // ),
       dependsOn,
       //. could assume each starts with deviceId?
       //. could call this id, as it's such in the devices.xml?
-      key: template.key.replace('${deviceId}', deviceId),
+      // key: template.key.replace('${deviceId}', deviceId),
+      key: `${deviceId}-${template.key}`,
       //. could call this getValue?
       value,
     }

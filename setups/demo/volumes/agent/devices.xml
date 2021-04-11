@@ -12,6 +12,7 @@
       <DataItems>
         <DataItem id="ccs-pa-001-connection" category="EVENT" type="AVAILABILITY"/>
         <DataItem id="ccs-pa-001-state" category="EVENT" type="EXECUTION"/>
+        <DataItem id="ccs-pa-001-step" category="EVENT" type="BLOCK"/>
         <DataItem id="ccs-pa-001-e_stop" category="EVENT" type="EMERGENCY_STOP"/>
         <DataItem id="ccs-pa-001-printer_start_print" category="EVENT" type="ACTUATOR_STATE"/>
         <DataItem id="ccs-pa-001-status-cycle_time" category="SAMPLE" units="SECOND" type="PROCESS_TIMER" subType="PROCESS"/>
