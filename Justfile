@@ -25,23 +25,25 @@ docs:
     cd docs && make html && http-server build/html
     cd docs && firebase deploy
 
-# build devices.xml and device*.js files from device*.yaml files
-build: _buildxml _buildjs
+# buildxml and buildjs
+build SETUP='demo':
+    just buildxml {{SETUP}}
+    just buildjs {{SETUP}}
 
-# build devices.xml from device*.yaml files
-_buildxml:
-    node services/builder/code/src/buildXml.js setups/demo/devices/*.yaml | \
-    tee setups/demo/devices.xml
-    cp setups/demo/devices.xml setups/demo/volumes/agent/config
+# build devices.xml from model device.yaml
+buildxml SETUP='demo':
+    node services/compiler/src/buildXml.js setups/{{SETUP}}/devices/*.yaml | \
+    tee setups/{{SETUP}}/devices.xml
+    cp setups/{{SETUP}}/devices.xml setups/{{SETUP}}/volumes/agent/config
 
-# build device*.js files from device*.yaml files
-_buildjs:
-    for filename in setups/demo/devices/*.yaml; \
+# build calcs.js from model outputs.yaml
+buildjs:
+    for filename in setups/{{SETUP}}/devices/*.yaml; \
     do \
-        node services/builder/code/src/buildJs.js "$filename" | \
+        node services/compiler/src/buildJs.js "$filename" | \
           tee "setups/demo/devices/$(basename $filename .yaml).js" ; \
     done
-    cp services/builder/output/*.js services/adapter/code/src/plugins
+    cp services/compiler/output/*.js services/adapter/src/plugins
 
 
 # run
@@ -53,7 +55,7 @@ _buildjs:
 
 # start a setup with all services, e.g. `just run` or `just run demo`
 run SETUP='demo' SERVICE='':
-    FILE=setups/{{SETUP}}/docker-compose.yaml && \
+    FILE=setups/{{SETUP}}/docker/docker-compose.yaml && \
     docker-compose --file $FILE down && \
     docker-compose --file $FILE up --build --remove-orphans {{SERVICE}} && \
     docker-compose --file $FILE rm -fsv
