@@ -1,4 +1,5 @@
 // list of calculations to run on cache values to get shdr key/value pairs.
+
 //. this will be extracted/compiled from outputs and types yamls.
 // edit manually for now.
 
@@ -53,7 +54,7 @@ export default [
     value: cache => cache.get('ccs-pa-001-status-cycle_time').value,
   },
 
-  // these come from
+  // these come from models/rockwell-hmi
   {
     dependsOn: ['ccs-pa-001-operator'],
     key: 'ccs-pa-001-operator',

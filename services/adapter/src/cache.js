@@ -42,6 +42,8 @@ export class Cache {
   }
 }
 
+// get shdr output
+//. could have other output types also
 function getShdr(cache, calc) {
   const timestamp = new Date().toISOString()
   const key = calc.key

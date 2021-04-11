@@ -1,6 +1,9 @@
 # inputs
 
-# currently inputs are pulled from mqtt json - see services/adapter/plugins/mqtt-ccs.js
+#. not used yet
+
+# currently inputs are pulled from mqtt json with code -
+# see services/adapter/plugins/mqtt-ccs.js
 
 inputs:
   topics:
@@ -53,6 +56,7 @@ inputs:
       - key: status-has-feed-warning
         path: Object.keys($.faults).map(f=>['50','51'].includes(f)).some(bool=>bool)
 
+    #. need better way than $.find - linear search is slow
     l99/${deviceId}/evt/read: &read_topic
       - key: printer_ribbon_low
         path: $.find(a=>a.address==='%I0.0').value
