@@ -1,3 +1,4 @@
 {
+  "//": "need this so can import .js files instead of .mjs",
   "type": "module"
 }
