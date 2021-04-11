@@ -100,12 +100,11 @@ for (const device of devices) {
 // note: types IS used - it's in the closure formed by eval(str).
 function getOutputs({ outputTemplates, types, deviceId }) {
   const outputs = outputTemplates.map(template => {
-    //. build up dependsOn array during parse also - what cache keys are seen?
-    // const dependsOn = [deviceId + '-status-cycle_time'] //...
+    // build up dependsOn array during parse from what cache keys are seen
     const dependsOn = []
     // m will be undefined if no match, or array with elements 1,2,3 with contents
-    //. also check if str is multiline - then need to wrap in braces?
     //. handle multiple <>'s in a string also - how do? .* needs to be greedy for one thing
+    //. also check if str is multiline - then need to wrap in braces?
     const regexp = /(.*)<(.*)>(.*)/
     const m = (template.value || '').match(regexp)
     let value = cache => template.value // by default just return string value
@@ -118,16 +117,11 @@ function getOutputs({ outputTemplates, types, deviceId }) {
       dependsOn.push(dependency)
     }
     const output = {
-      // dependsOn: template.dependsOn.map(s =>
-      //   s.replace('${deviceId}', deviceId)
-      // ),
       dependsOn,
-      //. could assume each starts with deviceId?
-      //. could call this id, as it's such in the devices.xml?
-      // key: template.key.replace('${deviceId}', deviceId),
+      //. assume each starts with deviceId?
+      //. call this id, as it's such in the devices.xml?
       key: `${deviceId}-${template.key}`,
-      //. could call this getValue?
-      value,
+      value, //. getValue?
     }
     return output
   })
