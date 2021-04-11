@@ -29,7 +29,8 @@ for (const device of devices) {
   const deviceId = device.id
   const { sources } = device
   for (const source of sources) {
-    const { type, url } = source
+    console.log({ source })
+    const { model, type, url } = source
     const path = `./plugins/${type}.js` // eg './plugins/mqtt-ccs.js' - must start with ./
     console.log(`Adapter importing plugin code: ${path}...`)
     // @ts-ignore top level await okay
@@ -37,6 +38,19 @@ for (const device of devices) {
     //. also load inputs.yaml or js for this source, pass to plugin
     console.log(`Adapter initializing plugin...`)
     plugin.init({ url, cache, deviceId })
+
+    //. import outputs calcs from each model and pass to cache.
+    const path2 = `/home/node/models/${model}/build/outputs.js`
+    //. this should be const foo = await import(path); const outputs = foo(deviceId)
+    // const outputs = (await import(path)).default
+    // @ts-ignore top level await okay
+    const module = await import(path2)
+    // console.log({ module })
+    const outputs = module.getOutputs({ cache, deviceId })
+    // console.log({ outputs })
+    source.outputs = outputs
+    // outputs.forEach(output => output.socket = socket) // didnt help warning
+    // @ts-ignore
   }
 
   console.log(`TCP creating server for agent...`)
@@ -46,18 +60,8 @@ for (const device of devices) {
     const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
     console.log('TCP new client connection from', remoteAddress)
 
-    //. import outputs calcs from each model and pass to cache.
-    // need to do this here as we need the socket.
     for (const source of sources) {
-      const { model } = source
-      const path = `/home/node/models/${model}/build/outputs.js`
-      //. this should be const foo = await import(path); const outputs = foo(deviceId)
-      // const outputs = (await import(path)).default
-      const module = await import(path)
-      console.log({ module })
-      const outputs = module.getOutputs({ cache, deviceId })
-      // outputs.forEach(output => output.socket = socket) // didnt help warning
-      // @ts-ignore
+      const { outputs } = source
       cache.addOutputs(outputs, socket)
     }
 

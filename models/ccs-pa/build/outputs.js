@@ -45,17 +45,22 @@ const outputTemplates = [
   // },
 ]
 
-export function getOutputs({ cache, deviceId }) {
+export function getOutputs({ deviceId }) {
   const outputs = outputTemplates.map(template => {
+    const str = template.value.replace(/(foo)/g, 'pok')
+    //. check if str is multiline - then need to wrap in braces etc?
+    const value = cache => eval(str)
     const output = {
       dependsOn: template.dependsOn.map(s =>
         s.replace('${deviceId}', deviceId)
       ),
       key: template.key.replace('${deviceId}', deviceId),
-      value: cache => cache.get(`${deviceId}-operator`).value,
+      // value: cache => cache.get(`${deviceId}-operator`).value,
+      value,
     }
+    console.log({ output })
+    console.log({ str })
     return output
   })
-  console.log({ outputs })
   return outputs
 }
