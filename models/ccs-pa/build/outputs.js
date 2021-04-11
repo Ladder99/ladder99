@@ -56,6 +56,7 @@ export function getOutputs({ deviceId }) {
   const outputs = outputTemplates.map(template => {
     // m will be undefined if no match, or array with elements 1,2,3 with contents
     //. also check if str is multiline - then need to wrap in braces?
+    //. handle multiple <>'s in a string also - how do? .* needs to be greedy for one thing
     const regexp = /(.*)<(.*)>(.*)/
     const m = template.value.match(regexp)
     let value = cache => template.value // by default just return string value
