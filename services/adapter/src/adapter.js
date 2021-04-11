@@ -45,11 +45,13 @@ for (const device of devices) {
 
     // import outputs
     const path2 = `/home/node/models/${model}/outputs.yaml`
-    const outputTemplates = importYaml(path2)
+    // @ts-ignore
+    const outputTemplates = importYaml(path2).outputs
 
     // import types
     const path3 = `/home/node/models/${model}/types.yaml`
-    const types = importYaml(path3)
+    // @ts-ignore
+    const types = importYaml(path3).types
 
     // compile outputs from yaml strings and save to source
     const outputs = getOutputs({ deviceId, outputTemplates, types })
@@ -95,11 +97,13 @@ for (const device of devices) {
 // note: types IS used - it's in the closure formed by eval(str).
 function getOutputs({ outputTemplates, types, deviceId }) {
   const outputs = outputTemplates.map(template => {
+    //. build up dependsOn array during parse also - what cache keys are seen?
+    const dependsOn = []
     // m will be undefined if no match, or array with elements 1,2,3 with contents
     //. also check if str is multiline - then need to wrap in braces?
     //. handle multiple <>'s in a string also - how do? .* needs to be greedy for one thing
     const regexp = /(.*)<(.*)>(.*)/
-    const m = template.value.match(regexp)
+    const m = (template.value || '').match(regexp)
     let value = cache => template.value // by default just return string value
     // got match
     if (m) {
@@ -107,10 +111,11 @@ function getOutputs({ outputTemplates, types, deviceId }) {
       value = cache => eval(str) // evaluate the cache access string
     }
     const output = {
-      //. could assume each starts with deviceId?
-      dependsOn: template.dependsOn.map(s =>
-        s.replace('${deviceId}', deviceId)
-      ),
+      //. assume each starts with deviceId?
+      // dependsOn: template.dependsOn.map(s =>
+      //   s.replace('${deviceId}', deviceId)
+      // ),
+      dependsOn,
       //. could assume each starts with deviceId?
       //. could call this id, as it's such in the devices.xml?
       key: template.key.replace('${deviceId}', deviceId),
