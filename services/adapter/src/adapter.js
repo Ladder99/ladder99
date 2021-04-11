@@ -45,9 +45,9 @@ for (const device of devices) {
   tcp.on('connection', async socket => {
     const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
     console.log('TCP new client connection from', remoteAddress)
-    //. import calcs and pass to cache
-    const calcs = (await import('./outputs.js')).default
-    cache.addCalcs(calcs, socket)
+    //. import outputs calcs from each model and pass to cache
+    const outputs = (await import('./outputs.js')).default
+    cache.addOutputs(outputs, socket)
     // handle incoming data - get PING from agent, return PONG
     socket.on('data', pingpong)
     function pingpong(buffer) {
