@@ -47,19 +47,25 @@ const outputTemplates = [
 
 export function getOutputs({ deviceId }) {
   const outputs = outputTemplates.map(template => {
-    const str = template.value.replace(/(foo)/g, 'pok')
-    //. check if str is multiline - then need to wrap in braces etc?
-    const value = cache => eval(str)
+    // m will be undefined if no match, or array with elements 1,2,3 with contents
+    //. also check if str is multiline - then need to wrap in braces?
+    const regexp = /(.*)<(.*)>(.*)/
+    const m = template.value.match(regexp)
+    let value = cache => template.value // by default just return string value
+    // got match
+    if (m) {
+      // console.log({ m })
+      const str = m[1] + `cache.get('${deviceId}-${m[2]}').value` + m[3]
+      // console.log({ str })
+      value = cache => eval(str)
+    }
     const output = {
       dependsOn: template.dependsOn.map(s =>
         s.replace('${deviceId}', deviceId)
       ),
       key: template.key.replace('${deviceId}', deviceId),
-      // value: cache => cache.get(`${deviceId}-operator`).value,
       value,
     }
-    console.log({ output })
-    console.log({ str })
     return output
   })
   return outputs
