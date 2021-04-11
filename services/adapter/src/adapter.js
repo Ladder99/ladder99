@@ -52,7 +52,9 @@ for (const device of devices) {
       const { model } = source
       const path = `/home/node/models/${model}/build/outputs.js`
       //. this should be const foo = await import(path); const outputs = foo(deviceId)
-      const outputs = (await import(path)).default
+      // const outputs = (await import(path)).default
+      const Outputs = await import(path)
+      const outputs = Outputs.getOutputs({ cache, deviceId })
       // outputs.forEach(output => output.socket = socket) // didnt help warning
       // @ts-ignore
       cache.addOutputs(outputs, socket)

@@ -5,6 +5,8 @@
 # currently inputs are pulled from mqtt json with code -
 # see services/adapter/plugins/mqtt-ccs.js
 
+# each item's id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
+
 inputs:
   topics:
     l99/${deviceId}/evt/status:
