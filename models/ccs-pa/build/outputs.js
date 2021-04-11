@@ -1,23 +1,15 @@
 // list of calculations to run on cache values to get shdr key/value pairs.
 
 //. this will be extracted/compiled from outputs and types yamls.
-// edit manually for now.
 
-// import types from '../types.yaml'
-// const types = {
-//   AVAILABILITY: {
-//     online: 'AVAILABLE',
-//     offline: 'UNAVAILABLE',
-//   },
-//   EXECUTION: {
-//     50: 'WAIT',
-//     100: 'WAIT',
-//     200: 'PROGRAM_STOPPED',
-//     250: 'WAIT',
-//     300: 'WAIT',
-//     400: 'ACTIVE',
-//   },
-// }
+import fs from 'fs' // node lib for filesys
+import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
+
+const yamlfile = '../types.yaml'
+const yaml = fs.readFileSync(yamlfile, 'utf8')
+const yamltree = libyaml.load(yaml)
+// @ts-ignore okay to cast here
+const { types } = yamltree
 
 export default [
   {

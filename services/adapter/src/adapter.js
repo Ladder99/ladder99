@@ -47,6 +47,8 @@ for (const device of devices) {
     console.log('TCP new client connection from', remoteAddress)
     //. import outputs calcs from each model and pass to cache
     const outputs = (await import('./outputs.js')).default
+    // outputs.forEach(output => output.socket = socket)
+    // @ts-ignore
     cache.addOutputs(outputs, socket)
     // handle incoming data - get PING from agent, return PONG
     socket.on('data', pingpong)
