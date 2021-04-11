@@ -12,7 +12,7 @@ services:
     ports:
       - 1883:1883
     volumes:
-      - ./volumes/broker-ccs-pa-001:/mosquitto
+      - ../volumes/broker-ccs-pa-001:/mosquitto
     logging:
       options:
         max-size: '1m'
@@ -29,8 +29,8 @@ services:
     networks:
       - ladder99
     volumes:
-      - ../../services/adapter:/home/node/app
-      - ./volumes/adapter:/etc/adapter
+      - ../../../services/adapter:/home/node/app
+      - ../volumes/adapter:/etc/adapter
     logging:
       options:
         max-size: '1m'
@@ -47,8 +47,8 @@ services:
       adapter:
         condition: service_started
     volumes:
-      - ./volumes/agent:/etc/mtconnect/agent-custom
-      - ./volumes/agent/data:/var/lib/agent
+      - ../volumes/agent:/etc/mtconnect/agent-custom
+      - ../volumes/agent/data:/var/lib/agent
     logging:
       options:
         max-size: '1m'
@@ -68,8 +68,8 @@ services:
     networks:
       - ladder99
     volumes:
-      - ../../services/application:/home/node/app
-    #   - ./volumes/application:/etc/application
+      - ../../../services/application:/home/node/app
+    #   - ../volumes/application:/etc/application
     logging:
       options:
         max-size: '1m'
@@ -94,8 +94,8 @@ services:
     networks:
       - ladder99
     volumes:
-      - ../../services/simulator-mqtt:/home/node/app
-      - ./volumes/simulator-mqtt:/etc/simulator-mqtt
+      - ../../../services/simulator-mqtt:/home/node/app
+      - ../volumes/simulator-mqtt:/etc/simulator-mqtt
     logging:
       options:
         max-size: '1m'
@@ -107,7 +107,7 @@ services:
     working_dir: /home/node/app
     command: npm start
     volumes:
-      - ../../services/simulator-opc:/home/node/app
+      - ../../../services/simulator-opc:/home/node/app
     depends_on:
       application:
         condition: service_started
@@ -138,7 +138,7 @@ services:
   #     - influxdb
   #   volumes:
   #     # Mount for telegraf config
-  #     - ./telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf
+  #     - ../volumes/telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf
   #   depends_on:
   #     - influxdb_cli
 
@@ -148,8 +148,8 @@ services:
   #   ports:
   #     - '3001:3000' # 3000 taken by my tallieo
   #   volumes:
-  #     # - ./volumes/grafana/config/grafana.ini:/etc/grafana/grafana.ini
-  #     - ./volumes/grafana:/etc/grafana
+  #     # - ../volumes/grafana/config/grafana.ini:/etc/grafana/grafana.ini
+  #     - ../volumes/grafana:/etc/grafana
   #     - grafana_data:/var/lib/grafana
   #     # - grafana_conf:/etc/grafana
   #   depends_on:

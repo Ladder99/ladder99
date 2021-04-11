@@ -37,7 +37,7 @@ buildxml SETUP='demo':
     cp setups/{{SETUP}}/devices.xml setups/{{SETUP}}/volumes/agent/config
 
 # build calcs.js from model outputs.yaml
-buildjs:
+buildjs SETUP='demo':
     for filename in setups/{{SETUP}}/devices/*.yaml; \
     do \
         node services/compiler/src/buildJs.js "$filename" | \
