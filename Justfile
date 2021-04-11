@@ -25,25 +25,29 @@ docs:
     cd docs && make html && http-server build/html
     cd docs && firebase deploy
 
-# buildxml and buildjs
+# buildxml and buildcompose
 build SETUP='demo':
-    just buildxml {{SETUP}}
-    just buildjs {{SETUP}}
+    just buildXml {{SETUP}}
+    just buildCompose {{SETUP}}
 
-# build devices.xml from model device.yaml
-buildxml SETUP='demo':
+# build devices.xml from model devices.yaml
+buildXml SETUP='demo':
     node services/compiler/src/buildXml.js setups/{{SETUP}}/devices/*.yaml | \
     tee setups/{{SETUP}}/devices.xml
     cp setups/{{SETUP}}/devices.xml setups/{{SETUP}}/volumes/agent/config
 
-# build calcs.js from model outputs.yaml
-buildjs SETUP='demo':
-    for filename in setups/{{SETUP}}/devices/*.yaml; \
-    do \
-        node services/compiler/src/buildJs.js "$filename" | \
-          tee "setups/demo/devices/$(basename $filename .yaml).js" ; \
-    done
-    cp services/compiler/output/*.js services/adapter/src/plugins
+# build docker-compose.yaml from devices.yaml
+buildCompose SETUP='demo':
+    echo todo
+
+# # build calcs.js from model outputs.yaml
+# buildjs SETUP='demo':
+#     for filename in setups/{{SETUP}}/devices/*.yaml; \
+#     do \
+#         node services/compiler/src/buildJs.js "$filename" | \
+#           tee "setups/demo/devices/$(basename $filename .yaml).js" ; \
+#     done
+#     cp services/compiler/output/*.js services/adapter/src/plugins
 
 
 # run
