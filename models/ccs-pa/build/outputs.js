@@ -51,10 +51,20 @@ const outputTemplates = [
   //   dependsOn: ['${deviceId}-operator'],
   //   key: '${deviceId}-operator',
   //   value: cache => cache.get('${deviceId}-operator').value,
+  //   value: <operator>,
   // },
 ]
 
 export function getOutputs({ cache, deviceId }) {
-  const outputs = outputTemplates
+  const outputs = outputTemplates.map(template => {
+    const output = {
+      dependsOn: template.dependsOn.map(s =>
+        s.replace('${deviceId}', deviceId)
+      ),
+      key: template.key.replace('${deviceId}', deviceId),
+      value: cache => cache.get(`${deviceId}-operator`).value,
+    }
+    return output
+  })
   return outputs
 }

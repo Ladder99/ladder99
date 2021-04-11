@@ -1,1 +1,1 @@
-export default []
+export function getOutputs() {}
