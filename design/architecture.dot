@@ -26,17 +26,15 @@ digraph "ladder99-adapter" {
   Broker4 [ label="MQTT Broker\n(Mosquitto)" ];
   // OldMachine1 [ fillcolor=lavender; label="Old Machine 1" ];
   // PLC4X [ label="PLC4X\n(Java)" ];
-
   Adapter [ label="MTConnect\nAdapter\nwith cache and\nplugins\n(NodeJS)" ];
   // DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
   // DiodeReceiver [ label="Diode Receiver\n(Java+RabbitMQ)" ];
-
   Agent [ label="MTConnect\nAgent\n(C++/cppagent)" ];
   Application [ label="MTConnect\nApplication\n(NodeJS)" ];
   Database [ label="Database\n(InfluxDB/\nTimescaleDB)" ];
   Visualizer [ label="Visualizer\n(Grafana/\nSuperset)" ];
   Cloud [ label="Cloud Storage\n(AWS/GCP)" ];
-  Admin [ fillcolor=lightyellow ];
+  // Admin [ fillcolor=lightyellow ];
   // LOI [ label="LOI\n(SvelteJS)" ];
   // Operator [ fillcolor=lightyellow ];
 
@@ -57,23 +55,21 @@ digraph "ladder99-adapter" {
   // Gateway -> Broker4 [ label="MQTT" ];
   OldMachine3 -> Kepware2;
   Kepware2 -> Broker4 [ label="MQTT" ];
-  
   Adapter -> Agent [ label="SHDR /   \nTCP 7878+         ", dir=both ];
-
   // Adapter -> DiodeSender [ label="SHDR /   \nTCP 7878      ", dir=both, style=dotted ];
   // DiodeSender -> DiodeReceiver [ label="UDP    ", style=dotted ];
   // DiodeReceiver -> Agent [ label="SHDR /    \nTCP 7878        ", style=dotted ];
-  
   Agent -> Application [ dir=both; label="XML / \nHTTP 5000          " ];
+  Agent -> Browser [ label="HTML /\nHTTP 5000" ];
   Application -> Database [ dir=both ];
   Database -> Visualizer [ dir=both ];
   Database -> Cloud;
-  Visualizer -> Admin [ dir=both ];
+  // Visualizer -> Admin [ dir=both ];
   // Application -> LOI;
   // LOI -> Operator;
 
   // rank
   { rank=same; Adapter Agent Application Database Visualizer };
   // { rank=same; DiodeSender DiodeReceiver Cloud Admin };
-  { rank=same; Cloud Admin };
+  // { rank=same; Cloud Admin };
 }

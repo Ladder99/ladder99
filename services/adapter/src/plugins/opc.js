@@ -36,6 +36,7 @@ export async function init({ url, cache, deviceId }) {
   // const endpointUrl = url
 
   try {
+    //. better to check if up every n secs
     await timeout(10000) // let server get started (slowish)
 
     console.log(`OPC connecting to server at ${url}...`)
