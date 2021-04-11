@@ -1,6 +1,11 @@
-// cache of key-value pairs.
-// when key-value is set, will perform any associated outputs calculations and
+// cache of key-item pairs.
+// when key-item is set, will perform any associated outputs calculations and
 // send shdr output to attached tcp socket.
+
+/**
+ * @typedef {Object} Item
+ * @property {any} value
+ */
 
 /**
  * @typedef {Object} Output
@@ -12,7 +17,7 @@
 
 export class Cache {
   constructor() {
-    this._map = new Map() // key-value pairs
+    this._map = new Map() // key-item pairs
     this._mapKeyToOutputs = {} // list of outputs assoc with each key
   }
 
@@ -22,7 +27,7 @@ export class Cache {
    * this builds a map from key to list of outputs.
    * each output goes to the same socket.
    * @param {Output[]} outputs
-   * @param socket
+   * @param {object} socket
    */
   addOutputs(outputs, socket) {
     for (const output of outputs) {
@@ -38,14 +43,14 @@ export class Cache {
   }
 
   /**
-   * set a cache key-value pair.
-   * called item, because each item can have a value.
+   * set a cache key-item pair.
+   * called item, because each item is an object that can have a value property.
    * @param {string} key
-   * @param {object} item
+   * @param {Item} item
    */
   set(key, item) {
     console.log('set', key)
-    // update the cache value
+    // update the cache item
     this._map.set(key, item)
     // get list of outputs associated with this key
     const outputs = this._mapKeyToOutputs[key] || []
@@ -59,22 +64,24 @@ export class Cache {
   }
 
   /**
-   * get key-value value
+   * get item from cache
+   * @param key {string}
+   * @returns {Item}
    */
   get(key) {
-    const item = this._map.get(key) || {} //. have default?
+    const item = this._map.get(key) || {} //. have default? return undefined?
     return item
   }
 }
 
 /**
- * calculate shdr using the given output object.
+ * calculate SHDR using the given output object.
  * could have other output types also
  * @param {Cache} cache
  * @param {Output} output
  */
 function getShdr(cache, output) {
-  const timestamp = new Date().toISOString()
+  const timestamp = new Date().toISOString() //. might need to get from item
   const key = output.key
   const value = output.value(cache) // do calculation - value is a fn of cache
   const shdr = `${timestamp}|${key}|${value}`
