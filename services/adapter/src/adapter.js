@@ -8,7 +8,7 @@ import net from 'net' // node lib for tcp
 import { Cache } from './cache.js'
 
 // load devices.yaml
-const yamlfile = '/etc/adapter/devices.yaml' // see setups/demo/volumes/adapter
+const yamlfile = '/etc/setup/devices.yaml' // see setups/demo/devices.yaml
 const yaml = fs.readFileSync(yamlfile, 'utf8')
 const yamltree = libyaml.load(yaml)
 // @ts-ignore okay to cast here

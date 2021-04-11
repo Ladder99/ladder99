@@ -2,7 +2,7 @@
 # this defines the structure of the xml that will get included in devices.xml.
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from devices.yaml.
-# dataitems are defined in outputs.yaml.
+# dataItems are defined in outputs.yaml.
 
 device:
   - id: ${deviceId} # eg 'ccs-pa-001'
@@ -74,7 +74,7 @@ device:
         feeder:
           id: ${deviceId}-feeder
           dataItems:
-            dataItem: 
+            dataItem:
               - feed_cond
               - feed_message
               - feed_part_detect

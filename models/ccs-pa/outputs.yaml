@@ -1,3 +1,5 @@
+# outputs
+
 # these outputs are placed in the model.yaml tree and define the
 # shdr strings that are calculated and sent to the agent.
 

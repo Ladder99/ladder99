@@ -57,6 +57,7 @@ inputs:
         path: Object.keys($.faults).map(f=>['50','51'].includes(f)).some(bool=>bool)
 
     #. need better way than $.find - linear search is slow
+    # eg what if there were thousands of these - then O(thousand*thousand)
     l99/${deviceId}/evt/read: &read_topic
       - key: printer_ribbon_low
         path: $.find(a=>a.address==='%I0.0').value

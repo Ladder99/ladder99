@@ -31,7 +31,8 @@ services:
     volumes:
       - ../../../services/adapter:/home/node/app
       - ../../../models:/home/node/models
-      - ../volumes/adapter:/etc/adapter
+      # - ../volumes/adapter:/etc/adapter
+      - ..:/etc/setup
     logging:
       options:
         max-size: '1m'
