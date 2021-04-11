@@ -50,8 +50,8 @@ for (const device of devices) {
     // need to do this here as we need the socket.
     for (const source of sources) {
       const { model } = source
-      // const path = './outputs.js'
       const path = `/home/node/models/${model}/build/outputs.js`
+      //. this should be const foo = await import(path); const outputs = foo(deviceId)
       const outputs = (await import(path)).default
       // outputs.forEach(output => output.socket = socket) // didnt help warning
       // @ts-ignore

@@ -4,6 +4,9 @@
 
 import types from './types.js'
 
+//. if exported a fn to wrap this, could pass in the deviceId,
+// possibly making it easier to have multiple devices/sources of this type.
+
 export default [
   {
     dependsOn: ['ccs-pa-001-status-connection'],
