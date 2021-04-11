@@ -23,7 +23,7 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
   console.log('OPC server initialize...')
   await server.initialize()
 
-  // The addressSpace is used to customize the object model that our server
+  // addressSpace is used to customize the object model that our server
   // will expose to the external world.
   const addressSpace = server.engine.addressSpace
   const namespace = addressSpace.getOwnNamespace()
@@ -36,10 +36,10 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
   })
 
   // add a variable named MyVariable1 to the newly created folder "MyDevice".
-  // Adding a read-only variable inside the server namespace requires
-  // only a getter function. This function returns a Variant containing the
+  // adding a read-only variable inside the server namespace requires
+  // only a getter function. this function returns a Variant containing the
   // value of the variable to scan.
-  // Note that we haven't specified a NodeId for the variable. The server will
+  // note that we haven't specified a NodeId for the variable - the server will
   // automatically assign a new nodeId for us.
   let variable1 = 1
   // emulate variable1 changing every 500 ms
@@ -71,6 +71,7 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
     },
   })
 
+  // publish a free memory variable
   console.log(`OPC server add FreeMemory...`)
   namespace.addVariable({
     componentOf: device,
@@ -83,6 +84,8 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
     },
   })
 
+  // publish a motion alarm variable
+  //. this will use a recording for simulation
   let nodeId = 'ns=1;s=B3:5'
   console.log(`OPC server add ${nodeId}...`)
   namespace.addVariable({
@@ -91,10 +94,12 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
     browseName: 'B4433-motion-alarm',
     dataType: 'Double',
     value: {
-      get: () => new Variant({ dataType: DataType.Double, value: 1.1 }),
+      get: () => new Variant({ dataType: DataType.Double, value: 1.1 }), //.
     },
   })
 
+  // publish an operator variable
+  //. this will use a recording for simulation
   nodeId = 'ns=1;s=Operator'
   console.log(`OPC server add ${nodeId}...`)
   namespace.addVariable({
@@ -104,7 +109,7 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
     dataType: 'String',
     value: {
       get: () =>
-        new Variant({ dataType: DataType.String, value: 'Amanda Davis' }),
+        new Variant({ dataType: DataType.String, value: 'Amanda Davis' }), //.
     },
   })
 
