@@ -46,6 +46,12 @@ const outputTemplates = [
   // },
 ]
 
+//. so this fn could be a part of adapter, yes?
+// just import the outputTemplate string defs and do replacements?
+//. actually adapter could read the types.yaml and pass the structure to this fn also.
+//. actually, do we need to compile outputs.yaml to outputs.js at all?
+// couldn't we do all that inside adapter after loading the yamls?
+// i think so...
 export function getOutputs({ deviceId }) {
   const outputs = outputTemplates.map(template => {
     // m will be undefined if no match, or array with elements 1,2,3 with contents
@@ -55,16 +61,18 @@ export function getOutputs({ deviceId }) {
     let value = cache => template.value // by default just return string value
     // got match
     if (m) {
-      // console.log({ m })
       const str = m[1] + `cache.get('${deviceId}-${m[2]}').value` + m[3]
-      // console.log({ str })
-      value = cache => eval(str)
+      value = cache => eval(str) // evaluate the cache access string
     }
     const output = {
+      //. or assume each starts with deviceId?
       dependsOn: template.dependsOn.map(s =>
         s.replace('${deviceId}', deviceId)
       ),
+      //. or assume each starts with deviceId?
+      //. call this id, as it's such in the devices.xml?
       key: template.key.replace('${deviceId}', deviceId),
+      //. call this getValue?
       value,
     }
     return output

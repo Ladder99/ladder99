@@ -2,6 +2,8 @@
 
 #. not used yet
 
+# these will be parsed by the adapter plugin, eg mqtt-json.js
+
 # currently inputs are pulled from mqtt json with code -
 # see services/adapter/plugins/mqtt-ccs.js
 
