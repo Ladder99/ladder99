@@ -47,14 +47,17 @@ for (const device of devices) {
     const path2 = `/home/node/models/${model}/outputs.yaml`
     // @ts-ignore
     const outputTemplates = importYaml(path2).outputs
+    console.log({ outputTemplates })
 
     // import types
     const path3 = `/home/node/models/${model}/types.yaml`
     // @ts-ignore
     const types = importYaml(path3).types
+    console.log({ types })
 
     // compile outputs from yaml strings and save to source
     const outputs = getOutputs({ deviceId, outputTemplates, types })
+    console.log({ outputs })
     source.outputs = outputs
   }
 
@@ -98,7 +101,7 @@ for (const device of devices) {
 function getOutputs({ outputTemplates, types, deviceId }) {
   const outputs = outputTemplates.map(template => {
     //. build up dependsOn array during parse also - what cache keys are seen?
-    const dependsOn = []
+    const dependsOn = [deviceId + '-status-step']
     // m will be undefined if no match, or array with elements 1,2,3 with contents
     //. also check if str is multiline - then need to wrap in braces?
     //. handle multiple <>'s in a string also - how do? .* needs to be greedy for one thing
@@ -128,8 +131,13 @@ function getOutputs({ outputTemplates, types, deviceId }) {
 }
 
 // import a yaml file and parse to js struct
-function importYaml(path) {
-  const yaml = fs.readFileSync(path, 'utf8')
-  const yamltree = libyaml.load(yaml)
-  return yamltree
+function importYaml(path, defaultTree = {}) {
+  try {
+    const yaml = fs.readFileSync(path, 'utf8')
+    const yamlTree = libyaml.load(yaml)
+    return yamlTree
+  } catch (e) {
+    console.log(e)
+  }
+  return defaultTree
 }
