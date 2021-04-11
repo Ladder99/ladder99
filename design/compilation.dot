@@ -13,6 +13,7 @@ digraph "ladder99-compilation" {
 
   // nodes
   // DeviceSheet [ label="device.gsheet" ];
+  DevicesYaml [ label="devices.yaml" ];
   ModelYaml [ label="model.yaml" ];
   CalcsYaml [ label="calcs.yaml" ];
   TypesYaml [ label="types.yaml" ];
@@ -29,19 +30,17 @@ digraph "ladder99-compilation" {
 
   // edges
   // DeviceSheet -> Compiler;
+  DevicesYaml -> Compiler;
   ModelYaml -> Compiler;
   CalcsYaml -> Compiler;
   TypesYaml -> Compiler;
   DeviceYaml -> Compiler;
   // DevicesYaml -> Compiler;
-
   Compiler -> DeviceJs;
   Compiler -> DevicesXml;
-
   DeviceJs -> Adapter;
   DevicesXml -> Agent;
-
-  Adapter -> Agent [ label="SHDR" ];
+  // Adapter -> Agent [ label="SHDR" ];
 
   // ModelYaml -> DeviceYaml [ label="structures" ];
   // DeviceSheet -> ModelYaml [ label="feeds into" ];
