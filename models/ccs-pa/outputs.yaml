@@ -5,6 +5,7 @@
 
 # the item's key (eg 'connection') together with the deviceId (eg 'ccs-pa-001')
 # form its id in the xml (eg 'ccs-pa-001-connection').
+
 # the shdr key is the same as the id.
 # the shdr value is defined with the item value code.
 

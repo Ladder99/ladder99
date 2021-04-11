@@ -9,8 +9,9 @@ import { Cache } from './cache.js'
 
 // load devices.yaml
 const yamlfile = '/etc/setup/devices.yaml' // see setups/demo/devices.yaml
-const yaml = fs.readFileSync(yamlfile, 'utf8')
-const yamltree = libyaml.load(yaml)
+// const yaml = fs.readFileSync(yamlfile, 'utf8')
+// const yamltree = libyaml.load(yaml)
+const yamltree = importYaml(yamlfile)
 // @ts-ignore okay to cast here
 const { devices } = yamltree
 
@@ -40,12 +41,20 @@ for (const device of devices) {
     plugin.init({ url, cache, deviceId })
 
     //. import outputs calcs from each model and pass to cache.
-    const path2 = `/home/node/models/${model}/build/outputs.js`
+    // const path2 = `/home/node/models/${model}/build/outputs.js`
     // const outputs = (await import(path)).default
     // @ts-ignore top level await okay
-    const module = await import(path2)
-    console.log({ module })
-    const outputs = module.getOutputs({ deviceId })
+    // const module = await import(path2)
+    // console.log({ module })
+
+    const path2 = `/home/node/models/${model}/outputs.yaml`
+    const outputTemplates = importYaml(path2)
+
+    const path3 = `/home/node/models/${model}/types.yaml`
+    const types = importYaml(path3)
+
+    // const outputs = module.getOutputs({ deviceId })
+    const outputs = getOutputs({ deviceId, outputTemplates, types })
     console.log({ outputs })
     source.outputs = outputs
   }
@@ -81,4 +90,41 @@ for (const device of devices) {
   const destination = destinations[0] //. just handles one for now
   console.log(`TCP try listening to socket at`, destinations, `...`)
   tcp.listen(destination.port, destination.host)
+}
+
+//. import the outputTemplate string defs and do replacements.
+//. adapter should read the types.yaml and pass the structure to this fn also.
+function getOutputs({ outputTemplates, types, deviceId }) {
+  const outputs = outputTemplates.map(template => {
+    // m will be undefined if no match, or array with elements 1,2,3 with contents
+    //. also check if str is multiline - then need to wrap in braces?
+    //. handle multiple <>'s in a string also - how do? .* needs to be greedy for one thing
+    const regexp = /(.*)<(.*)>(.*)/
+    const m = template.value.match(regexp)
+    let value = cache => template.value // by default just return string value
+    // got match
+    if (m) {
+      const str = m[1] + `cache.get('${deviceId}-${m[2]}').value` + m[3]
+      value = cache => eval(str) // evaluate the cache access string
+    }
+    const output = {
+      //. or assume each starts with deviceId?
+      dependsOn: template.dependsOn.map(s =>
+        s.replace('${deviceId}', deviceId)
+      ),
+      //. or assume each starts with deviceId?
+      //. call this id, as it's such in the devices.xml?
+      key: template.key.replace('${deviceId}', deviceId),
+      //. call this getValue?
+      value,
+    }
+    return output
+  })
+  return outputs
+}
+
+function importYaml(path) {
+  const yaml = fs.readFileSync(path, 'utf8')
+  const yamltree = libyaml.load(yaml)
+  return yamltree
 }
