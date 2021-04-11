@@ -7,10 +7,8 @@ import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
 import net from 'net' // node lib for tcp
 import { Cache } from './cache.js'
 
-// load devices.yaml
-const yamlfile = '/etc/setup/devices.yaml' // see setups/demo/devices.yaml
-// const yaml = fs.readFileSync(yamlfile, 'utf8')
-// const yamltree = libyaml.load(yaml)
+// load devices.yaml - see setups/demo/devices.yaml
+const yamlfile = '/etc/setup/devices.yaml'
 const yamltree = importYaml(yamlfile)
 // @ts-ignore okay to cast here
 const { devices } = yamltree
@@ -23,10 +21,9 @@ console.log(`----------------------------------------------------------------`)
 // define cache shared across devices and sources
 const cache = new Cache()
 
+// iterate over device definitions
 for (const device of devices) {
   console.log({ device })
-
-  // load sources and init
   const deviceId = device.id
   const { sources } = device
 
@@ -36,6 +33,7 @@ for (const device of devices) {
     const { model, type, url } = source
 
     // import protocol plugin
+    //. type -> protocol?
     const path = `./plugins/${type}.js` // eg './plugins/mqtt-ccs.js' - must start with ./
     console.log(`Adapter importing plugin code: ${path}...`)
     // @ts-ignore top level await okay
@@ -45,11 +43,11 @@ for (const device of devices) {
     console.log(`Adapter initializing plugin...`)
     plugin.init({ url, cache, deviceId })
 
-    // import outputs.yaml
+    // import outputs
     const path2 = `/home/node/models/${model}/outputs.yaml`
     const outputTemplates = importYaml(path2)
 
-    // import types.yaml
+    // import types
     const path3 = `/home/node/models/${model}/types.yaml`
     const types = importYaml(path3)
 
@@ -109,14 +107,14 @@ function getOutputs({ outputTemplates, types, deviceId }) {
       value = cache => eval(str) // evaluate the cache access string
     }
     const output = {
-      //. or assume each starts with deviceId?
+      //. could assume each starts with deviceId?
       dependsOn: template.dependsOn.map(s =>
         s.replace('${deviceId}', deviceId)
       ),
-      //. or assume each starts with deviceId?
-      //. call this id, as it's such in the devices.xml?
+      //. could assume each starts with deviceId?
+      //. could call this id, as it's such in the devices.xml?
       key: template.key.replace('${deviceId}', deviceId),
-      //. call this getValue?
+      //. could call this getValue?
       value,
     }
     return output
