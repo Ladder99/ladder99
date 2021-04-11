@@ -25,47 +25,48 @@ const cache = new Cache()
 
 for (const device of devices) {
   console.log({ device })
+
   // load sources and init
-  // iterate over sources, load plugin for that source, call init on it.
   const deviceId = device.id
   const { sources } = device
+
+  // iterate over sources, load plugin for that source, call init on it.
   for (const source of sources) {
     console.log({ source })
     const { model, type, url } = source
+
+    // import protocol plugin
     const path = `./plugins/${type}.js` // eg './plugins/mqtt-ccs.js' - must start with ./
     console.log(`Adapter importing plugin code: ${path}...`)
     // @ts-ignore top level await okay
     const plugin = await import(path)
-    //. also load inputs.yaml or js for this source, pass to plugin
+
+    // initialize plugin
     console.log(`Adapter initializing plugin...`)
     plugin.init({ url, cache, deviceId })
 
-    //. import outputs calcs from each model and pass to cache.
-    // const path2 = `/home/node/models/${model}/build/outputs.js`
-    // const outputs = (await import(path)).default
-    // @ts-ignore top level await okay
-    // const module = await import(path2)
-    // console.log({ module })
-
+    // import outputs.yaml
     const path2 = `/home/node/models/${model}/outputs.yaml`
     const outputTemplates = importYaml(path2)
 
+    // import types.yaml
     const path3 = `/home/node/models/${model}/types.yaml`
     const types = importYaml(path3)
 
-    // const outputs = module.getOutputs({ deviceId })
+    // compile outputs from yaml strings and save to source
     const outputs = getOutputs({ deviceId, outputTemplates, types })
-    console.log({ outputs })
     source.outputs = outputs
   }
 
   console.log(`TCP creating server for agent...`)
   const tcp = net.createServer()
+
   // handle tcp connection from agent or diode
   tcp.on('connection', async socket => {
     const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
     console.log('TCP new client connection from', remoteAddress)
 
+    // add outputs for each source to cache
     for (const source of sources) {
       const { outputs } = source
       cache.addOutputs(outputs, socket)
@@ -92,8 +93,8 @@ for (const device of devices) {
   tcp.listen(destination.port, destination.host)
 }
 
-//. import the outputTemplate string defs and do replacements.
-//. adapter should read the types.yaml and pass the structure to this fn also.
+// import the outputTemplate string defs and do replacements.
+// note: types IS used - it's in the closure formed by eval(str).
 function getOutputs({ outputTemplates, types, deviceId }) {
   const outputs = outputTemplates.map(template => {
     // m will be undefined if no match, or array with elements 1,2,3 with contents
@@ -123,6 +124,7 @@ function getOutputs({ outputTemplates, types, deviceId }) {
   return outputs
 }
 
+// import a yaml file and parse to js struct
 function importYaml(path) {
   const yaml = fs.readFileSync(path, 'utf8')
   const yamltree = libyaml.load(yaml)
