@@ -27,7 +27,7 @@ digraph "ladder99-adapter" {
   // OldMachine1 [ fillcolor=lavender; label="Old Machine 1" ];
   // PLC4X [ label="PLC4X\n(Java)" ];
 
-  Adapter [ label="MTConnect\nAdapter\nwith plugins\n(NodeJS)" ];
+  Adapter [ label="MTConnect\nAdapter\nwith cache and\nplugins\n(NodeJS)" ];
   // DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
   // DiodeReceiver [ label="Diode Receiver\n(Java+RabbitMQ)" ];
 
