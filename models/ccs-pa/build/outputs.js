@@ -2,14 +2,7 @@
 
 //. this will be extracted/compiled from outputs.yaml.
 
-import fs from 'fs' // node lib for filesys
-import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
-
-const yamlfile = '../types.yaml'
-const yaml = fs.readFileSync(yamlfile, 'utf8')
-const yamltree = libyaml.load(yaml)
-// @ts-ignore okay to cast here
-const { types } = yamltree
+import types from './types.js'
 
 export default [
   {

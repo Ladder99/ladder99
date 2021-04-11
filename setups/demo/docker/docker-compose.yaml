@@ -30,6 +30,7 @@ services:
       - ladder99
     volumes:
       - ../../../services/adapter:/home/node/app
+      - ../../../models:/home/node/models
       - ../volumes/adapter:/etc/adapter
     logging:
       options:
@@ -116,52 +117,6 @@ services:
     logging:
       options:
         max-size: '1m'
-
-  # timescaledb:
-  #   container_name: timescaledb
-  #   image: timescale/timescaledb:2.1.1-pg12
-  #   environment:
-  #     POSTGRES_PASSWORD: 'gralgrut'
-  #   volumes:
-  #     - db-data:/var/lib/postgresql/data
-  #   ports:
-  #     - '5433:5432' # 5432 was taken by... ?
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '1m'
-
-  # telegraf:
-  #   image: telegraf
-  #   links:
-  #     - influxdb
-  #   volumes:
-  #     # Mount for telegraf config
-  #     - ../volumes/telegraf/mytelegraf.conf:/etc/telegraf/telegraf.conf
-  #   depends_on:
-  #     - influxdb_cli
-
-  # grafana:
-  #   container_name: grafana
-  #   image: grafana/grafana:latest
-  #   ports:
-  #     - '3001:3000' # 3000 taken by my tallieo
-  #   volumes:
-  #     # - ../volumes/grafana/config/grafana.ini:/etc/grafana/grafana.ini
-  #     - ../volumes/grafana:/etc/grafana
-  #     - grafana_data:/var/lib/grafana
-  #     # - grafana_conf:/etc/grafana
-  #   depends_on:
-  #     # timescaledb:
-  #     #   condition: service_started
-  #     influxdb:
-  #       condition: service_started
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '1m'
 
   portainer:
     container_name: portainer

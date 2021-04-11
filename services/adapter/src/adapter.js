@@ -34,7 +34,7 @@ for (const device of devices) {
     console.log(`Adapter importing plugin code: ${path}...`)
     // @ts-ignore top level await okay
     const plugin = await import(path)
-    //. also load inputs for this source, pass to plugin
+    //. also load inputs.yaml or js for this source, pass to plugin
     console.log(`Adapter initializing plugin...`)
     plugin.init({ url, cache, deviceId })
   }
@@ -45,17 +45,19 @@ for (const device of devices) {
   tcp.on('connection', async socket => {
     const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
     console.log('TCP new client connection from', remoteAddress)
+
     //. import outputs calcs from each model and pass to cache.
     // need to do this here as we need the socket.
     for (const source of sources) {
       const { model } = source
       // const path = './outputs.js'
-      const path = `./models/${model}/build/outputs.js`
+      const path = `/home/node/models/${model}/build/outputs.js`
       const outputs = (await import(path)).default
       // outputs.forEach(output => output.socket = socket) // didnt help warning
       // @ts-ignore
       cache.addOutputs(outputs, socket)
     }
+
     // handle incoming data - get PING from agent, return PONG
     socket.on('data', pingpong)
     function pingpong(buffer) {
@@ -69,6 +71,7 @@ for (const device of devices) {
       }
     }
   })
+
   // start tcp connection
   const { destinations } = device
   const destination = destinations[0] //. just handles one for now
