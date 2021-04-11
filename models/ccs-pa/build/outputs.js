@@ -3,6 +3,7 @@
 //. this will be extracted/compiled from outputs.yaml.
 
 import types from './types.js'
+console.log({ types })
 
 const outputTemplates = [
   {

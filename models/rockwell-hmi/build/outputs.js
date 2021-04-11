@@ -1,1 +1,3 @@
-export function getOutputs() {}
+export function getOutputs() {
+  return []
+}

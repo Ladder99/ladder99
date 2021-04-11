@@ -41,16 +41,13 @@ for (const device of devices) {
 
     //. import outputs calcs from each model and pass to cache.
     const path2 = `/home/node/models/${model}/build/outputs.js`
-    //. this should be const foo = await import(path); const outputs = foo(deviceId)
     // const outputs = (await import(path)).default
     // @ts-ignore top level await okay
     const module = await import(path2)
-    // console.log({ module })
-    const outputs = module.getOutputs({ cache, deviceId })
-    // console.log({ outputs })
+    console.log({ module })
+    const outputs = module.getOutputs({ deviceId })
+    console.log({ outputs })
     source.outputs = outputs
-    // outputs.forEach(output => output.socket = socket) // didnt help warning
-    // @ts-ignore
   }
 
   console.log(`TCP creating server for agent...`)
