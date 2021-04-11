@@ -1,5 +1,5 @@
-#. this will be generated from devices.yaml, but edit manually for now
-# order of startup: broker, adapter, agent, application, simulators
+#. this will be generated from devices.yaml, but edit manually for now.
+# order of startup: broker, adapter, agent, application, simulators.
 
 version: '3.7'
 
