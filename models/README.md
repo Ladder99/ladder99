@@ -1,3 +1,3 @@
-# components
+# models
 
-Devices and subcomponents and their dataitems are defined here
+Models and their dataItems are defined here

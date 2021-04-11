@@ -4,6 +4,7 @@ these are compiled from yaml sources
 
 old, from outputs.js
 better to compile the types.yaml to types.js so can import directly - otherwise would need to make models into a npm package with node_modules etc
+though eventually might want each model to be a package?
 // import fs from 'fs' // node lib for filesys
 // import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
 // const yamlfile = '../types.yaml'
