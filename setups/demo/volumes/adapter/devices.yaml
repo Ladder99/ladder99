@@ -9,8 +9,9 @@ devices:
       uuid: e05363af-95d1-4354-b749-8fbb09d3499e
       serialNumber: '001'
 
+    # define data sources that feed into this device
     sources:
-      - model: ccs-pa # model defines inputs and outputs via yaml files
+      - model: ccs-pa # model defines inputs and outputs with yaml files
         type: mqtt-ccs # type of plugin - manages protocol and payload
         url: mqtt://broker-ccs-pa-001:1883
         # active: true # should this data source be initialized on adapter startup?
