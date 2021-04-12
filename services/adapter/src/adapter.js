@@ -10,7 +10,6 @@ import { Cache } from './cache.js'
 // load devices.yaml - see setups/demo/devices.yaml
 const yamlfile = '/etc/setup/devices.yaml'
 const yamltree = importYaml(yamlfile)
-// @ts-ignore okay to cast here
 const { devices } = yamltree
 
 console.log(`MTConnect Adapter`)
@@ -44,20 +43,18 @@ for (const device of devices) {
 
     // import outputs
     const path2 = `/home/node/models/${model}/outputs.yaml`
-    // @ts-ignore
     const outputTemplates = importYaml(path2).outputs
-    console.log({ outputTemplates })
+    // console.log({ outputTemplates })
 
     // import types
     const path3 = `/home/node/models/${model}/types.yaml`
-    // @ts-ignore
     const types = importYaml(path3).types
-    console.log({ types })
+    // console.log({ types })
 
     // compile outputs from yaml strings and save to source
     const outputs = getOutputs({ deviceId, outputTemplates, types })
-    console.log({ outputs })
     source.outputs = outputs
+    // console.log({ outputs })
   }
 
   console.log(`TCP creating server for agent...`)
@@ -88,7 +85,7 @@ for (const device of devices) {
     }
   })
 
-  // start tcp connection
+  // start tcp connection for this device
   const { destinations } = device
   const destination = destinations[0] //. just handles one for now
   console.log(`TCP try listening to socket at`, destinations, `...`)
@@ -127,7 +124,10 @@ function getOutputs({ outputTemplates, types, deviceId }) {
   return outputs
 }
 
-// import a yaml file and parse to js struct
+/**
+ * import a yaml file and parse to js struct
+ * @returns {object}
+ */
 function importYaml(path, defaultTree = {}) {
   try {
     const yaml = fs.readFileSync(path, 'utf8')

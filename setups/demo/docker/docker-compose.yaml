@@ -23,7 +23,26 @@ services:
     user: node
     working_dir: /home/node/app
     command: npm start
-    #...
+    depends_on:
+      broker-ccs-pa-001:
+        condition: service_started
+    networks:
+      - ladder99
+    volumes:
+      - ../../../services/adapter:/home/node/app
+      - ../../../models:/home/node/models
+      # - ../volumes/adapter:/etc/adapter
+      - ..:/etc/setup
+    logging:
+      options:
+        max-size: '1m'
+
+  adapter002:
+    container_name: adapter002
+    image: node:latest
+    user: node
+    working_dir: /home/node/app
+    command: npm start
     # depends_on:
     #   broker-ccs-pa-001:
     #     condition: service_started
