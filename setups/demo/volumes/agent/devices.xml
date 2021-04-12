@@ -14,7 +14,8 @@
         <DataItem id="ccs-pa-001-fw_ver" type="FIRMWARE" subType="VERSION" category="EVENT"/>
         <DataItem id="ccs-pa-001-func_mode" type="FUNCTIONAL_MODE" category="EVENT"/>
       </DataItems>
-      <Components>
+
+      <!-- <Components>
         <Controller id="ccs-pa-001-controller" nativeName="plc">
           <Description>Electronic board set responsible for coordinating all machine function.</Description>
           <DataItems>
@@ -36,8 +37,9 @@
             </Path>
           </Components>
         </Controller>
-      </Components>
-      <Systems id="ccs-pa-001-systems">
+      </Components> -->
+
+      <!-- <Systems id="ccs-pa-001-systems">
         <Components>
           <EndEffector id="ccs-pa-001-end_effector">
             <DataItems>
@@ -74,7 +76,8 @@
             </DataItems>
           </Feeder>
         </Components>
-      </Systems>
+      </Systems> -->
+
     </Device>
   </Devices>
 </MTConnectDevices>

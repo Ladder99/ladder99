@@ -36,6 +36,8 @@ function getDevices(sourcefile) {
         type: output.type,
         subType: output.subType,
         category: output.category,
+        units: output.units,
+        //. others?
       }
       outputDict[key] = obj
     }
@@ -51,14 +53,11 @@ function getDevices(sourcefile) {
     const modelPath = `models/${model}/model.yaml`
     const modelTree = importYaml(modelPath, transforms).model
 
-    // now recurse down the model tree,
-    // replacing dataItems with their output defs
+    // recurse down the model tree, replacing dataItems with their output defs.
     attachDataItems(modelTree, outputDict)
-    // dir({ modelTree })
     const xmltree = translate(modelTree)
     foos.push(xmltree)
   }
-  // dir({ foos })
   return foos
 }
 

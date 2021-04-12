@@ -30,11 +30,10 @@ for (const device of devices) {
   // iterate over sources, load plugin for that source, call init on it.
   for (const source of sources) {
     console.log({ source })
-    const { model, type, url } = source
+    const { model, protocol, url } = source
 
     // import protocol plugin
-    //. type -> protocol?
-    const path = `./plugins/${type}.js` // eg './plugins/mqtt-ccs.js' - must start with ./
+    const path = `./plugins/${protocol}.js` // eg './plugins/mqtt-ccs.js' - must start with ./
     console.log(`Adapter importing plugin code: ${path}...`)
     // @ts-ignore top level await okay
     const plugin = await import(path)
