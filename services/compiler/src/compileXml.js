@@ -31,7 +31,13 @@ function getDevices(sourcefile) {
     const outputDict = {}
     for (const output of outputs) {
       const key = output.key
-      outputDict[key] = output
+      const obj = {
+        id: id + '-' + key,
+        type: output.type,
+        subType: output.subType,
+        category: output.category,
+      }
+      outputDict[key] = obj
     }
 
     // define text transforms to perform on model.yaml
@@ -44,14 +50,15 @@ function getDevices(sourcefile) {
     // get model.yaml, making text substitutions with properties
     const modelPath = `models/${model}/model.yaml`
     const modelTree = importYaml(modelPath, transforms).model
-    dir({ modelTree })
+    // dir({ modelTree })
 
     //. now recurse down the model tree,
     // replacing dataItems with their output defs
     attachDataItems(modelTree, outputDict)
+    dir({ modelTree })
   }
 
-  dir({ devices })
+  // dir({ devices })
 
   // for (const sourcefile of sourcefiles) {
   //   const xmltree = translate(yamltree) // recurses

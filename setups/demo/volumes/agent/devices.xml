@@ -13,13 +13,48 @@
       },
       dataItems: {
         dataItem: [
-          'connection',
-          'asset_changed',
-          'asset_removed',
-          'dev_cond',
-          'dev_msg',
-          'fw_ver',
-          'func_mode'
+          {
+            id: 'ccs-pa-001-connection',
+            type: 'AVAILABILITY',
+            subType: undefined,
+            category: 'EVENT'
+          },
+          {
+            id: 'ccs-pa-001-asset_changed',
+            type: 'ASSET_CHANGED',
+            subType: undefined,
+            category: 'EVENT'
+          },
+          {
+            id: 'ccs-pa-001-asset_removed',
+            type: 'ASSET_REMOVED',
+            subType: undefined,
+            category: 'EVENT'
+          },
+          {
+            id: 'ccs-pa-001-dev_cond',
+            type: 'SYSTEM',
+            subType: undefined,
+            category: 'CONDITION'
+          },
+          {
+            id: 'ccs-pa-001-dev_msg',
+            type: 'MESSAGE',
+            subType: undefined,
+            category: 'EVENT'
+          },
+          {
+            id: 'ccs-pa-001-fw_ver',
+            type: 'FIRMWARE',
+            subType: 'VERSION',
+            category: 'EVENT'
+          },
+          {
+            id: 'ccs-pa-001-func_mode',
+            type: 'FUNCTIONAL_MODE',
+            subType: undefined,
+            category: 'EVENT'
+          }
         ]
       },
       components: {
@@ -96,32 +131,6 @@
           }
         }
       }
-    }
-  ]
-}
-{
-  devices: [
-    {
-      id: 'ccs-pa-001',
-      model: 'ccs-pa',
-      properties: {
-        uuid: 'e05363af-95d1-4354-b749-8fbb09d3499e',
-        serialNumber: '001',
-        deviceId: 'ccs-pa-001'
-      },
-      sources: [
-        {
-          model: 'ccs-pa',
-          protocol: 'mqtt-ccs',
-          url: 'mqtt://broker-ccs-pa-001:1883'
-        },
-        {
-          model: 'rockwell-hmi',
-          protocol: 'opc',
-          url: 'opc.tcp://simulator-opc:4334/UA/LittleServer'
-        }
-      ],
-      destinations: [ { protocol: 'shdr', host: 'adapter', port: 7878 } ]
     }
   ]
 }
