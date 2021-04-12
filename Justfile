@@ -35,9 +35,9 @@ compileXml SETUP='demo':
     node services/compiler/src/compileXml.js setups/{{SETUP}}/devices.yaml | \
     tee setups/{{SETUP}}/volumes/agent/devices.xml
 
-# # compile docker-compose.yaml from devices.yaml
-# compileCompose SETUP='demo':
-#     echo todo
+# compile docker-compose.yaml from devices.yaml
+compileCompose SETUP='demo':
+    echo todo
 
 # # compile calcs.js from model outputs.yaml
 # compilejs SETUP='demo':
