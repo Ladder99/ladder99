@@ -1,137 +1,126 @@
 {
-  yamltree: {
-    devices: [
-      {
-        id: 'ccs-pa-001',
-        model: 'ccs-pa',
-        properties: {
-          uuid: 'e05363af-95d1-4354-b749-8fbb09d3499e',
-          serialNumber: '001'
+  devices: [
+    {
+      id: 'ccs-pa-001',
+      model: 'ccs-pa',
+      properties: {
+        uuid: 'e05363af-95d1-4354-b749-8fbb09d3499e',
+        serialNumber: '001'
+      },
+      sources: [
+        {
+          model: 'ccs-pa',
+          protocol: 'mqtt-ccs',
+          url: 'mqtt://broker-ccs-pa-001:1883'
         },
-        sources: [
-          {
-            model: 'ccs-pa',
-            protocol: 'mqtt-ccs',
-            url: 'mqtt://broker-ccs-pa-001:1883'
-          },
-          {
-            model: 'rockwell-hmi',
-            protocol: 'opc',
-            url: 'opc.tcp://simulator-opc:4334/UA/LittleServer'
-          }
-        ],
-        destinations: [ { protocol: 'shdr', host: 'adapter', port: 7878 } ]
-      }
-    ]
-  }
-}
-{
-  transforms: [
-    [Function (anonymous)],
-    [Function (anonymous)],
-    [Function (anonymous)]
+        {
+          model: 'rockwell-hmi',
+          protocol: 'opc',
+          url: 'opc.tcp://simulator-opc:4334/UA/LittleServer'
+        }
+      ],
+      destinations: [ { protocol: 'shdr', host: 'adapter', port: 7878 } ]
+    }
   ]
 }
 {
-  deviceTree: {
-    device: [
-      {
-        id: 'ccs-pa-001',
-        name: 'CCS-PA',
-        uuid: 'e05363af-95d1-4354-b749-8fbb09d3499e',
-        sampleInterval: 10,
-        description: {
-          manufacturer: 'CCS',
-          model: 'Emergent-PA-Pneumatic',
-          serialNumber: '001',
-          text: 'Emergent Next Generation Print and Apply'
-        },
-        dataItems: {
-          dataItem: [
-            'connection',
-            'asset_changed',
-            'asset_removed',
-            'dev_cond',
-            'dev_msg',
-            'fw_ver',
-            'func_mode'
-          ]
-        },
-        components: {
-          controller: {
-            id: 'ccs-pa-001-controller',
-            nativeName: 'plc',
-            description: {
-              text: 'Electronic board set responsible for coordinating all machine function.'
-            },
-            dataItems: { dataItem: [ 'e_stop' ] },
-            components: {
-              path: {
-                id: 'ccs-pa-001-path1',
-                name: 'path',
-                dataItems: {
-                  dataItem: [
-                    'state',
-                    'wait_state',
-                    'program',
-                    'step',
-                    'clk_time',
-                    'up_time',
-                    'fault_count',
-                    'cycle_count',
-                    'life_count'
-                  ]
-                }
-              }
-            }
-          }
-        },
-        systems: {
-          id: 'ccs-pa-001-systems',
+  modelTree: [
+    {
+      id: 'ccs-pa-001',
+      name: 'CCS-PA',
+      uuid: 'e05363af-95d1-4354-b749-8fbb09d3499e',
+      sampleInterval: 10,
+      description: {
+        manufacturer: 'CCS',
+        model: 'Emergent-PA-Pneumatic',
+        serialNumber: '001',
+        text: 'Emergent Next Generation Print and Apply'
+      },
+      dataItems: {
+        dataItem: [
+          'connection',
+          'asset_changed',
+          'asset_removed',
+          'dev_cond',
+          'dev_msg',
+          'fw_ver',
+          'func_mode'
+        ]
+      },
+      components: {
+        controller: {
+          id: 'ccs-pa-001-controller',
+          nativeName: 'plc',
+          description: {
+            text: 'Electronic board set responsible for coordinating all machine function.'
+          },
+          dataItems: { dataItem: [ 'e_stop' ] },
           components: {
-            endEffector: {
-              id: 'ccs-pa-001-end_effector',
+            path: {
+              id: 'ccs-pa-001-path1',
+              name: 'path',
               dataItems: {
                 dataItem: [
-                  'end_eff_cond',
-                  'end_eff_message',
-                  'smart_tamp_part_detect',
-                  'tamp_air_assist',
-                  'tamp_vacuum',
-                  'tamp_cylinder',
-                  'cylinder_extend_time',
-                  'cylinder_home_disengage_time',
-                  'cylinder_travel_time',
-                  'tamp_vacuum_delay'
-                ]
-              }
-            },
-            feeder: {
-              id: 'ccs-pa-001-feeder',
-              dataItems: {
-                dataItem: [
-                  'feed_cond',
-                  'feed_message',
-                  'feed_part_detect',
-                  'web_take_up_motor_state',
-                  'printer_reprint',
-                  'printer_pause',
-                  'printer_feed',
-                  'printer_start_print',
-                  'print_signal_time',
-                  'print_time',
-                  'transport_time',
-                  'idle_time',
-                  'printer_start_print_duration',
-                  'printer_end_print_wait',
-                  'product_sensor_one_edge_trigger',
-                  'product_sensor_one_debounce'
+                  'state',
+                  'wait_state',
+                  'program',
+                  'step',
+                  'clk_time',
+                  'up_time',
+                  'fault_count',
+                  'cycle_count',
+                  'life_count'
                 ]
               }
             }
           }
         }
+      },
+      systems: {
+        id: 'ccs-pa-001-systems',
+        components: {
+          endEffector: {
+            id: 'ccs-pa-001-end_effector',
+            dataItems: {
+              dataItem: [
+                'end_eff_cond',
+                'end_eff_message',
+                'smart_tamp_part_detect',
+                'tamp_air_assist',
+                'tamp_vacuum',
+                'tamp_cylinder',
+                'cylinder_extend_time',
+                'cylinder_home_disengage_time',
+                'cylinder_travel_time',
+                'tamp_vacuum_delay'
+              ]
+            }
+          },
+          feeder: {
+            id: 'ccs-pa-001-feeder',
+            dataItems: {
+              dataItem: [
+                'feed_cond',
+                'feed_message',
+                'feed_part_detect',
+                'web_take_up_motor_state',
+                'printer_reprint',
+                'printer_pause',
+                'printer_feed',
+                'printer_start_print',
+                'print_signal_time',
+                'print_time',
+                'transport_time',
+                'idle_time',
+                'printer_start_print_duration',
+                'printer_end_print_wait',
+                'product_sensor_one_edge_trigger',
+                'product_sensor_one_debounce'
+              ]
+            }
+          }
+        }
       }
-    ]
-  }
+    }
+  ]
 }
