@@ -14,7 +14,7 @@ console.log(xml)
 function main(sourcefile, xmltree) {
   const devices = getDevices(sourcefile)
   xmltree.MTConnectDevices[0].Devices.Device = devices
-  const xml = libxml.js2xml(xmltree, { compact: true, spaces: 2 })
+  const xml = getXml(xmltree)
   return xml
 }
 
@@ -80,4 +80,9 @@ function importYaml(path) {
   const yaml = fs.readFileSync(path, 'utf8')
   const yamltree = libyaml.load(yaml) // parse yaml
   return yamltree
+}
+
+function getXml(xmltree) {
+  const xml = libxml.js2xml(xmltree, { compact: true, spaces: 2 })
+  return xml
 }
