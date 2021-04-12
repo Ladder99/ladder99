@@ -19,7 +19,7 @@ const xml = getXml(xmltree)
  */
 function getDevices(sourcefile) {
   const devices = importYaml(sourcefile).devices
-  dir({ devices })
+  // dir({ devices })
 
   // iterate over device definitions
   for (const device of devices) {
@@ -28,8 +28,6 @@ function getDevices(sourcefile) {
     // get output.yaml, which defines the dataItems for the model
     const outputPath = `models/${model}/outputs.yaml`
     const outputs = importYaml(outputPath).outputs
-
-    //. walk over outputs, adding to dict
     const outputDict = {}
     for (const output of outputs) {
       const key = output.key
@@ -47,13 +45,38 @@ function getDevices(sourcefile) {
     const modelPath = `models/${model}/model.yaml`
     const modelTree = importYaml(modelPath, transforms).model
     dir({ modelTree })
+
+    //. now recurse down the model tree,
+    // replacing dataItems with their output defs
+    attachDataItems(modelTree, outputDict)
   }
+
+  dir({ devices })
+
   // for (const sourcefile of sourcefiles) {
   //   const xmltree = translate(yamltree) // recurses
   //   const device = xmltree.Device[0]
   //   devices.push(device)
   // }
+
   return devices
+}
+
+function attachDataItems(node, outputs) {
+  if (Array.isArray(node)) {
+    for (const el of node) {
+      attachDataItems(el, outputs)
+    }
+  } else if (node !== null && typeof node === 'object') {
+    if (node.dataItems) {
+      const arr = node.dataItems.dataItem
+      for (let i = 0; i < arr.length; i++) {
+        if (outputs[arr[i]]) {
+          arr[i] = outputs[arr[i]]
+        }
+      }
+    }
+  }
 }
 
 /**
