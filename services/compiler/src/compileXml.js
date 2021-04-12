@@ -18,28 +18,33 @@ const xml = getXml(xmltree)
  * get list of devices from devices.yaml
  */
 function getDevices(sourcefile) {
-  // const devices = []
+  // get devices.yaml
   const yamltree = importYaml(sourcefile)
   dir({ yamltree })
-  // @ts-ignore
   const devices = yamltree.devices
+
   for (const device of devices) {
     const { id, model, properties, sources, destinations } = device
     const devicePath = `models/${model}/device.yaml`
+
+    // get device's model.yaml, making text substitutions
     properties.deviceId = id
     const transforms = Object.keys(properties).map(key => {
       const value = properties[key]
       return str => str.replaceAll('${' + key + '}', value)
     })
-    dir({ transforms })
     const deviceTree = importYaml(devicePath, transforms)
     dir({ deviceTree })
+
+    // get each source's outputs.yaml
     for (const source of sources) {
       const { model, protocol, url } = source
       const outputsPath = `models/${model}/outputs.yaml`
       const outputsTree = importYaml(outputsPath)
       // dir({ outputsTree })
     }
+
+    // substitute in
   }
   // for (const sourcefile of sourcefiles) {
   //   const xmltree = translate(yamltree) // recurses
@@ -89,6 +94,8 @@ function capitalize(str) {
 /**
  * import a yaml file, apply any transforms, parse it,
  * and return as a js structure.
+ * @param path {string}
+ * @returns {object}
  */
 function importYaml(path, transforms = []) {
   let yaml = fs.readFileSync(path, 'utf8')
