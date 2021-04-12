@@ -26,11 +26,15 @@ function getDevices(sourcefile) {
     const { id, model, properties, sources, destinations } = device
     const devicePath = `models/${model}/device.yaml`
     const yt = importYaml(devicePath)
-    console.log(yt)
+    console.log({ yt })
     // console.log(sources)
     for (const source of sources) {
       console.log(source)
-      const { model, type, url } = source
+      const { model, protocol, url } = source
+      //. type defines the adapter plugin to use, which defines the inputs/outputs eh?
+      const outputsPath = `models/${model}/outputs.yaml`
+      const yt2 = importYaml(outputsPath)
+      console.log({ yt2 })
     }
   }
   // for (const sourcefile of sourcefiles) {

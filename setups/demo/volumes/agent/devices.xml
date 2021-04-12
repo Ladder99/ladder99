@@ -1,27 +1,32 @@
-{
-  device: [
-    {
-      id: '${deviceId}',
-      name: 'CCS-PA',
-      uuid: '${uuid}',
-      sampleInterval: 10,
-      description: [Object],
-      dataItems: [Object],
-      components: [Object],
-      systems: [Object]
-    }
-  ]
-}
+{ yt: { device: [ [Object] ] } }
 {
   model: 'ccs-pa',
-  type: 'mqtt-ccs',
+  protocol: 'mqtt-ccs',
   url: 'mqtt://broker-ccs-pa-001:1883'
 }
 {
+  yt2: {
+    outputs: [
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object],
+      [Object], [Object], [Object], [Object]
+    ]
+  }
+}
+{
   model: 'rockwell-hmi',
-  type: 'opc',
+  protocol: 'opc',
   url: 'opc.tcp://simulator-opc:4334/UA/LittleServer'
 }
+{ yt2: { outputs: [ [Object] ] } }
 <?xml version="1.0" encoding="UTF-8"?>
 <!--Generated file - DO NOT EDIT!-->
 <MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
@@ -36,16 +41,16 @@
       </properties>
       <sources>
         <model>ccs-pa</model>
-        <type>mqtt-ccs</type>
+        <protocol>mqtt-ccs</protocol>
         <url>mqtt://broker-ccs-pa-001:1883</url>
       </sources>
       <sources>
         <model>rockwell-hmi</model>
-        <type>opc</type>
+        <protocol>opc</protocol>
         <url>opc.tcp://simulator-opc:4334/UA/LittleServer</url>
       </sources>
       <destinations>
-        <type>shdr</type>
+        <protocol>shdr</protocol>
         <host>adapter</host>
         <port>7878</port>
       </destinations>
