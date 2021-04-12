@@ -12,14 +12,14 @@ const sourcefile = process.argv[2] // eg 'setups/demo/devices.yaml'
 const devices = getDevices(sourcefile)
 xmltree.MTConnectDevices[0].Devices.Device = devices
 const xml = getXml(xmltree)
-// console.log(xml)
+console.log(xml)
 
 /**
  * get list of devices from devices.yaml
  */
 function getDevices(sourcefile) {
+  const foos = []
   const devices = importYaml(sourcefile).devices
-  // dir({ devices })
 
   // iterate over device definitions
   for (const device of devices) {
@@ -54,18 +54,12 @@ function getDevices(sourcefile) {
     // now recurse down the model tree,
     // replacing dataItems with their output defs
     attachDataItems(modelTree, outputDict)
-    dir({ modelTree })
+    // dir({ modelTree })
+    const xmltree = translate(modelTree)
+    foos.push(xmltree)
   }
-
-  // dir({ devices })
-
-  // for (const sourcefile of sourcefiles) {
-  //   const xmltree = translate(yamltree) // recurses
-  //   const device = xmltree.Device[0]
-  //   devices.push(device)
-  // }
-
-  return devices
+  // dir({ foos })
+  return foos
 }
 
 /**
@@ -100,16 +94,15 @@ function attachDataItems(node, outputs) {
 /**
  * translate yaml tree to xml tree recursively
  */
-function translate(yamltree) {
-  if (Array.isArray(yamltree)) {
-    return yamltree.map(el => translate(el))
-  } else if (typeof yamltree === 'object') {
+function translate(node) {
+  if (Array.isArray(node)) {
+    return node.map(el => translate(el))
+  } else if (node !== null && typeof node === 'object') {
     const obj = {}
     const attributes = {}
     const elements = {}
-    const keys = Object.keys(yamltree)
-    for (const key of keys) {
-      const el = yamltree[key]
+    for (const key of Object.keys(node)) {
+      const el = node[key]
       if (sets.attributes.has(key)) {
         attributes[key] = el
       } else if (sets.values.has(key)) {

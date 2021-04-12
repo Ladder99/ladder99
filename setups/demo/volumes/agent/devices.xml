@@ -1,320 +1,80 @@
-{
-  modelTree: [
-    {
-      id: 'ccs-pa-001',
-      name: 'CCS-PA',
-      uuid: 'e05363af-95d1-4354-b749-8fbb09d3499e',
-      sampleInterval: 10,
-      description: {
-        manufacturer: 'CCS',
-        model: 'Emergent-PA-Pneumatic',
-        serialNumber: '001',
-        text: 'Emergent Next Generation Print and Apply'
-      },
-      dataItems: {
-        dataItem: [
-          {
-            id: 'ccs-pa-001-connection',
-            type: 'AVAILABILITY',
-            subType: undefined,
-            category: 'EVENT'
-          },
-          {
-            id: 'ccs-pa-001-asset_changed',
-            type: 'ASSET_CHANGED',
-            subType: undefined,
-            category: 'EVENT'
-          },
-          {
-            id: 'ccs-pa-001-asset_removed',
-            type: 'ASSET_REMOVED',
-            subType: undefined,
-            category: 'EVENT'
-          },
-          {
-            id: 'ccs-pa-001-dev_cond',
-            type: 'SYSTEM',
-            subType: undefined,
-            category: 'CONDITION'
-          },
-          {
-            id: 'ccs-pa-001-dev_msg',
-            type: 'MESSAGE',
-            subType: undefined,
-            category: 'EVENT'
-          },
-          {
-            id: 'ccs-pa-001-fw_ver',
-            type: 'FIRMWARE',
-            subType: 'VERSION',
-            category: 'EVENT'
-          },
-          {
-            id: 'ccs-pa-001-func_mode',
-            type: 'FUNCTIONAL_MODE',
-            subType: undefined,
-            category: 'EVENT'
-          }
-        ]
-      },
-      components: {
-        controller: {
-          id: 'ccs-pa-001-controller',
-          nativeName: 'plc',
-          description: {
-            text: 'Electronic board set responsible for coordinating all machine function.'
-          },
-          dataItems: {
-            dataItem: [
-              {
-                id: 'ccs-pa-001-e_stop',
-                type: 'EMERGENCY_STOP',
-                subType: undefined,
-                category: 'EVENT'
-              }
-            ]
-          },
-          components: {
-            path: {
-              id: 'ccs-pa-001-path1',
-              name: 'path',
-              dataItems: {
-                dataItem: [
-                  {
-                    id: 'ccs-pa-001-state',
-                    type: 'EXECUTION',
-                    subType: undefined,
-                    category: 'EVENT'
-                  },
-                  {
-                    id: 'ccs-pa-001-wait_state',
-                    type: 'WAIT_STATE',
-                    subType: undefined,
-                    category: 'EVENT'
-                  },
-                  {
-                    id: 'ccs-pa-001-program',
-                    type: 'PROGRAM',
-                    subType: 'MAIN',
-                    category: 'EVENT'
-                  },
-                  {
-                    id: 'ccs-pa-001-step',
-                    type: 'BLOCK',
-                    subType: undefined,
-                    category: 'EVENT'
-                  },
-                  {
-                    id: 'ccs-pa-001-clk_time',
-                    type: 'CLOCK_TIME',
-                    subType: undefined,
-                    category: 'SAMPLE'
-                  },
-                  {
-                    id: 'ccs-pa-001-up_time',
-                    type: 'EQUIPMENT_TIMER',
-                    subType: 'OPERATING',
-                    category: 'SAMPLE'
-                  },
-                  {
-                    id: 'ccs-pa-001-fault_count',
-                    type: 'COUNT',
-                    subType: undefined,
-                    category: 'SAMPLE'
-                  },
-                  {
-                    id: 'ccs-pa-001-cycle_count',
-                    type: 'COUNT',
-                    subType: undefined,
-                    category: 'SAMPLE'
-                  },
-                  {
-                    id: 'ccs-pa-001-life_count',
-                    type: 'COUNT',
-                    subType: undefined,
-                    category: 'SAMPLE'
-                  }
-                ]
-              }
-            }
-          }
-        }
-      },
-      systems: {
-        id: 'ccs-pa-001-systems',
-        components: {
-          endEffector: {
-            id: 'ccs-pa-001-end_effector',
-            dataItems: {
-              dataItem: [
-                {
-                  id: 'ccs-pa-001-end_eff_cond',
-                  type: 'SYSTEM',
-                  subType: undefined,
-                  category: 'CONDITION'
-                },
-                {
-                  id: 'ccs-pa-001-end_eff_message',
-                  type: 'MESSAGE',
-                  subType: undefined,
-                  category: 'EVENT'
-                },
-                {
-                  id: 'ccs-pa-001-smart_tamp_part_detect',
-                  type: 'PART_DETECT',
-                  subType: undefined,
-                  category: 'EVENT'
-                },
-                {
-                  id: 'ccs-pa-001-tamp_air_assist',
-                  type: 'ACTUATOR_STATE',
-                  subType: undefined,
-                  category: 'EVENT'
-                },
-                {
-                  id: 'ccs-pa-001-tamp_vacuum',
-                  type: 'ACTUATOR_STATE',
-                  subType: undefined,
-                  category: 'EVENT'
-                },
-                {
-                  id: 'ccs-pa-001-tamp_cylinder',
-                  type: 'ACTUATOR_STATE',
-                  subType: undefined,
-                  category: 'EVENT'
-                },
-                {
-                  id: 'ccs-pa-001-cylinder_extend_time',
-                  type: 'EQUIPMENT_TIMER',
-                  subType: 'WORKING',
-                  category: 'SAMPLE'
-                },
-                {
-                  id: 'ccs-pa-001-cylinder_home_disengage_time',
-                  type: 'EQUIPMENT_TIMER',
-                  subType: 'WORKING',
-                  category: 'SAMPLE'
-                },
-                {
-                  id: 'ccs-pa-001-cylinder_travel_time',
-                  type: 'EQUIPMENT_TIMER',
-                  subType: 'WORKING',
-                  category: 'SAMPLE'
-                },
-                {
-                  id: 'ccs-pa-001-tamp_vacuum_delay',
-                  type: 'EQUIPMENT_TIMER',
-                  subType: 'DELAY',
-                  category: 'SAMPLE'
-                }
-              ]
-            }
-          },
-          feeder: {
-            id: 'ccs-pa-001-feeder',
-            dataItems: {
-              dataItem: [
-                {
-                  id: 'ccs-pa-001-feed_cond',
-                  type: 'SYSTEM',
-                  subType: undefined,
-                  category: 'CONDITION'
-                },
-                {
-                  id: 'ccs-pa-001-feed_message',
-                  type: 'MESSAGE',
-                  subType: undefined,
-                  category: 'EVENT'
-                },
-                {
-                  id: 'ccs-pa-001-feed_part_detect',
-                  type: 'PART_DETECT',
-                  subType: undefined,
-                  category: 'EVENT'
-                },
-                {
-                  id: 'ccs-pa-001-web_take_up_motor_state',
-                  type: 'ACTUATOR_STATE',
-                  subType: undefined,
-                  category: 'EVENT'
-                },
-                {
-                  id: 'ccs-pa-001-printer_reprint',
-                  type: 'ACTUATOR_STATE',
-                  subType: undefined,
-                  category: 'EVENT'
-                },
-                {
-                  id: 'ccs-pa-001-printer_pause',
-                  type: 'ACTUATOR_STATE',
-                  subType: undefined,
-                  category: 'EVENT'
-                },
-                {
-                  id: 'ccs-pa-001-printer_feed',
-                  type: 'ACTUATOR_STATE',
-                  subType: undefined,
-                  category: 'EVENT'
-                },
-                {
-                  id: 'ccs-pa-001-printer_start_print',
-                  type: 'ACTUATOR_STATE',
-                  subType: undefined,
-                  category: 'EVENT'
-                },
-                {
-                  id: 'ccs-pa-001-print_signal_time',
-                  type: 'EQUIPMENT_TIMER',
-                  subType: 'DELAY',
-                  category: 'SAMPLE'
-                },
-                {
-                  id: 'ccs-pa-001-print_time',
-                  type: 'EQUIPMENT_TIMER',
-                  subType: 'WORKING',
-                  category: 'SAMPLE'
-                },
-                {
-                  id: 'ccs-pa-001-transport_time',
-                  type: 'EQUIPMENT_TIMER',
-                  subType: 'DELAY',
-                  category: 'SAMPLE'
-                },
-                {
-                  id: 'ccs-pa-001-idle_time',
-                  type: 'EQUIPMENT_TIMER',
-                  subType: 'DELAY',
-                  category: 'SAMPLE'
-                },
-                {
-                  id: 'ccs-pa-001-printer_start_print_duration',
-                  type: 'EQUIPMENT_TIMER',
-                  subType: 'DELAY',
-                  category: 'SAMPLE'
-                },
-                {
-                  id: 'ccs-pa-001-printer_end_print_wait',
-                  type: 'EQUIPMENT_TIMER',
-                  subType: 'DELAY',
-                  category: 'SAMPLE'
-                },
-                {
-                  id: 'ccs-pa-001-product_sensor_one_edge_trigger',
-                  type: undefined,
-                  subType: undefined,
-                  category: 'SAMPLE'
-                },
-                {
-                  id: 'ccs-pa-001-product_sensor_one_debounce',
-                  type: 'EQUIPMENT_TIMER',
-                  subType: 'DELAY',
-                  category: 'SAMPLE'
-                }
-              ]
-            }
-          }
-        }
-      }
-    }
-  ]
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!--Generated file - DO NOT EDIT!-->
+<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
+  <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="12345678" bufferSize="131072" version="1.6.0.7"/>
+  <Devices>
+    <Device id="ccs-pa-001" name="CCS-PA" uuid="e05363af-95d1-4354-b749-8fbb09d3499e" sampleInterval="10">
+      <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="001">Emergent Next Generation Print and Apply</Description>
+      <DataItems>
+        <DataItem id="ccs-pa-001-connection" type="AVAILABILITY" category="EVENT"/>
+        <DataItem id="ccs-pa-001-asset_changed" type="ASSET_CHANGED" category="EVENT"/>
+        <DataItem id="ccs-pa-001-asset_removed" type="ASSET_REMOVED" category="EVENT"/>
+        <DataItem id="ccs-pa-001-dev_cond" type="SYSTEM" category="CONDITION"/>
+        <DataItem id="ccs-pa-001-dev_msg" type="MESSAGE" category="EVENT"/>
+        <DataItem id="ccs-pa-001-fw_ver" type="FIRMWARE" subType="VERSION" category="EVENT"/>
+        <DataItem id="ccs-pa-001-func_mode" type="FUNCTIONAL_MODE" category="EVENT"/>
+      </DataItems>
+      <Components>
+        <Controller id="ccs-pa-001-controller" nativeName="plc">
+          <Description>Electronic board set responsible for coordinating all machine function.</Description>
+          <DataItems>
+            <DataItem id="ccs-pa-001-e_stop" type="EMERGENCY_STOP" category="EVENT"/>
+          </DataItems>
+          <Components>
+            <Path id="ccs-pa-001-path1" name="path">
+              <DataItems>
+                <DataItem id="ccs-pa-001-state" type="EXECUTION" category="EVENT"/>
+                <DataItem id="ccs-pa-001-wait_state" type="WAIT_STATE" category="EVENT"/>
+                <DataItem id="ccs-pa-001-program" type="PROGRAM" subType="MAIN" category="EVENT"/>
+                <DataItem id="ccs-pa-001-step" type="BLOCK" category="EVENT"/>
+                <DataItem id="ccs-pa-001-clk_time" type="CLOCK_TIME" category="SAMPLE"/>
+                <DataItem id="ccs-pa-001-up_time" type="EQUIPMENT_TIMER" subType="OPERATING" category="SAMPLE"/>
+                <DataItem id="ccs-pa-001-fault_count" type="COUNT" category="SAMPLE"/>
+                <DataItem id="ccs-pa-001-cycle_count" type="COUNT" category="SAMPLE"/>
+                <DataItem id="ccs-pa-001-life_count" type="COUNT" category="SAMPLE"/>
+              </DataItems>
+            </Path>
+          </Components>
+        </Controller>
+      </Components>
+      <Systems id="ccs-pa-001-systems">
+        <Components>
+          <EndEffector id="ccs-pa-001-end_effector">
+            <DataItems>
+              <DataItem id="ccs-pa-001-end_eff_cond" type="SYSTEM" category="CONDITION"/>
+              <DataItem id="ccs-pa-001-end_eff_message" type="MESSAGE" category="EVENT"/>
+              <DataItem id="ccs-pa-001-smart_tamp_part_detect" type="PART_DETECT" category="EVENT"/>
+              <DataItem id="ccs-pa-001-tamp_air_assist" type="ACTUATOR_STATE" category="EVENT"/>
+              <DataItem id="ccs-pa-001-tamp_vacuum" type="ACTUATOR_STATE" category="EVENT"/>
+              <DataItem id="ccs-pa-001-tamp_cylinder" type="ACTUATOR_STATE" category="EVENT"/>
+              <DataItem id="ccs-pa-001-cylinder_extend_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE"/>
+              <DataItem id="ccs-pa-001-cylinder_home_disengage_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE"/>
+              <DataItem id="ccs-pa-001-cylinder_travel_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE"/>
+              <DataItem id="ccs-pa-001-tamp_vacuum_delay" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
+            </DataItems>
+          </EndEffector>
+          <Feeder id="ccs-pa-001-feeder">
+            <DataItems>
+              <DataItem id="ccs-pa-001-feed_cond" type="SYSTEM" category="CONDITION"/>
+              <DataItem id="ccs-pa-001-feed_message" type="MESSAGE" category="EVENT"/>
+              <DataItem id="ccs-pa-001-feed_part_detect" type="PART_DETECT" category="EVENT"/>
+              <DataItem id="ccs-pa-001-web_take_up_motor_state" type="ACTUATOR_STATE" category="EVENT"/>
+              <DataItem id="ccs-pa-001-printer_reprint" type="ACTUATOR_STATE" category="EVENT"/>
+              <DataItem id="ccs-pa-001-printer_pause" type="ACTUATOR_STATE" category="EVENT"/>
+              <DataItem id="ccs-pa-001-printer_feed" type="ACTUATOR_STATE" category="EVENT"/>
+              <DataItem id="ccs-pa-001-printer_start_print" type="ACTUATOR_STATE" category="EVENT"/>
+              <DataItem id="ccs-pa-001-print_signal_time" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
+              <DataItem id="ccs-pa-001-print_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE"/>
+              <DataItem id="ccs-pa-001-transport_time" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
+              <DataItem id="ccs-pa-001-idle_time" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
+              <DataItem id="ccs-pa-001-printer_start_print_duration" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
+              <DataItem id="ccs-pa-001-printer_end_print_wait" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
+              <DataItem id="ccs-pa-001-product_sensor_one_edge_trigger" category="SAMPLE"/>
+              <DataItem id="ccs-pa-001-product_sensor_one_debounce" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
+            </DataItems>
+          </Feeder>
+        </Components>
+      </Systems>
+    </Device>
+  </Devices>
+</MTConnectDevices>
