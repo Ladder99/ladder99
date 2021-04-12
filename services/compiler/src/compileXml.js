@@ -63,10 +63,12 @@ function getDevices(sourcefile) {
 }
 
 function attachDataItems(node, outputs) {
+  // if node is an array, recurse down each element
   if (Array.isArray(node)) {
     for (const el of node) {
       attachDataItems(el, outputs)
     }
+    // else if node is an object, check if it has dataItems
   } else if (node !== null && typeof node === 'object') {
     if (node.dataItems) {
       const arr = node.dataItems.dataItem
@@ -74,6 +76,11 @@ function attachDataItems(node, outputs) {
         if (outputs[arr[i]]) {
           arr[i] = outputs[arr[i]]
         }
+      }
+      // no dataItems - recurse down dict values?
+    } else {
+      for (const el of Object.values(node)) {
+        attachDataItems(el, outputs)
       }
     }
   }
