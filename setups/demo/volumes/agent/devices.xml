@@ -1,17 +1,30 @@
 {
-  devices: [
+  device: [
     {
-      id: 'ccs-pa-001',
-      model: 'ccs-pa',
-      properties: [Object],
-      sources: [Array],
-      destinations: [Array]
+      id: '${deviceId}',
+      name: 'CCS-PA',
+      uuid: '${uuid}',
+      sampleInterval: 10,
+      description: [Object],
+      dataItems: [Object],
+      components: [Object],
+      systems: [Object]
     }
   ]
 }
+{
+  model: 'ccs-pa',
+  type: 'mqtt-ccs',
+  url: 'mqtt://broker-ccs-pa-001:1883'
+}
+{
+  model: 'rockwell-hmi',
+  type: 'opc',
+  url: 'opc.tcp://simulator-opc:4334/UA/LittleServer'
+}
 <?xml version="1.0" encoding="UTF-8"?>
 <MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
-  <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.6.0.7"/>
+  <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="12345678" bufferSize="131072" version="1.6.0.7"/>
   <Devices>
     <Device>
       <id>ccs-pa-001</id>

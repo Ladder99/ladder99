@@ -24,11 +24,11 @@ const xmldoc = {
       Header: {
         //. values?
         _attributes: {
-          creationTime: '2021-02-23T18:44:40+00:00',
-          sender: 'localhost',
-          instanceId: '1267728234',
-          bufferSize: '131072',
-          version: '1.6.0.7',
+          creationTime: '2021-02-23T18:44:40+00:00', //.
+          sender: 'localhost', //.
+          instanceId: '12345678', //.
+          bufferSize: '131072', //. ?
+          version: '1.6.0.7', //.
         },
       },
       Devices: {
@@ -43,10 +43,21 @@ const xmldoc = {
 // get list of devices from devices.yaml
 function getDevices() {
   // const devices = []
-  const yaml = fs.readFileSync(sourcefile, 'utf8')
-  const yamltree = libyaml.load(yaml) // parse yaml
-  console.log(yamltree)
+  const yamltree = importYaml(sourcefile)
+  // console.log(yamltree)
+  // @ts-ignore
   const devices = yamltree.devices
+  for (const device of devices) {
+    const { id, model, properties, sources, destinations } = device
+    const devicePath = `models/${model}/device.yaml`
+    const yt = importYaml(devicePath)
+    console.log(yt)
+    // console.log(sources)
+    for (const source of sources) {
+      console.log(source)
+      const { model, type, url } = source
+    }
+  }
   // for (const sourcefile of sourcefiles) {
   //   const xmltree = translate(yamltree) // recurses
   //   const device = xmltree.Device[0]
@@ -85,6 +96,12 @@ function translate(yamltree) {
 
 function capitalize(str) {
   return str.slice(0, 1).toUpperCase() + str.slice(1)
+}
+
+function importYaml(path) {
+  const yaml = fs.readFileSync(path, 'utf8')
+  const yamltree = libyaml.load(yaml) // parse yaml
+  return yamltree
 }
 
 // ----------------
