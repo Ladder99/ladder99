@@ -4,10 +4,10 @@ const fs = require('fs') // node lib filesys
 const libyaml = require('js-yaml') // https://github.com/nodeca/js-yaml
 const libxml = require('xml-js') // https://github.com/nashwaan/xml-js
 
-const sourcefiles = process.argv.slice(2) // eg ['input/foo/device.yaml']
+const sourcefile = process.argv[2] // eg 'setups/demo/devices.yaml'
 
 // define xml document root
-const xdoc = {
+const xmldoc = {
   _declaration: {
     _attributes: { version: '1.0', encoding: 'UTF-8' },
   },
@@ -71,27 +71,28 @@ value
 // get list of devices from devices.yaml
 function getDevices() {
   const devices = []
-  for (const sourcefile of sourcefiles) {
-    const ystr = fs.readFileSync(sourcefile, 'utf8')
-    const ytree = libyaml.load(ystr) // parse yaml
-    const xtree = translate(ytree) // recurses
-    const device = xtree.Device[0]
-    devices.push(device)
-  }
+  const yaml = fs.readFileSync(sourcefile, 'utf8')
+  const yamltree = libyaml.load(yaml) // parse yaml
+  console.log(yamltree)
+  // for (const sourcefile of sourcefiles) {
+  //   const xmltree = translate(yamltree) // recurses
+  //   const device = xmltree.Device[0]
+  //   devices.push(device)
+  // }
   return devices
 }
 
 // translate yaml tree to xml tree recursively
-function translate(ytree) {
-  if (Array.isArray(ytree)) {
-    return ytree.map(el => translate(el))
-  } else if (typeof ytree === 'object') {
+function translate(yamltree) {
+  if (Array.isArray(yamltree)) {
+    return yamltree.map(el => translate(el))
+  } else if (typeof yamltree === 'object') {
     const obj = {}
     const attributes = {}
     const elements = {}
-    const keys = Object.keys(ytree)
+    const keys = Object.keys(yamltree)
     for (const key of keys) {
-      const el = ytree[key]
+      const el = yamltree[key]
       if (attributesSet.has(key)) {
         attributes[key] = el
       } else if (valuesSet.has(key)) {
@@ -121,11 +122,11 @@ function getSet(lines) {
 
 function main() {
   const devices = getDevices()
-  xdoc.MTConnectDevices[0].Devices.Device = devices
-  const xstr = libxml.js2xml(xdoc, { compact: true, spaces: 2 })
+  xmldoc.MTConnectDevices[0].Devices.Device = devices
+  const xml = libxml.js2xml(xmldoc, { compact: true, spaces: 2 })
   //. insert comment at/near top -
   // <!-- generated file - do not edit -->
-  console.log(xstr)
+  console.log(xml)
 }
 
 main()
