@@ -44,15 +44,14 @@ function getDevices(sourcefile) {
     properties.deviceId = id
     const transforms = Object.keys(properties).map(key => {
       const value = properties[key]
-      return str => str.replaceAll('${' + key + '}', value)
+      return str => str.replaceAll('${' + key + '}', value) // requires node15
     })
 
     // get model.yaml, making text substitutions with properties
     const modelPath = `models/${model}/model.yaml`
     const modelTree = importYaml(modelPath, transforms).model
-    // dir({ modelTree })
 
-    //. now recurse down the model tree,
+    // now recurse down the model tree,
     // replacing dataItems with their output defs
     attachDataItems(modelTree, outputDict)
     dir({ modelTree })
@@ -69,6 +68,9 @@ function getDevices(sourcefile) {
   return devices
 }
 
+/**
+ * attach dataItems from outputs.yaml to model.yaml tree recursively.
+ */
 function attachDataItems(node, outputs) {
   // if node is an array, recurse down each element
   if (Array.isArray(node)) {
@@ -85,8 +87,10 @@ function attachDataItems(node, outputs) {
         }
       }
       // no dataItems - recurse down dict values?
-    } else {
-      for (const el of Object.values(node)) {
+    }
+    for (const key of Object.keys(node)) {
+      if (key !== 'dataItems') {
+        const el = node[key]
         attachDataItems(el, outputs)
       }
     }
