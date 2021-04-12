@@ -6,23 +6,17 @@ import libxml from 'xml-js' // https://github.com/nashwaan/xml-js
 import sets from './sets.js'
 import xmltree from './xmltree.js'
 
-const path = process.argv[2] // eg 'setups/demo/devices.yaml'
+const sourcefile = process.argv[2] // eg 'setups/demo/devices.yaml'
 
-const xml = main(path, xmltree)
+const devices = getDevices(sourcefile)
+xmltree.MTConnectDevices[0].Devices.Device = devices
+const xml = getXml(xmltree)
 console.log(xml)
-
-function main(sourcefile, xmltree) {
-  const devices = getDevices(sourcefile)
-  xmltree.MTConnectDevices[0].Devices.Device = devices
-  const xml = getXml(xmltree)
-  return xml
-}
 
 // get list of devices from devices.yaml
 function getDevices(sourcefile) {
   // const devices = []
   const yamltree = importYaml(sourcefile)
-  // console.log(yamltree)
   // @ts-ignore
   const devices = yamltree.devices
   for (const device of devices) {
