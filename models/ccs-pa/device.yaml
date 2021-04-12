@@ -13,7 +13,7 @@ device:
     description:
       manufacturer: CCS
       model: Emergent-PA-Pneumatic
-      serialNumber: ${serialNumber} # eg '001'
+      serialNumber: '${serialNumber}' # eg '001'
       text: Emergent Next Generation Print and Apply
 
     dataItems:

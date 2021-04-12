@@ -12,7 +12,7 @@ const sourcefile = process.argv[2] // eg 'setups/demo/devices.yaml'
 const devices = getDevices(sourcefile)
 xmltree.MTConnectDevices[0].Devices.Device = devices
 const xml = getXml(xmltree)
-console.log(xml)
+// console.log(xml)
 
 /**
  * get list of devices from devices.yaml
@@ -20,21 +20,25 @@ console.log(xml)
 function getDevices(sourcefile) {
   // const devices = []
   const yamltree = importYaml(sourcefile)
+  dir({ yamltree })
   // @ts-ignore
   const devices = yamltree.devices
   for (const device of devices) {
     const { id, model, properties, sources, destinations } = device
     const devicePath = `models/${model}/device.yaml`
-    const yt = importYaml(devicePath)
-    console.log({ yt })
-    // console.log(sources)
+    properties.deviceId = id
+    const transforms = Object.keys(properties).map(key => {
+      const value = properties[key]
+      return str => str.replaceAll('${' + key + '}', value)
+    })
+    dir({ transforms })
+    const deviceTree = importYaml(devicePath, transforms)
+    dir({ deviceTree })
     for (const source of sources) {
-      console.log(source)
       const { model, protocol, url } = source
-      //. type defines the adapter plugin to use, which defines the inputs/outputs eh?
       const outputsPath = `models/${model}/outputs.yaml`
-      const yt2 = importYaml(outputsPath)
-      console.log({ yt2 })
+      const outputsTree = importYaml(outputsPath)
+      // dir({ outputsTree })
     }
   }
   // for (const sourcefile of sourcefiles) {
@@ -83,10 +87,14 @@ function capitalize(str) {
 }
 
 /**
- * import a yaml file, parse it, and return as a js structure
+ * import a yaml file, apply any transforms, parse it,
+ * and return as a js structure.
  */
-function importYaml(path) {
-  const yaml = fs.readFileSync(path, 'utf8')
+function importYaml(path, transforms = []) {
+  let yaml = fs.readFileSync(path, 'utf8')
+  for (const transform of transforms) {
+    yaml = transform(yaml)
+  }
   const yamltree = libyaml.load(yaml) // parse yaml
   return yamltree
 }
@@ -97,4 +105,11 @@ function importYaml(path) {
 function getXml(xmltree) {
   const xml = libxml.js2xml(xmltree, { compact: true, spaces: 2 })
   return xml
+}
+
+/**
+ * print an object with unlimited depth
+ */
+function dir(obj) {
+  console.dir(obj, { depth: null })
 }

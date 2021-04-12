@@ -1,59 +1,137 @@
-{ yt: { device: [ [Object] ] } }
 {
-  model: 'ccs-pa',
-  protocol: 'mqtt-ccs',
-  url: 'mqtt://broker-ccs-pa-001:1883'
-}
-{
-  yt2: {
-    outputs: [
-      [Object], [Object], [Object], [Object],
-      [Object], [Object], [Object], [Object],
-      [Object], [Object], [Object], [Object],
-      [Object], [Object], [Object], [Object],
-      [Object], [Object], [Object], [Object],
-      [Object], [Object], [Object], [Object],
-      [Object], [Object], [Object], [Object],
-      [Object], [Object], [Object], [Object],
-      [Object], [Object], [Object], [Object],
-      [Object], [Object], [Object], [Object],
-      [Object], [Object], [Object], [Object]
+  yamltree: {
+    devices: [
+      {
+        id: 'ccs-pa-001',
+        model: 'ccs-pa',
+        properties: {
+          uuid: 'e05363af-95d1-4354-b749-8fbb09d3499e',
+          serialNumber: '001'
+        },
+        sources: [
+          {
+            model: 'ccs-pa',
+            protocol: 'mqtt-ccs',
+            url: 'mqtt://broker-ccs-pa-001:1883'
+          },
+          {
+            model: 'rockwell-hmi',
+            protocol: 'opc',
+            url: 'opc.tcp://simulator-opc:4334/UA/LittleServer'
+          }
+        ],
+        destinations: [ { protocol: 'shdr', host: 'adapter', port: 7878 } ]
+      }
     ]
   }
 }
 {
-  model: 'rockwell-hmi',
-  protocol: 'opc',
-  url: 'opc.tcp://simulator-opc:4334/UA/LittleServer'
+  transforms: [
+    [Function (anonymous)],
+    [Function (anonymous)],
+    [Function (anonymous)]
+  ]
 }
-{ yt2: { outputs: [ [Object] ] } }
-<?xml version="1.0" encoding="UTF-8"?>
-<!--Generated file - DO NOT EDIT!-->
-<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
-  <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="12345678" bufferSize="131072" version="1.6.0.7"/>
-  <Devices>
-    <Device>
-      <id>ccs-pa-001</id>
-      <model>ccs-pa</model>
-      <properties>
-        <uuid>e05363af-95d1-4354-b749-8fbb09d3499e</uuid>
-        <serialNumber>001</serialNumber>
-      </properties>
-      <sources>
-        <model>ccs-pa</model>
-        <protocol>mqtt-ccs</protocol>
-        <url>mqtt://broker-ccs-pa-001:1883</url>
-      </sources>
-      <sources>
-        <model>rockwell-hmi</model>
-        <protocol>opc</protocol>
-        <url>opc.tcp://simulator-opc:4334/UA/LittleServer</url>
-      </sources>
-      <destinations>
-        <protocol>shdr</protocol>
-        <host>adapter</host>
-        <port>7878</port>
-      </destinations>
-    </Device>
-  </Devices>
-</MTConnectDevices>
+{
+  deviceTree: {
+    device: [
+      {
+        id: 'ccs-pa-001',
+        name: 'CCS-PA',
+        uuid: 'e05363af-95d1-4354-b749-8fbb09d3499e',
+        sampleInterval: 10,
+        description: {
+          manufacturer: 'CCS',
+          model: 'Emergent-PA-Pneumatic',
+          serialNumber: '001',
+          text: 'Emergent Next Generation Print and Apply'
+        },
+        dataItems: {
+          dataItem: [
+            'connection',
+            'asset_changed',
+            'asset_removed',
+            'dev_cond',
+            'dev_msg',
+            'fw_ver',
+            'func_mode'
+          ]
+        },
+        components: {
+          controller: {
+            id: 'ccs-pa-001-controller',
+            nativeName: 'plc',
+            description: {
+              text: 'Electronic board set responsible for coordinating all machine function.'
+            },
+            dataItems: { dataItem: [ 'e_stop' ] },
+            components: {
+              path: {
+                id: 'ccs-pa-001-path1',
+                name: 'path',
+                dataItems: {
+                  dataItem: [
+                    'state',
+                    'wait_state',
+                    'program',
+                    'step',
+                    'clk_time',
+                    'up_time',
+                    'fault_count',
+                    'cycle_count',
+                    'life_count'
+                  ]
+                }
+              }
+            }
+          }
+        },
+        systems: {
+          id: 'ccs-pa-001-systems',
+          components: {
+            endEffector: {
+              id: 'ccs-pa-001-end_effector',
+              dataItems: {
+                dataItem: [
+                  'end_eff_cond',
+                  'end_eff_message',
+                  'smart_tamp_part_detect',
+                  'tamp_air_assist',
+                  'tamp_vacuum',
+                  'tamp_cylinder',
+                  'cylinder_extend_time',
+                  'cylinder_home_disengage_time',
+                  'cylinder_travel_time',
+                  'tamp_vacuum_delay'
+                ]
+              }
+            },
+            feeder: {
+              id: 'ccs-pa-001-feeder',
+              dataItems: {
+                dataItem: [
+                  'feed_cond',
+                  'feed_message',
+                  'feed_part_detect',
+                  'web_take_up_motor_state',
+                  'printer_reprint',
+                  'printer_pause',
+                  'printer_feed',
+                  'printer_start_print',
+                  'print_signal_time',
+                  'print_time',
+                  'transport_time',
+                  'idle_time',
+                  'printer_start_print_duration',
+                  'printer_end_print_wait',
+                  'product_sensor_one_edge_trigger',
+                  'product_sensor_one_debounce'
+                ]
+              }
+            }
+          }
+        }
+      }
+    ]
+  }
+}
