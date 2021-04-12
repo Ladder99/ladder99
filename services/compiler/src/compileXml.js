@@ -33,7 +33,7 @@ function getDevices(sourcefile) {
       const key = output.key
       const obj = {
         id: id + '-' + key,
-        type: output.type,
+        type: output.type || 'UNKNOWN', //.
         subType: output.subType,
         category: output.category,
         units: output.units,
