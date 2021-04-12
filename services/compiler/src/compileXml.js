@@ -8,12 +8,15 @@ import xmltree from './xmltree.js'
 
 const sourcefile = process.argv[2] // eg 'setups/demo/devices.yaml'
 
+// main
 const devices = getDevices(sourcefile)
 xmltree.MTConnectDevices[0].Devices.Device = devices
 const xml = getXml(xmltree)
 console.log(xml)
 
-// get list of devices from devices.yaml
+/**
+ * get list of devices from devices.yaml
+ */
 function getDevices(sourcefile) {
   // const devices = []
   const yamltree = importYaml(sourcefile)
@@ -38,7 +41,9 @@ function getDevices(sourcefile) {
   return devices
 }
 
-// translate yaml tree to xml tree recursively
+/**
+ * translate yaml tree to xml tree recursively
+ */
 function translate(yamltree) {
   if (Array.isArray(yamltree)) {
     return yamltree.map(el => translate(el))
@@ -66,16 +71,25 @@ function translate(yamltree) {
   }
 }
 
+/**
+ * capitalize a string
+ */
 function capitalize(str) {
   return str.slice(0, 1).toUpperCase() + str.slice(1)
 }
 
+/**
+ * import a yaml file, parse it, and return as a js structure
+ */
 function importYaml(path) {
   const yaml = fs.readFileSync(path, 'utf8')
   const yamltree = libyaml.load(yaml) // parse yaml
   return yamltree
 }
 
+/**
+ * convert xmltree js structure to xml string
+ */
 function getXml(xmltree) {
   const xml = libxml.js2xml(xmltree, { compact: true, spaces: 2 })
   return xml
