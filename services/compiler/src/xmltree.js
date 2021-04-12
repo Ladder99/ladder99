@@ -1,8 +1,9 @@
-// define xml document root
+// define xml tree root
 export default {
   _declaration: {
     _attributes: { version: '1.0', encoding: 'UTF-8' },
   },
+  _comment: 'Generated file - DO NOT EDIT!',
   MTConnectDevices: [
     {
       _attributes: {

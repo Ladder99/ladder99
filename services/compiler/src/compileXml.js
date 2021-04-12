@@ -4,14 +4,14 @@ import fs from 'fs' // node lib filesys
 import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
 import libxml from 'xml-js' // https://github.com/nashwaan/xml-js
 import sets from './sets.js'
-import xmldoc from './xmldoc.js'
+import xmltree from './xmltree.js'
 
 const sourcefile = process.argv[2] // eg 'setups/demo/devices.yaml'
 
 function main() {
   const devices = getDevices()
-  xmldoc.MTConnectDevices[0].Devices.Device = devices
-  const xml = libxml.js2xml(xmldoc, { compact: true, spaces: 2 })
+  xmltree.MTConnectDevices[0].Devices.Device = devices
+  const xml = libxml.js2xml(xmltree, { compact: true, spaces: 2 })
   //. insert comment at/near top -
   // <!-- generated file - do not edit -->
   console.log(xml)
