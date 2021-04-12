@@ -1,5 +1,7 @@
 # this defines the devices.xml structure, along with the model yamls.
 # read by services/adapter/src/adapter.js.
+# sources define the inputs to the cache.
+# compiled by services/compiler into devices.xml.
 #. see also devices-future.yaml for future dev.
 
 devices:

@@ -32,6 +32,7 @@
                 <DataItem id="ccs-pa-001-fault_count" type="COUNT" category="SAMPLE"/>
                 <DataItem id="ccs-pa-001-cycle_count" type="COUNT" category="SAMPLE"/>
                 <DataItem id="ccs-pa-001-life_count" type="COUNT" category="SAMPLE"/>
+                <DataItem id="ccs-pa-001-cycle_time" type="PROCESS_TIMER" subType="PROCESS" category="SAMPLE" unit="SECONDS"/>
               </DataItems>
             </Path>
           </Components>

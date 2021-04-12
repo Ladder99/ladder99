@@ -3,6 +3,7 @@
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from devices.yaml.
 # dataItems are defined in outputs.yaml.
+# compilation is done with services/compiler.
 
 model:
   id: ${deviceId} # eg 'ccs-pa-001'
@@ -51,6 +52,7 @@ model:
               - fault_count
               - cycle_count
               - life_count
+              - cycle_time #. ok here?
 
   systems:
     id: ${deviceId}-systems
