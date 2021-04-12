@@ -18,14 +18,11 @@ const xml = getXml(xmltree)
  * get list of devices from devices.yaml
  */
 function getDevices(sourcefile) {
-  // get devices.yaml
-  const yamltree = importYaml(sourcefile)
-  dir({ yamltree })
-  const devices = yamltree.devices
+  const devices = importYaml(sourcefile).devices
+  dir({ devices })
 
   for (const device of devices) {
     const { id, model, properties, sources, destinations } = device
-    const devicePath = `models/${model}/device.yaml`
 
     // get device's model.yaml, making text substitutions
     properties.deviceId = id
@@ -33,18 +30,21 @@ function getDevices(sourcefile) {
       const value = properties[key]
       return str => str.replaceAll('${' + key + '}', value)
     })
-    const deviceTree = importYaml(devicePath, transforms)
-    dir({ deviceTree })
+    const modelPath = `models/${model}/model.yaml`
+    const modelTree = importYaml(modelPath, transforms).model
+    dir({ modelTree })
 
-    // get each source's outputs.yaml
-    for (const source of sources) {
-      const { model, protocol, url } = source
-      const outputsPath = `models/${model}/outputs.yaml`
-      const outputsTree = importYaml(outputsPath)
-      // dir({ outputsTree })
-    }
+    // get device's output.yaml, which defines the dataItems for the model
+    const outputPath = `models/${model}/outputs.yaml`
+    const outputTree = importYaml(outputPath)
 
-    // substitute in
+    // // get each source's outputs.yaml
+    // for (const source of sources) {
+    //   const { model, protocol, url } = source
+    //   const outputsPath = `models/${model}/outputs.yaml`
+    //   const outputsTree = importYaml(outputsPath)
+    //   // dir({ outputsTree })
+    // }
   }
   // for (const sourcefile of sourcefiles) {
   //   const xmltree = translate(yamltree) // recurses

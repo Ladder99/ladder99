@@ -2,7 +2,7 @@
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from the device yaml.
 
-device:
+model:
   - id: ${deviceId}
     name: ASC Econoclave
     uuid: ${uuid}

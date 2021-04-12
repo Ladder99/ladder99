@@ -1,4 +1,4 @@
-device:
+model:
   - id: ${deviceId} # eg 'rockwell-hmi-001'
     name: Rockwell-HMI
     uuid: ${uuid} # eg 'e05363af-95d1-4354-b749-8fbb09d3499e'
