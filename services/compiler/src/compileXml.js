@@ -1,8 +1,9 @@
 // translate devices.yaml to devices.xml
 
-const fs = require('fs') // node lib filesys
-const libyaml = require('js-yaml') // https://github.com/nodeca/js-yaml
-const libxml = require('xml-js') // https://github.com/nashwaan/xml-js
+import fs from 'fs' // node lib filesys
+import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
+import libxml from 'xml-js' // https://github.com/nashwaan/xml-js
+import sets from './sets.js'
 
 const sourcefile = process.argv[2] // eg 'setups/demo/devices.yaml'
 
@@ -37,43 +38,15 @@ const xmldoc = {
   ],
 }
 
-// treat these yaml elements as attributes
-const attributesSet = getSet(`
-id
-name
-nativeName
-uuid
-sampleInterval
-manufacturer
-model
-serialNumber
-category
-type
-subType
-`)
-
-// enclose these yaml elements as contents
-const valuesSet = getSet(`
-text
-source
-`)
-
-// hide these yaml elements
-const hiddenSet = getSet(`
-events
-samples
-conditions
-value
-`)
-
 // helper fns
 
 // get list of devices from devices.yaml
 function getDevices() {
-  const devices = []
+  // const devices = []
   const yaml = fs.readFileSync(sourcefile, 'utf8')
   const yamltree = libyaml.load(yaml) // parse yaml
   console.log(yamltree)
+  const devices = yamltree.devices
   // for (const sourcefile of sourcefiles) {
   //   const xmltree = translate(yamltree) // recurses
   //   const device = xmltree.Device[0]
@@ -93,11 +66,11 @@ function translate(yamltree) {
     const keys = Object.keys(yamltree)
     for (const key of keys) {
       const el = yamltree[key]
-      if (attributesSet.has(key)) {
+      if (sets.attributes.has(key)) {
         attributes[key] = el
-      } else if (valuesSet.has(key)) {
+      } else if (sets.values.has(key)) {
         obj._text = el
-      } else if (hiddenSet.has(key)) {
+      } else if (sets.hidden.has(key)) {
         // ignore
       } else {
         const element = translate(el)
@@ -112,10 +85,6 @@ function translate(yamltree) {
 
 function capitalize(str) {
   return str.slice(0, 1).toUpperCase() + str.slice(1)
-}
-
-function getSet(lines) {
-  return new Set(lines.trim().split('\n'))
 }
 
 // ----------------
