@@ -25,26 +25,25 @@ docs:
     cd docs && make html && http-server build/html
     cd docs && firebase deploy
 
-# buildxml and buildcompose
-build SETUP='demo':
-    just buildXml {{SETUP}}
-    just buildCompose {{SETUP}}
+# compileXml and compileCompose
+compile SETUP='demo':
+    just compileXml {{SETUP}}
+    just compileCompose {{SETUP}}
 
-# build devices.xml from model devices.yaml
-buildXml SETUP='demo':
-    node services/compiler/src/buildXml.js setups/{{SETUP}}/devices/*.yaml | \
-    tee setups/{{SETUP}}/devices.xml
-    cp setups/{{SETUP}}/devices.xml setups/{{SETUP}}/volumes/agent/config
+# compile devices.xml from model devices.yaml
+compileXml SETUP='demo':
+    node services/compiler/src/compileXml.js setups/{{SETUP}}/devices.yaml | \
+    tee setups/{{SETUP}}/volumes/agent/devices.xml
 
-# build docker-compose.yaml from devices.yaml
-buildCompose SETUP='demo':
-    echo todo
+# # compile docker-compose.yaml from devices.yaml
+# compileCompose SETUP='demo':
+#     echo todo
 
-# # build calcs.js from model outputs.yaml
-# buildjs SETUP='demo':
+# # compile calcs.js from model outputs.yaml
+# compilejs SETUP='demo':
 #     for filename in setups/{{SETUP}}/devices/*.yaml; \
 #     do \
-#         node services/compiler/src/buildJs.js "$filename" | \
+#         node services/compiler/src/compileJs.js "$filename" | \
 #           tee "setups/demo/devices/$(basename $filename .yaml).js" ; \
 #     done
 #     cp services/compiler/output/*.js services/adapter/src/plugins
