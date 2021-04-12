@@ -6,21 +6,20 @@ import libxml from 'xml-js' // https://github.com/nashwaan/xml-js
 import sets from './sets.js'
 import xmltree from './xmltree.js'
 
-const sourcefile = process.argv[2] // eg 'setups/demo/devices.yaml'
+const path = process.argv[2] // eg 'setups/demo/devices.yaml'
 
-function main() {
-  const devices = getDevices()
+const xml = main(path, xmltree)
+console.log(xml)
+
+function main(sourcefile, xmltree) {
+  const devices = getDevices(sourcefile)
   xmltree.MTConnectDevices[0].Devices.Device = devices
   const xml = libxml.js2xml(xmltree, { compact: true, spaces: 2 })
-  //. insert comment at/near top -
-  // <!-- generated file - do not edit -->
-  console.log(xml)
+  return xml
 }
 
-main()
-
 // get list of devices from devices.yaml
-function getDevices() {
+function getDevices(sourcefile) {
   // const devices = []
   const yamltree = importYaml(sourcefile)
   // console.log(yamltree)
