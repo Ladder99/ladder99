@@ -15,7 +15,7 @@
         <DataItem id="ccs-pa-001-func_mode" type="FUNCTIONAL_MODE" category="EVENT"/>
       </DataItems>
 
-      <!-- <Components>
+      <Components>
         <Controller id="ccs-pa-001-controller" nativeName="plc">
           <Description>Electronic board set responsible for coordinating all machine function.</Description>
           <DataItems>
@@ -37,7 +37,7 @@
             </Path>
           </Components>
         </Controller>
-      </Components> -->
+      </Components>
 
       <!-- <Systems id="ccs-pa-001-systems">
         <Components>
