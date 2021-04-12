@@ -274,6 +274,7 @@ outputs:
     value: <printer_end_print_wait>
 
   - key: product_sensor_one_edge_trigger
+    type: UNKNOWN #..
     category: SAMPLE
     value: <product_sensor_one_edge_trigger>
 

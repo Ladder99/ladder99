@@ -39,7 +39,7 @@
         </Controller>
       </Components>
 
-      <!-- <Systems id="ccs-pa-001-systems">
+      <Systems id="ccs-pa-001-systems">
         <Components>
           <EndEffector id="ccs-pa-001-end_effector">
             <DataItems>
@@ -71,12 +71,12 @@
               <DataItem id="ccs-pa-001-idle_time" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
               <DataItem id="ccs-pa-001-printer_start_print_duration" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
               <DataItem id="ccs-pa-001-printer_end_print_wait" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
-              <DataItem id="ccs-pa-001-product_sensor_one_edge_trigger" category="SAMPLE"/>
+              <DataItem id="ccs-pa-001-product_sensor_one_edge_trigger" type="UNKNOWN" category="SAMPLE"/>
               <DataItem id="ccs-pa-001-product_sensor_one_debounce" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
             </DataItems>
           </Feeder>
         </Components>
-      </Systems> -->
+      </Systems>
 
     </Device>
   </Devices>
