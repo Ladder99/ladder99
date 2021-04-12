@@ -47,10 +47,10 @@
               <DataItem id="ccs-pa-001-tamp_air_assist" type="ACTUATOR_STATE" category="EVENT"/>
               <DataItem id="ccs-pa-001-tamp_vacuum" type="ACTUATOR_STATE" category="EVENT"/>
               <DataItem id="ccs-pa-001-tamp_cylinder" type="ACTUATOR_STATE" category="EVENT"/>
-              <DataItem id="ccs-pa-001-cylinder_extend_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE"/>
-              <DataItem id="ccs-pa-001-cylinder_home_disengage_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE"/>
-              <DataItem id="ccs-pa-001-cylinder_travel_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE"/>
-              <DataItem id="ccs-pa-001-tamp_vacuum_delay" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
+              <DataItem id="ccs-pa-001-cylinder_extend_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE" unit="SECOND"/>
+              <DataItem id="ccs-pa-001-cylinder_home_disengage_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE" unit="SECOND"/>
+              <DataItem id="ccs-pa-001-cylinder_travel_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE" unit="SECOND"/>
+              <DataItem id="ccs-pa-001-tamp_vacuum_delay" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE" unit="SECOND"/>
             </DataItems>
           </EndEffector>
           <Feeder id="ccs-pa-001-feeder">
@@ -63,14 +63,14 @@
               <DataItem id="ccs-pa-001-printer_pause" type="ACTUATOR_STATE" category="EVENT"/>
               <DataItem id="ccs-pa-001-printer_feed" type="ACTUATOR_STATE" category="EVENT"/>
               <DataItem id="ccs-pa-001-printer_start_print" type="ACTUATOR_STATE" category="EVENT"/>
-              <DataItem id="ccs-pa-001-print_signal_time" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
-              <DataItem id="ccs-pa-001-print_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE"/>
-              <DataItem id="ccs-pa-001-transport_time" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
-              <DataItem id="ccs-pa-001-idle_time" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
-              <DataItem id="ccs-pa-001-printer_start_print_duration" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
-              <DataItem id="ccs-pa-001-printer_end_print_wait" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
+              <DataItem id="ccs-pa-001-print_signal_time" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE" unit="SECOND"/>
+              <DataItem id="ccs-pa-001-print_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE" unit="SECOND"/>
+              <DataItem id="ccs-pa-001-transport_time" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE" unit="SECOND"/>
+              <DataItem id="ccs-pa-001-idle_time" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE" unit="SECOND"/>
+              <DataItem id="ccs-pa-001-printer_start_print_duration" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE" unit="SECOND"/>
+              <DataItem id="ccs-pa-001-printer_end_print_wait" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE" unit="SECOND"/>
               <DataItem id="ccs-pa-001-product_sensor_one_edge_trigger" type="UNKNOWN" category="SAMPLE"/>
-              <DataItem id="ccs-pa-001-product_sensor_one_debounce" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE"/>
+              <DataItem id="ccs-pa-001-product_sensor_one_debounce" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE" unit="SECOND"/>
             </DataItems>
           </Feeder>
         </Components>

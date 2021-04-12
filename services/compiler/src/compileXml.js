@@ -36,7 +36,7 @@ function getDevices(sourcefile) {
         type: output.type || 'UNKNOWN', //.
         subType: output.subType,
         category: output.category,
-        units: output.units,
+        unit: output.unit,
         //. others?
       }
       outputDict[key] = obj

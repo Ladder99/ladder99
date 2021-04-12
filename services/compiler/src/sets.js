@@ -11,7 +11,7 @@ serialNumber
 category
 type
 subType
-units
+unit
 `)
 
 // enclose these yaml elements as contents
