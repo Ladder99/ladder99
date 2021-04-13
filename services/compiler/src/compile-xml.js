@@ -1,28 +1,27 @@
 // translate devices.yaml to devices.xml
 
+// note: we use yaml and xml for the strings,
+// yamltree and xmltree for the corresponding js structures.
+
 import fs from 'fs' // node lib filesys
 import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
 import libxml from 'xml-js' // https://github.com/nashwaan/xml-js
 import sets from './sets.js'
-import xmlroot from './xmltree.js'
+import xmltree from './xmltree.js' // base xml structure
 
 const sourcefile = process.argv[2] // eg 'setups/demo/devices.yaml'
 const destfile = process.argv[3] // eg 'setups/demo/volumes/agent/devices.xml'
 
 // main
-// const xmldevices = getXmlDevices(sourcefile)
-// xmltree.MTConnectDevices[0].Devices.Device = xmldevices
-const xmltree = getXmlDevices(sourcefile)
-const xml = getXml(xmltree)
-// console.log(xml)
-fs.writeFileSync(destfile, xml)
+const devices = loadYamlTree(sourcefile).devices
+attachDevices(xmltree, devices)
+saveXmlTree(xmltree, destfile)
 
 /**
  * get list of xml-js devices from devices.yaml
  */
-function getXmlDevices(sourcefile) {
+function attachDevices(xmltree, devices) {
   const xmldevices = []
-  const devices = importYaml(sourcefile).devices
 
   // iterate over device definitions
   for (const device of devices) {
@@ -33,22 +32,15 @@ function getXmlDevices(sourcefile) {
     // outputs is an array, with each element like
     //   { key: 'connection', category: 'EVENT', type: 'AVAILABILITY', value: ... }
     const outputPath = `models/${model}/outputs.yaml`
-    const outputs = importYaml(outputPath).outputs
+    const outputs = loadYamlTree(outputPath).outputs
 
     // get dataItems dict - maps from key to dataItem object.
     const dataItems = {}
     for (const output of outputs) {
       const key = output.key
-      // const dataItem = {
-      //   id: id + '-' + key,
-      //   type: output.type || 'UNKNOWN', //. each must have a type or agent dies
-      //   subType: output.subType,
-      //   category: output.category,
-      //   unit: output.unit,
-      //   //. others? safer to delete key and value from output object?
-      // }
       let dataItem = { ...output }
       dataItem.id = id + '-' + key
+      //. print warning
       if (!dataItem.type) dataItem.type = 'UNKNOWN' // else agent dies
       delete dataItem.key
       delete dataItem.value
@@ -64,7 +56,7 @@ function getXmlDevices(sourcefile) {
 
     // get model.yaml, making text substitutions with properties
     const modelPath = `models/${model}/model.yaml`
-    const modelTree = importYaml(modelPath, transforms).model
+    const modelTree = loadYamlTree(modelPath, transforms).model
 
     // recurse down the model tree, replacing dataItems with their output defs.
     attachDataItems(modelTree, dataItems)
@@ -75,13 +67,14 @@ function getXmlDevices(sourcefile) {
     const xmltree = translate(modelTree)
     xmldevices.push(xmltree)
   }
-  // return xmldevices
-  xmlroot.MTConnectDevices[0].Devices.Device = xmldevices
-  return xmlroot
+  // attach devices to tree
+  xmltree.MTConnectDevices[0].Devices.Device = xmldevices
 }
 
 /**
  * attach dataItems from outputs.yaml to model.yaml tree recursively.
+ * @param {object} node - the xml node to attach to
+ * @param {object} dataItems - dict of dataItem objects
  */
 function attachDataItems(node, dataItems) {
   // if node is an array, recurse down each element
@@ -155,7 +148,7 @@ function capitalize(str) {
  * @param path {string}
  * @returns {object}
  */
-function importYaml(path, transforms = []) {
+function loadYamlTree(path, transforms = []) {
   let yaml = fs.readFileSync(path, 'utf8')
   for (const transform of transforms) {
     yaml = transform(yaml)
@@ -165,11 +158,11 @@ function importYaml(path, transforms = []) {
 }
 
 /**
- * convert xmltree js structure to xml string
+ * convert xml structure to xml string and save to a file.
  */
-function getXml(xmltree) {
+function saveXmlTree(xmltree, destfile) {
   const xml = libxml.js2xml(xmltree, { compact: true, spaces: 2 })
-  return xml
+  fs.writeFileSync(destfile, xml)
 }
 
 /**
