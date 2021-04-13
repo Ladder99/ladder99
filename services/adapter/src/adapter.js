@@ -117,13 +117,16 @@ function getOutputs({ outputTemplates, types, deviceId }) {
     //   dependsOn.push(dependency)
     // }
 
+    template.value = template.value || ''
+
     // replace all occurrences of <key> with cache.get('').value
-    const regexp1 = /<(.*?)>/gm
+    const regexp1 = /(<(.*?)>)/gm
     template.value = template.value.replaceAll(
       regexp1,
-      `cache.get('${deviceId}-$&').value` // $& is the matched substring
+      `cache.get('${deviceId}-$2').value` // $& is the matched substring
     )
-    const value = cache => template.value // by default just return string value
+    console.log('new value', template.value)
+    const value = cache => eval(template.value)
 
     // get dependsOn AFTER transforms, because user might have
     // specified a cache get manually.
@@ -134,6 +137,8 @@ function getOutputs({ outputTemplates, types, deviceId }) {
       const key = match[1]
       dependsOn.push(key)
     }
+    console.log({ dependsOn })
+
     const output = {
       dependsOn,
       //. assume each starts with deviceId?
