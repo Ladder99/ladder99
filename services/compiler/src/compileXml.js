@@ -88,8 +88,9 @@ function attachDataItems(node, dataItems) {
       if (key === 'dataItems') {
         const keys = node.dataItems.dataItem
         for (let i = 0; i < keys.length; i++) {
-          if (dataItems[keys[i]]) {
-            keys[i] = dataItems[keys[i]]
+          const dataItem = dataItems[keys[i]]
+          if (dataItem) {
+            keys[i] = dataItem
           } else {
             console.log(`warning: unknown dataItem in model.yaml: ${key}`)
           }

@@ -6,33 +6,35 @@
     <Device id="ccs-pa-001" name="CCS-PA" uuid="e05363af-95d1-4354-b749-8fbb09d3499e" sampleInterval="10">
       <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="001">Emergent Next Generation Print and Apply</Description>
       <DataItems>
-        <DataItem id="ccs-pa-001-connection" type="AVAILABILITY" category="EVENT"/>
-        <DataItem id="ccs-pa-001-asset_changed" type="ASSET_CHANGED" category="EVENT"/>
-        <DataItem id="ccs-pa-001-asset_removed" type="ASSET_REMOVED" category="EVENT"/>
-        <DataItem id="ccs-pa-001-dev_cond" type="SYSTEM" category="CONDITION"/>
-        <DataItem id="ccs-pa-001-dev_msg" type="MESSAGE" category="EVENT"/>
-        <DataItem id="ccs-pa-001-fw_ver" type="FIRMWARE" subType="VERSION" category="EVENT"/>
-        <DataItem id="ccs-pa-001-func_mode" type="FUNCTIONAL_MODE" category="EVENT"/>
+        <DataItem category="EVENT" type="AVAILABILITY" id="ccs-pa-001-connection"/>
+        <DataItem category="EVENT" type="ASSET_CHANGED" id="ccs-pa-001-asset_changed"/>
+        <DataItem category="EVENT" type="ASSET_REMOVED" id="ccs-pa-001-asset_removed"/>
+        <DataItem category="CONDITION" type="SYSTEM" id="ccs-pa-001-dev_cond"/>
+        <DataItem category="EVENT" type="MESSAGE" id="ccs-pa-001-dev_msg">
+          <Representation/>
+        </DataItem>
+        <DataItem category="EVENT" type="FIRMWARE" subType="VERSION" id="ccs-pa-001-fw_ver"/>
+        <DataItem category="EVENT" type="FUNCTIONAL_MODE" id="ccs-pa-001-func_mode"/>
       </DataItems>
       <Components>
         <Controller id="ccs-pa-001-controller" nativeName="plc">
           <Description>Electronic board set responsible for coordinating all machine function.</Description>
           <DataItems>
-            <DataItem id="ccs-pa-001-e_stop" type="EMERGENCY_STOP" category="EVENT"/>
+            <DataItem category="EVENT" type="EMERGENCY_STOP" id="ccs-pa-001-e_stop"/>
           </DataItems>
           <Components>
             <Path id="ccs-pa-001-path1" name="path">
               <DataItems>
-                <DataItem id="ccs-pa-001-state" type="EXECUTION" category="EVENT"/>
-                <DataItem id="ccs-pa-001-wait_state" type="WAIT_STATE" category="EVENT"/>
-                <DataItem id="ccs-pa-001-program" type="PROGRAM" subType="MAIN" category="EVENT"/>
-                <DataItem id="ccs-pa-001-step" type="BLOCK" category="EVENT"/>
-                <DataItem id="ccs-pa-001-clk_time" type="CLOCK_TIME" category="SAMPLE"/>
-                <DataItem id="ccs-pa-001-up_time" type="EQUIPMENT_TIMER" subType="OPERATING" category="SAMPLE"/>
-                <DataItem id="ccs-pa-001-fault_count" type="COUNT" category="SAMPLE"/>
-                <DataItem id="ccs-pa-001-cycle_count" type="COUNT" category="SAMPLE"/>
-                <DataItem id="ccs-pa-001-life_count" type="COUNT" category="SAMPLE"/>
-                <DataItem id="ccs-pa-001-cycle_time" type="PROCESS_TIMER" subType="PROCESS" category="SAMPLE" unit="SECONDS"/>
+                <DataItem category="EVENT" type="EXECUTION" id="ccs-pa-001-state"/>
+                <DataItem category="EVENT" type="WAIT_STATE" id="ccs-pa-001-wait_state"/>
+                <DataItem category="EVENT" type="PROGRAM" subType="MAIN" id="ccs-pa-001-program"/>
+                <DataItem category="EVENT" type="BLOCK" id="ccs-pa-001-step"/>
+                <DataItem category="SAMPLE" type="CLOCK_TIME" id="ccs-pa-001-clk_time"/>
+                <DataItem category="SAMPLE" type="EQUIPMENT_TIMER" subType="OPERATING" id="ccs-pa-001-up_time"/>
+                <DataItem category="SAMPLE" type="COUNT" id="ccs-pa-001-fault_count"/>
+                <DataItem category="SAMPLE" type="COUNT" id="ccs-pa-001-cycle_count"/>
+                <DataItem category="SAMPLE" type="COUNT" id="ccs-pa-001-life_count"/>
+                <DataItem category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" unit="SECONDS" id="ccs-pa-001-cycle_time"/>
               </DataItems>
             </Path>
           </Components>
@@ -42,36 +44,40 @@
         <Components>
           <EndEffector id="ccs-pa-001-end_effector">
             <DataItems>
-              <DataItem id="ccs-pa-001-end_eff_cond" type="SYSTEM" category="CONDITION"/>
-              <DataItem id="ccs-pa-001-end_eff_message" type="MESSAGE" category="EVENT"/>
-              <DataItem id="ccs-pa-001-smart_tamp_part_detect" type="PART_DETECT" category="EVENT"/>
-              <DataItem id="ccs-pa-001-tamp_air_assist" type="ACTUATOR_STATE" category="EVENT"/>
-              <DataItem id="ccs-pa-001-tamp_vacuum" type="ACTUATOR_STATE" category="EVENT"/>
-              <DataItem id="ccs-pa-001-tamp_cylinder" type="ACTUATOR_STATE" category="EVENT"/>
-              <DataItem id="ccs-pa-001-cylinder_extend_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE" unit="SECOND"/>
-              <DataItem id="ccs-pa-001-cylinder_home_disengage_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE" unit="SECOND"/>
-              <DataItem id="ccs-pa-001-cylinder_travel_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE" unit="SECOND"/>
-              <DataItem id="ccs-pa-001-tamp_vacuum_delay" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE" unit="SECOND"/>
+              <DataItem category="CONDITION" type="SYSTEM" id="ccs-pa-001-end_eff_cond"/>
+              <DataItem category="EVENT" type="MESSAGE" id="ccs-pa-001-end_eff_message">
+                <Representation/>
+              </DataItem>
+              <DataItem category="EVENT" type="PART_DETECT" id="ccs-pa-001-smart_tamp_part_detect"/>
+              <DataItem category="EVENT" type="ACTUATOR_STATE" id="ccs-pa-001-tamp_air_assist"/>
+              <DataItem category="EVENT" type="ACTUATOR_STATE" id="ccs-pa-001-tamp_vacuum"/>
+              <DataItem category="EVENT" type="ACTUATOR_STATE" id="ccs-pa-001-tamp_cylinder"/>
+              <DataItem category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND" id="ccs-pa-001-cylinder_extend_time"/>
+              <DataItem category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND" id="ccs-pa-001-cylinder_home_disengage_time"/>
+              <DataItem category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND" id="ccs-pa-001-cylinder_travel_time"/>
+              <DataItem category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND" id="ccs-pa-001-tamp_vacuum_delay"/>
             </DataItems>
           </EndEffector>
           <Feeder id="ccs-pa-001-feeder">
             <DataItems>
-              <DataItem id="ccs-pa-001-feed_cond" type="SYSTEM" category="CONDITION"/>
-              <DataItem id="ccs-pa-001-feed_message" type="MESSAGE" category="EVENT"/>
-              <DataItem id="ccs-pa-001-feed_part_detect" type="PART_DETECT" category="EVENT"/>
-              <DataItem id="ccs-pa-001-web_take_up_motor_state" type="ACTUATOR_STATE" category="EVENT"/>
-              <DataItem id="ccs-pa-001-printer_reprint" type="ACTUATOR_STATE" category="EVENT"/>
-              <DataItem id="ccs-pa-001-printer_pause" type="ACTUATOR_STATE" category="EVENT"/>
-              <DataItem id="ccs-pa-001-printer_feed" type="ACTUATOR_STATE" category="EVENT"/>
-              <DataItem id="ccs-pa-001-printer_start_print" type="ACTUATOR_STATE" category="EVENT"/>
-              <DataItem id="ccs-pa-001-print_signal_time" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE" unit="SECOND"/>
-              <DataItem id="ccs-pa-001-print_time" type="EQUIPMENT_TIMER" subType="WORKING" category="SAMPLE" unit="SECOND"/>
-              <DataItem id="ccs-pa-001-transport_time" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE" unit="SECOND"/>
-              <DataItem id="ccs-pa-001-idle_time" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE" unit="SECOND"/>
-              <DataItem id="ccs-pa-001-printer_start_print_duration" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE" unit="SECOND"/>
-              <DataItem id="ccs-pa-001-printer_end_print_wait" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE" unit="SECOND"/>
-              <DataItem id="ccs-pa-001-product_sensor_one_edge_trigger" type="UNKNOWN" category="SAMPLE"/>
-              <DataItem id="ccs-pa-001-product_sensor_one_debounce" type="EQUIPMENT_TIMER" subType="DELAY" category="SAMPLE" unit="SECOND"/>
+              <DataItem category="CONDITION" type="SYSTEM" id="ccs-pa-001-feed_cond"/>
+              <DataItem category="EVENT" type="MESSAGE" id="ccs-pa-001-feed_message">
+                <Representation/>
+              </DataItem>
+              <DataItem category="EVENT" type="PART_DETECT" id="ccs-pa-001-feed_part_detect"/>
+              <DataItem category="EVENT" type="ACTUATOR_STATE" id="ccs-pa-001-web_take_up_motor_state"/>
+              <DataItem category="EVENT" type="ACTUATOR_STATE" id="ccs-pa-001-printer_reprint"/>
+              <DataItem category="EVENT" type="ACTUATOR_STATE" id="ccs-pa-001-printer_pause"/>
+              <DataItem category="EVENT" type="ACTUATOR_STATE" id="ccs-pa-001-printer_feed"/>
+              <DataItem category="EVENT" type="ACTUATOR_STATE" id="ccs-pa-001-printer_start_print"/>
+              <DataItem category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND" id="ccs-pa-001-print_signal_time"/>
+              <DataItem category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND" id="ccs-pa-001-print_time"/>
+              <DataItem category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND" id="ccs-pa-001-transport_time"/>
+              <DataItem category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND" id="ccs-pa-001-idle_time"/>
+              <DataItem category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND" id="ccs-pa-001-printer_start_print_duration"/>
+              <DataItem category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND" id="ccs-pa-001-printer_end_print_wait"/>
+              <DataItem type="UNKNOWN" category="SAMPLE" id="ccs-pa-001-product_sensor_one_edge_trigger"/>
+              <DataItem category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND" id="ccs-pa-001-product_sensor_one_debounce"/>
             </DataItems>
           </Feeder>
         </Components>
