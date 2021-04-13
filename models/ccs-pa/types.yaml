@@ -39,10 +39,10 @@ types:
     300: RESUMING
     400: UNAVAILABLE
 
-  CONDITION_TRIPLE:
-    2: NORMAL
-    1: WARNING
-    0: FAULT
+  # CONDITION_TRIPLE:
+  #   2: NORMAL
+  #   1: WARNING
+  #   0: FAULT
 
   WARN_CONDITION:
     false: NORMAL
