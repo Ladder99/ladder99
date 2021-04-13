@@ -1,4 +1,3 @@
-warning: unknown dataItem in model.yaml: lkmlkm
 <?xml version="1.0" encoding="UTF-8"?>
 <!--Generated file - DO NOT EDIT!-->
 <MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
