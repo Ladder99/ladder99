@@ -40,9 +40,8 @@ function attachDevices(xmltree, devices) {
       const key = output.key
       let dataItem = { ...output }
       dataItem.id = id + '-' + key
-      //. print warning
       if (!dataItem.type) {
-        console.log(`warning - type not specified for output ${key}`)
+        console.log(`warning: type not specified for output '${key}'`)
         dataItem.type = 'UNKNOWN' // else agent dies
       }
       delete dataItem.key
@@ -97,7 +96,7 @@ function attachDataItems(node, dataItems) {
           if (dataItem) {
             keys[i] = dataItem
           } else {
-            console.log(`warning: unknown dataItem in model.yaml: ${keys[i]}`)
+            console.log(`warning: unknown dataItem '${keys[i]}' in model.yaml`)
             keys[i] = { id: keys[i], type: 'UNKNOWN', category: 'UNKNOWN' }
           }
         }
