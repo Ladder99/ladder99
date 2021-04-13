@@ -9,13 +9,13 @@ import libxml from 'xml-js' // https://github.com/nashwaan/xml-js
 import sets from './sets.js'
 import xmltree from './xmltree.js' // base xml structure
 
-const sourcefile = process.argv[2] // eg 'setups/demo/devices.yaml'
-const destfile = process.argv[3] // eg 'setups/demo/volumes/agent/devices.xml'
+const yamlfile = process.argv[2] // eg 'setups/demo/devices.yaml'
+const xmlfile = process.argv[3] // eg 'setups/demo/volumes/agent/devices.xml'
 
 // main
-const devices = loadYamlTree(sourcefile).devices
+const devices = loadYamlTree(yamlfile).devices
 attachDevices(xmltree, devices)
-saveXmlTree(xmltree, destfile)
+saveXmlTree(xmltree, xmlfile)
 
 /**
  * get list of xml-js devices from devices.yaml
@@ -41,7 +41,10 @@ function attachDevices(xmltree, devices) {
       let dataItem = { ...output }
       dataItem.id = id + '-' + key
       //. print warning
-      if (!dataItem.type) dataItem.type = 'UNKNOWN' // else agent dies
+      if (!dataItem.type) {
+        console.log(`warning - type not specified for output ${key}`)
+        dataItem.type = 'UNKNOWN' // else agent dies
+      }
       delete dataItem.key
       delete dataItem.value
       dataItems[key] = dataItem
@@ -64,7 +67,7 @@ function attachDevices(xmltree, devices) {
     //. report any dataItems not used
 
     // convert model to xml and add to list
-    const xmltree = translate(modelTree)
+    const xmltree = translateYamlToXml(modelTree)
     xmldevices.push(xmltree)
   }
   // attach devices to tree
@@ -108,10 +111,12 @@ function attachDataItems(node, dataItems) {
 
 /**
  * translate yaml tree to xml tree recursively
+ * @param {object} node - a yaml tree node
+ * @returns xml tree
  */
-function translate(node) {
+function translateYamlToXml(node) {
   if (Array.isArray(node)) {
-    return node.map(el => translate(el))
+    return node.map(el => translateYamlToXml(el))
   } else if (node !== null && typeof node === 'object') {
     const obj = {}
     const attributes = {}
@@ -125,7 +130,7 @@ function translate(node) {
       } else if (sets.hidden.has(key)) {
         // ignore
       } else {
-        const element = translate(el)
+        const element = translateYamlToXml(el)
         elements[capitalize(key)] = element
       }
     }
@@ -145,11 +150,11 @@ function capitalize(str) {
 /**
  * import a yaml file, apply any transforms, parse it,
  * and return as a js structure.
- * @param path {string}
- * @returns {object}
+ * @param yamlfile {string}
+ * @returns {object} yaml tree
  */
-function loadYamlTree(path, transforms = []) {
-  let yaml = fs.readFileSync(path, 'utf8')
+function loadYamlTree(yamlfile, transforms = []) {
+  let yaml = fs.readFileSync(yamlfile, 'utf8')
   for (const transform of transforms) {
     yaml = transform(yaml)
   }
@@ -159,10 +164,12 @@ function loadYamlTree(path, transforms = []) {
 
 /**
  * convert xml structure to xml string and save to a file.
+ * @param {object} xmltree
+ * @param {string} xmlfile
  */
-function saveXmlTree(xmltree, destfile) {
+function saveXmlTree(xmltree, xmlfile) {
   const xml = libxml.js2xml(xmltree, { compact: true, spaces: 2 })
-  fs.writeFileSync(destfile, xml)
+  fs.writeFileSync(xmlfile, xml)
 }
 
 /**

@@ -1,4 +1,5 @@
 // define xml tree root
+// this is in a format the xml-js lib understands
 export default {
   _declaration: {
     _attributes: { version: '1.0', encoding: 'UTF-8' },
