@@ -63,7 +63,12 @@ function attachDevices(xmltree, devices) {
     // recurse down the model tree, replacing dataItems with their output defs.
     attachDataItems(modelTree, dataItems)
 
-    //. report any dataItems not used
+    // report any dataItems not used
+    const unused = Object.values(dataItems).filter(item => !item.used)
+    if (unused) {
+      const unusedStr = unused.map(item => "'" + item.id + "'").join(', ')
+      console.log(`warning: unused dataItems ${unusedStr}`)
+    }
 
     // convert model to xml and add to list
     const xmltree = translateYamlToXml(modelTree)
@@ -95,6 +100,7 @@ function attachDataItems(node, dataItems) {
           const dataItem = dataItems[keys[i]]
           if (dataItem) {
             keys[i] = dataItem
+            dataItem.used = true
           } else {
             console.log(`warning: unknown dataItem '${keys[i]}' in model.yaml`)
             keys[i] = { id: keys[i], type: 'UNKNOWN', category: 'UNKNOWN' }
