@@ -117,23 +117,27 @@ function getOutputs({ outputTemplates, types, deviceId }) {
     //   dependsOn.push(dependency)
     // }
 
-    template.value = template.value || ''
+    let valueStr = template.value || ''
 
-    // replace all occurrences of <key> with cache.get('').value
+    // replace all occurrences of <key> with `cache.get('...').value`.
+    // note: .*? is a non-greedy match, so doesn't eat other occurrences also.
     const regexp1 = /(<(.*?)>)/gm
-    template.value = template.value.replaceAll(
+    valueStr = valueStr.replaceAll(
       regexp1,
-      `cache.get('${deviceId}-$2').value` // $& is the matched substring
+      `cache.get('${deviceId}-$2').value` // $2 is the matched substring
     )
-    console.log('new value', template.value)
-    const value = cache => eval(template.value)
+    if (valueStr.includes('\n')) {
+      valueStr = '{\n' + valueStr + '\n}'
+    }
+    console.log('new value', valueStr)
+    const value = cache => eval(valueStr)
 
     // get dependsOn AFTER transforms, because user might have
     // specified a cache get manually.
     const dependsOn = []
     const regexp2 = /cache\.get\('(.*?)'\).value/gm
     let match
-    while ((match = regexp2.exec(template.value)) !== null) {
+    while ((match = regexp2.exec(valueStr)) !== null) {
       const key = match[1]
       dependsOn.push(key)
     }

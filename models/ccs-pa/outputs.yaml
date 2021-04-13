@@ -32,9 +32,6 @@ outputs:
   - key: dev_cond
     category: CONDITION
     type: SYSTEM
-    #value: |
-    #  const str = <status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'
-    #  return str
     value: types.CONDITION_TRIPLE[[<status-has-hard-faults>, <status-has-soft-faults>, <status-has-no-faults>].indexOf(true)]
 
   - key: dev_msg
@@ -42,7 +39,7 @@ outputs:
     type: MESSAGE
     representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
     value: |
-      const faults = Object.values(<status-faults>)
+      const faults = Object.values(<status-faults>) || []
       const str = faults.map(fault => fault.id + ':' + fault.description).join(', ')
       return str
 
@@ -129,9 +126,10 @@ outputs:
     category: EVENT
     type: MESSAGE
     representation: DATA_SET
-    value: |
-      const str = Object.keys(<status-faults>).filter(key => key in [2,3,5]).map(key => key + ':' + $.faults[key].description).join(', ')
-      return str
+    #. $
+    # value: |
+    #   const str = Object.keys(<status-faults>).filter(key => key in [2,3,5]).map(key => key + ':' + $.faults[key].description).join(', ')
+    #   return str
 
   - key: smart_tamp_part_detect
     category: EVENT
@@ -195,9 +193,10 @@ outputs:
     category: EVENT
     type: MESSAGE
     representation: DATA_SET
-    value: |
-      const str = Object.keys(<status-faults>).filter(key => key in [1,11,12,13,14,15,50,51]).map(key => key + ':' + $.faults[key].description).join(', ')
-      return str
+    #. $
+    # value: |
+    #   const str = Object.keys(<status-faults>).filter(key => key in [1,11,12,13,14,15,50,51]).map(key => key + ':' + $.faults[key].description).join(', ')
+    #   return str
 
   - key: feed_part_detect
     category: EVENT
