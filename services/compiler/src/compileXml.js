@@ -77,25 +77,26 @@ function getXmlDevices(sourcefile) {
 function attachDataItems(node, dataItems) {
   // if node is an array, recurse down each element
   if (Array.isArray(node)) {
-    for (const el of node) {
-      attachDataItems(el, dataItems)
+    for (const subnode of node) {
+      attachDataItems(subnode, dataItems)
     }
-    // else if node is an object, check if it has dataItems
+    // else if node is an object, recurse down values
   } else if (node !== null && typeof node === 'object') {
-    if (node.dataItems) {
-      const arr = node.dataItems.dataItem
-      // replace each dataItem with its corresponding output object
-      for (let i = 0; i < arr.length; i++) {
-        if (dataItems[arr[i]]) {
-          arr[i] = dataItems[arr[i]]
-        }
-      }
-    }
-    // recurse down dict values
+    // iterate over dict values
     for (const key of Object.keys(node)) {
-      if (key !== 'dataItems') {
-        const el = node[key]
-        attachDataItems(el, dataItems)
+      // if dataItems, replace each element with its corresponding dataItem obj
+      if (key === 'dataItems') {
+        const keys = node.dataItems.dataItem
+        for (let i = 0; i < keys.length; i++) {
+          if (dataItems[keys[i]]) {
+            keys[i] = dataItems[keys[i]]
+          } else {
+            console.log(`warning: unknown dataItem in model.yaml: ${key}`)
+          }
+        }
+      } else {
+        const subnode = node[key]
+        attachDataItems(subnode, dataItems)
       }
     }
   }
