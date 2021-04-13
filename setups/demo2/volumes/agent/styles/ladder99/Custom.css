@@ -1,0 +1,19 @@
+.panel-default > .panel-heading {
+  padding: 5px 15px;
+}
+
+.nav,
+.navbar,
+.navbar-default,
+.navbar-nav,
+.navbar-brand,
+.navbar-collapse,
+.navbar-header,
+.navbar-form {
+  background: black;
+}
+
+.navbar-default .navbar-nav > li > a:focus,
+.navbar-default .navbar-nav > li > a:hover {
+  color: white;
+}
