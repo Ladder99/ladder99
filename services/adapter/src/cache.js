@@ -49,7 +49,7 @@ export class Cache {
    * @param {Item} item
    */
   set(key, item) {
-    console.log('set', key, JSON.stringify(item).slice(0, 60))
+    console.log('set', key, JSON.stringify(item).slice(0, 99))
     // update the cache item
     this._map.set(key, item)
     // get list of outputs associated with this key

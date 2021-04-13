@@ -39,12 +39,11 @@ outputs:
     category: EVENT
     type: MESSAGE
     representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
-    value: 'pok=3 lkm=4'
-    # value: JSON.stringify(<status-faults>)
     # value: |
-    #   const faults = Object.values(<status-faults>) || []
-    #   const str = faults.map(fault => fault.id + ':' + fault.description).join(',')
-    #   return str
+    #   const faults = Object.entries(<status-faults>)
+    #   const str = faults.map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
+    #   return str  #. illegal return - why?
+    value: Object.entries(<status-faults>).map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
 
   - key: fw_ver
     category: EVENT
