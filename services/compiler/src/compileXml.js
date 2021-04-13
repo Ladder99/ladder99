@@ -25,7 +25,8 @@ function getXmlDevices(sourcefile) {
   for (const device of devices) {
     const { id, model, properties } = device
 
-    // get output.yaml, which defines the dataItems for the model
+    // get output.yaml, which defines the dataItems for the model.
+    // outputs is dict like { '': {} }
     const outputPath = `models/${model}/outputs.yaml`
     const outputs = importYaml(outputPath).outputs
     const outputDict = {}
@@ -33,11 +34,11 @@ function getXmlDevices(sourcefile) {
       const key = output.key
       const obj = {
         id: id + '-' + key,
-        type: output.type || 'UNKNOWN', //.
+        type: output.type || 'UNKNOWN', //. each must have a type or agent dies
         subType: output.subType,
         category: output.category,
         unit: output.unit,
-        //. others?
+        //. others? safer to delete key and value from output object?
       }
       outputDict[key] = obj
     }
@@ -46,7 +47,7 @@ function getXmlDevices(sourcefile) {
     properties.deviceId = id
     const transforms = Object.keys(properties).map(key => {
       const value = properties[key]
-      return str => str.replaceAll('${' + key + '}', value) // requires node15
+      return str => str.replaceAll('${' + key + '}', value) // replaceAll needs node15
     })
 
     // get model.yaml, making text substitutions with properties
@@ -74,13 +75,14 @@ function attachDataItems(node, outputs) {
   } else if (node !== null && typeof node === 'object') {
     if (node.dataItems) {
       const arr = node.dataItems.dataItem
+      // replace each dataItem with its corresponding output object
       for (let i = 0; i < arr.length; i++) {
         if (outputs[arr[i]]) {
           arr[i] = outputs[arr[i]]
         }
       }
-      // no dataItems - recurse down dict values?
     }
+    // recurse down dict values
     for (const key of Object.keys(node)) {
       if (key !== 'dataItems') {
         const el = node[key]
