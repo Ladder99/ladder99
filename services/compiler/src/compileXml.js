@@ -25,22 +25,31 @@ function getXmlDevices(sourcefile) {
   for (const device of devices) {
     const { id, model, properties } = device
 
-    // get output.yaml, which defines the dataItems for the model.
-    // outputs is dict like { '': {} }
+    // get array of outputs from output.yaml,
+    // which defines the dataItems for the model.
+    // outputs is an array, with each element like
+    //   { key: 'connection', category: 'EVENT', type: 'AVAILABILITY', value: ... }
     const outputPath = `models/${model}/outputs.yaml`
     const outputs = importYaml(outputPath).outputs
-    const outputDict = {}
+
+    // get dataItems dict - maps from key to dataItem object.
+    const dataItems = {}
     for (const output of outputs) {
       const key = output.key
-      const obj = {
-        id: id + '-' + key,
-        type: output.type || 'UNKNOWN', //. each must have a type or agent dies
-        subType: output.subType,
-        category: output.category,
-        unit: output.unit,
-        //. others? safer to delete key and value from output object?
-      }
-      outputDict[key] = obj
+      // const dataItem = {
+      //   id: id + '-' + key,
+      //   type: output.type || 'UNKNOWN', //. each must have a type or agent dies
+      //   subType: output.subType,
+      //   category: output.category,
+      //   unit: output.unit,
+      //   //. others? safer to delete key and value from output object?
+      // }
+      let dataItem = { ...output }
+      dataItem.id = id + '-' + key
+      if (!dataItem.type) dataItem.type = 'UNKNOWN' // else agent dies
+      delete dataItem.key
+      delete dataItem.value
+      dataItems[key] = dataItem
     }
 
     // define text transforms to perform on model.yaml
@@ -55,7 +64,7 @@ function getXmlDevices(sourcefile) {
     const modelTree = importYaml(modelPath, transforms).model
 
     // recurse down the model tree, replacing dataItems with their output defs.
-    attachDataItems(modelTree, outputDict)
+    attachDataItems(modelTree, dataItems)
     const xmltree = translate(modelTree)
     xmldevices.push(xmltree)
   }
@@ -65,11 +74,11 @@ function getXmlDevices(sourcefile) {
 /**
  * attach dataItems from outputs.yaml to model.yaml tree recursively.
  */
-function attachDataItems(node, outputs) {
+function attachDataItems(node, dataItems) {
   // if node is an array, recurse down each element
   if (Array.isArray(node)) {
     for (const el of node) {
-      attachDataItems(el, outputs)
+      attachDataItems(el, dataItems)
     }
     // else if node is an object, check if it has dataItems
   } else if (node !== null && typeof node === 'object') {
@@ -77,8 +86,8 @@ function attachDataItems(node, outputs) {
       const arr = node.dataItems.dataItem
       // replace each dataItem with its corresponding output object
       for (let i = 0; i < arr.length; i++) {
-        if (outputs[arr[i]]) {
-          arr[i] = outputs[arr[i]]
+        if (dataItems[arr[i]]) {
+          arr[i] = dataItems[arr[i]]
         }
       }
     }
@@ -86,7 +95,7 @@ function attachDataItems(node, outputs) {
     for (const key of Object.keys(node)) {
       if (key !== 'dataItems') {
         const el = node[key]
-        attachDataItems(el, outputs)
+        attachDataItems(el, dataItems)
       }
     }
   }
