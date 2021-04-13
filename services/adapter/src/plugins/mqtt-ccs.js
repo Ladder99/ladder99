@@ -2,6 +2,8 @@
 // subscribes to ladder99 mqtt topics, receives messages,
 // parses them out, updates cache.
 
+//. this should return a class or factory, as need multiples
+
 //. this will be replaced by a generic mqtt plugin that extracts inputs according
 // to an inputs.yaml file.
 
@@ -72,7 +74,7 @@ export function init({ url, cache, deviceId }) {
       const [address, ...others] = item.keys
       const key = `${deviceId}-${address}` // eg 'ccs-pa-001-%I0.10'
       item.value = item.default // use default value, if any
-      cache.set(key, item)
+      cache.set(key, item) // note: this will cause cache to publish shdr
       // add other keys to aliases
       for (const alias of others) {
         const key2 = `${deviceId}-${alias}`
@@ -98,9 +100,10 @@ export function init({ url, cache, deviceId }) {
     for (const part of parts) {
       const key = `${deviceId}-status-${part}` // eg 'ccs-pa-001-status-faults'
       const item = { value: msg.payload[part] }
-      cache.set(key, item)
+      cache.set(key, item) // note: this will cause cache to publish shdr
     }
     // check for step transitions to get timing info
+    //. will want to genericize this somehow, or let user write code
     const step = msg.payload.step
     if (step === 'Waiting') {
       //
@@ -123,7 +126,8 @@ export function init({ url, cache, deviceId }) {
     // add items to cache
     for (const item of msg.payload) {
       const key = `${deviceId}-${item.address}` // eg 'ccs-pa-001-%Q0.0'
-      cache.set(key, item) // item has { address, value }
+      // item has { address, value }
+      cache.set(key, item) // note: this will cause cache to publish shdr
     }
   }
 }
