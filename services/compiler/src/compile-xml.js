@@ -4,14 +4,15 @@ import fs from 'fs' // node lib filesys
 import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
 import libxml from 'xml-js' // https://github.com/nashwaan/xml-js
 import sets from './sets.js'
-import xmltree from './xmltree.js'
+import xmlroot from './xmltree.js'
 
 const sourcefile = process.argv[2] // eg 'setups/demo/devices.yaml'
 const destfile = process.argv[3] // eg 'setups/demo/volumes/agent/devices.xml'
 
 // main
-const xmldevices = getXmlDevices(sourcefile)
-xmltree.MTConnectDevices[0].Devices.Device = xmldevices
+// const xmldevices = getXmlDevices(sourcefile)
+// xmltree.MTConnectDevices[0].Devices.Device = xmldevices
+const xmltree = getXmlDevices(sourcefile)
 const xml = getXml(xmltree)
 // console.log(xml)
 fs.writeFileSync(destfile, xml)
@@ -74,7 +75,9 @@ function getXmlDevices(sourcefile) {
     const xmltree = translate(modelTree)
     xmldevices.push(xmltree)
   }
-  return xmldevices
+  // return xmldevices
+  xmlroot.MTConnectDevices[0].Devices.Device = xmldevices
+  return xmlroot
 }
 
 /**

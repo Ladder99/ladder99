@@ -34,7 +34,7 @@ compile SETUP='demo':
 compile-xml SETUP='demo':
     node services/compiler/src/compile-xml.js \
     setups/{{SETUP}}/devices.yaml \
-    -o setups/{{SETUP}}/volumes/agent/devices.xml
+    setups/{{SETUP}}/volumes/agent/devices.xml
 
 # compile docker-compose.yaml from devices.yaml
 compile-compose SETUP='demo':
