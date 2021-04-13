@@ -2,9 +2,10 @@
 
 #. not used yet
 
-# these will be parsed by the adapter plugin, eg mqtt-json.js.
 # currently inputs are pulled from mqtt json with code -
 # see services/adapter/plugins/mqtt-ccs.js
+
+# these will be parsed by the adapter plugin, eg mqtt-json.js.
 
 # note: each item's id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
 
@@ -60,7 +61,6 @@ inputs:
         path: Object.keys($.faults).map(f=>['50','51'].includes(f)).some(bool=>bool)
 
     #. need better way than $.find - linear search is slow
-    # eg what if there were thousands of these - then O(thousand*thousand)
     l99/${deviceId}/evt/read: &read_topic
       - key: printer_ribbon_low
         path: $.find(a=>a.address==='%I0.0').value
