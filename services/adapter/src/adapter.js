@@ -32,27 +32,27 @@ for (const device of devices) {
     const { model, protocol, url } = source
 
     // import protocol plugin
-    const path = `./plugins/${protocol}.js` // eg './plugins/mqtt-ccs.js' - must start with ./
-    console.log(`Adapter importing plugin code: ${path}...`)
+    const pathProtocol = `./plugins/${protocol}.js` // eg './plugins/mqtt-ccs.js' - must start with ./
+    console.log(`Adapter importing plugin code: ${pathProtocol}...`)
     // @ts-ignore top level await okay
-    const plugin = await import(path)
+    const plugin = await import(pathProtocol)
 
     // initialize plugin
     console.log(`Adapter initializing plugin...`)
     plugin.init({ url, cache, deviceId })
 
     // import outputs
-    const path2 = `/home/node/models/${model}/outputs.yaml`
-    const outputTemplates = importYaml(path2).outputs
+    const pathOutputs = `/home/node/models/${model}/outputs.yaml`
+    const outputTemplates = importYaml(pathOutputs).outputs
     // console.log({ outputTemplates })
 
     // import types
-    const path3 = `/home/node/models/${model}/types.yaml`
-    const types = importYaml(path3).types
+    const pathTypes = `/home/node/models/${model}/types.yaml`
+    const types = importYaml(pathTypes).types
     // console.log({ types })
 
     // compile outputs from yaml strings and save to source
-    const outputs = getOutputs({ deviceId, outputTemplates, types })
+    const outputs = getOutputs({ outputTemplates, types, deviceId })
     source.outputs = outputs
     // console.log({ outputs })
   }
@@ -92,8 +92,12 @@ for (const device of devices) {
   tcp.listen(destination.port, destination.host)
 }
 
-// import the outputTemplate string defs and do replacements.
-// note: types IS used - it's in the closure formed by eval(str).
+/**
+ * import the outputTemplate string defs and do replacements.
+ * note: types IS used - it's in the closure formed by eval(str).
+ * @param {{outputTemplates: array, types: object, deviceId: string}} arg
+ * @returns {{key: string, value: function, dependsOn: string[]}}[] - array of output objs
+ */
 function getOutputs({ outputTemplates, types, deviceId }) {
   const outputs = outputTemplates.map(template => {
     // build up dependsOn array during parse from what cache keys are seen
@@ -121,6 +125,7 @@ function getOutputs({ outputTemplates, types, deviceId }) {
     }
     return output
   })
+  // @ts-ignore
   return outputs
 }
 
