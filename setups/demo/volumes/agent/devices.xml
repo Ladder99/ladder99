@@ -6,7 +6,6 @@
     <Device id="ccs-pa-001" name="CCS-PA" uuid="e05363af-95d1-4354-b749-8fbb09d3499e" sampleInterval="10">
       <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="001">Emergent Next Generation Print and Apply</Description>
       <DataItems>
-        <DataItem id="lkmlkm" type="UNKNOWN" category="UNKNOWN"/>
         <DataItem category="EVENT" type="AVAILABILITY" id="ccs-pa-001-connection"/>
         <DataItem category="EVENT" type="ASSET_CHANGED" id="ccs-pa-001-asset_changed"/>
         <DataItem category="EVENT" type="ASSET_REMOVED" id="ccs-pa-001-asset_removed"/>

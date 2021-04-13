@@ -65,7 +65,7 @@ function attachDevices(xmltree, devices) {
 
     // report any dataItems not used
     const unused = Object.values(dataItems).filter(item => !item.used)
-    if (unused) {
+    if (unused.length > 0) {
       const unusedStr = unused.map(item => "'" + item.id + "'").join(', ')
       console.log(`warning: unused dataItems ${unusedStr}`)
     }

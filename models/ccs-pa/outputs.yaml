@@ -13,8 +13,6 @@
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
 
 outputs:
-  - key: pokpok
-
   - key: connection
     category: EVENT
     type: AVAILABILITY
