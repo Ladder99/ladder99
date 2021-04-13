@@ -9,16 +9,16 @@ import xmltree from './xmltree.js'
 const sourcefile = process.argv[2] // eg 'setups/demo/devices.yaml'
 
 // main
-const devices = getDevices(sourcefile)
-xmltree.MTConnectDevices[0].Devices.Device = devices
+const xmldevices = getXmlDevices(sourcefile)
+xmltree.MTConnectDevices[0].Devices.Device = xmldevices
 const xml = getXml(xmltree)
 console.log(xml)
 
 /**
- * get list of devices from devices.yaml
+ * get list of xml-js devices from devices.yaml
  */
-function getDevices(sourcefile) {
-  const foos = []
+function getXmlDevices(sourcefile) {
+  const xmldevices = []
   const devices = importYaml(sourcefile).devices
 
   // iterate over device definitions
@@ -56,9 +56,9 @@ function getDevices(sourcefile) {
     // recurse down the model tree, replacing dataItems with their output defs.
     attachDataItems(modelTree, outputDict)
     const xmltree = translate(modelTree)
-    foos.push(xmltree)
+    xmldevices.push(xmltree)
   }
-  return foos
+  return xmldevices
 }
 
 /**

@@ -86,7 +86,7 @@ outputs:
     type: BLOCK
     value: <status-step>
 
-  - key: cycle_time #. status-cycle_time ? what's difference? confusing
+  - key: cycle_time
     category: SAMPLE
     type: PROCESS_TIMER
     subType: PROCESS
