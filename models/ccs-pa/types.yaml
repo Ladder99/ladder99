@@ -44,10 +44,6 @@ types:
     1: WARNING
     0: FAULT
 
-  FAULT_CONDITION:
-    false: NORMAL
-    true: FAULT
-
   WARN_CONDITION:
     false: NORMAL
     true: WARNING

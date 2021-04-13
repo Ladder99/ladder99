@@ -38,10 +38,12 @@ outputs:
     category: EVENT
     type: MESSAGE
     representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
-    value: |
-      const faults = Object.values(<status-faults>) || []
-      const str = faults.map(fault => fault.id + ':' + fault.description).join(', ')
-      return str
+    value: 'pok:3,lkm:4'
+    # value: JSON.stringify(<status-faults>)
+    # value: |
+    #   const faults = Object.values(<status-faults>) || []
+    #   const str = faults.map(fault => fault.id + ':' + fault.description).join(',')
+    #   return str
 
   - key: fw_ver
     category: EVENT
@@ -52,14 +54,16 @@ outputs:
   - key: func_mode
     category: EVENT
     type: FUNCTIONAL_MODE
-    value: types.FUNCTIONAL_MODE[<status-has-faults>]
+    # value: types.FUNCTIONAL_MODE[<status-has-faults>]
+    #. yuck
+    value: "types.FUNCTIONAL_MODE[<status-has-faults> ? 'true' : 'false']"
 
   - key: e_stop
     category: EVENT
     type: EMERGENCY_STOP
-    value: |
-      const str = types.EMERGENCY_STOP[<status-has-fault-ten>]
-      return str
+    # value: types.EMERGENCY_STOP[<status-has-fault-ten>]
+    #. yuck
+    value: "types.EMERGENCY_STOP[<status-has-fault-ten> ? 'true' : 'false']"
 
   - key: state
     category: EVENT
@@ -119,7 +123,6 @@ outputs:
   - key: end_eff_cond
     category: CONDITION
     type: SYSTEM
-    #value: types.FAULT_CONDITION[<status-has-tamp-fault>]
     value: types.CONDITION_TRIPLE[[<status-has-tamp-fault>, false, true].indexOf(true)]
 
   - key: end_eff_message
@@ -134,9 +137,7 @@ outputs:
   - key: smart_tamp_part_detect
     category: EVENT
     type: PART_DETECT
-    value: |
-      const str = <smart_tamp_enabled> ? types.PART_DETECT[<tamp_part_detect>] : 'UNAVAILABLE'
-      return str
+    value: "<smart_tamp_enabled> ? types.PART_DETECT[<tamp_part_detect>] : 'UNAVAILABLE'"
 
   - key: tamp_air_assist
     category: EVENT
@@ -184,16 +185,13 @@ outputs:
   - key: feed_cond
     category: CONDITION
     type: SYSTEM
-    #value: |
-    #  const str = <status-has-feed-fault> ? 'FAULT' : <status-has-feed-warning> ? 'WARNING' : 'NORMAL'
-    #  return str
     value: types.CONDITION_TRIPLE[[<status-has-feed-fault>, <status-has-feed-warning>, true].indexOf(true)]
 
   - key: feed_message
     category: EVENT
     type: MESSAGE
     representation: DATA_SET
-    #. $
+    #. uses $
     # value: |
     #   const str = Object.keys(<status-faults>).filter(key => key in [1,11,12,13,14,15,50,51]).map(key => key + ':' + $.faults[key].description).join(', ')
     #   return str
@@ -273,7 +271,7 @@ outputs:
     value: <printer_end_print_wait>
 
   - key: product_sensor_one_edge_trigger
-    type: UNKNOWN #..
+    type: UNKNOWN #. ?
     category: SAMPLE
     value: <product_sensor_one_edge_trigger>
 
