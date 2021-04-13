@@ -1,3 +1,4 @@
+warning: unknown dataItem in model.yaml: lkmlkm
 <?xml version="1.0" encoding="UTF-8"?>
 <!--Generated file - DO NOT EDIT!-->
 <MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
@@ -6,6 +7,7 @@
     <Device id="ccs-pa-001" name="CCS-PA" uuid="e05363af-95d1-4354-b749-8fbb09d3499e" sampleInterval="10">
       <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="001">Emergent Next Generation Print and Apply</Description>
       <DataItems>
+        <DataItem id="lkmlkm" type="UNKNOWN" category="UNKNOWN"/>
         <DataItem category="EVENT" type="AVAILABILITY" id="ccs-pa-001-connection"/>
         <DataItem category="EVENT" type="ASSET_CHANGED" id="ccs-pa-001-asset_changed"/>
         <DataItem category="EVENT" type="ASSET_REMOVED" id="ccs-pa-001-asset_removed"/>

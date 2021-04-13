@@ -1,0 +1,13 @@
+compile-xml SETUP='demo':
+    node services/compiler/src/compileXml.js setups/{{SETUP}}/devices.yaml | \
+    tee setups/{{SETUP}}/volumes/agent/devices.xml
+
+# compile calcs.js from model outputs.yaml
+compilejs SETUP='demo':
+    for filename in setups/{{SETUP}}/devices/*.yaml; \
+    do \
+        node services/compiler/src/compileJs.js "$filename" | \
+          tee "setups/demo/devices/$(basename $filename .yaml).js" ; \
+    done
+    cp services/compiler/output/*.js services/adapter/src/plugins
+

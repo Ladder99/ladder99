@@ -19,6 +19,7 @@ model:
 
   dataItems:
     dataItem:
+      - lkmlkm
       - connection
       - asset_changed
       - asset_removed

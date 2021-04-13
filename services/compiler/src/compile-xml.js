@@ -7,12 +7,14 @@ import sets from './sets.js'
 import xmltree from './xmltree.js'
 
 const sourcefile = process.argv[2] // eg 'setups/demo/devices.yaml'
+const destfile = process.argv[3] // eg 'setups/demo/volumes/agent/devices.xml'
 
 // main
 const xmldevices = getXmlDevices(sourcefile)
 xmltree.MTConnectDevices[0].Devices.Device = xmldevices
 const xml = getXml(xmltree)
-console.log(xml)
+// console.log(xml)
+fs.writeFileSync(destfile, xml)
 
 /**
  * get list of xml-js devices from devices.yaml
@@ -65,6 +67,10 @@ function getXmlDevices(sourcefile) {
 
     // recurse down the model tree, replacing dataItems with their output defs.
     attachDataItems(modelTree, dataItems)
+
+    //. report any dataItems not used
+
+    // convert model to xml and add to list
     const xmltree = translate(modelTree)
     xmldevices.push(xmltree)
   }
@@ -92,7 +98,7 @@ function attachDataItems(node, dataItems) {
           if (dataItem) {
             keys[i] = dataItem
           } else {
-            // console.error(`warning: unknown dataItem in model.yaml: ${key}`)
+            console.log(`warning: unknown dataItem in model.yaml: ${keys[i]}`)
             keys[i] = { id: keys[i], type: 'UNKNOWN', category: 'UNKNOWN' }
           }
         }

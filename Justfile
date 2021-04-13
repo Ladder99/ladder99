@@ -25,28 +25,20 @@ docs:
     cd docs && make html && http-server build/html
     cd docs && firebase deploy
 
-# compileXml and compileCompose
+# compile-xml and compile-compose
 compile SETUP='demo':
-    just compileXml {{SETUP}}
-    just compileCompose {{SETUP}}
+    just compile-xml {{SETUP}}
+    just compile-compose {{SETUP}}
 
 # compile devices.xml from model devices.yaml
-compileXml SETUP='demo':
-    node services/compiler/src/compileXml.js setups/{{SETUP}}/devices.yaml | \
-    tee setups/{{SETUP}}/volumes/agent/devices.xml
+compile-xml SETUP='demo':
+    node services/compiler/src/compile-xml.js \
+    setups/{{SETUP}}/devices.yaml \
+    -o setups/{{SETUP}}/volumes/agent/devices.xml
 
 # compile docker-compose.yaml from devices.yaml
-compileCompose SETUP='demo':
+compile-compose SETUP='demo':
     echo todo
-
-# # compile calcs.js from model outputs.yaml
-# compilejs SETUP='demo':
-#     for filename in setups/{{SETUP}}/devices/*.yaml; \
-#     do \
-#         node services/compiler/src/compileJs.js "$filename" | \
-#           tee "setups/demo/devices/$(basename $filename .yaml).js" ; \
-#     done
-#     cp services/compiler/output/*.js services/adapter/src/plugins
 
 
 # run
