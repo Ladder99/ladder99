@@ -12,6 +12,7 @@ category
 type
 subType
 unit
+representation
 `)
 
 // enclose these yaml elements as contents

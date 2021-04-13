@@ -92,7 +92,8 @@ function attachDataItems(node, dataItems) {
           if (dataItem) {
             keys[i] = dataItem
           } else {
-            console.log(`warning: unknown dataItem in model.yaml: ${key}`)
+            // console.error(`warning: unknown dataItem in model.yaml: ${key}`)
+            keys[i] = { id: keys[i], type: 'UNKNOWN', category: 'UNKNOWN' }
           }
         }
       } else {
