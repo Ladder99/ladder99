@@ -158,7 +158,7 @@ it works
 
 ## inputs.yaml
 
-note: each item's id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
+so we'd like to go from a custom code plugin for mqtt-ccs to data-defined inputs.
 
     inputs:
       topics:
@@ -171,5 +171,39 @@ note: each item's id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
 
           - key: status-has-hard-faults
             path: Object.keys($.faults).some(f => f<'50')
+
+each item's id will be {deviceId}-{key}, eg 'ccs-pa-001-status-faults'
+
+
+so what will adapter.js do?
+
+it'll load inputs.yaml -> js arrays
+
+load mqtt-json.js plugin
+on init plugin, pass these topics and inputs, and it would subscribe to those topics. 
+
+q. would need to send initial message to kick things off - how specify that?
+
+
+
+
+
+for each message received it'll go through the relevant inputs and set the cache key-item pairs.
+
+
+
+
+
+maybe a hybrid approach for now would be good - 
+
+ie use mqtt-ccs.js plugin, but pass inputs.yaml js to it also on init
+
+then would use those for the alias list
+which would... uhh
+
+
+
+
+
 
 

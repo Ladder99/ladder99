@@ -37,6 +37,10 @@ for (const device of devices) {
     // @ts-ignore top level await okay
     const plugin = await import(pathProtocol)
 
+    // import inputs
+    const pathInputs = `/home/node/models/${model}/inputs.yaml`
+    const inputTemplates = importYaml(pathInputs).inputs
+
     // initialize plugin
     console.log(`Adapter initializing plugin...`)
     plugin.init({ url, cache, deviceId })
