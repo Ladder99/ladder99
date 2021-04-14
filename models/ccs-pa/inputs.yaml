@@ -13,36 +13,8 @@ topics:
     subscribe:
       - topic: l99/${deviceId}/evt/status
       - topic: l99/${deviceId}/evt/read
-
-  l99/${deviceId}/evt/status:
-    # $ is a variable declared as `let $` before this code is executed
-    prelim: "$ = payload; $.faultKeys=Object.keys(payload.faults);"
-    # lookup: "($, value) => value.includes('$') ? value : $[value]"
-    # lookup: "($, value) => value"
-    inputs:
-      # key-value pairs to set the cache.
-      # each input's cache id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
-      # $ is the message payload dictionary
-      status-connection: $.connection
-      status-build_no: $.build_no
-      status-state: $.state
-      status-program: $.program
-      status-step: $.step
-      status-utc_time: $.utc_time
-      status-cpu_time: $.cpu_time
-      status-faults: $.faults
-      status-has-no-faults: $.faultKeys.length === 0
-      status-has-faults: $.faultKeys.length > 0
-      status-has-soft-faults: $.faultKeys.some(f => f>='50')
-      status-has-hard-faults: $.faultKeys.some(f => f<'50')
-      status-has-fault-ten: $.faultKeys.some(f => f==='10')
-      status-has-tamp-fault: $.faultKeys.map(f=>['2','3','5'].includes(f)).some(bool=>bool)
-      status-has-feed-fault: $.faultKeys.map(f=>['1','11','12','13','14,'15'].includes(f)).some(bool=>bool)
-      status-has-feed-warning: $.faultKeys.map(f=>['50','51'].includes(f)).some(bool=>bool)
-
-  l99/${deviceId}/evt/query: 
-    prelim: "$ = {}; payload.forEach(item => $[item.keys[0]] = item)"
-    lookup: "($, value) => $[value].default"
+    prelim: '$ = {}; payload.forEach(item => $[item.keys[0]] = item)'
+    lookup: '($, value) => $[value].default'
     inputs: &queryTable
       printer_ribbon_low: '%I0.0'
       printer_service_required: '%I0.1'
@@ -115,9 +87,34 @@ topics:
       web_take_up_motor_anti_twitch_counter: '%Z55.0'
       web_take_up_motor_anti_twitch_active: '%Z55.1'
 
+  l99/${deviceId}/evt/status:
+    # $ is a variable declared as `let $` before this code is executed
+    prelim: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
+    # lookup: "($, value) => value.includes('$') ? value : $[value]"
+    # lookup: "($, value) => value"
+    inputs:
+      # key-value pairs to set the cache.
+      # each input's cache id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
+      # $ is the message payload dictionary
+      status-connection: $.connection
+      status-build_no: $.build_no
+      status-state: $.state
+      status-program: $.program
+      status-step: $.step
+      status-utc_time: $.utc_time
+      status-cpu_time: $.cpu_time
+      status-faults: $.faults
+      status-has-no-faults: $.faultKeys.length === 0
+      status-has-faults: $.faultKeys.length > 0
+      status-has-soft-faults: $.faultKeys.some(f => f>='50')
+      status-has-hard-faults: $.faultKeys.some(f => f<'50')
+      status-has-fault-ten: $.faultKeys.some(f => f==='10')
+      status-has-tamp-fault: $.faultKeys.map(f=>['2','3','5'].includes(f)).some(bool=>bool)
+      status-has-feed-fault: $.faultKeys.map(f=>['1','11','12','13','14,'15'].includes(f)).some(bool=>bool)
+      status-has-feed-warning: $.faultKeys.map(f=>['50','51'].includes(f)).some(bool=>bool)
+
   l99/${deviceId}/evt/read:
     # make $ a dictionary keyed on the item addresses
     prelim: $ = {}; payload.forEach(item => $[item.address] = item)
-    lookup: "($, value) => $[value].value"
+    lookup: '($, value) => $[value].value'
     inputs: *queryTable
-  
