@@ -2,8 +2,6 @@
 # these are parsed by the adapter plugin, eg mqtt-json.js.
 # note: each input's cache id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
 
-#. could embed js code also
-
 handlers:
   connect:
     subscribe:
@@ -21,6 +19,7 @@ handlers:
     code:
       $ = payload
 
+    #. do as a table?
     inputs:
       - key: status-connection
         value: $.connection
@@ -81,289 +80,76 @@ handlers:
       // write all aliases to cache? but duplications
       // what if wrote to cache each item as key=keys[0], value=default
 
-    table:
+    table: &read_table
       '%I0.0': printer_ribbon_low
-      '%I0.1': printer_ribbon_low
-      '%I0.2': printer_ribbon_low
-      '%I0.3': printer_ribbon_low
-      '%I0.4': printer_ribbon_low
-      '%I0.5': printer_ribbon_low
-      '%I0.6': printer_ribbon_low
-
-    inputs: &read_topic
-      - key: printer_ribbon_low
-        value: $['%I0.0'].value
-
-      - key: printer_service_required
-        value: $['%I0.1'].value
-
-      - key: printer_print_end
-        value: $['%I0.2'].value
-
-      - key: printer_media_out
-        value: $['%I0.3'].value
-
-      - key: printer_ribbon_out
-        value: $['%I0.4'].value
-
-      - key: printer_data_ready
-        value: $.find(a=>a.address==='%I0.5').value
-        value: $['%I0.3'].value
-
-      - key: product_sensor_one
-        value: $.find(a=>a.address==='%I0.6').value
-        value: $['%I0.3'].value
-
-      - key: tamp_head_up
-        value: $.find(a=>a.address==='%I0.7').value
-        value: $['%I0.3'].value
-
-      - key: input_9
-        value: $.find(a=>a.address==='%I0.8').value
-        value: $['%I0.3'].value
-
-      - key: smart_tamp_proximity
-        value: $.find(a=>a.address==='%I0.9').value
-        value: $['%I0.3'].value
-
-      - key: safety_e_stop
-        value: $.find(a=>a.address==='%I0.10').value
-        value: $['%I0.3'].value
-
-      - key: product_sensor_aux
-        value: $.find(a=>a.address==='%I0.11').value
-        value: $['%I0.3'].value
-
-      - key: web_media_low
-        value: $.find(a=>a.address==='%I0.12').value
-        value: $['%I0.3'].value
-
-      - key: web_dancer_arm
-        value: $.find(a=>a.address==='%I0.13').value
-        value: $['%I0.3'].value
-
-      - key: input_15
-        value: $.find(a=>a.address==='%I0.14').value
-        value: $['%I0.3'].value
-
-      - key: input_16
-        value: $.find(a=>a.address==='%I0.15').value
-        value: $['%I0.3'].value
-
-      - key: printer_start_print
-        value: $.find(a=>a.address==='%Q0.0').value
-        value: $['%I0.3'].value
-
-      - key: printer_feed
-        value: $.find(a=>a.address==='%Q0.1').value
-        value: $['%I0.3'].value
-
-      - key: printer_pause
-        value: $.find(a=>a.address==='%Q0.2').value
-        value: $['%I0.3'].value
-
-      - key: printer_reprint
-        value: $.find(a=>a.address==='%Q0.3').value
-        value: $['%I0.3'].value
-
-      - key: tamp_air_assist
-        value: $.find(a=>a.address==='%Q0.4').value
-        value: $['%I0.3'].value
-
-      - key: tamp_vacuum
-        value: $.find(a=>a.address==='%Q0.5').value
-        value: $['%I0.3'].value
-
-      - key: tamp_cylinder
-        value: $.find(a=>a.address==='%Q0.6').value
-        value: $['%I0.3'].value
-
-      - key: output_8
-        value: $.find(a=>a.address==='%Q0.7').value
-        value: $['%I0.3'].value
-
-      - key: output_9
-        value: $.find(a=>a.address==='%Q0.8').value
-        value: $['%I0.3'].value
-
-      - key: andon_green
-        value: $.find(a=>a.address==='%Q0.9').value
-        value: $['%I0.3'].value
-
-      - key: andon_red
-        value: $.find(a=>a.address==='%Q0.10').value
-        value: $['%I0.3'].value
-
-      - key: andon_yellow
-        value: $.find(a=>a.address==='%Q0.11').value
-        value: $['%I0.3'].value
-
-      - key: output_13
-        value: $.find(a=>a.address==='%Q0.12').value
-        value: $['%I0.3'].value
-
-      - key: output_14
-        value: $.find(a=>a.address==='%Q0.13').value
-        value: $['%I0.3'].value
-
-      - key: output_15
-        value: $.find(a=>a.address==='%Q0.14').value
-        value: $['%I0.3'].value
-
-      - key: output_16
-        value: $.find(a=>a.address==='%Q0.15').value
-        value: $['%I0.3'].value
-
-      - key: web_take_up_motor_state
-        value: $.find(a=>a.address==='%Q1.0').value
-        value: $['%I0.3'].value
-
-      - key: life_count
-        value: $.find(a=>a.address==='%M55.0').value
-        value: $['%I0.3'].value
-
-      - key: cycle_count
-        value: $.find(a=>a.address==='%M55.1').value
-        value: $['%I0.3'].value
-
-      - key: fault_count
-        value: $.find(a=>a.address==='%M55.2').value
-        value: $['%I0.3'].value
-
-      - key: idle_time
-        value: $.find(a=>a.address==='%M55.3').value
-        value: $['%I0.3'].value
-
-      - key: transport_time
-        value: $.find(a=>a.address==='%M55.4').value
-        value: $['%I0.3'].value
-
-      - key: printer_time
-        value: $.find(a=>a.address==='%M55.5').value
-        value: $['%I0.3'].value
-
-      - key: labels_applied
-        value: $.find(a=>a.address==='%M55.6').value
-        value: $['%I0.3'].value
-
-      - key: cylinder_travel_time
-        value: $.find(a=>a.address==='%M55.7').value
-        value: $['%I0.3'].value
-
-      - key: cylinder_home_disengage_time
-        value: $.find(a=>a.address==='%M55.8').value
-        value: $['%I0.3'].value
-
-      - key: cylinder_extend_time
-        value: $.find(a=>a.address==='%M55.9').value
-        value: $['%I0.3'].value
-
-      - key: print_signal_time
-        value: $.find(a=>a.address==='%M55.10').value
-        value: $['%I0.3'].value
-
-      - key: tamp_vacuum_delay
-        value: $.find(a=>a.address==='%M56.0').value
-        value: $['%I0.3'].value
-
-      - key: printer_start_print_duration
-        value: $.find(a=>a.address==='%M56.1').value
-        value: $['%I0.3'].value
-
-      - key: printer_end_print_wait
-        value: $.find(a=>a.address==='%M56.2').value
-        value: $['%I0.3'].value
-
-      - key: product_sensor_one_edge_trigger
-        value: $.find(a=>a.address==='%M56.3').value
-        value: $['%I0.3'].value
-
-      - key: product_sensor_one_debounce
-        value: $.find(a=>a.address==='%M56.4').value
-        value: $['%I0.3'].value
-
-      - key: product_sensor_one_delay
-        value: $.find(a=>a.address==='%M56.5').value
-        value: $['%I0.3'].value
-
-      - key: tamp_cylinder_extend_duration
-        value: $.find(a=>a.address==='%M56.6').value
-        value: $['%I0.3'].value
-
-      - key: tamp_cylinder_travel_duration_multiplier
-        value: $.find(a=>a.address==='%M56.7').value
-        value: $['%I0.3'].value
-
-      - key: tamp_head_up_wait_duration
-        value: $.find(a=>a.address==='%M56.8').value
-        value: $['%I0.3'].value
-
-      - key: multi_feed_count
-        value: $.find(a=>a.address==='%M56.9').value
-        value: $['%I0.3'].value
-
-      - key: multi_feed_delay
-        value: $.find(a=>a.address==='%M56.10').value
-        value: $['%I0.3'].value
-
-      - key: product_sensor_aux_enabled
-        value: $.find(a=>a.address==='%M56.11').value
-        value: $['%I0.3'].value
-
-      - key: product_sensor_aux_edge_trigger
-        value: $.find(a=>a.address==='%M56.12').value
-        value: $['%I0.3'].value
-
-      - key: product_sensor_aux_debounce
-        value: $.find(a=>a.address==='%M56.13').value
-        value: $['%I0.3'].value
-
-      - key: product_sensor_aux_delay
-        value: $.find(a=>a.address==='%M56.14').value
-        value: $['%I0.3'].value
-
-      - key: machine_operating_mode
-        value: $.find(a=>a.address==='%M56.15').value
-        value: $['%I0.3'].value
-
-      - key: web_take_up_motor_timeout
-        value: $.find(a=>a.address==='%M56.16').value
-        value: $['%I0.3'].value
-
-      - key: web_take_up_motor_operating_mode
-        value: $.find(a=>a.address==='%M56.17').value
-        value: $['%I0.3'].value
-
-      - key: web_take_up_motor_start_delay
-        value: $.find(a=>a.address==='%M56.18').value
-        value: $['%I0.3'].value
-
-      - key: smart_tamp_enabled
-        value: $.find(a=>a.address==='%M56.19').value
-        value: $['%I0.3'].value
-
-      - key: product_sensor_one_bypass
-        value: $.find(a=>a.address==='%M56.20').value
-        value: $['%I0.3'].value
-
-      - key: printer_make
-        value: $.find(a=>a.address==='%M56.21').value
-        value: $['%I0.3'].value
-
-      - key: web_take_up_motor_anti_twitch_enabled
-        value: $.find(a=>a.address==='%M56.22').value
-        value: $['%I0.3'].value
-
-      - key: web_take_up_motor_anti_twitch_count
-        value: $.find(a=>a.address==='%M56.23').value
-        value: $['%I0.3'].value
-
-      - key: web_take_up_motor_anti_twitch_counter
-        value: $.find(a=>a.address==='%Z55.0').value
-        value: $['%I0.3'].value
-
-      - key: web_take_up_motor_anti_twitch_active
-        value: $.find(a=>a.address==='%Z55.1').value
-        value: $['%I0.3'].value
-
-  l99/${deviceId}/evt/query: *read_topic
+      '%I0.1': printer_service_required
+      '%I0.2': printer_print_end
+      '%I0.3': printer_media_out
+      '%I0.4': printer_ribbon_out
+      '%I0.5': printer_data_ready
+      '%I0.6': product_sensor_one
+      '%I0.7': tamp_head_up
+      '%I0.8': input_9
+      '%I0.9': smart_tamp_proximity
+      '%I0.10': safety_e_stop
+      '%I0.11': product_sensor_aux
+      '%I0.12': web_media_low
+      '%I0.13': web_dancer_arm
+      '%I0.14': input_15
+      '%I0.15': input_16
+      '%Q0.0': printer_start_print
+      '%Q0.1': printer_feed
+      '%Q0.2': printer_pause
+      '%Q0.3': printer_reprint
+      '%Q0.4': tamp_air_assist
+      '%Q0.5': tamp_vacuum
+      '%Q0.6': tamp_cylinder
+      '%Q0.7': output_8
+      '%Q0.8': output_9
+      '%Q0.9': andon_green
+      '%Q0.10': andon_red
+      '%Q0.11': andon_yellow
+      '%Q0.12': output_13
+      '%Q0.13': output_14
+      '%Q0.14': output_15
+      '%Q0.15': output_16
+      '%Q1.0': web_take_up_motor_state
+      '%M55.0': life_count
+      '%M55.1': cycle_count
+      '%M55.2': fault_count
+      '%M55.3': idle_time
+      '%M55.4': transport_time
+      '%M55.5': printer_time
+      '%M55.6': labels_applied
+      '%M55.7': cylinder_travel_time
+      '%M55.8': cylinder_home_disengage_time
+      '%M55.9': cylinder_extend_time
+      '%M55.10': print_signal_time
+      '%M56.0': tamp_vacuum_delay
+      '%M56.1': printer_start_print_duration
+      '%M56.2': printer_end_print_wait
+      '%M56.3': product_sensor_one_edge_trigger
+      '%M56.4': product_sensor_one_debounce
+      '%M56.5': product_sensor_one_delay
+      '%M56.6': tamp_cylinder_extend_duration
+      '%M56.7': tamp_cylinder_travel_duration_multiplier
+      '%M56.8': tamp_head_up_wait_duration
+      '%M56.9': multi_feed_count
+      '%M56.10': multi_feed_delay
+      '%M56.11': product_sensor_aux_enabled
+      '%M56.12': product_sensor_aux_edge_trigger
+      '%M56.13': product_sensor_aux_debounce
+      '%M56.14': product_sensor_aux_delay
+      '%M56.15': machine_operating_mode
+      '%M56.16': web_take_up_motor_timeout
+      '%M56.17': web_take_up_motor_operating_mode
+      '%M56.18': web_take_up_motor_start_delay
+      '%M56.19': smart_tamp_enabled
+      '%M56.20': product_sensor_one_bypass
+      '%M56.21': printer_make
+      '%M56.22': web_take_up_motor_anti_twitch_enabled
+      '%M56.23': web_take_up_motor_anti_twitch_count
+      '%Z55.0': web_take_up_motor_anti_twitch_counter
+      '%Z55.1': web_take_up_motor_anti_twitch_active
+
+l99/${deviceId}/evt/query: *read_topic
