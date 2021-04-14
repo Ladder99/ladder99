@@ -182,25 +182,18 @@ it'll load inputs.yaml -> js arrays
 load mqtt-json.js plugin
 on init plugin, pass these topics and inputs, and it would subscribe to those topics. 
 
-q. would need to send initial message to kick things off - how specify that?
-
-
-
+>q. would need to send initial message to kick things off - how specify that?
+hardcode for now, then specify it in inputs.yaml?
 
 
 for each message received it'll go through the relevant inputs and set the cache key-item pairs.
 
-
-
-
-
-maybe a hybrid approach for now would be good - 
+>maybe a hybrid approach for now would be good - 
 
 ie use mqtt-ccs.js plugin, but pass inputs.yaml js to it also on init
 
 then would use those for the alias list
-which would... uhh
-
+?
 
 
 

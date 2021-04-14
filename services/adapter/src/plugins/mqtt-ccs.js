@@ -25,7 +25,7 @@ let cycleStart = null
 
 // initialize the client plugin.
 // queries the device for address space definitions, subscribes to topics.
-export function init({ url, cache, deviceId }) {
+export function init({ url, cache, deviceId, inputs }) {
   console.log('init', { deviceId })
 
   // add deviceId to topics

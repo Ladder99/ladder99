@@ -14,7 +14,8 @@ devices:
     # define data sources that feed into this device
     sources:
       - model: ccs-pa # model defines inputs and outputs with yaml files
-        protocol: mqtt-ccs # type of plugin - manages protocol and payload
+        # protocol: mqtt-ccs # type of plugin - manages protocol and payload
+        protocol: mqtt-json # type of plugin - manages protocol and payload
         url: mqtt://broker-ccs-pa-001:1883
 
       - model: rockwell-hmi

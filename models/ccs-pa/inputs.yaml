@@ -10,6 +10,11 @@
 # note: each item's id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
 
 inputs:
+  #. embed js code here?
+  initialize:
+    topic: l99/${deviceId}/cmd/query
+    payload: '{}'
+
   topics:
     l99/${deviceId}/evt/status:
       - key: status-connection

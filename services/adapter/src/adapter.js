@@ -39,11 +39,11 @@ for (const device of devices) {
 
     // import inputs
     const pathInputs = `/home/node/models/${model}/inputs.yaml`
-    const inputTemplates = importYaml(pathInputs).inputs
+    const inputs = importYaml(pathInputs).inputs
 
     // initialize plugin
     console.log(`Adapter initializing plugin...`)
-    plugin.init({ url, cache, deviceId })
+    plugin.init({ url, cache, deviceId, inputs })
 
     // import outputs
     const pathOutputs = `/home/node/models/${model}/outputs.yaml`
