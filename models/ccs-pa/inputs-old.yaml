@@ -1,9 +1,15 @@
 # inputs
-# these are parsed by the adapter plugin, eg mqtt-json.js.
-# note: each input's cache id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
 
-#. could embed js code also
+#. not used yet
 
+# currently inputs are pulled from mqtt json with code -
+# see services/adapter/plugins/mqtt-ccs.js
+
+# these will be parsed by the adapter plugin, eg mqtt-json.js.
+
+# note: each item's id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
+
+#. embed js code?
 handlers:
   connect:
     subscribe:
@@ -68,8 +74,60 @@ handlers:
         path: Object.keys($.faults).map(f=>['50','51'].includes(f)).some(bool=>bool)
 
   l99/${deviceId}/evt/read:
+
+inputs:
+  topics:
+    l99/${deviceId}/evt/status:
+      - key: status-connection
+        path: $.connection
+
+      - key: status-build_no
+        path: $.build_no
+
+      - key: status-state
+        path: $.state
+
+      - key: status-program
+        path: $.program
+
+      - key: status-step
+        path: $.step
+
+      - key: status-utc_time
+        path: $.utc_time
+
+      - key: status-cpu_time
+        path: $.cpu_time
+
+      - key: status-faults
+        path: $.faults
+
+      - key: status-has-no-faults
+        path: Object.keys($.faults).length === 0
+
+      - key: status-has-faults
+        path: Object.keys($.faults).length > 0
+
+      - key: status-has-soft-faults
+        path: Object.keys($.faults).some(f => f>='50')
+
+      - key: status-has-hard-faults
+        path: Object.keys($.faults).some(f => f<'50')
+
+      - key: status-has-fault-ten
+        path: Object.keys($.faults).some(f => f==='10')
+
+      - key: status-has-tamp-fault
+        path: Object.keys($.faults).map(f=>['2','3','5'].includes(f)).some(bool=>bool)
+
+      - key: status-has-feed-fault
+        path: Object.keys($.faults).map(f=>['1','11','12','13','14,'15'].includes(f)).some(bool=>bool)
+
+      - key: status-has-feed-warning
+        path: Object.keys($.faults).map(f=>['50','51'].includes(f)).some(bool=>bool)
+
     #. need better way than $.find - linear search is slow
-    inputs: &read_topic
+    l99/${deviceId}/evt/read: &read_topic
       - key: printer_ribbon_low
         path: $.find(a=>a.address==='%I0.0').value
 

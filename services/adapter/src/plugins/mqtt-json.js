@@ -24,11 +24,13 @@ const aliases = {}
 export function init({ url, cache, deviceId, inputs }) {
   console.log('init', { deviceId })
 
-  // add deviceId to topics
+  // get list of topics to subscribe to
   const topics = Object.keys(inputs.topics).map(topic =>
     topic.replace('${deviceId}', deviceId)
   )
   console.log('MQTT', { topics })
+
+  //. but order matters
 
   console.log(`MQTT connecting to broker on ${url}...`)
   const mqtt = libmqtt.connect(url)
@@ -38,12 +40,12 @@ export function init({ url, cache, deviceId, inputs }) {
     // mqtt.on('message', onMessage)
     // ask for initial query message - handler at onQueryMessage
     // mqtt.subscribe(topics.receiveQuery)
-    console.log(`MQTT publishing initial message`)
-    const { initialize } = inputs
-    mqtt.publish(
-      initialize.topic.replace('${deviceId}', deviceId),
-      initialize.message
-    )
+    // console.log(`MQTT publishing initial message`)
+    // const { initialize } = inputs
+    // mqtt.publish(
+    //   initialize.topic.replace('${deviceId}', deviceId),
+    //   initialize.message
+    // )
     console.log(`MQTT listening for messages...`)
   })
 
