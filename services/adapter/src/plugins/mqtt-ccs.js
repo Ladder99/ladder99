@@ -160,6 +160,17 @@ export function init({ url, cache, deviceId }) {
       // item has { address, value }
       cache.set(key, item) // note: this will cause cache to publish shdr
     }
+
+    // - key: life_count
+    //   path: $.find(a=>a.address==='%M55.0').value
+    // - key: cycle_count
+    //   path: $.find(a=>a.address==='%M55.1').value
+    // - key: fault_count
+    //   path: $.find(a=>a.address==='%M55.2').value
+    // const $ = msg.payload
+    cache.set(`${deviceId}-life_count`, cache.get(`${deviceId}-%M55.0`).value)
+    cache.set(`${deviceId}-cycle_count`, cache.get(`${deviceId}-%M55.1`).value)
+    cache.set(`${deviceId}-fault_count`, cache.get(`${deviceId}-%M55.2`).value)
   }
 }
 

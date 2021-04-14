@@ -121,6 +121,7 @@ outputs:
   - key: life_count
     category: SAMPLE
     type: COUNT
+    # value: <%M55.0>
     value: <life_count>
 
   - key: end_eff_cond
