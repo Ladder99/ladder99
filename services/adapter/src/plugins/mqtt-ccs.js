@@ -76,6 +76,7 @@ export function init({ url, cache, deviceId }) {
       item.value = item.default // use default value, if any
       cache.set(key, item) // note: this will cause cache to publish shdr
       // add other keys to aliases
+      //. replace . with _ ?
       for (const alias of others) {
         const key2 = `${deviceId}-${alias}`
         aliases[key2] = item
@@ -161,10 +162,15 @@ export function init({ url, cache, deviceId }) {
       cache.set(key, item) // note: this will cause cache to publish shdr
     }
 
-    //.
-    cache.set(`${deviceId}-life_count`, cache.get(`${deviceId}-%M55.0`))
-    cache.set(`${deviceId}-cycle_count`, cache.get(`${deviceId}-%M55.1`))
-    cache.set(`${deviceId}-fault_count`, cache.get(`${deviceId}-%M55.2`))
+    //. too many to do this - get the generic mqtt json working
+    const aliases = [
+      ['%M55.0', 'life_count'],
+      ['%M55.1', 'cycle_count'],
+      ['%M55.2', 'fault_count'],
+    ]
+    for (const alias of aliases) {
+      cache.set(`${deviceId}-${alias[1]}`, cache.get(`${deviceId}-${alias[0]}`))
+    }
   }
 }
 
