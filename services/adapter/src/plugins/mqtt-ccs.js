@@ -162,9 +162,9 @@ export function init({ url, cache, deviceId }) {
     }
 
     //.
-    cache.set(`${deviceId}-life_count`, cache.get(`${deviceId}-%M55.0`).value)
-    cache.set(`${deviceId}-cycle_count`, cache.get(`${deviceId}-%M55.1`).value)
-    cache.set(`${deviceId}-fault_count`, cache.get(`${deviceId}-%M55.2`).value)
+    cache.set(`${deviceId}-life_count`, cache.get(`${deviceId}-%M55.0`))
+    cache.set(`${deviceId}-cycle_count`, cache.get(`${deviceId}-%M55.1`))
+    cache.set(`${deviceId}-fault_count`, cache.get(`${deviceId}-%M55.2`))
   }
 }
 
