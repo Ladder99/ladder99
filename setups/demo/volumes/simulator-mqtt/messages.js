@@ -551,12 +551,12 @@ module.exports = [
 
   {
     topic: 'l99/${deviceId}/evt/read',
-    json: { address: '%I0.10', value: 1 }, // emerg stop on
+    json: [{ address: '%I0.10', value: 1 }], // emerg stop on
   },
 
   {
     topic: 'l99/${deviceId}/evt/read',
-    json: { address: '%I0.10', value: 0 }, // emerg stop off
+    json: [{ address: '%I0.10', value: 0 }], // emerg stop off
   },
 
   {
