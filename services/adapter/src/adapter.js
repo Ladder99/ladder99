@@ -39,7 +39,7 @@ for (const device of devices) {
 
     // import inputs
     const pathInputs = `/home/node/models/${model}/inputs.yaml`
-    const inputs = importYaml(pathInputs).inputs
+    const inputs = importYaml(pathInputs)
 
     // initialize plugin
     console.log(`Adapter initializing plugin...`)
