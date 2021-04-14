@@ -2,20 +2,10 @@
 // adapter plugiin - subscribes to mqtt topics, receives messages,
 // parses them out as json, updates cache.
 
-//. wip
-
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
-// // mqtt topics
-// const topics = {
-//   // sendQuery: 'l99/${deviceId}/cmd/query',
-//   // receiveQuery: 'l99/${deviceId}/evt/query',
-//   // receiveStatus: 'l99/${deviceId}/evt/status',
-//   // receiveRead: 'l99/${deviceId}/evt/read',
-// }
-
-// map from aliases to items, e.g. "ccs-pa-001-IN10" -> { address: "%I0.9", ... }
-const aliases = {}
+// // map from aliases to items, e.g. "ccs-pa-001-IN10" -> { address: "%I0.9", ... }
+// const aliases = {}
 
 /**
  * initialize the client plugin.
@@ -34,12 +24,8 @@ export function init({ url, cache, deviceId, inputs }) {
     console.log(`MQTT registering generic message handler`)
     mqtt.on('message', onMessage)
 
-    // ask for initial query message - handler at onQueryMessage
-    // mqtt.subscribe(topics.receiveQuery)
-    // console.log(`MQTT publishing initial message`)
-
     console.log(`MQTT subscribing to topics...`)
-    const subscriptions = inputs.onConnect.subscribe
+    const subscriptions = inputs.connect.subscribe
     for (const subscription of subscriptions) {
       const topic = subscription.topic.replace('${deviceId}', deviceId)
       console.log(`MQTT subscribing to ${topic}`)
@@ -47,7 +33,7 @@ export function init({ url, cache, deviceId, inputs }) {
     }
 
     console.log(`MQTT publishing topics...`)
-    const publishings = inputs.onConnect.publish
+    const publishings = inputs.connect.publish
     for (const publishing of publishings) {
       const topic = publishing.topic.replace('${deviceId}', deviceId)
       console.log(`MQTT publishing to ${topic}`)
@@ -59,8 +45,41 @@ export function init({ url, cache, deviceId, inputs }) {
 
   // handle all incoming messages
   function onMessage(topic, buffer) {
-    console.log('MQTT onMessage', { topic })
+    console.log('MQTT got message on topic', topic)
     const msg = unpack(topic, buffer)
+    const payload = msg.payload
+    Object.entries(inputs.topics).forEach(([key, handler]) => {
+      key = key.replace('${deviceId}', deviceId)
+      if (topic === key) {
+        // execute handler commands
+
+        // unsubscribe
+        for (const unsubscription of handler.unsubscribe) {
+          const topic = unsubscription.topic.replace('${deviceId}', deviceId)
+          console.log(`MQTT unsubscribe from ${topic}`)
+          mqtt.unsubscribe(topic)
+        }
+
+        // prelim
+        let $
+        if (handler.prelim) {
+          eval(handler.prelim) // assign values to $
+        }
+
+        // lookup
+        const lookup = eval(handler.lookup)
+
+        // table
+
+        // subscribe
+        for (const subscription of handler.subscribe) {
+          const topic = subscription.topic.replace('${deviceId}', deviceId)
+          console.log(`MQTT subscribe to ${topic}`)
+          mqtt.subscribe(topic)
+        }
+      }
+    })
+
     // const handlers = {
     //   [topics.receiveQuery]: onQueryMessage,
     //   [topics.receiveStatus]: onStatusMessage,
@@ -73,61 +92,6 @@ export function init({ url, cache, deviceId, inputs }) {
     //   console.log(`MQTT WARNING: no handler for topic`, topic)
     // }
   }
-
-  // // handle initial query message
-  // function onQueryMessage(msg) {
-  //   console.log('MQTT onQueryMessage')
-
-  //   mqtt.unsubscribe(topics.receiveQuery)
-
-  //   // add each item in message to cache
-  //   for (const item of msg.payload) {
-  //     const [address, ...others] = item.keys
-  //     const key = `${deviceId}-${address}` // eg 'ccs-pa-001-%I0.10'
-  //     item.value = item.default // use default value, if any
-  //     cache.set(key, item)
-  //     // add other keys to aliases
-  //     for (const alias of others) {
-  //       const key2 = `${deviceId}-${alias}`
-  //       aliases[key2] = item
-  //     }
-  //   }
-
-  //   // best to subscribe to topics at this point,
-  //   // in case status or read messages come in BEFORE query results are delivered,
-  //   // which would clobber these values.
-  //   mqtt.subscribe(topics.receiveStatus)
-  //   mqtt.subscribe(topics.receiveRead)
-  // }
-
-  // // handle status messages
-  // function onStatusMessage(msg) {
-  //   console.log('MQTT onStatusMessage')
-  //   console.log({ msg })
-  //   // add parts to cache
-  //   const parts = `connection,state,program,step,faults,cpu_time,utc_time,build_no,_ts`.split(
-  //     ','
-  //   )
-  //   for (const part of parts) {
-  //     const key = `${deviceId}-status-${part}` // eg 'ccs-pa-001-status-faults'
-  //     const item = { value: msg.payload[part] }
-  //     cache.set(key, item)
-  //   }
-  // }
-
-  // // handle read messages
-  // function onReadMessage(msg) {
-  //   console.log('MQTT onReadMessage')
-  //   // make sure we have an array
-  //   if (!Array.isArray(msg.payload)) {
-  //     msg.payload = [msg.payload]
-  //   }
-  //   // add items to cache
-  //   for (const item of msg.payload) {
-  //     const key = `${deviceId}-${item.address}` // eg 'ccs-pa-001-%Q0.0'
-  //     cache.set(key, item) // item has { address, value }
-  //   }
-  // }
 }
 
 // unpack a message payload byte buffer and append some metadata.

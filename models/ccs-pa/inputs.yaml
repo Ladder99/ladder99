@@ -1,7 +1,7 @@
 # inputs
 # this is parsed by the adapter plugin mqtt-json.js.
 
-onConnect:
+connect:
   subscribe:
     - topic: l99/${deviceId}/evt/query
   publish:
@@ -10,6 +10,8 @@ onConnect:
 
 topics:
   l99/${deviceId}/evt/query:
+    unsubscribe:
+      - topic: l99/${deviceId}/evt/query
     subscribe:
       - topic: l99/${deviceId}/evt/status
       - topic: l99/${deviceId}/evt/read
