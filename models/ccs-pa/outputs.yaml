@@ -19,20 +19,21 @@ outputs:
     value: types.AVAILABILITY[<status-connection>]
 
   # eg change tool to a drill etc - irrelevant to p&a
+  # see std pt 4 line 347
   - key: asset_changed
     category: EVENT
-    type: ASSET_CHANGED # see std pt 4 line 347
+    type: ASSET_CHANGED
     value:
 
+  # see std pt 4 line 357
   - key: asset_removed
     category: EVENT
-    type: ASSET_REMOVED # see std pt 4 line 357
+    type: ASSET_REMOVED
     value:
 
   - key: dev_cond
     category: CONDITION
     type: SYSTEM
-    # value: types.CONDITION_TRIPLE[[<status-has-hard-faults>, <status-has-soft-faults>, <status-has-no-faults>].indexOf(true)]
     value: "<status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'"
 
   - key: dev_msg

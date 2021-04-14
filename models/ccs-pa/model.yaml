@@ -1,4 +1,4 @@
-# ccs-pa
+# ccs-pa model
 # this defines the structure of the xml that will get included in devices.xml.
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from devices.yaml.
