@@ -92,7 +92,6 @@ topics:
   l99/${deviceId}/evt/status:
     # $ is a variable declared as `let $` before this code is executed
     prelim: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
-    # lookup: "($, value) => value.includes('$') ? value : $[value]"
     lookup: '($, value) => ({ value: eval(value) })'
     inputs:
       # key-value pairs to set the cache.
