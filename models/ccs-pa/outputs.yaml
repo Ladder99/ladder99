@@ -9,7 +9,7 @@
 # the shdr key is the same as the id.
 # the shdr value is defined with the item value code.
 
-# value is javascript
+# value is javascript, evaluated by the cache in calculating the shdr output.
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
 
 outputs:
@@ -39,15 +39,11 @@ outputs:
   - key: dev_msg
     category: EVENT
     type: MESSAGE
-    #. nowork here?
+    #. nowork here? or maybe the xsl used doesn't transform it properly.
     # representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
-    # value: |
-    #   const faults = Object.entries(<status-faults>)
-    #   const str = faults.map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
-    #   return str  #. illegal return - why?
     # value: Object.entries(<status-faults>).map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
     # value: "'msg|' + Object.entries(<status-faults>).map(([id, fault]) => 'f' + id + '=pokpok').join(' ')"
-    value: "'msg|' + Object.entries(<status-faults>).map(([id, fault]) => 'f' + id + '=pokpok').join(' ')"
+    value: "Object.entries(<status-faults>).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
 
   - key: fw_ver
     category: EVENT
@@ -59,15 +55,15 @@ outputs:
     category: EVENT
     type: FUNCTIONAL_MODE
     # value: types.FUNCTIONAL_MODE[<status-has-faults>]
-    #. yuck
-    value: "types.FUNCTIONAL_MODE[<status-has-faults> ? 'true' : 'false']"
+    # value: "types.FUNCTIONAL_MODE[<status-has-faults> ? 'true' : 'false']"
+    value: "<status-has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
 
   - key: e_stop
     category: EVENT
     type: EMERGENCY_STOP
     # value: types.EMERGENCY_STOP[<status-has-fault-ten>]
-    #. yuck
-    value: "types.EMERGENCY_STOP[<status-has-fault-ten> ? 'true' : 'false']"
+    # value: "types.EMERGENCY_STOP[<status-has-fault-ten> ? 'true' : 'false']"
+    value: "<status-has-fault-ten> ? 'TRIGGERED' : 'ARMED'"
 
   - key: state
     category: EVENT

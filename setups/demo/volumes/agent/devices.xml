@@ -10,7 +10,7 @@
         <DataItem category="EVENT" type="ASSET_CHANGED" id="ccs-pa-001-asset_changed"/>
         <DataItem category="EVENT" type="ASSET_REMOVED" id="ccs-pa-001-asset_removed"/>
         <DataItem category="CONDITION" type="SYSTEM" id="ccs-pa-001-dev_cond"/>
-        <DataItem category="EVENT" type="MESSAGE" representation="DATA_SET" id="ccs-pa-001-dev_msg"/>
+        <DataItem category="EVENT" type="MESSAGE" id="ccs-pa-001-dev_msg"/>
         <DataItem category="EVENT" type="FIRMWARE" subType="VERSION" id="ccs-pa-001-fw_ver"/>
         <DataItem category="EVENT" type="FUNCTIONAL_MODE" id="ccs-pa-001-func_mode"/>
       </DataItems>
@@ -43,7 +43,7 @@
           <EndEffector id="ccs-pa-001-end_effector">
             <DataItems>
               <DataItem category="CONDITION" type="SYSTEM" id="ccs-pa-001-end_eff_cond"/>
-              <DataItem category="EVENT" type="MESSAGE" representation="DATA_SET" id="ccs-pa-001-end_eff_message"/>
+              <DataItem category="EVENT" type="MESSAGE" id="ccs-pa-001-end_eff_message"/>
               <DataItem category="EVENT" type="PART_DETECT" id="ccs-pa-001-smart_tamp_part_detect"/>
               <DataItem category="EVENT" type="ACTUATOR_STATE" id="ccs-pa-001-tamp_air_assist"/>
               <DataItem category="EVENT" type="ACTUATOR_STATE" id="ccs-pa-001-tamp_vacuum"/>
