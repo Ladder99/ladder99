@@ -19,6 +19,25 @@ handlers:
     code:
       $ = payload
 
+    table:
+      status-connection: $.connection
+      status-build_no: $.build_no
+      status-state: $.state
+      status-program: $.program
+      status-step: $.step
+      status-utc_time: $.utc_time
+      status-cpu_time: $.cpu_time
+      status-faults: $.faults
+      status-has-no-faults: Object.keys($.faults).length === 0
+      status-has-faults: Object.keys($.faults).length > 0
+      status-has-soft-faults: Object.keys($.faults).some(f => f>='50')
+      status-has-hard-faults: Object.keys($.faults).some(f => f<'50')
+      status-has-fault-ten: Object.keys($.faults).some(f => f==='10')
+      status-has-tamp-fault: Object.keys($.faults).map(f=>['2','3','5'].includes(f)).some(bool=>bool)
+      status-has-feed-fault: Object.keys($.faults).map(f=>['1','11','12','13','14,'15'].includes(f)).some(bool=>bool)
+      status-has-feed-warning: Object.keys($.faults).map(f=>['50','51'].includes(f)).some(bool=>bool)
+
+
     #. do as a table?
     inputs:
       - key: status-connection
