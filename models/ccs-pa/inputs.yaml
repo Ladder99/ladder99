@@ -1,7 +1,6 @@
 # inputs
 
-# these are parsed by the adapter plugin mqtt-json.js.
-# note: each input's cache id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
+# this is parsed by the adapter plugin mqtt-json.js.
 
 handlers:
   connect:
@@ -18,10 +17,11 @@ handlers:
 
   l99/${deviceId}/evt/status:
     # $ is a variable declared as `let $` before this code is executed
-    code: $ = payload
+    prelim: $ = payload
 
-    table:
+    inputs:
       # key-value pairs to set the cache.
+      # each input's cache id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
       # if no $ is in the value, uses $[value], else value.
       status-connection: connection
       status-build_no: build_no
@@ -43,7 +43,7 @@ handlers:
   l99/${deviceId}/evt/query: 
     code: $ = {}; payload.forEach(item => $[item.address] = item)
 
-    table: &queryTable
+    inputs: &queryTable
       printer_ribbon_low: '%I0.0'
       printer_service_required: '%I0.1'
       printer_print_end: '%I0.2'
@@ -116,5 +116,7 @@ handlers:
       web_take_up_motor_anti_twitch_active: '%Z55.1'
 
   l99/${deviceId}/evt/read:
-    table: *queryTable
+    # make $ a dictionary keyed on the item addresses
+    prelim: $ = {}; payload.forEach(item => $[item.address] = item)
+    inputs: *queryTable
   
