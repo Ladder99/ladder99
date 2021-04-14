@@ -1,5 +1,6 @@
 # inputs
-# these are parsed by the adapter plugin, eg mqtt-json.js.
+
+# these are parsed by the adapter plugin mqtt-json.js.
 # note: each input's cache id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
 
 handlers:
@@ -16,18 +17,20 @@ handlers:
       - topic: l99/${deviceId}/evt/read
 
   l99/${deviceId}/evt/status:
-    code:
-      $ = payload
+    # $ is a variable declared as `let $` before this code is executed
+    code: $ = payload
 
     table:
-      status-connection: $.connection
-      status-build_no: $.build_no
-      status-state: $.state
-      status-program: $.program
-      status-step: $.step
-      status-utc_time: $.utc_time
-      status-cpu_time: $.cpu_time
-      status-faults: $.faults
+      # key-value pairs to set the cache.
+      # if no $ is in the value, uses $[value], else value.
+      status-connection: connection
+      status-build_no: build_no
+      status-state: state
+      status-program: program
+      status-step: step
+      status-utc_time: utc_time
+      status-cpu_time: cpu_time
+      status-faults: faults
       status-has-no-faults: Object.keys($.faults).length === 0
       status-has-faults: Object.keys($.faults).length > 0
       status-has-soft-faults: Object.keys($.faults).some(f => f>='50')
@@ -37,69 +40,10 @@ handlers:
       status-has-feed-fault: Object.keys($.faults).map(f=>['1','11','12','13','14,'15'].includes(f)).some(bool=>bool)
       status-has-feed-warning: Object.keys($.faults).map(f=>['50','51'].includes(f)).some(bool=>bool)
 
+  l99/${deviceId}/evt/query: 
+    code: $ = {}; payload.forEach(item => $[item.address] = item)
 
-    #. do as a table?
-    inputs:
-      - key: status-connection
-        value: $.connection
-
-      - key: status-build_no
-        value: $.build_no
-
-      - key: status-state
-        value: $.state
-
-      - key: status-program
-        value: $.program
-
-      - key: status-step
-        value: $.step
-
-      - key: status-utc_time
-        value: $.utc_time
-
-      - key: status-cpu_time
-        value: $.cpu_time
-
-      - key: status-faults
-        value: $.faults
-
-      - key: status-has-no-faults
-        value: Object.keys($.faults).length === 0
-
-      - key: status-has-faults
-        value: Object.keys($.faults).length > 0
-
-      - key: status-has-soft-faults
-        value: Object.keys($.faults).some(f => f>='50')
-
-      - key: status-has-hard-faults
-        value: Object.keys($.faults).some(f => f<'50')
-
-      - key: status-has-fault-ten
-        value: Object.keys($.faults).some(f => f==='10')
-
-      - key: status-has-tamp-fault
-        value: Object.keys($.faults).map(f=>['2','3','5'].includes(f)).some(bool=>bool)
-
-      - key: status-has-feed-fault
-        value: Object.keys($.faults).map(f=>['1','11','12','13','14,'15'].includes(f)).some(bool=>bool)
-
-      - key: status-has-feed-warning
-        value: Object.keys($.faults).map(f=>['50','51'].includes(f)).some(bool=>bool)
-
-  l99/${deviceId}/evt/read:
-    # had value: $.find(a=>a.address==='%I0.0').value
-    # but that would be O(n^2), and have n=72
-
-    # make a dict of msg payload values keyed on their address
-    code: |
-      $ = {}
-      payload.forEach(item => $[item.address] = item)
-      // write all aliases to cache? but duplications
-      // what if wrote to cache each item as key=keys[0], value=default
-
-    table: &read_table
+    table: &queryTable
       printer_ribbon_low: '%I0.0'
       printer_service_required: '%I0.1'
       printer_print_end: '%I0.2'
@@ -171,6 +115,6 @@ handlers:
       web_take_up_motor_anti_twitch_counter: '%Z55.0'
       web_take_up_motor_anti_twitch_active: '%Z55.1'
 
-  l99/${deviceId}/evt/query: 
-    table: *read_topic
+  l99/${deviceId}/evt/read:
+    table: *queryTable
   
