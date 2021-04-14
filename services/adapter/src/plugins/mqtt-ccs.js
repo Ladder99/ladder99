@@ -114,9 +114,9 @@ export function init({ url, cache, deviceId }) {
       cache.set(`${deviceId}-status-cycle_time`, { value: cycleTime }) // sec
       cycleStart = null
     }
-    // some custom calcs
-    const $ = msg.payload
 
+    //. some custom calcs
+    const $ = msg.payload
     cache.set(
       `${deviceId}-status-has-no-faults`,
       Object.keys($.faults).length === 0
@@ -136,11 +136,11 @@ export function init({ url, cache, deviceId }) {
     )
     cache.set(
       `${deviceId}-status-has-tamp-fault`,
+      //. better way?
       Object.keys($.faults)
         .map(f => ['2', '3', '5'].includes(f))
         .some(bool => bool)
     )
-
     // - key: status-has-feed-fault
     //   path: Object.keys($.faults).map(f=>['1','11','12','13','14,'15'].includes(f)).some(bool=>bool)
     // - key: status-has-feed-warning
@@ -161,13 +161,7 @@ export function init({ url, cache, deviceId }) {
       cache.set(key, item) // note: this will cause cache to publish shdr
     }
 
-    // - key: life_count
-    //   path: $.find(a=>a.address==='%M55.0').value
-    // - key: cycle_count
-    //   path: $.find(a=>a.address==='%M55.1').value
-    // - key: fault_count
-    //   path: $.find(a=>a.address==='%M55.2').value
-    // const $ = msg.payload
+    //.
     cache.set(`${deviceId}-life_count`, cache.get(`${deviceId}-%M55.0`).value)
     cache.set(`${deviceId}-cycle_count`, cache.get(`${deviceId}-%M55.1`).value)
     cache.set(`${deviceId}-fault_count`, cache.get(`${deviceId}-%M55.2`).value)
