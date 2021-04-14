@@ -46,10 +46,13 @@ export function init({ url, cache, deviceId, inputs }) {
   // handle all incoming messages
   function onMessage(topic, buffer) {
     console.log('MQTT got message on topic', topic)
+
     const msg = unpack(topic, buffer)
     const payload = msg.payload
+
     Object.entries(inputs.topics).forEach(([key, handler]) => {
       key = key.replace('${deviceId}', deviceId)
+
       if (topic === key) {
         // execute handler commands
 
@@ -65,11 +68,20 @@ export function init({ url, cache, deviceId, inputs }) {
         if (handler.prelim) {
           eval(handler.prelim) // assign values to $
         }
+        console.log({ $ })
 
         // lookup
         const lookup = eval(handler.lookup)
+        console.log({ lookup })
 
-        // table
+        // inputs
+        for (const key of Object.keys(handler.inputs)) {
+          const id = deviceId + '-' + key
+          const value = handler.inputs[key]
+          console.log(`lookup value ${value} for id ${id}`)
+          const item = lookup($, value)
+          cache.set(id, item)
+        }
 
         // subscribe
         for (const subscription of handler.subscribe) {

@@ -17,7 +17,7 @@ topics:
       - topic: l99/${deviceId}/evt/read
     prelim: '$ = {}; payload.forEach(item => $[item.keys[0]] = item)'
     lookup: '($, value) => $[value].default'
-    inputs: &queryTable
+    inputs: &queryInputs
       printer_ribbon_low: '%I0.0'
       printer_service_required: '%I0.1'
       printer_print_end: '%I0.2'
@@ -119,4 +119,4 @@ topics:
     # make $ a dictionary keyed on the item addresses
     prelim: $ = {}; payload.forEach(item => $[item.address] = item)
     lookup: '($, value) => $[value].value'
-    inputs: *queryTable
+    inputs: *queryInputs
