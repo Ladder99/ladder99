@@ -31,7 +31,6 @@ types:
   # MATERIAL_UNLOAD, SECONDARY_PROCESS, PAUSING, or RESUMING.
   # see pt3 pg138 for details on values.
   #. what is wait_state if execution is not wait?
-  # seems to be set to UNAVAILABLE?
   WAIT_STATE:
     50: PAUSING
     100: PAUSING

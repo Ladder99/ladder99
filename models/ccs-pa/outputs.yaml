@@ -55,14 +55,12 @@ outputs:
     category: EVENT
     type: FUNCTIONAL_MODE
     # value: types.FUNCTIONAL_MODE[<status-has-faults>]
-    # value: "types.FUNCTIONAL_MODE[<status-has-faults> ? 'true' : 'false']"
     value: "<status-has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
 
   - key: e_stop
     category: EVENT
     type: EMERGENCY_STOP
     # value: types.EMERGENCY_STOP[<status-has-fault-ten>]
-    # value: "types.EMERGENCY_STOP[<status-has-fault-ten> ? 'true' : 'false']"
     value: "<status-has-fault-ten> ? 'TRIGGERED' : 'ARMED'"
 
   - key: state
