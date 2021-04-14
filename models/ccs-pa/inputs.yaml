@@ -93,8 +93,7 @@ topics:
     # $ is a variable declared as `let $` before this code is executed
     prelim: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
     # lookup: "($, value) => value.includes('$') ? value : $[value]"
-    #. eval?
-    lookup: '($, value) => value'
+    lookup: '($, value) => ({ value: eval(value) })'
     inputs:
       # key-value pairs to set the cache.
       # each input's cache id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
@@ -113,11 +112,11 @@ topics:
       status-has-hard-faults: $.faultKeys.some(f => f<'50')
       status-has-fault-ten: $.faultKeys.some(f => f==='10')
       status-has-tamp-fault: $.faultKeys.map(f=>['2','3','5'].includes(f)).some(bool=>bool)
-      status-has-feed-fault: $.faultKeys.map(f=>['1','11','12','13','14,'15'].includes(f)).some(bool=>bool)
+      status-has-feed-fault: $.faultKeys.map(f=>['1','11','12','13','14','15'].includes(f)).some(bool=>bool)
       status-has-feed-warning: $.faultKeys.map(f=>['50','51'].includes(f)).some(bool=>bool)
 
   l99/${deviceId}/evt/read:
     # make $ a dictionary keyed on the item addresses
     prelim: $ = {}; payload.forEach(item => $[item.address] = item)
-    lookup: '($, value) => $[value].value'
+    lookup: '($, value) => ($[value] || {}).value'
     inputs: *queryInputs

@@ -69,14 +69,10 @@ export function init({ url, cache, deviceId, inputs }) {
           eval(handler.prelim) // assign values to $
         }
         // console.log({ $ }) // works
-        console.log('i0.0', ($ || {})['%I0.0'])
 
         // lookup
         const lookup = eval(handler.lookup)
-        // const lookup = ($, value) => ({ value: $[value].default })
         console.log(lookup.toString()) // works
-
-        console.log('lookup($, i0.0)', lookup($, '%I0.0'))
 
         // inputs
         for (const key of Object.keys(handler.inputs) || []) {
