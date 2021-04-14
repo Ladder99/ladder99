@@ -44,7 +44,7 @@ outputs:
     #   const str = faults.map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
     #   return str  #. illegal return - why?
     # value: Object.entries(<status-faults>).map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
-    value: Object.entries(<status-faults>).map(([id, fault]) => id + '=pokpok').join(' ')
+    value: "'msg|' + Object.entries(<status-faults>).map(([id, fault]) => 'f' + id + '=pokpok').join(' ')"
 
   - key: fw_ver
     category: EVENT
