@@ -152,6 +152,13 @@ the relevant calculation has
       dependsOn: ['ccs-pa-001-status-has-hard-faults', 'ccs-pa-001-status-has-soft-faults']
     }
 
+5000 has
+
+Condition
+Timestamp	Type	Sub Type	Name	Id	Sequence	Value
+2021-04-14T08:33:42.694Z	Fault			ccs-pa-001-dev_cond	334	Message
+
+works
 
 
 
