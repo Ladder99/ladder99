@@ -71,14 +71,14 @@ export function init({ url, cache, deviceId }) {
 
     // add each item in message to cache
     for (const item of msg.payload) {
-      const [address, ...others] = item.keys
+      const [address, ...others] = item.keys // eg '%I0.10' and ['IN11', 'safety.e_stop', 'J3.P12', 'SX1.P10']
       const key = `${deviceId}-${address}` // eg 'ccs-pa-001-%I0.10'
       item.value = item.default // use default value, if any
       cache.set(key, item) // note: this will cause cache to publish shdr
       // add other keys to aliases
       //. replace . with _ ?
       for (const alias of others) {
-        const key2 = `${deviceId}-${alias}`
+        const key2 = `${deviceId}-${alias}` // eg 'ccs-pa-001-safety.e_stop'
         aliases[key2] = item
       }
     }
