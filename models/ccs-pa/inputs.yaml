@@ -18,7 +18,7 @@ handlers:
   l99/${deviceId}/evt/status:
     # $ is a variable declared as `let $` before this code is executed
     prelim: $ = payload
-
+    lookup: "($, value) => value.includes('$') ? value : $[value]"
     inputs:
       # key-value pairs to set the cache.
       # each input's cache id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
@@ -41,8 +41,8 @@ handlers:
       status-has-feed-warning: Object.keys($.faults).map(f=>['50','51'].includes(f)).some(bool=>bool)
 
   l99/${deviceId}/evt/query: 
-    code: $ = {}; payload.forEach(item => $[item.address] = item)
-
+    prelim: $ = {}; payload.forEach(item => $[item.keys[0]] = item)
+    lookup: "($, value) => $[value].default"
     inputs: &queryTable
       printer_ribbon_low: '%I0.0'
       printer_service_required: '%I0.1'
@@ -118,5 +118,6 @@ handlers:
   l99/${deviceId}/evt/read:
     # make $ a dictionary keyed on the item addresses
     prelim: $ = {}; payload.forEach(item => $[item.address] = item)
+    lookup: "($, value) => $[value].value"
     inputs: *queryTable
   
