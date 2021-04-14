@@ -9,6 +9,7 @@
 
 /**
  * @typedef {Object} Output
+ * @property {string} category
  * @property {string} key
  * @property {object} socket
  * @property {string[]} dependsOn
@@ -76,14 +77,26 @@ export class Cache {
 
 /**
  * calculate SHDR using the given output object.
- * could have other output types also
  * @param {Cache} cache
  * @param {Output} output
  */
 function getShdr(cache, output) {
-  const timestamp = new Date().toISOString() //. might need to get from item
+  const timestamp = new Date().toISOString() //. get from item
+  const category = output.category
   const key = output.key
   const value = output.value(cache) // do calculation - value is a fn of cache
-  const shdr = `${timestamp}|${key}|${value}`
+  let shdr = ''
+  if (category === 'EVENT' || category === 'SAMPLE') {
+    shdr = `${timestamp}|${key}|${value}`
+  } else if (category === 'CONDITION') {
+    const level = 1
+    const nativeCode = 2
+    const nativeSeverity = 3
+    const qualifier = 4
+    const message = 'pokpok'
+    shdr = `${timestamp}|${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
+  } else {
+    console.log(`warning: unknown category '${category}'`)
+  }
   return shdr
 }

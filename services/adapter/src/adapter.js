@@ -44,17 +44,14 @@ for (const device of devices) {
     // import outputs
     const pathOutputs = `/home/node/models/${model}/outputs.yaml`
     const outputTemplates = importYaml(pathOutputs).outputs
-    // console.log({ outputTemplates })
 
     // import types
     const pathTypes = `/home/node/models/${model}/types.yaml`
     const types = importYaml(pathTypes).types
-    // console.log({ types })
 
     // compile outputs from yaml strings and save to source
     const outputs = getOutputs({ outputTemplates, types, deviceId })
     source.outputs = outputs
-    // console.log({ outputs })
   }
 
   console.log(`TCP creating server for agent...`)
@@ -100,25 +97,7 @@ for (const device of devices) {
  */
 function getOutputs({ outputTemplates, types, deviceId }) {
   const outputs = outputTemplates.map(template => {
-    // // build up dependsOn array during parse from what cache keys are seen
-    // const dependsOn = []
-    // // m will be undefined if no match, or array with elements 1,2,3 with contents
-    // //. handle multiple <>'s in a string also - how do? .* needs to be greedy for one thing
-    // //. also check if str is multiline - then need to wrap in braces?
-    // const regexp = /(.*)<(.*)>(.*)/
-    // const m = (template.value || '').match(regexp)
-    // let value = cache => template.value // by default just return string value
-    // // got match
-    // if (m) {
-    //   const str = m[1] + `cache.get('${deviceId}-${m[2]}').value` + m[3]
-    //   value = cache => eval(str) // evaluate the cache access string
-    //   //. assume each starts with deviceId?
-    //   const dependency = `${deviceId}-${m[2]}`
-    //   dependsOn.push(dependency)
-    // }
-
     let valueStr = template.value || ''
-
     // replace all occurrences of <key> with `cache.get('...').value`.
     // note: .*? is a non-greedy match, so doesn't eat other occurrences also.
     const regexp1 = /(<(.*?)>)/gm
@@ -144,6 +123,7 @@ function getOutputs({ outputTemplates, types, deviceId }) {
     console.log({ dependsOn })
 
     const output = {
+      category: template.category, // needed for cache getShdr fn
       dependsOn,
       //. assume each starts with deviceId?
       //. call this id, as it's such in the devices.xml?
@@ -152,7 +132,7 @@ function getOutputs({ outputTemplates, types, deviceId }) {
     }
     return output
   })
-  // @ts-ignore
+  // @ts-ignore too strict typechecking
   return outputs
 }
 

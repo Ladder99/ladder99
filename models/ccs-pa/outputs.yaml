@@ -38,12 +38,14 @@ outputs:
   - key: dev_msg
     category: EVENT
     type: MESSAGE
-    representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
+    #. nowork here?
+    # representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
     # value: |
     #   const faults = Object.entries(<status-faults>)
     #   const str = faults.map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
     #   return str  #. illegal return - why?
     # value: Object.entries(<status-faults>).map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
+    # value: "'msg|' + Object.entries(<status-faults>).map(([id, fault]) => 'f' + id + '=pokpok').join(' ')"
     value: "'msg|' + Object.entries(<status-faults>).map(([id, fault]) => 'f' + id + '=pokpok').join(' ')"
 
   - key: fw_ver
@@ -130,7 +132,7 @@ outputs:
   - key: end_eff_message
     category: EVENT
     type: MESSAGE
-    representation: DATA_SET
+    # representation: DATA_SET
     #. $
     # value: |
     #   const str = Object.keys(<status-faults>).filter(key => key in [2,3,5]).map(key => key + ':' + $.faults[key].description).join(', ')
