@@ -89,11 +89,11 @@ function getShdr(cache, output) {
   if (category === 'EVENT' || category === 'SAMPLE') {
     shdr = `${timestamp}|${key}|${value}`
   } else if (category === 'CONDITION') {
-    const level = 1
-    const nativeCode = 2
-    const nativeSeverity = 3
-    const qualifier = 4
-    const message = 'pokpok'
+    const level = value // eg 'WARNING'
+    const nativeCode = 'NativeCode'
+    const nativeSeverity = 'NativeSeverity'
+    const qualifier = 'Qualifier'
+    const message = 'Message'
     shdr = `${timestamp}|${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
   } else {
     console.log(`warning: unknown category '${category}'`)
