@@ -118,29 +118,29 @@ export function init({ url, cache, deviceId }) {
 
     //. some custom calcs
     const $ = msg.payload
-    cache.set(
-      `${deviceId}-status-has-no-faults`,
-      Object.keys($.faults).length === 0
-    )
-    cache.set(`${deviceId}-status-has-faults`, Object.keys($.faults).length > 0)
-    cache.set(
-      `${deviceId}-status-has-soft-faults`,
-      Object.keys($.faults).some(f => f >= '50')
-    )
-    cache.set(
-      `${deviceId}-status-has-hard-faults`,
-      Object.keys($.faults).some(f => f < '50')
-    )
-    cache.set(
-      `${deviceId}-status-has-fault-ten`,
-      Object.keys($.faults).some(f => f === '10')
-    )
+    cache.set(`${deviceId}-status-has-no-faults`, {
+      value: Object.keys($.faults).length === 0,
+    })
+    cache.set(`${deviceId}-status-has-faults`, {
+      value: Object.keys($.faults).length > 0,
+    })
+    cache.set(`${deviceId}-status-has-soft-faults`, {
+      value: Object.keys($.faults).some(f => f >= '50'),
+    })
+    cache.set(`${deviceId}-status-has-hard-faults`, {
+      value: Object.keys($.faults).some(f => f < '50'),
+    })
+    cache.set(`${deviceId}-status-has-fault-ten`, {
+      value: Object.keys($.faults).some(f => f === '10'),
+    })
     cache.set(
       `${deviceId}-status-has-tamp-fault`,
       //. better way?
-      Object.keys($.faults)
-        .map(f => ['2', '3', '5'].includes(f))
-        .some(bool => bool)
+      {
+        value: Object.keys($.faults)
+          .map(f => ['2', '3', '5'].includes(f))
+          .some(bool => bool),
+      }
     )
     // - key: status-has-feed-fault
     //   path: Object.keys($.faults).map(f=>['1','11','12','13','14,'15'].includes(f)).some(bool=>bool)

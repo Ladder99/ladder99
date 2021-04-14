@@ -15,9 +15,20 @@ devices.xml:
 
     <DataItem category="CONDITION" type="SYSTEM" id="ccs-pa-001-dev_cond"/>
 
-so it's up to the adapter to send shdr, like
+and the output object is
 
-    "2021-04-14T03:04:00.000Z|ccs-pa-001-dev_cond|WARNING"
+    {
+      id: 'ccs-pa-001-dev_cond',
+      category: 'CONDITION',
+      value: cache => eval("cache.get('ccs-pa-001-status-has-hard-faults').value ? 'FAULT' : cache.get('ccs-pa-001-status-has-soft-faults').value ? 'WARNING': 'NORMAL'")
+      dependsOn: ['ccs-pa-001-status-has-hard-faults', 'ccs-pa-001-status-has-soft-faults']
+    }
+
+so when a cache value in dependsOn changes, it triggers the corresponding shdr output calculated from the value fn.
+
+so it's up to the adapter to send shdr, ie
+
+    "2021-04-14T03:04:00.000Z|id|value"
 
 actually, for a condition you need more info - 
 
@@ -32,12 +43,40 @@ eg
 
     "2021-04-14T03:04:00.000Z|ccs-pa-001-dev_cond|WARNING|warn|warning|um|ribbon low"
 
-how get that?
-
 
 ## mqtt messages
 
-device sends json over mqtt - currently handled by mqtt-ccs.js.
+device sends json over mqtt - currently handled by adapter.js and mqtt-ccs.js.
+
+adapter.js initializes the cache with dependencies - 
+
+    addOutputs(outputs, socket) {
+      for (const output of outputs) {
+        output.socket = socket // attach tcp socket to each output also
+        for (const key of output.dependsOn) {
+          if (this._mapKeyToOutputs[key]) {
+            this._mapKeyToOutputs[key].push(output)
+          } else {
+            this._mapKeyToOutputs[key] = [output]
+          }
+        }
+      }
+    }
+
+so eg for the above output, ie
+
+    {
+      id: 'ccs-pa-001-dev_cond',
+      category: 'CONDITION',
+      value: cache => eval("cache.get('ccs-pa-001-status-has-hard-faults').value ? 'FAULT' : cache.get('ccs-pa-001-status-has-soft-faults').value ? 'WARNING': 'NORMAL'")
+      dependsOn: ['ccs-pa-001-status-has-hard-faults', 'ccs-pa-001-status-has-soft-faults']
+    }
+
+we get
+
+    this._mapKeyToOutputs['ccs-pa-001-status-has-hard-faults'] = [ output ]
+    this._mapKeyToOutputs['ccs-pa-001-status-has-soft-faults'] = [ output ]
+
 
 handle initial query message (nothing relevant to faults here):
 
@@ -62,8 +101,7 @@ handle status messages:
       cache.set(key, item) // note: this will cause cache to publish shdr
     }
 
-
-simulator-mqtt sends data from messages.js, which has:
+so simulator-mqtt sends data from messages.js, which has:
 
     {
       topic: 'l99/${deviceId}/evt/status',
@@ -84,8 +122,35 @@ which causes
 
     cache.set('ccs-pa-001-status-faults', { value: {} })
 
-but nothing depends on status-faults, eh?
+another message has:
 
+      faults: {
+        50: { description: 'soft fault', hard: false, count: 1 },
+      },
+
+    cache.set('ccs-pa-001-status-faults', { value: { 50: { description: 'soft fault', hard: false, count: 1 }} })
+
+but nothing currently depends on status-faults, so added some custom code -
+
+    const $ = msg.payload
+    cache.set(`${deviceId}-status-has-soft-faults`, Object.keys($.faults).some(f => f >= '50'))
+    cache.set(`${deviceId}-status-has-hard-faults`, Object.keys($.faults).some(f => f < '50'))
+
+so for this mqtt message, 
+
+    cache.set('ccs-pa-001-status-has-soft-faults', true)
+    cache.set('ccs-pa-001-status-has-hard-faults', false)
+
+***should be { value: true } etc?
+
+the relevant calculation has 
+
+    {
+      id: 'ccs-pa-001-dev_cond',
+      category: 'CONDITION',
+      value: cache => eval("cache.get('ccs-pa-001-status-has-hard-faults').value ? 'FAULT' : cache.get('ccs-pa-001-status-has-soft-faults').value ? 'WARNING': 'NORMAL'")
+      dependsOn: ['ccs-pa-001-status-has-hard-faults', 'ccs-pa-001-status-has-soft-faults']
+    }
 
 
 
