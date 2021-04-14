@@ -2,53 +2,44 @@
 
 ## compilation: yamls to devices.xml
 
-eg outputs.yaml includes:
+outputs.yaml includes this dataItem for device condition:
 
     - key: dev_cond
       category: CONDITION
       type: SYSTEM
       value: "<status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'"
 
-compiles to
-
-devices.xml:
+which compiles to this in devices.xml:
 
     <DataItem category="CONDITION" type="SYSTEM" id="ccs-pa-001-dev_cond"/>
 
-and the output object is
+note that id=deviceId+key
 
-    {
-      id: 'ccs-pa-001-dev_cond',
-      category: 'CONDITION',
-      value: cache => eval("cache.get('ccs-pa-001-status-has-hard-faults').value ? 'FAULT' : cache.get('ccs-pa-001-status-has-soft-faults').value ? 'WARNING': 'NORMAL'")
-      dependsOn: ['ccs-pa-001-status-has-hard-faults', 'ccs-pa-001-status-has-soft-faults']
-    }
-
-so when a cache value in dependsOn changes, it triggers the corresponding shdr output calculated from the value fn.
-
-so it's up to the adapter to send shdr, ie
+so it's up to the adapter to send SHDR to match, ie
 
     "2021-04-14T03:04:00.000Z|id|value"
 
 actually, for a condition you need more info - 
 
     const level = value // eg 'WARNING'
-    const nativeCode = 'NativeCode'
-    const nativeSeverity = 'NativeSeverity'
-    const qualifier = 'Qualifier'
-    const message = 'Message'
+    const nativeCode = 'nativeCode'
+    const nativeSeverity = 'nativeSeverity'
+    const qualifier = 'qualifier'
+    const message = 'condition message'
     shdr = `${timestamp}|${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
 
 eg
 
     "2021-04-14T03:04:00.000Z|ccs-pa-001-dev_cond|WARNING|warn|warning|um|ribbon low"
 
+how get that?
+
 
 ## mqtt messages
 
-device sends json over mqtt - currently handled by adapter.js and mqtt-ccs.js.
+the device sends json over mqtt - currently handled by adapter.js and mqtt-ccs.js.
 
-adapter.js initializes the cache with dependencies - 
+### adapter.js initializes the cache with dependencies
 
     addOutputs(outputs, socket) {
       for (const output of outputs) {
@@ -63,7 +54,7 @@ adapter.js initializes the cache with dependencies -
       }
     }
 
-so eg for the above output, ie
+so for the previous dataItem example, adapter.js gets the following output object -
 
     {
       id: 'ccs-pa-001-dev_cond',
@@ -72,13 +63,17 @@ so eg for the above output, ie
       dependsOn: ['ccs-pa-001-status-has-hard-faults', 'ccs-pa-001-status-has-soft-faults']
     }
 
-we get
+when a cache value in dependsOn changes, it should trigger the corresponding shdr output calculated from the value fn.
+
+it does this by adding the dependsOn keys to a map linking to the dependent calcs - 
 
     this._mapKeyToOutputs['ccs-pa-001-status-has-hard-faults'] = [ output ]
     this._mapKeyToOutputs['ccs-pa-001-status-has-soft-faults'] = [ output ]
 
 
-handle initial query message (nothing relevant to faults here):
+### handle initial query message (nothing relevant to faults here)
+
+mqtt-ccs.js plugin has
 
     for (const item of msg.payload) {
       const [address, ...others] = item.keys // eg '%I0.10' and ['IN11', 'safety.e_stop', 'J3.P12', 'SX1.P10']
@@ -92,7 +87,9 @@ handle initial query message (nothing relevant to faults here):
       }
     }
 
-handle status messages:
+## handle status messages
+
+mqtt-ccs.js plugin has
 
     const parts = `connection,state,program,step,faults,cpu_time,utc_time,build_no,_ts`.split(',')
     for (const part of parts) {
@@ -133,15 +130,13 @@ another message has:
 but nothing currently depends on status-faults, so added some custom code -
 
     const $ = msg.payload
-    cache.set(`${deviceId}-status-has-soft-faults`, Object.keys($.faults).some(f => f >= '50'))
-    cache.set(`${deviceId}-status-has-hard-faults`, Object.keys($.faults).some(f => f < '50'))
+    cache.set(`${deviceId}-status-has-soft-faults`, { value: Object.keys($.faults).some(f => f >= '50') })
+    cache.set(`${deviceId}-status-has-hard-faults`, { value: Object.keys($.faults).some(f => f < '50') })
 
 so for this mqtt message, 
 
-    cache.set('ccs-pa-001-status-has-soft-faults', true)
-    cache.set('ccs-pa-001-status-has-hard-faults', false)
-
-***should be { value: true } etc?
+    cache.set('ccs-pa-001-status-has-soft-faults', { value: true })
+    cache.set('ccs-pa-001-status-has-hard-faults', { value: false })
 
 the relevant calculation has 
 
@@ -152,20 +147,18 @@ the relevant calculation has
       dependsOn: ['ccs-pa-001-status-has-hard-faults', 'ccs-pa-001-status-has-soft-faults']
     }
 
-5000 has
+so 5000 has
 
-Condition
-Timestamp	Type	Sub Type	Name	Id	Sequence	Value
-2021-04-14T08:33:42.694Z	Fault			ccs-pa-001-dev_cond	334	Message
+    Condition
+    Timestamp	Type	Sub Type	Name	Id	Sequence	Value
+    2021-04-14T08:33:42.694Z	Fault			ccs-pa-001-dev_cond	334	condition message
 
-works
-
-
-
-inputs.yaml:
+it works
 
 
-#note: each item's id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
+## inputs.yaml
+
+note: each item's id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
 
     inputs:
       topics:
@@ -178,9 +171,5 @@ inputs.yaml:
 
           - key: status-has-hard-faults
             path: Object.keys($.faults).some(f => f<'50')
-
-
-
-so 
 
 
