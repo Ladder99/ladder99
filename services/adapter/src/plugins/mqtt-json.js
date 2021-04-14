@@ -48,7 +48,7 @@ export function init({ url, cache, deviceId, inputs }) {
     console.log('MQTT got message on topic', topic)
 
     const msg = unpack(topic, buffer)
-    const payload = msg.payload
+    const payload = msg.payload // payload IS used eg by inputs.prelim fn - don't delete
 
     Object.entries(inputs.topics).forEach(([key, handler]) => {
       key = key.replace('${deviceId}', deviceId)
@@ -63,27 +63,29 @@ export function init({ url, cache, deviceId, inputs }) {
           mqtt.unsubscribe(topic)
         }
 
-        // prelim
+        // a variable representing payload data - usually a dict
         let $
+
+        // initialize
+        // eg assign payload values to $
+        // eg prelim: '$ = {}; payload.forEach(item => $[item.keys[0]] = item)'
         if (handler.prelim) {
-          eval(handler.prelim) // assign values to $
+          eval(handler.prelim)
         }
-        // console.log({ $ }) // works
 
         // lookup
-        const lookup = eval(handler.lookup)
-        console.log(lookup.toString()) // works
+        // eg lookup: '($, field) => ({ value: ($[field] || {}).default })'
+        const lookup = eval(handler.lookup) // get the function itself
+        console.log(lookup.toString())
 
         // inputs
         for (const key of Object.keys(handler.inputs) || []) {
-          const id = deviceId + '-' + key
-          const value = handler.inputs[key]
-          console.log(`lookup value ${value} for id ${id}`)
-          const item = lookup($, value) || {} //. ok?
-          console.log('got item', item)
-          const item2 = cache.get('ccs-pa-001-fault_count') //.
-          console.log('item2', item2)
-          cache.set(id, item)
+          const id = deviceId + '-' + key // eg 'ccs-pa-001-fault_count'
+          const field = handler.inputs[key] // eg '%M55.2'
+          const item = lookup($, field) // evaluate the lookup function
+          if (item && item.value !== undefined) {
+            cache.set(id, item)
+          }
         }
 
         // subscribe

@@ -18,7 +18,7 @@ topics:
       - topic: l99/${deviceId}/evt/read
     # $ is a variable declared as `let $` before this code is executed
     prelim: '$ = {}; payload.forEach(item => $[item.keys[0]] = item)'
-    lookup: '($, value) => ({ value: ($[value] || {}).default })'
+    lookup: '($, field) => ({ value: ($[field] || {}).default })'
     inputs: &queryInputs
       # key-value pairs to set the cache.
       # each input's cache id will be {deviceId}-{key}, eg 'ccs-pa-001-printer_ribbon_low'
@@ -96,7 +96,7 @@ topics:
   l99/${deviceId}/evt/status:
     # makes $ the message payload dictionary and adds faultKeys
     prelim: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
-    lookup: '($, value) => ({ value: eval(value) })'
+    lookup: '($, calc) => ({ value: eval(calc) })'
     inputs:
       status-connection: $.connection
       status-build_no: $.build_no
@@ -118,5 +118,5 @@ topics:
   l99/${deviceId}/evt/read:
     # makes $ a dictionary keyed on the item addresses
     prelim: $ = {}; payload.forEach(item => $[item.address] = item)
-    lookup: '($, value) => ({ value: ($[value] || {}).value })'
+    lookup: '($, field) => ({ value: ($[field] || {}).value })'
     inputs: *queryInputs
