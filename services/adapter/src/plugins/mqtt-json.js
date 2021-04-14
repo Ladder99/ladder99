@@ -81,6 +81,8 @@ export function init({ url, cache, deviceId, inputs }) {
           console.log(`lookup value ${value} for id ${id}`)
           const item = lookup($, value) || {} //. ok?
           console.log('got item', item)
+          const item2 = cache.get('ccs-pa-001-fault_count') //.
+          console.log('item2', item2)
           cache.set(id, item)
         }
 
