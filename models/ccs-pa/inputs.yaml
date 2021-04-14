@@ -16,7 +16,7 @@ topics:
       - topic: l99/${deviceId}/evt/status
       - topic: l99/${deviceId}/evt/read
     prelim: '$ = {}; payload.forEach(item => $[item.keys[0]] = item)'
-    lookup: '($, value) => $[value].default'
+    lookup: '($, value) => ({ value: ($[value] || {}).default })'
     inputs: &queryInputs
       printer_ribbon_low: '%I0.0'
       printer_service_required: '%I0.1'
@@ -93,7 +93,8 @@ topics:
     # $ is a variable declared as `let $` before this code is executed
     prelim: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
     # lookup: "($, value) => value.includes('$') ? value : $[value]"
-    # lookup: "($, value) => value"
+    #. eval?
+    lookup: '($, value) => value'
     inputs:
       # key-value pairs to set the cache.
       # each input's cache id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'

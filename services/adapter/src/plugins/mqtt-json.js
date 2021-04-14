@@ -57,7 +57,7 @@ export function init({ url, cache, deviceId, inputs }) {
         // execute handler commands
 
         // unsubscribe
-        for (const unsubscription of handler.unsubscribe) {
+        for (const unsubscription of handler.unsubscribe || []) {
           const topic = unsubscription.topic.replace('${deviceId}', deviceId)
           console.log(`MQTT unsubscribe from ${topic}`)
           mqtt.unsubscribe(topic)
@@ -68,23 +68,28 @@ export function init({ url, cache, deviceId, inputs }) {
         if (handler.prelim) {
           eval(handler.prelim) // assign values to $
         }
-        console.log({ $ })
+        // console.log({ $ }) // works
+        console.log('i0.0', ($ || {})['%I0.0'])
 
         // lookup
         const lookup = eval(handler.lookup)
-        console.log({ lookup })
+        // const lookup = ($, value) => ({ value: $[value].default })
+        console.log(lookup.toString()) // works
+
+        console.log('lookup($, i0.0)', lookup($, '%I0.0'))
 
         // inputs
-        for (const key of Object.keys(handler.inputs)) {
+        for (const key of Object.keys(handler.inputs) || []) {
           const id = deviceId + '-' + key
           const value = handler.inputs[key]
           console.log(`lookup value ${value} for id ${id}`)
-          const item = lookup($, value)
+          const item = lookup($, value) || {} //. ok?
+          console.log('got item', item)
           cache.set(id, item)
         }
 
         // subscribe
-        for (const subscription of handler.subscribe) {
+        for (const subscription of handler.subscribe || []) {
           const topic = subscription.topic.replace('${deviceId}', deviceId)
           console.log(`MQTT subscribe to ${topic}`)
           mqtt.subscribe(topic)
