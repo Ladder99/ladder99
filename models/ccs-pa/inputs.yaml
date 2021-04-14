@@ -1,5 +1,4 @@
 # inputs
-
 # this is parsed by the adapter plugin mqtt-json.js.
 
 handlers:
@@ -17,31 +16,32 @@ handlers:
 
   l99/${deviceId}/evt/status:
     # $ is a variable declared as `let $` before this code is executed
-    prelim: $ = payload
-    lookup: "($, value) => value.includes('$') ? value : $[value]"
+    prelim: "$ = payload; $.faultKeys=Object.keys(payload.faults);"
+    # lookup: "($, value) => value.includes('$') ? value : $[value]"
+    # lookup: "($, value) => value"
     inputs:
       # key-value pairs to set the cache.
       # each input's cache id will be {deviceId}-{key}, eg 'ccs-pa-001-status-connection'
-      # if no $ is in the value, uses $[value], else value.
-      status-connection: connection
-      status-build_no: build_no
-      status-state: state
-      status-program: program
-      status-step: step
-      status-utc_time: utc_time
-      status-cpu_time: cpu_time
-      status-faults: faults
-      status-has-no-faults: Object.keys($.faults).length === 0
-      status-has-faults: Object.keys($.faults).length > 0
-      status-has-soft-faults: Object.keys($.faults).some(f => f>='50')
-      status-has-hard-faults: Object.keys($.faults).some(f => f<'50')
-      status-has-fault-ten: Object.keys($.faults).some(f => f==='10')
-      status-has-tamp-fault: Object.keys($.faults).map(f=>['2','3','5'].includes(f)).some(bool=>bool)
-      status-has-feed-fault: Object.keys($.faults).map(f=>['1','11','12','13','14,'15'].includes(f)).some(bool=>bool)
-      status-has-feed-warning: Object.keys($.faults).map(f=>['50','51'].includes(f)).some(bool=>bool)
+      # $ is the message payload dictionary
+      status-connection: $.connection
+      status-build_no: $.build_no
+      status-state: $.state
+      status-program: $.program
+      status-step: $.step
+      status-utc_time: $.utc_time
+      status-cpu_time: $.cpu_time
+      status-faults: $.faults
+      status-has-no-faults: $.faultKeys.length === 0
+      status-has-faults: $.faultKeys.length > 0
+      status-has-soft-faults: $.faultKeys.some(f => f>='50')
+      status-has-hard-faults: $.faultKeys.some(f => f<'50')
+      status-has-fault-ten: $.faultKeys.some(f => f==='10')
+      status-has-tamp-fault: $.faultKeys.map(f=>['2','3','5'].includes(f)).some(bool=>bool)
+      status-has-feed-fault: $.faultKeys.map(f=>['1','11','12','13','14,'15'].includes(f)).some(bool=>bool)
+      status-has-feed-warning: $.faultKeys.map(f=>['50','51'].includes(f)).some(bool=>bool)
 
   l99/${deviceId}/evt/query: 
-    prelim: $ = {}; payload.forEach(item => $[item.keys[0]] = item)
+    prelim: "$ = {}; payload.forEach(item => $[item.keys[0]] = item)"
     lookup: "($, value) => $[value].default"
     inputs: &queryTable
       printer_ribbon_low: '%I0.0'
