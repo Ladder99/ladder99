@@ -118,5 +118,5 @@ topics:
   l99/${deviceId}/evt/read:
     # makes $ a dictionary keyed on the item addresses
     prelim: $ = {}; payload.forEach(item => $[item.address] = item)
-    lookup: '($, value) => ($[value] || {}).value'
+    lookup: '($, value) => ({ value: ($[value] || {}).value })'
     inputs: *queryInputs
