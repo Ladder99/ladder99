@@ -1,14 +1,14 @@
 # inputs
 # this is parsed by the adapter plugin mqtt-json.js.
 
-handlers:
-  connect:
-    subscribe:
-      - topic: l99/${deviceId}/evt/query
-    publish:
-      - topic: l99/${deviceId}/cmd/query
-        payload: '{}'
+onConnect:
+  subscribe:
+    - topic: l99/${deviceId}/evt/query
+  publish:
+    - topic: l99/${deviceId}/cmd/query
+      message: '{}'
 
+topics:
   l99/${deviceId}/evt/query:
     subscribe:
       - topic: l99/${deviceId}/evt/status

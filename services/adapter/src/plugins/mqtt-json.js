@@ -20,51 +20,59 @@ const aliases = {}
 /**
  * initialize the client plugin.
  * queries the device for address space definitions, subscribes to topics.
+ * inputs is the inputs.yaml file parsed to a js tree.
  */
 export function init({ url, cache, deviceId, inputs }) {
   console.log('init', { deviceId })
-
-  // get list of topics to subscribe to
-  const topics = Object.keys(inputs.topics).map(topic =>
-    topic.replace('${deviceId}', deviceId)
-  )
-  console.log('MQTT', { topics })
-
-  //. but order matters
 
   console.log(`MQTT connecting to broker on ${url}...`)
   const mqtt = libmqtt.connect(url)
 
   mqtt.on('connect', function onConnect() {
     console.log(`MQTT connected to broker on ${url}`)
-    // mqtt.on('message', onMessage)
+
+    console.log(`MQTT registering generic message handler`)
+    mqtt.on('message', onMessage)
+
     // ask for initial query message - handler at onQueryMessage
     // mqtt.subscribe(topics.receiveQuery)
     // console.log(`MQTT publishing initial message`)
-    // const { initialize } = inputs
-    // mqtt.publish(
-    //   initialize.topic.replace('${deviceId}', deviceId),
-    //   initialize.message
-    // )
+
+    console.log(`MQTT subscribing to topics...`)
+    const subscriptions = inputs.onConnect.subscribe
+    for (const subscription of subscriptions) {
+      const topic = subscription.topic.replace('${deviceId}', deviceId)
+      console.log(`MQTT subscribing to ${topic}`)
+      mqtt.subscribe(topic)
+    }
+
+    console.log(`MQTT publishing topics...`)
+    const publishings = inputs.onConnect.publish
+    for (const publishing of publishings) {
+      const topic = publishing.topic.replace('${deviceId}', deviceId)
+      console.log(`MQTT publishing to ${topic}`)
+      mqtt.publish(topic, publishing.message)
+    }
+
     console.log(`MQTT listening for messages...`)
   })
 
-  // // handle all incoming messages
-  // function onMessage(topic, buffer) {
-  //   console.log('MQTT onMessage', { topic })
-  //   const msg = unpack(topic, buffer)
-  //   const handlers = {
-  //     [topics.receiveQuery]: onQueryMessage,
-  //     [topics.receiveStatus]: onStatusMessage,
-  //     [topics.receiveRead]: onReadMessage,
-  //   }
-  //   const handler = handlers[topic]
-  //   if (handler) {
-  //     handler(msg)
-  //   } else {
-  //     console.log(`MQTT WARNING: no handler for topic`, topic)
-  //   }
-  // }
+  // handle all incoming messages
+  function onMessage(topic, buffer) {
+    console.log('MQTT onMessage', { topic })
+    const msg = unpack(topic, buffer)
+    // const handlers = {
+    //   [topics.receiveQuery]: onQueryMessage,
+    //   [topics.receiveStatus]: onStatusMessage,
+    //   [topics.receiveRead]: onReadMessage,
+    // }
+    // const handler = handlers[topic]
+    // if (handler) {
+    //   handler(msg)
+    // } else {
+    //   console.log(`MQTT WARNING: no handler for topic`, topic)
+    // }
+  }
 
   // // handle initial query message
   // function onQueryMessage(msg) {
