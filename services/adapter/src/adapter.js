@@ -139,6 +139,8 @@ function getOutputs({ outputTemplates, types, deviceId }) {
       value, //. getValue
       dependsOn,
       category: template.category, // needed for cache getShdr fn
+      type: template.type, // ditto
+      representation: template.representation, // ditto
     }
     return output
   })

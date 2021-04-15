@@ -128,9 +128,9 @@ outputs:
     category: EVENT
     type: MESSAGE
     # representation: DATA_SET
-    #. uses $
-    # value: Object.keys(<status-faults>).filter(key => key in [2,3,5]).map(key => key + ':' + $.faults[key].description).join(', ')
-    value: Object.entries(<status-faults>).filter(([key, fault]) => key in [2,3,5]).map(([key, fault]) => key + ':' + fault.description).join(', ')
+    # value: Object.entries(<status-faults>).filter(([key, fault]) => key in [2,3,5]).map(([key, fault]) => key + ':' + fault.description).join(', '))
+    # value: Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + '=' + fault.description.replaceAll(' ','')).join(' ')
+    value: "Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + ': ' + fault.description).join(', ')"
 
   - key: smart_tamp_part_detect
     category: EVENT
@@ -190,11 +190,10 @@ outputs:
   - key: feed_message
     category: EVENT
     type: MESSAGE
-    #.
-    # representation: DATA_SET
-    #. uses $
-    # value: Object.keys(<status-faults>).filter(key => key in [1,11,12,13,14,15,50,51]).map(key => key + '=' + $.faults[key].description).join(' ')
-    value: "Object.entries(<status-faults>).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
+    # representation: DATA_SET #. not available for agent xsl yet
+    # representation: VALUE #. nowork - stuck as dataset
+    #. nowork - blank ?
+    value: "Object.entries(<status-faults>).filter(([key,]) => [1,11,12,13,14,15,50,51].includes(Number(key))).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
 
   - key: feed_part_detect
     category: EVENT
