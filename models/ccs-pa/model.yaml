@@ -95,9 +95,9 @@ model:
             - product_sensor_one_debounce
 
         #compositions: []
-    #resources:
-    #  components:
-    #    personnel:
-    #      dataItems:
-    #        dataItem:
-    #          - operator
+    resources:
+      components:
+        personnel:
+          dataItems:
+            dataItem:
+              - operator
