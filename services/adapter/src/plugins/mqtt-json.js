@@ -4,6 +4,8 @@
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
+let cycleStart
+
 /**
  * initialize the client plugin.
  * queries the device for address space definitions, subscribes to topics.
@@ -99,7 +101,6 @@ export function init({ url, cache, deviceId, inputs }) {
 
         // check for step transitions to get timing info
         //. genericize this somehow, or let user write code
-        let cycleStart
         if (topic.includes('status')) {
           const step = payload.step
           if (step === 'Waiting') {
