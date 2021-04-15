@@ -24,8 +24,9 @@ handlers:
     initialize: 'payload.forEach(item => $[item.keys[0]] = item)'
     lookup: '($, part) => ({ value: ($[part] || {}).default })'
     # define key-part pairs, and save for later - read message uses same inputs.
-    # key defines the cache id: {deviceId}-{key}, eg 'ccs-pa-001-printer_ribbon_low'.
-    # part defines the part of the payload to get the value from, eg value = $['%I0.0']
+    # key defines the cache id - {deviceId}-{key}, eg id = 'ccs-pa-001-printer_ribbon_low'
+    # part defines the part of the payload to get, eg value = $['%I0.0']
+    # sets item = { value }, then calls cache.set(id, item)
     inputs: &queryInputs
       printer_ribbon_low: '%I0.0'
       printer_service_required: '%I0.1'
@@ -99,7 +100,7 @@ handlers:
       web_take_up_motor_anti_twitch_active: '%Z55.1'
 
   l99/${deviceId}/evt/status:
-    # makes $ the message payload dictionary and adds faultKeys
+    # make $ the message payload dictionary and adds faultKeys for quick lookups
     initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
     lookup: '($, calc) => ({ value: eval(calc) })'
     inputs:
@@ -121,7 +122,7 @@ handlers:
       status-has-feed-warning: $.faultKeys.map(f=>['50','51'].includes(f)).some(bool=>bool)
 
   l99/${deviceId}/evt/read:
-    # makes $ a dictionary keyed on the item addresses
+    # make $ a dictionary keyed on the item addresses
     initialize: 'payload.forEach(item => $[item.address] = item)'
     lookup: '($, field) => ({ value: ($[field] || {}).value })'
     inputs: *queryInputs

@@ -50,6 +50,8 @@ export function init({ url, cache, deviceId, inputs }) {
   function onMessage(msgTopic, msgBuffer) {
     console.log('MQTT got message on topic', msgTopic)
 
+    const receivedTime = new Date()
+
     // unpack the mqtt json payload, assuming it's a JSON string.
     // gets payload as variable - used by handler.initialize - don't delete - @ts-ignore
     const payload = JSON.parse(msgBuffer.toString())
@@ -87,9 +89,11 @@ export function init({ url, cache, deviceId, inputs }) {
         for (const [key, part] of inputs) {
           // use the lookup function to get item from payload, if there
           const item = lookup($, part)
+
           // if we have the part in the payload, add it to the cache
           if (item && item.value !== undefined) {
             const cacheId = deviceId + '-' + key // eg 'ccs-pa-001-fault_count'
+            item.receivedTime = receivedTime
             cache.set(cacheId, item) // save to the cache - may send shdr to tcp
           }
         }
