@@ -31,6 +31,7 @@ export class Cache {
    * @param {object} socket
    */
   addOutputs(outputs, socket) {
+    console.log(`cache.addOutputs - add ${outputs.length} outputs`)
     for (const output of outputs) {
       output.socket = socket // attach tcp socket to each output also
       for (const key of output.dependsOn) {
@@ -55,8 +56,8 @@ export class Cache {
     this._map.set(key, item)
     //.
     if (key === 'ccs-pa-001-fault_count') {
-      console.log('pokpok set', key, JSON.stringify(item).slice(0, 99))
-      console.log('pokpok', this._mapKeyToOutputs)
+      console.log(key, JSON.stringify(item).slice(0, 99))
+      console.log('mapKeyToOutputs (entire thing)', this._mapKeyToOutputs)
     }
     // get list of outputs associated with this key
     const outputs = this._mapKeyToOutputs[key] || []

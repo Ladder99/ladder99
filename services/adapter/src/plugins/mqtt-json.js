@@ -23,7 +23,7 @@ export function init({ url, cache, deviceId, inputs }) {
     console.log(`MQTT connected to broker on ${url}`)
 
     // register message handler
-    console.log(`MQTT registering generic message handler`)
+    console.log(`MQTT registering message handler`)
     mqtt.on('message', onMessage)
 
     // subscribe to any topics defined
@@ -103,10 +103,11 @@ export function init({ url, cache, deviceId, inputs }) {
 
         // check for step transitions to get timing info
         //. genericize this, or let user write code
+        //. use message time, not new Date()
         if (topic.includes('status')) {
           const step = payload.step
           if (step === 'Waiting') {
-            //
+            // nothing
           } else if (step === 'Cycle_Start') {
             cycleStart = new Date().getTime() // ms
           } else if (step === 'Cycle_Finish') {
