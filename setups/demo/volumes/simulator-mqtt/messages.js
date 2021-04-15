@@ -350,7 +350,7 @@ module.exports = [
         keys: ['%M55.5', 'metric.printer_time'],
         remote_allow: false,
         retain: false,
-        default: 0,
+        default: 25,
         rate_limit: 50,
       },
       {

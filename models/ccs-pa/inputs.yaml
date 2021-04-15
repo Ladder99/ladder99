@@ -66,7 +66,8 @@ handlers:
       fault_count: '%M55.2'
       idle_time: '%M55.3'
       transport_time: '%M55.4'
-      printer_time: '%M55.5'
+      # printer_time: '%M55.5'
+      print_time: '%M55.5' #. is this right? changed from printer_time
       labels_applied: '%M55.6'
       cylinder_travel_time: '%M55.7'
       cylinder_home_disengage_time: '%M55.8'

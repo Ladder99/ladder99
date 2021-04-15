@@ -94,7 +94,8 @@ function getShdr(cache, output) {
     const nativeCode = 'nativeCode'
     const nativeSeverity = 'nativeSeverity'
     const qualifier = 'qualifier'
-    const message = 'condition message'
+    // const message = 'condition message'
+    const message = value + ' (msg here)'
     shdr = `${timestamp}|${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
   } else {
     console.log(`warning: unknown category '${category}'`)
