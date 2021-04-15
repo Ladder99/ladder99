@@ -9,7 +9,7 @@ connect:
     - topic: l99/${deviceId}/cmd/query
       message: '{}'
 
-topics:
+handlers:
   l99/${deviceId}/evt/query:
     unsubscribe:
       - topic: l99/${deviceId}/evt/query

@@ -94,6 +94,7 @@ export function init({ url, cache, deviceId, inputs }) {
   function onStatusMessage(msg) {
     console.log('MQTT onStatusMessage')
     console.log({ msg })
+
     // add parts to cache
     const parts = `connection,state,program,step,faults,cpu_time,utc_time,build_no,_ts`.split(
       ','
@@ -103,6 +104,7 @@ export function init({ url, cache, deviceId, inputs }) {
       const item = { value: msg.payload[part] }
       cache.set(key, item) // note: this will cause cache to publish shdr
     }
+
     // check for step transitions to get timing info
     //. will want to genericize this somehow, or let user write code
     const step = msg.payload.step
