@@ -54,6 +54,7 @@ module.exports = [
           type: 'choice',
           value: [0, 1],
         },
+        default: 0, //. set this
       },
       {
         keys: ['%I0.7', 'IN8', 'tamp.head_up', 'J1.11', 'SX1.P7'],

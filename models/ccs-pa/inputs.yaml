@@ -113,6 +113,7 @@ handlers:
       status-utc_time: $.utc_time
       status-cpu_time: $.cpu_time
       status-faults: $.faults
+      status-cycle_time: 5 #. fake - need fsm?
       status-has-no-faults: $.faultKeys.length === 0
       status-has-faults: $.faultKeys.length > 0
       status-has-soft-faults: $.faultKeys.some(f => f>='50')
