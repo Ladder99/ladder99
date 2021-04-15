@@ -64,6 +64,7 @@ export function init({ url, cache, deviceId, inputs }) {
     handlers.forEach(([topic, handler]) => {
       topic = replaceDeviceId(topic)
 
+      // eg msgTopic => 'l99/ccs-pa-001/evt/query'
       if (topic === msgTopic) {
         // unsubscribe from topics as needed
         for (const entry of handler.unsubscribe || []) {
@@ -93,14 +94,15 @@ export function init({ url, cache, deviceId, inputs }) {
           const item = lookup($, part)
           // if we have the part in the payload, add it to the cache
           if (item && item.value !== undefined) {
+            console.log(`MQTT have part '${part}' in payload - set cache`)
             const cacheId = deviceId + '-' + key // eg 'ccs-pa-001-fault_count'
-            item.receivedTime = receivedTime
+            // item.receivedTime = receivedTime
             cache.set(cacheId, item) // save to the cache - may send shdr to tcp
           }
         }
 
         // check for step transitions to get timing info
-        //. genericize this somehow, or let user write code
+        //. genericize this, or let user write code
         if (topic.includes('status')) {
           const step = payload.step
           if (step === 'Waiting') {
