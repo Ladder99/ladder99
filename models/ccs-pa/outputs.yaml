@@ -116,7 +116,6 @@ outputs:
   - key: life_count
     category: SAMPLE
     type: COUNT
-    # value: <%M55.0>
     value: <life_count>
 
   - key: end_eff_cond
@@ -129,10 +128,9 @@ outputs:
     category: EVENT
     type: MESSAGE
     # representation: DATA_SET
-    #. $
-    # value: |
-    #   const str = Object.keys(<status-faults>).filter(key => key in [2,3,5]).map(key => key + ':' + $.faults[key].description).join(', ')
-    #   return str
+    #. uses $
+    # value: Object.keys(<status-faults>).filter(key => key in [2,3,5]).map(key => key + ':' + $.faults[key].description).join(', ')
+    value: Object.entries(<status-faults>).filter(([key, fault]) => key in [2,3,5]).map(([key, fault]) => key + ':' + fault.description).join(', ')
 
   - key: smart_tamp_part_detect
     category: EVENT
