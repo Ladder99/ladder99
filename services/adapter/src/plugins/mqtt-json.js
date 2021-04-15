@@ -89,12 +89,29 @@ export function init({ url, cache, deviceId, inputs }) {
         for (const [key, part] of inputs) {
           // use the lookup function to get item from payload, if there
           const item = lookup($, part)
-
           // if we have the part in the payload, add it to the cache
           if (item && item.value !== undefined) {
             const cacheId = deviceId + '-' + key // eg 'ccs-pa-001-fault_count'
             item.receivedTime = receivedTime
             cache.set(cacheId, item) // save to the cache - may send shdr to tcp
+          }
+        }
+
+        // check for step transitions to get timing info
+        //. genericize this somehow, or let user write code
+        let cycleStart
+        if (topic.includes('status')) {
+          const step = payload.step
+          if (step === 'Waiting') {
+            //
+          } else if (step === 'Cycle_Start') {
+            cycleStart = new Date().getTime() // ms
+          } else if (step === 'Cycle_Finish') {
+            if (cycleStart) {
+              const cycleTime = (new Date().getTime() - cycleStart) / 1000 // sec
+              cache.set(`${deviceId}-status-cycle_time`, { value: cycleTime }) // sec
+              cycleStart = null
+            }
           }
         }
 
