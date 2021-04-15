@@ -24,9 +24,10 @@ const cache = new Cache()
 for (const device of devices) {
   console.log({ device })
   const deviceId = device.id
-  const { sources } = device
 
+  // each device can have multiple sources.
   // iterate over sources, load plugin for that source, call init on it.
+  const { sources } = device
   for (const source of sources) {
     console.log({ source })
     const { model, protocol, url } = source
@@ -69,6 +70,8 @@ for (const device of devices) {
     console.log('TCP new client connection from', remoteAddress)
 
     // add outputs for each source to cache
+    // this needs to happen BEFORE initializing plugins,
+    // because this sets the list of cache id dependencies.
     for (const source of sources) {
       const { outputs } = source
       cache.addOutputs(outputs, socket)
