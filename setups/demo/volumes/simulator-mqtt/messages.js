@@ -530,7 +530,7 @@ module.exports = [
       { keys: ['%M56.16'], default: 0 },
       { keys: ['%M56.17'], default: 0 },
       { keys: ['%M56.18'], default: 0 },
-      { keys: ['%M56.19'], default: 0 },
+      { keys: ['%M56.19'], default: 1 }, // enable smart tamp
       { keys: ['%M56.20'], default: 0 },
       { keys: ['%M56.21'], default: 0 },
       { keys: ['%M56.22'], default: 0 },
@@ -582,9 +582,9 @@ module.exports = [
       program: 'pgm0',
       step: 'Cycle_Start',
       faults: {
-        1: { description: 'hard fault', hard: true, count: 1 },
-        10: { description: 'another hard fault', hard: true, count: 1 }, // estop
-        50: { description: 'soft fault', hard: false, count: 1 },
+        2: { description: 'head up hard fault', hard: true, count: 1 },
+        10: { description: 'e-stop hard fault', hard: true, count: 1 }, // estop
+        50: { description: 'low ribbon soft fault', hard: false, count: 1 },
       },
       cpu_time: 691322.50763624,
       utc_time: 1.6098097061826477e9,

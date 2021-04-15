@@ -135,6 +135,7 @@ outputs:
   - key: smart_tamp_part_detect
     category: EVENT
     type: PART_DETECT
+    #. tamp_part_detect not in inputs.yaml, so this will return undefined
     value: "<smart_tamp_enabled> ? types.PART_DETECT[<tamp_part_detect>] : 'UNAVAILABLE'"
 
   - key: tamp_air_assist
