@@ -29,17 +29,17 @@ export function init({ url, cache, deviceId, inputs }) {
     mqtt.on('message', onMessage)
 
     // subscribe to any topics defined
-    for (const subscription of inputs.connect.subscribe) {
-      const topic = subscription.topic.replace('${deviceId}', deviceId)
+    for (const entry of inputs.connect.subscribe) {
+      const topic = replaceDeviceId(entry.topic)
       console.log(`MQTT subscribing to ${topic}`)
       mqtt.subscribe(topic)
     }
 
     // publish to any topics defined
-    for (const publishing of inputs.connect.publish) {
-      const topic = publishing.topic.replace('${deviceId}', deviceId)
+    for (const entry of inputs.connect.publish) {
+      const topic = replaceDeviceId(entry.topic)
       console.log(`MQTT publishing to ${topic}`)
-      mqtt.publish(topic, publishing.message)
+      mqtt.publish(topic, entry.message)
     }
 
     console.log(`MQTT listening for messages...`)
@@ -61,7 +61,8 @@ export function init({ url, cache, deviceId, inputs }) {
     const payload = msg.payload
 
     // iterate over message handlers
-    const handlers = Object.entries(inputs.handlers) // array of [topic, handler]
+    // handlers is array of [topic, handler]
+    const handlers = Object.entries(inputs.handlers) || []
     handlers.forEach(([topic, handler]) => {
       topic = replaceDeviceId(topic)
 
@@ -76,27 +77,32 @@ export function init({ url, cache, deviceId, inputs }) {
         // initialize as needed
         // eg assign payload values to a dictionary $, for fast lookups.
         // eg initialize: 'payload.forEach(item => $[item.keys[0]] = item)'
+        console.log(`MQTT initialize handler`)
         let $ = {} // a variable representing payload data
         eval(handler.initialize)
 
         // define lookup function
-        // eg lookup: '($, field) => ({ value: ($[field] || {}).default })'
+        // eg lookup: '($, part) => ({ value: ($[part] || {}).default })'
+        console.log(`MQTT define lookup function`)
         const lookup = eval(handler.lookup) // get the function itself
 
-        // iterate over inputs - if we have it in the payload, add it to the cache
-        const inputs = Object.entries(handler.inputs) || [] // array of [key, part]
+        // iterate over inputs - if we have it in the payload, add it to the cache.
+        // inputs is array of [key, part], eg ['fault_count', '%M55.2'].
+        console.log(`MQTT iterate over inputs`)
+        const inputs = Object.entries(handler.inputs) || []
         for (const [key, part] of inputs) {
-          // const field = handler.inputs[key] // eg '%M55.2'
-          const id = deviceId + '-' + key // eg 'ccs-pa-001-fault_count'
-          const item = lookup($, part) // evaluate the lookup function
+          // use the lookup function to get item from payload, if there
+          const item = lookup($, part)
+          // if we have the part in the payload, add it to the cache
           if (item && item.value !== undefined) {
-            cache.set(id, item) // save to the cache - may send shdr to tcp
+            const cacheId = deviceId + '-' + key // eg 'ccs-pa-001-fault_count'
+            cache.set(cacheId, item) // save to the cache - may send shdr to tcp
           }
         }
 
-        // subscribe
-        for (const subscription of handler.subscribe || []) {
-          const topic = subscription.topic.replace('${deviceId}', deviceId)
+        // subscribe to any topics
+        for (const entry of handler.subscribe || []) {
+          const topic = replaceDeviceId(entry.topic)
           console.log(`MQTT subscribe to ${topic}`)
           mqtt.subscribe(topic)
         }
