@@ -53,6 +53,11 @@ export class Cache {
     console.log('set', key, JSON.stringify(item).slice(0, 99))
     // update the cache item
     this._map.set(key, item)
+    //.
+    if (key === 'ccs-pa-001-fault_count') {
+      console.log('pokpok set', key, JSON.stringify(item).slice(0, 99))
+      console.log('pokpok', this._mapKeyToOutputs)
+    }
     // get list of outputs associated with this key
     const outputs = this._mapKeyToOutputs[key] || []
     // calculate outputs and send dependent shdr values to tcp

@@ -84,7 +84,7 @@ export function init({ url, cache, deviceId, inputs }) {
           const field = handler.inputs[key] // eg '%M55.2'
           const item = lookup($, field) // evaluate the lookup function
           if (item && item.value !== undefined) {
-            cache.set(id, item)
+            cache.set(id, item) // save to the cache - may send shdr to tcp
           }
         }
 
