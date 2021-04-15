@@ -55,26 +55,26 @@ services:
       options:
         max-size: '1m'
 
-  application:
-    container_name: application
-    image: node:latest
-    user: node
-    working_dir: /home/node/app
-    command: npm start
-    environment:
-      - URL=http://agent:5000/sample
-      - INTERVAL=2000
-    depends_on:
-      agent:
-        condition: service_started
-    networks:
-      - ladder99
-    volumes:
-      - ../../../services/application:/home/node/app
-    #   - ../volumes/application:/etc/application
-    logging:
-      options:
-        max-size: '1m'
+  # application:
+  #   container_name: application
+  #   image: node:latest
+  #   user: node
+  #   working_dir: /home/node/app
+  #   command: npm start
+  #   environment:
+  #     - URL=http://agent:5000/sample
+  #     - INTERVAL=2000
+  #   depends_on:
+  #     agent:
+  #       condition: service_started
+  #   networks:
+  #     - ladder99
+  #   volumes:
+  #     - ../../../services/application:/home/node/app
+  #   #   - ../volumes/application:/etc/application
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
   simulator-mqtt:
     container_name: simulator-mqtt
@@ -88,11 +88,13 @@ services:
       - DEVICE_ID=ccs-pa-001
       - MESSAGES_FILE=/etc/simulator-mqtt/messages.js
       - MESSAGE_DELAY=1000
-      - LOOP=true
+      # - LOOP=true
       - LOOP_DELAY=3000
     depends_on:
-      application:
+      agent:
         condition: service_started
+      # application:
+      #   condition: service_started
     networks:
       - ladder99
     volumes:
@@ -111,8 +113,10 @@ services:
     volumes:
       - ../../../services/simulator-opc:/home/node/app
     depends_on:
-      application:
+      agent:
         condition: service_started
+    #   application:
+    #     condition: service_started
     networks:
       - ladder99
     logging:
