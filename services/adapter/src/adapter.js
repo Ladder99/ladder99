@@ -97,16 +97,18 @@ for (const device of devices) {
 
 /**
  * import the outputTemplate string defs and do replacements.
- * note: types IS used - it's in the closure formed by eval(str).
  * @param {{outputTemplates: array, types: object, deviceId: string}} arg
  * @returns {{key: string, value: function, dependsOn: string[]}}[] - array of output objs
  */
+// note: types IS used - it's in the closure formed by eval(str)
 function getOutputs({ outputTemplates, types, deviceId }) {
+  console.log('getOutputs - iterate over output templates')
   const outputs = outputTemplates.map(template => {
-    let valueStr = template.value || ''
     // replace all occurrences of <key> with `cache.get('...').value`.
+    // eg <status_faults> => cache.get(`${deviceId}-status_faults`).value
     // note: .*? is a non-greedy match, so doesn't eat other occurrences also.
     const regexp1 = /(<(.*?)>)/gm
+    let valueStr = template.value || ''
     valueStr = valueStr.replaceAll(
       regexp1,
       `cache.get('${deviceId}-$2').value` // $2 is the matched substring
@@ -114,11 +116,13 @@ function getOutputs({ outputTemplates, types, deviceId }) {
     if (valueStr.includes('\n')) {
       valueStr = '{\n' + valueStr + '\n}'
     }
-    console.log('new value', valueStr)
+    console.log(`${template.key} new value: "${valueStr}"`)
+
+    // evaluate the value function
     const value = cache => eval(valueStr)
 
-    // get dependsOn AFTER transforms, because user might have
-    // specified a cache get manually.
+    // get list of cache ids this calculation depends on.
+    // get AFTER transforms, because user could specify a cache get manually.
     const dependsOn = []
     const regexp2 = /cache\.get\('(.*?)'\).value/gm
     let match
@@ -126,15 +130,16 @@ function getOutputs({ outputTemplates, types, deviceId }) {
       const key = match[1]
       dependsOn.push(key)
     }
-    console.log({ dependsOn })
+    // console.log({ dependsOn })
 
+    // get output object
     const output = {
-      category: template.category, // needed for cache getShdr fn
-      dependsOn,
       //. assume each starts with deviceId?
       //. call this id, as it's such in the devices.xml?
       key: `${deviceId}-${template.key}`,
       value, //. getValue
+      dependsOn,
+      category: template.category, // needed for cache getShdr fn
     }
     return output
   })
