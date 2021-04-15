@@ -79,7 +79,7 @@
           <Components>
             <Personnel>
               <DataItems>
-                <DataItem id="operator" type="UNKNOWN" category="UNKNOWN"/>
+                <DataItem id="operator" type="USER" subType="OPERATOR" category="EVENT"/>
               </DataItems>
             </Personnel>
           </Components>
