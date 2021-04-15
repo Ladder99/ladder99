@@ -20,7 +20,7 @@ console.log(`----------------------------------------------------------------`)
 // define cache shared across devices and sources
 const cache = new Cache()
 
-// iterate over device definitions
+// iterate over device definitions from devices.yaml
 for (const device of devices) {
   console.log({ device })
   const deviceId = device.id
@@ -41,10 +41,6 @@ for (const device of devices) {
     const pathInputs = `/home/node/models/${model}/inputs.yaml`
     const inputs = importYaml(pathInputs)
 
-    // initialize plugin
-    console.log(`Adapter initializing plugin...`)
-    plugin.init({ url, cache, deviceId, inputs })
-
     // import outputs
     const pathOutputs = `/home/node/models/${model}/outputs.yaml`
     const outputTemplates = importYaml(pathOutputs).outputs
@@ -56,6 +52,12 @@ for (const device of devices) {
     // compile outputs from yaml strings and save to source
     const outputs = getOutputs({ outputTemplates, types, deviceId })
     source.outputs = outputs
+
+    // initialize plugin
+    // note: this must be done AFTER getOutputs, as that is where the
+    // dependsOn values are set, and this needs those.
+    console.log(`Adapter initializing plugin...`)
+    plugin.init({ url, cache, deviceId, inputs })
   }
 
   console.log(`TCP creating server for agent...`)
