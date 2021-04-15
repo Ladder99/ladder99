@@ -366,6 +366,9 @@ module.exports = [
         default: 0,
         rate_limit: 500,
       },
+      { keys: ['%M55.8'], default: 0 },
+      { keys: ['%M55.9'], default: 0 },
+      { keys: ['%M55.10'], default: 0 },
 
       {
         keys: ['%M56.0', 'tamp.vacuum.delay'],
@@ -523,6 +526,18 @@ module.exports = [
           value: ['apply_before_feed', 'apply_after_feed'],
         },
       },
+
+      { keys: ['%M56.16'], default: 0 },
+      { keys: ['%M56.17'], default: 0 },
+      { keys: ['%M56.18'], default: 0 },
+      { keys: ['%M56.19'], default: 0 },
+      { keys: ['%M56.20'], default: 0 },
+      { keys: ['%M56.21'], default: 0 },
+      { keys: ['%M56.22'], default: 0 },
+      { keys: ['%M56.23'], default: 0 },
+
+      { keys: ['%Z55.0'], default: 0 },
+      { keys: ['%Z55.1'], default: 0 },
     ],
   },
 
