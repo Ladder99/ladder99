@@ -548,7 +548,11 @@ module.exports = [
       state: 400, // 200 stopped, 400 running
       program: 'pgm0',
       step: 'Waiting',
-      faults: {},
+      faults: {
+        2: { description: 'head up hard fault', hard: true, count: 1 },
+        10: { description: 'e-stop hard fault', hard: true, count: 1 }, // estop
+        50: { description: 'low ribbon soft fault', hard: false, count: 1 },
+      },
       cpu_time: 691322.50763624,
       utc_time: 1.6098097061826477e9,
       build_no: '1.3.0.3',
@@ -582,8 +586,6 @@ module.exports = [
       program: 'pgm0',
       step: 'Cycle_Start',
       faults: {
-        2: { description: 'head up hard fault', hard: true, count: 1 },
-        10: { description: 'e-stop hard fault', hard: true, count: 1 }, // estop
         50: { description: 'low ribbon soft fault', hard: false, count: 1 },
       },
       cpu_time: 691322.50763624,

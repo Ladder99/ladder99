@@ -117,9 +117,9 @@ handlers:
       status-has-soft-faults: $.faultKeys.some(f => f>='50')
       status-has-hard-faults: $.faultKeys.some(f => f<'50')
       status-has-fault-ten: $.faultKeys.some(f => f==='10')
-      status-has-tamp-fault: $.faultKeys.map(f=>['2','3','5'].includes(f)).some(bool=>bool)
-      status-has-feed-fault: $.faultKeys.map(f=>['1','11','12','13','14','15'].includes(f)).some(bool=>bool)
-      status-has-feed-warning: $.faultKeys.map(f=>['50','51'].includes(f)).some(bool=>bool)
+      status-has-tamp-fault: $.faultKeys.some(f=>['2','3','5'].includes(f))
+      status-has-feed-fault: $.faultKeys.some(f=>['1','11','12','13','14','15'].includes(f))
+      status-has-feed-warning: $.faultKeys.some(f=>['50','51'].includes(f))
 
   l99/${deviceId}/evt/read:
     # make $ a dictionary keyed on the item addresses
