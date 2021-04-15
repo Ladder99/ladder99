@@ -18,11 +18,13 @@ handlers:
     subscribe:
       - topic: l99/${deviceId}/evt/status
       - topic: l99/${deviceId}/evt/read
+
     # $ is a way to do quick lookups on the payload.
     # it's a variable declared as `let $ = {}` before this code is executed.
     #. this complexity should be hidden from the user in the plugin code somehow.
     initialize: 'payload.forEach(item => $[item.keys[0]] = item)'
     lookup: '($, part) => ({ value: ($[part] || {}).default })'
+
     # define key-part pairs, and save for later - read message uses same inputs.
     # key defines the cache id - {deviceId}-{key}, eg id = 'ccs-pa-001-printer_ribbon_low'
     # part defines the part of the payload to get, eg value = $['%I0.0']

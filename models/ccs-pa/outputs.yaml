@@ -54,13 +54,11 @@ outputs:
   - key: func_mode
     category: EVENT
     type: FUNCTIONAL_MODE
-    # value: types.FUNCTIONAL_MODE[<status-has-faults>]
     value: "<status-has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
 
   - key: e_stop
     category: EVENT
     type: EMERGENCY_STOP
-    # value: types.EMERGENCY_STOP[<status-has-fault-ten>]
     value: "<status-has-fault-ten> ? 'TRIGGERED' : 'ARMED'"
 
   - key: state
@@ -121,14 +119,12 @@ outputs:
   - key: end_eff_cond
     category: CONDITION
     type: SYSTEM
-    # value: types.CONDITION_TRIPLE[[<status-has-tamp-fault>, false, true].indexOf(true)]
     value: "<status-has-tamp-fault> ? 'FAULT' : 'NORMAL'"
 
   - key: end_eff_message
     category: EVENT
     type: MESSAGE
     # representation: DATA_SET
-    # value: Object.entries(<status-faults>).filter(([key, fault]) => key in [2,3,5]).map(([key, fault]) => key + ':' + fault.description).join(', '))
     # value: Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + '=' + fault.description.replaceAll(' ','')).join(' ')
     value: "Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + ': ' + fault.description).join(', ')"
 
