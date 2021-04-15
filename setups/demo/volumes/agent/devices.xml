@@ -79,7 +79,7 @@
           <Components>
             <Personnel>
               <DataItems>
-                <DataItem id="operator" type="USER" subType="OPERATOR" category="EVENT"/>
+                <DataItem id="ccs-pa-001-operator" type="USER" subType="OPERATOR" category="EVENT"/>
               </DataItems>
             </Personnel>
           </Components>
