@@ -2,6 +2,7 @@
 # this is parsed by the adapter plugin mqtt-json.js.
 # handles mqtt messages, writes values to the cache.
 
+# define connect handler
 connect:
   subscribe:
     - topic: l99/${deviceId}/evt/query
@@ -9,6 +10,7 @@ connect:
     - topic: l99/${deviceId}/cmd/query
       message: '{}'
 
+# define message topic handlers
 handlers:
   l99/${deviceId}/evt/query:
     unsubscribe:
@@ -16,12 +18,15 @@ handlers:
     subscribe:
       - topic: l99/${deviceId}/evt/status
       - topic: l99/${deviceId}/evt/read
-    # $ is a variable declared as `let $ = {}` before this code is executed
-    prelim: 'payload.forEach(item => $[item.keys[0]] = item)'
-    lookup: '($, field) => ({ value: ($[field] || {}).default })'
+    # $ is a way to do quick lookups on the payload.
+    # it's a variable declared as `let $ = {}` before this code is executed.
+    #. this complexity should be hidden from the user in the plugin code somehow.
+    initialize: 'payload.forEach(item => $[item.keys[0]] = item)'
+    lookup: '($, part) => ({ value: ($[part] || {}).default })'
+    # define key-part pairs, and save for later - read message uses same inputs.
+    # key defines the cache id: {deviceId}-{key}, eg 'ccs-pa-001-printer_ribbon_low'.
+    # part defines the part of the payload to get the value from, eg value = $['%I0.0']
     inputs: &queryInputs
-      # key-value pairs to set the cache.
-      # each input's cache id will be {deviceId}-{key}, eg 'ccs-pa-001-printer_ribbon_low'
       printer_ribbon_low: '%I0.0'
       printer_service_required: '%I0.1'
       printer_print_end: '%I0.2'
@@ -95,7 +100,7 @@ handlers:
 
   l99/${deviceId}/evt/status:
     # makes $ the message payload dictionary and adds faultKeys
-    prelim: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
+    initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
     lookup: '($, calc) => ({ value: eval(calc) })'
     inputs:
       status-connection: $.connection
@@ -117,6 +122,6 @@ handlers:
 
   l99/${deviceId}/evt/read:
     # makes $ a dictionary keyed on the item addresses
-    prelim: 'payload.forEach(item => $[item.address] = item)'
+    initialize: 'payload.forEach(item => $[item.address] = item)'
     lookup: '($, field) => ({ value: ($[field] || {}).value })'
     inputs: *queryInputs

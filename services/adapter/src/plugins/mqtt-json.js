@@ -73,24 +73,22 @@ export function init({ url, cache, deviceId, inputs }) {
           mqtt.unsubscribe(topic)
         }
 
-        // initialize
-        // eg assign payload values to $
-        // eg prelim: 'payload.forEach(item => $[item.keys[0]] = item)'
+        // initialize as needed
+        // eg assign payload values to a dictionary $, for fast lookups.
+        // eg initialize: 'payload.forEach(item => $[item.keys[0]] = item)'
         let $ = {} // a variable representing payload data
-        if (handler.prelim) {
-          eval(handler.prelim)
-        }
+        eval(handler.initialize)
 
-        // lookup
+        // define lookup function
         // eg lookup: '($, field) => ({ value: ($[field] || {}).default })'
         const lookup = eval(handler.lookup) // get the function itself
-        console.log(lookup.toString())
 
-        // inputs
-        for (const key of Object.keys(handler.inputs) || []) {
+        // iterate over inputs - if we have it in the payload, add it to the cache
+        const inputs = Object.entries(handler.inputs) || [] // array of [key, part]
+        for (const [key, part] of inputs) {
+          // const field = handler.inputs[key] // eg '%M55.2'
           const id = deviceId + '-' + key // eg 'ccs-pa-001-fault_count'
-          const field = handler.inputs[key] // eg '%M55.2'
-          const item = lookup($, field) // evaluate the lookup function
+          const item = lookup($, part) // evaluate the lookup function
           if (item && item.value !== undefined) {
             cache.set(id, item) // save to the cache - may send shdr to tcp
           }
