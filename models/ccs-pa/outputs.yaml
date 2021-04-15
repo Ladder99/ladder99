@@ -189,11 +189,11 @@ outputs:
   - key: feed_message
     category: EVENT
     type: MESSAGE
-    representation: DATA_SET
+    #.
+    # representation: DATA_SET
     #. uses $
-    # value: |
-    #   const str = Object.keys(<status-faults>).filter(key => key in [1,11,12,13,14,15,50,51]).map(key => key + '=' + $.faults[key].description).join(' ')
-    #   return str
+    # value: Object.keys(<status-faults>).filter(key => key in [1,11,12,13,14,15,50,51]).map(key => key + '=' + $.faults[key].description).join(' ')
+    value: "Object.entries(<status-faults>).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
 
   - key: feed_part_detect
     category: EVENT
