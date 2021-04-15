@@ -4,10 +4,6 @@
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
-//. this might be useful
-// map from aliases to items, e.g. "ccs-pa-001-IN10" -> { address: "%I0.9", ... }
-// const aliases = {}
-
 /**
  * initialize the client plugin.
  * queries the device for address space definitions, subscribes to topics.
@@ -47,22 +43,20 @@ export function init({ url, cache, deviceId, inputs }) {
 
   /**
    * handle all incoming messages.
-   * eg for ccs-pa, will have query, status, and read messages.
-   * @param {string} msgTopic - the mqtt topic eg 'l99/ccs-pa-001/evt/query
-   * @param {array} msgBuffer - an array of bytes (we assume to be a json string)
+   * eg for ccs-pa, could have query, status, and read messages.
+   * @param {string} msgTopic - mqtt topic, eg 'l99/ccs-pa-001/evt/query'
+   * @param {array} msgBuffer - array of bytes (assumed to be a json string)
    */
   function onMessage(msgTopic, msgBuffer) {
     console.log('MQTT got message on topic', msgTopic)
 
-    // unpack the mqtt json payload - get { topic, payload, receivedTime }
-    const msg = unpack(msgTopic, msgBuffer)
+    // unpack the mqtt json payload, assuming it's a JSON string.
+    // gets payload as variable - used by handler.initialize - don't delete - @ts-ignore
+    const payload = JSON.parse(msgBuffer.toString())
 
-    // get payload as var - used by handler.initialize - don't delete - @ts-ignore
-    const payload = msg.payload
-
-    // iterate over message handlers
-    // handlers is array of [topic, handler]
+    // iterate over message handlers - handlers is an array of [topic, handler].
     const handlers = Object.entries(inputs.handlers) || []
+    let msgHandled = false
     handlers.forEach(([topic, handler]) => {
       topic = replaceDeviceId(topic)
 
@@ -74,21 +68,21 @@ export function init({ url, cache, deviceId, inputs }) {
           mqtt.unsubscribe(topic)
         }
 
-        // initialize as needed
+        // initialize handler
+        console.log(`MQTT initialize handler`)
         // eg assign payload values to a dictionary $, for fast lookups.
         // eg initialize: 'payload.forEach(item => $[item.keys[0]] = item)'
-        console.log(`MQTT initialize handler`)
         let $ = {} // a variable representing payload data
         eval(handler.initialize)
 
         // define lookup function
-        // eg lookup: '($, part) => ({ value: ($[part] || {}).default })'
         console.log(`MQTT define lookup function`)
+        // eg lookup: '($, part) => ({ value: ($[part] || {}).default })'
         const lookup = eval(handler.lookup) // get the function itself
 
-        // iterate over inputs - if we have it in the payload, add it to the cache.
-        // inputs is array of [key, part], eg ['fault_count', '%M55.2'].
+        // iterate over inputs - if part is in the payload, add it to the cache.
         console.log(`MQTT iterate over inputs`)
+        // inputs is array of [key, part], eg ['fault_count', '%M55.2'].
         const inputs = Object.entries(handler.inputs) || []
         for (const [key, part] of inputs) {
           // use the lookup function to get item from payload, if there
@@ -106,31 +100,17 @@ export function init({ url, cache, deviceId, inputs }) {
           console.log(`MQTT subscribe to ${topic}`)
           mqtt.subscribe(topic)
         }
+
+        msgHandled = true
       }
     })
 
-    // const handler = handlers[topic]
-    // if (handler) {
-    //   handler(msg)
-    // } else {
-    //   console.log(`MQTT WARNING: no handler for topic`, topic)
-    // }
+    if (!msgHandled) {
+      console.log(`MQTT WARNING: no handler for topic`, msgTopic)
+    }
   }
 
   function replaceDeviceId(str) {
     return str.replace('${deviceId}', deviceId)
   }
-}
-
-/**
- * unpack a message buffer and append some metadata.
- * @param {string} topic
- * @param {object} buffer
- * @returns {{topic:string, payload:object, receivedTime:Date}}
- */
-function unpack(topic, buffer) {
-  const payload = JSON.parse(buffer.toString())
-  const receivedTime = new Date()
-  const msg = { topic, payload, receivedTime }
-  return msg
 }
