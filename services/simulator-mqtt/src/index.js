@@ -26,7 +26,7 @@ const mqtt = mqttlib.connect(config)
 
 mqtt.on('connect', async function onConnect() {
   console.log(`Publishing messages...`)
-  while (loop) {
+  do {
     for (const message of messages) {
       const topic = message.topic.replace('${deviceId}', deviceId)
       const payload = JSON.stringify(message.json)
@@ -35,7 +35,7 @@ mqtt.on('connect', async function onConnect() {
       await new Promise(resolve => setTimeout(resolve, messageDelay))
     }
     await new Promise(resolve => setTimeout(resolve, loopDelay))
-  }
+  } while (loop)
   console.log(`Closing MQTT connection...`)
   mqtt.end()
 })
