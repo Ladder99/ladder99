@@ -28,38 +28,6 @@ for (const device of devices) {
   // each device can have multiple sources.
   // iterate over sources, load plugin for that source, call init on it.
   const { sources } = device
-  for (const source of sources) {
-    console.log({ source })
-    const { model, protocol, url } = source
-
-    // import protocol plugin
-    const pathProtocol = `./plugins/${protocol}.js` // eg './plugins/mqtt-ccs.js' - must start with ./
-    console.log(`Adapter importing plugin code: ${pathProtocol}...`)
-    // @ts-ignore top level await okay
-    const plugin = await import(pathProtocol)
-
-    // import inputs
-    const pathInputs = `/home/node/models/${model}/inputs.yaml`
-    const inputs = importYaml(pathInputs)
-
-    // import outputs
-    const pathOutputs = `/home/node/models/${model}/outputs.yaml`
-    const outputTemplates = importYaml(pathOutputs).outputs
-
-    // import types
-    const pathTypes = `/home/node/models/${model}/types.yaml`
-    const types = importYaml(pathTypes).types
-
-    // compile outputs from yaml strings and save to source
-    const outputs = getOutputs({ outputTemplates, types, deviceId })
-    source.outputs = outputs
-
-    // initialize plugin
-    // note: this must be done AFTER getOutputs, as that is where the
-    // dependsOn values are set, and this needs those.
-    console.log(`Adapter initializing plugin...`)
-    plugin.init({ url, cache, deviceId, inputs })
-  }
 
   console.log(`TCP creating server for agent...`)
   const tcp = net.createServer()
@@ -72,9 +40,45 @@ for (const device of devices) {
     // add outputs for each source to cache
     // this needs to happen BEFORE initializing plugins,
     // because this sets the list of cache id dependencies.
+    // for (const source of sources) {
+    // const { outputs } = source
+    // cache.addOutputs(outputs, socket)
+    // }
     for (const source of sources) {
-      const { outputs } = source
+      console.log({ source })
+      const { model, protocol, url } = source
+
+      // import protocol plugin
+      const pathProtocol = `./plugins/${protocol}.js` // eg './plugins/mqtt-ccs.js' - must start with ./
+      console.log(`Adapter importing plugin code: ${pathProtocol}...`)
+      // @ts-ignore top level await okay
+      const plugin = await import(pathProtocol)
+
+      // import inputs
+      const pathInputs = `/home/node/models/${model}/inputs.yaml`
+      const inputs = importYaml(pathInputs)
+
+      // import outputs
+      const pathOutputs = `/home/node/models/${model}/outputs.yaml`
+      const outputTemplates = importYaml(pathOutputs).outputs
+
+      // import types
+      const pathTypes = `/home/node/models/${model}/types.yaml`
+      const types = importYaml(pathTypes).types
+
+      // compile outputs from yaml strings and save to source
+      const outputs = getOutputs({ outputTemplates, types, deviceId })
+      // source.outputs = outputs
+
+      // add outputs for each source to cache
+      // @ts-ignore
       cache.addOutputs(outputs, socket)
+
+      // initialize plugin
+      // note: this must be done AFTER getOutputs and addOutputs,
+      // as that is where the dependsOn values are set, and this needs those.
+      console.log(`Adapter initializing plugin...`)
+      plugin.init({ url, cache, deviceId, inputs })
     }
 
     // handle incoming data - get PING from agent, return PONG
