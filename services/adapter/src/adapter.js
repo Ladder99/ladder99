@@ -25,26 +25,19 @@ for (const device of devices) {
   console.log({ device })
   const deviceId = device.id
 
-  // each device can have multiple sources.
-  // iterate over sources, load plugin for that source, call init on it.
-  const { sources } = device
-
   console.log(`TCP creating server for agent...`)
   const tcp = net.createServer()
 
-  // handle tcp connection from agent or diode
+  // handle tcp connection from agent or diode.
+  // need to do this BEFORE registering plugins because those need the socket
+  // so know where to send SHDR strings.
   tcp.on('connection', async socket => {
     const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
     console.log('TCP new client connection from', remoteAddress)
 
-    // add outputs for each source to cache
-    // this needs to happen BEFORE initializing plugins,
-    // because this sets the list of cache id dependencies.
-    // for (const source of sources) {
-    // const { outputs } = source
-    // cache.addOutputs(outputs, socket)
-    // }
-    for (const source of sources) {
+    // each device can have multiple sources.
+    // iterate over sources, load plugin for that source, call init on it.
+    for (const source of device.sources) {
       console.log({ source })
       const { model, protocol, url } = source
 
@@ -68,10 +61,9 @@ for (const device of devices) {
 
       // compile outputs from yaml strings and save to source
       const outputs = getOutputs({ outputTemplates, types, deviceId })
-      // source.outputs = outputs
 
       // add outputs for each source to cache
-      // @ts-ignore
+      // @ts-ignore complex types
       cache.addOutputs(outputs, socket)
 
       // initialize plugin
@@ -97,7 +89,7 @@ for (const device of devices) {
 
   // start tcp connection for this device
   const { destinations } = device
-  const destination = destinations[0] //. just handles one for now
+  const destination = destinations[0] //. just handle one for now
   console.log(`TCP try listening to socket at`, destinations, `...`)
   tcp.listen(destination.port, destination.host)
 }
@@ -109,7 +101,7 @@ for (const device of devices) {
  */
 // note: types IS used - it's in the closure formed by eval(str)
 function getOutputs({ outputTemplates, types, deviceId }) {
-  console.log('getOutputs - iterate over output templates')
+  // console.log('getOutputs - iterate over output templates')
   const outputs = outputTemplates.map(template => {
     // replace all occurrences of <key> with `cache.get('...').value`.
     // eg <status_faults> => cache.get(`${deviceId}-status_faults`).value
@@ -123,7 +115,7 @@ function getOutputs({ outputTemplates, types, deviceId }) {
     if (valueStr.includes('\n')) {
       valueStr = '{\n' + valueStr + '\n}'
     }
-    console.log(`${template.key} new value: "${valueStr}"`)
+    // console.log(`${template.key} new value: "${valueStr}"`)
 
     // evaluate the value function
     const value = cache => eval(valueStr)
