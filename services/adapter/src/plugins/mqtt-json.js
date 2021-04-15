@@ -48,39 +48,35 @@ export function init({ url, cache, deviceId, inputs }) {
   /**
    * handle all incoming messages.
    * eg for ccs-pa, will have query, status, and read messages.
-   * @param {string} topic - the mqtt topic eg 'l99/ccs-pa-001/evt/query
-   * @param {array} buffer - an array of bytes (we assume to be a json string)
+   * @param {string} msgTopic - the mqtt topic eg 'l99/ccs-pa-001/evt/query
+   * @param {array} msgBuffer - an array of bytes (we assume to be a json string)
    */
-  function onMessage(topic, buffer) {
-    console.log('MQTT got message on topic', topic)
+  function onMessage(msgTopic, msgBuffer) {
+    console.log('MQTT got message on topic', msgTopic)
 
     // unpack the mqtt json payload - get { topic, payload, receivedTime }
-    const msg = unpack(topic, buffer)
-    // @ts-ignore - payload IS used eg by inputs.prelim fn - don't delete
+    const msg = unpack(msgTopic, msgBuffer)
+
+    // get payload as var - used by handler.initialize - don't delete - @ts-ignore
     const payload = msg.payload
 
     // iterate over message handlers
-    Object.entries(inputs.handlers).forEach(([key, handler]) => {
-      // replace deviceId in topic
-      // key = key.replace('${deviceId}', deviceId)
-      key = key.replace('${deviceId}', deviceId)
+    const handlers = Object.entries(inputs.handlers) // array of [topic, handler]
+    handlers.forEach(([topic, handler]) => {
+      topic = replaceDeviceId(topic)
 
-      if (topic === key) {
-        // execute handler commands
-
-        // unsubscribe
-        for (const unsubscription of handler.unsubscribe || []) {
-          const topic = unsubscription.topic.replace('${deviceId}', deviceId)
+      if (topic === msgTopic) {
+        // unsubscribe from topics as needed
+        for (const entry of handler.unsubscribe || []) {
+          const topic = replaceDeviceId(entry.topic)
           console.log(`MQTT unsubscribe from ${topic}`)
           mqtt.unsubscribe(topic)
         }
 
-        // a variable representing payload data - usually a dict
-        let $
-
         // initialize
         // eg assign payload values to $
-        // eg prelim: '$ = {}; payload.forEach(item => $[item.keys[0]] = item)'
+        // eg prelim: 'payload.forEach(item => $[item.keys[0]] = item)'
+        let $ = {} // a variable representing payload data
         if (handler.prelim) {
           eval(handler.prelim)
         }
@@ -117,7 +113,7 @@ export function init({ url, cache, deviceId, inputs }) {
     // }
   }
 
-  function substitute(str) {
+  function replaceDeviceId(str) {
     return str.replace('${deviceId}', deviceId)
   }
 }
