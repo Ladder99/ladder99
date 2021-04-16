@@ -92,8 +92,7 @@ function getDataItemsMap(sources, id) {
     // iterate over outputs, getting dataItems for each, adding to map
     for (const output of outputs) {
       const key = output.key
-      let dataItem = { ...output } // copy the dataItem
-      dataItem.id = id + '-' + key
+      let dataItem = { id: id + '-' + key, ...output } // copy the dataItem, add id
       if (!dataItem.type) {
         console.log(
           `warning: type not specified for output '${key}' - setting to UNKNOWN`

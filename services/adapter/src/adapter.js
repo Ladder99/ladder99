@@ -47,15 +47,15 @@ for (const device of devices) {
       // @ts-ignore top level await okay
       const plugin = await import(pathProtocol)
 
-      // import inputs
+      // get inputs
       const pathInputs = `/home/node/models/${model}/inputs.yaml`
       const inputs = importYaml(pathInputs)
 
-      // import outputs
+      // get outputs
       const pathOutputs = `/home/node/models/${model}/outputs.yaml`
       const outputTemplates = importYaml(pathOutputs).outputs
 
-      // import types
+      // get types
       const pathTypes = `/home/node/models/${model}/types.yaml`
       const types = importYaml(pathTypes).types
 
