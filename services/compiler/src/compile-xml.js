@@ -29,9 +29,8 @@ function attachDevices(xmltree, devices) {
   for (const device of devices) {
     const { id, model, properties } = device
 
-    // get array of outputs from output.yaml,
-    // which defines the dataItems for the model.
-    // outputs is an array, with each element like
+    // get array of outputs from output.yaml - defines the dataItems for the model.
+    // each output is like -
     //   { key: 'connection', category: 'EVENT', type: 'AVAILABILITY', value: ... }
     const outputPath = `models/${model}/outputs.yaml`
     const outputs = loadYamlTree(outputPath).outputs
@@ -39,14 +38,8 @@ function attachDevices(xmltree, devices) {
     // get dataItems dict - maps from key to dataItem object.
     const dataItems = getDataItems(outputs, id)
 
-    // define text transforms to perform on model.yaml
-    properties.deviceId = id
-    const transforms = Object.keys(properties).map(key => {
-      const value = properties[key]
-      return str => str.replaceAll('${' + key + '}', value) // replaceAll needs node15
-    })
-
     // get model.yaml, making text substitutions with properties
+    const transforms = getTransforms(properties, id)
     const modelPath = `models/${model}/model.yaml`
     const modelTree = loadYamlTree(modelPath, transforms).model
 
@@ -64,12 +57,26 @@ function attachDevices(xmltree, devices) {
     const xmltree = translateYamlToXml(modelTree)
     xmldevices.push(xmltree)
   }
-  // attach devices to tree
+
+  // attach array of devices to tree
   xmltree.MTConnectDevices[0].Devices.Device = xmldevices
 }
 
 /**
- * getDataItems
+ * get text transforms to substitute properties into a string.
+ * eg '${deviceId}' => 'ccs-pa-001'
+ */
+function getTransforms(properties, id) {
+  properties.deviceId = id
+  const transforms = Object.keys(properties).map(key => {
+    const value = properties[key]
+    return str => str.replaceAll('${' + key + '}', value) // replaceAll needs node15
+  })
+  return transforms
+}
+
+/**
+ * get map from keys to dataItems
  * @param {array} outputs
  * @param {string} id
  * @returns {object} map from key to dataItem object
