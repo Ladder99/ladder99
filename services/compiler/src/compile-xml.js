@@ -1,24 +1,26 @@
 // translate devices.yaml to devices.xml
 
-// note: we use yaml and xml for the strings,
-// yamltree and xmltree for the corresponding js structures.
+// note: we use 'yaml' and 'xml' for the strings,
+// 'yamltree' and 'xmltree' for the corresponding js structures.
 
 import fs from 'fs' // node lib filesys
 import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
 import libxml from 'xml-js' // https://github.com/nashwaan/xml-js
-import sets from './sets.js'
 import xmltree from './xmltree.js' // base xml structure
+import sets from './sets.js' // vocabulary
 
 const yamlfile = process.argv[2] // eg 'setups/demo/devices.yaml'
 const xmlfile = process.argv[3] // eg 'setups/demo/volumes/agent/devices.xml'
 
 // main
-const devices = loadYamlTree(yamlfile).devices
+const devices = loadYamlTree(yamlfile).devices // array of objs
 attachDevices(xmltree, devices)
 saveXmlTree(xmltree, xmlfile)
 
 /**
- * get list of xml-js devices from devices.yaml
+ * attach devices from devices.yaml to xml tree
+ * @param {object} xmltree
+ * @param {array} devices
  */
 function attachDevices(xmltree, devices) {
   const xmldevices = []
@@ -35,19 +37,7 @@ function attachDevices(xmltree, devices) {
     const outputs = loadYamlTree(outputPath).outputs
 
     // get dataItems dict - maps from key to dataItem object.
-    const dataItems = {}
-    for (const output of outputs) {
-      const key = output.key
-      let dataItem = { ...output }
-      dataItem.id = id + '-' + key
-      if (!dataItem.type) {
-        console.log(`warning: type not specified for output '${key}'`)
-        dataItem.type = 'UNKNOWN' // else agent dies
-      }
-      delete dataItem.key
-      delete dataItem.value
-      dataItems[key] = dataItem
-    }
+    const dataItems = getDataItems(outputs, id)
 
     // define text transforms to perform on model.yaml
     properties.deviceId = id
@@ -76,6 +66,31 @@ function attachDevices(xmltree, devices) {
   }
   // attach devices to tree
   xmltree.MTConnectDevices[0].Devices.Device = xmldevices
+}
+
+/**
+ * getDataItems
+ * @param {array} outputs
+ * @param {string} id
+ * @returns {object} map from key to dataItem object
+ */
+function getDataItems(outputs, id) {
+  const dataItems = {}
+  for (const output of outputs) {
+    const key = output.key
+    let dataItem = { ...output }
+    dataItem.id = id + '-' + key
+    if (!dataItem.type) {
+      console.log(
+        `warning: type not specified for output '${key}' - setting to UNKNOWN`
+      )
+      dataItem.type = 'UNKNOWN' // else agent dies
+    }
+    delete dataItem.key
+    delete dataItem.value
+    dataItems[key] = dataItem
+  }
+  return dataItems
 }
 
 /**
