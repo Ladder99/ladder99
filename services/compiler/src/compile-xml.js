@@ -29,16 +29,8 @@ function attachDevices(xmltree, devices) {
   for (const device of devices) {
     const { id, model, properties, sources } = device
 
-    // // get array of outputs from output.yaml, which defines dataItems for model.
-    // // each output is like -
-    // //   { key: 'connection', category: 'EVENT', type: 'AVAILABILITY', value: ... }
-    // const outputPath = `models/${model}/outputs.yaml`
-    // const outputs = loadYamlTree(outputPath).outputs
-
-    // get dataItems dict - maps from key to dataItem object.
-    //. supposed to get dataItems from ALL sources, not the device model.
-    // const dataItems = getDataItems(outputs, id)
-    const dataItems = getDataItems(sources, id)
+    // get dataItems map - maps from key to dataItem object
+    const dataItemsMap = getDataItemsMap(sources, id)
 
     // get model.yaml, making text substitutions with properties
     const transforms = getTransforms(properties, id)
@@ -46,10 +38,10 @@ function attachDevices(xmltree, devices) {
     const modelTree = loadYamlTree(modelPath, transforms).model
 
     // recurse down the model tree, replacing dataItems with their output defs.
-    attachDataItems(modelTree, dataItems)
+    attachDataItems(modelTree, dataItemsMap)
 
     // report any dataItems not used
-    const unused = Object.values(dataItems).filter(item => !item.used)
+    const unused = Object.values(dataItemsMap).filter(item => !item.used)
     if (unused.length > 0) {
       const unusedStr = unused.map(item => "'" + item.id + "'").join(', ')
       console.log(`warning: unused dataItems ${unusedStr}`)
@@ -86,10 +78,11 @@ function getTransforms(properties, id) {
 //. if want this to get ALL dataitems incl 'operator', then need to pass it ALL
 // models for the device, eh ?
 // function getDataItems(outputs, id) {
-function getDataItems(sources, id) {
-  const dataItems = {}
+function getDataItemsMap(sources, id) {
+  const dataItemsMap = {}
   for (const source of sources) {
     const { model } = source
+
     // get array of outputs from output.yaml, which defines dataItems for model.
     // each output is like -
     //   { key: 'connection', category: 'EVENT', type: 'AVAILABILITY', value: ... }
@@ -111,22 +104,22 @@ function getDataItems(sources, id) {
       delete dataItem.key
       delete dataItem.value
       // save to map
-      dataItems[key] = dataItem
+      dataItemsMap[key] = dataItem
     }
   }
-  return dataItems
+  return dataItemsMap
 }
 
 /**
  * attach dataItems from outputs.yaml to model.yaml tree recursively.
  * @param {object} node - the xml node to attach to
- * @param {object} dataItems - dict of dataItem objects
+ * @param {object} dataItemsMap - map from key to dataItem object
  */
-function attachDataItems(node, dataItems) {
+function attachDataItems(node, dataItemsMap) {
   // if node is an array, recurse down each element
   if (Array.isArray(node)) {
     for (const subnode of node) {
-      attachDataItems(subnode, dataItems)
+      attachDataItems(subnode, dataItemsMap) // recurse
     }
     // else if node is an object, recurse down values
   } else if (node !== null && typeof node === 'object') {
@@ -136,7 +129,7 @@ function attachDataItems(node, dataItems) {
       if (key === 'dataItems') {
         const keys = node.dataItems.dataItem
         for (let i = 0; i < keys.length; i++) {
-          const dataItem = dataItems[keys[i]]
+          const dataItem = dataItemsMap[keys[i]]
           if (dataItem) {
             keys[i] = dataItem
             dataItem.used = true
@@ -147,7 +140,7 @@ function attachDataItems(node, dataItems) {
         }
       } else {
         const subnode = node[key]
-        attachDataItems(subnode, dataItems)
+        attachDataItems(subnode, dataItemsMap) // recurse
       }
     }
   }
@@ -160,7 +153,7 @@ function attachDataItems(node, dataItems) {
  */
 function translateYamlToXml(node) {
   if (Array.isArray(node)) {
-    return node.map(el => translateYamlToXml(el))
+    return node.map(el => translateYamlToXml(el)) // recurse
   } else if (node !== null && typeof node === 'object') {
     const obj = {}
     const attributes = {}
@@ -174,7 +167,7 @@ function translateYamlToXml(node) {
       } else if (sets.hidden.has(key)) {
         // ignore
       } else {
-        const element = translateYamlToXml(el)
+        const element = translateYamlToXml(el) // recurse
         elements[capitalize(key)] = element
       }
     }
@@ -192,9 +185,8 @@ function capitalize(str) {
 }
 
 /**
- * import a yaml file, apply any transforms, parse it,
- * and return as a js structure.
- * @param yamlfile {string}
+ * import a yaml file, apply any transforms, parse it, and return as a js structure.
+ * @param yamlfile {string} file path
  * @returns {object} yaml tree
  */
 function loadYamlTree(yamlfile, transforms = []) {
@@ -208,8 +200,8 @@ function loadYamlTree(yamlfile, transforms = []) {
 
 /**
  * convert xml structure to xml string and save to a file.
- * @param {object} xmltree
- * @param {string} xmlfile
+ * @param {object} xmltree - js structure
+ * @param {string} xmlfile - file path
  */
 function saveXmlTree(xmltree, xmlfile) {
   const xml = libxml.js2xml(xmltree, { compact: true, spaces: 2 })
