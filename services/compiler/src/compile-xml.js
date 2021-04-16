@@ -27,16 +27,18 @@ function attachDevices(xmltree, devices) {
 
   // iterate over device definitions
   for (const device of devices) {
-    const { id, model, properties } = device
+    const { id, model, properties, sources } = device
 
-    // get array of outputs from output.yaml - defines the dataItems for the model.
-    // each output is like -
-    //   { key: 'connection', category: 'EVENT', type: 'AVAILABILITY', value: ... }
-    const outputPath = `models/${model}/outputs.yaml`
-    const outputs = loadYamlTree(outputPath).outputs
+    // // get array of outputs from output.yaml, which defines dataItems for model.
+    // // each output is like -
+    // //   { key: 'connection', category: 'EVENT', type: 'AVAILABILITY', value: ... }
+    // const outputPath = `models/${model}/outputs.yaml`
+    // const outputs = loadYamlTree(outputPath).outputs
 
     // get dataItems dict - maps from key to dataItem object.
-    const dataItems = getDataItems(outputs, id)
+    //. supposed to get dataItems from ALL sources, not the device model.
+    // const dataItems = getDataItems(outputs, id)
+    const dataItems = getDataItems(sources, id)
 
     // get model.yaml, making text substitutions with properties
     const transforms = getTransforms(properties, id)
@@ -77,25 +79,40 @@ function getTransforms(properties, id) {
 
 /**
  * get map from keys to dataItems
- * @param {array} outputs
+ * @param {array} sources
  * @param {string} id
  * @returns {object} map from key to dataItem object
  */
-function getDataItems(outputs, id) {
+//. if want this to get ALL dataitems incl 'operator', then need to pass it ALL
+// models for the device, eh ?
+// function getDataItems(outputs, id) {
+function getDataItems(sources, id) {
   const dataItems = {}
-  for (const output of outputs) {
-    const key = output.key
-    let dataItem = { ...output }
-    dataItem.id = id + '-' + key
-    if (!dataItem.type) {
-      console.log(
-        `warning: type not specified for output '${key}' - setting to UNKNOWN`
-      )
-      dataItem.type = 'UNKNOWN' // else agent dies
+  for (const source of sources) {
+    const { model } = source
+    // get array of outputs from output.yaml, which defines dataItems for model.
+    // each output is like -
+    //   { key: 'connection', category: 'EVENT', type: 'AVAILABILITY', value: ... }
+    const outputPath = `models/${model}/outputs.yaml`
+    const outputs = loadYamlTree(outputPath).outputs
+
+    // iterate over outputs, getting dataItems for each, adding to map
+    for (const output of outputs) {
+      const key = output.key
+      let dataItem = { ...output } // copy the dataItem
+      dataItem.id = id + '-' + key
+      if (!dataItem.type) {
+        console.log(
+          `warning: type not specified for output '${key}' - setting to UNKNOWN`
+        )
+        dataItem.type = 'UNKNOWN' // else agent dies
+      }
+      // remove unneeded props from the dataItem copy
+      delete dataItem.key
+      delete dataItem.value
+      // save to map
+      dataItems[key] = dataItem
     }
-    delete dataItem.key
-    delete dataItem.value
-    dataItems[key] = dataItem
   }
   return dataItems
 }
