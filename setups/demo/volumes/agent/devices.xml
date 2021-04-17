@@ -77,7 +77,7 @@
         </Components>
         <Resources>
           <Components>
-            <Personnel>
+            <Personnel id="ccs-pa-001-personnel">
               <DataItems>
                 <DataItem id="ccs-pa-001-operator" category="EVENT" type="USER" subType="OPERATOR"/>
               </DataItems>

@@ -98,6 +98,7 @@ model:
     resources:
       components:
         personnel:
+          id: ${deviceId}-personnel
           dataItems:
             dataItem:
               - operator
