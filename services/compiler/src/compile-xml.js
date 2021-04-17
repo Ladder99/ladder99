@@ -27,13 +27,13 @@ function attachDevices(xmltree, devices) {
 
   // iterate over device definitions
   for (const device of devices) {
-    const { id, model, properties, sources } = device
+    const { id: deviceId, model, properties, sources } = device
 
     // get dataItems map - maps from key to dataItem object
-    const dataItemsMap = getDataItemsMap(sources, id)
+    const dataItemsMap = getDataItemsMap(sources, deviceId)
 
     // get model.yaml, making text substitutions with properties
-    const transforms = getTransforms(properties, id)
+    const transforms = getTransforms(properties, deviceId)
     const modelPath = `models/${model}/model.yaml`
     const modelTree = loadYamlTree(modelPath, transforms).model
 
@@ -60,8 +60,8 @@ function attachDevices(xmltree, devices) {
  * get text transforms to substitute properties into a string.
  * eg '${deviceId}' => 'ccs-pa-001'
  */
-function getTransforms(properties, id) {
-  properties.deviceId = id
+function getTransforms(properties, deviceId) {
+  properties.deviceId = deviceId
   const transforms = Object.keys(properties).map(key => {
     const value = properties[key]
     return str => str.replaceAll('${' + key + '}', value) // replaceAll needs node15
@@ -72,13 +72,10 @@ function getTransforms(properties, id) {
 /**
  * get map from keys to dataItems
  * @param {array} sources
- * @param {string} id
+ * @param {string} deviceId
  * @returns {object} map from key to dataItem object
  */
-//. if want this to get ALL dataitems incl 'operator', then need to pass it ALL
-// models for the device, eh ?
-// function getDataItems(outputs, id) {
-function getDataItemsMap(sources, id) {
+function getDataItemsMap(sources, deviceId) {
   const dataItemsMap = {}
   for (const source of sources) {
     const { model } = source
@@ -92,7 +89,8 @@ function getDataItemsMap(sources, id) {
     // iterate over outputs, getting dataItems for each, adding to map
     for (const output of outputs) {
       const key = output.key
-      let dataItem = { id: id + '-' + key, ...output } // copy the dataItem, add id
+      const id = deviceId + '-' + key
+      let dataItem = { id, ...output } // copy the dataItem, put id first
       if (!dataItem.type) {
         console.log(
           `warning: type not specified for output '${key}' - setting to UNKNOWN`
@@ -148,7 +146,7 @@ function attachDataItems(node, dataItemsMap) {
 /**
  * translate yaml tree to xml tree recursively
  * @param {object} node - a yaml tree node
- * @returns xml tree
+ * @returns {object} xml tree
  */
 function translateYamlToXml(node) {
   if (Array.isArray(node)) {
