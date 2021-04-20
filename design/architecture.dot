@@ -1,44 +1,72 @@
-digraph "ladder99-adapter" {
+// graphviz diagram
+// colors https://www.graphviz.org/doc/info/colors.html
 
+digraph "ladder99-mtconnect" {
+
+  //------------------------------------------------------------------------
   // styles
-  graph [ label="Ladder99 MTConnect data flow\n "; color=lightgray; ];
+  //------------------------------------------------------------------------
+
+  graph [ label="Ladder99 MTConnect data flow\n ", color=lightgray; ];
   graph [ fontsize=20 ];
   graph [ labelloc=t ];
   graph [ ranksep=0.2 ];
   graph [ nodesep=0.35 ];
   graph [ rankdir=LR; ] // left-to-right
-  node [ color=gray; fillcolor=white; style=filled ];
-  edge [ color=gray ];
-  edge [ fontsize=12; fontcolor=gray30; ];
 
+  node [ color=gray, fillcolor=white, style=filled ];
+
+  edge [ color=gray ];
+  edge [ fontsize=12, fontcolor=gray30 ];
+
+
+  //------------------------------------------------------------------------
   // nodes
-  PA [ fillcolor=lavender; label="CCS P&A" ];
-  HMI [ fillcolor=lavender; label="Rockwell HMI" ];
-  Motor [ fillcolor=lavender; label="VFD Motor" ];
-  OldMachine3 [ fillcolor=lavender; label="Device" ];
-  Camera [ fillcolor=lavender; label="Camera" ];
-  Kepware1 [ label="Kepware\n(Windows)"];
-  Kepware2 [ label="Kepware+\nIoT Gateway\n(Windows)"];
-  Autoclave [ label="Autoclave", fillcolor=lavender ];
-  CPC [ label="ASC CPC" ];
-  Broker1 [ label="MQTT Broker\n(Mosquitto)" ];
-  Broker3 [ label="MQTT Broker\n(Mosquitto)" ];
-  Broker4 [ label="MQTT Broker\n(Mosquitto)" ];
-  // OldMachine1 [ fillcolor=lavender; label="Old Machine 1" ];
-  // PLC4X [ label="PLC4X\n(Java)" ];
-  Adapter [ label="MTConnect\nAdapter\nwith cache and\nplugins\n(NodeJS)" ];
+  //------------------------------------------------------------------------
+
+  // devices
+  PA [ fillcolor=lavender, label="CCS P&A" ];
+  HMI [ fillcolor=lavender, label="Rockwell HMI" ];
+  Motor [ fillcolor=lavender, label="VFD Motor" ];
+  OldMachine3 [ fillcolor=lavender, label="Device" ];
+  Camera [ fillcolor=lavender, label="Camera" ];
+  Autoclave [ fillcolor=lavender, label="Autoclave" ];
+  // OldMachine1 [ fillcolor=lavender, label="Old Machine 1" ];
+
+  // intermediaries
+  Broker1 [ fillcolor=lightblue, label="MQTT Broker\n(Mosquitto)" ];
+  Broker3 [ fillcolor=lightblue, label="MQTT Broker\n(Mosquitto)" ];
+  Broker4 [ fillcolor=lightblue, label="MQTT Broker\n(Mosquitto)" ];
+  Kepware1 [ fillcolor=lightblue, label="Kepware\n(Windows)"];
+  Kepware2 [ fillcolor=lightblue, label="Kepware+\nIoT Gateway\n(Windows)"];
+  CPC [ fillcolor=lightblue, label="ASC CPC" ];
+  // PLC4X [ fillcolor=lightblue, label="PLC4X\n(Java)" ];
+
+  // mtconnect
+  Adapter [ fillcolor=greenyellow, label="MTConnect\nAdapter\nwith cache and\nplugins\n(NodeJS)" ];
+  Agent [ fillcolor=greenyellow, label="MTConnect\nAgent\n(C++/cppagent)" ];
+  Application [ fillcolor=greenyellow, label="MTConnect\nApplication\n(NodeJS)" ];
+
+  // diode
   // DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
   // DiodeReceiver [ label="Diode Receiver\n(Java+RabbitMQ)" ];
-  Agent [ label="MTConnect\nAgent\n(C++/cppagent)" ];
-  Application [ label="MTConnect\nApplication\n(NodeJS)" ];
-  Database [ label="Database\n(InfluxDB/\nTimescaleDB)" ];
-  Visualizer [ label="Visualizer\n(Grafana/\nSuperset)" ];
-  Cloud [ label="Cloud Storage\n(AWS/GCP)" ];
+
+  // applications
+  Database [ fillcolor=gray90, label="Database\n(InfluxDB/\nTimescaleDB)" ];
+  Visualizer [ fillcolor=gray90, label="Visualizer\n(Grafana/\nSuperset)" ];
+  Cloud [ fillcolor=gray90, label="Cloud Storage\n(AWS/GCP)" ];
+  Browser [ fillcolor=gray90 ];
+  // LOI [ fillcolor=gray90, label="LOI\n(SvelteJS)" ];
+
+  // users
   // Admin [ fillcolor=lightyellow ];
-  // LOI [ label="LOI\n(SvelteJS)" ];
   // Operator [ fillcolor=lightyellow ];
 
+
+  //------------------------------------------------------------------------
   // edges
+  //------------------------------------------------------------------------
+
   PA -> Broker1 [ label="  TCP  ", dir=both ];
   Camera -> Broker3 [ label="  TCP  ", dir=both ];
   Autoclave -> CPC [ dir=both ];
@@ -68,7 +96,11 @@ digraph "ladder99-adapter" {
   // Application -> LOI;
   // LOI -> Operator;
 
-  // rank
+
+  //------------------------------------------------------------------------
+  // ranks
+  //------------------------------------------------------------------------
+
   { rank=same; Adapter Agent Application Database Visualizer };
   // { rank=same; DiodeSender DiodeReceiver Cloud Admin };
   // { rank=same; Cloud Admin };
