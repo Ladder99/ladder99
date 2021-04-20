@@ -50,7 +50,7 @@ compile-compose SETUP='demo':
 
 # start a setup with all services, e.g. `just run` or `just run demo` - compiles also
 run SETUP='demo' SERVICE='':
-    just compile {{SETUP}}
+    # just compile {{SETUP}}
     FILE=setups/{{SETUP}}/docker/docker-compose.yaml && \
     docker-compose --file $FILE down && \
     docker-compose --file $FILE up --build --remove-orphans {{SERVICE}} && \
