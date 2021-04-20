@@ -17,18 +17,18 @@ services:
       options:
         max-size: '1m'
 
-  broker-ccs-pa-002:
-    container_name: broker-ccs-pa-002
-    image: eclipse-mosquitto
-    networks:
-      - ladder99
-    ports:
-      - 1884:1883
-    volumes:
-      - ../volumes/broker-ccs-pa-002:/mosquitto
-    logging:
-      options:
-        max-size: '1m'
+  # broker-ccs-pa-002:
+  #   container_name: broker-ccs-pa-002
+  #   image: eclipse-mosquitto
+  #   networks:
+  #     - ladder99
+  #   ports:
+  #     - 1884:1883
+  #   volumes:
+  #     - ../volumes/broker-ccs-pa-002:/mosquitto
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
   adapter:
     container_name: adapter
@@ -38,26 +38,7 @@ services:
     command: npm start
     depends_on:
       - broker-ccs-pa-001
-      - broker-ccs-pa-002
-    networks:
-      - ladder99
-    volumes:
-      - ../../../services/adapter:/home/node/app
-      - ../../../models:/home/node/models
-      # - ../volumes/adapter:/etc/adapter
-      - ..:/etc/setup
-    logging:
-      options:
-        max-size: '1m'
-
-  adapter002:
-    container_name: adapter002
-    image: node:latest
-    user: node
-    working_dir: /home/node/app
-    command: npm start
-    depends_on:
-      - broker-ccs-pa-002
+      # - broker-ccs-pa-002
     networks:
       - ladder99
     volumes:
@@ -78,34 +59,14 @@ services:
     ports:
       - 5000:5000
     depends_on:
-      - adapter
-      - adapter002
+      adapter:
+        condition: service_started
     volumes:
       - ../volumes/agent:/etc/mtconnect/agent-custom
       - ../volumes/agent/data:/var/lib/agent
     logging:
       options:
         max-size: '1m'
-
-  # application:
-  #   container_name: application
-  #   image: node:latest
-  #   user: node
-  #   working_dir: /home/node/app
-  #   command: npm start
-  #   environment:
-  #     - URL=http://agent:5000/sample
-  #     - INTERVAL=2000
-  #   depends_on:
-  #     - agent
-  #   networks:
-  #     - ladder99
-  #   volumes:
-  #     - ../../../services/application:/home/node/app
-  #   #   - ../volumes/application:/etc/application
-  #   logging:
-  #     options:
-  #       max-size: '1m'
 
   simulator-mqtt:
     container_name: simulator-mqtt

@@ -25,19 +25,19 @@ devices:
         host: adapter
         port: 7878
 
-  - id: ccs-pa-002 # this is substituted into the model yaml and sources
-    model: ccs-pa # for xml structure - see models/ccs-pa/device.yaml
-    properties: # these are substituted into the model yaml
-      uuid: e05363af-95d1-4354-b749-8fbb09d3499f
-      serialNumber: '002'
+  # - id: ccs-pa-002 # this is substituted into the model yaml and sources
+  #   model: ccs-pa # for xml structure - see models/ccs-pa/device.yaml
+  #   properties: # these are substituted into the model yaml
+  #     uuid: e05363af-95d1-4354-b749-8fbb09d3499f
+  #     serialNumber: '002'
 
-    # define data sources that feed into this device
-    sources:
-      - model: ccs-pa # model defines inputs and outputs with yaml files
-        protocol: mqtt-json # type of plugin - manages protocol and payload
-        url: mqtt://broker-ccs-pa-002:1883
+  #   # define data sources that feed into this device
+  #   sources:
+  #     - model: ccs-pa # model defines inputs and outputs with yaml files
+  #       protocol: mqtt-json # type of plugin - manages protocol and payload
+  #       url: mqtt://broker-ccs-pa-002:1883
 
-    destinations: # where to post output - just handles one for now
-      - protocol: shdr
-        host: adapter
-        port: 7879
+  #   destinations: # where to post output - just handles one for now
+  #     - protocol: shdr
+  #       host: adapter
+  #       port: 7879
