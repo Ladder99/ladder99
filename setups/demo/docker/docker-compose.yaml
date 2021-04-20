@@ -24,8 +24,7 @@ services:
     working_dir: /home/node/app
     command: npm start
     depends_on:
-      broker-ccs-pa-001:
-        condition: service_started
+      - broker-ccs-pa-001
     networks:
       - ladder99
     volumes:
@@ -46,8 +45,7 @@ services:
     ports:
       - 5000:5000
     depends_on:
-      adapter:
-        condition: service_started
+      - adapter
     volumes:
       - ../volumes/agent:/etc/mtconnect/agent-custom
       - ../volumes/agent/data:/var/lib/agent
@@ -70,8 +68,7 @@ services:
       - LOOP=true
       - LOOP_DELAY=3000
     depends_on:
-      agent:
-        condition: service_started
+      - agent
     networks:
       - ladder99
     volumes:
@@ -90,8 +87,7 @@ services:
     volumes:
       - ../../../services/simulator-opc:/home/node/app
     depends_on:
-      agent:
-        condition: service_started
+      - agent
     networks:
       - ladder99
     logging:

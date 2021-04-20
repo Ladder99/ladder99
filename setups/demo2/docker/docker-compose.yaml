@@ -37,10 +37,8 @@ services:
     working_dir: /home/node/app
     command: npm start
     depends_on:
-      broker-ccs-pa-001:
-        condition: service_started
-      broker-ccs-pa-002:
-        condition: service_started
+      - broker-ccs-pa-001
+      - broker-ccs-pa-002
     networks:
       - ladder99
     volumes:
@@ -59,8 +57,7 @@ services:
     working_dir: /home/node/app
     command: npm start
     depends_on:
-      broker-ccs-pa-002:
-        condition: service_started
+      - broker-ccs-pa-002
     networks:
       - ladder99
     volumes:
@@ -81,10 +78,8 @@ services:
     ports:
       - 5000:5000
     depends_on:
-      adapter:
-        condition: service_started
-      adapter002:
-        condition: service_started
+      - adapter
+      - adapter002
     volumes:
       - ../volumes/agent:/etc/mtconnect/agent-custom
       - ../volumes/agent/data:/var/lib/agent
@@ -102,8 +97,7 @@ services:
       - URL=http://agent:5000/sample
       - INTERVAL=2000
     depends_on:
-      agent:
-        condition: service_started
+      - agent
     networks:
       - ladder99
     volumes:
@@ -128,8 +122,7 @@ services:
       - LOOP=true
       - LOOP_DELAY=3000
     depends_on:
-      application:
-        condition: service_started
+      - application
     networks:
       - ladder99
     volumes:
@@ -148,8 +141,7 @@ services:
     volumes:
       - ../../../services/simulator-opc:/home/node/app
     depends_on:
-      application:
-        condition: service_started
+      - application
     networks:
       - ladder99
     logging:
@@ -176,9 +168,6 @@ volumes:
   portainer_data:
   db-data:
     driver: local
-  # influxdbv2:
-  # grafana_data:
-  # grafana_conf:
 
 networks:
   ladder99:
