@@ -7,7 +7,6 @@
 				<link type="text/css" href="/styles/Streams.css" media="screen" rel="stylesheet"/>
 			</head>
 			<body>
-			  <hr/>
 				<p>
 					<xsl:apply-templates select="/m:MTConnectStreams/m:Header" />
 				</p>

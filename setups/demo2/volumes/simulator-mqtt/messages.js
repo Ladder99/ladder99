@@ -54,6 +54,7 @@ module.exports = [
           type: 'choice',
           value: [0, 1],
         },
+        default: 0, //. set this
       },
       {
         keys: ['%I0.7', 'IN8', 'tamp.head_up', 'J1.11', 'SX1.P7'],
@@ -350,7 +351,7 @@ module.exports = [
         keys: ['%M55.5', 'metric.printer_time'],
         remote_allow: false,
         retain: false,
-        default: 0,
+        default: 25,
         rate_limit: 50,
       },
       {
@@ -366,6 +367,9 @@ module.exports = [
         default: 0,
         rate_limit: 500,
       },
+      { keys: ['%M55.8'], default: 0 },
+      { keys: ['%M55.9'], default: 0 },
+      { keys: ['%M55.10'], default: 0 },
 
       {
         keys: ['%M56.0', 'tamp.vacuum.delay'],
@@ -523,6 +527,18 @@ module.exports = [
           value: ['apply_before_feed', 'apply_after_feed'],
         },
       },
+
+      { keys: ['%M56.16'], default: 0 },
+      { keys: ['%M56.17'], default: 0 },
+      { keys: ['%M56.18'], default: 0 },
+      { keys: ['%M56.19'], default: 1 }, // enable smart tamp
+      { keys: ['%M56.20'], default: 0 },
+      { keys: ['%M56.21'], default: 0 },
+      { keys: ['%M56.22'], default: 0 },
+      { keys: ['%M56.23'], default: 0 },
+
+      { keys: ['%Z55.0'], default: 0 },
+      { keys: ['%Z55.1'], default: 0 },
     ],
   },
 
@@ -533,7 +549,11 @@ module.exports = [
       state: 400, // 200 stopped, 400 running
       program: 'pgm0',
       step: 'Waiting',
-      faults: {},
+      faults: {
+        2: { description: 'head up hard fault', hard: true, count: 1 },
+        10: { description: 'e-stop hard fault', hard: true, count: 1 }, // estop
+        50: { description: 'low ribbon soft fault', hard: false, count: 1 },
+      },
       cpu_time: 691322.50763624,
       utc_time: 1.6098097061826477e9,
       build_no: '1.3.0.3',
@@ -551,12 +571,12 @@ module.exports = [
 
   {
     topic: 'l99/${deviceId}/evt/read',
-    json: { address: '%I0.10', value: 1 }, // emerg stop on
+    json: [{ address: '%I0.10', value: 1 }], // emerg stop on
   },
 
   {
     topic: 'l99/${deviceId}/evt/read',
-    json: { address: '%I0.10', value: 0 }, // emerg stop off
+    json: [{ address: '%I0.10', value: 0 }], // emerg stop off
   },
 
   {
@@ -567,9 +587,7 @@ module.exports = [
       program: 'pgm0',
       step: 'Cycle_Start',
       faults: {
-        1: { description: 'hard fault', hard: true, count: 1 },
-        10: { description: 'another hard fault', hard: true, count: 1 }, // estop
-        50: { description: 'soft fault', hard: false, count: 1 },
+        50: { description: 'low ribbon soft fault', hard: false, count: 1 },
       },
       cpu_time: 691322.50763624,
       utc_time: 1.6098097061826477e9,
