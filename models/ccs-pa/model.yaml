@@ -7,7 +7,7 @@
 
 model:
   id: ${deviceId} # eg 'ccs-pa-001'
-  name: CCS-PA
+  name: ${deviceId} # must be unique in xml
   uuid: ${uuid} # eg 'e05363af-95d1-4354-b749-8fbb09d3499e'
   sampleInterval: 10
 

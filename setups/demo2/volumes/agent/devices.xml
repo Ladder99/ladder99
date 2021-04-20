@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--Generated file - DO NOT EDIT!-->
-<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
+<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
   <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="12345678" bufferSize="131072" version="1.6.0.7"/>
   <Devices>
     <Device id="ccs-pa-001" name="ccs-pa-001" uuid="e05363af-95d1-4354-b749-8fbb09d3499e" sampleInterval="10">
@@ -160,6 +158,15 @@
             </DataItems>
           </Feeder>
         </Components>
+        <Resources>
+          <Components>
+            <Personnel id="ccs-pa-002-personnel">
+              <DataItems>
+                <DataItem id="operator" type="UNKNOWN" category="UNKNOWN"/>
+              </DataItems>
+            </Personnel>
+          </Components>
+        </Resources>
       </Systems>
     </Device>
   </Devices>
