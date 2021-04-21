@@ -14,8 +14,8 @@ FROM arm32v7/node:buster-slim AS tempBuildImage
 RUN apt-get update
 
 # set timezone
-RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime \
-  && echo $CONTAINER_TIMEZONE > /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && \
+  echo $CONTAINER_TIMEZONE > /etc/timezone
 
 # get dependencies
 # The C++ agent depends on libxml2 and for testing libcppunit. 
@@ -25,34 +25,23 @@ RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime \
 RUN apt-get install -y libxml2 libxml2-dev libcppunit-dev \
   cmake git build-essential screen curl
 
-# get agent source
-RUN mkdir -p ~/agent/build \ 
-  && cd ~/agent \
-  && git clone https://github.com/mtconnect/cppagent.git \
-  && cd cppagent \
-  && git submodule init \
-  && git submodule update
-
-# build makefile
-RUN cd ~/agent/build && cmake -D CMAKE_BUILD_TYPE=Release ../cppagent/
-
-# build agent
-RUN cd ~/agent/build && make
-
-# install agent
-RUN cp ~/agent/cppagent/agent/agent /usr/local/bin
+# get agent source, build makefile, build agent, install
+RUN mkdir -p ~/agent/build && \ 
+  cd ~/agent && \
+  git clone https://github.com/mtconnect/cppagent.git && \
+  cd build && \
+  cmake -D CMAKE_BUILD_TYPE=Release ../cppagent/ && \
+  make && \
+  cp agent/agent /usr/local/bin
 
 # setup agent
-RUN mkdir -p /etc/mtconnect/agent \
-  && cd ~/agent/cppagent \
-  && cp -r styles schemas simulator/VMC-3Axis.xml /etc/mtconnect/agent
-
-# # setup simulator
-# RUN mkdir -p /etc/mtconnect/adapter \
-#   && cp simulator/VMC-3Axis-Log.txt simulator/run_scenario.rb /etc/mtconnect/adapter
+RUN mkdir -p /etc/mtconnect/agent && \
+  cd ~/agent/cppagent && \
+  cp -r styles schemas /etc/mtconnect/agent
 
 # multistage build - second step
 # FROM ubuntu:18.04
+# FROM arm32v7/node:buster-slim
 # COPY --from=tempBuildImage /home/app /home/app
 
 # define ports to listen on
