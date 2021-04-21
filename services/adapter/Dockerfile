@@ -1,4 +1,5 @@
 # image for arm
+# see Justfile - build-adapter
 
 FROM arm32v7/node:buster-slim
 
