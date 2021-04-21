@@ -75,6 +75,7 @@ build-adapter:
     docker tag ccs001-adapter mriiotllc/ladder99:ccs001-adapter-0.1.0 && \
     docker push mriiotllc/ladder99:ccs001-adapter-0.1.0
 
+# build agent image - do `docker login -u mriiotllc` if permission denied
 build-agent:
     cd services/agent && \
     docker build --tag=ccs001-agent . && \
