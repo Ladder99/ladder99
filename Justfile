@@ -65,6 +65,23 @@ replay SETUP='demo' RUN='run0' PORT='1883':
       --loop true \
       --file setups/{{SETUP}}/recordings/mqtt/{{RUN}}.csv
 
+
+# ----------- docker images -------------
+
+# build adapter image - do `docker login -u mriiotllc` if permission denied
+build-adapter:
+    cd services/adapter && \
+    docker build --tag=ccs001-adapter . && \
+    docker tag ccs001-adapter mriiotllc/ladder99:ccs001-adapter-0.1.0 && \
+    docker push mriiotllc/ladder99:ccs001-adapter-0.1.0
+
+build-agent:
+    cd services/agent && \
+    docker build --tag=ccs001-agent . && \
+    docker tag ccs001-agent mriiotllc/ladder99:ccs001-agent-0.1.0 && \
+    docker push mriiotllc/ladder99:ccs001-agent-0.1.0
+
+
 # ----------- diode -------------
 
 # start rabbitmq message queues

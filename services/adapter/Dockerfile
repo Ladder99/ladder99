@@ -1,0 +1,17 @@
+# image for arm
+
+FROM arm32v7/node:buster-slim
+
+WORKDIR /usr/src/app
+
+# install javascript dependencies
+# COPY services/adapter/package*.json ./
+COPY ./package*.json ./
+RUN npm ci --production
+
+# copy source
+# COPY services/adapter/src ./src
+COPY ./src ./src
+
+# default command when run container
+CMD ["npm", "start"]
