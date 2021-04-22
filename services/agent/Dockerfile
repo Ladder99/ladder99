@@ -5,7 +5,7 @@
 # get base
 # this ubuntu has linux/arm/v7, linux/amd64
 # see https://hub.docker.com/layers/ubuntu/library/ubuntu/20.04/images/sha256-b30065ff935c7761707eab66d3edc367e5fc1f3cc82c2e4addd69cee3b9e7c1c?context=explore
-FROM ubuntu:20.04 AS base
+FROM ubuntu:20.04 AS makeBase
 
 # update package indexes
 RUN apt-get update
@@ -23,7 +23,7 @@ RUN apt-get install -y \
   libxml2 libxml2-dev libcppunit-dev \
   cmake git build-essential screen curl
 
-FROM base as make
+FROM makeBase as makeMakefile
 
 # get agent source, build makefile, build agent, install
 RUN mkdir -p ~/agent/build && \ 
@@ -32,22 +32,21 @@ RUN mkdir -p ~/agent/build && \
   cd build && \
   cmake -D CMAKE_BUILD_TYPE=Release ../cppagent/
 
-FROM make as build
+FROM makeMakefile as compile
 
 RUN cd ~/agent/build && \
   make && \
   cp agent/agent /usr/local/bin
 
-FROM build as run
+FROM compile as run
 
 # setup agent
 RUN mkdir -p /etc/mtconnect/agent && \
   cd ~/agent/cppagent && \
   cp -r styles schemas /etc/mtconnect/agent
 
-# multistage build - second step
+# multistage build
 # FROM ubuntu:18.04
-# FROM arm32v7/node:buster-slim
 # COPY --from=tempBuildImage /home/app /home/app
 
 # define ports to listen on
