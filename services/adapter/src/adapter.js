@@ -10,7 +10,7 @@ import { Cache } from './cache.js'
 // file system inputs
 const pluginsFolder = './plugins' // for protocol handlers, eg mqtt-json - must start with .
 const dataFolder = '/etc/ladder99' // incl devices.yaml
-const modelsFolder = '/etc/ladder99/models'
+const modelsFolder = '/etc/ladder99/models' // incl ccs-pa/model.yaml etc
 
 // load devices.yaml - see setups/demo/devices.yaml
 // const yamlfile = `${devicesFolder}/devices.yaml`
