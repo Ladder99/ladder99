@@ -2,13 +2,10 @@
 # following instructions from
 # http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu
 
-# status - nearly works but got cd confused at some point and broke build,
-# takes a long time to go through build process, so abandoned for 
-# a prebuilt image.
-
 # get base
-# FROM ubuntu:20.04 AS tempBuildImage
-FROM arm32v7/node:buster-slim AS tempBuildImage
+# this ubuntu has linux/arm/v7, linux/amd64
+# see https://hub.docker.com/layers/ubuntu/library/ubuntu/20.04/images/sha256-b30065ff935c7761707eab66d3edc367e5fc1f3cc82c2e4addd69cee3b9e7c1c?context=explore
+FROM ubuntu:20.04 AS base
 
 # update package indexes
 RUN apt-get update
@@ -22,17 +19,26 @@ RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && \
 # The rest are the standard packages for building software. 
 # We also use cmake to generate the make files.
 # i removed ruby.
-RUN apt-get install -y libxml2 libxml2-dev libcppunit-dev \
+RUN apt-get install -y \
+  libxml2 libxml2-dev libcppunit-dev \
   cmake git build-essential screen curl
+
+FROM base as make
 
 # get agent source, build makefile, build agent, install
 RUN mkdir -p ~/agent/build && \ 
   cd ~/agent && \
   git clone https://github.com/mtconnect/cppagent.git && \
   cd build && \
-  cmake -D CMAKE_BUILD_TYPE=Release ../cppagent/ && \
+  cmake -D CMAKE_BUILD_TYPE=Release ../cppagent/
+
+FROM make as build
+
+RUN cd ~/agent/build && \
   make && \
   cp agent/agent /usr/local/bin
+
+FROM build as run
 
 # setup agent
 RUN mkdir -p /etc/mtconnect/agent && \

@@ -95,10 +95,14 @@ build-adapter SETUP='demo' VERSION='latest':
     just delete-adapter-data
 
 # build and upload agent image
-build-agent:
+build-agent SETUP='demo' VERSION='latest':
     cd services/agent && \
-    docker build --tag=ladder99-agent --tag=mriiotllc/ladder99-agent:latest . && \
-    docker push mriiotllc/ladder99-agent:latest
+    docker buildx build \
+      --platform linux/arm/v7,linux/amd64 \
+      --tag=mriiotllc/ladder99-agent:latest \
+      --tag=mriiotllc/ladder99-agent:{{VERSION}} \
+      --push \
+      .
 
 
 # ----------- diode -------------
