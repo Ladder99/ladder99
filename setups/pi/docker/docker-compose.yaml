@@ -10,8 +10,6 @@ services:
     user: node
     working_dir: /home/node/app
     command: npm start
-    # depends_on:
-    #   - broker-ccs-pa-001
     networks:
       - ladder99
     volumes:
