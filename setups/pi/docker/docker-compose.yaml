@@ -10,14 +10,16 @@ services:
     user: node
     working_dir: /home/node/app
     command: npm start
-    depends_on:
-      - broker-ccs-pa-001
+    # depends_on:
+    #   - broker-ccs-pa-001
     networks:
       - ladder99
     volumes:
       - ../../../services/adapter:/home/node/app
-      - ../devices.yaml:/etc/ladder99/devices.yaml
-      - ../../../models:/etc/ladder99/models
+      # - ../../../models:/etc/ladder99/models
+      # - ../devices.yaml:/etc/ladder99/devices.yaml
+      - ../devices.yaml:/home/node/app/data/devices.yaml
+      - ../../../models:/home/node/app/data/models
     logging:
       options:
         max-size: '1m'

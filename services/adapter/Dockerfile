@@ -1,11 +1,7 @@
-# image for arm
-# see Justfile - build-adapter
+FROM node:15
 
-# FROM node:14-slim
-FROM arm32v7/node:buster-slim
-
-# not /home/node/app ?
-WORKDIR /usr/src/app
+# WORKDIR /usr/src/app
+WORKDIR /home/node/app
 
 # install javascript dependencies
 # COPY services/adapter/package*.json ./
@@ -13,8 +9,12 @@ COPY ./package*.json ./
 RUN npm ci --production
 
 # copy source
-# COPY services/adapter/src ./src
 COPY ./src ./src
+
+# copy data
+# COPY ../../setups/pi/devices.yaml /etc/ladder99
+# COPY ../../models /etc/ladder99/models
+COPY ./data ./data
 
 # default command when run container
 CMD ["npm", "start"]
