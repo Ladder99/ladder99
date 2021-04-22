@@ -91,7 +91,6 @@ build-adapter SETUP='demo':
       --tag=mriiotllc/ladder99-adapter:latest \
       --push \
       .
-    # docker push mriiotllc/ladder99-adapter:latest
     just delete-adapter-data
 
 # build and upload agent image
