@@ -86,6 +86,7 @@ export class Cache {
 function getShdr(cache, output) {
   const timestamp = new Date().toISOString() //. get from item
   const { category, type, representation, key } = output
+  //. rename .value to .getValue or .valueFn
   const value = output.value(cache) // do calculation - value is a fn of cache
   let shdr = ''
   // handle different shdr types
