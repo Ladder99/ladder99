@@ -80,12 +80,17 @@ replay MODEL='ccs-pa' RUN='run0' PORT='1883':
 # ----------- docker images -------------
 
 # do `docker login -u mriiotllc` if permission denied
+# do `docker buildx create --use` if error "multiple platforms not supported"
 
 # build and upload adapter image
 build-adapter SETUP='demo':
     just copy-adapter-data {{SETUP}}
     cd services/adapter && \
-    docker build --tag=ladder99-adapter --tag=mriiotllc/ladder99-adapter:latest . && \
+    docker buildx build \
+      --platform linux/arm/v7,linux/amd64 \
+      --tag=ladder99-adapter \
+      --tag=mriiotllc/ladder99-adapter:latest \
+      . && \
     docker push mriiotllc/ladder99-adapter:latest
     just delete-adapter-data
 
