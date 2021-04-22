@@ -68,19 +68,21 @@ replay SETUP='demo' RUN='run0' PORT='1883':
 
 # ----------- docker images -------------
 
-# build adapter image - do `docker login -u mriiotllc` if permission denied
+# do `docker login -u mriiotllc` if permission denied
+
+# build and upload adapter image
 build-adapter:
     cd services/adapter && \
-    docker build --tag=ccs001-adapter . && \
-    docker tag ccs001-adapter mriiotllc/ladder99:ccs001-adapter-0.1.0 && \
-    docker push mriiotllc/ladder99:ccs001-adapter-0.1.0
+    docker build --tag=ladder99-adapter . && \
+    docker tag ladder99-adapter mriiotllc/ladder99-adapter:latest && \
+    docker push mriiotllc/ladder99-adapter:latest
 
-# build agent image - do `docker login -u mriiotllc` if permission denied
+# build and upload agent image
 build-agent:
     cd services/agent && \
-    docker build --tag=ccs001-agent . && \
-    docker tag ccs001-agent mriiotllc/ladder99:ccs001-agent-0.1.0 && \
-    docker push mriiotllc/ladder99:ccs001-agent-0.1.0
+    docker build --tag=ladder99-agent . && \
+    docker tag ladder99-agent mriiotllc/ladder99-agent:latest && \
+    docker push mriiotllc/ladder99-agent:latest
 
 
 # ----------- diode -------------

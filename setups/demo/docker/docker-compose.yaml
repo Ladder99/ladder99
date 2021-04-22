@@ -30,7 +30,7 @@ services:
     volumes:
       - ../../../services/adapter:/home/node/app
       - ../../../models:/home/node/models
-      - ..:/etc/setup
+      - ../devices.yaml:/etc/setup/devices.yaml
     logging:
       options:
         max-size: '1m'
