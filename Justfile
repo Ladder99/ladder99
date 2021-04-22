@@ -57,13 +57,13 @@ run SETUP='demo' SERVICE='':
     docker-compose --file $FILE rm -fsv
 
 # replay mqtt recording - https://github.com/rpdswtk/mqtt_recorder
-replay SETUP='demo' RUN='run0' PORT='1883':
+replay-mqtt MODEL='ccs-pa' RUN='run0' PORT='1883':
     mqtt-recorder \
       --host localhost \
       --port {{PORT}} \
       --mode replay \
       --loop true \
-      --file setups/{{SETUP}}/recordings/mqtt/{{RUN}}.csv
+      --file models/{{MODEL}}/simulations/{{RUN}}.csv
 
 
 # ----------- docker images -------------
