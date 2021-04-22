@@ -4,19 +4,6 @@
 version: '3.7'
 
 services:
-  broker-ccs-pa-001:
-    container_name: broker-ccs-pa-001
-    image: eclipse-mosquitto
-    networks:
-      - ladder99
-    ports:
-      - 1883:1883
-    volumes:
-      - ../volumes/broker-ccs-pa-001:/mosquitto
-    logging:
-      options:
-        max-size: '1m'
-
   adapter:
     container_name: adapter
     image: node:latest
@@ -52,47 +39,6 @@ services:
       options:
         max-size: '1m'
 
-  simulator-mqtt:
-    container_name: simulator-mqtt
-    image: node:latest
-    user: node
-    working_dir: /home/node/app
-    command: npm start
-    environment:
-      - MQTT_HOST=broker-ccs-pa-001
-      - MQTT_PORT=1883
-      - DEVICE_ID=ccs-pa-001
-      - MESSAGES_FILE=/etc/simulator-mqtt/messages.js
-      - MESSAGE_DELAY=1000
-      - LOOP=true
-      - LOOP_DELAY=3000
-    depends_on:
-      - agent
-    networks:
-      - ladder99
-    volumes:
-      - ../../../services/simulator-mqtt:/home/node/app
-      - ../volumes/simulator-mqtt:/etc/simulator-mqtt
-    logging:
-      options:
-        max-size: '1m'
-
-  simulator-opc:
-    container_name: simulator-opc
-    image: node:latest
-    user: node
-    working_dir: /home/node/app
-    command: npm start
-    volumes:
-      - ../../../services/simulator-opc:/home/node/app
-    depends_on:
-      - agent
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '1m'
-
   portainer:
     container_name: portainer
     image: portainer/portainer-ce
@@ -111,8 +57,6 @@ services:
 
 volumes:
   portainer_data:
-  db-data:
-    driver: local
 
 networks:
   ladder99:
