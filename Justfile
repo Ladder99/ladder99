@@ -57,7 +57,7 @@ delete-adapter-data:
 # -s, --stop    Stop the containers, if required, before removing
 # -v            Remove any anonymous volumes attached to containers
 # ----
-# start a setup with all services, e.g. `just run` or `just run demo` - compiles also
+# start a setup with all services, e.g. `just run` or `just run demo`
 run SETUP='demo' SERVICE='':
     # just compile {{SETUP}}
     just copy-adapter-data {{SETUP}}
@@ -85,16 +85,14 @@ replay MODEL='ccs-pa' RUN='run0' PORT='1883':
 build-adapter SETUP='demo':
     just copy-adapter-data {{SETUP}}
     cd services/adapter && \
-    docker build --tag=ladder99-adapter . && \
-    docker tag ladder99-adapter mriiotllc/ladder99-adapter:latest && \
+    docker build --tag=ladder99-adapter --tag=mriiotllc/ladder99-adapter:latest . && \
     docker push mriiotllc/ladder99-adapter:latest
     just delete-adapter-data
 
 # build and upload agent image
 build-agent:
     cd services/agent && \
-    docker build --tag=ladder99-agent . && \
-    docker tag ladder99-agent mriiotllc/ladder99-agent:latest && \
+    docker build --tag=ladder99-agent --tag=mriiotllc/ladder99-agent:latest . && \
     docker push mriiotllc/ladder99-agent:latest
 
 
