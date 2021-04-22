@@ -85,17 +85,10 @@ export class Cache {
  */
 function getShdr(cache, output) {
   const timestamp = new Date().toISOString() //. get from item
-  // const category = output.category
-  // const key = output.key
   const { category, type, representation, key } = output
   const value = output.value(cache) // do calculation - value is a fn of cache
   let shdr = ''
   // handle different shdr types
-  // if (representation === 'DATA_SET') {
-  //   const nativeCode = 'nativeCode'
-  //   const message = value + ' (msg here)'
-  //   shdr = `${timestamp}|${key}|${nativeCode}|${message}`
-  // } else
   if (category === 'EVENT' || category === 'SAMPLE') {
     shdr = `${timestamp}|${key}|${value}`
   } else if (category === 'CONDITION') {
@@ -103,9 +96,12 @@ function getShdr(cache, output) {
     const nativeCode = 'nativeCode'
     const nativeSeverity = 'nativeSeverity'
     const qualifier = 'qualifier'
-    // const message = 'condition message'
     const message = value + ' (msg here)'
     shdr = `${timestamp}|${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
+    // } else if (representation === 'DATA_SET') {
+    //   const nativeCode = 'nativeCode'
+    //   const message = value + ' (msg here)'
+    //   shdr = `${timestamp}|${key}|${nativeCode}|${message}`
   } else {
     console.log(`warning: unknown category '${category}'`)
   }
