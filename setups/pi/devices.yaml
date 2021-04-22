@@ -1,0 +1,28 @@
+# devices
+# this defines the devices.xml structure, along with the model yamls.
+# read by services/adapter/src/adapter.js.
+# sources define the inputs to the cache.
+# compiled by services/compiler into devices.xml.
+#. see also devices-future.yaml for future dev.
+
+devices:
+  - id: ccs-pa-001 # this is substituted into the model yaml and sources
+    model: ccs-pa # for xml structure - see models/ccs-pa/device.yaml
+    properties: # these are substituted into the model yaml
+      uuid: e05363af-95d1-4354-b749-8fbb09d3499e
+      serialNumber: '001'
+
+    # define data sources that feed into this device
+    sources:
+      - model: ccs-pa # model defines inputs and outputs with yaml files
+        protocol: mqtt-json # type of plugin - manages protocol and payload
+        url: mqtt://broker-ccs-pa-001:1883
+
+      - model: rockwell-hmi
+        protocol: opc
+        url: opc.tcp://simulator-opc:4334/UA/LittleServer
+
+    destinations: # where to post output - just handles one for now
+      - protocol: shdr
+        host: adapter
+        port: 7878
