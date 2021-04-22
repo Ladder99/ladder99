@@ -7,8 +7,14 @@ import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
 import net from 'net' // node lib for tcp
 import { Cache } from './cache.js'
 
+// file system inputs
+//. move these folders, etc /etc/adapter - call it dataFolder or yamlFolder?
+const devicesFolder = '/etc/setup'
+const modelsFolder = '/home/node/models' // for model.yaml, inputs, outputs
+const pluginsFolder = './plugins' // for protocol handlers, eg mqtt-json - must start with .
+
 // load devices.yaml - see setups/demo/devices.yaml
-const yamlfile = '/etc/setup/devices.yaml'
+const yamlfile = `${devicesFolder}/devices.yaml`
 const yamltree = importYaml(yamlfile)
 const { devices } = yamltree
 
@@ -42,21 +48,21 @@ for (const device of devices) {
       const { model, protocol, url } = source
 
       // import protocol plugin
-      const pathProtocol = `./plugins/${protocol}.js` // eg './plugins/mqtt-ccs.js' - must start with ./
+      const pathProtocol = `${pluginsFolder}/${protocol}.js` // eg './plugins/mqtt-ccs.js' -
       console.log(`Adapter importing plugin code: ${pathProtocol}...`)
       // @ts-ignore top level await okay
       const plugin = await import(pathProtocol)
 
       // get inputs
-      const pathInputs = `/home/node/models/${model}/inputs.yaml`
+      const pathInputs = `${modelsFolder}/${model}/inputs.yaml`
       const inputs = importYaml(pathInputs)
 
       // get outputs
-      const pathOutputs = `/home/node/models/${model}/outputs.yaml`
+      const pathOutputs = `${modelsFolder}/${model}/outputs.yaml`
       const outputTemplates = importYaml(pathOutputs).outputs
 
       // get types
-      const pathTypes = `/home/node/models/${model}/types.yaml`
+      const pathTypes = `${modelsFolder}/${model}/types.yaml`
       const types = importYaml(pathTypes).types
 
       // compile outputs from yaml strings and save to source
@@ -75,6 +81,7 @@ for (const device of devices) {
 
     // handle incoming data - get PING from agent, return PONG
     socket.on('data', pingpong)
+
     function pingpong(buffer) {
       const str = buffer.toString().trim()
       if (str === '* PING') {
