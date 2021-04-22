@@ -29,8 +29,8 @@ services:
       - ladder99
     volumes:
       - ../../../services/adapter:/home/node/app
-      - ../../../models:/home/node/models
-      - ../devices.yaml:/etc/setup/devices.yaml
+      - ../devices.yaml:/etc/data/devices.yaml
+      - ../../../models:/etc/data/models
     logging:
       options:
         max-size: '1m'

@@ -8,13 +8,13 @@ import net from 'net' // node lib for tcp
 import { Cache } from './cache.js'
 
 // file system inputs
-//. move these folders, etc /etc/adapter - call it dataFolder or yamlFolder?
-const devicesFolder = '/etc/setup'
-const modelsFolder = '/home/node/models' // for model.yaml, inputs, outputs
 const pluginsFolder = './plugins' // for protocol handlers, eg mqtt-json - must start with .
+const dataFolder = '/etc/data' // incl devices.yaml
+const modelsFolder = '/etc/data/models'
 
 // load devices.yaml - see setups/demo/devices.yaml
-const yamlfile = `${devicesFolder}/devices.yaml`
+// const yamlfile = `${devicesFolder}/devices.yaml`
+const yamlfile = `${dataFolder}/devices.yaml`
 const yamltree = importYaml(yamlfile)
 const { devices } = yamltree
 
