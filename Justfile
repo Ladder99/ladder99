@@ -40,16 +40,6 @@ compile-xml SETUP='demo':
 compile-compose SETUP='demo':
     echo todo
 
-# copy setup data and models to adapter folder
-copy-adapter-data SETUP='demo':
-    mkdir -p services/adapter/src/data
-    cp -r models services/adapter/src/data/models && \
-    cp setups/{{SETUP}}/devices.yaml services/adapter/src/data
-
-# remove data folder from adapter
-delete-adapter-data:
-    rm -rf services/adapter/src/data
-
 # run
 # SETUP is a variable, the name of the setup folder to use
 # rm options:
@@ -82,6 +72,16 @@ replay MODEL='ccs-pa' RUN='run0' PORT='1883':
 # do `docker login -u mriiotllc` if permission denied
 # do `docker buildx create --use` if error "multiple platforms not supported"
 
+# copy setup data and models to adapter folder
+copy-adapter-data SETUP='demo':
+    mkdir -p services/adapter/src/data
+    cp -r models services/adapter/src/data/models && \
+    cp setups/{{SETUP}}/devices.yaml services/adapter/src/data
+
+# remove data folder from adapter
+delete-adapter-data:
+    rm -rf services/adapter/src/data
+
 # build and upload adapter image, eg `just build-adapter pi 0.1.0`
 build-adapter SETUP='demo' VERSION='latest':
     just copy-adapter-data {{SETUP}}
@@ -94,10 +94,20 @@ build-adapter SETUP='demo' VERSION='latest':
       .
     just delete-adapter-data
 
-#      --platform linux/arm/v7,linux/amd64 \
+
+# copy setup data and models to agent folder
+copy-agent-data SETUP='demo':
+    mkdir -p services/agent/src/data
+    cp -r models services/agent/src/data/models && \
+    cp setups/{{SETUP}}/devices.yaml services/agent/src/data
+
+# remove data folder from agent
+delete-agent-data:
+    rm -rf services/agent/src/data
 
 # build and upload agent image
 build-agent SETUP='demo' VERSION='latest' PLATFORM='linux/arm/v7,linux/amd64':
+    just copy-agent-data {{SETUP}}
     cd services/agent && \
     docker buildx build \
       --platform {{PLATFORM}} \
@@ -105,6 +115,7 @@ build-agent SETUP='demo' VERSION='latest' PLATFORM='linux/arm/v7,linux/amd64':
       --tag=mriiotllc/ladder99-agent:{{VERSION}} \
       --push \
       .
+    just delete-agent-data
 
 
 # ----------- diode -------------

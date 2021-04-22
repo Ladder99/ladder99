@@ -1,6 +1,9 @@
 # mtconnect c++ agent
 # following instructions from
 # http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu
+# divide into stages with FROM ... AS ..., so docker can cache intermediate steps,
+# which are slow.
+
 
 # get base
 # this ubuntu has linux/arm/v7, linux/amd64
@@ -23,32 +26,42 @@ RUN apt-get install -y \
   libxml2 libxml2-dev libcppunit-dev \
   cmake git build-essential screen curl
 
+
+# start the makefile step
 FROM make-os as make-makefile
 
-# get agent source, build makefile, build agent, install
+# get agent source
 RUN mkdir -p ~/agent/build && \ 
   cd ~/agent && \
-  git clone https://github.com/mtconnect/cppagent.git --depth 1 && \
-  cd build && \
+  git clone https://github.com/mtconnect/cppagent.git --depth 1
+
+# build makefile using cmake
+RUN cd ~/agent/build && \
   cmake \
   -D CMAKE_BUILD_TYPE=Release \
   -D CMAKE_VERBOSE_MAKEFILE=ON \
   ../cppagent/
 
+
+# start the compile step
 FROM make-makefile as compile
 
+# compile source
 RUN cd ~/agent/build && \
   make && \
   cp agent/agent /usr/local/bin
 
+
+# start the run step
 FROM compile as run
 
 # setup agent
+# RUN mkdir -p /etc/mtconnect/agent && \
+#   cd ~/agent/cppagent && \
+#   cp -r styles schemas /etc/mtconnect/agent
 RUN mkdir -p /etc/mtconnect/agent && \
-  cd ~/agent/cppagent && \
-  cp -r styles schemas /etc/mtconnect/agent
+  echo hi
 
-# multistage build
 # FROM ubuntu:18.04
 # COPY --from=tempBuildImage /home/app /home/app
 
