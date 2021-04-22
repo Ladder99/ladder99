@@ -5,7 +5,7 @@
 # get base
 # this ubuntu has linux/arm/v7, linux/amd64
 # see https://hub.docker.com/layers/ubuntu/library/ubuntu/20.04/images/sha256-b30065ff935c7761707eab66d3edc367e5fc1f3cc82c2e4addd69cee3b9e7c1c?context=explore
-FROM ubuntu:20.04 AS makeBase
+FROM ubuntu:20.04 AS make-os
 
 # update package indexes
 RUN apt-get update
@@ -23,16 +23,16 @@ RUN apt-get install -y \
   libxml2 libxml2-dev libcppunit-dev \
   cmake git build-essential screen curl
 
-FROM makeBase as makeMakefile
+FROM make-os as make-makefile
 
 # get agent source, build makefile, build agent, install
 RUN mkdir -p ~/agent/build && \ 
   cd ~/agent && \
-  git clone https://github.com/mtconnect/cppagent.git && \
+  git clone https://github.com/mtconnect/cppagent.git --depth 1 && \
   cd build && \
   cmake -D CMAKE_BUILD_TYPE=Release ../cppagent/
 
-FROM makeMakefile as compile
+FROM make-makefile as compile
 
 RUN cd ~/agent/build && \
   make && \
