@@ -3,7 +3,6 @@
 # read by services/adapter/src/adapter.js.
 # sources define the inputs to the cache.
 # compiled by services/compiler into devices.xml.
-#. see also devices-future.yaml for future dev.
 
 devices:
   - id: ccs-pa-001 # this is substituted into the model yaml and sources
@@ -17,10 +16,6 @@ devices:
       - model: ccs-pa # model defines inputs and outputs with yaml files
         protocol: mqtt-json # type of plugin - manages protocol and payload
         url: mqtt://broker-ccs-pa-001:1883
-
-      - model: rockwell-hmi
-        protocol: opc
-        url: opc.tcp://simulator-opc:4334/UA/LittleServer
 
     destinations: # where to post output - just handles one for now
       - protocol: shdr
