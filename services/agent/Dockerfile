@@ -30,7 +30,10 @@ RUN mkdir -p ~/agent/build && \
   cd ~/agent && \
   git clone https://github.com/mtconnect/cppagent.git --depth 1 && \
   cd build && \
-  cmake -D CMAKE_BUILD_TYPE=Release ../cppagent/
+  cmake \
+  -D CMAKE_BUILD_TYPE=Release \
+  -D CMAKE_VERBOSE_MAKEFILE=ON \
+  ../cppagent/
 
 FROM make-makefile as compile
 

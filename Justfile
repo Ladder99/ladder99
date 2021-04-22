@@ -94,11 +94,13 @@ build-adapter SETUP='demo' VERSION='latest':
       .
     just delete-adapter-data
 
+#      --platform linux/arm/v7,linux/amd64 \
+
 # build and upload agent image
-build-agent SETUP='demo' VERSION='latest':
+build-agent SETUP='demo' VERSION='latest' PLATFORM='linux/arm/v7,linux/amd64':
     cd services/agent && \
     docker buildx build \
-      --platform linux/arm/v7,linux/amd64 \
+      --platform {{PLATFORM}} \
       --tag=mriiotllc/ladder99-agent:latest \
       --tag=mriiotllc/ladder99-agent:{{VERSION}} \
       --push \
