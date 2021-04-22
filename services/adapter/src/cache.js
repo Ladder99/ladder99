@@ -92,6 +92,7 @@ function getShdr(cache, output) {
   if (category === 'EVENT' || category === 'SAMPLE') {
     shdr = `${timestamp}|${key}|${value}`
   } else if (category === 'CONDITION') {
+    //. pick these values out of the value, which should be an object, eh?
     const level = value // eg 'WARNING' -> element 'Warning'
     const nativeCode = 'nativeCode'
     const nativeSeverity = 'nativeSeverity'
