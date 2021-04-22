@@ -5,7 +5,10 @@
 # which are slow.
 
 
-# get base
+#----------------------------------------------------------------------------
+# start the os step
+#----------------------------------------------------------------------------
+
 # this ubuntu has linux/arm/v7, linux/amd64
 # see https://hub.docker.com/layers/ubuntu/library/ubuntu/20.04/images/sha256-b30065ff935c7761707eab66d3edc367e5fc1f3cc82c2e4addd69cee3b9e7c1c?context=explore
 FROM ubuntu:20.04 AS make-os
@@ -27,7 +30,10 @@ RUN apt-get install -y \
   cmake git build-essential screen curl
 
 
+#----------------------------------------------------------------------------
 # start the makefile step
+#----------------------------------------------------------------------------
+
 FROM make-os as make-makefile
 
 # get agent source
@@ -43,7 +49,10 @@ RUN cd ~/agent/build && \
   ../cppagent/
 
 
+#----------------------------------------------------------------------------
 # start the compile step
+#----------------------------------------------------------------------------
+
 FROM make-makefile as compile
 
 # compile source
@@ -52,7 +61,10 @@ RUN cd ~/agent/build && \
   cp agent/agent /usr/local/bin
 
 
+#----------------------------------------------------------------------------
 # start the run step
+#----------------------------------------------------------------------------
+
 FROM compile as run
 
 # setup agent
