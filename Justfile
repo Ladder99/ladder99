@@ -88,10 +88,10 @@ build-adapter SETUP='demo':
     cd services/adapter && \
     docker buildx build \
       --platform linux/arm/v7,linux/amd64 \
-      --tag=ladder99-adapter \
       --tag=mriiotllc/ladder99-adapter:latest \
-      . && \
-    docker push mriiotllc/ladder99-adapter:latest
+      --push \
+      .
+    # docker push mriiotllc/ladder99-adapter:latest
     just delete-adapter-data
 
 # build and upload agent image
