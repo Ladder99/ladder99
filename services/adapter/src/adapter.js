@@ -9,6 +9,8 @@ import { Cache } from './cache.js'
 
 // file system inputs
 const pluginsFolder = './plugins' // for protocol handlers, eg mqtt-json - must start with .
+// note: caller needs to copy devices.yaml and model folders before running this app.
+// see Justfile - copy-adapter-data and delete-adapter-data.
 //. why do we need to specify ./src here? don't need it for plugins
 const dataFolder = './src/data' // incl devices.yaml, models folder (copied from setups and models)
 const modelsFolder = `${dataFolder}/models` // incl ccs-pa/model.yaml etc

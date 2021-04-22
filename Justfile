@@ -41,13 +41,13 @@ compile-compose SETUP='demo':
     echo todo
 
 # copy setup data and models to adapter folder
-adapter-copy-data SETUP='demo':
+copy-adapter-data SETUP='demo':
     mkdir -p services/adapter/src/data
     cp -r models services/adapter/src/data/models && \
     cp setups/{{SETUP}}/devices.yaml services/adapter/src/data
 
 # remove data folder from adapter
-adapter-delete-data:
+delete-adapter-data:
     rm -rf services/adapter/src/data
 
 # run
@@ -60,12 +60,12 @@ adapter-delete-data:
 # start a setup with all services, e.g. `just run` or `just run demo` - compiles also
 run SETUP='demo' SERVICE='':
     # just compile {{SETUP}}
-    just adapter-copy-data {{SETUP}}
+    just copy-adapter-data {{SETUP}}
     FILE=setups/{{SETUP}}/docker/docker-compose.yaml && \
     docker-compose --file $FILE down && \
     docker-compose --file $FILE up --build --remove-orphans {{SERVICE}} && \
     docker-compose --file $FILE rm -fsv
-    just adapter-delete-data
+    just delete-adapter-data
 
 # replay mqtt recording - https://github.com/rpdswtk/mqtt_recorder
 replay MODEL='ccs-pa' RUN='run0' PORT='1883':
@@ -83,12 +83,12 @@ replay MODEL='ccs-pa' RUN='run0' PORT='1883':
 
 # build and upload adapter image
 build-adapter SETUP='demo':
-    just adapter-copy-data {{SETUP}}
+    just copy-adapter-data {{SETUP}}
     cd services/adapter && \
     docker build --tag=ladder99-adapter . && \
     docker tag ladder99-adapter mriiotllc/ladder99-adapter:latest && \
     docker push mriiotllc/ladder99-adapter:latest
-    just adapter-delete-data
+    just delete-adapter-data
 
 # build and upload agent image
 build-agent:
