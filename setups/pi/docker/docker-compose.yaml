@@ -6,12 +6,9 @@ version: '3.7'
 services:
   adapter:
     container_name: adapter
-    image: node:latest
-    user: node
-    working_dir: /home/node/app
-    command: npm start
+    image: mriiotllc/ladder99-adapter:latest
     networks:
-      - ladder99
+      - l99_bridge
     volumes:
       - ../../../services/adapter:/home/node/app
       # - ../../../models:/etc/ladder99/models
@@ -27,7 +24,7 @@ services:
     image: raymondhub/mtconnect:v1.5
     command: agent debug /etc/mtconnect/agent-custom/agent.cfg
     networks:
-      - ladder99
+      - l99_bridge
     ports:
       - 5000:5000
     depends_on:
@@ -46,7 +43,7 @@ services:
     logging:
       driver: 'none'
     networks:
-      - ladder99
+      - l99_bridge
     ports:
       - '9000:9000'
     volumes:
@@ -59,5 +56,5 @@ volumes:
   portainer_data:
 
 networks:
-  ladder99:
-    name: ladder99
+  l99_bridge:
+    name: l99_bridge

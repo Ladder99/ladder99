@@ -55,7 +55,7 @@ RUN cd ~/agent/build && \
 
 FROM make-makefile as compile
 
-# compile source
+# compile source (~20mins)
 RUN cd ~/agent/build && \
   make && \
   cp agent/agent /usr/local/bin
@@ -67,7 +67,7 @@ RUN cd ~/agent/build && \
 
 FROM compile as run
 
-WORKDIR /etc/mtconnect/agent
+WORKDIR /etc/mtconnect/agent-custom
 
 COPY data/agent .
 
@@ -75,4 +75,4 @@ COPY data/agent .
 EXPOSE 5000 7878
 
 # define default run command
-CMD ["agent", "debug", "/etc/mtconnect/agent/agent.cfg"]
+CMD ["agent", "debug", "/etc/mtconnect/agent-custom/agent.cfg"]
