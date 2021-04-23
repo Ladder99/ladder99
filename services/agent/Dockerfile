@@ -45,7 +45,6 @@ RUN mkdir -p ~/agent/build && \
 RUN cd ~/agent/build && \
   cmake \
   -D CMAKE_BUILD_TYPE=Release \
-  -D CMAKE_VERBOSE_MAKEFILE=ON \
   ../cppagent/
 
 

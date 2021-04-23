@@ -21,17 +21,14 @@ services:
 
   agent:
     container_name: agent
-    image: raymondhub/mtconnect:v1.5
-    command: agent debug /etc/mtconnect/agent-custom/agent.cfg
+    image: mriiotllc/ladder99-agent:latest
+    # command: agent debug /etc/mtconnect/agent-custom/agent.cfg
     networks:
       - l99_bridge
     ports:
       - 5000:5000
     depends_on:
       - adapter
-    volumes:
-      - ../volumes/agent:/etc/mtconnect/agent-custom
-      - ../volumes/agent/data:/var/lib/agent
     logging:
       options:
         max-size: '1m'
