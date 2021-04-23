@@ -1,5 +1,7 @@
+#-------------------------------------------------------------------------
 # use with https://github.com/casey/just
 # like make, but just a command runner
+#-------------------------------------------------------------------------
 
 # list targets
 help:
@@ -67,7 +69,9 @@ replay MODEL='ccs-pa' RUN='run0' PORT='1883':
       --file models/{{MODEL}}/simulations/{{RUN}}.csv
 
 
-# ----------- docker images -------------
+#-------------------------------------------------------------------------
+# docker images
+#-------------------------------------------------------------------------
 
 # do `docker login -u mriiotllc` if permission denied
 # do `docker buildx create --use` if error "multiple platforms not supported"
@@ -95,30 +99,33 @@ build-adapter SETUP='demo' VERSION='latest':
     just delete-adapter-data
 
 
-# copy setup data and models to agent folder
+# copy setup data and models to agent folder, 
+# so it's in the context accessible by the dockerfile.
 copy-agent-data SETUP='demo':
-    mkdir -p services/agent/src/data
-    cp -r models services/agent/src/data/models && \
-    cp setups/{{SETUP}}/devices.yaml services/agent/src/data
+    mkdir -p services/agent/data
+    cp -r setups/{{SETUP}}/volumes/agent  services/agent/data
 
 # remove data folder from agent
 delete-agent-data:
-    rm -rf services/agent/src/data
+    rm -rf services/agent/data
 
+# note: the image won't show up in `docker images` because it's multiarch
 # build and upload agent image
 build-agent SETUP='demo' VERSION='latest' PLATFORM='linux/arm/v7,linux/amd64':
     just copy-agent-data {{SETUP}}
     cd services/agent && \
     docker buildx build \
       --platform {{PLATFORM}} \
-      --tag=mriiotllc/ladder99-agent:latest \
       --tag=mriiotllc/ladder99-agent:{{VERSION}} \
+      --tag=mriiotllc/ladder99-agent:latest \
       --push \
       .
     just delete-agent-data
 
 
-# ----------- diode -------------
+#-------------------------------------------------------------------------
+# diode (java/rabbitmq)
+#-------------------------------------------------------------------------
 
 # start rabbitmq message queues
 rabbits:
