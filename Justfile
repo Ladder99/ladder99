@@ -121,6 +121,7 @@ build-agent SETUP='demo' VERSION='latest' PLATFORM='linux/arm/v7,linux/amd64':
       --push \
       .
     just delete-agent-data
+    docker run -it mriiotllc/ladder99-agent:latest /bin/bash
 
 
 #-------------------------------------------------------------------------
