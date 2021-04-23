@@ -111,7 +111,8 @@ delete-agent-data:
 
 # note: the image won't show up in `docker images` because it's multiarch
 # build and upload agent image
-build-agent SETUP='demo' VERSION='latest' PLATFORM='linux/arm/v7,linux/amd64':
+# build-agent SETUP='demo' VERSION='latest' PLATFORM='linux/arm/v7,linux/amd64':
+build-agent SETUP='demo' VERSION='latest' PLATFORM='linux/amd64':
     just copy-agent-data {{SETUP}}
     cd services/agent && \
     docker buildx build \
