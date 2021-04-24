@@ -15,7 +15,8 @@ devices:
     sources:
       - model: ccs-pa # model defines inputs and outputs with yaml files
         protocol: mqtt-json # type of plugin - manages protocol and payload
-        url: mqtt://broker-ccs-pa-001:1883
+        # url: mqtt://broker-ccs-pa-001:1883
+        url: mqtt://mosquitto:1883
 
     destinations: # where to post output - just handles one for now
       - protocol: shdr
