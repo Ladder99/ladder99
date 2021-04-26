@@ -9,6 +9,8 @@ services:
     image: mriiotllc/ladder99-adapter:latest
     networks:
       - l99_bridge
+    # environment:
+    #   - MQTT_HOST=broker-ccs-pa-001
     # volumes:
     #   - ../../../services/adapter:/home/node/app
     #   # - ../../../models:/etc/ladder99/models
