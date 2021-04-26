@@ -7,7 +7,7 @@
 help:
     @just --list
 
-# install all dependencies (also need python, node/npm, docker, openjdk8, gradle2.8)
+# install all dependencies (also need python, node/npm, docker, jq, openjdk8, gradle2.8)
 install:
     pip install mqtt-recorder
     npm install -g http-server
@@ -76,27 +76,26 @@ replay MODEL='ccs-pa' RUN='run0' PORT='1883':
 # do `docker login -u mriiotllc` if permission denied
 # do `docker buildx create --use` if error "multiple platforms not supported"
 
-# copy setup data and models to adapter folder
-copy-adapter-data SETUP='demo':
-    mkdir -p services/adapter/src/data
-    cp -r models services/adapter/src/data/models && \
-    cp setups/{{SETUP}}/devices.yaml services/adapter/src/data
+# # copy setup data and models to adapter folder
+# copy-adapter-data SETUP='demo':
+#     mkdir -p services/adapter/src/data
+#     cp -r models services/adapter/src/data/models && \
+#     cp setups/{{SETUP}}/devices.yaml services/adapter/src/data
 
-# remove data folder from adapter
-delete-adapter-data:
-    rm -rf services/adapter/src/data
+# # remove data folder from adapter
+# delete-adapter-data:
+#     rm -rf services/adapter/src/data
 
-# build and upload adapter image, eg `just build-adapter pi 0.1.0`
-build-adapter SETUP='demo' VERSION='latest':
-    just copy-adapter-data {{SETUP}}
+# build and upload adapter image
+build-adapter:
+    export L99_ADAPTER_VERSION=`jq .version services/adapter/package.json`
     cd services/adapter && \
     docker buildx build \
       --platform linux/arm/v7,linux/amd64 \
       --tag=mriiotllc/ladder99-adapter:latest \
-      --tag=mriiotllc/ladder99-adapter:{{VERSION}} \
+      --tag=mriiotllc/ladder99-adapter:$L99_ADAPTER_VERSION \
       --push \
       .
-    just delete-adapter-data
 
 
 # copy setup data and models to agent folder, 

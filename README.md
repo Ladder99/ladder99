@@ -35,7 +35,7 @@ Clone this repo
     git clone https://github.com/bburns/ladder99-mtconnect
     cd ladder99-mtconnect
 
-Install Docker, Node, and Python3 from their installers. 
+Install Docker, Node, jq, and Python3 from their installers. 
 
 Install [just](https://github.com/casey/just), which is a task runner, using `Justfile` for command scripts - if on Mac, 
 
@@ -44,8 +44,9 @@ Install [just](https://github.com/casey/just), which is a task runner, using `Ju
 Install all other dependencies with
 
     just install
+    just install-dev   # includes sphinx for docs
 
-You can see all the commands you can run with
+You can see all the commands available with
 
     just
 
