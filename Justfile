@@ -75,21 +75,18 @@ replay MODEL='ccs-pa' RUN='run0' PORT='1883':
 
 # do `docker login -u mriiotllc` if permission denied
 # do `docker buildx create --use` if error "multiple platforms not supported"
-
-# # copy setup data and models to adapter folder
-# copy-adapter-data SETUP='demo':
-#     mkdir -p services/adapter/src/data
-#     cp -r models services/adapter/src/data/models && \
-#     cp setups/{{SETUP}}/devices.yaml services/adapter/src/data
-
-# # remove data folder from adapter
-# delete-adapter-data:
-#     rm -rf services/adapter/src/data
-
+#---
+# note: the image won't show up in `docker images` because it's multiarch
+#---
+# test and look around with this -
+#   docker run -it mriiotllc/ladder99-adapter:0.1.0 /bin/bash
+#   npm start  # will get error due to missing devices.yaml
+#. or docker run :latest if can ignore cache
+#---
 # build and upload adapter image
 build-adapter:
-    export L99_ADAPTER_VERSION=`jq .version services/adapter/package.json`
     cd services/adapter && \
+    export L99_ADAPTER_VERSION=`jq -r .version package.json` && \
     docker buildx build \
       --platform linux/arm/v7,linux/amd64 \
       --tag=mriiotllc/ladder99-adapter:latest \
@@ -98,30 +95,18 @@ build-adapter:
       .
 
 
-# copy setup data and models to agent folder, 
-# so it's in the context accessible by the dockerfile.
-copy-agent-data SETUP='demo':
-    mkdir -p services/agent/data
-    cp -r setups/{{SETUP}}/volumes/agent  services/agent/data
-
-# remove data folder from agent
-delete-agent-data:
-    rm -rf services/agent/data
-
 # note: the image won't show up in `docker images` because it's multiarch
-# build and upload agent image
-# build-agent SETUP='demo' VERSION='latest' PLATFORM='linux/arm/v7,linux/amd64':
-build-agent SETUP='demo' VERSION='latest' PLATFORM='linux/amd64':
-    just copy-agent-data {{SETUP}}
+#---
+# build and upload agent image, eg `just build-agent linux/arm/v7`
+build-agent PLATFORM='linux/amd64':
     cd services/agent && \
+    export L99_AGENT_VERSION=`jq -r .version package.json` && \
     docker buildx build \
       --platform {{PLATFORM}} \
-      --tag=mriiotllc/ladder99-agent:{{VERSION}} \
-      --tag=mriiotllc/ladder99-agent:latest \
+      --tag=mriiotllc/ladder99-adapter:latest \
+      --tag=mriiotllc/ladder99-adapter:$L99_AGENT_VERSION \
       --push \
       .
-    just delete-agent-data
-    docker run -it mriiotllc/ladder99-agent:latest /bin/bash
 
 
 #-------------------------------------------------------------------------
