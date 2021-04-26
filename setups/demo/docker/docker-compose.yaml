@@ -47,7 +47,7 @@ services:
       - adapter
     volumes:
       - ../volumes/agent:/etc/mtconnect/agent-custom
-      - ../volumes/agent/data:/var/lib/agent
+      # - ../volumes/agent/data:/var/lib/agent
     logging:
       options:
         max-size: '1m'

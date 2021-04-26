@@ -11,12 +11,9 @@ services:
       - l99_bridge
     # environment:
     #   - MQTT_HOST=broker-ccs-pa-001
-    # volumes:
-    #   - ../../../services/adapter:/home/node/app
-    #   # - ../../../models:/etc/ladder99/models
-    #   # - ../devices.yaml:/etc/ladder99/devices.yaml
-    #   # - ../devices.yaml:/home/node/app/data/devices.yaml
-    #   # - ../../../models:/home/node/app/data/models
+    volumes:
+      - ../../../models:/etc/ladder99-adapter/models
+      - ../devices.yaml:/etc/ladder99-adapter/devices.yaml
     logging:
       options:
         max-size: '1m'
@@ -31,6 +28,9 @@ services:
       - 5000:5000
     depends_on:
       - adapter
+    # volumes:
+    #   - ../../../models:/etc/ladder99-adapter/models
+    #   - ../devices.yaml:/etc/ladder99-adapter/devices.yaml
     logging:
       options:
         max-size: '1m'
