@@ -68,7 +68,7 @@ FROM compile as run
 
 WORKDIR /etc/mtconnect/agent-custom
 
-COPY data/agent .
+# COPY data/agent .
 
 # define ports to listen on
 EXPOSE 5000 7878
