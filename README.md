@@ -52,11 +52,15 @@ You can see all the commands you can run with
 
 ## Developing
 
-The device models are defined in `models`, e.g. the ccs-pa model has adapter.js, device.yaml, and calcs.yaml. 
+The device models are defined in `models`, e.g. the ccs-pa model has model.yaml, inputs.yaml, outputs.yaml, and types.yaml. 
 
-The device instances are defined in the `setups` folder, eg the `demo` setup has a list of instances in the devices subfolder there. 
+The device instances are defined in the `setups` folder, eg the `demo` setup has a list of instances in the devices subfolder there. Edit these as needed.
 
-Edit these as needed - then generate the `setups/demo/volumes/agent/devices.xml` and `setups/demo/docker-compose.yaml` files, run docker-compose up, and start the device simulations with -
+Then generate the `setups/demo/volumes/agent/devices.xml` and `setups/demo/docker/docker-compose.yaml` files (latter not implemented yet - hand-edit) -
+
+    just compile
+
+Then run docker-compose up and start the device simulations with -
 
     just run
 
