@@ -9,8 +9,6 @@ services:
     image: mriiotllc/ladder99-adapter:latest
     networks:
       - l99_bridge
-    # environment:
-    #   - MQTT_HOST=broker-ccs-pa-001
     volumes:
       - ../../../models:/etc/ladder99-adapter/models
       - ../devices.yaml:/etc/ladder99-adapter/devices.yaml
@@ -28,9 +26,8 @@ services:
       - 5000:5000
     depends_on:
       - adapter
-    # volumes:
-    #   - ../../../models:/etc/ladder99-adapter/models
-    #   - ../devices.yaml:/etc/ladder99-adapter/devices.yaml
+    volumes:
+      - ./volumes/agent:/etc/ladder99-agent
     logging:
       options:
         max-size: '1m'
