@@ -6,11 +6,12 @@
 # http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu
 
 # update package indexes
-sudo apt-get update
+sudo apt update
+# sudo apt upgrade ?
 
 # get dependencies
 # i removed ruby.
-sudo apt-get install -y \
+sudo apt install -y \
   libxml2 libxml2-dev libcppunit-dev \
   cmake git build-essential screen curl
 

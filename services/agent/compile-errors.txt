@@ -1,0 +1,67 @@
+pi@raspberrypi:~ $ cd ~/agent/build &&   make &&   cp agent/agent /usr/local/bin
+[  0%] Built target UPDATE_VERSION
+Scanning dependencies of target agent_lib
+[  1%] Building CXX object agent_lib/CMakeFiles/agent_lib.dir/__/src/version.cpp.o
+[  2%] Linking CXX static library libagent_lib.a
+[ 17%] Built target agent_lib
+[ 18%] Linking CXX executable agent
+/usr/bin/ld: ../agent_lib/libagent_lib.a(config.cpp.o): in function `std::filesystem::__cxx11::path::path<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::filesystem::__cxx11::path>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::filesystem::__cxx11::path::format) [clone .constprop.1031]':
+config.cpp:(.text+0xa7c): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: ../agent_lib/libagent_lib.a(config.cpp.o): in function `mtconnect::AgentConfiguration::AgentConfiguration()':
+config.cpp:(.text+0x1dc8): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: config.cpp:(.text+0x1e58): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: config.cpp:(.text+0x1edc): undefined reference to `std::filesystem::current_path[abi:cxx11]()'
+/usr/bin/ld: config.cpp:(.text+0x1f6c): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: ../agent_lib/libagent_lib.a(config.cpp.o): in function `mtconnect::AgentConfiguration::checkPath(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)':
+config.cpp:(.text+0x257c): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: config.cpp:(.text+0x2594): undefined reference to `std::filesystem::__cxx11::path::has_root_directory() const'
+/usr/bin/ld: config.cpp:(.text+0x25d0): undefined reference to `std::filesystem::status(std::filesystem::__cxx11::path const&)'
+/usr/bin/ld: config.cpp:(.text+0x2648): undefined reference to `std::filesystem::status(std::filesystem::__cxx11::path const&)'
+/usr/bin/ld: config.cpp:(.text+0x2670): undefined reference to `std::filesystem::__cxx11::path::has_filename() const'
+/usr/bin/ld: config.cpp:(.text+0x269c): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: config.cpp:(.text+0x26cc): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: config.cpp:(.text+0x26e0): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: config.cpp:(.text+0x277c): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: config.cpp:(.text+0x2790): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: ../agent_lib/libagent_lib.a(config.cpp.o): in function `std::filesystem::__cxx11::path::operator/=(std::filesystem::__cxx11::path const&)':
+config.cpp:(.text._ZNSt10filesystem7__cxx114pathdVERKS1_[_ZNSt10filesystem7__cxx114pathdVERKS1_]+0x14): undefined reference to `std::filesystem::__cxx11::path::has_root_directory() const'
+/usr/bin/ld: config.cpp:(.text._ZNSt10filesystem7__cxx114pathdVERKS1_[_ZNSt10filesystem7__cxx114pathdVERKS1_]+0x50): undefined reference to `std::filesystem::__cxx11::path::has_filename() const'
+/usr/bin/ld: config.cpp:(.text._ZNSt10filesystem7__cxx114pathdVERKS1_[_ZNSt10filesystem7__cxx114pathdVERKS1_]+0x78): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: ../agent_lib/libagent_lib.a(file_cache.cpp.o): in function `mtconnect::http_server::FileCache::getFile(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)':
+file_cache.cpp:(.text+0x3e4): undefined reference to `std::filesystem::__cxx11::path::_M_find_extension() const'
+/usr/bin/ld: file_cache.cpp:(.text+0x618): undefined reference to `std::filesystem::file_size(std::filesystem::__cxx11::path const&)'
+/usr/bin/ld: file_cache.cpp:(.text+0x86c): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: file_cache.cpp:(.text+0xa40): undefined reference to `std::filesystem::__cxx11::filesystem_error::~filesystem_error()'
+/usr/bin/ld: file_cache.cpp:(.text+0xba8): undefined reference to `std::filesystem::__cxx11::filesystem_error::~filesystem_error()'
+/usr/bin/ld: ../agent_lib/libagent_lib.a(file_cache.cpp.o): in function `mtconnect::http_server::FileCache::registerFile(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)':
+file_cache.cpp:(.text+0xc88): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: file_cache.cpp:(.text+0xc94): undefined reference to `std::filesystem::status(std::filesystem::__cxx11::path const&)'
+/usr/bin/ld: file_cache.cpp:(.text+0xcec): undefined reference to `std::filesystem::absolute(std::filesystem::__cxx11::path const&)'
+/usr/bin/ld: file_cache.cpp:(.text+0xe5c): undefined reference to `std::filesystem::status(std::filesystem::__cxx11::path const&)'
+/usr/bin/ld: file_cache.cpp:(.text+0xeac): undefined reference to `std::filesystem::absolute(std::filesystem::__cxx11::path const&)'
+/usr/bin/ld: file_cache.cpp:(.text+0x100c): undefined reference to `std::filesystem::absolute(std::filesystem::__cxx11::path const&)'
+/usr/bin/ld: ../agent_lib/libagent_lib.a(file_cache.cpp.o): in function `mtconnect::http_server::FileCache::registerDirectory(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&, std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const&)':
+file_cache.cpp:(.text+0x2960): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: file_cache.cpp:(.text+0x296c): undefined reference to `std::filesystem::status(std::filesystem::__cxx11::path const&)'
+/usr/bin/ld: file_cache.cpp:(.text+0x2ac0): undefined reference to `std::filesystem::status(std::filesystem::__cxx11::path const&)'
+/usr/bin/ld: file_cache.cpp:(.text+0x2c30): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: file_cache.cpp:(.text+0x2c44): undefined reference to `std::filesystem::__cxx11::directory_iterator::directory_iterator(std::filesystem::__cxx11::path const&, std::filesystem::directory_options, std::error_code*)'
+/usr/bin/ld: file_cache.cpp:(.text+0x2cfc): undefined reference to `std::filesystem::__cxx11::directory_iterator::operator*() const'
+/usr/bin/ld: file_cache.cpp:(.text+0x2e54): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: file_cache.cpp:(.text+0x2f34): undefined reference to `std::filesystem::__cxx11::path::has_root_directory() const'
+/usr/bin/ld: file_cache.cpp:(.text+0x32e0): undefined reference to `std::filesystem::__cxx11::directory_iterator::operator++()'
+/usr/bin/ld: file_cache.cpp:(.text+0x3320): undefined reference to `std::filesystem::__cxx11::path::has_filename() const'
+/usr/bin/ld: file_cache.cpp:(.text+0x3394): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: file_cache.cpp:(.text+0x3904): undefined reference to `std::filesystem::__cxx11::filesystem_error::~filesystem_error()'
+/usr/bin/ld: file_cache.cpp:(.text+0x39c4): undefined reference to `std::filesystem::__cxx11::filesystem_error::~filesystem_error()'
+/usr/bin/ld: ../agent_lib/libagent_lib.a(file_cache.cpp.o):(.ARM.extab+0x6c): undefined reference to `typeinfo for std::filesystem::__cxx11::filesystem_error'
+/usr/bin/ld: ../agent_lib/libagent_lib.a(file_cache.cpp.o):(.ARM.extab+0x330): undefined reference to `typeinfo for std::filesystem::__cxx11::filesystem_error'
+/usr/bin/ld: ../agent_lib/libagent_lib.a(file_cache.cpp.o): in function `std::filesystem::__cxx11::filesystem_error::filesystem_error(std::filesystem::__cxx11::filesystem_error const&)':
+file_cache.cpp:(.text._ZNSt10filesystem7__cxx1116filesystem_errorC2ERKS1_[_ZNSt10filesystem7__cxx1116filesystem_errorC5ERKS1_]+0x2cc): undefined reference to `vtable for std::filesystem::__cxx11::filesystem_error'
+/usr/bin/ld: ../agent_lib/libagent_lib.a(file_cache.cpp.o): in function `std::pair<std::_Rb_tree_iterator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::filesystem::__cxx11::path> >, bool> std::_Rb_tree<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::filesystem::__cxx11::path>, std::_Select1st<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::filesystem::__cxx11::path> >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::filesystem::__cxx11::path> > >::_M_emplace_unique<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::filesystem::__cxx11::path>(std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >&, std::filesystem::__cxx11::path&&)':
+file_cache.cpp:(.text._ZNSt8_Rb_treeINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt4pairIKS5_NSt10filesystem7__cxx114pathEESt10_Select1stISB_ESt4lessIS5_ESaISB_EE17_M_emplace_uniqueIJRS5_SA_EEES6_ISt17_Rb_tree_iteratorISB_EbEDpOT_[_ZNSt8_Rb_treeINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt4pairIKS5_NSt10filesystem7__cxx114pathEESt10_Select1stISB_ESt4lessIS5_ESaISB_EE17_M_emplace_uniqueIJRS5_SA_EEES6_ISt17_Rb_tree_iteratorISB_EbEDpOT_]+0xa4): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+/usr/bin/ld: file_cache.cpp:(.text._ZNSt8_Rb_treeINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt4pairIKS5_NSt10filesystem7__cxx114pathEESt10_Select1stISB_ESt4lessIS5_ESaISB_EE17_M_emplace_uniqueIJRS5_SA_EEES6_ISt17_Rb_tree_iteratorISB_EbEDpOT_[_ZNSt8_Rb_treeINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEESt4pairIKS5_NSt10filesystem7__cxx114pathEESt10_Select1stISB_ESt4lessIS5_ESaISB_EE17_M_emplace_uniqueIJRS5_SA_EEES6_ISt17_Rb_tree_iteratorISB_EbEDpOT_]+0xb8): undefined reference to `std::filesystem::__cxx11::path::_M_split_cmpts()'
+collect2: error: ld returned 1 exit status
+make[2]: *** [agent/CMakeFiles/agent.dir/build.make:87: agent/agent] Error 1
+make[1]: *** [CMakeFiles/Makefile2:340: agent/CMakeFiles/agent.dir/all] Error 2
+make: *** [Makefile:163: all] Error 2
