@@ -4,6 +4,11 @@
 # following instructions from
 # http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu
 
+#. these don't work directly on the pi - get errors with gcc8,9,10. 
+# need to build within docker. weird. 
+
+
+
 sudo apt update
 sudo apt upgrade
 
