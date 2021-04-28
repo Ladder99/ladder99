@@ -19,7 +19,7 @@ services:
 
   adapter:
     container_name: adapter
-    image: node:latest
+    image: node:14
     user: node
     working_dir: /home/node/app
     command: npm start
@@ -37,7 +37,8 @@ services:
 
   agent:
     container_name: agent
-    image: raymondhub/mtconnect:v1.5
+    # image: raymondhub/mtconnect:v1.5
+    image: mriiotllc/ladder99-agent:latest-amd64
     command: agent debug /etc/ladder99-agent/agent.cfg
     networks:
       - ladder99
@@ -53,7 +54,7 @@ services:
 
   simulator-mqtt:
     container_name: simulator-mqtt
-    image: node:latest
+    image: node:14
     user: node
     working_dir: /home/node/app
     command: npm start
@@ -78,7 +79,7 @@ services:
 
   simulator-opc:
     container_name: simulator-opc
-    image: node:latest
+    image: node:14
     user: node
     working_dir: /home/node/app
     command: npm start
