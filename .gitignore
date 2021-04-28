@@ -5,3 +5,4 @@ node_modules
 *.log
 *.db
 .firebase
+pi_password.txt
