@@ -12,3 +12,8 @@
 
 # install docker-compose - not yet in docker command
 sudo pip3 install docker-compose
+
+# allow pi user to run docker
+sudo usermod -aG docker pi
+
+echo Now restart terminal - otherwise must use sudo with docker commands. 
