@@ -29,6 +29,10 @@ console.log(`----------------------------------------------------------------`)
 // define cache shared across devices and sources
 const cache = new Cache()
 
+if (!devices) {
+  console.log(`No devices.yaml available - please add one to ${dataFolder}.`)
+}
+
 // iterate over device definitions from devices.yaml
 for (const device of devices) {
   console.log({ device })

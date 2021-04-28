@@ -1,6 +1,10 @@
 #. this will be generated from devices.yaml, but edit manually for now.
 # order of startup: broker, adapter, agent, application, simulators.
 
+#. note: this is currently setup for the pi,
+# where it expects the adapter and agent datafiles to be in /etc folders.
+# so won't run on desktop with `just run pi` yet.
+
 version: '3.7'
 
 services:

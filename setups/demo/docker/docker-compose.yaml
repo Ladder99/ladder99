@@ -29,8 +29,8 @@ services:
       - ladder99
     volumes:
       - ../../../services/adapter:/home/node/app
-      - ../devices.yaml:/etc/ladder99/devices.yaml
-      - ../../../models:/etc/ladder99/models
+      - ../devices.yaml:/etc/ladder99-adapter/devices.yaml
+      - ../../../models:/etc/ladder99-adapter/models
     logging:
       options:
         max-size: '1m'
@@ -38,7 +38,7 @@ services:
   agent:
     container_name: agent
     image: raymondhub/mtconnect:v1.5
-    command: agent debug /etc/mtconnect/agent-custom/agent.cfg
+    command: agent debug /etc/ladder99-agent/agent.cfg
     networks:
       - ladder99
     ports:
@@ -46,8 +46,7 @@ services:
     depends_on:
       - adapter
     volumes:
-      - ../volumes/agent:/etc/mtconnect/agent-custom
-      # - ../volumes/agent/data:/var/lib/agent
+      - ../volumes/agent:/etc/ladder99-agent
     logging:
       options:
         max-size: '1m'
