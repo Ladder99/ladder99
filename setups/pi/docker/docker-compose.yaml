@@ -10,8 +10,9 @@ services:
     networks:
       - l99_bridge
     volumes:
-      - ../../../models:/etc/ladder99-adapter/models
-      - ../devices.yaml:/etc/ladder99-adapter/devices.yaml
+      # - ../../../models:/etc/ladder99-adapter/models
+      # - ../devices.yaml:/etc/ladder99-adapter/devices.yaml
+      - /etc/ladder99-adapter:/etc/ladder99-adapter
     logging:
       options:
         max-size: '1m'
@@ -27,7 +28,8 @@ services:
     depends_on:
       - adapter
     volumes:
-      - ./volumes/agent:/etc/ladder99-agent
+      # - ./volumes/agent:/etc/ladder99-agent
+      - /etc/ladder99-agent:/etc/ladder99-agent
     logging:
       options:
         max-size: '1m'

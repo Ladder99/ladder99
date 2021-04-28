@@ -103,8 +103,8 @@ build-agent PLATFORM='linux/amd64':
     export L99_AGENT_VERSION=`jq -r .version package.json` && \
     docker buildx build \
       --platform {{PLATFORM}} \
-      --tag=mriiotllc/ladder99-adapter:latest \
-      --tag=mriiotllc/ladder99-adapter:$L99_AGENT_VERSION \
+      --tag=mriiotllc/ladder99-agent:latest \
+      --tag=mriiotllc/ladder99-agent:$L99_AGENT_VERSION \
       --push \
       .
 
