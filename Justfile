@@ -1,9 +1,10 @@
 #-------------------------------------------------------------------------
 # use with https://github.com/casey/just
 # like make, but just a command runner
+# not avail for raspberry pi yet - https://github.com/casey/just/issues/739
 #-------------------------------------------------------------------------
 
-# note: just automatically reads environment variables from the .env file
+# note: this automatically reads environment variables from an .env file
 
 # this command will enter passwords at the command line for you
 # see https://github.com/clarkwang/passh
