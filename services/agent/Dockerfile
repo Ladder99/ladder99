@@ -75,5 +75,4 @@ FROM compile as run
 EXPOSE 5000
 
 # define default run command
-# CMD ["agent", "debug", "/etc/mtconnect/agent-custom/agent.cfg"]
 CMD ["agent", "debug", "/etc/ladder99-agent/agent.cfg"]
