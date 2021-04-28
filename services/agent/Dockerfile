@@ -44,6 +44,9 @@ RUN mkdir -p ~/agent/build && \
   git clone https://github.com/mtconnect/cppagent.git --depth 1
 
 # build makefile using cmake
+# fails when building for linux/arm/7 in macos docker - need to build in pi docker.
+#   CMake Error at /usr/share/cmake-3.16/Modules/CMakeCompilerIdDetection.cmake:26 (list):
+#   list sub-command REMOVE_ITEM requires two or more arguments.
 RUN cd ~/agent/build && \
   cmake \
   -D CMAKE_BUILD_TYPE=Release \
@@ -69,8 +72,6 @@ RUN cd ~/agent/build && \
 FROM compile as run
 
 WORKDIR /etc/mtconnect/agent-custom
-
-# COPY data/agent .
 
 # define ports to listen on
 EXPOSE 5000 7878
