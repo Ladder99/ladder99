@@ -11,6 +11,7 @@
 #   sudo bash -s -- --to /usr/local/bin
 
 # install and upgrade docker
+# see https://docs.docker.com/engine/install/debian/#install-using-the-convenience-script
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 sudo apt upgrade docker
