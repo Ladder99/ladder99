@@ -100,6 +100,9 @@ build-adapter:
       --push \
       .
 
+# note: we set the destination directory's group and owner to pi, 
+# so can copy to it with scp.
+#---
 # copy yaml files to pi - envars are set in .env file
 deploy-adapter SETUP='pi':
     $enterpwd ssh $PI "sudo mkdir -p /etc/ladder99-adapter" && \
@@ -122,6 +125,9 @@ build-agent:
       --push \
       .
 
+# note: we set the destination directory's group and owner to pi, 
+# so can copy to it with scp.
+#---
 # copy xml and style files to pi - envars are set in .env file
 deploy-agent SETUP='pi':
     $enterpwd ssh $PI "sudo mkdir -p /etc/ladder99-agent" && \
