@@ -110,6 +110,12 @@ build-agent PLATFORM='linux/amd64':
       --push \
       .
 
+deploy-agent SETUP='pi':
+    source .env && \
+    enterpwd ssh $PI "sudo mkdir -p /etc/ladder99-agent" && \
+    enterpwd ssh $PI "sudo chown pi:pi /etc/ladder99-agent" && \
+    enterpwd scp -rp setups/{{SETUP}}/volumes/agent/* $PI:/etc/ladder99-agent
+
 
 #-------------------------------------------------------------------------
 # diode (java/rabbitmq)
