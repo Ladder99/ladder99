@@ -5,4 +5,4 @@ export PI_USER=pi
 export PI_PASSWORD=password
 
 export PI=$PI_USER@$PI_URL
-alias enterpwd="./bin/macos/passh -p env:PI_PASSWORD"
+export ENTERPWD="./bin/macos/passh -p env:PI_PASSWORD"
