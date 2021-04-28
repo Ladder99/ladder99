@@ -47,6 +47,11 @@ RUN mkdir -p ~/agent/build && \
 # fails when building for linux/arm/7 in macos docker - need to build in pi docker.
 #   CMake Error at /usr/share/cmake-3.16/Modules/CMakeCompilerIdDetection.cmake:26 (list):
 #   list sub-command REMOVE_ITEM requires two or more arguments.
+# see https://gitlab.kitware.com/cmake/cmake/-/issues/20568#note_780329
+# you need to recompile cmake with that flag. You can set it via your environment variables:
+# export CFLAGS="-D_FILE_OFFSET_BITS=64"
+# export CXXFLAGS="-D_FILE_OFFSET_BITS=64"
+#. try that sometime ^
 RUN cd ~/agent/build && \
   cmake \
   -D CMAKE_BUILD_TYPE=Release \

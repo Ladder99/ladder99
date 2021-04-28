@@ -92,12 +92,13 @@ build-adapter:
       --push \
       .
 
+# copy yaml files to pi
 deploy-adapter SETUP='pi':
     source pi.sh && \
-    enterpwd ssh $PI "sudo mkdir -p /etc/ladder99-adapter" && \
-    enterpwd ssh $PI "sudo chown pi:pi /etc/ladder99-adapter" && \
-    enterpwd scp -p setups/{{SETUP}}/devices.yaml $PI:/etc/ladder99-adapter && \
-    enterpwd scp -pr models $PI:/etc/ladder99-adapter/models
+    bash -c '$ENTERPWD ssh $PI "sudo mkdir -p /etc/ladder99-adapter"'' && \
+    $ENTERPWD ssh $PI "sudo chown pi:pi /etc/ladder99-adapter" && \
+    $ENTERPWD scp -p setups/{{SETUP}}/devices.yaml $PI:/etc/ladder99-adapter && \
+    $ENTERPWD scp -pr models $PI:/etc/ladder99-adapter/models
 
 # note: the image won't show up in `docker images` because it's multiarch
 #---
@@ -112,6 +113,7 @@ build-agent PLATFORM='linux/amd64':
       --push \
       .
 
+# copy xml and style files to pi
 deploy-agent SETUP='pi':
     source pi.sh && \
     enterpwd ssh $PI "sudo mkdir -p /etc/ladder99-agent" && \
