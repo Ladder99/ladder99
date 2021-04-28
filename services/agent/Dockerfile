@@ -53,6 +53,8 @@ RUN mkdir -p ~/agent/build && \
 # export CXXFLAGS="-D_FILE_OFFSET_BITS=64"
 #. try that sometime ^
 RUN cd ~/agent/build && \
+  export CFLAGS="-D_FILE_OFFSET_BITS=64" && \
+  export CXXFLAGS="-D_FILE_OFFSET_BITS=64" && \
   cmake \
   -D CMAKE_BUILD_TYPE=Release \
   ../cppagent/

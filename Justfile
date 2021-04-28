@@ -95,7 +95,7 @@ build-adapter:
 # copy yaml files to pi
 deploy-adapter SETUP='pi':
     source pi.sh && \
-    bash -c '$ENTERPWD ssh $PI "sudo mkdir -p /etc/ladder99-adapter"'' && \
+    $ENTERPWD ssh $PI "sudo mkdir -p /etc/ladder99-adapter" && \
     $ENTERPWD ssh $PI "sudo chown pi:pi /etc/ladder99-adapter" && \
     $ENTERPWD scp -p setups/{{SETUP}}/devices.yaml $PI:/etc/ladder99-adapter && \
     $ENTERPWD scp -pr models $PI:/etc/ladder99-adapter/models
@@ -103,11 +103,15 @@ deploy-adapter SETUP='pi':
 # note: the image won't show up in `docker images` because it's multiarch
 #---
 # build and upload agent image, eg `just build-agent linux/amd64,linux/arm/v7`
-build-agent PLATFORM='linux/amd64':
+#      --platform {{PLATFORM}} \
+# build-agent PLATFORM='linux/amd64':
+build-agent:
     cd services/agent && \
     export L99_AGENT_VERSION=`jq -r .version package.json` && \
+    export CFLAGS="-D_FILE_OFFSET_BITS=64" && \
+    export CXXFLAGS="-D_FILE_OFFSET_BITS=64" && \
     docker buildx build \
-      --platform {{PLATFORM}} \
+      --platform linux/arm/v7,linux/amd64 \
       --tag=mriiotllc/ladder99-agent:latest \
       --tag=mriiotllc/ladder99-agent:$L99_AGENT_VERSION \
       --push \
