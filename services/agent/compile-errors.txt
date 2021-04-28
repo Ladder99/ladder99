@@ -1,3 +1,7 @@
+with gcc8.3
+doesn't handle std::filesystem
+
+
 pi@raspberrypi:~ $ cd ~/agent/build &&   make &&   cp agent/agent /usr/local/bin
 [  0%] Built target UPDATE_VERSION
 Scanning dependencies of target agent_lib
