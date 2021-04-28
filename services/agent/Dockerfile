@@ -51,7 +51,7 @@ RUN mkdir -p ~/agent/build && \
 # you need to recompile cmake with that flag. You can set it via your environment variables:
 # export CFLAGS="-D_FILE_OFFSET_BITS=64"
 # export CXXFLAGS="-D_FILE_OFFSET_BITS=64"
-#. try that sometime ^
+# still get same error though...
 RUN cd ~/agent/build && \
   export CFLAGS="-D_FILE_OFFSET_BITS=64" && \
   export CXXFLAGS="-D_FILE_OFFSET_BITS=64" && \
