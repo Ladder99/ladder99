@@ -97,7 +97,7 @@ build-adapter:
 
 # note: the image won't show up in `docker images` because it's multiarch
 #---
-# build and upload agent image, eg `just build-agent linux/arm/v7`
+# build and upload agent image, eg `just build-agent linux/amd64,linux/arm/v7`
 build-agent PLATFORM='linux/amd64':
     cd services/agent && \
     export L99_AGENT_VERSION=`jq -r .version package.json` && \
