@@ -94,6 +94,8 @@ build-adapter:
       --push \
       .
 
+deploy-adapter:
+    echo hi
 
 # note: the image won't show up in `docker images` because it's multiarch
 #---
