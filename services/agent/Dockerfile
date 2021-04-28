@@ -72,7 +72,7 @@ RUN cd ~/agent/build && \
 FROM compile as run
 
 # define ports to listen on
-EXPOSE 5000 7878
+EXPOSE 5000
 
 # define default run command
 # CMD ["agent", "debug", "/etc/mtconnect/agent-custom/agent.cfg"]
