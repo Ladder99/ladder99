@@ -3,7 +3,11 @@
 # like make, but just a command runner
 #-------------------------------------------------------------------------
 
-# just automatically reads environment variables from the .env file
+# note: just automatically reads environment variables from the .env file
+
+# this command will enter passwords at the command line for you
+# see https://github.com/clarkwang/passh
+export enterpwd := "./bin/macos/passh -p env:PI_PASSWORD"
 
 # list targets
 help:
@@ -96,10 +100,10 @@ build-adapter:
 
 # copy yaml files to pi - envars are set in .env file
 deploy-adapter SETUP='pi':
-    $ENTERPWD ssh $PI "sudo mkdir -p /etc/ladder99-adapter" && \
-    $ENTERPWD ssh $PI "sudo chown pi:pi /etc/ladder99-adapter" && \
-    $ENTERPWD scp -p setups/{{SETUP}}/devices.yaml $PI:/etc/ladder99-adapter && \
-    $ENTERPWD scp -pr models $PI:/etc/ladder99-adapter/models
+    $enterpwd ssh $PI "sudo mkdir -p /etc/ladder99-adapter" && \
+    $enterpwd ssh $PI "sudo chown pi:pi /etc/ladder99-adapter" && \
+    $enterpwd scp -p setups/{{SETUP}}/devices.yaml $PI:/etc/ladder99-adapter && \
+    $enterpwd scp -pr models $PI:/etc/ladder99-adapter/models
 
 # note: the image won't show up in `docker images` because it's multiarch
 #---
@@ -118,9 +122,9 @@ build-agent:
 
 # copy xml and style files to pi - envars are set in .env file
 deploy-agent SETUP='pi':
-    $ENTERPWD ssh $PI "sudo mkdir -p /etc/ladder99-agent" && \
-    $ENTERPWD ssh $PI "sudo chown pi:pi /etc/ladder99-agent" && \
-    $ENTERPWD scp -rp setups/{{SETUP}}/volumes/agent/* $PI:/etc/ladder99-agent
+    $enterpwd ssh $PI "sudo mkdir -p /etc/ladder99-agent" && \
+    $enterpwd ssh $PI "sudo chown pi:pi /etc/ladder99-agent" && \
+    $enterpwd scp -rp setups/{{SETUP}}/volumes/agent/* $PI:/etc/ladder99-agent
 
 
 #-------------------------------------------------------------------------
