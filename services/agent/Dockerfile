@@ -71,10 +71,9 @@ RUN cd ~/agent/build && \
 
 FROM compile as run
 
-WORKDIR /etc/mtconnect/agent-custom
-
 # define ports to listen on
 EXPOSE 5000 7878
 
 # define default run command
-CMD ["agent", "debug", "/etc/mtconnect/agent-custom/agent.cfg"]
+# CMD ["agent", "debug", "/etc/mtconnect/agent-custom/agent.cfg"]
+CMD ["agent", "debug", "/etc/ladder99-agent/agent.cfg"]
