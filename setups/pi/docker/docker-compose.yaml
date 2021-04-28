@@ -18,7 +18,6 @@ services:
   agent:
     container_name: agent
     image: mriiotllc/ladder99-agent:latest
-    # command: agent debug /etc/mtconnect/agent-custom/agent.cfg
     networks:
       - l99_bridge
     ports:
