@@ -118,9 +118,9 @@ build-agent:
 # copy xml and style files to pi
 deploy-agent SETUP='pi':
     source pi.sh && \
-    enterpwd ssh $PI "sudo mkdir -p /etc/ladder99-agent" && \
-    enterpwd ssh $PI "sudo chown pi:pi /etc/ladder99-agent" && \
-    enterpwd scp -rp setups/{{SETUP}}/volumes/agent/* $PI:/etc/ladder99-agent
+    $ENTERPWD ssh $PI "sudo mkdir -p /etc/ladder99-agent" && \
+    $ENTERPWD ssh $PI "sudo chown pi:pi /etc/ladder99-agent" && \
+    $ENTERPWD scp -rp setups/{{SETUP}}/volumes/agent/* $PI:/etc/ladder99-agent
 
 
 #-------------------------------------------------------------------------
