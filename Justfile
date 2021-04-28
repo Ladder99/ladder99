@@ -108,8 +108,6 @@ deploy-adapter SETUP='pi':
 build-agent:
     cd services/agent && \
     export L99_AGENT_VERSION=`jq -r .version package.json` && \
-    export CFLAGS="-D_FILE_OFFSET_BITS=64" && \
-    export CXXFLAGS="-D_FILE_OFFSET_BITS=64" && \
     docker buildx build \
       --platform linux/arm/v7,linux/amd64 \
       --tag=mriiotllc/ladder99-agent:latest \
