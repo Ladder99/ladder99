@@ -30,6 +30,8 @@ For more on the data diode, see the service [here](services/diode).
 
 ## Installation
 
+### Desktop (Mac/Windows)
+
 Clone this repo
 
     git clone https://github.com/bburns/ladder99-mtconnect
@@ -49,6 +51,14 @@ Install all other dependencies with
 You can see all the commands available with
 
     just
+
+### Raspberry pi
+
+Run this to install Docker etc -
+
+    ./pi_install.sh
+
+Note: 'just' isn't available for the pi yet.
 
 
 ## Developing
@@ -78,6 +88,24 @@ To replay some more mqtt messages,
     just replay
 
 (later use telegraf to shovel data from localhost:5000 to database and visualizer)
+
+
+## Deploying
+
+To deploy to the Raspberry pi, first build the images - this will also push them to our Docker Hub - 
+
+    build-adapter
+
+Currently build-agent must be done ON THE PI - gives errors on x86.
+
+    build-agent
+
+Then copy the needed files - 'pi' here is the setup to use - see 'setups' folder -
+
+    deploy-adapter pi
+    deploy-agent pi
+
+Then can run everything on the pi.
 
 
 ## Documentation
