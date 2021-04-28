@@ -3,6 +3,8 @@
 # like make, but just a command runner
 #-------------------------------------------------------------------------
 
+# just automatically reads environment variables from the .env file
+
 # list targets
 help:
     @just --list
@@ -92,9 +94,8 @@ build-adapter:
       --push \
       .
 
-# copy yaml files to pi
+# copy yaml files to pi - envars are set in .env file
 deploy-adapter SETUP='pi':
-    source pi.sh && \
     $ENTERPWD ssh $PI "sudo mkdir -p /etc/ladder99-adapter" && \
     $ENTERPWD ssh $PI "sudo chown pi:pi /etc/ladder99-adapter" && \
     $ENTERPWD scp -p setups/{{SETUP}}/devices.yaml $PI:/etc/ladder99-adapter && \
@@ -115,9 +116,8 @@ build-agent:
       --push \
       .
 
-# copy xml and style files to pi
+# copy xml and style files to pi - envars are set in .env file
 deploy-agent SETUP='pi':
-    source pi.sh && \
     $ENTERPWD ssh $PI "sudo mkdir -p /etc/ladder99-agent" && \
     $ENTERPWD ssh $PI "sudo chown pi:pi /etc/ladder99-agent" && \
     $ENTERPWD scp -rp setups/{{SETUP}}/volumes/agent/* $PI:/etc/ladder99-agent
