@@ -7,6 +7,7 @@
 # note: this automatically reads environment variables from an .env file
 
 # this command will enter passwords at the command line for you
+# usage: $enterpwd <command text>
 # see https://github.com/clarkwang/passh
 export enterpwd := "./bin/macos/passh -p env:PI_PASSWORD"
 
