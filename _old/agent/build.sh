@@ -9,6 +9,26 @@
 
 
 
+# increase memory available - need for building dlib on the pi.
+
+# Note: Increasing swap size is a great way to burn out your Raspberry Pi card.
+# https://www.pyimagesearch.com/2017/05/01/install-dlib-raspberry-pi/
+# https://pimylifeup.com/raspberry-pi-swap-file/
+
+# $ sudo nano /etc/dphys-swapfile
+# CONF_SWAPSIZE=100 => 1000
+
+# restart swap:
+# $ sudo /etc/init.d/dphys-swapfile stop
+# $ sudo /etc/init.d/dphys-swapfile start
+# $ free -mh
+
+# COMPILE
+
+# THEN PUT SWAP SIZE BACK TO 100!
+
+
+
 sudo apt update
 sudo apt upgrade
 
@@ -68,13 +88,5 @@ cd ~/agent/build && \
   make && \
   cp agent/agent /usr/local/bin
 
-# WORKDIR /etc/mtconnect/agent-custom
-# COPY data/agent .
-
-# define ports to listen on
-# EXPOSE 5000 7878
-
-# define default run command
-# CMD ["agent", "debug", "/etc/mtconnect/agent-custom/agent.cfg"]
-
-agent debug /etc/mtconnect/agent-custom/agent.cfg
+# run agent
+agent debug /etc/ladder99-agent/agent.cfg
