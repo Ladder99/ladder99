@@ -12,7 +12,6 @@
   "license": "Proprietary",
   "private": true,
   "dependencies": {
-    "influx": "^5.8.0",
     "node-fetch": "^2.6.1",
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.3",

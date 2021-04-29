@@ -1,5 +1,7 @@
 import fetch from 'node-fetch'
-import { Sequelize } from 'sequelize'
+// import { Sequelize } from 'sequelize'
+
+console.log(`in application`)
 
 // const username = 'postgres'
 // const password = 'gralgrut'

@@ -1,23 +1,24 @@
-  # application:
-  #   container_name: application
-  #   image: node:latest
-  #   user: node
-  #   working_dir: /home/node/app
-  #   command: npm start
-  #   environment:
-  #     - URL=http://agent:5000/sample
-  #     - INTERVAL=2000
-  #   depends_on:
-  #     agent:
-  #       condition: service_started
-  #   networks:
-  #     - ladder99
-  #   volumes:
-  #     - ../../../services/application:/home/node/app
-  #   #   - ../volumes/application:/etc/application
-  #   logging:
-  #     options:
-  #       max-size: '1m'
+  application:
+    container_name: application
+    image: node:15
+    # user: node
+    # working_dir: /home/node/app
+    # command: npm start
+    environment:
+      - URL=http://agent:5000/sample
+      - INTERVAL=2000
+    # depends_on:
+    #   agent:
+    #     condition: service_started
+    networks:
+      - ladder99
+    volumes:
+      - ../../../services/application:/home/node/app
+    #   - ../volumes/application:/etc/application
+    logging:
+      options:
+        max-size: '1m'
+
 
 
   # timescaledb:
