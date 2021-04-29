@@ -1,15 +1,22 @@
 import * as domain from './domain.js'
 import tree from '../example-current.js'
 
-domain.traverse(tree, node => {
-  // console.log(node)
+domain.traverse(tree, (group, node) => {
   const types = Object.keys(node)
   types.forEach(type => {
-    const dataItem = node[type]
-    const id = dataItem['@dataItemId']
-    const sequence = dataItem['@sequence']
-    const timestamp = dataItem['@timestamp']
-    const value = dataItem.Value
-    console.log(id, value)
+    const data = node[type]
+    const id = data['@dataItemId']
+    const sequence = data['@sequence']
+    const timestamp = data['@timestamp']
+    const value = data.Value
+    const dataItem = {
+      group,
+      type,
+      id,
+      sequence,
+      timestamp,
+      value,
+    }
+    console.log(dataItem)
   })
 })

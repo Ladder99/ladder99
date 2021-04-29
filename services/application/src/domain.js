@@ -5,12 +5,8 @@ export function traverse(node, callback) {
   } else if (node !== null && typeof node === 'object') {
     // Object.values(node).forEach(value => traverse(value, callback))
     Object.entries(node).forEach(([key, value]) => {
-      if (key === 'Samples') {
-        value.forEach(callback)
-      } else if (key === 'Events') {
-        value.forEach(callback)
-      } else if (key === 'Conditions') {
-        value.forEach(callback)
+      if (key === 'Samples' || key === 'Events' || key === 'Conditions') {
+        value.forEach(value => callback(key, value))
       } else {
         traverse(value, callback)
       }
