@@ -1,7 +1,7 @@
 import fetch from 'node-fetch'
 // import { Sequelize } from 'sequelize'
 
-console.log(`in application`)
+console.log(`MTConnect Application starting`)
 
 // const username = 'postgres'
 // const password = 'gralgrut'
