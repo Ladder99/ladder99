@@ -6,7 +6,7 @@
   "//target": "es2017",
   "scripts": {
     "start": "node src/application.js",
-    "test": "node src/application.test.js"
+    "test": "nodemon src/application.test.js"
   },
   "keywords": [],
   "author": "Brian Burns <bburns.km@gmail.com>",
@@ -15,8 +15,9 @@
   "dependencies": {
     "node-fetch": "^2.6.1",
     "pg": "^8.5.1",
-    "pg-hstore": "^2.3.3",
-    "sequelize": "^6.6.2",
-    "sequelize-cli": "^6.2.0"
+    "pg-hstore": "^2.3.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
   }
 }

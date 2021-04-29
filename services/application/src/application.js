@@ -1,4 +1,5 @@
 import fetch from 'node-fetch'
+import * as domain from './domain'
 
 console.log(`MTConnect Application starting`)
 
@@ -22,10 +23,10 @@ async function shovel() {
         Accept: 'application/json',
       },
     })
-    const json = await response.json()
-    console.log(json)
-    const streams = json.MTConnectStreams.Streams
-    traverse(streams, node => {
+    const tree = await response.json()
+    // console.log(tree)
+    // const streams = tree.MTConnectStreams.Streams
+    domain.traverse(tree, node => {
       console.log(node)
     })
     // console.dir(json, { depth: null })
@@ -48,16 +49,5 @@ async function shovel() {
     } else {
       throw error
     }
-  }
-}
-
-// recurse down a tree of nodes, calling callback on each one
-function traverse(node, callback) {
-  if (Array.isArray(node)) {
-    node.forEach(subnode => traverse(subnode, callback))
-  } else if (node !== null && typeof node === 'object') {
-    Object.values(node).forEach(value => traverse(value, callback))
-  } else {
-    callback(node)
   }
 }
