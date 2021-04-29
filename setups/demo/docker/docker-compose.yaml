@@ -19,7 +19,7 @@ services:
 
   adapter:
     container_name: adapter
-    image: node:14
+    image: node:15
     user: node
     working_dir: /home/node/app
     command: npm start
@@ -54,7 +54,7 @@ services:
 
   simulator-mqtt:
     container_name: simulator-mqtt
-    image: node:14
+    image: node:15
     user: node
     working_dir: /home/node/app
     command: npm start
@@ -79,7 +79,7 @@ services:
 
   simulator-opc:
     container_name: simulator-opc
-    image: node:14
+    image: node:15
     user: node
     working_dir: /home/node/app
     command: npm start
