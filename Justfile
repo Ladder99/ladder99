@@ -75,6 +75,11 @@ replay MODEL='ccs-pa' RUN='run0' PORT='1883':
       --loop true \
       --file models/{{MODEL}}/simulations/{{RUN}}.csv
 
+# run the mtconnect application, which polls the agent
+run-app:
+    cd services/application && \
+    npm start
+
 
 #-------------------------------------------------------------------------
 # docker images
