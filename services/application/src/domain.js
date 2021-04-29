@@ -7,7 +7,7 @@ export function traverse(node, callback) {
     Object.entries(node).forEach(([key, value]) => {
       if (key === 'Samples' || key === 'Events' || key === 'Condition') {
         value.forEach(value => {
-          const dataItems = foo(key, value)
+          const dataItems = getDataItems(key, value)
           callback(dataItems)
         })
       } else {
@@ -21,22 +21,10 @@ export function traverse(node, callback) {
   }
 }
 
-function foo(group, datanode) {
+function getDataItems(group, datanode) {
   const types = Object.keys(datanode)
   const dataItems = types.map(type => {
-    const data = datanode[type]
-    const id = data['@dataItemId']
-    const sequence = data['@sequence']
-    const timestamp = data['@timestamp']
-    const value = data.Value
-    const dataItem = {
-      group,
-      type,
-      id,
-      sequence,
-      timestamp,
-      value,
-    }
+    const dataItem = { group, type, ...datanode[type] }
     return dataItem
   })
   return dataItems

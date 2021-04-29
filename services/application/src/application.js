@@ -1,4 +1,4 @@
-import fs from 'fs'
+// import fs from 'fs'
 import fetch from 'node-fetch'
 import * as domain from './domain.js'
 
@@ -29,7 +29,8 @@ async function shovel() {
     })
     const tree = await response.json()
     // fs.writeFileSync('../example.json', JSON.stringify(tree))
-    domain.traverse(tree, dataItems => console.log(dataItems[0]))
+    // domain.traverse(tree, dataItems => console.log(dataItems[0]))
+    domain.traverse(tree, console.log)
 
     // console.dir(json, { depth: null })
     // const streams = json.MTConnectStreams.Streams
