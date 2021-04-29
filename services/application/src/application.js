@@ -24,7 +24,6 @@ async function shovel() {
       },
     })
     const tree = await response.json()
-    // console.log(tree)
     // const streams = tree.MTConnectStreams.Streams
     domain.traverse(tree, node => {
       console.log(node)
