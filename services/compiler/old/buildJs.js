@@ -8,9 +8,7 @@ const sourcefile = process.argv[2] // eg 'input/foo/device.yaml'
 // find all value entries in the yaml tree and add as strings to output dict, recursively.
 function getCode(ytree, values) {
   if (Array.isArray(ytree)) {
-    for (const el of ytree) {
-      getCode(el, values)
-    }
+    ytree.forEach(el => getCode(el, values))
   } else if (typeof ytree === 'object') {
     const keys = Object.keys(ytree)
     let id

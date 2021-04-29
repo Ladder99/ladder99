@@ -1,5 +1,4 @@
 import fetch from 'node-fetch'
-// import { Sequelize } from 'sequelize'
 
 console.log(`MTConnect Application starting`)
 
@@ -10,24 +9,10 @@ console.log(`MTConnect Application starting`)
 // const database = 'tutorial'
 // const connect = `postgres://${username}:${password}@${host}:${port}/${database}`
 
-// const sequelize = new Sequelize(connect, {
-//   dialect: 'postgres',
-//   protocol: 'postgres',
-//   dialectOptions: {},
-// })
-// console.log(sequelize)
-
-// sequelize
-//   .authenticate()
-//   .then(() => {
-//     console.log('Connection has been established successfully.')
-//   })
-//   .catch(err => {
-//     console.error('Unable to connect to the database:', err)
-//   })
-
 const url = process.env.URL || 'http://agent:5000/sample'
 const interval = Number(process.env.INTERVAL || 2000) // msec
+
+setInterval(shovel, interval)
 
 async function shovel() {
   try {
@@ -39,6 +24,10 @@ async function shovel() {
     })
     const json = await response.json()
     console.log(json)
+    const streams = json.MTConnectStreams.Streams
+    traverse(streams, node => {
+      console.log(node)
+    })
     // console.dir(json, { depth: null })
     // const streams = json.MTConnectStreams.Streams
     // for (const stream of streams) {
@@ -62,4 +51,13 @@ async function shovel() {
   }
 }
 
-setInterval(shovel, interval)
+// recurse down a tree of nodes, calling callback on each one
+function traverse(node, callback) {
+  if (Array.isArray(node)) {
+    node.forEach(subnode => traverse(subnode, callback))
+  } else if (node !== null && typeof node === 'object') {
+    Object.values(node).forEach(value => traverse(value, callback))
+  } else {
+    callback(node)
+  }
+}
