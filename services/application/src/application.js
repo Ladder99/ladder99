@@ -1,5 +1,6 @@
+import fs from 'fs'
 import fetch from 'node-fetch'
-import * as domain from './domain'
+import * as domain from './domain.js'
 
 console.log(`MTConnect Application starting`)
 
@@ -10,20 +11,24 @@ console.log(`MTConnect Application starting`)
 // const database = 'tutorial'
 // const connect = `postgres://${username}:${password}@${host}:${port}/${database}`
 
-const url = process.env.URL || 'http://agent:5000/sample'
+const url = process.env.URL || 'http://localhost:5000/sample'
 const interval = Number(process.env.INTERVAL || 2000) // msec
+
+const sample = '?from=1&count=200'
 
 setInterval(shovel, interval)
 
 async function shovel() {
   try {
-    const response = await fetch(url, {
+    console.log(url + sample)
+    const response = await fetch(url + sample, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
       },
     })
     const tree = await response.json()
+    // fs.writeFileSync('../example.json', JSON.stringify(tree))
     domain.traverse(tree, dataItems => console.log(dataItems[0]))
 
     // console.dir(json, { depth: null })

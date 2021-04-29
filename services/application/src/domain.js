@@ -4,9 +4,8 @@ export function traverse(node, callback) {
   if (Array.isArray(node)) {
     node.forEach(subnode => traverse(subnode, callback))
   } else if (node !== null && typeof node === 'object') {
-    // Object.values(node).forEach(value => traverse(value, callback))
     Object.entries(node).forEach(([key, value]) => {
-      if (key === 'Samples' || key === 'Events' || key === 'Conditions') {
+      if (key === 'Samples' || key === 'Events' || key === 'Condition') {
         value.forEach(value => {
           const dataItems = foo(key, value)
           callback(dataItems)
