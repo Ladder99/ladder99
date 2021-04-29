@@ -1,4 +1,4 @@
-// import fs from 'fs'
+import fs from 'fs'
 import fetch from 'node-fetch'
 import * as domain from './domain.js'
 
@@ -11,27 +11,28 @@ console.log(`MTConnect Application starting`)
 // const database = 'tutorial'
 // const connect = `postgres://${username}:${password}@${host}:${port}/${database}`
 
-// const url = process.env.URL || 'http://localhost:5000/sample'
-const url = process.env.URL || 'http://localhost:5000/current'
+const baseUrl = process.env.BASE_URL || 'http://localhost:5000'
 const interval = Number(process.env.INTERVAL || 2000) // msec
-
-// const sample = '?from=1&count=200'
 
 setInterval(shovel, interval)
 
 async function shovel() {
+  const currentUrl = `${baseUrl}/current`
+  // const from = 1
+  // const count = 200
+  // const sampleUrl = `${baseUrl}/sample?from=${from}&count=${count}`
+  const url = currentUrl
   try {
-    console.log(url + sample)
-    const response = await fetch(url + sample, {
+    console.log(`fetch from ${url}...`)
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
       },
     })
     const tree = await response.json()
-    // fs.writeFileSync('../example.json', JSON.stringify(tree))
-    // domain.traverse(tree, dataItems => console.log(dataItems[0]))
-    domain.traverse(tree, console.log)
+    fs.writeFileSync('./example.json', JSON.stringify(tree))
+    // domain.traverse(tree, console.log)
   } catch (error) {
     if (error.code === 'ENOTFOUND') {
       console.log(`Agent not found at ${url} - waiting...`)
