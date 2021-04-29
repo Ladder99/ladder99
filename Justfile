@@ -77,8 +77,10 @@ replay MODEL='ccs-pa' RUN='run0' PORT='1883':
 
 # run the mtconnect application, which polls the agent
 run-app:
-    cd services/application && \
-    npm start
+    cd services/application && npm start
+
+test-app:
+    cd services/application && npm test
 
 
 #-------------------------------------------------------------------------
