@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "MTConnect Application",
   "type": "module",
-  "target": "es2017",
+  "//target": "es2017",
   "scripts": {
     "start": "node src/application.js"
   },
