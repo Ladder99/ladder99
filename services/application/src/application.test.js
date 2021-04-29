@@ -1,3 +1,3 @@
-import fs from 'fs'
+import tree from '../example-current.js'
 
-console.log(`test`)
+console.log(tree)

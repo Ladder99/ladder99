@@ -1,17 +1,17 @@
-// this is example json from mtconnect agent 5000/sample
+// this is example json data from mtconnect agent 5000/current
 
-{
+export default {
   MTConnectStreams: {
     Header: {
       '@bufferSize': 131072,
-      '@creationTime': '2021-04-07T23:17:12Z',
+      '@creationTime': '2021-04-03T14:53:29Z',
       '@firstSequence': 1,
-      '@instanceId': 1617837421,
+      '@instanceId': 1617461605,
       '@lastSequence': 7,
       '@nextSequence': 8,
-      '@sender': 'aff18e7fe831',
+      '@sender': 'a7c87ed17539',
       '@testIndicator': false,
-      '@version': '1.6'
+      '@version': '1.6',
     },
     Streams: [
       {
@@ -29,54 +29,54 @@
                     Availability: {
                       '@dataItemId': 'ccs-pa-001-connection',
                       '@sequence': 1,
-                      '@timestamp': '2021-04-07T23:17:01.923778Z',
-                      Value: 'UNAVAILABLE'
-                    }
+                      '@timestamp': '2021-04-03T14:53:25.573274Z',
+                      Value: 'UNAVAILABLE',
+                    },
                   },
                   {
                     EmergencyStop: {
                       '@dataItemId': 'ccs-pa-001-e_stop',
                       '@sequence': 2,
-                      '@timestamp': '2021-04-07T23:17:01.923778Z',
-                      Value: 'UNAVAILABLE'
-                    }
+                      '@timestamp': '2021-04-03T14:53:25.573274Z',
+                      Value: 'UNAVAILABLE',
+                    },
                   },
                   {
                     ActuatorState: {
                       '@dataItemId': 'ccs-pa-001-printer_start_print',
                       '@sequence': 4,
-                      '@timestamp': '2021-04-07T23:17:01.923778Z',
-                      Value: 'UNAVAILABLE'
-                    }
+                      '@timestamp': '2021-04-03T14:53:25.573274Z',
+                      Value: 'UNAVAILABLE',
+                    },
                   },
                   {
                     Execution: {
                       '@dataItemId': 'ccs-pa-001-state',
                       '@sequence': 5,
-                      '@timestamp': '2021-04-07T23:17:01.923778Z',
-                      Value: 'UNAVAILABLE'
-                    }
+                      '@timestamp': '2021-04-03T14:53:25.573274Z',
+                      Value: 'UNAVAILABLE',
+                    },
                   },
                   {
                     AssetChanged: {
                       '@assetType': '',
                       '@dataItemId': 'ccs-pa-001_asset_chg',
                       '@sequence': 6,
-                      '@timestamp': '2021-04-07T23:17:01.923778Z',
-                      Value: 'UNAVAILABLE'
-                    }
+                      '@timestamp': '2021-04-03T14:53:25.573274Z',
+                      Value: 'UNAVAILABLE',
+                    },
                   },
                   {
                     AssetRemoved: {
                       '@assetType': '',
                       '@dataItemId': 'ccs-pa-001_asset_rem',
                       '@sequence': 7,
-                      '@timestamp': '2021-04-07T23:17:01.923778Z',
-                      Value: 'UNAVAILABLE'
-                    }
-                  }
-                ]
-              }
+                      '@timestamp': '2021-04-03T14:53:25.573274Z',
+                      Value: 'UNAVAILABLE',
+                    },
+                  },
+                ],
+              },
             },
             {
               ComponentStream: {
@@ -89,16 +89,16 @@
                       '@dataItemId': 'ccs-pa-001-operator',
                       '@sequence': 3,
                       '@subType': 'OPERATOR',
-                      '@timestamp': '2021-04-07T23:17:01.923778Z',
-                      Value: 'UNAVAILABLE'
-                    }
-                  }
-                ]
-              }
-            }
-          ]
-        }
-      }
-    ]
-  }
+                      '@timestamp': '2021-04-03T14:53:25.573274Z',
+                      Value: 'UNAVAILABLE',
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+    ],
+  },
 }
