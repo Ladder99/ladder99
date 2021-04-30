@@ -11,7 +11,8 @@ console.log(`MTConnect Application starting`)
 // const database = 'tutorial'
 // const connect = `postgres://${username}:${password}@${host}:${port}/${database}`
 
-const baseUrl = process.env.BASE_URL || 'http://localhost:5000'
+// const baseUrl = process.env.BASE_URL || 'http://localhost:5000'
+const baseUrl = process.env.BASE_URL || 'http://192.168.0.109:5000'
 const interval = Number(process.env.INTERVAL || 2000) // msec
 
 setInterval(shovel, interval)
@@ -31,8 +32,18 @@ async function shovel() {
       },
     })
     const tree = await response.json()
-    fs.writeFileSync('./example.json', JSON.stringify(tree))
+    //. use this to save example outputs - rename to example-current.js etc
+    // fs.writeFileSync('./example.json', JSON.stringify(tree))
+
+    // traverse the json tree and output dataitem nodes
     // domain.traverse(tree, console.log)
+
+    // traverse the tree and output state
+    domain.traverse(tree, dataItems => {
+      if (dataItems[0].type === 'Execution') {
+        console.log(dataItems[0])
+      }
+    })
   } catch (error) {
     if (error.code === 'ENOTFOUND') {
       console.log(`Agent not found at ${url} - waiting...`)
