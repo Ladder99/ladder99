@@ -119,6 +119,16 @@ services:
       - $HOME/data/grafana:/var/lib/grafana
     user: grafana
 
+  pgadmin:
+    image: biarms/pgadmin4:4.21
+    ports:
+      - '5050:5050/tcp'
+    networks:
+      - ladder99
+    deploy:
+      restart_policy:
+        condition: on-failure
+
   portainer:
     container_name: portainer
     image: portainer/portainer-ce
