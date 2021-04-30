@@ -7,7 +7,6 @@
   "scripts": {
     "start": "node src/adapter.js"
   },
-  "keywords": [],
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "Proprietary",
   "private": true,
