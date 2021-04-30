@@ -117,7 +117,7 @@ services:
         condition: on-failure
     volumes:
       - $HOME/data/grafana:/var/lib/grafana
-    user: $ID
+    user: pi
 
   portainer:
     container_name: portainer
