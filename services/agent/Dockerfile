@@ -14,22 +14,17 @@ FROM ubuntu:20.04 AS make-os
 # FROM raspbian/stretch AS make-os  # too old
 # FROM balenalib/raspberry-pi-debian:build AS make-os  # only arm64
 
-# update package indexes
-RUN apt-get update
+# # set timezone
+# #. where does envar get set? it's not in macos
+# RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && \
+#   echo $CONTAINER_TIMEZONE > /etc/timezone
 
-# set timezone
-RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && \
-  echo $CONTAINER_TIMEZONE > /etc/timezone
+# update package indexes
+RUN sudo apt-get update
 
 # get dependencies
-# The C++ agent depends on libxml2 and for testing libcppunit. 
-# The rest are the standard packages for building software. 
-# We also use cmake to generate the make files.
-# i removed ruby.
-RUN apt-get install -y \
-  libxml2 libxml2-dev libcppunit-dev \
-  cmake git build-essential screen curl
-
+RUN sudo apt-get install -y \
+  git cmake build-essential libxml2 libxml2-dev libcppunit-dev screen ruby curl
 
 #----------------------------------------------------------------------------
 # build makefile
@@ -39,9 +34,9 @@ FROM make-os as make-makefile
 
 # get agent source
 # note: user is root, so ~ is /root - ok?
-RUN mkdir -p ~/agent/build && \
-  cd ~/agent && \
-  git clone https://github.com/mtconnect/cppagent.git --depth 1
+RUN mkdir -p ~/agent/build \
+  && cd ~/agent \
+  && git clone https://github.com/mtconnect/cppagent.git --depth 1
 
 # build makefile using cmake
 # fails when building for linux/arm/7 in macos docker - need to build in pi docker.
@@ -52,12 +47,10 @@ RUN mkdir -p ~/agent/build && \
 # export CFLAGS="-D_FILE_OFFSET_BITS=64"
 # export CXXFLAGS="-D_FILE_OFFSET_BITS=64"
 # still get same error though...
-RUN cd ~/agent/build && \
-  export CFLAGS="-D_FILE_OFFSET_BITS=64" && \
-  export CXXFLAGS="-D_FILE_OFFSET_BITS=64" && \
-  cmake \
-  -D CMAKE_BUILD_TYPE=Release \
-  ../cppagent/
+RUN cd ~/agent/build \
+  && export CFLAGS="-D_FILE_OFFSET_BITS=64" \
+  && export CXXFLAGS="-D_FILE_OFFSET_BITS=64" \
+  && cmake -D CMAKE_BUILD_TYPE=Release ../cppagent/
 
 
 #----------------------------------------------------------------------------
@@ -67,19 +60,43 @@ RUN cd ~/agent/build && \
 FROM make-makefile as compile
 
 # compile source (~20mins)
-RUN cd ~/agent/build && \
-  make && \
-  cp agent/agent /usr/local/bin
+RUN cd ~/agent/build \
+  && make \
+  && sudo cp agent/agent /usr/local/bin
+
+# setup agent
+RUN cd ~/agent/cppagent \
+  && sudo mkdir -p /etc/mtconnect/agent /etc/mtconnect/adapter \
+  && sudo cp -r styles schemas simulator/VMC-3Axis.xml /etc/mtconnect/agent
+
+# setup simulator
+RUN cd ~/agent/cppagent \
+  && sudo cp simulator/VMC-3Axis-Log.txt simulator/run_scenario.rb /etc/mtconnect/adapter
+
+COPY agent.cfg /etc/mtconnect/adapter
 
 
 #----------------------------------------------------------------------------
 # run app
 #----------------------------------------------------------------------------
 
-FROM compile as run
+# FROM compile as run
+FROM ubuntu:20.04
+
+RUN sudo apt-get update
+RUN sudo apt-get install -y ruby
+
+WORKDIR /usr/local/bin
+
+COPY --from=compile /usr/local/bin/agent .
+
+COPY test-agent.sh .
 
 # define ports to listen on
 EXPOSE 5000
 
 # define default run command
-CMD ["agent", "debug", "/etc/ladder99-agent/agent.cfg"]
+# CMD ["agent", "debug", "/etc/ladder99-agent/agent.cfg"]
+# CMD ["/usr/local/bin/agent", "debug", "/etc/mtconnect/agent/agent.cfg"]
+# CMD ["agent", "debug", "/etc/mtconnect/agent/agent.cfg"]
+CMD ["test-agent.sh"]
