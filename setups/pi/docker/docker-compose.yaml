@@ -8,11 +8,24 @@
 version: '3.7'
 
 services:
+  broker-ccs-pa-001:
+    container_name: broker-ccs-pa-001
+    image: eclipse-mosquitto
+    networks:
+      - ladder99
+    ports:
+      - 1883:1883
+    volumes:
+      - ../volumes/broker-ccs-pa-001:/mosquitto
+    logging:
+      options:
+        max-size: '1m'
+
   adapter:
     container_name: adapter
     image: mriiotllc/ladder99-adapter:latest
     networks:
-      - l99_bridge
+      - ladder99
     volumes:
       - /etc/ladder99-adapter:/etc/ladder99-adapter
     logging:
@@ -23,7 +36,7 @@ services:
     container_name: agent
     image: mriiotllc/ladder99-agent:latest
     networks:
-      - l99_bridge
+      - ladder99
     ports:
       - 5000:5000
     depends_on:
@@ -41,7 +54,7 @@ services:
     logging:
       driver: 'none'
     networks:
-      - l99_bridge
+      - ladder99
     ports:
       - '9000:9000'
     volumes:
@@ -54,5 +67,5 @@ volumes:
   portainer_data:
 
 networks:
-  l99_bridge:
-    name: l99_bridge
+  ladder99:
+    name: ladder99
