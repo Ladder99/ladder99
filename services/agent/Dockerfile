@@ -1,26 +1,19 @@
 # mtconnect c++ agent
 # following instructions from
 # http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu
-# divided into stages with FROM ... AS ..., so docker can cache intermediate steps,
-# which are slow (not needed?)
 
-# note: removed 'sudo' from commands, as ubuntu doesn't recognize it.
+# note: removed 'sudo' from commands - ubuntu doesn't recognize it.
 
 #----------------------------------------------------------------------------
 # build os
 #----------------------------------------------------------------------------
 
-# this ubuntu has linux/arm/v7, linux/amd64, etc
-FROM ubuntu:21.04 AS make-os
+# base image - ubuntu has linux/arm/v7, linux/amd64, etc
+FROM ubuntu:21.04 AS compile
 # FROM raspbian/stretch AS make-os  # too old
 # FROM balenalib/raspberry-pi-debian:build AS make-os  # only arm64
 
-# # set timezone
-# #. where does envar get set? it's not in macos
-# RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && \
-#   echo $CONTAINER_TIMEZONE > /etc/timezone
-
-# update package indexes
+# get dependencies
 RUN apt-get update \
   && apt-get install -y git cmake build-essential libxml2 libxml2-dev libcppunit-dev screen ruby curl
 
@@ -28,16 +21,14 @@ RUN apt-get update \
 # build makefile
 #----------------------------------------------------------------------------
 
-FROM make-os as make-makefile
-
 # get agent source
-# note: user is root, so ~ is /root - ok?
+# note: user is root, so ~ is /root
 RUN mkdir -p ~/agent/build \
   && cd ~/agent \
   && git clone https://github.com/mtconnect/cppagent.git --depth 1
 
 # build makefile using cmake
-# fails when building for linux/arm/7 in macos docker - need to build in pi docker.
+#. fails when building for linux/arm/7 in macos docker - need to build in pi docker.
 #   CMake Error at /usr/share/cmake-3.16/Modules/CMakeCompilerIdDetection.cmake:26 (list):
 #   list sub-command REMOVE_ITEM requires two or more arguments.
 # see https://gitlab.kitware.com/cmake/cmake/-/issues/20568#note_780329
@@ -54,8 +45,6 @@ RUN cd ~/agent/build \
 # compile app
 #----------------------------------------------------------------------------
 
-FROM make-makefile as compile
-
 # compile source (~20mins)
 RUN cd ~/agent/build \
   && make \
@@ -66,7 +55,6 @@ RUN cd ~/agent/cppagent \
   && mkdir -p /etc/mtconnect \
   && cp -r styles schemas simulator /etc/mtconnect
 
-
 #----------------------------------------------------------------------------
 # run app
 #----------------------------------------------------------------------------
@@ -74,13 +62,17 @@ RUN cd ~/agent/cppagent \
 # multi-stage build - bring only essentials from previous layers
 FROM ubuntu:21.04
 
+# install ruby for simulator
 RUN apt-get update && apt-get install -y ruby
 
 COPY --from=compile /usr/local/bin/agent /usr/local/bin
 COPY --from=compile /etc/mtconnect /etc/mtconnect
+
 COPY test-agent.sh /root
 
+# expose port
 EXPOSE 5000
 
-# default run command
+# default run command - can override with docker run or docker-compose.
+# the script runs the simulator and the app.
 CMD ["/root/test-agent.sh"]
