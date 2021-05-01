@@ -2,17 +2,15 @@
 # following instructions from
 # http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu
 # divided into stages with FROM ... AS ..., so docker can cache intermediate steps,
-# which are slow.
+# which are slow (not needed?)
 
-# note: removed 'sudo' from commands, as it wasn't recognized by ubuntu
-
+# note: removed 'sudo' from commands, as ubuntu doesn't recognize it.
 
 #----------------------------------------------------------------------------
 # build os
 #----------------------------------------------------------------------------
 
-# this ubuntu has linux/arm/v7, linux/amd64
-# see https://hub.docker.com/layers/ubuntu/library/ubuntu/20.04/images/sha256-b30065ff935c7761707eab66d3edc367e5fc1f3cc82c2e4addd69cee3b9e7c1c?context=explore
+# this ubuntu has linux/arm/v7, linux/amd64, etc
 FROM ubuntu:21.04 AS make-os
 # FROM raspbian/stretch AS make-os  # too old
 # FROM balenalib/raspberry-pi-debian:build AS make-os  # only arm64
@@ -95,7 +93,4 @@ COPY test-agent.sh .
 EXPOSE 5000
 
 # define default run command
-# CMD ["agent", "debug", "/etc/ladder99-agent/agent.cfg"]
-# CMD ["/usr/local/bin/agent", "debug", "/etc/mtconnect/agent/agent.cfg"]
-# CMD ["agent", "debug", "/etc/mtconnect/agent/agent.cfg"]
 CMD ["./test-agent.sh"]
