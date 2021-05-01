@@ -70,7 +70,7 @@ RUN apt-get update && apt-get install -y ruby
 COPY --from=compile /usr/local/bin/agent /usr/local/bin
 COPY --from=compile /etc/mtconnect /etc/mtconnect
 
-COPY styles/* /etc/mtconnect/styles
+COPY styles /etc/mtconnect/styles
 COPY test-agent.sh /root
 
 # expose port
