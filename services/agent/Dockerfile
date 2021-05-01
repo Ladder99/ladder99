@@ -86,9 +86,8 @@ FROM ubuntu:21.04
 RUN apt-get update
 RUN apt-get install -y ruby
 
-WORKDIR /usr/local/bin
-
-COPY --from=compile /usr/local/bin/agent .
+COPY --from=compile /usr/local/bin/agent /usr/local/bin
+COPY --from=compile /etc/mtconnect /etc/mtconnect
 
 COPY test-agent.sh .
 
@@ -99,4 +98,4 @@ EXPOSE 5000
 # CMD ["agent", "debug", "/etc/ladder99-agent/agent.cfg"]
 # CMD ["/usr/local/bin/agent", "debug", "/etc/mtconnect/agent/agent.cfg"]
 # CMD ["agent", "debug", "/etc/mtconnect/agent/agent.cfg"]
-CMD ["test-agent.sh"]
+CMD ["./test-agent.sh"]
