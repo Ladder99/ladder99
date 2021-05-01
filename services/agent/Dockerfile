@@ -14,8 +14,8 @@ FROM ubuntu:21.04 AS compile
 # FROM balenalib/raspberry-pi-debian:build AS make-os  # only arm64
 
 # get dependencies
-RUN apt-get update \
-  && apt-get install -y git cmake build-essential libxml2 libxml2-dev libcppunit-dev screen ruby curl
+RUN apt-get update && apt-get install -y \
+  git cmake build-essential libxml2 libxml2-dev libcppunit-dev screen curl
 
 #----------------------------------------------------------------------------
 # build makefile
