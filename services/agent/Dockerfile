@@ -61,18 +61,10 @@ RUN cd ~/agent/build \
   && make \
   && cp agent/agent /usr/local/bin
 
-# # setup agent
-# RUN cd ~/agent/cppagent \
-#   && mkdir -p /etc/mtconnect/agent /etc/mtconnect/adapter \
-#   && cp -r styles schemas simulator/VMC-3Axis.xml /etc/mtconnect/agent
-
-# # setup simulator
-# RUN cd ~/agent/cppagent \
-#   && cp simulator/VMC-3Axis-Log.txt simulator/run_scenario.rb /etc/mtconnect/adapter
-
-# COPY agent.cfg /etc/mtconnect/adapter
-
-RUN cd ~/agent/cppagent && cp -r styles schemas simulator /etc/mtconnect
+# copy simulator
+RUN cd ~/agent/cppagent \
+  && mkdir -p /etc/mtconnect \
+  && cp -r styles schemas simulator /etc/mtconnect
 
 
 #----------------------------------------------------------------------------
