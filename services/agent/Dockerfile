@@ -81,7 +81,7 @@ COPY agent.cfg /etc/mtconnect/adapter
 #----------------------------------------------------------------------------
 
 # FROM compile as run
-FROM ubuntu:20.04
+FROM ubuntu:21.04
 
 RUN apt-get update
 RUN apt-get install -y ruby
