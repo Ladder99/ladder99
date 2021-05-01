@@ -135,7 +135,7 @@ build-agent PLATFORM='linux/amd64' SUFFIX='-amd64':
 
 build-agent-test:
     cd services/agent \
-    && docker build --no-cache --tag pokpok .
+    && docker build --tag pokpok .
 
 # note: we set the destination directory's group and owner to pi, 
 # so can copy to it with scp.
