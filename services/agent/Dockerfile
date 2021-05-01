@@ -1,5 +1,5 @@
-# mtconnect c++ agent
-# following instructions from
+# MTConnect C++ Agent docker image
+# adapted from
 # http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu
 
 # note: removed 'sudo' from commands - ubuntu doesn't recognize it.
