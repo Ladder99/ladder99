@@ -4,13 +4,16 @@
 # divided into stages with FROM ... AS ..., so docker can cache intermediate steps,
 # which are slow.
 
+# note: removed 'sudo' from commands, as it wasn't recognized by ubuntu
+
+
 #----------------------------------------------------------------------------
 # build os
 #----------------------------------------------------------------------------
 
 # this ubuntu has linux/arm/v7, linux/amd64
 # see https://hub.docker.com/layers/ubuntu/library/ubuntu/20.04/images/sha256-b30065ff935c7761707eab66d3edc367e5fc1f3cc82c2e4addd69cee3b9e7c1c?context=explore
-FROM ubuntu:20.04 AS make-os
+FROM ubuntu:21.04 AS make-os
 # FROM raspbian/stretch AS make-os  # too old
 # FROM balenalib/raspberry-pi-debian:build AS make-os  # only arm64
 
@@ -20,11 +23,8 @@ FROM ubuntu:20.04 AS make-os
 #   echo $CONTAINER_TIMEZONE > /etc/timezone
 
 # update package indexes
-RUN sudo apt-get update
-
-# get dependencies
-RUN sudo apt-get install -y \
-  git cmake build-essential libxml2 libxml2-dev libcppunit-dev screen ruby curl
+RUN apt-get update \
+  && apt-get install -y git cmake build-essential libxml2 libxml2-dev libcppunit-dev screen ruby curl
 
 #----------------------------------------------------------------------------
 # build makefile
@@ -62,16 +62,16 @@ FROM make-makefile as compile
 # compile source (~20mins)
 RUN cd ~/agent/build \
   && make \
-  && sudo cp agent/agent /usr/local/bin
+  && cp agent/agent /usr/local/bin
 
 # setup agent
 RUN cd ~/agent/cppagent \
-  && sudo mkdir -p /etc/mtconnect/agent /etc/mtconnect/adapter \
-  && sudo cp -r styles schemas simulator/VMC-3Axis.xml /etc/mtconnect/agent
+  && mkdir -p /etc/mtconnect/agent /etc/mtconnect/adapter \
+  && cp -r styles schemas simulator/VMC-3Axis.xml /etc/mtconnect/agent
 
 # setup simulator
 RUN cd ~/agent/cppagent \
-  && sudo cp simulator/VMC-3Axis-Log.txt simulator/run_scenario.rb /etc/mtconnect/adapter
+  && cp simulator/VMC-3Axis-Log.txt simulator/run_scenario.rb /etc/mtconnect/adapter
 
 COPY agent.cfg /etc/mtconnect/adapter
 
@@ -83,8 +83,8 @@ COPY agent.cfg /etc/mtconnect/adapter
 # FROM compile as run
 FROM ubuntu:20.04
 
-RUN sudo apt-get update
-RUN sudo apt-get install -y ruby
+RUN apt-get update
+RUN apt-get install -y ruby
 
 WORKDIR /usr/local/bin
 
