@@ -50,7 +50,6 @@ RUN cd ~/agent/build \
   && export CXXFLAGS="-D_FILE_OFFSET_BITS=64" \
   && cmake -D CMAKE_BUILD_TYPE=Release ../cppagent/
 
-
 #----------------------------------------------------------------------------
 # compile app
 #----------------------------------------------------------------------------
@@ -62,34 +61,37 @@ RUN cd ~/agent/build \
   && make \
   && cp agent/agent /usr/local/bin
 
-# setup agent
+# # setup agent
+# RUN cd ~/agent/cppagent \
+#   && mkdir -p /etc/mtconnect/agent /etc/mtconnect/adapter \
+#   && cp -r styles schemas simulator/VMC-3Axis.xml /etc/mtconnect/agent
+
+# # setup simulator
+# RUN cd ~/agent/cppagent \
+#   && cp simulator/VMC-3Axis-Log.txt simulator/run_scenario.rb /etc/mtconnect/adapter
+
+# COPY agent.cfg /etc/mtconnect/adapter
+
 RUN cd ~/agent/cppagent \
   && mkdir -p /etc/mtconnect/agent /etc/mtconnect/adapter \
-  && cp -r styles schemas simulator/VMC-3Axis.xml /etc/mtconnect/agent
-
-# setup simulator
-RUN cd ~/agent/cppagent \
-  && cp simulator/VMC-3Axis-Log.txt simulator/run_scenario.rb /etc/mtconnect/adapter
-
-COPY agent.cfg /etc/mtconnect/adapter
+  && cp -r styles schemas /etc/mtconnect/agent \
+  && cp -r simulator /etc/mtconnect
 
 
 #----------------------------------------------------------------------------
 # run app
 #----------------------------------------------------------------------------
 
+# multi-stage build - bring only essentials from previous layers
 FROM ubuntu:21.04
 
-RUN apt-get update
-RUN apt-get install -y ruby
+RUN apt-get update && apt-get install -y ruby
 
 COPY --from=compile /usr/local/bin/agent /usr/local/bin
 COPY --from=compile /etc/mtconnect /etc/mtconnect
+COPY test-agent.sh ~
 
-COPY test-agent.sh .
-
-# define ports to listen on
 EXPOSE 5000
 
-# define default run command
-CMD ["./test-agent.sh"]
+# default run command
+CMD ["~/test-agent.sh"]
