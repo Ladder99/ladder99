@@ -78,7 +78,6 @@ COPY agent.cfg /etc/mtconnect/adapter
 # run app
 #----------------------------------------------------------------------------
 
-# FROM compile as run
 FROM ubuntu:21.04
 
 RUN apt-get update
