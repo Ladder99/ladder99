@@ -5,4 +5,4 @@
   /etc/mtconnect/adapter/VMC-3Axis-Log.txt &
 
 # run the agent with sample agent config
-/usr/local/bin/agent run /etc/mtconnect/adapter/agent.cfg
+/usr/local/bin/agent debug /etc/mtconnect/adapter/agent.cfg
