@@ -2,10 +2,16 @@
 
 Adapted for Ladder99 from https://github.com/TrakHound/MTConnect-Agent-Stylesheet.
 
-XML Stylesheet for MTConnect Agents using [Bootstrap](http://getbootstrap.com/). This provides a better appearance than the default stylesheet and also adds the ability to switch between Probe, Current, and Sample requests.
+To keep up-to-date with MTConnect standard, change the version in the xsl:stylesheet element in Devices.xsl and Streams.xsl. 
+
+Note: Changes should be made to BOTH Devices.xsl and Streams.xsl, where applicable.
+
+The MTConnect cppagent doesn't seem to allow using subfolders in the styles folder, so keep it flat. 
 
 
 ## About
+
+XML Stylesheet for MTConnect Agents using [Bootstrap](http://getbootstrap.com/). This provides a better appearance than the default stylesheet and also adds the ability to switch between Probe, Current, and Sample requests.
 
 ### File Size
 
@@ -15,6 +21,7 @@ Just over 300 KB. This Includes the necessary files for jQuery, Bootstrap, and t
 ## Installation
 
 1. Copy the contents of this repository (you can exclude the .git folder) into the "Styles" folder for the MTConnect Agent.
+
 2. Edit the Agent's configuration file (ex. agent.cfg) to look for the stylesheets as shown below:
 
 ### Agent.cfg
@@ -42,10 +49,6 @@ StreamsStyle { Location = /styles/Streams.xsl }
 
 
 ## Customization
-
-Changes should be made to BOTH Devices.xsl and Streams.xsl, where applicable.
-
-The MTConnect cppagent doesn't seem to allow using subfolders in the styles. 
 
 This stylesheet is easily customizable using the Custom.css file. Customizations can include any overrides of the standard bootstrap styles such as changing the colors of the panel headers. The logo and link can be changed by editing the following lines in both Devices.xsl and Streams.xsl as shown below:
 
