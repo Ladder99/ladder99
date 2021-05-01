@@ -56,6 +56,8 @@ RUN mkdir -p /etc/mtconnect \
   && cp -r schemas simulator /etc/mtconnect \
   && cp -r styles /etc/mtconnect/styles-orig
 
+# add stylesheet for / endpoint
+RUN echo "DevicesStyle { Location = /styles/Devices.xsl }" >> /etc/mtconnect/simulator/agent.cfg
 
 #----------------------------------------------------------------------------
 # run app
