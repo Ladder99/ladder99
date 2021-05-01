@@ -51,9 +51,11 @@ RUN cd ~/agent/build \
   && cp agent/agent /usr/local/bin
 
 # copy simulator
-RUN cd ~/agent/cppagent \
-  && mkdir -p /etc/mtconnect \
-  && cp -r styles schemas simulator /etc/mtconnect
+RUN mkdir -p /etc/mtconnect \
+  && cd ~/agent/cppagent \
+  && cp -r schemas simulator /etc/mtconnect \
+  && cp -r styles /etc/mtconnect/styles-orig
+
 
 #----------------------------------------------------------------------------
 # run app
@@ -68,6 +70,7 @@ RUN apt-get update && apt-get install -y ruby
 COPY --from=compile /usr/local/bin/agent /usr/local/bin
 COPY --from=compile /etc/mtconnect /etc/mtconnect
 
+COPY styles/* /etc/mtconnect/styles
 COPY test-agent.sh /root
 
 # expose port
