@@ -10,5 +10,8 @@ WORKDIR /home/node/app
 COPY ./package*.json ./
 RUN npm ci --production
 
+# copy code
+COPY ./src ./src
+
 # default command when run container
 CMD ["npm", "start"]
