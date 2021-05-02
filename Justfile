@@ -103,7 +103,7 @@ build-adapter:
     cd services/adapter && \
     export L99_ADAPTER_VERSION=`jq -r .version package.json` && \
     docker buildx build \
-      --platform linux/arm/v7,linux/amd64 \
+      --platform linux/arm/v7,linux/arm64,linux/amd64 \
       --tag=mriiotllc/ladder99-adapter:latest \
       --tag=mriiotllc/ladder99-adapter:$L99_ADAPTER_VERSION \
       --push \
@@ -122,7 +122,7 @@ deploy-adapter SETUP='pi':
 
 # note: the image won't show up in `docker images` because it's multiarch
 #---
-# build and upload agent image, eg `just build-agent linux/amd64,linux/arm/v7`
+# build and upload agent image, eg `just build-agent linux/amd64,linux/arm/v7,linux/arm64`
 build-agent PLATFORM='linux/amd64' SUFFIX='-amd64':
     cd services/agent && \
     export L99_AGENT_VERSION=`jq -r .version package.json` && \
