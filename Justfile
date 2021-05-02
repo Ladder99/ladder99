@@ -88,13 +88,13 @@ test-app:
 # docker images
 #-------------------------------------------------------------------------
 
-# do `docker login -u mriiotllc` if permission denied
+# do `docker login --user ladder99` if permission denied
 # do `docker buildx create --use` if error "multiple platforms not supported"
 #---
 # note: the image won't show up in `docker images` because it's multiarch
 #---
 # test and look around with this -
-#   docker run -it mriiotllc/ladder99-adapter:0.1.0 /bin/bash
+#   docker run -it ladder99/mtconnect-adapter:0.1.0 /bin/bash
 #   npm start  # will get error due to missing devices.yaml
 #. or docker run :latest if can ignore cache
 #---
@@ -104,21 +104,22 @@ build-adapter:
     export L99_ADAPTER_VERSION=`jq -r .version package.json` && \
     docker buildx build \
       --platform linux/arm/v7,linux/arm64,linux/amd64 \
-      --tag=mriiotllc/ladder99-adapter:latest \
-      --tag=mriiotllc/ladder99-adapter:$L99_ADAPTER_VERSION \
+      --tag=ladder99/adapter:latest \
+      --tag=ladder99/adapter:$L99_ADAPTER_VERSION \
       --push \
       .
 
 # note: we set the destination directory's group and owner to pi, 
 # so can copy to it with scp.
+#. how do this for local testing also? ie mkdirs and copy yamls to ~/data
 #---
 # copy yaml files to pi - envars are set in .env file
 deploy-adapter SETUP='pi':
     source .env && \
-    $enterpwd ssh $PI "sudo mkdir -p /etc/ladder99-adapter" && \
-    $enterpwd ssh $PI "sudo chown pi:pi /etc/ladder99-adapter" && \
-    $enterpwd scp -p setups/{{SETUP}}/devices.yaml $PI:/etc/ladder99-adapter && \
-    $enterpwd scp -pr models $PI:/etc/ladder99-adapter/models
+    $enterpwd ssh $PI "sudo mkdir -p ~/data/adapter" && \
+    $enterpwd ssh $PI "sudo chown pi:pi ~/data/adapter" && \
+    $enterpwd scp -p setups/{{SETUP}}/devices.yaml $PI:~/data/adapter && \
+    $enterpwd scp -pr models $PI:~/data/adapter/models
 
 # note: the image won't show up in `docker images` because it's multiarch
 #---
