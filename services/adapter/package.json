@@ -1,6 +1,6 @@
 {
   "name": "ladder99-adapter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MTConnect Adapter",
   "type": "module",
   "target": "es2017",
