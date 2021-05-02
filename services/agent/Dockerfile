@@ -17,23 +17,25 @@ FROM ubuntu:21.04 AS compile
 RUN apt-get update && apt-get install -y \
   git cmake build-essential libxml2 libxml2-dev libcppunit-dev screen curl
 
+# change to a new non-root user for better security
+RUN groupadd --gid 1000 ladder99
+RUN useradd --gid 1000 --uid 1000 --create-home ladder99
+USER ladder99
+
 #----------------------------------------------------------------------------
 # build makefile
 #----------------------------------------------------------------------------
 
 # get agent source
-# note: user is root, so ~ is /root
 RUN mkdir -p ~/agent/build \
   && cd ~/agent \
   && git clone https://github.com/mtconnect/cppagent.git --depth 1
 
 # build makefile using cmake
-# fails when building for linux/arm/7 in macos docker
+# note: fails when building for linux/arm/7 in macos docker:
 #   CMake Error at /usr/share/cmake-3.16/Modules/CMakeCompilerIdDetection.cmake:26 (list):
 #   list sub-command REMOVE_ITEM requires two or more arguments.
-# fix at https://gitlab.kitware.com/cmake/cmake/-/issues/20568#note_780329
-#   export CFLAGS="-D_FILE_OFFSET_BITS=64"
-#   export CXXFLAGS="-D_FILE_OFFSET_BITS=64"
+# fix with CFLAGS - see https://gitlab.kitware.com/cmake/cmake/-/issues/20568#note_780329
 RUN cd ~/agent/build \
   && export CFLAGS="-D_FILE_OFFSET_BITS=64" \
   && export CXXFLAGS="-D_FILE_OFFSET_BITS=64" \
@@ -54,7 +56,7 @@ RUN mkdir -p /etc/mtconnect \
   && cp -r schemas simulator /etc/mtconnect \
   && cp -r styles /etc/mtconnect/styles-orig
 
-# add our stylesheet for / endpoint
+# add our stylesheet for the / endpoint
 RUN echo "DevicesStyle { Location = /styles/Devices.xsl }" >> /etc/mtconnect/simulator/agent.cfg
 
 #----------------------------------------------------------------------------
@@ -67,7 +69,7 @@ FROM ubuntu:21.04
 # install ruby for simulator
 RUN apt-get update && apt-get install -y ruby
 
-# copy agent app and simulator to new layer
+# copy agent app and simulator files to new layer
 COPY --from=compile /usr/local/bin/agent /usr/local/bin
 COPY --from=compile /etc/mtconnect /etc/mtconnect
 
@@ -75,11 +77,11 @@ COPY --from=compile /etc/mtconnect /etc/mtconnect
 COPY styles /etc/mtconnect/styles
 
 # bring in test script
-COPY test-agent.sh /root
+COPY test-agent.sh /etc/mtconnect
 
 # expose port
 EXPOSE 5000
 
 # default run command - can override with docker run or docker-compose.
 # this script runs the app and ruby simulator.
-CMD ["/root/test-agent.sh"]
+CMD ["/etc/mtconnect/test-agent.sh"]
