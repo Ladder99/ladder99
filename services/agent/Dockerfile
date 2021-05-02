@@ -17,11 +17,6 @@ FROM ubuntu:21.04 AS compile
 RUN apt-get update && apt-get install -y \
   git cmake build-essential libxml2 libxml2-dev libcppunit-dev screen curl
 
-# change to a new non-root user for better security
-RUN groupadd --gid 1000 ladder99
-RUN useradd --gid 1000 --uid 1000 --create-home ladder99
-USER ladder99
-
 #----------------------------------------------------------------------------
 # build makefile
 #----------------------------------------------------------------------------
@@ -81,6 +76,11 @@ COPY test-agent.sh /etc/mtconnect
 
 # expose port
 EXPOSE 5000
+
+# change to a new non-root user for better security
+RUN groupadd --gid 1000 ladder99 \
+  && useradd --gid 1000 --uid 1000 --create-home ladder99
+USER ladder99
 
 # default run command - can override with docker run or docker-compose.
 # this script runs the app and ruby simulator.
