@@ -99,11 +99,11 @@ test-app:
 #. or docker run :latest if can ignore cache
 #---
 # build and upload adapter image
-build-adapter:
+build-adapter PLATFORM='linux/amd64,linux/arm/v7,linux/arm64':
     cd services/adapter && \
     export L99_ADAPTER_VERSION=`jq -r .version package.json` && \
     docker buildx build \
-      --platform linux/arm/v7,linux/arm64,linux/amd64 \
+      --platform {{PLATFORM}} \
       --tag=ladder99/adapter:latest \
       --tag=ladder99/adapter:$L99_ADAPTER_VERSION \
       --push \
@@ -111,15 +111,15 @@ build-adapter:
 
 # note: we set the destination directory's group and owner to pi, 
 # so can copy to it with scp.
-#. how do this for local testing also? ie mkdirs and copy yamls to ~/data
+#. how do this for local testing also? ie mkdirs and copy yamls to /etc/ladder99/adapter
 #---
 # copy yaml files to pi - envars are set in .env file
 deploy-adapter SETUP='pi':
     source .env && \
-    $enterpwd ssh $PI "sudo mkdir -p ~/data/adapter" && \
-    $enterpwd ssh $PI "sudo chown pi:pi ~/data/adapter" && \
-    $enterpwd scp -p setups/{{SETUP}}/devices.yaml $PI:~/data/adapter && \
-    $enterpwd scp -pr models $PI:~/data/adapter/models
+    $enterpwd ssh $PI "sudo mkdir -p /etc/ladder99/adapter" && \
+    $enterpwd ssh $PI "sudo chown pi:pi /etc/ladder99/adapter" && \
+    $enterpwd scp -p setups/{{SETUP}}/devices.yaml $PI:/etc/ladder99/adapter && \
+    $enterpwd scp -pr models $PI:/etc/ladder99/adapter/models
 
 # note: the image won't show up in `docker images` because it's multiarch
 #---
@@ -128,7 +128,7 @@ build-agent:
     cd services/agent && \
     export L99_AGENT_VERSION=`jq -r .version package.json` && \
     docker buildx build \
-      --platform linux/arm/v7,linux/arm64,linux/amd64 \
+      --platform linux/amd64,linux/arm/v7,linux/arm64 \
       --tag=ladder99/mtconnect-agent:latest \
       --tag=ladder99/mtconnect-agent:$L99_AGENT_VERSION \
       --push \
