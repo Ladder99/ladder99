@@ -2,4 +2,5 @@
 
 cd services/agent
 docker build --tag=agent .
-docker run -it agent
+docker run -it --rm --name agent -p 5000:5000 -d agent
+curl localhost:5000/current
