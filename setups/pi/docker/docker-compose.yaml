@@ -44,7 +44,9 @@ services:
       - 5000:5000
     depends_on:
       - adapter
-    # volumes:
+    command: agent debug /data/agent/agent.cfg
+    volumes:
+      - agent:/data/agent
     #   - /etc/ladder99-agent:/etc/ladder99-agent
     logging:
       options:
@@ -152,6 +154,8 @@ services:
 volumes:
   portainer_data:
   adapter:
+    external: true
+  agent:
     external: true
 
 networks:
