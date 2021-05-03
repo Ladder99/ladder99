@@ -1,14 +1,14 @@
 #!/bin/bash
 # copy data to a named volume for the adapter container to access.
 
-SETUP=${1:-'pi'}
+# SETUP=${1:-'pi'}
 
-docker container create \
-  --name temp \
-  --volume adapter:/home/ladder99/data/adapter \
-  busybox
-docker cp . temp:/home/ladder99/data/adapter
-docker rm temp
+# docker container create \
+#   --name temp \
+#   --volume adapter:/data/adapter \
+#   busybox
+# docker cp . temp:/data/adapter
+# docker rm temp
 
 
 
