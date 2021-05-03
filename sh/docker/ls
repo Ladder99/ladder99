@@ -3,4 +3,8 @@
 
 VOLUME=$1
 
-./vm ls -l /docker/var/lib/docker/volumes/$VOLUME/_data
+# vm='docker run --rm -it --volume /:/docker alpine:edge $@'
+# $vm ls -l /docker/var/lib/docker/volumes/$VOLUME/_data
+
+docker run -it --rm --volume /:/docker alpine:edge \
+  ls -l /docker/var/lib/docker/volumes/$VOLUME/_data
