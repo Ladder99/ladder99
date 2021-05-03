@@ -2,9 +2,10 @@
 # source: https://www.freshblurbs.com/blog/2017/04/16/inspect-docker-volumes-on-mac.html
 
 VOLUME=$1
+SUFFIX=$2
 
 # vm='docker run --rm -it --volume /:/docker alpine:edge $@'
 # $vm ls -l /docker/var/lib/docker/volumes/$VOLUME/_data
 
 docker run -it --rm --volume /:/docker alpine:edge \
-  ls -l /docker/var/lib/docker/volumes/$VOLUME/_data
+  ls -l /docker/var/lib/docker/volumes/$VOLUME/_data$SUFFIX
