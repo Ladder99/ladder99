@@ -1,9 +1,15 @@
 #!/bin/bash
 
+# get an optional version number (defaults to 'latest')
 export VERSION=${1:-'latest'}
 
+# make sure we have the test image
+docker pull ladder99/mtconnect-agent:test
+
+# tag it with 'latest' and an optional version number
 docker tag ladder99/mtconnect-agent:test ladder99/mtconnect-agent:latest
 docker tag ladder99/mtconnect-agent:test ladder99/mtconnect-agent:$VERSION
 
+# push the new tags to docker hub
 docker push ladder99/mtconnect-agent:latest
 docker push ladder99/mtconnect-agent:$VERSION
