@@ -1,0 +1,4 @@
+#!/bin/bash
+# source: https://www.freshblurbs.com/blog/2017/04/16/inspect-docker-volumes-on-mac.html
+
+docker run --rm -it --volume /:/docker alpine:edge $@
