@@ -1,4 +1,5 @@
 #!/bin/bash
+# test agent locally
 
 cd services/agent
 docker build --tag=agent .

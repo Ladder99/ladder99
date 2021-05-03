@@ -14,15 +14,18 @@ FROM node:15-slim
 RUN useradd --create-home ladder99
 USER ladder99
 
-# WORKDIR /home/node/app
-WORKDIR /home/ladder99/app
+ENV NODE_ENV production
+
+WORKDIR /home/ladder99/adapter
 
 # install javascript dependencies
-COPY ./package*.json ./
+COPY --chown=ladder99:ladder99 ./package*.json ./
 RUN npm ci --production
 
-# copy code
-COPY ./src ./src
+# copy code, assigning to user instead of root
+# COPY ./src ./src
+COPY --chown=ladder99:ladder99 ./src ./src
 
 # default command when run container
+# this form 
 CMD ["npm", "start"]
