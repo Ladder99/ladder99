@@ -6,8 +6,8 @@ echo $PLATFORM
 cd services/adapter && \
 docker buildx build \
   --platform=$PLATFORM \
-  --tag=adapter \
-  --load \
+  --tag=ladder99/adapter:test \
+  --push \
   .
 
 # L99_ADAPTER_VERSION=`jq -r .version package.json` \

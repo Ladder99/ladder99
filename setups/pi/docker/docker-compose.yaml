@@ -23,7 +23,7 @@ services:
 
   adapter:
     container_name: adapter
-    image: ladder99/adapter:latest
+    image: ladder99/adapter:test
     networks:
       - ladder99
     depends_on:
@@ -37,7 +37,7 @@ services:
 
   agent:
     container_name: agent
-    image: ladder99/mtconnect-agent:latest
+    image: ladder99/mtconnect-agent:test
     networks:
       - ladder99
     ports:
