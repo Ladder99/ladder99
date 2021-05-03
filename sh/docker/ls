@@ -1,0 +1,6 @@
+#!/bin/bash
+# source: https://www.freshblurbs.com/blog/2017/04/16/inspect-docker-volumes-on-mac.html
+
+VOLUME=$1
+
+./vm ls -l /docker/var/lib/docker/volumes/$VOLUME/_data
