@@ -111,12 +111,12 @@ build-adapter PLATFORM='linux/amd64,linux/arm/v7,linux/arm64':
 #. how do this for local testing also? ie mkdirs and copy yamls to /etc/ladder99/adapter
 #---
 # copy yaml files to pi - envars are set in .env file
-deploy-adapter SETUP='pi':
-    source .env && \
-    $enterpwd ssh $PI "sudo mkdir -p /etc/ladder99/adapter" && \
-    $enterpwd ssh $PI "sudo chown pi:pi /etc/ladder99/adapter" && \
-    $enterpwd scp -p setups/{{SETUP}}/devices.yaml $PI:/etc/ladder99/adapter && \
-    $enterpwd scp -pr models $PI:/etc/ladder99/adapter/models
+# deploy-adapter SETUP='pi':
+#     source .env && \
+#     $enterpwd ssh $PI "sudo mkdir -p /data/adapter" && \
+#     $enterpwd ssh $PI "sudo chown pi:pi /data/adapter" && \
+#     $enterpwd scp -p setups/{{SETUP}}/devices.yaml $PI:/data/adapter && \
+#     $enterpwd scp -pr models $PI:/data/adapter/models
 
 # note: the image won't show up in `docker images` because it's multiarch
 #---
