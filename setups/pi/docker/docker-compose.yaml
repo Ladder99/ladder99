@@ -23,28 +23,29 @@ services:
 
   adapter:
     container_name: adapter
-    image: mriiotllc/ladder99-adapter:latest
+    image: ladder99/adapter:latest
     networks:
       - ladder99
     depends_on:
       - broker-ccs-pa-001
     volumes:
-      - /etc/ladder99-adapter:/etc/ladder99-adapter
+      # - /etc/ladder99-adapter:/etc/ladder99-adapter
+      - adapter:/data/adapter
     logging:
       options:
         max-size: '1m'
 
   agent:
     container_name: agent
-    image: mriiotllc/ladder99-agent:latest
+    image: ladder99/mtconnect-agent:latest
     networks:
       - ladder99
     ports:
       - 5000:5000
     depends_on:
       - adapter
-    volumes:
-      - /etc/ladder99-agent:/etc/ladder99-agent
+    # volumes:
+    #   - /etc/ladder99-agent:/etc/ladder99-agent
     logging:
       options:
         max-size: '1m'
@@ -90,44 +91,47 @@ services:
       options:
         max-size: '1m'
 
-  timescaledb:
-    image: timescale/timescaledb:1.7.4-pg12
-    ports:
-      - '5432:5432/tcp'
-    networks:
-      - ladder99
-    environment:
-      POSTGRES_USERNAME: postgres
-      POSTGRES_PASSWORD: gralgrut
-      POSTGRES_DB: ladder99
-    deploy:
-      restart_policy:
-        condition: on-failure
-    volumes:
-      - $HOME/data/postgres:/var/lib/postgresql/data
+  # timescaledb:
+  #   container_name: timescaledb
+  #   image: timescale/timescaledb:1.7.4-pg12
+  #   ports:
+  #     - '5432:5432/tcp'
+  #   networks:
+  #     - ladder99
+  #   environment:
+  #     POSTGRES_USERNAME: postgres
+  #     POSTGRES_PASSWORD: gralgrut
+  #     POSTGRES_DB: ladder99
+  #   deploy:
+  #     restart_policy:
+  #       condition: on-failure
+  #   volumes:
+  #     - $HOME/data/postgres:/var/lib/postgresql/data
 
-  grafana:
-    image: grafana/grafana:7.1.5
-    ports:
-      - '3000:3000/tcp'
-    networks:
-      - ladder99
-    deploy:
-      restart_policy:
-        condition: on-failure
-    volumes:
-      - $HOME/data/grafana:/var/lib/grafana
-    user: grafana
+  # grafana:
+  #   container_name: grafana
+  #   image: grafana/grafana:7.1.5
+  #   ports:
+  #     - '3000:3000/tcp'
+  #   networks:
+  #     - ladder99
+  #   deploy:
+  #     restart_policy:
+  #       condition: on-failure
+  #   volumes:
+  #     - $HOME/data/grafana:/var/lib/grafana
+  #   user: grafana
 
-  pgadmin:
-    image: biarms/pgadmin4:4.21
-    ports:
-      - '5050:5050/tcp'
-    networks:
-      - ladder99
-    deploy:
-      restart_policy:
-        condition: on-failure
+  # pgadmin:
+  #   container_name: pgadmin
+  #   image: biarms/pgadmin4:4.21
+  #   ports:
+  #     - '5050:5050/tcp'
+  #   networks:
+  #     - ladder99
+  #   deploy:
+  #     restart_policy:
+  #       condition: on-failure
 
   portainer:
     container_name: portainer
@@ -147,6 +151,8 @@ services:
 
 volumes:
   portainer_data:
+  adapter:
+    external: true
 
 networks:
   ladder99:

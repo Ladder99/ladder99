@@ -60,9 +60,9 @@ compile-compose SETUP='demo':
 run SETUP='demo' SERVICE='':
     # just compile {{SETUP}}
     FILE=setups/{{SETUP}}/docker/docker-compose.yaml && \
-    docker compose --file $FILE down && \
-    docker compose --file $FILE up --build --remove-orphans {{SERVICE}} && \
-    docker compose --file $FILE rm -fsv
+    docker-compose --file $FILE down && \
+    docker-compose --file $FILE up --build --remove-orphans {{SERVICE}} && \
+    docker-compose --file $FILE rm -fsv
 
 # replay mqtt recording - https://github.com/rpdswtk/mqtt_recorder
 replay MODEL='ccs-pa' RUN='run0' PORT='1883':
