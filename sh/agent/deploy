@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # get an optional version number (defaults to 'latest')
+#. make this required?
 export VERSION=${1:-'latest'}
 
 # make sure we have the test image
