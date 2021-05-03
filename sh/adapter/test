@@ -1,8 +1,5 @@
 #!/bin/bash
 
 cd services/adapter
-docker build \
-  --tag=adapter \
-  .
-
+docker build --tag=adapter .
 docker run -it adapter
