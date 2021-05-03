@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo ${1:-'linux/amd64,linux/arm/v7,linux/arm64'}
+
+cd services/adapter && \
+export PLATFORM=${1:-'linux/amd64,linux/arm/v7,linux/arm64'} && \
+docker buildx build \
+  --platform=$PLATFORM \
+  --tag=adapter \
+  --load \
+  .
+
+# L99_ADAPTER_VERSION=`jq -r .version package.json` \
+# --tag=ladder99/adapter:latest \
+# --tag=ladder99/adapter:$L99_ADAPTER_VERSION \

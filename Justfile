@@ -4,9 +4,6 @@
 # not avail for raspberry pi yet - https://github.com/casey/just/issues/739
 #-------------------------------------------------------------------------
 
-# note: this automatically reads environment variables from an .env file.
-# or, it's supposed to - currently need to say `source .env`.
-
 # this command will enter passwords at the command line
 # usage: $enterpwd <command text>
 # see https://github.com/clarkwang/passh
@@ -54,7 +51,7 @@ compile-compose SETUP='demo':
 
 # run
 # SETUP is a variable, the name of the setup folder to use
-# rm options:
+# docker compose rm options:
 # -f, --force   Don't ask to confirm removal
 # -s, --stop    Stop the containers, if required, before removing
 # -v            Remove any anonymous volumes attached to containers
