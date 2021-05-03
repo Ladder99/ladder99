@@ -1,4 +1,4 @@
-# adapter expects ~/data/adapter to have devices.yaml and models folder.
+# adapter expects /data/adapter to have devices.yaml and models folder.
 
 #. experimental
 
