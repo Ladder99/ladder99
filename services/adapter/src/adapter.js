@@ -106,8 +106,20 @@ for (const device of devices) {
   // start tcp connection for this device
   const { destinations } = device
   const destination = destinations[0] //. just handle one for now
-  console.log(`TCP try listening to socket at`, destinations, `...`)
+  console.log(`TCP try listening to socket at`, destination, `...`)
+  console.log('here')
+  // try {
   tcp.listen(destination.port, destination.host)
+  // } catch (error) {
+  //   if (error.code === 'ENOTFOUND') {
+  //     console.log(
+  //       `TCP socket at ${destination.host}:${destination.port} not found.`
+  //     )
+  //   } else {
+  //     throw error
+  //   }
+  // }
+  console.log('there')
 }
 
 /**
