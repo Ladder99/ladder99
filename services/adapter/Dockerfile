@@ -8,7 +8,14 @@
 # FROM node:15-alpine  # smallest, but harder to work with
 FROM node:15-slim
 
-WORKDIR /home/node/app
+# change to a new non-root user for better security.
+# this also adds the user to a group with the same name.
+# --create-home creates a home folder, ie /home/<username>
+RUN useradd --create-home ladder99
+USER ladder99
+
+# WORKDIR /home/node/app
+WORKDIR /home/ladder99/app
 
 # install javascript dependencies
 COPY ./package*.json ./
@@ -16,11 +23,6 @@ RUN npm ci --production
 
 # copy code
 COPY ./src ./src
-
-# change to a new non-root user for better security
-RUN groupadd --gid 1000 ladder99 \
-  && useradd --gid 1000 --uid 1000 --create-home ladder99
-USER ladder99
 
 # default command when run container
 CMD ["npm", "start"]

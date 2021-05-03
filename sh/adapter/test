@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd services/adapter
+docker build \
+  --tag=adapter \
+  .
