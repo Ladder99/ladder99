@@ -2,8 +2,8 @@
 
 export VERSION=${1:-'latest'}
 
-docker tag ladder99/mtconnect-agent:latest ladder99/mtconnect-agent:test
-docker tag ladder99/mtconnect-agent:$VERSION ladder99/mtconnect-agent:test
+docker tag ladder99/mtconnect-agent:test ladder99/mtconnect-agent:latest
+docker tag ladder99/mtconnect-agent:test ladder99/mtconnect-agent:$VERSION
 
 docker push ladder99/mtconnect-agent:latest
 docker push ladder99/mtconnect-agent:$VERSION
