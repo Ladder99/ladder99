@@ -1,8 +1,0 @@
-#!/bin/bash
-
-source .env
-
-$enterpwd ssh $PI "sudo mkdir -p /etc/ladder99/adapter"
-$enterpwd ssh $PI "sudo chown pi:pi /etc/ladder99/adapter"
-$enterpwd scp -p setups/{{SETUP}}/devices.yaml $PI:/etc/ladder99/adapter
-$enterpwd scp -pr models $PI:/etc/ladder99/adapter/models

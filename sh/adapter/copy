@@ -1,0 +1,21 @@
+#!/bin/bash
+# copy data to a named volume for the adapter container to access.
+
+SETUP=${1:-'pi'}
+
+docker container create \
+  --name temp \
+  --volume adapter:/home/ladder99/data/adapter \
+  busybox
+docker cp . temp:/home/ladder99/data/adapter
+docker rm temp
+
+
+
+
+
+# source .env
+# $enterpwd ssh $PI "sudo mkdir -p /etc/ladder99/adapter"
+# $enterpwd ssh $PI "sudo chown pi:pi /etc/ladder99/adapter"
+# $enterpwd scp -p setups/{{SETUP}}/devices.yaml $PI:/etc/ladder99/adapter
+# $enterpwd scp -pr models $PI:/etc/ladder99/adapter/models

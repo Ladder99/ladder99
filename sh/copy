@@ -1,0 +1,12 @@
+#!/bin/bash
+# copy data to a named volume for a container to access.
+# usage: 
+#   sh/copy setups/pi/devices.yaml adapter /data/adapter
+
+FROM=$1
+VOLUME=$2
+TO=$3
+
+docker container create --name temp --volume $VOLUME:$TO busybox
+docker cp $FROM temp:$TO
+docker rm temp
