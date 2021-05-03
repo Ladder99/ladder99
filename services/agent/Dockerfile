@@ -78,8 +78,9 @@ COPY test-agent.sh /etc/mtconnect
 EXPOSE 5000
 
 # change to a new non-root user for better security
-RUN groupadd --gid 1000 ladder99 \
-  && useradd --gid 1000 --uid 1000 --create-home ladder99
+# this also adds the user to a group with the same name.
+# --create-home creates a home folder, ie /home/<username>
+RUN useradd --create-home ladder99
 USER ladder99
 
 # default run command - can override with docker run or docker-compose.
