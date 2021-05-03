@@ -1,0 +1,11 @@
+#!/bin/bash
+
+export PLATFORM=${1:-'linux/amd64,linux/arm/v7,linux/arm64'}
+echo $PLATFORM
+
+cd services/agent && \
+docker buildx build \
+  --platform=$PLATFORM \
+  --tag=agent \
+  --load \
+  .
