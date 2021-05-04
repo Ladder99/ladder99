@@ -8,11 +8,11 @@ export default {
   MTConnectDevices: [
     {
       _attributes: {
-        'xmlns:m': 'urn:mtconnect.org:MTConnectDevices:1.6',
+        'xmlns:m': 'urn:mtconnect.org:MTConnectDevices:1.7',
         'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-        xmlns: 'urn:mtconnect.org:MTConnectDevices:1.6',
+        xmlns: 'urn:mtconnect.org:MTConnectDevices:1.7',
         'xsi:schemaLocation':
-          'urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd',
+          'urn:mtconnect.org:MTConnectDevices:1.7 http://www.mtconnect.org/schemas/MTConnectDevices_1.7.xsd',
       },
       Header: {
         //. values?
@@ -21,7 +21,7 @@ export default {
           sender: 'localhost', //.
           instanceId: '12345678', //.
           bufferSize: '131072', //. ?
-          version: '1.6.0.7', //.
+          version: '1.7.0.3', //.
         },
       },
       Devices: {
