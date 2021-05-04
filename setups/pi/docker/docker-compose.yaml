@@ -29,7 +29,6 @@ services:
     depends_on:
       - broker-ccs-pa-001
     volumes:
-      # - /etc/ladder99-adapter:/etc/ladder99-adapter
       - adapter:/data/adapter
     logging:
       options:
@@ -47,7 +46,6 @@ services:
     command: agent debug /data/agent/agent.cfg
     volumes:
       - agent:/data/agent
-    #   - /etc/ladder99-agent:/etc/ladder99-agent
     logging:
       options:
         max-size: '1m'
