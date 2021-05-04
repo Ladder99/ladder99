@@ -21,7 +21,7 @@ RUN apt-get update && apt-get install -y \
 # build makefile
 #----------------------------------------------------------------------------
 
-# get agent source
+# get latest cppagent source
 RUN mkdir -p ~/agent/build \
   && cd ~/agent \
   && git clone https://github.com/mtconnect/cppagent.git --depth 1
