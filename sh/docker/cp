@@ -2,6 +2,7 @@
 # copy data to a named volume for a container to access.
 # usage: 
 #   sh/copy setups/pi/devices.yaml adapter /data/adapter
+# why didn't docker make a fn like this to copy data into a named volume?
 
 FROM=$1
 VOLUME=$2
