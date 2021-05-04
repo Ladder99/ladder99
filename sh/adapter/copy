@@ -1,0 +1,9 @@
+#!/bin/bash
+# copy data to a named volume for the adapter container
+
+SETUP=${1:-'pi'}
+
+docker volume create adapter
+
+sh/docker/cp setups/$SETUP/devices.yaml adapter /data/adapter
+sh/docker/cp models adapter /data/adapter
