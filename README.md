@@ -32,14 +32,21 @@ For more on the data diode, see the service [here](services/diode).
 
 Clone this repo
 
-    git clone https://github.com/ladder99/mtconnect
+    git clone https://github.com/Ladder99/mtconnect
+
+or if using ssh (can set up so don't need to enter pw all the time)
+
+    git clone git@github.com:Ladder99/mtconnect.git
+
+then
+
     cd mtconnect
 
-You can see all the commands available with
+You can see all the Mac/Linux shell commands available with
 
     tree sh
 
-### Desktop (Mac/Windows)
+### Desktop (Mac/Linux)
 
 Install Docker, Node, jq, and Python3 from their installers. 
 
@@ -47,7 +54,6 @@ Install all other dependencies with
 
     sh/install/apps
     sh/install/deps
-
 
 ### Raspberry pi
 
@@ -66,11 +72,11 @@ The device instances are defined in the `setups` folder, eg the `demo` setup has
 
 Then generate the `setups/demo/volumes/agent/devices.xml` and `setups/demo/docker/docker-compose.yaml` files (latter not implemented yet - hand-edit) -
 
-    sh/setup/compile
+    sh/setup/compile pi
 
 Then run docker-compose up and start the device simulations with -
 
-    sh/setup/run
+    sh/setup/run pi
 
 You can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
 
@@ -84,14 +90,11 @@ To replay some more mqtt messages,
 
     sh/setup/replay
 
-(later use telegraf to shovel data from localhost:5000 to database and visualizer)
-
 
 ## Deploying
 
 To deploy to the Raspberry pi, first build the images - this will also push them to our Docker Hub - 
 
-<!-- build-adapter -->
     sh/adapter/build
     sh/agent/build
 
