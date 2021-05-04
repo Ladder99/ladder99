@@ -20,6 +20,9 @@ sudo pip3 install docker-compose
 # allow pi user to run docker
 sudo usermod -aG docker pi
 
+# login to ladder99 docker hub
+sudo docker login --username ladder99
+
 echo Now restart terminal - otherwise must use sudo with docker commands. 
 
 
