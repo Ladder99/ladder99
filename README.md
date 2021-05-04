@@ -79,14 +79,14 @@ Then copy the relevant data files into named volumes -
     sh/adapter/copy pi
     sh/agent/copy pi
 
-Then build the multiarchitecture Docker images - this will also push them to our Ladder99 Docker Hub - 
+Then build the multiarchitecture Docker images - this will also push them to our Ladder99 Docker Hub. This can be done on another machine, as it can take a few hours if starting from scratch -
 
     sh/adapter/build
     sh/agent/build
 
 Then run docker-compose up and start the device simulations with -
 
-    sh/setup/run pi
+    sh/setups/run pi
 
 You can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
 
@@ -102,7 +102,7 @@ To replay some more mqtt messages,
 
     sh/setup/replay
 
-(not working yet)
+(not yet working)
 
 
 ## Documentation
