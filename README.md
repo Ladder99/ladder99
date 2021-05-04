@@ -34,46 +34,41 @@ For more on the data diode, see the service [here](services/diode).
 
 Clone this repo
 
-    git clone https://github.com/bburns/ladder99-mtconnect
-    cd ladder99-mtconnect
+    git clone https://github.com/ladder99/mtconnect
+    cd mtconnect
 
 Install Docker, Node, jq, and Python3 from their installers. 
 
-Install [just](https://github.com/casey/just), which is a task runner, using `Justfile` for command scripts - if on Mac, 
-
-    brew install just
-
 Install all other dependencies with
 
-    just install
-    just install-dev   # includes sphinx for docs
+    sh/install/apps
+    sh/install/deps
 
 You can see all the commands available with
 
-    just
+    tree sh
+
 
 ### Raspberry pi
 
 Run this to install Docker etc -
 
-    ./pi_install.sh
-
-Note: 'just' isn't available for the pi yet.
+    sh/install/docker
 
 
 ## Developing
 
-The device models are defined in `models`, e.g. the ccs-pa model has model.yaml, inputs.yaml, outputs.yaml, and types.yaml. 
+The device models are defined in `models`, eg the ccs-pa model has model.yaml, inputs.yaml, outputs.yaml, and types.yaml. 
 
 The device instances are defined in the `setups` folder, eg the `demo` setup has a list of instances in the devices subfolder there. Edit these as needed.
 
 Then generate the `setups/demo/volumes/agent/devices.xml` and `setups/demo/docker/docker-compose.yaml` files (latter not implemented yet - hand-edit) -
 
-    just compile
+    sh/setup/compile
 
 Then run docker-compose up and start the device simulations with -
 
-    just run
+    sh/setup/run
 
 You can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
 
@@ -85,7 +80,7 @@ etc
 
 To replay some more mqtt messages,
 
-    just replay
+    sh/setup/replay
 
 (later use telegraf to shovel data from localhost:5000 to database and visualizer)
 
@@ -94,16 +89,14 @@ To replay some more mqtt messages,
 
 To deploy to the Raspberry pi, first build the images - this will also push them to our Docker Hub - 
 
-    build-adapter
-
-Currently build-agent must be done ON THE PI - gives errors on x86.
-
-    build-agent
+<!-- build-adapter -->
+    sh/adapter/build
+    sh/agent/build
 
 Then copy the needed files - 'pi' here is the setup to use - see 'setups' folder -
 
-    deploy-adapter pi
-    deploy-agent pi
+    sh/adapter/copy
+    sh/agent/copy
 
 Then can run everything on the pi.
 
@@ -112,7 +105,7 @@ Then can run everything on the pi.
 
 Build and deploy the docs with
 
-    just docs
+    sh/docs/build
 
 Then visit https://ladder99-mtconnect.web.app/
 
