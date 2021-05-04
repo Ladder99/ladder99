@@ -46,7 +46,7 @@ services:
       - adapter
     command: agent debug /data/agent/agent.cfg
     volumes:
-      - agent:/data
+      - agent:/data/agent
     #   - /etc/ladder99-agent:/etc/ladder99-agent
     logging:
       options:
