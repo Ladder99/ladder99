@@ -10,6 +10,9 @@ PLATFORM=${1:-'linux/amd64,linux/arm/v7,linux/arm64'}
 
 cd services/adapter
 
+# build and deploy to hub
+# note: you have to use either --push or --load. 
+# --load fails for multiarch, so we have to push to a registry, docker hub. 
 docker buildx build \
   --platform=$PLATFORM \
   --tag=ladder99/adapter:latest \
