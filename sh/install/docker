@@ -1,26 +1,50 @@
 #!/bin/bash
 # install docker on pi
 
+# update packages
+sudo apt update
+sudo apt install curl
+
 # install and upgrade docker
 # see https://docs.docker.com/engine/install/debian/#install-using-the-convenience-script
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh get-docker.sh
+curl -sSL https://get.docker.com | sudo sh
 sudo apt upgrade docker
 
-# install libseccomp to fix docker bug
-# because when compile with docker get errors - 
-# "At least one invalid signature was encountered."
-# see https://askubuntu.com/questions/1263284/apt-update-throws-signature-error-in-ubuntu-20-04-container-on-arm#
-wget http://ftp.us.debian.org/debian/pool/main/libs/libseccomp/libseccomp2_2.5.1-1_armhf.deb
-sudo dpkg -i libseccomp2_2.5.1-1_armhf.deb
+# # install libseccomp to fix docker bug
+# # because when compile with docker get errors - 
+# # "At least one invalid signature was encountered."
+# # see https://askubuntu.com/questions/1263284/apt-update-throws-signature-error-in-ubuntu-20-04-container-on-arm#
+# wget http://ftp.us.debian.org/debian/pool/main/libs/libseccomp/libseccomp2_2.5.1-1_armhf.deb
+# sudo dpkg -i libseccomp2_2.5.1-1_armhf.deb
+
+# allow user to run docker - else need `sudo docker ...`
+sudo usermod -aG docker $(whoami)
+
+# ?
+newgrp docker
+
+# start docker daemon
+sudo systemctl enable docker
+sudo systemctl start docker
 
 # install docker-compose - not yet in docker command
+sudo apt -y install libffi-dev libssl-dev python3-dev python3 python3-pip
 sudo pip3 install docker-compose
 
-# allow pi user to run docker
-sudo usermod -aG docker pi
+# ?
+sync
 
-# login to ladder99 docker hub
+# ?
+sudo apt install gpg pass
+
+# login to docker hub as ladder99
 sudo docker login --username ladder99
+
+# run a container with the qemu emulator
+sudo docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+# create a multiarch builder
+sudo docker buildx create --name multiarch --driver docker-container --use
+sudo docker buildx inspect --bootstrap
 
 echo Now restart terminal - otherwise must use sudo with docker commands. 
