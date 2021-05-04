@@ -94,18 +94,17 @@ test-app:
 # test and look around with this -
 #   docker run -it ladder99/mtconnect-adapter:0.1.0 /bin/bash
 #   npm start  # will get error due to missing devices.yaml
-#. or docker run :latest if can ignore cache
 #---
 # build and upload adapter image
-build-adapter PLATFORM='linux/amd64,linux/arm/v7,linux/arm64':
-    cd services/adapter && \
-    export L99_ADAPTER_VERSION=`jq -r .version package.json` && \
-    docker buildx build \
-      --platform {{PLATFORM}} \
-      --tag=ladder99/adapter:latest \
-      --tag=ladder99/adapter:$L99_ADAPTER_VERSION \
-      --push \
-      .
+# build-adapter PLATFORM='linux/amd64,linux/arm/v7,linux/arm64':
+#     cd services/adapter && \
+#     export L99_ADAPTER_VERSION=`jq -r .version package.json` && \
+#     docker buildx build \
+#       --platform {{PLATFORM}} \
+#       --tag=ladder99/adapter:latest \
+#       --tag=ladder99/adapter:$L99_ADAPTER_VERSION \
+#       --push \
+#       .
 
 # note: we set the destination directory's group and owner to pi, 
 # so can copy to it with scp.
@@ -122,25 +121,25 @@ build-adapter PLATFORM='linux/amd64,linux/arm/v7,linux/arm64':
 # note: the image won't show up in `docker images` because it's multiarch
 #---
 # build and upload agent image
-build-agent:
-    cd services/agent && \
-    export L99_AGENT_VERSION=`jq -r .version package.json` && \
-    docker buildx build \
-      --platform linux/amd64,linux/arm/v7,linux/arm64 \
-      --tag=ladder99/mtconnect-agent:latest \
-      --tag=ladder99/mtconnect-agent:$L99_AGENT_VERSION \
-      --push \
-      .
+# build-agent:
+#     cd services/agent && \
+#     export L99_AGENT_VERSION=`jq -r .version package.json` && \
+#     docker buildx build \
+#       --platform linux/amd64,linux/arm/v7,linux/arm64 \
+#       --tag=ladder99/mtconnect-agent:latest \
+#       --tag=ladder99/mtconnect-agent:$L99_AGENT_VERSION \
+#       --push \
+#       .
 
 # note: we set the destination directory's group and owner to pi, 
 # so can copy to it with scp.
 #---
 # copy xml and style files to pi - envars are set in .env file
-deploy-agent SETUP='pi':
-    source .env && \
-    $enterpwd ssh $PI "sudo mkdir -p /etc/ladder99-agent" && \
-    $enterpwd ssh $PI "sudo chown pi:pi /etc/ladder99-agent" && \
-    $enterpwd scp -rp setups/{{SETUP}}/volumes/agent/* $PI:/etc/ladder99-agent
+# deploy-agent SETUP='pi':
+#     source .env && \
+#     $enterpwd ssh $PI "sudo mkdir -p /etc/ladder99-agent" && \
+#     $enterpwd ssh $PI "sudo chown pi:pi /etc/ladder99-agent" && \
+#     $enterpwd scp -rp setups/{{SETUP}}/volumes/agent/* $PI:/etc/ladder99-agent
 
 
 #-------------------------------------------------------------------------

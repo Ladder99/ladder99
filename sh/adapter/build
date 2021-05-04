@@ -1,6 +1,10 @@
 #!/bin/bash
 # build and deploy multiarch adapter docker image
 
+# do `docker login --user ladder99` if permission denied
+# do `docker buildx create --use` if error "multiple platforms not supported"
+# note: the image won't show up in `docker images` because it's multiarch
+
 # get platforms to build, with a default value
 PLATFORM=${1:-'linux/amd64,linux/arm/v7,linux/arm64'}
 
