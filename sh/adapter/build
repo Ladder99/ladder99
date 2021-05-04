@@ -1,12 +1,13 @@
 #!/bin/bash
+# build adapter docker image
 
-export PLATFORM=${1:-'linux/amd64,linux/arm/v7,linux/arm64'}
-echo $PLATFORM
+PLATFORM=${1:-'linux/amd64,linux/arm/v7,linux/arm64'}
 
 cd services/adapter && \
 docker buildx build \
   --platform=$PLATFORM \
   --tag=ladder99/adapter:test \
+  --tag=ladder99/adapter:latest \
   --push \
   .
 
