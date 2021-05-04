@@ -65,14 +65,14 @@ docs:
 #     docker-compose --file $FILE up --build --remove-orphans {{SERVICE}} && \
 #     docker-compose --file $FILE rm -fsv
 
-# replay mqtt recording - https://github.com/rpdswtk/mqtt_recorder
-replay MODEL='ccs-pa' RUN='run0' PORT='1883':
-    mqtt-recorder \
-      --host localhost \
-      --port {{PORT}} \
-      --mode replay \
-      --loop true \
-      --file models/{{MODEL}}/simulations/{{RUN}}.csv
+# # replay mqtt recording - https://github.com/rpdswtk/mqtt_recorder
+# replay MODEL='ccs-pa' RUN='run0' PORT='1883':
+#     mqtt-recorder \
+#       --host localhost \
+#       --port {{PORT}} \
+#       --mode replay \
+#       --loop true \
+#       --file models/{{MODEL}}/simulations/{{RUN}}.csv
 
 # run the mtconnect application, which polls the agent
 run-app:
@@ -147,12 +147,12 @@ test-app:
 #-------------------------------------------------------------------------
 
 # start rabbitmq message queues
-rabbits:
+rabbit:
     cd services/diode/code/application/datadiode/contrib/docker && \
     docker-compose up
 
 # send a test message to rabbitmq
-send:
+test-rabbit:
     cd services/diode/code/application/datadiode/contrib/nodejs && \
     node src/send.js
 
