@@ -7,6 +7,4 @@
 VOLUME=$1
 SUFFIX=$2
 
-#. re-use this with an alias or another sh file or ?
-docker run -it --rm --volume /:/docker alpine:edge \
-  ls -l /docker/var/lib/docker/volumes/$VOLUME/_data$SUFFIX
+sh/docker/vm ls -l /docker/var/lib/docker/volumes/$VOLUME/_data/$SUFFIX
