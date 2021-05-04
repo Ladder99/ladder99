@@ -10,15 +10,18 @@ PLATFORM=${1:-'linux/amd64,linux/arm/v7,linux/arm64'}
 
 cd services/adapter
 
+#. get version from package.json? 
+# but then has to rebuild that copy and subsequent layers.
+# L99_ADAPTER_VERSION=`jq -r .version package.json`
+# --tag=ladder99/adapter:$L99_ADAPTER_VERSION \
+
 # build and deploy to hub
 # note: you have to use either --push or --load. 
 # --load fails for multiarch, so we have to push to a registry, docker hub. 
+# initially had it pushing as :test, but then no way to add :latest to it
+# after testing. 
 docker buildx build \
   --platform=$PLATFORM \
   --tag=ladder99/adapter:latest \
   --push \
   .
-
-# L99_ADAPTER_VERSION=`jq -r .version package.json` \
-# --tag=ladder99/adapter:latest \
-# --tag=ladder99/adapter:$L99_ADAPTER_VERSION \

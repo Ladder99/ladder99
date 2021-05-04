@@ -1,6 +1,14 @@
 #!/bin/bash
 # copy data to a named volume for the adapter container
 
+# note: a named volume may be created directly outside of compose 
+# with docker volume create and then referenced inside 
+# docker-compose.yaml like so:
+# volumes:
+#   myapp:
+#     external: true
+
+# pick a setup folder for devices.yaml
 SETUP=${1:-'pi'}
 
 docker volume create adapter
