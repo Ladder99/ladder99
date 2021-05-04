@@ -1,0 +1,23 @@
+#!/bin/bash
+# compile a setup
+
+SETUP=${1:-'pi'}
+
+node services/compiler/src/compile-xml.js \
+  setups/$SETUP/devices.yaml \
+  setups/$SETUP/volumes/agent/devices.xml
+
+# # compile-xml and compile-compose
+# compile SETUP='demo':
+#     just compile-xml {{SETUP}}
+#     just compile-compose {{SETUP}}
+
+# # compile devices.xml from model devices.yaml
+# compile-xml SETUP='demo':
+#     node services/compiler/src/compile-xml.js \
+#     setups/{{SETUP}}/devices.yaml \
+#     setups/{{SETUP}}/volumes/agent/devices.xml
+
+# # compile docker-compose.yaml from devices.yaml
+# compile-compose SETUP='demo':
+#     echo todo

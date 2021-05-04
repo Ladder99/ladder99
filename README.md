@@ -30,12 +30,16 @@ For more on the data diode, see the service [here](services/diode).
 
 ## Installation
 
-### Desktop (Mac/Windows)
-
 Clone this repo
 
     git clone https://github.com/ladder99/mtconnect
     cd mtconnect
+
+You can see all the commands available with
+
+    tree sh
+
+### Desktop (Mac/Windows)
 
 Install Docker, Node, jq, and Python3 from their installers. 
 
@@ -44,16 +48,14 @@ Install all other dependencies with
     sh/install/apps
     sh/install/deps
 
-You can see all the commands available with
-
-    tree sh
-
 
 ### Raspberry pi
 
-Run this to install Docker etc -
+Install Docker and other dependencies -
 
     sh/install/docker
+    sh/install/apps
+    sh/install/deps
 
 
 ## Developing
