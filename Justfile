@@ -57,7 +57,7 @@ compile-compose SETUP='demo':
 # -v            Remove any anonymous volumes attached to containers
 # ----
 # start a setup with all services, e.g. `just run` or `just run demo`
-run SETUP='demo' SERVICE='':
+run SETUP='pi' SERVICE='':
     # just compile {{SETUP}}
     FILE=setups/{{SETUP}}/docker/docker-compose.yaml && \
     docker-compose --file $FILE down && \
