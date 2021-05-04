@@ -12,13 +12,16 @@ SERVICE=$3
 FILE=setups/$SETUP/docker/docker-compose$SUFFIX.yaml
 
 # shut down
+# don't do this as kills network when running two compose files
 # docker-compose --file $FILE down
 
 # get latest images
 docker-compose --file $FILE pull
 
 # run the setup
-docker-compose --file $FILE up --build --remove-orphans $SERVICE
+# don't remove orphans as kills other running services
+# docker-compose --file $FILE up --build --remove-orphans $SERVICE
+docker-compose --file $FILE up --build
 
 # remove containers etc
 # -f, --force   Don't ask to confirm removal
