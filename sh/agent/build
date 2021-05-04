@@ -1,16 +1,18 @@
 #!/bin/bash
-# build multiarch agent image and push :test to docker hub
+# build and deploy multiarch agent docker image
 
 # get platforms to build, with a default value
-export PLATFORM=${1:-'linux/amd64,linux/arm/v7,linux/arm64'}
+PLATFORM=${1:-'linux/amd64,linux/arm/v7,linux/arm64'}
+
+cd services/agent
 
 # build image and push to docker hub
 # note: you have to use either --push or --load. 
 # --load fails for multiarch, so we have to push to a registry, docker hub. 
 # tag it with :test for now - then run deploy script to deploy as :latest etc
-cd services/agent
+
 docker buildx build \
   --platform=$PLATFORM \
-  --tag=ladder99/mtconnect-agent:test \
+  --tag=ladder99/mtconnect-agent:latest \
   --push \
   .

@@ -1,12 +1,13 @@
 #!/bin/bash
-# build adapter docker image
+# build and deploy multiarch adapter docker image
 
+# get platforms to build, with a default value
 PLATFORM=${1:-'linux/amd64,linux/arm/v7,linux/arm64'}
 
-cd services/adapter && \
+cd services/adapter
+
 docker buildx build \
   --platform=$PLATFORM \
-  --tag=ladder99/adapter:test \
   --tag=ladder99/adapter:latest \
   --push \
   .
