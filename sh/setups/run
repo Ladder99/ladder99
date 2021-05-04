@@ -12,7 +12,7 @@ SERVICE=$3
 FILE=setups/$SETUP/docker/docker-compose$SUFFIX.yaml
 
 # shut down
-docker-compose --file $FILE down
+# docker-compose --file $FILE down
 
 # get latest images
 docker-compose --file $FILE pull
