@@ -1,7 +1,4 @@
 #!/bin/bash
-# test agent locally
+# test agent - runs the default command which runs a simulation
 
-cd services/agent
-docker build --tag=agent .
-docker run -it --rm --name agent -p 5000:5000 -d agent
-curl localhost:5000/current
+docker run -it --rm -p 5000:5000 --name agent ladder99/mtconnect-agent:latest

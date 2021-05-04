@@ -13,16 +13,16 @@ export enterpwd := "./bin/macos/passh -p env:PI_PASSWORD"
 help:
     @just --list
 
-# install all dependencies (also need python, node/npm, docker, jq, openjdk8, gradle2.8)
-install:
-    pip install mqtt-recorder
-    npm install -g http-server
-    cd services/adapter && npm install
-    cd services/application && npm install
-    cd services/compiler && npm install
-    cd services/simulator-mqtt && npm install
-    cd services/simulator-opc && npm install
-    cd services/diode/code/application/datadiode/contrib/nodejs && npm install
+# # install all dependencies (also need python, node/npm, docker, jq, openjdk8, gradle2.8)
+# install:
+#     pip install mqtt-recorder
+#     npm install -g http-server
+#     cd services/adapter && npm install
+#     cd services/application && npm install
+#     cd services/compiler && npm install
+#     cd services/simulator-mqtt && npm install
+#     cd services/simulator-opc && npm install
+#     cd services/diode/code/application/datadiode/contrib/nodejs && npm install
 
 # install development tools
 install-dev:
@@ -61,6 +61,7 @@ run SETUP='demo' SERVICE='':
     # just compile {{SETUP}}
     FILE=setups/{{SETUP}}/docker/docker-compose.yaml && \
     docker-compose --file $FILE down && \
+    docker-compose --file $FILE pull && \
     docker-compose --file $FILE up --build --remove-orphans {{SERVICE}} && \
     docker-compose --file $FILE rm -fsv
 
