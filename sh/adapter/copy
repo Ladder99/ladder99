@@ -1,21 +1,11 @@
 #!/bin/bash
-# copy data to a named volume for the adapter container to access.
+# copy data to a named volume for the agent container to access.
 
-# SETUP=${1:-'pi'}
+SETUP=${1:-'pi'}
 
-# docker container create \
-#   --name temp \
-#   --volume adapter:/data/adapter \
-#   busybox
-# docker cp . temp:/data/adapter
-# docker rm temp
+docker volume rm agent
+docker volume create agent
 
-
-
-
-
-# source .env
-# $enterpwd ssh $PI "sudo mkdir -p /etc/ladder99/adapter"
-# $enterpwd ssh $PI "sudo chown pi:pi /etc/ladder99/adapter"
-# $enterpwd scp -p setups/{{SETUP}}/devices.yaml $PI:/etc/ladder99/adapter
-# $enterpwd scp -pr models $PI:/etc/ladder99/adapter/models
+sh/docker/cp setups/$SETUP/volumes/agent/agent.cfg agent /data/agent
+sh/docker/cp setups/$SETUP/volumes/agent/devices.xml agent /data/agent
+sh/docker/cp setups/$SETUP/volumes/agent/styles agent /data/agent
