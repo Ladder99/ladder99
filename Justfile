@@ -57,13 +57,13 @@ compile-compose SETUP='demo':
 # -v            Remove any anonymous volumes attached to containers
 # ----
 # start a setup with all services, e.g. `just run` or `just run demo`
-run SETUP='pi' SERVICE='':
-    # just compile {{SETUP}}
-    FILE=setups/{{SETUP}}/docker/docker-compose.yaml && \
-    docker-compose --file $FILE down && \
-    docker-compose --file $FILE pull && \
-    docker-compose --file $FILE up --build --remove-orphans {{SERVICE}} && \
-    docker-compose --file $FILE rm -fsv
+# run SETUP='pi' SERVICE='':
+#     # just compile {{SETUP}}
+#     FILE=setups/{{SETUP}}/docker/docker-compose.yaml && \
+#     docker-compose --file $FILE down && \
+#     docker-compose --file $FILE pull && \
+#     docker-compose --file $FILE up --build --remove-orphans {{SERVICE}} && \
+#     docker-compose --file $FILE rm -fsv
 
 # replay mqtt recording - https://github.com/rpdswtk/mqtt_recorder
 replay MODEL='ccs-pa' RUN='run0' PORT='1883':
