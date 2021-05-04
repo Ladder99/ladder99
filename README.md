@@ -70,9 +70,19 @@ The device models are defined in `models`, eg the ccs-pa model has model.yaml, i
 
 The device instances are defined in the `setups` folder, eg the `demo` setup has a list of instances in the devices subfolder there. Edit these as needed.
 
-Then generate the `setups/demo/volumes/agent/devices.xml` and `setups/demo/docker/docker-compose.yaml` files (latter not implemented yet - hand-edit) -
+Then generate the `setups/demo/volumes/agent/devices.xml` and `setups/demo/docker/docker-compose.yaml` files (former partially implemented, latter not implemented yet - hand-edit) -
 
     sh/setup/compile pi
+
+Then copy the relevant data files into named volumes - 
+
+    sh/adapter/copy pi
+    sh/agent/copy pi
+
+Then build the multiarchitecture Docker images - this will also push them to our Ladder99 Docker Hub - 
+
+    sh/adapter/build
+    sh/agent/build
 
 Then run docker-compose up and start the device simulations with -
 
@@ -84,26 +94,15 @@ To see the xml the agent generates visit
 
     localhost:5000/current
 
-etc
+If you're running the setup on a pi, goto something like this -
+
+    192.168.0.109:5000/current 
 
 To replay some more mqtt messages,
 
     sh/setup/replay
 
-
-## Deploying
-
-To deploy to the Raspberry pi, first build the images - this will also push them to our Docker Hub - 
-
-    sh/adapter/build
-    sh/agent/build
-
-Then copy the needed files - 'pi' here is the setup to use - see 'setups' folder -
-
-    sh/adapter/copy
-    sh/agent/copy
-
-Then can run everything on the pi.
+(not working yet)
 
 
 ## Documentation
