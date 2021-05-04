@@ -91,22 +91,23 @@ services:
       options:
         max-size: '1m'
 
-  # timescaledb:
-  #   container_name: timescaledb
-  #   image: timescale/timescaledb:1.7.4-pg12
-  #   ports:
-  #     - '5432:5432/tcp'
-  #   networks:
-  #     - ladder99
-  #   environment:
-  #     POSTGRES_USERNAME: postgres
-  #     POSTGRES_PASSWORD: gralgrut
-  #     POSTGRES_DB: ladder99
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure
-  #   volumes:
-  #     - $HOME/data/postgres:/var/lib/postgresql/data
+  timescaledb:
+    container_name: timescaledb
+    #   image: timescale/timescaledb:1.7.4-pg12
+    image: timescale/timescaledb:latest-pg13
+    ports:
+      - '5432:5432/tcp'
+    networks:
+      - ladder99
+    environment:
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: gralgrut
+      POSTGRES_DB: ladder99
+    deploy:
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - $HOME/data/postgres:/var/lib/postgresql/data
 
   # grafana:
   #   container_name: grafana
