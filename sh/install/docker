@@ -1,6 +1,9 @@
 #!/bin/bash
 # install docker on pi
 
+#. untested combination of my and chris's notes
+#. walk through it on a new pi and test
+
 # update packages
 sudo apt update
 sudo apt install curl
