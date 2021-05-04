@@ -2,13 +2,14 @@
 # run a setup
 
 SETUP=${1:-'pi'}
-SERVICE=$2
+SUFFIX=$2  # eg '-application'
+SERVICE=$3
 
 # compile devices.yaml to devices.xml
-# sh/setup/compile $SETUP
+# sh/setups/compile $SETUP
 
 # get the docker-compose config file
-FILE=setups/$SETUP/docker/docker-compose.yaml
+FILE=setups/$SETUP/docker/docker-compose$SUFFIX.yaml
 
 # shut down
 docker-compose --file $FILE down
