@@ -46,6 +46,10 @@ You can see all the Mac/Linux shell commands available with
 
     tree sh
 
+Get a copy of the .env file, or modify the existing .env-example file, then set the environment variables with
+
+    source .env
+
 ### Desktop (Mac/Linux)
 
 Install Docker, Node, jq, and Python3 from their installers. 
