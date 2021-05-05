@@ -84,9 +84,14 @@ Then build the multiarchitecture Docker images - this will also push them to our
     sh/adapter/build
     sh/agent/build
 
-Then start all the services with -
+Then start all the services with (where pi is the name of the setups folder) -
 
     sh/setups/run pi base sims app
+
+or to run some services on the pi, some elsewhere, etc -
+
+    sh/setups/run pi base sims
+    sh/setups/run pi app
 
 You can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
 
