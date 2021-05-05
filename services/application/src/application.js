@@ -44,8 +44,7 @@ async function shovel() {
         const dataItem = dataItems[0] //.
         console.log(dataItem.value)
         // dump value to db
-        //. rename state to value in db
-        const sql = `INSERT INTO execution(time, state) VALUES($1, $2) RETURNING *`
+        const sql = `INSERT INTO execution(time, value) VALUES($1, $2) RETURNING *`
         const values = [dataItem.timestamp, dataItem.value]
         await client.query(sql, values)
       }
