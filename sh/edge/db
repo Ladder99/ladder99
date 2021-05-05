@@ -1,9 +1,0 @@
-#!/bin/bash
-# connect to edge database
-#. put this in setups/pi etc?
-
-# docker run -it --rm postgres:13 psql \
-#     -U postgres -h 192.168.0.109 -p 5432 -d ladder99
-
-docker run -it --rm postgres:13 psql \
-    -h $EDGE -p $DBPORT -d $DBNAME -U $DBUSER
