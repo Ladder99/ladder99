@@ -23,19 +23,19 @@ services:
     volumes:
       - $HOME/data/postgres:/var/lib/postgresql/data
 
-  # grafana:
-  #   container_name: grafana
-  #   image: grafana/grafana:7.1.5
-  #   ports:
-  #     - '3000:3000/tcp'
-  #   networks:
-  #     - ladder99
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure
-  #   volumes:
-  #     - $HOME/data/grafana:/var/lib/grafana
-  #   user: grafana
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:7.5.5
+    ports:
+      - '3003:3000/tcp'
+    networks:
+      - ladder99
+    deploy:
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - $HOME/data/grafana:/var/lib/grafana
+    user: grafana
 
   pgadmin:
     container_name: pgadmin
