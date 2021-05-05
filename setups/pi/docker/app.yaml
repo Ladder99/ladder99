@@ -13,6 +13,11 @@ services:
     environment:
       - BASE_URL=http://agent:5000
       - INTERVAL=2000
+      - PGHOST
+      - PGPORT
+      - PGDATABASE
+      - PGUSER
+      - PGPASSWORD
     env_file:
       - ../../../.env
     networks:
