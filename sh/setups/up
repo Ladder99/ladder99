@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # run a set of docker-compose yaml files
+# eg `sh/setups/pi up`
+# see also down
 
 import sys
 import os
