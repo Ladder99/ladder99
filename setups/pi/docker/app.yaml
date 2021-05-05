@@ -14,7 +14,7 @@ services:
       - BASE_URL=http://agent:5000
       - INTERVAL=2000
     env_file:
-      - .env
+      - ../../../.env
     networks:
       - ladder99
     volumes:
