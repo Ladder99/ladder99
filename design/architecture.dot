@@ -13,11 +13,14 @@ digraph "ladder99-mtconnect" {
   graph [ ranksep=0.2 ];
   graph [ nodesep=0.35 ];
   graph [ rankdir=LR; ] // left-to-right
+  graph [ fontname=arial ];
 
   node [ color=gray, fillcolor=white, style=filled ];
+  node [ fontname=arial ];
 
   edge [ color=gray ];
   edge [ fontsize=12, fontcolor=gray30 ];
+  edge [ fontname=arial ];
 
 
   //------------------------------------------------------------------------
