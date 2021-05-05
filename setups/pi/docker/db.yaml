@@ -33,6 +33,8 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
+    environment:
+      GF_INSTALL_PLUGINS: grafana-clock-panel,natel-discrete-panel
     volumes:
       - $HOME/data/grafana:/var/lib/grafana
       - ../volumes/grafana:/etc/grafana
