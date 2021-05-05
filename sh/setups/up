@@ -4,14 +4,14 @@
 import sys
 import os
 
-#. compile devices.yaml to devices.xml
-# sh/setups/compile $SETUP
-
 setup = sys.argv[1]
 parts = sys.argv[2:]
 
 files = [f"setups/{setup}/docker/{part}.yaml" for part in parts]
 args = ' '.join([f"--file {file}" for file in files])
+
+# . compile devices.yaml to devices.xml
+# sh/setups/compile $SETUP
 
 cmd = f"docker-compose {args} pull"
 print(cmd)

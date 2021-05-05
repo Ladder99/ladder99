@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+# stop a set of docker compose services
+
+import sys
+import os
+
+setup = sys.argv[1]
+parts = sys.argv[2:]
+
+files = [f"setups/{setup}/docker/{part}.yaml" for part in parts]
+args = ' '.join([f"--file {file}" for file in files])
+
+cmd = f"docker-compose {args} down"
+print(cmd)
+os.system(cmd)
