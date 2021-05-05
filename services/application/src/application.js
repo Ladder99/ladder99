@@ -39,7 +39,9 @@ async function shovel() {
     // traverse the tree and output state
     domain.traverse(tree, dataItems => {
       if (dataItems[0].type === 'Execution') {
-        console.log(dataItems[0])
+        // console.log(dataItems[0])
+        const dataItem = dataItems[0] //.
+        console.log(dataItem.value)
       }
     })
   } catch (error) {
