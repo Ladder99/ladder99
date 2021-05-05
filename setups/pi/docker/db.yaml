@@ -35,7 +35,7 @@ services:
         condition: on-failure
     volumes:
       - $HOME/data/grafana:/var/lib/grafana
-    user: pi
+    user: grafana
 
   pgadmin:
     container_name: pgadmin
