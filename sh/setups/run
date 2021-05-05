@@ -1,30 +1,22 @@
-#!/bin/bash
-# run a setup
+#!/usr/bin/env python3
+# run a set of docker-compose yaml files
 
-SETUP=${1:-'pi'}
-SUFFIX=$2  # eg '-application'
-SERVICE=$3
+import sys
+import os
 
-# compile devices.yaml to devices.xml
+#. compile devices.yaml to devices.xml
 # sh/setups/compile $SETUP
 
-# get the docker-compose config file
-FILE=setups/$SETUP/docker/docker-compose$SUFFIX.yaml
+setup = sys.argv[1]
+parts = sys.argv[2:]
 
-# shut down
-# don't do this as kills network when running two compose files
-# docker-compose --file $FILE down
+files = [f"setups/{setup}/docker/{part}.yaml" for part in parts]
+args = ' '.join([f"--file {file}" for file in files])
 
-# get latest images
-docker-compose --file $FILE pull
+cmd = f"docker-compose {args} pull"
+print(cmd)
+os.system(cmd)
 
-# run the setup
-# don't remove orphans as kills other running services
-# docker-compose --file $FILE up --build --remove-orphans $SERVICE
-docker-compose --file $FILE up --build
-
-# remove containers etc
-# -f, --force   Don't ask to confirm removal
-# -s, --stop    Stop the containers, if required, before removing
-# -v            Remove any anonymous volumes attached to containers
-docker-compose --file $FILE rm -fsv
+cmd = f"docker-compose {args} up --build"
+print(cmd)
+os.system(cmd)
