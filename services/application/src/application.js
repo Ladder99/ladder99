@@ -1,15 +1,24 @@
 // import fs from 'fs'
 import fetch from 'node-fetch'
+import { Client } from 'pg' // postgres driver
 import * as domain from './domain.js'
 
 console.log(`MTConnect Application starting`)
 
-// const username = 'postgres'
-// const password = 'gralgrut'
 // const host = 'timescaledb'
 // const port = '5432'
-// const database = 'tutorial'
+// const database = 'ladder99'
+// const username = 'postgres'
+// const password = 'gralgrut'
 // const connect = `postgres://${username}:${password}@${host}:${port}/${database}`
+
+const client = new Client()
+await client.connect()
+const res = await client.query('SELECT NOW(), $1::text as message', [
+  'Hello world!',
+])
+console.log(res.rows[0].message) // Hello world!
+await client.end()
 
 // const baseUrl = process.env.BASE_URL || 'http://localhost:5000'
 const baseUrl = process.env.BASE_URL || 'http://192.168.0.109:5000'
