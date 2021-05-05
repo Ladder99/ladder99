@@ -98,6 +98,13 @@ or to run some services on the pi, some elsewhere, etc -
     sh/setups/up pi db
     sh/setups/up pi app
 
+Setup the database with
+
+    setups/pi/shell/dbrun setups/pi/migrations/000-init.sql
+    setups/pi/shell/dbrun setups/pi/migrations/001-tables.sql
+    etc
+
+
 You can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
 
 You can stop services with
