@@ -1,0 +1,5 @@
+#!/bin/bash
+# serve sphinx docs
+
+cd docs
+http-server build/html

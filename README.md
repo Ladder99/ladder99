@@ -107,10 +107,14 @@ To replay some more mqtt messages,
 
 ## Documentation
 
+Serve the docs for development with
+
+    sh/docs/serve
+
 Build and deploy the docs with
 
     sh/docs/build
+    sh/docs/deploy
 
-Then visit https://ladder99-mtconnect.web.app/
+then visit https://ladder99-mtconnect.web.app/
 
-(could make a local server for development also)
