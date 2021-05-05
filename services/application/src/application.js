@@ -41,9 +41,10 @@ async function shovel() {
     domain.traverse(tree, async dataItems => {
       if (dataItems[0].type === 'Execution') {
         // console.log(dataItems[0])
-        const dataItem = dataItems[0] //.
+        const dataItem = dataItems[0] //. just one?
         console.log(dataItem.value)
         // dump value to db
+        //. add try block
         const sql = `INSERT INTO execution(time, value) VALUES($1, $2) RETURNING *`
         const values = [dataItem.timestamp, dataItem.value]
         await client.query(sql, values)
