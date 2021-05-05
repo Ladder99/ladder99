@@ -1,6 +1,7 @@
 // import fs from 'fs'
 import fetch from 'node-fetch'
-import { Client } from 'pg' // postgres driver
+import pg from 'pg' // postgres driver
+const { Client } = pg
 import * as domain from './domain.js'
 
 console.log(`MTConnect Application starting`)
