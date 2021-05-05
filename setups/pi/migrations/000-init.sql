@@ -1,0 +1,4 @@
+
+CREATE DATABASE ladder99;
+\c ladder99
+CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
