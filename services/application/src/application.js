@@ -12,7 +12,7 @@ console.log(`MTConnect Application starting`)
 // const connect = `postgres://${username}:${password}@${host}:${port}/${database}`
 
 // const baseUrl = process.env.BASE_URL || 'http://localhost:5000'
-const baseUrl = process.env.BASE_URL || 'http://192.168.0.109:5000/current'
+const baseUrl = process.env.BASE_URL || 'http://192.168.0.109:5000'
 const interval = Number(process.env.INTERVAL || 2000) // msec
 
 setInterval(shovel, interval)

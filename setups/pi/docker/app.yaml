@@ -11,7 +11,7 @@ services:
     working_dir: /home/node/app
     command: npm start
     environment:
-      - URL=http://agent:5000/current #. sample
+      - BASE_URL=http://agent:5000
       - INTERVAL=2000
     networks:
       - ladder99
