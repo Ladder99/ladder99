@@ -1,14 +1,15 @@
--- tables
+-- create tables
 
 CREATE TABLE IF NOT EXISTS execution (
   time timestamptz NOT NULL,
   value text NOT NULL
 );
 
+-- convert to timescaledb hypertable
 SELECT create_hypertable('execution', 'time');
 
 
--- views
+-- create views
 
 -- CREATE VIEW execution_summary_minute WITH (timescaledb.continuous) AS
 -- SELECT time_bucket(INTERVAL '1 minute', time) AS bucket,
