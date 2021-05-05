@@ -1,5 +1,5 @@
 #!/bin/bash
-# connect to edge database
+# connect to edge database with psql cli
 # source envars firsr
 
 docker run -it --rm postgres:13 psql \

@@ -1,5 +1,5 @@
 # set environment variables
-# run with `source setups/pi/envars`
+# run with `source setups/pi/shell/envars`
 
 export EDGE=192.168.0.109
 export DBPORT=5432
