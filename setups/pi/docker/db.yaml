@@ -34,7 +34,7 @@ services:
       restart_policy:
         condition: on-failure
     volumes:
-      - $HOME/data/grafana:/var/lib/grafana
+      - $HOME/data/grafana:/var/lib/grafana:rw
     user: grafana
 
   pgadmin:
