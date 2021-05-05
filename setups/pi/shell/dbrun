@@ -3,6 +3,5 @@
 
 SQL_FILE=$1
 
-docker run -it --rm postgres:13 psql \
-    -h $EDGE -p $DBPORT -d $DBNAME -U $DBUSER \
-    -f $SQL_FILE
+cat $SQL_FILE | docker run -i --rm postgres:13 sh -c \
+    "export PGPASSWORD=$PGPASSWORD && psql -h $PGHOST -p $PGPORT -d $PGDATABASE -U $PGUSER"
