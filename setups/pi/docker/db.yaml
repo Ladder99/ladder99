@@ -35,6 +35,7 @@ services:
         condition: on-failure
     volumes:
       - $HOME/data/grafana:/var/lib/grafana
+      - ../volumes/grafana:/etc/grafana
     user: grafana
 
   pgadmin:

@@ -3,13 +3,12 @@
 # config file version
 apiVersion: 1
 
-# # list of datasources that should be deleted from the database
+# # list of datasources to delete
 # deleteDatasources:
 #   - name: Graphite
 #     orgId: 1
 
-# list of datasources to insert/update depending
-# what's available in the database
+# list of datasources to insert/update
 datasources:
   - name: Postgres
     type: postgres
@@ -22,21 +21,21 @@ datasources:
     # url: localhost:5433 # connection refused
     url: timescaledb:5432
     user: postgres
-    database: tutorial
-    # # <bool> enable/disable basic auth
+    database: ladder99
+    # enable/disable basic auth
     basicAuth: false
-    # # <string> basic auth username
+    # <string> basic auth username
     # basicAuthUser:
-    # # <bool> enable/disable with credentials headers
+    # enable/disable with credentials headers
     withCredentials: false
-    # <bool> mark as default datasource. Max one per org
+    # mark as default datasource. Max one per org
     isDefault: true
-    # <map> fields that will be converted to json and stored in jsonData
+    # fields that will be converted to json and stored in jsonData
     jsonData:
       graphiteVersion: '1.1'
       tlsAuth: false
       tlsAuthWithCACert: false
-      postgresVersion: 1200 # v12
+      postgresVersion: 1300 # v13
       sslmode: disable
       timescaledb: true
     # <string> json object of data that will be encrypted.
