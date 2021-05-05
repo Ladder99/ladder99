@@ -84,9 +84,12 @@ Then build the multiarchitecture Docker images - this will also push them to our
     sh/adapter/build
     sh/agent/build
 
-Then run docker-compose up and start the device simulations with -
+Then start the services with -
 
     sh/setups/run pi
+    sh/setups/run pi simulations
+    sh/setups/run pi application
+    sh/setups/run pi base simulations application
 
 You can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
 
