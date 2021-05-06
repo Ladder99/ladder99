@@ -1,8 +1,8 @@
-# Ladder99 MTConnect pipeline
+# Ladder99
 
-This project transfers data from factory devices to a database and end-user visualizations. 
+Ladder99 transfers data from factory devices to a database and end-user visualizations using MTConnect, an open standard. 
 
-MTConnect standardizes factory device data flow - it was designed by UC Berkeley, Georgia Institute of Technology, and Sun Microsystems in 2008. 
+MTConnect standardizes factory device data flow and vocabulary - it was designed by UC Berkeley, Georgia Institute of Technology, and Sun Microsystems in 2008. 
 
 
 ## Goals
@@ -10,7 +10,6 @@ MTConnect standardizes factory device data flow - it was designed by UC Berkeley
 - Connect factory devices to database and visualizations
 - Use MTConnect Adapter, Agent, Application scheme
 - Enforce one-way dataflow via a data diode
-- Secure communication between devices via encrypted UDP transmission
 
 
 ## Architecture
