@@ -1,4 +1,4 @@
-# Ladder99 MTConnect System
+# Ladder99 MTConnect pipeline
 
 This project transfers data from factory devices to a database and end-user visualizations. 
 
