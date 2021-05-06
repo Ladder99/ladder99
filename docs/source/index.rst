@@ -8,15 +8,24 @@ Ladder99
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Table of Contents
 
-   pokpok
-   foo/lkmlkm
+   about
+   introduction
+   getting-started
+   logs
+   accounts
+   services
+   customizing
+   help
+   security
+   appendix
+   cheat-sheet
 
 
-Indices and tables
-==================
+.. Indices and tables
+.. ==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. * :ref:`genindex`
+.. * :ref:`modindex`
+.. * :ref:`search`
