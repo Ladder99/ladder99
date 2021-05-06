@@ -20,8 +20,8 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'Ladder99'
-copyright = '2021, Ladder99'
-author = 'Ladder99'
+copyright = '2021, Ladder99 LLC'
+author = 'Ladder99 LLC'
 
 
 # -- General configuration ---------------------------------------------------
