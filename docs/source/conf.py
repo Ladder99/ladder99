@@ -17,9 +17,9 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'ladder99-mtconnect'
-copyright = '2021, MRIIOT'
-author = 'MRIIOT'
+project = 'Ladder99'
+copyright = '2021, Ladder99'
+author = 'Ladder99'
 
 
 # -- General configuration ---------------------------------------------------
