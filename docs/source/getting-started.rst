@@ -127,6 +127,31 @@ Installation
             ├── replay
             └── up
       
+#. Start all the services
+
+   ``pi`` is the name of the setups folder, and others are names of yaml files in the setups/pi/docker folder.
+
+   .. code:: console
+   
+      sh/setups/up pi base sims db app
+
+   Now you can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
+
+   To see the data the agent generates visit (where the IP address is your edge device)
+
+      192.168.0.109:5000/current 
+      
+   .. image:: _images/agent.jpg
+
+
+#. Setup the database with
+
+   .. code:: console
+      
+      setups/pi/shell/dbrun setups/pi/migrations/000-init.sql
+      setups/pi/shell/dbrun setups/pi/migrations/001-tables.sql
+      etc
+
 
 
 .. _Docker: https://www.docker.com/
