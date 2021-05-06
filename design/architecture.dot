@@ -1,13 +1,13 @@
 // graphviz diagram
 // colors https://www.graphviz.org/doc/info/colors.html
 
-digraph "ladder99-mtconnect" {
+digraph {
 
   //------------------------------------------------------------------------
   // styles
   //------------------------------------------------------------------------
 
-  graph [ label="Ladder99 MTConnect data flow\n ", color=lightgray; ];
+  graph [ label="Ladder99 Architecture\n ", color=lightgray; ];
   graph [ fontsize=20 ];
   graph [ labelloc=t ];
   graph [ ranksep=0.2 ];
