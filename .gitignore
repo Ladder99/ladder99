@@ -7,3 +7,4 @@ node_modules
 .firebase
 pi.sh
 .env
+.vscode

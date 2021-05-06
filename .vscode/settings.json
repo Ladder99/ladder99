@@ -1,5 +1,0 @@
-{
-  "restructuredtext.linter.disabled": true,
-  "restructuredtext.languageServer.disabled": true,
-  "restructuredtext.confPath": "${workspaceFolder}/sphinx/source"
-}
