@@ -50,8 +50,8 @@ exclude_patterns = []
 #
 # html_theme = 'alabaster'
 html_theme = "sphinx_rtd_theme"
-html_static_path = ['_static']
-html_logo = '_static/LadderLogo.png'
+# html_static_path = ['_static']
+html_logo = 'LadderLogo.png'
 html_theme_options = {
     'logo_only': True,
 }
