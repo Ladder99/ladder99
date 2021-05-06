@@ -65,7 +65,7 @@ html_static_path = ['_static']
 
 
 def setup(app):
-    app.add_stylesheet('css/custom.css')
+    app.add_css_file('css/custom.css')
 
 
 sphinx_tabs_disable_tab_closing = True
