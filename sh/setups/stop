@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # stop a set of docker compose services
-# eg `sh/setups/pi down`
-# see also up
+# eg `sh/setups/stop pi db`
+# see also start
 
 import sys
 import os

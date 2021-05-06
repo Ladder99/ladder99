@@ -5,7 +5,7 @@ Getting Started
 Requirements
 -----------------------
 
-- An edge device (e.g. Raspberry Pi) running Linux. 
+- An edge device running Linux (e.g. a Raspberry Pi). 
 
 
 Installation
@@ -133,7 +133,7 @@ Installation
 
    .. code:: console
    
-      sh/setups/up pi base sims db app
+      sh/setups/start pi base sims db app
 
    Now you can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
 
