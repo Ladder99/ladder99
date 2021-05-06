@@ -37,7 +37,28 @@ Installation
 
 #. Set environment variables
 
-   Copy the ``.env-example`` file to ``.env``, modify the values as needed, then set the environment variables with
+   Copy the ``.env-example`` file to ``.env``, modify the values as needed, e.g. 
+
+   .. code:: console
+
+      # edge device, eg raspberry pi
+      export EDGE=192.168.0.109
+      export EDGE_PASSWORD=pw
+
+      # postgres/timescaledb
+      export PGHOST=$EDGE
+      export PGPORT=5432
+      export PGDATABASE=ladder99
+      export PGUSER=postgres
+      export PGPASSWORD=pw
+
+      # postgres admin console
+      export PGADMIN_PASSWORD=pw
+
+      # grafana
+      export GRAFANA_PASSWORD=pw
+
+   then set the environment variables with
 
    .. code:: console
     
@@ -45,7 +66,7 @@ Installation
 
 #. Install dependencies
 
-   Install Docker_, Node_, Python_, and jq_ from their installers. 
+   Install Docker_, Node_, Python_, jq_, and other dependencies
 
    .. code:: console
 
@@ -53,15 +74,62 @@ Installation
       sh/install/apps
       sh/install/deps
 
-.. note::
+#. Copy data files into named volumes for Docker
 
-  You can see all the shell commands available with
+   ``pi`` in this case refers to the subdirectory in ``setups``, which contains the data files.
 
-  .. code:: console
+   .. code:: console
 
-      tree sh
-  
-.. _Docker: 
-.. _Node: 
-.. _Python: 
-.. _jq: 
+      sh/adapter/copy pi
+      sh/agent/copy pi
+
+
+   .. note::
+
+      You can see all the shell commands available with
+
+      .. code:: console
+
+         tree sh
+
+      e.g.
+
+      .. code:: console
+
+         $ tree sh
+         sh
+         ├── adapter
+         │   ├── build
+         │   ├── copy
+         │   └── test
+         ├── agent
+         │   ├── build
+         │   ├── copy
+         │   └── test
+         ├── db
+         │   ├── cli
+         │   └── run
+         ├── docker
+         │   ├── cp
+         │   ├── ls
+         │   └── vm
+         ├── docs
+         │   ├── build
+         │   ├── deploy
+         │   └── serve
+         ├── install
+         │   ├── apps
+         │   ├── deps
+         │   └── docker
+         └── setups
+            ├── compile
+            ├── down
+            ├── replay
+            └── up
+      
+
+
+.. _Docker: https://www.docker.com/
+.. _Node: https://nodejs.org/en/
+.. _Python: https://www.python.org/
+.. _jq: https://stedolan.github.io/jq/

@@ -7,10 +7,6 @@ MTConnect standardizes factory device data flow and vocabulary - it was designed
 See our documentation on readthedocs.org here - https://ladder99.readthedocs.io/en/latest/.
 
 
-## Installation
-
-
-
 ## Developing
 
 The device models are defined in `models`, eg the ccs-pa model has model.yaml, inputs.yaml, outputs.yaml, and types.yaml. 
