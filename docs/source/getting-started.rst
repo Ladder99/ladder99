@@ -2,68 +2,66 @@
 Getting Started
 **************
 
-Set up your environment
+Requirements
 -----------------------
 
-#. Start a Terminal window
+- An edge device (e.g. Raspberry Pi) running Linux. 
 
+
+Installation
+-----------------------
+
+#. Start a Terminal window and navigate to home directory
+
+   .. code:: console
+
+      cd ~
+   
 #. Clone this repo
 
-    .. code:: console
+   .. code:: console
 
-      $ git clone https://github.com/Ladder99/ladder99
+     git clone https://github.com/Ladder99/ladder99
 
-    or if using ssh (can set up so don't need to enter pw all the time)
+   or if using ssh (can set up so don't need to enter password all the time)
 
-    .. code:: console
+   .. code:: console
 
-      $ git clone git@github.com:Ladder99/ladder99.git
+     git clone git@github.com:Ladder99/ladder99.git
 
-    then
+   then
 
-    .. code:: console
+   .. code:: console
 
-      $ cd ladder99
-
+     cd ladder99
 
 #. Set environment variables
 
-  Get a copy of the .env file, or modify the existing .env-example file, then set the environment variables with
+   Copy the ``.env-example`` file to ``.env``, modify the values as needed, then set the environment variables with
 
-  .. code:: console
+   .. code:: console
     
-    source .env
+      source .env
 
+#. Install dependencies
 
-.. tabs::
+   Install Docker_, Node_, Python_, and jq_ from their installers. 
 
-  .. tab:: Desktop (Mac/Linux)
+   .. code:: console
 
-      Install Docker, Node, jq, and Python3 from their installers. 
-
-      Install all other dependencies with
-
-          sh/install/apps
-          sh/install/deps
-
-  .. tab:: Edge device (e.g. Raspberry Pi)
-
-      Install Docker and other dependencies -
-
-          sh/install/docker
-          sh/install/apps
-          sh/install/deps
+      sh/install/docker
+      sh/install/apps
+      sh/install/deps
 
 .. note::
 
-  You can see all the Mac/Linux shell commands available with
+  You can see all the shell commands available with
 
   .. code:: console
 
       tree sh
   
-.. _Webpack: https://webpack.js.org/
-.. _node-sass: https://github.com/sass/node-sass
-.. _SASS: http://www.sass-lang.com
-.. _Wyrm: http://www.github.com/snide/wyrm/
-.. _Sphinx: http://www.sphinx-doc.org/en/stable/
+.. _Docker: 
+.. _Node: 
+.. _Python: 
+.. _jq: 
