@@ -32,15 +32,15 @@ For more on the data diode, see the service [here](services/diode).
 
 Clone this repo
 
-    git clone https://github.com/Ladder99/mtconnect
+    git clone https://github.com/Ladder99/ladder99
 
 or if using ssh (can set up so don't need to enter pw all the time)
 
-    git clone git@github.com:Ladder99/mtconnect.git
+    git clone git@github.com:Ladder99/ladder99.git
 
 then
 
-    cd mtconnect
+    cd ladder99
 
 You can see all the Mac/Linux shell commands available with
 
@@ -137,5 +137,4 @@ Build and deploy the docs with
     sh/docs/build
     sh/docs/deploy
 
-then visit https://ladder99-mtconnect.web.app/
-
+then visit https://ladder99.web.app/
