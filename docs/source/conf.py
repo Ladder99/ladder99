@@ -4,8 +4,6 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-import sphinx_rtd_theme
-
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -16,11 +14,15 @@ import sphinx_rtd_theme
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 
+from datetime import datetime
+import sphinx_rtd_theme
+
 
 # -- Project information -----------------------------------------------------
 
 project = 'Ladder99'
-copyright = '2021, Ladder99 LLC'
+# copyright = '2021, Ladder99 LLC'
+copyright = str(datetime.now().year) + ', Ladder99 LLC'
 author = 'Ladder99 LLC'
 
 
