@@ -7,59 +7,8 @@ MTConnect standardizes factory device data flow and vocabulary - it was designed
 See our documentation on readthedocs.org here - https://ladder99.readthedocs.io/en/latest/.
 
 
-## Architecture
-
-### Data flow
-
-![arch](design/architecture.dot.svg)
-
-MQTT is a simple publish/subscribe message protocol. Messages from factory devices go to an MQTT Broker (Mosquitto). PLC4X communicates with old machines via proprietary protocols and translates them to MQTT (correct?). 
-
-Our MTConnect Adapter (a NodeJS program) subscribes and listens to those messages, translates them to SHDR (Simple Hierarchical Data Representation, eg "2021-02-28T02:40:00|key|value"), and sends them on to the MTConnect Agent (cppagent) via an optional one-way data diode (Java + RabbitMQ). 
-
-An MTConnect Application then consumes the data as XML over HTTP, and feeds it to a database and visualizer. 
-
-For more on the data diode, see the service [here](services/diode).
-
-
 ## Installation
 
-Clone this repo
-
-    git clone https://github.com/Ladder99/ladder99
-
-or if using ssh (can set up so don't need to enter pw all the time)
-
-    git clone git@github.com:Ladder99/ladder99.git
-
-then
-
-    cd ladder99
-
-You can see all the Mac/Linux shell commands available with
-
-    tree sh
-
-Get a copy of the .env file, or modify the existing .env-example file, then set the environment variables with
-
-    source .env
-
-### Desktop (Mac/Linux)
-
-Install Docker, Node, jq, and Python3 from their installers. 
-
-Install all other dependencies with
-
-    sh/install/apps
-    sh/install/deps
-
-### Raspberry pi
-
-Install Docker and other dependencies -
-
-    sh/install/docker
-    sh/install/apps
-    sh/install/deps
 
 
 ## Developing

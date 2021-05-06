@@ -33,8 +33,8 @@ author = 'Ladder99 LLC'
 # ones.
 extensions = [
     "sphinx_rtd_theme",
+    "sphinx_tabs.tabs",
 ]
-
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -66,3 +66,6 @@ html_static_path = ['_static']
 
 def setup(app):
     app.add_stylesheet('css/custom.css')
+
+
+sphinx_tabs_disable_tab_closing = True
