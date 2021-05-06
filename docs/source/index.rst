@@ -1,10 +1,10 @@
-.. ladder99 documentation master file, created by
-   sphinx-quickstart on Sat Mar 13 14:06:07 2021.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
 Ladder99
 ==============================================
+
+Ladder99 transfers data from factory devices to a database and end-user visualizations using MTConnect, an open standard.
+
+MTConnect standardizes factory device data flow and vocabulary - it was designed by UC Berkeley, Georgia Institute of Technology, and Sun Microsystems in 2008.
+
 
 .. toctree::
    :maxdepth: 2
