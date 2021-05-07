@@ -25,4 +25,3 @@ Our MTConnect Adapter subscribes and listens to those messages, translates them 
 Our MTConnect Application then consumes the data as XML or JSON over HTTP, and feeds it to a database and visualizer. 
 
 .. For more on the data diode, see the service [here](services/diode).
-

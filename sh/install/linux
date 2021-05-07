@@ -1,6 +1,6 @@
 #!/bin/bash
 # install linux applications
 
-# upgrade all packages
+# upgrade all packages (may take a while)
 sudo apt update
 sudo apt -y full-upgrade

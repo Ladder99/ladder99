@@ -13,7 +13,6 @@ newgrp docker # activate group
 
 # echo Now restart terminal - otherwise must use sudo with docker commands. 
 
-
 # Docker Engine starts automatically on DEB-based distributions. 
 #. On RPM-based distributions, you need to start it manually using 
 # the appropriate systemctl or service command.
@@ -23,25 +22,6 @@ newgrp docker # activate group
 # sudo systemctl enable docker.service
 # sudo systemctl enable containerd.service
 
-
-
 # install docker-compose - not yet in docker command?
 # sudo apt -y install libffi-dev libssl-dev python3-dev python3 python3-pip
 # sudo pip3 install docker-compose
-
-# ?
-# sync
-
-# ?
-# sudo apt install gpg pass
-
-# login to docker hub as ladder99
-docker login --username ladder99
-
-# run a container with the qemu emulator
-docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-
-# create a multiarch builder
-docker buildx create --name multiarch --driver docker-container --use
-docker buildx inspect --bootstrap
-

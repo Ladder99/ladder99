@@ -35,19 +35,18 @@ Steps
       nano .env   
       source .env
 
-#. Install dependencies
-
-   Install Docker_, Node_, Python_, jq_, and other dependencies
-
-   .. note::
-
-      You can see the available shell commands with ``tree sh``.
+#. Install dependencies **in this order** (may take a while)
 
    .. code:: console
 
       sh/install/linux
       sh/install/docker
+      sh/install/python
       sh/install/node
+
+   .. note::
+
+      You can see the available shell commands with ``tree sh``.
 
 #. Copy data files into named volumes for Docker
 
