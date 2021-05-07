@@ -5,13 +5,13 @@ Installation
 Requirements
 -----------------------
 
-- An edge device running Linux (e.g. a Raspberry Pi). 
+- An edge device running Linux (e.g. a Raspberry Pi)
 
 
 Steps
 -----------------------
 
-#. Start a Terminal window and navigate to home directory, or other suitable place
+#. In the edge device, start a terminal window and navigate to the home directory, or other suitable place
 
    .. code:: console
 
@@ -21,25 +21,14 @@ Steps
 
    .. code:: console
 
-     git clone https://github.com/Ladder99/ladder99
-
-   or if using ssh (can set up so don't need to enter password all the time)
-
-   .. code:: console
-
-     git clone git@github.com:Ladder99/ladder99.git
-
-   then
-
-   .. code:: console
-
-     cd ladder99
+      git clone --depth 1 https://github.com/Ladder99/ladder99
+      cd ladder99
 
 #. Set environment variables
 
-   Copy the ``.env-example`` file to ``.env``, modify the values as needed, e.g. 
+   Copy the ``.env-example`` file to ``.env``, modify the passwords as needed, e.g. 
 
-   .. code:: console
+   .. code:: bash
 
       # edge device, eg raspberry pi
       export EDGE=192.168.0.109
@@ -70,9 +59,10 @@ Steps
 
    .. code:: console
 
-      sh/install/docker
       sh/install/apps
+      sh/install/docker
       sh/install/deps
+      sh/install/docs
 
 #. Copy data files into named volumes for Docker
 

@@ -13,4 +13,3 @@ sudo npm install -g npm@latest
 
 # note: raspberry pi os already has python/pip
 pip3 install mqtt-recorder
-npm install -g http-server
