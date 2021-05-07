@@ -2,6 +2,7 @@
 # run a command in a docker named volume on the mac.
 # docker runs in a vm on the mac, so can't access the named volumes
 # except this way...
+# used by sh/docker/ls - could make others.
 # source: https://www.freshblurbs.com/blog/2017/04/16/inspect-docker-volumes-on-mac.html
 
 docker run --rm -it --volume /:/docker alpine:edge $@
