@@ -1,6 +1,6 @@
 # Ladder99
 
-[![License](https://img.shields.io/github/license/Ladder99/ladder99.svg)](./LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 [![Open Issues](https://img.shields.io/github/issues/Ladder99/ladder99.svg)](https://github.com/Ladder99/ladder99/issues)
 [![Github Stars](https://img.shields.io/github/stars/Ladder99/ladder99.svg)]()
 
