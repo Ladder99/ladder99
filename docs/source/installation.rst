@@ -11,47 +11,28 @@ Requirements
 Steps
 -----------------------
 
-#. In the edge device, start a terminal window and navigate to the home directory, or other suitable place
+#. SSH into the edge device using its IP address and your username and password, e.g.
 
    .. code:: console
 
-      cd ~
-   
+      ssh pi@192.168.0.109
+      (password)
+
 #. Clone this repo there
 
    .. code:: console
 
-      git clone --depth 1 https://github.com/Ladder99/ladder99
+      git clone https://github.com/Ladder99/ladder99
       cd ladder99
 
 #. Set environment variables
 
-   Copy the ``.env-example`` file to ``.env`` and modify the passwords as needed, e.g. 
-
-   .. code:: bash
-
-      # edge device, eg raspberry pi
-      export EDGE=192.168.0.109
-      export EDGE_USER=pi
-      export EDGE_PASSWORD=pw
-
-      # postgres/timescaledb
-      export PGHOST=$EDGE
-      export PGPORT=5432
-      export PGDATABASE=ladder99
-      export PGUSER=postgres
-      export PGPASSWORD=pw
-
-      # postgres admin console
-      export PGADMIN_PASSWORD=pw
-
-      # grafana
-      export GRAFANA_PASSWORD=pw
-
-   then load the environment variables with
+   Copy the ``.env-example`` file to ``.env`` and modify the passwords as needed. Then load the environment variables.
 
    .. code:: console
-    
+
+      cp .env-example .env
+      nano .env   
       source .env
 
 #. Install dependencies
