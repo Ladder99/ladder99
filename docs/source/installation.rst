@@ -35,7 +35,7 @@ Steps
       nano .env   
       source .env
 
-#. Install dependencies **in this order** (may take a while)
+#. Install dependencies **in this order** (may take a while). Also make sure to run them **in the ladder99 directory**.
 
    .. code:: console
 
@@ -46,7 +46,7 @@ Steps
 
    .. note::
 
-      You can see the available shell commands with ``tree sh``.
+      You can see all the available shell commands with ``tree sh``.
 
 #. Copy data files into named volumes for Docker
 
