@@ -5,6 +5,7 @@
 [![Github Stars](https://img.shields.io/github/stars/Ladder99/ladder99.svg)]()
 [![follow @ladder99](https://badgen.net/twitter/follow/ladder99_org)](https://twitter.com/ladder99_org)
 
+<!-- [![Medium](https://img.shields.io/badge/Medium-12100E?logo=medium&style=flat)](https://medium.com/@ladder99) -->
 <!-- [![Github code size in bytes](https://img.shields.io/github/languages/code-size/Ladder99/ladder99.svg)]() -->
 <!-- [![Formatted with Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier) -->
 <!-- <a href="https://codecov.io/gh/Ladder99/neomem"><img alt="Codecov Coverage Status" src="https://img.shields.io/ladder99/c/github/Ladder99/ladder99.svg?style=flat"></a> -->
