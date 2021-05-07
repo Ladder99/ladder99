@@ -1,7 +1,7 @@
 # Ladder99
 
 [![License](https://img.shields.io/github/license/Ladder99/ladder99.svg)](https://img.shields.io/github/license/Ladder99/ladder99)
-[![Github Issues](https://img.shields.io/github/issues/Ladder99/ladder99.svg)](https://github.com/Ladder99/ladder99/issues)
+[![Open Issues](https://img.shields.io/github/issues/Ladder99/ladder99.svg)](https://github.com/Ladder99/ladder99/issues)
 [![Github Stars](https://img.shields.io/github/stars/Ladder99/ladder99.svg)]()
 
 <!-- [![Github code size in bytes](https://img.shields.io/github/languages/code-size/Ladder99/ladder99.svg)]() -->
