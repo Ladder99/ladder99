@@ -4,3 +4,6 @@
 # upgrade all packages
 sudo apt update
 sudo apt -y full-upgrade
+
+# direnv lets you change envars etc per directory/project
+sudo apt install direnv

@@ -22,11 +22,20 @@ newgrp docker # activate group
 # sudo systemctl enable containerd.service
 
 # install docker-compose
-# docker compose is not yet included in the docker command for linux
-#. For alpine, the following dependency packages are needed: 
-# py-pip, python3-dev, libffi-dev, openssl-dev, gcc, libc-dev, rust, cargo and make.
-# this only works for linux-x86
-# $(uname -s)-$(uname -m) gives Linux-armv7l on my raspberrypi 4
+# The new docker compose command is not yet included in docker for linux.
+# Docker Compose is normally installed from pre-built binaries, 
+# downloaded from the GitHub release page for the project. 
+# Sadly, those are not available for the ARM architecture. We can 
+# however install Docker Compose from pip.
+
+# Use this for linux-x86:
+# eg $(uname -s)-$(uname -m) gives Linux-armv7l on my raspberrypi 4
 # sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 # sudo chmod +x /usr/local/bin/docker-compose
+
+# Use this for alpine linux:
+# sudo apt install py-pip python3-dev libffi-dev openssl-dev gcc libc-dev rust cargo make
+# sudo pip3 install docker-compose
+
+# Use this for debian/ubuntu:
 sudo pip3 install docker-compose

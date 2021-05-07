@@ -1,0 +1,4 @@
+mqtt-recorder==1.2.0
+paho-mqtt==1.5.1
+pkg-resources==0.0.0
+tqdm==4.60.0
