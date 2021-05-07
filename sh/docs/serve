@@ -1,5 +1,6 @@
 #!/bin/bash
-# serve sphinx docs
+# watch and serve sphinx docs
 
-cd docs
-sphinx-autobuild -a --port 8080 source docs/build/html
+# -a rebuilds everything on a change - needed because the sidebar
+# can get all out of whack otherwise.
+sphinx-autobuild -a --port 8080 docs/source docs/build/html

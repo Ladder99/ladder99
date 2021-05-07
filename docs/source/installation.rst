@@ -17,7 +17,7 @@ Steps
 
       cd ~
    
-#. Clone this repo
+#. Clone this repo there
 
    .. code:: console
 
@@ -26,7 +26,7 @@ Steps
 
 #. Set environment variables
 
-   Copy the ``.env-example`` file to ``.env``, modify the passwords as needed, e.g. 
+   Copy the ``.env-example`` file to ``.env`` and modify the passwords as needed, e.g. 
 
    .. code:: bash
 
@@ -48,7 +48,7 @@ Steps
       # grafana
       export GRAFANA_PASSWORD=pw
 
-   then set the environment variables with
+   then load the environment variables with
 
    .. code:: console
     
@@ -60,10 +60,9 @@ Steps
 
    .. code:: console
 
-      sh/install/apps
+      sh/install/linux
       sh/install/docker
       sh/install/deps
-      sh/install/docs
 
 #. Copy data files into named volumes for Docker
 

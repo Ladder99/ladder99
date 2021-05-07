@@ -7,5 +7,3 @@
 (cd services/simulator-mqtt && npm install)
 (cd services/simulator-opc && npm install)
 (cd services/diode/code/application/datadiode/contrib/nodejs && npm install)
-
-# brew install netcat # what for ?

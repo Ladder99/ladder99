@@ -1,0 +1,4 @@
+#!/bin/bash
+# install macos applications
+
+brew install netcat

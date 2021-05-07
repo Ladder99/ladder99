@@ -1,5 +1,5 @@
 #!/bin/bash
-# install applications
+# install linux applications
 
 # upgrade all packages
 sudo apt update
