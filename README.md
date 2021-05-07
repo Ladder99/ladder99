@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 [![Open Issues](https://img.shields.io/github/issues/Ladder99/ladder99.svg)](https://github.com/Ladder99/ladder99/issues)
 [![Github Stars](https://img.shields.io/github/stars/Ladder99/ladder99.svg)]()
-[![follow @ladder99](https://badgen.net/twitter/follow/ladder99)](https://twitter.com/ladder99)
+[![follow @ladder99](https://badgen.net/twitter/follow/ladder99_org)](https://twitter.com/ladder99_org)
 
 <!-- [![Github code size in bytes](https://img.shields.io/github/languages/code-size/Ladder99/ladder99.svg)]() -->
 <!-- [![Formatted with Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier) -->
