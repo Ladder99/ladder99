@@ -10,6 +10,7 @@ sudo apt upgrade -y docker
 # allow user to run docker - else need `sudo docker ...`
 sudo usermod -aG docker $USER
 newgrp docker # activate group
+newgrp $USER # go back to original group
 
 # start docker service
 # Docker Engine starts automatically on DEB-based distributions. 
@@ -20,6 +21,7 @@ newgrp docker # activate group
 # for other distros, use the commands below:
 # sudo systemctl enable docker.service
 # sudo systemctl enable containerd.service
+
 
 # install docker-compose
 # The new docker compose command is not yet included in docker for linux.
