@@ -1,18 +1,17 @@
 #!/bin/bash
 # install docker
-# see https://docs.docker.com/engine/install/debian/#install-using-the-convenience-script
+# see https://docs.docker.com/engine/install/debian/
+# and https://docs.docker.com/compose/install/
 
 # install and upgrade docker
 curl -sSL https://get.docker.com | sudo sh
-sudo apt upgrade docker
+sudo apt upgrade -y docker
 
 # allow user to run docker - else need `sudo docker ...`
-sudo groupadd docker
 sudo usermod -aG docker $USER
 newgrp docker # activate group
 
-# echo Now restart terminal - otherwise must use sudo with docker commands. 
-
+# start docker service
 # Docker Engine starts automatically on DEB-based distributions. 
 #. On RPM-based distributions, you need to start it manually using 
 # the appropriate systemctl or service command.
@@ -22,6 +21,12 @@ newgrp docker # activate group
 # sudo systemctl enable docker.service
 # sudo systemctl enable containerd.service
 
-# install docker-compose - not yet in docker command?
-# sudo apt -y install libffi-dev libssl-dev python3-dev python3 python3-pip
-# sudo pip3 install docker-compose
+# install docker-compose
+# docker compose is not yet included in the docker command for linux
+#. For alpine, the following dependency packages are needed: 
+# py-pip, python3-dev, libffi-dev, openssl-dev, gcc, libc-dev, rust, cargo and make.
+# this only works for linux-x86
+# $(uname -s)-$(uname -m) gives Linux-armv7l on my raspberrypi 4
+# sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+# sudo chmod +x /usr/local/bin/docker-compose
+sudo pip3 install docker-compose
