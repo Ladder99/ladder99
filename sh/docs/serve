@@ -2,4 +2,4 @@
 # serve sphinx docs
 
 cd docs
-sphinx-autobuild --port 8080 source docs/build/html
+sphinx-autobuild -a --port 8080 source docs/build/html

@@ -12,5 +12,5 @@ Ladder99 is a free and open source application that transfers data from factory 
    introduction
    installation
    getting-started
-   setups
-   adapters
+   setup-devices
+   developing-adapters

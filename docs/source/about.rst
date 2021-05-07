@@ -25,3 +25,4 @@ We are a small company started in 2021 with plans to create a free and open ecos
 
 Future applications will include an optional visual dashboard builder, which would be released under a freemium model. 
 
+
