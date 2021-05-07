@@ -1,4 +1,0 @@
-# sh
-
-Shell command scripts
-
