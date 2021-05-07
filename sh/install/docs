@@ -1,0 +1,5 @@
+#!/bin/bash
+# install documentation dependencies
+
+#. use requirements.txt?
+pip3 install -U Sphinx

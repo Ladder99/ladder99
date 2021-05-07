@@ -8,7 +8,4 @@
 (cd services/simulator-opc && npm install)
 (cd services/diode/code/application/datadiode/contrib/nodejs && npm install)
 
-#. make a requirements.txt file?
-pip3 install -U Sphinx
-
 # brew install netcat # what for ?
