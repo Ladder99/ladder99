@@ -39,11 +39,15 @@ Steps
 
    Install Docker_, Node_, Python_, jq_, and other dependencies
 
+   .. note::
+
+      You can see the available shell commands with ``tree sh``.
+
    .. code:: console
 
       sh/install/linux
       sh/install/docker
-      sh/install/deps
+      sh/install/node
 
 #. Copy data files into named volumes for Docker
 
