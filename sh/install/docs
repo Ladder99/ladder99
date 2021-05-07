@@ -1,7 +1,0 @@
-#!/bin/bash
-# install documentation dependencies
-
-#. use requirements.txt?
-#. use venv?
-pip install -U Sphinx
-pip install -r docs/requirements.txt

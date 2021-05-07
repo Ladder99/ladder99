@@ -3,7 +3,4 @@
 
 # upgrade all packages
 sudo apt update
-sudo apt full-upgrade
-
-# note: raspberry pi os already has python/pip
-pip3 install mqtt-recorder
+sudo apt -y full-upgrade
