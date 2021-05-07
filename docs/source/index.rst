@@ -10,13 +10,7 @@ Ladder99 is a free and open source application that transfers data from factory 
 
    about
    introduction
+   installation
    getting-started
-   developing
-
-
-.. Indices and tables
-.. ==================
-
-.. * :ref:`genindex`
-.. * :ref:`modindex`
-.. * :ref:`search`
+   setups
+   adapters

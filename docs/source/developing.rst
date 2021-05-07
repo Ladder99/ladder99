@@ -2,11 +2,27 @@
 Developing
 ******************
 
-The device models are defined in `models`, eg the ccs-pa model has model.yaml, inputs.yaml, outputs.yaml, and types.yaml. 
 
-The device instances are defined in the `setups` folder, eg the `demo` setup has a list of instances in the devices subfolder there. Edit these as needed.
 
-Then generate the `setups/demo/volumes/agent/devices.xml` and `setups/demo/docker/docker-compose.yaml` files (former partially implemented, latter not implemented yet - hand-edit) -
+
+Model Files
+==============
+
+Device models are defined in the ``models`` folder, e.g. the CCS Print and Apply model is defined in ``models/ccs-pa`` - it has the following files:
+
+- model.yaml
+- inputs.yaml
+- outputs.yaml
+- types.yaml
+
+
+Device Instances
+================
+
+The device instances are defined in the ``setups`` folder, eg the ``demo`` setup has a list of instances in the devices subfolder there. Edit these as needed.
+
+
+Then generate the ``setups/demo/volumes/agent/devices.xml`` and ``setups/demo/docker/docker-compose.yaml`` files (former partially implemented, latter not implemented yet - hand-edit) -
 
     sh/setup/compile pi
 

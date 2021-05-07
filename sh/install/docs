@@ -2,4 +2,5 @@
 # install documentation dependencies
 
 #. use requirements.txt?
+#. use venv?
 pip3 install -U Sphinx
