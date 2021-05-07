@@ -27,7 +27,7 @@ Steps
 
 #. Set environment variables
 
-   Copy the ``.env-example`` file to ``.env`` and modify the passwords as needed. Then load the environment variables.
+   Copy the ``.env-example`` file to ``.env`` and modify the passwords as needed, then load the environment variables
 
    .. code:: console
 
