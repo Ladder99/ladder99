@@ -64,24 +64,24 @@ FROM ubuntu:21.04
 # install ruby for simulator
 RUN apt-get update && apt-get install -y ruby
 
-# copy agent app and simulator files to new layer
-COPY --from=compile /usr/local/bin/agent /usr/local/bin
-COPY --from=compile /etc/mtconnect /etc/mtconnect
-
-# bring in our stylesheets
-COPY styles /etc/mtconnect/styles
-
-# bring in test script
-COPY test-agent.sh /etc/mtconnect
-
-# expose port
-EXPOSE 5000
-
 # change to a new non-root user for better security
 # this also adds the user to a group with the same name.
 # --create-home creates a home folder, ie /home/<username>
 RUN useradd --create-home ladder99
 USER ladder99
+
+# copy agent app and simulator files to new layer
+COPY --chown=ladder99:ladder99 --from=compile /usr/local/bin/agent /usr/local/bin
+COPY --chown=ladder99:ladder99 --from=compile /etc/mtconnect /etc/mtconnect
+
+# bring in our stylesheets
+COPY --chown=ladder99:ladder99 styles /etc/mtconnect/styles
+
+# bring in test script
+COPY --chown=ladder99:ladder99 test-agent.sh /etc/mtconnect
+
+# expose port
+EXPOSE 5000
 
 # default run command - can override with docker run or docker-compose.
 # this script runs the app and ruby simulator.
