@@ -48,7 +48,11 @@ Steps
 
       You can see all the available shell commands with ``tree sh``.
 
+#. Activate the Python virtual environment
 
+   .. code:: console
+
+      source ~/.venv/ladder99-venv/bin/activate
 
 
 .. _Docker: https://www.docker.com/

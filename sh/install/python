@@ -5,17 +5,5 @@
 python3 -m venv ~/.venv/ladder99-venv
 source ~/.venv/ladder99-venv/bin/activate
 
-# add an alias
-echo "alias venv='source ~/.venv/ladder99-venv/bin/activate'" >> ~/.bash_aliases
-source ~/.bash_aliases
-
 # install requirements
 pip3 install -r requirements.txt
-
-
-# # install pipenv
-# # this works, more like npm, but loses shell history on `pipenv shell`
-# sudo apt install pipenv
-# echo 'eval "$(pipenv --completion)"' >> ~/.bashrc
-# source ~/.bashrc
-# pipenv shell  # start a subshell with venv

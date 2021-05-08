@@ -4,6 +4,3 @@
 # upgrade all packages
 sudo apt update
 sudo apt -y full-upgrade
-
-echo "alias l='ls -la --group-directories-first'" >> ~/.bash_aliases
-source ~/.bash_aliases 
