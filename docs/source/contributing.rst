@@ -1,7 +1,5 @@
-:orphan:
-
 *************************
-Developing Ladder99
+Contributing
 *************************
 
 Install dependencies
