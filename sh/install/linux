@@ -5,8 +5,11 @@
 sudo apt update
 sudo apt -y full-upgrade
 
-# install direnv
-# lets you change envars etc per directory/project
-sudo apt install direnv
-echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
-source ~/.bashrc
+echo "alias l='ls -la --group-directories-first'" >> .bash_aliases
+source .bash_aliases
+
+# # install direnv
+# # lets you change envars etc per directory/project
+# sudo apt install direnv
+# echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
+# source ~/.bashrc
