@@ -1,5 +1,5 @@
 *******************
-Setup Devices
+Setting Up Devices
 *******************
 
 A configuration of devices is called a 'setup', and is defined in the ``setups`` folder.
@@ -47,7 +47,7 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
    To see the data the agent generates visit (where the IP address is your edge device)
 
-      192.168.0.109:5000/current 
+      raspberrypi.local:5000/current 
       
    .. image:: _images/agent.jpg
 
