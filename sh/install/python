@@ -1,9 +1,17 @@
 #!/bin/bash
-# install python and dependencies
+# install python dependencies
 
 # use virtual environment
 python3 -m venv ~/.venv/ladder99
 source ~/.venv/ladder99/bin/activate
 
 # install requirements
-pip3 install mqtt-recorder
+# pip3 install mqtt-recorder
+pip3 install -r requirements.txt
+
+
+# # install pipenv
+# sudo apt install pipenv
+# echo 'eval "$(pipenv --completion)"' >> ~/.bashrc
+# source ~/.bashrc
+# pipenv shell  # start a subshell with venv. but lose shell history
