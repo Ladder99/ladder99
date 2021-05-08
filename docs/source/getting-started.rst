@@ -2,6 +2,14 @@
 Getting Started
 *******************
 
+Let's run the MTConnect Agent, which comes with a simulator for a CNC device.
+
+   note: this may give an error if the docker image is still set to private, in which case ``docker login``
+
+   .. code:: console
+
+      cd ~/ladder99
+      sh/agent/test
 
    .. note::
 
@@ -10,40 +18,4 @@ Getting Started
       .. code:: console
 
          tree sh
-
-      e.g.
-
-      .. code:: console
-
-         $ tree sh
-         sh
-         ├── adapter
-         │   ├── build
-         │   ├── copy
-         │   └── test
-         ├── agent
-         │   ├── build
-         │   ├── copy
-         │   └── test
-         ├── db
-         │   ├── cli
-         │   └── run
-         ├── docker
-         │   ├── cp
-         │   ├── ls
-         │   └── vm
-         ├── docs
-         │   ├── build
-         │   ├── deploy
-         │   └── serve
-         ├── install
-         │   ├── apps
-         │   ├── deps
-         │   └── docker
-         └── setups
-            ├── compile
-            ├── down
-            ├── replay
-            └── up
-      
 

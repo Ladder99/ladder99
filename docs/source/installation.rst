@@ -25,16 +25,6 @@ Steps
       git clone https://github.com/Ladder99/ladder99
       cd ladder99
 
-#. Set environment variables
-
-   Copy the ``.env-example`` file to ``.env`` and modify the passwords as needed, then load the environment variables
-
-   .. code:: console
-
-      cp .env-example .env
-      nano .env   
-      source .env
-
 #. Install dependencies **in this order** (may take a while). Also make sure to run them **in the ladder99 directory**.
 
    .. code:: console
@@ -44,18 +34,4 @@ Steps
       sh/install/python
       sh/install/node
 
-   .. note::
-
-      You can see all the available shell commands with ``tree sh``.
-
-#. Activate the Python virtual environment
-
-   .. code:: console
-
-      source ~/.venv/ladder99-venv/bin/activate
-
-
-.. _Docker: https://www.docker.com/
-.. _Node: https://nodejs.org/en/
-.. _Python: https://www.python.org/
-.. _jq: https://stedolan.github.io/jq/
+Next, we'll run the MTConnect Agent and make sure it works with the demonstration data.

@@ -1,9 +1,12 @@
 #!/bin/bash
 # install python dependencies
 
-# create and use a virtual environment
+# create a virtual environment
 python3 -m venv ~/.venv/ladder99-venv
-source ~/.venv/ladder99-venv/bin/activate
 
-# install requirements
+# install requirements to our venv
+source ~/.venv/ladder99-venv/bin/activate
 pip3 install -r requirements.txt
+
+# note: user must activate the venv manually in order for shell to use it
+# ie `source ~/.venv/ladder99-venv/bin/activate`
