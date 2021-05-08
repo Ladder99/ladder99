@@ -11,11 +11,11 @@ Requirements
 Steps
 -----------------------
 
-#. SSH into the edge device using its IP address and your username and password, e.g.
+#. SSH into the edge device using its local name or IP address and your username and password, e.g.
 
    .. code:: console
 
-      ssh pi@192.168.0.109
+      ssh pi@raspberrypi.local
       (password)
 
 #. Clone this repo there
@@ -48,40 +48,6 @@ Steps
 
       You can see all the available shell commands with ``tree sh``.
 
-#. Copy data files into named volumes for Docker
-
-   ``pi`` in this case refers to the subdirectory in ``setups``, which contains the data files.
-
-   .. code:: console
-
-      sh/adapter/copy pi
-      sh/agent/copy pi
-
-
-#. Start all the services
-
-   ``pi`` is the name of the setups folder, and others are names of yaml files in the setups/pi/docker folder.
-
-   .. code:: console
-   
-      sh/setups/start pi base sims db app
-
-   Now you can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
-
-   To see the data the agent generates visit (where the IP address is your edge device)
-
-      192.168.0.109:5000/current 
-      
-   .. image:: _images/agent.jpg
-
-
-#. Setup the database with
-
-   .. code:: console
-      
-      setups/pi/shell/dbrun setups/pi/migrations/000-init.sql
-      setups/pi/shell/dbrun setups/pi/migrations/001-tables.sql
-      etc
 
 
 

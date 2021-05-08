@@ -7,3 +7,5 @@ sudo apt -y full-upgrade
 
 # direnv lets you change envars etc per directory/project
 sudo apt install direnv
+echo 'eval "$(direnv hook bash)"' >> ~/.bashrc
+source ~/.bashrc
