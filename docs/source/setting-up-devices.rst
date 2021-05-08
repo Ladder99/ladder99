@@ -60,3 +60,4 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
       setups/pi/shell/dbrun setups/pi/migrations/001-tables.sql
       etc
 
+...
