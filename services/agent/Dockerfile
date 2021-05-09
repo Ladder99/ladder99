@@ -13,9 +13,17 @@
 # FROM ubuntu:21.04 AS compile  # causing probs - see second stage
 FROM ubuntu:20.04 AS compile
 
+RUN apt-get update
+
+# # set timezone - otherwise install can get stuck waiting for input
+# RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime \
+#   && echo $CONTAINER_TIMEZONE > /etc/timezone
+ARG DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/Chicago
+
 # get dependencies
 # note: removed ruby - install in second stage
-RUN apt-get update && apt-get install -y \
+RUN apt-get install -y \
   git cmake build-essential libxml2 libxml2-dev libcppunit-dev screen curl
 
 #----------------------------------------------------------------------------
