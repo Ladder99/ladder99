@@ -10,8 +10,8 @@
 # base image - ubuntu has linux/arm/v7, linux/amd64, etc
 # FROM raspbian/stretch AS make-os  # too old
 # FROM balenalib/raspberry-pi-debian:build AS make-os  # only arm64
-FROM ubuntu:21.04 AS compile
-# FROM ubuntu:20.04 AS compile
+# FROM ubuntu:21.04 AS compile  # causing probs - see second stage
+FROM ubuntu:20.04 AS compile
 
 # get dependencies
 # note: removed ruby - install in second stage
