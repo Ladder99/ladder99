@@ -50,9 +50,9 @@ RUN apt-get install -y wget \
   && wget https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2.tar.gz \
   && tar zxvf cmake-3.20.2.tar.gz \
   && cd cmake-3.20.2 \
-  && sudo ./bootstrap \
-  && sudo make \
-  && sudo make install
+  && ./bootstrap \
+  && make \
+  && make install
 
 # build makefile using cmake
 RUN cd ~/agent/build \
