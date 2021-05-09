@@ -64,6 +64,9 @@ FROM ubuntu:21.04
 # install ruby for simulator
 RUN apt-get update && apt-get install -y ruby
 
+# for debugging
+RUN apt install strace
+
 # change to a new non-root user for better security
 # this also adds the user to a group with the same name.
 # --create-home creates a home folder, ie /home/<username>
