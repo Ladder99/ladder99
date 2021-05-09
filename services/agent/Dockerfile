@@ -63,8 +63,10 @@ RUN echo "DevicesStyle { Location = /styles/Devices.xsl }" >> /etc/mtconnect/sim
 # FROM ubuntu:21.04  # causing error?
 FROM ubuntu:20.04
 
+RUN apt-get update
+
 # install ruby for simulator
-# RUN apt-get update && apt-get install -y ruby
+RUN apt-get install -y ruby
 
 # for debugging
 # RUN apt-get install -y strace
