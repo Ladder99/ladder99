@@ -18,8 +18,10 @@ RUN apt-get update
 # # set timezone - otherwise install can get stuck waiting for input
 # RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime \
 #   && echo $CONTAINER_TIMEZONE > /etc/timezone
+# see https://serverfault.com/a/1016972/211025
 ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=America/Chicago
+RUN apt-get install -y tzdata
 
 # get dependencies
 # note: removed ruby - install in second stage
