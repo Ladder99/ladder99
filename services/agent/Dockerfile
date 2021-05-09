@@ -28,6 +28,8 @@ RUN apt-get install -y tzdata
 RUN apt-get install -y \
   git cmake build-essential libxml2 libxml2-dev libcppunit-dev screen curl
 
+RUN apt-get upgrade cmake
+
 #----------------------------------------------------------------------------
 # build makefile
 #----------------------------------------------------------------------------
