@@ -29,9 +29,13 @@ RUN apt-get install -y \
 #----------------------------------------------------------------------------
 
 # get latest cppagent source
+# and check out april 16, 2021 version, before turned file monitor on.
+# trying to see if that causes pi crash.
 RUN mkdir -p ~/agent/build \
   && cd ~/agent \
-  && git clone https://github.com/mtconnect/cppagent.git --depth 1
+  && git clone https://github.com/mtconnect/cppagent.git --depth 1 \
+  && git checkout a6c47791655bf35bff82cf0023e509bfca481ab8
+
 
 # # build cmake
 # # note: running cmake below fails when building for linux/arm/7 in macos docker
