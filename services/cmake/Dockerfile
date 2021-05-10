@@ -2,6 +2,7 @@
 # Ubuntu 20.04 ships with cmake-3.16.3
 # Ubuntu 21.04 ships with cmake-3.18.4
 # we need at least 3.18, which fixes a bug on arm/v7
+# but 21.04 seems to bomb on pi
 
 # base image - ubuntu has linux/arm/v7, linux/amd64, etc
 FROM ubuntu:20.04 AS build
@@ -29,7 +30,7 @@ RUN apt-get install -y wget build-essential
 # compilation steps from https://stackoverflow.com/a/59689105/243392
 # RUN apt-get install -y wget \
 #   && wget --no-check-certificate https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2.tar.gz \
-#   && tar zxvf cmake-3.20.2.tar.gz \
+#   && tar zxf cmake-3.20.2.tar.gz \
 #   && cd cmake-3.20.2 \
 #   && ./bootstrap \
 #   && make \
