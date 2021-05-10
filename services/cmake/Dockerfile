@@ -16,8 +16,9 @@ ENV TZ=America/Chicago
 RUN apt-get install -y tzdata
 
 # get dependencies
-# need libssl-dev for openssl
+# need libssl-dev for openssl, then pkg-config so knows where to find it
 RUN apt-get install -y wget build-essential libssl-dev
+RUN apg-get install -y pkg-config
 
 # build cmake
 # note: running cmake below fails when building for linux/arm/7 in macos docker
