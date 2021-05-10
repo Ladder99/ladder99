@@ -72,9 +72,7 @@
           "select": [
             [
               {
-                "params": [
-                  "value"
-                ],
+                "params": ["value"],
                 "type": "column"
               }
             ]
@@ -153,8 +151,8 @@
     "list": []
   },
   "time": {
-    "from": "2021-05-05T20:32:51.213Z",
-    "to": "2021-05-05T20:36:23.583Z"
+    "from": "now-15m",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -173,5 +171,5 @@
   "timezone": "",
   "title": "Ladder99",
   "uid": "dII-Qgzgz",
-  "version": 8
+  "version": 1
 }

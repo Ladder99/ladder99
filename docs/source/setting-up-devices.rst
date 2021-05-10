@@ -6,6 +6,8 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
 #. Activate the Python virtual environment
 
+   (currently just used with the replay cmd, which doesn't work yet)
+
    .. code:: console
 
       source ~/.venv/ladder99-venv/bin/activate
@@ -39,6 +41,7 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
    .. code:: console
    
+      source .env
       sh/setups/start pi base sims db
 
    Now you can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
@@ -66,3 +69,7 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
       sh/setups/start pi app
 
 #. Setup/view the Grafana dashboard at raspberrypi.local:3003
+
+   The default username/password is admin/admin.
+
+   
