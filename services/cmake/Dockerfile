@@ -16,9 +16,12 @@ ENV TZ=America/Chicago
 RUN apt-get install -y tzdata
 
 # get dependencies
-# need libssl-dev for openssl, then pkg-config so knows where to find it
-RUN apt-get install -y wget build-essential libssl-dev
-RUN apt-get install -y pkg-config
+# need libssl-dev for openssl, then pkg-config so knows where to find it.
+# but pkg-config needs separate packages per arch.
+# so just turn off openssl below.
+RUN apt-get install -y wget build-essential
+# RUN apt-get install -y wget build-essential libssl-dev
+# RUN apt-get install -y pkg-config
 
 # build cmake
 # note: running cmake below fails when building for linux/arm/7 in macos docker
@@ -40,7 +43,8 @@ RUN apt-get install -y pkg-config
 
 RUN wget --no-check-certificate https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2.tar.gz
 RUN tar zxf cmake-3.20.2.tar.gz
-RUN cd cmake-3.20.2 && ./bootstrap
+# RUN cd cmake-3.20.2 && ./bootstrap
+RUN cd cmake-3.20.2 && ./bootstrap -- -DCMAKE_USE_OPENSSL=OFF
 RUN cd cmake-3.20.2 && make
 RUN cd cmake-3.20.2 && make install
 
