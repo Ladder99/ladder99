@@ -16,7 +16,8 @@ ENV TZ=America/Chicago
 RUN apt-get install -y tzdata
 
 # get dependencies
-RUN apt-get install -y wget build-essential
+# need libssl-dev for openssl
+RUN apt-get install -y wget build-essential libssl-dev
 
 # build cmake
 # note: running cmake below fails when building for linux/arm/7 in macos docker
@@ -37,7 +38,7 @@ RUN apt-get install -y wget build-essential
 #   && make install
 
 RUN wget --no-check-certificate https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2.tar.gz
-RUN tar zxvf cmake-3.20.2.tar.gz
+RUN tar zxf cmake-3.20.2.tar.gz
 RUN cd cmake-3.20.2 && ./bootstrap
 RUN cd cmake-3.20.2 && make
 RUN cd cmake-3.20.2 && make install
