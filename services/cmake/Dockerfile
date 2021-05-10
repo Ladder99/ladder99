@@ -28,14 +28,21 @@ RUN apt-get install -y tzdata
 # this is fixed in ubuntu 21.04, which has cmake 3.18.4,
 # but we can't use ubuntu 21.04 because it bombs on arm32 (?).
 # compilation steps from https://stackoverflow.com/a/59689105/243392
-RUN apt-get install -y wget \
-  && wget --no-check-certificate https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2.tar.gz \
-  && tar zxvf cmake-3.20.2.tar.gz \
-  && cd cmake-3.20.2 \
-  && ./bootstrap \
-  && make \
-  && make install
+# RUN apt-get install -y wget \
+#   && wget --no-check-certificate https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2.tar.gz \
+#   && tar zxvf cmake-3.20.2.tar.gz \
+#   && cd cmake-3.20.2 \
+#   && ./bootstrap \
+#   && make \
+#   && make install
 
+RUN apt-get install -y wget
+RUN wget --no-check-certificate https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2.tar.gz
+RUN tar zxvf cmake-3.20.2.tar.gz
+RUN cd cmake-3.20.2
+RUN ./bootstrap
+RUN make
+RUN make insta
 
 # # multi-stage build - bring only essentials from previous layers
 # FROM ubuntu:20.04
