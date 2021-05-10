@@ -8,7 +8,8 @@
 
 # base image - ubuntu has linux/arm/v7, linux/amd64, etc
 # FROM ubuntu:20.04 AS compile  # cmake for this has probs building for arm
-FROM ubuntu:21.04 AS compile
+# FROM ubuntu:21.04 AS compile
+FROM ladder99/cmake:latest AS compile
 
 RUN apt-get update
 
@@ -20,9 +21,9 @@ RUN apt-get install -y tzdata
 
 # get dependencies
 # note: removed ruby - install in second stage
-# note: remove cmake if build it ourselves later
+# note: removed cmake since built image for it
 RUN apt-get install -y \
-  git cmake build-essential libxml2 libxml2-dev libcppunit-dev screen curl
+  git build-essential libxml2 libxml2-dev libcppunit-dev screen curl
 
 #----------------------------------------------------------------------------
 # build makefile
