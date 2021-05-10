@@ -1,5 +1,5 @@
 #!/bin/bash
-# run sql commands on edge db
+# run sql command file on db
 # usage:
 #   sh/db/run migrations/000-init.sql
 
