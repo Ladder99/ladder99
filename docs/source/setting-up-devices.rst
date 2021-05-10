@@ -10,7 +10,6 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
       source ~/.venv/ladder99-venv/bin/activate
 
-
 #. Set environment variables
 
    Copy the ``.env-example`` file to ``.env`` and modify the passwords as needed, then load the environment variables
@@ -29,7 +28,6 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
       sh/adapter/copy pi
       sh/agent/copy pi
-
 
    .. note::
 
@@ -51,11 +49,11 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
       
    .. image:: _images/agent.jpg
 
-
 #. Setup the database with
 
    .. code:: console
       
+      source .env
       setups/pi/shell/dbrun setups/pi/migrations/000-init.sql
       setups/pi/shell/dbrun setups/pi/migrations/001-tables.sql
       etc
