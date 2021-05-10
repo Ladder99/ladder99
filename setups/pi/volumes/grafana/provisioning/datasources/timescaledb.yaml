@@ -18,7 +18,8 @@ datasources:
     # other parts of the configuration, if not specified will be generated automatically
     uid: timescaledb
     # url: http://localhost:5432  # syntax error
-    url: localhost:5433 # connection refused
+    # url: localhost:5433 # connection refused
+    url: host.docker.internal:5433 # for macos
     # url: timescaledb:5432
     user: postgres
     database: ladder99
