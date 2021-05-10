@@ -14,9 +14,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 ENV TZ=America/Chicago
 RUN apt-get install -y tzdata
 
-# # get dependencies
-# RUN apt-get install -y \
-#   git build-essential libxml2 libxml2-dev libcppunit-dev screen curl
+# get dependencies
+RUN apt-get install -y wget build-essential
 
 # build cmake
 # note: running cmake below fails when building for linux/arm/7 in macos docker
@@ -36,14 +35,11 @@ RUN apt-get install -y tzdata
 #   && make \
 #   && make install
 
-RUN apt-get install -y wget
 RUN wget --no-check-certificate https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2.tar.gz
 RUN tar zxvf cmake-3.20.2.tar.gz
-# RUN cd cmake-3.20.2
-# WORKDIR /root/cmake-3.20.2
 RUN cd cmake-3.20.2 && ./bootstrap
 RUN cd cmake-3.20.2 && make
-RUN cd cmake-3.20.2 && make insta
+RUN cd cmake-3.20.2 && make install
 
 # # multi-stage build - bring only essentials from previous layers
 # FROM ubuntu:20.04
