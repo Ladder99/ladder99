@@ -39,7 +39,8 @@ RUN apt-get install -y tzdata
 RUN apt-get install -y wget
 RUN wget --no-check-certificate https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2.tar.gz
 RUN tar zxvf cmake-3.20.2.tar.gz
-RUN cd cmake-3.20.2
+# RUN cd cmake-3.20.2
+WORKDIR /root/cmake-3.20.2
 RUN ./bootstrap
 RUN make
 RUN make insta
