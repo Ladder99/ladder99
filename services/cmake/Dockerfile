@@ -19,8 +19,9 @@ RUN apt-get install -y tzdata
 #. need libssl-dev for openssl, then pkg-config so knows where to find it.
 #. but pkg-config needs separate packages per arch.
 # so just turn off openssl below.
-RUN apt-get install -y wget build-essential
-# RUN apt-get install -y wget build-essential libssl-dev
+#. but need openssl for cppagent build - uses https, so add it back.
+# RUN apt-get install -y wget build-essential
+RUN apt-get install -y wget build-essential libssl-dev pkg-config
 # RUN apt-get install -y pkg-config
 
 # build cmake
@@ -43,9 +44,9 @@ RUN apt-get install -y wget build-essential
 
 RUN wget --no-check-certificate https://github.com/Kitware/CMake/releases/download/v3.20.2/cmake-3.20.2.tar.gz
 RUN tar zxf cmake-3.20.2.tar.gz
-# RUN cd cmake-3.20.2 && ./bootstrap
-#. see above for turning off openssl
-RUN cd cmake-3.20.2 && ./bootstrap -- -DCMAKE_USE_OPENSSL=OFF
+RUN cd cmake-3.20.2 && ./bootstrap
+#. see above for turning off openssl. and back on.
+# RUN cd cmake-3.20.2 && ./bootstrap -- -DCMAKE_USE_OPENSSL=OFF
 RUN cd cmake-3.20.2 && make
 RUN cd cmake-3.20.2 && make install
 
