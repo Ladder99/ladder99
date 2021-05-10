@@ -39,7 +39,7 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
    .. code:: console
    
-      sh/setups/start pi base sims db app
+      sh/setups/start pi base sims db
 
    Now you can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
 
@@ -58,4 +58,11 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
       setups/pi/shell/dbrun setups/pi/migrations/001-tables.sql
       etc
 
-...
+#. Start the MTConnect application
+
+   .. code:: console
+
+      source .env
+      sh/setups/start pi app
+
+#. Setup/view the Grafana dashboard at raspberrypi.local:3003
