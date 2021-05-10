@@ -1,6 +1,7 @@
 #!/bin/bash
 # run sql command file on db
 # usage:
+#   source .env
 #   sh/db/run migrations/000-init.sql
 
 SQL_FILE=$1
