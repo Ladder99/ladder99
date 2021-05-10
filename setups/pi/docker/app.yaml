@@ -11,7 +11,7 @@ services:
     working_dir: /home/node/app
     command: npm start
     environment:
-      - BASE_URL=http://agent:5000
+      - AGENT_BASE_URL=http://agent:5000
       - INTERVAL=2000
       - PGHOST
       - PGPORT
