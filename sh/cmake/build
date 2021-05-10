@@ -1,0 +1,14 @@
+#!/bin/bash
+# build and deploy multiarch cmake docker image
+
+# get platforms to build, with a default value
+PLATFORM=${1:-'linux/amd64,linux/arm/v7,linux/arm64'}
+
+cd services/cmake
+
+# build image and push to docker hub
+docker buildx build \
+  --platform=$PLATFORM \
+  --tag=ladder99/cmake:latest \
+  --push \
+  .
