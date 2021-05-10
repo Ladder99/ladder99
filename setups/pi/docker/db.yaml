@@ -11,7 +11,8 @@ services:
     container_name: timescaledb
     image: timescale/timescaledb:latest-pg13
     ports:
-      - '5432:5432/tcp'
+      # remap to 5433 so can run on mac with local db also
+      - '5433:5432/tcp'
     networks:
       - ladder99
     environment:
