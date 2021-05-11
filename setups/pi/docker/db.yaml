@@ -42,7 +42,8 @@ services:
     volumes:
       # - $HOME/data/grafana:/var/lib/grafana
       # - grafana:/var/lib/grafana
-      - ../volumes/grafana:/var/lib/grafana
+      # - ../volumes/grafana:/var/lib/grafana
+      - ../volumes/grafana:/etc/grafana
     user: grafana
 
   pgadmin:
