@@ -1,17 +1,17 @@
 {
   "name": "ladder99-application",
   "version": "0.1.0",
-  "description": "MTConnect Application",
+  "description": "Ladder99 MTConnect Application",
   "type": "module",
   "module": "esnext",
   "target": "es2017",
   "scripts": {
     "start": "node src/application.js",
+    "example": "node src/example.js",
     "test": "nodemon src/domain.test.js"
   },
   "author": "Brian Burns <bburns.km@gmail.com>",
-  "license": "Proprietary",
-  "private": true,
+  "license": "MIT",
   "dependencies": {
     "node-fetch": "^2.6.1",
     "pg": "^8.5.1",
