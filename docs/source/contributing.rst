@@ -31,10 +31,8 @@ To develop and view the documentation locally, first install the Python dependen
 
       shell/install/python-dev
 
-Then serve the documents, viewable at localhost:5050
+Then serve the documents, viewable at localhost:8080 -
 
    .. code:: console
 
       shell/docs/serve
-
-

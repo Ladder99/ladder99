@@ -4,6 +4,8 @@ Getting Started
 
 Let's run the MTConnect Agent, which comes with a simulator for a CNC device.
 
+On your edge device, 
+
    note: this may give an error if the docker image is still set to private, in which case ``docker login``
 
    .. code:: console
@@ -11,11 +13,6 @@ Let's run the MTConnect Agent, which comes with a simulator for a CNC device.
       cd ~/ladder99
       shell/agent/test
 
-   .. note::
+Now you should be able to view the MTConnect Agent output on your browser at (e.g.) http://raspberrypi.local:5000.
 
-      You can see all the shell commands available with
-
-      .. code:: console
-
-         tree shell
-
+.. image:: _images/agent.jpg
