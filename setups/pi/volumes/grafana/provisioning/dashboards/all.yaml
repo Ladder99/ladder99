@@ -22,7 +22,7 @@ providers:
       # Required when using the 'file' type
       #. use /etc/grafana/dashboards? then can use the json there?
       #. but then can't edit the dashboards?
-      # path: /var/lib/grafana/dashboards
-      path: /etc/grafana/dashboards
+      path: /var/lib/grafana/dashboards
+      # path: /etc/grafana/dashboards
       # <bool> use folder names from filesystem to create folders in Grafana
       foldersFromFilesStructure: true

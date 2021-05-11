@@ -58,8 +58,6 @@ services:
 
 volumes:
   timescaledb:
-  grafana:
-    external: true
 
 networks:
   ladder99:
