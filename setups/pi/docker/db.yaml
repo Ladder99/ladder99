@@ -38,7 +38,7 @@ services:
         condition: on-failure
     environment:
       # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
-      GF_INSTALL_PLUGINS: grafana-clock-panel,natel-discrete-panel
+      GF_INSTALL_PLUGINS: natel-discrete-panel
     volumes:
       # - $HOME/data/grafana:/var/lib/grafana
       - grafana:/var/lib/grafana
