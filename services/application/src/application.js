@@ -2,11 +2,12 @@
 import fetch from 'node-fetch'
 import pg from 'pg' // postgres driver
 const { Client } = pg
-import * as domain from './domain.js'
+import * as logic from './logic.js'
 
 console.log(`MTConnect Application starting`)
 
 const client = new Client()
+// @ts-ignore
 await client.connect() // uses envars PGHOST, PGPORT, etc - set with `source .env`
 // const res = await client.query('SELECT $1::text as message', ['Hello world!'])
 // console.log(res.rows[0].message) // Hello world!
@@ -38,7 +39,7 @@ async function shovel() {
     // fs.writeFileSync('./example.json', JSON.stringify(tree))
 
     // traverse the tree and output state
-    domain.traverse(tree, async dataItems => {
+    logic.traverse(tree, async dataItems => {
       if (dataItems[0].type === 'Execution') {
         // console.log(dataItems[0])
         const dataItem = dataItems[0] //. just one?

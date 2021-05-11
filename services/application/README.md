@@ -1,8 +1,9 @@
-this transfers xml/json data from agent to database
+# ladder99-application
 
-run it separately from the docker compose apps
+this transfers xml/json data from agent to the database
 
-it polls json data from the agent at localhost:5000,
-which is exposed by the compose file. 
+run it separately from the other docker compose apps
 
+    sh/setups/start pi app
 
+it polls json data from the agent at localhost:5000
