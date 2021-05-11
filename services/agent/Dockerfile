@@ -1,14 +1,17 @@
 # MTConnect C++ Agent docker image
-# adapted from http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu
-# don't need sudo as containers run as root by default.
+# Adapted from http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu.
+
+# 
+
+# note: don't need sudo as containers run as root by default.
 
 #----------------------------------------------------------------------------
 # build os
 #----------------------------------------------------------------------------
 
 # base image - ubuntu has linux/arm/v7, linux/amd64, etc
-# FROM ubuntu:20.04 AS compile  # cmake for this has probs building for arm
-# FROM ubuntu:21.04 AS compile
+# FROM ubuntu:20.04 AS compile  # cmake version for this has prob building for arm, so build our own
+# FROM ubuntu:21.04 AS compile  # this has errors running on arm
 FROM ladder99/cmake:latest AS compile
 
 RUN apt-get update
@@ -21,7 +24,7 @@ RUN apt-get install -y tzdata
 
 # get dependencies
 # note: removed ruby - install in second stage
-# note: removed cmake since built image for it
+# note: removed cmake since included in base image
 RUN apt-get install -y \
   git build-essential libxml2 libxml2-dev libcppunit-dev screen curl
 
@@ -35,9 +38,10 @@ RUN apt-get install -y \
 # && git clone https://github.com/mtconnect/cppagent.git --depth 1 \
 RUN mkdir -p ~/agent/build \
   && cd ~/agent \
-  && git clone https://github.com/mtconnect/cppagent.git \
-  && cd cppagent \
-  && git checkout a6c47791655bf35bff82cf0023e509bfca481ab8
+  && git clone https://github.com/mtconnect/cppagent.git
+
+# && cd cppagent \
+# && git checkout a6c47791655bf35bff82cf0023e509bfca481ab8
 
 
 # # build cmake
@@ -86,7 +90,7 @@ RUN echo "DevicesStyle { Location = /styles/Devices.xsl }" >> /etc/mtconnect/sim
 
 # multi-stage build - bring only essentials from previous layers
 FROM ubuntu:20.04
-# FROM ubuntu:21.04 # bombs on rpi
+# FROM ubuntu:21.04 # errors on rpi
 
 # install ruby for simulator
 RUN apt-get update && apt-get install -y ruby
@@ -110,11 +114,21 @@ COPY --from=compile /etc/mtconnect /etc/mtconnect
 COPY styles /etc/mtconnect/styles
 
 # bring in test script
-COPY test-agent.sh /etc/mtconnect
+# COPY test-agent.sh /etc/mtconnect
 
 # expose port
 EXPOSE 5000
 
 # default run command - can override with docker run or docker-compose.
 # this script runs the app and ruby simulator.
-CMD ["/etc/mtconnect/test-agent.sh"]
+# CMD ["/etc/mtconnect/test-agent.sh"]
+
+# default command - can override with docker run or docker-compose 
+# command.
+# this runs the adapter simulator and the agent using the sample config file.
+# note: must use shell form here instead of exec form, since we're running 
+# multiple statements using shell commands (& and &&).
+# see https://stackoverflow.com/questions/46797348/docker-cmd-exec-form-for-multiple-command-execution
+CMD /usr/bin/ruby /etc/mtconnect/simulator/run_scenario.rb -l \
+  /etc/mtconnect/simulator/VMC-3Axis-Log.txt & \
+  cd /etc/mtconnect/simulator && agent debug agent.cfg

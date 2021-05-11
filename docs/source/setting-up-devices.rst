@@ -4,13 +4,13 @@ Setting Up Devices
 
 A configuration of devices is called a 'setup', and is defined in the ``setups`` folder.
 
-#. Activate the Python virtual environment
+.. #. Activate the Python virtual environment
 
-   (currently just used with the replay cmd, which doesn't work yet)
+..    (currently just used with the replay cmd, which doesn't work yet)
 
-   .. code:: console
+..    .. code:: console
 
-      source ~/.venv/ladder99-venv/bin/activate
+..       source ~/.venv/ladder99-venv/bin/activate
 
 #. Set environment variables
 

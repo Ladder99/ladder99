@@ -1,4 +1,5 @@
 #!/bin/bash
+# this script is included in the image
 
 # run the adapter simulator
 /usr/bin/ruby /etc/mtconnect/simulator/run_scenario.rb -l \
