@@ -41,8 +41,8 @@ services:
       GF_INSTALL_PLUGINS: natel-discrete-panel
     volumes:
       # - $HOME/data/grafana:/var/lib/grafana
-      - grafana:/var/lib/grafana
-      # - ../volumes/grafana:/etc/grafana
+      # - grafana:/var/lib/grafana
+      - ../volumes/grafana:/var/lib/grafana
     user: grafana
 
   pgadmin:
