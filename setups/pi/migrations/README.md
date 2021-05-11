@@ -2,7 +2,7 @@
 run these with
 
 source .env
-sh/db/run setups/pi/migrations/000-init.sql 
+shell/db/run setups/pi/migrations/000-init.sql 
 
 etc
 

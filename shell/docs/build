@@ -1,6 +1,4 @@
 #!/bin/bash
 # build sphinx docs
 
-cd docs
-
-make html
+(cd docs && make html)

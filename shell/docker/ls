@@ -8,4 +8,4 @@
 VOLUME=$1
 SUFFIX=$2
 
-sh/docker/vm ls -l /docker/var/lib/docker/volumes/$VOLUME/_data/$SUFFIX
+shell/docker/vm ls -l /docker/var/lib/docker/volumes/$VOLUME/_data/$SUFFIX

@@ -1,6 +1,0 @@
-#!/bin/bash
-# deploy sphinx docs
-
-firebase deploy
-
-echo Visit https://ladder99-mtconnect.web.app/

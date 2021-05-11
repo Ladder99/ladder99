@@ -1,0 +1,10 @@
+#!/bin/bash
+# copy data to a named volume for the agent container to access.
+
+SETUP=${1:-'pi'}
+
+docker volume create agent
+
+shell/docker/cp setups/$SETUP/volumes/agent/agent.cfg agent /data/agent
+shell/docker/cp setups/$SETUP/volumes/agent/devices.xml agent /data/agent
+shell/docker/cp setups/$SETUP/volumes/agent/styles agent /data/agent

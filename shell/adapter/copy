@@ -13,5 +13,5 @@ SETUP=${1:-'pi'}
 
 docker volume create adapter
 
-sh/docker/cp setups/$SETUP/devices.yaml adapter /data/adapter
-sh/docker/cp models adapter /data/adapter
+shell/docker/cp setups/$SETUP/devices.yaml adapter /data/adapter
+shell/docker/cp models adapter /data/adapter
