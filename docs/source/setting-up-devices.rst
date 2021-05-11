@@ -37,18 +37,17 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
 #. Start all the services
 
-   ``pi`` is the name of the setups folder, and others are names of yaml files in the setups/pi/docker folder.
+   ``pi`` here is the name of the setups folder, and others are names of yaml files in the setups/pi/docker folder.
 
    .. code:: console
    
-      source .env
       shell/setups/start pi base sims db
 
    Now you can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
 
-   To see the data the agent generates visit (where the IP address is your edge device)
+   To see the data the agent generates visit (where the address is your edge device)
 
-      raspberrypi.local:5000/current 
+      raspberrypi.local:5000/current
       
    .. image:: _images/agent.jpg
 
@@ -56,7 +55,6 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
    .. code:: console
       
-      source .env
       shell/db/run setups/pi/migrations/000-init.sql
       shell/db/run setups/pi/migrations/001-tables.sql
       etc
@@ -65,7 +63,6 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
    .. code:: console
 
-      source .env
       shell/setups/start pi app
 
 #. Setup/view the Grafana dashboard at raspberrypi.local:3003
