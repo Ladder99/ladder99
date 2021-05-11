@@ -2,6 +2,9 @@
 Getting Started
 *******************
 
+Running the Agent
+=====================
+
 Let's run the MTConnect Agent, which comes with a simulator for a CNC device.
 
 On your edge device, in the ladder99 folder -
@@ -13,3 +16,13 @@ On your edge device, in the ladder99 folder -
 Now you should be able to view the MTConnect Agent output on your browser at e.g. http://raspberrypi.local:5000.
 
 .. image:: _images/agent.jpg
+
+
+Viewing the dashboard
+=========================
+
+
+
+
+
+Next we'll take a look at setting up some devices.

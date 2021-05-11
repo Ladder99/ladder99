@@ -69,4 +69,4 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
    The default username/password is admin/admin.
 
-   
+Next we'll look at how to develop custom adapters for other devices.
