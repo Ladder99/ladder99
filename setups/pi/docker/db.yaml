@@ -30,6 +30,7 @@ services:
     container_name: grafana
     image: grafana/grafana:7.5.5
     ports:
+      # remap to 3003 so can have react app running also
       - '3003:3000/tcp'
     networks:
       - ladder99
@@ -43,6 +44,8 @@ services:
       # - $HOME/data/grafana:/var/lib/grafana
       # - grafana:/var/lib/grafana
       # - ../volumes/grafana:/var/lib/grafana
+      # grafana.ini is located in /etc/grafana by default -
+      # other folders are specified there.
       - ../volumes/grafana:/etc/grafana
     user: grafana
 
