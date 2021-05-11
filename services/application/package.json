@@ -7,7 +7,7 @@
   "target": "es2017",
   "scripts": {
     "start": "node src/application.js",
-    "example": "node src/example.js",
+    "capture": "node src/capture.js",
     "test": "nodemon src/logic.test.js"
   },
   "author": "Brian Burns <bburns.km@gmail.com>",
