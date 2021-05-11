@@ -24,7 +24,7 @@ services:
         condition: on-failure
     volumes:
       # - $HOME/data/postgres:/var/lib/postgresql/data
-      - timescaledb_data:/var/lib/postgresql/data
+      - timescaledb:/var/lib/postgresql/data
 
   grafana:
     container_name: grafana
@@ -41,8 +41,8 @@ services:
       GF_INSTALL_PLUGINS: grafana-clock-panel,natel-discrete-panel
     volumes:
       # - $HOME/data/grafana:/var/lib/grafana
-      - grafana_data:/var/lib/grafana
-      - ../volumes/grafana:/etc/grafana
+      - grafana:/var/lib/grafana
+      # - ../volumes/grafana:/etc/grafana
     user: grafana
 
   pgadmin:
@@ -57,8 +57,9 @@ services:
         condition: on-failure
 
 volumes:
-  timescaledb_data:
-  grafana_data:
+  timescaledb:
+  grafana:
+    external: true
 
 networks:
   ladder99:

@@ -1,0 +1,10 @@
+#!/bin/bash
+# copy data to a named volume for grafana container to access.
+
+SETUP=${1:-'pi'}
+
+docker volume create grafana
+
+sh/docker/cp setups/$SETUP/volumes/grafana/grafana.cfg grafana /data/grafana
+sh/docker/cp setups/$SETUP/volumes/grafana/devices.xml grafana /data/grafana
+sh/docker/cp setups/$SETUP/volumes/grafana/styles grafana /data/grafana
