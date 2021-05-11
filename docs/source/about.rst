@@ -5,7 +5,7 @@ About
 Ladder99
 ===========
 
-Ladder99 transforms data from your devices to a standard vocabulary, which you can plug into any MTConnect-compatible application. 
+Ladder99 transforms data from your devices to a standard vocabulary, which you can then plug into any MTConnect-compatible application. 
 
 
 MTConnect

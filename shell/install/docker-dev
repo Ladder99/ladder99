@@ -1,15 +1,12 @@
 #!/bin/bash
 # install docker dependencies for building multiarch images
 
-# ?
-# sudo apt install gpg pass
-
-# login to docker hub
-docker login --username ladder99
-
 # run a container with the qemu emulator
 docker run --rm --privileged multiarch/qemu-user-static --reset --persistent yes
 
 # create a multiarch builder
 docker buildx create --name multiarch --driver docker-container --use
 docker buildx inspect --bootstrap
+
+# # login to docker hub
+# docker login --username ladder99
