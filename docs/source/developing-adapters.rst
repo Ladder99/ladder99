@@ -22,36 +22,36 @@ Then generate the ``setups/pi/volumes/agent/devices.xml`` and ``setups/pi/docker
 
    .. code:: console
 
-      sh/setup/compile pi
+      shell/setup/compile pi
 
 Then copy the relevant data files into named volumes - 
 
    .. code:: console
 
-      sh/adapter/copy pi
-      sh/agent/copy pi
+      shell/adapter/copy pi
+      shell/agent/copy pi
 
 Then build the multiarchitecture Docker images - this will also push them to our Ladder99 Docker Hub. This can be done on another machine, as it can take a few hours if starting from scratch -
 
    .. code:: console
 
-      sh/adapter/build
-      sh/agent/build
+      shell/adapter/build
+      shell/agent/build
 
 Then start all the services with (where ``pi`` is the name of the setups folder, others correspond to docker-compose yamls in ``setups/pi/docker``) -
 
    .. code:: console
 
-      sh/setups/start pi base sims db app
+      shell/setups/start pi base sims db app
 
 You can stop services with
 
    .. code:: console
 
-      sh/setups/stop pi sims
+      shell/setups/stop pi sims
 
 To replay some more mqtt messages (not yet working),
 
    .. code:: console
 
-      sh/setup/replay pi
+      shell/setup/replay pi

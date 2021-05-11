@@ -6,6 +6,6 @@ Install dependencies
 
    .. code:: console
 
-      sh/install/docker-dev
-      sh/install/python-dev
+      shell/install/docker-dev
+      shell/install/python-dev
 

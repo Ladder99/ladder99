@@ -6,4 +6,4 @@ Build and deploy the MTConnect Agent Docker image
 
    .. code:: console
       
-      sh/agent/build
+      shell/agent/build

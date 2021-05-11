@@ -28,12 +28,12 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
    .. code:: console
 
-      sh/adapter/copy pi
-      sh/agent/copy pi
+      shell/adapter/copy pi
+      shell/agent/copy pi
 
    .. note::
 
-      You can see all the available shell commands with ``tree sh``.
+      You can see all the available shell commands with ``tree shell``.
 
 #. Start all the services
 
@@ -42,7 +42,7 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
    .. code:: console
    
       source .env
-      sh/setups/start pi base sims db
+      shell/setups/start pi base sims db
 
    Now you can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
 
@@ -57,8 +57,8 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
    .. code:: console
       
       source .env
-      setups/pi/shell/dbrun setups/pi/migrations/000-init.sql
-      setups/pi/shell/dbrun setups/pi/migrations/001-tables.sql
+      shell/db/run setups/pi/migrations/000-init.sql
+      shell/db/run setups/pi/migrations/001-tables.sql
       etc
 
 #. Start the MTConnect application
@@ -66,7 +66,7 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
    .. code:: console
 
       source .env
-      sh/setups/start pi app
+      shell/setups/start pi app
 
 #. Setup/view the Grafana dashboard at raspberrypi.local:3003
 

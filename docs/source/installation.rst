@@ -29,9 +29,9 @@ Steps
 
    .. code:: console
 
-      sh/install/linux
-      sh/install/docker
-      sh/install/python
-      sh/install/node
+      shell/install/linux
+      shell/install/docker
+      shell/install/python
+      shell/install/node
 
 Next, we'll run the MTConnect Agent and make sure it works with the demonstration data.

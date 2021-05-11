@@ -9,7 +9,7 @@ Let's run the MTConnect Agent, which comes with a simulator for a CNC device.
    .. code:: console
 
       cd ~/ladder99
-      sh/agent/test
+      shell/agent/test
 
    .. note::
 
@@ -17,5 +17,5 @@ Let's run the MTConnect Agent, which comes with a simulator for a CNC device.
 
       .. code:: console
 
-         tree sh
+         tree shell
 
