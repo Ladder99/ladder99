@@ -1,5 +1,0 @@
-#!/bin/bash
-# test agent - runs the default command which runs a simulation
-
-docker run -it --rm --publish 5000:5000 --name agent --pull always \
-  ladder99/mtconnect-agent:latest
