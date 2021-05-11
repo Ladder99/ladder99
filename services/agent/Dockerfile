@@ -85,8 +85,8 @@ RUN echo "DevicesStyle { Location = /styles/Devices.xsl }" >> /etc/mtconnect/sim
 #----------------------------------------------------------------------------
 
 # multi-stage build - bring only essentials from previous layers
-# FROM ubuntu:20.04
-FROM ubuntu:21.04
+FROM ubuntu:20.04
+# FROM ubuntu:21.04 # bombs on rpi
 
 # install ruby for simulator
 RUN apt-get update && apt-get install -y ruby
