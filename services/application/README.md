@@ -11,5 +11,7 @@ it polls json data from the agent at localhost:5000
 
 To test, 
 
-    npm test
+    sh/app/test
+
+which runs `npm test`
 

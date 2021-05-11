@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node src/application.js",
     "example": "node src/example.js",
-    "test": "nodemon src/domain.test.js"
+    "test": "nodemon src/logic.test.js"
   },
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "MIT",
