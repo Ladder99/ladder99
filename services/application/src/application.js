@@ -1,4 +1,5 @@
-// import fs from 'fs'
+// capture agent data and write to database
+
 import fetch from 'node-fetch'
 import pg from 'pg' // postgres driver
 const { Client } = pg
@@ -14,17 +15,16 @@ await client.connect() // uses envars PGHOST, PGPORT, etc - set with `source .en
 // await client.end()
 
 const baseUrl = process.env.AGENT_BASE_URL || 'http://localhost:5000'
-// const baseUrl = process.env.AGENT_BASE_URL || 'http://192.168.0.109:5000'
+// const baseUrl = process.env.AGENT_BASE_URL || 'http://raspberrypi.local:5000'
 const interval = Number(process.env.INTERVAL || 2000) // msec
 
 setInterval(shovel, interval)
 
 async function shovel() {
-  const currentUrl = `${baseUrl}/current`
+  const url = `${baseUrl}/current`
   // const from = 1
   // const count = 200
-  // const sampleUrl = `${baseUrl}/sample?from=${from}&count=${count}`
-  const url = currentUrl
+  // const url = `${baseUrl}/sample?from=${from}&count=${count}`
   try {
     // console.log(`fetch from ${url}...`)
     const response = await fetch(url, {
@@ -34,9 +34,6 @@ async function shovel() {
       },
     })
     const tree = await response.json()
-
-    //. use this to save example outputs - rename to example-current.js etc
-    // fs.writeFileSync('./example.json', JSON.stringify(tree))
 
     // traverse the tree and output state
     logic.traverse(tree, async dataItems => {
