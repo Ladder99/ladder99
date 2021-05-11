@@ -14,8 +14,8 @@ await client.connect() // uses envars PGHOST, PGPORT, etc - set with `source .en
 // console.log(res.rows[0].message) // Hello world!
 // await client.end()
 
-const baseUrl = process.env.AGENT_BASE_URL || 'http://localhost:5000'
 // const baseUrl = process.env.AGENT_BASE_URL || 'http://raspberrypi.local:5000'
+const baseUrl = process.env.AGENT_BASE_URL || 'http://localhost:5000'
 const interval = Number(process.env.INTERVAL || 2000) // msec
 
 setInterval(shovel, interval)
