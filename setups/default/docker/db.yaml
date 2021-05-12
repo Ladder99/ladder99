@@ -44,8 +44,8 @@ services:
       # note: grafana.ini is located in /etc/grafana by default -
       # other folders are specified there.
       - ../volumes/grafana:/etc/grafana
-      #. might want this to keep out of this repo, eg plugin sourcecode?
-      # - grafana:/var/lib/grafana
+      # use this to keep data out of repo, eg plugin sourcecode
+      - grafana:/var/lib/grafana
     user: grafana
 
   pgadmin:
@@ -61,6 +61,7 @@ services:
 
 volumes:
   timescaledb:
+  grafana:
 
 networks:
   ladder99:
