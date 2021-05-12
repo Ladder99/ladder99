@@ -24,12 +24,12 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
 #. Copy data files into named volumes for Docker
 
-   ``pi`` in this case refers to the subdirectory in ``setups``, which contains the data files.
+   ``ccs-pa`` in this case refers to the subdirectory in ``setups``, which contains the data files.
 
    .. code:: console
 
-      shell/adapter/copy pi
-      shell/agent/copy pi
+      shell/adapter/copy ccs-pa
+      shell/agent/copy ccs-pa
 
    .. note::
 
@@ -37,11 +37,11 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
 #. Start all the services
 
-   ``pi`` here is the name of the setups folder, and others are names of yaml files in the setups/pi/docker folder.
+   ``ccs-pa`` here is the name of the setups folder, and others are names of yaml files in the setups/ccs-pa/docker folder.
 
    .. code:: console
    
-      shell/setups/start pi base sims db
+      shell/setups/start ccs-pa base sims db
 
    Now you can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
 
@@ -55,15 +55,15 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
    .. code:: console
       
-      shell/db/run setups/pi/migrations/000-init.sql
-      shell/db/run setups/pi/migrations/001-tables.sql
+      shell/db/run setups/ccs-pa/migrations/000-init.sql
+      shell/db/run setups/ccs-pa/migrations/001-tables.sql
       etc
 
 #. Start the MTConnect application
 
    .. code:: console
 
-      shell/setups/start pi app
+      shell/setups/start ccs-pa app
 
 #. Setup/view the Grafana dashboard at raspberrypi.local:3003
 
