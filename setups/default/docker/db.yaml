@@ -16,10 +16,12 @@ services:
     networks:
       - ladder99
     environment:
-      #. use : $PGUSERNAME, $PGPASSWORD
-      POSTGRES_USERNAME: postgres
-      POSTGRES_PASSWORD: gralgrut
-      POSTGRES_DB: ladder99
+      # POSTGRES_DB: ladder99
+      # POSTGRES_USERNAME: postgres
+      # POSTGRES_PASSWORD: gralgrut
+      POSTGRES_DB: $PGDATABASE
+      POSTGRES_USERNAME: $PGUSER
+      POSTGRES_PASSWORD: $PGPASSWORD
     deploy:
       restart_policy:
         condition: on-failure

@@ -25,6 +25,7 @@ Start the database in another console on the edge device -
 
    .. code:: console
 
+      source .env
       shell/setups/start default db
 
 Initialize the database - 
