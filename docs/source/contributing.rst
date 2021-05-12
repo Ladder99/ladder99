@@ -3,23 +3,25 @@ Contributing
 *************************
 
 
-Build MTConnect Agent Docker image
+Building Agent image
 ====================================
+
+The Agent image should only need to be built to handle another architecture, or keep up-to-date with the latest cppagent version -
 
 See https://github.com/Ladder99/mtconnect-agent. 
 
 
-Build MTConnect Adapter Docker image
+Building Adapter image
 ====================================
 
-Build a multiarchitecture Docker image and deploy it to our Ladder99 Docker Hub -
+If you develop a plugin for the adapter or make other changes to it, build a multiarchitecture Docker image and deploy it to our Ladder99 Docker Hub -
 
    .. code:: console
 
       shell/adapter/build
 
 
-Build documentation
+Building documentation
 ==================================
 
 This documentation is hosted by readthedocs.org, and is built and deployed automatically on changes being pushed to the GitHub repo. 
