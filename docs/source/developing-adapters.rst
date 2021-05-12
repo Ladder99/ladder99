@@ -3,7 +3,7 @@ Developing Adapters
 ***********************
 
 
-Define Models
+Defining Models
 ======================
 
 Device models are defined in subfolders of the ``models`` folder, and typically contain:
@@ -22,7 +22,7 @@ To develop a new model, you could make a copy of the ``ccs-pa`` folder and make 
       cp -r models/ccs-pa models/my-model
 
 
-Define Devices
+Defining Devices
 =========================
 
 The devices (model instances) are defined in the ``setups`` folder, eg the ``ccs-pa`` setup has a list of instances in the ``devices.yaml`` file there.
@@ -35,31 +35,33 @@ To start your own setup, start by making a copy of the ``setups/ccs-pa`` folder 
 
 Make changes to the setup as needed.
 
-Then generate the ``setups/my-setup/volumes/agent/devices.xml`` and ``setups/my-setup/docker/*.yaml`` files (former partially implemented, latter not implemented yet - hand-edit) -
+Then generate the devices.xml and docker files (former partially implemented, latter not implemented yet - hand-edit) - e.g.
 
    .. code:: console
 
-      shell/setup/compile my-setup
+      shell/setup/compile ccs-pa
 
 
 Testing a setup
 =========================================
 
-Copy the relevant data files into named volumes for Docker - 
+You can test a setup by copying the relevant data into Docker volumes, then running different parts of the setup with Docker-compose.
+
+Copy the data files into named volumes (use your setup name in place of "ccs-pa" ) -
 
    .. code:: console
 
-      shell/adapter/copy my-setup
-      shell/agent/copy my-setup
+      shell/adapter/copy ccs-pa
+      shell/agent/copy ccs-pa
 
-Then start all the services with (where ``my-setup`` is the name of the setups folder, others correspond to docker-compose yamls in ``setups/my-setup/docker``) -
+Then start all the services with (where base, sims, db, app correspond to docker-compose yamls in ``setups/ccs-pa/docker``) -
 
    .. code:: console
 
-      shell/setups/start my-setup base sims db app
+      shell/setups/start ccs-pa base sims db app
 
 You can stop services with
 
    .. code:: console
 
-      shell/setups/stop my-setup sims
+      shell/setups/stop ccs-pa sims
