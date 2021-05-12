@@ -37,7 +37,7 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
 #. Start all the services
 
-   ``ccs-pa`` here is the name of the setups folder, and others are names of yaml files in the setups/ccs-pa/docker folder.
+   ``ccs-pa`` here is the name of the setups subfolder, and others are names of yaml files in the ``setups/ccs-pa/docker`` folder.
 
    .. code:: console
    
@@ -59,7 +59,7 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
       shell/db/run setups/ccs-pa/migrations/001-tables.sql
       etc
 
-#. Start the MTConnect application
+#. Start the MTConnect application, which transfers data from the agent to the database
 
    .. code:: console
 

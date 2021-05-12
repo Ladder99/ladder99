@@ -10,7 +10,7 @@ services:
     working_dir: /home/node/app
     command: npm start
     environment:
-      - MQTT_HOST=broker-ccs-pa-001
+      - MQTT_HOST=broker
       - MQTT_PORT=1883
       - DEVICE_ID=ccs-pa-001
       - MESSAGES_FILE=/etc/simulator-mqtt/messages.js

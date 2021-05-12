@@ -5,9 +5,7 @@ Contributing
 Build MTConnect Agent Docker image
 ====================================
 
-Note: This build can take some hours. 
-
-Follow the instructions at https://github.com/Ladder99/mtconnect-agent. 
+See https://github.com/Ladder99/mtconnect-agent. 
 
 
 Build documentation

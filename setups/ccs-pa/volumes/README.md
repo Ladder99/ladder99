@@ -1,5 +1,5 @@
 # volumes
 
-these folders are exposed to the services through docker-compose.yaml
+These folders are exposed to the services through the docker-compose yamls in ccs-pa/docker.
 
-put anything the services will need here
+Put anything the services will need here, but be careful you don't add too much to the repo - use .gitignore.

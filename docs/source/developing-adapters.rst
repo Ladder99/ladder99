@@ -7,10 +7,10 @@ Model Files
 
 Device models are defined in the ``models`` folder, e.g. the CCS Print and Apply model is defined in ``models/ccs-pa`` - it has the following files:
 
-- model.yaml
-- inputs.yaml
-- outputs.yaml
-- types.yaml
+- model.yaml - defines the structure of the xml that is included in devices.xml, which is fed to the mtconnect agent
+- inputs.yaml - defines how to parse mqtt messages using the mqtt-json plugin, which writes values to a key-value cache
+- outputs.yaml - defines the shdr strings that are calculated from the cache and sent on to the agent
+- types.yaml - (optional) used by outputs.yaml
 
 
 Device Instances
@@ -24,19 +24,18 @@ Then generate the ``setups/ccs-pa/volumes/agent/devices.xml`` and ``setups/ccs-p
 
       shell/setup/compile ccs-pa
 
-Then copy the relevant data files into named volumes - 
+Then copy the relevant data files into named volumes for Docker - 
 
    .. code:: console
 
       shell/adapter/copy ccs-pa
       shell/agent/copy ccs-pa
 
-Then build the multiarchitecture Docker images - this will also push them to our Ladder99 Docker Hub. This can be done on another machine, as it can take a few hours if starting from scratch -
+Then build the multiarchitecture Docker image - this will also deploy it to our Ladder99 Docker Hub. 
 
    .. code:: console
 
       shell/adapter/build
-      shell/agent/build
 
 Then start all the services with (where ``ccs-pa`` is the name of the setups folder, others correspond to docker-compose yamls in ``setups/ccs-pa/docker``) -
 
