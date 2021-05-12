@@ -48,9 +48,3 @@ You can stop services with
    .. code:: console
 
       shell/setups/stop ccs-pa sims
-
-To replay some more mqtt messages (not yet working),
-
-   .. code:: console
-
-      shell/setup/replay ccs-pa

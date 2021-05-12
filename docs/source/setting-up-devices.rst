@@ -4,14 +4,6 @@ Setting Up Devices
 
 A configuration of devices is called a 'setup', and is defined in the ``setups`` folder.
 
-.. #. Activate the Python virtual environment
-
-..    (currently just used with the replay cmd, which doesn't work yet)
-
-..    .. code:: console
-
-..       source ~/.venv/ladder99-venv/bin/activate
-
 #. Set environment variables
 
    Copy the ``.env-example`` file to ``.env`` and modify the passwords as needed, then load the environment variables
@@ -64,6 +56,12 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
    .. code:: console
 
       shell/setups/start ccs-pa app
+
+#. Replay some more mqtt messages (not yet working),
+
+   .. code:: console
+
+      shell/setup/replay ccs-pa
 
 #. Setup/view the Grafana dashboard at raspberrypi.local:3003
 

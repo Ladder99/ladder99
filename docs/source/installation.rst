@@ -31,7 +31,8 @@ Steps
 
       shell/install/linux
       shell/install/docker
-      shell/install/python
       shell/install/node
+      shell/install/python
+      source ~/.venv/ladder99-venv/bin/activate
 
 Next, we'll run the MTConnect Agent and make sure it works with the demonstration data.
