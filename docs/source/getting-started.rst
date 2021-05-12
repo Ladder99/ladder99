@@ -21,8 +21,28 @@ Now you should be able to view the MTConnect Agent output on your browser at e.g
 Viewing the dashboard
 =========================
 
-...
+Start the database in another console on the edge device -
 
+   .. code:: console
+
+      shell/setups/start default db
+
+Initialize the database - 
+
+   .. code:: console
+
+      shell/db/run setups/default/migrations/000-init.sql
+      shell/db/run setups/default/migrations/001-tables.sql
+
+Now start the application, which feeds data from the agent to the database and visualizer -
+
+   .. code:: console
+
+      shell/setups/start default app
+
+Now you should be able to view a dashboard in your browser at http://raspberrypi.local:3003.
+
+.. image:: _images/grafana.jpg
 
 
 Next we'll take a look at setting up some devices.
