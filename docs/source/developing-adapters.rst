@@ -2,6 +2,13 @@
 Developing Adapters
 ***********************
 
+Diagram
+======================
+
+This diagram shows the sequence of operations for data going from a device through the adapter and plugin to the agent - 
+
+.. image:: _images/sequences.jpg
+
 
 Defining Models
 ======================
