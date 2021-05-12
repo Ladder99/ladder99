@@ -7,17 +7,7 @@ Build MTConnect Agent Docker image
 
 Note: This build can take some hours. 
 
-First install more Docker dependencies, including the multiarchitecture build tool, buildx - 
-
-   .. code:: console
-
-      shell/install/docker-dev
-
-Then you can build and deploy the MTConnect Agent Docker image  -
-
-   .. code:: console
-      
-      shell/agent/build
+Follow the instructions at https://github.com/Ladder99/mtconnect-agent. 
 
 
 Build documentation
