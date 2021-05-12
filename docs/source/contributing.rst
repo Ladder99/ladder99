@@ -2,10 +2,21 @@
 Contributing
 *************************
 
+
 Build MTConnect Agent Docker image
 ====================================
 
 See https://github.com/Ladder99/mtconnect-agent. 
+
+
+Build MTConnect Adapter Docker image
+====================================
+
+Build a multiarchitecture Docker image and deploy it to our Ladder99 Docker Hub -
+
+   .. code:: console
+
+      shell/adapter/build
 
 
 Build documentation
