@@ -21,7 +21,7 @@ Now you should be able to view the MTConnect Agent output on your browser at e.g
 Viewing the dashboard
 =========================
 
-
+...
 
 
 
