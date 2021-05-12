@@ -22,7 +22,7 @@ datasources:
     url: host.docker.internal:5433 # for macos
     # url: timescaledb:5432
     user: postgres
-    database: ladder99
+    database: ladder99_ccs_pa
     # enable/disable basic auth
     basicAuth: false
     # <string> basic auth username
