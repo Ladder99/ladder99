@@ -37,3 +37,11 @@ Then serve the documents, viewable at localhost:8080 -
    .. code:: console
 
       shell/docs/serve
+
+
+Issues
+===============
+
+If you come across any issues, or have feature requests, feel free to file an issue on our GitHub repo - https://github.com/Ladder99/ladder99/issues.
+
+You can also write us directly at ladder99@mriiot.com.

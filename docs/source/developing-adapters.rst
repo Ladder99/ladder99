@@ -2,6 +2,7 @@
 Developing Adapters
 ***********************
 
+
 Diagram
 ======================
 
@@ -72,3 +73,6 @@ You can stop services with
    .. code:: console
 
       shell/setups/stop ccs-pa sims
+
+
+Next we'll see about contributing to the Ladder99 project.
