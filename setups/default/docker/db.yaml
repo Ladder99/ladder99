@@ -1,0 +1,67 @@
+# database services
+
+#. note: this currently expects db data to be stored directly in ~/data folders.
+# so no work on mac yet.
+#. move to cloud?
+
+version: '3.7'
+
+services:
+  timescaledb:
+    container_name: timescaledb
+    image: timescale/timescaledb:latest-pg13
+    ports:
+      # remap to 5433 so can run on mac with local db also
+      - '5433:5432/tcp'
+    networks:
+      - ladder99
+    environment:
+      #. use : $PGUSERNAME, $PGPASSWORD
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: gralgrut
+      POSTGRES_DB: ladder99
+    deploy:
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - timescaledb:/var/lib/postgresql/data
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:7.5.5
+    ports:
+      # remap to 3003 so can have react app running also
+      - '3003:3000/tcp'
+    networks:
+      - ladder99
+    deploy:
+      restart_policy:
+        condition: on-failure
+    environment:
+      # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
+      GF_INSTALL_PLUGINS: natel-discrete-panel
+    volumes:
+      # note: grafana.ini is located in /etc/grafana by default -
+      # other folders are specified there.
+      - ../volumes/grafana:/etc/grafana
+      #. might want this to keep out of this repo, eg plugin sourcecode?
+      # - grafana:/var/lib/grafana
+    user: grafana
+
+  pgadmin:
+    container_name: pgadmin
+    image: biarms/pgadmin4:latest
+    ports:
+      - '5050:5050/tcp'
+    networks:
+      - ladder99
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+volumes:
+  timescaledb:
+
+networks:
+  ladder99:
+    name: ladder99
