@@ -13,6 +13,7 @@ services:
     environment:
       - AGENT_BASE_URL=http://agent:5000
       - INTERVAL=2000
+      # use current environment values for these
       - PGHOST
       - PGPORT
       - PGDATABASE
