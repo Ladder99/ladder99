@@ -9,7 +9,7 @@
 #     external: true
 
 # pick a setup folder for devices.yaml
-SETUP=${1:-'pi'}
+SETUP=${1:-'default'}
 
 docker volume create adapter
 

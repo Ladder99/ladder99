@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # run a set of docker-compose yaml files
-# eg `sh/setups/start pi db app`
+# eg `shell/setups/start ccs-pa db app`
 # see also stop
 
 import sys
@@ -13,7 +13,7 @@ files = [f"setups/{setup}/docker/{part}.yaml" for part in parts]
 args = ' '.join([f"--file {file}" for file in files])
 
 # . compile devices.yaml to devices.xml
-# sh/setups/compile $SETUP
+# shell/setups/compile $SETUP
 
 cmd = f"docker-compose {args} pull"
 print(cmd)

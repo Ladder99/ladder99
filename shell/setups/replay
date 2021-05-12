@@ -1,7 +1,7 @@
 #!/bin/bash
 # replay an mqtt recording
 
-# SETUP=${1:-'pi'}
+# SETUP=${1:-'default'}
 
 # # replay mqtt recording - https://github.com/rpdswtk/mqtt_recorder
 # replay MODEL='ccs-pa' RUN='run0' PORT='1883':

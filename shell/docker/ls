@@ -1,8 +1,8 @@
 #!/bin/bash
 # list contents of a docker named volume
 # usage:
-#   sh/docker/ls agent
-#   sh/docker/ls agent styles
+#   shell/docker/ls agent
+#   shell/docker/ls agent styles
 # source: https://www.freshblurbs.com/blog/2017/04/16/inspect-docker-volumes-on-mac.html
 
 VOLUME=$1

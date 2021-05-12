@@ -1,7 +1,7 @@
 #!/bin/bash
 # copy data to a named volume for grafana container to access.
 
-SETUP=${1:-'pi'}
+SETUP=${1:-'default'}
 
 docker volume create grafana
 
