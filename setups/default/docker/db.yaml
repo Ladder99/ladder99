@@ -1,9 +1,5 @@
 # database services
 
-#. note: this currently expects db data to be stored directly in ~/data folders.
-# so no work on mac yet.
-#. move to cloud?
-
 version: '3.7'
 
 services:
