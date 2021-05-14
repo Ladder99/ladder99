@@ -6,8 +6,8 @@
 import sys
 import os
 
-setup = sys.argv[1]
-parts = sys.argv[2:]
+setup = sys.argv[1] # eg 'default'
+parts = sys.argv[2:] # eg ['base', 'db']
 
 files = [f"setups/{setup}/docker/{part}.yaml" for part in parts]
 args = ' '.join([f"--file {file}" for file in files])
