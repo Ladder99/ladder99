@@ -1,0 +1,16 @@
+#!/bin/bash
+# initialize influxdb
+
+SETUP=${1:-'default'}
+
+cd setups/$SETUP/volumes/influxdb
+
+docker run -d -p 8086:8086 \
+  -v $PWD/data:/var/lib/influxdb2 \
+  -v $PWD/config:/etc/influxdb2 \
+  -e DOCKER_INFLUXDB_INIT_MODE=setup \
+  -e DOCKER_INFLUXDB_INIT_USERNAME=ladder99 \
+  -e DOCKER_INFLUXDB_INIT_PASSWORD=ladder99 \
+  -e DOCKER_INFLUXDB_INIT_ORG=ladder99 \
+  -e DOCKER_INFLUXDB_INIT_BUCKET=ladder99 \
+  influxdb:2.0

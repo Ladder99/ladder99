@@ -14,33 +14,36 @@ services:
       - INFLUXDB_ADMIN_PASSWORD=admin
       - INFLUXDB_USER=user
       - INFLUXDB_PASSWORD=user
+    volumes:
+      - influxdb:/var/lib/influxdb2
     networks:
       - ladder99
 
-  grafana:
-    container_name: grafana
-    image: grafana/grafana:7.5.5
-    ports:
-      # remap to 3003 so can have react app running also
-      - '3003:3000/tcp'
-    networks:
-      - ladder99
-    deploy:
-      restart_policy:
-        condition: on-failure
-    environment:
-      # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
-      GF_INSTALL_PLUGINS: natel-discrete-panel
-    volumes:
-      # note: grafana.ini is located in /etc/grafana by default -
-      # other folders are specified there.
-      - ../volumes/grafana:/etc/grafana
-      # use this to keep data out of repo, eg plugin sourcecode
-      - grafana:/var/lib/grafana
-    user: grafana
+  # grafana:
+  #   container_name: grafana
+  #   image: grafana/grafana:7.5.5
+  #   ports:
+  #     # remap to 3003 so can have react app running also
+  #     - '3003:3000/tcp'
+  #   networks:
+  #     - ladder99
+  #   deploy:
+  #     restart_policy:
+  #       condition: on-failure
+  #   environment:
+  #     # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
+  #     GF_INSTALL_PLUGINS: natel-discrete-panel
+  #   volumes:
+  #     # note: grafana.ini is located in /etc/grafana by default -
+  #     # other folders are specified there.
+  #     - ../volumes/grafana:/etc/grafana
+  #     # use this to keep data out of repo, eg plugin sourcecode
+  #     - grafana:/var/lib/grafana
+  #   user: grafana
 
 volumes:
   grafana:
+  influxdb:
 
 networks:
   ladder99:
