@@ -3,19 +3,23 @@
 version: '3.7'
 
 services:
-  influxdb:
-    container_name: influxdb
-    image: influxdb:2.0
+  timescaledb:
+    container_name: timescaledb
+    image: timescale/timescaledb:latest-pg13
     ports:
-      - '8086:8086'
-    environment:
-      - INFLUXDB_DB=ladder99
-      - INFLUXDB_ADMIN_USER=admin
-      - INFLUXDB_ADMIN_PASSWORD=admin
-      - INFLUXDB_USER=user
-      - INFLUXDB_PASSWORD=user
+      # remap to 5433 so can run on mac with local db also
+      - '5433:5432/tcp'
     networks:
       - ladder99
+    environment:
+      POSTGRES_DB: $PGDATABASE
+      POSTGRES_USERNAME: $PGUSER
+      POSTGRES_PASSWORD: $PGPASSWORD
+    deploy:
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - timescaledb:/var/lib/postgresql/data
 
   grafana:
     container_name: grafana
@@ -39,7 +43,19 @@ services:
       - grafana:/var/lib/grafana
     user: grafana
 
+  pgadmin:
+    container_name: pgadmin
+    image: biarms/pgadmin4:latest
+    ports:
+      - '5050:5050/tcp'
+    networks:
+      - ladder99
+    deploy:
+      restart_policy:
+        condition: on-failure
+
 volumes:
+  timescaledb:
   grafana:
 
 networks:
