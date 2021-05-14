@@ -12,10 +12,11 @@ services:
       - INFLUXDB_DB=ladder99
       - INFLUXDB_ADMIN_USER=admin
       - INFLUXDB_ADMIN_PASSWORD=admin
-      - INFLUXDB_USER=user
-      - INFLUXDB_PASSWORD=user
+      - INFLUXDB_USER=ladder99
+      - INFLUXDB_PASSWORD=ladder99
     volumes:
-      - influxdb:/var/lib/influxdb2
+      - ../volumes/influxdb/data:/var/lib/influxdb2
+      - ../volumes/influxdb/config:/etc/influxdb2
     networks:
       - ladder99
 
