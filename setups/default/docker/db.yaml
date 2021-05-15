@@ -28,7 +28,7 @@ services:
     # environment:
     #   - INFLUXDB_DB=ladder99
     volumes:
-      - ../volumes/telegraf:/var/lib/telegraf
+      - ../volumes/telegraf:/etc/telegraf
     networks:
       - ladder99
 
