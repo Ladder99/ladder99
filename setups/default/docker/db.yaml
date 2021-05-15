@@ -27,13 +27,8 @@ services:
     #   - '8086:8086'
     # environment:
     #   - INFLUXDB_DB=ladder99
-    #   - INFLUXDB_ADMIN_USER=admin
-    #   - INFLUXDB_ADMIN_PASSWORD=admin
-    #   - INFLUXDB_USER=ladder99
-    #   - INFLUXDB_PASSWORD=ladder99
-    # volumes:
-    #   - ../volumes/influxdb/data:/var/lib/influxdb2
-    #   - ../volumes/influxdb/config:/etc/influxdb2
+    volumes:
+      - ../volumes/telegraf:/var/lib/telegraf
     networks:
       - ladder99
 
