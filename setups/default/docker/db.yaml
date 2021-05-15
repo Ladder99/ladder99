@@ -20,6 +20,23 @@ services:
     networks:
       - ladder99
 
+  telegraf:
+    container_name: telegraf
+    image: telegraf:latest
+    # ports:
+    #   - '8086:8086'
+    # environment:
+    #   - INFLUXDB_DB=ladder99
+    #   - INFLUXDB_ADMIN_USER=admin
+    #   - INFLUXDB_ADMIN_PASSWORD=admin
+    #   - INFLUXDB_USER=ladder99
+    #   - INFLUXDB_PASSWORD=ladder99
+    # volumes:
+    #   - ../volumes/influxdb/data:/var/lib/influxdb2
+    #   - ../volumes/influxdb/config:/etc/influxdb2
+    networks:
+      - ladder99
+
   # grafana:
   #   container_name: grafana
   #   image: grafana/grafana:7.5.5
@@ -44,7 +61,6 @@ services:
 
 volumes:
   grafana:
-  influxdb:
 
 networks:
   ladder99:

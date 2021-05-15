@@ -1,0 +1,35 @@
+#!/usr/bin/env python3
+# run a set of docker-compose yaml files
+# eg `shell/setups/docker start ccs-pa db`
+
+import sys
+import os
+
+cmd = sys.argv[1] # eg 'start', 'startd', 'stop'
+setup = sys.argv[2] # eg 'default'
+parts = sys.argv[3:] # eg ['base', 'db']
+
+# get list of docker compose file paths
+files = [f"setups/{setup}/docker/{part}.yaml" for part in parts]
+args = ' '.join([f"--file {file}" for file in files])
+
+# get flags
+flags = ''
+if cmd=='startd':
+    flags = '--detach'
+
+if cmd=='start' or cmd=='startd':
+    # . compile devices.yaml to devices.xml
+    # shell/setups/compile $SETUP
+
+    # pull any required images in the docker-compose files
+    # and start all the services
+    cmd = f"docker-compose {args} pull && docker-compose {args} up --build {flags}"
+    print(cmd)
+    os.system(cmd)
+
+elif cmd=='stop':
+
+    cmd = f"docker-compose {args} down"
+    print(cmd)
+    os.system(cmd)
