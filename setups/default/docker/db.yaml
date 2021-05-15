@@ -22,11 +22,7 @@ services:
 
   telegraf:
     container_name: telegraf
-    image: telegraf:latest
-    # ports:
-    #   - '8086:8086'
-    # environment:
-    #   - INFLUXDB_DB=ladder99
+    image: telegraf:1.18
     volumes:
       - ../volumes/telegraf:/etc/telegraf
     networks:
