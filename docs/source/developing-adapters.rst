@@ -66,13 +66,13 @@ Then start all the services with (where base, sims, db, app correspond to docker
 
    .. code:: console
 
-      shell/setups/start ccs-pa base sims db app
+      shell/setups/docker start ccs-pa base sims db app
 
 You can stop services with
 
    .. code:: console
 
-      shell/setups/stop ccs-pa sims
+      shell/setups/docker stop ccs-pa sims
 
 
 Next we'll see about contributing to the Ladder99 project.

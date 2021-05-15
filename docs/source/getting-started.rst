@@ -26,7 +26,7 @@ Start the database in another console on the edge device -
    .. code:: console
 
       source .env
-      shell/setups/start default db
+      shell/setups/docker start default db
 
 Initialize the database - 
 
@@ -39,7 +39,7 @@ Now start the application, which feeds data from the agent to the database and v
 
    .. code:: console
 
-      shell/setups/start default app
+      shell/setups/docker start default app
 
 Now you should be able to view a dashboard in your browser at http://raspberrypi.local:3003.
 

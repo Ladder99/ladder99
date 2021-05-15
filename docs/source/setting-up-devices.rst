@@ -33,7 +33,7 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
    .. code:: console
    
-      shell/setups/start ccs-pa base sims db
+      shell/setups/docker start ccs-pa base sims db
 
    Now you can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
 
@@ -55,7 +55,7 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
 
    .. code:: console
 
-      shell/setups/start ccs-pa app
+      shell/setups/docker start ccs-pa app
 
 #. Replay some more mqtt messages (not yet working),
 
