@@ -23,6 +23,8 @@ services:
   telegraf:
     container_name: telegraf
     image: telegraf:1.18
+    depends_on:
+      - influxdb
     environment:
       - INFLUX_TOKEN
     volumes:
