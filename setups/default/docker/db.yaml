@@ -3,27 +3,40 @@
 version: '3.7'
 
 services:
-  influxdb:
-    container_name: influxdb
-    image: influxdb:2.0
-    ports:
-      - '8086:8086'
+  arangodb:
+    container_name: arangodb
+    image: arangodb:3.7
     environment:
-      - INFLUXDB_DB=ladder99
-      - INFLUXDB_ADMIN_USER=admin
-      - INFLUXDB_ADMIN_PASSWORD=admin
-      - INFLUXDB_USER=ladder99
-      - INFLUXDB_PASSWORD=ladder99
+      - ARANGO_NO_AUTH: 1
+    ports:
+      - '8529:8529'
     volumes:
-      - ../volumes/influxdb/data:/var/lib/influxdb2
-      - ../volumes/influxdb/config:/etc/influxdb2
+      - ../volumes/arangodb:/data
     networks:
       - ladder99
+
+  # influxdb:
+  #   container_name: influxdb
+  #   image: influxdb:2.0
+  #   ports:
+  #     - '8086:8086'
+  #   environment:
+  #     - INFLUXDB_DB=ladder99
+  #     - INFLUXDB_ADMIN_USER=admin
+  #     - INFLUXDB_ADMIN_PASSWORD=admin
+  #     - INFLUXDB_USER=ladder99
+  #     - INFLUXDB_PASSWORD=ladder99
+  #   volumes:
+  #     - ../volumes/influxdb/data:/var/lib/influxdb2
+  #     - ../volumes/influxdb/config:/etc/influxdb2
+  #   networks:
+  #     - ladder99
 
   telegraf:
     container_name: telegraf
     image: telegraf:1.18
     depends_on:
+      - arangodb
       - influxdb
     environment:
       - INFLUX_TOKEN
