@@ -7,7 +7,7 @@ services:
     container_name: arangodb
     image: arangodb:3.7
     environment:
-      - ARANGO_NO_AUTH: 1
+      - ARANGO_NO_AUTH=1
     ports:
       - '8529:8529'
     volumes:
@@ -32,18 +32,18 @@ services:
   #   networks:
   #     - ladder99
 
-  telegraf:
-    container_name: telegraf
-    image: telegraf:1.18
-    depends_on:
-      - arangodb
-      - influxdb
-    environment:
-      - INFLUX_TOKEN
-    volumes:
-      - ../volumes/telegraf:/etc/telegraf
-    networks:
-      - ladder99
+  # telegraf:
+  #   container_name: telegraf
+  #   image: telegraf:1.18
+  #   depends_on:
+  #     - arangodb
+  #     # - influxdb
+  #   environment:
+  #     - INFLUX_TOKEN
+  #   volumes:
+  #     - ../volumes/telegraf:/etc/telegraf
+  #   networks:
+  #     - ladder99
 
   # grafana:
   #   container_name: grafana
