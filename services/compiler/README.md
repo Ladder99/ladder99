@@ -1,3 +1,3 @@
-# ladder99-builder
+# ladder99-compiler
 
-This compiles yaml files to xml and js
+This compiles devices and model yaml files to devices.xml
