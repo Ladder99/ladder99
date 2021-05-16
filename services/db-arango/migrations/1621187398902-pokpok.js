@@ -1,10 +1,11 @@
 'use strict'
-var db = require('../db')
 
-module.exports.up = function (next) {
-  next()
+const db = require('../db')
+
+module.exports.up = async function () {
+  //
 }
 
-module.exports.down = function (next) {
-  next()
+module.exports.down = async function () {
+  //
 }
