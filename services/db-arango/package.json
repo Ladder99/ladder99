@@ -8,6 +8,7 @@
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "arangojs": "^7.5.0",
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {

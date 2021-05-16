@@ -1,0 +1,17 @@
+{
+  "lastRun": "1621187398902-pokpok.js",
+  "migrations": [
+    {
+      "title": "1621186606798-test.js",
+      "timestamp": 1621187645977
+    },
+    {
+      "title": "1621187398902-pokpok.js",
+      "timestamp": 1621187645978
+    },
+    {
+      "title": "db.js",
+      "timestamp": null
+    }
+  ]
+}
