@@ -8,6 +8,7 @@ services:
     image: arangodb:3.7
     environment:
       - ARANGO_NO_AUTH=1
+      # - ARANGO_ROOT_PASSWORD=password
     ports:
       - '8529:8529'
     volumes:
