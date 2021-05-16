@@ -1,7 +1,0 @@
-#!/bin/bash
-# connect to edge database with psql cli
-# source envars first `source .env`
-
-docker run -it --rm postgres:13 psql \
-  --host $PGHOST --port $PGPORT \
-  --dbname $PGDATABASE --username $PGUSER
