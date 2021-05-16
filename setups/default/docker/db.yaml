@@ -11,7 +11,8 @@ services:
     ports:
       - '8529:8529'
     volumes:
-      - ../volumes/arangodb:/data
+      - ../volumes/arangodb/data:/var/lib/arangodb3
+      - ../volumes/arangodb/apps:/var/lib/arangodb3-apps
     networks:
       - ladder99
 
