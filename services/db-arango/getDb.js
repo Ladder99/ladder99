@@ -5,10 +5,10 @@ require('dotenv').config()
 const { Database } = require('arangojs')
 
 async function getDb() {
-  // connect to running arrangodb server
+  // connect to running arrangodb server and get system db
   const system = new Database({ url: process.env.DB_HOST })
 
-  // create db if not there
+  // create our db if not there
   const dbs = await system.listDatabases()
   if (!dbs.includes(process.env.DB_NAME)) {
     await system.createDatabase(process.env.DB_NAME)
