@@ -1,6 +1,4 @@
-'use strict'
-
-const db = require('../db')
+const getDb = require('../db')
 
 module.exports.up = async function () {
   //

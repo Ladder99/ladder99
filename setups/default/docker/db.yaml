@@ -12,9 +12,10 @@ services:
     ports:
       - '8529:8529'
     # these don't seem to have any effect? at least not on mac - uses vm?
-    volumes:
-      - ../volumes/arangodb/data:/var/lib/arangodb3
-      - ../volumes/arangodb/apps:/var/lib/arangodb3-apps
+    # volumes:
+    #   - ../volumes/arango:/var/lib/arango
+    #   # - ../volumes/arangodb/data:/var/lib/arangodb3
+    #   # - ../volumes/arangodb/apps:/var/lib/arangodb3-apps
     networks:
       - ladder99
 

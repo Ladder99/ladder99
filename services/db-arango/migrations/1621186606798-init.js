@@ -1,14 +1,12 @@
-'use strict'
-
-const db = require('../db')
+const getDb = require('../db')
 
 module.exports.up = async function () {
-  console.log('hi')
+  const db = await getDb()
   const collection = await db.createCollection('persons')
 }
 
 module.exports.down = async function () {
-  console.log('bye')
+  const db = await getDb()
   const collection = await db.collection('persons')
   await collection.drop()
 }
