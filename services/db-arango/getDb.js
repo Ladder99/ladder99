@@ -1,7 +1,8 @@
 // create and use db
 // see https://www.arangodb.com/tutorials/tutorial-node-js/
+// and https://stackoverflow.com/questions/54117242/how-i-can-store-and-manage-a-db-schema-in-arango-or-neo4j-in-node-js-project
 
-require('dotenv').config()
+require('dotenv').config() // load .env vars
 const { Database } = require('arangojs')
 
 async function getDb() {
