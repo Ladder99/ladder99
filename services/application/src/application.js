@@ -49,6 +49,12 @@ const interval = Number(process.env.INTERVAL || 2000) // msec
 
   // get data structure
   const url = `${baseUrl}/probe`
+  const response = await fetch(url, {
+    method: 'GET',
+    headers: { Accept: 'application/json' },
+  })
+  const tree = await response.json()
+  console.log(tree)
 
   setInterval(shovel, interval)
 })()
