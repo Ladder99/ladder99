@@ -1,7 +1,7 @@
 // capture agent data and write to database
 
 import fetch from 'node-fetch'
-import { Database } from 'arangojs' // arangodb driver
+import { Database, aql } from 'arangojs' // arangodb driver
 import * as logic from './logic.js'
 
 console.log(`MTConnect Application starting`)
@@ -21,7 +21,19 @@ console.log(dbs)
 // if (!dbs.includes(process.env.DB_NAME)) {
 //   await system.createDatabase(process.env.DB_NAME)
 // }
-// const db = system.database('ladder99-default')
+if (!dbs.includes('ladder99-default')) {
+  await system.createDatabase('ladder99-default')
+}
+const db = system.database('ladder99-default')
+
+// const res = await client.query('SELECT $1::text as message', ['Hello world!'])
+// console.log(res.rows[0].message) // Hello world!
+const now = Date.now()
+const cursor = await db.query(aql`
+  RETURN ${now}
+`)
+const result = await cursor.next()
+console.log(result)
 
 // const baseUrl = process.env.AGENT_BASE_URL || 'http://raspberrypi.local:5000'
 const baseUrl = process.env.AGENT_BASE_URL || 'http://localhost:5000'
