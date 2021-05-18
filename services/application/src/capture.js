@@ -17,12 +17,15 @@ async function shovel() {
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: { Accept: 'application/json' },
+      // headers: { Accept: 'application/json' },
     })
-    const tree = await response.json()
-
+    // const tree = await response.json()
     // save example output - rename to example-current.js etc
-    fs.writeFileSync('./example.json', JSON.stringify(tree))
+    // fs.writeFileSync('./example.json', JSON.stringify(tree))
+
+    // save as xml
+    const tree = await response.text()
+    fs.writeFileSync('./example.xml', tree)
   } catch (error) {
     if (error.code === 'ENOTFOUND') {
       console.log(`Agent not found at ${url} - waiting...`)
