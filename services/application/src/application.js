@@ -39,14 +39,16 @@ const interval = Number(process.env.INTERVAL || 2000) // msec
     await db.createEdgeCollection('edges')
   }
 
-  // const res = await client.query('SELECT $1::text as message', ['Hello world!'])
-  // console.log(res.rows[0].message) // Hello world!
-  const now = Date.now()
-  const cursor = await db.query(aql`
-    RETURN ${now}
-  `)
-  const result = await cursor.next()
-  console.log(result)
+  // // run a test query
+  // const now = Date.now()
+  // const cursor = await db.query(aql`
+  //   RETURN ${now}
+  // `)
+  // const result = await cursor.next()
+  // console.log(result)
+
+  // get data structure
+  const url = `${baseUrl}/probe`
 
   setInterval(shovel, interval)
 })()

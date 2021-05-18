@@ -1,0 +1,21 @@
+# agent
+
+version: '3.7'
+
+  agent:
+    container_name: agent
+    image: ladder99/mtconnect-agent:latest
+    networks:
+      - ladder99
+    ports:
+      - 5000:5000
+    # command: agent debug /data/agent/agent.cfg
+    # volumes:
+    #   - agent:/data/agent
+    logging:
+      options:
+        max-size: '1m'
+
+networks:
+  ladder99:
+    name: ladder99
