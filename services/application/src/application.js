@@ -1,7 +1,7 @@
 // capture agent data and write to database
 
 import fetch from 'node-fetch'
-const { Database } = require('arangojs') // arangodb driver
+import { Database } from 'arangojs' // arangodb driver
 import * as logic from './logic.js'
 
 console.log(`MTConnect Application starting`)
@@ -12,7 +12,8 @@ console.log(`MTConnect Application starting`)
 // console.log(res.rows[0].message) // Hello world!
 // await client.end()
 
-const system = new Database()
+// const system = new Database()
+const system = new Database('http://arangodb:8529')
 // const system = new Database({ url: process.env.DB_HOST })
 // create our db if not there
 const dbs = await system.listDatabases()
