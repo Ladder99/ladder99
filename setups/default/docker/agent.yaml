@@ -2,6 +2,7 @@
 
 version: '3.7'
 
+services:
   agent:
     container_name: agent
     image: ladder99/mtconnect-agent:latest
