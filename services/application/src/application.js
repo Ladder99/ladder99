@@ -1,4 +1,5 @@
 // capture agent data and write to database
+// see https://arangodb.github.io/arangojs/latest/modules/_index_.html
 
 import fetch from 'node-fetch'
 import { Database, aql } from 'arangojs' // https://github.com/arangodb/arangojs
@@ -22,9 +23,21 @@ const interval = Number(process.env.INTERVAL || 2000) // msec
   const dbs = await system.listDatabases()
   console.log(dbs)
   if (!dbs.includes(arangodbDatabase)) {
+    console.log(`Creating database ${arangodbDatabase}...`)
     await system.createDatabase(arangodbDatabase)
   }
   const db = system.database(arangodbDatabase)
+
+  // create collections if not there
+  const collections = await db.listCollections()
+  if (!collections.find(collection => collection.name === 'nodes')) {
+    console.log(`Creating nodes collection...`)
+    await db.createCollection('nodes')
+  }
+  if (!collections.find(collection => collection.name === 'edges')) {
+    console.log(`Creating edges collection...`)
+    await db.createEdgeCollection('edges')
+  }
 
   // const res = await client.query('SELECT $1::text as message', ['Hello world!'])
   // console.log(res.rows[0].message) // Hello world!
