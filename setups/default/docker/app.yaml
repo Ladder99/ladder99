@@ -19,6 +19,8 @@ services:
       # - PGDATABASE
       # - PGUSER
       # - PGPASSWORD
+      - ARANGODB_URL=http://arangodb:8529
+      - ARANGODB_DATABASE=ladder99-default
     # env_file:
     #   - ../../../.env
     networks:

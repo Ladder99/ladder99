@@ -5,26 +5,20 @@ import { Database, aql } from 'arangojs' // arangodb driver
 import * as logic from './logic.js'
 
 console.log(`MTConnect Application starting`)
+console.log(`----------------------------------------------------------`)
 
-// const client = new Client()
-// await client.connect() // uses envars PGHOST, PGPORT, etc - set with `source .env`
-// const res = await client.query('SELECT $1::text as message', ['Hello world!'])
-// console.log(res.rows[0].message) // Hello world!
-// await client.end()
+const arangodbUrl = process.env.ARANGODB_URL || 'http://localhost:8529'
+const arangodbDatabase = process.env.ARANGODB_DATABASE || 'ladder99-default'
 
-// const system = new Database()
-const system = new Database('http://arangodb:8529')
-// const system = new Database({ url: process.env.DB_HOST })
+const system = new Database(arangodbUrl)
+
 // create our db if not there
 const dbs = await system.listDatabases()
 console.log(dbs)
-// if (!dbs.includes(process.env.DB_NAME)) {
-//   await system.createDatabase(process.env.DB_NAME)
-// }
-if (!dbs.includes('ladder99-default')) {
-  await system.createDatabase('ladder99-default')
+if (!dbs.includes(arangodbDatabase)) {
+  await system.createDatabase(arangodbDatabase)
 }
-const db = system.database('ladder99-default')
+const db = system.database(arangodbDatabase)
 
 // const res = await client.query('SELECT $1::text as message', ['Hello world!'])
 // console.log(res.rows[0].message) // Hello world!
