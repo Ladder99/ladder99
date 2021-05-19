@@ -8,8 +8,8 @@ const baseUrl = process.env.AGENT_BASE_URL || 'http://localhost:5000'
 shovel()
 
 async function shovel() {
-  const url = `${baseUrl}/probe`
-  // const url = `${baseUrl}/current`
+  // const url = `${baseUrl}/probe`
+  const url = `${baseUrl}/current`
   // const from = 1
   // const count = 200
   // const url = `${baseUrl}/sample?from=${from}&count=${count}`
