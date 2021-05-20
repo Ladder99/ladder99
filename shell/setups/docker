@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # run a set of docker-compose yaml files
-# eg `shell/setups/docker start ccs-pa db`
+# usage: shell/setups/dcker COMMAND SETUP YAMLS
+# eg `shell/setups/docker start ccs-pa base db`
 
 import sys
 import os
