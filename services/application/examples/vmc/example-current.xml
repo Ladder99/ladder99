@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/styles/Streams.xsl"?>
+<MTConnectStreams xmlns:m="urn:mtconnect.org:MTConnectStreams:1.7" xmlns="urn:mtconnect.org:MTConnectStreams:1.7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:mtconnect.org:MTConnectStreams:1.7 /schemas/MTConnectStreams_1.7.xsd">
+  <Header creationTime="2021-05-18T06:37:06Z" sender="b28197f93e9b" instanceId="1621319819" version="1.7.0.3" bufferSize="131072" nextSequence="61" firstSequence="1" lastSequence="60"/>
+  <Streams>
+    <DeviceStream name="Agent" uuid="0b49a3a0-18ca-0139-8748-2cde48001122">
+      <ComponentStream component="Adapter" name="127.0.0.1:7878" componentId="_24956f03ad">
+        <Samples>
+          <AssetUpdateRate dataItemId="_24956f03ad_asset_update_rate" sequence="54" statistic="AVERAGE" timestamp="2021-05-18T06:36:59.705922Z">UNAVAILABLE</AssetUpdateRate>
+          <ObservationUpdateRate dataItemId="_24956f03ad_observation_update_rate" sequence="57" statistic="AVERAGE" timestamp="2021-05-18T06:36:59.706099Z">UNAVAILABLE</ObservationUpdateRate>
+        </Samples>
+        <Events>
+          <AdapterSoftwareVersion dataItemId="_24956f03ad_adapter_software_version" sequence="56" timestamp="2021-05-18T06:36:59.706079Z">UNAVAILABLE</AdapterSoftwareVersion>
+          <AdapterURI dataItemId="_24956f03ad_adapter_uri" sequence="55" timestamp="2021-05-18T06:36:59.705982Z">shdr://127.0.0.1:7878</AdapterURI>
+          <ConnectionStatus dataItemId="_24956f03ad_connection_status" sequence="60" timestamp="2021-05-18T06:36:59.719664Z">LISTENING</ConnectionStatus>
+          <MTConnectVersion dataItemId="_24956f03ad_mtconnect_version" sequence="59" timestamp="2021-05-18T06:36:59.706143Z">UNAVAILABLE</MTConnectVersion>
+        </Events>
+      </ComponentStream>
+      <ComponentStream component="Agent" name="Agent" componentId="agent_2cde48001122">
+        <Events>
+          <AssetChanged dataItemId="agent_2cde48001122_asset_chg" sequence="2" timestamp="2021-05-18T06:36:59.692074Z">UNAVAILABLE</AssetChanged>
+          <AssetRemoved dataItemId="agent_2cde48001122_asset_rem" sequence="1" timestamp="2021-05-18T06:36:59.691936Z">UNAVAILABLE</AssetRemoved>
+          <Availability dataItemId="agent_avail" sequence="6" timestamp="2021-05-18T06:36:59.692126Z">UNAVAILABLE</Availability>
+          <DeviceAdded dataItemId="device_added" sequence="53" timestamp="2021-05-18T06:36:59.69621Z">000</DeviceAdded>
+          <DeviceChanged dataItemId="device_changed" sequence="3" timestamp="2021-05-18T06:36:59.692089Z">UNAVAILABLE</DeviceChanged>
+          <DeviceRemoved dataItemId="device_removed" sequence="4" timestamp="2021-05-18T06:36:59.692106Z">UNAVAILABLE</DeviceRemoved>
+        </Events>
+      </ComponentStream>
+    </DeviceStream>
+    <DeviceStream name="VMC-3Axis" uuid="000">
+      <ComponentStream component="Rotary" name="C" componentId="c1">
+        <Samples>
+          <SpindleSpeed dataItemId="c2" name="Sspeed" sequence="31" subType="ACTUAL" timestamp="2021-05-18T06:36:59.69583Z">UNAVAILABLE</SpindleSpeed>
+          <SpindleSpeed dataItemId="c3" name="Sovr" sequence="50" subType="OVERRIDE" timestamp="2021-05-18T06:36:59.696143Z">UNAVAILABLE</SpindleSpeed>
+          <Load dataItemId="cl3" name="Cload" sequence="21" timestamp="2021-05-18T06:36:59.695657Z">UNAVAILABLE</Load>
+        </Samples>
+        <Events>
+          <RotaryMode dataItemId="cm" name="Cmode" sequence="33" timestamp="2021-05-18T06:36:59.695863Z">SPINDLE</RotaryMode>
+        </Events>
+        <Condition>
+          <Unavailable dataItemId="Cloadc" sequence="30" timestamp="2021-05-18T06:36:59.695811Z" type="LOAD"/>
+          <Unavailable dataItemId="Csystem" sequence="26" timestamp="2021-05-18T06:36:59.69575Z" type="SYSTEM"/>
+        </Condition>
+      </ComponentStream>
+      <ComponentStream component="Controller" name="controller" componentId="cn1">
+        <Events>
+          <EmergencyStop dataItemId="estop" sequence="51" timestamp="2021-05-18T06:36:59.696164Z">UNAVAILABLE</EmergencyStop>
+          <Message dataItemId="msg" sequence="37" timestamp="2021-05-18T06:36:59.695932Z">UNAVAILABLE</Message>
+        </Events>
+        <Condition>
+          <Unavailable dataItemId="clp" sequence="44" timestamp="2021-05-18T06:36:59.696031Z" type="LOGIC_PROGRAM"/>
+          <Unavailable dataItemId="motion" sequence="49" timestamp="2021-05-18T06:36:59.696126Z" type="MOTION_PROGRAM"/>
+          <Unavailable dataItemId="system" sequence="24" timestamp="2021-05-18T06:36:59.695718Z" type="SYSTEM"/>
+        </Condition>
+      </ComponentStream>
+      <ComponentStream component="Coolant" name="coolant" componentId="cool">
+        <Condition>
+          <Unavailable dataItemId="clow" sequence="10" timestamp="2021-05-18T06:36:59.695327Z" type="LEVEL"/>
+          <Unavailable dataItemId="coolantmotor" sequence="9" timestamp="2021-05-18T06:36:59.695314Z" type="ACTUATOR"/>
+          <Unavailable dataItemId="coolpres" sequence="22" timestamp="2021-05-18T06:36:59.695674Z" type="PRESSURE"/>
+          <Unavailable dataItemId="filter" sequence="14" timestamp="2021-05-18T06:36:59.695396Z" type="X:FILTER"/>
+        </Condition>
+      </ComponentStream>
+      <ComponentStream component="Device" name="VMC-3Axis" componentId="dev">
+        <Events>
+          <Availability dataItemId="avail" sequence="34" timestamp="2021-05-18T06:36:59.695881Z">UNAVAILABLE</Availability>
+          <AssetChanged dataItemId="dev_asset_chg" sequence="7" timestamp="2021-05-18T06:36:59.695268Z">UNAVAILABLE</AssetChanged>
+          <AssetRemoved dataItemId="dev_asset_rem" sequence="38" timestamp="2021-05-18T06:36:59.695951Z">UNAVAILABLE</AssetRemoved>
+        </Events>
+      </ComponentStream>
+      <ComponentStream component="Electric" name="electric" componentId="el">
+        <Events>
+          <PowerState dataItemId="p2" name="power" sequence="47" timestamp="2021-05-18T06:36:59.696089Z">UNAVAILABLE</PowerState>
+        </Events>
+      </ComponentStream>
+      <ComponentStream component="Hydraulic" name="hydrolic" componentId="hsys">
+        <Condition>
+          <Unavailable dataItemId="hlow" sequence="12" timestamp="2021-05-18T06:36:59.695355Z" type="LEVEL"/>
+          <Unavailable dataItemId="hpres" sequence="16" timestamp="2021-05-18T06:36:59.695455Z" type="PRESSURE"/>
+          <Unavailable dataItemId="htemp" sequence="8" timestamp="2021-05-18T06:36:59.695297Z" type="TEMPERATURE"/>
+        </Condition>
+      </ComponentStream>
+      <ComponentStream component="Path" name="path" componentId="pth">
+        <Samples>
+          <PathFeedrate dataItemId="Fovr" sequence="11" timestamp="2021-05-18T06:36:59.695341Z">UNAVAILABLE</PathFeedrate>
+          <PathFeedrate dataItemId="Frt" sequence="36" timestamp="2021-05-18T06:36:59.695917Z">UNAVAILABLE</PathFeedrate>
+          <PathPosition dataItemId="Ppos" sequence="13" subType="ACTUAL" timestamp="2021-05-18T06:36:59.69537Z">UNAVAILABLE</PathPosition>
+        </Samples>
+        <Events>
+          <Block dataItemId="cn2" name="block" sequence="46" timestamp="2021-05-18T06:36:59.696064Z">UNAVAILABLE</Block>
+          <ControllerMode dataItemId="cn3" name="mode" sequence="52" timestamp="2021-05-18T06:36:59.696184Z">UNAVAILABLE</ControllerMode>
+          <Line dataItemId="cn4" name="line" sequence="25" timestamp="2021-05-18T06:36:59.695735Z">UNAVAILABLE</Line>
+          <Program dataItemId="cn5" name="program" sequence="17" timestamp="2021-05-18T06:36:59.695471Z">UNAVAILABLE</Program>
+          <Execution dataItemId="cn6" name="execution" sequence="40" timestamp="2021-05-18T06:36:59.695977Z">UNAVAILABLE</Execution>
+          <ToolId dataItemId="cnt1" name="tool_id" sequence="15" timestamp="2021-05-18T06:36:59.695416Z">UNAVAILABLE</ToolId>
+        </Events>
+      </ComponentStream>
+      <ComponentStream component="Linear" name="X" componentId="x1">
+        <Samples>
+          <Load dataItemId="n3" name="Xload" sequence="48" timestamp="2021-05-18T06:36:59.696104Z">UNAVAILABLE</Load>
+          <Position dataItemId="x2" name="Xact" sequence="32" subType="ACTUAL" timestamp="2021-05-18T06:36:59.695847Z">UNAVAILABLE</Position>
+          <Position dataItemId="x3" name="Xcom" sequence="23" subType="COMMANDED" timestamp="2021-05-18T06:36:59.695691Z">UNAVAILABLE</Position>
+        </Samples>
+        <Condition>
+          <Unavailable dataItemId="Xloadc" sequence="19" timestamp="2021-05-18T06:36:59.695504Z" type="LOAD"/>
+          <Unavailable dataItemId="Xsystem" sequence="18" timestamp="2021-05-18T06:36:59.695487Z" type="SYSTEM"/>
+        </Condition>
+      </ComponentStream>
+      <ComponentStream component="Linear" name="Y" componentId="y1">
+        <Samples>
+          <Position dataItemId="y2" name="Yact" sequence="28" subType="ACTUAL" timestamp="2021-05-18T06:36:59.695778Z">UNAVAILABLE</Position>
+          <Position dataItemId="y3" name="Ycom" sequence="39" subType="COMMANDED" timestamp="2021-05-18T06:36:59.695962Z">UNAVAILABLE</Position>
+          <Load dataItemId="y4" name="Yload" sequence="35" timestamp="2021-05-18T06:36:59.695898Z">UNAVAILABLE</Load>
+        </Samples>
+        <Condition>
+          <Unavailable dataItemId="Yloadc" sequence="45" timestamp="2021-05-18T06:36:59.69605Z" type="LOAD"/>
+          <Unavailable dataItemId="Ysystem" sequence="20" timestamp="2021-05-18T06:36:59.695634Z" type="SYSTEM"/>
+        </Condition>
+      </ComponentStream>
+      <ComponentStream component="Linear" name="Z" componentId="z1">
+        <Samples>
+          <Position dataItemId="z2" name="Zact" sequence="41" subType="ACTUAL" timestamp="2021-05-18T06:36:59.695991Z">UNAVAILABLE</Position>
+          <Position dataItemId="z3" name="Zcom" sequence="27" subType="COMMANDED" timestamp="2021-05-18T06:36:59.695758Z">UNAVAILABLE</Position>
+          <Load dataItemId="z4" name="Zload" sequence="43" timestamp="2021-05-18T06:36:59.696023Z">UNAVAILABLE</Load>
+        </Samples>
+        <Condition>
+          <Unavailable dataItemId="Zloadc" sequence="29" timestamp="2021-05-18T06:36:59.695796Z" type="LOAD"/>
+          <Unavailable dataItemId="Zsystem" sequence="42" timestamp="2021-05-18T06:36:59.696008Z" type="SYSTEM"/>
+        </Condition>
+      </ComponentStream>
+    </DeviceStream>
+  </Streams>
+</MTConnectStreams>
