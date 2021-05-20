@@ -5,9 +5,9 @@
 import sys
 import os
 
-cmd = sys.argv[1] # eg 'start', 'startd', 'stop'
-setup = sys.argv[2] # eg 'default'
-parts = sys.argv[3:] # eg ['base', 'db']
+cmd = sys.argv[1]  # eg 'start', 'startd', 'stop'
+setup = sys.argv[2]  # eg 'vmc'
+parts = sys.argv[3:]  # eg ['base', 'db']
 
 # get list of docker compose file paths
 files = [f"setups/{setup}/docker/{part}.yaml" for part in parts]
@@ -15,10 +15,10 @@ args = ' '.join([f"--file {file}" for file in files])
 
 # get flags
 flags = ''
-if cmd=='startd':
+if cmd == 'startd':
     flags = '--detach'
 
-if cmd=='start' or cmd=='startd':
+if cmd == 'start' or cmd == 'startd':
     # . compile devices.yaml to devices.xml
     # shell/setups/compile $SETUP
 
@@ -28,7 +28,7 @@ if cmd=='start' or cmd=='startd':
     print(cmd)
     os.system(cmd)
 
-elif cmd=='stop':
+elif cmd == 'stop':
 
     cmd = f"docker-compose {args} down"
     print(cmd)

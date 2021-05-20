@@ -26,20 +26,20 @@ Start the database in another console on the edge device -
    .. code:: console
 
       source .env
-      shell/setups/docker start default db
+      shell/setups/docker start vmc db
 
-Initialize the database - 
+.. Initialize the database - 
 
-   .. code:: console
+..    .. code:: console
 
-      shell/db/run setups/default/migrations/000-init.sql
-      shell/db/run setups/default/migrations/001-tables.sql
+..       shell/db/run setups/vmc/migrations/000-init.sql
+..       shell/db/run setups/vmc/migrations/001-tables.sql
 
 Now start the application, which feeds data from the agent to the database and visualizer -
 
    .. code:: console
 
-      shell/setups/docker start default app
+      shell/setups/docker start vmc app
 
 Now you should be able to view a dashboard in your browser at http://raspberrypi.local:3003.
 

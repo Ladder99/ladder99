@@ -43,13 +43,13 @@ A configuration of devices is called a 'setup', and is defined in the ``setups``
       
    .. image:: _images/agent.jpg
 
-#. Setup the database with
+.. #. Setup the database with
 
-   .. code:: console
+..    .. code:: console
       
-      shell/db/run setups/ccs-pa/migrations/000-init.sql
-      shell/db/run setups/ccs-pa/migrations/001-tables.sql
-      etc
+..       shell/db/run setups/ccs-pa/migrations/000-init.sql
+..       shell/db/run setups/ccs-pa/migrations/001-tables.sql
+..       etc
 
 #. Start the MTConnect application, which transfers data from the agent to the database
 
