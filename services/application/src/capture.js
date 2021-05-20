@@ -1,14 +1,14 @@
-// capture agent json output and save to example.json or xml
+// capture agent json output and save to example.json
 
 import fs from 'fs'
 import fetch from 'node-fetch'
 
 const baseUrl = process.env.AGENT_BASE_URL || 'http://localhost:5000'
+// const baseUrl = process.env.AGENT_BASE_URL || 'http://raspberrypi.local:5000'
 
 shovel()
 
 async function shovel() {
-  // const url = `${baseUrl}/probe`
   const url = `${baseUrl}/current`
   // const from = 1
   // const count = 200
@@ -16,16 +16,14 @@ async function shovel() {
   try {
     const response = await fetch(url, {
       method: 'GET',
-      // headers: { Accept: 'application/json' }, // turn on for json
+      headers: {
+        Accept: 'application/json',
+      },
     })
-    // save as json
-    // const tree = await response.json()
-    // save example output - rename to example-current.json etc
-    // fs.writeFileSync('./example.json', JSON.stringify(tree))
+    const tree = await response.json()
 
-    // save as xml
-    const tree = await response.text()
-    fs.writeFileSync('./example.xml', tree) // rename as needed
+    // save example output - rename to example-current.js etc
+    fs.writeFileSync('./example.json', JSON.stringify(tree))
   } catch (error) {
     if (error.code === 'ENOTFOUND') {
       console.log(`Agent not found at ${url} - waiting...`)
@@ -34,3 +32,5 @@ async function shovel() {
     }
   }
 }
+
+// await client.end()
