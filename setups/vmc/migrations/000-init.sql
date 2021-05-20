@@ -1,0 +1,3 @@
+CREATE DATABASE ladder99_vmc;
+\c ladder99_vmc
+CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
