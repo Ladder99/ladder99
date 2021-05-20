@@ -2,7 +2,9 @@
 // capture agent data and write to database
 
 import fetch from 'node-fetch'
-import { Client } from 'pg' // postgres driver
+// import { Client } from 'pg' // postgres driver - gives syntax error
+import pg from 'pg' // postgres driver
+const { Client } = pg
 import * as logic from './logic.js'
 
 console.log(`MTConnect Application starting`)
@@ -16,13 +18,14 @@ const interval = Number(process.env.INTERVAL || 2000) // msec
   // get postgres connection
   const client = new Client()
   await client.connect() // uses envars PGHOST, PGPORT, etc
+  console.log(client)
 
   // test
-  // const res = await client.query('SELECT $1::text as message', ['Hello world!'])
-  // console.log(res.rows[0].message) // Hello world!
+  const res = await client.query('SELECT $1::text as message', ['Hello world!'])
+  console.log(res.rows[0].message) // Hello world!
 
   // setup polling
-  setInterval(() => shovel(client), interval)
+  // setInterval(() => shovel(client), interval)
 })()
 
 async function shovel(client) {

@@ -13,16 +13,11 @@ services:
     environment:
       - AGENT_BASE_URL=http://agent:5000
       - INTERVAL=2000
-      # use current environment values for these
       - PGHOST
       - PGPORT
       - PGDATABASE
       - PGUSER
       - PGPASSWORD
-      # - ARANGODB_URL=http://arangodb:8529
-      # - ARANGODB_DATABASE=ladder99-default
-    # env_file:
-    #   - ../../../.env
     networks:
       - ladder99
     volumes:
