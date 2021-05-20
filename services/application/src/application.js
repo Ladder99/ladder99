@@ -1,3 +1,4 @@
+// mtconnect application
 // capture agent data and write to database
 
 import fetch from 'node-fetch'
@@ -6,6 +7,7 @@ const { Client } = pg
 import * as logic from './logic.js'
 
 console.log(`MTConnect Application starting`)
+console.log(`---------------------------------------------------`)
 
 const client = new Client()
 // @ts-ignore
@@ -14,7 +16,6 @@ await client.connect() // uses envars PGHOST, PGPORT, etc - set with `source .en
 // console.log(res.rows[0].message) // Hello world!
 // await client.end()
 
-// const baseUrl = process.env.AGENT_BASE_URL || 'http://raspberrypi.local:5000'
 const baseUrl = process.env.AGENT_BASE_URL || 'http://localhost:5000'
 const interval = Number(process.env.INTERVAL || 2000) // msec
 
@@ -29,9 +30,7 @@ async function shovel() {
     // console.log(`fetch from ${url}...`)
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        Accept: 'application/json',
-      },
+      headers: { Accept: 'application/json' },
     })
     const tree = await response.json()
 
@@ -56,5 +55,3 @@ async function shovel() {
     }
   }
 }
-
-// await client.end()
