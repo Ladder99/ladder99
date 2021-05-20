@@ -2,14 +2,13 @@
 // capture agent data and write to database
 
 import fetch from 'node-fetch'
-// import pg from 'pg' // postgres driver
-// const { Client } = pg
 import { Client } from 'pg' // postgres driver
 import * as logic from './logic.js'
 
 console.log(`MTConnect Application starting`)
 console.log(`---------------------------------------------------`)
 
+// get envars
 const baseUrl = process.env.AGENT_BASE_URL || 'http://localhost:5000'
 const interval = Number(process.env.INTERVAL || 2000) // msec
 
@@ -22,7 +21,7 @@ const interval = Number(process.env.INTERVAL || 2000) // msec
   // const res = await client.query('SELECT $1::text as message', ['Hello world!'])
   // console.log(res.rows[0].message) // Hello world!
 
-  // poll the agent
+  // setup polling
   setInterval(() => shovel(client), interval)
 })()
 
@@ -33,7 +32,7 @@ async function shovel(client) {
   // const url = `${baseUrl}/sample?from=${from}&count=${count}`
 
   try {
-    // console.log(`fetch from ${url}...`)
+    // get json from agent
     const response = await fetch(url, {
       method: 'GET',
       headers: { Accept: 'application/json' },
