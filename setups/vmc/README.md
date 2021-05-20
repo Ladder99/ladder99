@@ -1,3 +1,3 @@
 # default setup
 
-This setup handles the default VNC CNC machine data from the MTConnect Agent.
+This setup handles the default VMC 3 axis CNC machine simulation from the MTConnect Agent.

@@ -12,7 +12,7 @@ export function traverse(node, callback) {
       if (key === 'Samples' || key === 'Events' || key === 'Condition') {
         values.forEach(value => {
           const dataItems = getDataItems(key, value)
-          callback(dataItems)
+          callback(dataItems) // pass dataitems to callback
         })
       } else {
         traverse(values, callback) // recurse
