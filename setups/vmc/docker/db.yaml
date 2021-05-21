@@ -22,73 +22,73 @@ services:
     networks:
       - ladder99
 
-# arangodb:
-#   container_name: arangodb
-#   image: arangodb:3.7
-#   environment:
-#     - ARANGO_NO_AUTH=1 # for development only
-#     # - ARANGO_ROOT_PASSWORD=password
-#   ports:
-#     - '8529:8529'
-#   # these don't seem to have any effect? at least not on mac - uses vm?
-#   # volumes:
-#   #   - ../volumes/arango:/var/lib/arango
-#   #   # - ../volumes/arangodb/data:/var/lib/arangodb3
-#   #   # - ../volumes/arangodb/apps:/var/lib/arangodb3-apps
-#   networks:
-#     - ladder99
+  # arangodb:
+  #   container_name: arangodb
+  #   image: arangodb:3.7
+  #   environment:
+  #     - ARANGO_NO_AUTH=1 # for development only
+  #     # - ARANGO_ROOT_PASSWORD=password
+  #   ports:
+  #     - '8529:8529'
+  #   # these don't seem to have any effect? at least not on mac - uses vm?
+  #   # volumes:
+  #   #   - ../volumes/arango:/var/lib/arango
+  #   #   # - ../volumes/arangodb/data:/var/lib/arangodb3
+  #   #   # - ../volumes/arangodb/apps:/var/lib/arangodb3-apps
+  #   networks:
+  #     - ladder99
 
-# influxdb:
-#   container_name: influxdb
-#   image: influxdb:2.0
-#   ports:
-#     - '8086:8086'
-#   environment:
-#     - INFLUXDB_DB=ladder99
-#     - INFLUXDB_ADMIN_USER=admin
-#     - INFLUXDB_ADMIN_PASSWORD=admin
-#     - INFLUXDB_USER=ladder99
-#     - INFLUXDB_PASSWORD=ladder99
-#   volumes:
-#     - ../volumes/influxdb/data:/var/lib/influxdb2
-#     - ../volumes/influxdb/config:/etc/influxdb2
-#   networks:
-#     - ladder99
+  # influxdb:
+  #   container_name: influxdb
+  #   image: influxdb:2.0
+  #   ports:
+  #     - '8086:8086'
+  #   environment:
+  #     - INFLUXDB_DB=ladder99
+  #     - INFLUXDB_ADMIN_USER=admin
+  #     - INFLUXDB_ADMIN_PASSWORD=admin
+  #     - INFLUXDB_USER=ladder99
+  #     - INFLUXDB_PASSWORD=ladder99
+  #   volumes:
+  #     - ../volumes/influxdb/data:/var/lib/influxdb2
+  #     - ../volumes/influxdb/config:/etc/influxdb2
+  #   networks:
+  #     - ladder99
 
-# telegraf:
-#   container_name: telegraf
-#   image: telegraf:1.18
-#   # depends_on:
-#   #   - arangodb
-#   #   # - influxdb
-#   environment:
-#     - INFLUX_TOKEN
-#   volumes:
-#     - ../volumes/telegraf:/etc/telegraf
-#   networks:
-#     - ladder99
+  # telegraf:
+  #   container_name: telegraf
+  #   image: telegraf:1.18
+  #   # depends_on:
+  #   #   - arangodb
+  #   #   # - influxdb
+  #   environment:
+  #     - INFLUX_TOKEN
+  #   volumes:
+  #     - ../volumes/telegraf:/etc/telegraf
+  #   networks:
+  #     - ladder99
 
-# grafana:
-#   container_name: grafana
-#   image: grafana/grafana:7.5.5
-#   ports:
-#     # remap to 3003 so can have react app running also
-#     - '3003:3000/tcp'
-#   networks:
-#     - ladder99
-#   deploy:
-#     restart_policy:
-#       condition: on-failure
-#   environment:
-#     # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
-#     GF_INSTALL_PLUGINS: natel-discrete-panel
-#   volumes:
-#     # note: grafana.ini is located in /etc/grafana by default -
-#     # other folders are specified there.
-#     - ../volumes/grafana:/etc/grafana
-#     # use this to keep data out of repo, eg plugin sourcecode
-#     - grafana:/var/lib/grafana
-#   user: grafana
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:7.5.5
+    ports:
+      # remap to 3003 so can have react app running also
+      - '3003:3000/tcp'
+    environment:
+      # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
+      GF_INSTALL_PLUGINS: natel-discrete-panel
+    volumes:
+      # note: grafana.ini is located in /etc/grafana by default -
+      # other folders are specified there.
+      - ../volumes/grafana:/etc/grafana
+      # use this to keep data out of repo, eg plugin sourcecode
+      - grafana:/var/lib/grafana
+    user: grafana
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - ladder99
 
 # pgadmin:
 #   container_name: pgadmin
