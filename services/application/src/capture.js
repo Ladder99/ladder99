@@ -13,24 +13,16 @@ async function shovel() {
   // const from = 1
   // const count = 200
   // const url = `${baseUrl}/sample?from=${from}&count=${count}`
-  try {
-    const response = await fetch(url, {
-      method: 'GET',
-      // headers: { Accept: 'application/json' }, // turn on for json
-    })
-    // save as json
-    // const tree = await response.json()
-    // save example output - rename to example-current.json etc
-    // fs.writeFileSync('./example.json', JSON.stringify(tree))
+  const response = await fetch(url, {
+    method: 'GET',
+    // headers: { Accept: 'application/json' }, // turn on for json
+  })
+  // save as json
+  // const tree = await response.json()
+  // save example output - rename to example-current.json etc
+  // fs.writeFileSync('./example.json', JSON.stringify(tree))
 
-    // save as xml
-    const tree = await response.text()
-    fs.writeFileSync('./example.xml', tree) // rename as needed
-  } catch (error) {
-    if (error.code === 'ENOTFOUND') {
-      console.log(`Agent not found at ${url} - waiting...`)
-    } else {
-      throw error
-    }
-  }
+  // save as xml
+  const tree = await response.text()
+  fs.writeFileSync('./example.xml', tree) // rename as needed
 }

@@ -23,8 +23,6 @@ const interval = Number(process.env.INTERVAL || 2000) // msec
   // console.log(res.rows[0].message) // Hello world!
 
   // setup tables
-  // const url = getUrl('probe')
-  // const json = await getData(url)
   const json = await getData('probe')
 
   // setup polling
