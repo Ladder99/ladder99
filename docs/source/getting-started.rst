@@ -11,7 +11,9 @@ On your edge device, in the ladder99 folder -
 
    .. code:: console
 
-      shell/agent/test
+..      shell/agent/test
+
+      shell/setups/docker start vmc base
 
 Now you should be able to view the MTConnect Agent output on your browser at e.g. http://raspberrypi.local:5000.
 
@@ -25,15 +27,13 @@ Start the database in another console on the edge device -
 
    .. code:: console
 
-      source .env
       shell/setups/docker start vmc db
 
-.. Initialize the database - 
+Initialize the database - 
 
-..    .. code:: console
+   .. code:: console
 
-..       shell/db/run setups/vmc/migrations/000-init.sql
-..       shell/db/run setups/vmc/migrations/001-tables.sql
+      shell/db/migrate vmc 000-init.sql
 
 Now start the application, which feeds data from the agent to the database and visualizer -
 
