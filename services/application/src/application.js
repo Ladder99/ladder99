@@ -22,10 +22,10 @@ const interval = Number(process.env.INTERVAL || 2000) // msec
   // const res = await client.query('SELECT $1::text as message', ['Hello world!'])
   // console.log(res.rows[0].message) // Hello world!
 
-  await setupTables(client)
+  // await setupTables(client)
 
   // setup polling
-  // setInterval(() => shovel(client), interval)
+  setInterval(() => shovel(client), interval)
 })()
 
 async function setupTables(client) {
@@ -65,7 +65,8 @@ async function shovel(client) {
       console.log(dataItem.value)
       // dump value to db
       //. add try block
-      const sql = `INSERT INTO execution(time, value) VALUES($1, $2) RETURNING *`
+      // const sql = `INSERT INTO execution(time, value) VALUES($1, $2) RETURNING *`
+      const sql = `INSERT INTO test(time, value) VALUES($1, to_json($2)) RETURNING *;`
       const values = [dataItem.timestamp, dataItem.value]
       await client.query(sql, values)
     }
