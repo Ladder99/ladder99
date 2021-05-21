@@ -22,9 +22,9 @@ const interval = Number(process.env.INTERVAL || 2000) // msec
   // const res = await client.query('SELECT $1::text as message', ['Hello world!'])
   // console.log(res.rows[0].message) // Hello world!
 
-  // await setupTables(client)
+  await setupTables(client)
 
-  // setup polling
+  // start polling
   setInterval(() => shovel(client), interval)
 })()
 
@@ -38,11 +38,11 @@ async function setupTables(client) {
         const { id, name } = dataItem.DataItem
         const tableName = id //+ (name ? '_' + name : '')
         const sql = `
-CREATE TABLE IF NOT EXISTS ${tableName} (
+CREATE TABLE IF NOT EXISTS "${tableName}" (
   time timestamptz NOT NULL,
-  value json NOT NULL
+  value json
 );
-SELECT create_hypertable(${tableName}, 'time');
+SELECT create_hypertable("${tableName}", 'time');
 `
         console.log(sql)
         await client.query(sql)
@@ -60,16 +60,20 @@ async function shovel(client) {
 
   // traverse the json tree and output state
   logic.traverse(json, async dataItems => {
-    if (dataItems[0].type === 'Execution') {
-      const dataItem = dataItems[0] //. just one for /current
-      console.log(dataItem.value)
-      // dump value to db
-      //. add try block
-      // const sql = `INSERT INTO execution(time, value) VALUES($1, $2) RETURNING *`
-      const sql = `INSERT INTO test(time, value) VALUES($1, to_json($2)) RETURNING *;`
-      const values = [dataItem.timestamp, dataItem.value]
-      await client.query(sql, values)
-    }
+    // if (dataItems[0].type === 'Execution') {
+    const dataItem = dataItems[0] //. just one for /current
+    // console.log(dataItem.value)
+    // write value to db
+    //. add try block
+    // const sql = `INSERT INTO execution(time, value) VALUES($1, $2) RETURNING *`
+    const { id, timestamp, value } = dataItem
+    const tableName = id
+    const type = typeof value === 'string' ? 'text' : 'numeric'
+    const sql = `INSERT INTO "${tableName}" (time, value) VALUES($1, to_json($2::${type}));`
+    const values = [timestamp, value]
+    console.log(sql, { values })
+    await client.query(sql, values)
+    // }
   })
 }
 
