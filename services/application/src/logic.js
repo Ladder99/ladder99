@@ -32,12 +32,7 @@ export function traverse(node, callback) {
 // and datanode ()
 // return a list of dataItems
 function getDataItems(group, datanode) {
-  // const types = Object.keys(datanode)
-  // const dataItems = types.map(type => {
-  //   // add group and type to the datanode
-  //   const dataItem = { group, type, ...datanode[type] }
-  //   return dataItem
-  // })
+  // add group and type to the datanode
   const dataItems = Object.entries(datanode).map(([type, value]) => {
     return { group, type, ...value }
   })

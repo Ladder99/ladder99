@@ -34,8 +34,9 @@ async function setupTables(client) {
   if (json) {
     // traverse the json tree and create tables if not already there
     logic.traverse(json, async dataItems => {
-      const dataItem = dataItems[0] //. just one for /probe
-      console.log(dataItem)
+      // const dataItem = dataItems[0] //. just one for /probe
+      // console.log(dataItem)
+      console.log(dataItems)
       // const tablename = dataItem.
       // const sql = `CREATE TABLE IF NOT EXISTS ${tablename} ();`
       // await client.query(sql)
