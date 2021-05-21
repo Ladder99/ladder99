@@ -30,13 +30,12 @@ const interval = Number(process.env.INTERVAL || 2000) // msec
 
 async function setupTables(client) {
   const json = await getData('probe')
-  console.log(json)
   if (json) {
     // traverse the json tree and create tables if not already there
     logic.traverse(json, async dataItems => {
       dataItems.forEach(async dataItem => {
-        const { id, name } = dataItem.DataItem
-        const tableName = id //+ (name ? '_' + name : '')
+        const { id } = dataItem.DataItem
+        const tableName = id
         const sql = `
 CREATE TABLE IF NOT EXISTS "${tableName}" (
   time timestamptz NOT NULL,
@@ -44,7 +43,7 @@ CREATE TABLE IF NOT EXISTS "${tableName}" (
 );
 SELECT create_hypertable('"${tableName}"', 'time', if_not_exists => TRUE);
 `
-        console.log(sql)
+        console.log(`Creating table '${tableName}'...`)
         await client.query(sql)
       })
     })
@@ -52,28 +51,32 @@ SELECT create_hypertable('"${tableName}"', 'time', if_not_exists => TRUE);
   console.log('done')
 }
 
+let from = null
+let count = 10
+// let next = null
+
 async function shovel(client) {
-  // const from = 1
-  // const count = 200
-  // const json = await getData('sample', from, count)
-  const json = await getData('current')
+  console.log(`Getting sample from ${from} count ${count}...`)
+  const json = await getData('sample', from, count)
+
+  // get sequence info from header
+  // const { firstSequence, nextSequence, lastSequence } =
+  //   json.MTConnectStreams.Header
+  const { nextSequence } = json.MTConnectStreams.Header
+  from = nextSequence
 
   // traverse the json tree and output state
-  logic.traverse(json, async dataItems => {
-    // if (dataItems[0].type === 'Execution') {
-    const dataItem = dataItems[0] //. just one for /current
-    // console.log(dataItem.value)
-    // write value to db
-    //. add try block
-    // const sql = `INSERT INTO execution(time, value) VALUES($1, $2) RETURNING *`
-    const { dataItemId, timestamp, value } = dataItem
-    const tableName = dataItemId
-    const type = typeof value === 'string' ? 'text' : 'numeric'
-    const sql = `INSERT INTO "${tableName}" (time, value) VALUES($1, to_json($2::${type}));`
-    const values = [timestamp, value]
-    console.log(sql, { values })
-    await client.query(sql, values)
-    // }
+  logic.traverse(json, dataItems => {
+    dataItems.forEach(async dataItem => {
+      const { dataItemId, timestamp, value } = dataItem
+      const tableName = dataItemId
+      const type = typeof value === 'string' ? 'text' : 'numeric'
+      const sql = `INSERT INTO "${tableName}" (time, value) VALUES($1, to_json($2::${type}));`
+      const values = [timestamp, value]
+      console.log(sql, { values })
+      //. add try block
+      await client.query(sql, values)
+    })
   })
 }
 
@@ -90,7 +93,7 @@ async function getData(type, from, count) {
     return json
   } catch (error) {
     if (error.code === 'ENOTFOUND') {
-      console.log(`Agent not found at ${url} - waiting...`)
+      console.log(`Agent not found at ${url}...`)
     } else {
       throw error
     }
@@ -100,7 +103,7 @@ async function getData(type, from, count) {
 
 function getUrl(type, from, count) {
   const url =
-    type === 'sample'
+    from !== null
       ? `${baseUrl}/${type}?from=${from}&count=${count}`
       : `${baseUrl}/${type}`
   return url
