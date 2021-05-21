@@ -30,6 +30,7 @@ const interval = Number(process.env.INTERVAL || 2000) // msec
 
 async function setupTables(client) {
   const json = await getData('probe')
+  console.log(json)
   if (json) {
     // traverse the json tree and create tables if not already there
     logic.traverse(json, async dataItems => {
@@ -40,6 +41,7 @@ async function setupTables(client) {
       // await client.query(sql)
     })
   }
+  console.log('done')
 }
 
 async function shovel(client) {
@@ -64,6 +66,7 @@ async function shovel(client) {
 
 async function getData(type, from, count) {
   const url = getUrl(type, from, count)
+  console.log('getData', url)
   try {
     // get json from agent
     const response = await fetch(url, {
@@ -84,8 +87,8 @@ async function getData(type, from, count) {
 
 function getUrl(type, from, count) {
   const url =
-    `${baseUrl}/${type}` + type === 'sample'
-      ? `?from=${from}&count=${count}`
-      : ''
+    type === 'sample'
+      ? `${baseUrl}/${type}?from=${from}&count=${count}`
+      : `${baseUrl}/${type}`
   return url
 }
