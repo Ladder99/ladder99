@@ -6,8 +6,10 @@
 
 SETUP=$1
 MIGRATION=$2
-SQL_FILE=setups/$SETUP/$MIGRATION
-ENV_FILE=setups/$SETUP/.env
 
-cat $SQL_FILE | eval $(cat $ENV_FILE) docker run -i --rm postgres:13 sh -c \
-    "export PGPASSWORD=$PGPASSWORD && psql -h $PGHOST -p $PGPORT -d $PGDATABASE -U $PGUSER"
+ENV_FILE=setups/$SETUP/.env
+SQL_FILE=setups/$SETUP/migrations/$MIGRATION
+
+export $(grep -v '^#'  $ENV_FILE | xargs) \
+  && cat $SQL_FILE | docker run --env-file $ENV_FILE -i --rm postgres:13 sh -c \
+    "psql -h $PGHOST -p $PGPORT -d postgres -U $PGUSER"
