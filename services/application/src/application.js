@@ -34,18 +34,18 @@ async function setupTables(client) {
   if (json) {
     // traverse the json tree and create tables if not already there
     logic.traverse(json, async dataItems => {
-      // const dataItem = dataItems[0] //. just one for /probe
-      // console.log(dataItem)
-      // console.log(dataItems)
       dataItems.forEach(async dataItem => {
         const { id, name } = dataItem.DataItem
-        const tableName = id + (name ? '_' + name : '')
+        const tableName = id //+ (name ? '_' + name : '')
         const sql = `
-CREATE TABLE IF NOT EXISTS ${tableName} ( time timestamptz, value integer );
+CREATE TABLE IF NOT EXISTS ${tableName} (
+  time timestamptz NOT NULL,
+  value json NOT NULL
+);
 SELECT create_hypertable(${tableName}, 'time');
 `
         console.log(sql)
-        // await client.query(sql)
+        await client.query(sql)
       })
     })
   }
