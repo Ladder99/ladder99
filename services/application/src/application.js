@@ -22,12 +22,25 @@ const interval = Number(process.env.INTERVAL || 2000) // msec
   // const res = await client.query('SELECT $1::text as message', ['Hello world!'])
   // console.log(res.rows[0].message) // Hello world!
 
-  // setup tables
-  const json = await getData('probe')
+  await setupTables(client)
 
   // setup polling
   // setInterval(() => shovel(client), interval)
 })()
+
+async function setupTables(client) {
+  const json = await getData('probe')
+  if (json) {
+    // traverse the json tree and create tables if not already there
+    logic.traverse(json, async dataItems => {
+      const dataItem = dataItems[0] //. just one for /probe
+      console.log(dataItem)
+      // const tablename = dataItem.
+      // const sql = `CREATE TABLE IF NOT EXISTS ${tablename} ();`
+      // await client.query(sql)
+    })
+  }
+}
 
 async function shovel(client) {
   // const from = 1
