@@ -2,8 +2,7 @@
 // capture agent data and write to database
 
 import fetch from 'node-fetch'
-// import { Client } from 'pg' // postgres driver - gives syntax error
-import pg from 'pg' // postgres driver
+import pg from 'pg' // postgres driver - import { Client } from 'pg' gives error
 const { Client } = pg
 import * as logic from './logic.js'
 
@@ -18,22 +17,42 @@ const interval = Number(process.env.INTERVAL || 2000) // msec
   // get postgres connection
   const client = new Client()
   await client.connect() // uses envars PGHOST, PGPORT, etc
-  console.log(client)
 
-  // test
-  const res = await client.query('SELECT $1::text as message', ['Hello world!'])
-  console.log(res.rows[0].message) // Hello world!
+  // // test connection
+  // const res = await client.query('SELECT $1::text as message', ['Hello world!'])
+  // console.log(res.rows[0].message) // Hello world!
+
+  // setup tables
+  // const url = getUrl('probe')
+  // const json = await getData(url)
+  const json = await getData('probe')
 
   // setup polling
   // setInterval(() => shovel(client), interval)
 })()
 
 async function shovel(client) {
-  const url = `${baseUrl}/current`
   // const from = 1
   // const count = 200
-  // const url = `${baseUrl}/sample?from=${from}&count=${count}`
+  // const json = await getData('sample', from, count)
+  const json = await getData('current')
 
+  // traverse the json tree and output state
+  logic.traverse(json, async dataItems => {
+    if (dataItems[0].type === 'Execution') {
+      const dataItem = dataItems[0] //. just one for /current
+      console.log(dataItem.value)
+      // dump value to db
+      //. add try block
+      const sql = `INSERT INTO execution(time, value) VALUES($1, $2) RETURNING *`
+      const values = [dataItem.timestamp, dataItem.value]
+      await client.query(sql, values)
+    }
+  })
+}
+
+async function getData(type, from, count) {
+  const url = getUrl(type, from, count)
   try {
     // get json from agent
     const response = await fetch(url, {
@@ -41,19 +60,7 @@ async function shovel(client) {
       headers: { Accept: 'application/json' },
     })
     const json = await response.json()
-
-    // traverse the json tree and output state
-    logic.traverse(json, async dataItems => {
-      if (dataItems[0].type === 'Execution') {
-        const dataItem = dataItems[0] //. just one for /current
-        console.log(dataItem.value)
-        // dump value to db
-        //. add try block
-        const sql = `INSERT INTO execution(time, value) VALUES($1, $2) RETURNING *`
-        const values = [dataItem.timestamp, dataItem.value]
-        await client.query(sql, values)
-      }
-    })
+    return json
   } catch (error) {
     if (error.code === 'ENOTFOUND') {
       console.log(`Agent not found at ${url} - waiting...`)
@@ -61,4 +68,13 @@ async function shovel(client) {
       throw error
     }
   }
+  return null
+}
+
+function getUrl(type, from, count) {
+  const url =
+    `${baseUrl}/${type}` + type === 'sample'
+      ? `?from=${from}&count=${count}`
+      : ''
+  return url
 }
