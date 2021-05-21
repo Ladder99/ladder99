@@ -36,10 +36,17 @@ async function setupTables(client) {
     logic.traverse(json, async dataItems => {
       // const dataItem = dataItems[0] //. just one for /probe
       // console.log(dataItem)
-      console.log(dataItems)
-      // const tablename = dataItem.
-      // const sql = `CREATE TABLE IF NOT EXISTS ${tablename} ();`
-      // await client.query(sql)
+      // console.log(dataItems)
+      dataItems.forEach(async dataItem => {
+        const { id, name } = dataItem.DataItem
+        const tableName = id + (name ? '_' + name : '')
+        const sql = `
+CREATE TABLE IF NOT EXISTS ${tableName} ( time timestamptz, value integer );
+SELECT create_hypertable(${tableName}, 'time');
+`
+        console.log(sql)
+        // await client.query(sql)
+      })
     })
   }
   console.log('done')
