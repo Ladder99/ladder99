@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS "${tableName}" (
   time timestamptz NOT NULL,
   value json
 );
-SELECT create_hypertable("${tableName}", 'time');
+SELECT create_hypertable('"${tableName}"', 'time', if_not_exists => TRUE);
 `
         console.log(sql)
         await client.query(sql)
@@ -66,8 +66,8 @@ async function shovel(client) {
     // write value to db
     //. add try block
     // const sql = `INSERT INTO execution(time, value) VALUES($1, $2) RETURNING *`
-    const { id, timestamp, value } = dataItem
-    const tableName = id
+    const { dataItemId, timestamp, value } = dataItem
+    const tableName = dataItemId
     const type = typeof value === 'string' ? 'text' : 'numeric'
     const sql = `INSERT INTO "${tableName}" (time, value) VALUES($1, to_json($2::${type}));`
     const values = [timestamp, value]
