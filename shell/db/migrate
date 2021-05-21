@@ -10,6 +10,8 @@ MIGRATION=$2
 ENV_FILE=setups/$SETUP/.env
 SQL_FILE=setups/$SETUP/migrations/$MIGRATION
 
+# first line reads .env file variables
+# see https://stackoverflow.com/a/20909045/243392
 export $(grep -v '^#'  $ENV_FILE | xargs) \
   && cat $SQL_FILE | docker run --env-file $ENV_FILE -i --rm postgres:13 sh -c \
     "psql -h $PGHOST -p $PGPORT -d postgres -U $PGUSER"
