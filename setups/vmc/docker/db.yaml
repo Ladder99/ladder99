@@ -80,9 +80,11 @@ services:
     volumes:
       # note: grafana.ini is located in /etc/grafana by default -
       # other folders are specified there.
-      - ../volumes/grafana:/etc/grafana
+      # - ../volumes/grafana:/etc/grafana
+      - ../volumes/grafana/etc:/etc/grafana
       # use this to keep data out of repo, eg plugin sourcecode
-      - grafana:/var/lib/grafana
+      # - grafana:/var/lib/grafana
+      - ../volumes/grafana/var:/var/lib/grafana
     user: grafana
     deploy:
       restart_policy:

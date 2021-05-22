@@ -17,15 +17,18 @@ datasources:
     # <string> custom UID which can be used to reference this datasource in
     # other parts of the configuration, if not specified will be generated automatically
     uid: timescaledb
+
+    #. specify these with envars
     # url: http://localhost:5432  # syntax error
     # url: localhost:5433 # connection refused
-    url: host.docker.internal:5433 # for macos
     # url: timescaledb:5432
+    url: host.docker.internal:5433 # for macos
     user: postgres
-    database: ladder99
+    database: ladder99_vmc
+
     # enable/disable basic auth
     basicAuth: false
-    # <string> basic auth username
+    # basic auth username
     # basicAuthUser:
     # enable/disable with credentials headers
     withCredentials: false
@@ -44,10 +47,9 @@ datasources:
       # tlsCACert: '...'
       # tlsClientCert: '...'
       # tlsClientKey: '...'
-      # database password, if used
+      # database password, if used - #. use envar
       password: gralgrut
-      # basic auth password
       # basicAuthPassword:
     version: 1
-    # <bool> allow users to edit datasources from the UI.
+    # allow users to edit datasources from the UI
     editable: true
