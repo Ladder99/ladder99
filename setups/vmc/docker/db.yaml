@@ -14,7 +14,6 @@ services:
       POSTGRES_USERNAME: $PGUSER
       POSTGRES_PASSWORD: $PGPASSWORD
     volumes:
-      # - timescaledb:/var/lib/postgresql/data
       - ../volumes/timescaledb:/var/lib/postgresql/data
     deploy:
       restart_policy:
@@ -99,10 +98,6 @@ services:
 #   deploy:
 #     restart_policy:
 #       condition: on-failure
-
-# volumes:
-# timescaledb:
-# grafana:
 
 networks:
   ladder99:
