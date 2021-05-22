@@ -14,8 +14,8 @@ services:
       POSTGRES_USERNAME: $PGUSER
       POSTGRES_PASSWORD: $PGPASSWORD
     volumes:
-      - timescaledb:/var/lib/postgresql/data
-      # - ../volumes/timescaledb:/var/lib/postgresql/data
+      # - timescaledb:/var/lib/postgresql/data
+      - ../volumes/timescaledb:/var/lib/postgresql/data
     deploy:
       restart_policy:
         condition: on-failure
@@ -80,10 +80,7 @@ services:
     volumes:
       # note: grafana.ini is located in /etc/grafana by default -
       # other folders are specified there.
-      # - ../volumes/grafana:/etc/grafana
       - ../volumes/grafana/etc:/etc/grafana
-      # use this to keep data out of repo, eg plugin sourcecode
-      # - grafana:/var/lib/grafana
       - ../volumes/grafana/var:/var/lib/grafana
     user: grafana
     deploy:
@@ -103,9 +100,9 @@ services:
 #     restart_policy:
 #       condition: on-failure
 
-volumes:
-  timescaledb:
-  grafana:
+# volumes:
+# timescaledb:
+# grafana:
 
 networks:
   ladder99:
