@@ -1,1 +1,3 @@
-grafana.db
+var/grafana.db
+var/plugins
+var/png
