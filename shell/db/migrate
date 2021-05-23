@@ -7,11 +7,15 @@
 SETUP=$1
 MIGRATION=$2
 
+# this should match all db.yaml docker-compose files
+# IMAGE=postgres:13
+IMAGE=timescale/timescaledb:latest-pg13
+
 ENV_FILE=setups/$SETUP/.env
 SQL_FILE=setups/$SETUP/migrations/$MIGRATION
 
 # first line reads .env file variables
 # see https://stackoverflow.com/a/20909045/243392
 export $(grep -v '^#'  $ENV_FILE | xargs) \
-  && cat $SQL_FILE | docker run --env-file $ENV_FILE -i --rm postgres:13 sh -c \
+  && cat $SQL_FILE | docker run --env-file $ENV_FILE -i --rm $IMAGE sh -c \
     "psql -h $PGHOST -p $PGPORT -d postgres -U $PGUSER"
