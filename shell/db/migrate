@@ -4,11 +4,10 @@
 #   shell/db/migrate vmc 000-init.sql
 #   etc
 
-SETUP=$1
-MIGRATION=$2
+SETUP=$1   # eg vmc
+MIGRATION=$2   # eg 000-init.sql
 
 # this should match all db.yaml docker-compose files
-# IMAGE=postgres:13
 IMAGE=timescale/timescaledb:latest-pg13
 
 ENV_FILE=setups/$SETUP/.env

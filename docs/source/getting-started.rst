@@ -32,7 +32,7 @@ Start the database on the edge device - the first time this is run it may take a
 
    .. code:: console
 
-      shell/setups/docker start vmc db
+      shell/setups/docker startd vmc db
 
 Initialize the database - 
 
