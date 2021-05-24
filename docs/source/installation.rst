@@ -29,10 +29,11 @@ Steps
 
    .. code:: console
 
-      shell/install/linux     # update/upgrade os
-      shell/install/docker    # if not already on system
-      shell/install/node      # nodejs and dependencies
-      shell/install/python    # python dependencies
+      shell/install/linux            # update/upgrade os
+      shell/install/docker           # if not already on system
+      shell/install/docker-compose
+      shell/install/node             # nodejs and dependencies
+      shell/install/python           # python dependencies
       source ~/.venv/ladder99-venv/bin/activate
 
 Next, we'll run the MTConnect Agent and make sure it works with the demonstration data.
