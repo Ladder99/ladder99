@@ -6,9 +6,9 @@ services:
   timescaledb:
     container_name: timescaledb
     image: timescale/timescaledb:latest-pg13
-    # remap to 5433 so can run on mac with local db also
+    # can remap eg to 5433 so can run on mac with local db also
     ports:
-      - '5433:5432/tcp'
+      - $PGPORT:5432/tcp
     environment:
       POSTGRES_DB: $PGDATABASE
       POSTGRES_USERNAME: $PGUSER
