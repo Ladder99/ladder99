@@ -52,12 +52,29 @@ SELECT create_hypertable('"${tableName}"', 'time', if_not_exists => TRUE);
 }
 
 let from = null
-let count = 10
+let count = 200
 // let next = null
 
 async function shovel(client) {
   console.log(`Getting sample from ${from} count ${count}...`)
   const json = await getData('sample', from, count)
+
+  //. if get xml error back, not json, assume it's due to from being out of range
+  // <MTConnectError xmlns:m="urn:mtconnect.org:MTConnectError:1.7" xmlns="urn:mtconnect.org:MTConnectError:1.7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:mtconnect.org:MTConnectError:1.7 /schemas/MTConnectError_1.7.xsd">
+  // <Header creationTime="2021-05-24T17:57:14Z" sender="b28197f93e9b" instanceId="1621875421" version="1.7.0.3" bufferSize="131072"/>
+  // <Errors>
+  // <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
+  // </Errors>
+  // </MTConnectError >
+  if (json.MTConnectError) {
+    console.log(`ERROR`)
+    for (const err of json.MTConnectError.Errors) {
+      console.log(err)
+    }
+    // reset the counter - we lost some data
+    from = null
+    return
+  }
 
   // get sequence info from header
   // const { firstSequence, nextSequence, lastSequence } =
