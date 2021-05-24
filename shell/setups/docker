@@ -22,6 +22,8 @@ args = ' '.join([f"--file {file}" for file in files])
 envfile = f"setups/{setup}/.env"
 if pathlib.Path(envfile).exists():
     args += f" --env-file {envfile}"
+else:
+    args += f" --env-file {envfile}-default"
 
 # get flags
 flags = ''
