@@ -23,7 +23,7 @@ Now you should be able to view the MTConnect Agent output on your browser at e.g
 Viewing the dashboard
 =========================
 
-Start the database in another console on the edge device -
+Start the database in another console on the edge device. The first time this is run it will setup the database, which takes a minute -
 
    .. code:: console
 
