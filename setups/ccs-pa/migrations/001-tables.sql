@@ -1,5 +1,6 @@
--- create tables
+\c ccs_pa;
 
+-- create tables
 CREATE TABLE IF NOT EXISTS execution (
   time timestamptz NOT NULL,
   value text NOT NULL
