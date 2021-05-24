@@ -12,31 +12,31 @@ apiVersion: 1
 datasources:
   - name: Postgres
     type: postgres
-    # <string, required> access mode. proxy or direct (Server or Browser in the UI). Required
+    # access mode. proxy or direct (Server or Browser in the UI). Required
     access: direct
-    # <string> custom UID which can be used to reference this datasource in
+    # custom UID which can be used to reference this datasource in
     # other parts of the configuration, if not specified will be generated automatically
     uid: timescaledb
 
     # specify these with envars
-    # url: http://localhost:5432  # syntax error
-    # url: localhost:5433 # connection refused
     # url: timescaledb:5432
     # url: host.docker.internal:5433 # for macos
-    # user: postgres
-    # database: vmc
     url: $PGHOST:$PGPORT
     user: $PGUSER
     database: $PGDATABASE
 
     # enable/disable basic auth
     basicAuth: false
+
     # basic auth username
     # basicAuthUser:
+
     # enable/disable with credentials headers
     withCredentials: false
+
     # mark as default datasource. Max one per org
     isDefault: true
+
     # fields that will be converted to json and stored in jsonData
     jsonData:
       graphiteVersion: '1.1'
@@ -45,6 +45,7 @@ datasources:
       postgresVersion: 1300 # v13
       sslmode: disable
       timescaledb: true
+
     # json object of data that will be encrypted.
     secureJsonData:
       # tlsCACert: '...'
@@ -54,6 +55,8 @@ datasources:
       # password: gralgrut
       password: $PGPASSWORD
       # basicAuthPassword:
+
     version: 1
+
     # allow users to edit datasources from the UI
     editable: true
