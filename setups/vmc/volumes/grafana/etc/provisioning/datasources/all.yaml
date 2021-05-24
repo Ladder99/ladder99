@@ -18,13 +18,16 @@ datasources:
     # other parts of the configuration, if not specified will be generated automatically
     uid: timescaledb
 
-    #. specify these with envars
+    # specify these with envars
     # url: http://localhost:5432  # syntax error
     # url: localhost:5433 # connection refused
     # url: timescaledb:5432
-    url: host.docker.internal:5433 # for macos
-    user: postgres
-    database: ladder99_vmc
+    # url: host.docker.internal:5433 # for macos
+    # user: postgres
+    # database: vmc
+    url: $PGHOST:$PGPORT
+    user: $PGUSER
+    database: $PGDATABASE
 
     # enable/disable basic auth
     basicAuth: false
@@ -42,13 +45,14 @@ datasources:
       postgresVersion: 1300 # v13
       sslmode: disable
       timescaledb: true
-    # <string> json object of data that will be encrypted.
+    # json object of data that will be encrypted.
     secureJsonData:
       # tlsCACert: '...'
       # tlsClientCert: '...'
       # tlsClientKey: '...'
-      # database password, if used - #. use envar
-      password: gralgrut
+      # database password, if used
+      # password: gralgrut
+      password: $PGPASSWORD
       # basicAuthPassword:
     version: 1
     # allow users to edit datasources from the UI
