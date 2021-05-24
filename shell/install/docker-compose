@@ -17,5 +17,8 @@
 # sudo apt install py-pip python3-dev libffi-dev openssl-dev gcc libc-dev rust cargo make
 # sudo pip3 install docker-compose
 
+# need this for aarch64, eg 64-bit rpios
+sudo apt install libffi-dev
+
 # Use this for debian/ubuntu:
 sudo pip3 install docker-compose
