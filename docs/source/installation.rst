@@ -25,15 +25,15 @@ Steps
       git clone https://github.com/Ladder99/ladder99
       cd ladder99
 
-#. Install dependencies **in this order** (may take a while). Also make sure to run them **in the ladder99 directory**.
+#. Install dependencies **in this order** (may take a while) -
 
    .. code:: console
 
-      shell/install/linux            # update/upgrade os
-      shell/install/docker           # if not already on system
+      shell/install/linux
+      shell/install/docker
       shell/install/docker-compose
-      shell/install/node             # nodejs and dependencies
-      shell/install/python           # python dependencies
+      shell/install/node
+      shell/install/python
       source ~/.venv/ladder99-venv/bin/activate
 
 Next, we'll run the MTConnect Agent and make sure it works with the demonstration data.

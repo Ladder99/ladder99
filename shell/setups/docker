@@ -8,6 +8,7 @@
 
 import sys
 import os
+import pathlib
 
 cmd = sys.argv[1]  # eg 'start', 'startd', 'stop'
 setup = sys.argv[2]  # eg 'vmc'
@@ -19,7 +20,8 @@ args = ' '.join([f"--file {file}" for file in files])
 
 # add envfile
 envfile = f"setups/{setup}/.env"
-args += f" --env-file {envfile}"
+if pathlib.Path(envfile).exists():
+    args += f" --env-file {envfile}"
 
 # get flags
 flags = ''
