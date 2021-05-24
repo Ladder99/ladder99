@@ -82,7 +82,7 @@ services:
       - ../volumes/grafana/etc:/etc/grafana
       - ../volumes/grafana/var:/var/lib/grafana
     # user: grafana
-    user: '$UID:$GID'
+    # user: '$UID:$GID'
     deploy:
       restart_policy:
         condition: on-failure
