@@ -7,11 +7,11 @@ Running the Agent
 
 Let's run the MTConnect Agent, which comes with a simulator for a CNC device.
 
-On your edge device, in the ladder99 folder -
+On your edge device, in the ladder99 folder (note the d in startd, for detached, or run in the background) -
 
    .. code:: console
 
-      shell/setups/docker start vmc base
+      shell/setups/docker startd vmc base
 
 Now you should be able to view the MTConnect Agent output on your browser at e.g. http://raspberrypi.local:5000.
 
@@ -28,7 +28,7 @@ First, make a copy of the default settings file and edit it as needed -
       cp setups/vmc/.env-default setups/vmc/.env
       nano setups/vmc/.env
 
-Start the database in another console on the edge device. The first time this is run it may take a minute -
+Start the database on the edge device - the first time this is run it may take a minute -
 
    .. code:: console
 
