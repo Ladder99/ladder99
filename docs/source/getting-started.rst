@@ -7,7 +7,7 @@ Running the Agent
 
 Let's run the MTConnect Agent, which comes with a simulator for a CNC device.
 
-On your edge device, in the ladder99 folder (note the d in startd, for detached, or run in the background) -
+On your edge device, in the ladder99 folder (note the d in startd, for detach, to run in the background) -
 
    .. code:: console
 
@@ -55,7 +55,7 @@ Now start the application, which feeds data from the agent to the database and v
 Viewing the dashboard
 =========================
 
-Now you should be able to view a dashboard in your browser at http://raspberrypi.local:3003.
+Now you should be able to view a dashboard in your browser at http://raspberrypi.local:3003. The default username/password is admin/admin - you'll be asked to change the password. 
 
 .. image:: _images/grafana.jpg
 
