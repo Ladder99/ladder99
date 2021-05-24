@@ -22,34 +22,34 @@ const interval = Number(process.env.INTERVAL || 2000) // msec
   // const res = await client.query('SELECT $1::text as message', ['Hello world!'])
   // console.log(res.rows[0].message) // Hello world!
 
-  await setupTables(client)
+  // await setupTables(client)
 
   // start polling
   setInterval(() => shovel(client), interval)
 })()
 
-async function setupTables(client) {
-  const json = await getData('probe')
-  if (json) {
-    // traverse the json tree and create tables if not already there
-    logic.traverse(json, async dataItems => {
-      dataItems.forEach(async dataItem => {
-        const { id } = dataItem.DataItem
-        const tableName = id
-        const sql = `
-CREATE TABLE IF NOT EXISTS "${tableName}" (
-  time timestamptz NOT NULL,
-  value json
-);
-SELECT create_hypertable('"${tableName}"', 'time', if_not_exists => TRUE);
-`
-        console.log(`Creating table '${tableName}'...`)
-        await client.query(sql)
-      })
-    })
-  }
-  console.log('done')
-}
+// async function setupTables(client) {
+//   const json = await getData('probe')
+//   if (json) {
+//     // traverse the json tree and create tables if not already there
+//     logic.traverse(json, async dataItems => {
+//       dataItems.forEach(async dataItem => {
+//         const { id } = dataItem.DataItem
+//         const tableName = id
+//         const sql = `
+// CREATE TABLE IF NOT EXISTS "${tableName}" (
+//   time timestamptz NOT NULL,
+//   value json
+// );
+// SELECT create_hypertable('"${tableName}"', 'time', if_not_exists => TRUE);
+// `
+//         console.log(`Creating table '${tableName}'...`)
+//         await client.query(sql)
+//       })
+//     })
+//   }
+//   console.log('done')
+// }
 
 let from = null
 let count = 200
@@ -86,10 +86,14 @@ async function shovel(client) {
   logic.traverse(json, dataItems => {
     dataItems.forEach(async dataItem => {
       const { dataItemId, timestamp, value } = dataItem
-      const tableName = dataItemId
+      // const tableName = dataItemId
+      // const type = typeof value === 'string' ? 'text' : 'numeric'
+      // const sql = `INSERT INTO "${tableName}" (time, value) VALUES($1, to_json($2::${type}));`
+      // const values = [timestamp, value]
+      const id = dataItemId
       const type = typeof value === 'string' ? 'text' : 'numeric'
-      const sql = `INSERT INTO "${tableName}" (time, value) VALUES($1, to_json($2::${type}));`
-      const values = [timestamp, value]
+      const sql = `INSERT INTO values (id, time, value) VALUES($1, $2, to_json($3::${type}));`
+      const values = [id, timestamp, value]
       console.log(sql, { values })
       //. add try block
       await client.query(sql, values)
@@ -97,6 +101,7 @@ async function shovel(client) {
   })
 }
 
+// fetch data from agent rest endpoint
 async function getData(type, from, count) {
   const url = getUrl(type, from, count)
   console.log('getData', url)
