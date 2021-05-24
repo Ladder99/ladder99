@@ -32,6 +32,7 @@ Initialize the database -
    .. code:: console
 
       shell/db/migrate vmc 000-init.sql
+      shell/db/migrate vmc 001-tables.sql
 
 Now start the application, which feeds data from the agent to the database and visualizer -
 
