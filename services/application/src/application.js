@@ -17,8 +17,23 @@ const interval = Number(process.env.INTERVAL || 2000) // msec
   // get postgres connection and start polling
   const client = new Client()
   await client.connect() // uses envars PGHOST, PGPORT, etc
+  await setupTable(client)
   setInterval(() => shovel(client), interval)
 })()
+
+async function setupTable(client) {
+  const tableName = 'values'
+  const sql = `
+CREATE TABLE IF NOT EXISTS "${tableName}" (
+  id text NOT NULL,
+  time timestamptz NOT NULL,
+  value json
+);
+SELECT create_hypertable('"${tableName}"', 'time', if_not_exists => TRUE);
+`
+  console.log(`Creating table '${tableName}' if not there...`)
+  await client.query(sql)
+}
 
 let from = null
 let count = 200
