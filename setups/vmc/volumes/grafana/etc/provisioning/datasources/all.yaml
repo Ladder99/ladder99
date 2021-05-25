@@ -11,9 +11,12 @@ apiVersion: 1
 # list of datasources to insert/update
 datasources:
   - name: Postgres
+
     type: postgres
+
     # access mode. proxy or direct (Server or Browser in the UI). Required
     access: direct
+
     # custom UID which can be used to reference this datasource in
     # other parts of the configuration, if not specified will be generated automatically
     uid: timescaledb
@@ -22,7 +25,9 @@ datasources:
     # url: timescaledb:5432
     # url: host.docker.internal:5433 # for macos
     url: $PGHOST:$PGPORT
+
     user: $PGUSER
+
     database: $PGDATABASE
 
     # enable/disable basic auth
