@@ -31,11 +31,9 @@ async function shovel(client) {
   // eg <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
   if (json.MTConnectError) {
     console.log(json)
-    const outOfRange = json.MTConnectError.Errors.some(
-      err => err.Error.errorCode === 'OUT_OF_RANGE'
-    )
-    if (outOfRange) {
-      // we lost some data - reset the index and get from start of buffer
+    const errorCodes = json.MTConnectError.Errors.map(e => e.Error.errorCode)
+    if (errorCodes.includes('OUT_OF_RANGE')) {
+      // we lost some data, so reset the index and get from start of buffer
       from = null
       json = await getData('sample', from, count)
     }
@@ -47,16 +45,16 @@ async function shovel(client) {
   const { nextSequence } = json.MTConnectStreams.Header
   from = nextSequence
 
-  traverseAndWrite(json)
+  await traverseAndWrite(json, client)
 
   //. if gap, fetch and write that also
   // json = await getData('sample', from, count)
 }
 
-async function fetchAndWrite(json) {
+async function traverseAndWrite(json, client) {
   // traverse the json tree and write to db
-  logic.traverse(json, dataItems => {
-    dataItems.forEach(async dataItem => {
+  logic.traverse(json, async dataItems => {
+    for (const dataItem of dataItems) {
       const { dataItemId, timestamp, value } = dataItem
       const id = dataItemId
       const type = typeof value === 'string' ? 'text' : 'numeric'
@@ -65,7 +63,7 @@ async function fetchAndWrite(json) {
       console.log(sql, { values })
       //. add try block
       await client.query(sql, values)
-    })
+    }
   })
 }
 
