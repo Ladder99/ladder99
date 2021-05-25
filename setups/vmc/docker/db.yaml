@@ -21,6 +21,32 @@ services:
     networks:
       - ladder99
 
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:7.5.5
+    ports:
+      # remap to 3003 so can have react app running also
+      #. put in envar
+      - '3003:3000/tcp'
+    environment:
+      # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
+      GF_INSTALL_PLUGINS: natel-discrete-panel
+    volumes:
+      # note: grafana.ini is located in /etc/grafana by default -
+      # other folders are specified there.
+      - ../volumes/grafana/etc:/etc/grafana
+      - ../volumes/grafana/var:/var/lib/grafana
+    # user: grafana
+    #. get warning that these are blank, though echo $UID works - why?
+    # but even if blank, now grafana is able to write to /var/lib/grafana.
+    # gives permission error without this.
+    user: '$UID:$GID'
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - ladder99
+
   # arangodb:
   #   container_name: arangodb
   #   image: arangodb:3.7
@@ -66,31 +92,6 @@ services:
   #     - ../volumes/telegraf:/etc/telegraf
   #   networks:
   #     - ladder99
-
-  grafana:
-    container_name: grafana
-    image: grafana/grafana:7.5.5
-    ports:
-      # remap to 3003 so can have react app running also
-      #. put in envar
-      - '3003:3000/tcp'
-    environment:
-      # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
-      GF_INSTALL_PLUGINS: natel-discrete-panel
-    volumes:
-      # note: grafana.ini is located in /etc/grafana by default -
-      # other folders are specified there.
-      - ../volumes/grafana/etc:/etc/grafana
-      - ../volumes/grafana/var:/var/lib/grafana
-    # user: grafana
-    #. get warning that these are blank, though echo $UID works.
-    # but even if blank, now grafana is able to write to /var/lib/grafana.
-    user: '$UID:$GID'
-    deploy:
-      restart_policy:
-        condition: on-failure
-    networks:
-      - ladder99
 
 # pgadmin:
 #   container_name: pgadmin
