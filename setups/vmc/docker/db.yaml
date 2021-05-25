@@ -72,6 +72,7 @@ services:
     image: grafana/grafana:7.5.5
     ports:
       # remap to 3003 so can have react app running also
+      #. put in envar
       - '3003:3000/tcp'
     environment:
       # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
