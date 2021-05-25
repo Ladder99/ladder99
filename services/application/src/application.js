@@ -40,15 +40,15 @@ async function shovel(client) {
   }
 
   // get sequence info from header
-  // const { firstSequence, nextSequence, lastSequence } =
-  //   json.MTConnectStreams.Header
-  const { nextSequence } = json.MTConnectStreams.Header
+  const { firstSequence, nextSequence, lastSequence } =
+    json.MTConnectStreams.Header
   from = nextSequence
 
   const dataItems = getDataItems(json)
   await writeDataItems(dataItems, client)
 
-  //. if gap, fetch and write that also
+  // //. if gap, fetch and write that also
+  // const gap = false
   // if (gap) {
   //   const json = await getData('sample', from, count)
   //   const dataItems = getDataItems(json)
@@ -65,8 +65,7 @@ function getDataItems(json) {
   return allDataItems
 }
 
-//. better - gather up all items into one array,
-// then put all into one INSERT stmt
+//. gather up all items into one array, then put all into one INSERT stmt
 // see https://stackoverflow.com/a/63167970/243392 etc
 async function writeDataItems(dataItems, client) {
   for (const dataItem of dataItems) {
