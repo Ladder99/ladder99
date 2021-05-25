@@ -83,6 +83,8 @@ services:
       - ../volumes/grafana/etc:/etc/grafana
       - ../volumes/grafana/var:/var/lib/grafana
     # user: grafana
+    #. get warning that these are blank, though echo $UID works.
+    # but even if blank, now grafana is able to write to /var/lib/grafana.
     user: '$UID:$GID'
     deploy:
       restart_policy:
