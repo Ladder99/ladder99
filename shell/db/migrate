@@ -3,18 +3,21 @@
 # usage:
 #   shell/db/migrate vmc 000-init.sql
 #   etc
+# note: this assumes postgres is running
 
 SETUP=$1   # eg vmc
 MIGRATION=$2   # eg 000-init.sql
 
-# this should match all db.yaml docker-compose files
-IMAGE=timescale/timescaledb:latest-pg13
+# this should match db.yaml docker-compose file
+CONTAINER=timescaledb
 
 ENV_FILE=setups/$SETUP/.env
 SQL_FILE=setups/$SETUP/migrations/$MIGRATION
 
 # first line reads .env file variables
 # see https://stackoverflow.com/a/20909045/243392
+# export $(grep -v '^#'  $ENV_FILE | xargs) \
+#   && cat $SQL_FILE | docker run --env-file $ENV_FILE -i --rm $IMAGE sh -c \
+#     "psql -h $PGHOST -p $PGPORT -d postgres -U $PGUSER"
 export $(grep -v '^#'  $ENV_FILE | xargs) \
-  && cat $SQL_FILE | docker run --env-file $ENV_FILE -i --rm $IMAGE sh -c \
-    "psql -h $PGHOST -p $PGPORT -d postgres -U $PGUSER"
+  && cat $SQL_FILE | docker exec -i $CONTAINER sh -c "psql -U $PGUSER"
