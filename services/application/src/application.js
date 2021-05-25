@@ -14,17 +14,9 @@ const baseUrl = process.env.AGENT_BASE_URL || 'http://localhost:5000'
 const interval = Number(process.env.INTERVAL || 2000) // msec
 
 ;(async function () {
-  // get postgres connection
+  // get postgres connection and start polling
   const client = new Client()
   await client.connect() // uses envars PGHOST, PGPORT, etc
-
-  // // test connection
-  // const res = await client.query('SELECT $1::text as message', ['Hello world!'])
-  // console.log(res.rows[0].message) // Hello world!
-
-  // await setupTables(client)
-
-  // start polling
   setInterval(() => shovel(client), interval)
 })()
 
@@ -35,24 +27,17 @@ let count = 200
 async function shovel(client) {
   let json = await getData('sample', from, count)
 
-  // <MTConnectError xmlns:m="urn:mtconnect.org:MTConnectError:1.7" xmlns="urn:mtconnect.org:MTConnectError:1.7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:mtconnect.org:MTConnectError:1.7 /schemas/MTConnectError_1.7.xsd">
-  // <Header creationTime="2021-05-24T17:57:14Z" sender="b28197f93e9b" instanceId="1621875421" version="1.7.0.3" bufferSize="131072"/>
-  // <Errors>
-  // <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
-  // </Errors>
-  // </MTConnectError >
-  //. check errorCode
+  // check for errors
+  // eg <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
   if (json.MTConnectError) {
     console.log(json)
     const outOfRange = json.MTConnectError.Errors.some(
       err => err.Error.errorCode === 'OUT_OF_RANGE'
     )
     if (outOfRange) {
-      // reset the counter - we lost some data
+      // we lost some data - reset the index and get from start of buffer
       from = null
-      // fetch whatever is available
-      json = await getData('sample')
-      // return
+      json = await getData('sample', from, count)
     }
   }
 
@@ -62,14 +47,17 @@ async function shovel(client) {
   const { nextSequence } = json.MTConnectStreams.Header
   from = nextSequence
 
-  // traverse the json tree and output state
+  traverseAndWrite(json)
+
+  //. if gap, fetch and write that also
+  // json = await getData('sample', from, count)
+}
+
+async function fetchAndWrite(json) {
+  // traverse the json tree and write to db
   logic.traverse(json, dataItems => {
     dataItems.forEach(async dataItem => {
       const { dataItemId, timestamp, value } = dataItem
-      // const tableName = dataItemId
-      // const type = typeof value === 'string' ? 'text' : 'numeric'
-      // const sql = `INSERT INTO "${tableName}" (time, value) VALUES($1, to_json($2::${type}));`
-      // const values = [timestamp, value]
       const id = dataItemId
       const type = typeof value === 'string' ? 'text' : 'numeric'
       const sql = `INSERT INTO values (id, time, value) VALUES($1, $2, to_json($3::${type}));`
