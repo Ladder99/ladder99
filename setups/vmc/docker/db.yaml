@@ -6,7 +6,7 @@ services:
   timescaledb:
     container_name: timescaledb
     image: timescale/timescaledb:latest-pg13
-    # can remap eg to 5433 so can run on mac with local db also
+    # can remap port so can run on mac with local db also
     ports:
       - $PGPORT:5432/tcp
     environment:
@@ -43,6 +43,7 @@ services:
     #. get warning that these are blank, though echo $UID works - why?
     # but even if blank, now grafana is able to write to /var/lib/grafana.
     # gives permission error without this.
+    # does blank here mean root?
     user: '$UID:$GID'
     deploy:
       restart_policy:
