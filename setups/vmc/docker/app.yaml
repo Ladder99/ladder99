@@ -18,6 +18,10 @@ services:
       - PGDATABASE
       - PGUSER
       - PGPASSWORD
+    #. this fixes a problem on linux - will it still work on mac with this here?
+    # see https://stackoverflow.com/a/67158212/243392
+    extra_hosts:
+      - host.docker.internal:host-gateway
     networks:
       - ladder99
     volumes:
