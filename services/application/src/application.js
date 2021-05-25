@@ -45,35 +45,47 @@ async function shovel(client) {
   const { nextSequence } = json.MTConnectStreams.Header
   from = nextSequence
 
-  await traverseAndWrite(json, client)
+  const dataItems = getDataItems(json)
+  await writeDataItems(dataItems, client)
 
   //. if gap, fetch and write that also
-  // json = await getData('sample', from, count)
+  // if (gap) {
+  //   const json = await getData('sample', from, count)
+  //   const dataItems = getDataItems(json)
+  //   await writeDataItems(dataItems, client)
+  // }
 }
 
-async function traverseAndWrite(json, client) {
-  // traverse the json tree and write to db
-  logic.traverse(json, async dataItems => {
-    for (const dataItem of dataItems) {
-      const { dataItemId, timestamp, value } = dataItem
-      const id = dataItemId
-      const type = typeof value === 'string' ? 'text' : 'numeric'
-      const sql = `INSERT INTO values (id, time, value) VALUES($1, $2, to_json($3::${type}));`
-      const values = [id, timestamp, value]
-      console.log(sql, { values })
-      //. add try block
-      await client.query(sql, values)
-    }
+// traverse the json tree and return all data items
+function getDataItems(json) {
+  const allDataItems = []
+  logic.traverse(json, dataItems => {
+    allDataItems.push(dataItems)
   })
+  return allDataItems
 }
 
-// fetch data from agent rest endpoint
+//. better - gather up all items into one array,
+// then put all into one INSERT stmt
+// see https://stackoverflow.com/a/63167970/243392 etc
+async function writeDataItems(dataItems, client) {
+  for (const dataItem of dataItems) {
+    const { dataItemId, timestamp, value } = dataItem
+    const id = dataItemId
+    const type = typeof value === 'string' ? 'text' : 'numeric'
+    const sql = `INSERT INTO values (id, time, value) VALUES ($1, $2, to_json($3::${type}));`
+    const values = [id, timestamp, value]
+    console.log(sql, { values })
+    //. add try block
+    await client.query(sql, values)
+  }
+}
+
+// get data from agent rest endpoint
 async function getData(type, from, count) {
-  // console.log(`Getting ${type} - from ${from} count ${count}...`)
   const url = getUrl(type, from, count)
-  console.log(`Getting data - `, url)
+  console.log(`Getting data from ${url}...`)
   try {
-    // get json from agent
     const response = await fetch(url, {
       method: 'GET',
       headers: { Accept: 'application/json' },
