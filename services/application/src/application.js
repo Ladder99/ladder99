@@ -33,7 +33,7 @@ let count = 200
 // let next = null
 
 async function shovel(client) {
-  const json = await getData('sample', from, count)
+  let json = await getData('sample', from, count)
 
   // <MTConnectError xmlns:m="urn:mtconnect.org:MTConnectError:1.7" xmlns="urn:mtconnect.org:MTConnectError:1.7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:mtconnect.org:MTConnectError:1.7 /schemas/MTConnectError_1.7.xsd">
   // <Header creationTime="2021-05-24T17:57:14Z" sender="b28197f93e9b" instanceId="1621875421" version="1.7.0.3" bufferSize="131072"/>
@@ -43,13 +43,17 @@ async function shovel(client) {
   // </MTConnectError >
   //. check errorCode
   if (json.MTConnectError) {
-    console.log(`ERROR`)
-    for (const err of json.MTConnectError.Errors) {
-      console.log(err)
+    console.log(json)
+    const outOfRange = json.MTConnectError.Errors.some(
+      err => err.Error.errorCode === 'OUT_OF_RANGE'
+    )
+    if (outOfRange) {
+      // reset the counter - we lost some data
+      from = null
+      // fetch whatever is available
+      json = await getData('sample')
+      // return
     }
-    // reset the counter - we lost some data
-    from = null
-    return
   }
 
   // get sequence info from header
