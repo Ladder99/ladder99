@@ -23,7 +23,8 @@ services:
 
   influxdb:
     container_name: influxdb
-    image: influxdb:2.0
+    # image: influxdb:2.0 # not avail for 32bit - need 64bit os
+    image: influxdb:1.8 # need v1 for https://grafana.com/grafana/dashboards/12034
     ports:
       - '8086:8086'
     environment:
@@ -33,8 +34,10 @@ services:
       INFLUXDB_USER:
       INFLUXDB_PASSWORD:
     volumes:
-      - ../volumes/influxdb/config:/etc/influxdb2
-      - ../volumes/influxdb/data:/var/lib/influxdb2
+      # - ../volumes/influxdb/config:/etc/influxdb2
+      # - ../volumes/influxdb/data:/var/lib/influxdb2
+      - ../volumes/influxdb/config:/etc/influxdb
+      - ../volumes/influxdb/data:/var/lib/influxdb
     networks:
       - ladder99
 
