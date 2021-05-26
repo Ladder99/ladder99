@@ -34,18 +34,18 @@ Start the database on the edge device - the first time this is run it may take a
 
       shell/setups/docker startd vmc db
 
-Initialize the database - 
+.. Initialize the database - 
 
-   .. code:: console
+..    .. code:: console
 
-      shell/db/migrate vmc 000-init.sql
-      shell/db/migrate vmc 001-tables.sql
+..       shell/db/migrate vmc 000-init.sql
+..       shell/db/migrate vmc 001-tables.sql
 
 
 Starting the Application
 =========================
 
-Now start the application, which feeds data from the agent to the database and visualizer -
+Now start the application, which feeds data from the agent to the database and visualizer - this may take a few minutes the first time it's run -
 
    .. code:: console
 
@@ -55,7 +55,9 @@ Now start the application, which feeds data from the agent to the database and v
 Viewing the dashboard
 =========================
 
-Now you should be able to view a dashboard in your browser at http://raspberrypi.local:3003. The default username/password is admin/admin - you'll be asked to change the password. 
+Now you should be able to view a dashboard in your browser at e.g. http://raspberrypi.local:3003. The default username/password is admin/admin - you'll be asked to change the password. 
+
+.. or did we specify the pw in the .env file?
 
 .. image:: _images/grafana.jpg
 
