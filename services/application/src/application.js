@@ -76,7 +76,7 @@ async function shovel(client) {
 function getDataItems(json) {
   const allDataItems = []
   logic.traverse(json, dataItems => {
-    allDataItems.push(dataItems)
+    allDataItems.push(...dataItems)
   })
   return allDataItems
 }
