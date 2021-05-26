@@ -12,7 +12,7 @@
       }
     ]
   },
-  "description": "test",
+  "description": "Vertical Machining Center (VMC) Dashboard",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
@@ -27,7 +27,9 @@
       "datasource": null,
       "description": "",
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "unit": "lengthmm"
+        },
         "overrides": []
       },
       "fill": 1,
@@ -89,7 +91,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "axes",
+      "title": "Actual Position (mm)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -105,7 +107,7 @@
       },
       "yaxes": [
         {
-          "format": "short",
+          "format": "lengthmm",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -132,8 +134,12 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
+      "description": "",
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "displayName": "Frt",
+          "unit": "lengthmm"
+        },
         "overrides": []
       },
       "fill": 1,
@@ -176,7 +182,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  id,\n  \"time\" AS \"time\",\n  value::text::numeric\nFROM \"values\"\nWHERE\n  id='Frt' and\n  $__timeFilter(\"time\")\nORDER BY 1",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text::numeric\nFROM \"values\"\nWHERE\n  id='Frt' and\n  $__timeFilter(\"time\")\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -202,7 +208,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "frt",
+      "title": "Path Feedrate (mm/sec)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -218,7 +224,7 @@
       },
       "yaxes": [
         {
-          "format": "short",
+          "format": "lengthmm",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -248,8 +254,8 @@
     "list": []
   },
   "time": {
-    "from": "2021-05-26T03:38:47.779Z",
-    "to": "2021-05-26T03:42:29.854Z"
+    "from": "2021-05-26T03:28:01.210Z",
+    "to": "2021-05-26T03:28:24.591Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -266,7 +272,7 @@
     ]
   },
   "timezone": "",
-  "title": "Ladder99",
+  "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 6
+  "version": 4
 }
