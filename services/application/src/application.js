@@ -24,6 +24,7 @@ const interval = Number(process.env.INTERVAL || 2000) // msec
 async function setupTable(client) {
   const tableName = 'values'
   const sql = `
+CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 CREATE TABLE IF NOT EXISTS "${tableName}" (
   id text NOT NULL,
   time timestamptz NOT NULL,
