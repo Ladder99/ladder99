@@ -35,9 +35,123 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 6,
+        "w": 11,
         "x": 0,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 10,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value::text::numeric\nFROM \"values\"\nWHERE\n  (id='x3' or id='y3') and\n  $__timeFilter(\"time\")\nORDER BY id, time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "\"values\"",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Commanded Position (mm)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "lengthmm",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "lengthmm"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 11,
+        "x": 11,
         "y": 0
       },
       "hiddenSeries": false,
@@ -72,7 +186,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__time(time),\n  id,\n  value::text::numeric\nFROM\n  values\nWHERE\n  (id='x2' OR id='y2' OR id='z2') AND\n  $__timeFilter(time)\n",
+          "rawSql": "SELECT\n  $__time(time),\n  id,\n  value::text::numeric\nFROM\n  values\nWHERE\n  (id='x2' OR id='y2' OR id='z2') AND\n  $__timeFilter(time)\nORDER BY id, time",
           "refId": "A",
           "select": [
             [
@@ -145,10 +259,10 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 12,
-        "y": 0
+        "h": 4,
+        "w": 11,
+        "x": 0,
+        "y": 6
       },
       "hiddenSeries": false,
       "id": 8,
@@ -182,7 +296,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text::numeric\nFROM \"values\"\nWHERE\n  id='Frt' and\n  $__timeFilter(\"time\")\nORDER BY 1",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value::text::numeric\nFROM \"values\"\nWHERE\n  id='Frt' and\n  $__timeFilter(\"time\")\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -254,8 +368,8 @@
     "list": []
   },
   "time": {
-    "from": "2021-05-26T03:28:01.210Z",
-    "to": "2021-05-26T03:28:24.591Z"
+    "from": "2021-05-26T15:19:56.699Z",
+    "to": "2021-05-26T15:21:07.157Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -274,5 +388,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 4
+  "version": 7
 }
