@@ -20,6 +20,113 @@
   "links": [],
   "panels": [
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "hiddenSeries": false,
+      "id": 6,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__time(time),\n  id,\n  value::text::numeric\nFROM\n  values\nWHERE\n  (id='x2' OR id='y2' OR id='z2') AND\n  $__timeFilter(time)\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "values",
+          "timeColumn": "time",
+          "where": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "axes",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
       "backgroundColor": "rgba(128,128,128,0.1)",
       "colorMaps": [
         {
@@ -40,7 +147,7 @@
         "h": 5,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 8
       },
       "highlightOnMouseover": true,
       "id": 4,
@@ -151,8 +258,8 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
-    "to": "now"
+    "from": "2021-05-26T03:28:01.210Z",
+    "to": "2021-05-26T03:28:24.591Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -171,5 +278,5 @@
   "timezone": "",
   "title": "Ladder99",
   "uid": "dII-Qgzgz",
-  "version": 1
+  "version": 5
 }
