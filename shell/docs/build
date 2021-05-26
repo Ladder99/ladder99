@@ -1,5 +1,8 @@
 #!/bin/bash
 # build sphinx docs
 
+# note: sphinx docs are automatically built and available on git push at
+# https://ladder99.readthedocs.io/en/latest/
+
 cd docs
 make html

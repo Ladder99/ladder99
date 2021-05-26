@@ -1,6 +1,9 @@
 #!/bin/bash
 # watch and serve sphinx docs
 
+# note: sphinx docs are automatically built and available on git push at
+# https://ladder99.readthedocs.io/en/latest/
+
 # -a rebuilds everything on a change - needed because the sidebar
 # can get all out of whack otherwise.
 sphinx-autobuild -a --port 8080 docs/source docs/build/html
