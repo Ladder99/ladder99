@@ -1,0 +1,181 @@
+version: '3.8'
+
+services:
+  agent:
+    container_name: agent
+    image: ladder99/mtconnect-agent:latest
+    networks:
+      - ladder99
+    ports:
+      - 5000:5000
+    logging:
+      options:
+        max-size: '1m'
+
+  timescaledb:
+    container_name: timescaledb
+    image: timescale/timescaledb:latest-pg13
+    # can remap port so can run on mac with local db also
+    ports:
+      - $PGPORT:5432/tcp
+    environment:
+      POSTGRES_DB: $PGDATABASE
+      POSTGRES_USERNAME: $PGUSER
+      POSTGRES_PASSWORD: $PGPASSWORD
+    volumes:
+      - volumes/timescaledb:/var/lib/postgresql/data
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
+  influxdb:
+    container_name: influxdb
+    # image: influxdb:2.0 # not avail for 32bit - need 64bit os
+    image: influxdb:1.8 # need v1 for https://grafana.com/grafana/dashboards/12034
+    ports:
+      - '8086:8086'
+    environment:
+      INFLUXDB_DB:
+      INFLUXDB_ADMIN_USER:
+      INFLUXDB_ADMIN_PASSWORD:
+      INFLUXDB_USER:
+      INFLUXDB_PASSWORD:
+    volumes:
+      # - volumes/influxdb/config:/etc/influxdb2
+      # - volumes/influxdb/data:/var/lib/influxdb2
+      - volumes/influxdb/config:/etc/influxdb
+      - volumes/influxdb/data:/var/lib/influxdb
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
+  telegraf:
+    container_name: telegraf
+    image: telegraf:1.18
+    environment:
+      INFLUXDB_URL: http://influxdb:8086
+      INFLUXDB_DB:
+      INFLUXDB_PASSWORD:
+      # INFLUX_TOKEN:
+    volumes:
+      - volumes/telegraf:/etc/telegraf
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:7.5.5
+    ports:
+      - $GRAFANA_PORT:3000/tcp
+    environment:
+      PGHOST: timescaledb
+      PGPORT:
+      PGDATABASE:
+      PGUSER:
+      PGPASSWORD:
+      # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
+      GF_INSTALL_PLUGINS: natel-discrete-panel
+    volumes:
+      # note: grafana.ini is located in /etc/grafana by default -
+      # other folders are specified there.
+      - volumes/grafana/etc:/etc/grafana
+      - volumes/grafana/var:/var/lib/grafana
+    # user: grafana
+    #. get warning that these are blank, though echo $UID works - why?
+    # but even if blank, now grafana is able to write to /var/lib/grafana.
+    # gives permission error without this.
+    # does blank here mean root?
+    user: '$UID:$GID'
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
+  # arangodb:
+  #   container_name: arangodb
+  #   image: arangodb:3.7
+  #   environment:
+  #     - ARANGO_NO_AUTH=1 # for development only
+  #     # - ARANGO_ROOT_PASSWORD=password
+  #   ports:
+  #     - '8529:8529'
+  #   # these don't seem to have any effect? at least not on mac - uses vm?
+  #   # volumes:
+  #   #   - volumes/arango:/var/lib/arango
+  #   #   # - volumes/arangodb/data:/var/lib/arangodb3
+  #   #   # - volumes/arangodb/apps:/var/lib/arangodb3-apps
+  #   networks:
+  #     - ladder99
+
+  # pgadmin:
+  #   container_name: pgadmin
+  #   image: biarms/pgadmin4:latest
+  #   ports:
+  #     - '5050:5050/tcp'
+  #   networks:
+  #     - ladder99
+  #   deploy:
+  #     restart_policy:
+  #       condition: on-failure
+
+  application:
+    container_name: application
+    image: node:15
+    user: node
+    working_dir: /home/node/app
+    command: npm start
+    environment:
+      - AGENT_BASE_URL=http://agent:5000
+      - FETCH_INTERVAL=2000
+      - FETCH_COUNT=200
+      - PGHOST
+      - PGPORT
+      - PGDATABASE
+      - PGUSER
+      - PGPASSWORD
+    #. this fixes a problem on linux - will it still work on mac with this here?
+    # see https://stackoverflow.com/a/67158212/243392
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+      - ladder99
+    volumes:
+      - ../../../services/application:/home/node/app
+    #   - volumes/application:/etc/application
+    logging:
+      options:
+        max-size: '1m'
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce
+    ports:
+      - '9000:9000'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - volumes/portainer:/data
+    restart: always
+    logging:
+      driver: 'none'
+    networks:
+      - ladder99
+
+networks:
+  ladder99:
+    name: ladder99
