@@ -63,7 +63,6 @@ services:
       INFLUXDB_URL: http://influxdb:8086
       INFLUXDB_DB:
       INFLUXDB_PASSWORD:
-      # INFLUX_TOKEN:
     volumes:
       - volumes/telegraf:/etc/telegraf
     networks:
