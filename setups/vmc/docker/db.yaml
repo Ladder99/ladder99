@@ -21,6 +21,23 @@ services:
     networks:
       - ladder99
 
+  influxdb:
+    container_name: influxdb
+    image: influxdb:2.0
+    ports:
+      - '8086:8086'
+    environment:
+      INFLUXDB_DB:
+      INFLUXDB_ADMIN_USER:
+      INFLUXDB_ADMIN_PASSWORD:
+      INFLUXDB_USER:
+      INFLUXDB_PASSWORD:
+    volumes:
+      - ../volumes/influxdb/config:/etc/influxdb2
+      - ../volumes/influxdb/data:/var/lib/influxdb2
+    networks:
+      - ladder99
+
   grafana:
     container_name: grafana
     image: grafana/grafana:7.5.5
@@ -64,23 +81,6 @@ services:
   #   #   - ../volumes/arango:/var/lib/arango
   #   #   # - ../volumes/arangodb/data:/var/lib/arangodb3
   #   #   # - ../volumes/arangodb/apps:/var/lib/arangodb3-apps
-  #   networks:
-  #     - ladder99
-
-  # influxdb:
-  #   container_name: influxdb
-  #   image: influxdb:2.0
-  #   ports:
-  #     - '8086:8086'
-  #   environment:
-  #     - INFLUXDB_DB=ladder99
-  #     - INFLUXDB_ADMIN_USER=admin
-  #     - INFLUXDB_ADMIN_PASSWORD=admin
-  #     - INFLUXDB_USER=ladder99
-  #     - INFLUXDB_PASSWORD=ladder99
-  #   volumes:
-  #     - ../volumes/influxdb/data:/var/lib/influxdb2
-  #     - ../volumes/influxdb/config:/etc/influxdb2
   #   networks:
   #     - ladder99
 
