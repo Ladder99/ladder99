@@ -1,4 +1,7 @@
 # ladder99-adapter
 
-NodeJS program with JS plugins for each device/datasource. 
+MTConnect Adapter - NodeJS program with plugins for different datasources.
 
+Plugins convert from machine data to SHDR representation, send on to MTConnect Agent.
+
+The core component is the cache - dataitems are written there, then calculations are run on the cache items and output to SHDR.
