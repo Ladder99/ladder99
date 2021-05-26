@@ -11,14 +11,15 @@ console.log(`---------------------------------------------------`)
 
 // get envars
 const baseUrl = process.env.AGENT_BASE_URL || 'http://localhost:5000'
-const interval = Number(process.env.INTERVAL || 2000) // msec
+const fetchInterval = Number(process.env.FETCH_INTERVAL || 2000) // msec
+const fetchCount = Number(process.env.FETCH_COUNT || 200)
 
 ;(async function () {
   // get postgres connection and start polling
   const client = new Client()
   await client.connect() // uses envars PGHOST, PGPORT, etc
   await setupTable(client)
-  setInterval(() => shovel(client), interval)
+  setInterval(() => shovel(client), fetchInterval)
 })()
 
 async function setupTable(client) {
@@ -37,7 +38,7 @@ SELECT create_hypertable('"${tableName}"', 'time', if_not_exists => TRUE);
 }
 
 let from = null
-let count = 200
+let count = fetchCount
 // let next = null
 
 async function shovel(client) {

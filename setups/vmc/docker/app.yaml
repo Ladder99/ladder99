@@ -12,7 +12,8 @@ services:
     command: npm start
     environment:
       - AGENT_BASE_URL=http://agent:5000
-      - INTERVAL=2000
+      - FETCH_INTERVAL=2000
+      - FETCH_COUNT=200
       - PGHOST
       - PGPORT
       - PGDATABASE
