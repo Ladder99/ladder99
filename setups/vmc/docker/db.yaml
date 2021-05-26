@@ -41,6 +41,16 @@ services:
     networks:
       - ladder99
 
+  telegraf:
+    container_name: telegraf
+    image: telegraf:1.18
+    # environment:
+    #   - INFLUX_TOKEN
+    volumes:
+      - ../volumes/telegraf:/etc/telegraf
+    networks:
+      - ladder99
+
   grafana:
     container_name: grafana
     image: grafana/grafana:7.5.5
@@ -84,19 +94,6 @@ services:
   #   #   - ../volumes/arango:/var/lib/arango
   #   #   # - ../volumes/arangodb/data:/var/lib/arangodb3
   #   #   # - ../volumes/arangodb/apps:/var/lib/arangodb3-apps
-  #   networks:
-  #     - ladder99
-
-  # telegraf:
-  #   container_name: telegraf
-  #   image: telegraf:1.18
-  #   # depends_on:
-  #   #   - arangodb
-  #   #   # - influxdb
-  #   environment:
-  #     - INFLUX_TOKEN
-  #   volumes:
-  #     - ../volumes/telegraf:/etc/telegraf
   #   networks:
   #     - ladder99
 
