@@ -23,7 +23,7 @@ services:
       POSTGRES_USERNAME: $PGUSER
       POSTGRES_PASSWORD: $PGPASSWORD
     volumes:
-      - volumes/timescaledb:/var/lib/postgresql/data
+      - volumes/timescaledb/data:/var/lib/postgresql/data
     deploy:
       restart_policy:
         condition: on-failure
