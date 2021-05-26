@@ -13,10 +13,9 @@
 <!-- <a href="https://www.npmjs.com/package/neomem"><img alt="weekly downloads from npm" src="https://img.shields.io/npm/dw/ladder99.svg?style=flat-square"></a> -->
 <!-- [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/) -->
 
+Ladder99 is a free and open source application that transfers data from factory devices to a database and end-user visualizations using MTConnect, an open standard.
 
-Ladder99 is a free and open source application that transfers data from factory devices to a database and end-user visualizations using MTConnect, an open standard. 
-
-MTConnect standardizes factory device data flow and vocabulary - it was started by UC Berkeley, Georgia Institute of Technology, and Sun Microsystems in 2008. 
+MTConnect standardizes factory device data flow and vocabulary - it was started by UC Berkeley, Georgia Institute of Technology, and Sun Microsystems in 2008, and continues under active development.
 
 ![image](docs/source/_images/agent.jpg)
 
