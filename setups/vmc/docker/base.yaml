@@ -1,5 +1,3 @@
-# agent
-
 version: '3.7'
 
 services:
@@ -13,6 +11,22 @@ services:
     logging:
       options:
         max-size: '1m'
+
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce
+    ports:
+      - '9000:9000'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ../volumes/portainer:/data
+    restart: always
+    logging:
+      driver: 'none'
+    networks:
+      - ladder99
 
 networks:
   ladder99:
