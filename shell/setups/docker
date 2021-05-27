@@ -34,7 +34,7 @@ if cmd == 'startd':
 if cmd == 'start' or cmd == 'startd':
     # pull any required images in the docker-compose files
     # and start the services
-    cmd = f"docker-compose {args} pull && docker-compose {args} up --build {flags} {services}"
+    cmd = f"docker-compose {args} pull {services} && docker-compose {args} up --build {flags} {services}"
     print(cmd)
     os.system(cmd)
 
