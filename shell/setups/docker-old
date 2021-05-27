@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+# run a set of docker-compose yaml files
+
+# usage: shell/setups/docker COMMAND SETUP YAMLS
+# COMMAND can be start, startd, stop
+# SETUP is the setup subfolder, eg vmc, ccs-pa
+# YAMLS is a space-delim list of yamls to run
+# eg `shell/setups/docker start ccs-pa base db`
+
+import sys
+import os
+import pathlib
+
+cmd = sys.argv[1]  # eg 'start', 'startd', 'stop'
+setup = sys.argv[2]  # eg 'vmc'
+parts = sys.argv[3:]  # eg ['base', 'db']
+
+# get list of docker compose file paths
+files = [f"setups/{setup}/docker/{part}.yaml" for part in parts]
+args = ' '.join([f"--file {file}" for file in files])
+
+# add envfile
+envfile = f"setups/{setup}/.env"
+if pathlib.Path(envfile).exists():
+    args += f" --env-file {envfile}"
+else:
+    args += f" --env-file {envfile}-default"
+
+# get flags
+flags = ''
+if cmd == 'startd':
+    flags = '--detach'
+
+if cmd == 'start' or cmd == 'startd':
+    # . compile devices.yaml to devices.xml
+    # shell/setups/compile $SETUP
+
+    # pull any required images in the docker-compose files
+    # and start all the services
+    cmd = f"docker-compose {args} pull && docker-compose {args} up --build {flags}"
+    print(cmd)
+    os.system(cmd)
+
+elif cmd == 'stop':
+
+    cmd = f"docker-compose {args} down"
+    print(cmd)
+    os.system(cmd)
