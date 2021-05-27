@@ -15,7 +15,6 @@ services:
   timescaledb:
     container_name: timescaledb
     image: timescale/timescaledb:latest-pg13
-    # can remap port so can run on mac with local db also
     ports:
       - $PGPORT:5432/tcp
     environment:
@@ -46,8 +45,6 @@ services:
       INFLUXDB_USER:
       INFLUXDB_PASSWORD:
     volumes:
-      # - ./volumes/influxdb/config:/etc/influxdb2
-      # - ./volumes/influxdb/data:/var/lib/influxdb2
       - ./volumes/influxdb/config:/etc/influxdb
       - ./volumes/influxdb/data:/var/lib/influxdb
     networks:
@@ -94,7 +91,8 @@ services:
     # but even if blank, now grafana is able to write to /var/lib/grafana.
     # gives permission error without this.
     # does blank here mean root?
-    user: '$UID:$GID'
+    # user: '$UID:$GID'
+    user: root
     deploy:
       restart_policy:
         condition: on-failure
@@ -154,7 +152,6 @@ services:
       - ladder99
     volumes:
       - ../../services/application:/home/node/app
-    #   - ./volumes/application:/etc/application
     logging:
       options:
         max-size: '1m'
