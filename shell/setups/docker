@@ -18,7 +18,8 @@ services = ' '.join(sys.argv[3:])  # eg 'agent timescaledb'
 # # get list of docker compose file paths
 # files = [f"setups/{setup}/docker/{part}.yaml" for part in parts]
 # args = ' '.join([f"--file {file}" for file in files])
-composefile = f"setups/{setup}/compose.yaml"
+# composefile = f"setups/{setup}/compose.yaml"
+composefile = f"setups/compose.yaml"
 args = f"--file {composefile}"
 
 # add envfile
