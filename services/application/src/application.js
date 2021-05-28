@@ -96,11 +96,12 @@ function getDataItems(json) {
 // see https://stackoverflow.com/a/63167970/243392 etc
 async function writeDataItems(dataItems, client) {
   for (const dataItem of dataItems) {
-    const { dataItemId, timestamp, value } = dataItem
+    let { dataItemId, timestamp, value } = dataItem
     const id = dataItemId
     // const type = typeof value === 'string' ? 'text' : 'numeric'
     // const sql = `INSERT INTO values (id, time, value) VALUES ($1, $2, to_json($3::${type}));`
     // const values = [id, timestamp, value]
+    value = value === undefined ? 'undefined' : value
     const type = typeof value === 'string' ? '::text' : ''
     const sql = `INSERT INTO values (time, id, value) VALUES ($1, $2, to_jsonb($3${type}));`
     const values = [timestamp, id, value]
