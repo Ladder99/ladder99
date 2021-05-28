@@ -126,7 +126,7 @@ services:
     environment:
       - AGENT_BASE_URL=http://agent:5000
       - FETCH_INTERVAL=2000
-      - FETCH_COUNT=400
+      - FETCH_COUNT=800
       - PGHOST
       - PGPORT
       - PGDATABASE
