@@ -4,6 +4,20 @@
 version: '3.8'
 
 services:
+  agent:
+    container_name: agent
+    image: ladder99/mtconnect-agent:latest
+    command: agent debug /data/agent/agent.cfg
+    ports:
+      - 5000:5000
+    volumes:
+      - ./$SETUP/volumes/agent:/data/agent
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
   broker:
     container_name: broker
     image: eclipse-mosquitto
