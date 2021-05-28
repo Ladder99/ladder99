@@ -1,4 +1,4 @@
-# base services
+# docker-compose file
 #. this will be generated from devices.yaml, but edit manually for now.
 
 version: '3.8'
@@ -42,13 +42,11 @@ services:
       - MESSAGE_DELAY=1000
       - LOOP=true
       - LOOP_DELAY=3000
-    # depends_on:
-    #   - agent
-    networks:
-      - ladder99
     volumes:
       - ../../../services/simulator-mqtt:/home/node/app
       - ../volumes/simulator-mqtt:/etc/simulator-mqtt
+    networks:
+      - ladder99
     logging:
       options:
         max-size: '1m'
@@ -61,8 +59,6 @@ services:
     command: npm start
     volumes:
       - ../../../services/simulator-opc:/home/node/app
-    # depends_on:
-    #   - agent
     networks:
       - ladder99
     logging:
