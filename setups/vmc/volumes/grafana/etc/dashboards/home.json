@@ -86,7 +86,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value::text::numeric\nFROM \"values\"\nWHERE\n  (id='x3' or id='y3') and\n  $__timeFilter(\"time\")\nORDER BY id, time",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value::text::numeric\nFROM \"values\"\nWHERE\n  (id='x3' or id='y3') and (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY id, time",
           "refId": "A",
           "select": [
             [
@@ -202,7 +202,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__time(time),\n  id,\n  value::text::numeric\nFROM\n  values\nWHERE\n  (id='x2' OR id='y2') AND\n  $__timeFilter(time)\nORDER BY id, time",
+          "rawSql": "SELECT\n  $__time(time),\n  id,\n  value::text::numeric\nFROM\n  values\nWHERE\n  (id='x2' OR id='y2') AND (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(time)\nORDER BY id, time",
           "refId": "A",
           "select": [
             [
@@ -312,7 +312,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value::text::numeric\nFROM \"values\"\nWHERE\n  id='Frt' and\n  $__timeFilter(\"time\")\nORDER BY 1",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value::text::numeric\nFROM \"values\"\nWHERE\n  id='Frt' and (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -749,5 +749,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 12
+  "version": 14
 }
