@@ -2,16 +2,15 @@
 Setting Up Devices
 *******************
 
-A configuration of devices is called a 'setup', and is defined in the ``setups`` folder.
-
-#. Copy data files into named volumes for Docker
-
-   ``ccs-pa`` in this case refers to the subdirectory in ``setups``, which contains the data files.
+A configuration of devices is called a 'setup', and is defined in the ``setups`` folder. Ladder99 comes with a print & apply machine as an example - let's look at that. Check the files in setups/ccs-pa - 
 
    .. code:: console
 
-      shell/adapter/copy ccs-pa
-      shell/agent/copy ccs-pa
+      tree setups/ccs-pa
+
+
+
+
 
    .. note::
 
