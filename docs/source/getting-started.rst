@@ -38,7 +38,7 @@ You can also view a dashboard in your browser at e.g. http://raspberrypi.local:3
 
 .. or did we specify the pw in the .env file?
 
-.. image:: _images/grafana.jpg
+.. image:: _images/grafana-vmc.jpg
 
 You can select a range on the graphs to zoom in, or select a time range.
 
