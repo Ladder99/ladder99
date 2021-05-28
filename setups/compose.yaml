@@ -16,7 +16,8 @@ services:
 
   timescaledb:
     container_name: timescaledb
-    image: timescale/timescaledb:latest-pg13
+    # image: timescale/timescaledb:latest-pg13
+    image: timescale/timescaledb:2.3.0-pg13
     ports:
       - $PGPORT:5432/tcp
     environment:
@@ -117,7 +118,8 @@ services:
 
   application:
     container_name: application
-    image: node:15
+    # image: node:15
+    image: node:15.14
     user: node
     working_dir: /home/node/app
     command: npm start
