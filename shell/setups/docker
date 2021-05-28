@@ -22,7 +22,8 @@ composefile = f"setups/{setup}/compose.yaml"
 args = f"--file {composefile}"
 
 # add envfile
-envfile = f"setups/{setup}/.env"
+# envfile = f"setups/{setup}/.env"
+envfile = f"setups/.env"
 if pathlib.Path(envfile).exists():
     args += f" --env-file {envfile}"
 
