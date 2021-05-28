@@ -27,6 +27,9 @@ envfile = f"setups/.env"
 if pathlib.Path(envfile).exists():
     args += f" --env-file {envfile}"
 
+# add envars
+args += f" -e SETUP={setup}"
+
 # get flags
 flags = ''
 if cmd == 'startd':
