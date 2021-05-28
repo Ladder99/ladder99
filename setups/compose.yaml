@@ -3,16 +3,16 @@
 version: '3.8'
 
 services:
-  # agent:
-  #   container_name: agent
-  #   image: ladder99/mtconnect-agent:latest
-  #   ports:
-  #     - 5000:5000
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '1m'
+  agent:
+    container_name: agent
+    image: ladder99/mtconnect-agent:latest
+    ports:
+      - 5000:5000
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
 
   timescaledb:
     container_name: timescaledb
