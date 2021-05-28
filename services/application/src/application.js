@@ -102,7 +102,7 @@ async function writeDataItems(dataItems, client) {
     // const sql = `INSERT INTO values (id, time, value) VALUES ($1, $2, to_json($3::${type}));`
     // const values = [id, timestamp, value]
     value = value === undefined ? 'undefined' : value
-    const type = typeof value === 'string' ? '::text' : ''
+    const type = typeof value === 'string' ? '::text' : '::numeric'
     const sql = `INSERT INTO values (time, id, value) VALUES ($1, $2, to_jsonb($3${type}));`
     const values = [timestamp, id, value]
     console.log(sql, { values })
