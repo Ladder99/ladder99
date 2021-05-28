@@ -23,17 +23,27 @@ const fetchCount = Number(process.env.FETCH_COUNT || 200)
 })()
 
 async function setupTable(client) {
-  const tableName = 'values'
   const sql = `
 CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
-CREATE TABLE IF NOT EXISTS "${tableName}" (
-  id text NOT NULL,
+
+CREATE TABLE IF NOT EXISTS values (
   time timestamptz NOT NULL,
-  value json
+  id text NOT NULL,
+  value jsonb
 );
-SELECT create_hypertable('"${tableName}"', 'time', if_not_exists => TRUE);
+
+SELECT create_hypertable('values', 'time', if_not_exists => TRUE);
+
+-- CREATE OR REPLACE VIEW values_numeric AS
+-- SELECT time, id, value::numeric
+-- FROM values
+-- WHERE value ~ '^\d+(\.\d+)?$';
+
+-- CREATE OR REPLACE VIEW values_text AS
+-- SELECT time, id, value::text
+-- FROM values;
 `
-  console.log(`Creating table '${tableName}' if not there...`)
+  console.log(`Creating db structures if not there...`)
   await client.query(sql)
 }
 
@@ -88,9 +98,12 @@ async function writeDataItems(dataItems, client) {
   for (const dataItem of dataItems) {
     const { dataItemId, timestamp, value } = dataItem
     const id = dataItemId
-    const type = typeof value === 'string' ? 'text' : 'numeric'
-    const sql = `INSERT INTO values (id, time, value) VALUES ($1, $2, to_json($3::${type}));`
-    const values = [id, timestamp, value]
+    // const type = typeof value === 'string' ? 'text' : 'numeric'
+    // const sql = `INSERT INTO values (id, time, value) VALUES ($1, $2, to_json($3::${type}));`
+    // const values = [id, timestamp, value]
+    const type = typeof value === 'string' ? '::text' : ''
+    const sql = `INSERT INTO values (time, id, value) VALUES ($1, $2, to_jsonb($3${type}));`
+    const values = [timestamp, id, value]
     console.log(sql, { values })
     //. add try block
     await client.query(sql, values)
