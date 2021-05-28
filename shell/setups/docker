@@ -27,8 +27,8 @@ envfile = f"setups/.env"
 if pathlib.Path(envfile).exists():
     args += f" --env-file {envfile}"
 
-# add envars
-args += f" -e SETUP={setup}"
+# # add envars
+# args += f" -e SETUP={setup}"
 
 # get flags
 flags = ''
@@ -38,11 +38,12 @@ if cmd == 'startd':
 if cmd == 'start' or cmd == 'startd':
     # pull any required images in the docker-compose files
     # and start the services
-    cmd = f"docker-compose {args} pull {services} && docker-compose {args} up --build {flags} {services}"
+    # cmd = f"docker-compose {args} pull {services} && docker-compose {args} up --build {flags} {services}"
+    cmd = f"SETUP={setup} docker-compose {args} pull {services} && SETUP={setup} docker-compose {args} up --build {flags} {services}"
     print(cmd)
     os.system(cmd)
 
 elif cmd == 'stop':
-    cmd = f"docker-compose {args} down {services}"
+    cmd = f"SETUP={setup} docker-compose {args} down {services}"
     print(cmd)
     os.system(cmd)
