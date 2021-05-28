@@ -139,7 +139,7 @@ services:
     networks:
       - ladder99
     volumes:
-      - ../../services/application:/home/node/app
+      - ../services/application:/home/node/app
     logging:
       options:
         max-size: '1m'
