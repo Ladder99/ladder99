@@ -1,8 +1,33 @@
-# simulations
+# base services
+#. this will be generated from devices.yaml, but edit manually for now.
 
-version: '3.7'
+version: '3.8'
 
 services:
+  broker:
+    container_name: broker
+    image: eclipse-mosquitto
+    ports:
+      - 1883:1883
+    volumes:
+      - ./$SETUP/volumes/broker:/mosquitto
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
+  adapter:
+    container_name: adapter
+    image: ladder99/adapter:latest
+    volumes:
+      - adapter:/data/adapter
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
   simulator-mqtt:
     container_name: simulator-mqtt
     image: node:15

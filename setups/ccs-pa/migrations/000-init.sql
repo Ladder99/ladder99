@@ -1,3 +1,0 @@
-CREATE DATABASE ccs_pa;
-\c ccs_pa
-CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
