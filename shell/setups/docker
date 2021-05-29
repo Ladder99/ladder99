@@ -22,6 +22,9 @@ services = ' '.join(sys.argv[3:])  # eg 'agent timescaledb'
 composefile = f"setups/compose.yaml"
 args = f"--file {composefile}"
 
+composefile2 = f"setups/{setup}/compose-{setup}.yaml"
+args += f" --file {composefile2}"
+
 # add envfile
 # envfile = f"setups/{setup}/.env"
 envfile = f"setups/.env"

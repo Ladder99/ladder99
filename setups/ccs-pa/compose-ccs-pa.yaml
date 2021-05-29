@@ -4,80 +4,74 @@
 version: '3.8'
 
 services:
+  # override agent settings from compose.yaml
   agent:
-    # container_name: agent
-    # image: ladder99/mtconnect-agent:latest
-    # ports:
-    #   - 5000:5000
     command: agent debug /data/agent/agent.cfg
+    ports:
+      - 5001:5000
     volumes:
       - ./$SETUP/volumes/agent:/data/agent
-    # networks:
-    #   - ladder99
-    # logging:
-    #   options:
-    #     max-size: '1m'
 
-  broker:
-    container_name: broker
-    image: eclipse-mosquitto
-    ports:
-      - 1883:1883
-    volumes:
-      - ./$SETUP/volumes/broker:/mosquitto
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '1m'
+  # broker:
+  #   container_name: broker
+  #   image: eclipse-mosquitto
+  #   ports:
+  #     - 1883:1883
+  #   volumes:
+  #     - ./$SETUP/volumes/broker:/mosquitto
+  #   networks:
+  #     - ladder99
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
-  adapter:
-    container_name: adapter
-    image: ladder99/adapter:latest
-    volumes:
-      - adapter:/data/adapter
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '1m'
+  # adapter:
+  #   container_name: adapter
+  #   image: ladder99/adapter:latest
+  #   volumes:
+  #     - adapter:/data/adapter
+  #   networks:
+  #     - ladder99
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
-  simulator-mqtt:
-    container_name: simulator-mqtt
-    image: node:15
-    user: node
-    working_dir: /home/node/app
-    command: npm start
-    environment:
-      - MQTT_HOST=broker
-      - MQTT_PORT=1883
-      - DEVICE_ID=ccs-pa-001
-      - MESSAGES_FILE=/etc/simulator-mqtt/messages.js
-      - MESSAGE_DELAY=1000
-      - LOOP=true
-      - LOOP_DELAY=3000
-    volumes:
-      - ../../../services/simulator-mqtt:/home/node/app
-      - ../volumes/simulator-mqtt:/etc/simulator-mqtt
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '1m'
+  # simulator-mqtt:
+  #   container_name: simulator-mqtt
+  #   image: node:15
+  #   user: node
+  #   working_dir: /home/node/app
+  #   command: npm start
+  #   environment:
+  #     - MQTT_HOST=broker
+  #     - MQTT_PORT=1883
+  #     - DEVICE_ID=ccs-pa-001
+  #     - MESSAGES_FILE=/etc/simulator-mqtt/messages.js
+  #     - MESSAGE_DELAY=1000
+  #     - LOOP=true
+  #     - LOOP_DELAY=3000
+  #   volumes:
+  #     - ../../../services/simulator-mqtt:/home/node/app
+  #     - ../volumes/simulator-mqtt:/etc/simulator-mqtt
+  #   networks:
+  #     - ladder99
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
-  simulator-opc:
-    container_name: simulator-opc
-    image: node:15
-    user: node
-    working_dir: /home/node/app
-    command: npm start
-    volumes:
-      - ../../../services/simulator-opc:/home/node/app
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '1m'
+  # simulator-opc:
+  #   container_name: simulator-opc
+  #   image: node:15
+  #   user: node
+  #   working_dir: /home/node/app
+  #   command: npm start
+  #   volumes:
+  #     - ../../../services/simulator-opc:/home/node/app
+  #   networks:
+  #     - ladder99
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
 networks:
   ladder99:
