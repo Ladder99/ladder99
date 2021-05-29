@@ -16,7 +16,8 @@ const pluginsFolder = './plugins' // for protocol handlers, eg mqtt-json - must 
 // const dataFolder = '/etc/ladder99/adapter' // incls devices.yaml, models folder
 // const dataFolder = '/home/ladder99/data/adapter' // incls devices.yaml, models folder
 const dataFolder = '/data/adapter' // incls devices.yaml, models folder
-const modelsFolder = `${dataFolder}/models` // incl ccs-pa/model.yaml etc
+// const modelsFolder = `${dataFolder}/models` // incl ccs-pa/model.yaml etc
+const modelsFolder = `/data/models` // incl ccs-pa/model.yaml etc
 
 // load devices.yaml - see setups/demo/devices.yaml
 const yamlfile = `${dataFolder}/devices.yaml`
