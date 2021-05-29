@@ -19,11 +19,15 @@ services = ' '.join(sys.argv[3:])  # eg 'agent timescaledb'
 # files = [f"setups/{setup}/docker/{part}.yaml" for part in parts]
 # args = ' '.join([f"--file {file}" for file in files])
 # composefile = f"setups/{setup}/compose.yaml"
+
+# add main compose file for main agent-viz pipeline
 composefile = f"setups/compose.yaml"
 args = f"--file {composefile}"
 
+# add compose file for device-agent pipeline / overrides
 composefile2 = f"setups/{setup}/compose-{setup}.yaml"
-args += f" --file {composefile2}"
+if pathlib.Path(composefile2).exists():
+    args += f" --file {composefile2}"
 
 # add envfile
 # envfile = f"setups/{setup}/.env"
@@ -31,18 +35,13 @@ envfile = f"setups/.env"
 if pathlib.Path(envfile).exists():
     args += f" --env-file {envfile}"
 
-# # add envars
-# args += f" -e SETUP={setup}"
-
 # get flags
 flags = ''
 if cmd == 'startd':
     flags = '--detach'
 
 if cmd == 'start' or cmd == 'startd':
-    # pull any required images in the docker-compose files
-    # and start the services
-    # cmd = f"docker-compose {args} pull {services} && docker-compose {args} up --build {flags} {services}"
+    # pull any required images in the docker-compose files and start services.
     cmd = f"SETUP={setup} docker-compose {args} pull {services} && SETUP={setup} docker-compose {args} up --build {flags} {services}"
     print(cmd)
     os.system(cmd)
