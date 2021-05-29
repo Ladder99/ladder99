@@ -8,31 +8,39 @@ services:
   agent:
     command: agent debug /data/agent/agent.cfg
     volumes:
+      # contains agent.cfg and devices.xml
       - ./$SETUP/volumes/agent:/data/agent
 
-  # broker:
-  #   container_name: broker
-  #   image: eclipse-mosquitto
-  #   ports:
-  #     - 1883:1883
-  #   volumes:
-  #     - ./$SETUP/volumes/broker:/mosquitto
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '1m'
+  broker:
+    container_name: broker
+    image: eclipse-mosquitto
+    ports:
+      - 1883:1883
+    volumes:
+      # contains config/mosquitto.conf
+      - ./$SETUP/volumes/broker:/mosquitto
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
 
-  # adapter:
-  #   container_name: adapter
-  #   image: ladder99/adapter:latest
-  #   volumes:
-  #     - adapter:/data/adapter
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '1m'
+  adapter:
+    container_name: adapter
+    image: node:15.14
+    user: node
+    working_dir: /home/node/app
+    command: npm start
+    volumes:
+      # contains source code
+      - ../services/adapter:/home/node/app
+      # contains devices.yaml
+      - ./$SETUP:/data/adapter
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
 
   # simulator-mqtt:
   #   container_name: simulator-mqtt

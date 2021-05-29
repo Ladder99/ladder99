@@ -33,6 +33,7 @@ const cache = new Cache()
 
 if (!devices) {
   console.log(`No devices.yaml available - please add one to ${dataFolder}.`)
+  process.exit(1)
 }
 
 // iterate over device definitions from devices.yaml
