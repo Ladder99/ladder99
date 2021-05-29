@@ -1,4 +1,4 @@
-# docker-compose for broker-adapter-agent pipeline
+# docker-compose file for broker-adapter-agent pipeline.
 #. this will be generated from devices.yaml, but edit manually for now.
 
 version: '3.8'
@@ -7,8 +7,6 @@ services:
   # override agent settings from compose.yaml
   agent:
     command: agent debug /data/agent/agent.cfg
-    ports:
-      - 5001:5000
     volumes:
       - ./$SETUP/volumes/agent:/data/agent
 
