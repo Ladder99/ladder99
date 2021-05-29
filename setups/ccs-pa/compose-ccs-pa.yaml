@@ -4,7 +4,7 @@
 version: '3.8'
 
 services:
-  # override agent settings from compose.yaml
+  # override agent settings from main compose.yaml
   agent:
     command: agent debug /data/agent/agent.cfg
     volumes:
