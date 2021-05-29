@@ -1,4 +1,4 @@
-# docker-compose setup file
+# docker-compose file for agent-db-app-viz pipeline
 
 version: '3.8'
 

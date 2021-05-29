@@ -1,4 +1,4 @@
-# docker-compose file
+# docker-compose for broker-adapter-agent pipeline
 #. this will be generated from devices.yaml, but edit manually for now.
 
 version: '3.8'
