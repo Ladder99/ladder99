@@ -1,8 +1,0 @@
-#!/bin/bash
-# test agent - runs the default command which runs a simulation
-# usage:
-#   shell/agent/test
-# then check browser at localhost:5000 or raspberrypi.local:5000 etc
-
-docker run -it --rm --publish 5000:5000 --name agent --pull always \
-  ladder99/mtconnect-agent:latest
