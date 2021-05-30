@@ -544,7 +544,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time,\n  SUM(CASE id WHEN 'x2' THEN value::text::numeric ELSE 0 END) AS x,\n  SUM(CASE id WHEN 'y2' THEN value::text::numeric ELSE 0 END) AS y\nFROM values\nWHERE (value::text<>'\"UNAVAILABLE\"')\nGROUP BY time\nLIMIT 100\n;\n",
+          "rawSql": "SELECT time,\n  SUM(CASE id WHEN 'x2' THEN value::text::numeric ELSE 0 END) AS x,\n  SUM(CASE id WHEN 'y2' THEN value::text::numeric ELSE 0 END) AS y\nFROM values\nWHERE (value::text<>'\"UNAVAILABLE\"') and $__timeFilter(\"time\")\nGROUP BY time\n;\n",
           "refId": "A",
           "select": [
             [
@@ -917,7 +917,7 @@
       }
     }
   ],
-  "refresh": false,
+  "refresh": "10s",
   "schemaVersion": 27,
   "style": "dark",
   "tags": [],
@@ -925,8 +925,8 @@
     "list": []
   },
   "time": {
-    "from": "2021-05-28T11:34:09.477Z",
-    "to": "2021-05-28T17:59:35.128Z"
+    "from": "now-5m",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -945,5 +945,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 21
+  "version": 28
 }
