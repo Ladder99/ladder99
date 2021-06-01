@@ -77,11 +77,15 @@ services:
     ports:
       - $GRAFANA_PORT:3000/tcp
     environment:
+      # need these for provisioning datasources
       PGHOST: timescaledb
       PGPORT:
       PGDATABASE:
       PGUSER:
       PGPASSWORD:
+      INFLUXDB_DB:
+      INFLUXDB_USER:
+      INFLUXDB_PASSWORD:
       # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
       GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel
     volumes:
