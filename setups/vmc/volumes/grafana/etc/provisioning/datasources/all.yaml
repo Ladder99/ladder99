@@ -11,7 +11,6 @@ apiVersion: 1
 # list of datasources to insert/update
 datasources:
   - name: Postgres
-
     type: postgres
 
     # access mode. proxy or direct (Server or Browser in the UI). Required
@@ -22,19 +21,12 @@ datasources:
     uid: timescaledb
 
     # specify these with envars
-    # url: timescaledb:5432
-    # url: host.docker.internal:5433 # for macos
     url: $PGHOST:$PGPORT
-
     user: $PGUSER
-
     database: $PGDATABASE
 
     # enable/disable basic auth
     basicAuth: false
-
-    # basic auth username
-    # basicAuthUser:
 
     # enable/disable with credentials headers
     withCredentials: false
@@ -47,19 +39,38 @@ datasources:
       graphiteVersion: '1.1'
       tlsAuth: false
       tlsAuthWithCACert: false
-      postgresVersion: 1300 # v13
+      postgresVersion: 1300 # postgres v13
       sslmode: disable
-      timescaledb: true
+      timescaledb: true # uses timescaledb extension
 
-    # json object of data that will be encrypted.
+    # json object of data that will be encrypted
     secureJsonData:
-      # tlsCACert: '...'
-      # tlsClientCert: '...'
-      # tlsClientKey: '...'
-      # database password, if used
-      # password: gralgrut
       password: $PGPASSWORD
-      # basicAuthPassword:
+
+    # allow users to edit datasources from the UI
+    editable: true
+
+    version: 1
+
+  - name: InfluxDB
+
+    type: influxdb
+
+    # access mode. proxy or direct (Server or Browser in the UI). Required
+    access: direct
+
+    # custom UID which can be used to reference this datasource in
+    # other parts of the configuration, if not specified will be generated automatically
+    uid: influxdb
+
+    # specify these with envars
+    url: http://influx:8086
+    user: $INFLUXDB_USER
+    database: $INFLUXDB_DB
+
+    # json object of data that will be encrypted
+    secureJsonData:
+      password: $INFLUXDB_PASSWORD
 
     version: 1
 
