@@ -2,8 +2,8 @@
 # install doc building dependencies
 
 # use virtual environment
-source ~/ladder99-venv/bin/activate
+source ~/.venv/ladder99-venv/bin/activate
 
 # for building docs
 pip install -U Sphinx
-pip install -r requirements.txt
+pip install -r docs/requirements.txt

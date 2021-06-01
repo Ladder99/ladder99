@@ -1,4 +1,5 @@
 #!/bin/bash
 # install macos applications
 
+# for diode
 brew install netcat
