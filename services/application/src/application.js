@@ -102,13 +102,15 @@ async function writeDataItems(dataItems, client) {
     const row = `('${timestamp}', '${id}', to_jsonb('${value}'::${type}))`
     rows.push(row)
   }
-  const values = rows.join(',\n')
-  const sql = `INSERT INTO history (time, id, value) 
-VALUES
-${values};`
-  console.log(sql)
-  //. add try block
-  await client.query(sql)
+  if (rows.length > 0) {
+    const values = rows.join(',\n')
+    const sql = `INSERT INTO history (time, id, value) 
+  VALUES
+  ${values};`
+    console.log(sql)
+    //. add try block
+    await client.query(sql)
+  }
 }
 
 // get data from agent rest endpoint
