@@ -86,6 +86,7 @@ function getDataItems(json) {
 //. gather up all items into one array, then put all into one INSERT stmt
 // see https://stackoverflow.com/a/63167970/243392 etc
 async function writeDataItems(dataItems, client) {
+  let rows = []
   for (const dataItem of dataItems) {
     let { dataItemId, timestamp, value } = dataItem
     const id = dataItemId
@@ -93,13 +94,19 @@ async function writeDataItems(dataItems, client) {
     // const sql = `INSERT INTO values (id, time, value) VALUES ($1, $2, to_json($3::${type}));`
     // const values = [id, timestamp, value]
     value = value === undefined ? 'undefined' : value
-    const type = typeof value === 'string' ? '::text' : '::numeric'
-    const sql = `INSERT INTO history (time, id, value) VALUES ($1, $2, to_jsonb($3${type}));`
-    const values = [timestamp, id, value]
-    console.log(sql, { values })
-    //. add try block
-    await client.query(sql, values)
+    // const type = typeof value === 'string' ? '::text' : '::numeric'
+    // const sql = `INSERT INTO history (time, id, value) VALUES ($1, $2, to_jsonb($3${type}));`
+    // const values = [timestamp, id, value]
+    // await client.query(sql, values)
+    const type = typeof value === 'string' ? 'text' : 'numeric'
+    const row = `(${timestamp}, ${id}, to_jsonb(${value}::${type}))`
+    rows.push(row)
   }
+  const values = rows.join(',\n')
+  const sql = `INSERT INTO history (time, id, value) VALUES ${values};`
+  console.log(sql)
+  //. add try block
+  await client.query(sql)
 }
 
 // get data from agent rest endpoint
