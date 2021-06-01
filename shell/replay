@@ -25,7 +25,7 @@ while (true) {
       --port ${port} \
       --mode replay \
       --loop false \
-      --file ${folder}/${csvfile}.csv`
+      --file ${folder}/${csvfile}`
     console.log(cmd)
     shell.exec(cmd)
   }
