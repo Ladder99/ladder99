@@ -2,8 +2,8 @@
 Setting Up Devices
 *******************
 
-
 A configuration of devices is called a 'setup', and is defined in the ``setups`` folder. 
+
 
 Example setup
 ===================
@@ -22,17 +22,6 @@ To see the data the agent generates visit http://raspberrypi.local:5000/current 
 
    .. image:: _images/agent.jpg
 
-.. #. Start the MTConnect application, which transfers data from the agent to the database
-
-..    .. code:: console
-
-..       shell/setups/docker start ccs-pa app
-
-.. #. Replay some more mqtt messages (not yet working),
-
-..    .. code:: console
-
-..       shell/setup/replay ccs-pa
 
 Setup/view the Grafana dashboard at http://raspberrypi.local:3003. The default username/password is admin/admin.
 
