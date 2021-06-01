@@ -86,7 +86,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value::text::numeric\nFROM \"values\"\nWHERE\n  (id='x3' or id='y3') and (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY id, time",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value::text::numeric\nFROM history\nWHERE\n  (id='x3' or id='y3') and (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY id, time",
           "refId": "A",
           "select": [
             [
@@ -202,7 +202,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__time(time),\n  id,\n  value::text::numeric\nFROM\n  values\nWHERE\n  (id='x2' OR id='y2') AND (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(time)\nORDER BY id, time",
+          "rawSql": "SELECT\n  $__time(time),\n  id,\n  value::text::numeric\nFROM\n  history\nWHERE\n  (id='x2' OR id='y2') AND (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(time)\nORDER BY id, time",
           "refId": "A",
           "select": [
             [
@@ -312,7 +312,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value::text::numeric\nFROM \"values\"\nWHERE\n  id='Frt' and (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY 1",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value::text::numeric\nFROM history\nWHERE\n  id='Frt' and (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY 1",
           "refId": "A",
           "select": [
             [
@@ -452,7 +452,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value\nFROM \"values\"\nWHERE\n  (id <> 'cn2' and id <> 'x2' and id <> 'x3' and id <> 'y2' and id <> 'y3') and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value\nFROM history\nWHERE\n  (id <> 'cn2' and id <> 'x2' and id <> 'x3' and id <> 'y2' and id <> 'y3') and\n  $__timeFilter(\"time\")",
           "refId": "A",
           "select": [
             [
@@ -544,7 +544,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time,\n  SUM(CASE id WHEN 'x2' THEN value::text::numeric ELSE 0 END) AS x,\n  SUM(CASE id WHEN 'y2' THEN value::text::numeric ELSE 0 END) AS y\nFROM values\nWHERE (value::text<>'\"UNAVAILABLE\"') and $__timeFilter(\"time\")\nGROUP BY time\n;\n",
+          "rawSql": "SELECT time,\n  SUM(CASE id WHEN 'x2' THEN value::text::numeric ELSE 0 END) AS x,\n  SUM(CASE id WHEN 'y2' THEN value::text::numeric ELSE 0 END) AS y\nFROM history\nWHERE (value::text<>'\"UNAVAILABLE\"') and $__timeFilter(\"time\")\nGROUP BY time\n;\n",
           "refId": "A",
           "select": [
             [
@@ -925,7 +925,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -945,5 +945,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 28
+  "version": 30
 }
