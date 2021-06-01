@@ -18,15 +18,15 @@ const csvfiles = fs
   .readdirSync(folder)
   .filter(csvfile => csvfile.endsWith('.csv'))
 
-console.log(csvfiles)
-
-// for (const csvfile of csvfiles) {
-//   const cmd = `mqtt-recorder \
-//     --host localhost \
-//     --port ${port} \
-//     --mode replay \
-//     --loop false \
-//     --file ${folder}/${csvfile}.csv`
-//   console.log(cmd)
-//   shell.exec(cmd)
-// }
+while (true) {
+  for (const csvfile of csvfiles) {
+    const cmd = `mqtt-recorder \
+      --host localhost \
+      --port ${port} \
+      --mode replay \
+      --loop false \
+      --file ${folder}/${csvfile}.csv`
+    console.log(cmd)
+    shell.exec(cmd)
+  }
+}
