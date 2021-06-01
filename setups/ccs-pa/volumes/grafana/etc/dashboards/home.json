@@ -12,7 +12,7 @@
       }
     ]
   },
-  "description": "test",
+  "description": "",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
@@ -37,7 +37,7 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 24,
+        "w": 10,
         "x": 0,
         "y": 0
       },
@@ -167,9 +167,9 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 24,
-        "x": 0,
-        "y": 5
+        "w": 10,
+        "x": 10,
+        "y": 0
       },
       "highlightOnMouseover": true,
       "id": 5,
@@ -299,7 +299,7 @@
     ]
   },
   "timezone": "",
-  "title": "Ladder99",
+  "title": "CCS P&A",
   "uid": "dII-Qgzgz",
   "version": 1
 }
