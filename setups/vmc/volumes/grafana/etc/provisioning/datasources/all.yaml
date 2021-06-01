@@ -13,12 +13,12 @@ datasources:
   - name: Postgres
     type: postgres
 
-    # access mode. proxy or direct (Server or Browser in the UI). Required
-    access: direct
-
     # custom UID which can be used to reference this datasource in
     # other parts of the configuration, if not specified will be generated automatically
     uid: timescaledb
+
+    # access mode. proxy or direct (Server or Browser in the UI). Required
+    access: direct
 
     # specify these with envars
     url: $PGHOST:$PGPORT
@@ -53,18 +53,17 @@ datasources:
     version: 1
 
   - name: InfluxDB
-
     type: influxdb
-
-    # access mode. proxy or direct (Server or Browser in the UI). Required
-    access: direct
 
     # custom UID which can be used to reference this datasource in
     # other parts of the configuration, if not specified will be generated automatically
     uid: influxdb
 
+    # access mode. proxy or direct (Server or Browser in the UI). Required
+    access: direct
+
     # specify these with envars
-    url: http://influx:8086
+    url: http://influxdb:8086
     user: $INFLUXDB_USER
     database: $INFLUXDB_DB
 
@@ -72,7 +71,7 @@ datasources:
     secureJsonData:
       password: $INFLUXDB_PASSWORD
 
-    version: 1
-
     # allow users to edit datasources from the UI
     editable: true
+
+    version: 1
