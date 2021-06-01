@@ -19,10 +19,10 @@ datasources:
     uid: timescaledb
     # url: http://localhost:5432  # syntax error
     # url: localhost:5433 # connection refused
-    url: host.docker.internal:5433 # for macos
-    # url: timescaledb:5432
-    user: postgres
-    database: ladder99_ccs_pa
+    # url: host.docker.internal:5433 # for macos
+    url: timescaledb:5432
+    user: $PGUSER
+    database: $PGDATABASE
     # enable/disable basic auth
     basicAuth: false
     # <string> basic auth username
@@ -41,13 +41,7 @@ datasources:
       timescaledb: true
     # <string> json object of data that will be encrypted.
     secureJsonData:
-      # tlsCACert: '...'
-      # tlsClientCert: '...'
-      # tlsClientKey: '...'
-      # database password, if used
-      password: gralgrut
-      # basic auth password
-      # basicAuthPassword:
+      password: $PGPASSWORD
     version: 1
-    # <bool> allow users to edit datasources from the UI.
+    # allow users to edit datasources from the UI.
     editable: true
