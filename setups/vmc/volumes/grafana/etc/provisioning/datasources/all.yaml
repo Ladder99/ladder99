@@ -59,8 +59,8 @@ datasources:
     # other parts of the configuration, if not specified will be generated automatically
     uid: influxdb
 
-    # access mode. proxy or direct (Server or Browser in the UI). Required
-    access: direct
+    # # access mode. proxy or direct (Server or Browser in the UI). Required
+    # access: direct
 
     # specify these with envars
     url: http://influxdb:8086
