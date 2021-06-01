@@ -90,14 +90,7 @@ async function writeDataItems(dataItems, client) {
   for (const dataItem of dataItems) {
     let { dataItemId, timestamp, value } = dataItem
     const id = dataItemId
-    // const type = typeof value === 'string' ? 'text' : 'numeric'
-    // const sql = `INSERT INTO values (id, time, value) VALUES ($1, $2, to_json($3::${type}));`
-    // const values = [id, timestamp, value]
     value = value === undefined ? 'undefined' : value
-    // const type = typeof value === 'string' ? '::text' : '::numeric'
-    // const sql = `INSERT INTO history (time, id, value) VALUES ($1, $2, to_jsonb($3${type}));`
-    // const values = [timestamp, id, value]
-    // await client.query(sql, values)
     const type = typeof value === 'string' ? 'text' : 'numeric'
     const row = `('${timestamp}', '${id}', to_jsonb('${value}'::${type}))`
     rows.push(row)
