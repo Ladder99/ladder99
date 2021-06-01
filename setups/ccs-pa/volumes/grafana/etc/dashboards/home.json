@@ -290,7 +290,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 11,
         "x": 0,
         "y": 5
@@ -536,10 +536,10 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 4,
+        "h": 5,
         "w": 11,
         "x": 0,
-        "y": 9
+        "y": 10
       },
       "hiddenSeries": false,
       "id": 8,
@@ -573,7 +573,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value::text::numeric\nFROM history\nWHERE id='ccs-pa-001-cycle_time'\nand $__timeFilter(\"time\")\norder by time\n",
+          "rawSql": "SELECT\n  time,\n  value::text\nFROM history\nWHERE id='ccs-pa-001-cycle_time'\nand $__timeFilter(\"time\")\n\n",
           "refId": "A",
           "select": [
             [
@@ -629,9 +629,312 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 5,
+        "w": 11,
+        "x": 11,
+        "y": 10
+      },
+      "hiddenSeries": false,
+      "id": 11,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time,\n  value::text::numeric\nFROM history\nWHERE id='ccs-pa-001-print_time'\nand $__timeFilter(\"time\")\norder by time\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "execution",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Print Time",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "backgroundColor": "rgba(128,128,128,0.1)",
+      "colorMaps": [
+        {
+          "color": "#CCC",
+          "text": "N/A"
+        }
+      ],
+      "crosshairColor": "#8F070C",
+      "datasource": null,
+      "display": "timeline",
+      "expandFromQueryS": 0,
+      "extendLastValue": true,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 11,
+        "x": 0,
+        "y": 15
+      },
+      "highlightOnMouseover": true,
+      "id": 12,
+      "legendSortBy": "-ms",
+      "lineColor": "rgba(0,0,0,0.1)",
+      "metricNameColor": "#000000",
+      "pluginVersion": "7.5.5",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "rowHeight": 50,
+      "showLegend": true,
+      "showLegendNames": true,
+      "showLegendPercent": true,
+      "showLegendValues": true,
+      "showTimeAxis": true,
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time,\n  value::text\nFROM history\nWHERE id='ccs-pa-001-feed_part_detect'\nand $__timeFilter(\"time\")\norder by time\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "execution",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": []
+        }
+      ],
+      "textSize": 24,
+      "textSizeTime": 12,
+      "timeFrom": null,
+      "timeOptions": [
+        {
+          "name": "Years",
+          "value": "years"
+        },
+        {
+          "name": "Months",
+          "value": "months"
+        },
+        {
+          "name": "Weeks",
+          "value": "weeks"
+        },
+        {
+          "name": "Days",
+          "value": "days"
+        },
+        {
+          "name": "Hours",
+          "value": "hours"
+        },
+        {
+          "name": "Minutes",
+          "value": "minutes"
+        },
+        {
+          "name": "Seconds",
+          "value": "seconds"
+        },
+        {
+          "name": "Milliseconds",
+          "value": "milliseconds"
+        }
+      ],
+      "timePrecision": {
+        "name": "Minutes",
+        "value": "minutes"
+      },
+      "timeShift": null,
+      "timeTextColor": "#d8d9da",
+      "title": "Feed Part Detect",
+      "type": "natel-discrete-panel",
+      "units": "short",
+      "use12HourClock": false,
+      "useTimePrecision": false,
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueTextColor": "#000000",
+      "writeAllValues": false,
+      "writeLastValue": true,
+      "writeMetricNames": false
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 20
+      },
+      "id": 10,
+      "options": {
+        "showHeader": true
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value\nFROM history\nWHERE\n  $__timeFilter(\"time\")\nORDER BY 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Events",
+      "type": "table"
     }
   ],
-  "refresh": false,
+  "refresh": "10s",
   "schemaVersion": 27,
   "style": "dark",
   "tags": [],
