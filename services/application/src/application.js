@@ -18,30 +18,21 @@ const fetchCount = Number(process.env.FETCH_COUNT || 200)
   // get postgres connection and start polling
   const client = new Client()
   await client.connect() // uses envars PGHOST, PGPORT, etc
-  await setupTable(client)
+  await setupTables(client)
   setInterval(() => shovel(client), fetchInterval)
 })()
 
-async function setupTable(client) {
+async function setupTables(client) {
   const sql = `
 CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
-CREATE TABLE IF NOT EXISTS values (
+CREATE TABLE IF NOT EXISTS history (
   time timestamptz NOT NULL,
   id text NOT NULL,
   value jsonb
 );
 
-SELECT create_hypertable('values', 'time', if_not_exists => TRUE);
-
--- CREATE OR REPLACE VIEW values_numeric AS
--- SELECT time, id, value::numeric
--- FROM values
--- WHERE value ~ '^\d+(\.\d+)?$';
-
--- CREATE OR REPLACE VIEW values_text AS
--- SELECT time, id, value::text
--- FROM values;
+SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 `
   console.log(`Creating db structures if not there...`)
   await client.query(sql)
@@ -103,7 +94,7 @@ async function writeDataItems(dataItems, client) {
     // const values = [id, timestamp, value]
     value = value === undefined ? 'undefined' : value
     const type = typeof value === 'string' ? '::text' : '::numeric'
-    const sql = `INSERT INTO values (time, id, value) VALUES ($1, $2, to_jsonb($3${type}));`
+    const sql = `INSERT INTO history (time, id, value) VALUES ($1, $2, to_jsonb($3${type}));`
     const values = [timestamp, id, value]
     console.log(sql, { values })
     //. add try block
