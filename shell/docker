@@ -1,52 +1,45 @@
-#!/usr/bin/env python3
-# run a docker-compose yaml file with optional list of services
+#!/usr/bin/env node
 
-# usage: shell/setups/docker SETUP COMMAND [SERVICES]
-# SETUP is the setup subfolder, eg vmc, ccs-pa
-# COMMAND can be start, startd, stop
-# SERVICES is an optional space-delim list of services to start/stop
-# eg `shell/setups/docker startd ccs-pa agent`
+// run a docker-compose yaml file with optional list of services
 
-import sys
-import os
-import pathlib
+// usage: shell/docker SETUP COMMAND [SERVICES]
+// SETUP is the setup subfolder, eg vmc, ccs-pa
+// COMMAND can be start, startd, stop
+// SERVICES is an optional space-delim list of services to start/stop
+// eg `shell/docker ccs-pa start application`
 
-setup = sys.argv[1]  # eg 'vmc'
-cmd = sys.argv[2]  # eg 'start', 'startd', 'stop'
-services = ' '.join(sys.argv[3:])  # eg 'agent timescaledb'
+const fs = require('fs')
+const shell = require('shelljs')
 
-# # get list of docker compose file paths
-# files = [f"setups/{setup}/docker/{part}.yaml" for part in parts]
-# args = ' '.join([f"--file {file}" for file in files])
-# composefile = f"setups/{setup}/compose.yaml"
+const setup = process.argv[2] // eg 'vmc'
+const cmd = process.argv[3] // eg 'start', 'startd', 'stop'
+const services = process.argv.slice(4).join(' ') // eg 'agent timescaledb'
 
-# add main compose file for main agent-viz pipeline
-composefile = f"setups/compose.yaml"
-args = f"--file {composefile}"
+const composefile = `setups/compose.yaml`
+let args = `--file ${composefile}`
 
-# add compose file for device-agent pipeline / overrides
-composefile2 = f"setups/{setup}/compose-{setup}.yaml"
-if pathlib.Path(composefile2).exists():
-    args += f" --file {composefile2}"
+const composefile2 = `setups/${setup}/compose-${setup}.yaml`
+if (fs.existsSync(composefile2)) {
+  args += ` --file ${composefile2}`
+}
 
-# add envfile
-# envfile = f"setups/{setup}/.env"
-envfile = f"setups/.env"
-if pathlib.Path(envfile).exists():
-    args += f" --env-file {envfile}"
+const envfile = `setups/.env`
+if (fs.existsSync(envfile)) {
+  args += ` --env-file ${envfile}`
+}
 
-# get flags
-flags = ''
-if cmd == 'startd':
-    flags = '--detach'
+let flags = ''
+if (cmd === 'startd') {
+  flags = '--detach'
+}
 
-if cmd == 'start' or cmd == 'startd':
-    # pull any required images in the docker-compose files and start services.
-    cmd = f"SETUP={setup} docker-compose {args} pull {services} && SETUP={setup} docker-compose {args} up --build {flags} {services}"
-    print(cmd)
-    os.system(cmd)
-
-elif cmd == 'stop':
-    cmd = f"SETUP={setup} docker-compose {args} down {services}"
-    print(cmd)
-    os.system(cmd)
+if (cmd === 'start' || cmd === 'startd') {
+  // pull any required images in the docker-compose files and start services.
+  const cmd = `SETUP=${setup} docker-compose ${args} pull ${services} && SETUP =${setup} docker-compose ${args} up --build ${flags} ${services}`
+  console.log(cmd)
+  shell.exec(cmd)
+} else if (cmd === 'stop') {
+  const cmd = `SETUP=${setup} docker-compose ${args} down ${services}`
+  console.log(cmd)
+  shell.exec(cmd)
+}

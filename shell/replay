@@ -1,16 +1,32 @@
-#!/bin/bash
-# replay an mqtt recording
+#!/usr/bin/env node
 
-MODEL=$1 # eg 'ccs-pa'
-RUN=$2 # eg 'run0'
-PORT=1883
+// replay mqtt recordings
+// uses python package https://github.com/rpdswtk/mqtt_recorder
 
-# replay mqtt recording - https://github.com/rpdswtk/mqtt_recorder
-# replay MODEL=$SETUP RUN='run0' PORT='1883':
+// usage: shell/replay MODEL
+// where MODEL is the model folder containing a simulations folder
 
-mqtt-recorder \
-  --host localhost \
-  --port $PORT \
-  --mode replay \
-  --loop true \
-  --file models/$MODEL/simulations/$RUN.csv
+const fs = require('fs')
+const shell = require('shelljs')
+
+const model = process.argv[2] // eg 'ccs-pa'
+const port = 1883
+
+const folder = `models/${model}/simulations`
+
+const csvfiles = fs
+  .readdirSync(folder)
+  .filter(csvfile => csvfile.endsWith('.csv'))
+
+console.log(csvfiles)
+
+// for (const csvfile of csvfiles) {
+//   const cmd = `mqtt-recorder \
+//     --host localhost \
+//     --port ${port} \
+//     --mode replay \
+//     --loop false \
+//     --file ${folder}/${csvfile}.csv`
+//   console.log(cmd)
+//   shell.exec(cmd)
+// }
