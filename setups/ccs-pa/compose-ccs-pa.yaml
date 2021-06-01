@@ -40,28 +40,28 @@ services:
       options:
         max-size: '1m'
 
-  simulator-mqtt:
-    container_name: simulator-mqtt
-    image: node:15
-    user: node
-    working_dir: /home/node/app
-    command: npm start
-    environment:
-      - MQTT_HOST=broker
-      - MQTT_PORT=1883
-      - DEVICE_ID=ccs-pa-001
-      - MESSAGES_FILE=/etc/simulator-mqtt/messages.js
-      - MESSAGE_DELAY=1000
-      - LOOP=true
-      - LOOP_DELAY=3000
-    volumes:
-      - ../services/simulator-mqtt:/home/node/app # has source code
-      - ./$SETUP/volumes/simulator-mqtt:/etc/simulator-mqtt # has sim msgs
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '1m'
+  # simulator-mqtt:
+  #   container_name: simulator-mqtt
+  #   image: node:15
+  #   user: node
+  #   working_dir: /home/node/app
+  #   command: npm start
+  #   environment:
+  #     - MQTT_HOST=broker
+  #     - MQTT_PORT=1883
+  #     - DEVICE_ID=ccs-pa-001
+  #     - MESSAGES_FILE=/etc/simulator-mqtt/messages.js
+  #     - MESSAGE_DELAY=1000
+  #     - LOOP=true
+  #     - LOOP_DELAY=3000
+  #   volumes:
+  #     - ../services/simulator-mqtt:/home/node/app # has source code
+  #     - ./$SETUP/volumes/simulator-mqtt:/etc/simulator-mqtt # has sim msgs
+  #   networks:
+  #     - ladder99
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
   # simulator-opc:
   #   container_name: simulator-opc
