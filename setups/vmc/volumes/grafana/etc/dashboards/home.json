@@ -259,6 +259,100 @@
       }
     },
     {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 7
+      },
+      "id": 20,
+      "options": {
+        "border": {
+          "show": false,
+          "color": "yellow",
+          "size": 1
+        },
+        "fieldSets": [
+          {
+            "col": 2,
+            "color": "#e04c7b",
+            "dotSize": 2,
+            "hidden": false,
+            "lineSize": 1,
+            "lineType": "none"
+          }
+        ],
+        "grid": {
+          "color": "gray"
+        },
+        "legend": {
+          "show": false,
+          "size": 3
+        },
+        "rotateYAxisTitle": false,
+        "xAxis": {
+          "col": 1,
+          "inverted": false
+        },
+        "xAxisExtents": {
+          "min": -2,
+          "max": 2
+        },
+        "xAxisTitle": {
+          "text": "x",
+          "color": "white",
+          "textSize": 1
+        },
+        "yAxisExtents": {
+          "min": -2,
+          "max": 2
+        },
+        "yAxisTitle": {
+          "text": "y",
+          "color": "#777",
+          "textSize": 1
+        }
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time,\n  SUM(CASE id WHEN 'x2' THEN value::text::numeric ELSE 0 END) AS x,\n  SUM(CASE id WHEN 'y2' THEN value::text::numeric ELSE 0 END) AS y\nFROM history\nWHERE (value::text<>'\"UNAVAILABLE\"') and $__timeFilter(\"time\")\nGROUP BY time\n;\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "\"values\"",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Shape",
+      "type": "michaeldmoore-scatter-panel"
+    },
+    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -276,8 +370,8 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 6,
-        "w": 11,
-        "x": 0,
+        "w": 8,
+        "x": 6,
         "y": 7
       },
       "hiddenSeries": false,
@@ -416,7 +510,7 @@
               },
               {
                 "id": "custom.width",
-                "value": 212
+                "value": 153
               }
             ]
           },
@@ -428,7 +522,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": null
+                "value": 70
               }
             ]
           }
@@ -436,8 +530,8 @@
       },
       "gridPos": {
         "h": 6,
-        "w": 11,
-        "x": 11,
+        "w": 8,
+        "x": 14,
         "y": 7
       },
       "id": 22,
@@ -478,107 +572,13 @@
       "type": "table"
     },
     {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 6,
-        "x": 0,
-        "y": 13
-      },
-      "id": 20,
-      "options": {
-        "border": {
-          "show": false,
-          "color": "yellow",
-          "size": 1
-        },
-        "fieldSets": [
-          {
-            "col": 2,
-            "color": "#e04c7b",
-            "dotSize": 2,
-            "hidden": false,
-            "lineSize": 1,
-            "lineType": "none"
-          }
-        ],
-        "grid": {
-          "color": "gray"
-        },
-        "legend": {
-          "show": false,
-          "size": 3
-        },
-        "rotateYAxisTitle": false,
-        "xAxis": {
-          "col": 1,
-          "inverted": false
-        },
-        "xAxisExtents": {
-          "min": -2,
-          "max": 2
-        },
-        "xAxisTitle": {
-          "text": "x",
-          "color": "white",
-          "textSize": 1
-        },
-        "yAxisExtents": {
-          "min": -2,
-          "max": 2
-        },
-        "yAxisTitle": {
-          "text": "y",
-          "color": "#777",
-          "textSize": 1
-        }
-      },
-      "pluginVersion": "7.5.5",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT time,\n  SUM(CASE id WHEN 'x2' THEN value::text::numeric ELSE 0 END) AS x,\n  SUM(CASE id WHEN 'y2' THEN value::text::numeric ELSE 0 END) AS y\nFROM history\nWHERE (value::text<>'\"UNAVAILABLE\"') and $__timeFilter(\"time\")\nGROUP BY time\n;\n",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "\"values\"",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamptz",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Shape",
-      "type": "michaeldmoore-scatter-panel"
-    },
-    {
       "collapsed": false,
       "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 22
+        "y": 15
       },
       "id": 16,
       "panels": [],
@@ -604,7 +604,7 @@
         "h": 6,
         "w": 7,
         "x": 0,
-        "y": 23
+        "y": 16
       },
       "hiddenSeries": false,
       "id": 12,
@@ -715,7 +715,7 @@
         "h": 6,
         "w": 7,
         "x": 7,
-        "y": 23
+        "y": 16
       },
       "hiddenSeries": false,
       "id": 17,
@@ -824,7 +824,7 @@
         "h": 6,
         "w": 8,
         "x": 14,
-        "y": 23
+        "y": 16
       },
       "hiddenSeries": false,
       "id": 18,
@@ -945,5 +945,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 30
+  "version": 32
 }
