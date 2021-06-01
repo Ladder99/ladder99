@@ -42,325 +42,6 @@
       "description": "",
       "fieldConfig": {
         "defaults": {
-          "unit": "lengthmm"
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 6,
-        "w": 11,
-        "x": 0,
-        "y": 1
-      },
-      "hiddenSeries": false,
-      "id": 10,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.5.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value::text::numeric\nFROM history\nWHERE\n  (id='x3' or id='y3') and (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY id, time",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "\"values\"",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamptz",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Commanded Position (mm)",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "lengthmm",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "unit": "lengthmm"
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 6,
-        "w": 11,
-        "x": 11,
-        "y": 1
-      },
-      "hiddenSeries": false,
-      "id": 6,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.5.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  $__time(time),\n  id,\n  value::text::numeric\nFROM\n  history\nWHERE\n  (id='x2' OR id='y2') AND (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(time)\nORDER BY id, time",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "values",
-          "timeColumn": "time",
-          "where": []
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Actual Position (mm)",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "lengthmm",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
-    },
-    {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 6,
-        "x": 0,
-        "y": 7
-      },
-      "id": 20,
-      "options": {
-        "border": {
-          "show": false,
-          "color": "yellow",
-          "size": 1
-        },
-        "fieldSets": [
-          {
-            "col": 2,
-            "color": "#e04c7b",
-            "dotSize": 2,
-            "hidden": false,
-            "lineSize": 1,
-            "lineType": "none"
-          }
-        ],
-        "grid": {
-          "color": "gray"
-        },
-        "legend": {
-          "show": false,
-          "size": 3
-        },
-        "rotateYAxisTitle": false,
-        "xAxis": {
-          "col": 1,
-          "inverted": false
-        },
-        "xAxisExtents": {
-          "min": -2,
-          "max": 2
-        },
-        "xAxisTitle": {
-          "text": "x",
-          "color": "white",
-          "textSize": 1
-        },
-        "yAxisExtents": {
-          "min": -2,
-          "max": 2
-        },
-        "yAxisTitle": {
-          "text": "y",
-          "color": "#777",
-          "textSize": 1
-        }
-      },
-      "pluginVersion": "7.5.5",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT time,\n  SUM(CASE id WHEN 'x2' THEN value::text::numeric ELSE 0 END) AS x,\n  SUM(CASE id WHEN 'y2' THEN value::text::numeric ELSE 0 END) AS y\nFROM history\nWHERE (value::text<>'\"UNAVAILABLE\"') and $__timeFilter(\"time\")\nGROUP BY time\n;\n",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "\"values\"",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamptz",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Shape",
-      "type": "michaeldmoore-scatter-panel"
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
           "displayName": "Frt",
           "unit": "lengthmm"
         },
@@ -369,10 +50,10 @@
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 6,
-        "y": 7
+        "h": 8,
+        "w": 11,
+        "x": 0,
+        "y": 1
       },
       "hiddenSeries": false,
       "id": 8,
@@ -529,10 +210,10 @@
         ]
       },
       "gridPos": {
-        "h": 6,
-        "w": 8,
-        "x": 14,
-        "y": 7
+        "h": 8,
+        "w": 11,
+        "x": 11,
+        "y": 1
       },
       "id": 22,
       "options": {
@@ -572,13 +253,460 @@
       "type": "table"
     },
     {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "lengthmm"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 11,
+        "x": 0,
+        "y": 9
+      },
+      "hiddenSeries": false,
+      "id": 10,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value::text::numeric\nFROM history\nWHERE\n  (id='x3' or id='y3') and (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY id, time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "\"values\"",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Commanded Position (mm)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "lengthmm",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "unit": "lengthmm"
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 11,
+        "x": 11,
+        "y": 9
+      },
+      "hiddenSeries": false,
+      "id": 6,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.5.5",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  $__time(time),\n  id,\n  value::text::numeric\nFROM\n  history\nWHERE\n  (id='x2' OR id='y2') AND (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(time)\nORDER BY id, time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "values",
+          "timeColumn": "time",
+          "where": []
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Actual Position (mm)",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "lengthmm",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 15
+      },
+      "id": 20,
+      "options": {
+        "border": {
+          "show": false,
+          "color": "yellow",
+          "size": 1
+        },
+        "fieldSets": [
+          {
+            "col": 2,
+            "color": "#e04c7b",
+            "dotSize": 2,
+            "hidden": false,
+            "lineSize": 1,
+            "lineType": "none"
+          }
+        ],
+        "grid": {
+          "color": "gray"
+        },
+        "legend": {
+          "show": false,
+          "size": 3
+        },
+        "rotateYAxisTitle": false,
+        "xAxis": {
+          "col": 1,
+          "inverted": false
+        },
+        "xAxisExtents": {
+          "min": -2,
+          "max": 2
+        },
+        "xAxisTitle": {
+          "text": "x",
+          "color": "white",
+          "textSize": 1
+        },
+        "yAxisExtents": {
+          "min": -2,
+          "max": 2
+        },
+        "yAxisTitle": {
+          "text": "y",
+          "color": "#777",
+          "textSize": 1
+        }
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time,\n  SUM(CASE id WHEN 'x2' THEN value::text::numeric ELSE 0 END) AS x,\n  SUM(CASE id WHEN 'y2' THEN value::text::numeric ELSE 0 END) AS y\nFROM history\nWHERE (value::text<>'\"UNAVAILABLE\"') and $__timeFilter(\"time\")\nGROUP BY time\n;\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "\"values\"",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Path 2d",
+      "type": "michaeldmoore-scatter-panel"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 10,
+        "x": 6,
+        "y": 15
+      },
+      "id": 24,
+      "pconfig": {
+        "fixScale": "x",
+        "layout": {
+          "dragmode": "lasso",
+          "font": {
+            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
+          },
+          "hovermode": "closest",
+          "legend": {
+            "orientation": "h"
+          },
+          "showlegend": false,
+          "xaxis": {
+            "range": [-2, 2],
+            "rangemode": "between",
+            "showgrid": true,
+            "title": "x",
+            "type": "linear",
+            "zeroline": false
+          },
+          "yaxis": {
+            "range": [-2, 2],
+            "rangemode": "between",
+            "showgrid": true,
+            "title": "y",
+            "type": "linear",
+            "zeroline": false
+          },
+          "zaxis": {
+            "rangemode": "normal",
+            "showgrid": true,
+            "title": "z",
+            "type": "linear",
+            "zeroline": false
+          }
+        },
+        "loadFromCDN": false,
+        "settings": {
+          "displayModeBar": false,
+          "type": "scatter3d"
+        },
+        "showAnnotations": true,
+        "traces": [
+          {
+            "mapping": {
+              "color": "time",
+              "size": null,
+              "text": null,
+              "x": "x",
+              "y": "y",
+              "z": "z"
+            },
+            "name": "Trace 1",
+            "settings": {
+              "color_option": "ramp",
+              "line": {
+                "color": "#005f81",
+                "dash": "solid",
+                "shape": "linear",
+                "width": 6
+              },
+              "marker": {
+                "color": "#33B5E5",
+                "colorscale": "Earth",
+                "line": {
+                  "color": "#DDD",
+                  "width": 0
+                },
+                "showscale": true,
+                "size": 5,
+                "sizemin": 3,
+                "sizemode": "diameter",
+                "sizeref": 0.2,
+                "symbol": "circle"
+              }
+            },
+            "show": {
+              "line": true,
+              "lines": false,
+              "markers": true
+            }
+          }
+        ]
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time,\n  SUM(CASE id WHEN 'x2' THEN value::text::numeric ELSE 0 END) AS x,\n  SUM(CASE id WHEN 'y2' THEN value::text::numeric ELSE 0 END) AS y,\n  SUM(CASE id WHEN 'z2' THEN value::text::numeric ELSE 0 END) AS z\nFROM history\nWHERE (value::text<>'\"UNAVAILABLE\"') and $__timeFilter(\"time\")\nGROUP BY time\n;\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Path 3d",
+      "type": "natel-plotly-panel",
+      "version": 1
+    },
+    {
       "collapsed": false,
       "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 23
       },
       "id": 16,
       "panels": [],
@@ -604,7 +732,7 @@
         "h": 6,
         "w": 7,
         "x": 0,
-        "y": 16
+        "y": 24
       },
       "hiddenSeries": false,
       "id": 12,
@@ -715,7 +843,7 @@
         "h": 6,
         "w": 7,
         "x": 7,
-        "y": 16
+        "y": 24
       },
       "hiddenSeries": false,
       "id": 17,
@@ -824,7 +952,7 @@
         "h": 6,
         "w": 8,
         "x": 14,
-        "y": 16
+        "y": 24
       },
       "hiddenSeries": false,
       "id": 18,
@@ -925,7 +1053,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
@@ -945,5 +1073,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 32
+  "version": 35
 }
