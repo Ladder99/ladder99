@@ -16,6 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
+  "id": 1,
   "links": [],
   "panels": [
     {
@@ -573,7 +574,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value::text\nFROM history\nWHERE id='ccs-pa-001-cycle_time'\nand $__timeFilter(\"time\")\n\n",
+          "rawSql": "SELECT\n  time,\n  value::text::numeric\nFROM history\nWHERE id='ccs-pa-001-cycle_time'\nand $__timeFilter(\"time\")\nand value::text <> '\"UNAVAILABLE\"'\n\n",
           "refId": "A",
           "select": [
             [
@@ -682,7 +683,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value::text::numeric\nFROM history\nWHERE id='ccs-pa-001-print_time'\nand $__timeFilter(\"time\")\norder by time\n",
+          "rawSql": "SELECT\n  time,\n  value::text::numeric\nFROM history\nWHERE id='ccs-pa-001-print_time'\nand $__timeFilter(\"time\")\nand value::text <> '\"UNAVAILABLE\"'\norder by time\n",
           "refId": "A",
           "select": [
             [
@@ -942,7 +943,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -962,5 +963,5 @@
   "timezone": "",
   "title": "CCS P&A",
   "uid": "dII-Qgzgz",
-  "version": 2
+  "version": 6
 }
