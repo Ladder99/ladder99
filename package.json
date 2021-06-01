@@ -1,0 +1,12 @@
+{
+  "name": "ladder99",
+  "version": "0.1.0",
+  "description": "ladder99 shell commands",
+  "scripts": {},
+  "keywords": [],
+  "author": "Brian Burns <bburns.km@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "shelljs": "^0.8.4"
+  }
+}
