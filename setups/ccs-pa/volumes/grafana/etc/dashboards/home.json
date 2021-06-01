@@ -16,7 +16,6 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
   "links": [],
   "panels": [
     {
@@ -67,7 +66,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value\nFROM execution\nORDER BY 1\nlimit 1000\n",
+          "rawSql": "SELECT\n  time,\n  value::text\nFROM history\nWHERE id='ccs-pa-001-state'\nlimit 100\n",
           "refId": "A",
           "select": [
             [
@@ -129,6 +128,7 @@
       "title": "Execution state",
       "type": "natel-discrete-panel",
       "units": "short",
+      "use12HourClock": false,
       "useTimePrecision": false,
       "valueMaps": [
         {
@@ -151,7 +151,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
