@@ -118,7 +118,6 @@ services:
 
   application:
     container_name: application
-    # image: node:15
     image: node:15.14
     user: node
     working_dir: /home/node/app
@@ -139,7 +138,7 @@ services:
     networks:
       - ladder99
     volumes:
-      - ../services/application:/home/node/app
+      - ../services/application:/home/node/app # has source code
     logging:
       options:
         max-size: '1m'

@@ -1,4 +1,5 @@
 # docker-compose file for broker-adapter-agent pipeline.
+# these services are run in addition to those in setups/compose.yaml.
 #. this will be generated from devices.yaml, but edit manually for now.
 
 version: '3.8'
@@ -8,8 +9,7 @@ services:
   agent:
     command: agent debug /data/agent/agent.cfg
     volumes:
-      # contains agent.cfg and devices.xml
-      - ./$SETUP/volumes/agent:/data/agent
+      - ./$SETUP/volumes/agent:/data/agent # has agent.cfg, devices.xml
 
   broker:
     container_name: broker
@@ -17,8 +17,7 @@ services:
     ports:
       - 1883:1883
     volumes:
-      # contains config/mosquitto.conf
-      - ./$SETUP/volumes/broker:/mosquitto
+      - ./$SETUP/volumes/broker:/mosquitto # has config/mosquitto.conf
     networks:
       - ladder99
     logging:
@@ -32,12 +31,9 @@ services:
     working_dir: /home/node/app
     command: npm start
     volumes:
-      # contains source code
-      - ../services/adapter:/home/node/app
-      # contains devices.yaml
-      - ./$SETUP:/data/adapter
-      # contains model yamls
-      - ../models:/data/models
+      - ../services/adapter:/home/node/app # has source code
+      - ./$SETUP:/data/adapter # has devices.yaml
+      - ../models:/data/models # has model yamls
     networks:
       - ladder99
     logging:
@@ -59,10 +55,8 @@ services:
       - LOOP=true
       - LOOP_DELAY=3000
     volumes:
-      # contains source code
-      - ../services/simulator-mqtt:/home/node/app
-      # contains simulation messages
-      - ./$SETUP/volumes/simulator-mqtt:/etc/simulator-mqtt
+      - ../services/simulator-mqtt:/home/node/app # has source code
+      - ./$SETUP/volumes/simulator-mqtt:/etc/simulator-mqtt # has sim msgs
     networks:
       - ladder99
     logging:
