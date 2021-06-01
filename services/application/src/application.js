@@ -99,11 +99,13 @@ async function writeDataItems(dataItems, client) {
     // const values = [timestamp, id, value]
     // await client.query(sql, values)
     const type = typeof value === 'string' ? 'text' : 'numeric'
-    const row = `(${timestamp}, ${id}, to_jsonb(${value}::${type}))`
+    const row = `('${timestamp}', '${id}', to_jsonb('${value}'::${type}))`
     rows.push(row)
   }
   const values = rows.join(',\n')
-  const sql = `INSERT INTO history (time, id, value) VALUES ${values};`
+  const sql = `INSERT INTO history (time, id, value) 
+VALUES
+${values};`
   console.log(sql)
   //. add try block
   await client.query(sql)
