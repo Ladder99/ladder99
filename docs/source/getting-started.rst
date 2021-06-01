@@ -11,14 +11,18 @@ First, make a copy of the default settings file and edit the passwords as needed
 
    .. code:: console
 
-      cp setups/vmc/.env-default setups/vmc/.env
-      nano setups/vmc/.env
+      cp setups/.env-default setups/.env
+      nano setups/.env
 
-On your edge device, in the ladder99 folder (note the d in startd, for detach / run in the background) - this will take a few minutes the first time it's run -
+On your edge device, in the ladder99 folder (note the d in startd, for detach / run in the background), start all the vmc services in Docker - this may take a few minutes the first time it's run -
 
    .. code:: console
 
-      shell/setups/docker startd vmc
+      shell/docker vmc startd
+
+   .. note::
+
+      You can see all the available shell commands with ``tree shell``.
 
 
 Viewing the Agent
@@ -46,11 +50,11 @@ You can select a range on the graphs to zoom in, or select a time range.
 Stopping the Pipeline
 =====================
 
-To stop the agent and pipeline, 
+To stop the pipeline services, 
 
    .. code:: console
 
-      shell/setups/docker stop vmc
+      shell/docker vmc stop
 
 
 Next we'll take a look at setting up some devices.

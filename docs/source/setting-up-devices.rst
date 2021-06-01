@@ -2,58 +2,35 @@
 Setting Up Devices
 *******************
 
-A configuration of devices is called a 'setup', and is defined in the ``setups`` folder. Ladder99 comes with a print & apply machine as an example - let's look at that. Check the files in setups/ccs-pa - 
-
-   .. code:: console
-
-      tree setups/ccs-pa
-
-
-
-
-
-   .. note::
-
-      You can see all the available shell commands with ``tree shell``.
+A configuration of devices is called a 'setup', and is defined in the ``setups`` folder. Ladder99 comes with a print & apply machine as an example, defined in setups/ccs-pa - let's try that out -
 
 #. Start all the services
 
-   ``ccs-pa`` here is the name of the setups subfolder, and others are names of yaml files in the ``setups/ccs-pa/docker`` folder.
-
    .. code:: console
    
-      shell/setups/docker start ccs-pa base sims db
+      shell/docker ccs-pa start
 
-   Now you can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via shdr messages. 
+   Now you can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via SHDR messages. 
 
    To see the data the agent generates visit (where the address is your edge device)
 
-      raspberrypi.local:5000/current
+      http://raspberrypi.local:5000/current
       
    .. image:: _images/agent.jpg
 
-.. #. Setup the database with
+.. #. Start the MTConnect application, which transfers data from the agent to the database
 
 ..    .. code:: console
-      
-..       shell/db/run setups/ccs-pa/migrations/000-init.sql
-..       shell/db/run setups/ccs-pa/migrations/001-tables.sql
-..       etc
 
-#. Start the MTConnect application, which transfers data from the agent to the database
+..       shell/setups/docker start ccs-pa app
 
-   .. code:: console
+.. #. Replay some more mqtt messages (not yet working),
 
-      shell/setups/docker start ccs-pa app
+..    .. code:: console
 
-#. Replay some more mqtt messages (not yet working),
+..       shell/setup/replay ccs-pa
 
-   .. code:: console
+#. Setup/view the Grafana dashboard at http://raspberrypi.local:3003. The default username/password is admin/admin.
 
-      shell/setup/replay ccs-pa
-
-#. Setup/view the Grafana dashboard at raspberrypi.local:3003
-
-   The default username/password is admin/admin.
 
 Next we'll look at how to develop custom adapters for other devices.
