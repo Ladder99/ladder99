@@ -11,14 +11,14 @@ The Agent image should only need to be built to handle another architecture, or 
 See https://github.com/Ladder99/mtconnect-agent. 
 
 
-Building Adapter image
-====================================
+.. Building Adapter image
+.. ====================================
 
-If you develop a plugin for the adapter or make other changes to it, build a multiarchitecture Docker image and deploy it to our Ladder99 Docker Hub -
+.. If you develop a plugin for the adapter or make other changes to it, build a multiarchitecture Docker image and deploy it to our Ladder99 Docker Hub -
 
-   .. code:: console
+..    .. code:: console
 
-      shell/adapter/build
+..       shell/adapter/build
 
 
 Building documentation
@@ -36,7 +36,7 @@ Then serve the documents, viewable at localhost:8080 -
 
    .. code:: console
 
-      shell/docs/serve
+      shell/docs
 
 
 Issues

@@ -47,32 +47,41 @@ Then generate the devices.xml and docker files (former partially implemented, la
 
    .. code:: console
 
-      shell/setup/compile ccs-pa
+      shell/compile my-setup
 
 
 Testing a setup
 =========================================
 
-You can test a setup by copying the relevant data into Docker volumes, then running different parts of the setup with Docker-compose.
-
-Copy the data files into named volumes (use your setup name in place of "ccs-pa" ) -
+You can test a setup by running the pipeline in Docker - 
 
    .. code:: console
 
-      shell/adapter/copy ccs-pa
-      shell/agent/copy ccs-pa
+      shell/docker my-setup start
 
-Then start all the services with (where base, sims, db, app correspond to docker-compose yamls in ``setups/ccs-pa/docker``) -
-
-   .. code:: console
-
-      shell/setups/docker start ccs-pa base sims db app
-
-You can stop services with
+or in the background with 
 
    .. code:: console
 
-      shell/setups/docker stop ccs-pa sims
+      shell/docker my-setup startd
+
+or an individual service (e.g. application) with 
+
+   .. code:: console
+
+      shell/docker my-setup start [servicename]
+
+You can stop all services with
+
+   .. code:: console
+
+      shell/docker my-setup stop
+
+or an individual service with 
+
+   .. code:: console
+      
+      docker kill [servicename]
 
 
 Next we'll see about contributing to the Ladder99 project.

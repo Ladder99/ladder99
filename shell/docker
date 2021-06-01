@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # run a docker-compose yaml file with optional list of services
 
-# usage: shell/setups/docker COMMAND SETUP [SERVICES]
-# COMMAND can be start, startd, stop
+# usage: shell/setups/docker SETUP COMMAND [SERVICES]
 # SETUP is the setup subfolder, eg vmc, ccs-pa
+# COMMAND can be start, startd, stop
 # SERVICES is an optional space-delim list of services to start/stop
 # eg `shell/setups/docker startd ccs-pa agent`
 
@@ -11,8 +11,8 @@ import sys
 import os
 import pathlib
 
-cmd = sys.argv[1]  # eg 'start', 'startd', 'stop'
-setup = sys.argv[2]  # eg 'vmc'
+setup = sys.argv[1]  # eg 'vmc'
+cmd = sys.argv[2]  # eg 'start', 'startd', 'stop'
 services = ' '.join(sys.argv[3:])  # eg 'agent timescaledb'
 
 # # get list of docker compose file paths
