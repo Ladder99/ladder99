@@ -1,14 +1,16 @@
 #!/bin/bash
 # replay an mqtt recording
 
-# SETUP=${1:-'default'}
+MODEL=$1 # eg 'ccs-pa'
+RUN=$2 # eg 'run0'
+PORT=1883
 
-# # replay mqtt recording - https://github.com/rpdswtk/mqtt_recorder
-# replay MODEL='ccs-pa' RUN='run0' PORT='1883':
-#     mqtt-recorder \
-#       --host localhost \
-#       --port {{PORT}} \
-#       --mode replay \
-#       --loop true \
-#       --file models/{{MODEL}}/simulations/{{RUN}}.csv
+# replay mqtt recording - https://github.com/rpdswtk/mqtt_recorder
+# replay MODEL=$SETUP RUN='run0' PORT='1883':
 
+mqtt-recorder \
+  --host localhost \
+  --port $PORT \
+  --mode replay \
+  --loop true \
+  --file models/$MODEL/simulations/$RUN.csv
