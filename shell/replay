@@ -17,15 +17,16 @@ const folder = `models/${model}/simulations`
 const csvfiles = fs
   .readdirSync(folder)
   .filter(csvfile => csvfile.endsWith('.csv'))
+  .sort((a, b) => a.localeCompare(b))
 
 while (true) {
   for (const csvfile of csvfiles) {
+    // can pass --loop true
     const cmd = `mqtt-recorder \
-      --host localhost \
-      --port ${port} \
-      --mode replay \
-      --loop false \
-      --file ${folder}/${csvfile}`
+--host localhost \
+--port ${port} \
+--mode replay \
+--file ${folder}/${csvfile}`
     console.log(cmd)
     shell.exec(cmd)
   }
