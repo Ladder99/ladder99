@@ -2,6 +2,7 @@
   "name": "ladder99-replay",
   "version": "0.1.0",
   "description": "replay device messages to mqtt broker",
+  "type": "module",
   "scripts": {
     "start": "node src/index.js"
   },
