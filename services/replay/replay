@@ -37,15 +37,14 @@ const csvfiles = fs
     for (const csvfile of csvfiles) {
       // can pass --loop true
       const cmd = `mqtt-recorder \
-  --host ${host} \
-  --port ${port} \
-  --mode replay \
-  --file ${folder}/${csvfile}`
+--mode replay \
+--host ${host} \
+--port ${port} \
+--file ${folder}/${csvfile}`
       console.log(cmd)
       try {
         execSync(cmd)
       } catch (e) {
-        // process.exit(1)
         console.log(`Retrying in ${pause / 1000} seconds...`)
         await new Promise(resolve => setTimeout(resolve, pause))
       }

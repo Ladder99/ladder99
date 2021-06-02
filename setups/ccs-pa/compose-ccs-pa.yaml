@@ -44,22 +44,22 @@ services:
       options:
         max-size: '1m'
 
-  # # mqtt replay
-  # replay:
-  #   container_name: replay
-  #   build: ../services/replay
-  #   command: ccs-pa # model to simulate
-  #   environment:
-  #     HOST: broker
-  #     MODELS_FOLDER: /etc/models
-  #   volumes:
-  #     - ../services/replay:/home/node/app # has source code
-  #     - ../models:/etc/models # has MODEL/simulations subfolder with sim msgs
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '1m'
+  # mqtt replay
+  replay:
+    container_name: replay
+    build: ../services/replay
+    command: ccs-pa # model to simulate
+    environment:
+      HOST: broker
+      MODELS_FOLDER: /etc/models
+    volumes:
+      - ../services/replay:/home/node/app # has source code
+      - ../models:/etc/models # has MODEL/simulations subfolder with sim msgs
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
 
   simulator-mqtt:
     container_name: simulator-mqtt
