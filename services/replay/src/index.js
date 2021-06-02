@@ -1,11 +1,9 @@
 // replay
 // replays MQTT recordings made with rpdswtk/mqtt_recorder, a python app.
 
-// const fs = require('fs')
-// const mqttlib = require('mqtt')
 import fs from 'fs'
 import mqttlib from 'mqtt'
-import parse from 'csv-parse/lib/sync'
+import parse from 'csv-parse/lib/sync.js'
 
 const host = process.env.MQTT_HOST || 'localhost'
 const port = Number(process.env.MQTT_PORT || 1883)
@@ -41,7 +39,6 @@ mqtt.on('connect', async function onConnect() {
       const csv = fs.readFileSync(csvpath)
       const rows = parse(csv, { columns })
 
-      // for (const message of messages) {
       for (const row of rows) {
         const { payload, time_delta } = row
         const topic = row.topic.replace('${deviceId}', deviceId)
