@@ -5,7 +5,11 @@ FROM python:3.9.5-alpine
 # FROM nikolaik/python-nodejs:python3.9-nodejs16-slim
 # FROM nikolaik/python-nodejs:python3.9-nodejs16-alpine
 
-RUN apt-get update && apt-get install nodejs -y
+# for slim-buster
+# RUN apt-get update && apt-get install nodejs -y
+
+# for alpine
+RUN apk add --no-cache nodejs
 
 RUN pip3 install mqtt-recorder
 
