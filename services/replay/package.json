@@ -1,7 +1,7 @@
 {
-  "name": "ladder99-simulator-mqtt",
+  "name": "ladder99-replay",
   "version": "0.1.0",
-  "description": "send test device messages to mqtt broker",
+  "description": "replay device messages to mqtt broker",
   "scripts": {
     "start": "node src/index.js"
   },
