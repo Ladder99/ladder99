@@ -1,2 +1,2 @@
 data/*
-!data/pg_hba.conf
+# !data/pg_hba.conf
