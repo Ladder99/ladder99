@@ -50,7 +50,7 @@ services:
     build: ../services/replay
     # image: node:15.14
     # user: node
-    working_dir: /home/node/app
+    # working_dir: /home/node/app
     # command: ccs-pa # model to simulate
     # command: npm start
     environment:
