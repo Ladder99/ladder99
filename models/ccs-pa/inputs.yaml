@@ -6,6 +6,8 @@
 connect:
   subscribe:
     - topic: l99/${deviceId}/evt/query
+    - topic: l99/${deviceId}/evt/status
+    - topic: l99/${deviceId}/evt/read
   publish:
     - topic: l99/${deviceId}/cmd/query
       message: '{}'
