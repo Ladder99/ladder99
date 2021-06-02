@@ -57,6 +57,8 @@ export function init({ url, cache, deviceId, inputs }) {
     // unpack the mqtt json payload, assuming it's a JSON string.
     // sets payload as variable - used by handler.initialize - don't delete - @ts-ignore
     const payload = JSON.parse(msgBuffer.toString())
+    // let payload = JSON.parse(msgBuffer.toString())
+    // if (!Array.isArray(payload)) payload = [payload] // wrap obj in array
 
     // iterate over message handlers - handlers is an array of [topic, handler]
     const handlers = Object.entries(inputs.handlers) || []
