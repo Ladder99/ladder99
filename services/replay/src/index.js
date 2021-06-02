@@ -42,12 +42,9 @@ mqtt.on('connect', async function onConnect() {
       for (const row of rows) {
         const { payload, time_delta } = row
         const topic = row.topic.replace('${deviceId}', deviceId)
-        // const payload = JSON.stringify(message.json)
         console.log(`Topic ${topic}: ${payload.slice(0, 40)}...`)
         mqtt.publish(topic, payload)
-        console.log({ time_delta })
-        // await new Promise(resolve => setTimeout(resolve, time_delta))
-        await new Promise(resolve => setTimeout(resolve, 1000))
+        await new Promise(resolve => setTimeout(resolve, time_delta * 1000))
       }
       await new Promise(resolve => setTimeout(resolve, loopDelay))
     }
