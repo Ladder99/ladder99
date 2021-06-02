@@ -1,43 +1,61 @@
 // replay
-// replays MQTT recordings made with rpdswtk/mqtt_recorder, a python app
+// replays MQTT recordings made with rpdswtk/mqtt_recorder, a python app.
 
-const mqttlib = require('mqtt')
+// const fs = require('fs')
+// const mqttlib = require('mqtt')
+import fs from 'fs'
+import mqttlib from 'mqtt'
+import parse from 'csv-parse/lib/sync'
 
 const host = process.env.MQTT_HOST || 'localhost'
 const port = Number(process.env.MQTT_PORT || 1883)
 const deviceId = process.env.DEVICE_ID // eg 'ccs-pa-001'
 const model = process.env.MODEL // eg 'ccs-pa'
 const modelsFolder = process.env.MODELS_FOLDER || '/etc/models'
-// const messageDelay = Number(process.env.MESSAGE_DELAY || 1000)
 const loop = Boolean(process.env.LOOP || false)
 const loopDelay = Number(process.env.LOOP_DELAY || 3000)
-
-// const messages = require(messagesFile)
-// console.log({ messages })
 
 console.log(`Replay`)
 console.log(`Simulates a device sending MQTT messages.`)
 console.log(`------------------------------------------------------------`)
 
-const clientId = deviceId // || 'simulator-' + Math.random()
+const clientId = deviceId
 const config = { host, port, clientId }
 console.log(`Connecting to MQTT broker on`, config)
 const mqtt = mqttlib.connect(config)
 
 mqtt.on('connect', async function onConnect() {
-  const folder = `${modelsFolder}/${model}/simulations`
+  const simulationsFolder = `${modelsFolder}/${model}/simulations`
+  const csvfiles = fs
+    .readdirSync(simulationsFolder)
+    .filter(csvfile => csvfile.endsWith('.csv'))
+    .sort((a, b) => a.localeCompare(b))
+  const columns = 'topic,payload,qos,retain,time_now,time_delta'.split(',')
+
   console.log(`Publishing messages...`)
 
+  // do while loop
   do {
-    for (const message of messages) {
-      const topic = message.topic.replace('${deviceId}', deviceId)
-      const payload = JSON.stringify(message.json)
-      console.log(`Topic ${topic}: ${payload.slice(0, 40)}...`)
-      mqtt.publish(topic, payload)
-      await new Promise(resolve => setTimeout(resolve, messageDelay))
+    for (const csvfile of csvfiles) {
+      const csvpath = `${simulationsFolder}/${csvfile}`
+      const csv = fs.readFileSync(csvpath)
+      const rows = parse(csv, { columns })
+
+      // for (const message of messages) {
+      for (const row of rows) {
+        const { payload, time_delta } = row
+        const topic = row.topic.replace('${deviceId}', deviceId)
+        // const payload = JSON.stringify(message.json)
+        console.log(`Topic ${topic}: ${payload.slice(0, 40)}...`)
+        mqtt.publish(topic, payload)
+        console.log({ time_delta })
+        // await new Promise(resolve => setTimeout(resolve, time_delta))
+        await new Promise(resolve => setTimeout(resolve, 1000))
+      }
+      await new Promise(resolve => setTimeout(resolve, loopDelay))
     }
-    await new Promise(resolve => setTimeout(resolve, loopDelay))
   } while (loop)
+
   console.log(`Closing MQTT connection...`)
   mqtt.end()
 })

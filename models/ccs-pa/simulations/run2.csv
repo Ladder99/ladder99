@@ -1,40 +1,40 @@
-l99/ccs-pa-001/evt/status,"{""connection"": ""online"", ""state"": 200, ""program"": ""emergent_pa_rc2"", ""step"": ""fault"", ""faults"": {}, ""cpu_time"": 282.025067024, ""utc_time"": 1616701065.9328506, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701066007}",0,1,1616701191.275063,0.009734869003295898
-l99/ccs-pa-001/cmd/write,"[{""name"":""%M56.5"",""value"":0.7}]",0,0,1616701211.013003,19.737940073013306
-l99/ccs-pa-001/evt/read,"[{""address"": ""%M56.5"", ""keys"": [""product.sensor_one.delay""], ""value"": 0.7, ""_ts"": 1616701211141}]",0,0,1616701211.126136,0.11313295364379883
-l99/ccs-pa-001/cmd/write,"[{""name"":""%M56.5"",""value"":0.1}]",0,0,1616701215.503874,4.377737998962402
-l99/ccs-pa-001/evt/read,"[{""address"": ""%M56.5"", ""keys"": [""product.sensor_one.delay""], ""value"": 0.1, ""_ts"": 1616701215646}]",0,0,1616701215.6314209,0.1275467872619629
-l99/ccs-pa-001/cmd/write,"[{""name"":""%M56.11"",""value"":1}]",0,0,1616701219.820707,4.189286231994629
-l99/ccs-pa-001/evt/read,"[{""address"": ""%M56.11"", ""keys"": [""product.sensor_aux.enabled""], ""value"": 1, ""_ts"": 1616701219950}]",0,0,1616701219.934777,0.11406993865966797
-l99/ccs-pa-001/cmd/write,"[{""name"":""%M56.11"",""value"":0}]",0,0,1616701221.033736,1.098958969116211
-l99/ccs-pa-001/evt/read,"[{""address"": ""%M56.11"", ""keys"": [""product.sensor_aux.enabled""], ""value"": 0, ""_ts"": 1616701221150}]",0,0,1616701221.136641,0.1029050350189209
-l99/ccs-pa-001/cmd/write,"[{""name"":""%M56.6"",""value"":0.25}]",0,0,1616701227.293098,6.15645694732666
-l99/ccs-pa-001/evt/read,"[{""address"": ""%M56.6"", ""keys"": [""tamp.cylinder.extend_duration""], ""value"": 0.25, ""_ts"": 1616701227456}]",0,0,1616701227.4408991,0.14780116081237793
-l99/ccs-pa-001/cmd/write,"[{""name"":""%M56.0"",""value"":0}]",0,0,1616701231.9900951,4.549196004867554
-l99/ccs-pa-001/evt/read,"[{""address"": ""%M56.0"", ""keys"": [""tamp.vacuum.delay""], ""value"": 0, ""_ts"": 1616701232160}]",0,0,1616701232.1946099,0.204514741897583
-l99/ccs-pa-001/cmd/write,"[{""name"":""%M55.1"",""value"":0}]",0,0,1616701238.749645,6.55503511428833
-l99/ccs-pa-001/cmd/write,"[{""name"":""%M55.2"",""value"":0}]",0,0,1616701238.753171,0.003525972366333008
-l99/ccs-pa-001/evt/read,"[{""address"": ""%M55.1"", ""keys"": [""metric.cycle_count""], ""value"": 0, ""_ts"": 1616701238869}]",0,0,1616701238.8527071,0.09953618049621582
-l99/ccs-pa-001/evt/read,"[{""address"": ""%M55.2"", ""keys"": [""metric.fault_count""], ""value"": 24, ""error"": ""RemoteNotAllowedException"", ""_ts"": 1616701238869}]",0,0,1616701238.855396,0.002688884735107422
-l99/ccs-pa-001/cmd/write,"[{""name"":""%Q1.0"",""value"":1}]",0,0,1616701250.9468548,12.091458797454834
-l99/ccs-pa-001/evt/read,"[{""address"": ""%Q1.0"", ""keys"": [""web.take_up_motor_state""], ""value"": 1, ""_ts"": 1616701251183}]",0,0,1616701251.2444632,0.2976083755493164
-l99/ccs-pa-001/evt/read,"[{""address"": ""%I0.13"", ""keys"": [""IN14"", ""web.dancer_arm"", ""J3.10"", ""SX1.P13""], ""value"": 1, ""_ts"": 1616701255989}]",0,0,1616701255.973074,4.7286107540130615
-l99/ccs-pa-001/evt/read,"[{""address"": ""%I0.13"", ""keys"": [""IN14"", ""web.dancer_arm"", ""J3.10"", ""SX1.P13""], ""value"": 0, ""_ts"": 1616701256687}]",0,0,1616701256.671436,0.6983621120452881
-l99/ccs-pa-001/evt/read,"[{""address"": ""%I0.13"", ""keys"": [""IN14"", ""web.dancer_arm"", ""J3.10"", ""SX1.P13""], ""value"": 1, ""_ts"": 1616701257088}]",0,0,1616701257.071239,0.39980292320251465
-l99/ccs-pa-001/evt/read,"[{""address"": ""%I0.13"", ""keys"": [""IN14"", ""web.dancer_arm"", ""J3.10"", ""SX1.P13""], ""value"": 0, ""_ts"": 1616701258589}]",0,0,1616701258.6132538,1.5420148372650146
-l99/ccs-pa-001/evt/read,"[{""address"": ""%I0.13"", ""keys"": [""IN14"", ""web.dancer_arm"", ""J3.10"", ""SX1.P13""], ""value"": 1, ""_ts"": 1616701259690}]",0,0,1616701259.674072,1.0608181953430176
-l99/ccs-pa-001/cmd/write,"[{""name"":""%Q1.0"",""value"":0}]",0,0,1616701265.782376,6.108304023742676
-l99/ccs-pa-001/evt/read,"[{""address"": ""%Q1.0"", ""keys"": [""web.take_up_motor_state""], ""value"": 0, ""_ts"": 1616701265898}]",0,0,1616701265.881581,0.09920501708984375
-l99/ccs-pa-001/cmd/runstate/action=run,{},0,0,1616701269.364119,3.4825379848480225
-l99/ccs-pa-001/evt/status,"{""connection"": ""online"", ""state"": 300, ""program"": ""emergent_pa_rc2"", ""step"": ""wait_for_printer_data_ready"", ""faults"": {}, ""cpu_time"": 485.72604775, ""utc_time"": 1616701269.633831, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701269703}",0,0,1616701269.6862369,0.32211780548095703
-l99/ccs-pa-001/evt/read,"[{""address"": ""%Q0.10"", ""keys"": [""OUT11"", ""andon.red"", ""J3.P8"", ""SX2.P10""], ""value"": 0, ""_ts"": 1616701269704}]",0,0,1616701269.689436,0.0031991004943847656
-l99/ccs-pa-001/evt/read,"[{""address"": ""%Q1.0"", ""keys"": [""web.take_up_motor_state""], ""value"": 1, ""_ts"": 1616701269705}]",0,0,1616701269.689769,0.0003330707550048828
-l99/ccs-pa-001/evt/status,"{""connection"": ""online"", ""state"": 400, ""program"": ""emergent_pa_rc2"", ""step"": ""wait_for_printer_data_ready"", ""faults"": {}, ""cpu_time"": 485.749567588, ""utc_time"": 1616701269.657352, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701269705}",0,0,1616701269.690018,0.00024890899658203125
-l99/ccs-pa-001/evt/read,"[{""address"": ""%M55.2"", ""keys"": [""metric.fault_count""], ""value"": 25, ""_ts"": 1616701269706}]",0,0,1616701269.690262,0.000244140625
-l99/ccs-pa-001/evt/read,"[{""address"": ""%Q0.10"", ""keys"": [""OUT11"", ""andon.red"", ""J3.P8"", ""SX2.P10""], ""value"": 1, ""_ts"": 1616701269706}]",0,0,1616701269.692369,0.002106904983520508
-l99/ccs-pa-001/evt/read,"[{""address"": ""%Q1.0"", ""keys"": [""web.take_up_motor_state""], ""value"": 0, ""_ts"": 1616701269707}]",0,0,1616701269.6927218,0.0003528594970703125
-l99/ccs-pa-001/evt/status,"{""connection"": ""online"", ""state"": 400, ""program"": ""emergent_pa_rc2"", ""step"": ""fault"", ""faults"": {""50"": {""description"": ""low ribbon"", ""hard"": false, ""added"": 485.754414872, ""updated"": 485.771838091, ""count"": 2}, ""14"": {""description"": ""no printer data"", ""hard"": true, ""added"": 485.755088122, ""updated"": 485.755091103, ""count"": 1}}, ""cpu_time"": 485.7669764, ""utc_time"": 1616701269.6747603, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701269707}",0,0,1616701269.692988,0.00026607513427734375
-l99/ccs-pa-001/evt/read,"[{""address"": ""%Q0.11"", ""keys"": [""OUT12"", ""andon.yellow"", ""J3.P9"", ""SX2.P11""], ""value"": 1, ""_ts"": 1616701269708}]",0,0,1616701269.695725,0.0027370452880859375
-l99/ccs-pa-001/evt/status,"{""connection"": ""online"", ""state"": 50, ""program"": ""emergent_pa_rc2"", ""step"": ""fault"", ""faults"": {}, ""cpu_time"": 485.775623316, ""utc_time"": 1616701269.6834075, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701269709}",0,0,1616701269.696148,0.0004229545593261719
-l99/ccs-pa-001/evt/status,"{""connection"": ""online"", ""state"": 100, ""program"": ""emergent_pa_rc2"", ""step"": ""fault"", ""faults"": {}, ""cpu_time"": 485.781273848, ""utc_time"": 1616701269.6890574, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701269709}",0,0,1616701269.696519,0.00037097930908203125
-l99/ccs-pa-001/evt/read,"[{""address"": ""%Q0.11"", ""keys"": [""OUT12"", ""andon.yellow"", ""J3.P9"", ""SX2.P11""], ""value"": 0, ""_ts"": 1616701269710}]",0,0,1616701269.696838,0.0003190040588378906
-l99/ccs-pa-001/evt/status,"{""connection"": ""online"", ""state"": 200, ""program"": ""emergent_pa_rc2"", ""step"": ""fault"", ""faults"": {}, ""cpu_time"": 485.796304563, ""utc_time"": 1616701269.7040892, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701269711}",0,0,1616701269.698771,0.0019330978393554688
+l99/${deviceId}/evt/status,"{""connection"": ""online"", ""state"": 200, ""program"": ""emergent_pa_rc2"", ""step"": ""fault"", ""faults"": {}, ""cpu_time"": 282.025067024, ""utc_time"": 1616701065.9328506, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701066007}",0,1,1616701191.275063,0.009734869003295898
+l99/${deviceId}/cmd/write,"[{""name"":""%M56.5"",""value"":0.7}]",0,0,1616701211.013003,19.737940073013306
+l99/${deviceId}/evt/read,"[{""address"": ""%M56.5"", ""keys"": [""product.sensor_one.delay""], ""value"": 0.7, ""_ts"": 1616701211141}]",0,0,1616701211.126136,0.11313295364379883
+l99/${deviceId}/cmd/write,"[{""name"":""%M56.5"",""value"":0.1}]",0,0,1616701215.503874,4.377737998962402
+l99/${deviceId}/evt/read,"[{""address"": ""%M56.5"", ""keys"": [""product.sensor_one.delay""], ""value"": 0.1, ""_ts"": 1616701215646}]",0,0,1616701215.6314209,0.1275467872619629
+l99/${deviceId}/cmd/write,"[{""name"":""%M56.11"",""value"":1}]",0,0,1616701219.820707,4.189286231994629
+l99/${deviceId}/evt/read,"[{""address"": ""%M56.11"", ""keys"": [""product.sensor_aux.enabled""], ""value"": 1, ""_ts"": 1616701219950}]",0,0,1616701219.934777,0.11406993865966797
+l99/${deviceId}/cmd/write,"[{""name"":""%M56.11"",""value"":0}]",0,0,1616701221.033736,1.098958969116211
+l99/${deviceId}/evt/read,"[{""address"": ""%M56.11"", ""keys"": [""product.sensor_aux.enabled""], ""value"": 0, ""_ts"": 1616701221150}]",0,0,1616701221.136641,0.1029050350189209
+l99/${deviceId}/cmd/write,"[{""name"":""%M56.6"",""value"":0.25}]",0,0,1616701227.293098,6.15645694732666
+l99/${deviceId}/evt/read,"[{""address"": ""%M56.6"", ""keys"": [""tamp.cylinder.extend_duration""], ""value"": 0.25, ""_ts"": 1616701227456}]",0,0,1616701227.4408991,0.14780116081237793
+l99/${deviceId}/cmd/write,"[{""name"":""%M56.0"",""value"":0}]",0,0,1616701231.9900951,4.549196004867554
+l99/${deviceId}/evt/read,"[{""address"": ""%M56.0"", ""keys"": [""tamp.vacuum.delay""], ""value"": 0, ""_ts"": 1616701232160}]",0,0,1616701232.1946099,0.204514741897583
+l99/${deviceId}/cmd/write,"[{""name"":""%M55.1"",""value"":0}]",0,0,1616701238.749645,6.55503511428833
+l99/${deviceId}/cmd/write,"[{""name"":""%M55.2"",""value"":0}]",0,0,1616701238.753171,0.003525972366333008
+l99/${deviceId}/evt/read,"[{""address"": ""%M55.1"", ""keys"": [""metric.cycle_count""], ""value"": 0, ""_ts"": 1616701238869}]",0,0,1616701238.8527071,0.09953618049621582
+l99/${deviceId}/evt/read,"[{""address"": ""%M55.2"", ""keys"": [""metric.fault_count""], ""value"": 24, ""error"": ""RemoteNotAllowedException"", ""_ts"": 1616701238869}]",0,0,1616701238.855396,0.002688884735107422
+l99/${deviceId}/cmd/write,"[{""name"":""%Q1.0"",""value"":1}]",0,0,1616701250.9468548,12.091458797454834
+l99/${deviceId}/evt/read,"[{""address"": ""%Q1.0"", ""keys"": [""web.take_up_motor_state""], ""value"": 1, ""_ts"": 1616701251183}]",0,0,1616701251.2444632,0.2976083755493164
+l99/${deviceId}/evt/read,"[{""address"": ""%I0.13"", ""keys"": [""IN14"", ""web.dancer_arm"", ""J3.10"", ""SX1.P13""], ""value"": 1, ""_ts"": 1616701255989}]",0,0,1616701255.973074,4.7286107540130615
+l99/${deviceId}/evt/read,"[{""address"": ""%I0.13"", ""keys"": [""IN14"", ""web.dancer_arm"", ""J3.10"", ""SX1.P13""], ""value"": 0, ""_ts"": 1616701256687}]",0,0,1616701256.671436,0.6983621120452881
+l99/${deviceId}/evt/read,"[{""address"": ""%I0.13"", ""keys"": [""IN14"", ""web.dancer_arm"", ""J3.10"", ""SX1.P13""], ""value"": 1, ""_ts"": 1616701257088}]",0,0,1616701257.071239,0.39980292320251465
+l99/${deviceId}/evt/read,"[{""address"": ""%I0.13"", ""keys"": [""IN14"", ""web.dancer_arm"", ""J3.10"", ""SX1.P13""], ""value"": 0, ""_ts"": 1616701258589}]",0,0,1616701258.6132538,1.5420148372650146
+l99/${deviceId}/evt/read,"[{""address"": ""%I0.13"", ""keys"": [""IN14"", ""web.dancer_arm"", ""J3.10"", ""SX1.P13""], ""value"": 1, ""_ts"": 1616701259690}]",0,0,1616701259.674072,1.0608181953430176
+l99/${deviceId}/cmd/write,"[{""name"":""%Q1.0"",""value"":0}]",0,0,1616701265.782376,6.108304023742676
+l99/${deviceId}/evt/read,"[{""address"": ""%Q1.0"", ""keys"": [""web.take_up_motor_state""], ""value"": 0, ""_ts"": 1616701265898}]",0,0,1616701265.881581,0.09920501708984375
+l99/${deviceId}/cmd/runstate/action=run,{},0,0,1616701269.364119,3.4825379848480225
+l99/${deviceId}/evt/status,"{""connection"": ""online"", ""state"": 300, ""program"": ""emergent_pa_rc2"", ""step"": ""wait_for_printer_data_ready"", ""faults"": {}, ""cpu_time"": 485.72604775, ""utc_time"": 1616701269.633831, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701269703}",0,0,1616701269.6862369,0.32211780548095703
+l99/${deviceId}/evt/read,"[{""address"": ""%Q0.10"", ""keys"": [""OUT11"", ""andon.red"", ""J3.P8"", ""SX2.P10""], ""value"": 0, ""_ts"": 1616701269704}]",0,0,1616701269.689436,0.0031991004943847656
+l99/${deviceId}/evt/read,"[{""address"": ""%Q1.0"", ""keys"": [""web.take_up_motor_state""], ""value"": 1, ""_ts"": 1616701269705}]",0,0,1616701269.689769,0.0003330707550048828
+l99/${deviceId}/evt/status,"{""connection"": ""online"", ""state"": 400, ""program"": ""emergent_pa_rc2"", ""step"": ""wait_for_printer_data_ready"", ""faults"": {}, ""cpu_time"": 485.749567588, ""utc_time"": 1616701269.657352, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701269705}",0,0,1616701269.690018,0.00024890899658203125
+l99/${deviceId}/evt/read,"[{""address"": ""%M55.2"", ""keys"": [""metric.fault_count""], ""value"": 25, ""_ts"": 1616701269706}]",0,0,1616701269.690262,0.000244140625
+l99/${deviceId}/evt/read,"[{""address"": ""%Q0.10"", ""keys"": [""OUT11"", ""andon.red"", ""J3.P8"", ""SX2.P10""], ""value"": 1, ""_ts"": 1616701269706}]",0,0,1616701269.692369,0.002106904983520508
+l99/${deviceId}/evt/read,"[{""address"": ""%Q1.0"", ""keys"": [""web.take_up_motor_state""], ""value"": 0, ""_ts"": 1616701269707}]",0,0,1616701269.6927218,0.0003528594970703125
+l99/${deviceId}/evt/status,"{""connection"": ""online"", ""state"": 400, ""program"": ""emergent_pa_rc2"", ""step"": ""fault"", ""faults"": {""50"": {""description"": ""low ribbon"", ""hard"": false, ""added"": 485.754414872, ""updated"": 485.771838091, ""count"": 2}, ""14"": {""description"": ""no printer data"", ""hard"": true, ""added"": 485.755088122, ""updated"": 485.755091103, ""count"": 1}}, ""cpu_time"": 485.7669764, ""utc_time"": 1616701269.6747603, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701269707}",0,0,1616701269.692988,0.00026607513427734375
+l99/${deviceId}/evt/read,"[{""address"": ""%Q0.11"", ""keys"": [""OUT12"", ""andon.yellow"", ""J3.P9"", ""SX2.P11""], ""value"": 1, ""_ts"": 1616701269708}]",0,0,1616701269.695725,0.0027370452880859375
+l99/${deviceId}/evt/status,"{""connection"": ""online"", ""state"": 50, ""program"": ""emergent_pa_rc2"", ""step"": ""fault"", ""faults"": {}, ""cpu_time"": 485.775623316, ""utc_time"": 1616701269.6834075, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701269709}",0,0,1616701269.696148,0.0004229545593261719
+l99/${deviceId}/evt/status,"{""connection"": ""online"", ""state"": 100, ""program"": ""emergent_pa_rc2"", ""step"": ""fault"", ""faults"": {}, ""cpu_time"": 485.781273848, ""utc_time"": 1616701269.6890574, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701269709}",0,0,1616701269.696519,0.00037097930908203125
+l99/${deviceId}/evt/read,"[{""address"": ""%Q0.11"", ""keys"": [""OUT12"", ""andon.yellow"", ""J3.P9"", ""SX2.P11""], ""value"": 0, ""_ts"": 1616701269710}]",0,0,1616701269.696838,0.0003190040588378906
+l99/${deviceId}/evt/status,"{""connection"": ""online"", ""state"": 200, ""program"": ""emergent_pa_rc2"", ""step"": ""fault"", ""faults"": {}, ""cpu_time"": 485.796304563, ""utc_time"": 1616701269.7040892, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701269711}",0,0,1616701269.698771,0.0019330978393554688
