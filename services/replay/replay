@@ -45,7 +45,11 @@ const csvfiles = fs
       try {
         execSync(cmd)
       } catch (e) {
-        console.log(`Retrying in ${pause / 1000} seconds...`)
+        console.log(
+          `Unable to reach ${host}:${port} - retrying in ${
+            pause / 1000
+          } seconds...`
+        )
         await new Promise(resolve => setTimeout(resolve, pause))
       }
     }
