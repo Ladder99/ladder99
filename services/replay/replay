@@ -4,7 +4,7 @@
 const fs = require('fs')
 const { execSync } = require('child_process')
 
-if (process.argv.length < 3) {
+if (!process.env.MODEL && process.argv.length < 3) {
   console.log(`
 Usage: shell/replay MODEL
 
@@ -18,9 +18,9 @@ e.g. shell/replay ccs-pa
   process.exit(0)
 }
 
-const model = process.argv[2] // eg 'ccs-pa'
+const model = process.env.MODEL || process.argv[2] // eg 'ccs-pa'
 
-const port = 1883
+const port = process.env.PORT || 1883
 const pause = 2000 // ms
 
 const folder = `models/${model}/simulations`

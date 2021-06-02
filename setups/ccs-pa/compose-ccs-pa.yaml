@@ -40,9 +40,26 @@ services:
       options:
         max-size: '1m'
 
+  replay:
+    container_name: replay
+    image: node:15.14
+    user: node
+    working_dir: /home/node/app
+    command: node replay
+    environment:
+      MODEL: ccs-pa
+    volumes:
+      - ../services/replay:/home/node/app # has source code
+      - ./models:/etc/models # model subfolder has simulations folder with sim msgs
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
   # simulator-mqtt:
   #   container_name: simulator-mqtt
-  #   image: node:15
+  #   image: node:15.14
   #   user: node
   #   working_dir: /home/node/app
   #   command: npm start
