@@ -1,8 +1,10 @@
-FROM node:15.14
+FROM python:3.9-slim-buster
 
-USER node
+RUN apt-get update && apt-get install nodejs -y
 
-WORKDIR /usr/node/app
+RUN pip3 install mqtt-recorder
+
+WORKDIR /app
 
 COPY . .
 

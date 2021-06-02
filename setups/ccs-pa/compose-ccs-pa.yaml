@@ -1,5 +1,6 @@
 # docker-compose file for broker-adapter-agent pipeline.
 # these services are run in addition to those in setups/compose.yaml.
+
 #. this will be generated from devices.yaml, but edit manually for now.
 
 version: '3.8'
@@ -42,15 +43,17 @@ services:
 
   replay:
     container_name: replay
-    image: node:15.14
-    user: node
-    working_dir: /home/node/app
-    command: node replay ccs-pa
-    # environment:
-    #   MODEL: ccs-pa
+    # image: node:15.14
+    # user: node
+    # working_dir: /home/node/app
+    # command: node replay ccs-pa
+    build: ../services/replay
+    command: ccs-pa
+    environment:
+      MODELS_FOLDER: /etc/models
     volumes:
       - ../services/replay:/home/node/app # has source code
-      - ./models:/home/node/app/models # model subfolder has simulations folder with sim msgs
+      - ../models:/etc/models # has MODEL/simulations subfolder with sim msgs
     networks:
       - ladder99
     logging:
