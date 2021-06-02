@@ -1,9 +1,9 @@
 FROM node:15.14
 
+USER node
+
 WORKDIR /usr/node/app
 
 COPY . .
 
-CMD ["test.py"]
-
-ENTRYPOINT ["python3"]
+ENTRYPOINT ["node", "replay"]
