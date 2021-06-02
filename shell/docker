@@ -1,15 +1,24 @@
 #!/usr/bin/env python3
-# run a docker-compose yaml file with optional list of services
-
-# usage: shell/setups/docker SETUP COMMAND [SERVICES]
-# SETUP is the setup subfolder, eg vmc, ccs-pa
-# COMMAND can be start, startd, stop
-# SERVICES is an optional space-delim list of services to start/stop
-# eg `shell/setups/docker startd ccs-pa agent`
 
 import sys
 import os
 import pathlib
+
+if len(sys.argv) < 2:
+    print("""
+Usage: shell/docker SETUP COMMAND [SERVICES]
+
+Run a docker-compose yaml file with optional list of services.
+
+SETUP     setup subfolder, eg vmc, ccs-pa
+COMMAND   start, startd (run detached), stop (stop all services)
+SERVICES  optional space-delim list of services to start
+
+eg `shell/docker startd ccs-pa application`
+
+Use `docker kill SERVICE` to stop a service
+""")
+    sys.exit(0)
 
 setup = sys.argv[1]  # eg 'vmc'
 cmd = sys.argv[2]  # eg 'start', 'startd', 'stop'
