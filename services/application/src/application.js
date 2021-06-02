@@ -14,8 +14,8 @@ const baseUrl = process.env.AGENT_BASE_URL || 'http://localhost:5000'
 const fetchInterval = Number(process.env.FETCH_INTERVAL || 2000) // msec
 const fetchCount = Number(process.env.FETCH_COUNT || 200)
 
+// get postgres connection and start polling
 ;(async function () {
-  // get postgres connection and start polling
   const client = new Client()
   await client.connect() // uses envars PGHOST, PGPORT, etc
   await setupTables(client)
@@ -83,7 +83,8 @@ function getDataItems(json) {
   return allDataItems
 }
 
-//. gather up all items into one array, then put all into one INSERT stmt
+// gather up all items into array, then put all into one INSERT stmt, for speed.
+// otherwise pipeline couldn't keep up.
 // see https://stackoverflow.com/a/63167970/243392 etc
 async function writeDataItems(dataItems, client) {
   let rows = []
