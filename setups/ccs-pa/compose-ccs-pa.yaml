@@ -64,7 +64,8 @@ services:
       - LOOP_DELAY=3000
     volumes:
       # - ../services/replay:/home/ladder99/replay # has source code
-      - ../services/replay:/home/node/app # has source code
+      # - ../services/replay:/home/node/app # has source code
+      - ../services/replay:/data/app # has source code
       - ../models:/etc/models # has MODEL/simulations subfolder with sim msgs
     networks:
       - ladder99
