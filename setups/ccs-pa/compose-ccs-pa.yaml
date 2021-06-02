@@ -45,12 +45,12 @@ services:
     image: node:15.14
     user: node
     working_dir: /home/node/app
-    command: node replay
-    environment:
-      MODEL: ccs-pa
+    command: node replay ccs-pa
+    # environment:
+    #   MODEL: ccs-pa
     volumes:
       - ../services/replay:/home/node/app # has source code
-      - ./models:/etc/models # model subfolder has simulations folder with sim msgs
+      - ./models:/home/node/app/models # model subfolder has simulations folder with sim msgs
     networks:
       - ladder99
     logging:

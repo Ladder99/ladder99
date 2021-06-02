@@ -23,7 +23,7 @@ const model = process.env.MODEL || process.argv[2] // eg 'ccs-pa'
 const port = process.env.PORT || 1883
 const pause = 2000 // ms
 
-const folder = `models/${model}/simulations`
+const folder = `./models/${model}/simulations`
 
 const csvfiles = fs
   .readdirSync(folder)
