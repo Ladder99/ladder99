@@ -1,16 +1,27 @@
 #!/usr/bin/env node
-
-// replay mqtt recordings
-// uses python package https://github.com/rpdswtk/mqtt_recorder
-
-// usage: shell/replay MODEL
-// where MODEL is the model folder containing a simulations folder
+// note: uses python package https://github.com/rpdswtk/mqtt_recorder
 
 const fs = require('fs')
-const shell = require('shelljs')
+const { execSync } = require('child_process')
+
+if (process.argv.length < 3) {
+  console.log(`
+Usage: shell/replay MODEL
+
+Replay MQTT recordings made with rpdswtk/mqtt_recorder.
+
+MODEL  the name of the model subfolder containing a simulations
+       folder with the set of csv files
+
+e.g. shell/replay ccs-pa
+`)
+  process.exit(0)
+}
 
 const model = process.argv[2] // eg 'ccs-pa'
+
 const port = 1883
+const pause = 2000 // ms
 
 const folder = `models/${model}/simulations`
 
@@ -19,15 +30,23 @@ const csvfiles = fs
   .filter(csvfile => csvfile.endsWith('.csv'))
   .sort((a, b) => a.localeCompare(b))
 
-while (true) {
-  for (const csvfile of csvfiles) {
-    // can pass --loop true
-    const cmd = `mqtt-recorder \
---host localhost \
---port ${port} \
---mode replay \
---file ${folder}/${csvfile}`
-    console.log(cmd)
-    shell.exec(cmd)
+;(async function () {
+  while (true) {
+    for (const csvfile of csvfiles) {
+      // can pass --loop true
+      const cmd = `mqtt-recorder \
+  --host localhost \
+  --port ${port} \
+  --mode replay \
+  --file ${folder}/${csvfile}`
+      console.log(cmd)
+      try {
+        execSync(cmd)
+      } catch (e) {
+        // process.exit(1)
+        console.log(`Retrying in ${pause / 1000} seconds...`)
+        await new Promise(resolve => setTimeout(resolve, pause))
+      }
+    }
   }
-}
+})()
