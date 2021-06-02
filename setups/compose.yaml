@@ -156,7 +156,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./$SETUP/volumes/portainer:/data
+      - ./$SETUP/volumes/portainer/data:/data
     restart: always
     networks:
       - ladder99
