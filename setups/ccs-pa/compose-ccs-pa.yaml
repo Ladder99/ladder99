@@ -43,13 +43,10 @@ services:
 
   replay:
     container_name: replay
-    # image: node:15.14
-    # user: node
-    # working_dir: /home/node/app
-    # command: node replay ccs-pa
     build: ../services/replay
     command: ccs-pa
     environment:
+      HOST: broker
       MODELS_FOLDER: /etc/models
     volumes:
       - ../services/replay:/home/node/app # has source code

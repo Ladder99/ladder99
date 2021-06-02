@@ -20,6 +20,7 @@ e.g. shell/replay ccs-pa
 
 const model = process.env.MODEL || process.argv[2] // eg 'ccs-pa'
 
+const host = process.env.HOST || 'localhost'
 const port = process.env.PORT || 1883
 const pause = 2000 // ms
 
@@ -36,7 +37,7 @@ const csvfiles = fs
     for (const csvfile of csvfiles) {
       // can pass --loop true
       const cmd = `mqtt-recorder \
-  --host localhost \
+  --host ${host} \
   --port ${port} \
   --mode replay \
   --file ${folder}/${csvfile}`
