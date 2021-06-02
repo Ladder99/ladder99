@@ -30,18 +30,19 @@ mqtt.on('connect', async function onConnect() {
     .sort((a, b) => a.localeCompare(b))
   const columns = 'topic,payload,qos,retain,time_now,time_delta'.split(',')
 
-  console.log(`Publishing messages...`)
+  console.log(`Connected - publishing messages...`)
 
   // do while loop
   do {
     for (const csvfile of csvfiles) {
       const csvpath = `${simulationsFolder}/${csvfile}`
+      console.log(`Reading ${csvpath}...`)
       const csv = fs.readFileSync(csvpath)
       const rows = parse(csv, { columns })
       for (const row of rows) {
         const { payload, qos, time_delta } = row
         const topic = row.topic.replace('${deviceId}', deviceId)
-        console.log(`Topic ${topic}: ${payload.slice(0, 40)}...`)
+        console.log(`Publishing topic ${topic}: ${payload.slice(0, 40)}...`)
         mqtt.publish(topic, payload, { qos })
         await new Promise(resolve => setTimeout(resolve, time_delta * 1000))
       }
