@@ -38,7 +38,6 @@ mqtt.on('connect', async function onConnect() {
       const csvpath = `${simulationsFolder}/${csvfile}`
       const csv = fs.readFileSync(csvpath)
       const rows = parse(csv, { columns })
-
       for (const row of rows) {
         const { payload, time_delta } = row
         const topic = row.topic.replace('${deviceId}', deviceId)
