@@ -14,7 +14,7 @@ SETUP     setup subfolder, eg vmc, ccs-pa
 COMMAND   start, startd (run detached), stop (stop all services)
 SERVICES  optional space-delim list of services to start
 
-eg `shell/docker startd ccs-pa application`
+eg `shell/docker ccs-pa startd application`
 
 Use `docker kill SERVICE` to stop a service
 """)
