@@ -5,12 +5,12 @@ FROM node:15.14-slim
 # install javascript dependencies
 WORKDIR /data
 ENV NODE_ENV production
-COPY ./package*.json .
+COPY ./package*.json ./
 RUN npm ci --production
 
 WORKDIR /data/app
 ENV PATH /data/node_modules/.bin:$PATH
-COPY ./src /data/app/src
+COPY ./src ./src
 
 # default command when run container
 CMD ["npm", "start"]
