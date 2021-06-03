@@ -20,10 +20,6 @@ On your edge device, in the ladder99 folder (note the d in startd, for detach / 
 
       shell/docker vmc startd
 
-   .. note::
-
-      You can see all the available shell commands with ``tree shell``.
-
 
 Viewing the Agent
 =====================
