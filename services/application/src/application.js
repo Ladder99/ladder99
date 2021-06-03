@@ -33,6 +33,11 @@ CREATE TABLE IF NOT EXISTS history (
 );
 
 SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
+
+CREATE OR REPLACE VIEW history_numeric
+AS SELECT "time", id, value
+FROM history
+WHERE jsonb_typeof(value) = 'number'::text;
 `
   console.log(`Creating db structures if not there...`)
   await client.query(sql)
