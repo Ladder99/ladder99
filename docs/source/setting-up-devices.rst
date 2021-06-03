@@ -23,7 +23,9 @@ Then start all services with
    
       shell/docker ccs-pa start
 
-Now you can watch the simulation send mqtt messages to the brokers through to the adapter and then onto the agent via SHDR messages. 
+Now you can watch the pipeline send MQTT messages to the brokers through to the adapter and then onto the agent via SHDR messages. 
+
+Note: The messages come from recordings made of P&A machines, and are stored in csv files in ``models/ccs-pa/simulations``. 
 
 To see the data the agent generates visit http://raspberrypi.local:5000/current (where the address is your edge device)
 
