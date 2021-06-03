@@ -87,7 +87,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value::text::numeric\nFROM history\nWHERE\n  id='Frt' and (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY 1",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value\nFROM history_numeric\nWHERE\n  id='Frt' and\n  $__timeFilter(\"time\")",
           "refId": "A",
           "select": [
             [
@@ -305,7 +305,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text::numeric as x\nFROM history\nWHERE id='x2' and\n  (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value as x\nFROM history_numeric\nWHERE id='x2' and\n  $__timeFilter(\"time\");",
           "refId": "A",
           "select": [
             [
@@ -332,7 +332,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text::numeric as y\nFROM history\nWHERE id='y2' and\n  (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value as y\nFROM history_numeric\nWHERE id='y2' and\n  $__timeFilter(\"time\");",
           "refId": "B",
           "select": [
             [
@@ -359,7 +359,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text::numeric as z\nFROM history\nWHERE id='z2' and\n  (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value as z\nFROM history_numeric\nWHERE id='z2' and\n  $__timeFilter(\"time\");\n",
           "refId": "C",
           "select": [
             [
@@ -475,7 +475,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text::numeric as x\nFROM history\nWHERE id='x3' and\n  (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value as x\nFROM history_numeric\nWHERE id='x3' and\n  $__timeFilter(\"time\");",
           "refId": "A",
           "select": [
             [
@@ -502,7 +502,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text::numeric as y\nFROM history\nWHERE id='y3' and\n  (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value as y\nFROM history_numeric\nWHERE id='y3' and\n  $__timeFilter(\"time\");",
           "refId": "B",
           "select": [
             [
@@ -529,7 +529,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text::numeric as z\nFROM history\nWHERE id='z3' and\n  (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value as z\nFROM history_numeric\nWHERE id='z3' and\n  $__timeFilter(\"time\");\n",
           "refId": "C",
           "select": [
             [
@@ -659,7 +659,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time,\n  SUM(CASE id WHEN 'x2' THEN value::text::numeric ELSE 0 END) AS x,\n  SUM(CASE id WHEN 'y2' THEN value::text::numeric ELSE 0 END) AS y\nFROM history\nWHERE (value::text<>'\"UNAVAILABLE\"') and $__timeFilter(\"time\")\nGROUP BY time\n;\n",
+          "rawSql": "SELECT time,\n  SUM(CASE id WHEN 'x2' THEN value ELSE 0 END) AS x,\n  SUM(CASE id WHEN 'y2' THEN value ELSE 0 END) AS y\nFROM history_numeric\nWHERE $__timeFilter(\"time\")\nGROUP BY time\n;\n",
           "refId": "A",
           "select": [
             [
@@ -790,7 +790,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time,\n  SUM(CASE id WHEN 'x2' THEN value::text::numeric ELSE 0 END) AS x,\n  SUM(CASE id WHEN 'y2' THEN value::text::numeric ELSE 0 END) AS y,\n  SUM(CASE id WHEN 'z2' THEN value::text::numeric ELSE 0 END) AS z\nFROM history\nWHERE (value::text<>'\"UNAVAILABLE\"') and $__timeFilter(\"time\")\nGROUP BY time\n;\n",
+          "rawSql": "SELECT time,\n  SUM(CASE id WHEN 'x2' THEN value ELSE 0 END) AS x,\n  SUM(CASE id WHEN 'y2' THEN value ELSE 0 END) AS y,\n  SUM(CASE id WHEN 'z2' THEN value ELSE 0 END) AS z\nFROM history_numeric\nWHERE $__timeFilter(\"time\")\nGROUP BY time\n;\n",
           "refId": "A",
           "select": [
             [
@@ -1188,5 +1188,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 37
+  "version": 39
 }
