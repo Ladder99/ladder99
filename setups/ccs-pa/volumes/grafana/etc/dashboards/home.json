@@ -941,7 +941,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value::text::numeric\nFROM history\nWHERE id='ccs-pa-001-print_time'\nand $__timeFilter(\"time\")\nand value::text <> '\"UNAVAILABLE\"'\norder by time\n",
+          "rawSql": "SELECT\n  time,\n  value\nFROM history_numeric\nWHERE id='ccs-pa-001-print_time'\nand $__timeFilter(\"time\")\n",
           "refId": "A",
           "select": [
             [
@@ -1111,5 +1111,5 @@
   "timezone": "",
   "title": "CCS P&A",
   "uid": "dII-Qgzgz",
-  "version": 15
+  "version": 17
 }
