@@ -10,7 +10,7 @@ Example setup
 
 Ladder99 comes with a print & apply machine as an example, defined in ``setups/ccs-pa`` - let's try that out.
 
-First, make sure you've set the environment variables as in the previous page - 
+First, make sure you've set the environment variables as on the previous page - 
 
    .. code:: console
 
