@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS history (
 SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 
 CREATE OR REPLACE VIEW history_numeric
-AS SELECT "time", id, value
+AS SELECT "time", id, value::numeric
 FROM history
 WHERE jsonb_typeof(value) = 'number'::text;
 `
