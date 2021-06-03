@@ -30,7 +30,7 @@ services:
   # mtconnect adapter
   adapter:
     container_name: adapter
-    image: node:15.14
+    image: node:15.14-slim
     user: node
     working_dir: /home/node/app
     command: npm start
@@ -67,7 +67,7 @@ services:
 
   # simulator-mqtt:
   #   container_name: simulator-mqtt
-  #   image: node:15.14
+  #   image: node:15.14-slim
   #   user: node
   #   working_dir: /home/node/app
   #   command: npm start
@@ -90,7 +90,7 @@ services:
 
   # simulator-opc:
   #   container_name: simulator-opc
-  #   image: node:15
+  #   image: node:15.14-slim
   #   user: node
   #   working_dir: /home/node/app
   #   command: npm start

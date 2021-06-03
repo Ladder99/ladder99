@@ -3,6 +3,7 @@
 version: '3.8'
 
 services:
+  # mtconnect agent - takes in shdr and outputs html/json
   agent:
     container_name: agent
     image: ladder99/mtconnect-agent:latest
@@ -14,9 +15,9 @@ services:
       options:
         max-size: '1m'
 
+  # main database - stores structure and time-series data
   timescaledb:
     container_name: timescaledb
-    # image: timescale/timescaledb:latest-pg13
     image: timescale/timescaledb:2.3.0-pg13
     ports:
       - $PGPORT:5432/tcp
@@ -35,6 +36,7 @@ services:
       options:
         max-size: '1m'
 
+  # another time-series database - stores edge device data
   influxdb:
     container_name: influxdb
     # image: influxdb:2.0 # not avail for 32bit - need 64bit os
@@ -56,6 +58,7 @@ services:
       options:
         max-size: '1m'
 
+  # app that sends data from edge device to influxdb
   telegraf:
     container_name: telegraf
     image: telegraf:1.18
@@ -71,6 +74,7 @@ services:
       options:
         max-size: '1m'
 
+  # visualization app that shows real-time data from the databases
   grafana:
     container_name: grafana
     image: grafana/grafana:7.5.5
@@ -120,9 +124,10 @@ services:
   #     restart_policy:
   #       condition: on-failure
 
+  # mtconnect application - retrieves data from agent and sends to db
   application:
     container_name: application
-    image: node:15.14
+    image: node:15.14-slim
     user: node
     working_dir: /home/node/app
     command: npm start
@@ -147,6 +152,7 @@ services:
       options:
         max-size: '1m'
 
+  # docker container viewer/management
   portainer:
     container_name: portainer
     image: portainer/portainer-ce
