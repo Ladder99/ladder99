@@ -59,12 +59,6 @@ You can test a setup by running the pipeline in Docker -
 
       shell/docker my-setup start
 
-or in the background with 
-
-   .. code:: console
-
-      shell/docker my-setup startd
-
 or an individual service (e.g. application) with 
 
    .. code:: console
