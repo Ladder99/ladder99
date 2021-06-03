@@ -14,23 +14,33 @@ connect:
 
 # define message topic handlers
 handlers:
+  # handle query responses
   l99/${deviceId}/evt/query:
     unsubscribe:
       - topic: l99/${deviceId}/evt/query
-    subscribe:
-      - topic: l99/${deviceId}/evt/status
-      - topic: l99/${deviceId}/evt/read
+    # subscribe:
+    #   - topic: l99/${deviceId}/evt/status
+    #   - topic: l99/${deviceId}/evt/read
 
-    # $ is a way to do quick lookups on the payload.
-    # it's a variable declared as `let $ = {}` before this code is executed.
-    #. this complexity should be hidden from the user in the plugin code somehow.
+    # $ is a way to do quick lookups on the mqtt payload.
+    # in this case the payload is an array of items like { keys, default }.
+    # what we want to do is assign the default value to each item's key,
+    # where the key is keys[0], eg 'printer_ribbon_low'.
+    # $ is a variable declared as `let $ = {}` before this code is executed.
+    #. this complexity could be hidden from the user in the plugin code somehow.
     initialize: 'payload.forEach(item => $[item.keys[0]] = item)'
     lookup: '($, part) => ({ value: ($[part] || {}).default })'
 
-    # define key-part pairs, and save for later - read message uses same inputs.
-    # key defines the cache id - {deviceId}-{key}, eg id = 'ccs-pa-001-printer_ribbon_low'
-    # part defines the part of the payload to get, eg value = $['%I0.0']
-    # sets item = { value }, then calls cache.set(id, item)
+    # define key-part pairs
+    # the & syntax saves this list for later, as the read message handler
+    # uses the same pairs.
+    # key defines the cache id, with id = {deviceId}-{key},
+    # eg for key='printer_ribbon_low', id = 'ccs-pa-001-printer_ribbon_low'.
+    # part defines the part of the payload to get using the above defined
+    # lookup fn, eg for part='%I0.0', the value is obtained with $['%I0.0'].
+    # then it sets item = { value }, then calls cache.set(id, item),
+    # eg cache.set('ccs-pa-001-printer_ribbon_low', { value: 0 })
+    # this might trigger SHDR output to be sent to the mtconnect agent.
     inputs: &queryInputs
       printer_ribbon_low: '%I0.0'
       printer_service_required: '%I0.1'
@@ -104,10 +114,16 @@ handlers:
       web_take_up_motor_anti_twitch_counter: '%Z55.0'
       web_take_up_motor_anti_twitch_active: '%Z55.1'
 
+  # handle status messages
   l99/${deviceId}/evt/status:
-    # make $ the message payload dictionary and adds faultKeys for quick lookups
+    # make $ the message payload dictionary and add faultKeys for quick
+    # lookups of faults - payload.faults is a dictionary of faults.
     initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
-    lookup: '($, calc) => ({ value: eval(calc) })'
+    # define lookup function, which returns a value given a part calculation.
+    lookup: '($, part) => ({ value: eval(part) })'
+    # define key-part pairs, where key is mapped to a cache id,
+    # eg 'status-connection' => 'ccs-pa-001-status_connection',
+    # and part is some javascript calculation code to determine its value.
     inputs:
       status-connection: $.connection
       status-build_no: $.build_no
@@ -127,8 +143,10 @@ handlers:
       status-has-feed-fault: $.faultKeys.some(f=>['1','11','12','13','14','15'].includes(f))
       status-has-feed-warning: $.faultKeys.some(f=>['50','51'].includes(f))
 
+  # handle read messages
   l99/${deviceId}/evt/read:
     # make $ a dictionary keyed on the item addresses
     initialize: 'payload.forEach(item => $[item.address] = item)'
-    lookup: '($, field) => ({ value: ($[field] || {}).value })'
+    lookup: '($, part) => ({ value: ($[part] || {}).value })'
+    # reuse the query input list here, as the key-part pairs are the same
     inputs: *queryInputs

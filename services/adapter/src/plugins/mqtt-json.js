@@ -96,7 +96,7 @@ export function init({ url, cache, deviceId, inputs }) {
           const item = lookup($, part)
           // if we have the part in the payload, add it to the cache
           if (item && item.value !== undefined) {
-            console.log(`MQTT have part '${part}' in payload - set cache`)
+            console.log(`MQTT part '${part}' in payload - set cache`)
             const cacheId = deviceId + '-' + key // eg 'ccs-pa-001-fault_count'
             // item.receivedTime = receivedTime
             cache.set(cacheId, item) // save to the cache - may send shdr to tcp
