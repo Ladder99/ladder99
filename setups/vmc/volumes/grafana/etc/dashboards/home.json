@@ -305,8 +305,62 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value::text::numeric\nFROM history\nWHERE\n  (id='x3' or id='y3') and (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY id, time",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text::numeric as x\nFROM history\nWHERE id='x2' and\n  (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "\"values\"",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text::numeric as y\nFROM history\nWHERE id='y2' and\n  (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "\"values\"",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text::numeric as z\nFROM history\nWHERE id='z2' and\n  (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "C",
           "select": [
             [
               {
@@ -390,7 +444,7 @@
         "y": 9
       },
       "hiddenSeries": false,
-      "id": 6,
+      "id": 25,
       "legend": {
         "avg": false,
         "current": false,
@@ -421,7 +475,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__time(time),\n  id,\n  value::text::numeric\nFROM\n  history\nWHERE\n  (id='x2' OR id='y2') AND (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(time)\nORDER BY id, time",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text::numeric as x\nFROM history\nWHERE id='x3' and\n  (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -431,9 +485,70 @@
               }
             ]
           ],
-          "table": "values",
-          "timeColumn": "time",
-          "where": []
+          "table": "\"values\"",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text::numeric as y\nFROM history\nWHERE id='y3' and\n  (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "\"values\"",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text::numeric as z\nFROM history\nWHERE id='z3' and\n  (value::text <> '\"UNAVAILABLE\"') and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "C",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "\"values\"",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "thresholds": [],
@@ -1073,5 +1188,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 35
+  "version": 37
 }
