@@ -1,6 +1,6 @@
 import * as logic from './logic.js'
-// import tree from '../examples/example-current.js'
-import tree from '../examples/example-sample.js'
+// import tree from '../examples/ccs-pa/current.js'
+import tree from '../examples/ccs-pa/sample.js'
 
 // logic.traverse(tree, console.log)
 

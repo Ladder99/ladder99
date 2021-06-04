@@ -1,3 +1,4 @@
 #!/bin/bash
+# run unit tests for the mtconnect application
 
 npm run --prefix services/application test
