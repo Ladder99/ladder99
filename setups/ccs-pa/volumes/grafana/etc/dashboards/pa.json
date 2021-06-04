@@ -17,32 +17,21 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
-  "links": [],
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
   "panels": [
-    {
-      "datasource": null,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 17,
-      "title": "Row title",
-      "type": "row"
-    },
-    {
-      "datasource": null,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 1
-      },
-      "id": 15,
-      "title": "Row title",
-      "type": "row"
-    },
     {
       "backgroundColor": "rgba(128,128,128,0.1)",
       "colorMaps": [
@@ -65,7 +54,7 @@
         "h": 5,
         "w": 11,
         "x": 0,
-        "y": 2
+        "y": 0
       },
       "highlightOnMouseover": true,
       "id": 6,
@@ -192,7 +181,7 @@
         "h": 5,
         "w": 11,
         "x": 11,
-        "y": 2
+        "y": 0
       },
       "highlightOnMouseover": true,
       "id": 7,
@@ -317,7 +306,7 @@
         "h": 5,
         "w": 11,
         "x": 0,
-        "y": 7
+        "y": 5
       },
       "highlightOnMouseover": true,
       "id": 13,
@@ -444,7 +433,7 @@
         "h": 5,
         "w": 11,
         "x": 11,
-        "y": 7
+        "y": 5
       },
       "highlightOnMouseover": true,
       "id": 12,
@@ -571,7 +560,7 @@
         "h": 5,
         "w": 11,
         "x": 0,
-        "y": 12
+        "y": 10
       },
       "highlightOnMouseover": true,
       "id": 4,
@@ -704,7 +693,7 @@
         "h": 14,
         "w": 11,
         "x": 11,
-        "y": 12
+        "y": 10
       },
       "highlightOnMouseover": true,
       "id": 18,
@@ -907,7 +896,7 @@
         "h": 5,
         "w": 11,
         "x": 0,
-        "y": 17
+        "y": 15
       },
       "hiddenSeries": false,
       "id": 11,
@@ -1043,7 +1032,7 @@
         "h": 10,
         "w": 11,
         "x": 0,
-        "y": 22
+        "y": 20
       },
       "id": 10,
       "options": {
@@ -1111,5 +1100,5 @@
   "timezone": "",
   "title": "CCS P&A",
   "uid": "dII-Qgzgz",
-  "version": 17
+  "version": 26
 }
