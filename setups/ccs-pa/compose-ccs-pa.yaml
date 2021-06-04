@@ -7,13 +7,14 @@ version: '3.8'
 
 services:
   # mtconnect agent
-  # override agent settings from main compose.yaml
+  # this overrides settings from setups/compose.yaml
   agent:
     command: agent debug /data/agent/agent.cfg
     volumes:
       - ./$SETUP/volumes/agent:/data/agent # has agent.cfg, devices.xml
 
   # mqtt broker
+  # gets data from devices and publishes it to mtconnect adapter
   broker:
     container_name: broker
     image: eclipse-mosquitto
@@ -28,6 +29,7 @@ services:
         max-size: '1m'
 
   # mtconnect adapter
+  # converts machine data to shdr and sends to mtconnect agent
   adapter:
     container_name: adapter
     image: node:15.14-slim
