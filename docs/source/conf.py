@@ -34,7 +34,7 @@ copyright = str(datetime.now().year) + ', Ladder99 LLC'
 extensions = [
     "sphinx_rtd_theme",
     # "sphinx_tabs",
-    "myst_parser",
+    "myst_parser",  # handles markdown files
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -44,11 +44,6 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
-
-# source_parsers = {
-#     '.md': 'recommonmark.parser.CommonMarkParser',
-# }
-# source_suffix = ['.rst', '.md']
 
 # -- Options for HTML output -------------------------------------------------
 
