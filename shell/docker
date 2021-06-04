@@ -6,30 +6,31 @@ import pathlib
 
 if len(sys.argv) < 2:
     print("""
-Usage: shell/docker SETUP COMMAND [SERVICES]
+Usage: shell/docker SETUP COMMAND [PROFILES]
 
-Run a docker-compose yaml file with optional list of services.
+Run a docker-compose yaml file with optional list of profiles to include.
 
 SETUP     setup subfolder, eg vmc, ccs-pa
 COMMAND   start, startd (run detached), stop (stop all services)
-SERVICES  optional space-delim list of services to start
+PROFILES  optional space-delim list of profiles to start
 
-eg `shell/docker ccs-pa startd application`
+eg `shell/docker ccs-pa startd play-mqtt`
 
-Use `docker kill SERVICE` to stop a service
+Note: use `docker kill SERVICE` to stop a service
 """)
     sys.exit(0)
 
 setup = sys.argv[1]  # eg 'vmc'
 cmd = sys.argv[2]  # eg 'start', 'startd', 'stop'
-services = ' '.join(sys.argv[3:])  # eg 'agent timescaledb'
+# services = ' '.join(sys.argv[3:])  # eg 'play-mqtt'
+profiles = sys.argv[3:]  # eg ['play-mqtt']
 
 # # get list of docker compose file paths
 # files = [f"setups/{setup}/docker/{part}.yaml" for part in parts]
 # args = ' '.join([f"--file {file}" for file in files])
 # composefile = f"setups/{setup}/compose.yaml"
 
-# add main compose file for main agent-viz pipeline
+# add main compose file for agent-viz pipeline
 composefile = f"setups/compose.yaml"
 args = f"--file {composefile}"
 
@@ -44,6 +45,9 @@ envfile = f"setups/.env"
 if pathlib.Path(envfile).exists():
     args += f" --env-file {envfile}"
 
+# get profile flags
+profileFlags = ' '.join([f"--profile {profile}" for profile in profiles])
+
 # get flags
 flags = ''
 if cmd == 'startd':
@@ -51,11 +55,12 @@ if cmd == 'startd':
 
 if cmd == 'start' or cmd == 'startd':
     # pull any required images in the docker-compose files and start services.
-    cmd = f"SETUP={setup} docker-compose {args} pull {services} && SETUP={setup} docker-compose {args} up --build {flags} {services}"
+    cmd = f"""SETUP={setup} docker-compose {args} {profileFlags} pull && \
+SETUP={setup} docker-compose {args} {profileFlags} up --build {flags}"""
     print(cmd)
     os.system(cmd)
 
 elif cmd == 'stop':
-    cmd = f"SETUP={setup} docker-compose {args} down {services}"
+    cmd = f"SETUP={setup} docker-compose {args} down"
     print(cmd)
     os.system(cmd)
