@@ -3,6 +3,7 @@
 
 # note: sphinx docs are automatically built and available on git push at
 # https://ladder99.readthedocs.io/en/latest/
+# as long as the repo is public.
 # if you need to build html locally, cd docs && make html
 
 # -a rebuilds everything on a change - needed because the sidebar

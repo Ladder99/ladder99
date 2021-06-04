@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+//. converted from python to node, but the shell.exec fn didn't
+// handle output well (?). so went back to python.
+
 // run a docker-compose yaml file with optional list of services
 
 // usage: shell/docker SETUP COMMAND [SERVICES]
