@@ -21,10 +21,10 @@ Note: The messages come from recordings made of P&A machines, and are stored in 
 
 To see the data the agent generates visit http://raspberrypi.local:5000/current (where the address is your edge device)
 
-![img](./images/agent.jpg)
+![img](_images/agent.jpg)
 
 Setup/view the Grafana dashboard at http://raspberrypi.local:3003. The default username/password is admin/admin.
 
-![img](./images/grafana-pa.jpg)
+![img](_images/grafana-pa.jpg)
 
 Next we'll look at how to develop custom adapters for other devices.
