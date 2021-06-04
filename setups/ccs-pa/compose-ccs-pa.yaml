@@ -46,12 +46,12 @@ services:
       options:
         max-size: '1m'
 
-  # mqtt replay
-  replay:
-    container_name: replay
-    build: ../services/replay
+  # record mqtt recordings
+  record-mqtt:
+    container_name: record-mqtt
+    build: ../services/sim-mqtt
     profiles:
-      - replay
+      - record-mqtt
     environment:
       - MQTT_HOST=broker
       - MQTT_PORT=1883
@@ -69,8 +69,31 @@ services:
       options:
         max-size: '1m'
 
-  # simulator-mqtt:
-  #   container_name: simulator-mqtt
+  # play mqtt recordings
+  play-mqtt:
+    container_name: play-mqtt
+    build: ../services/sim-mqtt
+    profiles:
+      - play-mqtt
+    environment:
+      - MQTT_HOST=broker
+      - MQTT_PORT=1883
+      - DEVICE_ID=ccs-pa-001
+      - MODEL=ccs-pa
+      - MODELS_FOLDER=/etc/models
+      - LOOP=true
+      - LOOP_DELAY=3000
+    volumes:
+      - ../services/replay:/data/app # has source code
+      - ../models:/etc/models # has MODEL/simulations subfolder with sim msgs
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
+  # sim-mqtt:
+  #   container_name: sim-mqtt
   #   image: node:15.14-slim
   #   user: node
   #   working_dir: /home/node/app
@@ -79,27 +102,27 @@ services:
   #     - MQTT_HOST=broker
   #     - MQTT_PORT=1883
   #     - DEVICE_ID=ccs-pa-001
-  #     - MESSAGES_FILE=/etc/simulator-mqtt/messages.js
+  #     - MESSAGES_FILE=/etc/sim-mqtt/messages.js
   #     - MESSAGE_DELAY=1000
   #     - LOOP=true
   #     - LOOP_DELAY=3000
   #   volumes:
-  #     - ../services/simulator-mqtt:/home/node/app # has source code
-  #     - ./$SETUP/volumes/simulator-mqtt:/etc/simulator-mqtt # has sim msgs
+  #     - ../services/sim-mqtt:/home/node/app # has source code
+  #     - ./$SETUP/volumes/sim-mqtt:/etc/sim-mqtt # has sim msgs
   #   networks:
   #     - ladder99
   #   logging:
   #     options:
   #       max-size: '1m'
 
-  # simulator-opc:
-  #   container_name: simulator-opc
+  # sim-opc:
+  #   container_name: sim-opc
   #   image: node:15.14-slim
   #   user: node
   #   working_dir: /home/node/app
   #   command: npm start
   #   volumes:
-  #     - ../../../services/simulator-opc:/home/node/app
+  #     - ../../../services/sim-opc:/home/node/app
   #   networks:
   #     - ladder99
   #   logging:
