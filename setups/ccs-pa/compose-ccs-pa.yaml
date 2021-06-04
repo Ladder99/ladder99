@@ -46,26 +46,28 @@ services:
       options:
         max-size: '1m'
 
-  # # mqtt replay
-  # replay:
-  #   container_name: replay
-  #   build: ../services/replay
-  #   environment:
-  #     - MQTT_HOST=broker
-  #     - MQTT_PORT=1883
-  #     - DEVICE_ID=ccs-pa-001
-  #     - MODEL=ccs-pa
-  #     - MODELS_FOLDER=/etc/models
-  #     - LOOP=true
-  #     - LOOP_DELAY=3000
-  #   volumes:
-  #     - ../services/replay:/data/app # has source code
-  #     - ../models:/etc/models # has MODEL/simulations subfolder with sim msgs
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '1m'
+  # mqtt replay
+  replay:
+    container_name: replay
+    build: ../services/replay
+    profiles:
+      - replay
+    environment:
+      - MQTT_HOST=broker
+      - MQTT_PORT=1883
+      - DEVICE_ID=ccs-pa-001
+      - MODEL=ccs-pa
+      - MODELS_FOLDER=/etc/models
+      - LOOP=true
+      - LOOP_DELAY=3000
+    volumes:
+      - ../services/replay:/data/app # has source code
+      - ../models:/etc/models # has MODEL/simulations subfolder with sim msgs
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
 
   # simulator-mqtt:
   #   container_name: simulator-mqtt
