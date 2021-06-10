@@ -47,7 +47,7 @@ WHERE jsonb_typeof(value) = 'number'::text;
 
 async function initialize(client) {
   const json = await getData('current')
-  // // get sequence info from header
+  // // get sequence info from header?
   // const { firstSequence, nextSequence, lastSequence } =
   //   json.MTConnectStreams.Header
   // from = nextSequence

@@ -3,9 +3,6 @@
   xmlns="urn:mtconnect.org:MTConnectDevices:1.7"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.7 http://schemas.mtconnect.org/schemas/MTConnectDevices_1.7.xsd">
   <Header creationTime="2021-06-10T16:56:35Z" sender="DMZ-MTCNCT" instanceId="1622761005" version="1.7.0.3" assetBufferSize="8096" assetCount="73" bufferSize="4096">
-    <AssetCounts>
-      <AssetCount assetType="CuttingTool">73</AssetCount>
-    </AssetCounts>
   </Header>
   <Devices>
     <Device id="d1" name="M12346" uuid="M80104K162N">
