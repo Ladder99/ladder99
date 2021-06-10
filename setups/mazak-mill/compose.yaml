@@ -10,6 +10,12 @@ services:
     volumes:
       - ./$SETUP/volumes/agent:/data/agent # has agent.cfg, devices.xml
 
+  # mtconnect application - retrieves data from agent and sends to db
+  # overrides
+  application:
+    environment:
+      - AGENT_BASE_URL=http://mtconnect.mazakcorp.com:5717
+
 networks:
   ladder99:
     name: ladder99
