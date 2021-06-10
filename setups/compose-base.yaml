@@ -23,6 +23,8 @@ services:
     image: timescale/timescaledb:2.3.0-pg13
     ports:
       - $PGPORT:5432/tcp
+    profiles:
+      - full
     environment:
       POSTGRES_DB: $PGDATABASE
       POSTGRES_USERNAME: $PGUSER
@@ -45,6 +47,8 @@ services:
     image: influxdb:1.8 # need v1 for https://grafana.com/grafana/dashboards/12034
     ports:
       - '8086:8086'
+    profiles:
+      - full
     environment:
       INFLUXDB_DB:
       INFLUXDB_ADMIN_USER:
@@ -64,6 +68,8 @@ services:
   telegraf:
     container_name: telegraf
     image: telegraf:1.18
+    profiles:
+      - full
     environment:
       INFLUXDB_URL: http://influxdb:8086
       INFLUXDB_DB:
@@ -80,6 +86,8 @@ services:
   grafana:
     container_name: grafana
     image: grafana/grafana:7.5.5
+    profiles:
+      - full
     ports:
       - $GRAFANA_PORT:3000/tcp
     environment:
@@ -160,6 +168,8 @@ services:
   portainer:
     container_name: portainer
     image: portainer/portainer-ce
+    profiles:
+      - full
     ports:
       - '9001:9000' #.... changed from 9000:9000 - make envar?
     volumes:
