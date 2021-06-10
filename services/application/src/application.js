@@ -19,6 +19,8 @@ const fetchCount = Number(process.env.FETCH_COUNT || 200)
   const client = new Client()
   await client.connect() // uses envars PGHOST, PGPORT, etc
   await setupTables(client)
+  await initialize(client)
+  await new Promise(resolve => setTimeout(resolve, fetchInterval))
   setInterval(() => shovel(client), fetchInterval)
 })()
 
@@ -41,6 +43,16 @@ WHERE jsonb_typeof(value) = 'number'::text;
 `
   console.log(`Creating db structures if not there...`)
   await client.query(sql)
+}
+
+async function initialize(client) {
+  const json = await getData('current')
+  // // get sequence info from header
+  // const { firstSequence, nextSequence, lastSequence } =
+  //   json.MTConnectStreams.Header
+  // from = nextSequence
+  const dataItems = getDataItems(json)
+  await writeDataItems(dataItems, client)
 }
 
 let from = null
@@ -112,9 +124,15 @@ async function writeDataItems(dataItems, client) {
   }
 }
 
-// get data from agent rest endpoint
+// get data from agent rest endpoint.
+// type is 'probe', 'current', or 'sample'.
+// from and count are optional.
 async function getData(type, from, count) {
-  const url = getUrl(type, from, count)
+  // const url = getUrl(type, from, count)
+  const url =
+    from !== null
+      ? `${baseUrl}/${type}?from=${from}&count=${count}`
+      : `${baseUrl}/${type}`
   console.log(`Getting data from ${url}...`)
   try {
     const response = await fetch(url, {
@@ -133,11 +151,11 @@ async function getData(type, from, count) {
   return null
 }
 
-// get the rest endpoint url - from and count are optional
-function getUrl(type, from, count) {
-  const url =
-    from !== null
-      ? `${baseUrl}/${type}?from=${from}&count=${count}`
-      : `${baseUrl}/${type}`
-  return url
-}
+// // get the rest endpoint url - from and count are optional
+// function getUrl(type, from, count) {
+//   const url =
+//     from !== null
+//       ? `${baseUrl}/${type}?from=${from}&count=${count}`
+//       : `${baseUrl}/${type}`
+//   return url
+// }

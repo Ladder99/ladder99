@@ -133,6 +133,8 @@ services:
     user: node
     working_dir: /home/node/app
     command: npm start
+    depends_on:
+      - agent
     environment:
       - AGENT_BASE_URL=http://agent:5000
       - FETCH_INTERVAL=2000
