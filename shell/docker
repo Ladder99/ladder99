@@ -22,8 +22,8 @@ Note: use `docker kill SERVICE` to stop a service
 
 setup = sys.argv[1]  # eg 'vmc'
 cmd = sys.argv[2]  # eg 'start', 'startd', 'stop'
-# services = ' '.join(sys.argv[3:])  # eg 'play-mqtt'
 profiles = sys.argv[3:]  # eg ['play-mqtt']
+# services = ' '.join(sys.argv[3:])  # eg 'play-mqtt'
 
 # # get list of docker compose file paths
 # files = [f"setups/{setup}/docker/{part}.yaml" for part in parts]
@@ -31,11 +31,11 @@ profiles = sys.argv[3:]  # eg ['play-mqtt']
 # composefile = f"setups/{setup}/compose.yaml"
 
 # add main compose file for agent-viz pipeline
-composefile = f"setups/compose.yaml"
+composefile = f"setups/compose-base.yaml"
 args = f"--file {composefile}"
 
 # add compose file for device-agent pipeline / overrides
-composefile2 = f"setups/{setup}/compose-{setup}.yaml"
+composefile2 = f"setups/{setup}/compose.yaml"
 if pathlib.Path(composefile2).exists():
     args += f" --file {composefile2}"
 
