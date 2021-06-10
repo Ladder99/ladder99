@@ -7,7 +7,7 @@
   <Devices>
     <Device>
       <DataItems>
-        <DataItem />
+        <DataItem id="mazak-mill-connection" category="EVENT" type="AVAILABILITY"/>
       </DataItems>
     </Device>
   </Devices>
