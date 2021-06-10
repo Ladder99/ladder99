@@ -1,0 +1,15 @@
+# docker-compose file for agent setup
+
+version: '3.8'
+
+services:
+  # mtconnect agent
+  # this overrides settings from setups/compose.yaml
+  agent:
+    command: agent debug /data/agent/agent.cfg
+    volumes:
+      - ./$SETUP/volumes/agent:/data/agent # has agent.cfg, devices.xml
+
+networks:
+  ladder99:
+    name: ladder99
