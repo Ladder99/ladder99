@@ -109,9 +109,11 @@ async function writeDataItems(dataItems, client) {
     let { dataItemId, timestamp, value } = dataItem
     const id = dataItemId
     value = value === undefined ? 'undefined' : value
-    const type = typeof value === 'string' ? 'text' : 'numeric'
-    const row = `('${timestamp}', '${id}', to_jsonb('${value}'::${type}))`
-    rows.push(row)
+    if (typeof value !== 'object') {
+      const type = typeof value === 'string' ? 'text' : 'numeric'
+      const row = `('${timestamp}', '${id}', to_jsonb('${value}'::${type}))`
+      rows.push(row)
+    }
   }
   if (rows.length > 0) {
     const values = rows.join(',\n')
