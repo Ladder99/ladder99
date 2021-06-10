@@ -130,8 +130,10 @@ async function writeDataItems(dataItems, client) {
 async function getData(type, from, count) {
   // const url = getUrl(type, from, count)
   const url =
-    from !== null
-      ? `${baseUrl}/${type}?from=${from}&count=${count}`
+    from !== undefined
+      ? `${baseUrl}/${type}?${
+          from !== null ? 'from=' + from + '&' : ''
+        }count=${count}`
       : `${baseUrl}/${type}`
   console.log(`Getting data from ${url}...`)
   try {
