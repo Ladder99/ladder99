@@ -141,6 +141,8 @@ services:
     user: node
     working_dir: /home/node/app
     command: npm start
+    profiles:
+      - full
     depends_on:
       - agent
     environment:
