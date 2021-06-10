@@ -159,7 +159,7 @@ services:
     container_name: portainer
     image: portainer/portainer-ce
     ports:
-      - '9000:9000'
+      - '9001:9000' #.... changed from 9000:9000 - make envar?
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro

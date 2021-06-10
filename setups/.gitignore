@@ -1,1 +1,4 @@
 .env
+
+**/portainer/data
+**/timescaledb/data
