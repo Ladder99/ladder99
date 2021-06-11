@@ -1,5 +1,5 @@
-# vmc (default) setup
+# VMC (default) setup
 
 This setup handles the default VMC (vertical machining center) simulation from the MTConnect Agent.
 
-The agent includes a devices.xml file for this, as well as a simulator.
+The Agent includes the agent.cfg and devices.xml file for this setup, hence no volumes/agent folder needed here.
