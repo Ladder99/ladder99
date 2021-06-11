@@ -40,7 +40,7 @@ services:
       options:
         max-size: '1m'
 
-  # another time-series database - stores edge device data
+  # influxdb - another time-series database - stores edge device data
   influxdb:
     container_name: influxdb
     # image: influxdb:2.0 # not avail for 32bit - need 64bit os
@@ -64,7 +64,7 @@ services:
       options:
         max-size: '1m'
 
-  # app that sends data from edge device to influxdb
+  # telegraf - sends data from edge device to influxdb
   telegraf:
     container_name: telegraf
     image: telegraf:1.18
@@ -82,7 +82,7 @@ services:
       options:
         max-size: '1m'
 
-  # visualization app that shows real-time data from the databases
+  # grafana - visualization app that shows real-time data from the databases
   grafana:
     container_name: grafana
     image: grafana/grafana:7.5.5
@@ -100,6 +100,7 @@ services:
       INFLUXDB_DB:
       INFLUXDB_USER:
       INFLUXDB_PASSWORD:
+      # grafana will download and install these automatically
       # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
       GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel
     volumes:
@@ -113,6 +114,7 @@ services:
     # gives permission error without this.
     # does blank here mean root?
     # user: '$UID:$GID'
+    #.. don't use root here
     user: root
     deploy:
       restart_policy:
@@ -154,7 +156,7 @@ services:
       - PGDATABASE
       - PGUSER
       - PGPASSWORD
-    #. this fixes a problem on linux - will it still work on mac with this here?
+    # this fixes a problem on linux - works on mac okay also
     # see https://stackoverflow.com/a/67158212/243392
     extra_hosts:
       - host.docker.internal:host-gateway
@@ -166,14 +168,14 @@ services:
       options:
         max-size: '1m'
 
-  # docker container viewer/management
+  # portainer - docker container viewer/management
   portainer:
     container_name: portainer
     image: portainer/portainer-ce
     profiles:
       - full
     ports:
-      - '9001:9000' #.... changed from 9000:9000 - make envar?
+      - '9001:9000' #.... changed from 9000:9000 - make envar
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
