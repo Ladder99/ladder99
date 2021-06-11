@@ -15,9 +15,9 @@ services:
       - MODELS_FOLDER=/etc/models
       - LOOP=true
       - LOOP_DELAY=3000
-    volumes:
-      - ../services/replay:/data/app # has source code
-      - ../models:/etc/models # has MODEL/simulations subfolder with sim msgs
+    # volumes:
+    #   - ../services/replay:/data/app # has source code
+    #   - ../models:/etc/models # has MODEL/simulations subfolder with sim msgs
     networks:
       - ladder99
     logging:
@@ -36,9 +36,9 @@ services:
       - MODELS_FOLDER=/etc/models
       - LOOP=true
       - LOOP_DELAY=3000
-    volumes:
-      - ../services/replay:/data/app # has source code
-      - ../models:/etc/models # has MODEL/simulations subfolder with sim msgs
+    # volumes:
+    #   - ../services/replay:/data/app # has source code
+    #   - ../models:/etc/models # has MODEL/simulations subfolder with sim msgs
     networks:
       - ladder99
     logging:
