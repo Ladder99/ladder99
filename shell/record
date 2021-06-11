@@ -1,0 +1,3 @@
+#!/bin/bash
+
+docker-compose --file ./services/sim-mqtt/compose.yaml up record
