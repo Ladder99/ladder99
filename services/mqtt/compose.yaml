@@ -7,6 +7,7 @@ services:
   record:
     container_name: record
     build: .
+    command: mqtt-recorder
     environment:
       - MQTT_HOST=broker
       - MQTT_PORT=1883
@@ -28,6 +29,7 @@ services:
   replay:
     container_name: replay
     build: .
+    command: mqtt-recorder
     environment:
       - MQTT_HOST=broker
       - MQTT_PORT=1883
@@ -37,7 +39,6 @@ services:
       - LOOP=true
       - LOOP_DELAY=3000
     # volumes:
-    #   - ../services/replay:/data/app # has source code
     #   - ../models:/etc/models # has MODEL/simulations subfolder with sim msgs
     networks:
       - ladder99
