@@ -15,14 +15,16 @@ const fetchInterval = Number(process.env.FETCH_INTERVAL || 2000) // msec
 const fetchCount = Number(process.env.FETCH_COUNT || 200)
 
 // get postgres connection and start polling
-;(async function () {
+async function main() {
   const client = new Client()
   await client.connect() // uses envars PGHOST, PGPORT, etc
   await setupTables(client)
   await initialize(client)
   await new Promise(resolve => setTimeout(resolve, fetchInterval))
   setInterval(() => shovel(client), fetchInterval)
-})()
+}
+
+main()
 
 async function setupTables(client) {
   const sql = `
