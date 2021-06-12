@@ -13,7 +13,8 @@ COPY test.csv .
 EXPOSE 1883
 
 # ENTRYPOINT [ "mqtt-recorder" ]
+# CMD [ "--host", "localhost", "--mode", "replay", "--file", "test.csv" ]
 
 # default command when run container
-CMD ["mqtt-recorder", "--host", "localhost", "--mode", "replay", "--file", "test.csv"]
-# CMD [ "--host", "localhost", "--mode", "replay", "--file", "test.csv" ]
+# CMD ["mqtt-recorder", "--host", "localhost", "--port", "1883", "--mode", "replay", "--file", "test.csv"]
+CMD ["mqtt-recorder", "--host", "localhost", "--port", "1883", "--mode", "record", "--file", "test.csv"]

@@ -7,7 +7,9 @@ services:
   record:
     container_name: record
     build: .
-    command: mqtt-recorder
+    #.. change cmd here
+    # command: mqtt-recorder
+    # command: bash
     # environment:
     #   - MQTT_HOST=broker
     #   - MQTT_PORT=1883
@@ -29,7 +31,7 @@ services:
   replay:
     container_name: replay
     build: .
-    command: mqtt-recorder
+    # command: mqtt-recorder
     # environment:
     #   - MQTT_HOST=broker
     #   - MQTT_PORT=1883
