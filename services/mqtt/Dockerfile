@@ -13,12 +13,19 @@ COPY data/playback.csv data/playback.csv
 
 EXPOSE 1883
 
+# change what signal `docker stop` sends
 STOPSIGNAL SIGINT
 
-# default command when run container
+# CMD is default command when run container
+
+# works
 # CMD ["sh", "-c", "mqtt-recorder --host $HOST --port $PORT --mode $MODE --file $FILE"]
 
-# CMD ["sh", "-c", "./docker-entrypoint.sh mqtt-recorder --host $HOST --port $PORT --mode $MODE --file $FILE"]
+# works
+ENTRYPOINT ["sh", "-c", "mqtt-recorder --host $HOST --port $PORT --mode $MODE --file $FILE"]
 
-# ENTRYPOINT ["sh", "-c", "mqtt-recorder --host $HOST --port $PORT --mode $MODE --file $FILE"]
-ENTRYPOINT [ "./docker-entrypoint.sh"]
+# nowork
+# ENTRYPOINT [ "mqtt-recorder --host $HOST --port $PORT --mode $MODE --file $FILE"]
+
+# works
+# ENTRYPOINT [ "./docker-entrypoint.sh"]
