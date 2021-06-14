@@ -9,27 +9,15 @@ services:
     build: .
     ports:
       - 1883:1883
-    #.. change cmd here
-    # command: mqtt-recorder
-    # 'mqtt-recorder --host localhost --port 1883 --mode record --file test.csv'
-    # command: 'mqtt-recorder --host host.docker.internal --port 1883 --mode record --file recording.csv'
+    # init: true
     environment:
       - HOST=host.docker.internal
       - PORT=1883
       - MODE=record
       - FILE=/data/recording.csv
-    # command: bash
-    # environment:
-    #   - MQTT_HOST=broker
-    #   - MQTT_PORT=1883
-    #   - DEVICE_ID=ccs-pa-001
-    #   - MODEL=ccs-pa
-    #   - MODELS_FOLDER=/etc/models
     #   - LOOP=true
     #   - LOOP_DELAY=3000
     volumes:
-      #   - ../services/replay:/data/app # has source code
-      #   - ../models:/etc/models # has MODEL/simulations subfolder with sim msgs
       - ./data:/data
     networks:
       - ladder99
@@ -43,8 +31,7 @@ services:
     build: .
     ports:
       - 1883:1883
-    # command: 'mqtt-recorder --host host.docker.internal --port 1883 --mode replay --file playback.csv'
-    # command: 'mqtt-recorder --host host.docker.internal --port 1883 --mode replay --file $FILE'
+    # init: true
     environment:
       - HOST=host.docker.internal
       - PORT=1883
@@ -52,8 +39,6 @@ services:
       - FILE=data/playback.csv
     #   - LOOP=true
     #   - LOOP_DELAY=3000
-    # volumes:
-    #   - ../models:/etc/models # has MODEL/simulations subfolder with sim msgs
     networks:
       - ladder99
     logging:
