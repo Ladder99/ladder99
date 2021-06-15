@@ -1,21 +1,26 @@
 // tapedeck
-// records/replays MQTT recordings
+// plays/records MQTT messages
 // inspired by rpdswtk/mqtt_recorder, a python app
+// currently pass params by envars, except mode=play/record pass on cmdline
 
 import fs from 'fs'
 import mqttlib from 'mqtt'
 import parse from 'csv-parse/lib/sync.js'
 
-const host = process.env.MQTT_HOST || 'localhost'
-const port = Number(process.env.MQTT_PORT || 1883)
-const deviceId = process.env.DEVICE_ID // eg 'ccs-pa-001'
-const model = process.env.MODEL // eg 'ccs-pa'
-const modelsFolder = process.env.MODELS_FOLDER || '/etc/models'
+const mode = process.argv[2] // eg 'play' or 'record'
+
+const host = process.env.HOST || 'localhost'
+const port = Number(process.env.PORT || 1883)
+// const deviceId = process.env.DEVICE_ID // eg 'ccs-pa-001'
+// const model = process.env.MODEL // eg 'ccs-pa'
+// const modelsFolder = process.env.MODELS_FOLDER || '/etc/models'
+// const file = process.env.FILE // eg '
+const folder = process.env.FOLDER // eg '/Users/bburns/Desktop/tapedeck'
 const loop = Boolean(process.env.LOOP || false)
 const loopDelay = Number(process.env.LOOP_DELAY || 3000)
 
 console.log(`Tapedeck`)
-console.log(`Record/playback of MQTT messages`)
+console.log(`Plays/records MQTT messages`)
 console.log(`------------------------------------------------------------`)
 
 const clientId = deviceId
@@ -28,7 +33,7 @@ mqtt.on('connect', async function onConnect() {
   const csvfiles = fs
     .readdirSync(simulationsFolder)
     .filter(csvfile => csvfile.endsWith('.csv'))
-    .sort((a, b) => a.localeCompare(b))
+    .sort()
   const columns = 'topic,payload,qos,retain,time_now,time_delta'.split(',')
 
   console.log(`Connected - publishing messages...`)
@@ -45,12 +50,17 @@ mqtt.on('connect', async function onConnect() {
         const topic = row.topic.replace('${deviceId}', deviceId)
         console.log(`Publishing topic ${topic}: ${payload.slice(0, 40)}...`)
         mqtt.publish(topic, payload)
-        await new Promise(resolve => setTimeout(resolve, time_delta * 1000))
+        wait(time_delta * 1000)
       }
-      await new Promise(resolve => setTimeout(resolve, loopDelay))
+      wait(loopDelay)
     }
   } while (loop)
 
   console.log(`Closing MQTT connection...`)
   mqtt.end()
 })
+
+// wait ms milliseconds
+async function wait(ms) {
+  await new Promise(resolve => setTimeout(resolve, ms))
+}
