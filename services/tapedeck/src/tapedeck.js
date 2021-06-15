@@ -49,12 +49,25 @@ mqtt.on('connect', async function onConnect() {
 
   if (mode === 'play') {
     console.log(`Playback mode`)
+
     console.log(`Reading list of files in ${folder}...`)
     // const simulationsFolder = `${modelsFolder}/${model}/simulations` //.
-    const csvfiles = fs
-      .readdirSync(folder)
-      .filter(csvfile => csvfile.endsWith('.csv'))
-      .sort()
+    let csvfiles
+    try {
+      csvfiles = fs
+        .readdirSync(folder)
+        .filter(csvfile => csvfile.endsWith('.csv'))
+        .sort()
+    } catch (error) {
+      console.log(`Problem reading files - does the folder exist?`)
+      process.exit(1)
+      return
+    }
+    if (csvfiles.length === 0) {
+      console.log(`No csv files found in folder.`)
+      process.exit(1)
+      return
+    }
 
     // do while loop
     do {
