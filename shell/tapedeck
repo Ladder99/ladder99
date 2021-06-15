@@ -1,0 +1,7 @@
+#!/bin/bash
+# tapedeck - play/record mqtt messages
+# specify play/record as parameter, eg
+#     shell/tapedeck play
+#     shell/tapedeck record
+
+docker-compose --file services/tapedeck/compose.yaml up --build $1
