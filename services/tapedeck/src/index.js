@@ -1,5 +1,6 @@
-// replay
-// replays MQTT recordings made with rpdswtk/mqtt_recorder, a python app.
+// tapedeck
+// records/replays MQTT recordings
+// inspired by rpdswtk/mqtt_recorder, a python app
 
 import fs from 'fs'
 import mqttlib from 'mqtt'
@@ -13,8 +14,8 @@ const modelsFolder = process.env.MODELS_FOLDER || '/etc/models'
 const loop = Boolean(process.env.LOOP || false)
 const loopDelay = Number(process.env.LOOP_DELAY || 3000)
 
-console.log(`Replay`)
-console.log(`Simulates a device sending MQTT messages.`)
+console.log(`Tapedeck`)
+console.log(`Record/playback of MQTT messages`)
 console.log(`------------------------------------------------------------`)
 
 const clientId = deviceId
