@@ -17,7 +17,7 @@ program
   .option('-m, --mode <mode>', 'play or record', 'play')
   .option('-l, --loop <loop>', 'play in a loop', true)
   .option('-t, --topic <topic>', 'topic to subscribe to', '#')
-  .option('-f, --folder <folder>', 'folder containing csv files', 'recordings')
+  .option('-f, --folder <folder>', 'folder containing csv files', 'tapedeck')
 
 program.parse(process.argv)
 
@@ -25,11 +25,6 @@ const options = program.opts()
 
 const { host, port, mode, loop, topic, folder } = options
 
-// const host = process.env.HOST || 'localhost'
-// const port = Number(process.env.PORT || 1883)
-// const mode = process.env.MODE || 'play'
-// const loop = Boolean(process.env.LOOP || false)
-// const topics = process.env.TOPICS || '#'
 // const folder = '/etc/tapedeck' // must match that in compose.yaml
 
 console.log()
@@ -60,11 +55,11 @@ mqtt.on('connect', async function onConnect() {
         .filter(csvfile => csvfile.endsWith('.csv'))
         .sort()
     } catch (error) {
-      console.log(`Problem reading files - does the folder exist?`)
+      console.log(`Problem reading files - does the folder '${folder}' exist?`)
       process.exit(1)
     }
     if (csvfiles.length === 0) {
-      console.log(`No csv files found in folder.`)
+      console.log(`No csv files found in folder '${folder}'.`)
       process.exit(1)
     }
 
@@ -110,10 +105,10 @@ mqtt.on('connect', async function onConnect() {
       try {
         fd = fs.openSync(filepath, 'w')
       } catch (error) {
-        console.log(`Problem opening file - does the directory exist?`)
+        console.log(`Problem opening file - does the folder '${folder}' exist?`)
         process.exit(1)
       }
-      let time_last = Number(new Date())
+      let time_last = Number(new Date()) / 1000 // seconds
 
       function onMessage(topic, buffer) {
         const message = buffer.toString()
@@ -121,8 +116,8 @@ mqtt.on('connect', async function onConnect() {
         const msg = message.replaceAll('"', '""')
         const qos = 0
         const retain = true
-        const time_now = Number(new Date())
-        const time_delta = (time_now - time_last) / 1000 // seconds
+        const time_now = Number(new Date()) / 1000 // seconds
+        const time_delta = time_now - time_last // seconds
         time_last = time_now
         const row = `${topic},"${msg}",${qos},${retain},${time_now},${time_delta}\n`
         //. write each msg, or write to array and flush every n msgs?

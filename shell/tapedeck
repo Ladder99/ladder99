@@ -3,4 +3,4 @@
 
 MODE=${1:-play}
 
-node services/tapedeck/src/tapedeck.js --mode $MODE --folder ./recordings
+node services/tapedeck/src/tapedeck.js --mode $MODE
