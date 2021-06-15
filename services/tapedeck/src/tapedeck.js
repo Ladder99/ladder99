@@ -45,7 +45,7 @@ mqtt.on('connect', async function onConnect() {
       for (const csvfile of csvfiles) {
         const csvpath = `${folder}/${csvfile}`
         console.log(`Reading ${csvpath}...`)
-        const csv = fs.readFileSync(csvpath)
+        const csv = await fs.readFileSync(csvpath)
         const rows = parse(csv, { columns })
         for (const row of rows) {
           const { payload, qos, retain, time_delta } = row
@@ -67,7 +67,13 @@ mqtt.on('connect', async function onConnect() {
     const filename =
       // @ts-ignore
       new Date().toISOString().replaceAll(':', '').slice(0, 17) + '.csv'
+    const filepath = `${folder}/${filename}`
     console.log(`Recording MQTT messages to ${filename}...`)
+    const fd = fs.openSync(filepath, 'a')
+    const buffer = 'hello\n'
+    fs.writeSync(fd, buffer)
+    fs.writeSync(fd, buffer)
+    fs.closeSync(fd)
     // function(err, granted){} where: {Error} err - subscription error
     // (none at the moment!) { Array } granted - array of { topic: 't', qos: 0 }
     function callback(err, granted) {
