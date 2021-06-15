@@ -63,31 +63,32 @@ mqtt.on('connect', async function onConnect() {
   } else {
     console.log(`Record mode`)
     console.log(`Subscribing to MQTT topics (${topics})...`)
-    mqtt.subscribe(topics, null, callback)
-    mqtt.on('message', callback2)
-    const filename =
-      // @ts-ignore
-      new Date().toISOString().replaceAll(':', '').slice(0, 17) + '.csv'
-    const filepath = `${folder}/${filename}`
-    console.log(`Recording MQTT messages to ${filename}...`)
-    const fd = fs.openSync(filepath, 'a')
-
+    mqtt.subscribe(topics, null, onSubscribe)
     // function(err, granted) granted - array of { topic: 't', qos: 0 }
-    function callback(err, granted) {
-      console.log(granted)
-    }
-    function callback2(topic, message) {
-      // const columns = 'topic,payload,qos,retain,time_now,time_delta'.split(',')
-      // const row = `${topic}`
-      console.log(topic, message)
-      const buffer = `${topic},${message}`
-      fs.writeSync(fd, buffer)
+    function onSubscribe(err, granted) {
+      console.log('Subscribed to ', granted, '...')
+      mqtt.on('message', onMessage)
+      const filename =
+        // @ts-ignore
+        new Date().toISOString().replaceAll(':', '').slice(0, 17) + '.csv'
+      const filepath = `${folder}/${filename}`
+      console.log(`Recording MQTT messages to ${filename}...`)
+      const fd = fs.openSync(filepath, 'a')
+      function onMessage(topic, message) {
+        // const columns = 'topic,payload,qos,retain,time_now,time_delta'.split(',')
+        // const row = `${topic}`
+        console.log(topic, message.toString())
+        const buffer = `${topic},"${message.toString().replaceAll('"', '""')}"` //,${qos},${retain},${time_now},${time_delta}`
+        //. write each msg, or write to array and flush every n msgs?
+        fs.writeSync(fd, buffer)
+      }
     }
     do {
       console.log(`Listening...`)
+      //. break out on SIGINT or SIGTERM ?
       await sleep(2000)
     } while (true)
-    fs.closeSync(fd)
+    // fs.closeSync(fd)
   }
 
   console.log(`Closing MQTT connection...`)
