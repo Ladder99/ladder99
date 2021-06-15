@@ -11,14 +11,8 @@ const mode = process.argv[2] // 'play' or 'record'
 
 const host = process.env.HOST || 'localhost'
 const port = Number(process.env.PORT || 1883)
-// const deviceId = process.env.DEVICE_ID // eg 'ccs-pa-001'
-// const model = process.env.MODEL // eg 'ccs-pa'
-// const modelsFolder = process.env.MODELS_FOLDER || '/etc/models'
-// const file = process.env.FILE // eg '
-//. this needs to be a fixed folder? ie for docker volume?
-// const folder = process.env.FOLDER || '/etc/tapedeck' // eg '/Users/bburns/Desktop/tapedeck'
-const folder = '/etc/tapedeck'
 const loop = Boolean(process.env.LOOP || false)
+const folder = '/etc/tapedeck' // must match that in compose.yaml
 
 console.log(`Tapedeck`)
 console.log(`Play/record MQTT messages`)
@@ -51,11 +45,12 @@ mqtt.on('connect', async function onConnect() {
       const csv = fs.readFileSync(csvpath)
       const rows = parse(csv, { columns })
       for (const row of rows) {
-        const { payload, qos, time_delta } = row
+        const { payload, qos, retain, time_delta } = row
         // const topic = row.topic.replace('${deviceId}', deviceId)
         const topic = row.topic
         console.log(`Publishing topic ${topic}: ${payload.slice(0, 40)}...`)
-        mqtt.publish(topic, payload)
+        // mqtt.publish(topic, payload)
+        mqtt.publish(topic, payload, { qos, retain })
         await sleep(time_delta * 1000) // pause between messages
       }
       await sleep(1000) // pause between csv files
@@ -68,6 +63,6 @@ mqtt.on('connect', async function onConnect() {
 })
 
 // sleep ms milliseconds
-async function sleep(ms) {
-  await new Promise(resolve => setTimeout(resolve, ms))
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
