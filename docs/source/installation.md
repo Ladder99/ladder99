@@ -21,7 +21,8 @@ Install dependencies **in this order** (may take a while) -
     shell/install/linux
     shell/install/docker
     shell/install/docker-compose
-    shell/install/node
+    shell/install/node      # if node not already installed
+    shell/install/node-deps
     shell/install/python
 
 Next, we'll run the MTConnect Agent and make sure it works with the demonstration data.
