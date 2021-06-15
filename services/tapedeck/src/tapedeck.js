@@ -23,7 +23,7 @@ program.parse(process.argv)
 
 const options = program.opts()
 
-const { host, port, mode, loop, topics, folder } = options
+const { host, port, mode, loop, topic, folder } = options
 
 // const host = process.env.HOST || 'localhost'
 // const port = Number(process.env.PORT || 1883)
@@ -32,6 +32,7 @@ const { host, port, mode, loop, topics, folder } = options
 // const topics = process.env.TOPICS || '#'
 // const folder = '/etc/tapedeck' // must match that in compose.yaml
 
+console.log()
 console.log(`Tapedeck`)
 console.log(`Play/record MQTT messages`)
 console.log(`------------------------------------------------------------`)
@@ -61,12 +62,10 @@ mqtt.on('connect', async function onConnect() {
     } catch (error) {
       console.log(`Problem reading files - does the folder exist?`)
       process.exit(1)
-      return
     }
     if (csvfiles.length === 0) {
       console.log(`No csv files found in folder.`)
       process.exit(1)
-      return
     }
 
     // do while loop
@@ -92,8 +91,12 @@ mqtt.on('connect', async function onConnect() {
     } while (loop)
   } else {
     console.log(`Record mode`)
-    console.log(`Subscribing to MQTT topics (${topics})...`)
-    mqtt.subscribe(topics, null, onSubscribe)
+
+    console.log(`Subscribing to MQTT topics (${topic})...`)
+    mqtt.subscribe(topic, null, onSubscribe)
+
+    let fd // file descriptor
+
     // granted - array of { topic, qos }
     function onSubscribe(err, granted) {
       console.log('Subscribed to', granted, '...')
@@ -103,8 +106,13 @@ mqtt.on('connect', async function onConnect() {
         // @ts-ignore
         new Date().toISOString().replaceAll(':', '').slice(0, 17) + '.csv'
       const filepath = `${folder}/${filename}`
-      console.log(`Recording MQTT messages to ${filename}...`)
-      const fd = fs.openSync(filepath, 'w')
+      console.log(`Recording MQTT messages to '${filepath}'...`)
+      try {
+        fd = fs.openSync(filepath, 'w')
+      } catch (error) {
+        console.log(`Problem opening file - does the directory exist?`)
+        process.exit(1)
+      }
       let time_last = Number(new Date())
 
       function onMessage(topic, buffer) {
@@ -116,7 +124,7 @@ mqtt.on('connect', async function onConnect() {
         const time_now = Number(new Date())
         const time_delta = (time_now - time_last) / 1000 // seconds
         time_last = time_now
-        const row = `${topic},"${msg}",${qos},${retain},${time_now},${time_delta}`
+        const row = `${topic},"${msg}",${qos},${retain},${time_now},${time_delta}\n`
         //. write each msg, or write to array and flush every n msgs?
         fs.writeSync(fd, row)
       }
@@ -126,7 +134,7 @@ mqtt.on('connect', async function onConnect() {
       //. break out on SIGINT or SIGTERM ?
       await sleep(2000)
     } while (true)
-    // fs.closeSync(fd)
+    fs.closeSync(fd)
   }
 
   console.log(`Closing MQTT connection...`)
