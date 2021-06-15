@@ -35,6 +35,7 @@ const mqtt = mqttlib.connect(config)
 mqtt.on('connect', async function onConnect() {
   console.log(`Connected...`)
 
+  console.log(`Reading list of files in ${folder}...`)
   // const simulationsFolder = `${modelsFolder}/${model}/simulations`
   const csvfiles = fs
     .readdirSync(folder)
@@ -43,6 +44,7 @@ mqtt.on('connect', async function onConnect() {
 
   // do while loop
   do {
+    console.log(`Looping over files...`)
     for (const csvfile of csvfiles) {
       const csvpath = `${folder}/${csvfile}`
       console.log(`Reading ${csvpath}...`)

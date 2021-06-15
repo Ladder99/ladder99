@@ -10,6 +10,6 @@ MODE=${1:-play}
 # these values override the settings in docker compose.yaml
 HOST=host.docker.internal \
 PORT=1883 \
-FOLDER=/Users/bburns/Desktop/tapedeck \
+FOLDER=./tapedeck \
 LOOP=true \
 docker-compose --file $COMPOSE up --build tapedeck
