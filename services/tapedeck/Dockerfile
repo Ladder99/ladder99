@@ -18,7 +18,8 @@ COPY ./src ./src
 
 # base command - pass params with CMD
 # ENTRYPOINT ["npm", "start"]
+ENTRYPOINT ["node", "/data/app/src/tapedeck.js"]
 
 # default command when run container
 # CMD ["npm", "start"]
-CMD ["node", "/data/app/src/tapedeck.js"]
+# CMD ["node", "/data/app/src/tapedeck.js"]

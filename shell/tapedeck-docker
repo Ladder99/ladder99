@@ -1,0 +1,8 @@
+#!/bin/bash
+# tapedeck - play/record mqtt messages
+# specify play/record as parameter, eg
+#     shell/tapedeck -m play -f ./recordings
+#     shell/tapedeck -m record -f /Users/bburns/Desktop/tapedeck -h host.docker.internal
+
+docker build -t tapedeck services/tapedeck
+docker run -it tapedeck $*

@@ -10,11 +10,13 @@ services:
       - 1883:1883
     # init: true
     # these override any command line envars if set here
-    command: npm start -h $HOST -p $PORT
+    # command: npm start -m $MODE -h $HOST -p $PORT -l $LOOP -f $FOLDER
+    command: node src/tapedeck.js -m $MODE -h $HOST -p $PORT -l $LOOP -f $FOLDER
     environment:
+      - MODE
+      - FOLDER
       - HOST
       - PORT
-      - MODE
       - LOOP
     volumes:
       - $FOLDER:/etc/tapedeck
