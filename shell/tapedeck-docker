@@ -1,8 +1,23 @@
 #!/bin/bash
-# tapedeck - play/record mqtt messages
+# tapedeck - a nodejs app to play/record mqtt messages
 # specify play/record as parameter, eg
-#     shell/tapedeck -m play -f ./recordings
-#     shell/tapedeck -m record -f /Users/bburns/Desktop/tapedeck -h host.docker.internal
+#     shell/tapedeck models/ccs-pa/tapedeck -m play
+#     shell/tapedeck tapedeck -m record -h host.docker.internal
 
-docker build -t tapedeck services/tapedeck
-docker run -it tapedeck $*
+# get first param then remove it from $* array
+HOST_FOLDER=$1
+shift
+
+# build docker image for tapedeck
+docker build --tag tapedeck services/tapedeck
+
+# run the docker image as a container
+# -it is for interactive terminal
+# -v links a host folder to a folder inside the container.
+# tapedeck will write to the container folder,
+# and it'll be visible in the host folder.
+# $* passes remaining params to the tapedeck node app.
+CONTAINER_FOLDER=/etc/tapedeck
+docker run --name tapedeck -it --init \
+  -v "$(pwd)"/$HOST_FOLDER:$CONTAINER_FOLDER \
+  tapedeck -f $CONTAINER_FOLDER $*

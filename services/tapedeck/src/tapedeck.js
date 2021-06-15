@@ -25,8 +25,6 @@ const options = program.opts()
 
 const { host, port, mode, loop, topic, folder } = options
 
-// const folder = '/etc/tapedeck' // must match that in compose.yaml
-
 console.log()
 console.log(`Tapedeck`)
 console.log(`Play/record MQTT messages`)
@@ -46,10 +44,7 @@ mqtt.on('connect', async function onConnect() {
   const columns = 'topic,payload,qos,retain,time_now,time_delta'.split(',')
 
   if (mode === 'play') {
-    // console.log(`Playback mode`)
-
     console.log(`Reading list of files in folder '${folder}'...`)
-    // const simulationsFolder = `${modelsFolder}/${model}/simulations` //.
     let csvfiles
     try {
       csvfiles = fs
