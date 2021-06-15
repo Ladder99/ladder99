@@ -4,12 +4,14 @@
 #     shell/tapedeck play
 #     shell/tapedeck record
 
+MODE=$1
+FOLDER=${2:-"./recordings"}
 COMPOSE=services/tapedeck/compose.yaml
-MODE=${1:-play}
 
 # these values override the settings in docker compose.yaml
 HOST=host.docker.internal \
 PORT=1883 \
-FOLDER=./tapedeck \
 LOOP=true \
+MODE=$MODE \
+FOLDER=$FOLDER \
 docker-compose --file $COMPOSE up --build tapedeck
