@@ -1,0 +1,29 @@
+# tapedeck docker-compose file
+
+version: '3.8'
+
+services:
+  tapedeck:
+    container_name: tapedeck
+    build: .
+    ports:
+      - 1883:1883
+    # init: true
+    environment:
+      - HOST=host.docker.internal
+      - PORT=1883
+      # - FOLDER=/data
+      # - FOLDER=/etc/tapedeck
+      # - FILE=/data/recording.csv
+    #   - LOOP=true
+    volumes:
+      - $FOLDER:/data
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
+networks:
+  ladder99:
+    name: ladder99

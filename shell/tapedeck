@@ -4,4 +4,10 @@
 #     shell/tapedeck play
 #     shell/tapedeck record
 
-docker-compose --file services/tapedeck/compose.yaml up --build $1
+export MODE=$1
+
+HOST=host.docker.internal \
+PORT=1883 \
+FOLDER=/Users/bburns/Desktop/tapedeck \
+LOOP=true \
+docker-compose --file services/tapedeck/compose.yaml up --build $MODE

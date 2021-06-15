@@ -1,5 +1,5 @@
 // tapedeck
-// plays/records MQTT messages
+// play/record MQTT messages
 // inspired by rpdswtk/mqtt_recorder, a python app
 // currently pass params by envars, except mode=play/record pass on cmdline
 
@@ -7,7 +7,7 @@ import fs from 'fs'
 import mqttlib from 'mqtt'
 import parse from 'csv-parse/lib/sync.js'
 
-const mode = process.argv[2] // eg 'play' or 'record'
+const mode = process.argv[2] // 'play' or 'record'
 
 const host = process.env.HOST || 'localhost'
 const port = Number(process.env.PORT || 1883)
@@ -15,12 +15,12 @@ const port = Number(process.env.PORT || 1883)
 // const model = process.env.MODEL // eg 'ccs-pa'
 // const modelsFolder = process.env.MODELS_FOLDER || '/etc/models'
 // const file = process.env.FILE // eg '
-const folder = process.env.FOLDER // eg '/Users/bburns/Desktop/tapedeck'
+//. this needs to be a fixed folder? ie for docker volume?
+const folder = process.env.FOLDER || '/etc/tapedeck' // eg '/Users/bburns/Desktop/tapedeck'
 const loop = Boolean(process.env.LOOP || false)
-const loopDelay = Number(process.env.LOOP_DELAY || 3000)
 
 console.log(`Tapedeck`)
-console.log(`Plays/records MQTT messages`)
+console.log(`Play/record MQTT messages`)
 console.log(`------------------------------------------------------------`)
 
 const clientId = deviceId
@@ -52,7 +52,6 @@ mqtt.on('connect', async function onConnect() {
         mqtt.publish(topic, payload)
         wait(time_delta * 1000)
       }
-      wait(loopDelay)
     }
   } while (loop)
 
