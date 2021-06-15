@@ -66,21 +66,28 @@ mqtt.on('connect', async function onConnect() {
     mqtt.subscribe(topics, null, onSubscribe)
     // function(err, granted) granted - array of { topic: 't', qos: 0 }
     function onSubscribe(err, granted) {
-      console.log('Subscribed to ', granted, '...')
+      console.log('Subscribed to', granted, '...')
       mqtt.on('message', onMessage)
+
       const filename =
         // @ts-ignore
         new Date().toISOString().replaceAll(':', '').slice(0, 17) + '.csv'
       const filepath = `${folder}/${filename}`
       console.log(`Recording MQTT messages to ${filename}...`)
-      const fd = fs.openSync(filepath, 'a')
-      function onMessage(topic, message) {
-        // const columns = 'topic,payload,qos,retain,time_now,time_delta'.split(',')
-        // const row = `${topic}`
-        console.log(topic, message.toString())
-        const buffer = `${topic},"${message.toString().replaceAll('"', '""')}"` //,${qos},${retain},${time_now},${time_delta}`
+      const fd = fs.openSync(filepath, 'w')
+      let time_last = Number(new Date())
+      function onMessage(topic, buffer) {
+        const message = buffer.toString()
+        console.log(topic, message.slice(0, 60))
+        const msg = message.replaceAll('"', '""')
+        const qos = 0
+        const retain = true
+        const time_now = Number(new Date())
+        const time_delta = (time_now - time_last) / 1000 // seconds
+        time_last = time_now
+        const row = `${topic},"${msg}",${qos},${retain},${time_now},${time_delta}`
         //. write each msg, or write to array and flush every n msgs?
-        fs.writeSync(fd, buffer)
+        fs.writeSync(fd, row)
       }
     }
     do {
