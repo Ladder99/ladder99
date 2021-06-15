@@ -4,8 +4,8 @@
 // currently pass params by envars, except mode=play/record pass on cmdline
 
 import fs from 'fs'
-import mqttlib from 'mqtt'
-import parse from 'csv-parse/lib/sync.js'
+import mqttlib from 'mqtt' // see https://github.com/mqttjs/MQTT.js
+import parse from 'csv-parse/lib/sync.js' // see https://github.com/adaltas/node-csv-parse
 
 const host = process.env.HOST || 'localhost'
 const mode = process.env.MODE || 'play'
@@ -64,21 +64,30 @@ mqtt.on('connect', async function onConnect() {
     console.log(`Record mode`)
     console.log(`Subscribing to MQTT topics (${topics})...`)
     mqtt.subscribe(topics, null, callback)
+    mqtt.on('message', callback2)
     const filename =
       // @ts-ignore
       new Date().toISOString().replaceAll(':', '').slice(0, 17) + '.csv'
     const filepath = `${folder}/${filename}`
     console.log(`Recording MQTT messages to ${filename}...`)
     const fd = fs.openSync(filepath, 'a')
-    const buffer = 'hello\n'
-    fs.writeSync(fd, buffer)
-    fs.writeSync(fd, buffer)
-    fs.closeSync(fd)
-    // function(err, granted){} where: {Error} err - subscription error
-    // (none at the moment!) { Array } granted - array of { topic: 't', qos: 0 }
+
+    // function(err, granted) granted - array of { topic: 't', qos: 0 }
     function callback(err, granted) {
       console.log(granted)
     }
+    function callback2(topic, message) {
+      // const columns = 'topic,payload,qos,retain,time_now,time_delta'.split(',')
+      // const row = `${topic}`
+      console.log(topic, message)
+      const buffer = `${topic},${message}`
+      fs.writeSync(fd, buffer)
+    }
+    do {
+      console.log(`Listening...`)
+      await sleep(2000)
+    } while (true)
+    fs.closeSync(fd)
   }
 
   console.log(`Closing MQTT connection...`)
