@@ -9,7 +9,7 @@ services:
     build: .
     ports:
       - 1883:1883
-    # init: true
+    init: true
     environment:
       - HOST=host.docker.internal
       - PORT=1883

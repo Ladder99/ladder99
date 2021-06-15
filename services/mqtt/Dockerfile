@@ -24,7 +24,7 @@ STOPSIGNAL SIGINT
 # works
 ENTRYPOINT ["sh", "-c", "mqtt-recorder --host $HOST --port $PORT --mode $MODE --file $FILE"]
 
-# nowork
+# nowork - no recognize envars
 # ENTRYPOINT [ "mqtt-recorder --host $HOST --port $PORT --mode $MODE --file $FILE"]
 
 # works
