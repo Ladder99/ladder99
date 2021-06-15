@@ -6,18 +6,35 @@
 import fs from 'fs'
 import mqttlib from 'mqtt' // see https://github.com/mqttjs/MQTT.js
 import parse from 'csv-parse/lib/sync.js' // see https://github.com/adaltas/node-csv-parse
+// @ts-ignore
+import { Command } from 'commander/esm.mjs' // see https://github.com/tj/commander.js
 
-const host = process.env.HOST || 'localhost'
-const mode = process.env.MODE || 'play'
-const port = Number(process.env.PORT || 1883)
-const loop = Boolean(process.env.LOOP || false)
-const topics = process.env.TOPICS || '#'
-const folder = '/etc/tapedeck' // must match that in compose.yaml
+const program = new Command()
+
+program
+  .option('-h, --host <host>', 'mqtt host', 'localhost')
+  .option('-p, --port <port>', 'mqtt port', 1883)
+  .option('-m, --mode <mode>', 'play or record', 'play')
+  .option('-l, --loop <loop>', 'play in a loop', true)
+  .option('-t, --topic <topic>', 'topic to subscribe to', '#')
+  .option('-f, --folder <folder>', 'folder containing csv files', './tapedeck')
+
+program.parse(process.argv)
+
+const options = program.opts()
+
+const { host, port, mode, loop, topics, folder } = options
+
+// const host = process.env.HOST || 'localhost'
+// const port = Number(process.env.PORT || 1883)
+// const mode = process.env.MODE || 'play'
+// const loop = Boolean(process.env.LOOP || false)
+// const topics = process.env.TOPICS || '#'
+// const folder = '/etc/tapedeck' // must match that in compose.yaml
 
 console.log(`Tapedeck`)
 console.log(`Play/record MQTT messages`)
 console.log(`------------------------------------------------------------`)
-console.log(mode)
 
 const clientId = `tapedeck-${Math.random()}`
 const config = { host, port, clientId }

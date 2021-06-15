@@ -1,19 +1,9 @@
 #!/bin/bash
 # tapedeck - play/record mqtt messages
 # specify play/record as parameter, eg
-#     shell/tapedeck play ./recordings #
-#     shell/tapedeck record /Users/bburns/Desktop/tapedeck #
-
-MODE=$1
-FOLDER=$2
-TOPICS=$3
+#     shell/tapedeck -m play -f ./recordings
+#     shell/tapedeck -m record -f /Users/bburns/Desktop/tapedeck -h host.docker.internal
 
 COMPOSE=services/tapedeck/compose.yaml
 
-HOST=host.docker.internal \
-PORT=1883 \
-LOOP=true \
-MODE=$MODE \
-FOLDER=$FOLDER \
-TOPICS=$TOPICS \
 docker-compose --file $COMPOSE up --build tapedeck

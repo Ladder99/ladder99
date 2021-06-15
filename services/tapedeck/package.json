@@ -9,6 +9,7 @@
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "commander": "^7.2.0",
     "csv": "^5.5.0",
     "mqtt": "^4.2.6"
   }

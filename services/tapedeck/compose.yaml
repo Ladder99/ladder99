@@ -10,6 +10,7 @@ services:
       - 1883:1883
     # init: true
     # these override any command line envars if set here
+    command: npm start -h $HOST -p $PORT
     environment:
       - HOST
       - PORT
