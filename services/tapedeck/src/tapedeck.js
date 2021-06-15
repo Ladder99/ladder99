@@ -31,6 +31,8 @@ console.log()
 console.log(`Tapedeck`)
 console.log(`Play/record MQTT messages`)
 console.log(`------------------------------------------------------------`)
+const modeString = mode === 'play' ? 'Playback' : 'Record'
+console.log(`${modeString} mode`)
 
 const clientId = `tapedeck-${Math.random()}`
 const config = { host, port, clientId }
@@ -44,7 +46,7 @@ mqtt.on('connect', async function onConnect() {
   const columns = 'topic,payload,qos,retain,time_now,time_delta'.split(',')
 
   if (mode === 'play') {
-    console.log(`Playback mode`)
+    // console.log(`Playback mode`)
 
     console.log(`Reading list of files in folder '${folder}'...`)
     // const simulationsFolder = `${modelsFolder}/${model}/simulations` //.
@@ -85,7 +87,7 @@ mqtt.on('connect', async function onConnect() {
       await sleep(1000) // pause between loops
     } while (loop)
   } else {
-    console.log(`Record mode`)
+    // console.log(`Record mode`)
 
     console.log(`Subscribing to MQTT topics (${topic})...`)
     mqtt.subscribe(topic, null, onSubscribe)

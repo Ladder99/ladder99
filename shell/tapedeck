@@ -1,6 +1,4 @@
 #!/bin/bash
 # tapedeck - play/record mqtt messages
 
-MODE=${1:-play}
-
-node services/tapedeck/src/tapedeck.js --mode $MODE
+node services/tapedeck/src/tapedeck.js $*
