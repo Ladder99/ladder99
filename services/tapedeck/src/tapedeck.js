@@ -64,7 +64,7 @@ mqtt.on('connect', async function onConnect() {
     console.log(`Record mode`)
     console.log(`Subscribing to MQTT topics (${topics})...`)
     mqtt.subscribe(topics, null, onSubscribe)
-    // function(err, granted) granted - array of { topic: 't', qos: 0 }
+    // granted - array of { topic, qos }
     function onSubscribe(err, granted) {
       console.log('Subscribed to', granted, '...')
       mqtt.on('message', onMessage)
@@ -76,9 +76,10 @@ mqtt.on('connect', async function onConnect() {
       console.log(`Recording MQTT messages to ${filename}...`)
       const fd = fs.openSync(filepath, 'w')
       let time_last = Number(new Date())
+
       function onMessage(topic, buffer) {
         const message = buffer.toString()
-        console.log(topic, message.slice(0, 60))
+        console.log('Message received:', topic, message.slice(0, 60))
         const msg = message.replaceAll('"', '""')
         const qos = 0
         const retain = true
