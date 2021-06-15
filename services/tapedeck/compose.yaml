@@ -9,11 +9,12 @@ services:
     ports:
       - 1883:1883
     # init: true
+    # these override any command line envars if set here
     environment:
-      - HOST=host.docker.internal
-      - PORT=1883
-      - MODE=play
-      - LOOP=true
+      - HOST
+      - PORT
+      - MODE
+      - LOOP
     volumes:
       - $FOLDER:/etc/tapedeck
     networks:
