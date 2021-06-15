@@ -1,10 +1,10 @@
 {
-  "name": "ladder99-replay",
+  "name": "ladder99-tapedeck",
   "version": "0.1.0",
-  "description": "replay device messages to mqtt broker",
+  "description": "play/record mqtt messages",
   "type": "module",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/tapedeck.js"
   },
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "MIT",

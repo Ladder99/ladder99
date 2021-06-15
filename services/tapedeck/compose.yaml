@@ -12,12 +12,10 @@ services:
     environment:
       - HOST=host.docker.internal
       - PORT=1883
-      # - FOLDER=/data
-      # - FOLDER=/etc/tapedeck
-      # - FILE=/data/recording.csv
-    #   - LOOP=true
+      - MODE=play
+      - LOOP=true
     volumes:
-      - $FOLDER:/data
+      - $FOLDER:/etc/tapedeck
     networks:
       - ladder99
     logging:
