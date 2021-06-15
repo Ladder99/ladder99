@@ -17,7 +17,7 @@ program
   .option('-m, --mode <mode>', 'play or record', 'play')
   .option('-l, --loop <loop>', 'play in a loop', true)
   .option('-t, --topic <topic>', 'topic to subscribe to', '#')
-  .option('-f, --folder <folder>', 'folder containing csv files', './tapedeck')
+  .option('-f, --folder <folder>', 'folder containing csv files', 'recordings')
 
 program.parse(process.argv)
 
@@ -50,7 +50,7 @@ mqtt.on('connect', async function onConnect() {
   if (mode === 'play') {
     console.log(`Playback mode`)
 
-    console.log(`Reading list of files in ${folder}...`)
+    console.log(`Reading list of files in folder '${folder}'...`)
     // const simulationsFolder = `${modelsFolder}/${model}/simulations` //.
     let csvfiles
     try {
