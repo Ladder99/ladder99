@@ -54,16 +54,18 @@ mqtt.on('connect', async function onConnect() {
         const topic = row.topic
         console.log(`Publishing topic ${topic}: ${payload.slice(0, 40)}...`)
         mqtt.publish(topic, payload)
-        wait(time_delta * 1000)
+        await sleep(time_delta * 1000) // pause between messages
       }
+      await sleep(1000) // pause between csv files
     }
+    await sleep(1000) // pause between loops
   } while (loop)
 
   console.log(`Closing MQTT connection...`)
   mqtt.end()
 })
 
-// wait ms milliseconds
-async function wait(ms) {
+// sleep ms milliseconds
+async function sleep(ms) {
   await new Promise(resolve => setTimeout(resolve, ms))
 }
