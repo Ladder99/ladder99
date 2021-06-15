@@ -1,12 +1,12 @@
 #!/bin/bash
 # tapedeck - play/record mqtt messages
 # specify play/record as parameter, eg
-#     shell/tapedeck play
+#     shell/tapedeck play ./recordings #
 #     shell/tapedeck record /Users/bburns/Desktop/tapedeck #
 
 MODE=$1
-FOLDER=${2:-"./recordings"}
-TOPICS=${3:-"#"}
+FOLDER=$2
+TOPICS=$3
 
 COMPOSE=services/tapedeck/compose.yaml
 
