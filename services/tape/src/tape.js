@@ -30,7 +30,7 @@ const modeString = mode === 'play' ? 'Playback' : 'Record'
 console.log(`${modeString} mode`)
 
 const clientId = `tape-${Math.random()}`
-const config = { host, port, clientId }
+const config = { host, port, clientId, reconnectPeriod: 0 }
 
 console.log(`Connecting to MQTT broker on`, config)
 const mqtt = mqttlib.connect(config)
@@ -74,8 +74,9 @@ mqtt.on('connect', async function onConnect() {
         const rows = parse(csv, { columns })
         for (const row of rows) {
           const { payload, qos, retain, time_delta } = row
+          // const topic = row.topic
           // const topic = row.topic.replace('${deviceId}', deviceId) //. handle this
-          const topic = row.topic
+          const topic = row.topic.replace('${deviceId}', 'ccs-pa-001') //. handle this
           console.log(`Publishing topic ${topic}: ${payload.slice(0, 40)}...`)
           mqtt.publish(topic, payload, { qos, retain })
           await sleep(time_delta * 1000) // pause between messages
@@ -139,8 +140,10 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+// handle shutdown
 function shutdown(signal) {
   return err => {
+    console.log()
     console.log(`Signal ${signal} received - shutting down...`)
     if (err) console.error(err.stack || err)
     if (fd) fs.closeSync(fd)
