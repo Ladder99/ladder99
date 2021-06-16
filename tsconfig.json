@@ -2,6 +2,6 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "es2021",
-    "lib": ["es2021"]
+    "lib": ["esnext"]
   }
 }

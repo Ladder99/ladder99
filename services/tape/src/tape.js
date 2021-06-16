@@ -106,9 +106,9 @@ mqtt.on('connect', async function onConnect() {
       console.log('Subscribed to', granted, '...')
 
       // open file for writing
-      const filename =
-        // @ts-ignore
-        new Date().toISOString().replaceAll(':', '').slice(0, 17) + '.csv'
+      // @ts-ignore
+      const datetime = new Date().toISOString().replaceAll(':', '').slice(0, 17)
+      const filename = datetime + '.csv'
       const filepath = `${folder}/${filename}`
       console.log(`Recording MQTT messages to '${filepath}'...`)
       try {
@@ -127,8 +127,6 @@ mqtt.on('connect', async function onConnect() {
         const message = buffer.toString()
         console.log('Message received:', topic, message.slice(0, 60))
         const msg = message.replaceAll('"', '""')
-        // const qos = 0 //.
-        // const retain = true //.
         const { qos, retain } = packet
         const time_now = Number(new Date()) / 1000 // seconds
         const time_delta = time_now - time_last // seconds
