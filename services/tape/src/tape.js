@@ -38,9 +38,16 @@ const mqtt = mqttlib.connect(config)
 let fd // file descriptor for recording
 
 process
-  .on('SIGTERM', shutdown('SIGTERM'))
-  .on('SIGINT', shutdown('SIGINT'))
-  .on('uncaughtException', shutdown('uncaughtException'))
+  .on('SIGTERM', getShutdown('SIGTERM'))
+  .on('SIGINT', getShutdown('SIGINT'))
+  .on('uncaughtException', getShutdown('uncaughtException'))
+
+mqtt.on('close', e => {
+  console.log('CLOSE', e)
+  process.exit(1)
+})
+mqtt.on('reconnect', e => console.log('RECONNECT', e))
+mqtt.on('error', e => console.log('ERROR', e))
 
 mqtt.on('connect', async function onConnect() {
   console.log(`Connected...`)
@@ -69,18 +76,23 @@ mqtt.on('connect', async function onConnect() {
       console.log(`Looping over files...`)
       for (const csvfile of csvfiles) {
         const csvpath = `${folder}/${csvfile}`
-        console.log(`Reading ${csvpath}...`)
+
+        process.stdout.write(`Reading ${csvpath}`)
         const csv = await fs.readFileSync(csvpath)
         const rows = parse(csv, { columns })
+
         for (const row of rows) {
+          process.stdout.write('.')
           const { payload, qos, retain, time_delta } = row
           // const topic = row.topic
-          // const topic = row.topic.replace('${deviceId}', deviceId) //. handle this
-          const topic = row.topic.replace('${deviceId}', 'ccs-pa-001') //. handle this
-          console.log(`Publishing topic ${topic}: ${payload.slice(0, 40)}...`)
-          mqtt.publish(topic, payload, { qos, retain })
+          const topic = row.topic.replace('${deviceId}', 'ccs-pa-001') //... handle this
+          // console.log(`Publishing topic ${topic}: ${payload.slice(0, 40)}...`)
+          //. mosquitto closes with "disconnected due to protocol error" when send qos
+          // mqtt.publish(topic, payload, { qos, retain })
+          mqtt.publish(topic, payload, { retain })
           await sleep(time_delta * 1000) // pause between messages
         }
+        console.log()
         await sleep(1000) // pause between csv files
       }
       await sleep(1000) // pause between loops
@@ -111,12 +123,13 @@ mqtt.on('connect', async function onConnect() {
       console.log(`Listening...`)
 
       // message received - add to file
-      function onMessage(topic, buffer) {
+      function onMessage(topic, buffer, packet) {
         const message = buffer.toString()
         console.log('Message received:', topic, message.slice(0, 60))
         const msg = message.replaceAll('"', '""')
-        const qos = 0 //.
-        const retain = true //.
+        // const qos = 0 //.
+        // const retain = true //.
+        const { qos, retain } = packet
         const time_now = Number(new Date()) / 1000 // seconds
         const time_delta = time_now - time_last // seconds
         time_last = time_now
@@ -140,8 +153,8 @@ function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-// handle shutdown
-function shutdown(signal) {
+// get shutdown handler
+function getShutdown(signal) {
   return err => {
     console.log()
     console.log(`Signal ${signal} received - shutting down...`)
