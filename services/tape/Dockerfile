@@ -16,7 +16,7 @@ WORKDIR /data/app
 ENV PATH /data/node_modules/.bin:$PATH
 COPY ./src ./src
 
-# base command - pass params with CMD
+# base command - can pass params with CMD
 ENTRYPOINT ["node", "/data/app/src/tape.js"]
 
 # default command when run container

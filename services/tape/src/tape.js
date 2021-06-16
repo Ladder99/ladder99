@@ -50,8 +50,8 @@ mqtt.on('close', () => exit('close'))
 mqtt.on('error', e => exit('error', e))
 
 function exit(msg, e) {
-  console.log(msg, e)
-  // process.exit(1)
+  console.log(msg)
+  if (e) console.log(e)
 }
 
 mqtt.on('connect', async function onConnect() {
