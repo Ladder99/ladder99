@@ -42,12 +42,14 @@ process
   .on('SIGINT', getShutdown('SIGINT'))
   .on('uncaughtException', getShutdown('uncaughtException'))
 
-mqtt.on('close', e => {
-  console.log('CLOSE', e)
+mqtt.on('close', () => exit('close'))
+mqtt.on('reconnect', () => exit('reconnect'))
+mqtt.on('error', () => exit('error'))
+
+function exit(msg) {
+  console.log(msg)
   process.exit(1)
-})
-mqtt.on('reconnect', e => console.log('RECONNECT', e))
-mqtt.on('error', e => console.log('ERROR', e))
+}
 
 mqtt.on('connect', async function onConnect() {
   console.log(`Connected...`)
