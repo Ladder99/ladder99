@@ -1,7 +1,6 @@
-// tapedeck
-// play/record MQTT messages
+// tape
+// plays/records MQTT messages
 // inspired by rpdswtk/mqtt_recorder, a python app
-// currently pass params by envars, except mode=play/record pass on cmdline
 
 import fs from 'fs'
 import mqttlib from 'mqtt' // see https://github.com/mqttjs/MQTT.js
@@ -26,13 +25,13 @@ const options = program.opts()
 const { host, port, mode, loop, topic, folder } = options
 
 console.log()
-console.log(`Tapedeck`)
-console.log(`Play/record MQTT messages`)
+console.log(`Tape`)
+console.log(`Plays/records MQTT messages`)
 console.log(`------------------------------------------------------------`)
 const modeString = mode === 'play' ? 'Playback' : 'Record'
 console.log(`${modeString} mode`)
 
-const clientId = `tapedeck-${Math.random()}`
+const clientId = `tape-${Math.random()}`
 const config = { host, port, clientId }
 
 console.log(`Connecting to MQTT broker on`, config)
@@ -82,14 +81,12 @@ mqtt.on('connect', async function onConnect() {
       await sleep(1000) // pause between loops
     } while (loop)
   } else {
-    // console.log(`Record mode`)
-
     console.log(`Subscribing to MQTT topics (${topic})...`)
     mqtt.subscribe(topic, null, onSubscribe)
 
     let fd // file descriptor
 
-    // granted - array of { topic, qos }
+    // subscribed - granted is array of { topic, qos }
     function onSubscribe(err, granted) {
       console.log('Subscribed to', granted, '...')
       mqtt.on('message', onMessage)
@@ -107,6 +104,7 @@ mqtt.on('connect', async function onConnect() {
       }
       let time_last = Number(new Date()) / 1000 // seconds
 
+      // message received - add to file
       function onMessage(topic, buffer) {
         const message = buffer.toString()
         console.log('Message received:', topic, message.slice(0, 60))

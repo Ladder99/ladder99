@@ -1,7 +1,9 @@
-# ladder99-replay
+# ladder99-tape
 
-Replay MQTT recordings made by mqtt-recorder, a Python library.
+Plays/records MQTT messages.
 
 The recordings are csv files with structure:
 
     [msg.topic, payload, msg.qos, msg.retain, time_now, time_delta]
+
+time_now and time_delta are in seconds
