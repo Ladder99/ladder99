@@ -14,11 +14,13 @@ docker build --tag tape services/tape
 
 # run the docker image as a container
 # -it is for interactive terminal
+# --init passes ctrl-c to node
+# --rm removes the container when it's done
 # -v links a host folder to a folder inside the container.
 # tape will write to the container folder,
 # and it'll be visible in the host folder.
 # $* passes remaining params to the tape node app.
 CONTAINER_FOLDER=/etc/tape
-docker run --name tape -it --init \
+docker run --name tape -it --init --rm \
   -v "$(pwd)"/$HOST_FOLDER:$CONTAINER_FOLDER \
   tape -f $CONTAINER_FOLDER $*

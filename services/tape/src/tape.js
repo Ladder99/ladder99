@@ -141,8 +141,8 @@ function sleep(ms) {
 }
 
 function shutdown(signal) {
-  console.log(`Signal ${signal} received - shutting down...`)
   return err => {
+    console.log(`Signal ${signal} received - shutting down...`)
     if (err) console.error(err.stack || err)
     if (fd) fs.closeSync(fd)
     process.exit(err ? 1 : 0)
