@@ -43,13 +43,13 @@ process
   .on('SIGINT', getShutdown('SIGINT'))
   .on('uncaughtException', getShutdown('uncaughtException'))
 
-mqtt.on('disconnect', () => exit('disconnect'))
-mqtt.on('offline', () => exit('offline'))
-mqtt.on('reconnect', () => exit('reconnect'))
-mqtt.on('close', () => exit('close'))
-mqtt.on('error', e => exit('error', e))
+mqtt.on('disconnect', () => handleEvent('disconnect'))
+mqtt.on('offline', () => handleEvent('offline'))
+mqtt.on('reconnect', () => handleEvent('reconnect'))
+mqtt.on('close', () => handleEvent('close'))
+mqtt.on('error', e => handleEvent('error', e))
 
-function exit(msg, e) {
+function handleEvent(msg, e) {
   console.log(msg)
   if (e) console.log(e)
 }
