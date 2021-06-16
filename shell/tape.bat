@@ -1,8 +1,8 @@
 :: tape - a nodejs app to play/record mqtt messages.
 :: first param is folder relative to current directory.
 :: specify play/record as parameter, eg
-::     shell/tape models/ccs-pa/tape
-::     shell/tape tape -m record -h host.docker.internal
+::     shell\tape models\ccs-pa\tape
+::     shell\tape tape -m record -h host.docker.internal
 
 :: if [ -z "$1" ]; then echo "Error: folder required as first argument"; exit 1; fi
 
@@ -21,7 +21,7 @@ docker build --tag tape services/tape
 :: tape will write to the container folder,
 :: and it'll be visible in the host folder.
 :: $* passes remaining params to the tape node app.
-set CONTAINER_FOLDER=c:\temp\tape
+set CONTAINER_FOLDER=c:\tmp\tape
 docker run --name tape -it --init --rm -p 1883:1883 ^
   --volume "%cd%"\%HOST_FOLDER%:%CONTAINER_FOLDER% ^
   tape --folder %CONTAINER_FOLDER% %*
