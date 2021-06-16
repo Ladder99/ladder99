@@ -28,6 +28,7 @@ console.log()
 console.log(`Tape`)
 console.log(`Plays/records MQTT messages`)
 console.log(`------------------------------------------------------------`)
+console.log(options)
 const modeString = mode === 'play' ? 'Playback' : 'Record'
 console.log(`${modeString} mode`)
 
@@ -94,8 +95,8 @@ mqtt.on('connect', async function onConnect() {
     // subscribed - granted is array of { topic, qos }
     function onSubscribe(err, granted) {
       console.log('Subscribed to', granted, '...')
-      mqtt.on('message', onMessage)
 
+      // open file for writing
       const filename =
         // @ts-ignore
         new Date().toISOString().replaceAll(':', '').slice(0, 17) + '.csv'
@@ -109,24 +110,27 @@ mqtt.on('connect', async function onConnect() {
       }
       let time_last = Number(new Date()) / 1000 // seconds
 
+      mqtt.on('message', onMessage)
+      console.log(`Listening...`)
+
       // message received - add to file
       function onMessage(topic, buffer) {
         const message = buffer.toString()
         console.log('Message received:', topic, message.slice(0, 60))
         const msg = message.replaceAll('"', '""')
-        const qos = 0
-        const retain = true
+        const qos = 0 //.
+        const retain = true //.
         const time_now = Number(new Date()) / 1000 // seconds
         const time_delta = time_now - time_last // seconds
         time_last = time_now
         const row = `${topic},"${msg}",${qos},${retain},${time_now},${time_delta}\n`
-        //. write each msg, or write to array and flush every n msgs?
+        //. write each msg, or write to array and flush every n msgs
         fs.writeSync(fd, row)
       }
     }
 
     do {
-      console.log(`Listening...`)
+      // console.log(`Listening...`)
       await sleep(2000)
     } while (true)
   }
