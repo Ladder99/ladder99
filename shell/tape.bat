@@ -7,7 +7,7 @@
 :: if [ -z "$1" ]; then echo "Error: folder required as first argument"; exit 1; fi
 
 :: get first param then remove it from $* array
-HOST_FOLDER=%1
+set HOST_FOLDER=%1
 shift
 
 :: build docker image for tape
@@ -21,7 +21,7 @@ docker build --tag tape services/tape
 :: tape will write to the container folder,
 :: and it'll be visible in the host folder.
 :: $* passes remaining params to the tape node app.
-set CONTAINER_FOLDER=/etc/tape
-docker run --name tape -it --init --rm -p 1883:1883 \
-  --volume "%cd%"/%HOST_FOLDER%:%CONTAINER_FOLDER% \
+set CONTAINER_FOLDER=c:\temp\tape
+docker run --name tape -it --init --rm -p 1883:1883 ^
+  --volume "%cd%"\%HOST_FOLDER%:%CONTAINER_FOLDER% ^
   tape --folder %CONTAINER_FOLDER% %*
