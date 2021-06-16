@@ -23,6 +23,6 @@ docker build --tag tape services/tape
 # and it'll be visible in the host folder.
 # $* passes remaining params to the tape node app.
 CONTAINER_FOLDER=/etc/tape
-docker run --name tape -it --init --rm -p 1883:1883 \
+docker run --name tape -it --init --rm -p 1883:1883 -p 8082:8082 \
   --volume "$(pwd)"/$HOST_FOLDER:$CONTAINER_FOLDER \
   tape --folder $CONTAINER_FOLDER $*
