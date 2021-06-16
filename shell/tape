@@ -5,6 +5,8 @@
 #     shell/tape models/ccs-pa/tape
 #     shell/tape tape -m record -h host.docker.internal
 
+if [ -z "$1" ]; then echo "Error: folder required as first argument"; exit 1; fi
+
 # get first param then remove it from $* array
 HOST_FOLDER=$1
 shift
