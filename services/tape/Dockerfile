@@ -20,4 +20,4 @@ COPY ./src ./src
 ENTRYPOINT ["node", "/data/app/src/tape.js"]
 
 # default command when run container
-# CMD ["node", "/data/app/src/tapedeck.js"]
+# CMD ["node", "/data/app/src/tape.js"]
