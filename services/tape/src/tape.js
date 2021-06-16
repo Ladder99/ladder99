@@ -43,8 +43,10 @@ process
   .on('SIGINT', getShutdown('SIGINT'))
   .on('uncaughtException', getShutdown('uncaughtException'))
 
-mqtt.on('close', () => exit('close'))
+mqtt.on('disconnect', () => exit('disconnect'))
+mqtt.on('offline', () => exit('offline'))
 mqtt.on('reconnect', () => exit('reconnect'))
+mqtt.on('close', () => exit('close'))
 mqtt.on('error', e => exit('error', e))
 
 function exit(msg, e) {
@@ -161,6 +163,8 @@ function getShutdown(signal) {
     console.log(`Signal ${signal} received - shutting down...`)
     if (err) console.error(err.stack || err)
     if (fd) fs.closeSync(fd)
+    console.log(`Closing MQTT connection...`)
+    mqtt.end()
     process.exit(err ? 1 : 0)
   }
 }
