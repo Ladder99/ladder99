@@ -4,3 +4,9 @@
 # upgrade all packages
 sudo apt update
 sudo apt -y full-upgrade
+
+# install mosquitto and mosquitto_pub and _sub
+sudo apt install mosquitto
+sudo apt install mosquitto-clients
+sudo service mosquitto stop
+sudo systemctl stop mosquitto.service
