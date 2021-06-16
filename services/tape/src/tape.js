@@ -30,7 +30,8 @@ const modeString = mode === 'play' ? 'Playback' : 'Record'
 console.log(`${modeString} mode`)
 
 const clientId = `tape-${Math.random()}`
-const config = { host, port, clientId, reconnectPeriod: 0 }
+// const config = { host, port, clientId, reconnectPeriod: 0 }
+const config = { host, port, clientId }
 
 console.log(`Connecting to MQTT broker on`, config)
 const mqtt = mqttlib.connect(config)
@@ -44,10 +45,10 @@ process
 
 mqtt.on('close', () => exit('close'))
 mqtt.on('reconnect', () => exit('reconnect'))
-mqtt.on('error', () => exit('error'))
+mqtt.on('error', e => exit('error', e))
 
-function exit(msg) {
-  console.log(msg)
+function exit(msg, e) {
+  console.log(msg, e)
   process.exit(1)
 }
 
