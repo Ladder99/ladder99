@@ -37,6 +37,13 @@ const config = { host, port, clientId }
 console.log(`Connecting to MQTT broker on`, config)
 const mqtt = mqttlib.connect(config)
 
+let fd // file descriptor for recording
+
+process
+  .on('SIGTERM', shutdown('SIGTERM'))
+  .on('SIGINT', shutdown('SIGINT'))
+  .on('uncaughtException', shutdown('uncaughtException'))
+
 mqtt.on('connect', async function onConnect() {
   console.log(`Connected...`)
 
@@ -84,8 +91,6 @@ mqtt.on('connect', async function onConnect() {
     console.log(`Subscribing to MQTT topics (${topic})...`)
     mqtt.subscribe(topic, null, onSubscribe)
 
-    let fd // file descriptor
-
     // subscribed - granted is array of { topic, qos }
     function onSubscribe(err, granted) {
       console.log('Subscribed to', granted, '...')
@@ -119,12 +124,11 @@ mqtt.on('connect', async function onConnect() {
         fs.writeSync(fd, row)
       }
     }
+
     do {
       console.log(`Listening...`)
-      //. break out on SIGINT or SIGTERM ?
       await sleep(2000)
     } while (true)
-    fs.closeSync(fd)
   }
 
   console.log(`Closing MQTT connection...`)
@@ -134,4 +138,13 @@ mqtt.on('connect', async function onConnect() {
 // sleep ms milliseconds
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+function shutdown(signal) {
+  console.log(`Signal ${signal} received - shutting down...`)
+  return err => {
+    if (err) console.error(err.stack || err)
+    if (fd) fs.closeSync(fd)
+    process.exit(err ? 1 : 0)
+  }
 }
