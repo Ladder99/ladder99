@@ -99,7 +99,8 @@ services:
       - $GRAFANA_PORT:3000/tcp
     environment:
       # need these for provisioning datasources
-      PGHOST: timescaledb
+      # PGHOST: timescaledb
+      PGHOST:
       PGPORT:
       PGDATABASE:
       PGUSER:
