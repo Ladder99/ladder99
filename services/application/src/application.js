@@ -17,26 +17,10 @@ const fetchCount = Number(process.env.FETCH_COUNT || 200)
 
 // get postgres connection and start polling
 async function main() {
-  // const client = new Client()
   const pool = new Pool()
-  // let client
-  // let connected = false
   const client = await pool.connect() // uses envars PGHOST, PGPORT etc
-  // do {
-  //   try {
-  //     client = new Client()
-  //     await client.connect() // uses envars PGHOST, PGPORT, etc
-  //   } catch (error) {
-  //     if (error.code === 'ECONNREFUSED') {
-  //       await sleep(2000)
-  //     } else {
-  //       throw error
-  //     }
-  //   }
-  // } while (!connected)
   await setupTables(client)
   await initialize(client)
-  // await new Promise(resolve => setTimeout(resolve, fetchInterval))
   await sleep(fetchInterval)
   setInterval(() => shovel(client), fetchInterval)
 

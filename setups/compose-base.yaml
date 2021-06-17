@@ -11,6 +11,7 @@ services:
     profiles:
       - full
       - agent
+    # see https://github.com/Ladder99/mtconnect-agent
     image: ladder99/mtconnect-agent:latest
     ports:
       - 5000:5000
@@ -33,6 +34,7 @@ services:
       POSTGRES_DB: $PGDATABASE
       POSTGRES_USERNAME: $PGUSER
       POSTGRES_PASSWORD: $PGPASSWORD
+    init: true
     volumes:
       - ./$SETUP/volumes/timescaledb/data:/var/lib/postgresql/data
     deploy:
