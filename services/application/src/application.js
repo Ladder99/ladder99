@@ -1,29 +1,35 @@
 // mtconnect application
 // capture agent data and write to database
 
+import fs from 'fs' // node lib
 import fetch from 'node-fetch'
-import pg from 'pg' // postgres driver - import { Client } from 'pg' gives error
-const { Pool } = pg
+import pg from 'pg' // postgres driver
+const { Pool } = pg // import { Client } from 'pg' gives error, so must do this
 import * as logic from './logic.js'
 
 console.log(`MTConnect Application starting`)
 console.log(`---------------------------------------------------`)
 
 // get envars
-const baseUrl = process.env.AGENT_BASE_URL || 'http://localhost:5000'
+const agentUrls = process.env.URLS || 'http://localhost:5000'
 //. these should be dynamic - optimize on the fly
 let fetchInterval = Number(process.env.FETCH_INTERVAL || 2000) // how often to fetch sample data, msec
-let fetchCount = Number(process.env.FETCH_COUNT || 200) // how many samples to fetch each time
+let fetchCount = Number(process.env.FETCH_COUNT || 800) // how many samples to fetch each time
+
+let urls
+if (agentUrls.includes(',')) {
+  urls = agentUrls.split(',')
+} else if (agentUrls.endsWith('.yaml')) {
+  const s = String(fs.readFileSync(agentUrls)).trim()
+  urls = s.split('\n')
+} else {
+  urls = [agentUrls]
+}
 
 async function main() {
-  // get postgres connection
-  const client = await connect()
-
-  // handle ctrl-c etc
-  handleSignals(client)
-
-  // setup tables and views
-  await setupTables(client)
+  const client = await connect() // get postgres connection
+  handleSignals(client) // handle ctrl-c etc
+  await setupTables(client) // setup tables and views
 
   //------------------------------------------------------------------------
   // probe
