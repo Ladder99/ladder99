@@ -29,71 +29,44 @@ if (agentUrls.includes(',')) {
   baseUrls = [agentUrls]
 }
 
+// init sequences dict
+const sequences = {}
+for (const baseUrl of baseUrls) {
+  sequences[baseUrl] = {}
+}
+
 main(baseUrls)
 
 async function main(baseUrls) {
   const client = await connect() // get postgres connection
   handleSignals(client) // handle ctrl-c etc
   await setupTables(client) // setup tables and views
-  //. maybe we could call main once for each baseurl?
-  // no awaiting, just start them all off
+  // call main once for each baseurl
   //. could db get screwed up though? weird race conditions?
   for (const baseUrl of baseUrls) {
-    handleAgent(baseUrl)
+    handleAgent(baseUrl, client)
   }
 }
 
 // start a 'thread' to handle data from the given base agent url
 async function handleAgent(baseUrl, client) {
-  //------------------------------------------------------------------------
-  // probe
   // get device structures and write to db
-  //------------------------------------------------------------------------
   probe: do {
     console.log(`Getting probe data...`)
-    const url = getUrl(baseUrl, 'probe')
-    const json = await getData(url)
-    if (!json) {
-      console.log(`No data available - will wait and try again...`)
-      await sleep(retryTime)
-      break probe
-    }
-    const header = json.MTConnectDevices.Header
-    let { instanceId } = header
+    const json = await getData(baseUrl, 'probe')
+    if (noData(json)) break probe
+    const instanceId = getInstanceId(json)
+    await handleProbe(json, client)
 
-    //. await handleProbe(json, client)
-    //. get all elements and their relations
-    // const graph = getGraph(json)
-    // console.log(graph)
-    //. add all to nodes and edges tables
-    // writeGraphStructure(graph, client)
-    // vs writeGraphValues(graph, client)
-
-    //------------------------------------------------------------------------
-    // current
     // get last known values of all dataitems, write to db
-    //------------------------------------------------------------------------
     current: do {
       console.log(`Getting current data...`)
-      const url = getUrl(baseUrl, 'current')
-      const json = await getData(url)
-      if (!json) {
-        console.log(`No data available - will wait and try again...`)
-        await sleep(retryTime)
-        break current
-      }
-      const header = json.MTConnectDevices.Header
-      if (header.instanceId !== instanceId) {
-        console.log(`InstanceId changed - falling back to probe...`)
-        instanceId = header.instanceId
-        break probe
-      }
-      //. await handleCurrent(json, client)
+      const json = await getData(baseUrl, 'current')
+      if (noData(json)) break current
+      if (instanceIdChanged(json, instanceId)) break probe
+      await handleCurrent(json, client)
 
-      //------------------------------------------------------------------------
-      // sample
       // get sequence of dataitem values, write to db
-      //------------------------------------------------------------------------
       sample: do {
         //. need to maintain a dict of from, next, count, etc?
         // or getSample should maintain one - pass baseUrl to it as key of dict?
@@ -103,17 +76,27 @@ async function handleAgent(baseUrl, client) {
           await sleep(retryTime)
           break sample
         }
-        const header = json.MTConnectDevices.Header
-        if (header.instanceId !== instanceId) {
-          console.log(`InstanceId changed - falling back to probe...`)
-          instanceId = header.instanceId
-          break probe
-        }
+        if (instanceIdChanged(json, instanceId)) break probe
         await handleSample(json, client)
         await sleep(fetchInterval)
       } while (true)
     } while (true)
   } while (true)
+}
+
+function getInstanceId(json) {
+  const header = json.MTConnectDevices.Header
+  let { instanceId } = header
+  return instanceId
+}
+
+function instanceIdChanged(json, instanceId) {
+  const header = json.MTConnectDevices.Header
+  if (header.instanceId !== instanceId) {
+    console.log(`InstanceId changed - falling back to probe...`)
+    return true
+  }
+  return false
 }
 
 async function connect() {
@@ -186,6 +169,31 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 `
   console.log(`Creating db structures if not there...`)
   await client.query(sql)
+}
+
+// type is 'probe' or 'current'
+async function getData(baseUrl, type) {
+  // let json
+  // do {
+  //   const url = getUrl(baseUrl, type)
+  //   json = await fetchData(url)
+  //   if (!json) {
+  //     console.log(`No data available - will wait and try again...`)
+  //     await sleep(retryTime)
+  //   }
+  // } while (!json)
+  const url = getUrl(baseUrl, type)
+  const json = await fetchData(url)
+  return json
+}
+
+async function noData(json) {
+  if (!json) {
+    console.log(`No data available - will wait and try again...`)
+    await sleep(retryTime)
+    return true
+  }
+  return false
 }
 
 async function handleProbe(json, client) {
@@ -299,6 +307,8 @@ async function writeDataItems(dataItems, client) {
   }
 }
 
+// type is 'probe', 'current', or 'sample'.
+// from and count are optional.
 function getUrl(baseUrl, type, from, count) {
   const url =
     from === undefined
@@ -309,10 +319,8 @@ function getUrl(baseUrl, type, from, count) {
   return url
 }
 
-// get json data from agent rest endpoint.
-// type is 'probe', 'current', or 'sample'.
-// from and count are optional.
-async function getData(url) {
+// get json data from agent rest endpoint
+async function fetchData(url) {
   console.log(`Getting data from ${url}...`)
   try {
     const response = await fetch(url, {
