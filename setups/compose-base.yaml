@@ -158,7 +158,6 @@ services:
       - full
       - app
     depends_on:
-      #   - agent
       - db
     environment:
       - AGENT_BASE_URL=http://agent:5000

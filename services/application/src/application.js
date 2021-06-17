@@ -122,9 +122,12 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 
 async function getProbe(client) {
   const json = await getData('probe')
+  //. will want all elements, not just dataitems. and their relations
+  // const elements = getElements(json)
   const dataItems = getDataItems(json)
   //. add to nodes and edges tables
-  console.log(dataItems)
+  // console.log(dataItems)
+
   return json
 }
 
@@ -139,11 +142,11 @@ async function getCurrent(client) {
   return json
 }
 
-let from = null
-let count = fetchCount
-// let next = null
-
 async function getSample(client) {
+  let from = null
+  let count = fetchCount
+  // let next = null
+
   let json = await getData('sample', from, count)
 
   // check for errors
@@ -217,11 +220,11 @@ async function writeDataItems(dataItems, client) {
 // from and count are optional.
 async function getData(type, from, count) {
   const url =
-    from !== undefined
-      ? `${baseUrl}/${type}?${
+    from === undefined
+      ? `${baseUrl}/${type}`
+      : `${baseUrl}/${type}?${
           from !== null ? 'from=' + from + '&' : ''
         }count=${count}`
-      : `${baseUrl}/${type}`
 
   console.log(`Getting data from ${url}...`)
   try {

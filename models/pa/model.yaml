@@ -1,4 +1,4 @@
-# ccs-pa model
+# pa model
 # this defines the structure of the xml that will get included in devices.xml.
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from devices.yaml.
@@ -6,7 +6,7 @@
 # compilation is done with services/compiler.
 
 model:
-  id: ${deviceId} # eg 'ccs-pa-001'
+  id: ${deviceId} # eg 'pa'
   name: ${deviceId} # must be unique in xml - might want to override in devices.yaml tho?
   uuid: ${uuid} # eg 'e05363af-95d1-4354-b749-8fbb09d3499e'
   sampleInterval: 10
