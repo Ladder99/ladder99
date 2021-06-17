@@ -11,12 +11,14 @@ console.log(`MTConnect Application starting`)
 console.log(`---------------------------------------------------`)
 
 // get envars
+// agent urls can be a single url, a comma-delim list of urls, or a txt filename with urls
 const agentUrls = process.env.AGENT_URLS || 'http://localhost:5000'
 //. these should be dynamic - optimize on the fly
 let fetchInterval = Number(process.env.FETCH_INTERVAL || 2000) // how often to fetch sample data, msec
 let fetchCount = Number(process.env.FETCH_COUNT || 800) // how many samples to fetch each time
-const retryTime = 4000
+const retryTime = 4000 // ms between connection retries etc
 
+// get array of base agent urls
 let baseUrls
 if (agentUrls.includes(',')) {
   baseUrls = agentUrls.split(',')
@@ -27,20 +29,22 @@ if (agentUrls.includes(',')) {
   baseUrls = [agentUrls]
 }
 
-//. maybe we could call main once for each baseurl?
-// ie no awaiting
-// could db get screwed up though? weird race conditions?
+main(baseUrls)
 
-// main()
-for (const baseUrl of baseUrls) {
-  main(baseUrl)
-}
-
-async function main(baseUrl) {
+async function main(baseUrls) {
   const client = await connect() // get postgres connection
   handleSignals(client) // handle ctrl-c etc
   await setupTables(client) // setup tables and views
+  //. maybe we could call main once for each baseurl?
+  // no awaiting, just start them all off
+  //. could db get screwed up though? weird race conditions?
+  for (const baseUrl of baseUrls) {
+    main2(baseUrl)
+  }
+}
 
+// start a 'thread' to handle data from the given base agent url
+async function main2(baseUrl, client) {
   //------------------------------------------------------------------------
   // probe
   // get device structures and write to db
@@ -56,13 +60,13 @@ async function main(baseUrl) {
     }
     const header = json.MTConnectDevices.Header
     let { instanceId } = header
-    //. await handleProbe(json)
+    //. await handleProbe(json, client)
     //. get all elements and their relations
     // const graph = getGraph(json)
     // console.log(graph)
     //. add all to nodes and edges tables
-    // writeGraphStructure(graph)
-    // vs writeGraphValues(graph)
+    // writeGraphStructure(graph, client)
+    // vs writeGraphValues(graph, client)
 
     //------------------------------------------------------------------------
     // current
@@ -83,7 +87,7 @@ async function main(baseUrl) {
         instanceId = header.instanceId
         break probe
       }
-      //. await handleCurrent(json)
+      //. await handleCurrent(json, client)
 
       //------------------------------------------------------------------------
       // sample
@@ -92,8 +96,8 @@ async function main(baseUrl) {
       sample: do {
         //. need to maintain a dict of from, next, count, etc?
         // or getSample should maintain one - pass baseUrl to it as key of dict?
-        const url = getUrl(baseUrl, 'sample')
-        const json = await getSample(url, client)
+        // const url = getUrl(baseUrl, 'sample')
+        const json = await getSample(baseUrl, client)
         if (!json) {
           console.log(`No data available - will wait and try again...`)
           await sleep(retryTime)
