@@ -47,21 +47,22 @@ async function main(baseUrl) {
   //------------------------------------------------------------------------
   probe: do {
     console.log(`Getting probe data...`)
-    const url = getUrl(baseUrl)
-    const json = await getData(url, 'probe')
+    const url = getUrl(baseUrl, 'probe')
+    const json = await getData(url)
     if (!json) {
       console.log(`No data available - will wait and try again...`)
       await sleep(retryTime)
       break probe
     }
+    const header = json.MTConnectDevices.Header
+    let { instanceId } = header
+    //. await handleProbe(json)
     //. get all elements and their relations
     // const graph = getGraph(json)
     // console.log(graph)
     //. add all to nodes and edges tables
     // writeGraphStructure(graph)
     // vs writeGraphValues(graph)
-    const header = json.MTConnectDevices.Header
-    let { instanceId } = header
 
     //------------------------------------------------------------------------
     // current
@@ -69,8 +70,8 @@ async function main(baseUrl) {
     //------------------------------------------------------------------------
     current: do {
       console.log(`Getting current data...`)
-      const url = getUrl(baseUrl)
-      const json = await getCurrent(url, client)
+      const url = getUrl(baseUrl, 'current')
+      const json = await getData(url)
       if (!json) {
         console.log(`No data available - will wait and try again...`)
         await sleep(retryTime)
@@ -82,6 +83,7 @@ async function main(baseUrl) {
         instanceId = header.instanceId
         break probe
       }
+      //. await handleCurrent(json)
 
       //------------------------------------------------------------------------
       // sample
@@ -89,7 +91,8 @@ async function main(baseUrl) {
       //------------------------------------------------------------------------
       sample: do {
         //. need to maintain a dict of from, next, count, etc?
-        const url = getUrl(baseUrl)
+        // or getSample should maintain one - pass baseUrl to it as key of dict?
+        const url = getUrl(baseUrl, 'sample')
         const json = await getSample(url, client)
         if (!json) {
           console.log(`No data available - will wait and try again...`)
@@ -178,8 +181,8 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
   await client.query(sql)
 }
 
-// async function getProbe(baseUrl, client) {
-//   const json = await getData(baseUrl, 'probe')
+// async function getProbe(url, client) {
+//   const json = await getData(url)
 //   //. get all elements and their relations
 //   const graph = getGraph(json)
 //   console.log(graph)
@@ -189,8 +192,8 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 //   return json
 // }
 
-// async function getCurrent(baseUrl, client) {
-//   const json = await getData(baseUrl, 'current')
+// async function getCurrent(url, client) {
+//   const json = await getData(url)
 //   // // get sequence info from header?
 //   // const { firstSequence, nextSequence, lastSequence } =
 //   //   json.MTConnectStreams.Header
@@ -205,7 +208,8 @@ async function getSample(baseUrl, client) {
   let count = fetchCount
   // let next = null
 
-  let json = await getData(baseUrl, 'sample', from, count)
+  const url = getUrl(baseUrl, 'sample', from, count)
+  let json = await getData(url)
 
   // check for errors
   // eg <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
@@ -218,7 +222,8 @@ async function getSample(baseUrl, client) {
         `Out of range error - some data was lost. Will reset index and get from start of buffer.`
       )
       from = null
-      json = await getData(baseUrl, 'sample', from, count)
+      const url = getUrl(baseUrl, 'sample', from, count)
+      json = await getData(url)
     }
   }
 
@@ -237,6 +242,7 @@ async function getSample(baseUrl, client) {
   //   const dataItems = getDataItems(json)
   //   await writeDataItems(dataItems, client)
   // }
+
   return json
 }
 
@@ -287,21 +293,20 @@ async function writeDataItems(dataItems, client) {
   }
 }
 
-function getUrl(baseUrl, from, count) {
+function getUrl(baseUrl, type, from, count) {
   const url =
     from === undefined
       ? `${baseUrl}/${type}`
       : `${baseUrl}/${type}?${
           from !== null ? 'from=' + from + '&' : ''
         }count=${count}`
-
   return url
 }
 
 // get json data from agent rest endpoint.
 // type is 'probe', 'current', or 'sample'.
 // from and count are optional.
-async function getData(url, type) {
+async function getData(url) {
   console.log(`Getting data from ${url}...`)
   try {
     const response = await fetch(url, {
