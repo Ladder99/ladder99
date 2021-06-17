@@ -3,7 +3,8 @@
 
 import fetch from 'node-fetch'
 import pg from 'pg' // postgres driver - import { Client } from 'pg' gives error
-const { Client } = pg
+// const { Client } = pg
+const { Pool } = pg
 import * as logic from './logic.js'
 
 console.log(`MTConnect Application starting`)
@@ -16,12 +17,46 @@ const fetchCount = Number(process.env.FETCH_COUNT || 200)
 
 // get postgres connection and start polling
 async function main() {
-  const client = new Client()
-  await client.connect() // uses envars PGHOST, PGPORT, etc
+  // const client = new Client()
+  const pool = new Pool()
+  // let client
+  // let connected = false
+  const client = await pool.connect() // uses envars PGHOST, PGPORT etc
+  // do {
+  //   try {
+  //     client = new Client()
+  //     await client.connect() // uses envars PGHOST, PGPORT, etc
+  //   } catch (error) {
+  //     if (error.code === 'ECONNREFUSED') {
+  //       await sleep(2000)
+  //     } else {
+  //       throw error
+  //     }
+  //   }
+  // } while (!connected)
   await setupTables(client)
   await initialize(client)
-  await new Promise(resolve => setTimeout(resolve, fetchInterval))
+  // await new Promise(resolve => setTimeout(resolve, fetchInterval))
+  await sleep(fetchInterval)
   setInterval(() => shovel(client), fetchInterval)
+
+  //. need init:true in compose yaml?
+  process
+    .on('SIGTERM', getShutdown('SIGTERM'))
+    .on('SIGINT', getShutdown('SIGINT'))
+
+  // get shutdown handler
+  function getShutdown(signal) {
+    return error => {
+      console.log()
+      console.log(`Signal ${signal} received - shutting down...`)
+      if (error) console.error(error.stack || error)
+      console.log(`Releasing db client...`)
+      // mqtt.end()
+      client.release()
+      process.exit(error ? 1 : 0)
+    }
+  }
 }
 
 main()
@@ -165,3 +200,7 @@ async function getData(type, from, count) {
 //       : `${baseUrl}/${type}`
 //   return url
 // }
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
