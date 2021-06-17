@@ -197,6 +197,15 @@ async function getSample(client) {
   return json
 }
 
+// traverse the json tree and return all elements and relations
+function getElements(json) {
+  const elements = []
+  logic.traverse(json, els => {
+    elements.push(...els)
+  })
+  return elements
+}
+
 // traverse the json tree and return all data items
 function getDataItems(json) {
   const allDataItems = []

@@ -3,11 +3,9 @@
 // recurse down a tree of nodes, calling callback on each one.
 // callback takes array of dataItems.
 export function traverse(node, callback) {
-  // if array, recurse down each item
-  if (Array.isArray(node)) {
-    node.forEach(subnode => traverse(subnode, callback)) // recurse
-  } else if (node !== null && typeof node === 'object') {
-    // else if object, call callback for dataitems, recurse for others
+  const isObject = node !== null && typeof node === 'object'
+  if (isObject) {
+    // if object, call callback for dataitems, recurse for others
     Object.entries(node).forEach(([key, values]) => {
       if (key === 'Samples' || key === 'Events' || key === 'Condition') {
         values.forEach(value => {
@@ -21,10 +19,13 @@ export function traverse(node, callback) {
         traverse(values, callback) // recurse
       }
     })
+  } else if (Array.isArray(node)) {
+    // if array, recurse down each item
+    node.forEach(subnode => traverse(subnode, callback)) // recurse
   } else if (node === null || node === undefined) {
-    // else if null do nothing
+    // if null do nothing
   } else {
-    // else if value do nothing
+    // if value do nothing
   }
 }
 
