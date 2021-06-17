@@ -1,7 +1,7 @@
 // logic for mtconnect application
 
 // recurse down a tree of nodes, calling callback on each one.
-// callback takes array of elements.
+// callback takes array of dataItems.
 export function traverse(node, callback) {
   const isObject = node !== null && typeof node === 'object'
   if (isObject) {

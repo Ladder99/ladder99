@@ -11,31 +11,52 @@ console.log(`---------------------------------------------------`)
 
 // get envars
 const baseUrl = process.env.AGENT_BASE_URL || 'http://localhost:5000'
-const fetchInterval = Number(process.env.FETCH_INTERVAL || 2000) // how often to fetch sample data, msec
-const fetchCount = Number(process.env.FETCH_COUNT || 200) // how many samples to fetch each time
+//. these should be dynamic - optimize on the fly
+let fetchInterval = Number(process.env.FETCH_INTERVAL || 2000) // how often to fetch sample data, msec
+let fetchCount = Number(process.env.FETCH_COUNT || 200) // how many samples to fetch each time
 
-// get postgres connection and start polling
 async function main() {
+  // get postgres connection
   const client = await connect()
+
+  // handle ctrl-c etc
   handleSignals(client)
+
+  // setup tables and views
   await setupTables(client)
+
+  //------------------------------------------------------------------------
+  // probe
+  // get device structures
+  //------------------------------------------------------------------------
   probe: do {
     console.log(`Getting probe data...`)
-    const json = await getProbe(client)
+    const json = await getData('probe')
     if (!json) {
       console.log(`No data available - will wait and try again...`)
       await sleep(4000)
       break probe
     }
+    //. get all elements and their relations
+    const graph = getGraph(json)
+    console.log(graph)
+    //. add all to nodes and edges tables
+    // writeGraph(graph)
+    // writeGraphStructure(graph)
     const header = json.MTConnectDevices.Header
     let { instanceId } = header
-    do {
+
+    //------------------------------------------------------------------------
+    // current
+    // get last known values of all dataitems
+    //------------------------------------------------------------------------
+    current: do {
       console.log(`Getting current data...`)
       const json = await getCurrent(client)
       if (!json) {
         console.log(`No data available - will wait and try again...`)
         await sleep(4000)
-        break probe
+        break current
       }
       const header = json.MTConnectDevices.Header
       if (header.instanceId !== instanceId) {
@@ -43,12 +64,17 @@ async function main() {
         instanceId = header.instanceId
         break probe
       }
-      do {
+
+      //------------------------------------------------------------------------
+      // sample
+      // get sequence of dataitem values
+      //------------------------------------------------------------------------
+      sample: do {
         const json = await getSample(client)
         if (!json) {
           console.log(`No data available - will wait and try again...`)
           await sleep(4000)
-          break probe
+          break sample
         }
         const header = json.MTConnectDevices.Header
         if (header.instanceId !== instanceId) {
@@ -135,27 +161,27 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
   await client.query(sql)
 }
 
-async function getProbe(client) {
-  const json = await getData('probe')
-  //. will want all elements, not just dataitems. and their relations
-  // const elements = getElements(json)
-  // const dataItems = getDataItems(json)
-  //. add to nodes and edges tables
-  // console.log(dataItems)
+// async function getProbe(client) {
+//   const json = await getData('probe')
+//   //. get all elements and their relations
+//   const graph = getGraph(json)
+//   console.log(graph)
+//   //. add all to nodes and edges tables
+//   // writeGraph(graph)
+//   writeGraphStructure(graph)
+//   return json
+// }
 
-  return json
-}
-
-async function getCurrent(client) {
-  const json = await getData('current')
-  // // get sequence info from header?
-  // const { firstSequence, nextSequence, lastSequence } =
-  //   json.MTConnectStreams.Header
-  // from = nextSequence
-  const dataItems = getDataItems(json)
-  await writeDataItems(dataItems, client)
-  return json
-}
+// async function getCurrent(client) {
+//   const json = await getData('current')
+//   // // get sequence info from header?
+//   // const { firstSequence, nextSequence, lastSequence } =
+//   //   json.MTConnectStreams.Header
+//   // from = nextSequence
+//   // const dataItems = getDataItems(json)
+//   // await writeDataItems(dataItems, client)
+//   return json
+// }
 
 async function getSample(client) {
   let from = null
@@ -199,11 +225,11 @@ async function getSample(client) {
 
 // traverse the json tree and return all elements and relations
 function getElements(json) {
-  const elements = []
-  logic.traverse(json, els => {
-    elements.push(...els)
+  const allElements = []
+  logic.traverse(json, elements => {
+    allElements.push(...elements)
   })
-  return elements
+  return allElements
 }
 
 // traverse the json tree and return all data items
@@ -215,6 +241,10 @@ function getDataItems(json) {
   return allDataItems
 }
 
+function get_id(dataItemId) {
+  return 1
+}
+
 // gather up all items into array, then put all into one INSERT stmt, for speed.
 // otherwise pipeline couldn't keep up.
 // see https://stackoverflow.com/a/63167970/243392 etc
@@ -223,26 +253,24 @@ async function writeDataItems(dataItems, client) {
   for (const dataItem of dataItems) {
     let { dataItemId, timestamp, value } = dataItem
     const id = dataItemId
+    const _id = get_id(id)
     value = value === undefined ? 'undefined' : value
     if (typeof value !== 'object') {
-      // const type = typeof value === 'string' ? 'text' : 'numeric'
       const type = typeof value === 'string' ? 'text' : 'float'
-      const row = `('${timestamp}', '${id}', to_jsonb('${value}'::${type}))`
+      const row = `('${_id}', '${timestamp}', to_jsonb('${value}'::${type}))`
       rows.push(row)
     }
   }
   if (rows.length > 0) {
     const values = rows.join(',\n')
-    const sql = `INSERT INTO history (time, _id, value) 
-  VALUES
-  ${values};`
+    const sql = `INSERT INTO history (_id, time, value) VALUES ${values};`
     console.log(sql)
     //. add try catch block - ignore error? just print it?
     await client.query(sql)
   }
 }
 
-// get data from agent rest endpoint.
+// get json data from agent rest endpoint.
 // type is 'probe', 'current', or 'sample'.
 // from and count are optional.
 async function getData(type, from, count) {

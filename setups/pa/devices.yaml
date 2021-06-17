@@ -5,6 +5,9 @@
 # compiled by services/compiler into devices.xml.
 #. see also devices-future.yaml for future dev.
 
+#. maybe call this setup.yaml?
+# have setup: {meta:, devices:}, etc
+
 #. could we get this to one line per device? a site might have dozens of machines
 # eg set defaults at the top, overrides per device?
 
