@@ -16,6 +16,40 @@ const fetchCount = Number(process.env.FETCH_COUNT || 200)
 
 // get postgres connection and start polling
 async function main() {
+  const client = await connect()
+  handleSignals(client)
+  await setupTables(client)
+  probe: do {
+    console.log(`Getting probe data...`)
+    const json = await getProbe(client)
+    const header = json.MTConnectDevices.Header
+    let { instanceId } = header
+    do {
+      console.log(`Getting current data...`)
+      const json = await getCurrent(client)
+      const header = json.MTConnectDevices.Header
+      if (header.instanceId !== instanceId) {
+        console.log(`InstanceId changed - falling back to probe...`)
+        instanceId = header.instanceId
+        break probe
+      }
+      do {
+        const json = await getSample(client)
+        const header = json.MTConnectDevices.Header
+        if (header.instanceId !== instanceId) {
+          console.log(`InstanceId changed - falling back to probe...`)
+          instanceId = header.instanceId
+          break probe
+        }
+        await sleep(fetchInterval)
+      } while (true)
+    } while (true)
+  } while (true)
+}
+
+main()
+
+async function connect() {
   const pool = new Pool()
   let client
   do {
@@ -26,14 +60,12 @@ async function main() {
       console.error(error)
       console.log(`Sleeping before retrying...`)
       await sleep(4000)
-      throw error
     }
   } while (!client)
-  await setupTables(client)
-  await initialize(client)
-  await sleep(fetchInterval)
-  setInterval(() => shovel(client), fetchInterval)
+  return client
+}
 
+function handleSignals(client) {
   //. need init:true in compose yaml? nowork - how do?
   process
     .on('SIGTERM', getShutdown('SIGTERM'))
@@ -45,14 +77,14 @@ async function main() {
       console.log()
       console.log(`Signal ${signal} received - shutting down...`)
       if (error) console.error(error.stack || error)
-      console.log(`Releasing db client...`)
-      client.release()
+      if (!client) {
+        console.log(`Releasing db client...`)
+        client.release()
+      }
       process.exit(error ? 1 : 0)
     }
   }
 }
-
-main()
 
 async function setupTables(client) {
   const sql = `
@@ -88,7 +120,15 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
   await client.query(sql)
 }
 
-async function initialize(client) {
+async function getProbe(client) {
+  const json = await getData('probe')
+  const dataItems = getDataItems(json)
+  //. add to nodes and edges tables
+  console.log(dataItems)
+  return json
+}
+
+async function getCurrent(client) {
   const json = await getData('current')
   // // get sequence info from header?
   // const { firstSequence, nextSequence, lastSequence } =
@@ -96,13 +136,14 @@ async function initialize(client) {
   // from = nextSequence
   const dataItems = getDataItems(json)
   await writeDataItems(dataItems, client)
+  return json
 }
 
 let from = null
 let count = fetchCount
 // let next = null
 
-async function shovel(client) {
+async function getSample(client) {
   let json = await getData('sample', from, count)
 
   // check for errors
@@ -118,8 +159,8 @@ async function shovel(client) {
   }
 
   // get sequence info from header
-  const { firstSequence, nextSequence, lastSequence } =
-    json.MTConnectStreams.Header
+  const header = json.MTConnectStreams.Header
+  const { firstSequence, nextSequence, lastSequence } = header
   from = nextSequence
 
   const dataItems = getDataItems(json)
@@ -132,6 +173,7 @@ async function shovel(client) {
   //   const dataItems = getDataItems(json)
   //   await writeDataItems(dataItems, client)
   // }
+  return json
 }
 
 // traverse the json tree and return all data items
@@ -174,13 +216,13 @@ async function writeDataItems(dataItems, client) {
 // type is 'probe', 'current', or 'sample'.
 // from and count are optional.
 async function getData(type, from, count) {
-  // const url = getUrl(type, from, count)
   const url =
     from !== undefined
       ? `${baseUrl}/${type}?${
           from !== null ? 'from=' + from + '&' : ''
         }count=${count}`
       : `${baseUrl}/${type}`
+
   console.log(`Getting data from ${url}...`)
   try {
     const response = await fetch(url, {
@@ -198,15 +240,6 @@ async function getData(type, from, count) {
   }
   return null
 }
-
-// // get the rest endpoint url - from and count are optional
-// function getUrl(type, from, count) {
-//   const url =
-//     from !== null
-//       ? `${baseUrl}/${type}?from=${from}&count=${count}`
-//       : `${baseUrl}/${type}`
-//   return url
-// }
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
