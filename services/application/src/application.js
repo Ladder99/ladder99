@@ -39,12 +39,12 @@ async function main(baseUrls) {
   // no awaiting, just start them all off
   //. could db get screwed up though? weird race conditions?
   for (const baseUrl of baseUrls) {
-    main2(baseUrl)
+    handleAgent(baseUrl)
   }
 }
 
 // start a 'thread' to handle data from the given base agent url
-async function main2(baseUrl, client) {
+async function handleAgent(baseUrl, client) {
   //------------------------------------------------------------------------
   // probe
   // get device structures and write to db
@@ -60,6 +60,7 @@ async function main2(baseUrl, client) {
     }
     const header = json.MTConnectDevices.Header
     let { instanceId } = header
+
     //. await handleProbe(json, client)
     //. get all elements and their relations
     // const graph = getGraph(json)
@@ -96,8 +97,7 @@ async function main2(baseUrl, client) {
       sample: do {
         //. need to maintain a dict of from, next, count, etc?
         // or getSample should maintain one - pass baseUrl to it as key of dict?
-        // const url = getUrl(baseUrl, 'sample')
-        const json = await getSample(baseUrl, client)
+        const json = await getSample(baseUrl)
         if (!json) {
           console.log(`No data available - will wait and try again...`)
           await sleep(retryTime)
@@ -109,6 +109,7 @@ async function main2(baseUrl, client) {
           instanceId = header.instanceId
           break probe
         }
+        await handleSample(json, client)
         await sleep(fetchInterval)
       } while (true)
     } while (true)
@@ -133,9 +134,11 @@ async function connect() {
 
 function handleSignals(client) {
   //. need init:true in compose yaml? nowork - how do?
+  //. handle unhandled exception?
   process
     .on('SIGTERM', getShutdown('SIGTERM'))
     .on('SIGINT', getShutdown('SIGINT'))
+
   // get shutdown handler
   function getShutdown(signal) {
     return error => {
@@ -185,52 +188,53 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
   await client.query(sql)
 }
 
-// async function getProbe(url, client) {
-//   const json = await getData(url)
-//   //. get all elements and their relations
-//   const graph = getGraph(json)
-//   console.log(graph)
-//   //. add all to nodes and edges tables
-//   // writeGraph(graph)
-//   writeGraphStructure(graph)
-//   return json
-// }
+async function handleProbe(json, client) {
+  //. get all elements and their relations
+  // const graph = getGraph(json)
+  // console.log(graph)
+  //. add all to nodes and edges tables
+  // writeGraph(graph)
+  // writeGraphStructure(graph)
+}
 
-// async function getCurrent(url, client) {
-//   const json = await getData(url)
-//   // // get sequence info from header?
-//   // const { firstSequence, nextSequence, lastSequence } =
-//   //   json.MTConnectStreams.Header
-//   // from = nextSequence
-//   // const dataItems = getDataItems(json)
-//   // await writeDataItems(dataItems, client)
-//   return json
-// }
+async function handleCurrent(json, client) {
+  // // get sequence info from header?
+  // const { firstSequence, nextSequence, lastSequence } =
+  //   json.MTConnectStreams.Header
+  // from = nextSequence
+  // const dataItems = getDataItems(json)
+  // await writeDataItems(dataItems, client)
+}
 
-async function getSample(baseUrl, client) {
+async function getSample(baseUrl) {
+  //. move these to dict - sequences
   let from = null
   let count = fetchCount
   // let next = null
-
-  const url = getUrl(baseUrl, 'sample', from, count)
-  let json = await getData(url)
-
-  // check for errors
-  // eg <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
-  if (json.MTConnectError) {
-    console.log(json)
-    const errorCodes = json.MTConnectError.Errors.map(e => e.Error.errorCode)
-    if (errorCodes.includes('OUT_OF_RANGE')) {
-      // we lost some data, so reset the index and get from start of buffer
-      console.log(
-        `Out of range error - some data was lost. Will reset index and get from start of buffer.`
-      )
-      from = null
-      const url = getUrl(baseUrl, 'sample', from, count)
-      json = await getData(url)
+  let json
+  do {
+    const url = getUrl(baseUrl, 'sample', from, count)
+    json = await getData(url)
+    // check for errors
+    // eg <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
+    if (json.MTConnectError) {
+      console.log(json)
+      const errorCodes = json.MTConnectError.Errors.map(e => e.Error.errorCode)
+      if (errorCodes.includes('OUT_OF_RANGE')) {
+        // we lost some data, so reset the index and get from start of buffer
+        console.log(
+          `Out of range error - some data was lost. Will reset index and get as much as possible from start of buffer.`
+        )
+        from = null
+        // const url = getUrl(baseUrl, 'sample', from, count)
+        // json = await getData(url) //. check for errors here also
+      }
     }
-  }
+  } while (!json.MTConnectError)
+  return json
+}
 
+async function handleSample(json, client) {
   // get sequence info from header
   const header = json.MTConnectStreams.Header
   const { firstSequence, nextSequence, lastSequence } = header
@@ -246,8 +250,6 @@ async function getSample(baseUrl, client) {
   //   const dataItems = getDataItems(json)
   //   await writeDataItems(dataItems, client)
   // }
-
-  return json
 }
 
 // traverse the json tree and return all elements and relations
