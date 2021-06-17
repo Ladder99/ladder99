@@ -29,8 +29,8 @@ export function traverse(node, callback) {
 }
 
 // given a group (ie 'Samples', 'Events', 'Condition')
-// and datanode ()
-// return a list of dataItems
+// and datanode (the dataitem without its group and type info),
+// return a list of dataItems (objects with group and type info).
 function getDataItems(group, datanode) {
   // add group and type to the datanode
   const dataItems = Object.entries(datanode).map(([type, value]) => {
