@@ -11,22 +11,32 @@ console.log(`MTConnect Application starting`)
 console.log(`---------------------------------------------------`)
 
 // get envars
-const agentUrls = process.env.URLS || 'http://localhost:5000'
+const agentUrls = process.env.AGENT_URLS || 'http://localhost:5000'
 //. these should be dynamic - optimize on the fly
 let fetchInterval = Number(process.env.FETCH_INTERVAL || 2000) // how often to fetch sample data, msec
 let fetchCount = Number(process.env.FETCH_COUNT || 800) // how many samples to fetch each time
+const retryTime = 4000
 
-let urls
+let baseUrls
 if (agentUrls.includes(',')) {
-  urls = agentUrls.split(',')
-} else if (agentUrls.endsWith('.yaml')) {
+  baseUrls = agentUrls.split(',')
+} else if (agentUrls.endsWith('.txt')) {
   const s = String(fs.readFileSync(agentUrls)).trim()
-  urls = s.split('\n')
+  baseUrls = s.split('\n')
 } else {
-  urls = [agentUrls]
+  baseUrls = [agentUrls]
 }
 
-async function main() {
+//. maybe we could call main once for each baseurl?
+// ie no awaiting
+// could db get screwed up though? weird race conditions?
+
+// main()
+for (const baseUrl of baseUrls) {
+  main(baseUrl)
+}
+
+async function main(baseUrl) {
   const client = await connect() // get postgres connection
   handleSignals(client) // handle ctrl-c etc
   await setupTables(client) // setup tables and views
@@ -37,10 +47,11 @@ async function main() {
   //------------------------------------------------------------------------
   probe: do {
     console.log(`Getting probe data...`)
-    const json = await getData('probe')
+    const url = getUrl(baseUrl)
+    const json = await getData(url, 'probe')
     if (!json) {
       console.log(`No data available - will wait and try again...`)
-      await sleep(4000)
+      await sleep(retryTime)
       break probe
     }
     //. get all elements and their relations
@@ -58,10 +69,11 @@ async function main() {
     //------------------------------------------------------------------------
     current: do {
       console.log(`Getting current data...`)
-      const json = await getCurrent(client)
+      const url = getUrl(baseUrl)
+      const json = await getCurrent(url, client)
       if (!json) {
         console.log(`No data available - will wait and try again...`)
-        await sleep(4000)
+        await sleep(retryTime)
         break current
       }
       const header = json.MTConnectDevices.Header
@@ -76,10 +88,12 @@ async function main() {
       // get sequence of dataitem values, write to db
       //------------------------------------------------------------------------
       sample: do {
-        const json = await getSample(client)
+        //. need to maintain a dict of from, next, count, etc?
+        const url = getUrl(baseUrl)
+        const json = await getSample(url, client)
         if (!json) {
           console.log(`No data available - will wait and try again...`)
-          await sleep(4000)
+          await sleep(retryTime)
           break sample
         }
         const header = json.MTConnectDevices.Header
@@ -94,8 +108,6 @@ async function main() {
   } while (true)
 }
 
-main()
-
 async function connect() {
   const pool = new Pool()
   let client
@@ -106,7 +118,7 @@ async function connect() {
     } catch (error) {
       console.log(`Error - will sleep before retrying...`)
       console.log(error)
-      await sleep(4000)
+      await sleep(retryTime)
     }
   } while (!client)
   return client
@@ -117,7 +129,6 @@ function handleSignals(client) {
   process
     .on('SIGTERM', getShutdown('SIGTERM'))
     .on('SIGINT', getShutdown('SIGINT'))
-
   // get shutdown handler
   function getShutdown(signal) {
     return error => {
@@ -167,8 +178,8 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
   await client.query(sql)
 }
 
-// async function getProbe(client) {
-//   const json = await getData('probe')
+// async function getProbe(baseUrl, client) {
+//   const json = await getData(baseUrl, 'probe')
 //   //. get all elements and their relations
 //   const graph = getGraph(json)
 //   console.log(graph)
@@ -178,8 +189,8 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 //   return json
 // }
 
-// async function getCurrent(client) {
-//   const json = await getData('current')
+// async function getCurrent(baseUrl, client) {
+//   const json = await getData(baseUrl, 'current')
 //   // // get sequence info from header?
 //   // const { firstSequence, nextSequence, lastSequence } =
 //   //   json.MTConnectStreams.Header
@@ -189,12 +200,12 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 //   return json
 // }
 
-async function getSample(client) {
+async function getSample(baseUrl, client) {
   let from = null
   let count = fetchCount
   // let next = null
 
-  let json = await getData('sample', from, count)
+  let json = await getData(baseUrl, 'sample', from, count)
 
   // check for errors
   // eg <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
@@ -207,7 +218,7 @@ async function getSample(client) {
         `Out of range error - some data was lost. Will reset index and get from start of buffer.`
       )
       from = null
-      json = await getData('sample', from, count)
+      json = await getData(baseUrl, 'sample', from, count)
     }
   }
 
@@ -248,7 +259,7 @@ function getDataItems(json) {
 }
 
 function get_id(dataItemId) {
-  return 1
+  return 1 //.
 }
 
 // gather up all items into array, then put all into one INSERT stmt, for speed.
@@ -276,10 +287,7 @@ async function writeDataItems(dataItems, client) {
   }
 }
 
-// get json data from agent rest endpoint.
-// type is 'probe', 'current', or 'sample'.
-// from and count are optional.
-async function getData(type, from, count) {
+function getUrl(baseUrl, from, count) {
   const url =
     from === undefined
       ? `${baseUrl}/${type}`
@@ -287,6 +295,13 @@ async function getData(type, from, count) {
           from !== null ? 'from=' + from + '&' : ''
         }count=${count}`
 
+  return url
+}
+
+// get json data from agent rest endpoint.
+// type is 'probe', 'current', or 'sample'.
+// from and count are optional.
+async function getData(url, type) {
   console.log(`Getting data from ${url}...`)
   try {
     const response = await fetch(url, {

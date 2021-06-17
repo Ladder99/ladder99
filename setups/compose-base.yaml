@@ -161,7 +161,7 @@ services:
     depends_on:
       - db
     environment:
-      - AGENT_BASE_URL=http://agent:5000
+      - AGENT_URLS=http://agent:5000
       - FETCH_INTERVAL=2000
       - FETCH_COUNT=800
       - PGHOST
