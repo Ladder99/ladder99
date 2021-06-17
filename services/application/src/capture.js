@@ -1,4 +1,5 @@
 // capture agent json output and save to example.json or xml
+//. uhh, easier to use a chrome plugin to specify json output - try that
 
 import fs from 'fs'
 import fetch from 'node-fetch'
