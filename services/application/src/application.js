@@ -27,7 +27,7 @@ async function main() {
 
   //------------------------------------------------------------------------
   // probe
-  // get device structures
+  // get device structures and write to db
   //------------------------------------------------------------------------
   probe: do {
     console.log(`Getting probe data...`)
@@ -38,17 +38,17 @@ async function main() {
       break probe
     }
     //. get all elements and their relations
-    const graph = getGraph(json)
-    console.log(graph)
+    // const graph = getGraph(json)
+    // console.log(graph)
     //. add all to nodes and edges tables
-    // writeGraph(graph)
     // writeGraphStructure(graph)
+    // vs writeGraphValues(graph)
     const header = json.MTConnectDevices.Header
     let { instanceId } = header
 
     //------------------------------------------------------------------------
     // current
-    // get last known values of all dataitems
+    // get last known values of all dataitems, write to db
     //------------------------------------------------------------------------
     current: do {
       console.log(`Getting current data...`)
@@ -67,7 +67,7 @@ async function main() {
 
       //------------------------------------------------------------------------
       // sample
-      // get sequence of dataitem values
+      // get sequence of dataitem values, write to db
       //------------------------------------------------------------------------
       sample: do {
         const json = await getSample(client)
