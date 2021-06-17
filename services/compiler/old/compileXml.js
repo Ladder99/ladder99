@@ -1,4 +1,4 @@
-// translate devices.yaml to devices.xml
+// translate setup.yaml to devices.xml
 
 const fs = require('fs') // node lib filesys
 const libyaml = require('js-yaml') // https://github.com/nodeca/js-yaml
@@ -7,12 +7,14 @@ const libxml = require('xml-js') // https://github.com/nashwaan/xml-js
 const sourcefiles = process.argv.slice(2) // eg ['input/foo/device.yaml']
 
 // define xml document root
+//. make dynamic
 const xdoc = {
   _declaration: {
     _attributes: { version: '1.0', encoding: 'UTF-8' },
   },
   MTConnectDevices: [
     {
+      //. mtc version
       _attributes: {
         'xmlns:m': 'urn:mtconnect.org:MTConnectDevices:1.6',
         'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
@@ -21,13 +23,13 @@ const xdoc = {
           'urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd',
       },
       Header: {
-        //. values?
+        //. values
         _attributes: {
-          creationTime: '2021-02-23T18:44:40+00:00',
-          sender: 'localhost',
-          instanceId: '1267728234',
-          bufferSize: '131072',
-          version: '1.6.0.7',
+          creationTime: '2021-02-23T18:44:40+00:00', //.
+          sender: 'localhost', //. ?
+          instanceId: '1267728234', //. this should be a timestamp (secs?)
+          bufferSize: '131072', //. ?
+          version: '1.6.0.7', //. how get?
         },
       },
       Devices: {
@@ -68,7 +70,7 @@ value
 
 // helper fns
 
-// get list of devices from devices.yaml
+// get list of devices from setup.yaml
 function getDevices() {
   const devices = []
   for (const sourcefile of sourcefiles) {
@@ -123,8 +125,7 @@ function main() {
   const devices = getDevices()
   xdoc.MTConnectDevices[0].Devices.Device = devices
   const xstr = libxml.js2xml(xdoc, { compact: true, spaces: 2 })
-  //. insert comment at/near top -
-  // <!-- generated file - do not edit -->
+  //. insert comment at/near top - `<!-- generated file - do not edit -->`
   console.log(xstr)
 }
 

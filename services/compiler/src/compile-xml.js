@@ -1,4 +1,4 @@
-// translate devices.yaml to devices.xml
+// translate setup.yaml to devices.xml
 
 // note: we use 'yaml' and 'xml' for the strings,
 // 'yamltree' and 'xmltree' for the corresponding js structures.
@@ -9,16 +9,16 @@ import libxml from 'xml-js' // https://github.com/nashwaan/xml-js
 import xmltree from './xmltree.js' // base xml structure
 import sets from './sets.js' // vocabulary
 
-const yamlfile = process.argv[2] // eg 'setups/demo/devices.yaml'
+const yamlfile = process.argv[2] // eg 'setups/demo/setup.yaml'
 const xmlfile = process.argv[3] // eg 'setups/demo/volumes/agent/devices.xml'
 
 // main
-const devices = loadYamlTree(yamlfile).devices // array of objs
+const devices = loadYamlTree(yamlfile).setup.devices // array of objs
 attachDevices(xmltree, devices)
 saveXmlTree(xmltree, xmlfile)
 
 /**
- * attach devices from devices.yaml to xml tree
+ * attach devices from setup.yaml to xml tree
  * @param {object} xmltree
  * @param {array} devices
  */

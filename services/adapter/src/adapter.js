@@ -9,20 +9,21 @@ import { Cache } from './cache.js'
 
 // file system inputs
 const pluginsFolder = './plugins' // for protocol handlers, eg mqtt-json - must start with .
-// note: caller needs to copy devices.yaml and model folders before running this app.
+// note: caller needs to copy setup.yaml and model folders before running this app.
 // see Justfile - copy-adapter-data and delete-adapter-data.
-// const dataFolder = '/etc/ladder99-adapter' // incls devices.yaml, models folder
-// const dataFolder = '~/data/adapter' // incls devices.yaml, models folder
-// const dataFolder = '/etc/ladder99/adapter' // incls devices.yaml, models folder
-// const dataFolder = '/home/ladder99/data/adapter' // incls devices.yaml, models folder
-const dataFolder = '/data/adapter' // incls devices.yaml, models folder
+// const dataFolder = '/etc/ladder99-adapter' // incls setup.yaml, models folder
+// const dataFolder = '~/data/adapter' // incls setup.yaml, models folder
+// const dataFolder = '/etc/ladder99/adapter' // incls setup.yaml, models folder
+// const dataFolder = '/home/ladder99/data/adapter' // incls setup.yaml, models folder
+const dataFolder = '/data/adapter' // incls setup.yaml, models folder
 // const modelsFolder = `${dataFolder}/models` // incl ccs-pa/model.yaml etc
 const modelsFolder = `/data/models` // incl ccs-pa/model.yaml etc
 
-// load devices.yaml - see setups/demo/devices.yaml
-const yamlfile = `${dataFolder}/devices.yaml`
+// load setup.yaml - see setups/demo/setup.yaml
+const yamlfile = `${dataFolder}/setup.yaml`
 const yamltree = importYaml(yamlfile)
-const { devices } = yamltree
+const { setup } = yamltree
+const { devices } = setup
 
 console.log(`MTConnect Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
@@ -32,12 +33,12 @@ console.log(`----------------------------------------------------------------`)
 // define cache shared across devices and sources
 const cache = new Cache()
 
-if (!devices) {
-  console.log(`No devices.yaml available - please add one to ${dataFolder}.`)
+if (!setup) {
+  console.log(`No setup.yaml available - please add one to ${dataFolder}.`)
   process.exit(1)
 }
 
-// iterate over device definitions from devices.yaml
+// iterate over device definitions from setup.yaml
 for (const device of devices) {
   console.log({ device })
   const deviceId = device.id
