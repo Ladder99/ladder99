@@ -1,4 +1,4 @@
 .env
 
 **/portainer/data
-**/timescaledb/data
+**/db/data
