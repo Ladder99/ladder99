@@ -17,7 +17,18 @@ const fetchCount = Number(process.env.FETCH_COUNT || 200)
 // get postgres connection and start polling
 async function main() {
   const pool = new Pool()
-  const client = await pool.connect() // uses envars PGHOST, PGPORT etc
+  let client
+  do {
+    try {
+      console.log(`Trying to connect to db...`)
+      client = await pool.connect() // uses envars PGHOST, PGPORT etc
+    } catch (error) {
+      console.error(error)
+      console.log(`Sleeping before retrying...`)
+      await sleep(4000)
+      throw error
+    }
+  } while (!client)
   await setupTables(client)
   await initialize(client)
   await sleep(fetchInterval)
