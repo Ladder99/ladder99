@@ -3,7 +3,6 @@
 
 import fetch from 'node-fetch'
 import pg from 'pg' // postgres driver - import { Client } from 'pg' gives error
-// const { Client } = pg
 const { Pool } = pg
 import * as logic from './logic.js'
 
@@ -24,7 +23,7 @@ async function main() {
   await sleep(fetchInterval)
   setInterval(() => shovel(client), fetchInterval)
 
-  //. need init:true in compose yaml?
+  //. need init:true in compose yaml? nowork - how do?
   process
     .on('SIGTERM', getShutdown('SIGTERM'))
     .on('SIGINT', getShutdown('SIGINT'))
@@ -36,7 +35,6 @@ async function main() {
       console.log(`Signal ${signal} received - shutting down...`)
       if (error) console.error(error.stack || error)
       console.log(`Releasing db client...`)
-      // mqtt.end()
       client.release()
       process.exit(error ? 1 : 0)
     }
@@ -49,18 +47,31 @@ async function setupTables(client) {
   const sql = `
 CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
+CREATE TABLE IF NOT EXISTS nodes (
+  _id integer NOT NULL,
+  props jsonb
+);
+
+CREATE TABLE IF NOT EXISTS edges (
+  _from integer NOT NULL,
+  _to integer NOT NULL,
+  props jsonb
+);
+
 CREATE TABLE IF NOT EXISTS history (
+  _id integer NOT NULL,
   time timestamptz NOT NULL,
-  id text NOT NULL,
   value jsonb
 );
 
 SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 
-CREATE OR REPLACE VIEW history_numeric
-AS SELECT "time", id, value::numeric
-FROM history
-WHERE jsonb_typeof(value) = 'number'::text;
+-- float is an alias for 'double precision'
+-- .will want to join with nodes table to get props.path, eh?
+-- CREATE OR REPLACE VIEW history_float
+-- AS SELECT time, _id, value::float
+-- FROM history
+-- WHERE jsonb_typeof(value) = 'number'::text;
 `
   console.log(`Creating db structures if not there...`)
   await client.query(sql)
@@ -131,14 +142,15 @@ async function writeDataItems(dataItems, client) {
     const id = dataItemId
     value = value === undefined ? 'undefined' : value
     if (typeof value !== 'object') {
-      const type = typeof value === 'string' ? 'text' : 'numeric'
+      // const type = typeof value === 'string' ? 'text' : 'numeric'
+      const type = typeof value === 'string' ? 'text' : 'float'
       const row = `('${timestamp}', '${id}', to_jsonb('${value}'::${type}))`
       rows.push(row)
     }
   }
   if (rows.length > 0) {
     const values = rows.join(',\n')
-    const sql = `INSERT INTO history (time, id, value) 
+    const sql = `INSERT INTO history (time, _id, value) 
   VALUES
   ${values};`
     console.log(sql)
