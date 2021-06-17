@@ -11,8 +11,8 @@ console.log(`---------------------------------------------------`)
 
 // get envars
 const baseUrl = process.env.AGENT_BASE_URL || 'http://localhost:5000'
-const fetchInterval = Number(process.env.FETCH_INTERVAL || 2000) // msec
-const fetchCount = Number(process.env.FETCH_COUNT || 200)
+const fetchInterval = Number(process.env.FETCH_INTERVAL || 2000) // how often to fetch sample data, msec
+const fetchCount = Number(process.env.FETCH_COUNT || 200) // how many samples to fetch each time
 
 // get postgres connection and start polling
 async function main() {
@@ -22,11 +22,21 @@ async function main() {
   probe: do {
     console.log(`Getting probe data...`)
     const json = await getProbe(client)
+    if (!json) {
+      console.log(`No data available - will wait and try again...`)
+      await sleep(4000)
+      break probe
+    }
     const header = json.MTConnectDevices.Header
     let { instanceId } = header
     do {
       console.log(`Getting current data...`)
       const json = await getCurrent(client)
+      if (!json) {
+        console.log(`No data available - will wait and try again...`)
+        await sleep(4000)
+        break probe
+      }
       const header = json.MTConnectDevices.Header
       if (header.instanceId !== instanceId) {
         console.log(`InstanceId changed - falling back to probe...`)
@@ -35,6 +45,11 @@ async function main() {
       }
       do {
         const json = await getSample(client)
+        if (!json) {
+          console.log(`No data available - will wait and try again...`)
+          await sleep(4000)
+          break probe
+        }
         const header = json.MTConnectDevices.Header
         if (header.instanceId !== instanceId) {
           console.log(`InstanceId changed - falling back to probe...`)

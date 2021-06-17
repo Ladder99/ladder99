@@ -14,7 +14,8 @@ services:
       - ./$SETUP/volumes/agent:/data/agent # has agent.cfg, devices.xml
 
   # mqtt broker
-  # gets data from devices and publishes it to mtconnect adapter
+  # gets mqtt data from devices and publishes it to mtconnect adapter.
+  # we can playback mqtt data through this to simulate a device.
   broker:
     container_name: broker
     image: eclipse-mosquitto
@@ -46,30 +47,28 @@ services:
       options:
         max-size: '1m'
 
-  #. use tape app separately?
+  # play mqtt recordings
+  #. use tape app separately? put here? i guess put here
+  play:
+    container_name: play
+    build: ../services/tape
+    profiles:
+      - play
+    command: tape --host broker --folder ./models/pa/tape
+    # environment:
+    #   - HOST=broker
+    #   - PORT=1883
+    #   - FOLDER=../models/pa/tape
+    #   - LOOP=true
+    volumes:
+      - ../services/replay:/etc/tape # contains csv files
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
 
-  # # play mqtt recordings
-  # play-mqtt:
-  #   container_name: play-mqtt
-  #   build: ../services/sim-mqtt
-  #   profiles:
-  #     - play-mqtt
-  #   environment:
-  #     - HOST=broker
-  #     - PORT=1883
-  #     - DEVICE_ID=pa
-  #     - FOLDER=/etc/models/pa
-  #     - LOOP=true
-  #   volumes:
-  #     - ../services/replay:/data/app # has source code
-  #     - ../models:/etc/models # has MODEL/simulations subfolder with sim msgs
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '1m'
-
-  #. move into tape also - have plugins for diff datasources
+  #. move into tape also - have plugins for diff datasources?
 
   # sim-opc:
   #   container_name: sim-opc
