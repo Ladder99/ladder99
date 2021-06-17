@@ -15,7 +15,7 @@ datasources:
 
     # custom UID which can be used to reference this datasource in
     # other parts of the configuration, if not specified will be generated automatically
-    uid: timescaledb
+    uid: db
 
     # access mode. proxy or direct (Server or Browser in the UI). Required
     access: direct
