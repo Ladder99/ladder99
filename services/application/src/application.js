@@ -72,8 +72,8 @@ async function connect() {
       console.log(`Trying to connect to db...`)
       client = await pool.connect() // uses envars PGHOST, PGPORT etc
     } catch (error) {
-      console.error(error)
-      console.log(`Sleeping before retrying...`)
+      console.log(`Error - will sleep before retrying...`)
+      console.log(error)
       await sleep(4000)
     }
   } while (!client)
@@ -139,7 +139,7 @@ async function getProbe(client) {
   const json = await getData('probe')
   //. will want all elements, not just dataitems. and their relations
   // const elements = getElements(json)
-  const dataItems = getDataItems(json)
+  // const dataItems = getDataItems(json)
   //. add to nodes and edges tables
   // console.log(dataItems)
 
@@ -171,6 +171,9 @@ async function getSample(client) {
     const errorCodes = json.MTConnectError.Errors.map(e => e.Error.errorCode)
     if (errorCodes.includes('OUT_OF_RANGE')) {
       // we lost some data, so reset the index and get from start of buffer
+      console.log(
+        `Out of range error - some data was lost. Will reset index and get from start of buffer.`
+      )
       from = null
       json = await getData('sample', from, count)
     }
@@ -225,7 +228,7 @@ async function writeDataItems(dataItems, client) {
   VALUES
   ${values};`
     console.log(sql)
-    //. add try block
+    //. add try catch block - ignore error? just print it?
     await client.query(sql)
   }
 }

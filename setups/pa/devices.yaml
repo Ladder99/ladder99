@@ -5,6 +5,9 @@
 # compiled by services/compiler into devices.xml.
 #. see also devices-future.yaml for future dev.
 
+#. could we get this to one line per device? a site might have dozens of machines
+# eg set defaults at the top, overrides per device?
+
 devices:
   - id: ccs-pa-001 # this is substituted into the model yaml and sources
     model: ccs-pa # for xml structure - see models/ccs-pa/device.yaml
@@ -22,7 +25,7 @@ devices:
         protocol: opc
         url: opc.tcp://simulator-opc:4334/UA/LittleServer
 
-    destinations: # where to post output - just handles one for now
+    destinations: # where to post output - just handles one output for now
       - protocol: shdr
         host: adapter
         port: 7878

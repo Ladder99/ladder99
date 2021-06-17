@@ -32,6 +32,7 @@ services:
     profiles:
       - full
       - app
+      - db
     environment:
       POSTGRES_DB: $PGDATABASE
       POSTGRES_USERNAME: $PGUSER
