@@ -30,10 +30,12 @@ if (agentUrls.includes(',')) {
   baseUrls = [agentUrls]
 }
 
-// init sequence dict
+// init dicts
 const sequencesDict = {}
+const idsDict = {}
 for (const baseUrl of baseUrls) {
   sequencesDict[baseUrl] = { from: null }
+  idsDict[baseUrl] = {}
 }
 
 main(baseUrls)
@@ -68,10 +70,10 @@ async function handleAgent(baseUrl, client) {
 
       // get sequence of dataitem values, write to db
       sample: do {
-        const json = await getSample(baseUrl, sequences)
-        if (await noData(json)) break sample
-        if (instanceIdChanged(json, instanceId)) break probe
-        await handleSample(json, client, sequences)
+        // const json = await getSample(baseUrl, sequences)
+        // if (await noData(json)) break sample
+        // if (instanceIdChanged(json, instanceId)) break probe
+        // await handleSample(json, client, sequences)
         await sleep(fetchInterval)
       } while (true)
     } while (true)
@@ -191,12 +193,8 @@ async function noData(json) {
 }
 
 async function handleProbe(json, client) {
-  //. get all elements and their relations
-  // const graph = getGraph(json)
-  // console.log(graph)
-  //. add all to nodes and edges tables
-  // writeGraph(graph)
-  // writeGraphStructure(graph)
+  const graph = getGraph(json)
+  await writeGraphStructure(graph, client)
 }
 
 async function handleCurrent(json, client) {
@@ -206,6 +204,7 @@ async function handleCurrent(json, client) {
   // from = nextSequence
   // const dataItems = getDataItems(json)
   // await writeDataItems(dataItems, client)
+  // await writeGraphValues(graph)
 }
 
 async function getSample(baseUrl, sequences) {
@@ -228,7 +227,7 @@ async function getSample(baseUrl, sequences) {
         sequences.from = null
       }
     }
-  } while (!json.MTConnectError)
+  } while (json.MTConnectError)
   return json
 }
 
