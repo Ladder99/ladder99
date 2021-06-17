@@ -11,11 +11,12 @@ console.log(`MTConnect Application starting`)
 console.log(`---------------------------------------------------`)
 
 // get envars
-// agent urls can be a single url, a comma-delim list of urls, or a txt filename with urls
+// AGENT_URLS can be a single url, a comma-delim list of urls, or a txt filename with urls
 const agentUrls = process.env.AGENT_URLS || 'http://localhost:5000'
 //. these should be dynamic - optimize on the fly
 let fetchInterval = Number(process.env.FETCH_INTERVAL || 2000) // how often to fetch sample data, msec
 let fetchCount = Number(process.env.FETCH_COUNT || 800) // how many samples to fetch each time
+
 const retryTime = 4000 // ms between connection retries etc
 
 // get array of base agent urls
@@ -29,10 +30,10 @@ if (agentUrls.includes(',')) {
   baseUrls = [agentUrls]
 }
 
-// init sequences dict
-const sequences = {}
+// init sequence dict
+const sequencesDict = {}
 for (const baseUrl of baseUrls) {
-  sequences[baseUrl] = {}
+  sequencesDict[baseUrl] = { from: null }
 }
 
 main(baseUrls)
@@ -41,8 +42,7 @@ async function main(baseUrls) {
   const client = await connect() // get postgres connection
   handleSignals(client) // handle ctrl-c etc
   await setupTables(client) // setup tables and views
-  // call main once for each baseurl
-  //. could db get screwed up though? weird race conditions?
+  //. could db get screwed up with this? weird race conditions?
   for (const baseUrl of baseUrls) {
     handleAgent(baseUrl, client)
   }
@@ -50,34 +50,28 @@ async function main(baseUrls) {
 
 // start a 'thread' to handle data from the given base agent url
 async function handleAgent(baseUrl, client) {
+  const sequences = sequencesDict[baseUrl]
+
   // get device structures and write to db
   probe: do {
-    console.log(`Getting probe data...`)
     const json = await getData(baseUrl, 'probe')
-    if (noData(json)) break probe
+    if (await noData(json)) break probe
     const instanceId = getInstanceId(json)
     await handleProbe(json, client)
 
     // get last known values of all dataitems, write to db
     current: do {
-      console.log(`Getting current data...`)
       const json = await getData(baseUrl, 'current')
-      if (noData(json)) break current
+      if (await noData(json)) break current
       if (instanceIdChanged(json, instanceId)) break probe
       await handleCurrent(json, client)
 
       // get sequence of dataitem values, write to db
       sample: do {
-        //. need to maintain a dict of from, next, count, etc?
-        // or getSample should maintain one - pass baseUrl to it as key of dict?
-        const json = await getSample(baseUrl)
-        if (!json) {
-          console.log(`No data available - will wait and try again...`)
-          await sleep(retryTime)
-          break sample
-        }
+        const json = await getSample(baseUrl, sequences)
+        if (await noData(json)) break sample
         if (instanceIdChanged(json, instanceId)) break probe
-        await handleSample(json, client)
+        await handleSample(json, client, sequences)
         await sleep(fetchInterval)
       } while (true)
     } while (true)
@@ -214,14 +208,12 @@ async function handleCurrent(json, client) {
   // await writeDataItems(dataItems, client)
 }
 
-async function getSample(baseUrl) {
-  //. move these to dict - sequences
-  let from = null
-  let count = fetchCount
-  // let next = null
+async function getSample(baseUrl, sequences) {
+  sequences.from = null
+  sequences.count = fetchCount
   let json
   do {
-    const url = getUrl(baseUrl, 'sample', from, count)
+    const url = getUrl(baseUrl, 'sample', sequences.from, sequences.count)
     json = await getData(url)
     // check for errors
     // eg <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
@@ -233,20 +225,19 @@ async function getSample(baseUrl) {
         console.log(
           `Out of range error - some data was lost. Will reset index and get as much as possible from start of buffer.`
         )
-        from = null
-        // const url = getUrl(baseUrl, 'sample', from, count)
-        // json = await getData(url) //. check for errors here also
+        sequences.from = null
       }
     }
   } while (!json.MTConnectError)
   return json
 }
 
-async function handleSample(json, client) {
+async function handleSample(json, client, sequences) {
   // get sequence info from header
   const header = json.MTConnectStreams.Header
   const { firstSequence, nextSequence, lastSequence } = header
-  from = nextSequence
+  // from = nextSequence
+  sequences.from = nextSequence
 
   const dataItems = getDataItems(json)
   await writeDataItems(dataItems, client)
@@ -254,7 +245,7 @@ async function handleSample(json, client) {
   // //. if gap, fetch and write that also
   // const gap = false
   // if (gap) {
-  //   const json = await getData('sample', from, count)
+  //   const json = await getData('sample', sequences.from, sequences.count)
   //   const dataItems = getDataItems(json)
   //   await writeDataItems(dataItems, client)
   // }
