@@ -39,7 +39,6 @@ services:
       POSTGRES_PASSWORD: $PGPASSWORD
     init: true
     volumes:
-      # - ./$SETUP/volumes/timescaledb/data:/var/lib/postgresql/data
       - ./$SETUP/volumes/db/data:/var/lib/postgresql/data
     deploy:
       restart_policy:
@@ -160,14 +159,15 @@ services:
     profiles:
       - full
       - app
-    depends_on:
-      - db
+    # depends_on:
+    #   - db
     environment:
       - AGENT_ENDPOINTS=http://agent:5000
       - FETCH_INTERVAL=2000
       - FETCH_COUNT=800
-      - PGHOST
-      - PGPORT
+      #
+      - PGHOST=db
+      - PGPORT=5432
       - PGDATABASE
       - PGUSER
       - PGPASSWORD

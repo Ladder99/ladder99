@@ -26,7 +26,7 @@ export class Db {
         console.log(`Trying to connect to db...`, params)
         client = await pool.connect() // uses envars PGHOST, PGPORT etc
       } catch (error) {
-        console.log(`Error - will sleep before retrying...`)
+        console.log(`Error ${error.code} - will sleep before retrying...`)
         console.log(error)
         await libapp.sleep(4000)
       }
