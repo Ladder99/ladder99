@@ -46,9 +46,10 @@ export class Agent {
     return await this.endpoint.fetchData('probe')
   }
 
-  async handleProbe(db, data) {
-    // const graph = getGraph(data)
-    // await writeGraphStructure(db, graph)
+  async handleProbe(data) {
+    console.log(`handleProbe`, data)
+    // const graph = data.getGraph()
+    // await db.writeGraphStructure(graph)
   }
 
   async fetchCurrent() {

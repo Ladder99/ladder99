@@ -31,7 +31,7 @@ services:
       - $PGPORT:5432/tcp
     profiles:
       - full
-      - app
+      # - app
       - db
     environment:
       POSTGRES_DB: $PGDATABASE
@@ -59,6 +59,7 @@ services:
       - '8086:8086'
     profiles:
       - full
+      - viz
     environment:
       INFLUXDB_DB:
       INFLUXDB_ADMIN_USER:
@@ -80,6 +81,7 @@ services:
     image: telegraf:1.18
     profiles:
       - full
+      - viz
     environment:
       INFLUXDB_URL: http://influxdb:8086
       INFLUXDB_DB:
@@ -98,7 +100,7 @@ services:
     image: grafana/grafana:7.5.5
     profiles:
       - full
-      - app
+      - viz
     ports:
       - $GRAFANA_PORT:3000/tcp
     environment:
@@ -161,7 +163,7 @@ services:
     depends_on:
       - db
     environment:
-      - AGENT_URLS=http://agent:5000
+      - AGENT_ENDPOINTS=http://agent:5000
       - FETCH_INTERVAL=2000
       - FETCH_COUNT=800
       - PGHOST
