@@ -18,6 +18,7 @@ export class Agent {
   // start a 'thread' to handle data from the given base agent url
   async start() {
     // get device structures and write to db
+    //. will need to compare with existing graph structure in db - add/update as needed
     probe: do {
       const data = await this.fetchData('probe')
       if (await data.unavailable()) break probe
@@ -49,10 +50,16 @@ export class Agent {
     return data
   }
 
+  //. need to compare probe data with db data
   async handleProbe(data) {
     console.log(`handleProbe`, data)
-    // const graph = data.getGraph()
+    // const elements = data.getElements()
+    // console.log(elements)
+    const graph = data.getGraph()
+    console.log(graph)
+    //. which is better?
     // await db.writeGraphStructure(graph)
+    // await graph.write(this.db)
   }
 
   async handleCurrent(db, data) {
@@ -61,8 +68,8 @@ export class Agent {
     //   json.MTConnectStreams.Header
     // this.from = nextSequence
     // const dataItems = getDataItems(data)
-    // await writeDataItems(db, dataItems)
-    // await writeGraphValues(db, graph)
+    // await db.writeDataItems(dataItems)
+    // await db.writeGraphValues(graph)
   }
 
   async fetchSample() {

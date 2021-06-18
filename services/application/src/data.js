@@ -44,11 +44,11 @@ export class Data {
 
   // traverse the json tree and return all elements and relations
   getElements() {
-    const allElements = []
-    libapp.traverse(this.json, elements => {
-      allElements.push(...elements)
+    const elements = []
+    libapp.traverse(this.json, els => {
+      elements.push(...els)
     })
-    return allElements
+    return elements
   }
 
   // // traverse the json tree and return all data items
@@ -59,4 +59,37 @@ export class Data {
   //   })
   //   return allDataItems
   // }
+
+  getGraph() {
+    const nodes = new Nodes()
+    const edges = new Edges()
+    const graph = { nodes, edges }
+    libapp.traverse(this.json, (arr, parent) => {
+      nodes.add(...arr)
+      edges.add({ _from, _to })
+    })
+    return graph
+  }
+}
+
+class Nodes {
+  constructor() {
+    this.nodes = []
+    this.index = {}
+  }
+  add(nodes) {
+    this.nodes.push(...nodes)
+    //. add to index
+  }
+}
+
+class Edges {
+  constructor() {
+    this.edges = []
+    this.index = {}
+  }
+  add(edges) {
+    this.edges.push(...edges)
+    //. add to index
+  }
 }

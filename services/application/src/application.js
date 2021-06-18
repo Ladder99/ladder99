@@ -23,6 +23,9 @@ class Application {
     const db = new Db()
     await db.start()
 
+    // get graph - nodes and edges
+    // const dbGraph = await db.getGraph()
+
     // get endpoints
     const endpoints = Endpoint.getEndpoints(params.agentEndpoints)
     console.log(`Agent endpoints:`, endpoints)
