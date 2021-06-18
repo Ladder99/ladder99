@@ -37,6 +37,8 @@ export class Db {
   init() {
     //. need init:true in compose yaml to get SIGINT etc?
     // nowork - how do?
+
+    const that = this
     process
       .on('SIGTERM', getShutdown('SIGTERM'))
       .on('SIGINT', getShutdown('SIGINT'))
@@ -48,7 +50,7 @@ export class Db {
         console.log()
         console.log(`Signal ${signal} received - shutting down...`)
         if (error) console.error(error.stack || error)
-        this.disconnect()
+        that.disconnect()
         process.exit(error ? 1 : 0)
       }
     }

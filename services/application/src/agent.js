@@ -1,3 +1,4 @@
+import { Data } from './data.js'
 import * as libapp from './libapp.js'
 
 export class Agent {
@@ -15,17 +16,17 @@ export class Agent {
   }
 
   // start a 'thread' to handle data from the given base agent url
-  async run() {
+  async start() {
     // get device structures and write to db
     probe: do {
-      const data = await this.fetchProbe()
+      const data = await this.fetchData('probe')
       if (await data.unavailable()) break probe
       this.instanceId = data.getInstanceId()
       await this.handleProbe(data)
 
       // get last known values of all dataitems, write to db
       current: do {
-        // const data = await this.fetchCurrent()
+        // const data = await this.fetchData('current')
         // if (await data.unavailable()) break current
         // if (data.instanceIdChanged(this.instanceId)) break probe
         // await this.handleCurrent(data)
@@ -42,18 +43,16 @@ export class Agent {
     } while (true)
   }
 
-  async fetchProbe() {
-    return await this.endpoint.fetchData('probe')
+  async fetchData(type) {
+    const json = await this.endpoint.fetchData(type)
+    const data = new Data(json)
+    return data
   }
 
   async handleProbe(data) {
     console.log(`handleProbe`, data)
     // const graph = data.getGraph()
     // await db.writeGraphStructure(graph)
-  }
-
-  async fetchCurrent() {
-    return await this.endpoint.fetchData('current')
   }
 
   async handleCurrent(db, data) {
@@ -72,7 +71,12 @@ export class Agent {
     let data
     let errors
     do {
-      data = await this.endpoint.fetchData('sample', this.from, this.count)
+      const json = await this.endpoint.fetchData(
+        'sample',
+        this.from,
+        this.count
+      )
+      data = new Data(json)
       // check for errors
       // eg <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
       // if (json.MTConnectError) {

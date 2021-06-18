@@ -3,21 +3,22 @@ import fetch from 'node-fetch' // see https://github.com/node-fetch/node-fetch
 // import * as libapp from './libapp.js'
 
 export class Endpoint {
-  constructor() {
-    this.baseUrl = null // eg http://localhost:5000
+  constructor(baseUrl) {
+    this.baseUrl = baseUrl // eg http://localhost:5000
   }
 
   // get array of endpoint objects - static method
   static getEndpoints(endpointsStr) {
-    let endpoints = []
+    let arr = []
     if (endpointsStr.includes(',')) {
-      endpoints = endpointsStr.split(',')
+      arr = endpointsStr.split(',')
     } else if (endpointsStr.endsWith('.txt')) {
       const s = String(fs.readFileSync(endpointsStr)).trim()
-      endpoints = s.split('\n')
+      arr = s.split('\n')
     } else {
-      endpoints = [endpointsStr]
+      arr = [endpointsStr]
     }
+    const endpoints = arr.map(url => new Endpoint(url))
     return endpoints
   }
 
@@ -30,6 +31,7 @@ export class Endpoint {
         headers: { Accept: 'application/json' },
       })
       const json = await response.json()
+
       return json
     } catch (error) {
       if (error.code === 'ENOTFOUND') {

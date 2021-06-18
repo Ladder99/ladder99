@@ -162,10 +162,11 @@ services:
     # depends_on:
     #   - db
     environment:
+      # override these as needed in setup compose.yaml
       - AGENT_ENDPOINTS=http://agent:5000
       - FETCH_INTERVAL=2000
       - FETCH_COUNT=800
-      #
+      #.
       - PGHOST=db
       - PGPORT=5432
       - PGDATABASE
