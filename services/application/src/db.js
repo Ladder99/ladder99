@@ -105,6 +105,10 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
     await this.client.query(sql)
   }
 
+  async query(sql) {
+    return await this.client.query(sql)
+  }
+
   // //. read nodes and edges into graph structure
   // async getGraph(Graph) {
   //   const graph = new Graph()
