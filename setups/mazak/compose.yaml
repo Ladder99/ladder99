@@ -16,8 +16,8 @@ services:
   # overrides of base yaml
   application:
     environment:
-      - AGENT_URLS=http://mtconnect.mazakcorp.com:5717
-      # - AGENT_URLS=urls.txt
+      - AGENT_ENDPOINTS=http://mtconnect.mazakcorp.com:5717
+      # - AGENT_ENDPOINTS=urls.txt
 
 networks:
   ladder99:

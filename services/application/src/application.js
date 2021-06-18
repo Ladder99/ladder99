@@ -14,64 +14,67 @@ console.log(`---------------------------------------------------`)
 
 // get array of agent urls
 // AGENT_URLS can be a single url, a comma-delim list of urls, or a txt filename with urls
-const agentUrlsStr = process.env.AGENT_URLS || 'http://localhost:5000'
-let agentUrls = []
-if (agentUrlsStr.includes(',')) {
-  agentUrls = agentUrlsStr.split(',')
-} else if (agentUrlsStr.endsWith('.txt')) {
-  const s = String(fs.readFileSync(agentUrlsStr)).trim()
-  agentUrls = s.split('\n')
+const endpointsStr = process.env.AGENT_ENDPOINTS || 'http://localhost:5000'
+let endpoints = []
+if (endpointsStr.includes(',')) {
+  endpoints = endpointsStr.split(',')
+} else if (endpointsStr.endsWith('.txt')) {
+  const s = String(fs.readFileSync(endpointsStr)).trim()
+  endpoints = s.split('\n')
 } else {
-  agentUrls = [agentUrlsStr]
+  endpoints = [endpointsStr]
 }
+console.log(`MTConnect Agent endpoints:`, endpoints)
 
+//. put these inside an agent object - could be diff for each agent
 //. these will be dynamic - optimize on the fly
 let fetchInterval = Number(process.env.FETCH_INTERVAL || 2000) // how often to fetch sample data, msec
 let fetchCount = Number(process.env.FETCH_COUNT || 800) // how many samples to fetch each time
 
 // init dicts
+//. each agent will store these values
 const sequenceDicts = {}
-const idDicts = {}
-for (const agentUrl of agentUrls) {
-  sequenceDicts[agentUrl] = { from: null }
-  idDicts[agentUrl] = {}
+const idMaps = {}
+for (const endpoint of endpoints) {
+  sequenceDicts[endpoint] = { from: null }
+  idMaps[endpoint] = {}
 }
 
 const retryTime = 4000 // ms between connection retries etc
 
-main(agentUrls)
+main(endpoints)
 
-async function main(agentUrls) {
+async function main(endpoints) {
   const db = await getDb() // get postgres db connection
   handleSignals(db) // handle ctrl-c etc
   await setupTables(db) // setup tables and views
   //. could db get screwed up with this? weird race conditions?
-  for (const agentUrl of agentUrls) {
-    handleAgent(db, agentUrl)
+  for (const endpoint of endpoints) {
+    handleAgent(db, endpoint)
   }
 }
 
 // start a 'thread' to handle data from the given base agent url
-async function handleAgent(db, agentUrl) {
-  const sequences = sequenceDicts[agentUrl]
+async function handleAgent(db, endpoint) {
+  const sequences = sequenceDicts[endpoint]
 
   // get device structures and write to db
   probe: do {
-    const json = await getAgentData(agentUrl, 'probe')
+    const json = await getAgentData(endpoint, 'probe')
     if (await noAgentData(json)) break probe
     const instanceId = getInstanceId(json)
     await handleProbe(db, json)
 
     // get last known values of all dataitems, write to db
     current: do {
-      const json = await getAgentData(agentUrl, 'current')
+      const json = await getAgentData(endpoint, 'current')
       if (await noAgentData(json)) break current
       if (instanceIdChanged(json, instanceId)) break probe
       await handleCurrent(db, json, sequences)
 
       // get sequence of dataitem values, write to db
       sample: do {
-        // const json = await getSample(agentUrl, sequences)
+        // const json = await getSample(endpoint, sequences)
         // if (await noAgentData(json)) break sample
         // if (instanceIdChanged(json, instanceId)) break probe
         // await handleSample(db, json, sequences)
@@ -169,8 +172,8 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 }
 
 // type is 'probe' or 'current'
-async function getAgentData(agentUrl, type) {
-  const url = getUrl(agentUrl, type)
+async function getAgentData(endpoint, type) {
+  const url = getUrl(endpoint, type)
   const json = await fetchJsonData(url)
   return json
 }
@@ -199,12 +202,12 @@ async function handleCurrent(db, json, sequences) {
   // await writeGraphValues(db, graph)
 }
 
-async function getSample(agentUrl, sequences) {
+async function getSample(endpoint, sequences) {
   sequences.from = null
   sequences.count = fetchCount
   let json
   do {
-    const url = getUrl(agentUrl, 'sample', sequences.from, sequences.count)
+    const url = getUrl(endpoint, 'sample', sequences.from, sequences.count)
     json = await getAgentData(url)
     // check for errors
     // eg <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
@@ -294,11 +297,11 @@ async function writeDataItems(db, dataItems, idMap) {
 
 // type is 'probe', 'current', or 'sample'.
 // from and count are optional.
-function getUrl(agentUrl, type, from, count) {
+function getUrl(endpoint, type, from, count) {
   const url =
     from === undefined
-      ? `${agentUrl}/${type}`
-      : `${agentUrl}/${type}?${
+      ? `${endpoint}/${type}`
+      : `${endpoint}/${type}?${
           from !== null ? 'from=' + from + '&' : ''
         }count=${count}`
   return url
