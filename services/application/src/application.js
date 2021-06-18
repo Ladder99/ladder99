@@ -42,39 +42,39 @@ const retryTime = 4000 // ms between connection retries etc
 main(agentUrls)
 
 async function main(agentUrls) {
-  const db = await connect() // get postgres connection
+  const db = await getDb() // get postgres db connection
   handleSignals(db) // handle ctrl-c etc
   await setupTables(db) // setup tables and views
   //. could db get screwed up with this? weird race conditions?
   for (const agentUrl of agentUrls) {
-    handleAgent(agentUrl, db)
+    handleAgent(db, agentUrl)
   }
 }
 
 // start a 'thread' to handle data from the given base agent url
-async function handleAgent(agentUrl, db) {
+async function handleAgent(db, agentUrl) {
   const sequences = sequenceDicts[agentUrl]
 
   // get device structures and write to db
   probe: do {
-    const json = await getData(agentUrl, 'probe')
-    if (await noData(json)) break probe
+    const json = await getAgentData(agentUrl, 'probe')
+    if (await noAgentData(json)) break probe
     const instanceId = getInstanceId(json)
-    await handleProbe(json, db)
+    await handleProbe(db, json)
 
     // get last known values of all dataitems, write to db
     current: do {
-      const json = await getData(agentUrl, 'current')
-      if (await noData(json)) break current
+      const json = await getAgentData(agentUrl, 'current')
+      if (await noAgentData(json)) break current
       if (instanceIdChanged(json, instanceId)) break probe
-      await handleCurrent(json, db)
+      await handleCurrent(db, json, sequences)
 
       // get sequence of dataitem values, write to db
       sample: do {
         // const json = await getSample(agentUrl, sequences)
-        // if (await noData(json)) break sample
+        // if (await noAgentData(json)) break sample
         // if (instanceIdChanged(json, instanceId)) break probe
-        // await handleSample(json, db, sequences)
+        // await handleSample(db, json, sequences)
         await sleep(fetchInterval)
       } while (true)
     } while (true)
@@ -96,7 +96,7 @@ function instanceIdChanged(json, instanceId) {
   return false
 }
 
-async function connect() {
+async function getDb() {
   const pool = new Pool()
   let db
   do {
@@ -169,22 +169,13 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 }
 
 // type is 'probe' or 'current'
-async function getData(agentUrl, type) {
-  // let json
-  // do {
-  //   const url = getUrl(agentUrl, type)
-  //   json = await fetchData(url)
-  //   if (!json) {
-  //     console.log(`No data available - will wait and try again...`)
-  //     await sleep(retryTime)
-  //   }
-  // } while (!json)
+async function getAgentData(agentUrl, type) {
   const url = getUrl(agentUrl, type)
-  const json = await fetchData(url)
+  const json = await fetchJsonData(url)
   return json
 }
 
-async function noData(json) {
+async function noAgentData(json) {
   if (!json) {
     console.log(`No data available - will wait and try again...`)
     await sleep(retryTime)
@@ -193,19 +184,19 @@ async function noData(json) {
   return false
 }
 
-async function handleProbe(json, db) {
+async function handleProbe(db, json) {
   const graph = getGraph(json)
-  await writeGraphStructure(graph, db)
+  await writeGraphStructure(db, graph)
 }
 
-async function handleCurrent(json, db) {
+async function handleCurrent(db, json, sequences) {
   // // get sequence info from header?
   // const { firstSequence, nextSequence, lastSequence } =
   //   json.MTConnectStreams.Header
   // from = nextSequence
   // const dataItems = getDataItems(json)
-  // await writeDataItems(dataItems, db)
-  // await writeGraphValues(graph)
+  // await writeDataItems(db, dataItems)
+  // await writeGraphValues(db, graph)
 }
 
 async function getSample(agentUrl, sequences) {
@@ -214,40 +205,40 @@ async function getSample(agentUrl, sequences) {
   let json
   do {
     const url = getUrl(agentUrl, 'sample', sequences.from, sequences.count)
-    json = await getData(url)
+    json = await getAgentData(url)
     // check for errors
     // eg <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
     if (json.MTConnectError) {
       console.log(json)
-      const errorCodes = json.MTConnectError.Errors.map(e => e.Error.errorCode)
-      if (errorCodes.includes('OUT_OF_RANGE')) {
+      const codes = json.MTConnectError.Errors.map(e => e.Error.errorCode)
+      if (codes.includes('OUT_OF_RANGE')) {
         // we lost some data, so reset the index and get from start of buffer
         console.log(
           `Out of range error - some data was lost. Will reset index and get as much as possible from start of buffer.`
         )
         sequences.from = null
+        //. adjust fetch count/speed
       }
     }
   } while (json.MTConnectError)
   return json
 }
 
-async function handleSample(json, db, sequences) {
+async function handleSample(db, json, sequences) {
   // get sequence info from header
   const header = json.MTConnectStreams.Header
   const { firstSequence, nextSequence, lastSequence } = header
-  // from = nextSequence
   sequences.from = nextSequence
 
   const dataItems = getDataItems(json)
-  await writeDataItems(dataItems, db)
+  await writeDataItems(db, dataItems)
 
   // //. if gap, fetch and write that also
   // const gap = false
   // if (gap) {
-  //   const json = await getData('sample', sequences.from, sequences.count)
+  //   const json = await getAgentData('sample', sequences.from, sequences.count)
   //   const dataItems = getDataItems(json)
-  //   await writeDataItems(dataItems, db)
+  //   await writeDataItems(db, dataItems)
   // }
 }
 
@@ -269,31 +260,34 @@ function getDataItems(json) {
   return allDataItems
 }
 
-function get_id(dataItemId) {
-  return 1 //.
-}
-
 // gather up all items into array, then put all into one INSERT stmt, for speed.
 // otherwise pipeline couldn't keep up.
 // see https://stackoverflow.com/a/63167970/243392 etc
-async function writeDataItems(dataItems, db) {
+async function writeDataItems(db, dataItems, idMap) {
   let rows = []
   for (const dataItem of dataItems) {
     let { dataItemId, timestamp, value } = dataItem
     const id = dataItemId
-    const _id = get_id(id)
-    value = value === undefined ? 'undefined' : value
-    if (typeof value !== 'object') {
-      const type = typeof value === 'string' ? 'text' : 'float'
-      const row = `('${_id}', '${timestamp}', to_jsonb('${value}'::${type}))`
-      rows.push(row)
+    const _id = idMap[id]
+    if (_id) {
+      value = value === undefined ? 'undefined' : value
+      if (typeof value !== 'object') {
+        const type = typeof value === 'string' ? 'text' : 'float'
+        const row = `('${_id}', '${timestamp}', to_jsonb('${value}'::${type}))`
+        rows.push(row)
+      } else {
+        //. handle arrays
+        console.log(`**Handle arrays for '${id}'.`)
+      }
+    } else {
+      console.log(`Unknown element id '${id}', value '${value}'.`)
     }
   }
   if (rows.length > 0) {
     const values = rows.join(',\n')
     const sql = `INSERT INTO history (_id, time, value) VALUES ${values};`
     console.log(sql)
-    //. add try catch block - ignore error? just print it?
+    //. add try catch block - ignore error? or just print it?
     await db.query(sql)
   }
 }
@@ -311,7 +305,7 @@ function getUrl(agentUrl, type, from, count) {
 }
 
 // get json data from agent rest endpoint
-async function fetchData(url) {
+async function fetchJsonData(url) {
   console.log(`Getting data from ${url}...`)
   try {
     const response = await fetch(url, {
