@@ -61,11 +61,12 @@ export class Data {
   //   return allDataItems
   // }
 
+  // traverse json tree and add nodes and edges to a graph structure
   getGraph() {
     const graph = new Graph()
     libapp.traverse(this.json, (nodes, edges = []) => {
-      for (const node of nodes) graph.addNode(node)
-      for (const edge of edges) graph.addEdge(edge)
+      for (const node of nodes) graph.nodes.add(node)
+      for (const edge of edges) graph.edges.add(edge)
     })
     return graph
   }

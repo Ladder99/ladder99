@@ -105,17 +105,17 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
     await this.client.query(sql)
   }
 
-  //. read nodes and edges into graph structure
-  async getGraph(Graph) {
-    const graph = new Graph()
-    const sql = `SELECT * FROM nodes;`
-    const res = await this.client.query(sql)
-    const nodes = res.rows // [{ _id, props }]
-    console.log(nodes)
-    for (const node of nodes) {
-      graph.addNode(node)
-    }
-    //. get edges also
-    return graph
-  }
+  // //. read nodes and edges into graph structure
+  // async getGraph(Graph) {
+  //   const graph = new Graph()
+  //   const sql = `SELECT * FROM nodes;`
+  //   const res = await this.client.query(sql)
+  //   const nodes = res.rows // [{ _id, props }]
+  //   console.log(nodes)
+  //   for (const node of nodes) {
+  //     graph.addNode(node)
+  //   }
+  //   //. get edges also
+  //   return graph
+  // }
 }

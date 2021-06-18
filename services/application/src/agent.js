@@ -50,17 +50,12 @@ export class Agent {
     return data
   }
 
-  //. need to compare probe data with db data
+  //. compare probe data with db data, update db as needed
   async handleProbe(data) {
-    console.log(`handleProbe`, data)
-    // const elements = data.getElements()
-    // console.log(elements)
-    const graph = data.getGraph()
-    // console.log(graph)
+    const graph = data.getGraph() // get probe data into graph structure - see Data.getGraph
     libapp.print(graph)
-    //. which is better?
-    // await db.writeGraphStructure(graph)
-    // await graph.write(this.db) // this - db can be switched out easily
+    await graph.write(this.db) //. implies graph = await Graph.read(this.db)?
+    //. or graph = db.getGraph(Graph) //. uh, former is better, less weird, in same place
   }
 
   async handleCurrent(db, data) {
