@@ -1,86 +1,84 @@
+import * as libapp from './libapp.js'
+
 export class Agent {
-  constructor(endpoint) {
-    this.endpoint = endpoint // base url
-    this.from = null
-    this.idMap = {} // map from element id to integer _id for db tables
-    //. these will be dynamic - optimize on the fly
-    this.fetchInterval = fetchInterval
-    this.fetchCount = fetchCount
+  constructor({ db, endpoint, params }) {
+    this.db = db
+    this.endpoint = endpoint
+    this.params = params
+    //
     this.instanceId = null
+    this.idMap = {} // map from element id to integer _id for db tables
+    this.fetchFrom = null
+    //. these will be dynamic - optimize on the fly
+    this.fetchInterval = params.fetchInterval
+    this.fetchCount = params.fetchCount
   }
 
   // start a 'thread' to handle data from the given base agent url
-  async run(db) {
+  async run() {
     // get device structures and write to db
     probe: do {
-      const json = await this.fetchAgentData('probe')
-      if (await noAgentData(json)) break probe
-      this.instanceId = getInstanceId(json)
-      await this.handleProbe(db, json)
+      const data = await this.fetchProbe()
+      if (await data.unavailable()) break probe
+      this.instanceId = data.getInstanceId()
+      await this.handleProbe(data)
 
       // get last known values of all dataitems, write to db
       current: do {
-        const json = await this.fetchAgentData('current')
-        if (await noAgentData(json)) break current
-        if (this.instanceIdChanged(json)) break probe
-        // await this.handleCurrent(db, json)
+        // const data = await this.fetchCurrent()
+        // if (await data.unavailable()) break current
+        // if (data.instanceIdChanged(this.instanceId)) break probe
+        // await this.handleCurrent(data)
 
         // get sequence of dataitem values, write to db
         sample: do {
-          // const json = await this.fetchAgentSample()
-          // if (await noAgentData(json)) break sample
-          // if (this.instanceIdChanged(json)) break probe
-          // await this.handleSample(db, json)
-          await sleep(fetchInterval)
+          // const data = await this.fetchSample()
+          // if (await data.unavailable()) break sample
+          // if (data.instanceIdChanged(this.instanceId)) break probe
+          // await this.handleSample(data)
+          await libapp.sleep(this.fetchInterval)
         } while (true)
       } while (true)
     } while (true)
   }
 
-  instanceIdChanged(json) {
-    const header = json.MTConnectDevices.Header
-    if (header.instanceId !== this.instanceId) {
-      console.log(`InstanceId changed - falling back to probe...`)
-      return true
-    }
-    return false
+  async fetchProbe() {
+    return await this.endpoint.fetchData('probe')
   }
 
-  // fetch data - type is 'probe' or 'current'
-  //. move to api.js ?
-  async fetchAgentData(type) {
-    const url = getUrl(this.endpoint, type)
-    const json = await fetchJsonData(url)
-    return json
-  }
-
-  async handleProbe(db, json) {
-    // const graph = getGraph(json)
+  async handleProbe(db, data) {
+    // const graph = getGraph(data)
     // await writeGraphStructure(db, graph)
   }
 
-  async handleCurrent(db, json) {
+  async fetchCurrent() {
+    return await this.endpoint.fetchData('current')
+  }
+
+  async handleCurrent(db, data) {
     // // get sequence info from header
     // const { firstSequence, nextSequence, lastSequence } =
     //   json.MTConnectStreams.Header
     // this.from = nextSequence
-    // const dataItems = getDataItems(json)
+    // const dataItems = getDataItems(data)
     // await writeDataItems(db, dataItems)
     // await writeGraphValues(db, graph)
   }
 
-  async getSample() {
+  async fetchSample() {
     this.from = null
     this.count = this.fetchCount
-    let json
+    let data
+    let errors
     do {
-      const url = getUrl(this.endpoint, 'sample', this.from, this.count)
-      json = await fetchAgentData(url)
+      data = await this.endpoint.fetchData('sample', this.from, this.count)
       // check for errors
       // eg <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
-      if (json.MTConnectError) {
-        console.log(json)
-        const codes = json.MTConnectError.Errors.map(e => e.Error.errorCode)
+      // if (json.MTConnectError) {
+      errors = data.getErrors()
+      if (errors) {
+        console.log(data)
+        const codes = errors.map(e => e.Error.errorCode)
         if (codes.includes('OUT_OF_RANGE')) {
           // we lost some data, so reset the index and get from start of buffer
           console.log(
@@ -90,18 +88,19 @@ export class Agent {
           //. adjust fetch count/speed
         }
       }
-    } while (json.MTConnectError)
-    return json
+    } while (errors)
+    return data
   }
 
-  async handleSample(db, json) {
+  async handleSample(data) {
     // get sequence info from header
-    const header = json.MTConnectStreams.Header
+    // const header = json.MTConnectStreams.Header
+    const header = data.getHeader()
     const { firstSequence, nextSequence, lastSequence } = header
     this.from = nextSequence
 
-    const dataItems = getDataItems(json)
-    await writeDataItems(db, dataItems)
+    const dataItems = data.getDataItems()
+    await this.writeDataItems(dataItems)
 
     // //. if gap, fetch and write that also
     // const gap = false
@@ -110,5 +109,38 @@ export class Agent {
     //   const dataItems = getDataItems(json)
     //   await writeDataItems(db, dataItems)
     // }
+  }
+
+  // gather up all items into array, then put all into one INSERT stmt, for speed.
+  // otherwise pipeline couldn't keep up.
+  // see https://stackoverflow.com/a/63167970/243392 etc
+  async writeDataItems(dataItems) {
+    //. write to db with arrays - that will translate to sql
+    let rows = []
+    for (const dataItem of dataItems) {
+      let { dataItemId, timestamp, value } = dataItem
+      const id = dataItemId
+      const _id = this.idMap[id]
+      if (_id) {
+        value = value === undefined ? 'undefined' : value
+        if (typeof value !== 'object') {
+          const type = typeof value === 'string' ? 'text' : 'float'
+          const row = `('${_id}', '${timestamp}', to_jsonb('${value}'::${type}))`
+          rows.push(row)
+        } else {
+          //. handle arrays
+          console.log(`**Handle arrays for '${id}'.`)
+        }
+      } else {
+        console.log(`Unknown element id '${id}', value '${value}'.`)
+      }
+    }
+    if (rows.length > 0) {
+      const values = rows.join(',\n')
+      const sql = `INSERT INTO history (_id, time, value) VALUES ${values};`
+      console.log(sql)
+      //. add try catch block - ignore error? or just print it?
+      await this.db.query(sql)
+    }
   }
 }

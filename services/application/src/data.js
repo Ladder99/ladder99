@@ -1,6 +1,20 @@
+// data
+// handles data returned from probe, current, and sample endpoints
+
+import * as libapp from './libapp.js'
+
 export class Data {
   constructor(json) {
     this.json = json
+  }
+
+  getErrors() {
+    // eg <Errors><Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error></Errors>
+    // const codes = this.json.MTConnectError.Errors.map(e => e.Error.errorCode)
+    if (this.json.MTConnectError) {
+      console.log(this.json)
+      return this.json.MTConnectError.Errors
+    }
   }
 
   getHeader() {
@@ -8,15 +22,21 @@ export class Data {
   }
 
   getInstanceId() {
-    const header = this.getHeader()
-    let { instanceId } = header
-    return instanceId
+    return this.getHeader().instanceId
   }
 
-  async noAgentData() {
+  async unavailable() {
     if (!this.json) {
       console.log(`No data available - will wait and try again...`)
       await libapp.sleep(4000)
+      return true
+    }
+    return false
+  }
+
+  instanceIdChanged(instanceId) {
+    if (this.getInstanceId() !== instanceId) {
+      console.log(`InstanceId changed - falling back to probe...`)
       return true
     }
     return false

@@ -1,29 +1,46 @@
 import fs from 'fs' // node lib
+import fetch from 'node-fetch' // see https://github.com/node-fetch/node-fetch
+// import * as libapp from './libapp.js'
 
 export class Endpoint {
   constructor() {
-    this.baseUrl = null
+    this.baseUrl = null // eg http://localhost:5000
   }
 
+  // get array of endpoint objects - static method
   static getEndpoints(endpointsStr) {
-      // get array of agent urls
-      // AGENT_URLS can be a single url, a comma-delim list of urls, or a txt filename with urls
-      let endpoints = []
-      if (endpointsStr.includes(',')) {
-        endpoints = endpointsStr.split(',')
-      } else if (endpointsStr.endsWith('.txt')) {
-        const s = String(fs.readFileSync(endpointsStr)).trim()
-        endpoints = s.split('\n')
-      } else {
-        endpoints = [endpointsStr]
-      }
-      // this.endpoints = endpoints
-      return endpoints
+    let endpoints = []
+    if (endpointsStr.includes(',')) {
+      endpoints = endpointsStr.split(',')
+    } else if (endpointsStr.endsWith('.txt')) {
+      const s = String(fs.readFileSync(endpointsStr)).trim()
+      endpoints = s.split('\n')
+    } else {
+      endpoints = [endpointsStr]
     }
-  
-  
-}
-  
+    return endpoints
+  }
+
+  // get json data from agent rest endpoint
+  static async fetchData(url) {
+    console.log(`Getting data from ${url}...`)
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+      })
+      const json = await response.json()
+      return json
+    } catch (error) {
+      if (error.code === 'ENOTFOUND') {
+        console.log(`Agent not found at ${url}...`)
+      } else {
+        throw error
+      }
+    }
+    return null
+  }
+
   // get url
   // type is 'probe', 'current', or 'sample'.
   // from and count are optional.
@@ -35,5 +52,11 @@ export class Endpoint {
             from !== null ? 'from=' + from + '&' : ''
           }count=${count}`
     return url
+  }
+
+  async fetchData(type, from, count) {
+    const url = this.getUrl(type, from, count)
+    const data = await Endpoint.fetchData(url)
+    return data
   }
 }
