@@ -2,6 +2,7 @@
 // handles data returned from probe, current, and sample endpoints
 
 import * as libapp from './libapp.js'
+import { Graph } from './graph.js'
 
 export class Data {
   constructor(json) {
@@ -61,35 +62,11 @@ export class Data {
   // }
 
   getGraph() {
-    const nodes = new Nodes()
-    const edges = new Edges()
-    const graph = { nodes, edges }
-    libapp.traverse(this.json, (arr, parent) => {
-      nodes.add(...arr)
-      edges.add({ _from, _to })
+    const graph = new Graph()
+    libapp.traverse(this.json, (ns, es) => {
+      graph.addNodes(ns)
+      if (es) graph.addEdges(es)
     })
     return graph
-  }
-}
-
-class Nodes {
-  constructor() {
-    this.nodes = []
-    this.index = {}
-  }
-  add(nodes) {
-    this.nodes.push(...nodes)
-    //. add to index
-  }
-}
-
-class Edges {
-  constructor() {
-    this.edges = []
-    this.index = {}
-  }
-  add(edges) {
-    this.edges.push(...edges)
-    //. add to index
   }
 }
