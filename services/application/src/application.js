@@ -11,69 +11,70 @@ console.log(`MTConnect Application starting`)
 console.log(`---------------------------------------------------`)
 
 // get envars
+
+// get array of agent urls
 // AGENT_URLS can be a single url, a comma-delim list of urls, or a txt filename with urls
-const agentUrls = process.env.AGENT_URLS || 'http://localhost:5000'
-//. these should be dynamic - optimize on the fly
+const agentUrlsStr = process.env.AGENT_URLS || 'http://localhost:5000'
+let agentUrls = []
+if (agentUrlsStr.includes(',')) {
+  agentUrls = agentUrlsStr.split(',')
+} else if (agentUrlsStr.endsWith('.txt')) {
+  const s = String(fs.readFileSync(agentUrlsStr)).trim()
+  agentUrls = s.split('\n')
+} else {
+  agentUrls = [agentUrlsStr]
+}
+
+//. these will be dynamic - optimize on the fly
 let fetchInterval = Number(process.env.FETCH_INTERVAL || 2000) // how often to fetch sample data, msec
 let fetchCount = Number(process.env.FETCH_COUNT || 800) // how many samples to fetch each time
 
+// init dicts
+const sequenceDicts = {}
+const idDicts = {}
+for (const agentUrl of agentUrls) {
+  sequenceDicts[agentUrl] = { from: null }
+  idDicts[agentUrl] = {}
+}
+
 const retryTime = 4000 // ms between connection retries etc
 
-// get array of base agent urls
-let baseUrls
-if (agentUrls.includes(',')) {
-  baseUrls = agentUrls.split(',')
-} else if (agentUrls.endsWith('.txt')) {
-  const s = String(fs.readFileSync(agentUrls)).trim()
-  baseUrls = s.split('\n')
-} else {
-  baseUrls = [agentUrls]
-}
+main(agentUrls)
 
-// init dicts
-const sequencesDict = {}
-const idsDict = {}
-for (const baseUrl of baseUrls) {
-  sequencesDict[baseUrl] = { from: null }
-  idsDict[baseUrl] = {}
-}
-
-main(baseUrls)
-
-async function main(baseUrls) {
-  const client = await connect() // get postgres connection
-  handleSignals(client) // handle ctrl-c etc
-  await setupTables(client) // setup tables and views
+async function main(agentUrls) {
+  const db = await connect() // get postgres connection
+  handleSignals(db) // handle ctrl-c etc
+  await setupTables(db) // setup tables and views
   //. could db get screwed up with this? weird race conditions?
-  for (const baseUrl of baseUrls) {
-    handleAgent(baseUrl, client)
+  for (const agentUrl of agentUrls) {
+    handleAgent(agentUrl, db)
   }
 }
 
 // start a 'thread' to handle data from the given base agent url
-async function handleAgent(baseUrl, client) {
-  const sequences = sequencesDict[baseUrl]
+async function handleAgent(agentUrl, db) {
+  const sequences = sequenceDicts[agentUrl]
 
   // get device structures and write to db
   probe: do {
-    const json = await getData(baseUrl, 'probe')
+    const json = await getData(agentUrl, 'probe')
     if (await noData(json)) break probe
     const instanceId = getInstanceId(json)
-    await handleProbe(json, client)
+    await handleProbe(json, db)
 
     // get last known values of all dataitems, write to db
     current: do {
-      const json = await getData(baseUrl, 'current')
+      const json = await getData(agentUrl, 'current')
       if (await noData(json)) break current
       if (instanceIdChanged(json, instanceId)) break probe
-      await handleCurrent(json, client)
+      await handleCurrent(json, db)
 
       // get sequence of dataitem values, write to db
       sample: do {
-        // const json = await getSample(baseUrl, sequences)
+        // const json = await getSample(agentUrl, sequences)
         // if (await noData(json)) break sample
         // if (instanceIdChanged(json, instanceId)) break probe
-        // await handleSample(json, client, sequences)
+        // await handleSample(json, db, sequences)
         await sleep(fetchInterval)
       } while (true)
     } while (true)
@@ -97,21 +98,21 @@ function instanceIdChanged(json, instanceId) {
 
 async function connect() {
   const pool = new Pool()
-  let client
+  let db
   do {
     try {
       console.log(`Trying to connect to db...`)
-      client = await pool.connect() // uses envars PGHOST, PGPORT etc
+      db = await pool.connect() // uses envars PGHOST, PGPORT etc
     } catch (error) {
       console.log(`Error - will sleep before retrying...`)
       console.log(error)
       await sleep(retryTime)
     }
-  } while (!client)
-  return client
+  } while (!db)
+  return db
 }
 
-function handleSignals(client) {
+function handleSignals(db) {
   //. need init:true in compose yaml? nowork - how do?
   //. handle unhandled exception?
   process
@@ -124,16 +125,16 @@ function handleSignals(client) {
       console.log()
       console.log(`Signal ${signal} received - shutting down...`)
       if (error) console.error(error.stack || error)
-      if (!client) {
-        console.log(`Releasing db client...`)
-        client.release()
+      if (!db) {
+        console.log(`Releasing db db...`)
+        db.release()
       }
       process.exit(error ? 1 : 0)
     }
   }
 }
 
-async function setupTables(client) {
+async function setupTables(db) {
   const sql = `
 CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
@@ -164,21 +165,21 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 -- WHERE jsonb_typeof(value) = 'number'::text;
 `
   console.log(`Creating db structures if not there...`)
-  await client.query(sql)
+  await db.query(sql)
 }
 
 // type is 'probe' or 'current'
-async function getData(baseUrl, type) {
+async function getData(agentUrl, type) {
   // let json
   // do {
-  //   const url = getUrl(baseUrl, type)
+  //   const url = getUrl(agentUrl, type)
   //   json = await fetchData(url)
   //   if (!json) {
   //     console.log(`No data available - will wait and try again...`)
   //     await sleep(retryTime)
   //   }
   // } while (!json)
-  const url = getUrl(baseUrl, type)
+  const url = getUrl(agentUrl, type)
   const json = await fetchData(url)
   return json
 }
@@ -192,27 +193,27 @@ async function noData(json) {
   return false
 }
 
-async function handleProbe(json, client) {
+async function handleProbe(json, db) {
   const graph = getGraph(json)
-  await writeGraphStructure(graph, client)
+  await writeGraphStructure(graph, db)
 }
 
-async function handleCurrent(json, client) {
+async function handleCurrent(json, db) {
   // // get sequence info from header?
   // const { firstSequence, nextSequence, lastSequence } =
   //   json.MTConnectStreams.Header
   // from = nextSequence
   // const dataItems = getDataItems(json)
-  // await writeDataItems(dataItems, client)
+  // await writeDataItems(dataItems, db)
   // await writeGraphValues(graph)
 }
 
-async function getSample(baseUrl, sequences) {
+async function getSample(agentUrl, sequences) {
   sequences.from = null
   sequences.count = fetchCount
   let json
   do {
-    const url = getUrl(baseUrl, 'sample', sequences.from, sequences.count)
+    const url = getUrl(agentUrl, 'sample', sequences.from, sequences.count)
     json = await getData(url)
     // check for errors
     // eg <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
@@ -231,7 +232,7 @@ async function getSample(baseUrl, sequences) {
   return json
 }
 
-async function handleSample(json, client, sequences) {
+async function handleSample(json, db, sequences) {
   // get sequence info from header
   const header = json.MTConnectStreams.Header
   const { firstSequence, nextSequence, lastSequence } = header
@@ -239,14 +240,14 @@ async function handleSample(json, client, sequences) {
   sequences.from = nextSequence
 
   const dataItems = getDataItems(json)
-  await writeDataItems(dataItems, client)
+  await writeDataItems(dataItems, db)
 
   // //. if gap, fetch and write that also
   // const gap = false
   // if (gap) {
   //   const json = await getData('sample', sequences.from, sequences.count)
   //   const dataItems = getDataItems(json)
-  //   await writeDataItems(dataItems, client)
+  //   await writeDataItems(dataItems, db)
   // }
 }
 
@@ -275,7 +276,7 @@ function get_id(dataItemId) {
 // gather up all items into array, then put all into one INSERT stmt, for speed.
 // otherwise pipeline couldn't keep up.
 // see https://stackoverflow.com/a/63167970/243392 etc
-async function writeDataItems(dataItems, client) {
+async function writeDataItems(dataItems, db) {
   let rows = []
   for (const dataItem of dataItems) {
     let { dataItemId, timestamp, value } = dataItem
@@ -293,17 +294,17 @@ async function writeDataItems(dataItems, client) {
     const sql = `INSERT INTO history (_id, time, value) VALUES ${values};`
     console.log(sql)
     //. add try catch block - ignore error? just print it?
-    await client.query(sql)
+    await db.query(sql)
   }
 }
 
 // type is 'probe', 'current', or 'sample'.
 // from and count are optional.
-function getUrl(baseUrl, type, from, count) {
+function getUrl(agentUrl, type, from, count) {
   const url =
     from === undefined
-      ? `${baseUrl}/${type}`
-      : `${baseUrl}/${type}?${
+      ? `${agentUrl}/${type}`
+      : `${agentUrl}/${type}?${
           from !== null ? 'from=' + from + '&' : ''
         }count=${count}`
   return url
