@@ -37,7 +37,7 @@ services:
       POSTGRES_DB: $PGDATABASE
       POSTGRES_USERNAME: $PGUSER
       POSTGRES_PASSWORD: $PGPASSWORD
-    init: true
+    # init: true
     volumes:
       - ./$SETUP/volumes/db/data:/var/lib/postgresql/data
     deploy:
@@ -155,7 +155,9 @@ services:
     image: node:15.14-slim
     user: node
     working_dir: /home/node/app
-    command: npm start
+    # command: npm start
+    command: node /home/node/app/src/application.js
+    init: true
     profiles:
       - full
       - app
