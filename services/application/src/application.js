@@ -7,6 +7,8 @@ import pg from 'pg' // postgres driver
 const { Pool } = pg // import { Client } from 'pg' gives error, so must do this
 import * as logic from './logic.js'
 
+const retryTime = 4000 // ms between connection retries etc
+
 console.log(`MTConnect Application starting`)
 console.log(`---------------------------------------------------`)
 
@@ -26,62 +28,92 @@ if (endpointsStr.includes(',')) {
 }
 console.log(`MTConnect Agent endpoints:`, endpoints)
 
-//. put these inside an agent object - could be diff for each agent
-//. these will be dynamic - optimize on the fly
-let fetchInterval = Number(process.env.FETCH_INTERVAL || 2000) // how often to fetch sample data, msec
-let fetchCount = Number(process.env.FETCH_COUNT || 800) // how many samples to fetch each time
+const fetchInterval = Number(process.env.FETCH_INTERVAL || 2000) // how often to fetch sample data, msec
+const fetchCount = Number(process.env.FETCH_COUNT || 800) // how many samples to fetch each time
 
-// init dicts
-//. each agent will store these values
-const sequenceDicts = {}
-const idMaps = {}
-for (const endpoint of endpoints) {
-  sequenceDicts[endpoint] = { from: null }
-  idMaps[endpoint] = {}
-}
+class Agent {
+  constructor(endpoint) {
+    this.endpoint = endpoint // base url
+    this.from = null
+    this.idMap = {} // map from element id to integer _id for db tables
+    //. these will be dynamic - optimize on the fly
+    this.fetchInterval = fetchInterval
+    this.fetchCount = fetchCount
+    this.instanceId = null
+  }
 
-const retryTime = 4000 // ms between connection retries etc
+  // start a 'thread' to handle data from the given base agent url
+  async run(db) {
+    // get device structures and write to db
+    probe: do {
+      const json = await this.fetchAgentData('probe')
+      if (await noAgentData(json)) break probe
+      this.instanceId = getInstanceId(json)
+      await this.handleProbe(db, json)
 
-main(endpoints)
+      // get last known values of all dataitems, write to db
+      current: do {
+        const json = await this.fetchAgentData('current')
+        if (await noAgentData(json)) break current
+        if (this.instanceIdChanged(json)) break probe
+        // await this.handleCurrent(db, json)
 
-async function main(endpoints) {
-  const db = await getDb() // get postgres db connection
-  handleSignals(db) // handle ctrl-c etc
-  await setupTables(db) // setup tables and views
-  //. could db get screwed up with this? weird race conditions?
-  for (const endpoint of endpoints) {
-    handleAgent(db, endpoint)
+        // get sequence of dataitem values, write to db
+        sample: do {
+          // const json = await this.fetchAgentSample()
+          // if (await noAgentData(json)) break sample
+          // if (this.instanceIdChanged(json)) break probe
+          // await this.handleSample(db, json)
+          await sleep(fetchInterval)
+        } while (true)
+      } while (true)
+    } while (true)
+  }
+
+  instanceIdChanged(json) {
+    const header = json.MTConnectDevices.Header
+    if (header.instanceId !== this.instanceId) {
+      console.log(`InstanceId changed - falling back to probe...`)
+      return true
+    }
+    return false
+  }
+
+  // fetch data - type is 'probe' or 'current'
+  async fetchAgentData(type) {
+    const url = getUrl(this.endpoint, type)
+    const json = await fetchJsonData(url)
+    return json
+  }
+
+  async handleProbe(db, json) {
+    // const graph = getGraph(json)
+    // await writeGraphStructure(db, graph)
+  }
+
+  async handleCurrent(db, json) {
+    // // get sequence info from header
+    // const { firstSequence, nextSequence, lastSequence } =
+    //   json.MTConnectStreams.Header
+    // this.from = nextSequence
+    // const dataItems = getDataItems(json)
+    // await writeDataItems(db, dataItems)
+    // await writeGraphValues(db, graph)
   }
 }
 
-// start a 'thread' to handle data from the given base agent url
-async function handleAgent(db, endpoint) {
-  const sequences = sequenceDicts[endpoint]
+const agents = endpoints.map(endpoint => new Agent(endpoint))
 
-  // get device structures and write to db
-  probe: do {
-    const json = await getAgentData(endpoint, 'probe')
-    if (await noAgentData(json)) break probe
-    const instanceId = getInstanceId(json)
-    await handleProbe(db, json)
+run(agents)
 
-    // get last known values of all dataitems, write to db
-    current: do {
-      const json = await getAgentData(endpoint, 'current')
-      if (await noAgentData(json)) break current
-      if (instanceIdChanged(json, instanceId)) break probe
-      await handleCurrent(db, json, sequences)
-
-      // get sequence of dataitem values, write to db
-      sample: do {
-        // const json = await getSample(endpoint, sequences)
-        // if (await noAgentData(json)) break sample
-        // if (instanceIdChanged(json, instanceId)) break probe
-        // await handleSample(db, json, sequences)
-        await sleep(fetchInterval)
-      } while (true)
-    } while (true)
-  } while (true)
+async function run(agents) {
+  const db = await getDb() // get postgres db connection
+  handleSignals(db) // handle ctrl-c etc
+  await setupTables(db) // setup tables and views
+  //. could this mess up db? weird race conditions?
+  for (const agent of agents) {
+    agent.run(db)
+  }
 }
 
 function getInstanceId(json) {
@@ -90,21 +122,17 @@ function getInstanceId(json) {
   return instanceId
 }
 
-function instanceIdChanged(json, instanceId) {
-  const header = json.MTConnectDevices.Header
-  if (header.instanceId !== instanceId) {
-    console.log(`InstanceId changed - falling back to probe...`)
-    return true
-  }
-  return false
-}
-
 async function getDb() {
   const pool = new Pool()
   let db
   do {
     try {
-      console.log(`Trying to connect to db...`)
+      const params = {
+        host: process.env.PGHOST,
+        port: process.env.PGPORT,
+        database: process.env.PGDATABASE,
+      }
+      console.log(`Trying to connect to db...`, params)
       db = await pool.connect() // uses envars PGHOST, PGPORT etc
     } catch (error) {
       console.log(`Error - will sleep before retrying...`)
@@ -117,10 +145,10 @@ async function getDb() {
 
 function handleSignals(db) {
   //. need init:true in compose yaml? nowork - how do?
-  //. handle unhandled exception?
   process
     .on('SIGTERM', getShutdown('SIGTERM'))
     .on('SIGINT', getShutdown('SIGINT'))
+    .on('uncaughtException', getShutdown('uncaughtException'))
 
   // get shutdown handler
   function getShutdown(signal) {
@@ -129,7 +157,7 @@ function handleSignals(db) {
       console.log(`Signal ${signal} received - shutting down...`)
       if (error) console.error(error.stack || error)
       if (!db) {
-        console.log(`Releasing db db...`)
+        console.log(`Releasing db client...`)
         db.release()
       }
       process.exit(error ? 1 : 0)
@@ -137,9 +165,15 @@ function handleSignals(db) {
   }
 }
 
+//. handle db versions and migrations - use meta table
 async function setupTables(db) {
   const sql = `
 CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
+
+CREATE TABLE IF NOT EXISTS meta (
+  name text NOT NULL,
+  value jsonb
+);
 
 CREATE TABLE IF NOT EXISTS nodes (
   _id integer NOT NULL,
@@ -171,13 +205,6 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
   await db.query(sql)
 }
 
-// type is 'probe' or 'current'
-async function getAgentData(endpoint, type) {
-  const url = getUrl(endpoint, type)
-  const json = await fetchJsonData(url)
-  return json
-}
-
 async function noAgentData(json) {
   if (!json) {
     console.log(`No data available - will wait and try again...`)
@@ -187,28 +214,13 @@ async function noAgentData(json) {
   return false
 }
 
-async function handleProbe(db, json) {
-  const graph = getGraph(json)
-  await writeGraphStructure(db, graph)
-}
-
-async function handleCurrent(db, json, sequences) {
-  // // get sequence info from header?
-  // const { firstSequence, nextSequence, lastSequence } =
-  //   json.MTConnectStreams.Header
-  // from = nextSequence
-  // const dataItems = getDataItems(json)
-  // await writeDataItems(db, dataItems)
-  // await writeGraphValues(db, graph)
-}
-
 async function getSample(endpoint, sequences) {
   sequences.from = null
   sequences.count = fetchCount
   let json
   do {
     const url = getUrl(endpoint, 'sample', sequences.from, sequences.count)
-    json = await getAgentData(url)
+    json = await fetchAgentData(url)
     // check for errors
     // eg <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
     if (json.MTConnectError) {
@@ -239,7 +251,7 @@ async function handleSample(db, json, sequences) {
   // //. if gap, fetch and write that also
   // const gap = false
   // if (gap) {
-  //   const json = await getAgentData('sample', sequences.from, sequences.count)
+  //   const json = await fetchAgentData('sample', sequences.from, sequences.count)
   //   const dataItems = getDataItems(json)
   //   await writeDataItems(db, dataItems)
   // }
