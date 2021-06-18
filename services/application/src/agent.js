@@ -56,7 +56,8 @@ export class Agent {
     // const elements = data.getElements()
     // console.log(elements)
     const graph = data.getGraph()
-    console.log(graph)
+    // console.log(graph)
+    libapp.print(graph)
     //. which is better?
     // await db.writeGraphStructure(graph)
     // await graph.write(this.db)

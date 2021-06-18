@@ -27,14 +27,14 @@ export function traverse(node, callback, parent = null) {
       } else if (key === 'Devices') {
         // values is an array with one object per device - { Agent } or { Device }
         traverse(values, callback, node) // recurse
-      } else if (key === 'DataItems') {
-        const dataItems = values
-        callback(dataItems)
-      } else if (key === 'Samples' || key === 'Events' || key === 'Condition') {
-        values.forEach(value => {
-          const dataItems = getDataItems(key, value)
-          callback(dataItems) // pass dataitems to callback
-        })
+        // } else if (key === 'DataItems') {
+        //   const dataItems = values
+        //   callback(dataItems)
+        // } else if (key === 'Samples' || key === 'Events' || key === 'Condition') {
+        //   values.forEach(value => {
+        //     const dataItems = getDataItems(key, value)
+        //     callback(dataItems) // pass dataitems to callback
+        //   })
       } else {
         traverse(values, callback, node) // recurse
       }
@@ -58,4 +58,8 @@ export function traverse(node, callback, parent = null) {
     })
     return dataItems
   }
+}
+
+export function print(...obj) {
+  console.dir(...obj, { depth: null })
 }
