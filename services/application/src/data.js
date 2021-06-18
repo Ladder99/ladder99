@@ -63,9 +63,9 @@ export class Data {
 
   getGraph() {
     const graph = new Graph()
-    libapp.traverse(this.json, (ns, es) => {
-      graph.addNodes(ns)
-      if (es) graph.addEdges(es)
+    libapp.traverse(this.json, (nodes, edges = []) => {
+      for (const node of nodes) graph.addNode(node)
+      for (const edge of edges) graph.addEdge(edge)
     })
     return graph
   }

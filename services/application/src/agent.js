@@ -60,7 +60,7 @@ export class Agent {
     libapp.print(graph)
     //. which is better?
     // await db.writeGraphStructure(graph)
-    // await graph.write(this.db)
+    // await graph.write(this.db) // this - db can be switched out easily
   }
 
   async handleCurrent(db, data) {

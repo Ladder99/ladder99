@@ -3,33 +3,44 @@ export class Graph {
     this.nodes = new Nodes()
     this.edges = new Edges()
   }
-  addNodes(nodes) {
-    this.nodes.add(nodes)
+  addNode(node) {
+    return this.nodes.add(node)
   }
-  addEdges(edges) {
-    this.edges.add(edges)
+  addEdge(edge) {
+    return this.edges.add(edge)
   }
 }
 
 class Nodes {
   constructor() {
-    this.nodes = []
-    this.index = {}
+    this.nodes = {}
   }
-  //. crud - get, add, update, delete
-  add(nodes) {
-    this.nodes.push(...nodes)
-    //. add to index
+  //. crud - add, get, update, delete
+  add(node) {
+    if (node._id) {
+    } else {
+      node._id = 1
+    }
+    this.nodes[node._id] = node
+    return node
   }
 }
 
 class Edges {
   constructor() {
-    this.edges = []
-    this.index = {}
+    this.edges = {}
+    this.reverse = {}
   }
-  add(edges) {
-    this.edges.push(...edges)
-    //. add both dirs to indexes
+  //. crud - add, get, update, delete
+  add(edge) {
+    if (!this.edges[edge._from]) {
+      this.edges[edge._from] = []
+    }
+    this.edges[edge._from].push(edge)
+    if (!this.reverse[edge._to]) {
+      this.reverse[edge._to] = []
+    }
+    this.reverse[edge._to].push(edge)
+    return edge
   }
 }

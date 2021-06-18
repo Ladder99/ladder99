@@ -1,4 +1,7 @@
-import pg from 'pg' // postgres driver
+// database class
+// wraps postgres/timescaledb/timegraph db
+
+import pg from 'pg' // postgres driver https://github.com/brianc/node-postgres
 const { Pool } = pg // import { Client } from 'pg' gives error, so must do this
 import * as libapp from './libapp.js'
 
@@ -35,10 +38,9 @@ export class Db {
   }
 
   init() {
-    //. need init:true in compose yaml to get SIGINT etc?
-    // nowork - how do?
-
     const that = this
+
+    //. need init:true in compose yaml to get SIGINT etc? tried - nowork
     process
       .on('SIGTERM', getShutdown('SIGTERM'))
       .on('SIGINT', getShutdown('SIGINT'))
@@ -101,5 +103,19 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 `
     console.log(`Migrating database structures...`)
     await this.client.query(sql)
+  }
+
+  //. read nodes and edges into graph structure
+  async getGraph(Graph) {
+    const graph = new Graph()
+    const sql = `SELECT * FROM nodes;`
+    const res = await this.client.query(sql)
+    const nodes = res.rows // [{ _id, props }]
+    console.log(nodes)
+    for (const node of nodes) {
+      graph.addNode(node)
+    }
+    //. get edges also
+    return graph
   }
 }

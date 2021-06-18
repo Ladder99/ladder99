@@ -4,6 +4,8 @@
 import { Db } from './db.js'
 import { Agent } from './agent.js'
 import { Endpoint } from './endpoint.js'
+import { Graph } from './graph.js'
+import * as libapp from './libapp.js'
 
 console.log(`MTConnect Application starting`)
 console.log(`---------------------------------------------------`)
@@ -23,8 +25,9 @@ class Application {
     const db = new Db()
     await db.start()
 
-    // get graph - nodes and edges
-    // const dbGraph = await db.getGraph()
+    // get db graph - nodes and edges
+    const graphDb = await db.getGraph(Graph)
+    libapp.print(graphDb)
 
     // get endpoints
     const endpoints = Endpoint.getEndpoints(params.agentEndpoints)
