@@ -1,4 +1,6 @@
-// logic for mtconnect application
+export function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
 
 // recurse down a tree of nodes, calling callback on each one.
 // callback takes array of elements.
@@ -27,15 +29,15 @@ export function traverse(node, callback) {
   } else {
     // if value do nothing
   }
-}
 
-// given a group (ie 'Samples', 'Events', 'Condition')
-// and datanode (the dataitem without its group and type info),
-// return a list of dataItems (objects with group and type info).
-function getDataItems(group, datanode) {
-  // add group and type to the datanode
-  const dataItems = Object.entries(datanode).map(([type, value]) => {
-    return { group, type, ...value }
-  })
-  return dataItems
+  // given a group (ie 'Samples', 'Events', 'Condition')
+  // and datanode (the dataitem without its group and type info),
+  // return a list of dataItems (objects with group and type info).
+  function getDataItems(group, datanode) {
+    // add group and type to the datanode
+    const dataItems = Object.entries(datanode).map(([type, value]) => {
+      return { group, type, ...value }
+    })
+    return dataItems
+  }
 }
