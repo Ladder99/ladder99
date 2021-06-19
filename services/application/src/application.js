@@ -26,7 +26,6 @@ class Application {
     await db.start()
 
     // get db graph - nodes and edges
-    // const graphDb = await db.getGraph(Graph)
     const graphDb = await Graph.read(db)
     libapp.print(graphDb)
 

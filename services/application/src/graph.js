@@ -5,31 +5,41 @@ export class Graph {
   constructor() {
     this.nodes = new Nodes(this)
     this.edges = new Edges(this)
-    // this.history = new History(this)
+    this.history = new History(this)
     this.nextId = 1
   }
+
   getNextId() {
     this.nextId++
     return this.nextId
   }
-  //. read graph from a timegraph db
+
+  // read graph from a timegraph db - STATIC fn
   static async read(db) {
     const graph = new Graph()
     // get nodes
-    const sql = `SELECT * FROM nodes;`
-    const res = await db.query(sql)
+    let sql = `SELECT * FROM nodes;`
+    let res = await db.query(sql)
     const nodes = res.rows // [{ _id, props }]
     for (const node of nodes) {
       graph.nodes.add(node)
     }
-    //. get edges
-
+    // get edges
+    sql = `SELECT * from edges;`
+    res = await db.query(sql)
+    const edges = res.rows // [{_from, _to, props}]
+    for (const edge of edges) {
+      graph.edges.add(edge)
+    }
+    // but don't do history - don't need. too much anyway.
     return graph
   }
+
   //. write nodes and edges to a timegraph db
   //. assume it's sql?
   async write(db) {
-    //. do we need to iterate over nodes one by one and see what needs update/add/delete? uhhh
+    //. do we need to iterate over nodes one by one and see
+    // what needs update/add/delete? uhhhhhh
   }
 }
 
@@ -70,4 +80,8 @@ class Edges {
   }
 }
 
-class History {}
+class History {
+  constructor(graph) {
+    this.graph = graph
+  }
+}
