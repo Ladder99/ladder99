@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS meta (
 );
 
 CREATE TABLE IF NOT EXISTS nodes (
-  node_id integer PRIMARY KEY,
+  node_id SERIAL PRIMARY KEY,
   props jsonb
 );
 -- CREATE INDEX nodes_type ON nodes (props.type);
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS edges (
 
 CREATE TABLE IF NOT EXISTS history (
   node_id integer REFERENCES nodes,
-  prop_id REFERENCES nodes,
+  prop_id integer REFERENCES nodes,
   time timestamptz NOT NULL,
   value jsonb
 );
