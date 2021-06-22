@@ -70,36 +70,40 @@ export class Db {
     const sql = `
 CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
+-- Adding a primary key will automatically create a unique B-tree index on
+-- the column or group of columns listed in the primary key, and will force
+-- the column(s) to be marked NOT NULL.
 CREATE TABLE IF NOT EXISTS meta (
-  name text NOT NULL,
+  name text PRIMARY KEY,
   value jsonb
 );
 
 CREATE TABLE IF NOT EXISTS nodes (
-  _id integer NOT NULL,
+  node_id integer PRIMARY KEY,
   props jsonb
 );
+-- CREATE INDEX nodes_type ON nodes (props.type);
 
 CREATE TABLE IF NOT EXISTS edges (
-  _from integer NOT NULL,
-  _to integer NOT NULL,
+  from_id integer REFERENCES nodes,
+  to_id integer REFERENCES nodes,
   props jsonb
 );
 
 CREATE TABLE IF NOT EXISTS history (
-  _id integer NOT NULL,
+  node_id integer REFERENCES nodes,
+  property_id REFERENCES nodes,
   time timestamptz NOT NULL,
   value jsonb
 );
-
 SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 
--- float is an alias for 'double precision'
+-- note: float is an alias for 'double precision'
 -- .will want to join with nodes table to get props.path, eh?
--- CREATE OR REPLACE VIEW history_float
--- AS SELECT time, _id, value::float
--- FROM history
--- WHERE jsonb_typeof(value) = 'number'::text;
+CREATE OR REPLACE VIEW history_float
+AS SELECT time, _id, value::float
+FROM history
+WHERE jsonb_typeof(value) = 'number'::text;
 `
     console.log(`Migrating database structures...`)
     await this.client.query(sql)
