@@ -105,6 +105,22 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 -- SELECT node_id, prop_id, time, value::float
 -- FROM history
 -- WHERE jsonb_typeof(value) = 'number'::text;
+
+CREATE OR REPLACE VIEW history_all AS
+SELECT devices.props->>'name' AS device, dataitems.props->>'name' AS dataitem, history.time, history.value
+FROM history
+JOIN nodes AS devices ON history.node_id=devices.node_id
+JOIN nodes AS dataitems ON history.prop_id=dataitems.node_id;
+
+CREATE OR REPLACE VIEW history_float AS
+SELECT device, dataitem, time, value::float
+FROM history_all
+WHERE jsonb_typeof(value) = 'number'::text;
+
+CREATE OR REPLACE VIEW history_text AS
+SELECT device, dataitem, time, value::text
+FROM history_all
+WHERE jsonb_typeof(value) = 'text'::text;
 `
     console.log(`Migrating database structures...`)
     await this.client.query(sql)
