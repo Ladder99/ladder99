@@ -83,6 +83,7 @@ CREATE TABLE IF NOT EXISTS nodes (
   props jsonb
 );
 -- CREATE INDEX nodes_type ON nodes (props.type);
+-- CREATE INDEX nodes_canonical_id ON nodes (props.canonicalId);
 
 CREATE TABLE IF NOT EXISTS edges (
   from_id integer REFERENCES nodes,
@@ -92,18 +93,18 @@ CREATE TABLE IF NOT EXISTS edges (
 
 CREATE TABLE IF NOT EXISTS history (
   node_id integer REFERENCES nodes,
-  property_id REFERENCES nodes,
+  prop_id REFERENCES nodes,
   time timestamptz NOT NULL,
   value jsonb
 );
 SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 
+-- . will want devicename, propname of some sort, for viz queries
 -- note: float is an alias for 'double precision'
--- .will want to join with nodes table to get props.path, eh?
-CREATE OR REPLACE VIEW history_float
-AS SELECT time, _id, value::float
-FROM history
-WHERE jsonb_typeof(value) = 'number'::text;
+-- CREATE OR REPLACE VIEW history_float AS
+-- SELECT node_id, prop_id, time, value::float
+-- FROM history
+-- WHERE jsonb_typeof(value) = 'number'::text;
 `
     console.log(`Migrating database structures...`)
     await this.client.query(sql)
