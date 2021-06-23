@@ -1,18 +1,20 @@
 // graph
-// timegraph class - nodes, edges, history
+// generic timegraph class - nodes, edges, history
 
+// note: we don't implement addNode etc as would lead to too many
+// pass-through methods - just say graph.nodes.add() etc
 export class Graph {
   constructor() {
     this.nodes = new Nodes(this)
     this.edges = new Edges(this)
     this.history = new History(this)
-    this.nextId = 1 //. let db handle this
+    // this.nextId = 1 //. let db handle this
   }
 
-  getNextId() {
-    this.nextId++
-    return this.nextId
-  }
+  // getNextId() {
+  //   this.nextId++
+  //   return this.nextId
+  // }
 
   // read graph from a timegraph db - STATIC fn
   static async read(db) {
@@ -43,45 +45,56 @@ export class Graph {
   }
 }
 
+//
+
 class Nodes {
   constructor(graph) {
-    this.graph = graph
-    this.nodes = {}
+    // this.graph = graph
+    // this.nodes = {}
+    this.nodes = []
   }
   //. crud - add, get, update, delete
+  // add node and return with any updated info (eg node_id)
   add(node) {
-    if (node._id) {
-    } else {
-      // node._id = 1 //. uhhhh
-      node._id = this.graph.getNextId()
-    }
-    this.nodes[node._id] = node
+    // if (node._id) {
+    // } else {
+    //   node._id = 1 //. uhhhh
+    //   // node._id = this.graph.getNextId()
+    // }
+    // this.nodes[node._id] = node
+    this.nodes.push(node)
     return node
   }
 }
 
+//
+
 class Edges {
   constructor(graph) {
-    this.graph = graph
-    this.edges = {}
-    this.reverse = {}
+    // this.graph = graph
+    // this.edges = {}
+    // this.reverse = {}
+    this.edges = []
   }
   //. crud - add, get, update, delete
+  // add edge and return with any updated info
+  // edge is { from, to } //. ?
   add(edge) {
-    if (!this.edges[edge._from]) {
-      this.edges[edge._from] = []
-    }
-    this.edges[edge._from].push(edge)
-    if (!this.reverse[edge._to]) {
-      this.reverse[edge._to] = []
-    }
-    this.reverse[edge._to].push(edge)
+    // if (!this.edges[edge._from]) {
+    //   this.edges[edge._from] = []
+    // }
+    // this.edges[edge._from].push(edge)
+    // if (!this.reverse[edge._to]) {
+    //   this.reverse[edge._to] = []
+    // }
+    // this.reverse[edge._to].push(edge)
+    this.edges.push(edge)
     return edge
   }
 }
 
 class History {
   constructor(graph) {
-    this.graph = graph
+    // this.graph = graph
   }
 }

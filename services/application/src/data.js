@@ -63,55 +63,44 @@ export class Data {
   //   return allDataItems
   // }
 
-  // traverse json tree and add nodes and edges to a graph structure
-  getGraph() {
+  // traverse tree and add nodes and edges to the probe graph structure.
+  // callback(key, values, node, parent)
+  getProbeGraph() {
     const graph = new Graph()
-    traverse(this.json, (nodes, edges = []) => {
-      for (const node of nodes) graph.nodes.add(node)
-      for (const edge of edges) graph.edges.add(edge)
-    })
+    const callbacks = {
+      MTConnectDevices: (key, values, node, parent) => {
+        // values is an object with Header and Devices keys - will recurse
+        const n = graph.nodes.add({ elementType: key }) // add root object with no attribs or edges
+      },
+      Header: (key, values, node, parent) => {
+        // values is a leaf object with instanceId, version etc
+        const n = graph.nodes.add({ elementType: key, ...values })
+        // const edge = { from: parent, to: n }
+        // graph.edges.add(edge)
+      },
+    }
+    traverse(this.json, callbacks)
     return graph
   }
 }
 
+//
+
 // recurse down a tree of nodes, calling callback on each one.
-// callback takes array of nodes and array of edges.
-function traverse(node, callback, parent = null) {
+// callbacks take an array of nodes and array of edges.
+function traverse(node, callbacks, parent = null) {
   if (libapp.isObject(node)) {
     const keyvalues = Object.entries(node)
     keyvalues.forEach(([key, values]) => {
-      if (key === 'MTConnectDevices') {
-        // values is an object with Header and Devices keys - recurse
-        callback([{ id: key }]) // add root object to db, no edges
-        traverse(values, callback, node) // recurse
-      } else if (key === 'Header') {
-        // values is a leaf object with instanceId, version etc
-        //. what do with this obj? how write to db?
-        //. how return edges? just parent?
-        // const items = [values]
-        const items = [{ id: key, ...values }]
-        callback(items)
-      } else if (key === 'Devices') {
-        // values is an array with one object per device - { Agent } or { Device }
-        traverse(values, callback, node) // recurse
-        // } else if (key === 'DataItems') {
-        //   const dataItems = values
-        //   callback(dataItems)
-        // } else if (key === 'Samples' || key === 'Events' || key === 'Condition') {
-        //   values.forEach(value => {
-        //     const dataItems = getDataItems(key, value)
-        //     callback(dataItems) // pass dataitems to callback
-        //   })
-      } else {
-        traverse(values, callback, node) // recurse
-      }
+      const callback = callbacks[key]
+      if (callback) callback(key, values, node, parent)
+      traverse(values, callbacks, node) // recurse
     })
   } else if (Array.isArray(node)) {
     // if array, recurse down each item
-    node.forEach(subnode => traverse(subnode, callback, node)) // recurse
-  } else if (node === null || node === undefined) {
-    // if null/undef do nothing
+    node.forEach(subnode => traverse(subnode, callbacks, node)) // recurse
   } else {
-    // if value do nothing
+    // if node is atomic value (string, number) or null/undefined do nothing
+    // (no recursion)
   }
 }

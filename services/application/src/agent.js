@@ -27,21 +27,23 @@ export class Agent {
       if (await data.unavailable()) break probe // waits some time
       this.instanceId = data.getInstanceId()
       await this.handleProbe(data)
+      process.exit(0)
 
       // get last known values of all dataitems, write to db
       current: do {
         // const data = await this.fetchData('current')
-        // if (await data.unavailable()) break current
+        // if (await data.unavailable()) break current // waits some time
         // if (data.instanceIdChanged(this.instanceId)) break probe
         // await this.handleCurrent(data)
 
         // get sequence of dataitem values, write to db
         sample: do {
           // const data = await this.fetchSample()
-          // if (await data.unavailable()) break sample
+          // if (await data.unavailable()) break sample // waits some time
           // if (data.instanceIdChanged(this.instanceId)) break probe
           // await this.handleSample(data)
-          await libapp.sleep(this.fetchInterval)
+          // console.log('.')
+          // await libapp.sleep(this.fetchInterval)
         } while (true)
       } while (true)
     } while (true)
@@ -55,9 +57,14 @@ export class Agent {
 
   //. compare probe data with db data, update db as needed
   async handleProbe(data) {
-    // const graph = data.getGraph() // get probe data into graph structure - see Data.getGraph
-    // libapp.print(graph)
+    // (nodes, edges = []) => {
+    //   for (const node of nodes) graph.nodes.add(node)
+    //   for (const edge of edges) graph.edges.add(edge)
+    // })
+    const graph = data.getProbeGraph() // get probe data into graph structure - see Data.getGraph
+    libapp.print(graph)
     // await graph.write(this.db) //. implies graph = await Graph.read(this.db)?
+    // await graph.synchTo(this.db)
     //. or graph = db.getGraph(Graph) //. uh, former is better, less weird, in same place
     // // get header, devices and dataitems
     // // const devices = []
@@ -68,6 +75,21 @@ export class Agent {
     //   // for (const edge of edges) edges.add(edge)
     // })
     // const nodes = getNodes(this.xml)
+
+    // } else if (key === 'Devices') {
+    //   // values is an array with one object per device - { Agent } or { Device }
+    //   traverse(values, callback, node) // recurse
+    //   // } else if (key === 'DataItems') {
+    //   //   const dataItems = values
+    //   //   callback(dataItems)
+    //   // } else if (key === 'Samples' || key === 'Events' || key === 'Condition') {
+    //   //   values.forEach(value => {
+    //   //     const dataItems = getDataItems(key, value)
+    //   //     callback(dataItems) // pass dataitems to callback
+    //   //   })
+    // } else {
+    // traverse(values, callback, node) // recurse
+    // }
   }
 
   async handleCurrent(db, data) {

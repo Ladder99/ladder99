@@ -21,8 +21,8 @@ CREATE TABLE IF NOT EXISTS edges (
   to_id integer REFERENCES nodes,
   props jsonb
 );
-CREATE INDEX edges_from ON edges (from_id);
-CREATE INDEX edges_to ON edges (to_id);
+CREATE INDEX IF NOT EXISTS edges_from ON edges (from_id);
+CREATE INDEX IF NOT EXISTS edges_to ON edges (to_id);
 
 CREATE TABLE IF NOT EXISTS history (
   node_id integer REFERENCES nodes,
@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS history (
   value jsonb
 );
 SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
-CREATE INDEX history_node ON history (node_id);
+CREATE INDEX IF NOT EXISTS history_node ON history (node_id);
 
 -- views
 
