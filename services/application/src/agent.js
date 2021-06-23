@@ -55,18 +55,17 @@ export class Agent {
 
   //. compare probe data with db data, update db as needed
   async handleProbe(data) {
-    const graph = data.getGraph() // get probe data into graph structure - see Data.getGraph
+    // const graph = data.getGraph() // get probe data into graph structure - see Data.getGraph
     // libapp.print(graph)
     // await graph.write(this.db) //. implies graph = await Graph.read(this.db)?
     //. or graph = db.getGraph(Graph) //. uh, former is better, less weird, in same place
-
-    // get header, devices and dataitems
-    // const devices = []
-    // const dataitems = []
-    //. why not getNodes and traverse returns only those of interest
-    // traverse(this.json, (nodes, edges = []) => {
-    // for (const node of nodes) graph.nodes.add(node)
-    // for (const edge of edges) graph.edges.add(edge)
+    // // get header, devices and dataitems
+    // // const devices = []
+    // // const dataitems = []
+    // //. why not getNodes and traverse returns only those of interest
+    // traverse(data.json, (nodes, edges = []) => {
+    //   // for (const node of nodes) nodes.add(node)
+    //   // for (const edge of edges) edges.add(edge)
     // })
     // const nodes = getNodes(this.xml)
   }
@@ -165,3 +164,14 @@ export class Agent {
     }
   }
 }
+
+// // given a group (ie 'Samples', 'Events', 'Condition')
+// // and datanode (the dataitem without its group and type info),
+// // return a list of dataItems (objects with group and type info).
+// function getDataItems(group, datanode) {
+//   // add group and type to the datanode
+//   const dataItems = Object.entries(datanode).map(([type, value]) => {
+//     return { group, type, ...value }
+//   })
+//   return dataItems
+// }

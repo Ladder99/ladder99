@@ -1,5 +1,5 @@
 // data
-// wraps/handles data returned from probe, current, and sample endpoints
+// wraps agent data returned from probe, current, and sample endpoints
 
 //. switch back to using xml, or convert it to json/xmltree structure
 
@@ -45,14 +45,14 @@ export class Data {
     return false
   }
 
-  // traverse the json tree and return all elements and relations
-  getElements() {
-    const elements = []
-    traverse(this.json, els => {
-      elements.push(...els)
-    })
-    return elements
-  }
+  // // traverse the json tree and return all elements and relations
+  // getElements() {
+  //   const elements = []
+  //   traverse(this.json, els => {
+  //     elements.push(...els)
+  //   })
+  //   return elements
+  // }
 
   // // traverse the json tree and return all data items
   // getDataItems() {
@@ -78,7 +78,6 @@ export class Data {
 // callback takes array of nodes and array of edges.
 function traverse(node, callback, parent = null) {
   if (libapp.isObject(node)) {
-    // if object, call callback for dataitems, recurse for others
     const keyvalues = Object.entries(node)
     keyvalues.forEach(([key, values]) => {
       if (key === 'MTConnectDevices') {
@@ -114,16 +113,5 @@ function traverse(node, callback, parent = null) {
     // if null/undef do nothing
   } else {
     // if value do nothing
-  }
-
-  // given a group (ie 'Samples', 'Events', 'Condition')
-  // and datanode (the dataitem without its group and type info),
-  // return a list of dataItems (objects with group and type info).
-  function getDataItems(group, datanode) {
-    // add group and type to the datanode
-    const dataItems = Object.entries(datanode).map(([type, value]) => {
-      return { group, type, ...value }
-    })
-    return dataItems
   }
 }
