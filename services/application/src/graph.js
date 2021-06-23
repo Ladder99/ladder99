@@ -6,7 +6,7 @@ export class Graph {
     this.nodes = new Nodes(this)
     this.edges = new Edges(this)
     this.history = new History(this)
-    this.nextId = 1
+    this.nextId = 1 //. let db handle this
   }
 
   getNextId() {

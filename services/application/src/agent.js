@@ -1,3 +1,6 @@
+// agent
+// class to represent an agent - handles probe, current, sample loop
+
 import { Data } from './data.js'
 import * as libapp from './libapp.js'
 
@@ -21,7 +24,7 @@ export class Agent {
     //. will need to compare with existing graph structure in db - add/update as needed
     probe: do {
       const data = await this.fetchData('probe')
-      if (await data.unavailable()) break probe
+      if (await data.unavailable()) break probe // waits some time
       this.instanceId = data.getInstanceId()
       await this.handleProbe(data)
 
