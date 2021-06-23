@@ -1,14 +1,17 @@
 // graph
 // generic timegraph class - nodes, edges, history
 
-// note: we don't implement addNode etc as would lead to too many
-// pass-through methods - just say graph.nodes.add() etc
+import * as libapp from './libapp.js'
+
 export class Graph {
   constructor() {
     this.nodes = new Nodes(this)
     this.edges = new Edges(this)
     this.history = new History(this)
   }
+
+  // note: we don't implement addNode etc as would lead to too many
+  // pass-through methods - just say graph.nodes.add() etc
 
   // read graph from a timegraph db
   //. ditch the sql - do simple translation? or use knex js?
@@ -42,13 +45,20 @@ export class Graph {
     //. for now, get list of nodes to write
     const actions = { add: [], update: [], delete: [] }
     const nodes = this.nodes.get() // gets all
-    for (const node of nodes) {
-      if (!graphDb.nodes.has(node)) {
-        actions.add.push(node)
+    if (nodes) {
+      // if (!Array.isArray(nodes)) {
+      // nodes = [nodes]
+      // }
+      for (const node of nodes) {
+        if (!graphDb.nodes.has(node)) {
+          actions.add.push(node)
+        }
       }
     }
+    //. sort nodes and edges topologically/depth first - oy
     //. execute actions
     // db.execute(actions)
+    console.log(actions)
   }
 }
 
@@ -56,8 +66,6 @@ export class Graph {
 
 class Nodes {
   constructor(graph) {
-    // this.graph = graph
-    // this.nodes = {}
     this.nodes = []
     this.indexByNodeId = {}
     // this.indexByProps = {}
@@ -74,14 +82,24 @@ class Nodes {
     this.nodes.push(node)
     return node
   }
-  get(node = undefined) {
-    if (node) {
-      return []
+  get(spec) {
+    if (spec) {
+      if (libapp.isObject(spec)) {
+        //. find node equal to spec
+        //. need index, but on what? hash the props object?
+        for (const node of this.nodes) {
+          if (libapp.shallowCompare(spec.props, node.props)) {
+            return node
+          }
+        }
+      }
+      return null
     }
     return this.nodes
   }
+  //. extra - merge into crud?
   has(node) {
-    return this.get(node).length > 0
+    return this.get(node) !== null
   }
 }
 
