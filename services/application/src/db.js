@@ -1,6 +1,7 @@
 // database class
 // wraps postgres/timescaledb/timegraph db
 
+import fs from 'fs' // node lib
 import pg from 'pg' // postgres driver https://github.com/brianc/node-postgres
 const { Pool } = pg // import { Client } from 'pg' gives error, so must do this
 import * as libapp from './libapp.js'
@@ -67,61 +68,8 @@ export class Db {
 
   //. handle versions - use meta table
   async migrate() {
-    const sql = `
-CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
-
--- Adding a primary key will automatically create a unique B-tree index on
--- the column or group of columns listed in the primary key, and will force
--- the column(s) to be marked NOT NULL.
-CREATE TABLE IF NOT EXISTS meta (
-  name text PRIMARY KEY,
-  value jsonb
-);
-
-CREATE TABLE IF NOT EXISTS nodes (
-  node_id SERIAL PRIMARY KEY,
-  props jsonb
-);
--- CREATE INDEX nodes_type ON nodes (props.type);
--- CREATE INDEX nodes_canonical_id ON nodes (props.canonicalId);
-
-CREATE TABLE IF NOT EXISTS edges (
-  from_id integer REFERENCES nodes,
-  to_id integer REFERENCES nodes,
-  props jsonb
-);
-
-CREATE TABLE IF NOT EXISTS history (
-  node_id integer REFERENCES nodes,
-  prop_id integer REFERENCES nodes,
-  time timestamptz NOT NULL,
-  value jsonb
-);
-SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
-
--- . will want devicename, propname of some sort, for viz queries
--- note: float is an alias for 'double precision'
--- CREATE OR REPLACE VIEW history_float AS
--- SELECT node_id, prop_id, time, value::float
--- FROM history
--- WHERE jsonb_typeof(value) = 'number'::text;
-
-CREATE OR REPLACE VIEW history_all AS
-SELECT devices.props->>'name' AS device, dataitems.props->>'name' AS dataitem, history.time, history.value
-FROM history
-JOIN nodes AS devices ON history.node_id=devices.node_id
-JOIN nodes AS dataitems ON history.prop_id=dataitems.node_id;
-
-CREATE OR REPLACE VIEW history_float AS
-SELECT device, dataitem, time, value::float
-FROM history_all
-WHERE jsonb_typeof(value) = 'number'::text;
-
-CREATE OR REPLACE VIEW history_text AS
-SELECT device, dataitem, time, value::text
-FROM history_all
-WHERE jsonb_typeof(value) = 'text'::text;
-`
+    const path = `migrations/001-init.sql`
+    const sql = String(fs.readFileSync(path))
     console.log(`Migrating database structures...`)
     await this.client.query(sql)
   }
