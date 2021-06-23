@@ -27,14 +27,15 @@ export class Agent {
       if (await data.unavailable()) break probe // waits some time
       this.instanceId = data.getInstanceId()
       await this.handleProbe(data)
-      process.exit(0)
 
       // get last known values of all dataitems, write to db
       current: do {
-        // const data = await this.fetchData('current')
-        // if (await data.unavailable()) break current // waits some time
-        // if (data.instanceIdChanged(this.instanceId)) break probe
-        // await this.handleCurrent(data)
+        const data = await this.fetchData('current')
+        if (await data.unavailable()) break current // waits some time
+        if (data.instanceIdChanged(this.instanceId)) break probe
+        await this.handleCurrent(data)
+
+        process.exit(0)
 
         // get sequence of dataitem values, write to db
         sample: do {
@@ -58,33 +59,21 @@ export class Agent {
   async handleProbe(data) {
     const graph = data.getProbeGraph() // get probe data into graph structure - see Data.getGraph
     libapp.print(graph)
-
-    //. compare probe data with db data, update db as needed
-    // await graph.write(this.db) //. implies graph = await Graph.read(this.db)?
-    // await graph.synchTo(this.db)
-    //. or graph = db.getGraph(Graph) //. uh, former is better, less weird, in same place
-
-    //   // } else if (key === 'DataItems') {
-    //   //   const dataItems = values
-    //   //   callback(dataItems)
-    //   // } else if (key === 'Samples' || key === 'Events' || key === 'Condition') {
-    //   //   values.forEach(value => {
-    //   //     const dataItems = getDataItems(key, value)
-    //   //     callback(dataItems) // pass dataitems to callback
-    //   //   })
-    // } else {
-    // traverse(values, callback, node) // recurse
-    // }
+    //. now compare probe graph with db graph, update db as needed
+    //. note: this implies graph = await Graph.read(this.db) static fn
+    // await graph.write(this.db) //. should be synchTo and synchFrom ?
   }
 
-  async handleCurrent(db, data) {
-    // // get sequence info from header
+  async handleCurrent(data) {
+    // get sequence info from header
     // const { firstSequence, nextSequence, lastSequence } =
-    //   json.MTConnectStreams.Header
+    //   data.json.MTConnectStreams.Header
     // this.from = nextSequence
+    const dataitems = data.getCurrentData()
     // const dataItems = getDataItems(data)
     // await db.writeDataItems(dataItems)
     // await db.writeGraphValues(graph)
+    console.log(dataitems)
   }
 
   async fetchSample() {
@@ -171,14 +160,3 @@ export class Agent {
     }
   }
 }
-
-// // given a group (ie 'Samples', 'Events', 'Condition')
-// // and datanode (the dataitem without its group and type info),
-// // return a list of dataItems (objects with group and type info).
-// function getDataItems(group, datanode) {
-//   // add group and type to the datanode
-//   const dataItems = Object.entries(datanode).map(([type, value]) => {
-//     return { group, type, ...value }
-//   })
-//   return dataItems
-// }

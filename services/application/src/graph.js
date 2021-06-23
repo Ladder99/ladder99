@@ -41,7 +41,7 @@ export class Graph {
   //. assume it's sql?
   async write(db) {
     //. do we need to iterate over nodes one by one and see
-    // what needs update/add/delete? uhhhhhh
+    // what needs update/add/delete?
   }
 }
 

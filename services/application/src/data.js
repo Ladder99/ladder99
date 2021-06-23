@@ -21,7 +21,10 @@ export class Data {
   }
 
   getHeader() {
-    return this.json.MTConnectDevices.Header
+    if (this.json.MTConnectDevices) {
+      return this.json.MTConnectDevices.Header
+    }
+    return this.json.MTConnectStreams.Header
   }
 
   getInstanceId() {
@@ -89,13 +92,51 @@ export class Data {
         })
       },
       DataItem: (key, obj, node, parent) => {
-        // obj is a leaf, though possibly with Filter subitems
-        // const { category, type, subType, id, name } = obj
+        // obj is a leaf with { id, name, type, ... }, possibly Filter, Constraint subitems
         const n = graph.nodes.add({ elementType: key, ...obj })
+      },
+      // Configuration: Other,
+      // Specification: Other,
+    }
+    // function Other(key, obj, node, parent) {
+    //   console.log('OTHER', key)
+    // }
+    traverse(this.json, callbacks) // recurse through probe structure, add to graph
+    return graph
+  }
+
+  // // given a group (ie 'Samples', 'Events', 'Condition')
+  // // and datanode (the dataitem without its group and type info),
+  // // return a list of dataItems (objects with group and type info).
+  // function getDataItems(group, datanode) {
+  //   // add group and type to the datanode
+  //   const dataItems = Object.entries(datanode).map(([type, value]) => {
+  //     return { group, type, ...value }
+  //   })
+  //   return dataItems
+  // }
+
+  getCurrentData() {
+    let deviceName = null
+    let group = null
+    const dataitems = []
+    const callbacks = {
+      DeviceStream: (key, obj, node, parent) => {
+        deviceName = obj.name
+      },
+      // // given a group (ie 'Samples', 'Events', 'Condition')
+      Samples: (key, obj) => (group = key),
+      Events: (key, obj) => (group = key),
+      Condition: (key, obj) => (group = key),
+      VariableDataSet: () => {}, //. skip these for now
+      Other: (key, obj, node, parent) => {
+        if (obj.dataItemId && !obj.dataItemId.startsWith('_')) {
+          dataitems.push({ elementType: key, ...obj })
+        }
       },
     }
     traverse(this.json, callbacks)
-    return graph
+    return dataitems
   }
 }
 
@@ -107,7 +148,7 @@ function traverse(node, callbacks, parent = null) {
   if (libapp.isObject(node)) {
     const entries = Object.entries(node)
     entries.forEach(([key, obj]) => {
-      const callback = callbacks[key]
+      const callback = callbacks[key] || callbacks.Other
       if (callback) callback(key, obj, node, parent)
       traverse(obj, callbacks, node) // recurse
     })
