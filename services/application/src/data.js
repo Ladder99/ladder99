@@ -64,19 +64,29 @@ export class Data {
   // }
 
   // traverse tree and add nodes and edges to the probe graph structure.
-  // callback(key, values, node, parent)
+  // callback(key, obj, node, parent)
   getProbeGraph() {
     const graph = new Graph()
     const callbacks = {
-      MTConnectDevices: (key, values, node, parent) => {
-        // values is an object with Header and Devices keys - will recurse
+      // obj is an object with Header and Devices keys - will recurse
+      MTConnectDevices: (key, obj, node, parent) => {
         const n = graph.nodes.add({ elementType: key }) // add root object with no attribs or edges
       },
-      Header: (key, values, node, parent) => {
-        // values is a leaf object with instanceId, version etc
-        const n = graph.nodes.add({ elementType: key, ...values })
+      // obj is a leaf object with instanceId, version etc
+      Header: (key, obj, node, parent) => {
+        const n = graph.nodes.add({ elementType: key, ...obj })
         // const edge = { from: parent, to: n }
         // graph.edges.add(edge)
+      },
+      Device: (key, obj, node, parent) => {
+        const { id, name, uuid, Description } = obj
+        const n = graph.nodes.add({
+          elementType: key,
+          id,
+          name,
+          uuid,
+          description: Description,
+        })
       },
     }
     traverse(this.json, callbacks)
@@ -90,11 +100,11 @@ export class Data {
 // callbacks take an array of nodes and array of edges.
 function traverse(node, callbacks, parent = null) {
   if (libapp.isObject(node)) {
-    const keyvalues = Object.entries(node)
-    keyvalues.forEach(([key, values]) => {
+    const entries = Object.entries(node)
+    entries.forEach(([key, obj]) => {
       const callback = callbacks[key]
-      if (callback) callback(key, values, node, parent)
-      traverse(values, callbacks, node) // recurse
+      if (callback) callback(key, obj, node, parent)
+      traverse(obj, callbacks, node) // recurse
     })
   } else if (Array.isArray(node)) {
     // if array, recurse down each item

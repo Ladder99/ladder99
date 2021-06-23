@@ -55,30 +55,15 @@ export class Agent {
     return data
   }
 
-  //. compare probe data with db data, update db as needed
   async handleProbe(data) {
-    // (nodes, edges = []) => {
-    //   for (const node of nodes) graph.nodes.add(node)
-    //   for (const edge of edges) graph.edges.add(edge)
-    // })
     const graph = data.getProbeGraph() // get probe data into graph structure - see Data.getGraph
     libapp.print(graph)
+
+    //. compare probe data with db data, update db as needed
     // await graph.write(this.db) //. implies graph = await Graph.read(this.db)?
     // await graph.synchTo(this.db)
     //. or graph = db.getGraph(Graph) //. uh, former is better, less weird, in same place
-    // // get header, devices and dataitems
-    // // const devices = []
-    // // const dataitems = []
-    // //. why not getNodes and traverse returns only those of interest
-    // traverse(data.json, (nodes, edges = []) => {
-    //   // for (const node of nodes) nodes.add(node)
-    //   // for (const edge of edges) edges.add(edge)
-    // })
-    // const nodes = getNodes(this.xml)
 
-    // } else if (key === 'Devices') {
-    //   // values is an array with one object per device - { Agent } or { Device }
-    //   traverse(values, callback, node) // recurse
     //   // } else if (key === 'DataItems') {
     //   //   const dataItems = values
     //   //   callback(dataItems)
