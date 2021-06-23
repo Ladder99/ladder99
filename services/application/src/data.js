@@ -1,5 +1,7 @@
 // data
-// handles data returned from probe, current, and sample endpoints
+// wraps/handles data returned from probe, current, and sample endpoints
+
+//. switch back to using xml, or convert it to json/xmltree structure
 
 import * as libapp from './libapp.js'
 import { Graph } from './graph.js'
