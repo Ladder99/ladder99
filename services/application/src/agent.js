@@ -50,6 +50,7 @@ export class Agent {
     } while (true)
   }
 
+  // type is 'probe', 'current', 'sample'
   async fetchData(type) {
     const json = await this.endpoint.fetchData(type)
     const data = new Data(json)

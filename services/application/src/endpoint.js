@@ -1,6 +1,7 @@
 import fs from 'fs' // node lib
 import fetch from 'node-fetch' // see https://github.com/node-fetch/node-fetch
 // import * as libapp from './libapp.js'
+import convert from 'xml-js' // see https://github.com/nashwaan/xml-js
 
 export class Endpoint {
   constructor(baseUrl) {
@@ -22,16 +23,22 @@ export class Endpoint {
     return endpoints
   }
 
-  // get json data from agent rest endpoint
-  static async fetchData(url) {
+  // get data from agent rest endpoint as xml or json
+  // note this is the STATIC fn
+  static async fetchData(url, fetchJson = true) {
     console.log(`Getting data from ${url}...`)
+    const headers = fetchJson ? { Accept: 'application/json' } : {}
     try {
-      const response = await fetch(url, {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-      })
-      const json = await response.json()
-
+      const response = await fetch(url, { method: 'GET', headers })
+      if (fetchJson) {
+        const json = await response.json()
+        return json
+      }
+      const xml = await response.text()
+      // console.log(xml)
+      const json = JSON.parse(convert.xml2json(xml, { compact: true }))
+      //. will need some more processing to align with agent json
+      // console.log(json)
       return json
     } catch (error) {
       if (error.code === 'ENOTFOUND') {
@@ -56,6 +63,7 @@ export class Endpoint {
     return url
   }
 
+  // type is 'probe', 'current', or 'sample'.
   async fetchData(type, from, count) {
     const url = this.getUrl(type, from, count)
     const data = await Endpoint.fetchData(url)
