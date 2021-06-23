@@ -68,12 +68,12 @@ export class Data {
   getProbeGraph() {
     const graph = new Graph()
     const callbacks = {
-      // obj is an object with Header and Devices keys - will recurse
       MTConnectDevices: (key, obj, node, parent) => {
+        // obj is an object with Header and Devices keys - will recurse
         const n = graph.nodes.add({ elementType: key }) // add root object with no attribs or edges
       },
-      // obj is a leaf object with instanceId, version etc
       Header: (key, obj, node, parent) => {
+        // obj is a leaf object with instanceId, version etc
         const n = graph.nodes.add({ elementType: key, ...obj })
         // const edge = { from: parent, to: n }
         // graph.edges.add(edge)
@@ -87,6 +87,11 @@ export class Data {
           uuid,
           description: Description,
         })
+      },
+      DataItem: (key, obj, node, parent) => {
+        // obj is a leaf, though possibly with Filter subitems
+        // const { category, type, subType, id, name } = obj
+        const n = graph.nodes.add({ elementType: key, ...obj })
       },
     }
     traverse(this.json, callbacks)
@@ -111,6 +116,6 @@ function traverse(node, callbacks, parent = null) {
     node.forEach(subnode => traverse(subnode, callbacks, node)) // recurse
   } else {
     // if node is atomic value (string, number) or null/undefined do nothing
-    // (no recursion)
+    // (ie no recursion)
   }
 }
