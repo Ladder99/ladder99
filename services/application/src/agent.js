@@ -58,11 +58,13 @@ export class Agent {
   }
 
   async handleProbe(data) {
-    const graph = data.getProbeGraph() // get probe data into graph structure - see Data.getGraph
-    libapp.print(graph)
+    const probeGraph = data.getProbeGraph() // get probe data into graph structure - see Data.getGraph
+    libapp.print(probeGraph)
+    // const dbGraph = new Graph
+    // await dbGraph.read(this.db)
     //. now compare probe graph with db graph, update db as needed
-    //. note: this implies graph = await Graph.read(this.db) static fn
-    // await graph.write(this.db) //. should be synchTo and synchFrom ?
+    // await probeGraph.write(this.db)
+    await probeGraph.synchTo(this.db)
   }
 
   async handleCurrent(data) {

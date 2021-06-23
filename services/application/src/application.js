@@ -26,8 +26,8 @@ class Application {
     await db.start()
 
     // get db graph - nodes and edges
-    const graphDb = await Graph.read(db)
-    libapp.print(graphDb)
+    // const graphDb = await Graph.read(db)
+    // libapp.print(graphDb)
 
     // get endpoints
     const endpoints = Endpoint.getEndpoints(params.agentEndpoints)

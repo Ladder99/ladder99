@@ -8,40 +8,47 @@ export class Graph {
     this.nodes = new Nodes(this)
     this.edges = new Edges(this)
     this.history = new History(this)
-    // this.nextId = 1 //. let db handle this
   }
 
-  // getNextId() {
-  //   this.nextId++
-  //   return this.nextId
-  // }
-
-  // read graph from a timegraph db - STATIC fn
-  static async read(db) {
-    const graph = new Graph()
-    // get nodes
+  // read graph from a timegraph db
+  //. ditch the sql - do simple translation? or use knex js?
+  async read(db) {
+    // nodes
     let sql = `SELECT * FROM nodes;`
-    let res = await db.query(sql)
-    const nodes = res.rows // [{ _id, props }]
+    let result = await db.query(sql)
+    const nodes = result.rows // [{ node_id, props }]
     for (const node of nodes) {
-      graph.nodes.add(node)
+      this.nodes.add(node)
     }
-    // get edges
+    // edges
     sql = `SELECT * from edges;`
-    res = await db.query(sql)
-    const edges = res.rows // [{_from, _to, props}]
+    result = await db.query(sql)
+    const edges = result.rows // [{from_id, to_id, props}]
     for (const edge of edges) {
-      graph.edges.add(edge)
+      this.edges.add(edge)
     }
-    // but don't do history - don't need. too much anyway.
-    return graph
+    // history - don't need
   }
 
-  //. write nodes and edges to a timegraph db
-  //. assume it's sql?
-  async write(db) {
-    //. do we need to iterate over nodes one by one and see
-    // what needs update/add/delete?
+  //. synchronize nodes and edges to a timegraph db
+  // assume the db is sql
+  async synchTo(db) {
+    // read graph from db to compare and write to
+    const graphDb = new Graph()
+    await graphDb.read(db)
+    //. iterate over nodes one by one and see what needs update/add/delete
+    //. maybe get list of nodes and edges to add/update/delete, then sort them,
+    // then execute them?
+    //. for now, get list of nodes to write
+    const transactions = []
+    const nodes = this.nodes.get() // gets all
+    for (const node of nodes) {
+      // if (node not in graphDb.nodes) {
+      // transactions.push(add this node)
+      // }
+    }
+    //. execute transactions
+    // db.execute(transactions)
   }
 }
 
@@ -52,6 +59,8 @@ class Nodes {
     // this.graph = graph
     // this.nodes = {}
     this.nodes = []
+    this.indexByNodeId = {}
+    // this.indexByProps = {}
   }
   //. crud - add, get, update, delete
   // add node and return with any updated info (eg node_id)
@@ -64,6 +73,9 @@ class Nodes {
     // this.nodes[node._id] = node
     this.nodes.push(node)
     return node
+  }
+  get() {
+    return this.nodes
   }
 }
 
