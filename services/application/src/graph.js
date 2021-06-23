@@ -40,15 +40,15 @@ export class Graph {
     //. maybe get list of nodes and edges to add/update/delete, then sort them,
     // then execute them?
     //. for now, get list of nodes to write
-    const transactions = []
+    const actions = { add: [], update: [], delete: [] }
     const nodes = this.nodes.get() // gets all
     for (const node of nodes) {
-      // if (node not in graphDb.nodes) {
-      // transactions.push(add this node)
-      // }
+      if (!graphDb.nodes.has(node)) {
+        actions.add.push(node)
+      }
     }
-    //. execute transactions
-    // db.execute(transactions)
+    //. execute actions
+    // db.execute(actions)
   }
 }
 
@@ -74,8 +74,14 @@ class Nodes {
     this.nodes.push(node)
     return node
   }
-  get() {
+  get(node = undefined) {
+    if (node) {
+      return []
+    }
     return this.nodes
+  }
+  has(node) {
+    return this.get(node).length > 0
   }
 }
 
