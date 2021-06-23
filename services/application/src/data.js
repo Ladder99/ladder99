@@ -48,26 +48,7 @@ export class Data {
     return false
   }
 
-  // // traverse the json tree and return all elements and relations
-  // getElements() {
-  //   const elements = []
-  //   traverse(this.json, els => {
-  //     elements.push(...els)
-  //   })
-  //   return elements
-  // }
-
-  // // traverse the json tree and return all data items
-  // getDataItems() {
-  //   const allDataItems = []
-  //   libapp.traverse(this.json, dataItems => {
-  //     allDataItems.push(...dataItems)
-  //   })
-  //   return allDataItems
-  // }
-
   // traverse tree and add nodes and edges to the probe graph structure.
-  // callback(key, obj, node, parent)
   getProbeGraph() {
     const graph = new Graph()
     const callbacks = {
@@ -105,17 +86,6 @@ export class Data {
     return graph
   }
 
-  // // given a group (ie 'Samples', 'Events', 'Condition')
-  // // and datanode (the dataitem without its group and type info),
-  // // return a list of dataItems (objects with group and type info).
-  // function getDataItems(group, datanode) {
-  //   // add group and type to the datanode
-  //   const dataItems = Object.entries(datanode).map(([type, value]) => {
-  //     return { group, type, ...value }
-  //   })
-  //   return dataItems
-  // }
-
   getCurrentData() {
     let deviceName = null
     let group = null
@@ -124,14 +94,13 @@ export class Data {
       DeviceStream: (key, obj, node, parent) => {
         deviceName = obj.name
       },
-      // // given a group (ie 'Samples', 'Events', 'Condition')
-      Samples: (key, obj) => (group = key),
-      Events: (key, obj) => (group = key),
-      Condition: (key, obj) => (group = key),
+      Samples: key => (group = key),
+      Events: key => (group = key),
+      Condition: key => (group = key),
       VariableDataSet: () => {}, //. skip these for now
       Other: (key, obj, node, parent) => {
         if (obj.dataItemId && !obj.dataItemId.startsWith('_')) {
-          dataitems.push({ elementType: key, ...obj })
+          dataitems.push({ elementType: key, group, ...obj })
         }
       },
     }
