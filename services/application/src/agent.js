@@ -18,8 +18,12 @@ export class Agent {
     this.fetchCount = params.fetchCount
   }
 
-  //
-  async init() {}
+  // init agent
+  async init() {
+    //. read probe info incl device info?
+    //. read dataitems.yaml to translate shdr id to canonical id?
+    //. or do that with a path-to-canonicalId translator?
+  }
 
   // start a 'thread' to handle data from the given base agent url
   async start() {
