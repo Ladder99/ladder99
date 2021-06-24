@@ -1,3 +1,6 @@
+# dataItems
+# canonical ids on left, shdr ids on right
+
 dataItems:
   - device-availability: avail
   - device-asset-changed: dev_asset_chg
