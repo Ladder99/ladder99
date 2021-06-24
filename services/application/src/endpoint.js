@@ -1,14 +1,19 @@
+// endpoint
+// fetch data from url endpoint as xml or json
+
 import fs from 'fs' // node lib
 import fetch from 'node-fetch' // see https://github.com/node-fetch/node-fetch
-// import * as libapp from './libapp.js'
 import convert from 'xml-js' // see https://github.com/nashwaan/xml-js
+// import * as libapp from './libapp.js'
 
 export class Endpoint {
   constructor(baseUrl) {
     this.baseUrl = baseUrl // eg http://localhost:5000
   }
 
-  // get array of endpoint objects - static method
+  // get array of endpoint objects
+  // str can be a url, a comma-separated list of urls, or a .txt file with a url per line
+  // note this is a STATIC fn
   static getEndpoints(endpointsStr) {
     let arr = []
     if (endpointsStr.includes(',')) {
@@ -23,8 +28,8 @@ export class Endpoint {
     return endpoints
   }
 
-  // get data from agent rest endpoint as xml or json
-  // note this is the STATIC fn
+  // get data from agent rest endpoint as xml or json.
+  // note this is a STATIC fn - see also the method.
   static async fetchData(url, fetchJson = true) {
     console.log(`Getting data from ${url}...`)
     const headers = fetchJson ? { Accept: 'application/json' } : {}

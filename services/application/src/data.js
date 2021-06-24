@@ -1,8 +1,6 @@
 // data
 // wraps agent data returned from probe, current, and sample endpoints
 
-//. switch back to using xml, or convert it to json/xmltree structure
-
 import * as libapp from './libapp.js'
 import { Graph } from './graph.js'
 
@@ -48,13 +46,14 @@ export class Data {
     return false
   }
 
-  // traverse tree and add nodes and edges to the probe graph structure.
+  // traverse json tree and add nodes and edges to a graph structure.
   getProbeGraph() {
     const graph = new Graph()
+    // define callbacks for different object types encountered
     const callbacks = {
       MTConnectDevices: (key, obj, node, parent) => {
-        // obj is an object with Header and Devices keys - will recurse
-        const n = graph.nodes.add({ elementType: key }) // add root object with no attribs or edges
+        // obj has Header and Devices keys - will recurse
+        graph.nodes.add({ elementType: key }) // add root object with no attribs or edges
       },
       Header: (key, obj, node, parent) => {
         // obj is a leaf object with instanceId, version etc

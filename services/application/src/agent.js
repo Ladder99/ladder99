@@ -26,14 +26,14 @@ export class Agent {
       const data = await this.fetchData('probe')
       if (await data.unavailable()) break probe // waits some time
       this.instanceId = data.getInstanceId()
-      await this.handleProbe(data)
+      await this.handleProbe(data) // update db
 
       // get last known values of all dataitems, write to db
       current: do {
         const data = await this.fetchData('current')
         if (await data.unavailable()) break current // waits some time
         if (data.instanceIdChanged(this.instanceId)) break probe
-        await this.handleCurrent(data)
+        await this.handleCurrent(data) // update db
 
         process.exit(0)
 

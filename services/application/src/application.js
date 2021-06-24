@@ -33,14 +33,14 @@ class Application {
     const endpoints = Endpoint.getEndpoints(params.agentEndpoints)
     console.log(`Agent endpoints:`, endpoints)
 
-    // get agents
+    // create agents
     const agents = endpoints.map(
       endpoint => new Agent({ db, endpoint, params })
     )
 
     // run agents
-    // node is single threaded with an event loop,
-    // so these agent 'threads' shouldn't clobber each other
+    // node is single threaded with an event loop
+    //. run these in serial so don't conflict with db synching?
     for (const agent of agents) {
       agent.start()
     }
