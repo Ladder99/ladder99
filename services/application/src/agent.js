@@ -18,10 +18,17 @@ export class Agent {
     this.fetchCount = params.fetchCount
   }
 
+  // async probe() {
+  //   const data = await this.fetchData('probe')
+  //   if (await data.unavailable()) break probe // waits some time
+  //   this.instanceId = data.getInstanceId()
+  //   await this.handleProbe(data) // update db
+  // }
+
   // start a 'thread' to handle data from the given base agent url
   async start() {
     // get device structures and write to db
-    //. will need to compare with existing graph structure in db - add/update as needed
+    //. will need to compare with existing graph structure in db and add/update as needed
     probe: do {
       const data = await this.fetchData('probe')
       if (await data.unavailable()) break probe // waits some time
@@ -58,7 +65,7 @@ export class Agent {
   }
 
   async handleProbe(data) {
-    const probeGraph = data.getProbeGraph() // get probe data into graph structure - see Data.getGraph
+    const probeGraph = data.getProbeGraph() // get probe data into graph structure
     libapp.print(probeGraph)
     // const dbGraph = new Graph
     // await dbGraph.read(this.db)

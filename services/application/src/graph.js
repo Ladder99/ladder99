@@ -46,16 +46,13 @@ export class Graph {
     const actions = { add: [], update: [], delete: [] }
     const nodes = this.nodes.get() // gets all
     if (nodes) {
-      // if (!Array.isArray(nodes)) {
-      // nodes = [nodes]
-      // }
       for (const node of nodes) {
         if (!graphDb.nodes.has(node)) {
           actions.add.push(node)
         }
       }
     }
-    //. sort nodes and edges topologically/depth first - oy
+    //. sort nodes and edges topologically/depth first? oy
     //. execute actions
     // db.execute(actions)
     console.log(actions)

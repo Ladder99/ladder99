@@ -41,6 +41,12 @@ class Application {
     // run agents
     // node is single threaded with an event loop
     //. run these in serial so don't conflict with db synching?
+    // or at least the probe part, since that writes db metadata?
+    // but probe needs to be in the agent.start loop as the fallback.
+    // for (const agent of agents) {
+    //   await agent.probe()
+    // }
+    // run in parallel
     for (const agent of agents) {
       agent.start()
     }
