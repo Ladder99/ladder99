@@ -1,4 +1,4 @@
-# devices
+# setup
 # this defines the devices.xml structure, along with the model yamls.
 # read by services/adapter/src/adapter.js.
 # sources define the inputs to the cache.
@@ -14,7 +14,7 @@
 devices:
   - id: pa # this is substituted into the model yaml and sources
     model: ccs-pa # for xml structure - see models/ccs-pa/device.yaml
-    #. shift these left, look for explicitly
+    #. shift these up, look for each explicitly
     properties: # these are substituted into the model yaml
       uuid: e05363af-95d1-4354-b749-8fbb09d3499e
       serialNumber: '001'

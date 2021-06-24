@@ -38,15 +38,19 @@ class Application {
       endpoint => new Agent({ db, endpoint, params })
     )
 
+    // initialize agents
+    // this reads the agent yaml file and sets up propdefs in the db
+    // run in serial so don't have db conflicts
+    // for (const agent of agents) {
+    //   await agent.init()
+    // }
+
     // run agents
     // node is single threaded with an event loop
     //. run these in serial so don't conflict with db synching?
     // or at least the probe part, since that writes db metadata?
     // but probe needs to be in the agent.start loop as the fallback.
-    // for (const agent of agents) {
-    //   await agent.probe()
-    // }
-    // run in parallel
+    // run in parallel so agents are independent of each other
     for (const agent of agents) {
       agent.start()
     }

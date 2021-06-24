@@ -18,12 +18,8 @@ export class Agent {
     this.fetchCount = params.fetchCount
   }
 
-  // async probe() {
-  //   const data = await this.fetchData('probe')
-  //   if (await data.unavailable()) break probe // waits some time
-  //   this.instanceId = data.getInstanceId()
-  //   await this.handleProbe(data) // update db
-  // }
+  //
+  async init() {}
 
   // start a 'thread' to handle data from the given base agent url
   async start() {
