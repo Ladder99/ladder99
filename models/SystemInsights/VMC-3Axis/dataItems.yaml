@@ -1,4 +1,4 @@
-variables:
+dataItems:
   - device-availability: avail
   - device-asset-changed: dev_asset_chg
   - device-asset-removed: dev_asset_rem
@@ -15,12 +15,12 @@ variables:
   - x-system: Xsystem
   - y-actual: y2
   - y-commanded: y3
-  - y-load-pct: n3
+  - y-load-pct: n3 # duplicate!
   - y-load: Yloadc
   - y-system: Ysystem
   - z-actual: z2
   - z-commanded: z3
-  - z-load-pct: n3
+  - z-load-pct: n3 # duplicate!
   - z-load: Zloadc
   - z-system: Zsystem
   - controller-message: msg
