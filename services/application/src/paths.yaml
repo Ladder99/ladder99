@@ -1,5 +1,7 @@
-# path expr on left, canonicalId on right
+# paths
+# defines canonical ids in terms of short xpath-like expressions
 
+# path expr on left, canonicalId on right
 # path exprs are abbreviated xpaths
 # just parens assumes element is a DataItem,
 # and attribute order is category,type,subtype, then have named attribs

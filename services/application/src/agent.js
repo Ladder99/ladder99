@@ -67,7 +67,7 @@ export class Agent {
   async handleProbe(data) {
     const probeGraph = data.getProbeGraph() // get probe data into graph structure
     libapp.print(probeGraph)
-    // const dbGraph = new Graph
+    // const dbGraph = new Graph()
     // await dbGraph.read(this.db)
     //. now compare probe graph with db graph, update db as needed
     // await probeGraph.write(this.db)
