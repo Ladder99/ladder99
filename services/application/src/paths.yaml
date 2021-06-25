@@ -37,7 +37,7 @@ paths:
   Axes/z/(event,axis_state): z-axis-state
 
   Axes/c/(sample,load): c-load
-  Axes/c/(sample,load): s-load #??
+  Axes/c/(sample,load,name=Sload): s-load #?? have this in a custom yaml file for setup?
   Axes/c/(condition,angle): c-angle-condition
   Axes/c/(sample,angular_velocity): c-angular-velocity
   Axes/c/(sample,rotary_velocity,actual): c-rotary-velocity
@@ -58,7 +58,7 @@ paths:
   Axes/a/(event,axis_state): a-axis-state
 
   Axes/c2/(sample,load): c2-load
-  Axes/c2/(sample,load): s2-load #??? only diff is id/name
+  Axes/c2/(sample,load,name=S2load): s2-load #? only diff is id/name
   Axes/c2/(condition,angle): c2-angle-condition
   Axes/c2/(sample,angular_velocity): c2-angular-velocity
   Axes/c2/(sample,rotary_velocity): c2-rotary-velocity
