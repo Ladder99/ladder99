@@ -19,22 +19,22 @@ paths:
   Axes/x/(sample,position,actual,coordinateSystem=work): x-pos-work
   Axes/x/(condition,position): x-pos-condition
   Axes/x/(sample,load): x-load
-  Axes/x/(sample,axis_feed): x-feedrate
-  Axes/x/(event/axis_state): x-axis-state
+  Axes/x/(sample,axis_feed): x-feedrate # x-axis-feed?
+  Axes/x/(event,axis_state): x-axis-state
 
   Axes/y/(sample,position,actual,coordinateSystem=machine): y-pos-machine
   Axes/y/(sample,position,actual,coordinateSystem=work): y-pos-work
   Axes/y/(condition,position): y-pos-condition
   Axes/y/(sample,load): y-load
-  Axes/y/(sample,axis_feed): y-feedrate
-  Axes/y/(event/axis_state): y-axis-state
+  Axes/y/(sample,axis_feed): y-feedrate # y-axis-feed?
+  Axes/y/(event,axis_state): y-axis-state
 
   Axes/z/(sample,position,actual,coordinateSystem=machine): z-pos-machine
   Axes/z/(sample,position,actual,coordinateSystem=work): z-pos-work
   Axes/z/(condition,position): z-pos-condition
   Axes/z/(sample,load): z-load
-  Axes/z/(sample,axis_feed): z-feedrate
-  Axes/z/(event/axis_state): z-axis-state
+  Axes/z/(sample,axis_feed): z-feedrate # z-axis-feed?
+  Axes/z/(event,axis_state): z-axis-state
 
   Axes/c/(sample,load): c-load
   Axes/c/(sample,load): s-load #??
