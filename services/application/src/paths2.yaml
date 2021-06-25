@@ -1,0 +1,134 @@
+# path expr on left, canonicalId on right
+
+# path exprs are abbreviated xpaths
+# just parens assumes element is a DataItem,
+# and attribute order is category,type,subtype, then have named attribs.
+# if just element type is given assumes it's only for first one listed.
+
+paths:
+  Device:
+    (event,availability): device-available
+    (event,functional_mode): device-functional-mode
+    (event,asset_changed): device-asset-changed
+    (event,asset_removed): device-asset-removed
+
+    Axes:
+      (condition,actuator): servo-condition
+      (condition,system): spindle-condition
+
+      x:
+        (sample,position,actual,coordinateSystem=machine): x-pos-machine
+        (sample,position,actual,coordinateSystem=work): x-pos-work
+        (condition,position): x-travel-condition
+        (sample,load,units=percent): x-load
+        (sample,axis_feed,units=millimeter/second): x-feedrate
+        (event,axis_state): x-axisstate
+
+      y:
+        (sample,position,actual,coordinateSystem=machine): y-pos-machine
+        (sample,position,actual,coordinateSystem=work): y-pos-work
+        (condition,position): y-travel-condition
+        (sample,load,units=percent): y-load
+        (sample,axis_feed,units=millimeter/second): y-feedrate
+        (event,axis_state): y-axisstate
+
+      z:
+        (sample,position,actual,coordinateSystem=machine): z-pos-machine
+        (sample,position,actual,coordinateSystem=work): z-pos-work
+        (condition,position): z-travel-condition
+        (sample,load,units=percent): z-load
+        (sample,axis_feed,units=millimeter/second): z-feedrate
+        (event,axis_state): z-axisstate
+
+      c:
+        (sample,load,units=percent): c-load
+        (sample,load,units=percent): s-load
+        (condition,angle): c-travel-condition
+        (sample,angular_velocity): c-feedrate
+        (sample,rotary_velocity,actual): c-speed
+        (sample,temperature): c-temp
+        (sample,angle,actual,coordinateSystem=machine): c-pos-machine
+        (sample,angle,actual,coordinateSystem=work): c-pos-work
+        (event,rotary_mode): c-mode
+        (condition,load): s-load-condition
+        (condition,temperature): s-temp-condition
+        (event,axis_state): c-axisstate
+
+      a:
+        (sample,load): a-load
+        (sample,angular_velocity): a-feedrate
+        (condition,angle): a-travel-condition
+        (sample,angle,actual,coordinateSystem=machine): a-pos-machine
+        (sample,angle,actual,coordinateSystem=work): a-pos-work
+        (event,rotary_mode): a-mode
+        (event,axis_state): a-axisstate
+
+      c2:
+        (sample,load): c2-load
+        (sample,load): s2-load
+        (condition,angle): c2-travel-condition
+        (sample,angular_velocity): c2-feedrate
+        (sample,rotary_velocity): c2-speed
+        (sample,temperature): c2-temp
+        (sample,angle,actual,coordinateSystem=machine): c2-pos-machine
+        (sample,angle,actual,coordinateSystem=work): c2-pos-work
+        (event,rotary_mode): c2-mode
+        (condition,load): s2-load-condition
+        (condition,temperature): s2-temp-condition
+        (event,axis_state): c2-axisstate
+
+    Controller:
+      (condition,communications): communications-condition
+      (condition,logic_program): logic-condition
+      (condition,system): system-condition
+      (event,emergency_stop): emergency-stop
+      (sample,accumulated_time,x:auto): auto-time
+      (sample,accumulated_time,x:total): total-time
+      (sample,accumulated_time,x:cut): cut-time
+      (sample,accumulated_time,x:totalcuttime): total-auto-cut-time
+      (event,pallet_id): pallet-id
+
+      Path:
+        (event,program_edit): path-edit-mode
+        (event,program_edit_name): path-edit-name
+        (event,chuck_state): chuck-state
+        (event,path_feedrate_override,rapid): feedrate-rapid-override
+        (event,path_feedrate_override,programmed): feedrate-override
+        (event,rotary_velocity_override): rotary-override
+        (event,program): program
+        (event,program,x:sub): subprogram
+        (event,line): line
+        (event,x:unit): unit
+        (event,x:sequence_number): sequence-number
+        (event,part_count): part-count
+        (sample,path_feedrate): feedrate-actual
+        (event,tool_number): tool-number
+        (event,x:tool_group): tool-group
+        (event,x:tool_suffix): tool-suffix
+        (event,execution): execution
+        (event,controller_mode): controller-mode
+        (event,program_comment): program-comment
+        (event,program_comment,x:sub): subprogram-comment
+        (condition,motion_program): motion-program-condition
+        (condition,system): path-system-condition
+
+    Door:
+      (event,door_state): doorstate
+
+    Systems:
+      Electric:
+        (condition,system): electric-condition
+
+      Hydraulic:
+        (condition,system): hydraulic-condition
+
+      Coolant:
+        (condition,system): coolant-condition
+        (sample,temperature): coolant-temp
+        (sample,concentration): coolant-concentration
+
+      Pneumatic:
+        (condition,system): pneumatic-condition
+
+      Lubrication:
+        (condition,system): lubrication-condition
