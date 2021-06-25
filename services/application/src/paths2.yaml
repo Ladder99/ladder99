@@ -22,7 +22,7 @@ paths:
         (condition,position): x-travel-condition
         (sample,load,units=percent): x-load
         (sample,axis_feed,units=millimeter/second): x-feedrate
-        (event,axis_state): x-axisstate
+        (event,axis_state): x-axis-state
 
       y:
         (sample,position,actual,coordinateSystem=machine): y-pos-machine
@@ -30,7 +30,7 @@ paths:
         (condition,position): y-travel-condition
         (sample,load,units=percent): y-load
         (sample,axis_feed,units=millimeter/second): y-feedrate
-        (event,axis_state): y-axisstate
+        (event,axis_state): y-axis-state
 
       z:
         (sample,position,actual,coordinateSystem=machine): z-pos-machine
@@ -38,7 +38,7 @@ paths:
         (condition,position): z-travel-condition
         (sample,load,units=percent): z-load
         (sample,axis_feed,units=millimeter/second): z-feedrate
-        (event,axis_state): z-axisstate
+        (event,axis_state): z-axis-state
 
       c:
         (sample,load,units=percent): c-load
@@ -52,7 +52,7 @@ paths:
         (event,rotary_mode): c-mode
         (condition,load): s-load-condition
         (condition,temperature): s-temp-condition
-        (event,axis_state): c-axisstate
+        (event,axis_state): c-axis-state
 
       a:
         (sample,load): a-load
@@ -61,7 +61,7 @@ paths:
         (sample,angle,actual,coordinateSystem=machine): a-pos-machine
         (sample,angle,actual,coordinateSystem=work): a-pos-work
         (event,rotary_mode): a-mode
-        (event,axis_state): a-axisstate
+        (event,axis_state): a-axis-state
 
       c2:
         (sample,load): c2-load
@@ -75,7 +75,7 @@ paths:
         (event,rotary_mode): c2-mode
         (condition,load): s2-load-condition
         (condition,temperature): s2-temp-condition
-        (event,axis_state): c2-axisstate
+        (event,axis_state): c2-axis-state
 
     Controller:
       (condition,communications): communications-condition
@@ -113,7 +113,7 @@ paths:
         (condition,system): path-system-condition
 
     Door:
-      (event,door_state): doorstate
+      (event,door_state): door-state
 
     Systems:
       Electric:
