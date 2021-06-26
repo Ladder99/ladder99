@@ -4,8 +4,8 @@
 import { Db } from './db.js'
 import { Agent } from './agent.js'
 import { Endpoint } from './endpoint.js'
-import { Graph } from './graph.js'
-import * as libapp from './libapp.js'
+// import { Graph } from './graph.js'
+// import * as libapp from './libapp.js'
 
 console.log(`MTConnect Application starting`)
 console.log(`---------------------------------------------------`)
@@ -21,7 +21,7 @@ const params = {
 
 class Application {
   async start(params) {
-    // get database
+    // get database, do migrations
     const db = new Db()
     await db.start()
 

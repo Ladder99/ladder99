@@ -1,17 +1,10 @@
 // database class
-// wraps arangodb
+// wraps postgres/timescaledb/timegraph db
 
-// import fs from 'fs' // node lib
-// import pg from 'pg' // postgres driver https://github.com/brianc/node-postgres
-// const { Pool } = pg // import { Client } from 'pg' gives error, so must do this
-import { Database, aql } from 'arangojs' // https://github.com/arangodb/arangojs
+import fs from 'fs' // node lib
+import pg from 'pg' // postgres driver https://github.com/brianc/node-postgres
+const { Pool } = pg // import { Client } from 'pg' gives error, so must do this
 import * as libapp from './libapp.js'
-
-// arangodb
-const arangoHost = process.env.ARANGO_HOST || 'http://localhost'
-const arangoPort = process.env.ARANGO_PORT || '8529'
-const arangoUrl = `${arangoHost}:${arangoPort}`
-const arangoDatabase = process.env.ARANGO_DATABASE || 'ladder99'
 
 export class Db {
   constructor() {
@@ -25,7 +18,6 @@ export class Db {
   }
 
   async connect() {
-    const system = new Database(arangoUrl)
     let client = null
     const pool = new Pool()
     do {
@@ -76,29 +68,10 @@ export class Db {
 
   //. handle versions - use meta table
   async migrate() {
-    // const path = `migrations/001-init.sql`
-    // const sql = String(fs.readFileSync(path))
-    // console.log(`Migrating database structures...`)
-    // await this.client.query(sql)
-    // create our db if not there
-    const dbs = await system.listDatabases()
-    console.log(dbs)
-    if (!dbs.includes(arangoDatabase)) {
-      console.log(`Creating database ${arangoDatabase}...`)
-      await system.createDatabase(arangoDatabase)
-    }
-    const db = system.database(arangoDatabase)
-
-    // create collections if not there
-    const collections = await db.listCollections()
-    if (!collections.find(collection => collection.name === 'nodes')) {
-      console.log(`Creating nodes collection...`)
-      await db.createCollection('nodes')
-    }
-    if (!collections.find(collection => collection.name === 'edges')) {
-      console.log(`Creating edges collection...`)
-      await db.createEdgeCollection('edges')
-    }
+    const path = `migrations/001-init.sql`
+    const sql = String(fs.readFileSync(path))
+    console.log(`Migrating database structures...`)
+    await this.client.query(sql)
   }
 
   async query(sql) {
