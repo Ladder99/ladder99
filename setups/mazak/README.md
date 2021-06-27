@@ -1,10 +1,3 @@
-don't need setup.yaml?
-wait, let's make one so can pull from all 5 devices in one setup
+# Mazak setup
 
-Note: need to append
-
-    host all all all md5
-
-to db/data/pg_hba.conf file, somehow
-
-(don't seem to need if running on mac?)
+Mazak provides MTConnect agent endpoints for some CNC machines here - http://mtconnect.mazakcorp.com/. The x-y axes are not included though, for security purposes.
