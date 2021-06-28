@@ -1,13 +1,21 @@
 // data
 // wraps agent data returned from probe, current, and sample endpoints
-// import * as libapp from './libapp.js'
+
+import * as libapp from './libapp.js'
 
 export class Data {
+  type = null
+
   constructor() {
     this.json = null
     this.errors = null
     this.header = null
     this.instanceId = null
+  }
+
+  async read(endpoint) {
+    this.json = await endpoint.fetchJson(this.type)
+    this.parseHeader()
   }
 
   // get errors, header, and instanceId from json
@@ -27,12 +35,19 @@ export class Data {
 // Probe
 
 export class Probe extends Data {
-  async read(endpoint) {
-    this.json = await endpoint.fetchJson('probe')
-    this.parseHeader()
-  }
+  type = 'probe'
+  // async read(endpoint) {
+  //   this.json = await endpoint.fetchJson('probe')
+  //   this.parseHeader()
+  // }
   async write(db) {
     console.log(this.json)
+    const nodes = []
+    const edges = []
+    const addNode = node => nodes.push(node)
+    const addEdge = edge => edges.push(edge)
+    libapp.traverse(this.json, addNode, addEdge)
+    console.log(nodes)
     // const probeGraph = data.getProbeGraph() // get probe data into graph structure
     // libapp.print(probeGraph)
     // const dbGraph = new Graph()
@@ -45,9 +60,8 @@ export class Probe extends Data {
 
 // Current
 
-// export class CurrentData extends Data {}
-
-// async handleCurrentData(data) {
+// export class CurrentData extends Data {
+// async write(data) {
 //   // get sequence info from header
 //   // const { firstSequence, nextSequence, lastSequence } =
 //   //   data.json.MTConnectStreams.Header
@@ -58,10 +72,13 @@ export class Probe extends Data {
 //   // await db.writeGraphValues(graph)
 //   console.log(dataitems)
 // }
+// }
 
 // Sample
 
-// async handleSampleData(data) {
+// export class SampleData extends Data {
+
+// async write(data) {
 //   // get sequence info from header
 //   // const header = json.MTConnectStreams.Header
 //   const header = data.getHeader()
@@ -113,7 +130,6 @@ export class Probe extends Data {
 //   }
 // }
 
-// export class SampleData extends Data {
 //   async fetchSample() {
 //     this.from = null
 //     this.count = this.fetchCount

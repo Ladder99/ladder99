@@ -24,9 +24,9 @@ export class Agent {
   // init agent
   async init() {
     //. read probe info incl device info, instanceId
-    const probe = new Probe()
     //. read dataitems.yaml to translate shdr id to canonical id?
     //. or do that with a path-to-canonicalId translator?
+    const probe = new Probe()
     await probe.read(this.endpoint)
     await probe.write(this.db)
     this.instanceId = probe.instanceId
