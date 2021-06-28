@@ -29,23 +29,6 @@ export class Data {
     return this.getHeader().instanceId
   }
 
-  async unavailable() {
-    if (!this.json) {
-      console.log(`No data available - will wait and try again...`)
-      await libapp.sleep(4000)
-      return true
-    }
-    return false
-  }
-
-  instanceIdChanged(instanceId) {
-    if (this.getInstanceId() !== instanceId) {
-      console.log(`InstanceId changed - falling back to probe...`)
-      return true
-    }
-    return false
-  }
-
   // traverse json tree and add nodes and edges to a graph structure.
   getProbeGraph() {
     const graph = new Graph()

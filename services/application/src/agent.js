@@ -31,15 +31,15 @@ export class Agent {
     //. will need to compare with existing graph structure in db and add/update as needed
     probe: do {
       const data = await this.fetchData('probe')
-      if (await data.unavailable()) break probe // waits some time
+      if (await unavailable(data)) break probe // waits some time
       this.instanceId = data.getInstanceId()
       await this.handleProbe(data) // update db
 
       // get last known values of all dataitems, write to db
       current: do {
         const data = await this.fetchData('current')
-        if (await data.unavailable()) break current // waits some time
-        if (data.instanceIdChanged(this.instanceId)) break probe
+        if (await unavailable(data)) break current // waits some time
+        if (instanceIdChanged(data, this.instanceId)) break probe
         await this.handleCurrent(data) // update db
 
         process.exit(0)
@@ -47,8 +47,8 @@ export class Agent {
         // get sequence of dataitem values, write to db
         sample: do {
           // const data = await this.fetchSample()
-          // if (await data.unavailable()) break sample // waits some time
-          // if (data.instanceIdChanged(this.instanceId)) break probe
+          // if (await unavailable(data)) break sample // waits some time
+          // if (instanceIdChanged(data, this.instanceId)) break probe
           // await this.handleSample(data)
           // console.log('.')
           // await libapp.sleep(this.fetchInterval)
@@ -169,4 +169,21 @@ export class Agent {
       await this.db.query(sql)
     }
   }
+}
+
+async function unavailable(data) {
+  if (!data.json) {
+    console.log(`No data available - will wait and try again...`)
+    await libapp.sleep(4000)
+    return true
+  }
+  return false
+}
+
+function instanceIdChanged(data, instanceId) {
+  if (data.getInstanceId() !== instanceId) {
+    console.log(`InstanceId changed - falling back to probe...`)
+    return true
+  }
+  return false
 }
