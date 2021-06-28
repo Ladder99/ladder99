@@ -56,13 +56,13 @@ services:
     profiles:
       - full
       - db
-    environment:
-      ARANGO_HOST:
-      ARANGO_PORT:
-      ARANGO_DATABASE:
-      ARANGO_USER:
-      ARANGO_ROOT_PASSWORD:
-      # ARANGO_PASSWORD:
+    # environment:
+    #   ARANGO_HOST:
+    #   ARANGO_PORT:
+    #   ARANGO_DATABASE:
+    #   ARANGO_USER:
+    #   ARANGO_ROOT_PASSWORD:
+    #   # ARANGO_PASSWORD:
     # init: true
     volumes:
       - ./$SETUP/volumes/db/data:/var/lib/arangodb3
@@ -192,15 +192,15 @@ services:
     #   - db
     environment:
       # override these as needed in setup compose.yaml
-      - AGENT_ENDPOINTS=http://agent:5000
-      - FETCH_INTERVAL=2000
-      - FETCH_COUNT=800
-      #.
-      - PGHOST=db
-      - PGPORT=5432
-      - PGDATABASE
-      - PGUSER
-      - PGPASSWORD
+      AGENT_ENDPOINTS: http://agent:5000
+      FETCH_INTERVAL: 2000
+      FETCH_COUNT: 800
+      ARANGO_HOST:
+      ARANGO_PORT:
+      ARANGO_DATABASE:
+      ARANGO_USER:
+      ARANGO_ROOT_PASSWORD:
+      # ARANGO_PASSWORD:
     # this fixes a problem on linux - works on mac okay also
     # see https://stackoverflow.com/a/67158212/243392
     extra_hosts:
