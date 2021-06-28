@@ -51,11 +51,14 @@ export function traverse(
         traverse(value, nodes, edges, key, _key, newparents)
       }
     }
-    obj.path = obj.parents
-      .slice(2)
-      .map(node => node.id || node.tag)
-      // .map(node => (node.id ? `${node.tag}(id=${node.id})` : node.tag))
-      .join('/')
+    obj.path =
+      obj.parents
+        .slice(2)
+        .map(node => node.id || node.tag)
+        // .map(node => (node.id ? `${node.tag}(id=${node.id})` : node.tag))
+        .join('/') +
+      '/' +
+      getStep(obj)
     delete obj.parents
     nodes.push(obj)
     if (parentKey) {
@@ -68,4 +71,14 @@ export function traverse(
   } else {
     console.log('>>what is this?', { node })
   }
+}
+
+function getStep(obj) {
+  let step = ''
+  switch (obj.tag) {
+    case 'DataItem':
+      step = `DataItem(${obj.category},${obj.type},${obj.subType})`
+      break
+  }
+  return step
 }
