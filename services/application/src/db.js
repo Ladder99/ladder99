@@ -1,10 +1,8 @@
 // database class
 // wraps arangodb
 
-// import fs from 'fs' // node lib
-// import pg from 'pg' // postgres driver https://github.com/brianc/node-postgres
-// const { Pool } = pg // import { Client } from 'pg' gives error, so must do this
-import { Database, aql } from 'arangojs' // https://github.com/arangodb/arangojs
+// import fs from 'fs' // node lib - filesystem
+import { Database } from 'arangojs' // https://github.com/arangodb/arangojs
 import * as libapp from './libapp.js'
 
 // arangodb
@@ -15,38 +13,19 @@ const arangoDatabase = process.env.ARANGO_DATABASE || 'ladder99'
 
 export class Db {
   constructor() {
-    this.client = null
+    this.system = null
+    this.db = null
+    this.nodes = null
+    this.edges = null
   }
 
   async start() {
+    this.setSignals()
     await this.connect()
-    this.init()
     await this.migrate()
   }
 
-  async connect() {
-    const system = new Database(arangoUrl)
-    let client = null
-    const pool = new Pool()
-    do {
-      try {
-        const params = {
-          host: process.env.PGHOST,
-          port: process.env.PGPORT,
-          database: process.env.PGDATABASE,
-        }
-        console.log(`Trying to connect to db...`, params)
-        client = await pool.connect() // uses envars PGHOST, PGPORT etc
-      } catch (error) {
-        console.log(`Error ${error.code} - will sleep before retrying...`)
-        console.log(error)
-        await libapp.sleep(4000)
-      }
-    } while (!client)
-    this.client = client
-  }
-
-  init() {
+  setSignals() {
     const that = this
 
     //. need init:true in compose yaml to get SIGINT etc? tried - nowork
@@ -67,55 +46,68 @@ export class Db {
     }
   }
 
+  async connect() {
+    let system = null
+    do {
+      try {
+        console.log(`Trying to connect to db...`, arangoUrl)
+        system = new Database(arangoUrl)
+      } catch (error) {
+        console.log(`Error ${error.code} - will sleep before retrying...`)
+        console.log(error)
+        await libapp.sleep(4000)
+      }
+    } while (!system)
+    this.system = system
+  }
+
   disconnect() {
-    if (!this.client) {
-      console.log(`Releasing db client...`)
-      this.client.release()
+    console.log(`Releasing db...`)
+    // if (!this.system) {
+    //   this.system //.
+    // }
+    if (!this.db) {
+      this.db //.
     }
   }
 
   //. handle versions - use meta table
   async migrate() {
+    console.log(`Migrating database structures...`)
+    await this.createDb()
+    await this.createCollections()
     // const path = `migrations/001-init.sql`
     // const sql = String(fs.readFileSync(path))
-    // console.log(`Migrating database structures...`)
-    // await this.client.query(sql)
-    // create our db if not there
-    const dbs = await system.listDatabases()
+  }
+
+  // create our db if not there
+  async createDb() {
+    const dbs = await this.system.listDatabases()
     console.log(dbs)
     if (!dbs.includes(arangoDatabase)) {
       console.log(`Creating database ${arangoDatabase}...`)
-      await system.createDatabase(arangoDatabase)
+      await this.system.createDatabase(arangoDatabase)
     }
-    const db = system.database(arangoDatabase)
+    // db.useDatabase(arangoDatabase) //. ? see https://www.arangodb.com/tutorials/tutorial-node-js/
+    this.db = this.system.database(arangoDatabase)
+  }
 
-    // create collections if not there
-    const collections = await db.listCollections()
+  // create collections if not there
+  async createCollections() {
+    const collections = await this.db.listCollections()
     if (!collections.find(collection => collection.name === 'nodes')) {
       console.log(`Creating nodes collection...`)
-      await db.createCollection('nodes')
+      await this.db.createCollection('nodes')
     }
+    this.nodes = this.db.collection('nodes')
     if (!collections.find(collection => collection.name === 'edges')) {
       console.log(`Creating edges collection...`)
-      await db.createEdgeCollection('edges')
+      await this.db.createEdgeCollection('edges')
     }
+    this.edges = this.db.collection('edges')
   }
 
-  async query(sql) {
-    return await this.client.query(sql)
-  }
-
-  // //. read nodes and edges into graph structure
-  // async getGraph(Graph) {
-  //   const graph = new Graph()
-  //   const sql = `SELECT * FROM nodes;`
-  //   const res = await this.client.query(sql)
-  //   const nodes = res.rows // [{ _id, props }]
-  //   console.log(nodes)
-  //   for (const node of nodes) {
-  //     graph.addNode(node)
-  //   }
-  //   //. get edges also
-  //   return graph
+  // async query(sql) {
+  //   return await this.client.query(sql)
   // }
 }
