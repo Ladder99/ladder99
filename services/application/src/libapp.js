@@ -3,7 +3,7 @@ export function sleep(ms) {
 }
 
 export function isObject(node) {
-  return node !== null && typeof node === 'object'
+  return node !== null && typeof node === 'object' && !Array.isArray(node)
 }
 
 export function print(...obj) {
