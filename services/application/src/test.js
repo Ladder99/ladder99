@@ -6,28 +6,32 @@ const path = 'services/application/examples/mazak/5717sm.xml'
 const xml = fs.readFileSync(path).toString()
 const json = JSON.parse(convert.xml2json(xml, { compact: true }))
 // console.log(json)
-libapp.print(json)
-exit()
-traverse(json, callback)
+// libapp.print(json)
+
+const objs = []
 function callback(obj) {
-  console.log(obj)
+  objs.push(obj)
 }
+traverse(json, callback)
+console.log(objs)
 
 function traverse(node, callback, parentTag = null) {
   if (libapp.isObject(node)) {
     const keys = Object.keys(node)
+    let obj = { tag: parentTag }
     for (const key of keys) {
       const value = node[key]
       if (key === '_declaration') {
-        continue
+        // continue
       } else if (key === '_attributes') {
-        const obj = { tag: parentTag, ...value }
-        callback(obj)
-        // console.log(obj)
+        obj = { ...obj, ...value }
+      } else if (key === '_text') {
+        obj = { ...obj, value }
       } else {
         traverse(value, callback, key)
       }
     }
+    callback(obj)
   } else if (Array.isArray(node)) {
   } else {
   }
