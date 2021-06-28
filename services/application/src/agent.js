@@ -26,7 +26,6 @@ export class Agent {
   // start fetching and processing data
   async start() {
     // probe - get agent data structures and write to db
-    let instanceId = null
     probe: do {
       const probe = new Probe()
       await probe.read(this.endpoint)

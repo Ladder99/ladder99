@@ -33,7 +33,7 @@ class Application {
     )
 
     // // initialize agents
-    // //. this reads the agent yaml file and sets up propdefs in the db
+    // //. could read the agent yaml file and set up propdefs in the db
     // // run in serial so don't have db conflicts
     // for (const agent of agents) {
     //   await agent.init()

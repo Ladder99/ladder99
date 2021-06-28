@@ -1,28 +1,25 @@
 // data
 // wraps agent data returned from probe, current, and sample endpoints
-
 // import * as libapp from './libapp.js'
 
 export class Data {
-  // type is 'probe', 'current', 'sample'
-  constructor(type) {
-    this.type = type
+  constructor() {
     this.json = null
+    this.errors = null
     this.header = null
     this.instanceId = null
   }
 
-  parseHeader(json) {
-    this.json = json
+  // get errors, header, and instanceId from json
+  parseHeader() {
     // eg <Errors><Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error></Errors>
-    if (json.MTConnectError) {
-      console.log(this.json)
-      return this.json.MTConnectError.Errors
-      // const codes = this.json.MTConnectError.Errors.map(e => e.Error.errorCode)
+    if (this.json.MTConnectError) {
+      this.errors = this.json.MTConnectError.Errors.map(e => e.Error.errorCode)
+      throw new Error(JSON.stringify(this.errors))
     }
-    this.header = json.MTConnectDevices
-      ? json.MTConnectDevices.Header
-      : json.MTConnectStreams.Header
+    this.header = this.json.MTConnectDevices
+      ? this.json.MTConnectDevices.Header
+      : this.json.MTConnectStreams.Header
     this.instanceId = this.header.instanceId
   }
 }
@@ -30,14 +27,12 @@ export class Data {
 // Probe
 
 export class Probe extends Data {
-  constructor() {
-    super('probe')
-  }
   async read(endpoint) {
     this.json = await endpoint.fetchJson('probe')
     this.parseHeader()
   }
   async write(db) {
+    console.log(this.json)
     // const probeGraph = data.getProbeGraph() // get probe data into graph structure
     // libapp.print(probeGraph)
     // const dbGraph = new Graph()
