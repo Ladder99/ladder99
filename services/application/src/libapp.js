@@ -51,15 +51,7 @@ export function traverse(
         traverse(value, nodes, edges, key, _key, newparents)
       }
     }
-    obj.path =
-      obj.parents
-        .slice(2)
-        // .map(node => node.id || node.tag)
-        .map(getStep)
-        // .map(node => (node.id ? `${node.tag}(id=${node.id})` : node.tag))
-        .join('/') +
-      '/' +
-      getStep(obj)
+    obj.path = obj.parents.slice(2).map(getStep).join('/') + '/' + getStep(obj)
     delete obj.parents
     nodes.push(obj)
     if (parentKey) {
@@ -74,29 +66,39 @@ export function traverse(
   }
 }
 
-// const ignoreTags = new Set('DataItems,Components,Filters'.split(','))
+// const ignoreTags = new Set('DataItems,Components,Filters,Specifications'.split(','))
+
 const ignoreKeys = new Set(
   'category,type,subType,_key,tag,parents,id'.split(',')
 )
 
 function getStep(obj) {
-  let step = ''
+  let params = []
   // if (ignoreTags.has(obj.tag)) return step
   switch (obj.tag) {
     case 'DataItem':
-      let params = [obj.category, obj.type]
+      params = [obj.category, obj.type]
       if (obj.subType) params.push(obj.subType)
       for (const key of Object.keys(obj)) {
         if (!ignoreKeys.has(key)) {
           params.push(key + '=' + obj[key])
         }
       }
-      const paramsStr = params.map(param => param.toLowerCase()).join(',')
-      step = `DataItem(${paramsStr})`
       break
-    default:
-      step = obj.tag
+    case 'Axes':
+    case 'Device':
+    case 'Linear':
+      params = [obj.id]
+      break
+    case 'Specification':
+      params = [obj.type]
+      if (obj.subType) params.push(obj.subType)
       break
   }
+  const paramsStr =
+    params.length > 0
+      ? '(' + params.map(param => param.toLowerCase()).join(',') + ')'
+      : ''
+  const step = `${obj.tag}${paramsStr}`
   return step
 }
