@@ -45,8 +45,8 @@ export class Probe extends Data {
     const nodes = []
     const edges = []
     libapp.traverse(this.json, nodes, edges)
-    // console.log(nodes)
-    console.log(nodes.slice(0, 20))
+    console.log(nodes)
+    // console.log(nodes.slice(0, 20))
 
     // const probeGraph = data.getProbeGraph() // get probe data into graph structure
     // libapp.print(probeGraph)
