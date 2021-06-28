@@ -16,13 +16,16 @@ traverse(json, callback)
 console.log(objs)
 
 function traverse(node, callback, parentTag = null) {
-  if (libapp.isObject(node)) {
+  if (Array.isArray(node)) {
+    for (const el of node) {
+      traverse(el, callback, parentTag)
+    }
+  } else if (libapp.isObject(node)) {
     const keys = Object.keys(node)
     let obj = { tag: parentTag }
     for (const key of keys) {
       const value = node[key]
       if (key === '_declaration') {
-        // continue
       } else if (key === '_attributes') {
         obj = { ...obj, ...value }
       } else if (key === '_text') {
@@ -32,7 +35,6 @@ function traverse(node, callback, parentTag = null) {
       }
     }
     callback(obj)
-  } else if (Array.isArray(node)) {
   } else {
   }
 }
