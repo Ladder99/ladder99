@@ -52,6 +52,7 @@ export function traverse(
       }
     }
     obj.path = obj.parents.slice(2).map(getStep).join('/') + '/' + getStep(obj)
+    obj.path = obj.path.replaceAll('//', '/').slice(1) // ditch first slash
     delete obj.parents
     nodes.push(obj)
     if (parentKey) {
@@ -66,7 +67,9 @@ export function traverse(
   }
 }
 
-// const ignoreTags = new Set('DataItems,Components,Filters,Specifications'.split(','))
+const ignoreTags = new Set(
+  'Devices,DataItems,Components,Filters,Specifications'.split(',')
+)
 
 const ignoreKeys = new Set(
   'category,type,subType,_key,tag,parents,id,units,nativeUnits'.split(',')
@@ -74,13 +77,15 @@ const ignoreKeys = new Set(
 
 function getStep(obj) {
   let params = []
-  // if (ignoreTags.has(obj.tag)) return step
+  if (ignoreTags.has(obj.tag)) return ''
   switch (obj.tag) {
     case 'Device':
     case 'Axes':
     case 'Linear':
     case 'Rotary':
-      params = [obj.id]
+    case 'Path':
+    case 'Controller':
+      params = [obj.id] //. or obj.name ?? sometimes one is nicer than the other
       break
     case 'DataItem':
       params = [obj.category, obj.type]

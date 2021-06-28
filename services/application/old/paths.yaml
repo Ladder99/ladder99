@@ -14,63 +14,63 @@ paths:
   DataItem(event,asset_changed): asset-changed
   DataItem(event,asset_removed): asset-removed
 
-  Axes/DataItem(condition,actuator): axes-actuator-condition # servo-condition?
-  Axes/DataItem(condition,system): axes-system-condition # spindle-condition? distinguish from controller system-condition
+  Axes(a)/DataItem(condition,actuator): axes-actuator-condition # servo-condition?
+  Axes(a)/DataItem(condition,system): axes-system-condition # spindle-condition? distinguish from controller system-condition
 
-  Axes/x/DataItem(sample,position,actual,coordinateSystem=machine): x-machine
-  Axes/x/DataItem(sample,position,actual,coordinateSystem=work): x-work
-  Axes/x/DataItem(condition,position): x-condition
-  Axes/x/DataItem(sample,load): x-load
-  Axes/x/DataItem(sample,axis_feed): x-feedrate
-  Axes/x/DataItem(event,axis_state): x-state
+  Axes(a)/Linear(x)/DataItem(sample,position,actual,coordinateSystem=machine): x-machine
+  Axes(a)/Linear(x)/DataItem(sample,position,actual,coordinateSystem=work): x-work
+  Axes(a)/Linear(x)/DataItem(condition,position): x-condition
+  Axes(a)/Linear(x)/DataItem(sample,load): x-load
+  Axes(a)/Linear(x)/DataItem(sample,axis_feed): x-feedrate
+  Axes(a)/Linear(x)/DataItem(event,axis_state): x-state
 
-  Axes/y/DataItem(sample,position,actual,coordinateSystem=machine): y-machine
-  Axes/y/DataItem(sample,position,actual,coordinateSystem=work): y-work
-  Axes/y/DataItem(condition,position): y-condition
-  Axes/y/DataItem(sample,load): y-load
-  Axes/y/DataItem(sample,axis_feed): y-feedrate
-  Axes/y/DataItem(event,axis_state): y-state
+  Axes(a)/Linear(y)/DataItem(sample,position,actual,coordinateSystem=machine): y-machine
+  Axes(a)/Linear(y)/DataItem(sample,position,actual,coordinateSystem=work): y-work
+  Axes(a)/Linear(y)/DataItem(condition,position): y-condition
+  Axes(a)/Linear(y)/DataItem(sample,load): y-load
+  Axes(a)/Linear(y)/DataItem(sample,axis_feed): y-feedrate
+  Axes(a)/Linear(y)/DataItem(event,axis_state): y-state
 
-  Axes/z/DataItem(sample,position,actual,coordinateSystem=machine): z-machine
-  Axes/z/DataItem(sample,position,actual,coordinateSystem=work): z-work
-  Axes/z/DataItem(condition,position): z-condition
-  Axes/z/DataItem(sample,load): z-load
-  Axes/z/DataItem(sample,axis_feed): z-feedrate
-  Axes/z/DataItem(event,axis_state): z-state
+  Axes(a)/Linear(z)/DataItem(sample,position,actual,coordinateSystem=machine): z-machine
+  Axes(a)/Linear(z)/DataItem(sample,position,actual,coordinateSystem=work): z-work
+  Axes(a)/Linear(z)/DataItem(condition,position): z-condition
+  Axes(a)/Linear(z)/DataItem(sample,load): z-load
+  Axes(a)/Linear(z)/DataItem(sample,axis_feed): z-feedrate
+  Axes(a)/Linear(z)/DataItem(event,axis_state): z-state
 
-  Axes/c/DataItem(sample,load): c-load
-  Axes/c/DataItem(sample,load,name=Sload): s-load #?? have this in a custom yaml file for setup?
-  Axes/c/DataItem(condition,angle): c-angle-condition
-  Axes/c/DataItem(sample,angular_velocity): c-angular-velocity
-  Axes/c/DataItem(sample,rotary_velocity,actual): c-rotary-velocity
-  Axes/c/DataItem(sample,temperature): c-temperature
-  Axes/c/DataItem(sample,angle,actual,coordinateSystem=machine): c-machine
-  Axes/c/DataItem(sample,angle,actual,coordinateSystem=work): c-work
-  Axes/c/DataItem(event,rotary_mode): c-rotary-mode
-  Axes/c/DataItem(condition,load): c-load-condition
-  Axes/c/DataItem(condition,temperature): c-temperature-condition
-  Axes/c/DataItem(event,axis_state): c-state
+  Axes(a)/Rotary(c)/DataItem(sample,load): c-load
+  Axes(a)/Rotary(c)/DataItem(sample,load,name=Sload): s-load #?? have this in a custom yaml file for setup?
+  Axes(a)/Rotary(c)/DataItem(condition,angle): c-angle-condition
+  Axes(a)/Rotary(c)/DataItem(sample,angular_velocity): c-angular-velocity
+  Axes(a)/Rotary(c)/DataItem(sample,rotary_velocity,actual): c-rotary-velocity
+  Axes(a)/Rotary(c)/DataItem(sample,temperature): c-temperature
+  Axes(a)/Rotary(c)/DataItem(sample,angle,actual,coordinateSystem=machine): c-machine
+  Axes(a)/Rotary(c)/DataItem(sample,angle,actual,coordinateSystem=work): c-work
+  Axes(a)/Rotary(c)/DataItem(event,rotary_mode): c-rotary-mode
+  Axes(a)/Rotary(c)/DataItem(condition,load): c-load-condition
+  Axes(a)/Rotary(c)/DataItem(condition,temperature): c-temperature-condition
+  Axes(a)/Rotary(c)/DataItem(event,axis_state): c-state
 
-  Axes/a/DataItem(sample,load): a-load
-  Axes/a/DataItem(sample,angular_velocity): a-angular-velocity
-  Axes/a/DataItem(condition,angle): a-angle-condition
-  Axes/a/DataItem(sample,angle,actual,coordinateSystem=machine): a-machine
-  Axes/a/DataItem(sample,angle,actual,coordinateSystem=work): a-work
-  Axes/a/DataItem(event,rotary_mode): a-rotary-mode
-  Axes/a/DataItem(event,axis_state): a-state
+  Axes(a)/Rotary(a)/DataItem(sample,load): a-load
+  Axes(a)/Rotary(a)/DataItem(sample,angular_velocity): a-angular-velocity
+  Axes(a)/Rotary(a)/DataItem(condition,angle): a-angle-condition
+  Axes(a)/Rotary(a)/DataItem(sample,angle,actual,coordinateSystem=machine): a-machine
+  Axes(a)/Rotary(a)/DataItem(sample,angle,actual,coordinateSystem=work): a-work
+  Axes(a)/Rotary(a)/DataItem(event,rotary_mode): a-rotary-mode
+  Axes(a)/Rotary(a)/DataItem(event,axis_state): a-state
 
-  Axes/c2/DataItem(sample,load): c2-load
-  Axes/c2/DataItem(sample,load,name=S2load): s2-load #? only diff is id/name
-  Axes/c2/DataItem(condition,angle): c2-angle-condition
-  Axes/c2/DataItem(sample,angular_velocity): c2-angular-velocity
-  Axes/c2/DataItem(sample,rotary_velocity): c2-rotary-velocity
-  Axes/c2/DataItem(sample,temperature): c2-temperature
-  Axes/c2/DataItem(sample,angle,actual,coordinateSystem=machine): c2-machine
-  Axes/c2/DataItem(sample,angle,actual,coordinateSystem=work): c2-work
-  Axes/c2/DataItem(event,rotary_mode): c2-rotary-mode
-  Axes/c2/DataItem(condition,load): c2-load-condition
-  Axes/c2/DataItem(condition,temperature): c2-temperature-condition
-  Axes/c2/DataItem(event,axis_state): c2-state
+  Axes(a)/Rotary(c2)/DataItem(sample,load): c2-load
+  Axes(a)/Rotary(c2)/DataItem(sample,load,name=S2load): s2-load #? only diff is id/name
+  Axes(a)/Rotary(c2)/DataItem(condition,angle): c2-angle-condition
+  Axes(a)/Rotary(c2)/DataItem(sample,angular_velocity): c2-angular-velocity
+  Axes(a)/Rotary(c2)/DataItem(sample,rotary_velocity): c2-rotary-velocity
+  Axes(a)/Rotary(c2)/DataItem(sample,temperature): c2-temperature
+  Axes(a)/Rotary(c2)/DataItem(sample,angle,actual,coordinateSystem=machine): c2-machine
+  Axes(a)/Rotary(c2)/DataItem(sample,angle,actual,coordinateSystem=work): c2-work
+  Axes(a)/Rotary(c2)/DataItem(event,rotary_mode): c2-rotary-mode
+  Axes(a)/Rotary(c2)/DataItem(condition,load): c2-load-condition
+  Axes(a)/Rotary(c2)/DataItem(condition,temperature): c2-temperature-condition
+  Axes(a)/Rotary(c2)/DataItem(event,axis_state): c2-state
 
   Controller/DataItem(condition,communications): communications-condition
   Controller/DataItem(condition,logic_program): logic-program-condition
@@ -107,14 +107,14 @@ paths:
 
   Door/DataItem(event,door_state): door-state
 
-  Systems/Electric/DataItem(condition,system): electric-condition
+  Systems/DataItemElectric/DataItem(condition,system): electric-condition
 
-  Systems/Hydraulic/DataItem(condition,system): hydraulic-condition
+  Systems/DataItemHydraulic/DataItem(condition,system): hydraulic-condition
 
-  Systems/Coolant/DataItem(condition,system): coolant-condition
-  Systems/Coolant/DataItem(sample,temperature): coolant-temperature
-  Systems/Coolant/DataItem(sample,concentration): coolant-concentration
+  Systems/DataItemCoolant/DataItem(condition,system): coolant-condition
+  Systems/DataItemCoolant/DataItem(sample,temperature): coolant-temperature
+  Systems/DataItemCoolant/DataItem(sample,concentration): coolant-concentration
 
-  Systems/Pneumatic/DataItem(condition,system): pneumatic-condition
+  Systems/DataItemPneumatic/DataItem(condition,system): pneumatic-condition
 
-  Systems/Lubrication/DataItem(condition,system): lubrication-condition
+  Systems/DataItemLubrication/DataItem(condition,system): lubrication-condition
