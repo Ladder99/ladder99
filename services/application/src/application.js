@@ -32,19 +32,19 @@ class Application {
       endpoint => new Agent({ db, endpoint, params })
     )
 
-    // // initialize agents
-    // //. could read the agent yaml file and set up propdefs in the db
-    // // run in serial so don't have db conflicts
-    // for (const agent of agents) {
-    //   await agent.init()
-    // }
+    // initialize agents
+    //. read the agent yaml file and set up propdefs in the db
+    // run this in serial so don't have db conflicts
+    for (const agent of agents) {
+      await agent.init()
+    }
 
     // run agents
     // node is single threaded with an event loop
-    // run in parallel so agents are independent of each other
-    for (const agent of agents) {
-      agent.start()
-    }
+    // run in parallel so agents run independently of each other
+    // for (const agent of agents) {
+    //   agent.start()
+    // }
   }
 }
 
