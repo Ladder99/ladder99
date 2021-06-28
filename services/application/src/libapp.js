@@ -44,21 +44,25 @@ export function traverse(
         obj = { ...obj, ...value, parents }
       } else if (key === '_text') {
         obj = { ...obj, value, parents }
+      } else if (key === 'Agent') {
+        // don't recurse
       } else {
         const newparents = [...parents, obj]
         traverse(value, nodes, edges, key, _key, newparents)
       }
     }
-    obj.path = obj.parents.map(node => node.id || node.tag).join('/')
+    obj.path = obj.parents
+      .slice(2)
+      .map(node => node.id || node.tag)
+      // .map(node => (node.id ? `${node.tag}(id=${node.id})` : node.tag))
+      .join('/')
     delete obj.parents
     nodes.push(obj)
     if (parentKey) {
       edges.push({ _from: parentKey, _to: _key })
     }
   } else if (Array.isArray(node)) {
-    // const obj = { id: 'lkm' }
-    const gparent = parents[parents.length - 2]
-    const obj = { tag: gparent.tag }
+    const obj = { tag: parentTag }
     const newparents = [...parents, obj]
     for (const el of node) {
       traverse(el, nodes, edges, parentTag, parentKey, newparents)

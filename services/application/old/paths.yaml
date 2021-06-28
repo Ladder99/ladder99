@@ -9,112 +9,112 @@
 # if just element type is given assumes it's only for first one listed
 
 paths:
-  (event,availability): availability
-  (event,functional_mode): functional-mode
-  (event,asset_changed): asset-changed
-  (event,asset_removed): asset-removed
+  DataItem(event,availability): availability
+  DataItem(event,functional_mode): functional-mode
+  DataItem(event,asset_changed): asset-changed
+  DataItem(event,asset_removed): asset-removed
 
-  Axes/(condition,actuator): servo-condition # actuator-condition?
-  Axes/(condition,system): spindle-condition # system-condition?
+  Axes/DataItem(condition,actuator): axes-actuator-condition # servo-condition?
+  Axes/DataItem(condition,system): axes-system-condition # spindle-condition? distinguish from controller system-condition
 
-  Axes/x/(sample,position,actual,coordinateSystem=machine): x-pos-machine
-  Axes/x/(sample,position,actual,coordinateSystem=work): x-pos-work
-  Axes/x/(condition,position): x-pos-condition
-  Axes/x/(sample,load): x-load
-  Axes/x/(sample,axis_feed): x-feedrate # x-axis-feed?
-  Axes/x/(event,axis_state): x-axis-state
+  Axes/x/DataItem(sample,position,actual,coordinateSystem=machine): x-machine
+  Axes/x/DataItem(sample,position,actual,coordinateSystem=work): x-work
+  Axes/x/DataItem(condition,position): x-condition
+  Axes/x/DataItem(sample,load): x-load
+  Axes/x/DataItem(sample,axis_feed): x-feedrate
+  Axes/x/DataItem(event,axis_state): x-state
 
-  Axes/y/(sample,position,actual,coordinateSystem=machine): y-pos-machine
-  Axes/y/(sample,position,actual,coordinateSystem=work): y-pos-work
-  Axes/y/(condition,position): y-pos-condition
-  Axes/y/(sample,load): y-load
-  Axes/y/(sample,axis_feed): y-feedrate # y-axis-feed?
-  Axes/y/(event,axis_state): y-axis-state
+  Axes/y/DataItem(sample,position,actual,coordinateSystem=machine): y-machine
+  Axes/y/DataItem(sample,position,actual,coordinateSystem=work): y-work
+  Axes/y/DataItem(condition,position): y-condition
+  Axes/y/DataItem(sample,load): y-load
+  Axes/y/DataItem(sample,axis_feed): y-feedrate
+  Axes/y/DataItem(event,axis_state): y-state
 
-  Axes/z/(sample,position,actual,coordinateSystem=machine): z-pos-machine
-  Axes/z/(sample,position,actual,coordinateSystem=work): z-pos-work
-  Axes/z/(condition,position): z-pos-condition
-  Axes/z/(sample,load): z-load
-  Axes/z/(sample,axis_feed): z-feedrate # z-axis-feed?
-  Axes/z/(event,axis_state): z-axis-state
+  Axes/z/DataItem(sample,position,actual,coordinateSystem=machine): z-machine
+  Axes/z/DataItem(sample,position,actual,coordinateSystem=work): z-work
+  Axes/z/DataItem(condition,position): z-condition
+  Axes/z/DataItem(sample,load): z-load
+  Axes/z/DataItem(sample,axis_feed): z-feedrate
+  Axes/z/DataItem(event,axis_state): z-state
 
-  Axes/c/(sample,load): c-load
-  Axes/c/(sample,load,name=Sload): s-load #?? have this in a custom yaml file for setup?
-  Axes/c/(condition,angle): c-angle-condition
-  Axes/c/(sample,angular_velocity): c-angular-velocity
-  Axes/c/(sample,rotary_velocity,actual): c-rotary-velocity
-  Axes/c/(sample,temperature): c-temperature
-  Axes/c/(sample,angle,actual,coordinateSystem=machine): c-angle-machine
-  Axes/c/(sample,angle,actual,coordinateSystem=work): c-angle-work
-  Axes/c/(event,rotary_mode): c-rotary-mode
-  Axes/c/(condition,load): c-load-condition
-  Axes/c/(condition,temperature): c-temperature-condition
-  Axes/c/(event,axis_state): c-axis-state
+  Axes/c/DataItem(sample,load): c-load
+  Axes/c/DataItem(sample,load,name=Sload): s-load #?? have this in a custom yaml file for setup?
+  Axes/c/DataItem(condition,angle): c-angle-condition
+  Axes/c/DataItem(sample,angular_velocity): c-angular-velocity
+  Axes/c/DataItem(sample,rotary_velocity,actual): c-rotary-velocity
+  Axes/c/DataItem(sample,temperature): c-temperature
+  Axes/c/DataItem(sample,angle,actual,coordinateSystem=machine): c-machine
+  Axes/c/DataItem(sample,angle,actual,coordinateSystem=work): c-work
+  Axes/c/DataItem(event,rotary_mode): c-rotary-mode
+  Axes/c/DataItem(condition,load): c-load-condition
+  Axes/c/DataItem(condition,temperature): c-temperature-condition
+  Axes/c/DataItem(event,axis_state): c-state
 
-  Axes/a/(sample,load): a-load
-  Axes/a/(sample,angular_velocity): a-angular-velocity
-  Axes/a/(condition,angle): a-angle-condition
-  Axes/a/(sample,angle,actual,coordinateSystem=machine): a-angle-machine
-  Axes/a/(sample,angle,actual,coordinateSystem=work): a-angle-work
-  Axes/a/(event,rotary_mode): a-rotary-mode
-  Axes/a/(event,axis_state): a-axis-state
+  Axes/a/DataItem(sample,load): a-load
+  Axes/a/DataItem(sample,angular_velocity): a-angular-velocity
+  Axes/a/DataItem(condition,angle): a-angle-condition
+  Axes/a/DataItem(sample,angle,actual,coordinateSystem=machine): a-machine
+  Axes/a/DataItem(sample,angle,actual,coordinateSystem=work): a-work
+  Axes/a/DataItem(event,rotary_mode): a-rotary-mode
+  Axes/a/DataItem(event,axis_state): a-state
 
-  Axes/c2/(sample,load): c2-load
-  Axes/c2/(sample,load,name=S2load): s2-load #? only diff is id/name
-  Axes/c2/(condition,angle): c2-angle-condition
-  Axes/c2/(sample,angular_velocity): c2-angular-velocity
-  Axes/c2/(sample,rotary_velocity): c2-rotary-velocity
-  Axes/c2/(sample,temperature): c2-temperature
-  Axes/c2/(sample,angle,actual,coordinateSystem=machine): c2-angle-machine
-  Axes/c2/(sample,angle,actual,coordinateSystem=work): c2-angle-work
-  Axes/c2/(event,rotary_mode): c2-rotary-mode
-  Axes/c2/(condition,load): c2-load-condition
-  Axes/c2/(condition,temperature): c2-temperature-condition
-  Axes/c2/(event,axis_state): c2-axis-state
+  Axes/c2/DataItem(sample,load): c2-load
+  Axes/c2/DataItem(sample,load,name=S2load): s2-load #? only diff is id/name
+  Axes/c2/DataItem(condition,angle): c2-angle-condition
+  Axes/c2/DataItem(sample,angular_velocity): c2-angular-velocity
+  Axes/c2/DataItem(sample,rotary_velocity): c2-rotary-velocity
+  Axes/c2/DataItem(sample,temperature): c2-temperature
+  Axes/c2/DataItem(sample,angle,actual,coordinateSystem=machine): c2-machine
+  Axes/c2/DataItem(sample,angle,actual,coordinateSystem=work): c2-work
+  Axes/c2/DataItem(event,rotary_mode): c2-rotary-mode
+  Axes/c2/DataItem(condition,load): c2-load-condition
+  Axes/c2/DataItem(condition,temperature): c2-temperature-condition
+  Axes/c2/DataItem(event,axis_state): c2-state
 
-  Controller/(condition,communications): communications-condition
-  Controller/(condition,logic_program): logic-program-condition
-  Controller/(condition,system): system-condition
-  Controller/(event,emergency_stop): emergency-stop
-  Controller/(sample,accumulated_time,x:auto): auto-time
-  Controller/(sample,accumulated_time,x:total): total-time
-  Controller/(sample,accumulated_time,x:cut): cut-time
-  Controller/(sample,accumulated_time,x:totalcuttime): total-auto-cut-time
-  Controller/(event,pallet_id): pallet-id
+  Controller/DataItem(condition,communications): communications-condition
+  Controller/DataItem(condition,logic_program): logic-program-condition
+  Controller/DataItem(condition,system): controller-condition # distinguish from axes-condition
+  Controller/DataItem(event,emergency_stop): emergency-stop
+  Controller/DataItem(sample,accumulated_time,x:auto): auto-time
+  Controller/DataItem(sample,accumulated_time,x:total): total-time
+  Controller/DataItem(sample,accumulated_time,x:cut): cut-time
+  Controller/DataItem(sample,accumulated_time,x:totalcuttime): total-auto-cut-time
+  Controller/DataItem(event,pallet_id): pallet-id
 
-  Controller/Path/(event,program_edit): path-edit-mode
-  Controller/Path/(event,program_edit_name): path-edit-name
-  Controller/Path/(event,chuck_state): chuck-state
-  Controller/Path/(event,path_feedrate_override,rapid): path-feedrate-override-rapid
-  Controller/Path/(event,path_feedrate_override,programmed): path-feedrate-override-programmed
-  Controller/Path/(event,rotary_velocity_override): rotary-velocity-override
-  Controller/Path/(event,program): program
-  Controller/Path/(event,program,x:sub): subprogram
-  Controller/Path/(event,line): line
-  Controller/Path/(event,x:unit): unit
-  Controller/Path/(event,x:sequence_number): sequence-number
-  Controller/Path/(event,part_count): part-count
-  Controller/Path/(sample,path_feedrate): path-feedrate
-  Controller/Path/(event,tool_number): tool-number
-  Controller/Path/(event,x:tool_group): tool-group
-  Controller/Path/(event,x:tool_suffix): tool-suffix
-  Controller/Path/(event,execution): execution
-  Controller/Path/(event,controller_mode): controller-mode
-  Controller/Path/(event,program_comment): program-comment
-  Controller/Path/(event,program_comment,x:sub): subprogram-comment
-  Controller/Path/(condition,motion_program): motion-program-condition
-  Controller/Path/(condition,system): path-system-condition
+  Controller/Path/DataItem(event,program_edit): path-edit-mode
+  Controller/Path/DataItem(event,program_edit_name): path-edit-name
+  Controller/Path/DataItem(event,chuck_state): chuck-state
+  Controller/Path/DataItem(event,path_feedrate_override,rapid): path-feedrate-override-rapid
+  Controller/Path/DataItem(event,path_feedrate_override,programmed): path-feedrate-override-programmed
+  Controller/Path/DataItem(event,rotary_velocity_override): rotary-velocity-override
+  Controller/Path/DataItem(event,program): program
+  Controller/Path/DataItem(event,program,x:sub): subprogram
+  Controller/Path/DataItem(event,line): line
+  Controller/Path/DataItem(event,x:unit): unit
+  Controller/Path/DataItem(event,x:sequence_number): sequence-number
+  Controller/Path/DataItem(event,part_count): part-count
+  Controller/Path/DataItem(sample,path_feedrate): path-feedrate
+  Controller/Path/DataItem(event,tool_number): tool-number
+  Controller/Path/DataItem(event,x:tool_group): tool-group
+  Controller/Path/DataItem(event,x:tool_suffix): tool-suffix
+  Controller/Path/DataItem(event,execution): execution
+  Controller/Path/DataItem(event,controller_mode): controller-mode
+  Controller/Path/DataItem(event,program_comment): program-comment
+  Controller/Path/DataItem(event,program_comment,x:sub): subprogram-comment
+  Controller/Path/DataItem(condition,motion_program): motion-program-condition
+  Controller/Path/DataItem(condition,system): path-system-condition
 
-  Door/(event,door_state): door-state
+  Door/DataItem(event,door_state): door-state
 
-  Systems/Electric/(condition,system): electric-condition
+  Systems/Electric/DataItem(condition,system): electric-condition
 
-  Systems/Hydraulic/(condition,system): hydraulic-condition
+  Systems/Hydraulic/DataItem(condition,system): hydraulic-condition
 
-  Systems/Coolant/(condition,system): coolant-condition
-  Systems/Coolant/(sample,temperature): coolant-temperature
-  Systems/Coolant/(sample,concentration): coolant-concentration
+  Systems/Coolant/DataItem(condition,system): coolant-condition
+  Systems/Coolant/DataItem(sample,temperature): coolant-temperature
+  Systems/Coolant/DataItem(sample,concentration): coolant-concentration
 
-  Systems/Pneumatic/(condition,system): pneumatic-condition
+  Systems/Pneumatic/DataItem(condition,system): pneumatic-condition
 
-  Systems/Lubrication/(condition,system): lubrication-condition
+  Systems/Lubrication/DataItem(condition,system): lubrication-condition
