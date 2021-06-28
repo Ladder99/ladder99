@@ -17,25 +17,23 @@ export class Db {
     this.db = null
     this.nodes = null
     this.edges = null
+    this.handleSignals()
   }
 
   async start() {
-    this.setSignals()
     await this.connect()
     await this.migrate()
   }
 
-  setSignals() {
+  handleSignals() {
     const that = this
-
     //. need init:true in compose yaml to get SIGINT etc? tried - nowork
     process
-      .on('SIGTERM', getShutdown('SIGTERM'))
-      .on('SIGINT', getShutdown('SIGINT'))
-      .on('uncaughtException', getShutdown('uncaughtException'))
-
+      .on('SIGTERM', getHandler('SIGTERM'))
+      .on('SIGINT', getHandler('SIGINT'))
+      .on('uncaughtException', getHandler('uncaughtException'))
     // get shutdown handler
-    function getShutdown(signal) {
+    function getHandler(signal) {
       return error => {
         console.log()
         console.log(`Signal ${signal} received - shutting down...`)
@@ -63,27 +61,26 @@ export class Db {
 
   disconnect() {
     console.log(`Releasing db...`)
-    // if (!this.system) {
+    // if (this.db) {
+    //   this.db //.
+    // }
+    // if (this.system) {
     //   this.system //.
     // }
-    if (!this.db) {
-      this.db //.
-    }
   }
 
-  //. handle versions - use meta table
+  //. handle versions - use meta collection
   async migrate() {
-    console.log(`Migrating database structures...`)
     await this.createDb()
     await this.createCollections()
+    // console.log(`Migrating database structures...`)
     // const path = `migrations/001-init.sql`
     // const sql = String(fs.readFileSync(path))
   }
 
-  // create our db if not there
+  // create/get our db
   async createDb() {
     const dbs = await this.system.listDatabases()
-    console.log(dbs)
     if (!dbs.includes(arangoDatabase)) {
       console.log(`Creating database ${arangoDatabase}...`)
       await this.system.createDatabase(arangoDatabase)
@@ -92,7 +89,7 @@ export class Db {
     this.db = this.system.database(arangoDatabase)
   }
 
-  // create collections if not there
+  // create/get collections
   async createCollections() {
     const collections = await this.db.listCollections()
     if (!collections.find(collection => collection.name === 'nodes')) {
@@ -107,7 +104,8 @@ export class Db {
     this.edges = this.db.collection('edges')
   }
 
-  // async query(sql) {
-  //   return await this.client.query(sql)
-  // }
+  async query(aql) {
+    const cursor = await this.db.query(aql)
+    return cursor
+  }
 }
