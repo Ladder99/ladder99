@@ -4,7 +4,7 @@
 import fs from 'fs' // node lib - filesystem
 import fetch from 'node-fetch' // https://github.com/node-fetch/node-fetch
 import convert from 'xml-js' // https://github.com/nashwaan/xml-js
-// import * as libapp from './libapp.js'
+import * as libapp from './libapp.js'
 
 export class Endpoint {
   constructor(baseUrl) {
@@ -28,35 +28,6 @@ export class Endpoint {
     return endpoints
   }
 
-  // get data from agent rest endpoint as xml or json.
-  // note this is a STATIC fn - see also the method.
-  // best to always get xml and transform to json,
-  // so don't need to know agent version.
-  static async fetchData(url, fetchJson = false) {
-    console.log(`Getting data from ${url}...`)
-    const headers = fetchJson ? { Accept: 'application/json' } : {}
-    try {
-      const response = await fetch(url, { method: 'GET', headers })
-      if (fetchJson) {
-        const json = await response.json()
-        return json
-      }
-      const xml = await response.text()
-      // console.log(xml)
-      const json = JSON.parse(convert.xml2json(xml, { compact: true }))
-      //. will need some more processing to align with agent json
-      // console.log(json)
-      return json
-    } catch (error) {
-      if (error.code === 'ENOTFOUND') {
-        console.log(`Agent not found at ${url}...`)
-      } else {
-        throw error
-      }
-    }
-    return null
-  }
-
   // get url
   // type is 'probe', 'current', or 'sample'.
   // from and count are optional.
@@ -70,10 +41,31 @@ export class Endpoint {
     return url
   }
 
+  // get data from agent rest endpoint as json.
+  // best to always get xml and transform to json,
+  // so don't need to know agent version.
   // type is 'probe', 'current', or 'sample'.
-  async fetchData(type, from, count) {
-    const url = this.getUrl(type, from, count)
-    const data = await Endpoint.fetchData(url)
-    return data
+  async fetchJson(type, from, count) {
+    let json
+    do {
+      const url = this.getUrl(type, from, count)
+      console.log(`Getting data from ${url}...`)
+      try {
+        const response = await fetch(url)
+        const xml = await response.text()
+        json = JSON.parse(convert.xml2json(xml, { compact: true }))
+      } catch (error) {
+        if (error.code === 'ENOTFOUND') {
+          console.log(`Agent not found at ${url}...`)
+        } else {
+          throw error
+        }
+      }
+      if (!json) {
+        console.log(`No data available - will wait and try again...`)
+        await libapp.sleep(4000)
+      }
+    } while (!json)
+    return json
   }
 }

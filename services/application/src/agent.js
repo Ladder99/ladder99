@@ -10,8 +10,7 @@ export class Agent {
     this.endpoint = endpoint
     this.params = params
     //
-    this.instanceId = null
-    this.idMap = {} // map from element id to integer _id for db tables
+    // this.idMap = {} // map from element id to integer _id for db tables
     this.fetchFrom = null
     //. these will be dynamic - optimize on the fly
     this.fetchInterval = params.fetchInterval
@@ -25,43 +24,40 @@ export class Agent {
     //. or do that with a path-to-canonicalId translator?
   }
 
-  // start a 'thread' to handle data from the given base agent url
+  // start fetching and processing data
   async start() {
+    let instanceId = null
     // get device structures and write to db
     //. will need to compare with existing graph structure in db and add/update as needed
     probe: do {
-      const data = await this.fetchData('probe')
-      if (await unavailable(data)) break probe // waits some time
-      this.instanceId = data.getInstanceId()
+      // const data = await this.fetchData('probe')
+      const data = await Data.getProbe(this.endpoint)
+      // if (await unavailable(data)) break probe // waits some time
+      instanceId = data.getInstanceId()
       await this.handleProbe(data) // update db
+
+      process.exit(0)
 
       // get last known values of all dataitems, write to db
       current: do {
-        const data = await this.fetchData('current')
-        if (await unavailable(data)) break current // waits some time
-        if (instanceIdChanged(data, this.instanceId)) break probe
+        // const data = await this.fetchData('current')
+        const data = await Data.get(this.endpoint, 'current')
+        // if (await unavailable(data)) break current // waits some time
+        if (instanceIdChanged(data, instanceId)) break probe
         await this.handleCurrent(data) // update db
-
-        process.exit(0)
 
         // get sequence of dataitem values, write to db
         sample: do {
-          // const data = await this.fetchSample()
-          // if (await unavailable(data)) break sample // waits some time
-          // if (instanceIdChanged(data, this.instanceId)) break probe
+          // // const data = await this.fetchSample()
+          // const data = await Data.get(this.endpoint, 'sample')
+          // // if (await unavailable(data)) break sample // waits some time
+          // if (instanceIdChanged(data, instanceId)) break probe
           // await this.handleSample(data)
           // console.log('.')
           // await libapp.sleep(this.fetchInterval)
         } while (true)
       } while (true)
     } while (true)
-  }
-
-  // type is 'probe', 'current', 'sample'
-  async fetchData(type) {
-    const json = await this.endpoint.fetchData(type)
-    const data = new Data(json)
-    return data
   }
 
   async handleProbe(data) {
@@ -84,38 +80,6 @@ export class Agent {
     // await db.writeDataItems(dataItems)
     // await db.writeGraphValues(graph)
     console.log(dataitems)
-  }
-
-  async fetchSample() {
-    this.from = null
-    this.count = this.fetchCount
-    let data
-    let errors
-    do {
-      const json = await this.endpoint.fetchData(
-        'sample',
-        this.from,
-        this.count
-      )
-      data = new Data(json)
-      // check for errors
-      // eg <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
-      // if (json.MTConnectError) {
-      errors = data.getErrors()
-      if (errors) {
-        console.log(data)
-        const codes = errors.map(e => e.Error.errorCode)
-        if (codes.includes('OUT_OF_RANGE')) {
-          // we lost some data, so reset the index and get from start of buffer
-          console.log(
-            `Out of range error - some data was lost. Will reset index and get as much as possible from start of buffer.`
-          )
-          this.from = null
-          //. adjust fetch count/speed
-        }
-      }
-    } while (errors)
-    return data
   }
 
   async handleSample(data) {
@@ -171,14 +135,16 @@ export class Agent {
   }
 }
 
-async function unavailable(data) {
-  if (!data.json) {
-    console.log(`No data available - will wait and try again...`)
-    await libapp.sleep(4000)
-    return true
-  }
-  return false
-}
+//
+
+// async function unavailable(data) {
+//   if (!data.json) {
+//     console.log(`No data available - will wait and try again...`)
+//     await libapp.sleep(4000)
+//     return true
+//   }
+//   return false
+// }
 
 function instanceIdChanged(data, instanceId) {
   if (data.getInstanceId() !== instanceId) {

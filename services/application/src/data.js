@@ -9,6 +9,24 @@ export class Data {
     this.json = json
   }
 
+  // type is 'probe', 'current', 'sample'
+  static await getProbe(endpoint) {
+    const json = await endpoint.fetchJson('probe')
+    const data = new Data(json)
+    data.parse()
+    return data
+  }
+
+  parse() {
+    // eg <Errors><Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error></Errors>
+    if (this.json.MTConnectError) {
+      console.log(this.json)
+      return this.json.MTConnectError.Errors
+    // const codes = this.json.MTConnectError.Errors.map(e => e.Error.errorCode)
+  }
+
+  }
+
   getErrors() {
     // eg <Errors><Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error></Errors>
     // const codes = this.json.MTConnectError.Errors.map(e => e.Error.errorCode)
@@ -27,6 +45,38 @@ export class Data {
 
   getInstanceId() {
     return this.getHeader().instanceId
+  }
+
+  async fetchSample() {
+    this.from = null
+    this.count = this.fetchCount
+    let data
+    let errors
+    do {
+      const json = await this.endpoint.fetchData(
+        'sample',
+        this.from,
+        this.count
+      )
+      data = new Data(json)
+      // check for errors
+      // eg <Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error>
+      // if (json.MTConnectError) {
+      errors = data.getErrors()
+      if (errors) {
+        console.log(data)
+        const codes = errors.map(e => e.Error.errorCode)
+        if (codes.includes('OUT_OF_RANGE')) {
+          // we lost some data, so reset the index and get from start of buffer
+          console.log(
+            `Out of range error - some data was lost. Will reset index and get as much as possible from start of buffer.`
+          )
+          this.from = null
+          //. adjust fetch count/speed
+        }
+      }
+    } while (errors)
+    return data
   }
 
   // traverse json tree and add nodes and edges to a graph structure.
