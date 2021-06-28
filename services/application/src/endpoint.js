@@ -1,9 +1,9 @@
 // endpoint
 // fetch data from url endpoint as xml or json
 
-import fs from 'fs' // node lib
-import fetch from 'node-fetch' // see https://github.com/node-fetch/node-fetch
-import convert from 'xml-js' // see https://github.com/nashwaan/xml-js
+import fs from 'fs' // node lib - filesystem
+import fetch from 'node-fetch' // https://github.com/node-fetch/node-fetch
+import convert from 'xml-js' // https://github.com/nashwaan/xml-js
 // import * as libapp from './libapp.js'
 
 export class Endpoint {
@@ -30,7 +30,9 @@ export class Endpoint {
 
   // get data from agent rest endpoint as xml or json.
   // note this is a STATIC fn - see also the method.
-  static async fetchData(url, fetchJson = true) {
+  // best to always get xml and transform to json,
+  // so don't need to know agent version.
+  static async fetchData(url, fetchJson = false) {
     console.log(`Getting data from ${url}...`)
     const headers = fetchJson ? { Accept: 'application/json' } : {}
     try {
