@@ -28,19 +28,6 @@ export class Endpoint {
     return endpoints
   }
 
-  // get url
-  // type is 'probe', 'current', or 'sample'.
-  // from and count are optional.
-  getUrl(type, from, count) {
-    const url =
-      from === undefined
-        ? `${this.baseUrl}/${type}`
-        : `${this.baseUrl}/${type}?${
-            from !== null ? 'from=' + from + '&' : ''
-          }count=${count}`
-    return url
-  }
-
   // get data from agent rest endpoint as json.
   // best to always get xml and transform to json,
   // so don't need to know agent version.
@@ -67,5 +54,18 @@ export class Endpoint {
       }
     } while (!json)
     return json
+  }
+
+  // get url
+  // type is 'probe', 'current', or 'sample'.
+  // from and count are optional.
+  getUrl(type, from, count) {
+    const url =
+      from === undefined
+        ? `${this.baseUrl}/${type}`
+        : `${this.baseUrl}/${type}?${
+            from !== null ? 'from=' + from + '&' : ''
+          }count=${count}`
+    return url
   }
 }

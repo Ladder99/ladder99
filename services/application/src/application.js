@@ -4,8 +4,6 @@
 import { Db } from './db.js'
 import { Agent } from './agent.js'
 import { Endpoint } from './endpoint.js'
-// import { Graph } from './graph.js'
-// import * as libapp from './libapp.js'
 
 console.log(`MTConnect Application starting`)
 console.log(`---------------------------------------------------`)
@@ -25,10 +23,6 @@ class Application {
     const db = new Db()
     await db.start()
 
-    // get db graph - nodes and edges
-    // const graphDb = await Graph.read(db)
-    // libapp.print(graphDb)
-
     // get endpoints
     const endpoints = Endpoint.getEndpoints(params.agentEndpoints)
     console.log(`Agent endpoints:`, endpoints)
@@ -38,18 +32,15 @@ class Application {
       endpoint => new Agent({ db, endpoint, params })
     )
 
-    // initialize agents
-    // this reads the agent yaml file and sets up propdefs in the db
-    // run in serial so don't have db conflicts
+    // // initialize agents
+    // //. this reads the agent yaml file and sets up propdefs in the db
+    // // run in serial so don't have db conflicts
     // for (const agent of agents) {
     //   await agent.init()
     // }
 
     // run agents
     // node is single threaded with an event loop
-    //. run these in serial so don't conflict with db synching?
-    // or at least the probe part, since that writes db metadata?
-    // but probe needs to be in the agent.start loop as the fallback.
     // run in parallel so agents are independent of each other
     for (const agent of agents) {
       agent.start()

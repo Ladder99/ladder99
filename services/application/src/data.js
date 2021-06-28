@@ -7,10 +7,10 @@ import { Graph } from './graph.js'
 export class Data {
   constructor(json) {
     this.json = json
+    this.instanceId = null
   }
 
-  // type is 'probe', 'current', 'sample'
-  static await getProbe(endpoint) {
+  static async getProbeData(endpoint) {
     const json = await endpoint.fetchJson('probe')
     const data = new Data(json)
     data.parse()
@@ -22,9 +22,8 @@ export class Data {
     if (this.json.MTConnectError) {
       console.log(this.json)
       return this.json.MTConnectError.Errors
-    // const codes = this.json.MTConnectError.Errors.map(e => e.Error.errorCode)
-  }
-
+      // const codes = this.json.MTConnectError.Errors.map(e => e.Error.errorCode)
+    }
   }
 
   getErrors() {
