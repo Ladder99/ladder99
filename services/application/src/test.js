@@ -11,14 +11,7 @@ const json = JSON.parse(convert.xml2json(xml, { compact: true }))
 const nodes = []
 const edges = []
 
-function addNode(node) {
-  nodes.push(node)
-}
-function addEdge(edge) {
-  edges.push(edge)
-}
-
-libapp.traverse(json, addNode, addEdge)
+libapp.traverse(json, nodes, edges)
 
 console.log(nodes)
 console.log(edges)

@@ -22,37 +22,38 @@ export function shallowCompare(obj1, obj2) {
   )
 }
 
-// traverse a tree of nodes, calling callbacks
+// traverse a tree of nodes, adding nodes and edges to arrays
 export function traverse(
   node,
-  addNode,
-  addEdge,
+  nodes,
+  edges,
   parentTag = 'root',
-  parentKey = ''
+  parentKey = '',
+  path = ''
 ) {
   if (isObject(node)) {
     const keys = Object.keys(node)
-    // assign random key to each node, use to define edges
+    // assign random key to each node, use to define edges?
     const _key = crypto.randomBytes(8).toString('hex')
     let obj = { tag: parentTag, _key }
     for (const key of keys) {
       const value = node[key]
       if (key === '_declaration') {
       } else if (key === '_attributes') {
-        obj = { ...obj, ...value }
+        obj = { ...obj, ...value, path }
       } else if (key === '_text') {
-        obj = { ...obj, value }
+        obj = { ...obj, value, path }
       } else {
-        traverse(value, addNode, addEdge, key, _key)
+        traverse(value, nodes, edges, key, _key, path + '/' + key)
       }
     }
-    addNode(obj)
+    nodes.push(obj)
     if (parentKey) {
-      addEdge({ _from: parentKey, _to: _key })
+      edges.push({ _from: parentKey, _to: _key })
     }
   } else if (Array.isArray(node)) {
     for (const el of node) {
-      traverse(el, addNode, addEdge, parentTag, parentKey)
+      traverse(el, nodes, edges, parentTag, parentKey, path + '/' + parentKey)
     }
   } else {
     console.log('>>what is this?', { node })
