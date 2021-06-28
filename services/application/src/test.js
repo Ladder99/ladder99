@@ -21,6 +21,11 @@ traverse(json, addNode, addEdge)
 console.log(nodes)
 console.log(edges)
 
+const nodesFile = 'nodes.json'
+fs.writeFileSync(nodesFile, JSON.stringify(nodes, null, 2))
+const edgesFile = 'edges.json'
+fs.writeFileSync(edgesFile, JSON.stringify(edges, null, 2))
+
 function traverse(node, addNode, addEdge, parentTag = 'root', parentKey = '') {
   if (libapp.isObject(node)) {
     const keys = Object.keys(node)
