@@ -1,4 +1,4 @@
-import crypto from 'crypto' // node lib
+import crypto from 'crypto' // node lib for random ids
 
 export function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -8,6 +8,7 @@ export function isObject(node) {
   return node !== null && typeof node === 'object' && !Array.isArray(node)
 }
 
+// print a complete object tree (console.log only does to depth 2)
 export function print(...obj) {
   console.dir(...obj, { depth: null })
 }
@@ -44,6 +45,7 @@ export function traverse(
       } else if (key === '_text') {
         obj = { ...obj, value, path }
       } else {
+        // const gparentId =
         traverse(value, nodes, edges, key, _key, path + '/' + key)
       }
     }
@@ -52,8 +54,10 @@ export function traverse(
       edges.push({ _from: parentKey, _to: _key })
     }
   } else if (Array.isArray(node)) {
+    // const gparentId = node.parent ? node.parent._attributes.id : ''
     for (const el of node) {
-      traverse(el, nodes, edges, parentTag, parentKey, path + '/' + parentKey)
+      // traverse(el, nodes, edges, parentTag, parentKey, path + '/' + 'lkmlkm')
+      traverse(el, nodes, edges, parentTag, parentKey, path + `(id=pok)`)
     }
   } else {
     console.log('>>what is this?', { node })
