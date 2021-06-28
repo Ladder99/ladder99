@@ -54,7 +54,8 @@ export function traverse(
     obj.path =
       obj.parents
         .slice(2)
-        .map(node => node.id || node.tag)
+        // .map(node => node.id || node.tag)
+        .map(getStep)
         // .map(node => (node.id ? `${node.tag}(id=${node.id})` : node.tag))
         .join('/') +
       '/' +
@@ -73,11 +74,28 @@ export function traverse(
   }
 }
 
+// const ignoreTags = new Set('DataItems,Components,Filters'.split(','))
+const ignoreKeys = new Set(
+  'category,type,subType,_key,tag,parents,id'.split(',')
+)
+
 function getStep(obj) {
   let step = ''
+  // if (ignoreTags.has(obj.tag)) return step
   switch (obj.tag) {
     case 'DataItem':
-      step = `DataItem(${obj.category},${obj.type},${obj.subType})`
+      let params = [obj.category, obj.type]
+      if (obj.subType) params.push(obj.subType)
+      for (const key of Object.keys(obj)) {
+        if (!ignoreKeys.has(key)) {
+          params.push(key + '=' + obj[key])
+        }
+      }
+      const paramsStr = params.map(param => param.toLowerCase()).join(',')
+      step = `DataItem(${paramsStr})`
+      break
+    default:
+      step = obj.tag
       break
   }
   return step
