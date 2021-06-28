@@ -1,7 +1,9 @@
 // agent
 // class to represent an agent - handles probe, current, sample loop
 
-import { Probe } from './data.js'
+import { Probe } from './dataProbe.js'
+// import { Current } from './dataCurrent.js'
+// import { Sample } from './dataSample.js'
 // import * as libapp from './libapp.js'
 
 export class Agent {
