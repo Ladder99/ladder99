@@ -19,7 +19,7 @@ export class Probe extends Data {
     libapp.traverse(this.json, nodes, edges)
     console.log(nodes)
     // console.log(nodes.slice(0, 20))
-    const nodesPath = 'nodes.json'
+    const nodesPath = '/Users/bburns/Desktop/nodes.json'
     fs.writeFileSync(nodesPath, JSON.stringify(nodes, null, 2))
 
     // const probeGraph = data.getProbeGraph() // get probe data into graph structure
