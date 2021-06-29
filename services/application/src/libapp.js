@@ -52,7 +52,8 @@ export function traverse(
       }
     }
     obj.path = obj.parents.slice(2).map(getStep).join('/') + '/' + getStep(obj)
-    obj.path = obj.path.replaceAll('//', '/').slice(1) // ditch first slash
+    obj.path = obj.path.replaceAll('//', '/')
+    if (obj.path.startsWith('/')) obj.path = obj.path.slice(1)
     delete obj.parents
     nodes.push(obj)
     if (parentKey) {
@@ -79,14 +80,19 @@ function getStep(obj) {
   let params = []
   if (ignoreTags.has(obj.tag)) return ''
   switch (obj.tag) {
-    case 'Device':
-    case 'Axes':
-    case 'Linear':
-    case 'Rotary':
-    case 'Path':
-    case 'Controller':
-      params = [obj.id] //. or obj.name ?? sometimes one is nicer than the other
-      break
+    // case 'Device':
+    // case 'Axes':
+    // case 'Linear':
+    // case 'Rotary':
+    // case 'Path':
+    // case 'Controller':
+    // case 'Resources':
+    // case 'Materials':
+    // case 'Stock':
+    // case 'Systems':
+    //   // params = [obj.id] //. or obj.name ?? sometimes one is nicer than the other
+    //   params = [obj.name || obj.id || '']
+    //   break
     case 'DataItem':
       params = [obj.category, obj.type]
       if (obj.subType) params.push(obj.subType)
@@ -100,9 +106,13 @@ function getStep(obj) {
       params = [obj.type]
       if (obj.subType) params.push(obj.subType)
       break
+    default:
+      // params = [obj.id] //. or obj.name ?? sometimes one is nicer than the other
+      params = [obj.name || obj.id || '']
+      break
   }
   const paramsStr =
-    params.length > 0
+    params[0].length > 0
       ? '(' + params.map(param => param.toLowerCase()).join(',') + ')'
       : ''
   const step = `${obj.tag}${paramsStr}`
