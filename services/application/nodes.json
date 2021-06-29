@@ -1,0 +1,2886 @@
+[
+  {
+    "tag": "AssetCount",
+    "_key": "bead863fb5bdaad2",
+    "assetType": "CuttingTool",
+    "value": "74",
+    "prop": "AssetCount",
+    "device": ""
+  },
+  {
+    "tag": "AssetCounts",
+    "_key": "b6c5f5bff29d29af",
+    "prop": "",
+    "device": ""
+  },
+  {
+    "tag": "Header",
+    "_key": "4750d48d971b922d",
+    "creationTime": "2021-06-29T17:45:16Z",
+    "sender": "DMZ-MTCNCT",
+    "instanceId": "1622761005",
+    "version": "1.7.0.3",
+    "assetBufferSize": "8096",
+    "assetCount": "74",
+    "bufferSize": "4096",
+    "prop": "Header",
+    "device": ""
+  },
+  {
+    "tag": "Description",
+    "_key": "132748bda5ff41e8",
+    "manufacturer": "Mazak_Corporation",
+    "value": "Mill w/SMooth-G",
+    "prop": "Description",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "c0b078c02d29ceb2",
+    "category": "EVENT",
+    "id": "avail",
+    "type": "AVAILABILITY",
+    "prop": "DataItem(event,availability)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "57e28470571d474c",
+    "category": "EVENT",
+    "id": "functionalmode",
+    "type": "FUNCTIONAL_MODE",
+    "prop": "DataItem(event,functional_mode)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "a7bdf8cffe1bd389",
+    "category": "EVENT",
+    "id": "emloaded",
+    "subType": "LOADED",
+    "type": "EQUIPMENT_MODE",
+    "prop": "DataItem(event,equipment_mode,loaded)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "43f8531657419d0c",
+    "category": "EVENT",
+    "id": "emworking",
+    "subType": "WORKING",
+    "type": "EQUIPMENT_MODE",
+    "prop": "DataItem(event,equipment_mode,working)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "945ae131b2082c32",
+    "category": "EVENT",
+    "id": "emoperating",
+    "subType": "OPERATING",
+    "type": "EQUIPMENT_MODE",
+    "prop": "DataItem(event,equipment_mode,operating)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "6454df8e1fbb024a",
+    "category": "EVENT",
+    "id": "empowered",
+    "subType": "POWERED",
+    "type": "EQUIPMENT_MODE",
+    "prop": "DataItem(event,equipment_mode,powered)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "92bd7c40a221778c",
+    "category": "EVENT",
+    "id": "emdelay",
+    "subType": "DELAY",
+    "type": "EQUIPMENT_MODE",
+    "prop": "DataItem(event,equipment_mode,delay)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "6389f3790b6ee13d",
+    "category": "EVENT",
+    "id": "osl",
+    "subType": "LICENSE",
+    "type": "OPERATING_SYSTEM",
+    "prop": "DataItem(event,operating_system,license)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "868fb9adb829b49e",
+    "category": "EVENT",
+    "id": "os",
+    "subType": "VERSION",
+    "type": "OPERATING_SYSTEM",
+    "prop": "DataItem(event,operating_system,version)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "a27058af9c795168",
+    "category": "EVENT",
+    "id": "osrd",
+    "subType": "RELEASE_DATE",
+    "type": "OPERATING_SYSTEM",
+    "prop": "DataItem(event,operating_system,release_date)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "099dfa81f2cd6236",
+    "category": "EVENT",
+    "id": "osid",
+    "subType": "INSTALL_DATE",
+    "type": "OPERATING_SYSTEM",
+    "prop": "DataItem(event,operating_system,install_date)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "bb7aabab6c9d7632",
+    "category": "EVENT",
+    "id": "osmfg",
+    "subType": "MANUFACTURER",
+    "type": "OPERATING_SYSTEM",
+    "prop": "DataItem(event,operating_system,manufacturer)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "927431e8f31f279d",
+    "category": "EVENT",
+    "discrete": "true",
+    "id": "d1_asset_chg",
+    "type": "ASSET_CHANGED",
+    "prop": "DataItem(event,asset_changed,discrete=true)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "dc0a3cb1614b8b33",
+    "category": "EVENT",
+    "id": "d1_asset_rem",
+    "type": "ASSET_REMOVED",
+    "prop": "DataItem(event,asset_removed)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "68d0d006489f70ca",
+    "prop": "",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "2fc23400a5721bef",
+    "category": "CONDITION",
+    "id": "servo_cond",
+    "type": "ACTUATOR",
+    "prop": "Axes(base)/DataItem(condition,actuator)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "75f1c7fe577f3978",
+    "category": "CONDITION",
+    "id": "spindle_cond",
+    "type": "SYSTEM",
+    "prop": "Axes(base)/DataItem(condition,system)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "ffd3b84dfd2ff3a6",
+    "prop": "Axes(base)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "e82db9550963e2d9",
+    "value": "2010",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(length)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "e160609f85a43be7",
+    "type": "LENGTH",
+    "units": "MILLIMETER",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(length)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "6f3d52ed50885135",
+    "value": "400",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(linear_force)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "71aa9c6b7e3947c5",
+    "value": "0",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(linear_force)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "91bc9441374cd213",
+    "type": "LINEAR_FORCE",
+    "units": "NEWTON",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(linear_force)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "402136cbd2ae8302",
+    "value": "1180",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(velocity,rapid)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "dbf2fde0bd8d8924",
+    "value": "1",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(velocity,rapid)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "3bf9ce88e22a1fa5",
+    "subType": "RAPID",
+    "type": "VELOCITY",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(velocity,rapid)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "0ec5d653d7d5b38a",
+    "value": "315",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(velocity,programmed)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "efecda3356e7233a",
+    "value": "1",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(velocity,programmed)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "adc8f3d44cb5b2a4",
+    "subType": "PROGRAMMED",
+    "type": "VELOCITY",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(velocity,programmed)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "02979eb5a5d1eba1",
+    "value": "1180",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(acceleration,rapid)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "69c55f7077618a31",
+    "value": "1",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(acceleration,rapid)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "c9a5015c077f74b1",
+    "subType": "RAPID",
+    "type": "ACCELERATION",
+    "units": "MILLIMETER/SECOND^2",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(acceleration,rapid)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "ab2432c07e4f708f",
+    "value": "1180",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(acceleration,programmed)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "2ed3f955fdb04def",
+    "value": "1",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(acceleration,programmed)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "2d14f3e236c3cf05",
+    "value": "380",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(acceleration,programmed)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "f3250d43c075a08d",
+    "subType": "PROGRAMMED",
+    "type": "ACCELERATION",
+    "units": "MILLIMETER/SECOND^2",
+    "prop": "Axes(base)/Linear(x)/Configuration/Specification(acceleration,programmed)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specifications",
+    "_key": "4580a29a26a8d6f8",
+    "prop": "Axes(base)/Linear(x)/Configuration/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Configuration",
+    "_key": "d175b6fa30e50e4c",
+    "prop": "Axes(base)/Linear(x)/Configuration",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "a545402644d02b7c",
+    "category": "CONDITION",
+    "id": "Xtravel",
+    "type": "POSITION",
+    "prop": "Axes(base)/Linear(x)/DataItem(condition,position)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filter",
+    "_key": "41c1e78e0cc7245a",
+    "type": "MINIMUM_DELTA",
+    "value": "3",
+    "prop": "Axes(base)/Linear(x)/DataItem(sample,load)/Filter",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filters",
+    "_key": "f6c824e4ae09bc72",
+    "prop": "Axes(base)/Linear(x)/DataItem(sample,load)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "564fd61b34efdeab",
+    "category": "SAMPLE",
+    "id": "Xload",
+    "nativeUnits": "PERCENT",
+    "type": "LOAD",
+    "units": "PERCENT",
+    "prop": "Axes(base)/Linear(x)/DataItem(sample,load)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "31161ab3dbc41174",
+    "category": "SAMPLE",
+    "id": "Xfrt",
+    "nativeUnits": "MILLIMETER/SECOND",
+    "type": "AXIS_FEEDRATE",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Axes(base)/Linear(x)/DataItem(sample,axis_feedrate)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filter",
+    "_key": "9b64998284f95b12",
+    "type": "MINIMUM_DELTA",
+    "value": "0.5",
+    "prop": "Axes(base)/Linear(x)/DataItem(sample,temperature,compositionid=xmotor)/Filter",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filters",
+    "_key": "23b51c38b5c80b9f",
+    "prop": "Axes(base)/Linear(x)/DataItem(sample,temperature,compositionid=xmotor)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "6ca7a83cf8af00d2",
+    "category": "SAMPLE",
+    "compositionId": "Xmotor",
+    "id": "servotemp1",
+    "nativeUnits": "CELSIUS",
+    "type": "TEMPERATURE",
+    "units": "CELSIUS",
+    "prop": "Axes(base)/Linear(x)/DataItem(sample,temperature,compositionid=xmotor)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "b4939d3c0a33e25a",
+    "category": "EVENT",
+    "id": "xaxisstate",
+    "type": "AXIS_STATE",
+    "prop": "Axes(base)/Linear(x)/DataItem(event,axis_state)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "8d7bb8c60a5c89c9",
+    "prop": "Axes(base)/Linear(x)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Composition",
+    "_key": "4badecd7e613af52",
+    "id": "Xballscrew",
+    "type": "BALLSCREW",
+    "prop": "Axes(base)/Linear(x)/Compositions/Composition(ballscrew)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Composition",
+    "_key": "5b7b9c1353ba581d",
+    "id": "Xmotor",
+    "type": "MOTOR",
+    "prop": "Axes(base)/Linear(x)/Compositions/Composition(motor)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Compositions",
+    "_key": "4b381a19a3bfe028",
+    "prop": "Axes(base)/Linear(x)/Compositions",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Linear",
+    "_key": "feb1db377c00ac76",
+    "id": "x",
+    "name": "X",
+    "prop": "Axes(base)/Linear(x)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "b4a17189e4521e78",
+    "value": "2010",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(length)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "516eacc357a74ea6",
+    "type": "LENGTH",
+    "units": "MILLIMETER",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(length)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "be1ef8ebccd2b57b",
+    "value": "400",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(linear_force)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "a17bbba21c8a55ce",
+    "value": "0",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(linear_force)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "734fd35e927e3c12",
+    "type": "LINEAR_FORCE",
+    "units": "NEWTON",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(linear_force)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "7f73f0445eea1e23",
+    "value": "1180",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(velocity,rapid)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "24a89a0fca977c39",
+    "value": "1",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(velocity,rapid)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "bb2a7bd772b0fad9",
+    "subType": "RAPID",
+    "type": "VELOCITY",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(velocity,rapid)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "3d8ef6d2979ee681",
+    "value": "315",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(velocity,programmed)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "0c2e1ef141aba166",
+    "value": "1",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(velocity,programmed)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "3d949f46a92e651b",
+    "subType": "PROGRAMMED",
+    "type": "VELOCITY",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(velocity,programmed)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "3d254cb222d83c59",
+    "value": "1180",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(acceleration,rapid)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "69b10dfa60151a1e",
+    "value": "1",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(acceleration,rapid)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "0e6dc18b612b1473",
+    "subType": "RAPID",
+    "type": "ACCELERATION",
+    "units": "MILLIMETER/SECOND^2",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(acceleration,rapid)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "c8ca548ab30e0efc",
+    "value": "1180",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(acceleration,programmed)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "f3c50785e213ba64",
+    "value": "1",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(acceleration,programmed)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "775c94900dac9916",
+    "value": "380",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(acceleration,programmed)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "906bcb40d5d7afa2",
+    "subType": "PROGRAMMED",
+    "type": "ACCELERATION",
+    "units": "MILLIMETER/SECOND^2",
+    "prop": "Axes(base)/Linear(y)/Configuration/Specification(acceleration,programmed)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specifications",
+    "_key": "d51a0857cf6a24c8",
+    "prop": "Axes(base)/Linear(y)/Configuration/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Configuration",
+    "_key": "6302341895e8cc11",
+    "prop": "Axes(base)/Linear(y)/Configuration",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "6830d584a31dd7b7",
+    "category": "CONDITION",
+    "id": "Ytravel",
+    "type": "POSITION",
+    "prop": "Axes(base)/Linear(y)/DataItem(condition,position)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filter",
+    "_key": "3af9e6eb82cd883c",
+    "type": "MINIMUM_DELTA",
+    "value": "3",
+    "prop": "Axes(base)/Linear(y)/DataItem(sample,load)/Filter",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filters",
+    "_key": "fdd0bbfe2914354d",
+    "prop": "Axes(base)/Linear(y)/DataItem(sample,load)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "126aaafec4779ebe",
+    "category": "SAMPLE",
+    "id": "Yload",
+    "nativeUnits": "PERCENT",
+    "type": "LOAD",
+    "units": "PERCENT",
+    "prop": "Axes(base)/Linear(y)/DataItem(sample,load)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "f06344f36d5c7b00",
+    "category": "SAMPLE",
+    "id": "Yfrt",
+    "nativeUnits": "MILLIMETER/SECOND",
+    "type": "AXIS_FEEDRATE",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Axes(base)/Linear(y)/DataItem(sample,axis_feedrate)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filter",
+    "_key": "008050ea03b847d1",
+    "type": "MINIMUM_DELTA",
+    "value": "0.5",
+    "prop": "Axes(base)/Linear(y)/DataItem(sample,temperature,compositionid=ymotor)/Filter",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filters",
+    "_key": "8d61ade8929c809d",
+    "prop": "Axes(base)/Linear(y)/DataItem(sample,temperature,compositionid=ymotor)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "3e204724191dc54b",
+    "category": "SAMPLE",
+    "compositionId": "Ymotor",
+    "id": "servotemp2",
+    "nativeUnits": "CELSIUS",
+    "type": "TEMPERATURE",
+    "units": "CELSIUS",
+    "prop": "Axes(base)/Linear(y)/DataItem(sample,temperature,compositionid=ymotor)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "06b21c519d59843b",
+    "category": "EVENT",
+    "id": "yaxisstate",
+    "type": "AXIS_STATE",
+    "prop": "Axes(base)/Linear(y)/DataItem(event,axis_state)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "7a29ffd756ca4027",
+    "prop": "Axes(base)/Linear(y)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Composition",
+    "_key": "b5e850d9f1d3b6e1",
+    "id": "Yballscrew",
+    "type": "BALLSCREW",
+    "prop": "Axes(base)/Linear(y)/Compositions/Composition(ballscrew)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Composition",
+    "_key": "81e731241c9ff660",
+    "id": "Ymotor",
+    "type": "MOTOR",
+    "prop": "Axes(base)/Linear(y)/Compositions/Composition(motor)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Compositions",
+    "_key": "0640b4866df3ff0f",
+    "prop": "Axes(base)/Linear(y)/Compositions",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Linear",
+    "_key": "c5ded6fd561181c2",
+    "id": "y",
+    "name": "Y",
+    "prop": "Axes(base)/Linear(y)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "69b397a66f69e18f",
+    "value": "2010",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(length)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "a76f5c525968e8d3",
+    "type": "LENGTH",
+    "units": "MILLIMETER",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(length)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "282348dce3c1c4a7",
+    "value": "400",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(linear_force)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "4f84c473494a987d",
+    "value": "0",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(linear_force)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "93f563c5aa16f044",
+    "type": "LINEAR_FORCE",
+    "units": "NEWTON",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(linear_force)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "704637c36e03ff33",
+    "value": "1180",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(velocity,rapid)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "d3150e0f45f8de77",
+    "value": "1",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(velocity,rapid)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "817800dd09ede78d",
+    "subType": "RAPID",
+    "type": "VELOCITY",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(velocity,rapid)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "4a413ed5c2929ae2",
+    "value": "315",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(velocity,programmed)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "c89effbadd6f6985",
+    "value": "1",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(velocity,programmed)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "719bc915ba638266",
+    "subType": "PROGRAMMED",
+    "type": "VELOCITY",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(velocity,programmed)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "f6f341f63733e909",
+    "value": "1180",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(acceleration,rapid)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "1ed578716c22d8c8",
+    "value": "1",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(acceleration,rapid)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "97dc4acd4fd3871d",
+    "subType": "RAPID",
+    "type": "ACCELERATION",
+    "units": "MILLIMETER/SECOND^2",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(acceleration,rapid)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "94308bb942681852",
+    "value": "1180",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(acceleration,programmed)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "e1a95d98232429f6",
+    "value": "1",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(acceleration,programmed)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "aeac39b8aa6444bd",
+    "value": "380",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(acceleration,programmed)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "d43111216047041a",
+    "subType": "PROGRAMMED",
+    "type": "ACCELERATION",
+    "units": "MILLIMETER/SECOND^2",
+    "prop": "Axes(base)/Linear(z)/Configuration/Specification(acceleration,programmed)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specifications",
+    "_key": "f392617ade0b5c3d",
+    "prop": "Axes(base)/Linear(z)/Configuration/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Configuration",
+    "_key": "08723c2712b3a983",
+    "prop": "Axes(base)/Linear(z)/Configuration",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "1057edce10655658",
+    "category": "SAMPLE",
+    "coordinateSystem": "MACHINE",
+    "id": "Zabs",
+    "nativeUnits": "MILLIMETER",
+    "subType": "ACTUAL",
+    "type": "POSITION",
+    "units": "MILLIMETER",
+    "prop": "Axes(base)/Linear(z)/DataItem(sample,position,actual,coordinatesystem=machine)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "cc8f6d5554928d9b",
+    "category": "SAMPLE",
+    "coordinateSystem": "WORK",
+    "id": "Zpos",
+    "nativeUnits": "MILLIMETER",
+    "subType": "ACTUAL",
+    "type": "POSITION",
+    "units": "MILLIMETER",
+    "prop": "Axes(base)/Linear(z)/DataItem(sample,position,actual,coordinatesystem=work)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "77c47e6fb31178a0",
+    "category": "CONDITION",
+    "id": "Ztravel",
+    "type": "POSITION",
+    "prop": "Axes(base)/Linear(z)/DataItem(condition,position)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filter",
+    "_key": "d16c990c7596117c",
+    "type": "MINIMUM_DELTA",
+    "value": "3",
+    "prop": "Axes(base)/Linear(z)/DataItem(sample,load)/Filter",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filters",
+    "_key": "44d66c69bb2f2127",
+    "prop": "Axes(base)/Linear(z)/DataItem(sample,load)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "06a1f500fce2c47e",
+    "category": "SAMPLE",
+    "id": "Zload",
+    "nativeUnits": "PERCENT",
+    "type": "LOAD",
+    "units": "PERCENT",
+    "prop": "Axes(base)/Linear(z)/DataItem(sample,load)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "ba2c532786a2bd67",
+    "category": "SAMPLE",
+    "id": "Zfrt",
+    "nativeUnits": "MILLIMETER/SECOND",
+    "type": "AXIS_FEEDRATE",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Axes(base)/Linear(z)/DataItem(sample,axis_feedrate)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filter",
+    "_key": "9507b6992ad05754",
+    "type": "MINIMUM_DELTA",
+    "value": "0.5",
+    "prop": "Axes(base)/Linear(z)/DataItem(sample,temperature,compositionid=zmotor)/Filter",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filters",
+    "_key": "6b2201366f0c2457",
+    "prop": "Axes(base)/Linear(z)/DataItem(sample,temperature,compositionid=zmotor)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "245a4396888c56e8",
+    "category": "SAMPLE",
+    "compositionId": "Zmotor",
+    "id": "servotemp3",
+    "nativeUnits": "CELSIUS",
+    "type": "TEMPERATURE",
+    "units": "CELSIUS",
+    "prop": "Axes(base)/Linear(z)/DataItem(sample,temperature,compositionid=zmotor)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "8ff502796639f0ad",
+    "category": "EVENT",
+    "id": "zaxisstate",
+    "type": "AXIS_STATE",
+    "prop": "Axes(base)/Linear(z)/DataItem(event,axis_state)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "7d4a6cbb15069a68",
+    "prop": "Axes(base)/Linear(z)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Composition",
+    "_key": "55205f49a842c33d",
+    "id": "Zballscrew",
+    "type": "BALLSCREW",
+    "prop": "Axes(base)/Linear(z)/Compositions/Composition(ballscrew)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Composition",
+    "_key": "ff1654124cf798da",
+    "id": "Zmotor",
+    "type": "MOTOR",
+    "prop": "Axes(base)/Linear(z)/Compositions/Composition(motor)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Compositions",
+    "_key": "653dc8a9120b81cc",
+    "prop": "Axes(base)/Linear(z)/Compositions",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Linear",
+    "_key": "875d5ffbe9620773",
+    "id": "z",
+    "name": "Z",
+    "prop": "Axes(base)/Linear(z)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "e0cf8e8ddabf2ffb",
+    "value": "2010",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(length)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "a2829cb900adb134",
+    "type": "LENGTH",
+    "units": "MILLIMETER",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(length)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "49ccf5d093ecd28f",
+    "value": "400",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(linear_force)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "fbc473e73433fec1",
+    "value": "0",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(linear_force)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "892faf9160355376",
+    "type": "LINEAR_FORCE",
+    "units": "NEWTON",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(linear_force)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "732d0cab8c9201a8",
+    "value": "1180",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(velocity,rapid)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "b9fcdc361ac646f8",
+    "value": "1",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(velocity,rapid)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "a6cad32feacd38f3",
+    "subType": "RAPID",
+    "type": "VELOCITY",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(velocity,rapid)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "ace1745cc44e6e1b",
+    "value": "315",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(velocity,programmed)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "db0499726aa1babc",
+    "value": "1",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(velocity,programmed)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "b77c2780b4eb403d",
+    "subType": "PROGRAMMED",
+    "type": "VELOCITY",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(velocity,programmed)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "e3e5ab02d160929c",
+    "value": "1180",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(acceleration,rapid)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "4d1816a5dc3e16f9",
+    "value": "1",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(acceleration,rapid)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "2db7f5c6b1fca5ac",
+    "subType": "RAPID",
+    "type": "ACCELERATION",
+    "units": "MILLIMETER/SECOND^2",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(acceleration,rapid)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "bc1ef73061f1bbe9",
+    "value": "1180",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(acceleration,programmed)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "4b9404fc331ce5f5",
+    "value": "1",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(acceleration,programmed)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "c12e0d72f662e5e6",
+    "value": "380",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(acceleration,programmed)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "c353b63d452157d3",
+    "subType": "PROGRAMMED",
+    "type": "ACCELERATION",
+    "units": "MILLIMETER/SECOND^2",
+    "prop": "Axes(base)/Linear(z3)/Configuration/Specification(acceleration,programmed)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specifications",
+    "_key": "5dc21f303c951476",
+    "prop": "Axes(base)/Linear(z3)/Configuration/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Configuration",
+    "_key": "2ebb02a87fe1f35c",
+    "prop": "Axes(base)/Linear(z3)/Configuration",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "8774e39a3a8969ab",
+    "category": "SAMPLE",
+    "coordinateSystem": "MACHINE",
+    "id": "Wabs",
+    "nativeUnits": "MILLIMETER",
+    "subType": "ACTUAL",
+    "type": "POSITION",
+    "units": "MILLIMETER",
+    "prop": "Axes(base)/Linear(z3)/DataItem(sample,position,actual,coordinatesystem=machine)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "b2ff02f714cd550a",
+    "category": "SAMPLE",
+    "coordinateSystem": "WORK",
+    "id": "Wpos",
+    "nativeUnits": "MILLIMETER",
+    "subType": "ACTUAL",
+    "type": "POSITION",
+    "units": "MILLIMETER",
+    "prop": "Axes(base)/Linear(z3)/DataItem(sample,position,actual,coordinatesystem=work)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "a5062b36252ef253",
+    "category": "CONDITION",
+    "id": "Wtravel",
+    "type": "POSITION",
+    "prop": "Axes(base)/Linear(z3)/DataItem(condition,position)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filter",
+    "_key": "0125772e455c2960",
+    "type": "MINIMUM_DELTA",
+    "value": "3",
+    "prop": "Axes(base)/Linear(z3)/DataItem(sample,load)/Filter",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filters",
+    "_key": "9ec4dc889bf2b4e1",
+    "prop": "Axes(base)/Linear(z3)/DataItem(sample,load)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "0bbebfeaf85dbc3b",
+    "category": "SAMPLE",
+    "id": "Wload",
+    "nativeUnits": "PERCENT",
+    "type": "LOAD",
+    "units": "PERCENT",
+    "prop": "Axes(base)/Linear(z3)/DataItem(sample,load)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "f39cc4a6090aa347",
+    "category": "SAMPLE",
+    "id": "Wfrt",
+    "nativeUnits": "MILLIMETER/SECOND",
+    "type": "AXIS_FEEDRATE",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Axes(base)/Linear(z3)/DataItem(sample,axis_feedrate)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "2bd1199b94a5b2b0",
+    "category": "SAMPLE",
+    "compositionId": "Z3motor",
+    "id": "servotemp6",
+    "nativeUnits": "CELSIUS",
+    "type": "TEMPERATURE",
+    "units": "CELSIUS",
+    "prop": "Axes(base)/Linear(z3)/DataItem(sample,temperature,compositionid=z3motor)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "76102afc6997ee5c",
+    "category": "EVENT",
+    "id": "z3axisstate",
+    "type": "AXIS_STATE",
+    "prop": "Axes(base)/Linear(z3)/DataItem(event,axis_state)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "860bbf1307e1d440",
+    "prop": "Axes(base)/Linear(z3)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Composition",
+    "_key": "f5266802ccbdf671",
+    "id": "Z3ballscrew",
+    "type": "BALLSCREW",
+    "prop": "Axes(base)/Linear(z3)/Compositions/Composition(ballscrew)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Composition",
+    "_key": "7960e0c018d60f0e",
+    "id": "Z3motor",
+    "type": "MOTOR",
+    "prop": "Axes(base)/Linear(z3)/Compositions/Composition(motor)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Compositions",
+    "_key": "a42ba589313bb484",
+    "prop": "Axes(base)/Linear(z3)/Compositions",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Linear",
+    "_key": "4d4399e29e0b3ce3",
+    "id": "w",
+    "name": "Z3",
+    "nativeName": "W",
+    "prop": "Axes(base)/Linear(z3)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "225d4874a95ba206",
+    "value": "400",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(linear_force)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "da6c2a4db1095b5f",
+    "value": "0",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(linear_force)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "42ca0d7f7e4d58c6",
+    "type": "LINEAR_FORCE",
+    "units": "NEWTON",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(linear_force)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "c45e2602c637678e",
+    "value": "1180",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(velocity,rapid)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "ca2464d9b10504ee",
+    "value": "1",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(velocity,rapid)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "3d4dd2b3cba67151",
+    "subType": "RAPID",
+    "type": "VELOCITY",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(velocity,rapid)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "a6e2af0cacfc1114",
+    "value": "315",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(velocity,programmed)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "69d0f4e728f0fc4d",
+    "value": "1",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(velocity,programmed)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "2f77a0f1d11c27d4",
+    "subType": "PROGRAMMED",
+    "type": "VELOCITY",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(velocity,programmed)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "699a5ff6b42718d9",
+    "value": "1180",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(acceleration,rapid)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "675fbbc6cf8685ff",
+    "value": "1",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(acceleration,rapid)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "1fc325abf9d67b08",
+    "subType": "RAPID",
+    "type": "ACCELERATION",
+    "units": "MILLIMETER/SECOND^2",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(acceleration,rapid)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "2bedfd16ec3f902f",
+    "value": "1180",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(acceleration,programmed)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "971ea6dbf6ad70f1",
+    "value": "1",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(acceleration,programmed)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "02aa54055e1ffcab",
+    "value": "380",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(acceleration,programmed)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "3bbc37745c3893c6",
+    "subType": "PROGRAMMED",
+    "type": "ACCELERATION",
+    "units": "MILLIMETER/SECOND^2",
+    "prop": "Axes(base)/Rotary(b)/Configuration/Specification(acceleration,programmed)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specifications",
+    "_key": "592c9b3a59b01555",
+    "prop": "Axes(base)/Rotary(b)/Configuration/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Configuration",
+    "_key": "4caad0268b42fa3a",
+    "prop": "Axes(base)/Rotary(b)/Configuration",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filter",
+    "_key": "11ce19abeb1ece8b",
+    "type": "MINIMUM_DELTA",
+    "value": "3",
+    "prop": "Axes(base)/Rotary(b)/DataItem(sample,load)/Filter",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filters",
+    "_key": "0a57adc39e338a35",
+    "prop": "Axes(base)/Rotary(b)/DataItem(sample,load)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "d7b9854179cd8504",
+    "category": "SAMPLE",
+    "id": "Bload",
+    "nativeUnits": "PERCENT",
+    "type": "LOAD",
+    "units": "PERCENT",
+    "prop": "Axes(base)/Rotary(b)/DataItem(sample,load)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "549797074c52974f",
+    "category": "SAMPLE",
+    "id": "Bfrt",
+    "nativeUnits": "DEGREE/MINUTE",
+    "type": "ANGULAR_VELOCITY",
+    "units": "DEGREE/SECOND",
+    "prop": "Axes(base)/Rotary(b)/DataItem(sample,angular_velocity)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "0db849de69ebe600",
+    "category": "CONDITION",
+    "id": "Btravel",
+    "type": "ANGLE",
+    "prop": "Axes(base)/Rotary(b)/DataItem(condition,angle)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "da53ece260119814",
+    "category": "SAMPLE",
+    "coordinateSystem": "MACHINE",
+    "id": "Babs",
+    "nativeUnits": "DEGREE",
+    "subType": "ACTUAL",
+    "type": "ANGLE",
+    "units": "DEGREE",
+    "prop": "Axes(base)/Rotary(b)/DataItem(sample,angle,actual,coordinatesystem=machine)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "cea0d3c69c42249a",
+    "category": "SAMPLE",
+    "coordinateSystem": "WORK",
+    "id": "Bpos",
+    "nativeUnits": "DEGREE",
+    "subType": "ACTUAL",
+    "type": "ANGLE",
+    "units": "DEGREE",
+    "prop": "Axes(base)/Rotary(b)/DataItem(sample,angle,actual,coordinatesystem=work)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Value",
+    "_key": "6dcab4c3d345ae3d",
+    "value": "CONTOUR",
+    "prop": "Axes(base)/Rotary(b)/DataItem(event,rotary_mode)/Constraints/Value",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Value",
+    "_key": "77ad06ce30c664e2",
+    "value": "INDEX",
+    "prop": "Axes(base)/Rotary(b)/DataItem(event,rotary_mode)/Constraints/Value",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Constraints",
+    "_key": "b1790e565bd5c10e",
+    "prop": "Axes(base)/Rotary(b)/DataItem(event,rotary_mode)/Constraints",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "c43fc9fa6ad57ec2",
+    "category": "EVENT",
+    "id": "arfunc",
+    "type": "ROTARY_MODE",
+    "prop": "Axes(base)/Rotary(b)/DataItem(event,rotary_mode)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "069869c5ab757e85",
+    "category": "SAMPLE",
+    "compositionId": "Bmotor",
+    "id": "servotemp4",
+    "nativeUnits": "CELSIUS",
+    "type": "TEMPERATURE",
+    "units": "CELSIUS",
+    "prop": "Axes(base)/Rotary(b)/DataItem(sample,temperature,compositionid=bmotor)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "0db9277a11e146fe",
+    "category": "EVENT",
+    "id": "baxisstate",
+    "type": "AXIS_STATE",
+    "prop": "Axes(base)/Rotary(b)/DataItem(event,axis_state)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "5388003b946ca2e3",
+    "prop": "Axes(base)/Rotary(b)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Composition",
+    "_key": "97887ebaaa96ac57",
+    "id": "Bmotor",
+    "type": "MOTOR",
+    "prop": "Axes(base)/Rotary(b)/Compositions/Composition(motor)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Compositions",
+    "_key": "6e93b2467c6ea7dc",
+    "prop": "Axes(base)/Rotary(b)/Compositions",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Rotary",
+    "_key": "7e8a885a987bf41b",
+    "id": "ar",
+    "name": "B",
+    "prop": "Axes(base)/Rotary(b)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filter",
+    "_key": "5452dc2573e168b9",
+    "type": "MINIMUM_DELTA",
+    "value": "3",
+    "prop": "Axes(base)/Rotary(c)/DataItem(sample,load)/Filter",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filters",
+    "_key": "620d8a52037aba13",
+    "prop": "Axes(base)/Rotary(c)/DataItem(sample,load)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "c7f5632032e719fd",
+    "category": "SAMPLE",
+    "id": "Cload",
+    "nativeUnits": "PERCENT",
+    "type": "LOAD",
+    "units": "PERCENT",
+    "prop": "Axes(base)/Rotary(c)/DataItem(sample,load)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filter",
+    "_key": "7b09243738d98a50",
+    "type": "MINIMUM_DELTA",
+    "value": "3",
+    "prop": "Axes(base)/Rotary(c)/DataItem(sample,load)/Filter",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filters",
+    "_key": "35a4a6a9d710bd44",
+    "prop": "Axes(base)/Rotary(c)/DataItem(sample,load)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "928e3cacb8e66c2a",
+    "category": "SAMPLE",
+    "id": "Sload",
+    "nativeUnits": "PERCENT",
+    "type": "LOAD",
+    "units": "PERCENT",
+    "prop": "Axes(base)/Rotary(c)/DataItem(sample,load)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "f118e8cc821ff59e",
+    "category": "CONDITION",
+    "id": "Ctravel",
+    "type": "ANGLE",
+    "prop": "Axes(base)/Rotary(c)/DataItem(condition,angle)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "78e8812949f102cd",
+    "category": "SAMPLE",
+    "id": "Cfrt",
+    "nativeUnits": "DEGREE/MINUTE",
+    "type": "ANGULAR_VELOCITY",
+    "units": "DEGREE/SECOND",
+    "prop": "Axes(base)/Rotary(c)/DataItem(sample,angular_velocity)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filter",
+    "_key": "e669b211958f5c8d",
+    "type": "MINIMUM_DELTA",
+    "value": "5",
+    "prop": "Axes(base)/Rotary(c)/DataItem(sample,rotary_velocity,actual)/Filter",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filters",
+    "_key": "4798fe948a7f3c4a",
+    "prop": "Axes(base)/Rotary(c)/DataItem(sample,rotary_velocity,actual)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "d0bbfe1e3bda13bb",
+    "category": "SAMPLE",
+    "id": "Srpm",
+    "nativeUnits": "REVOLUTION/MINUTE",
+    "subType": "ACTUAL",
+    "type": "ROTARY_VELOCITY",
+    "units": "REVOLUTION/MINUTE",
+    "prop": "Axes(base)/Rotary(c)/DataItem(sample,rotary_velocity,actual)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filter",
+    "_key": "6b85b6d1ea9ad5ca",
+    "type": "MINIMUM_DELTA",
+    "value": "0.5",
+    "prop": "Axes(base)/Rotary(c)/DataItem(sample,temperature,compositionid=cmotor)/Filter",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filters",
+    "_key": "caca8214658f3cfd",
+    "prop": "Axes(base)/Rotary(c)/DataItem(sample,temperature,compositionid=cmotor)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "3aa2f3d17a97997e",
+    "category": "SAMPLE",
+    "compositionId": "Cmotor",
+    "id": "Stemp",
+    "nativeUnits": "CELSIUS",
+    "type": "TEMPERATURE",
+    "units": "CELSIUS",
+    "prop": "Axes(base)/Rotary(c)/DataItem(sample,temperature,compositionid=cmotor)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "1ca704d26e55ff6e",
+    "category": "SAMPLE",
+    "coordinateSystem": "MACHINE",
+    "id": "Cabs",
+    "nativeUnits": "DEGREE",
+    "subType": "ACTUAL",
+    "type": "ANGLE",
+    "units": "DEGREE",
+    "prop": "Axes(base)/Rotary(c)/DataItem(sample,angle,actual,coordinatesystem=machine)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "f8c50ba35a9a28bb",
+    "category": "SAMPLE",
+    "coordinateSystem": "WORK",
+    "id": "Cpos",
+    "nativeUnits": "DEGREE",
+    "subType": "ACTUAL",
+    "type": "ANGLE",
+    "units": "DEGREE",
+    "prop": "Axes(base)/Rotary(c)/DataItem(sample,angle,actual,coordinatesystem=work)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Value",
+    "_key": "fc784bd0907eb01e",
+    "value": "SPINDLE",
+    "prop": "Axes(base)/Rotary(c)/DataItem(event,rotary_mode)/Constraints/Value",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Value",
+    "_key": "a02e3f53930ea52e",
+    "value": "INDEX",
+    "prop": "Axes(base)/Rotary(c)/DataItem(event,rotary_mode)/Constraints/Value",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Constraints",
+    "_key": "46b6eb7bbd26ca94",
+    "prop": "Axes(base)/Rotary(c)/DataItem(event,rotary_mode)/Constraints",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "2928f6124acb523b",
+    "category": "EVENT",
+    "id": "crfunc",
+    "type": "ROTARY_MODE",
+    "prop": "Axes(base)/Rotary(c)/DataItem(event,rotary_mode)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "19eaa4899a9d04ec",
+    "category": "CONDITION",
+    "id": "Sload_cond",
+    "type": "LOAD",
+    "prop": "Axes(base)/Rotary(c)/DataItem(condition,load)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "c68e4874e701e66f",
+    "category": "CONDITION",
+    "id": "Stemp_cond",
+    "type": "TEMPERATURE",
+    "prop": "Axes(base)/Rotary(c)/DataItem(condition,temperature)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "454c114a0da2dc86",
+    "category": "EVENT",
+    "id": "caxisstate",
+    "type": "AXIS_STATE",
+    "prop": "Axes(base)/Rotary(c)/DataItem(event,axis_state)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "e53dbe5cc71f0563",
+    "prop": "Axes(base)/Rotary(c)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Composition",
+    "_key": "b4f2217f1ba4610f",
+    "id": "Cmotor",
+    "type": "MOTOR",
+    "prop": "Axes(base)/Rotary(c)/Compositions/Composition(motor)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Compositions",
+    "_key": "265c7e2b8bf0a7e3",
+    "prop": "Axes(base)/Rotary(c)/Compositions",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Rotary",
+    "_key": "3044e1c5251ad2f2",
+    "id": "c",
+    "name": "C",
+    "prop": "Axes(base)/Rotary(c)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Components",
+    "_key": "9f1730a1dfa4062d",
+    "prop": "Axes(base)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Axes",
+    "_key": "f6d48697aa9602d0",
+    "id": "a",
+    "name": "base",
+    "prop": "Axes(base)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "489d16d5eac42c5e",
+    "category": "CONDITION",
+    "id": "comms_cond",
+    "type": "COMMUNICATIONS",
+    "prop": "Controller/DataItem(condition,communications)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "d82917b292875ef0",
+    "category": "CONDITION",
+    "id": "logic_cond",
+    "type": "LOGIC_PROGRAM",
+    "prop": "Controller/DataItem(condition,logic_program)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "400409e83502a6a4",
+    "category": "CONDITION",
+    "id": "system_cond",
+    "type": "SYSTEM",
+    "prop": "Controller/DataItem(condition,system)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "b5e5831d97a86751",
+    "category": "EVENT",
+    "id": "estop",
+    "type": "EMERGENCY_STOP",
+    "prop": "Controller/DataItem(event,emergency_stop)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "7216a2f67a6de615",
+    "category": "SAMPLE",
+    "id": "auto_time",
+    "nativeUnits": "SECOND",
+    "subType": "x:AUTO",
+    "type": "ACCUMULATED_TIME",
+    "units": "SECOND",
+    "prop": "Controller/DataItem(sample,accumulated_time,x:auto)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "4f609184aba41e59",
+    "category": "SAMPLE",
+    "id": "total_time",
+    "nativeUnits": "SECOND",
+    "subType": "x:TOTAL",
+    "type": "ACCUMULATED_TIME",
+    "units": "SECOND",
+    "prop": "Controller/DataItem(sample,accumulated_time,x:total)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "9a543b8b91c3b601",
+    "category": "SAMPLE",
+    "id": "cut_time",
+    "nativeUnits": "SECOND",
+    "subType": "x:CUT",
+    "type": "ACCUMULATED_TIME",
+    "units": "SECOND",
+    "prop": "Controller/DataItem(sample,accumulated_time,x:cut)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "0c524e5b2f507ff9",
+    "category": "SAMPLE",
+    "id": "total_auto_cut_time",
+    "nativeUnits": "SECOND",
+    "subType": "x:TOTALCUTTIME",
+    "type": "ACCUMULATED_TIME",
+    "units": "SECOND",
+    "prop": "Controller/DataItem(sample,accumulated_time,x:totalcuttime)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "5dcb5902b2b6ee75",
+    "category": "EVENT",
+    "id": "pallet_num",
+    "type": "PALLET_ID",
+    "prop": "Controller/DataItem(event,pallet_id)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "e85cc446c38b421b",
+    "prop": "Controller/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "e498da6479b586c4",
+    "category": "EVENT",
+    "id": "hd1chuckstate",
+    "type": "CHUCK_STATE",
+    "prop": "Controller/Path/DataItem(event,chuck_state)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "5f58b55cb4cd5f7f",
+    "category": "EVENT",
+    "id": "Frapidovr",
+    "subType": "RAPID",
+    "type": "PATH_FEEDRATE_OVERRIDE",
+    "prop": "Controller/Path/DataItem(event,path_feedrate_override,rapid)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "5fa7da3a9a05758f",
+    "category": "EVENT",
+    "id": "Fovr",
+    "subType": "PROGRAMMED",
+    "type": "PATH_FEEDRATE_OVERRIDE",
+    "prop": "Controller/Path/DataItem(event,path_feedrate_override,programmed)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "b08940c07b54398f",
+    "category": "EVENT",
+    "id": "Sovr",
+    "type": "ROTARY_VELOCITY_OVERRIDE",
+    "prop": "Controller/Path/DataItem(event,rotary_velocity_override)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "f5b431f739eb25ec",
+    "category": "EVENT",
+    "id": "program",
+    "subType": "MAIN",
+    "type": "PROGRAM",
+    "prop": "Controller/Path/DataItem(event,program,main)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "a921e2b77ee30a35",
+    "category": "EVENT",
+    "id": "activeprog",
+    "subType": "ACTIVE",
+    "type": "PROGRAM",
+    "prop": "Controller/Path/DataItem(event,program,active)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "3f11c446d34afcce",
+    "category": "EVENT",
+    "id": "unitNum",
+    "type": "x:UNIT",
+    "prop": "Controller/Path/DataItem(event,x:unit)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "1f22b135146d440e",
+    "category": "EVENT",
+    "id": "sequenceNum",
+    "type": "x:SEQUENCE_NUMBER",
+    "prop": "Controller/Path/DataItem(event,x:sequence_number)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "f1edbe4582bd26a1",
+    "category": "EVENT",
+    "id": "PartCountAct",
+    "type": "PART_COUNT",
+    "prop": "Controller/Path/DataItem(event,part_count)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "94d21a8ea740efed",
+    "category": "SAMPLE",
+    "coordinateSystem": "WORK",
+    "id": "Fact",
+    "nativeUnits": "MILLIMETER/SECOND",
+    "subType": "ACTUAL",
+    "type": "PATH_FEEDRATE",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Controller/Path/DataItem(sample,path_feedrate,actual,coordinatesystem=work)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "13b2d971b8990589",
+    "category": "EVENT",
+    "id": "Tool_number",
+    "type": "TOOL_NUMBER",
+    "prop": "Controller/Path/DataItem(event,tool_number)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "d6ae5745cf73c757",
+    "category": "EVENT",
+    "id": "Tool_group",
+    "type": "TOOL_GROUP",
+    "prop": "Controller/Path/DataItem(event,tool_group)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "4921d7b772b00788",
+    "category": "EVENT",
+    "id": "Tool_suffix",
+    "type": "x:TOOL_SUFFIX",
+    "prop": "Controller/Path/DataItem(event,x:tool_suffix)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "330c4e3bbabfc49b",
+    "category": "EVENT",
+    "id": "execution",
+    "type": "EXECUTION",
+    "prop": "Controller/Path/DataItem(event,execution)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "29414c2dec595620",
+    "category": "EVENT",
+    "id": "waitstate",
+    "type": "WAIT_STATE",
+    "prop": "Controller/Path/DataItem(event,wait_state)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "0bc8fbf2388cea29",
+    "category": "EVENT",
+    "id": "mode",
+    "type": "CONTROLLER_MODE",
+    "prop": "Controller/Path/DataItem(event,controller_mode)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "5e0348626652e77a",
+    "category": "EVENT",
+    "id": "program_cmt",
+    "subType": "MAIN",
+    "type": "PROGRAM_COMMENT",
+    "prop": "Controller/Path/DataItem(event,program_comment,main)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "88a4d4c7642643c1",
+    "category": "EVENT",
+    "id": "activeprogram_cmt",
+    "subType": "ACTIVE",
+    "type": "PROGRAM_COMMENT",
+    "prop": "Controller/Path/DataItem(event,program_comment,active)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "0baa5fcb0990cf2f",
+    "category": "CONDITION",
+    "id": "motion_cond",
+    "type": "MOTION_PROGRAM",
+    "prop": "Controller/Path/DataItem(condition,motion_program)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "777932c472a7ffb1",
+    "category": "CONDITION",
+    "id": "path_system",
+    "type": "SYSTEM",
+    "prop": "Controller/Path/DataItem(condition,system)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "39e4a73dbf8e2a75",
+    "category": "EVENT",
+    "id": "cmomachineaxislock",
+    "subType": "MACHINE_AXIS_LOCK",
+    "type": "CONTROLLER_MODE_OVERRIDE",
+    "prop": "Controller/Path/DataItem(event,controller_mode_override,machine_axis_lock)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "d1450ff01c63cda4",
+    "category": "EVENT",
+    "id": "cmosingleblock",
+    "subType": "SINGLE_BLOCK",
+    "type": "CONTROLLER_MODE_OVERRIDE",
+    "prop": "Controller/Path/DataItem(event,controller_mode_override,single_block)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "640e67deae680a9b",
+    "category": "EVENT",
+    "id": "cmodryrun",
+    "subType": "DRY_RUN",
+    "type": "CONTROLLER_MODE_OVERRIDE",
+    "prop": "Controller/Path/DataItem(event,controller_mode_override,dry_run)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "2d7105100ea52137",
+    "category": "EVENT",
+    "id": "linelabel",
+    "type": "LINE_LABEL",
+    "prop": "Controller/Path/DataItem(event,line_label)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "6dfb4ff8a67faf88",
+    "category": "EVENT",
+    "id": "linenumber",
+    "subType": "INCREMENTAL",
+    "type": "LINE_NUMBER",
+    "prop": "Controller/Path/DataItem(event,line_number,incremental)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "920559b1671ac2fa",
+    "category": "EVENT",
+    "id": "cvars",
+    "representation": "DATA_SET",
+    "type": "VARIABLE",
+    "prop": "Controller/Path/DataItem(event,variable,representation=data_set)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "94614598bc235db6",
+    "category": "SAMPLE",
+    "id": "cspeed",
+    "nativeUnits": "MILLIMETER/SECOND",
+    "subType": "ACTUAL",
+    "type": "CUTTING_SPEED",
+    "units": "MILLIMETER/SECOND",
+    "prop": "Controller/Path/DataItem(sample,cutting_speed,actual)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "30584f3d142011de",
+    "prop": "Controller/Path/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Path",
+    "_key": "2eec07fe2b814517",
+    "id": "path1",
+    "name": "path",
+    "prop": "Controller/Path",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Components",
+    "_key": "5cdf8df7481ef9e5",
+    "prop": "Controller/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Controller",
+    "_key": "aed96f3fbecbd347",
+    "id": "cont",
+    "name": "controller",
+    "prop": "Controller",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "029547721e9c6b9e",
+    "category": "EVENT",
+    "id": "doorstate",
+    "type": "DOOR_STATE",
+    "prop": "Door/DataItem(event,door_state)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "a44ca66e171dacb7",
+    "prop": "Door/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Door",
+    "_key": "3324f423640f8340",
+    "id": "door1",
+    "name": "door",
+    "prop": "Door",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "41c6291833485553",
+    "value": "233.56",
+    "prop": "Systems/WorkEnvelope/Configuration/Specification(x_dimension)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "f3bc090b13cf22d4",
+    "type": "X_DIMENSION",
+    "units": "MILLIMETER",
+    "prop": "Systems/WorkEnvelope/Configuration/Specification(x_dimension)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "188a1c653db1a964",
+    "value": "233.56",
+    "prop": "Systems/WorkEnvelope/Configuration/Specification(y_dimension)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "fd86fbaa6e22f4c6",
+    "type": "Y_DIMENSION",
+    "units": "MILLIMETER",
+    "prop": "Systems/WorkEnvelope/Configuration/Specification(y_dimension)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "2910b3e0ec55daa0",
+    "value": "233.56",
+    "prop": "Systems/WorkEnvelope/Configuration/Specification(z_dimension)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "5173f60d944f8d85",
+    "type": "Z_DIMENSION",
+    "units": "MILLIMETER",
+    "prop": "Systems/WorkEnvelope/Configuration/Specification(z_dimension)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "1821472acf54c5cb",
+    "value": "233.56",
+    "prop": "Systems/WorkEnvelope/Configuration/Specification(x_dimension)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "0e72dd328632bb0e",
+    "compositionIdRef": "tbl",
+    "type": "X_DIMENSION",
+    "units": "MILLIMETER",
+    "prop": "Systems/WorkEnvelope/Configuration/Specification(x_dimension)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "deb76572d505fc81",
+    "value": "233.56",
+    "prop": "Systems/WorkEnvelope/Configuration/Specification(y_dimension)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "1d394be9adf2acba",
+    "compositionIdRef": "tbl",
+    "type": "Y_DIMENSION",
+    "units": "MILLIMETER",
+    "prop": "Systems/WorkEnvelope/Configuration/Specification(y_dimension)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "469f92eb39d10432",
+    "value": "233.56",
+    "prop": "Systems/WorkEnvelope/Configuration/Specification(mass)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "74a6165261124a0c",
+    "compositionIdRef": "tbl",
+    "type": "MASS",
+    "units": "KILOGRAM",
+    "prop": "Systems/WorkEnvelope/Configuration/Specification(mass)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specifications",
+    "_key": "1f3e41311bad9e45",
+    "prop": "Systems/WorkEnvelope/Configuration/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Configuration",
+    "_key": "351c8f425d17d5a3",
+    "prop": "Systems/WorkEnvelope/Configuration",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Composition",
+    "_key": "3185d6126f49f16b",
+    "id": "wp",
+    "type": "WORKPIECE",
+    "prop": "Systems/WorkEnvelope/Compositions/Composition(workpiece)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Composition",
+    "_key": "aaf5f1ece282e864",
+    "id": "tbl",
+    "type": "TABLE",
+    "prop": "Systems/WorkEnvelope/Compositions/Composition(table)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Compositions",
+    "_key": "4b299baa340d616c",
+    "prop": "Systems/WorkEnvelope/Compositions",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "WorkEnvelope",
+    "_key": "998016fc3c073589",
+    "id": "we1",
+    "name": "WorkEnvelope",
+    "prop": "Systems/WorkEnvelope",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "4c68b5fe43f73ef5",
+    "value": "480",
+    "prop": "Systems/Electric/Configuration/Specification(voltage)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "25ce1ca3d9a8829f",
+    "type": "VOLTAGE",
+    "units": "VOLT",
+    "prop": "Systems/Electric/Configuration/Specification(voltage)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "0f8d790dc8dbbdf9",
+    "value": "75",
+    "prop": "Systems/Electric/Configuration/Specification(power_factor)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "40885f7ad1ba9bc9",
+    "type": "POWER_FACTOR",
+    "units": "PERCENT",
+    "prop": "Systems/Electric/Configuration/Specification(power_factor)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "ea6380cc169a7692",
+    "value": "50",
+    "prop": "Systems/Electric/Configuration/Specification(wattage)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "073641d34d32ecee",
+    "type": "WATTAGE",
+    "units": "WATT",
+    "prop": "Systems/Electric/Configuration/Specification(wattage)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Nominal",
+    "_key": "91f06fb6036789a5",
+    "value": "200",
+    "prop": "Systems/Electric/Configuration/Specification(amperage)/Nominal",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "8f9a5c1725edd0f8",
+    "type": "AMPERAGE",
+    "units": "AMPERE",
+    "prop": "Systems/Electric/Configuration/Specification(amperage)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specifications",
+    "_key": "4bd2087bca9b7b1f",
+    "prop": "Systems/Electric/Configuration/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Configuration",
+    "_key": "e737c44015ecde6f",
+    "prop": "Systems/Electric/Configuration",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "2d9bfa72860c89ef",
+    "category": "CONDITION",
+    "id": "electric_cond",
+    "type": "SYSTEM",
+    "prop": "Systems/Electric/DataItem(condition,system)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "26e40d775fa52487",
+    "prop": "Systems/Electric/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Electric",
+    "_key": "586c9ee94e729ac0",
+    "id": "elec",
+    "name": "electric",
+    "prop": "Systems/Electric",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "4b98cd5f7053c6e3",
+    "category": "CONDITION",
+    "id": "hydra_cond",
+    "type": "SYSTEM",
+    "prop": "Systems/Hydraulic/DataItem(condition,system)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "37f510bce49428cf",
+    "prop": "Systems/Hydraulic/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Hydraulic",
+    "_key": "9520b1a88189e8fc",
+    "id": "hydraulic",
+    "name": "hydraulic",
+    "prop": "Systems/Hydraulic",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "599f8705f9cab5be",
+    "value": "234",
+    "prop": "Systems/Coolant/Configuration/Specification(pressure)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "f6c6391116812fed",
+    "value": "0",
+    "prop": "Systems/Coolant/Configuration/Specification(pressure)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "3eded269a9b594d2",
+    "type": "PRESSURE",
+    "units": "PASCAL",
+    "prop": "Systems/Coolant/Configuration/Specification(pressure)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "32cc56aead1b771f",
+    "value": "10",
+    "prop": "Systems/Coolant/Configuration/Specification(ph)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "ad23b0915aa883ee",
+    "value": "0",
+    "prop": "Systems/Coolant/Configuration/Specification(ph)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "cc1293d2ac5cfdee",
+    "type": "PH",
+    "units": "PERCENT",
+    "prop": "Systems/Coolant/Configuration/Specification(ph)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "098dcc14b69b443b",
+    "value": "9",
+    "prop": "Systems/Coolant/Configuration/Specification(concentration)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "3b09423a5b279bae",
+    "value": "3",
+    "prop": "Systems/Coolant/Configuration/Specification(concentration)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "8e72d7a9bf048946",
+    "type": "CONCENTRATION",
+    "units": "PERCENT",
+    "prop": "Systems/Coolant/Configuration/Specification(concentration)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specifications",
+    "_key": "d7df57bffa2ae20c",
+    "prop": "Systems/Coolant/Configuration/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Configuration",
+    "_key": "658646f02bd6f495",
+    "prop": "Systems/Coolant/Configuration",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "5d85d8ecb9709378",
+    "category": "CONDITION",
+    "id": "coolant_cond",
+    "type": "SYSTEM",
+    "prop": "Systems/Coolant/DataItem(condition,system)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filter",
+    "_key": "e1dce76d86a43d36",
+    "type": "MINIMUM_DELTA",
+    "value": "0.5",
+    "prop": "Systems/Coolant/DataItem(sample,temperature)/Filter",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filters",
+    "_key": "e61ac848fab3040a",
+    "prop": "Systems/Coolant/DataItem(sample,temperature)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "5509cb7613e5ed3b",
+    "category": "SAMPLE",
+    "id": "cooltemp",
+    "nativeUnits": "CELSIUS",
+    "type": "TEMPERATURE",
+    "units": "CELSIUS",
+    "prop": "Systems/Coolant/DataItem(sample,temperature)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "51c3f40e26c4d2e4",
+    "category": "SAMPLE",
+    "id": "CONCENTRATION",
+    "nativeUnits": "PERCENT",
+    "type": "CONCENTRATION",
+    "units": "PERCENT",
+    "prop": "Systems/Coolant/DataItem(sample,concentration)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "dc0f2e817c4dd3d0",
+    "prop": "Systems/Coolant/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Coolant",
+    "_key": "c9e9fb4286a44e7c",
+    "id": "coolant",
+    "name": "coolant",
+    "prop": "Systems/Coolant",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "fb2308a7a939d5ea",
+    "category": "CONDITION",
+    "id": "pneu_cond",
+    "type": "SYSTEM",
+    "prop": "Systems/Pneumatic/DataItem(condition,system)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "de137b1dea2a1249",
+    "prop": "Systems/Pneumatic/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Pneumatic",
+    "_key": "721ea41fef3eea5c",
+    "id": "pneumatic",
+    "name": "pneumatic",
+    "prop": "Systems/Pneumatic",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "ea65acb89592ca14",
+    "category": "CONDITION",
+    "id": "lubrication_cond",
+    "type": "SYSTEM",
+    "prop": "Systems/Lubrication/DataItem(condition,system)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "db5c8acc06f6f6db",
+    "prop": "Systems/Lubrication/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Lubrication",
+    "_key": "b7165bc66deecb1c",
+    "id": "lubrication",
+    "name": "lubrication",
+    "prop": "Systems/Lubrication",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Components",
+    "_key": "558ac8dcf802b8d1",
+    "prop": "Systems/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Systems",
+    "_key": "6f414d7668eb6deb",
+    "id": "systems",
+    "name": "systems",
+    "prop": "Systems",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Maximum",
+    "_key": "a41cb017ffb33845",
+    "value": "22",
+    "prop": "Auxiliaries/Environmental/Configuration/Specification(temperature)/Maximum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Minimum",
+    "_key": "ab949956ecdf941f",
+    "value": "19",
+    "prop": "Auxiliaries/Environmental/Configuration/Specification(temperature)/Minimum",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specification",
+    "_key": "c64ed76065ad6986",
+    "type": "TEMPERATURE",
+    "units": "CELSIUS",
+    "prop": "Auxiliaries/Environmental/Configuration/Specification(temperature)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Specifications",
+    "_key": "82bfec0371c15be8",
+    "prop": "Auxiliaries/Environmental/Configuration/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Configuration",
+    "_key": "17d90f198305aa02",
+    "prop": "Auxiliaries/Environmental/Configuration",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filter",
+    "_key": "0bec9fc8a51b398a",
+    "type": "MINIMUM_DELTA",
+    "value": "0.5",
+    "prop": "Auxiliaries/Environmental/DataItem(sample,temperature)/Filter",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Filters",
+    "_key": "4001d6a0e9a330b4",
+    "prop": "Auxiliaries/Environmental/DataItem(sample,temperature)/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "6a37c2f86db952a8",
+    "category": "SAMPLE",
+    "id": "rmtmp1",
+    "nativeUnits": "CELSIUS",
+    "type": "TEMPERATURE",
+    "units": "CELSIUS",
+    "prop": "Auxiliaries/Environmental/DataItem(sample,temperature)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "bc81554e725cb686",
+    "prop": "Auxiliaries/Environmental/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Environmental",
+    "_key": "edb42150392d7bb0",
+    "id": "room",
+    "name": "environmental",
+    "prop": "Auxiliaries/Environmental",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Components",
+    "_key": "cc4ba24b2b56106a",
+    "prop": "Auxiliaries/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Auxiliaries",
+    "_key": "a5b97084e37a7985",
+    "id": "Aux",
+    "name": "auxiliaries",
+    "prop": "Auxiliaries",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "aa0b40b696182040",
+    "category": "EVENT",
+    "id": "operator",
+    "type": "USER",
+    "prop": "Resources/Personnel/DataItem(event,user)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "07b63e3ac9fbafbb",
+    "prop": "Resources/Personnel/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Personnel",
+    "_key": "8b9b896967dd3bf9",
+    "id": "personnel",
+    "name": "personnel",
+    "prop": "Resources/Personnel",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItem",
+    "_key": "9c4801b85c864bcc",
+    "category": "EVENT",
+    "id": "stock",
+    "type": "MATERIAL",
+    "prop": "Resources/Materials/Stock/DataItem(event,material)",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "DataItems",
+    "_key": "ab7aeddba9db4f93",
+    "prop": "Resources/Materials/Stock/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Stock",
+    "_key": "e325435b2cba0b6e",
+    "id": "procstock",
+    "name": "stock",
+    "prop": "Resources/Materials/Stock",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Components",
+    "_key": "c17b0cc9e60c586d",
+    "prop": "Resources/Materials/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Materials",
+    "_key": "53e75ff46f574d4b",
+    "id": "materials",
+    "name": "materials",
+    "prop": "Resources/Materials",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Components",
+    "_key": "60c23db45a9b3fdf",
+    "prop": "Resources/",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Resources",
+    "_key": "7f963f301e872d21",
+    "id": "resources",
+    "name": "resources",
+    "prop": "Resources",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Components",
+    "_key": "bd0d5423ae404b3e",
+    "prop": "",
+    "device": "Device(m80104k162n)"
+  },
+  {
+    "tag": "Device",
+    "_key": "ef69c8d1758a9efc",
+    "id": "d1",
+    "name": "M12346",
+    "uuid": "M80104K162N",
+    "prop": "Device(m80104k162n)",
+    "device": ""
+  },
+  {
+    "tag": "Devices",
+    "_key": "45c6c194dd6323a7",
+    "prop": "",
+    "device": ""
+  },
+  {
+    "tag": "MTConnectDevices",
+    "_key": "1fc9285e6d384b5f",
+    "xmlns:m": "urn:mtconnect.org:MTConnectDevices:1.7",
+    "xmlns": "urn:mtconnect.org:MTConnectDevices:1.7",
+    "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "xsi:schemaLocation": "urn:mtconnect.org:MTConnectDevices:1.7 http://schemas.mtconnect.org/schemas/MTConnectDevices_1.7.xsd",
+    "prop": "MTConnectDevices",
+    "device": ""
+  },
+  {
+    "tag": "",
+    "_key": "0b076c54249e079f",
+    "prop": "",
+    "device": ""
+  }
+]

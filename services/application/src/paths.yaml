@@ -8,7 +8,7 @@
 # Device for root element is assumed
 # if just element type is given assumes it's only for first one listed
 
-paths:
+definitionPaths:
   DataItem(event,availability): availability
   DataItem(event,functional_mode): functional-mode
   DataItem(event,asset_changed): asset-changed
@@ -16,6 +16,9 @@ paths:
 
   Axes(a)/DataItem(condition,actuator): axes-actuator-condition # servo-condition?
   Axes(a)/DataItem(condition,system): axes-system-condition # spindle-condition? distinguish from controller system-condition
+
+  #. use regex group capture and substitute into canonicalId string, eg
+  # /Axes\((.*)\)/Linear\((.*)\)/DataItem(sample,position,actual,coordinateSystem=machine): $2-machine
 
   Axes(a)/Linear(x)/DataItem(sample,position,actual,coordinateSystem=machine): x-machine
   Axes(a)/Linear(x)/DataItem(sample,position,actual,coordinateSystem=work): x-work
