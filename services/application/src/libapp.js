@@ -68,11 +68,13 @@ export function traverse(
   }
 }
 
+// ignore these element types - don't add much info to the path
 const ignoreTags = new Set(
   'Devices,DataItems,Components,Filters,Specifications'.split(',')
 )
 
-const ignoreKeys = new Set(
+// ignore these attributes - not necessary to identify an element, or are redundant
+const ignoreAttributes = new Set(
   'category,type,subType,_key,tag,parents,id,units,nativeUnits'.split(',')
 )
 
@@ -81,25 +83,13 @@ function getStep(obj) {
   if (ignoreTags.has(obj.tag)) return ''
   switch (obj.tag) {
     case 'Device':
-      params = [obj.uuid]
+      params = [obj.uuid] // standard says name may be optional in future versions, so use uuid
       break
-    // case 'Axes':
-    // case 'Linear':
-    // case 'Rotary':
-    // case 'Path':
-    // case 'Controller':
-    // case 'Resources':
-    // case 'Materials':
-    // case 'Stock':
-    // case 'Systems':
-    //   // params = [obj.id] //. or obj.name ?? sometimes one is nicer than the other
-    //   params = [obj.name || obj.id || '']
-    //   break
     case 'DataItem':
       params = [obj.category, obj.type]
       if (obj.subType) params.push(obj.subType)
       for (const key of Object.keys(obj)) {
-        if (!ignoreKeys.has(key)) {
+        if (!ignoreAttributes.has(key)) {
           params.push(key + '=' + obj[key])
         }
       }
