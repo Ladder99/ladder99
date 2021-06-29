@@ -80,7 +80,9 @@ function getStep(obj) {
   let params = []
   if (ignoreTags.has(obj.tag)) return ''
   switch (obj.tag) {
-    // case 'Device':
+    case 'Device':
+      params = [obj.uuid]
+      break
     // case 'Axes':
     // case 'Linear':
     // case 'Rotary':
@@ -103,16 +105,20 @@ function getStep(obj) {
       }
       break
     case 'Specification':
+    case 'Composition':
       params = [obj.type]
       if (obj.subType) params.push(obj.subType)
       break
     default:
       // params = [obj.id] //. or obj.name ?? sometimes one is nicer than the other
-      params = [obj.name || obj.id || '']
+      // don't give param if it's like "Systems(systems)" - indicates just one in a document
+      if ((obj.name || '').toLowerCase() !== (obj.tag || '').toLowerCase()) {
+        params = [obj.name || obj.id || '']
+      }
       break
   }
   const paramsStr =
-    params[0].length > 0
+    params.length > 0 && params[0].length > 0
       ? '(' + params.map(param => param.toLowerCase()).join(',') + ')'
       : ''
   const step = `${obj.tag}${paramsStr}`
