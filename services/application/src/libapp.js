@@ -40,20 +40,23 @@ export function traverse(
     for (const key of keys) {
       const value = node[key]
       if (key === '_declaration') {
+        // ignore xml declaration
       } else if (key === '_attributes') {
         obj = { ...obj, ...value, parents }
       } else if (key === '_text') {
         obj = { ...obj, value, parents }
       } else if (key === 'Agent') {
-        // don't recurse Agent
+        // ignore Agent info - ok?
       } else {
-        const newparents = [...parents, obj]
+        const newparents = [...parents, obj] // push obj onto parents path list
         traverse(value, nodes, edges, key, _key, newparents)
       }
     }
-    obj.path = obj.parents.slice(2).map(getStep).join('/') + '/' + getStep(obj)
-    obj.path = obj.path.replaceAll('//', '/')
-    if (obj.path.startsWith('/')) obj.path = obj.path.slice(1)
+    obj.prop = obj.parents.slice(4).map(getStep).join('/') + '/' + getStep(obj)
+    obj.device = getStep(obj.parents[3])
+    if (obj.prop.startsWith('/')) obj.prop = obj.prop.slice(1)
+    obj.prop = obj.prop.replaceAll('//', '/')
+    // obj.path = obj.device + '/' + obj.prop
     delete obj.parents
     nodes.push(obj)
     if (parentKey) {
@@ -70,16 +73,18 @@ export function traverse(
 
 // ignore these element types - don't add much info to the path
 const ignoreTags = new Set(
-  'Devices,DataItems,Components,Filters,Specifications'.split(',')
+  'AssetCounts,Devices,DataItems,Components,Filters,Specifications'.split(',')
 )
 
-// ignore these attributes - not necessary to identify an element, or are redundant
+// ignore these dataitem attributes - not necessary to identify an element,
+// or are redundant.
 const ignoreAttributes = new Set(
   'category,type,subType,_key,tag,parents,id,units,nativeUnits'.split(',')
 )
 
 function getStep(obj) {
   let params = []
+  if (!obj) return ''
   if (ignoreTags.has(obj.tag)) return ''
   switch (obj.tag) {
     case 'Device':
@@ -100,9 +105,9 @@ function getStep(obj) {
       if (obj.subType) params.push(obj.subType)
       break
     default:
-      // params = [obj.id] //. or obj.name ?? sometimes one is nicer than the other
       // don't give param if it's like "Systems(systems)" - indicates just one in a document
       if ((obj.name || '').toLowerCase() !== (obj.tag || '').toLowerCase()) {
+        // params = [obj.id] //. or obj.name ?? sometimes one is nicer than the other
         params = [obj.name || obj.id || '']
       }
       break
