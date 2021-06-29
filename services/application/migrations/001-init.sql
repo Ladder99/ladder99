@@ -2,7 +2,6 @@
 -- create tables and views
 
 -- TIMESCALE extension --
-
 -- lets us make hypertables for storing time-series data
 
 CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
@@ -15,7 +14,6 @@ CREATE TABLE IF NOT EXISTS meta (
 );
 
 -- NODES table --
-
 -- note: Adding a primary key will automatically create a unique B-tree index
 -- on the column or group of columns listed in the primary key, and will force
 -- the column(s) to be marked NOT NULL.
@@ -24,8 +22,8 @@ CREATE TABLE IF NOT EXISTS nodes (
   node_id SERIAL PRIMARY KEY,
   props jsonb
 );
--- CREATE INDEX nodes_type ON nodes (props.type);
--- CREATE INDEX nodes_canonical_id ON nodes (props.canonicalId);
+CREATE INDEX nodes_node_type ON nodes (props.nodeType);
+CREATE INDEX nodes_canonical_id ON nodes (props.canonicalId);
 
 -- EDGES table --
 
@@ -34,8 +32,8 @@ CREATE TABLE IF NOT EXISTS edges (
   to_id integer REFERENCES nodes,
   props jsonb
 );
-CREATE INDEX IF NOT EXISTS edges_from ON edges (from_id);
-CREATE INDEX IF NOT EXISTS edges_to ON edges (to_id);
+CREATE INDEX IF NOT EXISTS edges_from_id ON edges (from_id);
+CREATE INDEX IF NOT EXISTS edges_to_id ON edges (to_id);
 
 -- HISTORY table --
 
@@ -43,10 +41,10 @@ CREATE TABLE IF NOT EXISTS history (
   node_id integer REFERENCES nodes,
   property_id integer REFERENCES nodes,
   time timestamptz NOT NULL,
-  value jsonb
+  value jsonb -- can store numbers, strings, arrays, objects...
 );
 SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
-CREATE INDEX IF NOT EXISTS history_node ON history (node_id);
+CREATE INDEX IF NOT EXISTS history_node_id ON history (node_id);
 
 -- HISTORY_ALL view --
 
