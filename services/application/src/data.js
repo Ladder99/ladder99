@@ -11,8 +11,8 @@ export class Data {
     this.instanceId = null
   }
 
-  async read(endpoint) {
-    this.json = await endpoint.fetchJson(this.type)
+  async read(endpoint, from, count) {
+    this.json = await endpoint.fetchJson(this.type, from, count)
     this.parseHeader()
   }
 

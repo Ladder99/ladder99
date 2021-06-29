@@ -2,9 +2,9 @@
 // class to represent an agent - handles probe, current, sample loop
 
 import { Probe } from './dataProbe.js'
-// import { Current } from './dataCurrent.js'
-// import { Sample } from './dataSample.js'
-// import * as libapp from './libapp.js'
+import { Current } from './dataCurrent.js'
+import { Sample } from './dataSample.js'
+import * as libapp from './libapp.js'
 
 export class Agent {
   // db is a Db instance
@@ -23,16 +23,16 @@ export class Agent {
     this.count = params.fetchCount
   }
 
-  // init agent
-  async init() {
-    //. read probe info incl device info, instanceId
-    //. read dataitems.yaml to translate shdr id to canonical id?
-    //. or do that with a path-to-canonicalId translator?
-    const probe = new Probe()
-    await probe.read(this.endpoint)
-    await probe.write(this.db)
-    this.instanceId = probe.instanceId
-  }
+  // // init agent
+  // async init() {
+  //   //. read probe info incl device info, instanceId
+  //   //. read dataitems.yaml to translate shdr id to canonical id?
+  //   //. or do that with a path-to-canonicalId translator?
+  //   const probe = new Probe()
+  //   await probe.read(this.endpoint)
+  //   await probe.write(this.db)
+  //   this.instanceId = probe.instanceId
+  // }
 
   // start fetching and processing data
   async start() {
@@ -40,30 +40,26 @@ export class Agent {
     probe: do {
       const probe = new Probe()
       await probe.read(this.endpoint)
-      // need guard in case coming after init - don't do twice
-      if (instanceIdChanged(probe, this)) {
-        await probe.write(this.db)
-        this.instanceId = probe.instanceId
-      }
+      await probe.write(this.db)
+      this.instanceId = probe.instanceId
 
-      process.exit(0)
+      // current - get last known values of all dataitems, write to db
+      current: do {
+        const current = new Current()
+        await current.read(this.endpoint)
+        if (instanceIdChanged(current, probe)) break probe
+        await current.write(this.db)
 
-      // // current - get last known values of all dataitems, write to db
-      // current: do {
-      //   const current = await Data.getCurrentData(this.endpoint)
-      //   if (instanceIdChanged(current, probe)) break probe
-      //   await this.handleCurrentData(current) // update db
-
-      //   // sample - get sequence of dataitem values, write to db
-      //   sample: do {
-      //     // // const sample = await this.fetchSample()
-      //     // const sample = await Data.getSampleData(this.endpoint, from, count)
-      //     // if (instanceIdChanged(sample, probe)) break probe
-      //     // await this.handleSampleData(sample)
-      //     // console.log('.')
-      //     // await libapp.sleep(this.fetchInterval)
-      //   } while (true)
-      // } while (true)
+        // sample - get sequence of dataitem values, write to db
+        sample: do {
+          const sample = new Sample()
+          await sample.read(this.endpoint, this.from, this.count)
+          if (instanceIdChanged(sample, probe)) break probe
+          await sample.write(this.db)
+          console.log('.')
+          await libapp.sleep(this.interval)
+        } while (true)
+      } while (true)
     } while (true)
   }
 }
