@@ -54,7 +54,7 @@ services:
     build: ../services/tape
     profiles:
       - play
-    command: tape --host broker --folder ./models/pa/tape
+    command: tape --host broker --folder ./models/pa/tape-recordings
     # environment:
     #   - HOST=broker
     #   - PORT=1883

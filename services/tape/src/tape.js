@@ -47,11 +47,11 @@ mqtt.on('disconnect', () => handleEvent('disconnect'))
 mqtt.on('offline', () => handleEvent('offline'))
 mqtt.on('reconnect', () => handleEvent('reconnect'))
 mqtt.on('close', () => handleEvent('close'))
-mqtt.on('error', e => handleEvent('error', e))
+mqtt.on('error', error => handleEvent('error', error))
 
-function handleEvent(msg, e) {
+function handleEvent(msg, error) {
   console.log(msg)
-  if (e) console.log(e)
+  if (error) console.log(error)
 }
 
 mqtt.on('connect', async function onConnect() {
