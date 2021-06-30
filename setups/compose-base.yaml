@@ -22,51 +22,22 @@ services:
         max-size: '1m'
 
   # main database - stores structure and time-series data
-  # db:
-  #   container_name: db
-  #   image: timescale/timescaledb:2.3.0-pg13
-  #   ports:
-  #     - $PGPORT:5432/tcp
-  #   profiles:
-  #     - full
-  #     # - app
-  #     - db
-  #   environment:
-  #     POSTGRES_DB: $PGDATABASE
-  #     POSTGRES_USERNAME: $PGUSER
-  #     POSTGRES_PASSWORD: $PGPASSWORD
-  #   # init: true
-  #   volumes:
-  #     - ./$SETUP/volumes/db/data:/var/lib/postgresql/data
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '1m'
-
-  # main database - stores structure and time-series data
   db:
     container_name: db
-    image: arangodb:3.7.12
+    image: timescale/timescaledb:2.3.0-pg13
     ports:
-      - $ARANGO_PORT:8529
+      - $PGPORT:5432/tcp
     profiles:
       - full
+      # - app
       - db
-    # environment:
-    #   ARANGO_HOST:
-    #   ARANGO_PORT:
-    #   ARANGO_DATABASE:
-    #   ARANGO_USER:
-    #   ARANGO_ROOT_PASSWORD:
-    #   # ARANGO_PASSWORD:
+    environment:
+      POSTGRES_DB: $PGDATABASE
+      POSTGRES_USERNAME: $PGUSER
+      POSTGRES_PASSWORD: $PGPASSWORD
     # init: true
     volumes:
-      - ./$SETUP/volumes/db/data:/var/lib/arangodb3
-      - ./$SETUP/volumes/db/apps:/var/lib/arangodb3-apps
+      - ./$SETUP/volumes/db/data:/var/lib/postgresql/data
     deploy:
       restart_policy:
         condition: on-failure
@@ -75,6 +46,35 @@ services:
     logging:
       options:
         max-size: '1m'
+
+  # # main database - stores structure and time-series data
+  # db:
+  #   container_name: db
+  #   image: arangodb:3.7.12
+  #   ports:
+  #     - $ARANGO_PORT:8529
+  #   profiles:
+  #     - full
+  #     - db
+  #   # environment:
+  #   #   ARANGO_HOST:
+  #   #   ARANGO_PORT:
+  #   #   ARANGO_DATABASE:
+  #   #   ARANGO_USER:
+  #   #   ARANGO_ROOT_PASSWORD:
+  #   #   # ARANGO_PASSWORD:
+  #   # init: true
+  #   volumes:
+  #     - ./$SETUP/volumes/db/data:/var/lib/arangodb3
+  #     - ./$SETUP/volumes/db/apps:/var/lib/arangodb3-apps
+  #   deploy:
+  #     restart_policy:
+  #       condition: on-failure
+  #   networks:
+  #     - ladder99
+  #   logging:
+  #     options:
+  #       max-size: '1m'
 
   # influxdb - another time-series database - stores edge device data
   influxdb:
