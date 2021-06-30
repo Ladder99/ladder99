@@ -9,9 +9,9 @@ First, make a copy of the default settings file and edit the passwords as needed
     cp setups/.env-default setups/.env
     nano setups/.env
 
-On your edge device, in the ladder99 folder (note the d in startd, for detach / run in the background), start all the vmc services in Docker - this may take a few minutes the first time it's run -
+On your edge device, in the ladder99 folder (note the d in startd, for detach / run in the background), start all the vmc services in Docker - this may take a few minutes the first time it's run. Note: db, viz, and app are profiles for which services to start.
 
-    shell/docker vmc startd
+    shell/docker vmc startd db viz app
 
 ## Viewing the Agent
 
@@ -35,6 +35,6 @@ You can select a range on the graphs to zoom in, or select a time range.
 
 To stop the pipeline services,
 
-    shell/docker vmc stop
+    shell/docker vmc stop db viz app
 
 Next we'll take a look at setting up some devices.
