@@ -17,7 +17,7 @@ ENV PATH /data/node_modules/.bin:$PATH
 COPY ./src ./src
 
 # base command - can pass params with CMD
-ENTRYPOINT ["node", "/data/app/src/tape.js"]
+ENTRYPOINT ["node", "/data/app/src/tape-recorder.js"]
 
 # default command when run container
 # CMD ["node", "/data/app/src/tape.js"]

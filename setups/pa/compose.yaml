@@ -7,7 +7,7 @@ version: '3.8'
 
 services:
   # mtconnect agent
-  # this overrides settings from setups/compose.yaml
+  # this overrides settings from setups/compose-base.yaml
   agent:
     command: agent debug /data/agent/agent.cfg
     volumes:
@@ -51,17 +51,17 @@ services:
   #. use tape app separately? put here? i guess put here
   play:
     container_name: play
-    build: ../services/tape
+    build: ../services/tape-recorder
     profiles:
       - play
-    command: tape --host broker --folder ./models/pa/tape-recordings
+    command: tape-recorder --host broker --folder ./models/pa/tape-recordings
     # environment:
     #   - HOST=broker
     #   - PORT=1883
     #   - FOLDER=../models/pa/tape
     #   - LOOP=true
-    volumes:
-      - ../services/replay:/etc/tape # contains csv files
+    # volumes:
+    #   - ../services/replay:/etc/tape-recorder # contains csv files
     networks:
       - ladder99
     logging:

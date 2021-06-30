@@ -22,14 +22,14 @@ const options = program.opts()
 const { host, port, mode, loop, topic, folder } = options
 
 console.log()
-console.log(`Tape`)
+console.log(`Tape Recorder`)
 console.log(`Plays/records MQTT messages`)
 console.log(`------------------------------------------------------------`)
 
 const modeString = mode === 'play' ? 'Playback' : 'Record'
 console.log(`${modeString} mode`)
 
-const clientId = `tape-${Math.random()}`
+const clientId = `tape-recorder-${Math.random()}`
 // const config = { host, port, clientId, reconnectPeriod: 0 }
 const config = { host, port, clientId }
 

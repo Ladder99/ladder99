@@ -1,3 +1,3 @@
 # pa setup
 
-This setup is for a generic print & apply machine.
+This setup is for a CCS print & apply machine.
