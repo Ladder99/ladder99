@@ -3,9 +3,9 @@
 version: '3.8'
 
 services:
-  # mtconnect agent - takes in shdr and outputs html/json
+  # ladder99 agent - takes in shdr and outputs html/json.
   # can override these settings in individual setups -
-  # eg see setups/ccs-pa/compose.yaml
+  # eg see setups/ccs-pa/pipeline.yaml
   agent:
     container_name: agent
     profiles:

@@ -5,12 +5,12 @@
 version: '3.8'
 
 services:
-  # mtconnect application - retrieves data from agent and sends to db
+  # ladder99 application - retrieves data from agent and sends to db
   # overrides of base yaml
   application:
     environment:
       - AGENT_ENDPOINTS=http://mtconnect.mazakcorp.com:5717
-      # - AGENT_ENDPOINTS=agent-endpoints.txt
+      # - AGENT_ENDPOINTS=agents.txt
 
 networks:
   ladder99:

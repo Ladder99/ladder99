@@ -3,8 +3,8 @@
 # these outputs are placed in the model.yaml tree and define the
 # shdr strings that are calculated and sent to the agent.
 
-# the item's key (eg 'connection') together with the deviceId (eg 'pa')
-# form its id in the xml (eg 'pa-connection').
+# the item's key (eg 'connection') together with the deviceId (eg 'ccs-pa')
+# form its id in the xml (eg 'ccs-pa-connection').
 
 # the shdr key is the same as the id.
 # the shdr value is defined with the item value code.

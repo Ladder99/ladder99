@@ -1,12 +1,12 @@
-# docker-compose file for broker-adapter-agent pipeline.
-# these services are run in addition to those in setups/compose.yaml.
+# docker-compose file for ladder99 pipeline.
+# these services are run in addition to those in setups/pipeline.yaml.
 
 #. this will be generated from devices.yaml, but edit manually for now.
 
 version: '3.8'
 
 services:
-  # mtconnect agent
+  # ladder99 agent
   # this overrides settings from setups/compose-base.yaml
   agent:
     command: agent debug /data/agent/agent.cfg
@@ -29,8 +29,8 @@ services:
       options:
         max-size: '1m'
 
-  # mtconnect adapter
-  # converts machine data to shdr and sends to mtconnect agent
+  # ladder99 adapter
+  # converts machine data to shdr and sends to ladder99 agent
   adapter:
     container_name: adapter
     image: node:15.14-slim
@@ -48,27 +48,22 @@ services:
         max-size: '1m'
 
   # play mqtt recordings
-  #. use tape app separately? put here? i guess put here
   play:
     container_name: play
-    build: ../services/tape-recorder
+    build: ../services/recorder
     profiles:
       - play
-    command: tape-recorder --host broker --folder ./models/pa/tape-recordings
+    command: recorder --host broker --folder ./models/ccs-pa/recordings
     # environment:
     #   - HOST=broker
     #   - PORT=1883
-    #   - FOLDER=../models/pa/tape
+    #   - FOLDER=../models/ccs-pa/recordings
     #   - LOOP=true
-    # volumes:
-    #   - ../services/replay:/etc/tape-recorder # contains csv files
     networks:
       - ladder99
     logging:
       options:
         max-size: '1m'
-
-  #. move into tape also - have plugins for diff datasources?
 
   # sim-opc:
   #   container_name: sim-opc
