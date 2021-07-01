@@ -1,4 +1,4 @@
-# docker-compose file for agent-db-app-viz pipeline.
+# docker-compose file for ladder99 pipeline
 
 version: '3.8'
 
