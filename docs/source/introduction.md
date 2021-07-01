@@ -8,7 +8,7 @@
 
 ## Architecture
 
-![img](../design/architecture.dot.svg)
+![img](../../design/architecture.dot.svg)
 
 MQTT is a publish/subscribe message protocol. Messages from factory devices go to an MQTT Broker (Mosquitto).
 

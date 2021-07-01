@@ -6,7 +6,9 @@ Serve the docs for development with
 
     shell/docs
 
-Docs are automatically built by readthedocs.org when changes are pushed to the github repo.
+then visit http://localhost:8080.
+
+Docs are automatically built by readthedocs.org when changes are pushed to the github repo. See https://ladder99.readthedocs.io/en/latest/.
 
 ## Contributing
 
