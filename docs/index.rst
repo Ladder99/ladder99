@@ -10,8 +10,13 @@ Ladder99 is a free and open source application that transfers data from factory 
    :maxdepth: 2
    :caption: Table of Contents
 
-   source/introduction
+   source/welcome
    source/installation
+   source/adapter
+   .. source/agent
+   .. source/application
+   .. source/database
+   .. source/visualizer
    source/about
 
    .. source/getting-started
