@@ -1,7 +1,7 @@
-# dataItems
+# translations
 # canonical ids on left, shdr ids on right
 
-dataItems:
+translations:
   - device-availability: avail
   - device-asset-changed: dev_asset_chg
   - device-asset-removed: dev_asset_rem
