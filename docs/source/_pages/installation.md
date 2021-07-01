@@ -21,7 +21,7 @@ Install dependencies **in this order** (may take a while) -
     shell/install/linux
     shell/install/docker
     shell/install/docker-compose
-    shell/install/node      # if node not already installed
+    shell/install/node      # if not already installed
     shell/install/node-deps
     shell/install/python
 

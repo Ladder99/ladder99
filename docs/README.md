@@ -4,10 +4,9 @@
 
 Serve the docs for development with
 
-    sh/docs/serve
+    shell/docs
 
-Docs are automatically built by readthedocs.org when changes are pushed to the github repo. 
-
+Docs are automatically built by readthedocs.org when changes are pushed to the github repo.
 
 ## Contributing
 

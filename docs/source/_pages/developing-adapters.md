@@ -4,7 +4,7 @@
 
 This diagram shows the sequence of operations for data going from a device through the adapter and plugin to the agent -
 
-![img](_images/sequences.jpg)
+![img](../_images/sequences.jpg)
 
 ## Defining Models
 
