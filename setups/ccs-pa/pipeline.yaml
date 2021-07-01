@@ -6,86 +6,10 @@
 version: '3.8'
 
 services:
-  # ladder99 agent
-  # this overrides settings from setups/compose-base.yaml
   agent:
     command: agent debug /data/agent/agent.cfg
     volumes:
       - ./$SETUP/volumes/agent:/data/agent # has agent.cfg, devices.xml
-
-  # mqtt broker
-  # gets mqtt data from devices and publishes it to mtconnect adapter.
-  # we can playback mqtt data through this to simulate a device.
-  broker:
-    container_name: broker
-    image: eclipse-mosquitto
-    profiles:
-      - broker
-    ports:
-      - 1883:1883
-    volumes:
-      - ./$SETUP/volumes/broker:/mosquitto # has config/mosquitto.conf
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '1m'
-
-  # ladder99 adapter
-  # converts machine data to shdr and sends to ladder99 agent
-  adapter:
-    container_name: adapter
-    image: node:15.14-slim
-    profiles:
-      - all
-      - adapter
-    user: node
-    working_dir: /home/node/app
-    command: npm start
-    volumes:
-      - ../services/adapter:/home/node/app # has source code
-      - ./$SETUP:/data/adapter # has devices.yaml
-      - ../models:/data/models # has model yamls
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '1m'
-
-  # play device recordings
-  play:
-    container_name: play
-    build: ../services/recorder
-    profiles:
-      - play
-    command: recorder --host broker --folder ./models/ccs-pa/recorder
-    # environment:
-    #   - HOST=broker
-    #   - PORT=1883
-    #   - FOLDER=../models/ccs-pa/recordings
-    #   - LOOP=true
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '1m'
-
-  # # simulate device
-  # simulator:
-  #   container_name: simulator
-  #   image: node:15.14-slim
-  #   profiles:
-  #     - simulator
-  #   user: node
-  #   working_dir: /home/node/app
-  #   command: npm start
-  #   volumes:
-  #     - ../../../services/simulator:/home/node/app
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '1m'
 
 networks:
   ladder99:
