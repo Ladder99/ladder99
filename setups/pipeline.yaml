@@ -1,4 +1,5 @@
-# docker-compose file for ladder99 pipeline
+# docker-compose file for the ladder99 pipeline
+# run with eg `shell/docker ccs-pa start`
 
 version: '3.8'
 
@@ -9,7 +10,7 @@ services:
   agent:
     container_name: agent
     profiles:
-      - full
+      - all
       - agent
     # see https://github.com/Ladder99/mtconnect-agent
     image: ladder99/mtconnect-agent:latest
@@ -28,7 +29,7 @@ services:
     ports:
       - $PGPORT:5432/tcp
     profiles:
-      - full
+      - all
       # - app
       - db
     environment:
@@ -54,7 +55,7 @@ services:
   #   ports:
   #     - $ARANGO_PORT:8529
   #   profiles:
-  #     - full
+  #     - all
   #     - db
   #   # environment:
   #   #   ARANGO_HOST:
@@ -84,7 +85,7 @@ services:
     ports:
       - '8086:8086'
     profiles:
-      - full
+      - all
       - viz
     environment:
       INFLUXDB_DB:
@@ -106,7 +107,7 @@ services:
     container_name: telegraf
     image: telegraf:1.18
     profiles:
-      - full
+      - all
       - viz
     environment:
       INFLUXDB_URL: http://influxdb:8086
@@ -125,7 +126,7 @@ services:
     container_name: grafana
     image: grafana/grafana:7.5.5
     profiles:
-      - full
+      - all
       - viz
     ports:
       - $GRAFANA_PORT:3000/tcp
@@ -186,7 +187,7 @@ services:
     command: node /home/node/app/src/application.js
     init: true
     profiles:
-      - full
+      - all
       - app
     # depends_on:
     #   - db
@@ -218,7 +219,7 @@ services:
     container_name: portainer
     image: portainer/portainer-ce
     profiles:
-      - full
+      - all
     ports:
       - '9001:9000' #.... changed from 9000:9000 - make envar
     volumes:
