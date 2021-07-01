@@ -20,7 +20,6 @@ services:
     container_name: broker
     image: eclipse-mosquitto
     profiles:
-      - all
       - broker
     ports:
       - 1883:1883
@@ -53,14 +52,13 @@ services:
       options:
         max-size: '1m'
 
-  # play mqtt recordings
+  # play device recordings
   play:
     container_name: play
     build: ../services/recorder
     profiles:
-      - all
       - play
-    command: recorder --host broker --folder ./models/ccs-pa/recordings
+    command: recorder --host broker --folder ./models/ccs-pa/recorder
     # environment:
     #   - HOST=broker
     #   - PORT=1883
@@ -72,17 +70,17 @@ services:
       options:
         max-size: '1m'
 
-  # sim-opc:
-  #   container_name: sim-opc
+  # # simulate device
+  # simulator:
+  #   container_name: simulator
   #   image: node:15.14-slim
   #   profiles:
-  #     - all
-  #     - play-opc
+  #     - simulator
   #   user: node
   #   working_dir: /home/node/app
   #   command: npm start
   #   volumes:
-  #     - ../../../services/sim-opc:/home/node/app
+  #     - ../../../services/simulator:/home/node/app
   #   networks:
   #     - ladder99
   #   logging:
