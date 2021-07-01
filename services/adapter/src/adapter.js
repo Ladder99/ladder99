@@ -25,7 +25,7 @@ const yamltree = importYaml(yamlfile)
 const { setup } = yamltree
 const { devices } = setup
 
-console.log(`MTConnect Adapter`)
+console.log(`Ladder99 Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
 console.log(`posts to TCP.`)
 console.log(`----------------------------------------------------------------`)
@@ -188,8 +188,8 @@ function importYaml(path, defaultTree = {}) {
     const yaml = fs.readFileSync(path, 'utf8')
     const yamlTree = libyaml.load(yaml)
     return yamlTree
-  } catch (e) {
-    console.log(e)
+  } catch (error) {
+    console.log(error.message)
   }
   return defaultTree
 }
