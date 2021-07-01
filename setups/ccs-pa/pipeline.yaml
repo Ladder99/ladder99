@@ -19,6 +19,9 @@ services:
   broker:
     container_name: broker
     image: eclipse-mosquitto
+    profiles:
+      - all
+      - broker
     ports:
       - 1883:1883
     volumes:
@@ -34,6 +37,9 @@ services:
   adapter:
     container_name: adapter
     image: node:15.14-slim
+    profiles:
+      - all
+      - adapter
     user: node
     working_dir: /home/node/app
     command: npm start
@@ -52,6 +58,7 @@ services:
     container_name: play
     build: ../services/recorder
     profiles:
+      - all
       - play
     command: recorder --host broker --folder ./models/ccs-pa/recordings
     # environment:
@@ -68,6 +75,9 @@ services:
   # sim-opc:
   #   container_name: sim-opc
   #   image: node:15.14-slim
+  #   profiles:
+  #     - all
+  #     - play-opc
   #   user: node
   #   working_dir: /home/node/app
   #   command: npm start

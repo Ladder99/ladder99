@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# run docker compose pipeline
+# run docker compose pipeline - see below for usage
 
 import sys
 import os
@@ -8,7 +8,7 @@ import pathlib
 
 if len(sys.argv) < 2:
     print("""
-Usage: shell/docker SETUP COMMAND [PROFILES]
+Usage: shell/pipeline SETUP COMMAND [PROFILES]
 
 Run a docker-compose yaml file with optional list of profiles to include.
 
@@ -16,7 +16,7 @@ SETUP     setup subfolder, eg vmc, ccs-pa
 COMMAND   start (default), startd (run detached), stop (stop all services)
 PROFILES  optional space-delim list of profiles to start (default is 'all')
 
-eg `shell/docker ccs-pa startd play-mqtt`
+eg `shell/pipeline ccs-pa startd play-mqtt`
 
 Note: use `docker kill SERVICE` to stop an individual service
 """)
@@ -25,18 +25,12 @@ Note: use `docker kill SERVICE` to stop an individual service
 setup = sys.argv[1]  # eg 'vmc'
 cmd = sys.argv[2] or 'start'  # eg 'start', 'startd', 'stop'
 profiles = sys.argv[3:] or ['all']  # eg ['play-mqtt']
-# services = ' '.join(sys.argv[3:])  # eg 'play-mqtt'
 
-# # get list of docker compose file paths
-# files = [f"setups/{setup}/docker/{part}.yaml" for part in parts]
-# args = ' '.join([f"--file {file}" for file in files])
-# composefile = f"setups/{setup}/compose.yaml"
-
-# add main compose file for agent-viz pipeline
+# add main compose file for pipeline
 composefile = f"setups/pipeline.yaml"
 args = f"--file {composefile}"
 
-# add compose file for device-agent pipeline / overrides
+# add compose file for setup overrides
 composefile2 = f"setups/{setup}/pipeline.yaml"
 if pathlib.Path(composefile2).exists():
     args += f" --file {composefile2}"

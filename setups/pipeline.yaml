@@ -22,23 +22,22 @@ services:
       options:
         max-size: '1m'
 
-  # main database - stores structure and time-series data
-  db:
-    container_name: db
+  # database - stores structure and time-series data
+  database:
+    container_name: database
     image: timescale/timescaledb:2.3.0-pg13
     ports:
       - $PGPORT:5432/tcp
     profiles:
       - all
-      # - app
-      - db
+      - database
+    # init: true
     environment:
       POSTGRES_DB: $PGDATABASE
       POSTGRES_USERNAME: $PGUSER
       POSTGRES_PASSWORD: $PGPASSWORD
-    # init: true
     volumes:
-      - ./$SETUP/volumes/db/data:/var/lib/postgresql/data
+      - ./$SETUP/volumes/database/data:/var/lib/postgresql/data
     deploy:
       restart_policy:
         condition: on-failure
@@ -48,15 +47,16 @@ services:
       options:
         max-size: '1m'
 
-  # # main database - stores structure and time-series data
-  # db:
-  #   container_name: db
+  # # database - stores structure and time-series data
+  # database:
+  #   container_name: database
   #   image: arangodb:3.7.12
   #   ports:
   #     - $ARANGO_PORT:8529
   #   profiles:
   #     - all
-  #     - db
+  #     - database
+  #   # init: true
   #   # environment:
   #   #   ARANGO_HOST:
   #   #   ARANGO_PORT:
@@ -64,10 +64,9 @@ services:
   #   #   ARANGO_USER:
   #   #   ARANGO_ROOT_PASSWORD:
   #   #   # ARANGO_PASSWORD:
-  #   # init: true
   #   volumes:
-  #     - ./$SETUP/volumes/db/data:/var/lib/arangodb3
-  #     - ./$SETUP/volumes/db/apps:/var/lib/arangodb3-apps
+  #     - ./$SETUP/volumes/database/data:/var/lib/arangodb3
+  #     - ./$SETUP/volumes/database/apps:/var/lib/arangodb3-apps
   #   deploy:
   #     restart_policy:
   #       condition: on-failure
@@ -77,16 +76,17 @@ services:
   #     options:
   #       max-size: '1m'
 
-  # influxdb - another time-series database - stores edge device data
+  # influxdb - stores edge device data (for now - will move to postgres)
   influxdb:
     container_name: influxdb
-    # image: influxdb:2.0 # not avail for 32bit - need 64bit os
+    # image: influxdb:2.0 # not avail for 32bit - needs 64bit os
     image: influxdb:1.8 # need v1 for https://grafana.com/grafana/dashboards/12034
     ports:
       - '8086:8086'
     profiles:
       - all
-      - viz
+      - edge
+      - influxdb
     environment:
       INFLUXDB_DB:
       INFLUXDB_ADMIN_USER:
@@ -108,7 +108,8 @@ services:
     image: telegraf:1.18
     profiles:
       - all
-      - viz
+      - edge
+      - telegraf
     environment:
       INFLUXDB_URL: http://influxdb:8086
       INFLUXDB_DB:
@@ -121,13 +122,13 @@ services:
       options:
         max-size: '1m'
 
-  # grafana - visualization app that shows real-time data from the databases
+  # grafana - shows real-time data from the databases, handles notifications
   grafana:
     container_name: grafana
     image: grafana/grafana:7.5.5
     profiles:
       - all
-      - viz
+      - grafana
     ports:
       - $GRAFANA_PORT:3000/tcp
     environment:
@@ -166,29 +167,32 @@ services:
       options:
         max-size: '1m'
 
-  # pgadmin:
-  #   container_name: pgadmin
-  #   image: biarms/pgadmin4:latest
-  #   ports:
-  #     - '5050:5050/tcp'
-  #   networks:
-  #     - ladder99
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure
+  # pgadmin - admin console for postgres database
+  pgadmin:
+    container_name: pgadmin
+    image: biarms/pgadmin4:latest
+    profiles:
+      - pgadmin
+    ports:
+      - '5050:5050/tcp'
+    networks:
+      - ladder99
+    deploy:
+      restart_policy:
+        condition: on-failure
 
-  # mtconnect application - retrieves data from agent and sends to db
+  # ladder99 application - fetches data from agent and sends to db
   application:
     container_name: application
     image: node:15.14-slim
+    profiles:
+      - all
+      - app
     user: node
     working_dir: /home/node/app
     # command: npm start
     command: node /home/node/app/src/application.js
     init: true
-    profiles:
-      - all
-      - app
     # depends_on:
     #   - db
     environment:
@@ -196,12 +200,17 @@ services:
       AGENT_ENDPOINTS: http://agent:5000
       FETCH_INTERVAL: 2000
       FETCH_COUNT: 800
-      ARANGO_HOST:
-      ARANGO_PORT:
-      ARANGO_DATABASE:
-      ARANGO_USER:
-      ARANGO_ROOT_PASSWORD:
-      # ARANGO_PASSWORD:
+      PGHOST:
+      PGPORT:
+      PGDATABASE:
+      PGUSER:
+      PGPASSWORD:
+      # ARANGO_HOST:
+      # ARANGO_PORT:
+      # ARANGO_DATABASE:
+      # ARANGO_USER:
+      # ARANGO_ROOT_PASSWORD:
+      # # ARANGO_PASSWORD:
     # this fixes a problem on linux - works on mac okay also
     # see https://stackoverflow.com/a/67158212/243392
     extra_hosts:
@@ -219,7 +228,7 @@ services:
     container_name: portainer
     image: portainer/portainer-ce
     profiles:
-      - all
+      - portainer
     ports:
       - '9001:9000' #.... changed from 9000:9000 - make envar
     volumes:
