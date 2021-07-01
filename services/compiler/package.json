@@ -1,0 +1,14 @@
+{
+  "name": "ladder99-compiler",
+  "version": "0.1.0",
+  "description": "compile setup.yaml to devices.xml",
+  "type": "module",
+  "scripts": {},
+  "keywords": [],
+  "author": "Brian Burns <bburns.km@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "js-yaml": "^4.0.0",
+    "xml-js": "^1.6.11"
+  }
+}

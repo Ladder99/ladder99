@@ -1,0 +1,26 @@
+{
+  "project": "my-first-project",
+  "services": [
+    {
+      "id": "my-first-service",
+      "apps": [
+        {
+          "id": "my-first-app",
+          "domain": {
+            "type": "HTTP",
+            "uri": "MY-DOMAIN.sloppy.zone"
+          },
+          "mem": 128,
+          "image": "sloppy/apache-php",
+          "cmd": "/app.sh",
+          "instances": 1,
+          "port_mappings": [
+            {
+              "container_port": 80
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+# paths
+# defines canonical ids in terms of short xpath-like expressions
+
+# path expr on left, canonicalId on right
+# path exprs are abbreviated xpaths
+# just parens assumes element is a DataItem,
+# and attribute order is category,type,subtype, then have named attribs
+# Device for root element is assumed
+# if just element type is given assumes it's only for first one listed
+
+definitionPaths:
+  DataItem(event,availability): availability
+  DataItem(event,functional_mode): functional-mode
+  DataItem(event,asset_changed): asset-changed
+  DataItem(event,asset_removed): asset-removed
+
+  Axes(a)/DataItem(condition,actuator): axes-actuator-condition # servo-condition?
+  Axes(a)/DataItem(condition,system): axes-system-condition # spindle-condition? distinguish from controller system-condition
+
+  #. use regex group capture and substitute into canonicalId string, eg
+  # /Axes\((.*)\)/Linear\((.*)\)/DataItem(sample,position,actual,coordinateSystem=machine): $2-machine
+
+  Axes(a)/Linear(x)/DataItem(sample,position,actual,coordinateSystem=machine): x-machine
+  Axes(a)/Linear(x)/DataItem(sample,position,actual,coordinateSystem=work): x-work
+  Axes(a)/Linear(x)/DataItem(condition,position): x-condition
+  Axes(a)/Linear(x)/DataItem(sample,load): x-load
+  Axes(a)/Linear(x)/DataItem(sample,axis_feed): x-feedrate
+  Axes(a)/Linear(x)/DataItem(event,axis_state): x-state
+
+  Axes(a)/Linear(y)/DataItem(sample,position,actual,coordinateSystem=machine): y-machine
+  Axes(a)/Linear(y)/DataItem(sample,position,actual,coordinateSystem=work): y-work
+  Axes(a)/Linear(y)/DataItem(condition,position): y-condition
+  Axes(a)/Linear(y)/DataItem(sample,load): y-load
+  Axes(a)/Linear(y)/DataItem(sample,axis_feed): y-feedrate
+  Axes(a)/Linear(y)/DataItem(event,axis_state): y-state
+
+  Axes(a)/Linear(z)/DataItem(sample,position,actual,coordinateSystem=machine): z-machine
+  Axes(a)/Linear(z)/DataItem(sample,position,actual,coordinateSystem=work): z-work
+  Axes(a)/Linear(z)/DataItem(condition,position): z-condition
+  Axes(a)/Linear(z)/DataItem(sample,load): z-load
+  Axes(a)/Linear(z)/DataItem(sample,axis_feed): z-feedrate
+  Axes(a)/Linear(z)/DataItem(event,axis_state): z-state
+
+  Axes(a)/Rotary(c)/DataItem(sample,load): c-load
+  Axes(a)/Rotary(c)/DataItem(sample,load,name=Sload): s-load #?? have this in a custom yaml file for setup?
+  Axes(a)/Rotary(c)/DataItem(condition,angle): c-angle-condition
+  Axes(a)/Rotary(c)/DataItem(sample,angular_velocity): c-angular-velocity
+  Axes(a)/Rotary(c)/DataItem(sample,rotary_velocity,actual): c-rotary-velocity
+  Axes(a)/Rotary(c)/DataItem(sample,temperature): c-temperature
+  Axes(a)/Rotary(c)/DataItem(sample,angle,actual,coordinateSystem=machine): c-machine
+  Axes(a)/Rotary(c)/DataItem(sample,angle,actual,coordinateSystem=work): c-work
+  Axes(a)/Rotary(c)/DataItem(event,rotary_mode): c-rotary-mode
+  Axes(a)/Rotary(c)/DataItem(condition,load): c-load-condition
+  Axes(a)/Rotary(c)/DataItem(condition,temperature): c-temperature-condition
+  Axes(a)/Rotary(c)/DataItem(event,axis_state): c-state
+
+  Axes(a)/Rotary(a)/DataItem(sample,load): a-load
+  Axes(a)/Rotary(a)/DataItem(sample,angular_velocity): a-angular-velocity
+  Axes(a)/Rotary(a)/DataItem(condition,angle): a-angle-condition
+  Axes(a)/Rotary(a)/DataItem(sample,angle,actual,coordinateSystem=machine): a-machine
+  Axes(a)/Rotary(a)/DataItem(sample,angle,actual,coordinateSystem=work): a-work
+  Axes(a)/Rotary(a)/DataItem(event,rotary_mode): a-rotary-mode
+  Axes(a)/Rotary(a)/DataItem(event,axis_state): a-state
+
+  Axes(a)/Rotary(c2)/DataItem(sample,load): c2-load
+  Axes(a)/Rotary(c2)/DataItem(sample,load,name=S2load): s2-load #? only diff is id/name
+  Axes(a)/Rotary(c2)/DataItem(condition,angle): c2-angle-condition
+  Axes(a)/Rotary(c2)/DataItem(sample,angular_velocity): c2-angular-velocity
+  Axes(a)/Rotary(c2)/DataItem(sample,rotary_velocity): c2-rotary-velocity
+  Axes(a)/Rotary(c2)/DataItem(sample,temperature): c2-temperature
+  Axes(a)/Rotary(c2)/DataItem(sample,angle,actual,coordinateSystem=machine): c2-machine
+  Axes(a)/Rotary(c2)/DataItem(sample,angle,actual,coordinateSystem=work): c2-work
+  Axes(a)/Rotary(c2)/DataItem(event,rotary_mode): c2-rotary-mode
+  Axes(a)/Rotary(c2)/DataItem(condition,load): c2-load-condition
+  Axes(a)/Rotary(c2)/DataItem(condition,temperature): c2-temperature-condition
+  Axes(a)/Rotary(c2)/DataItem(event,axis_state): c2-state
+
+  Controller/DataItem(condition,communications): communications-condition
+  Controller/DataItem(condition,logic_program): logic-program-condition
+  Controller/DataItem(condition,system): controller-condition # distinguish from axes-condition
+  Controller/DataItem(event,emergency_stop): emergency-stop
+  Controller/DataItem(sample,accumulated_time,x:auto): auto-time
+  Controller/DataItem(sample,accumulated_time,x:total): total-time
+  Controller/DataItem(sample,accumulated_time,x:cut): cut-time
+  Controller/DataItem(sample,accumulated_time,x:totalcuttime): total-auto-cut-time
+  Controller/DataItem(event,pallet_id): pallet-id
+
+  Controller/Path/DataItem(event,program_edit): path-edit-mode
+  Controller/Path/DataItem(event,program_edit_name): path-edit-name
+  Controller/Path/DataItem(event,chuck_state): chuck-state
+  Controller/Path/DataItem(event,path_feedrate_override,rapid): path-feedrate-override-rapid
+  Controller/Path/DataItem(event,path_feedrate_override,programmed): path-feedrate-override-programmed
+  Controller/Path/DataItem(event,rotary_velocity_override): rotary-velocity-override
+  Controller/Path/DataItem(event,program): program
+  Controller/Path/DataItem(event,program,x:sub): subprogram
+  Controller/Path/DataItem(event,line): line
+  Controller/Path/DataItem(event,x:unit): unit
+  Controller/Path/DataItem(event,x:sequence_number): sequence-number
+  Controller/Path/DataItem(event,part_count): part-count
+  Controller/Path/DataItem(sample,path_feedrate): path-feedrate
+  Controller/Path/DataItem(event,tool_number): tool-number
+  Controller/Path/DataItem(event,x:tool_group): tool-group
+  Controller/Path/DataItem(event,x:tool_suffix): tool-suffix
+  Controller/Path/DataItem(event,execution): execution
+  Controller/Path/DataItem(event,controller_mode): controller-mode
+  Controller/Path/DataItem(event,program_comment): program-comment
+  Controller/Path/DataItem(event,program_comment,x:sub): subprogram-comment
+  Controller/Path/DataItem(condition,motion_program): motion-program-condition
+  Controller/Path/DataItem(condition,system): path-system-condition
+
+  Door/DataItem(event,door_state): door-state
+
+  Systems/DataItemElectric/DataItem(condition,system): electric-condition
+
+  Systems/DataItemHydraulic/DataItem(condition,system): hydraulic-condition
+
+  Systems/DataItemCoolant/DataItem(condition,system): coolant-condition
+  Systems/DataItemCoolant/DataItem(sample,temperature): coolant-temperature
+  Systems/DataItemCoolant/DataItem(sample,concentration): coolant-concentration
+
+  Systems/DataItemPneumatic/DataItem(condition,system): pneumatic-condition
+
+  Systems/DataItemLubrication/DataItem(condition,system): lubrication-condition

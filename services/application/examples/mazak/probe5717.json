@@ -1,0 +1,1803 @@
+{
+  "MTConnectDevices": {
+    "Devices": [
+      {
+        "Agent": {
+          "Components": [
+            {
+              "Adapters": {
+                "Components": [
+                  {
+                    "Adapter": {
+                      "DataItems": [
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "_414ef97208_connection_status",
+                            "type": "CONNECTION_STATUS"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "id": "_414ef97208_observation_update_rate",
+                            "nativeUnits": "COUNT/SECOND",
+                            "statistic": "AVERAGE",
+                            "type": "OBSERVATION_UPDATE_RATE",
+                            "units": "COUNT/SECOND"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "id": "_414ef97208_asset_update_rate",
+                            "nativeUnits": "COUNT/SECOND",
+                            "statistic": "AVERAGE",
+                            "type": "ASSET_UPDATE_RATE",
+                            "units": "COUNT/SECOND"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "_414ef97208_adapter_software_version",
+                            "type": "ADAPTER_SOFTWARE_VERSION"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "_414ef97208_mtconnect_version",
+                            "type": "MTCONNECT_VERSION"
+                          }
+                        }
+                      ],
+                      "id": "_414ef97208",
+                      "name": "M12346"
+                    }
+                  }
+                ],
+                "id": "__adapters__"
+              }
+            }
+          ],
+          "DataItems": [
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "agent_avail",
+                "type": "AVAILABILITY"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "device_added",
+                "type": "DEVICE_ADDED"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "device_removed",
+                "type": "DEVICE_REMOVED"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "device_changed",
+                "type": "DEVICE_CHANGED"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "discrete": "true",
+                "id": "agent_2cde48001122_asset_chg",
+                "type": "ASSET_CHANGED"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "agent_2cde48001122_asset_rem",
+                "type": "ASSET_REMOVED"
+              }
+            }
+          ],
+          "id": "agent_2cde48001122",
+          "mtconnectVersion": "1.7",
+          "name": "Agent",
+          "uuid": "0b49a3a0-18ca-0139-8748-2cde48001122"
+        }
+      },
+      {
+        "Device": {
+          "Components": [
+            {
+              "Axes": {
+                "Components": [
+                  {
+                    "Linear": {
+                      "Compositions": [
+                        {
+                          "Composition": {
+                            "id": "Xballscrew",
+                            "type": "BALLSCREW"
+                          }
+                        },
+                        {
+                          "Composition": {
+                            "id": "Xmotor",
+                            "type": "MOTOR"
+                          }
+                        }
+                      ],
+                      "Configuration": {
+                        "Specifications": [
+                          {
+                            "Specification": {
+                              "Nominal": 2010.0,
+                              "type": "LENGTH",
+                              "units": "MILLIMETER"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 400.0,
+                              "Minimum": 0.0,
+                              "type": "LINEAR_FORCE",
+                              "units": "NEWTON"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 1180.0,
+                              "Minimum": 1.0,
+                              "subType": "RAPID",
+                              "type": "VELOCITY",
+                              "units": "MILLIMETER/SECOND"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 315.0,
+                              "Minimum": 1.0,
+                              "subType": "PROGRAMMED",
+                              "type": "VELOCITY",
+                              "units": "MILLIMETER/SECOND"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 1180.0,
+                              "Minimum": 1.0,
+                              "subType": "RAPID",
+                              "type": "ACCELERATION",
+                              "units": "MILLIMETER/SECOND^2"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 1180.0,
+                              "Minimum": 1.0,
+                              "Nominal": 380.0,
+                              "subType": "PROGRAMMED",
+                              "type": "ACCELERATION",
+                              "units": "MILLIMETER/SECOND^2"
+                            }
+                          }
+                        ]
+                      },
+                      "DataItems": [
+                        {
+                          "DataItem": {
+                            "category": "CONDITION",
+                            "id": "Xtravel",
+                            "type": "POSITION"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "Filters": [
+                              {
+                                "Filter": {
+                                  "type": "MINIMUM_DELTA",
+                                  "value": 3.0
+                                }
+                              }
+                            ],
+                            "category": "SAMPLE",
+                            "id": "Xload",
+                            "nativeUnits": "PERCENT",
+                            "type": "LOAD",
+                            "units": "PERCENT"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "id": "Xfrt",
+                            "nativeUnits": "MILLIMETER/SECOND",
+                            "type": "AXIS_FEEDRATE",
+                            "units": "MILLIMETER/SECOND"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "Filters": [
+                              {
+                                "Filter": {
+                                  "type": "MINIMUM_DELTA",
+                                  "value": 0.5
+                                }
+                              }
+                            ],
+                            "category": "SAMPLE",
+                            "compositionId": "Xmotor",
+                            "id": "servotemp1",
+                            "nativeUnits": "CELSIUS",
+                            "type": "TEMPERATURE",
+                            "units": "CELSIUS"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "xaxisstate",
+                            "type": "AXIS_STATE"
+                          }
+                        }
+                      ],
+                      "id": "x",
+                      "name": "X"
+                    }
+                  },
+                  {
+                    "Linear": {
+                      "Compositions": [
+                        {
+                          "Composition": {
+                            "id": "Yballscrew",
+                            "type": "BALLSCREW"
+                          }
+                        },
+                        {
+                          "Composition": {
+                            "id": "Ymotor",
+                            "type": "MOTOR"
+                          }
+                        }
+                      ],
+                      "Configuration": {
+                        "Specifications": [
+                          {
+                            "Specification": {
+                              "Nominal": 2010.0,
+                              "type": "LENGTH",
+                              "units": "MILLIMETER"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 400.0,
+                              "Minimum": 0.0,
+                              "type": "LINEAR_FORCE",
+                              "units": "NEWTON"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 1180.0,
+                              "Minimum": 1.0,
+                              "subType": "RAPID",
+                              "type": "VELOCITY",
+                              "units": "MILLIMETER/SECOND"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 315.0,
+                              "Minimum": 1.0,
+                              "subType": "PROGRAMMED",
+                              "type": "VELOCITY",
+                              "units": "MILLIMETER/SECOND"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 1180.0,
+                              "Minimum": 1.0,
+                              "subType": "RAPID",
+                              "type": "ACCELERATION",
+                              "units": "MILLIMETER/SECOND^2"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 1180.0,
+                              "Minimum": 1.0,
+                              "Nominal": 380.0,
+                              "subType": "PROGRAMMED",
+                              "type": "ACCELERATION",
+                              "units": "MILLIMETER/SECOND^2"
+                            }
+                          }
+                        ]
+                      },
+                      "DataItems": [
+                        {
+                          "DataItem": {
+                            "category": "CONDITION",
+                            "id": "Ytravel",
+                            "type": "POSITION"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "Filters": [
+                              {
+                                "Filter": {
+                                  "type": "MINIMUM_DELTA",
+                                  "value": 3.0
+                                }
+                              }
+                            ],
+                            "category": "SAMPLE",
+                            "id": "Yload",
+                            "nativeUnits": "PERCENT",
+                            "type": "LOAD",
+                            "units": "PERCENT"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "id": "Yfrt",
+                            "nativeUnits": "MILLIMETER/SECOND",
+                            "type": "AXIS_FEEDRATE",
+                            "units": "MILLIMETER/SECOND"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "Filters": [
+                              {
+                                "Filter": {
+                                  "type": "MINIMUM_DELTA",
+                                  "value": 0.5
+                                }
+                              }
+                            ],
+                            "category": "SAMPLE",
+                            "compositionId": "Ymotor",
+                            "id": "servotemp2",
+                            "nativeUnits": "CELSIUS",
+                            "type": "TEMPERATURE",
+                            "units": "CELSIUS"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "yaxisstate",
+                            "type": "AXIS_STATE"
+                          }
+                        }
+                      ],
+                      "id": "y",
+                      "name": "Y"
+                    }
+                  },
+                  {
+                    "Linear": {
+                      "Compositions": [
+                        {
+                          "Composition": {
+                            "id": "Zballscrew",
+                            "type": "BALLSCREW"
+                          }
+                        },
+                        {
+                          "Composition": {
+                            "id": "Zmotor",
+                            "type": "MOTOR"
+                          }
+                        }
+                      ],
+                      "Configuration": {
+                        "Specifications": [
+                          {
+                            "Specification": {
+                              "Nominal": 2010.0,
+                              "type": "LENGTH",
+                              "units": "MILLIMETER"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 400.0,
+                              "Minimum": 0.0,
+                              "type": "LINEAR_FORCE",
+                              "units": "NEWTON"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 1180.0,
+                              "Minimum": 1.0,
+                              "subType": "RAPID",
+                              "type": "VELOCITY",
+                              "units": "MILLIMETER/SECOND"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 315.0,
+                              "Minimum": 1.0,
+                              "subType": "PROGRAMMED",
+                              "type": "VELOCITY",
+                              "units": "MILLIMETER/SECOND"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 1180.0,
+                              "Minimum": 1.0,
+                              "subType": "RAPID",
+                              "type": "ACCELERATION",
+                              "units": "MILLIMETER/SECOND^2"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 1180.0,
+                              "Minimum": 1.0,
+                              "Nominal": 380.0,
+                              "subType": "PROGRAMMED",
+                              "type": "ACCELERATION",
+                              "units": "MILLIMETER/SECOND^2"
+                            }
+                          }
+                        ]
+                      },
+                      "DataItems": [
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "coordinateSystem": "MACHINE",
+                            "id": "Zabs",
+                            "nativeUnits": "MILLIMETER",
+                            "subType": "ACTUAL",
+                            "type": "POSITION",
+                            "units": "MILLIMETER"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "coordinateSystem": "WORK",
+                            "id": "Zpos",
+                            "nativeUnits": "MILLIMETER",
+                            "subType": "ACTUAL",
+                            "type": "POSITION",
+                            "units": "MILLIMETER"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "CONDITION",
+                            "id": "Ztravel",
+                            "type": "POSITION"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "Filters": [
+                              {
+                                "Filter": {
+                                  "type": "MINIMUM_DELTA",
+                                  "value": 3.0
+                                }
+                              }
+                            ],
+                            "category": "SAMPLE",
+                            "id": "Zload",
+                            "nativeUnits": "PERCENT",
+                            "type": "LOAD",
+                            "units": "PERCENT"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "id": "Zfrt",
+                            "nativeUnits": "MILLIMETER/SECOND",
+                            "type": "AXIS_FEEDRATE",
+                            "units": "MILLIMETER/SECOND"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "Filters": [
+                              {
+                                "Filter": {
+                                  "type": "MINIMUM_DELTA",
+                                  "value": 0.5
+                                }
+                              }
+                            ],
+                            "category": "SAMPLE",
+                            "compositionId": "Zmotor",
+                            "id": "servotemp3",
+                            "nativeUnits": "CELSIUS",
+                            "type": "TEMPERATURE",
+                            "units": "CELSIUS"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "zaxisstate",
+                            "type": "AXIS_STATE"
+                          }
+                        }
+                      ],
+                      "id": "z",
+                      "name": "Z"
+                    }
+                  },
+                  {
+                    "Rotary": {
+                      "Compositions": [
+                        {
+                          "Composition": {
+                            "id": "Bmotor",
+                            "type": "MOTOR"
+                          }
+                        }
+                      ],
+                      "Configuration": {
+                        "Specifications": [
+                          {
+                            "Specification": {
+                              "Maximum": 400.0,
+                              "Minimum": 0.0,
+                              "type": "LINEAR_FORCE",
+                              "units": "NEWTON"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 1180.0,
+                              "Minimum": 1.0,
+                              "subType": "RAPID",
+                              "type": "VELOCITY",
+                              "units": "MILLIMETER/SECOND"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 315.0,
+                              "Minimum": 1.0,
+                              "subType": "PROGRAMMED",
+                              "type": "VELOCITY",
+                              "units": "MILLIMETER/SECOND"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 1180.0,
+                              "Minimum": 1.0,
+                              "subType": "RAPID",
+                              "type": "ACCELERATION",
+                              "units": "MILLIMETER/SECOND^2"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 1180.0,
+                              "Minimum": 1.0,
+                              "Nominal": 380.0,
+                              "subType": "PROGRAMMED",
+                              "type": "ACCELERATION",
+                              "units": "MILLIMETER/SECOND^2"
+                            }
+                          }
+                        ]
+                      },
+                      "DataItems": [
+                        {
+                          "DataItem": {
+                            "Filters": [
+                              {
+                                "Filter": {
+                                  "type": "MINIMUM_DELTA",
+                                  "value": 3.0
+                                }
+                              }
+                            ],
+                            "category": "SAMPLE",
+                            "id": "Bload",
+                            "nativeUnits": "PERCENT",
+                            "type": "LOAD",
+                            "units": "PERCENT"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "id": "Bfrt",
+                            "nativeUnits": "DEGREE/MINUTE",
+                            "type": "ANGULAR_VELOCITY",
+                            "units": "DEGREE/SECOND"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "CONDITION",
+                            "id": "Btravel",
+                            "type": "ANGLE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "coordinateSystem": "MACHINE",
+                            "id": "Babs",
+                            "nativeUnits": "DEGREE",
+                            "subType": "ACTUAL",
+                            "type": "ANGLE",
+                            "units": "DEGREE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "coordinateSystem": "WORK",
+                            "id": "Bpos",
+                            "nativeUnits": "DEGREE",
+                            "subType": "ACTUAL",
+                            "type": "ANGLE",
+                            "units": "DEGREE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "Constraints": {
+                              "value": ["CONTOUR", "INDEX"]
+                            },
+                            "category": "EVENT",
+                            "id": "arfunc",
+                            "type": "ROTARY_MODE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "compositionId": "Bmotor",
+                            "id": "servotemp4",
+                            "nativeUnits": "CELSIUS",
+                            "type": "TEMPERATURE",
+                            "units": "CELSIUS"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "baxisstate",
+                            "type": "AXIS_STATE"
+                          }
+                        }
+                      ],
+                      "id": "ar",
+                      "name": "B"
+                    }
+                  },
+                  {
+                    "Linear": {
+                      "Compositions": [
+                        {
+                          "Composition": {
+                            "id": "Z3ballscrew",
+                            "type": "BALLSCREW"
+                          }
+                        },
+                        {
+                          "Composition": {
+                            "id": "Z3motor",
+                            "type": "MOTOR"
+                          }
+                        }
+                      ],
+                      "Configuration": {
+                        "Specifications": [
+                          {
+                            "Specification": {
+                              "Nominal": 2010.0,
+                              "type": "LENGTH",
+                              "units": "MILLIMETER"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 400.0,
+                              "Minimum": 0.0,
+                              "type": "LINEAR_FORCE",
+                              "units": "NEWTON"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 1180.0,
+                              "Minimum": 1.0,
+                              "subType": "RAPID",
+                              "type": "VELOCITY",
+                              "units": "MILLIMETER/SECOND"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 315.0,
+                              "Minimum": 1.0,
+                              "subType": "PROGRAMMED",
+                              "type": "VELOCITY",
+                              "units": "MILLIMETER/SECOND"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 1180.0,
+                              "Minimum": 1.0,
+                              "subType": "RAPID",
+                              "type": "ACCELERATION",
+                              "units": "MILLIMETER/SECOND^2"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 1180.0,
+                              "Minimum": 1.0,
+                              "Nominal": 380.0,
+                              "subType": "PROGRAMMED",
+                              "type": "ACCELERATION",
+                              "units": "MILLIMETER/SECOND^2"
+                            }
+                          }
+                        ]
+                      },
+                      "DataItems": [
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "coordinateSystem": "MACHINE",
+                            "id": "Wabs",
+                            "nativeUnits": "MILLIMETER",
+                            "subType": "ACTUAL",
+                            "type": "POSITION",
+                            "units": "MILLIMETER"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "coordinateSystem": "WORK",
+                            "id": "Wpos",
+                            "nativeUnits": "MILLIMETER",
+                            "subType": "ACTUAL",
+                            "type": "POSITION",
+                            "units": "MILLIMETER"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "CONDITION",
+                            "id": "Wtravel",
+                            "type": "POSITION"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "Filters": [
+                              {
+                                "Filter": {
+                                  "type": "MINIMUM_DELTA",
+                                  "value": 3.0
+                                }
+                              }
+                            ],
+                            "category": "SAMPLE",
+                            "id": "Wload",
+                            "nativeUnits": "PERCENT",
+                            "type": "LOAD",
+                            "units": "PERCENT"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "id": "Wfrt",
+                            "nativeUnits": "MILLIMETER/SECOND",
+                            "type": "AXIS_FEEDRATE",
+                            "units": "MILLIMETER/SECOND"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "compositionId": "Z3motor",
+                            "id": "servotemp6",
+                            "nativeUnits": "CELSIUS",
+                            "type": "TEMPERATURE",
+                            "units": "CELSIUS"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "z3axisstate",
+                            "type": "AXIS_STATE"
+                          }
+                        }
+                      ],
+                      "id": "w",
+                      "name": "Z3",
+                      "nativeName": "W"
+                    }
+                  },
+                  {
+                    "Rotary": {
+                      "Compositions": [
+                        {
+                          "Composition": {
+                            "id": "Cmotor",
+                            "type": "MOTOR"
+                          }
+                        }
+                      ],
+                      "DataItems": [
+                        {
+                          "DataItem": {
+                            "Filters": [
+                              {
+                                "Filter": {
+                                  "type": "MINIMUM_DELTA",
+                                  "value": 3.0
+                                }
+                              }
+                            ],
+                            "category": "SAMPLE",
+                            "id": "Cload",
+                            "nativeUnits": "PERCENT",
+                            "type": "LOAD",
+                            "units": "PERCENT"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "Filters": [
+                              {
+                                "Filter": {
+                                  "type": "MINIMUM_DELTA",
+                                  "value": 3.0
+                                }
+                              }
+                            ],
+                            "category": "SAMPLE",
+                            "id": "Sload",
+                            "nativeUnits": "PERCENT",
+                            "type": "LOAD",
+                            "units": "PERCENT"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "CONDITION",
+                            "id": "Ctravel",
+                            "type": "ANGLE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "id": "Cfrt",
+                            "nativeUnits": "DEGREE/MINUTE",
+                            "type": "ANGULAR_VELOCITY",
+                            "units": "DEGREE/SECOND"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "Filters": [
+                              {
+                                "Filter": {
+                                  "type": "MINIMUM_DELTA",
+                                  "value": 5.0
+                                }
+                              }
+                            ],
+                            "category": "SAMPLE",
+                            "id": "Srpm",
+                            "nativeUnits": "REVOLUTION/MINUTE",
+                            "subType": "ACTUAL",
+                            "type": "ROTARY_VELOCITY",
+                            "units": "REVOLUTION/MINUTE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "Filters": [
+                              {
+                                "Filter": {
+                                  "type": "MINIMUM_DELTA",
+                                  "value": 0.5
+                                }
+                              }
+                            ],
+                            "category": "SAMPLE",
+                            "compositionId": "Cmotor",
+                            "id": "Stemp",
+                            "nativeUnits": "CELSIUS",
+                            "type": "TEMPERATURE",
+                            "units": "CELSIUS"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "coordinateSystem": "MACHINE",
+                            "id": "Cabs",
+                            "nativeUnits": "DEGREE",
+                            "subType": "ACTUAL",
+                            "type": "ANGLE",
+                            "units": "DEGREE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "coordinateSystem": "WORK",
+                            "id": "Cpos",
+                            "nativeUnits": "DEGREE",
+                            "subType": "ACTUAL",
+                            "type": "ANGLE",
+                            "units": "DEGREE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "Constraints": {
+                              "value": ["SPINDLE", "INDEX"]
+                            },
+                            "category": "EVENT",
+                            "id": "crfunc",
+                            "type": "ROTARY_MODE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "CONDITION",
+                            "id": "Sload_cond",
+                            "type": "LOAD"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "CONDITION",
+                            "id": "Stemp_cond",
+                            "type": "TEMPERATURE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "caxisstate",
+                            "type": "AXIS_STATE"
+                          }
+                        }
+                      ],
+                      "id": "c",
+                      "name": "C"
+                    }
+                  }
+                ],
+                "DataItems": [
+                  {
+                    "DataItem": {
+                      "category": "CONDITION",
+                      "id": "servo_cond",
+                      "type": "ACTUATOR"
+                    }
+                  },
+                  {
+                    "DataItem": {
+                      "category": "CONDITION",
+                      "id": "spindle_cond",
+                      "type": "SYSTEM"
+                    }
+                  }
+                ],
+                "id": "a",
+                "name": "base"
+              }
+            },
+            {
+              "Controller": {
+                "Components": [
+                  {
+                    "Path": {
+                      "DataItems": [
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "hd1chuckstate",
+                            "type": "CHUCK_STATE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "Frapidovr",
+                            "subType": "RAPID",
+                            "type": "PATH_FEEDRATE_OVERRIDE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "Fovr",
+                            "subType": "PROGRAMMED",
+                            "type": "PATH_FEEDRATE_OVERRIDE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "Sovr",
+                            "type": "ROTARY_VELOCITY_OVERRIDE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "program",
+                            "subType": "MAIN",
+                            "type": "PROGRAM"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "activeprog",
+                            "subType": "ACTIVE",
+                            "type": "PROGRAM"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "unitNum",
+                            "type": "x:UNIT"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "sequenceNum",
+                            "type": "x:SEQUENCE_NUMBER"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "PartCountAct",
+                            "type": "PART_COUNT"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "coordinateSystem": "WORK",
+                            "id": "Fact",
+                            "nativeUnits": "MILLIMETER/SECOND",
+                            "subType": "ACTUAL",
+                            "type": "PATH_FEEDRATE",
+                            "units": "MILLIMETER/SECOND"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "Tool_number",
+                            "type": "TOOL_NUMBER"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "Tool_group",
+                            "type": "TOOL_GROUP"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "Tool_suffix",
+                            "type": "x:TOOL_SUFFIX"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "execution",
+                            "type": "EXECUTION"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "waitstate",
+                            "type": "WAIT_STATE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "mode",
+                            "type": "CONTROLLER_MODE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "program_cmt",
+                            "subType": "MAIN",
+                            "type": "PROGRAM_COMMENT"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "activeprogram_cmt",
+                            "subType": "ACTIVE",
+                            "type": "PROGRAM_COMMENT"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "CONDITION",
+                            "id": "motion_cond",
+                            "type": "MOTION_PROGRAM"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "CONDITION",
+                            "id": "path_system",
+                            "type": "SYSTEM"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "cmomachineaxislock",
+                            "subType": "MACHINE_AXIS_LOCK",
+                            "type": "CONTROLLER_MODE_OVERRIDE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "cmosingleblock",
+                            "subType": "SINGLE_BLOCK",
+                            "type": "CONTROLLER_MODE_OVERRIDE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "cmodryrun",
+                            "subType": "DRY_RUN",
+                            "type": "CONTROLLER_MODE_OVERRIDE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "linelabel",
+                            "type": "LINE_LABEL"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "linenumber",
+                            "subType": "INCREMENTAL",
+                            "type": "LINE_NUMBER"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "cvars",
+                            "representation": "DATA_SET",
+                            "type": "VARIABLE"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "id": "cspeed",
+                            "nativeUnits": "MILLIMETER/SECOND",
+                            "subType": "ACTUAL",
+                            "type": "CUTTING_SPEED",
+                            "units": "MILLIMETER/SECOND"
+                          }
+                        }
+                      ],
+                      "id": "path1",
+                      "name": "path"
+                    }
+                  }
+                ],
+                "DataItems": [
+                  {
+                    "DataItem": {
+                      "category": "CONDITION",
+                      "id": "comms_cond",
+                      "type": "COMMUNICATIONS"
+                    }
+                  },
+                  {
+                    "DataItem": {
+                      "category": "CONDITION",
+                      "id": "logic_cond",
+                      "type": "LOGIC_PROGRAM"
+                    }
+                  },
+                  {
+                    "DataItem": {
+                      "category": "CONDITION",
+                      "id": "system_cond",
+                      "type": "SYSTEM"
+                    }
+                  },
+                  {
+                    "DataItem": {
+                      "category": "EVENT",
+                      "id": "estop",
+                      "type": "EMERGENCY_STOP"
+                    }
+                  },
+                  {
+                    "DataItem": {
+                      "category": "SAMPLE",
+                      "id": "auto_time",
+                      "nativeUnits": "SECOND",
+                      "subType": "x:AUTO",
+                      "type": "ACCUMULATED_TIME",
+                      "units": "SECOND"
+                    }
+                  },
+                  {
+                    "DataItem": {
+                      "category": "SAMPLE",
+                      "id": "total_time",
+                      "nativeUnits": "SECOND",
+                      "subType": "x:TOTAL",
+                      "type": "ACCUMULATED_TIME",
+                      "units": "SECOND"
+                    }
+                  },
+                  {
+                    "DataItem": {
+                      "category": "SAMPLE",
+                      "id": "cut_time",
+                      "nativeUnits": "SECOND",
+                      "subType": "x:CUT",
+                      "type": "ACCUMULATED_TIME",
+                      "units": "SECOND"
+                    }
+                  },
+                  {
+                    "DataItem": {
+                      "category": "SAMPLE",
+                      "id": "total_auto_cut_time",
+                      "nativeUnits": "SECOND",
+                      "subType": "x:TOTALCUTTIME",
+                      "type": "ACCUMULATED_TIME",
+                      "units": "SECOND"
+                    }
+                  },
+                  {
+                    "DataItem": {
+                      "category": "EVENT",
+                      "id": "pallet_num",
+                      "type": "PALLET_ID"
+                    }
+                  }
+                ],
+                "id": "cont",
+                "name": "controller"
+              }
+            },
+            {
+              "Door": {
+                "DataItems": [
+                  {
+                    "DataItem": {
+                      "category": "EVENT",
+                      "id": "doorstate",
+                      "type": "DOOR_STATE"
+                    }
+                  }
+                ],
+                "id": "door1",
+                "name": "door"
+              }
+            },
+            {
+              "Systems": {
+                "Components": [
+                  {
+                    "WorkEnvelope": {
+                      "Compositions": [
+                        {
+                          "Composition": {
+                            "id": "wp",
+                            "type": "WORKPIECE"
+                          }
+                        },
+                        {
+                          "Composition": {
+                            "id": "tbl",
+                            "type": "TABLE"
+                          }
+                        }
+                      ],
+                      "Configuration": {
+                        "Specifications": [
+                          {
+                            "Specification": {
+                              "Nominal": 233.56,
+                              "type": "X_DIMENSION",
+                              "units": "MILLIMETER"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Nominal": 233.56,
+                              "type": "Y_DIMENSION",
+                              "units": "MILLIMETER"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Nominal": 233.56,
+                              "type": "Z_DIMENSION",
+                              "units": "MILLIMETER"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Nominal": 233.56,
+                              "compositionIdRef": "tbl",
+                              "type": "X_DIMENSION",
+                              "units": "MILLIMETER"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Nominal": 233.56,
+                              "compositionIdRef": "tbl",
+                              "type": "Y_DIMENSION",
+                              "units": "MILLIMETER"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Nominal": 233.56,
+                              "compositionIdRef": "tbl",
+                              "type": "MASS",
+                              "units": "KILOGRAM"
+                            }
+                          }
+                        ]
+                      },
+                      "id": "we1",
+                      "name": "WorkEnvelope"
+                    }
+                  },
+                  {
+                    "Electric": {
+                      "Configuration": {
+                        "Specifications": [
+                          {
+                            "Specification": {
+                              "Nominal": 480.0,
+                              "type": "VOLTAGE",
+                              "units": "VOLT"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Nominal": 75.0,
+                              "type": "POWER_FACTOR",
+                              "units": "PERCENT"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Nominal": 50.0,
+                              "type": "WATTAGE",
+                              "units": "WATT"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Nominal": 200.0,
+                              "type": "AMPERAGE",
+                              "units": "AMPERE"
+                            }
+                          }
+                        ]
+                      },
+                      "DataItems": [
+                        {
+                          "DataItem": {
+                            "category": "CONDITION",
+                            "id": "electric_cond",
+                            "type": "SYSTEM"
+                          }
+                        }
+                      ],
+                      "id": "elec",
+                      "name": "electric"
+                    }
+                  },
+                  {
+                    "Hydraulic": {
+                      "DataItems": [
+                        {
+                          "DataItem": {
+                            "category": "CONDITION",
+                            "id": "hydra_cond",
+                            "type": "SYSTEM"
+                          }
+                        }
+                      ],
+                      "id": "hydraulic",
+                      "name": "hydraulic"
+                    }
+                  },
+                  {
+                    "Coolant": {
+                      "Configuration": {
+                        "Specifications": [
+                          {
+                            "Specification": {
+                              "Maximum": 234.0,
+                              "Minimum": 0.0,
+                              "type": "PRESSURE",
+                              "units": "PASCAL"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 10.0,
+                              "Minimum": 0.0,
+                              "type": "PH",
+                              "units": "PERCENT"
+                            }
+                          },
+                          {
+                            "Specification": {
+                              "Maximum": 9.0,
+                              "Minimum": 3.0,
+                              "type": "CONCENTRATION",
+                              "units": "PERCENT"
+                            }
+                          }
+                        ]
+                      },
+                      "DataItems": [
+                        {
+                          "DataItem": {
+                            "category": "CONDITION",
+                            "id": "coolant_cond",
+                            "type": "SYSTEM"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "Filters": [
+                              {
+                                "Filter": {
+                                  "type": "MINIMUM_DELTA",
+                                  "value": 0.5
+                                }
+                              }
+                            ],
+                            "category": "SAMPLE",
+                            "id": "cooltemp",
+                            "nativeUnits": "CELSIUS",
+                            "type": "TEMPERATURE",
+                            "units": "CELSIUS"
+                          }
+                        },
+                        {
+                          "DataItem": {
+                            "category": "SAMPLE",
+                            "id": "CONCENTRATION",
+                            "nativeUnits": "PERCENT",
+                            "type": "CONCENTRATION",
+                            "units": "PERCENT"
+                          }
+                        }
+                      ],
+                      "id": "coolant",
+                      "name": "coolant"
+                    }
+                  },
+                  {
+                    "Pneumatic": {
+                      "DataItems": [
+                        {
+                          "DataItem": {
+                            "category": "CONDITION",
+                            "id": "pneu_cond",
+                            "type": "SYSTEM"
+                          }
+                        }
+                      ],
+                      "id": "pneumatic",
+                      "name": "pneumatic"
+                    }
+                  },
+                  {
+                    "Lubrication": {
+                      "DataItems": [
+                        {
+                          "DataItem": {
+                            "category": "CONDITION",
+                            "id": "lubrication_cond",
+                            "type": "SYSTEM"
+                          }
+                        }
+                      ],
+                      "id": "lubrication",
+                      "name": "lubrication"
+                    }
+                  }
+                ],
+                "id": "systems",
+                "name": "systems"
+              }
+            },
+            {
+              "Auxiliaries": {
+                "Components": [
+                  {
+                    "Environmental": {
+                      "Configuration": {
+                        "Specifications": [
+                          {
+                            "Specification": {
+                              "Maximum": 22.0,
+                              "Minimum": 19.0,
+                              "type": "TEMPERATURE",
+                              "units": "CELSIUS"
+                            }
+                          }
+                        ]
+                      },
+                      "DataItems": [
+                        {
+                          "DataItem": {
+                            "Filters": [
+                              {
+                                "Filter": {
+                                  "type": "MINIMUM_DELTA",
+                                  "value": 0.5
+                                }
+                              }
+                            ],
+                            "category": "SAMPLE",
+                            "id": "rmtmp1",
+                            "nativeUnits": "CELSIUS",
+                            "type": "TEMPERATURE",
+                            "units": "CELSIUS"
+                          }
+                        }
+                      ],
+                      "id": "room",
+                      "name": "environmental"
+                    }
+                  }
+                ],
+                "id": "Aux",
+                "name": "auxiliaries"
+              }
+            },
+            {
+              "Resources": {
+                "Components": [
+                  {
+                    "Personnel": {
+                      "DataItems": [
+                        {
+                          "DataItem": {
+                            "category": "EVENT",
+                            "id": "operator",
+                            "type": "USER"
+                          }
+                        }
+                      ],
+                      "id": "personnel",
+                      "name": "personnel"
+                    }
+                  },
+                  {
+                    "Materials": {
+                      "Components": [
+                        {
+                          "Stock": {
+                            "DataItems": [
+                              {
+                                "DataItem": {
+                                  "category": "EVENT",
+                                  "id": "stock",
+                                  "type": "MATERIAL"
+                                }
+                              }
+                            ],
+                            "id": "procstock",
+                            "name": "stock"
+                          }
+                        }
+                      ],
+                      "id": "materials",
+                      "name": "materials"
+                    }
+                  }
+                ],
+                "id": "resources",
+                "name": "resources"
+              }
+            }
+          ],
+          "DataItems": [
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "avail",
+                "type": "AVAILABILITY"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "functionalmode",
+                "type": "FUNCTIONAL_MODE"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "emloaded",
+                "subType": "LOADED",
+                "type": "EQUIPMENT_MODE"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "emworking",
+                "subType": "WORKING",
+                "type": "EQUIPMENT_MODE"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "emoperating",
+                "subType": "OPERATING",
+                "type": "EQUIPMENT_MODE"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "empowered",
+                "subType": "POWERED",
+                "type": "EQUIPMENT_MODE"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "emdelay",
+                "subType": "DELAY",
+                "type": "EQUIPMENT_MODE"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "osl",
+                "subType": "LICENSE",
+                "type": "OPERATING_SYSTEM"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "os",
+                "subType": "VERSION",
+                "type": "OPERATING_SYSTEM"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "osrd",
+                "subType": "RELEASE_DATE",
+                "type": "OPERATING_SYSTEM"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "osid",
+                "subType": "INSTALL_DATE",
+                "type": "OPERATING_SYSTEM"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "osmfg",
+                "subType": "MANUFACTURER",
+                "type": "OPERATING_SYSTEM"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "discrete": "true",
+                "id": "d1_asset_chg",
+                "type": "ASSET_CHANGED"
+              }
+            },
+            {
+              "DataItem": {
+                "category": "EVENT",
+                "id": "d1_asset_rem",
+                "type": "ASSET_REMOVED"
+              }
+            }
+          ],
+          "Description": {
+            "manufacturer": "Mazak_Corporation",
+            "text": "Mill w/SMooth-G"
+          },
+          "id": "d1",
+          "name": "M12346",
+          "uuid": "M80104K162N"
+        }
+      }
+    ],
+    "Header": {
+      "assetBufferSize": 8096,
+      "assetCount": 73,
+      "bufferSize": 4096,
+      "creationTime": "2021-06-25T14:01:27Z",
+      "instanceId": 1622761005,
+      "schemaVersion": "1.7",
+      "sender": "DMZ-MTCNCT",
+      "testIndicator": false,
+      "version": "1.7.0.3"
+    }
+  }
+}
