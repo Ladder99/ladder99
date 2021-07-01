@@ -17,7 +17,7 @@ On your edge device, in the ladder99 folder (note the d in startd, for detach / 
 
 Now you should be able to view the MTConnect Agent output on your browser at e.g. http://raspberrypi.local:5000.
 
-![img](../_images/agent.jpg)
+![img](_images/agent.jpg)
 
 Click 'Probe' to see the structure of the data items, 'Current' to see the latest values, and 'Sample' with 'from' and 'count' values to see a range of data items.
 
@@ -27,7 +27,7 @@ You can also view a dashboard in your browser at e.g. http://raspberrypi.local:3
 
 <!-- or did we specify the pw in the .env file? -->
 
-![img](../_images/grafana-vmc.jpg)
+![img](_images/grafana-vmc.jpg)
 
 You can select a range on the graphs to zoom in, or select a time range.
 
