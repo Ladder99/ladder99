@@ -1,10 +1,20 @@
 # Introduction
 
-## Goals
+## Ladder99
 
+Ladder99 is a free and open-source application pipeline that transforms data from your devices to a standard vocabulary, which you can then plug into any MTConnect-compatible application.
+
+It uses the MTConnect Adapter, Agent, Application scheme.
+
+<!-- ## Goals
 - Connect factory devices to database and visualizations
-- Use MTConnect Adapter, Agent, Application scheme
-- Enforce one-way dataflow via a data diode
+- Use MTConnect Adapter, Agent, Application scheme -->
+
+## MTConnect
+
+MTConnect standardizes factory device data flow and vocabulary - it was started by UC Berkeley, Georgia Institute of Technology, and Sun Microsystems in 2008, and continues under active development.
+
+https://www.mtconnect.org/
 
 ## Architecture
 
@@ -18,6 +28,6 @@ Our MTConnect Adapter subscribes and listens to those messages, translates them 
 
 <!-- via an optional one-way data diode (Java + RabbitMQ) -->
 
-Our MTConnect Application then consumes the data as XML or JSON over HTTP, and feeds it to a database and visualizer.
+Our MTConnect Application then consumes the data as XML over HTTP, and feeds it to a database and visualizer.
 
 <!-- For more on the data diode, see the service [here](services/diode). -->

@@ -25,4 +25,4 @@ Install dependencies **in this order** (may take a while) -
     shell/install/node-deps
     shell/install/python
 
-Next, we'll run the MTConnect Agent and make sure it works with the demonstration data.
+<!-- Next, we'll run the MTConnect Agent and make sure it works with the demonstration data. -->
