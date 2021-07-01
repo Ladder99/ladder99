@@ -1,12 +1,12 @@
 {
-  "name": "ladder99-simulator-opc",
+  "name": "ladder99-simulator",
   "version": "0.1.0",
   "description": "send test device messages to opc client",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/simulator.js"
   },
   "author": "Brian Burns <bburns.km@gmail.com>",
-  "private": true,
+  "license": "MIT",
   "dependencies": {
     "node-opcua": "^2.36.0"
   }

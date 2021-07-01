@@ -18,7 +18,7 @@ program
   .option('-m, --mode <mode>', 'play or record', 'play')
   .option('-l, --loop <loop>', 'play in a loop', true)
   .option('-t, --topic <topic>', 'topic to subscribe to', '#')
-  .option('-f, --folder <folder>', 'folder containing csv files', 'recordings')
+  .option('-f, --folder <folder>', 'folder containing csv files', 'recorder')
 program.parse(process.argv)
 const options = program.opts()
 const { host, port, mode, loop, topic, folder } = options

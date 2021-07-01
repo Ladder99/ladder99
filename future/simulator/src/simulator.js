@@ -1,5 +1,6 @@
-// simulator-opc
-// simulates an opc server
+// simulator
+// simulates a device
+//. for now just an opc server, but have plugins for diff devices later
 
 // the endpoint urn of our server will be
 //   opc.tcp://<hostname>:4334/UA/LittleServer
@@ -119,16 +120,15 @@ const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua')
     console.log('OPC server is now listening ... (press CTRL+C to stop)')
     console.log('OPC server port', server.endpoints[0].port)
     // display endpoint url
-    const endpointUrl = server.endpoints[0].endpointDescriptions()[0]
-      .endpointUrl
+    const endpointUrl =
+      server.endpoints[0].endpointDescriptions()[0].endpointUrl
     console.log('OPS server primary endpoint is', endpointUrl)
   })
 })()
 
-/**
- * returns the percentage of free memory on the running machine
- * @return {Number}
- */
+//
+
+// returns the percentage of free memory on the running machine
 function available_memory() {
   // var value = process.memoryUsage().heapUsed / 1000000;
   const percentageMemUsed = (os.freemem() / os.totalmem()) * 100.0
