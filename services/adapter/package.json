@@ -1,7 +1,7 @@
 {
   "name": "ladder99-adapter",
   "version": "0.1.1",
-  "description": "MTConnect Adapter",
+  "description": "Ladder99 MTConnect Adapter",
   "type": "module",
   "target": "es2017",
   "scripts": {
@@ -12,6 +12,7 @@
   "dependencies": {
     "js-yaml": "^4.0.0",
     "mqtt": "^4.2.6",
-    "node-opcua-client": "^2.36.0"
+    "node-opcua-client": "^2.36.0",
+    "xml-js": "^1.6.11"
   }
 }
