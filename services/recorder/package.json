@@ -1,7 +1,7 @@
 {
-  "name": "ladder99-tape-recorder",
+  "name": "ladder99-recorder",
   "version": "0.1.0",
-  "description": "plays/records mqtt messages",
+  "description": "plays/records device messages",
   "type": "module",
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "MIT",

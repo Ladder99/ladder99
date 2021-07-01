@@ -1,6 +1,8 @@
-// tape
-// plays/records MQTT messages
+// recorder
+// plays/records device messages
 // inspired by rpdswtk/mqtt_recorder, a python app
+
+//. make plugins for different device sources, eg mqtt, opc, ...
 
 import fs from 'fs'
 import mqttlib from 'mqtt' // see https://github.com/mqttjs/MQTT.js
@@ -16,20 +18,20 @@ program
   .option('-m, --mode <mode>', 'play or record', 'play')
   .option('-l, --loop <loop>', 'play in a loop', true)
   .option('-t, --topic <topic>', 'topic to subscribe to', '#')
-  .option('-f, --folder <folder>', 'folder containing csv files', 'tape')
+  .option('-f, --folder <folder>', 'folder containing csv files', 'recordings')
 program.parse(process.argv)
 const options = program.opts()
 const { host, port, mode, loop, topic, folder } = options
 
 console.log()
-console.log(`Tape Recorder`)
-console.log(`Plays/records MQTT messages`)
+console.log(`Recorder`)
+console.log(`Plays/records device messages`)
 console.log(`------------------------------------------------------------`)
 
 const modeString = mode === 'play' ? 'Playback' : 'Record'
 console.log(`${modeString} mode`)
 
-const clientId = `tape-recorder-${Math.random()}`
+const clientId = `recorder-${Math.random()}`
 // const config = { host, port, clientId, reconnectPeriod: 0 }
 const config = { host, port, clientId }
 
@@ -90,7 +92,7 @@ mqtt.on('connect', async function onConnect() {
           process.stdout.write('.')
           const { payload, qos, retain, time_delta } = row
           // const topic = row.topic
-          const topic = row.topic.replace('${deviceId}', 'ccs-pa-001') //... handle this
+          const topic = row.topic.replace('${deviceId}', 'pa') //... handle this
           // console.log(`Publishing topic ${topic}: ${payload.slice(0, 40)}...`)
           //. mosquitto closes with "disconnected due to protocol error" when send qos
           // mqtt.publish(topic, payload, { qos, retain })
