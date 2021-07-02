@@ -9,7 +9,7 @@ services:
   agent:
     command: agent debug /data/agent/agent.cfg
     volumes:
-      - ./$SETUP/volumes/agent:/data/agent # has agent.cfg, devices.xml
+      - ./$SETUP/volumes/agent:/data/agent # has ccs-pa agent.cfg, devices.xml
 
 networks:
   ladder99:

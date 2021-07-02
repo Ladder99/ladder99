@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- handmade version for development -->
 <!-- will eventually be compiled from devices.yaml and model yamls -->
-<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
+<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">
   <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.6.0.7"/>
   <Devices>
 
-    <Device id="ccs-pa-001" name="ccs-pa-001" uuid="ccs-pa-001" sampleInterval="10">
+    <Device id="ccs-pa" name="ccs-pa" uuid="ccs-pa" sampleInterval="10">
       <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="001">
         Emergent Next Generation Print and Apply
       </Description>
       <DataItems>
-        <DataItem id="ccs-pa-001-connection" category="EVENT" type="AVAILABILITY"/>
-        <DataItem id="ccs-pa-001-state" category="EVENT" type="EXECUTION"/>
-        <DataItem id="ccs-pa-001-step" category="EVENT" type="BLOCK"/>
-        <DataItem id="ccs-pa-001-e_stop" category="EVENT" type="EMERGENCY_STOP"/>
-        <DataItem id="ccs-pa-001-printer_start_print" category="EVENT" type="ACTUATOR_STATE"/>
-        <DataItem id="ccs-pa-001-status-cycle_time" category="SAMPLE" units="SECOND" type="PROCESS_TIMER" subType="PROCESS"/>
+        <DataItem id="ccs-pa-connection" category="EVENT" type="AVAILABILITY"/>
+        <DataItem id="ccs-pa-state" category="EVENT" type="EXECUTION"/>
+        <DataItem id="ccs-pa-step" category="EVENT" type="BLOCK"/>
+        <DataItem id="ccs-pa-e_stop" category="EVENT" type="EMERGENCY_STOP"/>
+        <DataItem id="ccs-pa-printer_start_print" category="EVENT" type="ACTUATOR_STATE"/>
+        <DataItem id="ccs-pa-status-cycle_time" category="SAMPLE" units="SECOND" type="PROCESS_TIMER" subType="PROCESS"/>
       </DataItems>
 
       <Systems id="systems">
@@ -24,7 +26,7 @@
             <Components>
               <Personnel id="personnel" name="personnel">
                 <DataItems>
-                  <DataItem category="EVENT" id="ccs-pa-001-operator" type="USER" subType="OPERATOR"/>
+                  <DataItem category="EVENT" id="ccs-pa-operator" type="USER" subType="OPERATOR"/>
                 </DataItems>
               </Personnel>
             </Components>
