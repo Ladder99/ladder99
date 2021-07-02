@@ -92,7 +92,7 @@ mqtt.on('connect', async function onConnect() {
           process.stdout.write('.')
           const { payload, qos, retain, time_delta } = row
           // const topic = row.topic
-          const topic = row.topic.replace('${deviceId}', 'pa') //... handle this
+          const topic = row.topic.replace('${deviceId}', 'ccs-pa') //... handle this
           // console.log(`Publishing topic ${topic}: ${payload.slice(0, 40)}...`)
           //. mosquitto closes with "disconnected due to protocol error" when send qos
           // mqtt.publish(topic, payload, { qos, retain })

@@ -272,7 +272,10 @@ services:
     build: ../services/recorder
     profiles:
       - play
-    command: recorder --host broker --folder ./models/$SETUP/recorder
+    command: recorder --host broker --folder /data/models/$SETUP/recorder
+    volumes:
+      #   - ../../../services/simulator:/home/node/app
+      - ../models:/data/models
     # environment:
     #   - HOST=broker
     #   - PORT=1883
