@@ -104,7 +104,7 @@ for (const device of devices) {
   const { destinations } = device
   const destination = destinations[0] //. just handle one for now
   console.log(`TCP try listening to socket at`, destination, `...`)
-  console.log('here')
+  // console.log('here')
   // try {
   tcp.listen(destination.port, destination.host)
   // } catch (error) {
@@ -116,7 +116,7 @@ for (const device of devices) {
   //     throw error
   //   }
   // }
-  console.log('there')
+  // console.log('there')
 }
 
 /**
@@ -159,6 +159,7 @@ function getOutputs({ outputTemplates, types, deviceId }) {
     // get output object
     const output = {
       //. assume each starts with deviceId?
+      //. some might end with a number instead
       //. call this id, as it's such in the devices.xml?
       key: `${deviceId}-${template.key}`,
       value, //. getValue
