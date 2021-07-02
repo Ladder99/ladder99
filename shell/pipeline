@@ -8,15 +8,15 @@ import pathlib
 
 if len(sys.argv) < 2:
     print("""
-Usage: shell/pipeline SETUP COMMAND [PROFILES]
+Usage: shell/pipeline SETUP COMMAND PROFILES
 
 Run a docker-compose yaml file with optional list of profiles to include.
 
 SETUP     setup subfolder, eg vmc, ccs-pa
 COMMAND   start (default), startd (run detached), stop (stop all services)
-PROFILES  optional space-delim list of profiles to start (default is 'all')
+PROFILES  space-delim list of profiles to start, or 'all' (default is none)
 
-eg `shell/pipeline ccs-pa startd play-mqtt`
+eg `shell/pipeline ccs-pa startd play`
 
 Note: use `docker kill SERVICE` to stop an individual service
 """)
@@ -24,7 +24,7 @@ Note: use `docker kill SERVICE` to stop an individual service
 
 setup = sys.argv[1]  # eg 'vmc'
 cmd = sys.argv[2] or 'start'  # eg 'start', 'startd', 'stop'
-profiles = sys.argv[3:] or ['all']  # eg ['play-mqtt']
+profiles = sys.argv[3:]  # eg ['play-mqtt']
 
 # add main compose file for pipeline
 composefile = f"setups/pipeline.yaml"

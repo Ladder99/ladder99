@@ -172,6 +172,7 @@ services:
     container_name: pgadmin
     image: biarms/pgadmin4:latest
     profiles:
+      - all
       - pgadmin
     ports:
       - '5050:5050/tcp'
@@ -188,6 +189,7 @@ services:
     container_name: broker
     image: eclipse-mosquitto
     profiles:
+      - all
       - broker
     ports:
       - 1883:1883
@@ -205,6 +207,7 @@ services:
     container_name: adapter
     image: node:15.14-slim
     profiles:
+      - all
       - adapter
     user: node
     working_dir: /home/node/app
@@ -320,6 +323,7 @@ services:
     container_name: portainer
     image: portainer/portainer-ce
     profiles:
+      - all
       - portainer
     ports:
       - '9001:9000' #.... changed from 9000:9000 - make envar
