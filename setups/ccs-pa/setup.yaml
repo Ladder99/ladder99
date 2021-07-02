@@ -2,10 +2,10 @@
 # this defines the devices.xml structure, along with the model yamls.
 # read by services/adapter/src/adapter.js.
 # sources define the inputs to the cache.
-# compiled by services/compiler into devices.xml.
+# compiled by services/adapter/compiler into devices.xml.
 #. see also future/setup-future.yaml for future dev.
 
-#. have meta: section also?
+#. could have meta: section also
 
 #. could we get this to one line per device? a site might have dozens of machines
 # eg set defaults for all devices at the top, overrides per device?
