@@ -9,17 +9,11 @@ import { Cache } from './cache.js'
 
 // file system inputs
 const pluginsFolder = './plugins' // for protocol handlers, eg mqtt-json - must start with .
-// note: caller needs to copy setup.yaml and model folders before running this app.
-// see Justfile - copy-adapter-data and delete-adapter-data.
-// const dataFolder = '/etc/ladder99-adapter' // incls setup.yaml, models folder
-// const dataFolder = '~/data/adapter' // incls setup.yaml, models folder
-// const dataFolder = '/etc/ladder99/adapter' // incls setup.yaml, models folder
-// const dataFolder = '/home/ladder99/data/adapter' // incls setup.yaml, models folder
-const dataFolder = '/data/adapter' // incls setup.yaml, models folder
-// const modelsFolder = `${dataFolder}/models` // incl ccs-pa/model.yaml etc
+// these folders are defined in pipeline.yaml
+const dataFolder = '/data/adapter' // incls setup.yaml
 const modelsFolder = `/data/models` // incl ccs-pa/model.yaml etc
 
-// load setup.yaml - see setups/demo/setup.yaml
+// load setup.yaml - eg see setups/ccs-pa/setup.yaml
 const yamlfile = `${dataFolder}/setup.yaml`
 const yamltree = importYaml(yamlfile)
 const { setup } = yamltree

@@ -216,7 +216,7 @@ services:
     command: npm start
     volumes:
       - ../services/adapter:/home/node/app # has source code
-      - ./$SETUP:/data/adapter # has devices.yaml
+      - ./$SETUP:/data/adapter # has setup.yaml
       - ../models:/data/models # has model yamls
     networks:
       - ladder99
