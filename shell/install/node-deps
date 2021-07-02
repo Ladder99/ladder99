@@ -2,7 +2,7 @@
 # install node dependencies
 
 npm --prefix services/adapter install
-npm --prefix services/application install
-npm --prefix services/compiler install
-npm --prefix services/diode/code/application/datadiode/contrib/nodejs install
-npm --prefix services/tapedeck install
+npm --prefix services/recorder install
+
+# npm --prefix services/application install
+# npm --prefix services/diode/code/application/datadiode/contrib/nodejs install
