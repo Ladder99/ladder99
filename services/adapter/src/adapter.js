@@ -13,26 +13,26 @@ const pluginsFolder = './plugins' // for protocol handlers, eg mqtt-json - must 
 const dataFolder = '/data/adapter' // incls setup.yaml
 const modelsFolder = `/data/models` // incl ccs-pa/model.yaml etc
 
-// load setup.yaml - eg see setups/ccs-pa/setup.yaml
-const yamlfile = `${dataFolder}/setup.yaml`
-const yamltree = importYaml(yamlfile)
-const { setup } = yamltree
-const { devices } = setup
-
 console.log(`Ladder99 Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
 console.log(`posts to TCP.`)
 console.log(`----------------------------------------------------------------`)
 
-// define cache shared across devices and sources
-const cache = new Cache()
+// load setup.yaml - eg see setups/ccs-pa/setup.yaml
+const yamlfile = `${dataFolder}/setup.yaml`
+const yamltree = importYaml(yamlfile)
+const setup = yamltree
 
 if (!setup) {
   console.log(`No setup.yaml available - please add one to ${dataFolder}.`)
   process.exit(1)
 }
 
+// define cache shared across devices and sources
+const cache = new Cache()
+
 // iterate over device definitions from setup.yaml
+const { devices } = setup
 for (const device of devices) {
   console.log({ device })
   const deviceId = device.id
@@ -54,7 +54,7 @@ for (const device of devices) {
       const { model, protocol, url } = source
 
       // import protocol plugin
-      const pathProtocol = `${pluginsFolder}/${protocol}.js` // eg './plugins/mqtt-ccs.js' -
+      const pathProtocol = `${pluginsFolder}/${protocol}.js` // eg './plugins/mqtt-json.js' -
       console.log(`Adapter importing plugin code: ${pathProtocol}...`)
       // @ts-ignore top level await okay
       const plugin = await import(pathProtocol)
