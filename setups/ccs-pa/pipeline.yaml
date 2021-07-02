@@ -1,15 +1,15 @@
 # docker-compose file for ladder99 pipeline.
-# these services are run in addition to those in setups/pipeline.yaml.
+# specifies overrides for services listed in setups/pipeline.yaml.
 
 #. this will be generated from devices.yaml, but edit manually for now.
 
 version: '3.8'
 
-services:
-  agent:
-    command: agent debug /data/agent/agent.cfg
-    volumes:
-      - ./$SETUP/volumes/agent:/data/agent # has ccs-pa agent.cfg, devices.xml
+# services:
+#   agent:
+#     command: agent debug /data/agent/agent.cfg
+#     volumes:
+#       - ./$SETUP/volumes/agent:/data/agent # has ccs-pa agent.cfg, devices.xml
 
 networks:
   ladder99:

@@ -1,12 +1,11 @@
-# docker-compose file for the ladder99 pipeline
-# run with eg `shell/docker ccs-pa start`
+# docker compose file for the ladder99 pipeline.
+# can override these settings in individual setup pipeline.yamls.
+# run with eg `shell/docker ccs-pa start broker adapter agent`
 
 version: '3.8'
 
 services:
   # ladder99 agent - takes in shdr and outputs html/json.
-  # can override these settings in individual setups -
-  # eg see setups/ccs-pa/pipeline.yaml
   agent:
     container_name: agent
     profiles:
@@ -14,6 +13,9 @@ services:
       - agent
     # see https://github.com/Ladder99/mtconnect-agent
     image: ladder99/mtconnect-agent:latest
+    command: agent debug /data/agent/agent.cfg
+    volumes:
+      - ./$SETUP/volumes/agent:/data/agent # should have agent.cfg, devices.xml
     ports:
       - 5000:5000
     networks:
