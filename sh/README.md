@@ -1,3 +1,5 @@
 # sh
 
-Ladder99 shell scripts
+Ladder99 bash shell scripts - see all with
+
+    tree sh
