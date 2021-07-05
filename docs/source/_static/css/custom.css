@@ -1,5 +1,7 @@
 body {
-  --themecolor: black;
+  --themecolor: #333;
+  --menucolor: black;
+  /* --logocolor: #555; */
 }
 
 .wy-side-nav-search {
@@ -8,3 +10,16 @@ body {
 .wy-nav-top {
   background-color: var(--themecolor);
 }
+
+.wy-menu {
+  background-color: var(--menucolor);
+}
+
+.wy-nav-side {
+  background-color: var(--menucolor);
+}
+
+/* .wy-side-nav-search .wy-dropdown > a img.logo,
+.wy-side-nav-search > a img.logo {
+  background-color: var(--logocolor);
+} */
