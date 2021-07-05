@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # build multiarch agent docker image
 # example:
 #   shell/build linux/arm/v7

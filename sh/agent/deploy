@@ -1,7 +1,8 @@
 #!/bin/bash
+
 # build multiarch agent docker image and deploy to dockerhub
 # example:
-#   shell/deploy :test linux/arm/7
+#   sh/agent/deploy :test linux/arm/7
 
 # note: we have to push the whole buildx image up to dockerhub as 
 # it contains multiple architectures. you have to use either --push or 
@@ -15,6 +16,6 @@ PLATFORM=$2 # eg linux/amd64,linux/arm/v7,linux/arm64
 # build image and push to docker hub
 docker buildx build \
   --platform=$PLATFORM \
-  --tag=ladder99/mtconnect-agent$TAG \
+  --tag=ladder99/ladder99-agent$TAG \
   --push \
   .

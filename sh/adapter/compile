@@ -4,7 +4,7 @@
 
 SETUP=$1  # setup subfolder, eg 'vmc'
 
-node services/compiler/src/compile-xml.js \
+node services/adapter/src/compiler/compile-xml.js \
   setups/$SETUP/devices.yaml \
   setups/$SETUP/volumes/agent/devices.xml
 
@@ -15,7 +15,7 @@ node services/compiler/src/compile-xml.js \
 
 # # compile devices.xml from model devices.yaml
 # compile-xml SETUP='demo':
-#     node services/compiler/src/compile-xml.js \
+#     node services/adapter/src/compiler/compile-xml.js \
 #     setups/{{SETUP}}/devices.yaml \
 #     setups/{{SETUP}}/volumes/agent/devices.xml
 
