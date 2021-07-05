@@ -1,0 +1,9 @@
+#!/bin/bash
+# run agent
+# then check browser at localhost:5000 or raspberrypi.local:5000 etc
+
+TAG=$1
+CMD=$2
+
+docker run -it --rm --publish 5000:5000 --pull always \
+  ladder99/mtconnect-agent$TAG $CMD

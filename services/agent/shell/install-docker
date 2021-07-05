@@ -1,0 +1,26 @@
+#!/bin/bash
+# install docker
+# see https://docs.docker.com/engine/install/debian/
+
+# install and upgrade docker
+curl -sSL https://get.docker.com | sudo sh
+sudo apt upgrade -y docker
+
+# allow user to run docker - else need `sudo docker ...`
+sudo usermod -aG docker $USER
+newgrp docker # activate group
+newgrp $USER # go back to original group
+
+# start docker service
+
+# Docker Engine starts automatically on DEB-based distributions. 
+#. On RPM-based distributions, you need to start it manually using 
+# the appropriate systemctl or service command.
+# On Debian and Ubuntu, the Docker service is configured to start on 
+# boot by default. To automatically start Docker and Containerd on boot 
+# for other distros, use the commands below:
+# sudo systemctl enable docker.service
+# sudo systemctl enable containerd.service
+
+# # login to docker hub
+# docker login --username ladder99

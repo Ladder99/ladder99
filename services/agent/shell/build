@@ -1,0 +1,8 @@
+#!/bin/bash
+# build multiarch agent docker image
+# example:
+#   shell/build linux/arm/v7
+
+PLATFORM=$1 # eg linux/arm/v7
+
+docker buildx build --platform=$PLATFORM --load .
