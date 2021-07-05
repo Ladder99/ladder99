@@ -6,7 +6,7 @@ The MTConnect Agent is a C++ program that receives data from a device adapter, f
 
 See https://github.com/mtconnect/cppagent
 
-The Ladder99 Agent is a Docker image for the MTConnect Agent which includes a nice HTML interface for the data.
+The Ladder99 Agent is a Docker image for the MTConnect Agent which includes an HTML interface for the data.
 
 ## Running
 
@@ -39,7 +39,7 @@ The Dockerfile itself is at https://github.com/Ladder99/mtconnect-agent/blob/mai
 
 ## Styles
 
-The CSS styles are adapted with thanks from https://github.com/TrakHound/MTConnect-Agent-Stylesheet.
+The CSS styles are adapted from https://github.com/TrakHound/MTConnect-Agent-Stylesheet.
 
 ## Contributing
 
