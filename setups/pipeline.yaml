@@ -1,6 +1,6 @@
 # docker compose file for the ladder99 pipeline.
 # can override these settings in individual setup pipeline.yamls.
-# run with eg `shell/docker ccs-pa start broker adapter agent`
+# run with eg `sh/pipeline ccs-pa start broker adapter agent`
 
 version: '3.8'
 
@@ -48,35 +48,6 @@ services:
     logging:
       options:
         max-size: '1m'
-
-  # # database - stores structure and time-series data
-  # database:
-  #   container_name: database
-  #   image: arangodb:3.7.12
-  #   ports:
-  #     - $ARANGO_PORT:8529
-  #   profiles:
-  #     - all
-  #     - database
-  #   # init: true
-  #   # environment:
-  #   #   ARANGO_HOST:
-  #   #   ARANGO_PORT:
-  #   #   ARANGO_DATABASE:
-  #   #   ARANGO_USER:
-  #   #   ARANGO_ROOT_PASSWORD:
-  #   #   # ARANGO_PASSWORD:
-  #   volumes:
-  #     - ./$SETUP/volumes/database/data:/var/lib/arangodb3
-  #     - ./$SETUP/volumes/database/apps:/var/lib/arangodb3-apps
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '1m'
 
   # influxdb - stores edge device data (for now - will move to postgres)
   influxdb:
