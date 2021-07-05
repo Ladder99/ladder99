@@ -2,17 +2,11 @@
 
 <!-- note: if this readme changes much, copy/paste it into the dockerhub readme. autobuild doesn't handle multiarch yet, so must do this manually for now. -->
 
-The MTConnect Agent is a C++ program that receives data from a device adapter, fits key-value pairs into an xml tree, and serves output as XML or HTML.
+The MTConnect Agent is a C++ program that receives data from a device adapter, fits key-value pairs into an xml tree, and serves output as XML/HTML.
 
 See https://github.com/mtconnect/cppagent
 
-MTConnect standardizes factory device data flow and vocabulary - it was started by UC Berkeley, Georgia Institute of Technology, and Sun Microsystems in 2008.
-
-See https://mtconnect.org
-
-Ladder99 is a free and open source pipeline that transfers data from factory devices to a database and end-user visualizations using MTConnect, an open standard.
-
-See https://github.com/Ladder99/ladder99
+The Ladder99 Agent is a Docker image for the MTConnect Agent which includes a nice HTML interface for the data.
 
 ## Running
 
