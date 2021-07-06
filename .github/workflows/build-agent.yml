@@ -14,16 +14,13 @@ on: workflow_dispatch
 
 # jobs in a workflow can run in sequence or parallel
 jobs:
-
   # define a job called "build"
   build:
-
     # the type of runner that the job will run on
     runs-on: ubuntu-latest
-    
+
     # sequence of tasks that will be executed as part of the job
     steps:
-    
       - name: Checkout repository
         uses: actions/checkout@v2
 
@@ -44,7 +41,7 @@ jobs:
         with:
           # path to Dockerfile in repository
           context: services/${{ env.service }}
-          
+
           # platforms to build image on
           # for available platforms see output of a previous run -
           # the "Setup Docker BuildX" / "Inspect Builder" section
@@ -52,11 +49,11 @@ jobs:
           # "node_platforms": "linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6"
           # but the platforms must also be included in the os image chosen -
           # eg the ubuntu image doesn't include linux/arm/v6.
-          #platforms: linux/amd64,linux/arm64,linux/arm/v7
-          platforms: linux/amd64
-          
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          # platforms: linux/amd64
+
           # docker hub user/name:tag
           tags: ladder99/${{ env.service }}:latest
-          
+
           # push to docker hub
           push: true
