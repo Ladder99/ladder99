@@ -26,5 +26,5 @@ jobs:
         with:
           context: future/hello
           tags: ladder99/hello:latest
-          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           push: true
