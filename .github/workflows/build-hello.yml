@@ -1,11 +1,6 @@
 name: build-hello
 
 on: workflow_dispatch
-#on:
-#  push:
-#    branches: [main]
-#  # pull_request:
-#  #   branches: [ main ]
 
 jobs:
   docker:
@@ -29,6 +24,7 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
-          tags: ladder99/hello:test
           context: future/hello
+          tags: ladder99/hello:latest
+          platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v6
           push: true
