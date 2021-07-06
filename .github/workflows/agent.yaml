@@ -1,4 +1,4 @@
-name: Ladder99 Agent Docker Image CI
+name: ladder99-agent
 
 on:
   push:
@@ -12,4 +12,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build future/hello --tag Ladder99/ladder99-hello:$(date +%s)
+      run: docker build future/hello --tag ladder99-hello:test
