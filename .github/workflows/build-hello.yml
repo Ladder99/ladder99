@@ -1,4 +1,4 @@
-name: ladder99-hello
+name: build-hello
 
 on:
   push:
@@ -28,6 +28,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
-          tags: ladder99/ladder99-hello:test
+          tags: ladder99/hello:test
           context: future/hello
           push: true
