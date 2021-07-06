@@ -6,6 +6,9 @@
 
 name: build-agent
 
+env:
+  service: agent
+
 # let user run workflow manually from actions tab
 on: workflow_dispatch
 
@@ -37,7 +40,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           # path to Dockerfile in repository
-          context: services/agent
+          context: services/${{ env.service }}
 
           # platforms to build image on
           # for available platforms see output of a previous run -
@@ -50,7 +53,7 @@ jobs:
           platforms: linux/amd64
 
           # docker hub user/name:tag
-          tags: ladder99/agent:latest
+          tags: ladder99/${{ env.service }}:latest
 
           # push to docker hub
           push: true
