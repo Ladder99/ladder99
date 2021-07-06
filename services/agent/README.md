@@ -1,4 +1,4 @@
-# ladder99-agent
+# Ladder99 Agent
 
 MTConnect Agent (cppagent) is a C++ program that receives data from a device adapter, fits key-value pairs into an xml tree, and serves output as XML/HTML.
 
