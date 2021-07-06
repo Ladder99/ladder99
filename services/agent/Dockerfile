@@ -52,8 +52,7 @@ RUN cd ~/agent/build \
 RUN mkdir -p /etc/mtconnect \
   && cd ~/agent/cppagent \
   && cp -r schemas simulator /etc/mtconnect \
-  && mkdir /etc/mtconnect/styles \
-  && cp -r styles /etc/mtconnect/styles/original
+  && cp -r styles /etc/mtconnect/styles-original
 
 # add link to our additional stylesheet
 RUN echo "DevicesStyle { Location = /styles/Devices.xsl }" >> /etc/mtconnect/simulator/agent.cfg
@@ -83,9 +82,9 @@ COPY --chown=agent:agent --from=compile /usr/local/bin/agent /usr/local/bin
 COPY --chown=agent:agent --from=compile /etc/mtconnect /etc/mtconnect
 
 # bring in our stylesheets from this repo
-# COPY --chown=agent:agent styles /etc/mtconnect/styles-ladder99
-COPY --chown=agent:agent styles/ladder99 /etc/mtconnect/styles/ladder99
-COPY --chown=agent:agent styles/none /etc/mtconnect/styles/none
+# COPY --chown=agent:agent styles/ladder99 /etc/mtconnect/styles/ladder99
+# COPY --chown=agent:agent styles/none /etc/mtconnect/styles/none
+COPY --chown=agent:agent styles /etc/mtconnect/styles
 
 # expose port
 EXPOSE 5000
