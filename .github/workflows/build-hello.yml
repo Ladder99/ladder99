@@ -6,7 +6,8 @@ on: workflow_dispatch
 
 jobs:
   docker:
-    runs-on: ubuntu-latest # or :21.04?
+    # runs-on: ubuntu-latest
+    runs-on: ubuntu-21.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
