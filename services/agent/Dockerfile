@@ -43,7 +43,7 @@ RUN cd ~/agent/build \
 # compile app
 #----------------------------------------------------------------------------
 
-# compile source (~20mins - 3hrs)
+# compile source and install (~20mins - 3hrs for qemu)
 RUN cd ~/agent/build \
   && make \
   && cp agent/agent /usr/local/bin
