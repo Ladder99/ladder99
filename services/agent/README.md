@@ -46,15 +46,15 @@ and clone this repository -
 
 Build the agent image for different architectures - (must do these separately as encountered problems both during compilation and with the resulting images if tried to do all at once) - do amd64 first, as others require emulation and take longer -
 
-    services/agent/sh/build linux/amd64
-    services/agent/sh/build linux/arm64
-    services/agent/sh/build linux/arm/7
+    sh/agent/build linux/amd64
+    sh/agent/build linux/arm64
+    sh/agent/build linux/arm/7
 
 ## Testing
 
 Merge the images and deploy them to Docker Hub with the :test tag -
 
-    services/agent/sh/deploy :test linux/amd64,linux/arm/7,linux/arm64
+    sh/agent/deploy :test linux/amd64,linux/arm/7,linux/arm64
 
 To test the image, run it on the different architectures with
 
@@ -67,11 +67,11 @@ then check with a browser at e.g. http://localhost:5000 or http://raspberrypi.lo
 
 If all work okay, tag the image with :latest and deploy
 
-    services/agent/sh/deploy :latest linux/amd64,linux/arm/7,linux/arm64
+    sh/agent/deploy :latest linux/amd64,linux/arm/7,linux/arm64
 
 Then obtain the current MTConnect Agent version number from here - https://github.com/mtconnect/cppagent/blob/master/CMakeLists.txt, and tag the image with that - e.g.
 
-    services/agent/sh/deploy :1.7.0.3 linux/amd64,linux/arm/7,linux/arm64
+    sh/agent/deploy :1.7.0.3 linux/amd64,linux/arm/7,linux/arm64
 
 Then check that the images are up on Docker Hub at https://hub.docker.com/repository/docker/ladder99/mtconnect-agent, and remove the :test image.
 
