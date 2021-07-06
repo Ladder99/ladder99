@@ -1,10 +1,12 @@
 name: build-hello
 
+# run manually from github.com
+# see https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch
 on: workflow_dispatch
 
 jobs:
   docker:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # or :21.04?
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -24,7 +26,21 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v2
         with:
+          # path to Dockerfile in repository
           context: future/hello
-          tags: ladder99/hello:latest
+          
+          # platforms to build image on
+          # for available platforms see output of a previous run -
+          # the "Setup Docker BuildX" / "Inspect Builder" section
+          # has eg
+          # "node_platforms": "linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6"
+          # but the platforms must also be included in the os image chosen -
+          # eg the ubuntu image doesn't include linux/arm/v6.
           platforms: linux/amd64,linux/arm64,linux/arm/v7
+          
+          # docker hub user/name:tag
+          # eg see https://hub.docker.com/repository/docker/ladder99/hello
+          tags: ladder99/hello:latest
+          
+          # push to docker hub
           push: true
