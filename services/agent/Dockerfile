@@ -1,18 +1,32 @@
 # MTConnect C++ Agent Docker image build instructions
 # Adapted from http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu.
 
-# See https://github.com/mtconnect/cppagent
+# Agent source code https://github.com/mtconnect/cppagent
 
-# After setup, dirs look like this
-#
+# After setup, the dirs look like this -
 # /etc/mtconnect
 #  |-- schemas - xsd files
 #  |-- simulator - agent.cfg, simulator.rb, vmc-3axis.xml, log.txt
-#  |-- styles - devices.xsl, streams.xsl, custom.css, logo.png, favicon.ico
-#  |-- styles-orig - streams.xsl, streams.css, favicon.ico
+#  |-- styles - our devices.xsl, streams.xsl, custom.css, logo.png, favicon.ico
+#  |-- styles-original - streams.xsl, streams.css, favicon.ico
 # /usr/local/bin
 #  |-- agent - the agent application
-
+#
+# while the default simulator/agent.cfg has -
+#   Devices = ../simulator/VMC-3Axis.xml
+#   Files { styles { Path = ../styles } }
+# so when you run this agent it picks up our styles, not the originals.
+# see https://github.com/mtconnect/cppagent/blob/master/simulator/agent.cfg
+#
+# our pipeline docker-compose yaml has this for the agent service -
+#   agent:
+#     command: agent debug /data/agent/agent.cfg
+#     volumes:
+#       - ./$SETUP/volumes/agent:/data/agent # should have agent.cfg, devices.xml
+# so it lets the user override the agent.cfg by mapping /data/agent to
+# a local folder eg setups/ccs-pa/volumes/agent. 
+#
+# so if you want plain xml output, 
 
 #----------------------------------------------------------------------------
 # build os
