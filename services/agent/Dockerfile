@@ -26,7 +26,11 @@
 # so it lets the user override the agent.cfg by mapping /data/agent to
 # a local folder eg setups/ccs-pa/volumes/agent. 
 #
-# so if you want plain xml output, 
+# so if you want plain xml output, you'd need to supply another agent.cfg file,
+# eg with
+#   agent:
+#     command: agent debug /data/agent/agent-xml.cfg
+# and that cfg file would not specify the xsl file locations.
 
 #----------------------------------------------------------------------------
 # build os
