@@ -3,6 +3,17 @@
 
 # See https://github.com/mtconnect/cppagent
 
+# After setup, dirs look like this
+#
+# /etc/mtconnect
+#  |-- schemas - xsd files
+#  |-- simulator - agent.cfg, simulator.rb, vmc-3axis.xml, log.txt
+#  |-- styles - devices.xsl, streams.xsl, custom.css, logo.png, favicon.ico
+#  |-- styles-orig - streams.xsl, streams.css, favicon.ico
+# /usr/local/bin
+#  |-- agent - the agent application
+
+
 #----------------------------------------------------------------------------
 # build os
 #----------------------------------------------------------------------------
