@@ -4,6 +4,6 @@
 # example:
 #   shell/build linux/arm/v7
 
-PLATFORM=$1 # eg linux/arm/v7
+PLATFORM=${1-:"linux/amd64"}
 
 docker buildx build --platform=$PLATFORM --load .
