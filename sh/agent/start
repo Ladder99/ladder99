@@ -6,7 +6,7 @@
 # then check browser at localhost:5000 or raspberrypi.local:5000 etc
 
 TAG=$1 # eg :test - leave blank for :latest
-CMD=$2 # optional command
+CMD=$2 # optional command, eg bash
 
 docker run -it --rm --publish 5000:5000 --pull always \
   ladder99/agent$TAG $CMD
