@@ -2,3 +2,4 @@
 
 **/portainer/data
 **/db/data
+**/timescaledb/data
