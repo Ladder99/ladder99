@@ -1,8 +1,77 @@
 #!/bin/sh
 
-docker run -it --rm \
-  --name pipeline \
-  --volume "$PWD":/usr/src/pipeline \
-  --workdir /usr/src/pipeline \
-  python:3.7-alpine \
-  python sh/pipeline.py $*
+# run docker compose pipeline - see below for usage
+
+__usage="
+Usage: sh/pipeline COMMAND SETUP PROFILES
+
+Run a docker-compose yaml file with optional list of profiles to include.
+
+COMMAND   start (run in console), startd (run detached), stop (stop all)
+SETUP     setup subfolder, eg vmc (default), ccs-pa
+PROFILES  space-delim list of profiles to start, eg agent (default), all
+
+eg 'sh/pipeline start ccs-pa play'
+
+Note: use 'docker kill SERVICE' to stop an individual service    
+"
+
+if [ $# -eq 0 ]
+    then
+    echo "$__usage"
+    exit 1
+fi
+
+
+cmd=$1 # eg 'start', 'startd', 'stop'
+setup=${2:-"vmc"} # eg 'ccs-pa'
+profiles=${3:-"agent"}  # eg 'agent play'
+
+echo $cmd
+echo $setup
+echo $profiles
+
+# add main compose file for pipeline
+pipeline="setups/pipeline.yaml"
+args="--file $pipeline"
+
+echo $args
+
+# add compose file for setup overrides
+overrides="setups/$setup/pipeline.yaml"
+# if pathlib.Path(overrides).exists():
+#     args += f" --file {overrides}"
+if [ -e $overrides ] 
+then 
+  args="$args --file $overrides"
+fi
+echo $overrides
+echo $args
+
+# # add envfile
+# # . should be per setup folder?
+# # envfile = f"setups/{setup}/.env"
+# envfile = f"setups/.env"
+# if pathlib.Path(envfile).exists():
+#     args += f" --env-file {envfile}"
+
+# # get profile flags
+# profileFlags = ' '.join(
+#     [f"--profile {profile}" for profile in profiles]) or 'all'
+
+# # get flags
+# flags = ''
+# if cmd == 'startd':
+#     flags = '--detach'
+
+# if cmd == 'start' or cmd == 'startd':
+#     # pull any required images in the docker-compose files and start services.
+#     cmd = f"""SETUP={setup} docker-compose {args} {profileFlags} pull && \
+# SETUP={setup} docker-compose {args} {profileFlags} up --build {flags}"""
+#     print(cmd)
+#     os.system(cmd)
+
+# elif cmd == 'stop':
+#     cmd = f"SETUP={setup} docker-compose {args} down"
+#     print(cmd)
+#     os.system(cmd)
