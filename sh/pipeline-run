@@ -1,6 +1,7 @@
 #!/bin/sh
 
-# run pipeline with broker, adapter, agent, recorder, and portainer
+# run pipeline with broker, adapter, agent, recorder, and portainer.
+# use when docker-compose is not available, as used in sh/pipeline.
 
 SETUP=ccs-pa
 NETWORK=host
