@@ -13,7 +13,8 @@
 }
 
 .navbar-brand {
-  background: #a5b8c3;
+  /* background: #a5b8c3; */
+  background: black;
 }
 
 .navbar-default .navbar-nav > li > a:focus,

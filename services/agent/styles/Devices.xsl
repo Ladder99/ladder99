@@ -38,7 +38,7 @@
 						</button>
 
 						<a class="navbar-brand" style="padding: 5px 20px;" href="#">
-							<img alt="Brand" src="/styles/Ladder99Logo.png" height="40"/>
+							<img alt="Brand" src="/styles/Ladder99Logo-gray.png" height="40"/>
 						</a>
 
 					</div>
