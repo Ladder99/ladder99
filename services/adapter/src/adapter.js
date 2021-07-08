@@ -3,8 +3,8 @@
 // updates shdr strings, passes them to agent via tcp.
 
 import fs from 'fs' // node lib for filesys
-import libyaml from 'js-yaml' // https://github.com/nodeca/js-yaml
 import net from 'net' // node lib for tcp
+import libyaml from 'js-yaml' // see https://github.com/nodeca/js-yaml
 import { Cache } from './cache.js'
 
 // file system inputs
@@ -20,6 +20,7 @@ console.log(`----------------------------------------------------------------`)
 
 // load setup.yaml - eg see setups/ccs-pa/setup.yaml
 const yamlfile = `${dataFolder}/setup.yaml`
+console.log(`Reading ${yamlfile}...`)
 const yamltree = importYaml(yamlfile)
 const setup = yamltree
 
@@ -61,14 +62,17 @@ for (const device of devices) {
 
       // get inputs
       const pathInputs = `${modelsFolder}/${model}/inputs.yaml`
+      console.log(`Reading ${pathInputs}...`)
       const inputs = importYaml(pathInputs)
 
       // get outputs
       const pathOutputs = `${modelsFolder}/${model}/outputs.yaml`
+      console.log(`Reading ${pathOutputs}...`)
       const outputTemplates = importYaml(pathOutputs).outputs
 
       // get types
       const pathTypes = `${modelsFolder}/${model}/types.yaml`
+      console.log(`Reading ${pathTypes}...`)
       const types = importYaml(pathTypes).types
 
       // compile outputs from yaml strings and save to source
@@ -81,7 +85,7 @@ for (const device of devices) {
       // initialize plugin
       // note: this must be done AFTER getOutputs and addOutputs,
       // as that is where the dependsOn values are set, and this needs those.
-      console.log(`Adapter initializing plugin...`)
+      console.log(`Initializing ${protocol} plugin...`)
       plugin.init({ url, cache, deviceId, inputs })
     }
 
