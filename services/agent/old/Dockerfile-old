@@ -1,8 +1,9 @@
 # MTConnect C++ Agent Docker image build instructions
 # Adapted from http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu.
 
-# After setup, the dirs will look like this -
-#
+# Agent source code https://github.com/mtconnect/cppagent
+
+# After setup, the dirs look like this -
 # /etc/mtconnect
 #  |-- schemas - xsd files
 #  |-- simulator - agent.cfg, simulator.rb, vmc-3axis.xml, log.txt
@@ -25,14 +26,65 @@
 # so it lets the user override the agent.cfg by mapping /data/agent to
 # a local folder eg setups/ccs-pa/volumes/agent. 
 #
-# so if you want plain xml output, you'd need to comment out the xsl
-# file references from the agent.cfg file.
+# so if you want plain xml output, you'd need to supply another agent.cfg file,
+# eg with
+#   agent:
+#     command: agent debug /data/agent/agent-xml.cfg
+# and that cfg file would not specify the xsl file locations.
 
 #----------------------------------------------------------------------------
-# define base layer
+# build os
 #----------------------------------------------------------------------------
 
-FROM ladder99/agent-base:latest AS compile
+# base image - ubuntu has linux/arm/v7, linux/amd64, etc
+FROM ubuntu:21.04 AS compile
+
+# update os and add dependencies
+# note: removed ruby - install in second stage
+# note: dockerfiles run as root by default, so don't need sudo
+# this follows recommended docker practices -
+# see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#run
+RUN apt-get update && apt-get install -y \
+  build-essential \
+  cmake \
+  curl \
+  git \
+  libcppunit-dev \
+  libxml2 \
+  libxml2-dev \
+  screen \
+  && rm -rf /var/lib/apt/lists/*
+
+#----------------------------------------------------------------------------
+# build makefile
+#----------------------------------------------------------------------------
+
+# get latest cppagent source
+RUN mkdir -p ~/agent/build \
+  && cd ~/agent \
+  && git clone https://github.com/mtconnect/cppagent.git
+
+# build makefile using cmake
+RUN cd ~/agent/build \
+  && cmake -D CMAKE_BUILD_TYPE=Release ../cppagent/
+
+#----------------------------------------------------------------------------
+# compile app
+#----------------------------------------------------------------------------
+
+# compile source and install (~20mins - 3hrs for qemu)
+RUN cd ~/agent/build \
+  && make \
+  && cp agent/agent /usr/local/bin
+
+# copy simulator
+RUN mkdir -p /etc/mtconnect \
+  && cd ~/agent/cppagent \
+  && cp -r schemas simulator /etc/mtconnect \
+  && cp -r styles /etc/mtconnect/styles-original
+
+# add link to our additional stylesheet
+RUN echo "DevicesStyle { Location = /styles/Devices.xsl }" >> /etc/mtconnect/simulator/agent.cfg
 
 #----------------------------------------------------------------------------
 # run app
@@ -40,6 +92,7 @@ FROM ladder99/agent-base:latest AS compile
 
 # multi-stage build - bring only essentials from previous layers
 
+# start with a base image
 FROM ubuntu:21.04
 
 # install ruby for simulator
@@ -58,6 +111,8 @@ COPY --chown=agent:agent --from=compile /usr/local/bin/agent /usr/local/bin
 COPY --chown=agent:agent --from=compile /etc/mtconnect /etc/mtconnect
 
 # bring in our stylesheets from this repo
+# COPY --chown=agent:agent styles/ladder99 /etc/mtconnect/styles/ladder99
+# COPY --chown=agent:agent styles/none /etc/mtconnect/styles/none
 COPY --chown=agent:agent styles /etc/mtconnect/styles
 
 # expose port

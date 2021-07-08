@@ -1,0 +1,61 @@
+# MTConnect C++ Agent Docker base image build instructions
+# Adapted from http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu.
+
+# Agent source code https://github.com/mtconnect/cppagent
+
+# This is for the base image with the cppagent - see Dockerfile for 
+# the top layer.
+
+#----------------------------------------------------------------------------
+# build os
+#----------------------------------------------------------------------------
+
+# base image - ubuntu has linux/arm/v7, linux/amd64, etc
+FROM ubuntu:21.04 AS compile
+
+# update os and add dependencies
+# note: removed ruby - install in second stage
+# note: dockerfiles run as root by default, so don't need sudo
+# this follows recommended docker practices -
+# see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#run
+RUN apt-get update && apt-get install -y \
+  build-essential \
+  cmake \
+  curl \
+  git \
+  libcppunit-dev \
+  libxml2 \
+  libxml2-dev \
+  screen \
+  && rm -rf /var/lib/apt/lists/*
+
+#----------------------------------------------------------------------------
+# build makefile
+#----------------------------------------------------------------------------
+
+# get latest cppagent source
+RUN mkdir -p ~/agent/build \
+  && cd ~/agent \
+  && git clone https://github.com/mtconnect/cppagent.git
+
+# build makefile using cmake
+RUN cd ~/agent/build \
+  && cmake -D CMAKE_BUILD_TYPE=Release ../cppagent/
+
+#----------------------------------------------------------------------------
+# compile app
+#----------------------------------------------------------------------------
+
+# compile source and install (~3hrs for all 3 architectures using qemu)
+RUN cd ~/agent/build \
+  && make \
+  && cp agent/agent /usr/local/bin
+
+# copy simulator
+RUN mkdir -p /etc/mtconnect \
+  && cd ~/agent/cppagent \
+  && cp -r schemas simulator /etc/mtconnect \
+  && cp -r styles /etc/mtconnect/styles-original
+
+# add link to our additional stylesheet
+RUN echo "DevicesStyle { Location = /styles/Devices.xsl }" >> /etc/mtconnect/simulator/agent.cfg
