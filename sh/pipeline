@@ -22,64 +22,58 @@ if [ $# -eq 0 ]
     exit 1
 fi
 
-
+# get arguments
 cmd=$1 # eg 'start', 'startd', 'stop'
 setup=${2:-"vmc"} # eg 'ccs-pa'
 shift
 shift
 profiles=${*:-"agent"} # eg 'agent play'
-
 echo $cmd
 echo $setup
 echo $profiles
 
-# add main compose file for pipeline
+# add main docker compose file for pipeline
 pipeline="setups/pipeline.yaml"
 args="--file $pipeline"
 
 echo $args
 
-# add compose file for setup overrides
+# add docker compose file for setup overrides
 overrides="setups/$setup/pipeline.yaml"
-if [ -e $overrides ] 
-then 
+if [ -e $overrides ]; then
     args="$args --file $overrides"
 fi
 echo $overrides
 echo $args
 
-# add envfile
+# add .env file if there
 # . should be per setup folder?
 envfile="setups/.env"
-if [ -e $envfile ]
-then
+if [ -e $envfile ]; then
     args="$args --env-file $envfile"
 fi
 echo $args
 
 # get profile flags
 profileFlags=""
-for i in $profiles
-do
+for i in $profiles; do
     profileFlags="$profileFlags --profile $i"
 done
 echo $profileFlags
 
 # get flags
-if [ "$cmd" = "startd" ]
-then
+if [ "$cmd" = "startd" ]; then
     flags="--detach"
 fi
 echo $flags
 
 baseCmd="docker-compose $args $profileFlags"
 
-if [ "$cmd" = "start" ] || [ "$cmd" = "startd" ]
-then
+if [ "$cmd" = "start" ] || [ "$cmd" = "startd" ]; then
     # pull any required images in the docker-compose files and start services.
-    cmd="SETUP=$setup $baseCmd pull && $baseCmd up --build $flags"
+    cmd="$baseCmd pull && $baseCmd up --build $flags"
 else
-    cmd="SETUP=$setup $baseCmd down"
+    cmd="$baseCmd down"
 fi
 echo $cmd
-bash -c "$cmd"
+bash -c "export SETUP=$setup && $cmd"
