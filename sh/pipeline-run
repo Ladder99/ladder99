@@ -3,6 +3,7 @@
 # run pipeline with broker, adapter, agent, recorder, and portainer
 
 SETUP=ccs-pa
+NETWORK=host
 RUN=docker run -dit --init --rm --restart=always --log-opt max-size=1m --log-opt max-file=5
 
 docker container prune
@@ -18,7 +19,7 @@ $RUN --name=portainer -p 9999:9000 \
 # broker
 docker stop broker
 docker container rm broker
-$RUN --name broker --network host -p 1883 -p 9001 \
+$RUN --name broker --network $NETWORK -p 1883 -p 9001 \
   -v $(pwd)/setups/$SETUP/volumes/broker:/mosquitto \
   eclipse-mosquitto
 
@@ -26,7 +27,7 @@ $RUN --name broker --network host -p 1883 -p 9001 \
 docker stop adapter
 docker container rm adapter
 docker build --tag ladder99/adapter:latest services/adapter
-$RUN --name adapter --network host \
+$RUN --name adapter --network $NETWORK \
   -v $(pwd)/setups/$SETUP:/data/adapter \
   -v $(pwd)/models:/data/models \
   ladder99/adapter:latest
@@ -35,7 +36,7 @@ $RUN --name adapter --network host \
 #docker login
 docker stop agent
 docker container rm agent
-$RUN --name=agent --network host -p 5000 \
+$RUN --name=agent --network $NETWORK -p 5000 \
   -v $(pwd)/setups/$SETUP/volumes/agent:/data/agent:rw \
   ladder99/agent:latest \
   sh -c "agent debug /data/agent/agent.cfg"
@@ -44,7 +45,7 @@ $RUN --name=agent --network host -p 5000 \
 docker stop recorder
 docker container rm recorder
 docker build --tag ladder99/recorder:latest services/recorder
-$RUN --name play --network host \
+$RUN --name play --network $NETWORK \
   -v $(pwd)/models:/data/models \
   ladder99/recorder:latest \
   recorder --host localhost --folder /data/models/$SETUP/recorder --mode play
