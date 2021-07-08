@@ -1,13 +1,24 @@
 # github workflow to build ladder99 agent-base docker image
 
 # run manually at https://github.com/Ladder99/ladder99/actions
-# hosted on https://hub.docker.com/repository/docker/ladder99
 # secrets set at https://github.com/Ladder99/ladder99/settings/secrets/actions
+# hosted on https://hub.docker.com/repository/docker/ladder99
 
-name: build-agent
+name: build-agent-base
 
+# define some variables
 env:
   service: agent
+  suffix: -base
+  # platforms to build image on
+  # for available platforms see output of a previous run -
+  # the "Setup Docker BuildX" / "Inspect Builder" section
+  # has eg
+  # "node_platforms": "linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6"
+  # but the platforms must also be included in the os image chosen -
+  # eg the ubuntu image doesn't include linux/arm/v6.
+  # platforms: linux/amd64,linux/arm64,linux/arm/v7
+  platforms: linux/amd64
 
 # let user run workflow manually from actions tab
 on: workflow_dispatch
@@ -40,20 +51,12 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           # path to Dockerfile in repository
-          context: services/${{ env.service }}
+          file: services/${{ env.service }}/Dockerfile${{ env.suffix }}
 
-          # platforms to build image on
-          # for available platforms see output of a previous run -
-          # the "Setup Docker BuildX" / "Inspect Builder" section
-          # has eg
-          # "node_platforms": "linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6"
-          # but the platforms must also be included in the os image chosen -
-          # eg the ubuntu image doesn't include linux/arm/v6.
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
-          # platforms: linux/amd64
+          platforms: ${{ env.platforms }}
 
-          # docker hub user/name:tag
-          tags: ladder99/${{ env.service }}:latest
+          # docker hub user/repo:tag
+          tags: ladder99/${{ env.service }}${{ env.suffix }}:latest
 
           # push to docker hub
           push: true
