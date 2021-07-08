@@ -2,7 +2,7 @@
 
 # run docker compose pipeline - see below for usage
 
-__usage="
+usage="
 Usage: sh/pipeline COMMAND SETUP PROFILES
 
 Run a docker-compose yaml file with optional list of profiles to include.
@@ -18,7 +18,7 @@ Note: use 'docker kill SERVICE' to stop an individual service
 
 if [ $# -eq 0 ]
     then
-    echo "$__usage"
+    echo "$usage"
     exit 1
 fi
 
@@ -27,8 +27,7 @@ cmd=$1 # eg 'start', 'startd', 'stop'
 setup=${2:-"vmc"} # eg 'ccs-pa'
 shift
 shift
-# profiles=${3:-"agent"}  # eg 'agent play'
-profiles=${*:-"agent"}
+profiles=${*:-"agent"} # eg 'agent play'
 
 echo $cmd
 echo $setup
@@ -66,19 +65,21 @@ do
 done
 echo $profileFlags
 
-# # get flags
-# flags = ''
-# if cmd == 'startd':
-#     flags = '--detach'
+# get flags
+if [ "$cmd" = "startd" ]
+then
+    flags="--detach"
+fi
+echo $flags
 
-# if cmd == 'start' or cmd == 'startd':
-#     # pull any required images in the docker-compose files and start services.
-#     cmd = f"""SETUP={setup} docker-compose {args} {profileFlags} pull && \
-# SETUP={setup} docker-compose {args} {profileFlags} up --build {flags}"""
-#     print(cmd)
-#     os.system(cmd)
+baseCmd="docker-compose $args $profileFlags"
 
-# elif cmd == 'stop':
-#     cmd = f"SETUP={setup} docker-compose {args} down"
-#     print(cmd)
-#     os.system(cmd)
+if [ "$cmd" = "start" ] || [ "$cmd" = "startd" ]
+then
+    # pull any required images in the docker-compose files and start services.
+    cmd="SETUP=$setup $baseCmd pull && $baseCmd up --build $flags"
+else
+    cmd="SETUP=$setup $baseCmd down"
+fi
+echo $cmd
+bash -c "$cmd"
