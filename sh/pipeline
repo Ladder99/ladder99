@@ -25,7 +25,10 @@ fi
 
 cmd=$1 # eg 'start', 'startd', 'stop'
 setup=${2:-"vmc"} # eg 'ccs-pa'
-profiles=${3:-"agent"}  # eg 'agent play'
+shift
+shift
+# profiles=${3:-"agent"}  # eg 'agent play'
+profiles=${*:-"agent"}
 
 echo $cmd
 echo $setup
@@ -39,25 +42,29 @@ echo $args
 
 # add compose file for setup overrides
 overrides="setups/$setup/pipeline.yaml"
-# if pathlib.Path(overrides).exists():
-#     args += f" --file {overrides}"
 if [ -e $overrides ] 
 then 
-  args="$args --file $overrides"
+    args="$args --file $overrides"
 fi
 echo $overrides
 echo $args
 
-# # add envfile
-# # . should be per setup folder?
-# # envfile = f"setups/{setup}/.env"
-# envfile = f"setups/.env"
-# if pathlib.Path(envfile).exists():
-#     args += f" --env-file {envfile}"
+# add envfile
+# . should be per setup folder?
+envfile="setups/.env"
+if [ -e $envfile ]
+then
+    args="$args --env-file $envfile"
+fi
+echo $args
 
-# # get profile flags
-# profileFlags = ' '.join(
-#     [f"--profile {profile}" for profile in profiles]) or 'all'
+# get profile flags
+profileFlags=""
+for i in $profiles
+do
+    profileFlags="$profileFlags --profile $i"
+done
+echo $profileFlags
 
 # # get flags
 # flags = ''
