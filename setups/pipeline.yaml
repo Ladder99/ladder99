@@ -12,8 +12,6 @@ services:
     profiles:
       - all
       - adapter
-    environment:
-      SETUP:
     volumes:
       - ./$SETUP:/data/adapter # has setup.yaml
       - ../models:/data/models # has model yamls
@@ -32,8 +30,6 @@ services:
     # see https://github.com/Ladder99/mtconnect-agent
     image: ladder99/agent:latest
     command: agent debug /data/agent/agent.cfg
-    environment:
-      SETUP:
     volumes:
       - ./$SETUP/volumes/agent:/data/agent # should have agent.cfg, devices.xml
     ports:

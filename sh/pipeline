@@ -47,7 +47,7 @@ echo $overrides
 echo $args
 
 # add .env file if there
-# . should be per setup folder?
+# . should be per setup folder? or can you have multiple?
 envfile="setups/.env"
 if [ -e $envfile ]; then
     args="$args --env-file $envfile"
