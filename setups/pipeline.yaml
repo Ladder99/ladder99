@@ -32,7 +32,8 @@ services:
       - all
       - agent
     # see https://github.com/Ladder99/mtconnect-agent
-    image: ladder99/mtconnect-agent:latest
+    # image: ladder99/mtconnect-agent:latest
+    image: ladder99/agent:latest
     command: agent debug /data/agent/agent.cfg
     volumes:
       - ./$SETUP/volumes/agent:/data/agent # should have agent.cfg, devices.xml
