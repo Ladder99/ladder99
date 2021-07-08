@@ -8,17 +8,11 @@ services:
   # adapter - converts machine data to shdr and sends to agent
   adapter:
     container_name: adapter
-    # image: node:15.14-slim
     build: ../services/adapter
     profiles:
       - all
       - adapter
-    # user: node
-    # working_dir: /home/node/app
-    # command: npm start
-    # command: recorder --host broker --folder /data/models/$SETUP/recorder
     volumes:
-      # - ../services/adapter:/home/node/app # has source code
       - ./$SETUP:/data/adapter # has setup.yaml
       - ../models:/data/models # has model yamls
     networks:
