@@ -207,10 +207,7 @@
 	<xsl:template match="m:Components">
 
 		<div class="panel-group">
-			<details>
-				<summary>Contents</summary>
-				<xsl:apply-templates select="*"/>
-			</details>
+			<xsl:apply-templates select="*"/>
 		</div>
 
 	</xsl:template>

@@ -29,20 +29,18 @@
 
 			<nav class="navbar navbar-default navbar-fixed-top">
 				<div class="container-fluid">
+
 					<!-- Brand and toggle get grouped for better mobile display -->
 					<div class="navbar-header">
-
 						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
 							<span class="sr-only">Toggle navigation</span>
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-
 						<a class="navbar-brand" style="padding: 5px 20px;" href="#">
 							<img alt="Brand" src="/styles/Ladder99Logo-gray.png" height="40"/>
 						</a>
-
 					</div>
 
 					<!-- Collect the nav links, forms, and other content for toggling -->
@@ -60,14 +58,11 @@
 						</ul>
 
 						<div class="navbar-form navbar-left hidden-sm hidden-xs">
-
 							<div class="form-group">
 								<input id="fromText" type="text" class="form-control" style="margin-right: 10px;" placeholder="From"/>
 								<input id="countText" type="text" class="form-control" style="margin-right: 10px;" placeholder="Count"/>
 							</div>
-
 							<button onclick="getSample();" class="btn btn-default">Get Sample</button>
-
 						</div>
 
 					</div>					<!-- /.navbar-collapse -->
@@ -75,15 +70,11 @@
 			</nav>
 
 			<div class="container-fluid" style="margin-top: 60px;">
-
 				<p>
 					<xsl:apply-templates select="/m:MTConnectStreams/m:Header" />
 				</p>
-
 				<hr/>
-
 				<xsl:apply-templates select="/m:MTConnectStreams/m:Streams/m:DeviceStream" />
-
 			</div>
 
 			<footer class="footer" style="margin-top: 20px; margin-bottom: 20px;">
@@ -98,7 +89,6 @@
 				</div>
 			</footer>
 
-
 			<script src="/styles/jquery-1.12.4.min.js"></script>
 			<script src="/styles/bootstrap.min.js"></script>
 			<script src="/styles/GetSample.js"></script>
@@ -110,53 +100,37 @@
 	<xsl:template match="m:DeviceStream">
 
 		<div class="panel panel-default">
-
 			<div class="panel-heading">
-
 				<div class="container-fluid">
-
 					<div class="row">
 
 						<div class="col-lg-3 col-md-4 col-xs-12">
-
 							<h6 style="margin-bottom: 0px;">Device</h6>
-
 							<h2 style="margin-top: 0px; margin-bottom: 5px;">
 								<xsl:value-of select="@name"/>
 							</h2>
-
 						</div>
 
 						<div class="col-lg-3 col-md-4 hidden-xs">
-
 							<h6 style="margin-bottom: 0px;">ID</h6>
-
 							<h4 style="margin-top: 0px; margin-bottom: 5px;">
 								<xsl:value-of select="@id"/>
 							</h4>
-
 						</div>
 
 						<div class="col-lg-3 col-md-4 hidden-xs">
-
 							<h6 style="margin-bottom: 0px;">UUID</h6>
-
 							<h4 style="margin-top: 0px; margin-bottom: 5px;">
 								<xsl:value-of select="@uuid"/>
 							</h4>
-
 						</div>
 
 					</div>
-
 				</div>
-
 			</div>
 
 			<div class="panel-body">
-
 				<xsl:apply-templates select="m:ComponentStream"/>
-
 			</div>
 
 		</div>
@@ -208,6 +182,7 @@
 
 			</div>
 		</div>
+
 	</xsl:template>
 
 	<xsl:template match="m:ComponentStream">
@@ -232,6 +207,7 @@
 	<xsl:template match="*">
 
 		<div class="panel panel-default">
+
 			<div class="panel-heading">
 				<i class="fa fa-bar-chart-o fa-fw"></i>
 				<xsl:value-of select="name()"/>
@@ -283,7 +259,6 @@
 
 				<!-- Small Table -->
 				<div class="table-responsive hidden-xs visible-sm">
-
 					<table class="table table-hover hidden-xs visible-sm">
 						<thead>
 							<th>Type</th>
@@ -310,36 +285,22 @@
 							</xsl:for-each>
 						</tbody>
 					</table>
-
 				</div>
 
 				<!-- Extra Small List -->
 				<ul class="list-group visible-xs">
-
 					<xsl:for-each select="*">
-
 						<li class="list-group-item col-sm-12">
-
 							<h6 class="list-group-item-header">
-
 								<xsl:value-of select="@dataItemId"/>
-
 							</h6>
-
 							<h4 class="list-group-item-text">
-
 								<xsl:value-of select="."/>
-
 							</h4>
-
 						</li>
-
 					</xsl:for-each>
-
 				</ul>
-
 			</div>
-
 		</div>
 
 	</xsl:template>
