@@ -34,7 +34,8 @@ copyright = str(datetime.now().year) + ', Ladder99 LLC'
 extensions = [
     "sphinx_rtd_theme",
     # "sphinx_tabs",
-    "myst_parser",  # handles markdown files
+    # myst handles markdown files - see https://www.sphinx-doc.org/en/master/usage/markdown.html
+    "myst_parser",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -44,6 +45,7 @@ extensions = [
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
+
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -91,3 +93,21 @@ def setup(app):
 
 
 sphinx_tabs_disable_tab_closing = True
+
+
+# -- Myst configuration ---------------------------------------------------
+
+# see https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
+myst_enable_extensions = [
+    # "amsmath",
+    # "colon_fence",
+    # "deflist",
+    # "dollarmath",
+    # "html_admonition",
+    # "html_image",
+    "linkify",
+    # "replacements",
+    # "smartquotes",
+    # "substitution",
+    # "tasklist",
+]
