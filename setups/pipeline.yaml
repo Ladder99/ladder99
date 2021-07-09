@@ -272,15 +272,8 @@ services:
   # # simulate device
   # simulator:
   #   container_name: simulator
-  #   image: node:15.14-slim
   #   profiles:
   #     - simulator
-  #   user: node
-  #   working_dir: /home/node/app
-  # #   command: npm start
-  #   command: node src/simulator.js
-  #   volumes:
-  #     - ../../../services/simulator:/home/node/app
   #   networks:
   #     - ladder99
   #   logging:
