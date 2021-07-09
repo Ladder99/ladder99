@@ -67,12 +67,12 @@ for (const device of devices) {
       // get outputs
       const pathOutputs = `${modelsFolder}/${model}/outputs.yaml`
       console.log(`Reading ${pathOutputs}...`)
-      const outputTemplates = importYaml(pathOutputs).outputs || {}
+      const outputTemplates = (importYaml(pathOutputs) || {}).outputs
 
       // get types
       const pathTypes = `${modelsFolder}/${model}/types.yaml`
       console.log(`Reading ${pathTypes}...`)
-      const types = importYaml(pathTypes).types || {}
+      const types = (importYaml(pathTypes) || {}).types
 
       // compile outputs from yaml strings and save to source
       const outputs = getOutputs({ outputTemplates, types, deviceId })

@@ -10,7 +10,6 @@
 # eg set defaults for all devices at the top, overrides per device?
 
 devices:
-  # - id: ccs-pa # this is substituted into the model yaml and sources
   - id: pa1 # this is substituted into the model yaml and sources
     #. call this 'structure: ccs-pa' ?
     model: ccs-pa # for xml structure - see models/ccs-pa/device.yaml
@@ -23,8 +22,8 @@ devices:
     sources:
       - model: ccs-pa # model defines inputs and outputs with yaml files
         protocol: mqtt-json # type of plugin - manages protocol and payload
-        # url: mqtt://broker:1883 #. pass in somehow - envar?
-        url: mqtt://localhost:1883
+        url: mqtt://broker:1883 #. pass in somehow - envar?
+        # url: mqtt://localhost:1883
 
       - model: rockwell-hmi
         protocol: opc
@@ -32,6 +31,6 @@ devices:
 
     destinations: # where to post output - just handles one output for now
       - protocol: shdr
-        # host: adapter #. pass in somehow - envar?
-        host: localhost
+        host: adapter #. pass in somehow - envar?
+        # host: localhost
         port: 7878
