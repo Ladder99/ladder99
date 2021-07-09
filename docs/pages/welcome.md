@@ -24,10 +24,10 @@ MQTT is a publish/subscribe message protocol. Messages from factory devices go t
 
 <!-- PLC4X communicates with old machines via proprietary protocols and translates them to MQTT (correct?).  -->
 
-Our MTConnect Adapter subscribes and listens to those messages, translates them to SHDR (Simple Hierarchical Data Representation, eg "2021-02-28T02:40:00|key|value"), and sends them on to the MTConnect Agent.
+The Ladder99 Adapter subscribes and listens to those messages, translates them to SHDR (Simple Hierarchical Data Representation, eg "2021-02-28T02:40:00|key|value"), and sends them on to the Ladder99 Agent.
 
 <!-- via an optional one-way data diode (Java + RabbitMQ) -->
 
-Our MTConnect Application then consumes the data as XML over HTTP, and feeds it to a database and visualizer.
+The Ladder99 Application then consumes the data as XML over HTTP, and feeds it to a database and visualizer.
 
 <!-- For more on the data diode, see the service [here](services/diode). -->
