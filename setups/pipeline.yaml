@@ -221,11 +221,8 @@ services:
     command: recorder --mode play --host broker --folder /data/models/$MODEL/recorder
     volumes:
       - ../models:/data/models
-    # environment:
-    #   - HOST=broker
-    #   - PORT=1883
-    #   - FOLDER=../models/$MODEL/recordings
-    #   - LOOP=true
+    environment:
+      MODEL: ccs-pa
     networks:
       - ladder99
     logging:
@@ -261,11 +258,8 @@ services:
     command: recorder --mode record --host broker --folder /data/models/$MODEL/recorder
     volumes:
       - ../models:/data/models
-    # environment:
-    #   - HOST=broker
-    #   - PORT=1883
-    #   - FOLDER=../models/$MODEL/recordings
-    #   - LOOP=true
+    environment:
+      MODEL: ccs-pa
     networks:
       - ladder99
     logging:
