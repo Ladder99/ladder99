@@ -10,5 +10,5 @@ Put anything the services will need here, but be careful you don't add too much 
 - grafana - visualization dashboard
 - influxdb - timeseries db for raspberry pi monitoring
 - portainer - docker container monitoring
-- simulator-mqtt - record/playback mqtt data
+- recorder - record/playback mqtt data
 - telegraf - feeds raspberry pi metrics to influxdb

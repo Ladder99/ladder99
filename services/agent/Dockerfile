@@ -4,6 +4,7 @@
 # Agent source code https://github.com/mtconnect/cppagent
 
 # After setup, the dirs look like this -
+#
 # /etc/mtconnect
 #  |-- schemas - xsd files
 #  |-- simulator - agent.cfg, simulator.rb, vmc-3axis.xml, log.txt
@@ -26,11 +27,8 @@
 # so it lets the user override the agent.cfg by mapping /data/agent to
 # a local folder eg setups/ccs-pa/volumes/agent. 
 #
-# so if you want plain xml output, you'd need to supply another agent.cfg file,
-# eg with
-#   agent:
-#     command: agent debug /data/agent/agent-xml.cfg
-# and that cfg file would not specify the xsl file locations.
+# so if you want plain xml output, you'd need to comment out the files
+# section in the agent.cfg file and restart the agent.
 
 #----------------------------------------------------------------------------
 # build os
