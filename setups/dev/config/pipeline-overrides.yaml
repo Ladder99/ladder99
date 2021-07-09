@@ -7,7 +7,7 @@ services:
   agent:
     volumes:
       - ./$SETUP/volumes/agent:/data/agent # has ccs-pa agent.cfg, devices.xml
-      - ../services/agent/styles:/data/styles
+      - ../services/agent/styles-future:/data/styles
 
 networks:
   ladder99:
