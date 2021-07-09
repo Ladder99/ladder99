@@ -1,5 +1,4 @@
-# setup.yaml
-# this defines the devices.xml structure, along with the model yamls.
+# define the devices.xml structure, along with the model yamls.
 # read by services/adapter/src/adapter.js.
 # sources define the inputs to the cache.
 # compiled by services/adapter/compiler into devices.xml.
