@@ -1,3 +1,3 @@
 # CCS P&A Setup
 
-This setup is for a CCS print & apply machine.
+This setup is for a CCS (Chicago Coding Systems) Print & Apply machine.

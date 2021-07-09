@@ -1,12 +1,11 @@
-# docker-compose file for application setup
+# docker-compose file for mazak setup
 
-# note: don't need agent for this setup, since just polling mazak's endpoint
+# note: don't need agent for this setup, since just polling mazak's endpoints
 
 version: '3.8'
 
 services:
-  # ladder99 application - retrieves data from agent and sends to db
-  # overrides of base yaml
+  # application - retrieves data from agent and sends to db
   application:
     environment:
       - AGENT_ENDPOINTS=http://mtconnect.mazakcorp.com:5717
