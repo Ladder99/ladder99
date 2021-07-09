@@ -22,8 +22,8 @@ devices:
     sources:
       - model: ccs-pa # model defines inputs and outputs with yaml files
         protocol: mqtt-json # type of plugin - manages protocol and payload
-        url: mqtt://broker:1883 #. pass in somehow - envar? or say url: mqtt://$sourceHost:1883?
-        # url: mqtt://localhost:1883
+        # url: mqtt://broker:1883 #. pass in somehow - envar? or say url: mqtt://$sourceHost:1883?
+        url: mqtt://localhost:1883
 
       # - model: rockwell-hmi
       #   protocol: opc
@@ -31,6 +31,6 @@ devices:
 
     destinations: # where to post output - just handles one output for now
       - protocol: shdr
-        host: adapter #. pass in somehow - envar? or say host: $outputHost
-        # host: localhost
+        # host: adapter #. pass in somehow - envar? or say host: $outputHost
+        host: localhost
         port: 7878
