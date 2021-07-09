@@ -31,6 +31,9 @@ services:
       - agent
     image: ladder99/agent:latest
     command: agent debug /data/agent/agent.cfg
+    # see https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
+    # extra_hosts:
+    #   - foo:bar
     volumes:
       - ./$SETUP/volumes/agent:/data/agent # should have agent.cfg, devices.xml
     ports:
@@ -50,7 +53,6 @@ services:
       - app
     user: node
     working_dir: /home/node/app
-    # command: npm start
     command: node /home/node/app/src/application.js
     init: true
     environment:
@@ -65,6 +67,7 @@ services:
       PGPASSWORD:
     # this fixes a problem on linux - works on mac okay also
     # see https://stackoverflow.com/a/67158212/243392
+    # and https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
     extra_hosts:
       - host.docker.internal:host-gateway
     networks:
