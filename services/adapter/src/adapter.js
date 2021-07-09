@@ -18,15 +18,13 @@ console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
 console.log(`posts to TCP.`)
 console.log(`----------------------------------------------------------------`)
 
-// load setup from eg setups/ccs-pa/config/devices.yaml
+// load setup, eg from setups/ccs-pa/config/devices.yaml
 const yamlfile = `${setupFolder}/config/devices.yaml`
 console.log(`Reading ${yamlfile}...`)
 const yamltree = importYaml(yamlfile)
 const setup = yamltree
 if (!setup) {
-  console.log(
-    `No devices.yaml available - please add one to ${setupFolder}/config.`
-  )
+  console.log(`No ${yamlfile} available - please add one.`)
   process.exit(1)
 }
 
@@ -181,6 +179,7 @@ function getOutputs({ outputTemplates, types, deviceId }) {
 
 // import a yaml file and parse to js struct.
 // returns the js struct or null if file not avail.
+/** @returns {object} */
 function importYaml(path) {
   try {
     const yaml = fs.readFileSync(path, 'utf8')
