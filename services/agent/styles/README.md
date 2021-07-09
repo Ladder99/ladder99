@@ -6,7 +6,7 @@ To keep up-to-date with MTConnect standard, change the version in the xsl:styles
 
 Note: Changes should be made to BOTH Devices.xsl and Streams.xsl, where applicable.
 
-The MTConnect cppagent doesn't seem to allow using subfolders in the styles folder, so keep it flat.
+The MTConnect cppagent doesn't allow using subfolders in the styles folder, so keep it flat.
 
 ## About
 
