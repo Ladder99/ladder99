@@ -10,18 +10,17 @@ Install Docker, if not already on your system - https://docs.docker.com/get-dock
 
 Then start the Agent with the default CNC simulation -
 
-    docker run -it --rm -p 5000:5000 --pull always \
-        ladder99/agent:latest
+    docker run --name agent -it --init --rm -p 5000:5000 \
+        --pull always ladder99/agent:latest
 
 then view the output in your browser at http://localhost:5000 or http://raspberrypi.local:5000 or similar.
 
 To run with your own configuration, point the Agent to a folder containing your agent.cfg file etc, e.g.
 
-    docker run -it --rm -p 5000:5000 --pull always \
-        -v $(pwd)/agent:/etc/agent \
-        ladder99/agent:latest agent
-
-<!-- test this ^ -->
+    docker run --name agent -it --init --rm -p 5000:5000 \
+        -v $(pwd)/setups/ccs-pa/volumes/agent:/data/agent \
+        --workdir /data/agent \
+        --pull always ladder99/agent:latest agent debug
 
 ## Styles
 
