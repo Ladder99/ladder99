@@ -4,7 +4,7 @@
 
 Serve the docs for development with
 
-    shell/docs
+    sh/docs/start
 
 then visit http://localhost:8080.
 
