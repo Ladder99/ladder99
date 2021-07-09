@@ -218,11 +218,9 @@ services:
     build: ../services/recorder
     profiles:
       - play
-    command: recorder --mode play --host broker --folder /data/models/$MODEL/recorder
+    command: recorder --mode play --host broker --folder /data/models/ccs-pa/recorder
     volumes:
       - ../models:/data/models
-    environment:
-      MODEL: ccs-pa
     networks:
       - ladder99
     logging:
@@ -255,11 +253,9 @@ services:
     build: ../services/recorder
     profiles:
       - record
-    command: recorder --mode record --host broker --folder /data/models/$MODEL/recorder
+    command: recorder --mode record --host broker --folder /data/models/ccs-pa/recorder
     volumes:
       - ../models:/data/models
-    environment:
-      MODEL: ccs-pa
     networks:
       - ladder99
     logging:
