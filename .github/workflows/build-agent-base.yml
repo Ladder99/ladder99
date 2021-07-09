@@ -4,6 +4,9 @@
 # secrets set at https://github.com/Ladder99/ladder99/settings/secrets/actions
 # hosted on https://hub.docker.com/repository/docker/ladder99
 
+#. this is a wip - idea is to compile cppagent to base image,
+# then pull from that for the final layers.
+
 name: build-agent-base
 
 # define some variables
