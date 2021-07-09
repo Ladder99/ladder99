@@ -9,30 +9,31 @@ import { Cache } from './cache.js'
 
 // file system inputs
 const pluginsFolder = './plugins' // for protocol handlers, eg mqtt-json - must start with .
-// these folders are defined in pipeline.yaml
-const dataFolder = '/data/adapter' // incls setup.yaml
-const modelsFolder = `/data/models` // incl ccs-pa/model.yaml etc
+// these folders are defined in pipeline.yaml with docker volume mappings
+const setupFolder = '/data/setup' // incls config/devices.yaml etc
+const modelsFolder = `/data/models` // incls ccs-pa/model.yaml etc
 
 console.log(`Ladder99 Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
 console.log(`posts to TCP.`)
 console.log(`----------------------------------------------------------------`)
 
-// load setup.yaml - eg see setups/ccs-pa/setup.yaml
-const yamlfile = `${dataFolder}/setup.yaml`
+// load setup from eg setups/ccs-pa/config/devices.yaml
+const yamlfile = `${setupFolder}/config/devices.yaml`
 console.log(`Reading ${yamlfile}...`)
 const yamltree = importYaml(yamlfile)
 const setup = yamltree
-
 if (!setup) {
-  console.log(`No setup.yaml available - please add one to ${dataFolder}.`)
+  console.log(
+    `No devices.yaml available - please add one to ${setupFolder}/config.`
+  )
   process.exit(1)
 }
 
 // define cache shared across devices and sources
 const cache = new Cache()
 
-// iterate over device definitions from setup.yaml
+// iterate over device definitions from setup yaml file
 const { devices } = setup
 for (const device of devices) {
   console.log({ device })
@@ -63,17 +64,17 @@ for (const device of devices) {
       // get inputs
       const pathInputs = `${modelsFolder}/${model}/inputs.yaml`
       console.log(`Reading ${pathInputs}...`)
-      const inputs = importYaml(pathInputs)
+      const inputs = importYaml(pathInputs) || {}
 
       // get outputs
       const pathOutputs = `${modelsFolder}/${model}/outputs.yaml`
       console.log(`Reading ${pathOutputs}...`)
-      const outputTemplates = importYaml(pathOutputs).outputs
+      const outputTemplates = importYaml(pathOutputs).outputs || {}
 
       // get types
       const pathTypes = `${modelsFolder}/${model}/types.yaml`
       console.log(`Reading ${pathTypes}...`)
-      const types = importYaml(pathTypes).types
+      const types = importYaml(pathTypes).types || {}
 
       // compile outputs from yaml strings and save to source
       const outputs = getOutputs({ outputTemplates, types, deviceId })
@@ -178,11 +179,9 @@ function getOutputs({ outputTemplates, types, deviceId }) {
   return outputs
 }
 
-/**
- * import a yaml file and parse to js struct
- * @returns {object}
- */
-function importYaml(path, defaultTree = {}) {
+// import a yaml file and parse to js struct.
+// returns the js struct or null if file not avail.
+function importYaml(path) {
   try {
     const yaml = fs.readFileSync(path, 'utf8')
     const yamlTree = libyaml.load(yaml)
@@ -190,5 +189,5 @@ function importYaml(path, defaultTree = {}) {
   } catch (error) {
     console.log(error.message)
   }
-  return defaultTree
+  return null
 }
