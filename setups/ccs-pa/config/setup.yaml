@@ -12,6 +12,7 @@
 
 devices:
   - id: ccs-pa # this is substituted into the model yaml and sources
+    #. call this structure: ccs-pa ?
     model: ccs-pa # for xml structure - see models/ccs-pa/device.yaml
     #. shift these up, look for each explicitly
     properties: # these are substituted into the model yaml

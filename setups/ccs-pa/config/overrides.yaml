@@ -1,0 +1,11 @@
+# docker-compose overrides for ccs-pa pipeline.
+
+#. this will be generated from setup.yaml, but edit manually for now.
+
+version: '3.8'
+
+# no overrides yet
+
+networks:
+  ladder99:
+    name: ladder99

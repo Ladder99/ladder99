@@ -33,8 +33,8 @@ profiles=${*:-"agent"} # eg 'agent play'
 pipeline="setups/pipeline.yaml"
 args="--file $pipeline"
 
-# add docker compose file for setup overrides
-overrides="setups/$setup/pipeline.yaml"
+# add docker compose file for overrides
+overrides="setups/$setup/config/overrides.yaml"
 if [ -e $overrides ]; then
     args="$args --file $overrides"
 fi

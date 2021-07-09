@@ -2,9 +2,11 @@
 
 # run pipeline with broker, adapter, agent, recorder, and portainer.
 # use when docker-compose is not available, as used in sh/pipeline.
+# usage:
+#   sh/run ccs-pa host
 
-SETUP=ccs-pa
-NETWORK=host
+SETUP=${1:-"ccs-pa"}
+NETWORK=${2:-"host"}
 RUN=docker run -dit --init --rm --restart=always --log-opt max-size=1m --log-opt max-file=5
 
 docker container prune
