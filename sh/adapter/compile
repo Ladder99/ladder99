@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# compile a setup to devices.xml
+# compile a setup's config/setup.yaml to devices.xml
 
-SETUP=$1  # setup subfolder, eg 'vmc'
+SETUP=$1  # setup subfolder, eg 'ccs-pa'
 
 node services/adapter/src/compiler/compile-xml.js \
   setups/$SETUP/devices.yaml \

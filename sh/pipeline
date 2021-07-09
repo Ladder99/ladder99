@@ -29,19 +29,21 @@ shift
 shift
 profiles=${*:-"agent"} # eg 'agent play'
 
-# add main docker compose file for pipeline
+# file paths
 pipeline="setups/pipeline.yaml"
+overrides="setups/$setup/config/pipeline-overrides.yaml"
+envfile="setups/.env"
+
+# add main docker compose file for pipeline
 args="--file $pipeline"
 
 # add docker compose file for overrides
-overrides="setups/$setup/config/overrides.yaml"
 if [ -e $overrides ]; then
     args="$args --file $overrides"
 fi
 
 # add .env file if there
 # . should be per setup folder? can you have multiple?
-envfile="setups/.env"
 if [ -e $envfile ]; then
     args="$args --env-file $envfile"
 fi

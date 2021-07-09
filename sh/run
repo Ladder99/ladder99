@@ -2,7 +2,7 @@
 
 # run pipeline with broker, adapter, agent, recorder, and portainer.
 # use when docker-compose is not available, as used in sh/pipeline.
-# usage:
+# example:
 #   sh/run ccs-pa host
 
 SETUP=${1:-"ccs-pa"}
