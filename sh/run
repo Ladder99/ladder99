@@ -4,39 +4,50 @@
 # use when docker-compose is not available, as used in sh/pipeline.
 # runs broker, adapter, agent, recorder, and portainer services.
 # example:
-#   sh/run ccs-pa host
+#   sh/run ccs-pa ladder99 agent
 
 SETUP=${1:-"ccs-pa"}
 NETWORK=${2:-"host"}
-RUN="docker run -dit --init --rm --log-opt max-size=1m --log-opt max-file=5"
+shift
+shift
+SERVICES=${*:-"portainer broker adapter agent recorder"}
+MODEL=ccs-pa
 
-# portainer
-$RUN --name portainer -p 9999:9000 \
-  -v /var/run/docker.sock:/var/run/docker.sock \
-  -v portainer_data:/data \
-  portainer/portainer-ce
+RUN="docker run -it --init --rm --log-opt max-size=1m --log-opt max-file=5"
 
-# broker
-$RUN --name broker --network $NETWORK -p 1883 -p 9001 \
-  -v $(pwd)/setups/$SETUP/volumes/broker:/mosquitto \
-  eclipse-mosquitto
-
-# adapter
-docker build --tag ladder99/adapter:latest services/adapter
-$RUN --name adapter --network $NETWORK \
-  -v $(pwd)/setups/$SETUP:/data/adapter \
-  -v $(pwd)/models:/data/models \
-  ladder99/adapter:latest
-
-# agent
-$RUN --name agent --network $NETWORK -p 5000 \
-  -v $(pwd)/setups/$SETUP/volumes/agent:/data/agent:rw \
-  ladder99/agent:latest \
-  "agent debug /data/agent/agent.cfg"
-
-# recorder
-docker build --tag ladder99/recorder:latest services/recorder
-$RUN --name recorder --network $NETWORK \
-  -v $(pwd)/models:/data/models \
-  ladder99/recorder:latest \
-  recorder --host localhost --folder /data/models/$SETUP/recorder --mode play
+for service in $SERVICES
+do
+  echo "Starting $service..."
+  if [ $service = "portainer" ]; then
+    $RUN --name portainer -p 9999:9000 \
+      -v /var/run/docker.sock:/var/run/docker.sock \
+      -v portainer_data:/data \
+      portainer/portainer-ce
+  fi
+  if [ $service = "broker" ]; then
+    $RUN --name broker --network $NETWORK -p 1883 -p 9001 \
+      -v $(pwd)/setups/$SETUP/volumes/broker:/mosquitto \
+      eclipse-mosquitto
+  fi
+  if [ $service = "adapter" ]; then
+    docker build --tag ladder99/adapter:latest services/adapter
+    $RUN --name adapter --network $NETWORK \
+      -v $(pwd)/setups/$SETUP:/data/setup \
+      -v $(pwd)/models:/data/models \
+      ladder99/adapter:latest
+  fi
+  if [ $service = "agent" ]; then
+    $RUN --name agent --network $NETWORK -p 5000 \
+      -v $(pwd)/setups/$SETUP/volumes/agent:/data/agent:rw \
+      ladder99/agent:latest \
+      agent debug /data/agent/agent.cfg
+  fi
+  if [ $service = "recorder" ]; then
+    docker build --tag ladder99/recorder:latest services/recorder
+    $RUN --name recorder --network $NETWORK \
+      -v $(pwd)/models:/data/models \
+      ladder99/recorder:latest \
+      recorder --mode play --host localhost --folder /data/models/$MODEL/recorder
+  fi
+  echo ""
+done

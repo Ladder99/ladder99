@@ -218,14 +218,13 @@ services:
     build: ../services/recorder
     profiles:
       - play
-    command: recorder --host broker --folder /data/models/$SETUP/recorder
+    command: recorder --mode play --host broker --folder /data/models/$MODEL/recorder
     volumes:
-      #   - ../../../services/simulator:/home/node/app
       - ../models:/data/models
     # environment:
     #   - HOST=broker
     #   - PORT=1883
-    #   - FOLDER=../models/ccs-pa/recordings
+    #   - FOLDER=../models/$MODEL/recordings
     #   - LOOP=true
     networks:
       - ladder99
@@ -259,11 +258,13 @@ services:
     build: ../services/recorder
     profiles:
       - record
-    command: recorder --mode record --host broker --folder ./models/$SETUP/recorder
+    command: recorder --mode record --host broker --folder /data/models/$MODEL/recorder
+    volumes:
+      - ../models:/data/models
     # environment:
     #   - HOST=broker
     #   - PORT=1883
-    #   - FOLDER=../models/ccs-pa/recordings
+    #   - FOLDER=../models/$MODEL/recordings
     #   - LOOP=true
     networks:
       - ladder99
