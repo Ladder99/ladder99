@@ -2,7 +2,7 @@
 
 Plays/records device messages.
 
-<!-- could have plugins for different device sources -->
+Eventually would like to handle different data types through plugins, eg mqtt, ...
 
 The recordings are csv files with structure:
 
