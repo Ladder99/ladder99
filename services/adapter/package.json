@@ -1,7 +1,7 @@
 {
   "name": "ladder99-adapter",
   "version": "0.1.1",
-  "description": "Ladder99 Adapter",
+  "description": "Ladder99 Adapter and Compilers",
   "type": "module",
   "target": "es2017",
   "author": "Brian Burns <bburns.km@gmail.com>",
