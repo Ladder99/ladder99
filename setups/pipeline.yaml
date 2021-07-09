@@ -44,7 +44,7 @@ services:
   # application - fetches data from agent and sends to db
   application:
     container_name: application
-    image: node:15.14-slim
+    image: node:15.14-slim #. switch to Dockerfile
     profiles:
       - all
       - app
@@ -53,8 +53,6 @@ services:
     # command: npm start
     command: node /home/node/app/src/application.js
     init: true
-    # depends_on:
-    #   - db
     environment:
       # override these as needed in setup compose.yaml
       AGENT_ENDPOINTS: http://agent:5000
@@ -65,12 +63,6 @@ services:
       PGDATABASE:
       PGUSER:
       PGPASSWORD:
-      # ARANGO_HOST:
-      # ARANGO_PORT:
-      # ARANGO_DATABASE:
-      # ARANGO_USER:
-      # ARANGO_ROOT_PASSWORD:
-      # # ARANGO_PASSWORD:
     # this fixes a problem on linux - works on mac okay also
     # see https://stackoverflow.com/a/67158212/243392
     extra_hosts:
@@ -84,7 +76,6 @@ services:
         max-size: '1m'
 
   # broker - gets mqtt data from devices and publishes to mtconnect adapter.
-  # we can playback mqtt data through this to simulate a device.
   broker:
     container_name: broker
     image: eclipse-mosquitto
@@ -261,17 +252,6 @@ services:
     logging:
       options:
         max-size: '1m'
-
-  # # simulate device
-  # simulator:
-  #   container_name: simulator
-  #   profiles:
-  #     - simulator
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '1m'
 
   # telegraf - sends data from edge device to influxdb
   telegraf:
