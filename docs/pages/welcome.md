@@ -14,4 +14,4 @@ It uses the MTConnect Adapter, Agent, and Application scheme.
 
 MTConnect standardizes factory device data flow and vocabulary - it was started by UC Berkeley, Georgia Institute of Technology, and Sun Microsystems in 2008, and continues under active development.
 
-https://www.mtconnect.org/
+See https://www.mtconnect.org/ for more information.
