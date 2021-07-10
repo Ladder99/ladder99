@@ -1,6 +1,6 @@
 # data
 
-## compilation: yamls to devices.xml
+## compilation: model yamls to devices.xml
 
 outputs.yaml includes this dataItem for device condition:
 
@@ -19,7 +19,7 @@ so it's up to the adapter to send SHDR to match, ie
 
     "2021-04-14T03:04:00.000Z|id|value"
 
-actually, for a condition you need more info - 
+actually, for a condition you need more info -
 
     const level = value // eg 'WARNING'
     const nativeCode = 'nativeCode'
@@ -33,7 +33,6 @@ eg
     "2021-04-14T03:04:00.000Z|ccs-pa-001-dev_cond|WARNING|warn|warning|um|ribbon low"
 
 how get that?
-
 
 ## mqtt messages
 
@@ -65,11 +64,10 @@ so for the previous dataItem example, adapter.js gets the following output objec
 
 when a cache value in dependsOn changes, it should trigger the corresponding shdr output calculated from the value fn.
 
-it does this by adding the dependsOn keys to a map linking to the dependent calcs - 
+it does this by adding the dependsOn keys to a map linking to the dependent calcs -
 
     this._mapKeyToOutputs['ccs-pa-001-status-has-hard-faults'] = [ output ]
     this._mapKeyToOutputs['ccs-pa-001-status-has-soft-faults'] = [ output ]
-
 
 ### handle initial query message (nothing relevant to faults here)
 
@@ -133,12 +131,12 @@ but nothing currently depends on status-faults, so added some custom code -
     cache.set(`${deviceId}-status-has-soft-faults`, { value: Object.keys($.faults).some(f => f >= '50') })
     cache.set(`${deviceId}-status-has-hard-faults`, { value: Object.keys($.faults).some(f => f < '50') })
 
-so for this mqtt message, 
+so for this mqtt message,
 
     cache.set('ccs-pa-001-status-has-soft-faults', { value: true })
     cache.set('ccs-pa-001-status-has-hard-faults', { value: false })
 
-the relevant calculation has 
+the relevant calculation has
 
     {
       id: 'ccs-pa-001-dev_cond',
@@ -154,7 +152,6 @@ so 5000 has
     2021-04-14T08:33:42.694Z	Fault			ccs-pa-001-dev_cond	334	condition message
 
 it works
-
 
 ## inputs.yaml
 
@@ -174,29 +171,21 @@ so we'd like to go from a custom code plugin for mqtt-ccs to data-defined inputs
 
 each item's id will be {deviceId}-{key}, eg 'ccs-pa-001-status-faults'
 
-
 so what will adapter.js do?
 
 it'll load inputs.yaml -> js arrays
 
 load mqtt-json.js plugin
-on init plugin, pass these topics and inputs, and it would subscribe to those topics. 
+on init plugin, pass these topics and inputs, and it would subscribe to those topics.
 
->q. would need to send initial message to kick things off - how specify that?
-hardcode for now, then specify it in inputs.yaml?
-
+> q. would need to send initial message to kick things off - how specify that?
+> hardcode for now, then specify it in inputs.yaml?
 
 for each message received it'll go through the relevant inputs and set the cache key-item pairs.
 
->maybe a hybrid approach for now would be good - 
+> maybe a hybrid approach for now would be good -
 
 ie use mqtt-ccs.js plugin, but pass inputs.yaml js to it also on init
 
 then would use those for the alias list
 ?
-
-
-
-
-
-
