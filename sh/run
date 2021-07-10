@@ -35,7 +35,7 @@ do
   fi
 
   if [ $service = "adapter" ]; then
-    docker build --tag ladder99/adapter:latest services/adapter
+    docker build --tag ladder99/adapter:latest pipeline/adapter
     $RUN --name adapter --network $NETWORK \
       -v $(pwd)/setups/$SETUP:/data/setup \
       -v $(pwd)/models:/data/models \
@@ -50,7 +50,7 @@ do
   fi
 
   if [ $service = "recorder" ]; then
-    docker build --tag ladder99/recorder:latest services/recorder
+    docker build --tag ladder99/recorder:latest pipeline/recorder
     $RUN --name recorder --network $NETWORK \
       -v $(pwd)/models:/data/models \
       ladder99/recorder:latest \

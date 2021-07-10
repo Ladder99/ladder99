@@ -13,7 +13,7 @@ HOST_FOLDER=$1
 shift
 
 # build docker image for tape
-docker build --tag recorder services/recorder
+docker build --tag recorder pipeline/recorder
 
 # run the docker image as a container
 # -it is for interactive terminal

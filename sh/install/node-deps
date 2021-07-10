@@ -1,8 +1,8 @@
 #!/bin/bash
 # install node dependencies
 
-npm --prefix services/adapter install
-npm --prefix services/recorder install
+npm --prefix pipeline/adapter install
+npm --prefix pipeline/recorder install
 
-# npm --prefix services/application install
-# npm --prefix services/diode/code/application/datadiode/contrib/nodejs install
+# npm --prefix pipeline/application install
+# npm --prefix pipeline/diode/code/application/datadiode/contrib/nodejs install

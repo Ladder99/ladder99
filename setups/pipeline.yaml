@@ -10,7 +10,7 @@ services:
   # adapter - converts machine data to shdr and sends to agent
   adapter:
     container_name: adapter
-    build: ../services/adapter
+    build: ../pipeline/adapter
     profiles:
       - all
       - adapter
@@ -73,7 +73,7 @@ services:
     networks:
       - ladder99
     volumes:
-      - ../services/application:/home/node/app # has source code
+      - ../pipeline/application:/home/node/app # has source code
     logging:
       options:
         max-size: '1m'
@@ -209,7 +209,7 @@ services:
   # play device recordings
   play:
     container_name: play
-    build: ../services/recorder
+    build: ../pipeline/recorder
     profiles:
       - play
     command: recorder --mode play --host broker --folder /data/models/ccs-pa/recorder
@@ -244,7 +244,7 @@ services:
   # record a device
   record:
     container_name: record
-    build: ../services/recorder
+    build: ../pipeline/recorder
     profiles:
       - record
     command: recorder --mode record --host broker --folder /data/models/ccs-pa/recorder

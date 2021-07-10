@@ -6,6 +6,6 @@
 # note: it's best to build each arch image separately, then combine them
 
 PLATFORM=${1:-"linux/amd64"}
-PATH="services/agent"
+PATH="pipeline/agent"
 
 docker buildx build --platform=$PLATFORM --load $PATH

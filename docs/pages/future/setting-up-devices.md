@@ -13,7 +13,7 @@ First, make sure you've set the environment variables as on the previous page -
 
 Then start all services with
 
-    shell/docker ccs-pa start
+    sh/pipeline start ccs-pa
 
 Now you can watch the pipeline send MQTT messages to the brokers through to the adapter and then onto the agent via SHDR messages.
 

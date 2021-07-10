@@ -33,21 +33,21 @@ Make changes to the setup as needed.
 
 Then generate the devices.xml and docker files (former partially implemented, latter not implemented yet - hand-edit) - e.g.
 
-    shell/compile my-setup
+    sh/adapter/compile my-setup
 
 ## Testing a setup
 
 You can test a setup by running the pipeline in Docker -
 
-    shell/docker my-setup start
+    sh/pipeline start my-setup
 
 or an individual service (e.g. application) with
 
-    shell/docker my-setup start [servicename]
+    sh/pipeline start my-setup [servicename]
 
 You can stop all services with
 
-    shell/docker my-setup stop
+    sh/pipeline stop my-setup
 
 or an individual service with
 

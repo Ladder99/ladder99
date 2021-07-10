@@ -12,11 +12,11 @@
 # get platforms to merge
 TAG=$1 # eg :latest
 PLATFORM=$2 # eg linux/amd64,linux/arm/v7,linux/arm64
-PATH=services/agent
+PATH=pipeline/agent
 
 # build image and push to docker hub
 docker buildx build \
   --platform=$PLATFORM \
-  --tag=ladder99/ladder99-agent$TAG \
+  --tag=ladder99/agent$TAG \
   --push \
   $PATH

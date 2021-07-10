@@ -1,23 +1,24 @@
 #!/bin/sh
 
-# run pipeline with docker compose.
+# run ladder99 pipeline with docker compose.
 # if docker compose not available, use sh/run and sh/stop.
 
 usage="
-Usage: sh/pipeline COMMAND SETUP PROFILES
+Usage: sh/pipeline COMMAND SETUP SERVICES
 
-Run a docker-compose yaml file with optional list of profiles to include.
+Run the Ladder99 pipeline with optional list of services to include.
 
 COMMAND   start (run in console), startd (run detached), stop (stop all)
 SETUP     setup subfolder, eg vmc (default), ccs-pa
-PROFILES  space-delim list of profiles to start, eg agent (default), all
+SERVICES  space-delim list of services to start, eg agent (default), all
 
 Examples
 
     sh/pipeline start
     sh/pipeline start ccs-pa broker adapter agent play
 
-Note: use 'docker kill SERVICE' to stop an individual service    
+Note: use 'docker kill SERVICE' to stop an individual service.
+Note: services are referenced by their 'profile' attribute in pipeline.yaml.
 "
 
 if [ $# -eq 0 ]
@@ -31,7 +32,7 @@ cmd=$1 # eg 'start', 'startd', 'stop'
 setup=${2:-"vmc"} # eg 'ccs-pa'
 shift
 shift
-profiles=${*:-"agent"} # eg 'agent play'
+services=${*:-"agent"} # eg 'agent play'
 
 # file paths
 pipeline="setups/pipeline.yaml"
@@ -54,8 +55,8 @@ fi
 
 # get profile flags
 profileFlags=""
-for i in $profiles; do
-    profileFlags="$profileFlags --profile $i"
+for profile in $services; do
+    profileFlags="$profileFlags --profile $profile"
 done
 
 # get flags
