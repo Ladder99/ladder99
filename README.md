@@ -17,7 +17,7 @@ Ladder99 is a free and open source application that transfers data from factory 
 
 MTConnect standardizes factory device data flow and vocabulary - it was started by UC Berkeley, Georgia Institute of Technology, and Sun Microsystems in 2008, and continues under active development.
 
-![image](docs/source/pages/_images/agent-html.jpg)
+![image](docs/pages/_images/agent-html.jpg)
 
 See our documentation here - https://ladder99.readthedocs.io/en/latest/.
 
