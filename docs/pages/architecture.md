@@ -2,7 +2,11 @@
 
 Data flows from devices through the Adapter, Agent, and Application to the Database and Visualizer.
 
+## Diagram
+
 ![img](../../design/architecture.dot.svg)
+
+## Data Flow
 
 The Adapter polls or subscribes to messages from devices, and translates them to SHDR (Simple Hierarchical Data Representation), eg "2021-02-28T02:40:00|key|value", which it sends on to the Agent.
 

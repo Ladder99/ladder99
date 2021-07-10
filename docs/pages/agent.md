@@ -30,7 +30,7 @@ To see the original XML output, you can omit or comment out the files sections o
 
 ## HTML Styles
 
-The HTML output is defined by the XSL in the styles folder, which transforms the default XML output. The Ladder99 Agent uses an adapted/extended version of the styles found here - https://github.com/TrakHound/MTConnect-Agent-Stylesheet.
+The HTML output is defined by the XSL and CSS in the [services/agent/styles folder](https://github.com/Ladder99/ladder99/tree/main/services/agent/styles), which transforms the default XML output. We use an adapted/extended version of the styles found here - https://github.com/TrakHound/MTConnect-Agent-Stylesheet.
 
 ## Source
 
