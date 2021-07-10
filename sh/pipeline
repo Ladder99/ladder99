@@ -1,6 +1,7 @@
 #!/bin/sh
 
-# run pipeline with docker compose
+# run pipeline with docker compose.
+# if docker compose not available, use sh/run and sh/stop.
 
 usage="
 Usage: sh/pipeline COMMAND SETUP PROFILES
