@@ -4,7 +4,7 @@ Ladder99
 
 Ladder99 is a free and open source application that transfers data from factory devices to a database and end-user visualizations using MTConnect, an open standard.
 
-.. image:: pages/_images/agent.jpg
+.. image:: pages/_images/agent-html.jpg
 
 .. toctree::
    :maxdepth: 2
@@ -19,7 +19,7 @@ Ladder99 is a free and open source application that transfers data from factory 
    .. pages/application
    .. pages/database
    .. pages/visualizer
-   pages/development
+   .. pages/development
    pages/about
 
    .. pages/getting-started

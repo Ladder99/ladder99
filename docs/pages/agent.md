@@ -11,26 +11,26 @@ To start the Agent with the default simulation of a 3-axis VMC CNC machine -
 
 then view the output in your browser at http://localhost:5000 or http://raspberrypi.local:5000 or similar.
 
-![agent](_images/agent.jpg)
+![agent](_images/agent-html.jpg)
 
 ## Custom Setup
 
-To run with your own custom setup, point the Agent to a folder containing an agent.cfg file etc, e.g.
+To run with your own custom setup, point the Agent to a folder containing your agent.cfg configuration file, e.g.
 
     docker run --name agent -it --init --rm -p 5000:5000 \
         -v $(pwd)/setups/ccs-pa/volumes/agent:/data/agent \
         --workdir /data/agent \
         --pull always ladder99/agent:latest agent debug
 
-## XML
+## XML Output
 
-To see the original XML output, you can omit or comment out the files sections of the agent.cfg file.
+To see the original XML output, you can omit or comment out the files sections of the agent.cfg file -
 
-<!-- add image -->
+![agent-xml](_images/agent-xml.jpg)
 
-## Styles
+## HTML Styles
 
-The HTML output is defined in the styles folder, using XSL to transform the default XML output. Our XSL is adapted/extended from https://github.com/TrakHound/MTConnect-Agent-Stylesheet.
+The HTML output is defined by the XSL in the styles folder, which transforms the default XML output. The Ladder99 Agent uses an adapted/extended version of the styles found here - https://github.com/TrakHound/MTConnect-Agent-Stylesheet.
 
 ## Source
 

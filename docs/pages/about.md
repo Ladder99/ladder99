@@ -4,4 +4,4 @@
 
 We are a small company started in 2021 with plans to create a free and open ecosystem around MTConnect, including device adapters and visualizations.
 
-<!-- Future applications will include an optional visual dashboard builder, which would be released under a free/premium model. -->
+We will eventually release additional premium services built around the Ladder99 pipeline, including Cloud storage, Knowledge Graph integration, and Predictive Analytics.
