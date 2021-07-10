@@ -16,13 +16,18 @@ Clone this repo there
     git clone https://github.com/Ladder99/ladder99
     cd ladder99
 
-Install dependencies **in this order** (may take a while) -
+Check if Docker is on your system -
 
-    shell/install/linux
-    shell/install/docker
-    shell/install/docker-compose
-    shell/install/node      # if not already installed
-    shell/install/node-deps
-    shell/install/python
+    docker version
 
-<!-- Next, we'll run the MTConnect Agent and make sure it works with the demonstration data. -->
+if not there, install it - https://docs.docker.com/get-docker/.
+
+<!-- Install any missing dependencies **in this order** (may take a while) - -->
+
+<!-- sh/install/linux -->
+<!-- sh/install/docker -->
+<!-- sh/install/docker-compose -->
+<!-- sh/install/node -->
+<!-- sh/install/node-deps -->
+
+<!-- Next, we'll run the Ladder99 Agent and make sure it works with the demonstration data. -->

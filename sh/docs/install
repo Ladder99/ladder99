@@ -1,10 +1,8 @@
 #!/bin/bash
-# install doc building dependencies
+# install python dependencies
 
-# # create a virtual environment
+# # create and use a virtual environment
 # python3 -m venv ~/.venv/ladder99-venv
-
-# # use virtual environment
 # source ~/.venv/ladder99-venv/bin/activate
 
 # for building docs
