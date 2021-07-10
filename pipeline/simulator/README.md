@@ -1,3 +1,3 @@
-# ladder99-simulator
+# Ladder99 Simulator
 
-simulate a device
+Simulate an interactive device

@@ -4,7 +4,7 @@ Plays/records device messages.
 
 This is a work in progress.
 
-<!-- Eventually would like to handle different data types through plugins, eg mqtt, ... -->
+Eventually would like to handle different data types through plugins, eg mqtt.
 
 The recordings are csv files with structure:
 

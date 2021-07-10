@@ -1,11 +1,7 @@
-# ladder99-application
+# Ladder99 Application
 
-Transfers data from agent to the database.
+This transfers data from the Agent to the Database.
 
 It polls JSON data from the agent at eg localhost:5000.
 
-To test,
-
-    shell/app-test
-
-which runs `npm test`
+To test, `npm test`.
