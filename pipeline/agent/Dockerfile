@@ -3,33 +3,6 @@
 
 # Agent source code https://github.com/mtconnect/cppagent
 
-# After setup, the dirs look like this -
-#
-# /etc/mtconnect
-#  |-- schemas - xsd files
-#  |-- simulator - agent.cfg, simulator.rb, vmc-3axis.xml, log.txt
-#  |-- styles - our devices.xsl, streams.xsl, custom.css, logo.png, favicon.ico
-#  |-- styles-original - streams.xsl, streams.css, favicon.ico
-# /usr/local/bin
-#  |-- agent - the agent application
-#
-# while the default simulator/agent.cfg has -
-#   Devices = ../simulator/VMC-3Axis.xml
-#   Files { styles { Path = ../styles } }
-# so when you run this agent it picks up our styles, not the originals.
-# see https://github.com/mtconnect/cppagent/blob/master/simulator/agent.cfg
-#
-# our pipeline docker-compose yaml has this for the agent service -
-#   agent:
-#     command: agent debug /data/agent/agent.cfg
-#     volumes:
-#       - ./$SETUP/volumes/agent:/data/agent # should have agent.cfg, devices.xml
-# so it lets the user override the agent.cfg by mapping /data/agent to
-# a local folder eg setups/ccs-pa/volumes/agent. 
-#
-# so if you want plain xml output, you'd need to comment out the files
-# section in the agent.cfg file and restart the agent.
-
 #----------------------------------------------------------------------------
 # build os
 #----------------------------------------------------------------------------
@@ -124,3 +97,35 @@ WORKDIR /etc/mtconnect
 CMD /usr/bin/ruby /etc/mtconnect/simulator/run_scenario.rb -l \
   /etc/mtconnect/simulator/VMC-3Axis-Log.txt & \
   cd /etc/mtconnect/simulator && agent debug agent.cfg
+
+
+#----------------------------------------------------------------------------
+# notes
+#----------------------------------------------------------------------------
+
+# After setup, the dirs look like this -
+#
+# /etc/mtconnect
+#  |-- schemas - xsd files
+#  |-- simulator - agent.cfg, simulator.rb, vmc-3axis.xml, log.txt
+#  |-- styles - our devices.xsl, streams.xsl, custom.css, logo.png, favicon.ico
+#  |-- styles-original - streams.xsl, streams.css, favicon.ico
+# /usr/local/bin
+#  |-- agent - the agent application
+#
+# the default simulator/agent.cfg has -
+#   Devices = ../simulator/VMC-3Axis.xml
+#   Files { styles { Path = ../styles } }
+# so when you run this agent it picks up our styles, not the originals.
+# see https://github.com/mtconnect/cppagent/blob/master/simulator/agent.cfg
+#
+# our pipeline docker-compose yaml has this for the agent service -
+#   agent:
+#     command: agent debug /data/agent/agent.cfg
+#     volumes:
+#       - ./$SETUP/volumes/agent:/data/agent # should have agent.cfg, devices.xml
+# so it lets the user override the agent.cfg by mapping /data/agent to
+# a local folder eg setups/ccs-pa/volumes/agent. 
+#
+# if you want plain xml output, you currently need to comment out the files
+# section in the agent.cfg file and restart the agent.
