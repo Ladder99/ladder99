@@ -4,7 +4,7 @@
 
 - An edge device running Linux (e.g. a Raspberry Pi)
 
-## Steps
+## Install Ladder99
 
 SSH into the edge device using its local name or IP address and your username and password, e.g.
 
@@ -15,6 +15,8 @@ Clone this repo there
 
     git clone https://github.com/Ladder99/ladder99
     cd ladder99
+
+## Install Docker
 
 Check if Docker is on your system -
 
