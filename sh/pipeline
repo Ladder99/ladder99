@@ -11,7 +11,10 @@ COMMAND   start (run in console), startd (run detached), stop (stop all)
 SETUP     setup subfolder, eg vmc (default), ccs-pa
 PROFILES  space-delim list of profiles to start, eg agent (default), all
 
-eg 'sh/pipeline start ccs-pa play'
+Examples
+
+    sh/pipeline start
+    sh/pipeline start ccs-pa broker adapter agent play
 
 Note: use 'docker kill SERVICE' to stop an individual service    
 "

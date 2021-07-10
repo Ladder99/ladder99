@@ -3,7 +3,8 @@
 # run pipeline with docker run.
 # use when docker-compose is not available, as used in sh/pipeline.
 # runs broker, adapter, agent, recorder, and portainer services.
-# example:
+# examples:
+#   sh/run
 #   sh/run ccs-pa ladder99
 
 SETUP=${1:-"ccs-pa"}
