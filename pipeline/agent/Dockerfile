@@ -1,5 +1,6 @@
 # MTConnect C++ Agent Docker image build instructions
 # Adapted from http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu.
+# Stylesheet adapted from https://github.com/TrakHound/MTConnect-Agent-Stylesheet/.
 
 # Agent source code https://github.com/mtconnect/cppagent
 
