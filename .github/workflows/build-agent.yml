@@ -8,6 +8,7 @@ name: build-agent
 
 env:
   service: agent
+  version: 1.7.0.3
 
 # let user run workflow manually from actions tab
 on: workflow_dispatch
@@ -53,7 +54,9 @@ jobs:
           # platforms: linux/amd64
 
           # docker hub user/name:tag
-          tags: ladder99/${{ env.service }}:latest
+          tags:
+            - ladder99/${{ env.service }}:latest
+            - ladder99/${{ env.service }}:${{ env.version }}
 
           # push to docker hub
           push: true
