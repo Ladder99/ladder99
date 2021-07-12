@@ -2,10 +2,13 @@
 
 # build multiarch agent docker image
 # example:
-#   shell/build linux/arm/v7
+#   sh/agent/build linux/amd64
+#   sh/agent/build linux/arm64
+#   sh/agent/build linux/arm/v7
+#   sh/agent/build linux/amd64,linux/arm64,linux/arm/v7
 # note: it's best to build each arch image separately, then combine them
 
 PLATFORM=${1:-"linux/amd64"}
 PATH="pipeline/agent"
 
-docker buildx build --platform=$PLATFORM --load $PATH
+docker buildx build --platform $PLATFORM --load $PATH
