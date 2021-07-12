@@ -19,8 +19,8 @@ MTConnect standardizes factory device data flow and vocabulary - it was started 
 
 ![image](docs/pages/_images/agent-html.jpg)
 
-See our documentation here - https://ladder99.readthedocs.io/en/latest/.
+See our documentation here - https://ladder99.readthedocs.io.
 
-For more on MTConnect, see https://www.mtconnect.org/.
+For more on MTConnect, see https://www.mtconnect.org.
 
 License: MIT
