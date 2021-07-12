@@ -6,8 +6,7 @@ Ladder99 Agent is a Docker image of the MTConnect Agent, which receives data fro
 
 To start the Agent with the default simulation of a 3-axis VMC CNC machine -
 
-    docker run --name agent -it --init --rm -p 5000:5000 \
-        --pull always ladder99/agent:latest
+    docker run -it --init --rm -p 5000:5000 ladder99/agent:latest
 
 then view the output in your browser at http://localhost:5000 or http://raspberrypi.local:5000 or similar.
 
@@ -17,10 +16,10 @@ then view the output in your browser at http://localhost:5000 or http://raspberr
 
 To run with your own custom setup, point the Agent to a folder containing your agent.cfg configuration file, e.g.
 
-    docker run --name agent -it --init --rm -p 5000:5000 \
+    docker run -it --init --rm -p 5000:5000 \
         -v $(pwd)/setups/ccs-pa/volumes/agent:/data/agent \
         --workdir /data/agent \
-        --pull always ladder99/agent:latest agent debug
+        ladder99/agent:latest agent debug
 
 ## XML Output
 
