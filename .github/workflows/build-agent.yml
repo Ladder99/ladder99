@@ -1,8 +1,11 @@
 # github workflow to build ladder99 agent docker image
 
 # run manually at https://github.com/Ladder99/ladder99/actions
-# hosted on https://hub.docker.com/repository/docker/ladder99
+# image hosted on https://hub.docker.com/repository/docker/ladder99
 # secrets set at https://github.com/Ladder99/ladder99/settings/secrets/actions
+
+# update the version below when cppagent version changes - check here for latest -
+# https://github.com/mtconnect/cppagent/blob/master/CMakeLists.txt
 
 name: build-agent
 
