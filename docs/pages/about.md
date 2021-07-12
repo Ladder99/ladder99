@@ -10,9 +10,9 @@ Our plan is to eventually release additional premium services built around the L
 
 The Ladder99 repository is at https://github.com/Ladder99/ladder99.
 
-## Contact Us
+<!-- ## Contact Us
 
-You can reach us at info@ladder99.com.
+You can reach us at info@ladder99.com. -->
 
 ## Social Media
 
