@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/bin/sh
 
 # build multiarch agent docker image and deploy to dockerhub
 # example:
 #   sh/agent/deploy :test linux/arm/7
+#   sh/agent/deploy :1.7.0.3 linux/amd64,linux/arm64,linux/arm/v7
 
 # note: we have to push the whole buildx image up to dockerhub as 
 # it contains multiple architectures. you have to use either --push or 

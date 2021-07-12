@@ -1,5 +1,5 @@
 #!/bin/bash
-# install dependencies needed for build
+# install dependencies needed for multiarch build
 
 # run a container with the qemu emulator for multiarch builds
 # see https://hub.docker.com/r/multiarch/qemu-user-static/
