@@ -1,10 +1,10 @@
 # define the devices.xml structure, along with the model yamls.
 # read by pipeline/adapter/src/adapter.js.
 # sources define the inputs to the cache.
-# compiled by pipeline/adapter/compiler into devices.xml.
-#. see also future/devices-future.yaml for future dev.
+# compiled by pipeline/adapter/compiler into volumes/agent/devices.xml.
+#. see also devices-future.yaml for future dev.
 
-#. could have meta: section also
+#. add a meta section
 
 #. could we get this to one line per device? a site might have dozens of machines
 # eg set defaults for all devices at the top, overrides per device?

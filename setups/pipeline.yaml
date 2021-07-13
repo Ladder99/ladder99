@@ -1,5 +1,5 @@
 # docker compose file for the complete ladder99 pipeline.
-# can override these settings in config/pipeline-overrides.yaml files.
+# can override these settings in setup-specific config/pipeline-overrides.yaml files.
 
 # run different services with eg
 #   sh/pipeline start ccs-pa broker adapter agent
