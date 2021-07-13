@@ -7,10 +7,11 @@
 version: '3.8'
 
 services:
-  # adapter - converts machine data to shdr and sends to agent
+  # adapter - convert machine data to shdr and send to agent
   adapter:
     container_name: adapter
     build: ../pipeline/adapter
+    # image: ladder99/adapter:latest
     profiles:
       - all
       - adapter
@@ -23,7 +24,7 @@ services:
       options:
         max-size: '1m'
 
-  # agent - takes in shdr and outputs html/json.
+  # agent - take in shdr and output html/json
   agent:
     container_name: agent
     profiles:
@@ -44,7 +45,7 @@ services:
       options:
         max-size: '1m'
 
-  # application - fetches data from agent and sends to db
+  # application - fetch data from agent and send to db
   application:
     container_name: application
     image: node:15.14-slim #. switch to Dockerfile
@@ -78,7 +79,7 @@ services:
       options:
         max-size: '1m'
 
-  # broker - gets mqtt data from devices and publishes to mtconnect adapter.
+  # broker - get mqtt data from devices and publish to mtconnect adapter
   broker:
     container_name: broker
     image: eclipse-mosquitto
@@ -95,7 +96,7 @@ services:
       options:
         max-size: '1m'
 
-  # database - stores structure and time-series data
+  # database - store structure and time-series data
   database:
     container_name: database
     image: timescale/timescaledb:2.3.0-pg13
@@ -120,7 +121,7 @@ services:
       options:
         max-size: '1m'
 
-  # grafana - shows real-time data from the databases, handles notifications
+  # grafana - show real-time data from the database, handle notifications
   grafana:
     container_name: grafana
     image: grafana/grafana:7.5.5
@@ -165,7 +166,7 @@ services:
       options:
         max-size: '1m'
 
-  # influxdb - stores edge device data (for now - will move to postgres)
+  # influxdb - store edge device data (will move to postgres)
   influxdb:
     container_name: influxdb
     # image: influxdb:2.0 # not avail for 32bit - needs 64bit os
@@ -206,7 +207,7 @@ services:
       restart_policy:
         condition: on-failure
 
-  # play device recordings
+  # play - playback device recordings
   play:
     container_name: play
     build: ../pipeline/recorder
@@ -241,7 +242,7 @@ services:
     logging:
       driver: 'none'
 
-  # record a device
+  # record - record device messages for future playback
   record:
     container_name: record
     build: ../pipeline/recorder
@@ -256,7 +257,7 @@ services:
       options:
         max-size: '1m'
 
-  # telegraf - sends data from edge device to influxdb
+  # telegraf - send data from edge device to influxdb
   telegraf:
     container_name: telegraf
     image: telegraf:1.18
