@@ -45,17 +45,13 @@ RUN cd ~/agent/build \
 # compile source (~20mins - 3hrs for qemu)
 RUN cd ~/agent/build && make
 
-# install agent
-RUN cd ~/agent/build && cp agent/agent /usr/local/bin
+# install agent executable
+RUN cp ~/agent/build/agent/agent /usr/local/bin
 
-# copy simulator
+# copy simulator data to /etc/mtconnect
 RUN mkdir -p /etc/mtconnect \
   && cd ~/agent/cppagent \
-  && cp -r schemas simulator /etc/mtconnect \
-  && cp -r styles /etc/mtconnect/styles-original
-
-# add link to our additional stylesheet
-# RUN echo "DevicesStyle { Location = /styles/Devices.xsl }" >> /etc/mtconnect/simulator/agent.cfg
+  && cp -r schemas simulator styles /etc/mtconnect
 
 #----------------------------------------------------------------------------
 # install
@@ -81,9 +77,6 @@ USER agent
 COPY --chown=agent:agent --from=compile /usr/local/bin/agent /usr/local/bin
 COPY --chown=agent:agent --from=compile /etc/mtconnect /etc/mtconnect
 
-# bring in our stylesheets from this repo
-COPY --chown=agent:agent styles /etc/mtconnect/styles
-
 # expose port
 EXPOSE 5000
 
@@ -97,7 +90,6 @@ WORKDIR /etc/mtconnect
 CMD /usr/bin/ruby /etc/mtconnect/simulator/run_scenario.rb -l \
   /etc/mtconnect/simulator/VMC-3Axis-Log.txt & \
   cd /etc/mtconnect/simulator && agent debug agent.cfg
-
 
 #----------------------------------------------------------------------------
 # notes
