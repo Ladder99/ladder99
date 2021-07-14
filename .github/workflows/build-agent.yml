@@ -1,29 +1,33 @@
-# github workflow to build ladder99 agent docker image
+# github workflow to build ladder99/mtconnect agent docker image
 
 # run manually at https://github.com/Ladder99/ladder99/actions
-# image hosted on https://hub.docker.com/repository/docker/ladder99
 # secrets set at https://github.com/Ladder99/ladder99/settings/secrets/actions
-
-# update the version below when cppagent version changes - check here for latest -
-# https://github.com/mtconnect/cppagent/blob/master/CMakeLists.txt
+# hosted on https://hub.docker.com/repository/docker/ladder99
 
 name: build-agent
 
+# define some variables
 env:
-  service: agent
+  # can switch between mtconnect-agent and agent.
+  #. build the mtconnect-agent first, then agent will pull from that.
+  service: mtconnect-agent
+  # service: agent
   version: 1.7.0.3
+  # platforms to build image on
+  # for available platforms see output of a previous run -
+  # the "Setup Docker BuildX" / "Inspect Builder" section
+  # has eg
+  # "node_platforms": "linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6"
+  # but the platforms must also be included in the os image chosen -
+  # eg the ubuntu image doesn't include linux/arm/v6.
+  platforms: linux/amd64,linux/arm64,linux/arm/v7
 
 # let user run workflow manually from actions tab
 on: workflow_dispatch
 
-# jobs in a workflow can run in sequence or parallel
 jobs:
-  # define a job called "build"
   build:
-    # the type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # sequence of tasks that will be executed as part of the job
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -43,20 +47,11 @@ jobs:
       - name: Build image and push to DockerHub
         uses: docker/build-push-action@v2
         with:
-          # path to Dockerfile in repository
           context: pipeline/${{ env.service }}
+          file: pipeline/${{ env.service }}/Dockerfile
+          platforms: ${{ env.platforms }}
 
-          # platforms to build image on
-          # for available platforms see output of a previous run -
-          # the "Setup Docker BuildX" / "Inspect Builder" section
-          # has eg
-          # "node_platforms": "linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6"
-          # but the platforms must also be included in the os image chosen -
-          # eg the ubuntu image doesn't include linux/arm/v6.
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
-          # platforms: linux/amd64
-
-          # docker hub user/name:tag
+          # docker hub user/repo:tag
           tags: |
             ladder99/${{ env.service }}:latest
             ladder99/${{ env.service }}:${{ env.version }}
