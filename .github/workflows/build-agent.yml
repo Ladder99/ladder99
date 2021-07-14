@@ -5,13 +5,13 @@
 # image hosted on https://hub.docker.com/repository/docker/ladder99
 
 # instructions:
-# first, get current agent version from https://github.com/mtconnect/cppagent/blob/master/CMakeLists.txt
-# and update the version value below.
-# then, build the mtconnect-agent by using that for the service name,
-# and triggering it manually from github actions page.
-# that might take a few hours for the multiarch build.
-# then, build the ladder99 agent by switching service name to 'agent',
-# PUSH the change, then trigger the workflow.
+# 1. get current agent version from https://github.com/mtconnect/cppagent/blob/master/CMakeLists.txt
+#    and update the version value below.
+# 2. build the mtconnect-agent by using that for the service name,
+#    and triggering it manually from github actions page.
+#    that might take a few hours for the multiarch build.
+# 3. build the ladder99 agent by switching service name to 'agent',
+#    PUSH the change, then trigger the workflow.
 
 name: build-agent
 
