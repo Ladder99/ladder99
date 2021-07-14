@@ -11,8 +11,9 @@ name: build-agent-base
 
 # define some variables
 env:
-  service: agent
-  suffix: -base
+  # service: agent
+  service: mtconnect-agent
+  version: 1.7.0.3
   # platforms to build image on
   # for available platforms see output of a previous run -
   # the "Setup Docker BuildX" / "Inspect Builder" section
@@ -26,14 +27,9 @@ env:
 # let user run workflow manually from actions tab
 on: workflow_dispatch
 
-# jobs in a workflow can run in sequence or parallel
 jobs:
-  # define a job called "build"
   build:
-    # the type of runner that the job will run on
     runs-on: ubuntu-latest
-
-    # sequence of tasks that will be executed as part of the job
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -58,7 +54,9 @@ jobs:
           platforms: ${{ env.platforms }}
 
           # docker hub user/repo:tag
-          tags: ladder99/${{ env.service }}${{ env.suffix }}:latest
+          tags: |
+            ladder99/${{ env.service }}:latest
+            ladder99/${{ env.service }}:${{ env.version }}
 
           # push to docker hub
           push: true

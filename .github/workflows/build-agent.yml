@@ -57,9 +57,9 @@ jobs:
           # platforms: linux/amd64
 
           # docker hub user/name:tag
-          tags:
-            - ladder99/${{ env.service }}:latest
-            - ladder99/${{ env.service }}:${{ env.version }}
+          tags: |
+            ladder99/${{ env.service }}:latest
+            ladder99/${{ env.service }}:${{ env.version }}
 
           # push to docker hub
           push: true
