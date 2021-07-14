@@ -10,15 +10,15 @@
 # then, build the mtconnect-agent by using that for the service name,
 # and triggering it manually from github actions page.
 # that might take a few hours for the multiarch build.
-# then, build the ladder99 agent by switching service name to 'agent'.
-# it shouldn't take long.
+# then, build the ladder99 agent by switching service name to 'agent',
+# PUSH the change, then trigger the workflow.
 
 name: build-agent
 
 # define variables
 env:
-  service: mtconnect-agent
-  # service: agent
+  # service: mtconnect-agent
+  service: agent
   version: 1.7.0.3
   # for available platforms see output of a previous run -
   # ie the "Setup Docker BuildX" / "Inspect Builder" section

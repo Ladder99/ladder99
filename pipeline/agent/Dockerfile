@@ -1,8 +1,7 @@
 # Ladder99 Agent Docker image build instructions
 # Adapted from http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu.
-# See also pipeline/mtconnect-agent for base image.
+# See also pipeline/mtconnect-agent for MTConnect Agent..
 
-# see pipeline/mtconnect-agent Dockerfile
 FROM ladder99/mtconnect-agent:latest
 
 # change to non-root user for better security

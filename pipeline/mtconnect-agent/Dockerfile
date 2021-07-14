@@ -1,6 +1,7 @@
 # MTConnect C++ Agent Docker image build instructions
 # Adapted from http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu
 # Agent source code https://github.com/mtconnect/cppagent
+# See also pipeline/agent for Ladder99 Agent.
 
 #----------------------------------------------------------------------------
 # build os
