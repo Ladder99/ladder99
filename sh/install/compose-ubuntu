@@ -4,6 +4,7 @@
 # see https://docs.docker.com/compose/install/
 
 # The new docker compose command is not yet included in docker for linux.
+
 # Docker Compose is normally installed from pre-built binaries, 
 # downloaded from the GitHub release page for the project. 
 # Sadly, those are not available for the ARM architecture. We can 

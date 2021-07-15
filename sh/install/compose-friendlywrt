@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # install docker-compose on friendlywrt
 
 # see if any updates here - this version is 2021-07-14
