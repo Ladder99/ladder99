@@ -31,7 +31,9 @@ services:
       - all
       - agent
     image: ladder99/agent:latest
-    command: agent debug /data/agent/agent.cfg
+    working_dir: /data/agent
+    # command: agent debug /data/agent/agent.cfg
+    command: agent debug # default file is agent.cfg in working_dir
     # see https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
     # extra_hosts:
     #   - foo:bar
