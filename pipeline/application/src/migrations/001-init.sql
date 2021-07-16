@@ -58,7 +58,7 @@ SELECT devices.props->>'uuid' AS device_uuid,
   history.value -- value is a jsonb object - need to cast it as in below views
 FROM history
 JOIN nodes AS devices ON history.node_id=devices.node_id
-JOIN nodes AS properties ON history.property_id=dataitems.node_id;
+JOIN nodes AS properties ON history.property_id=properties.node_id;
 
 -- HISTORY_FLOAT view --
 
