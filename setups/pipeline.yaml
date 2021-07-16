@@ -50,18 +50,14 @@ services:
   # application - fetch data from agent and send to db
   application:
     container_name: application
-    # image: node:15.14-slim #. switch to Dockerfile
     build: ../pipeline/application
     profiles:
       - all
       - dashboard
       - application
-    # user: node
-    # working_dir: /home/node/app
-    # command: node /home/node/app/src/application.js
     init: true
     environment:
-      # override these as needed in setup compose.yaml
+      # override these as needed in pipeline-overrides.yaml
       AGENT_ENDPOINTS: http://agent:5000
       FETCH_INTERVAL: 2000
       FETCH_COUNT: 800
@@ -71,7 +67,7 @@ services:
       PGUSER:
       PGPASSWORD:
     # this fixes a problem on ubuntu - works on mac okay also
-    #. but not on friendlywrt - host-gateway doesn't exist
+    #. but not on friendlywrt - host-gateway doesn't exist, or need docker>=20.10
     # see https://stackoverflow.com/a/67158212/243392
     # and https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
     # extra_hosts:
