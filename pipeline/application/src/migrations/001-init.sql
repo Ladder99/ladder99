@@ -64,13 +64,15 @@ JOIN nodes AS properties ON history.property_id=properties.node_id;
 
 -- note: float is an alias for 'double precision'
 CREATE OR REPLACE VIEW history_float AS
-SELECT device, dataitem, time, value::float
+SELECT device_uuid, property_definition_path, property_value_path, 
+  property_canonical_id, value::float
 FROM history_all
 WHERE jsonb_typeof(value) = 'number'::text;
 
 -- HISTORY_TEXT view --
 
 CREATE OR REPLACE VIEW history_text AS
-SELECT device, dataitem, time, value::text
+SELECT device_uuid, property_definition_path, property_value_path, 
+  property_canonical_id, value::text
 FROM history_all
 WHERE jsonb_typeof(value) = 'text'::text;
