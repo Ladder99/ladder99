@@ -15,7 +15,8 @@ SERVICES  space-delim list of services to start, eg agent (default), all
 Examples
 
     sh/pipeline start
-    sh/pipeline start ccs-pa broker adapter agent play
+    sh/pipeline start ccs-pa dashboard
+    sh/pipeline start ccs-pa dashboard play
 
 Note: use 'docker kill SERVICE' to stop an individual service.
 Note: services are referenced by their 'profile' attribute in pipeline.yaml.
