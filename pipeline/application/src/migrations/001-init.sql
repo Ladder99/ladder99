@@ -22,8 +22,9 @@ CREATE TABLE IF NOT EXISTS nodes (
   node_id SERIAL PRIMARY KEY,
   props jsonb
 );
-CREATE INDEX nodes_node_type ON nodes (props.nodeType);
-CREATE INDEX nodes_canonical_id ON nodes (props.canonicalId);
+--. syntax for this?
+-- CREATE INDEX nodes_node_type ON nodes (props.nodeType);
+-- CREATE INDEX nodes_canonical_id ON nodes (props.canonicalId);
 
 -- EDGES table --
 
