@@ -3,6 +3,8 @@
 # install docker-compose
 # see https://docs.docker.com/compose/install/
 
+#. merge this with compose-friendlywrt
+
 # The new docker compose command is not yet included in docker for linux.
 
 # Docker Compose is normally installed from pre-built binaries, 
