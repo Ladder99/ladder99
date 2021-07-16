@@ -15,7 +15,7 @@ export class Probe extends Data {
 
     console.log(nodes)
 
-    const nodesPath = 'nodes.json'
+    const nodesPath = 'nodes-ex.json'
     fs.writeFileSync(nodesPath, JSON.stringify(nodes, null, 2))
     process.exit(0)
 
