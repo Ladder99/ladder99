@@ -1,6 +1,6 @@
-# adapter dockerfile
+# application dockerfile
 # based on https://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
-# keep in synch with pipeline/application/Dockerfile
+# keep in synch with pipeline/adapter/Dockerfile
 
 # FROM node:15  # huge 350mb compressed images
 # FROM node:15-alpine  # smallest, but harder to work with
@@ -18,7 +18,7 @@ ENV PATH /data/node_modules/.bin:$PATH
 COPY ./src ./src
 
 # base command - can pass params with CMD
-ENTRYPOINT ["node", "/data/app/src/adapter.js"]
+ENTRYPOINT ["node", "/data/app/src/application.js"]
 
 # default command when run container
-# CMD ["node", "/data/app/src/adapter.js"]
+# CMD ["node", "/data/app/src/application.js"]

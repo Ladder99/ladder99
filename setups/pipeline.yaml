@@ -50,14 +50,15 @@ services:
   # application - fetch data from agent and send to db
   application:
     container_name: application
-    image: node:15.14-slim #. switch to Dockerfile
+    # image: node:15.14-slim #. switch to Dockerfile
+    build: ../pipeline/application
     profiles:
       - all
       - dashboard
       - app
-    user: node
-    working_dir: /home/node/app
-    command: node /home/node/app/src/application.js
+    # user: node
+    # working_dir: /home/node/app
+    # command: node /home/node/app/src/application.js
     init: true
     environment:
       # override these as needed in setup compose.yaml
@@ -77,8 +78,8 @@ services:
     #   - host.docker.internal:host-gateway
     networks:
       - ladder99
-    volumes:
-      - ../pipeline/application:/home/node/app # has source code
+    # volumes:
+    #   - ../pipeline/application:/home/node/app # has source code
     logging:
       options:
         max-size: '1m'
