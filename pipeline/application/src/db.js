@@ -1,109 +1,54 @@
 // database class
-// wraps arangodb
+// wraps postgres/timescaledb/timegraph db
 
-// import fs from 'fs' // node lib - filesystem
-import { Database } from 'arangojs' // https://github.com/arangodb/arangojs
+import fs from 'fs' // node lib
+import pg from 'pg' // postgres driver https://github.com/brianc/node-postgres
+const { Pool } = pg // import { Client } from 'pg' gives error, so must do this
 import * as libapp from './libapp.js'
-
-// arangodb
-const arangoHost = process.env.ARANGO_HOST || 'localhost'
-const arangoPort = process.env.ARANGO_PORT || '8529'
-const arangoUrl = `http://${arangoHost}:${arangoPort}`
-const arangoDatabase = process.env.ARANGO_DATABASE || 'ladder99'
-const arangoUser = process.env.ARANGO_USER || 'root'
-const arangoRootPassword = process.env.ARANGO_ROOT_PASSWORD || ''
 
 export class Db {
   constructor() {
-    this.system = null
-    this.db = null
-    this.nodes = null
-    this.edges = null
-    this.handleSignals()
+    this.client = null
   }
 
   async start() {
     await this.connect()
+    this.init()
     await this.migrate()
   }
 
   async connect() {
-    let system = null
+    let client = null
+    const pool = new Pool()
     do {
       try {
-        console.log(`Trying to connect to db...`, arangoUrl)
-        system = new Database(arangoUrl)
-        system.useBasicAuth(arangoUser, arangoRootPassword)
+        const params = {
+          host: process.env.PGHOST,
+          port: process.env.PGPORT,
+          database: process.env.PGDATABASE,
+        }
+        console.log(`Trying to connect to db...`, params)
+        client = await pool.connect() // uses envars PGHOST, PGPORT etc
       } catch (error) {
         console.log(`Error ${error.code} - will sleep before retrying...`)
         console.log(error)
         await libapp.sleep(4000)
       }
-    } while (!system)
-    this.system = system
+    } while (!client)
+    this.client = client
   }
 
-  //. handle versions - use meta collection
-  async migrate() {
-    await this.createDb()
-    await this.createCollections()
-    // console.log(`Migrating database structures...`)
-    // const path = `migrations/001-init.sql`
-    // const sql = String(fs.readFileSync(path))
-  }
-
-  // create/get our db
-  async createDb() {
-    console.log(`db...`)
-    const dbs = await this.system.listDatabases()
-    if (!dbs.includes(arangoDatabase)) {
-      console.log(`Creating database ${arangoDatabase}...`)
-      await this.system.createDatabase(arangoDatabase)
-    }
-    // db.useDatabase(arangoDatabase) //. ? see https://www.arangodb.com/tutorials/tutorial-node-js/
-    this.db = this.system.database(arangoDatabase)
-  }
-
-  // create/get collections
-  async createCollections() {
-    console.log(`coll...`)
-    const collections = await this.db.listCollections()
-    if (!collections.find(collection => collection.name === 'nodes')) {
-      console.log(`Creating nodes collection...`)
-      await this.db.createCollection('nodes')
-    }
-    this.nodes = this.db.collection('nodes')
-    if (!collections.find(collection => collection.name === 'edges')) {
-      console.log(`Creating edges collection...`)
-      await this.db.createEdgeCollection('edges')
-    }
-    this.edges = this.db.collection('edges')
-  }
-
-  async query(aql) {
-    const cursor = await this.db.query(aql)
-    return cursor
-  }
-
-  disconnect() {
-    console.log(`Releasing db...`)
-    // if (this.db) {
-    //   this.db //.
-    // }
-    // if (this.system) {
-    //   this.system //.
-    // }
-  }
-
-  handleSignals() {
+  init() {
     const that = this
+
     //. need init:true in compose yaml to get SIGINT etc? tried - nowork
     process
-      .on('SIGTERM', getHandler('SIGTERM'))
-      .on('SIGINT', getHandler('SIGINT'))
-      .on('uncaughtException', getHandler('uncaughtException'))
+      .on('SIGTERM', getShutdown('SIGTERM'))
+      .on('SIGINT', getShutdown('SIGINT'))
+      .on('uncaughtException', getShutdown('uncaughtException'))
+
     // get shutdown handler
-    function getHandler(signal) {
+    function getShutdown(signal) {
       return error => {
         console.log()
         console.log(`Signal ${signal} received - shutting down...`)
@@ -113,4 +58,37 @@ export class Db {
       }
     }
   }
+
+  disconnect() {
+    if (!this.client) {
+      console.log(`Releasing db client...`)
+      this.client.release()
+    }
+  }
+
+  //. handle versions - use meta table
+  async migrate() {
+    const path = `migrations/001-init.sql`
+    const sql = String(fs.readFileSync(path))
+    console.log(`Migrating database structures...`)
+    await this.client.query(sql)
+  }
+
+  async query(sql) {
+    return await this.client.query(sql)
+  }
+
+  // //. read nodes and edges into graph structure
+  // async getGraph(Graph) {
+  //   const graph = new Graph()
+  //   const sql = `SELECT * FROM nodes;`
+  //   const res = await this.client.query(sql)
+  //   const nodes = res.rows // [{ _id, props }]
+  //   console.log(nodes)
+  //   for (const node of nodes) {
+  //     graph.addNode(node)
+  //   }
+  //   //. get edges also
+  //   return graph
+  // }
 }

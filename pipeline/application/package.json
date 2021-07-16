@@ -1,7 +1,7 @@
 {
   "name": "ladder99-application",
   "version": "0.1.0",
-  "description": "Ladder99 MTConnect Application",
+  "description": "Ladder99 Application",
   "type": "module",
   "module": "esnext",
   "target": "es2017",
@@ -12,7 +12,6 @@
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "arangojs": "^7.5.0",
     "node-fetch": "^2.6.1",
     "pg": "^8.5.1",
     "pg-hstore": "^2.3.3",
