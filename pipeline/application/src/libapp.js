@@ -40,7 +40,9 @@ export function traverse(
     for (const key of keys) {
       const value = node[key]
       if (key === '_declaration') {
-        // ignore xml declaration
+        // ignore this, eg { _attributes: { version: '1.0', encoding: 'UTF-8' }
+      } else if (key === '_instruction') {
+        // ignore this, eg { 'xml-stylesheet': 'type="text/xsl" href="/styles/Devices.xsl"' }
       } else if (key === '_attributes') {
         obj = { ...obj, ...value, parents }
       } else if (key === '_text') {

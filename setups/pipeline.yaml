@@ -55,7 +55,7 @@ services:
     profiles:
       - all
       - dashboard
-      - app
+      - application
     # user: node
     # working_dir: /home/node/app
     # command: node /home/node/app/src/application.js
