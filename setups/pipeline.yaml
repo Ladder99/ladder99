@@ -69,7 +69,8 @@ services:
       PGDATABASE:
       PGUSER:
       PGPASSWORD:
-    # this fixes a problem on linux - works on mac okay also
+    # this fixes a problem on ubuntu - works on mac okay also
+    #. but not on friendlywrt - host-gateway doesn't exist
     # see https://stackoverflow.com/a/67158212/243392
     # and https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
     extra_hosts:
