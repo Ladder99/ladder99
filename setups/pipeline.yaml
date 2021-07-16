@@ -29,6 +29,7 @@ services:
     container_name: agent
     profiles:
       - all
+      - dashboard
       - agent
     image: ladder99/agent:latest
     working_dir: /data/agent
@@ -52,6 +53,7 @@ services:
     image: node:15.14-slim #. switch to Dockerfile
     profiles:
       - all
+      - dashboard
       - app
     user: node
     working_dir: /home/node/app
@@ -86,6 +88,7 @@ services:
     image: eclipse-mosquitto
     profiles:
       - all
+      - dashboard
       - broker
     ports:
       - 1883:1883
@@ -105,6 +108,7 @@ services:
       - $PGPORT:5432/tcp
     profiles:
       - all
+      - dashboard
       - database
     # init: true
     environment:
@@ -128,6 +132,7 @@ services:
     image: grafana/grafana:7.5.5
     profiles:
       - all
+      - dashboard
       - grafana
     ports:
       - $GRAFANA_PORT:3000/tcp
