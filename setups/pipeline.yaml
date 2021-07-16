@@ -73,8 +73,8 @@ services:
     #. but not on friendlywrt - host-gateway doesn't exist
     # see https://stackoverflow.com/a/67158212/243392
     # and https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
-    extra_hosts:
-      - host.docker.internal:host-gateway
+    # extra_hosts:
+    #   - host.docker.internal:host-gateway
     networks:
       - ladder99
     volumes:
