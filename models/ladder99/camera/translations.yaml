@@ -2,4 +2,4 @@
 # canonical ids on left, shdr ids on right
 
 translations:
-  - device-availability: avail
+  - device-availability: connection

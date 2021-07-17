@@ -2,6 +2,10 @@
 
 made by mqtt-recorder, a Python app
 
+The recordings are csv files with structure:
+
+    [msg.topic, payload, qos, retain, time_now, time_delta]
+
 - run0 - q0.0 on/off, some faults on/off
 - run1 - continuous run of 37 labels until out of data
 - run2 - setup, setting changes, attempt start without data
