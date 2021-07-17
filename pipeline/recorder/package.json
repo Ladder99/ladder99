@@ -8,6 +8,7 @@
   "dependencies": {
     "commander": "^7.2.0",
     "csv": "^5.5.0",
+    "js-yaml": "^4.1.0",
     "mqtt": "^4.2.6"
   }
 }

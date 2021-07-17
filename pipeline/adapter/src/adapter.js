@@ -2,9 +2,8 @@
 // polls or subscribes to data via plugins, updates cache,
 // updates shdr strings, passes them to agent via tcp.
 
-import fs from 'fs' // node lib for filesys
 import net from 'net' // node lib for tcp
-import libyaml from 'js-yaml' // see https://github.com/nodeca/js-yaml
+import { importYaml } from './common.js'
 import { Cache } from './cache.js'
 
 // file system inputs
@@ -175,18 +174,4 @@ function getOutputs({ outputTemplates, types, deviceId }) {
   })
   // @ts-ignore too strict typechecking
   return outputs
-}
-
-// import a yaml file and parse to js struct.
-// returns the js struct or null if file not avail.
-/** @returns {object} */
-function importYaml(path) {
-  try {
-    const yaml = fs.readFileSync(path, 'utf8')
-    const yamlTree = libyaml.load(yaml)
-    return yamlTree
-  } catch (error) {
-    console.log(error.message)
-  }
-  return null
 }

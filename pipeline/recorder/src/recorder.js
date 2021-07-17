@@ -4,9 +4,10 @@
 
 //. make plugins for different device sources, eg mqtt, opc, ...
 
-import fs from 'fs'
+import fs from 'fs' // node lib for filesystem
 import mqttlib from 'mqtt' // see https://github.com/mqttjs/MQTT.js
 import parse from 'csv-parse/lib/sync.js' // see https://github.com/adaltas/node-csv-parse
+import { importYaml } from './common.js'
 // @ts-ignore
 import { Command } from 'commander/esm.mjs' // see https://github.com/tj/commander.js
 
