@@ -15,6 +15,7 @@ SERVICES  space-delim list of services to start, eg agent (default), all
 Examples
 
     sh/pipeline start
+    sh/pipeline start ccs-pa agent
     sh/pipeline start ccs-pa dashboard
     sh/pipeline start ccs-pa dashboard play
 

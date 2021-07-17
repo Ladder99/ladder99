@@ -6,8 +6,8 @@
   <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.7.0.3"/>
   <Devices>
 
-    <Device id="test" name="test" uuid="a1" sampleInterval="10">
-      <Description manufacturer="test" model="test" serialNumber="001">
+    <Device id="d1" name="device1" uuid="a123" sampleInterval="10">
+      <Description manufacturer="ladder99" model="model1" serialNumber="001">
         test device
       </Description>
       <DataItems>
