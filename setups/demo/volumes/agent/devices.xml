@@ -12,11 +12,6 @@
       </Description>
       <DataItems>
         <DataItem id="connection" category="EVENT" type="AVAILABILITY"/>
-        <DataItem id="state" category="EVENT" type="EXECUTION"/>
-        <DataItem id="step" category="EVENT" type="BLOCK"/>
-        <DataItem id="e_stop" category="EVENT" type="EMERGENCY_STOP"/>
-        <DataItem id="printer_start_print" category="EVENT" type="ACTUATOR_STATE"/>
-        <DataItem id="status-cycle_time" category="SAMPLE" units="SECOND" type="PROCESS_TIMER" subType="PROCESS"/>
       </DataItems>
     </Device>
 
