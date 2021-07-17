@@ -13,12 +13,12 @@ import { Command } from 'commander/esm.mjs' // see https://github.com/tj/command
 // parse command line arguments
 const program = new Command()
 program
-  .option('-h, --host <host>', 'mqtt host', 'localhost')
-  .option('-p, --port <port>', 'mqtt port', 1883)
+  .option('-f, --folder <folder>', 'folder containing csv files', 'recordings')
   .option('-m, --mode <mode>', 'play or record', 'play')
   .option('-l, --loop <loop>', 'play in a loop', true)
+  .option('-h, --host <host>', 'mqtt host', 'localhost')
+  .option('-p, --port <port>', 'mqtt port', 1883)
   .option('-t, --topic <topic>', 'topic to subscribe to', '#')
-  .option('-f, --folder <folder>', 'folder containing csv files', 'recorder')
 program.parse(process.argv)
 const options = program.opts()
 const { host, port, mode, loop, topic, folder } = options

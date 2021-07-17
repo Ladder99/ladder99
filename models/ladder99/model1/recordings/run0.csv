@@ -1,2 +1,2 @@
-l99/${deviceId}/evt/status,"{""connection"": ""offline""}",0,1,1615427419,0
-l99/${deviceId}/evt/status,"{""connection"": ""online""}",0,1,1615427419,1
+status,"{""connection"": ""offline""}",0
+status,"{""connection"": ""online""}",1
