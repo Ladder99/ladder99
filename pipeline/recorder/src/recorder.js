@@ -1,6 +1,5 @@
 // recorder
 // plays/records device messages
-// inspired by rpdswtk/mqtt_recorder, a python app
 
 //. make plugins for different device sources, eg mqtt, opc, ...
 

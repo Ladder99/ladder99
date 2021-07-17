@@ -1,2 +1,2 @@
-status,"{""connection"": ""offline""}",0
-status,"{""connection"": ""online""}",1
+status,offline,0
+status,online,1
