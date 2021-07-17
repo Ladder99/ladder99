@@ -1,6 +1,6 @@
-// keep this in synch by copying between services:
-// adapter, recorder
-// simpler than making a library somehow
+// important: keep this in synch by copying between services -
+//   adapter, recorder
+// simpler than making a library somewhere
 
 import fs from 'fs' // node lib for filesystem
 import libyaml from 'js-yaml' // see https://github.com/nodeca/js-yaml

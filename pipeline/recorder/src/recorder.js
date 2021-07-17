@@ -24,10 +24,24 @@ program.parse(process.argv)
 const options = program.opts()
 const { host, port, mode, loop, topic, folder } = options
 
+// file system inputs
+const pluginsFolder = './plugins'
+// these folders are defined in pipeline.yaml with docker volume mappings
+const recorderFolder = '/data/recorder' // incls config/devices.yaml etc
+
 console.log()
 console.log(`Recorder`)
 console.log(`Plays/records device messages`)
 console.log(`------------------------------------------------------------`)
+
+const yamlfile = `${recorderFolder}/recorder.yaml`
+console.log(`Reading ${yamlfile}...`)
+const yamltree = importYaml(yamlfile)
+const setup = yamltree
+if (!setup) {
+  console.log(`No ${yamlfile} available - please add one.`)
+  process.exit(1)
+}
 
 const modeString = mode === 'play' ? 'Playback' : 'Record'
 console.log(`${modeString} mode`)
