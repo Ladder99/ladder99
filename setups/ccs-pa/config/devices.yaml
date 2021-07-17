@@ -12,7 +12,7 @@
 devices:
   - id: pa1 # this is substituted into the model yaml and sources
     #. call this 'structure: ccs-pa' ?
-    model: ccs/pa # for xml structure - see models/ccs/pa/model.yaml
+    model: ccs/print-apply # for xml structure - see models/ccs/print-apply/model.yaml
     #. shift these up, look for each explicitly
     properties: # these are substituted into the model yaml
       uuid: e05363af
@@ -20,7 +20,7 @@ devices:
 
     # define data sources that feed into this device
     sources:
-      - model: ccs/pa # model defines inputs and outputs with yaml files
+      - model: ccs/print-apply # model defines inputs and outputs with yaml files
         protocol: mqtt-json # type of plugin - manages protocol and payload
         # url: mqtt://broker:1883 #. pass in somehow - envar? or say url: mqtt://$sourceHost:1883?
         url: mqtt://localhost:1883

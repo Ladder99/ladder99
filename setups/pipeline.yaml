@@ -218,10 +218,10 @@ services:
       - play
     # # use this for production
     # build: ../pipeline/recorder
-    # command: recorder --mode play --host broker --folder /data/models/ccs/pa/recordings
+    # command: recorder --mode play --host broker --folder /data/models/ccs/print-apply/recordings
     # use this for development
     image: node:15.14-slim
-    command: node src/recorder.js --mode play --host broker --folder /data/models/ccs/pa/recordings
+    command: node src/recorder.js --mode play --host broker --folder /data/models/ccs/print-apply/recordings
     user: node
     working_dir: /home/app
     volumes:
@@ -259,7 +259,7 @@ services:
     build: ../pipeline/recorder
     profiles:
       - record
-    command: recorder --mode record --host broker --folder /data/models/ccs/pa/recordings
+    command: recorder --mode record --host broker --folder /data/models/ccs/print-apply/recordings
     volumes:
       - ../models:/data/models
     networks:
