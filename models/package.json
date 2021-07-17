@@ -1,4 +1,0 @@
-{
-  "//": "need this so adapter can import .js files instead of .mjs",
-  "type": "module"
-}

@@ -1,2 +1,3 @@
-status,offline,0
-status,online,1
+time,prop,value
+0,status,offline
+1,status,online

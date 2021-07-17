@@ -1,6 +1,6 @@
 # inputs
 # this is parsed by the adapter plugin mqtt-json.js.
-# handles mqtt messages, writes values to the cache.
+# handles mqtt messages, writes values to cache, outputs shdr.
 
 # define connect handler
 connect:
