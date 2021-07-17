@@ -221,12 +221,15 @@ services:
     # command: recorder --mode play --host broker --folder /data/models/ccs/print-apply/recordings
     # use this for development
     image: node:15.14-slim
-    command: node src/recorder.js --mode play --host broker --folder /data/models/ccs/print-apply/recordings
+    # command: node src/recorder.js --mode play --host broker --folder /data/models/ccs/print-apply/recordings
+    # command: node src/recorder.js --mode play --host broker # for mac/pi
+    command: node src/recorder.js --mode play --host localhost # for hydrant
     user: node
     working_dir: /home/app
     volumes:
-      - ../pipeline/recorder:/home/app # has source
-      - ../models:/data/models
+      - ../pipeline/recorder:/home/app # has js src folder
+      - ./$SETUP:/data/setup # has setup-specific recordings folder
+      - ../models:/data/models # has model-specific recordings folder
     networks:
       - ladder99
     logging:
