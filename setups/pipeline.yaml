@@ -221,7 +221,6 @@ services:
     # command: recorder --mode play --host broker --folder /data/models/ccs/pa/recordings
     # use this for development
     image: node:15.14-slim
-    working_dir: $PWD/pipeline/recorder
     command: node src/recorder.js --mode play --host broker --folder /data/models/ccs/pa/recordings
     user: node
     working_dir: /home/app
