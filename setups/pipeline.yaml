@@ -217,7 +217,7 @@ services:
     build: ../pipeline/recorder
     profiles:
       - play
-    command: recorder --mode play --host broker --folder /data/models/ccs-pa/recorder
+    command: recorder --mode play --host broker --folder /data/models/ccs/pa/recordings
     volumes:
       - ../models:/data/models
     networks:
@@ -252,7 +252,7 @@ services:
     build: ../pipeline/recorder
     profiles:
       - record
-    command: recorder --mode record --host broker --folder /data/models/ccs-pa/recorder
+    command: recorder --mode record --host broker --folder /data/models/ccs/pa/recordings
     volumes:
       - ../models:/data/models
     networks:
