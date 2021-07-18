@@ -37,7 +37,7 @@ services=${*:-"agent"} # eg 'agent play'
 
 # file paths
 pipeline="setups/pipeline.yaml"
-overrides="setups/$setup/config/pipeline-overrides.yaml"
+overrides="setups/$setup/pipeline-overrides.yaml"
 envfile="setups/.env"
 
 # add main docker compose file for pipeline
