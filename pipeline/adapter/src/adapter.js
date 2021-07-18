@@ -50,7 +50,8 @@ for (const device of devices) {
     // iterate over sources, load plugin for that source, call init on it.
     for (const source of device.sources) {
       console.log({ source })
-      const { model, protocol, url } = source
+      // const { model, protocol, url } = source
+      const { model, protocol, host, port } = source
 
       // import protocol plugin
       //. shouldn't these be classes to instantiate? ie if need >1 of each type
@@ -85,7 +86,8 @@ for (const device of devices) {
       // note: this must be done AFTER getOutputs and addOutputs,
       // as that is where the dependsOn values are set, and this needs those.
       console.log(`Initializing ${protocol} plugin...`)
-      plugin.init({ url, cache, deviceId, inputs })
+      // plugin.init({ url, cache, deviceId, inputs })
+      plugin.init({ host, port, cache, deviceId, inputs })
     }
 
     // handle incoming data - get PING from agent, return PONG

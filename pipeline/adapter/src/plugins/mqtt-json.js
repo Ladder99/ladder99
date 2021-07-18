@@ -11,8 +11,10 @@ let cycleStart
  * queries the device for address space definitions, subscribes to topics.
  * inputs is the inputs.yaml file parsed to a js tree.
  */
-export function init({ url, cache, deviceId, inputs }) {
+// export function init({ url, cache, deviceId, inputs }) {
+export function init({ host, port, cache, deviceId, inputs }) {
   console.log('init', { deviceId })
+  const url = `mqtt://${host}:${port}`
 
   // connect to mqtt broker/server
   console.log(`MQTT connecting to broker on ${url}...`)
