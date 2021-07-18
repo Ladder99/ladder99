@@ -1,3 +1,4 @@
+topic,message,qos,retain,time_now,time_delta
 l99/${deviceId}/evt/status,"{""connection"": ""online"", ""state"": 200, ""program"": ""emergent_pa_rc2"", ""step"": null, ""faults"": {}, ""cpu_time"": 58.924252871, ""utc_time"": 1605737876.2684767, ""build_no"": ""1.3.0.2"", ""_ts"": 1605737876335}",0,1,1616700947.9427469,0.008334875106811523
 l99/${deviceId}/cmd/runstate/action=run,{},0,0,1616700956.334771,8.392024040222168
 l99/${deviceId}/evt/status,"{""connection"": ""online"", ""state"": 300, ""program"": ""emergent_pa_rc2"", ""step"": ""wait_for_printer_data_ready"", ""faults"": {}, ""cpu_time"": 172.631447913, ""utc_time"": 1616700956.5392327, ""build_no"": ""1.3.0.2"", ""_ts"": 1616700956611}",0,0,1616700956.6029,0.2681291103363037

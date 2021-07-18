@@ -1,3 +1,5 @@
+// mqtt player/recorder
+
 import fs from 'fs' // node lib for filesystem
 import mqttlib from 'mqtt' // see https://github.com/mqttjs/MQTT.js
 import parse from 'csv-parse/lib/sync.js' // see https://github.com/adaltas/node-csv-parse
@@ -20,7 +22,7 @@ export class Plugin {
     mqtt.on('connect', async function onConnect() {
       console.log(`Connected...`)
 
-      const columns = 'topic,payload,qos,retain,time_now,time_delta'.split(',')
+      // const columns = 'topic,payload,qos,retain,time_now,time_delta'.split(',')
 
       if (mode === 'play') {
         console.log(`Reading list of files in folder '${folder}'...`)
@@ -48,14 +50,16 @@ export class Plugin {
             const csvpath = `${folder}/${csvfile}`
 
             process.stdout.write(`Reading ${csvpath}`)
-            const csv = await fs.readFileSync(csvpath)
-            const rows = parse(csv, { columns })
+            let csv = await fs.readFileSync(csvpath).toString()
+            // @ts-ignore
+            csv = csv.replaceAll('${deviceId}', 'pa1') //... handle this
+
+            // const rows = parse(csv, { columns })
+            const rows = parse(csv, { columns: true, skip_empty_lines: true })
 
             for (const row of rows) {
               process.stdout.write('.')
-              const { payload, qos, retain, time_delta } = row
-              // const topic = row.topic
-              const topic = row.topic.replace('${deviceId}', 'pa1') //... handle this
+              const { topic, payload, qos, retain, time_delta } = row
               // console.log(`Publishing topic ${topic}: ${payload.slice(0, 40)}...`)
               //. mosquitto closes with "disconnected due to protocol error" when send qos
               // mqtt.publish(topic, payload, { qos, retain })
@@ -94,20 +98,23 @@ export class Plugin {
           }
           let time_last = Number(new Date()) / 1000 // seconds
 
+          const row = `topic,message,qos,retain,time_now,time_delta\n`
+          fs.writeSync(fd, row)
+
           mqtt.on('message', onMessage)
           console.log(`Listening...`)
 
           // message received - add to file
-          function onMessage(topic, buffer, packet) {
-            const message = buffer.toString()
+          function onMessage(topic, message, packet) {
+            message = message.toString().replaceAll('"', '""')
             console.log('Message received:', topic, message.slice(0, 60))
-            const msg = message.replaceAll('"', '""')
+            // const msg = message.replaceAll('"', '""')
             const { qos, retain } = packet
             const time_now = Number(new Date()) / 1000 // seconds
             const time_delta = time_now - time_last // seconds
             time_last = time_now
-            const row = `${topic},"${msg}",${qos},${retain},${time_now},${time_delta}\n`
-            //. write each msg, or write to array and flush every n msgs
+            //. write each message, or write to array and flush every n msgs
+            const row = `${topic},"${message}",${qos},${retain},${time_now},${time_delta}\n`
             fs.writeSync(fd, row)
           }
         }

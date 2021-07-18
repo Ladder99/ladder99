@@ -1,3 +1,4 @@
+topic,message,qos,retain,time_now,time_delta
 l99/${deviceId}/evt/status,"{""connection"": ""online"", ""state"": 400, ""program"": ""emergent_pa_rc2"", ""step"": ""wait_for_sensor_one"", ""faults"": {""50"": {""description"": ""low ribbon"", ""hard"": false, ""added"": 966.267349931, ""updated"": 1105.575680155, ""count"": 13838}}, ""cpu_time"": 1105.508104875, ""utc_time"": 1616701889.4158895, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701889490}",0,1,1616702032.1260328,0.010673761367797852
 l99/${deviceId}/evt/read,"[{""address"": ""%I0.6"", ""keys"": [""IN7"", ""product.sensor_one"", ""J1.12"", ""SX1.P6""], ""value"": 1, ""_ts"": 1616702042253}]",0,0,1616702042.2148328,10.088799953460693
 l99/${deviceId}/evt/read,"[{""address"": ""%I0.6"", ""keys"": [""IN7"", ""product.sensor_one"", ""J1.12"", ""SX1.P6""], ""value"": 0, ""_ts"": 1616702042353}]",0,0,1616702042.314754,0.09992122650146484

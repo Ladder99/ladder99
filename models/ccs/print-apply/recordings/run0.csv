@@ -1,3 +1,4 @@
+topic,message,qos,retain,time_now,time_delta
 l99/${deviceId}/evt/status,"{""connection"": ""online"", ""state"": 400, ""program"": ""pgm0"", ""step"": ""step1"", ""faults"": {}, ""cpu_time"": 6309035.984902669, ""utc_time"": 1615427419.6599176, ""build_no"": ""1.3.0.3"", ""_ts"": 1615427419676}",0,1,1615427419.811077,0.05297517776489258
 l99/${deviceId}/evt/read,"[{""address"": ""%M55.0"", ""keys"": [""counter.0.value""], ""value"": 1, ""_ts"": 1615427419875}]",0,0,1615427419.873438,0.06236076354980469
 l99/${deviceId}/evt/read,"[{""address"": ""%Q0.0"", ""keys"": [""OUT1"", ""output.1""], ""value"": 1, ""_ts"": 1615427420176}]",0,0,1615427420.1746821,0.30124425888061523
