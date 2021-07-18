@@ -216,16 +216,9 @@ services:
     container_name: play
     profiles:
       - play
-    # use this for production
     build: ../pipeline/recorder
     command: recorder --mode play
-    # # use this for development
-    # image: node:15.14-slim
-    # command: node src/recorder.js --mode play
-    # user: node
-    # working_dir: /home/app
     volumes:
-      # - ../pipeline/recorder:/home/app # has js src folder
       - ./$SETUP:/data/setup # has setup-specific recordings folder
       - ../models:/data/models # has model-specific recordings folder
     networks:
@@ -259,18 +252,11 @@ services:
     container_name: record
     profiles:
       - record
-    # use this for production
     build: ../pipeline/recorder
     command: recorder --mode record
-    # # use this for development
-    # image: node:15.14-slim
-    # command: node src/recorder.js --mode record
-    # user: node
-    # working_dir: /home/app
     volumes:
-      # - ../pipeline/recorder:/home/app # has js src folder
       - ./$SETUP:/data/setup # has setup-specific recordings folder
-      - ../models:/data/models
+      - ../models:/data/models # has model-specific recordings folder
     networks:
       - ladder99
     logging:
