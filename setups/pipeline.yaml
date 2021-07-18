@@ -222,8 +222,8 @@ services:
     # use this for development
     image: node:15.14-slim
     # command: node src/recorder.js --mode play --host broker --folder /data/models/ccs/print-apply/recordings
-    # command: node src/recorder.js --mode play --host broker # for mac/pi
-    command: node src/recorder.js --mode play --host localhost # for hydrant
+    command: node src/recorder.js --mode play --host broker # for mac/pi
+    # command: node src/recorder.js --mode play --host localhost # for hydrant
     user: node
     working_dir: /home/app
     volumes:
