@@ -1,4 +1,4 @@
-// mqtt player/recorder
+// mqtt-json player/recorder
 
 import fs from 'fs' // node lib for filesystem
 import mqttlib from 'mqtt' // see https://github.com/mqttjs/MQTT.js
