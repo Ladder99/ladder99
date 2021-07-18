@@ -8,6 +8,12 @@ devices:
 
     sources:
       - model: ladder99/camera
-        protocol: test # type of adapter plugin - manages protocol and payload
+        # protocol: test # type of adapter plugin - manages protocol and payload
+        protocol: mqtt # type of adapter plugin - manages protocol and payload
         # url: mqtt://broker:1883 #. pass in somehow - envar? or say url: mqtt://$sourceHost:1883?
-        url: mqtt://localhost:1883
+        # url: mqtt://localhost:1883
+        host: broker
+        # host: localhost
+        port: 1883
+        # loop: true
+        # topic: '#'

@@ -53,6 +53,7 @@ for (const device of devices) {
       const { model, protocol, url } = source
 
       // import protocol plugin
+      //. shouldn't these be classes to instantiate? ie if need >1 of each type
       const pathProtocol = `${pluginsFolder}/${protocol}.js` // eg './plugins/mqtt-json.js' -
       console.log(`Adapter importing plugin code: ${pathProtocol}...`)
       // @ts-ignore top level await okay

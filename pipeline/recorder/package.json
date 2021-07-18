@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "plays/records device messages",
   "type": "module",
+  "target": "es2021",
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "MIT",
   "dependencies": {
