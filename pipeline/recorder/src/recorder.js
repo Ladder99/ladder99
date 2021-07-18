@@ -10,19 +10,13 @@ const program = new Command()
 program.option('-m, --mode <mode>', 'play or record', 'play')
 program.parse(process.argv)
 const options = program.opts()
-const {
-  host = 'localhost',
-  port = 1883,
-  mode = 'play',
-  loop = true,
-  topic = '#',
-} = options
+const { mode = 'play' } = options
 
 // file system inputs
 const pluginsFolder = './plugins'
 // these folders are defined in pipeline.yaml with docker volume mappings
 const setupFolder = '/data/setup' // incls setup.yaml etc
-const modelsFolder = '/data/models' // incls ccs/print-apply, etc
+const modelsFolder = '/data/models' // incls ccs/print-apply/recordings, etc
 
 console.log()
 console.log(`Recorder`)
@@ -57,9 +51,9 @@ async function main() {
       const pluginPath = `${pluginsFolder}/${protocol}.js`
       console.log(`Importing plugin from ${pluginPath}...`)
       const { Plugin } = await import(pluginPath)
-      const plugin = new Plugin()
       // initialize the plugin
       const folder = `${modelsFolder}/${model}/recordings`
+      const plugin = new Plugin()
       plugin.init({ deviceId, mode, host, port, folder, loop, topic })
     }
   }
