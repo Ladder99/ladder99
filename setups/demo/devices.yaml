@@ -1,3 +1,6 @@
+meta:
+  foo: bar
+
 devices:
   - id: d1
     name: camera1
