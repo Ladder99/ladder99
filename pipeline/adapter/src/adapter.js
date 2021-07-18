@@ -3,7 +3,7 @@
 // updates shdr strings, passes them to agent via tcp.
 
 import net from 'net' // node lib for tcp
-import { importYaml } from './common.js'
+import * as common from './common.js'
 import { Cache } from './cache.js'
 
 // file system inputs
@@ -20,7 +20,7 @@ console.log(`----------------------------------------------------------------`)
 // load setup, eg from setups/ccs-pa/setup.yaml
 const yamlfile = `${setupFolder}/setup.yaml`
 console.log(`Reading ${yamlfile}...`)
-const yamltree = importYaml(yamlfile)
+const yamltree = common.importYaml(yamlfile)
 const setup = yamltree
 if (!setup) {
   console.log(`No ${yamlfile} available - please add one.`)
@@ -61,17 +61,17 @@ for (const device of devices) {
       // get inputs
       const pathInputs = `${modelsFolder}/${model}/inputs.yaml`
       console.log(`Reading ${pathInputs}...`)
-      const inputs = importYaml(pathInputs) || {}
+      const inputs = common.importYaml(pathInputs) || {}
 
       // get outputs
       const pathOutputs = `${modelsFolder}/${model}/outputs.yaml`
       console.log(`Reading ${pathOutputs}...`)
-      const outputTemplates = (importYaml(pathOutputs) || {}).outputs
+      const outputTemplates = (common.importYaml(pathOutputs) || {}).outputs
 
       // get types
       const pathTypes = `${modelsFolder}/${model}/types.yaml`
       console.log(`Reading ${pathTypes}...`)
-      const types = (importYaml(pathTypes) || {}).types
+      const types = (common.importYaml(pathTypes) || {}).types
 
       // compile outputs from yaml strings and save to source
       const outputs = getOutputs({ outputTemplates, types, deviceId })

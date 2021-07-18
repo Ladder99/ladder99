@@ -5,6 +5,11 @@
 import fs from 'fs' // node lib for filesystem
 import libyaml from 'js-yaml' // see https://github.com/nodeca/js-yaml
 
+// sleep ms milliseconds
+export function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 // import a yaml file and parse to js struct.
 // returns the js struct or null if file not avail.
 /** @returns {object} */
