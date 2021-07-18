@@ -7,7 +7,7 @@ import * as common from '../common.js'
 
 export class Plugin {
   constructor() {}
-  init({ mode, host, port, folder, loop, topic }) {
+  init({ deviceId, mode, host, port, folder, loop, topic }) {
     console.log(`Mode: ${mode}`)
 
     const clientId = `recorder-${Math.random()}`
@@ -49,16 +49,16 @@ export class Plugin {
           for (const csvfile of csvfiles) {
             const csvpath = `${folder}/${csvfile}`
 
-            process.stdout.write(`Reading ${csvpath}`)
+            console.log(`Reading and publishing ${csvpath}...`)
             let csv = await fs.readFileSync(csvpath).toString()
             // @ts-ignore
-            csv = csv.replaceAll('${deviceId}', 'pa1') //... handle this
+            csv = csv.replaceAll('${deviceId}', deviceId)
 
             // const rows = parse(csv, { columns })
             const rows = parse(csv, { columns: true, skip_empty_lines: true })
 
             for (const row of rows) {
-              process.stdout.write('.')
+              // process.stdout.write('.')
               const { topic, payload, qos, retain, time_delta } = row
               // console.log(`Publishing topic ${topic}: ${payload.slice(0, 40)}...`)
               //. mosquitto closes with "disconnected due to protocol error" when send qos
@@ -113,6 +113,7 @@ export class Plugin {
             const time_now = Number(new Date()) / 1000 // seconds
             const time_delta = time_now - time_last // seconds
             time_last = time_now
+            topic = topic.replace(deviceId, '${deviceId}') //. ok? dubious
             //. write each message, or write to array and flush every n msgs
             const row = `${topic},"${message}",${qos},${retain},${time_now},${time_delta}\n`
             fs.writeSync(fd, row)

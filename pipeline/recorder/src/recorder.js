@@ -41,6 +41,7 @@ async function main() {
   // iterate over devices in setup.yaml
   const { devices } = setup
   for (let device of devices) {
+    const { id: deviceId } = device
     // iterate over sources for each device
     const { sources } = device
     for (let source of sources) {
@@ -59,7 +60,7 @@ async function main() {
       const plugin = new Plugin()
       // initialize the plugin
       const folder = `${modelsFolder}/${model}/recordings`
-      plugin.init({ mode, host, port, folder, loop, topic })
+      plugin.init({ deviceId, mode, host, port, folder, loop, topic })
     }
   }
 }
