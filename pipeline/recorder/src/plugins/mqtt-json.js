@@ -6,11 +6,34 @@ import parse from 'csv-parse/lib/sync.js' // see https://github.com/adaltas/node
 import * as common from '../common.js'
 
 export class Plugin {
+  //------------------------------------------------------------------------
+  // init
+  //------------------------------------------------------------------------
+
   init({ deviceId, mode, host, port, folder, loop, topic }) {
     console.log(`Mode: ${mode}`)
 
+    let fd // file descriptor for recording
+
+    process
+      .on('SIGTERM', getShutdown('SIGTERM'))
+      .on('SIGINT', getShutdown('SIGINT'))
+      .on('uncaughtException', getShutdown('uncaughtException'))
+
+    // get shutdown handler
+    function getShutdown(signal) {
+      return err => {
+        console.log()
+        console.log(`Signal ${signal} received - shutting down...`)
+        if (err) console.error(err.stack || err)
+        if (fd) fs.closeSync(fd)
+        console.log(`Closing MQTT connection...`)
+        mqtt.end()
+        process.exit(err ? 1 : 0)
+      }
+    }
+
     const clientId = `recorder-${Math.random()}`
-    // const config = { host, port, clientId, reconnectPeriod: 0 }
     const config = { host, port, clientId }
 
     console.log(`Connecting to MQTT broker on`, config)
@@ -26,6 +49,21 @@ export class Plugin {
       console.log(`Closing MQTT connection...`)
       mqtt.end()
     })
+
+    mqtt.on('disconnect', () => handleEvent('disconnect'))
+    mqtt.on('offline', () => handleEvent('offline'))
+    mqtt.on('reconnect', () => handleEvent('reconnect'))
+    mqtt.on('close', () => handleEvent('close'))
+    mqtt.on('error', error => handleEvent('error', error))
+
+    function handleEvent(msg, error) {
+      console.log(msg)
+      if (error) console.log(error)
+    }
+
+    //------------------------------------------------------------------------
+    // play
+    //------------------------------------------------------------------------
 
     async function play() {
       console.log(`Reading list of files in folder '${folder}'...`)
@@ -57,11 +95,9 @@ export class Plugin {
           // @ts-ignore
           csv = csv.replaceAll('${deviceId}', deviceId)
 
-          // const rows = parse(csv, { columns })
           const rows = parse(csv, { columns: true, skip_empty_lines: true })
 
           for (const row of rows) {
-            // process.stdout.write('.')
             const { topic, message, qos, retain, time_delta } = row
             // console.log(`Publishing topic ${topic}: ${message.slice(0, 40)}`)
             //. mosquitto closes with "disconnected due to protocol error" when send qos
@@ -76,11 +112,13 @@ export class Plugin {
       } while (loop)
     }
 
+    //------------------------------------------------------------------------
+    // record
+    //------------------------------------------------------------------------
+
     async function record() {
       console.log(`Subscribing to MQTT topics (${topic})...`)
       mqtt.subscribe(topic, null, onSubscribe)
-
-      let fd // file descriptor
 
       // subscribed - granted is array of { topic, qos }
       function onSubscribe(err, granted) {

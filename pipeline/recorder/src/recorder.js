@@ -42,7 +42,7 @@ async function main() {
       // instantiate a plugin for the source protocol
       const {
         model,
-        protocol = 'mqtt',
+        protocol = 'mqtt-json',
         host = 'localhost',
         port = 1883,
         loop = true,
@@ -60,32 +60,3 @@ async function main() {
 }
 
 main()
-
-// process
-//   .on('SIGTERM', getShutdown('SIGTERM'))
-//   .on('SIGINT', getShutdown('SIGINT'))
-//   .on('uncaughtException', getShutdown('uncaughtException'))
-
-// mqtt.on('disconnect', () => handleEvent('disconnect'))
-// mqtt.on('offline', () => handleEvent('offline'))
-// mqtt.on('reconnect', () => handleEvent('reconnect'))
-// mqtt.on('close', () => handleEvent('close'))
-// mqtt.on('error', error => handleEvent('error', error))
-
-// function handleEvent(msg, error) {
-//   console.log(msg)
-//   if (error) console.log(error)
-// }
-
-// // get shutdown handler
-// function getShutdown(signal) {
-//   return err => {
-//     console.log()
-//     console.log(`Signal ${signal} received - shutting down...`)
-//     if (err) console.error(err.stack || err)
-//     if (fd) fs.closeSync(fd)
-//     console.log(`Closing MQTT connection...`)
-//     mqtt.end()
-//     process.exit(err ? 1 : 0)
-//   }
-// }
