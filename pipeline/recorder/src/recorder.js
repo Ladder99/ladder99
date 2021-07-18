@@ -33,14 +33,31 @@ console.log(`Recorder`)
 console.log(`Plays/records device messages`)
 console.log(`------------------------------------------------------------`)
 
-const yamlfile = `${setupFolder}/setup.yaml`
-console.log(`Reading ${yamlfile}...`)
-const yamltree = importYaml(yamlfile)
-const setup = yamltree
+const setupFile = `${setupFolder}/setup.yaml`
+console.log(`Reading ${setupFile}...`)
+const setup = importYaml(setupFile)
 if (!setup) {
-  console.log(`No ${yamlfile} available - please add one.`)
+  console.log(`No ${setupFile} available - please add one.`)
   process.exit(1)
 }
+
+async function main() {
+  // iterate over devices in setup.yaml
+  const { devices } = setup
+  for (let device of devices) {
+    // iterate over sources for each device
+    const { sources } = device
+    for (let source of sources) {
+      // instantiate a plugin for each source protocol
+      const { protocol } = source
+      const plugin = await import(`${pluginsFolder}/${protocol}`)
+      // initialize the plugin
+      plugin.init()
+    }
+  }
+}
+
+main()
 
 const modeString = mode === 'play' ? 'Playback' : 'Record'
 console.log(`${modeString} mode`)
