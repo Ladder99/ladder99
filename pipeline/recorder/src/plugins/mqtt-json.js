@@ -59,11 +59,11 @@ export class Plugin {
 
             for (const row of rows) {
               // process.stdout.write('.')
-              const { topic, payload, qos, retain, time_delta } = row
-              // console.log(`Publishing topic ${topic}: ${payload.slice(0, 40)}...`)
+              const { topic, message, qos, retain, time_delta } = row
+              // console.log(`Publishing topic ${topic}: ${message.slice(0, 40)}`)
               //. mosquitto closes with "disconnected due to protocol error" when send qos
               // mqtt.publish(topic, payload, { qos, retain })
-              mqtt.publish(topic, payload, { retain })
+              mqtt.publish(topic, message, { retain })
               await common.sleep(time_delta * 1000) // pause between messages
             }
             console.log()

@@ -48,19 +48,19 @@ export function init({ host, port, cache, deviceId, inputs }) {
   /**
    * handle incoming messages.
    * eg for ccs-pa have query, status, and read messages.
-   * @param {string} msgTopic - mqtt topic, eg 'l99/ccs-pa-001/evt/query'
-   * @param {array} msgBuffer - array of bytes (assumed to be a json string)
+   * @param {string} msgTopic - mqtt topic, eg 'l99/pa1/evt/query'
+   * message - array of bytes (assumed to be a json string)
    */
-  function onMessage(msgTopic, msgBuffer) {
-    console.log('MQTT got message on topic', msgTopic)
+  function onMessage(msgTopic, message) {
+    message = message.toString()
+    // console.log(`Got message on topic ${msgTopic}: ${message.slice(0, 20)}`)
 
     const receivedTime = new Date()
 
     // unpack the mqtt json payload, assuming it's a JSON string.
     // sets payload as variable - used by handler.initialize - don't delete - @ts-ignore
-    const payload = JSON.parse(msgBuffer.toString())
-    // let payload = JSON.parse(msgBuffer.toString())
-    // if (!Array.isArray(payload)) payload = [payload] // wrap obj in array
+    const payload = JSON.parse(message)
+    // let payload = JSON.parse(message)
 
     // iterate over message handlers - handlers is an array of [topic, handler]
     const handlers = Object.entries(inputs.handlers) || []
