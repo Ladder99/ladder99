@@ -218,12 +218,10 @@ services:
       - play
     # # use this for production
     # build: ../pipeline/recorder
-    # command: recorder --mode play --host broker --folder /data/models/ccs/print-apply/recordings
+    # command: recorder --mode play
     # use this for development
     image: node:15.14-slim
-    # command: node src/recorder.js --mode play --host broker --folder /data/models/ccs/print-apply/recordings
-    command: node src/recorder.js --mode play --host broker # for mac/pi
-    # command: node src/recorder.js --mode play --host localhost # for hydrant
+    command: node src/recorder.js --mode play
     user: node
     working_dir: /home/app
     volumes:
@@ -259,11 +257,19 @@ services:
   # record - record device messages for future playback
   record:
     container_name: record
-    build: ../pipeline/recorder
     profiles:
       - record
-    command: recorder --mode record --host broker --folder /data/models/ccs/print-apply/recordings
+    # # use this for production
+    # build: ../pipeline/recorder
+    # command: recorder --mode record
+    # use this for development
+    image: node:15.14-slim
+    command: node src/recorder.js --mode record
+    user: node
+    working_dir: /home/app
     volumes:
+      - ../pipeline/recorder:/home/app # has js src folder
+      - ./$SETUP:/data/setup # has setup-specific recordings folder
       - ../models:/data/models
     networks:
       - ladder99

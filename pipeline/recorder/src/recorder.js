@@ -1,21 +1,22 @@
 // recorder
 // plays/records device messages
 
-import * as common from './common.js'
 // @ts-ignore
 import { Command } from 'commander/esm.mjs' // see https://github.com/tj/commander.js
+import * as common from './common.js'
 
 // parse command line arguments
 const program = new Command()
 program.option('-m, --mode <mode>', 'play or record', 'play')
-// .option('-f, --folder <folder>', 'folder containing csv files', 'recordings')
-// .option('-l, --loop <loop>', 'play in a loop', true)
-// .option('-h, --host <host>', 'mqtt host', 'localhost')
-// .option('-p, --port <port>', 'mqtt port', 1883)
-// .option('-t, --topic <topic>', 'topic to subscribe to', '#')
 program.parse(process.argv)
 const options = program.opts()
-const { host, port, mode, loop, topic, folder } = options
+const {
+  host = 'localhost',
+  port = 1883,
+  mode = 'play',
+  loop = true,
+  topic = '#',
+} = options
 
 // file system inputs
 const pluginsFolder = './plugins'
@@ -43,8 +44,15 @@ async function main() {
     // iterate over sources for each device
     const { sources } = device
     for (let source of sources) {
-      // instantiate a plugin for the source protocol (mqtt, test)
-      const { model, protocol, host, port, loop, topic } = source
+      // instantiate a plugin for the source protocol
+      const {
+        model,
+        protocol = 'mqtt',
+        host = 'localhost',
+        port = 1883,
+        loop = true,
+        topic = '#',
+      } = source
       const pluginPath = `${pluginsFolder}/${protocol}.js`
       console.log(`Importing plugin from ${pluginPath}...`)
       const { Plugin } = await import(pluginPath)

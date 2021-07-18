@@ -12,8 +12,8 @@ devices:
         protocol: mqtt # type of adapter plugin - manages protocol and payload
         # url: mqtt://broker:1883 #. pass in somehow - envar? or say url: mqtt://$sourceHost:1883?
         # url: mqtt://localhost:1883
-        host: broker
-        # host: localhost
+        host: broker # for mac/pi
+        # host: localhost # for hydrant
         port: 1883
         # loop: true
         # topic: '#'
