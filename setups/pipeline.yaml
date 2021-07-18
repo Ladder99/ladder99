@@ -10,8 +10,8 @@ services:
   # adapter - convert machine data to shdr and send to agent
   adapter:
     container_name: adapter
+    # image: ladder99/adapter:latest # use this if build docker image and push to hub
     build: ../pipeline/adapter
-    # image: ladder99/adapter:latest
     profiles:
       - all
       - adapter
@@ -216,16 +216,16 @@ services:
     container_name: play
     profiles:
       - play
-    # # use this for production
-    # build: ../pipeline/recorder
-    # command: recorder --mode play
-    # use this for development
-    image: node:15.14-slim
-    command: node src/recorder.js --mode play
-    user: node
-    working_dir: /home/app
+    # use this for production
+    build: ../pipeline/recorder
+    command: recorder --mode play
+    # # use this for development
+    # image: node:15.14-slim
+    # command: node src/recorder.js --mode play
+    # user: node
+    # working_dir: /home/app
     volumes:
-      - ../pipeline/recorder:/home/app # has js src folder
+      # - ../pipeline/recorder:/home/app # has js src folder
       - ./$SETUP:/data/setup # has setup-specific recordings folder
       - ../models:/data/models # has model-specific recordings folder
     networks:
