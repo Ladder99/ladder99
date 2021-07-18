@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- handmade version for development -->
-<!-- will eventually be compiled from devices.yaml and model yamls -->
+<!-- will eventually be compiled from setup.yaml and model yamls -->
 <MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.6"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="urn:mtconnect.org:MTConnectDevices:1.6" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.6 http://www.mtconnect.org/schemas/MTConnectDevices_1.6.xsd">

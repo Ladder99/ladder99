@@ -16,7 +16,7 @@ services:
       - all
       - adapter
     volumes:
-      - ./$SETUP:/data/setup # has config/devices.yaml etc
+      - ./$SETUP:/data/setup # has config/setup.yaml etc
       - ../models:/data/models # has model yamls
     networks:
       - ladder99

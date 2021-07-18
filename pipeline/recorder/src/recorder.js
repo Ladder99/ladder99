@@ -26,14 +26,14 @@ const { host, port, mode, loop, topic, folder } = options
 // file system inputs
 const pluginsFolder = './plugins'
 // these folders are defined in pipeline.yaml with docker volume mappings
-const setupFolder = '/data/setup' // incls devices.yaml etc
+const setupFolder = '/data/setup' // incls setup.yaml etc
 
 console.log()
 console.log(`Recorder`)
 console.log(`Plays/records device messages`)
 console.log(`------------------------------------------------------------`)
 
-const yamlfile = `${setupFolder}/devices.yaml`
+const yamlfile = `${setupFolder}/setup.yaml`
 console.log(`Reading ${yamlfile}...`)
 const yamltree = importYaml(yamlfile)
 const setup = yamltree

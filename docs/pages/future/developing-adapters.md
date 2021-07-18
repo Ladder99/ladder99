@@ -23,7 +23,7 @@ To develop a new model, you could make a copy of the `ccs-pa` folder and make ch
 
 ## Defining Devices
 
-The devices (model instances) are defined in the `setups` folder, eg the `ccs-pa` setup has a list of instances in the `devices.yaml` file there.
+The devices (model instances) are defined in the `setups` folder, eg the `ccs-pa` setup has a list of instances in the `setup.yaml` file there.
 
 To start your own setup, start by making a copy of the `setups/ccs-pa` folder and name it something appropriate -
 

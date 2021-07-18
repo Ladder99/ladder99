@@ -5,7 +5,7 @@
 SETUP=$1  # setup subfolder, eg 'ccs-pa'
 
 node pipeline/adapter/src/compiler/compile-xml.js \
-  setups/$SETUP/devices.yaml \
+  setups/$SETUP/setup.yaml \
   setups/$SETUP/volumes/agent/devices.xml
 
 # # compile-xml and compile-compose
@@ -13,12 +13,12 @@ node pipeline/adapter/src/compiler/compile-xml.js \
 #     just compile-xml {{SETUP}}
 #     just compile-compose {{SETUP}}
 
-# # compile devices.xml from model devices.yaml
+# # compile devices.xml from model setup.yaml
 # compile-xml SETUP='demo':
 #     node pipeline/adapter/src/compiler/compile-xml.js \
-#     setups/{{SETUP}}/devices.yaml \
+#     setups/{{SETUP}}/setup.yaml \
 #     setups/{{SETUP}}/volumes/agent/devices.xml
 
-# # compile docker-compose.yaml from devices.yaml
+# # compile docker-compose.yaml from setup.yaml
 # compile-compose SETUP='demo':
 #     echo todo

@@ -1,6 +1,6 @@
 # docker-compose overrides for ccs-pa pipeline.
 
-#. this will be generated from devices.yaml, but edit manually for now.
+#. this will be generated from setup.yaml, but edit manually for now.
 
 version: '3.8'
 

@@ -1,4 +1,4 @@
-// translate devices.yaml to devices.xml
+// translate setup.yaml to devices.xml
 
 // note: we use 'yaml' and 'xml' for the strings,
 // 'yamltree' and 'xmltree' for the corresponding js structures.
