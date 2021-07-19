@@ -51,12 +51,10 @@ async function main() {
       // iterate over sources, load plugin for that source, call init on it.
       for (const source of device.sources) {
         console.log({ source })
-        // const { model, protocol, url } = source
         const { model, protocol, host, port } = source
 
         // import protocol plugin
-        //. shouldn't these be classes to instantiate? ie if need >1 of each type
-        const pathProtocol = `${pluginsFolder}/${protocol}.js` // eg './plugins/mqtt-json.js' -
+        const pathProtocol = `${pluginsFolder}/${protocol}.js` // eg './plugins/mqtt-json.js'
         console.log(`Adapter importing plugin code: ${pathProtocol}...`)
         const AdapterPlugin = await import(pathProtocol)
         const plugin = new AdapterPlugin()
@@ -80,19 +78,17 @@ async function main() {
         const outputs = getOutputs({ outputTemplates, types, deviceId })
 
         // add outputs for each source to cache
-        // @ts-ignore complex types
         cache.addOutputs(outputs, socket)
 
         // initialize plugin
         // note: this must be done AFTER getOutputs and addOutputs,
         // as that is where the dependsOn values are set, and this needs those.
         console.log(`Initializing ${protocol} plugin...`)
-        plugin.init({ host, port, cache, deviceId, inputs })
+        plugin.init({ deviceId, host, port, cache, inputs })
       }
 
       // handle incoming data - get PING from agent, return PONG
       socket.on('data', pingpong)
-
       function pingpong(buffer) {
         const str = buffer.toString().trim()
         if (str === '* PING') {
@@ -105,14 +101,9 @@ async function main() {
       }
     })
 
-    const defaultDestination = {
-      protocol: 'shdr',
-      host: 'adapter',
-      port: 7878,
-    }
-
     // start tcp connection for this device
     const { destinations } = device
+    const defaultDestination = { protocol: 'shdr', host: 'adapter', port: 7878 }
     //. just handle one for now
     const destination = destinations ? destinations[0] : defaultDestination
     console.log(`TCP try listening to socket at`, destination, `...`)
@@ -135,9 +126,10 @@ async function main() {
 main()
 
 // import the outputTemplate string defs and do replacements.
-// @param {{outputTemplates: array, types: object, deviceId: string}} arg
-// @returns {{key: string, value: function, dependsOn: string[]}}[] - array of output objs
+// outputTemplates is array of {}
+// types is __
 // note: types IS used - it's in the closure formed by eval(str)
+// returns array of {key: string, value: function, dependsOn: string[]}
 function getOutputs({ outputTemplates, types, deviceId }) {
   // console.log('getOutputs - iterate over output templates')
   const outputs = outputTemplates.map(template => {

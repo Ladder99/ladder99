@@ -54,9 +54,8 @@ export class AdapterPlugin {
       const receivedTime = new Date()
 
       // unpack the mqtt json payload, assuming it's a JSON string.
-      // sets payload as variable - used by handler.initialize - don't delete - @ts-ignore
+      // sets payload as variable - used by handler.initialize
       const payload = JSON.parse(message)
-      // let payload = JSON.parse(message)
 
       // iterate over message handlers - handlers is an array of [topic, handler]
       const handlers = Object.entries(inputs.handlers) || []

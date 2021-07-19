@@ -2,25 +2,9 @@
 // when key-item is set, will perform any associated outputs calculations and
 // send shdr output to attached tcp socket.
 
-// /**
-//  * @typedef {Object} Item
-//  * @property {any} value
-//  */
-
-// /**
-//  * @typedef {Object} Output
-//  * @property {string} category
-//  * @property {string} type
-//  * @property {string} representation
-//  * @property {string} key
-//  * @property {object} socket
-//  * @property {string[]} dependsOn
-//  * @property {function} value
-//  */
-
 export class Cache {
   constructor() {
-    this._map = new Map() // key-item pairs
+    this._map = new Map() // key-item pairs //. why not just {} ?
     this._mapKeyToOutputs = {} // list of outputs assoc with each key
   }
 
