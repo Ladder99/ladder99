@@ -43,12 +43,10 @@ export class AdapterPlugin {
       console.log(`MQTT listening for messages...`)
     })
 
-    /**
-     * handle incoming messages.
-     * eg for ccs-pa have query, status, and read messages.
-     * @param {string} msgTopic - mqtt topic, eg 'l99/pa1/evt/query'
-     * message - array of bytes (assumed to be a json string)
-     */
+    // handle incoming messages.
+    // eg for ccs-pa have query, status, and read messages.
+    // msgTopic - mqtt topic, eg 'l99/pa1/evt/query'
+    // message - array of bytes (assumed to be a json string)
     function onMessage(msgTopic, message) {
       message = message.toString()
       // console.log(`Got message on topic ${msgTopic}: ${message.slice(0, 20)}`)
@@ -97,7 +95,7 @@ export class AdapterPlugin {
             // if we have the part in the payload, add it to the cache
             if (item && item.value !== undefined) {
               console.log(`MQTT part '${part}' in payload - set cache`)
-              const cacheId = deviceId + '-' + key // eg 'ccs-pa-001-fault_count'
+              const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
               // item.receivedTime = receivedTime
               cache.set(cacheId, item) // save to the cache - may send shdr to tcp
             }

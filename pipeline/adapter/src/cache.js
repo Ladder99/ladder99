@@ -2,21 +2,21 @@
 // when key-item is set, will perform any associated outputs calculations and
 // send shdr output to attached tcp socket.
 
-/**
- * @typedef {Object} Item
- * @property {any} value
- */
+// /**
+//  * @typedef {Object} Item
+//  * @property {any} value
+//  */
 
-/**
- * @typedef {Object} Output
- * @property {string} category
- * @property {string} type
- * @property {string} representation
- * @property {string} key
- * @property {object} socket
- * @property {string[]} dependsOn
- * @property {function} value
- */
+// /**
+//  * @typedef {Object} Output
+//  * @property {string} category
+//  * @property {string} type
+//  * @property {string} representation
+//  * @property {string} key
+//  * @property {object} socket
+//  * @property {string[]} dependsOn
+//  * @property {function} value
+//  */
 
 export class Cache {
   constructor() {
@@ -24,14 +24,14 @@ export class Cache {
     this._mapKeyToOutputs = {} // list of outputs assoc with each key
   }
 
-  /**
-   * addOutputs
-   * each key can have multiple outputs calculations associated with it.
-   * this builds a map from key to list of outputs.
-   * each output goes to the same socket.
-   * @param {Output[]} outputs
-   * @param {object} socket
-   */
+  // addOutputs
+  // each key can have multiple outputs calculations associated with it.
+  // this builds a map from key to list of outputs.
+  // each output goes to the same socket.
+  // outputs is an array of Output objects
+  // Output is { category, type, representation, key, socket, dependsOn, value }
+  // dependsOn is array of strings
+  // value is a fn
   addOutputs(outputs, socket) {
     console.log(`cache.addOutputs - add ${outputs.length} outputs`)
     for (const output of outputs) {
@@ -46,12 +46,8 @@ export class Cache {
     }
   }
 
-  /**
-   * set a cache key-item pair.
-   * called item, because each item is an object that can have a value property.
-   * @param {string} key
-   * @param {Item} item
-   */
+  // set a cache key-item pair.
+  // called item, because each item is an object that can have a value property.
   set(key, item) {
     console.log('cache.set', key, JSON.stringify(item).slice(0, 99))
     // update the cache item
@@ -67,22 +63,14 @@ export class Cache {
     }
   }
 
-  /**
-   * get item from cache
-   * @param key {string}
-   * @returns {Item}
-   */
+  // get item from cache
   get(key) {
     const item = this._map.get(key) || {} //. have default? return undefined?
     return item
   }
 }
 
-/**
- * calculate SHDR using the given output object.
- * @param {Cache} cache
- * @param {Output} output
- */
+// calculate SHDR using the given output object.
 function getShdr(cache, output) {
   const timestamp = new Date().toISOString() //. get from item
   const { category, type, representation, key } = output

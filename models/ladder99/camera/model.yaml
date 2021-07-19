@@ -1,18 +1,19 @@
+# camera model
 # this defines the structure of the xml that will get included in devices.xml.
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from the device yaml.
 
 model:
   - id: ${deviceId}
-    name: CCS Camera
+    name: ${deviceId}
     uuid: ${uuid}
     sampleInterval: 10
 
     description:
-      manufacturer: CCS
+      manufacturer: Ladder99
       model: PiCamera
       serialNumber: ${serialNumber}
-      text: Emergent Pi Camera
+      text: Ladder99 PiCamera
 
     dataItems:
       dataItem:
