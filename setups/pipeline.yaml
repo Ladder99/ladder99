@@ -228,6 +228,8 @@ services:
       - play
     build: ../pipeline/recorder
     command: recorder --mode play
+    ports:
+      - 8081:8080
     volumes:
       - ./$SETUP:/data/setup # has setup-specific recordings folder
       - ../models:/data/models # has model-specific recordings folder
