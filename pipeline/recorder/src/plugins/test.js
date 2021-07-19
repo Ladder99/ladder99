@@ -5,9 +5,7 @@ import http from 'http' // node lib
 import parse from 'csv-parse/lib/sync.js' // see https://github.com/adaltas/node-csv-parse
 import * as common from '../common.js'
 
-export class Plugin {
-  constructor() {}
-
+export class RecorderPlugin {
   async init({ deviceId, mode, host, port, loop, folder, csvfiles }) {
     console.log(`init test, mode ${mode}`)
 
@@ -15,11 +13,10 @@ export class Plugin {
     server.listen(8080)
 
     const cache = {}
-    cache.hello = 40
 
     function requestListener(req, res) {
       res.writeHead(200)
-      res.end(String(cache.hello))
+      res.end(JSON.stringify(cache))
     }
 
     if (mode === 'play') {
@@ -41,10 +38,10 @@ export class Plugin {
           for (const row of rows) {
             const { topic, message, qos, retain, time_delta } = row
             // console.log(`Publishing topic ${topic}: ${message.slice(0, 40)}`)
-            //. mosquitto closes with "disconnected due to protocol error" when send qos
-            // mqtt.publish(topic, payload, { qos, retain })
-            // mqtt.publish(topic, message, { retain })
-            cache.hello += 1
+            const payload = JSON.parse(message)
+            for (let key of Object.keys(payload)) {
+              cache[key] = payload[key]
+            }
             await common.sleep(time_delta * 1000) // pause between messages
           }
           console.log()

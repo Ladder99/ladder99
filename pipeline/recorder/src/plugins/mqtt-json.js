@@ -5,7 +5,7 @@ import mqttlib from 'mqtt' // see https://github.com/mqttjs/MQTT.js
 import parse from 'csv-parse/lib/sync.js' // see https://github.com/adaltas/node-csv-parse
 import * as common from '../common.js'
 
-export class Plugin {
+export class RecorderPlugin {
   //------------------------------------------------------------------------
   // init
   //------------------------------------------------------------------------

@@ -53,7 +53,7 @@ async function main() {
       //.
       const pluginPath = `${pluginsFolder}/${protocol}.js`
       console.log(`Importing plugin from ${pluginPath}...`)
-      const { Plugin } = await import(pluginPath)
+      const { RecorderPlugin } = await import(pluginPath)
       // initialize the plugin
       const folder = `${modelsFolder}/${model}/recordings`
 
@@ -73,7 +73,7 @@ async function main() {
         process.exit(1)
       }
 
-      const plugin = new Plugin()
+      const plugin = new RecorderPlugin()
       plugin.init({ deviceId, mode, host, port, folder, csvfiles, loop, topic })
     }
   }
