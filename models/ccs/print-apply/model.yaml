@@ -1,9 +1,10 @@
-# ccs-pa model
+# ccs print-apply model
+
 # this defines the structure of the xml that will get included in devices.xml.
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from setup.yaml.
 # dataItems are defined in outputs.yaml.
-# compilation is done with sh/adapter/compile.
+# compilation to devices.xml is done with sh/adapter/compile.
 
 model:
   id: ${deviceId} # eg 'ccs-pa'

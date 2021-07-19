@@ -1,0 +1,6 @@
+# these types can be used in outputs.yaml
+
+types:
+  AVAILABILITY:
+    online: AVAILABLE
+    offline: UNAVAILABLE

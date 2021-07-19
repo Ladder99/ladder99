@@ -7,7 +7,7 @@ import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 let cycleStart
 
 export class AdapterPlugin {
-  // initialize the client plugin.
+  // initialize the client plugin
   // queries the device for address space definitions, subscribes to topics.
   // inputs is the inputs.yaml file parsed to a js tree.
   init({ deviceId, host, port, cache, inputs }) {

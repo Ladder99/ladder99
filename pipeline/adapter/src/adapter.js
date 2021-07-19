@@ -75,7 +75,11 @@ async function main() {
         const types = (common.importYaml(pathTypes) || {}).types
 
         // compile outputs from yaml strings and save to source
-        const outputs = getOutputs({ outputTemplates, types, deviceId })
+        const outputs = getOutputs({
+          templates: outputTemplates,
+          types,
+          deviceId,
+        })
 
         // add outputs for each source to cache
         cache.addOutputs(outputs, socket)
@@ -125,14 +129,15 @@ async function main() {
 
 main()
 
-// import the outputTemplate string defs and do replacements.
-// outputTemplates is array of {}
-// types is __
+// get outputs from from outputs.yaml templates - do substitutions etc.
+// templates is from outputs.yaml - array of { key, category, type, value },
+// but can have other keys also.
+// types is from types.yaml - object of objects with key:values
 // note: types IS used - it's in the closure formed by eval(str)
 // returns array of {key: string, value: function, dependsOn: string[]}
-function getOutputs({ outputTemplates, types, deviceId }) {
+function getOutputs({ templates, types, deviceId }) {
   // console.log('getOutputs - iterate over output templates')
-  const outputs = outputTemplates.map(template => {
+  const outputs = templates.map(template => {
     // replace all occurrences of <key> with `cache.get('...').value`.
     // eg <status_faults> => cache.get(`${deviceId}-status_faults`).value
     // note: .*? is a non-greedy match, so doesn't eat other occurrences also.

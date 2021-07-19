@@ -1,7 +1,10 @@
-# camera model
+# ladder99 camera model
+
 # this defines the structure of the xml that will get included in devices.xml.
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from the device yaml.
+# dataItems are defined in outputs.yaml.
+# compilation to devices.xml is done with sh/adapter/compile.
 
 model:
   - id: ${deviceId}

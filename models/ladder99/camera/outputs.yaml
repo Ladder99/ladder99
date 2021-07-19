@@ -1,0 +1,19 @@
+# outputs
+
+# these outputs are placed in the model.yaml tree and define the
+# shdr strings that are calculated and sent to the agent.
+
+# the item's key (eg 'connection') together with the deviceId (eg 'pa1')
+# form its id in the xml (eg 'pa1-connection').
+
+# the shdr key is the same as the id.
+# the shdr value is defined with the item value code.
+
+# value is javascript, evaluated by the cache in calculating the shdr output.
+# <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
+
+outputs:
+  - key: connection
+    category: EVENT
+    type: AVAILABILITY
+    value: types.AVAILABILITY[<status-connection>]

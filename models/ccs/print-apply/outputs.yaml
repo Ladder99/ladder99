@@ -3,8 +3,8 @@
 # these outputs are placed in the model.yaml tree and define the
 # shdr strings that are calculated and sent to the agent.
 
-# the item's key (eg 'connection') together with the deviceId (eg 'ccs-pa')
-# form its id in the xml (eg 'ccs-pa-connection').
+# the item's key (eg 'connection') together with the deviceId (eg 'pa1')
+# form its id in the xml (eg 'pa1-connection').
 
 # the shdr key is the same as the id.
 # the shdr value is defined with the item value code.
@@ -18,18 +18,18 @@ outputs:
     type: AVAILABILITY
     value: types.AVAILABILITY[<status-connection>]
 
-  # eg change tool to a drill etc - irrelevant to p&a
-  # see std pt 4 line 347
-  - key: asset_changed
-    category: EVENT
-    type: ASSET_CHANGED
-    value:
+  # # eg change tool to a drill etc - irrelevant to p&a
+  # # see std pt 4 line 347
+  # - key: asset_changed
+  #   category: EVENT
+  #   type: ASSET_CHANGED
+  #   value:
 
-  # see std pt 4 line 357
-  - key: asset_removed
-    category: EVENT
-    type: ASSET_REMOVED
-    value:
+  # # see std pt 4 line 357
+  # - key: asset_removed
+  #   category: EVENT
+  #   type: ASSET_REMOVED
+  #   value:
 
   - key: dev_cond
     category: CONDITION
