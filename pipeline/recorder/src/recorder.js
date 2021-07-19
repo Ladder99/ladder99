@@ -48,6 +48,8 @@ async function main() {
         loop = true,
         topic = '#',
       } = source
+      //. should we just pass the whole source to the plugin?
+      //.
       const pluginPath = `${pluginsFolder}/${protocol}.js`
       console.log(`Importing plugin from ${pluginPath}...`)
       const { Plugin } = await import(pluginPath)

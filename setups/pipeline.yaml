@@ -3,6 +3,12 @@
 
 # run different services with eg
 #   sh/pipeline start ccs-pa broker adapter agent
+#   sh/pipeline start ccs-pa html play
+
+# profiles include
+#   all - adapter, agent, application, database, broker
+#   html - adapter, agent, broker
+#   dashboard - adapter, agent, application, broker
 
 version: '3.8'
 
@@ -14,6 +20,8 @@ services:
     build: ../pipeline/adapter
     profiles:
       - all
+      - html
+      - dashboard
       - adapter
     volumes:
       - ./$SETUP:/data/setup # has setup.yaml etc
@@ -29,6 +37,7 @@ services:
     container_name: agent
     profiles:
       - all
+      - html
       - dashboard
       - agent
     image: ladder99/agent:latest
@@ -86,6 +95,7 @@ services:
     image: eclipse-mosquitto
     profiles:
       - all
+      - html
       - dashboard
       - broker
     ports:

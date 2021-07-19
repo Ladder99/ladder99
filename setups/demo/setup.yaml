@@ -1,19 +1,19 @@
+#. compile this with sh/adapter/compile
+# include in sh/pipeline steps? ie always compile this file (or if changed)
+
 meta:
   foo: bar
 
 devices:
   - id: d1
-    name: camera1
+    name: camera1 # this must match name in devices.xml
     model: ladder99/camera
 
     sources:
       - model: ladder99/camera
-        # protocol: test # type of adapter plugin - manages protocol and payload
-        protocol: mqtt # type of adapter plugin - manages protocol and payload
-        # url: mqtt://broker:1883 #. pass in somehow - envar? or say url: mqtt://$sourceHost:1883?
-        # url: mqtt://localhost:1883
-        host: broker # for mac/pi
-        # host: localhost # for hydrant
-        port: 1883
+        protocol: test # type of adapter plugin - manages protocol and payload
+        # host: broker # for mac/pi
+        # host: localhost # for hydrant?
+        # port: 1883
         # loop: true
         # topic: '#'

@@ -74,9 +74,7 @@ export class Plugin {
           .filter(csvfile => csvfile.endsWith('.csv'))
           .sort()
       } catch (error) {
-        console.log(
-          `Problem reading files - does the folder '${folder}' exist?`
-        )
+        console.log(`Problem reading files - does folder '${folder}' exist?`)
         process.exit(1)
       }
       if (csvfiles.length === 0) {
