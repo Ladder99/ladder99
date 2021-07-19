@@ -17,118 +17,126 @@ console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
 console.log(`posts to TCP.`)
 console.log(`----------------------------------------------------------------`)
 
-// load setup, eg from setups/ccs-pa/setup.yaml
-const yamlfile = `${setupFolder}/setup.yaml`
-console.log(`Reading ${yamlfile}...`)
-const yamltree = common.importYaml(yamlfile)
-const setup = yamltree
-if (!setup) {
-  console.log(`No ${yamlfile} available - please add one.`)
-  process.exit(1)
-}
+async function main() {
+  // load setup, eg from setups/ccs-pa/setup.yaml
+  const yamlfile = `${setupFolder}/setup.yaml`
+  console.log(`Reading ${yamlfile}...`)
+  const yamltree = common.importYaml(yamlfile)
+  const setup = yamltree
+  if (!setup) {
+    console.log(`No ${yamlfile} available - please add one.`)
+    process.exit(1)
+  }
 
-// define cache shared across devices and sources
-const cache = new Cache()
+  // define cache shared across devices and sources
+  const cache = new Cache()
 
-// iterate over device definitions from setup yaml file
-const { devices } = setup
-for (const device of devices) {
-  console.log({ device })
-  const deviceId = device.id
+  // iterate over device definitions from setup yaml file
+  const { devices } = setup
+  for (const device of devices) {
+    console.log({ device })
+    const deviceId = device.id
 
-  console.log(`TCP creating server for agent...`)
-  const tcp = net.createServer()
+    console.log(`TCP creating server for agent...`)
+    const tcp = net.createServer()
 
-  // handle tcp connection from agent or diode.
-  // need to do this BEFORE registering plugins because those need the socket
-  // so know where to send SHDR strings.
-  tcp.on('connection', async socket => {
-    const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
-    console.log('TCP new client connection from', remoteAddress)
+    // handle tcp connection from agent or diode.
+    // need to do this BEFORE registering plugins because those need the socket
+    // so know where to send SHDR strings.
+    tcp.on('connection', async socket => {
+      const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
+      console.log('TCP new client connection from', remoteAddress)
 
-    // each device can have multiple sources.
-    // iterate over sources, load plugin for that source, call init on it.
-    for (const source of device.sources) {
-      console.log({ source })
-      // const { model, protocol, url } = source
-      const { model, protocol, host, port } = source
+      // each device can have multiple sources.
+      // iterate over sources, load plugin for that source, call init on it.
+      for (const source of device.sources) {
+        console.log({ source })
+        // const { model, protocol, url } = source
+        const { model, protocol, host, port } = source
 
-      // import protocol plugin
-      //. shouldn't these be classes to instantiate? ie if need >1 of each type
-      const pathProtocol = `${pluginsFolder}/${protocol}.js` // eg './plugins/mqtt-json.js' -
-      console.log(`Adapter importing plugin code: ${pathProtocol}...`)
-      // @ts-ignore top level await okay
-      const plugin = await import(pathProtocol)
+        // import protocol plugin
+        //. shouldn't these be classes to instantiate? ie if need >1 of each type
+        const pathProtocol = `${pluginsFolder}/${protocol}.js` // eg './plugins/mqtt-json.js' -
+        console.log(`Adapter importing plugin code: ${pathProtocol}...`)
+        const AdapterPlugin = await import(pathProtocol)
+        const plugin = new AdapterPlugin()
 
-      // get inputs
-      const pathInputs = `${modelsFolder}/${model}/inputs.yaml`
-      console.log(`Reading ${pathInputs}...`)
-      const inputs = common.importYaml(pathInputs) || {}
+        // get inputs
+        const pathInputs = `${modelsFolder}/${model}/inputs.yaml`
+        console.log(`Reading ${pathInputs}...`)
+        const inputs = common.importYaml(pathInputs) || {}
 
-      // get outputs
-      const pathOutputs = `${modelsFolder}/${model}/outputs.yaml`
-      console.log(`Reading ${pathOutputs}...`)
-      const outputTemplates = (common.importYaml(pathOutputs) || {}).outputs
+        // get outputs
+        const pathOutputs = `${modelsFolder}/${model}/outputs.yaml`
+        console.log(`Reading ${pathOutputs}...`)
+        const outputTemplates = (common.importYaml(pathOutputs) || {}).outputs
 
-      // get types
-      const pathTypes = `${modelsFolder}/${model}/types.yaml`
-      console.log(`Reading ${pathTypes}...`)
-      const types = (common.importYaml(pathTypes) || {}).types
+        // get types
+        const pathTypes = `${modelsFolder}/${model}/types.yaml`
+        console.log(`Reading ${pathTypes}...`)
+        const types = (common.importYaml(pathTypes) || {}).types
 
-      // compile outputs from yaml strings and save to source
-      const outputs = getOutputs({ outputTemplates, types, deviceId })
+        // compile outputs from yaml strings and save to source
+        const outputs = getOutputs({ outputTemplates, types, deviceId })
 
-      // add outputs for each source to cache
-      // @ts-ignore complex types
-      cache.addOutputs(outputs, socket)
+        // add outputs for each source to cache
+        // @ts-ignore complex types
+        cache.addOutputs(outputs, socket)
 
-      // initialize plugin
-      // note: this must be done AFTER getOutputs and addOutputs,
-      // as that is where the dependsOn values are set, and this needs those.
-      console.log(`Initializing ${protocol} plugin...`)
-      // plugin.init({ url, cache, deviceId, inputs })
-      plugin.init({ host, port, cache, deviceId, inputs })
-    }
-
-    // handle incoming data - get PING from agent, return PONG
-    socket.on('data', pingpong)
-
-    function pingpong(buffer) {
-      const str = buffer.toString().trim()
-      if (str === '* PING') {
-        const response = '* PONG 10000' //. msec
-        console.log(`TCP received PING - sending PONG:`, response)
-        socket.write(response + '\n')
-      } else {
-        console.log('TCP received data:', str.slice(0, 20), '...')
+        // initialize plugin
+        // note: this must be done AFTER getOutputs and addOutputs,
+        // as that is where the dependsOn values are set, and this needs those.
+        console.log(`Initializing ${protocol} plugin...`)
+        plugin.init({ host, port, cache, deviceId, inputs })
       }
-    }
-  })
 
-  // start tcp connection for this device
-  const { destinations } = device
-  const destination = destinations[0] //. just handle one for now
-  console.log(`TCP try listening to socket at`, destination, `...`)
-  // console.log('here')
-  // try {
-  tcp.listen(destination.port, destination.host)
-  // } catch (error) {
-  //   if (error.code === 'ENOTFOUND') {
-  //     console.log(
-  //       `TCP socket at ${destination.host}:${destination.port} not found.`
-  //     )
-  //   } else {
-  //     throw error
-  //   }
-  // }
-  // console.log('there')
+      // handle incoming data - get PING from agent, return PONG
+      socket.on('data', pingpong)
+
+      function pingpong(buffer) {
+        const str = buffer.toString().trim()
+        if (str === '* PING') {
+          const response = '* PONG 10000' //. msec
+          console.log(`TCP received PING - sending PONG:`, response)
+          socket.write(response + '\n')
+        } else {
+          console.log('TCP received data:', str.slice(0, 20), '...')
+        }
+      }
+    })
+
+    const defaultDestination = {
+      protocol: 'shdr',
+      host: 'adapter',
+      port: 7878,
+    }
+
+    // start tcp connection for this device
+    const { destinations } = device
+    //. just handle one for now
+    const destination = destinations ? destinations[0] : defaultDestination
+    console.log(`TCP try listening to socket at`, destination, `...`)
+    // console.log('here')
+    // try {
+    tcp.listen(destination.port, destination.host)
+    // } catch (error) {
+    //   if (error.code === 'ENOTFOUND') {
+    //     console.log(
+    //       `TCP socket at ${destination.host}:${destination.port} not found.`
+    //     )
+    //   } else {
+    //     throw error
+    //   }
+    // }
+    // console.log('there')
+  }
 }
 
-/**
- * import the outputTemplate string defs and do replacements.
- * @param {{outputTemplates: array, types: object, deviceId: string}} arg
- * @returns {{key: string, value: function, dependsOn: string[]}}[] - array of output objs
- */
+main()
+
+// import the outputTemplate string defs and do replacements.
+// @param {{outputTemplates: array, types: object, deviceId: string}} arg
+// @returns {{key: string, value: function, dependsOn: string[]}}[] - array of output objs
 // note: types IS used - it's in the closure formed by eval(str)
 function getOutputs({ outputTemplates, types, deviceId }) {
   // console.log('getOutputs - iterate over output templates')
