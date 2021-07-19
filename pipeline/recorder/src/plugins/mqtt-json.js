@@ -10,7 +10,7 @@ export class Plugin {
   // init
   //------------------------------------------------------------------------
 
-  init({ deviceId, mode, host, port, folder, loop, topic }) {
+  init({ deviceId, mode, host, port, folder, csvfiles, loop, topic }) {
     console.log(`Mode: ${mode}`)
 
     let fd // file descriptor for recording
@@ -66,22 +66,6 @@ export class Plugin {
     //------------------------------------------------------------------------
 
     async function play() {
-      console.log(`Reading list of files in folder '${folder}'...`)
-      let csvfiles
-      try {
-        csvfiles = fs
-          .readdirSync(folder)
-          .filter(csvfile => csvfile.endsWith('.csv'))
-          .sort()
-      } catch (error) {
-        console.log(`Problem reading files - does folder '${folder}' exist?`)
-        process.exit(1)
-      }
-      if (csvfiles.length === 0) {
-        console.log(`No csv files found in folder '${folder}'.`)
-        process.exit(1)
-      }
-
       // do while loop
       do {
         console.log(`Looping over files...`)
