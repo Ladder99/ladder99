@@ -21,26 +21,19 @@ console.log(`posts to TCP.`)
 console.log(`----------------------------------------------------------------`)
 
 async function main() {
-  // load setup, eg from setups/ccs-pa/setup.yaml
-  const yamlfile = `${setupFolder}/setup.yaml`
-  console.log(`Reading ${yamlfile}...`)
-  const yamltree = common.importYaml(yamlfile)
-  const setup = yamltree
-  if (!setup) {
-    console.log(`No ${yamlfile} available - please add one.`)
-    process.exit(1)
-  }
+  // read setup.yaml file
+  const setup = readSetupYaml()
 
-  // define cache shared across devices and sources
+  // define cache shared across all devices and sources
   const cache = new Cache()
 
-  // iterate over device definitions from setup yaml file
+  // iterate over device definitions from setup.yaml file
   const { devices } = setup
   for (const device of devices) {
-    console.log({ device })
+    // console.log({ device })
     const deviceId = device.id
 
-    // each device gets a tcp connection to agent
+    // each device gets a tcp connection to the agent
     console.log(`TCP creating server for agent...`)
     const tcp = net.createServer()
 
@@ -96,7 +89,9 @@ async function main() {
       }
 
       // handle incoming data - get PING from agent, return PONG
-      socket.on('data', buffer => {
+      socket.on('data', pingPong)
+
+      function pingPong(buffer) {
         const str = buffer.toString().trim()
         if (str === '* PING') {
           const response = '* PONG 10000' //. msec - where get from?
@@ -105,7 +100,7 @@ async function main() {
         } else {
           console.log('TCP received data:', str.slice(0, 20), '...')
         }
-      })
+      }
     })
 
     // start tcp connection for this device
@@ -183,4 +178,17 @@ function getOutputs({ templates, types, deviceId }) {
     return output
   })
   return outputs
+}
+
+function readSetupYaml() {
+  // load setup, eg from setups/ccs-pa/setup.yaml
+  const yamlfile = `${setupFolder}/setup.yaml`
+  console.log(`Reading ${yamlfile}...`)
+  const yamltree = common.importYaml(yamlfile)
+  const setup = yamltree
+  if (!setup) {
+    console.log(`No ${yamlfile} available - please add one.`)
+    process.exit(1)
+  }
+  return setup
 }
