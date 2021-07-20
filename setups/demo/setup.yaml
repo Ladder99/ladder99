@@ -4,8 +4,7 @@
 #. will compile to agent.cfg, devices.xml, pipeline-overrides.yaml, topology.dot?
 #. include in sh/pipeline steps? ie always compile this file (or if changed)
 
-#. any way to get to one device per line?
-# ie define default settings then have overrides per device?
+#. any way to get to one device per line? see below...
 
 meta:
   foo: bar
@@ -38,3 +37,25 @@ devices:
       - protocol: shdr
         host: adapter
         port: 7879
+#
+#. idea for templates - define macros/fns/templates
+
+# templates:
+#   - camera(id,name,sourcePort,destPort):
+#       id: $id
+#       name: $name
+#       model: ladder99/camera
+#       sources:
+#         - model: ladder99/camera
+#           driver: test
+#           protocol: http
+#           host: play
+#           port: $sourcePort
+#       destinations:
+#         - protocol: shdr
+#           host: adapter
+#           port: $destPort
+
+# devices:
+#   - camera(d1,camera1,8080,7878)
+#   - camera(d2,camera2,8081,7879)
