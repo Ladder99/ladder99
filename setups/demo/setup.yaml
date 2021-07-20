@@ -1,5 +1,11 @@
+# demo setup with camera simulations
+
 #. compile this with sh/adapter/compile
-# include in sh/pipeline steps? ie always compile this file (or if changed)
+#. will compile to agent.cfg, devices.xml, pipeline-overrides.yaml, topology.dot?
+#. include in sh/pipeline steps? ie always compile this file (or if changed)
+
+#. any way to get to one device per line?
+# ie define default settings then have overrides per device?
 
 meta:
   foo: bar
@@ -8,16 +14,19 @@ devices:
   - id: d1
     name: camera1 # this must match name in agent.cfg and devices.xml
     model: ladder99/camera
-
     sources:
       - model: ladder99/camera
         driver: test # type of adapter plugin - manages protocol and payload
-        # url: http://play:8080
         protocol: http
         host: play
         port: 8080
-        # host: broker # for mac/pi
-        # host: localhost # for hydrant?
-        # port: 1883
-        # loop: true
-        # topic: '#'
+
+  - id: d2
+    name: camera2 #. is this used yet? check code
+    model: ladder99/camera
+    sources:
+      - model: ladder99/camera
+        driver: test # type of adapter plugin - manages protocol and payload
+        protocol: http
+        host: play
+        port: 8081

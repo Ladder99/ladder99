@@ -1,0 +1,27 @@
+# docker-compose overrides for demo pipeline.
+
+#. this will be generated from setup.yaml, but edit manually for now.
+
+version: '3.8'
+
+services:
+  play2:
+    container_name: play2
+    profiles:
+      - play2
+    build: ../pipeline/recorder
+    command: recorder --mode play
+    ports:
+      - 8081:8080
+    volumes:
+      - ./$SETUP:/data/setup # has setup-specific recordings folder
+      - ../models:/data/models # has model-specific recordings folder
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
+networks:
+  ladder99:
+    name: ladder99
