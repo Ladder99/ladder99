@@ -56,7 +56,7 @@ digraph {
 
   // applications
   Database [ fillcolor=greenyellow, label="Database\n(Postgres/\nTimescaleDB)" ];
-  Visualizer [ fillcolor=greenyellow, label="Visualizer\n(Grafana/\nSuperset)" ];
+  Dashboard [ fillcolor=greenyellow, label="Dashboard\n(Grafana/\nSuperset)" ];
   Cloud [ fillcolor=gray90, label="Cloud Storage\n(AWS/GCP)" ];
   Browser [ fillcolor=gray90 ];
   Browser2 [ fillcolor=gray90, label="Browser" ];
@@ -92,11 +92,11 @@ digraph {
   // DiodeSender -> DiodeReceiver [ label="UDP    ", style=dotted ];
   // DiodeReceiver -> Agent [ label="SHDR /    \nTCP 7878        ", style=dotted ];
   Agent -> Application [ dir=both; label="XML / \nHTTP 5000          " ];
-  Agent -> Browser [ label="HTML /\nHTTP 5000" ];
-  Application -> Database [ dir=both ];
-  Database -> Visualizer [ dir=both ];
+  Agent -> Browser [ label="XML/HTML /\nHTTP 5000" ];
+  Application -> Database [ label="SQL", dir=both ];
+  Database -> Dashboard [ label="SQL", dir=both ];
   Database -> Cloud;
-  Visualizer -> Browser2 [ dir=both ];
+  Dashboard -> Browser2 [ dir=both ];
   // Application -> LOI;
   // LOI -> Operator;
 
@@ -105,7 +105,7 @@ digraph {
   // ranks
   //------------------------------------------------------------------------
 
-  { rank=same; Adapter Agent Application Database Visualizer };
+  { rank=same; Adapter Agent Application Database Dashboard };
   // { rank=same; DiodeSender DiodeReceiver Cloud Admin };
   // { rank=same; Cloud Admin };
 }
