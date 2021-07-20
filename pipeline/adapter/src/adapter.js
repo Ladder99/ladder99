@@ -6,6 +6,9 @@ import net from 'net' // node lib for tcp
 import * as common from './common.js'
 import { Cache } from './cache.js'
 
+// default destination if none provided in model.yaml
+const defaultDestination = { protocol: 'shdr', host: 'adapter', port: 7878 }
+
 // file system inputs
 const pluginsFolder = './plugins' // for protocol handlers, eg mqtt-json - must start with .
 // these folders are defined in pipeline.yaml with docker volume mappings
@@ -37,11 +40,12 @@ async function main() {
     console.log({ device })
     const deviceId = device.id
 
+    // each device gets a tcp connection to agent
     console.log(`TCP creating server for agent...`)
     const tcp = net.createServer()
 
-    // handle tcp connection from agent or diode.
-    // need to do this BEFORE registering plugins because those need the socket
+    // handle tcp connection from agent.
+    // need to do this BEFORE registering plugins because those need the socket,
     // so know where to send SHDR strings.
     tcp.on('connection', async socket => {
       const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
@@ -74,7 +78,7 @@ async function main() {
         console.log(`Reading ${pathTypes}...`)
         const types = (common.importYaml(pathTypes) || {}).types
 
-        // compile outputs from yaml strings and save to source
+        // compile output js strings from outputs.yaml and save to source
         const outputs = getOutputs({
           templates: outputTemplates,
           types,
@@ -92,22 +96,20 @@ async function main() {
       }
 
       // handle incoming data - get PING from agent, return PONG
-      socket.on('data', pingpong)
-      function pingpong(buffer) {
+      socket.on('data', buffer => {
         const str = buffer.toString().trim()
         if (str === '* PING') {
-          const response = '* PONG 10000' //. msec
+          const response = '* PONG 10000' //. msec - where get from?
           console.log(`TCP received PING - sending PONG:`, response)
           socket.write(response + '\n')
         } else {
           console.log('TCP received data:', str.slice(0, 20), '...')
         }
-      }
+      })
     })
 
     // start tcp connection for this device
     const { destinations } = device
-    const defaultDestination = { protocol: 'shdr', host: 'adapter', port: 7878 }
     //. just handle one for now
     const destination = destinations ? destinations[0] : defaultDestination
     console.log(`TCP try listening to socket at`, destination, `...`)
@@ -180,6 +182,5 @@ function getOutputs({ templates, types, deviceId }) {
     }
     return output
   })
-  // @ts-ignore too strict typechecking
   return outputs
 }

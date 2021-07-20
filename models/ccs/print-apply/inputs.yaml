@@ -40,13 +40,14 @@ handlers:
     # define key-part pairs
     # the & syntax saves this list for later, as the read message handler
     # uses the same pairs.
-    # key defines the cache id, with id = {deviceId}-{key},
+    # 'key' defines the cache id, with id = {deviceId}-{key},
     # eg for key='printer_ribbon_low', id = 'pa1-printer_ribbon_low'.
-    # part defines the part of the payload to get using the above defined
+    # 'part' defines the part of the payload to get using the above defined
     # lookup fn, eg for part='%I0.0', the value is obtained with $['%I0.0'].
     # then it sets item = { value }, then calls cache.set(id, item),
-    # eg cache.set('pa-printer_ribbon_low', { value: 0 })
-    # this might trigger SHDR output to be sent to the mtconnect agent.
+    # eg cache.set('pa1-printer_ribbon_low', { value: 0 })
+    # this might trigger SHDR output to be sent to the mtconnect agent,
+    # according to the outputs defined in outputs.yaml.
     inputs: &queryInputs
       printer_ribbon_low: '%I0.0'
       printer_service_required: '%I0.1'
@@ -122,7 +123,7 @@ handlers:
 
   # handle status messages
   l99/${deviceId}/evt/status:
-    # make $ the message payload dictionary and add faultKeys for quick
+    # make '$' the message payload dictionary and add faultKeys for quick
     # lookups of faults - payload.faults is a dictionary of faults.
     initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
     # define lookup function, which returns a value given a part calculation.
