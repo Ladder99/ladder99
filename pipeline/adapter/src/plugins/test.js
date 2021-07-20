@@ -20,7 +20,7 @@ export class AdapterPlugin {
         console.log(json)
         const value = json.status === 'online' ? 'AVAILABLE' : 'UNAVAILABLE'
         const timestamp = new Date().toISOString() //. get from json
-        const shdr = `${timestamp}|connection|${value}`
+        const shdr = `${timestamp}|${deviceId}-connection|${value}`
         console.log(shdr)
         socket.write(shdr + '\n')
       } catch (error) {

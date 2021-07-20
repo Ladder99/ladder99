@@ -10,7 +10,7 @@ export class RecorderPlugin {
     console.log(`init test, mode ${mode}`)
 
     const server = http.createServer(requestListener)
-    server.listen(8080)
+    server.listen(port)
 
     const cache = {}
 

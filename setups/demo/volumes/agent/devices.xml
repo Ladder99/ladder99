@@ -8,19 +8,19 @@
 
     <Device id="d1" name="camera1" uuid="a123" sampleInterval="10">
       <Description manufacturer="ladder99" model="camera" serialNumber="001">
-        camera
+        camera1
       </Description>
       <DataItems>
-        <DataItem id="connection" category="EVENT" type="AVAILABILITY"/>
+        <DataItem id="d1-connection" category="EVENT" type="AVAILABILITY"/>
       </DataItems>
     </Device>
 
     <Device id="d2" name="camera2" uuid="a234" sampleInterval="10">
       <Description manufacturer="ladder99" model="camera" serialNumber="002">
-        camera
+        camera2
       </Description>
       <DataItems>
-        <DataItem id="connection" category="EVENT" type="AVAILABILITY"/>
+        <DataItem id="d2-connection" category="EVENT" type="AVAILABILITY"/>
       </DataItems>
     </Device>
 

@@ -36,7 +36,7 @@ async function main() {
   // iterate over devices in setup.yaml
   const { devices } = setup
   for (let device of devices) {
-    const { id: deviceId } = device
+    const deviceId = device.id
     // iterate over sources for each device
     const { sources } = device
     for (let source of sources) {

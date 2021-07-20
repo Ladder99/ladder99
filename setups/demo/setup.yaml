@@ -20,6 +20,10 @@ devices:
         protocol: http
         host: play
         port: 8080
+    destinations: # where to post output - just handles one output for now
+      - protocol: shdr
+        host: adapter
+        port: 7878
 
   - id: d2
     name: camera2 #. is this used yet? check code
@@ -30,3 +34,7 @@ devices:
         protocol: http
         host: play
         port: 8081
+    destinations: # where to post output - just handles one output for now
+      - protocol: shdr
+        host: adapter
+        port: 7879

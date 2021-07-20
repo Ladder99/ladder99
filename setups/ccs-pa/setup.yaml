@@ -37,6 +37,5 @@ devices:
 
     destinations: # where to post output - just handles one output for now
       - protocol: shdr
-        host: adapter #. pass in somehow - envar? or say host: $outputHost
-        # host: localhost
+        host: adapter
         port: 7878

@@ -31,7 +31,7 @@ digraph {
   // HMI [ fillcolor=lavender, label="Rockwell HMI" ];
   // Motor [ fillcolor=lavender, label="VFD Motor" ];
   // OldMachine3 [ fillcolor=lavender, label="Device" ];
-  Camera [ fillcolor=lavender, label="Camera1" ];
+  Camera1 [ fillcolor=lavender, label="Camera1" ];
   Camera2 [ fillcolor=lavender, label="Camera2" ];
   // Autoclave [ fillcolor=lavender, label="Autoclave" ];
   // OldMachine1 [ fillcolor=lavender, label="Old Machine 1" ];
@@ -79,8 +79,8 @@ digraph {
   // Broker4 -> Adapter [ label="MQTT", dir=both ];
   // OldMachine1 -> PLC4X; // [ label="proprietary\nprotocol" ];
   // PLC4X -> Broker3 [ label="" ];
-  Camera -> Adapter;
-  Camera2 -> Adapter;
+  Camera1 -> Adapter [ label="JSON\nHTTP 8000?", dir=both ];
+  Camera2 -> Adapter [ label="JSON\nHTTP 8001?", dir=both ];
   // HMI -> Kepware1 [ label="ethernet/ip" ];
   // Motor -> Kepware1 [ label="modbus" ];
   // Kepware1 -> Adapter [ label="OPC/UA" ];

@@ -30,7 +30,7 @@ async function main() {
   // iterate over device definitions from setup.yaml file
   const { devices } = setup
   for (const device of devices) {
-    console.log({ device })
+    console.log(`Device`, device)
     const deviceId = device.id
 
     // each device gets a tcp connection to the agent
@@ -47,7 +47,7 @@ async function main() {
       // each device can have multiple sources.
       // iterate over sources, load plugin for that source, call init on it.
       for (const source of device.sources) {
-        console.log({ source })
+        console.log(`Source`, source)
         const { model, driver, protocol, host, port } = source
 
         // import driver plugin
@@ -120,7 +120,7 @@ async function main() {
     console.log(`TCP try listening to socket at`, destination, `...`)
     // console.log('here')
     // try {
-    tcp.listen(destination.port, destination.host)
+    tcp.listen(destination.port, destination.host) // eg adapter:7878
     // } catch (error) {
     //   if (error.code === 'ENOTFOUND') {
     //     console.log(
