@@ -3,7 +3,7 @@
 import fetch from 'node-fetch'
 
 export class AdapterPlugin {
-  async init({ deviceId, protocol, host, port, cache, inputs, socket }) {
+  init({ deviceId, protocol, host, port, cache, inputs, socket }) {
     const url = `${protocol}://${host}:${port}` // eg http://play:8080
     console.log('init test plugin', { deviceId, url })
     const timer = setInterval(poll, 1000)

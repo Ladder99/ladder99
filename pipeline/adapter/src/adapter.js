@@ -53,7 +53,7 @@ async function main() {
         // import driver plugin
         const pathPlugin = `${pluginsFolder}/${driver}.js` // eg './plugins/mqtt-json.js'
         console.log(`Adapter importing plugin code: ${pathPlugin}...`)
-        const AdapterPlugin = await import(pathPlugin)
+        const { AdapterPlugin } = await import(pathPlugin)
         const plugin = new AdapterPlugin()
 
         // get input handlers
