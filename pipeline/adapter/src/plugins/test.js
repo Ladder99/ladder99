@@ -10,10 +10,18 @@ export class AdapterPlugin {
 
     //. hmm, if connection broke, this would start piling up awaiting fn calls...
     async function poll() {
-      const response = await fetch(url)
-      const text = await response.text()
-      const json = JSON.parse(text)
-      console.log(json)
+      try {
+        const response = await fetch(url)
+        const text = await response.text()
+        const json = JSON.parse(text)
+        console.log(json)
+      } catch (error) {
+        if (error.code === 'ECONNREFUSED') {
+          //. ignore - will try again
+        } else {
+          throw error
+        }
+      }
     }
 
     // //. poll device, send data directly to agent as shdr
