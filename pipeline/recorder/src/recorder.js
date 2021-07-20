@@ -43,6 +43,7 @@ async function main() {
       // instantiate a plugin for the source protocol
       const {
         model,
+        driver,
         protocol = 'mqtt-json',
         host = 'localhost',
         port = 1883,
@@ -51,7 +52,7 @@ async function main() {
       } = source
       //. should we just pass the whole source to the plugin?
       //.
-      const pluginPath = `${pluginsFolder}/${protocol}.js`
+      const pluginPath = `${pluginsFolder}/${driver}.js`
       console.log(`Importing plugin from ${pluginPath}...`)
       const { RecorderPlugin } = await import(pluginPath)
       // initialize the plugin

@@ -6,7 +6,7 @@ meta:
 
 devices:
   - id: d1
-    name: camera1 # this must match name in devices.xml
+    name: camera1 # this must match name in agent.cfg and devices.xml
     model: ladder99/camera
 
     sources:

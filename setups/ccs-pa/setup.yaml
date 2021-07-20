@@ -1,7 +1,10 @@
-# define the devices.xml structure, along with the model yamls.
+# ccs-pa setup
+
+# define the devices.xml structure, using the model yamls for dataitems.
 # read by pipeline/adapter/src/adapter.js.
 # sources define the inputs to the cache.
-# compiled by pipeline/adapter/compiler into volumes/agent/devices.xml.
+# compiled by pipeline/src/adapter/compiler into volumes/agent/devices.xml
+# and volumes/agent/agent.cfg.
 #. see also devices-future.yaml for future dev.
 
 #. add a meta section
@@ -11,6 +14,7 @@
 
 devices:
   - id: pa1 # this is substituted into the model yaml and sources
+    name: pa1 # this must match name in agent.cfg and devices.xml
     #. call this 'structure: ccs/print-apply' ?
     model: ccs/print-apply # for xml structure - see models/ccs/print-apply/model.yaml
     #. shift these up, look for each explicitly
