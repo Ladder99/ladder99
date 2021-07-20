@@ -46,9 +46,15 @@ digraph {
   // PLC4X [ fillcolor=lightblue, label="PLC4X\n(Java)" ];
 
   // mtconnect
-  Adapter [ fillcolor=greenyellow, label="Adapter\nwith cache and\nplugins\n(NodeJS)" ];
+  // Adapter [ fillcolor=greenyellow, label="Adapter\nwith cache and\nplugins\n(NodeJS)" ];
+  Adapter [ fillcolor=greenyellow, label="Adapter\n(NodeJS)" ];
   Agent [ fillcolor=greenyellow, label="Agent\n(C++/cppagent)" ];
   Application [ fillcolor=greenyellow, label="Application\n(NodeJS)" ];
+
+  // adapter
+  AdapterPlugin1 [ fillcolor=lemonchiffon, label="Adapter\nPlugin1" ];
+  AdapterPlugin2 [ fillcolor=lemonchiffon, label="Adapter\nPlugin2" ];
+  // AdapterCache [ fillcolor=lavenderblush, label="Adapter\nCache" ];
 
   // diode
   // DiodeSender [ label="Diode Sender\n(Java+RabbitMQ)" ];
@@ -79,8 +85,17 @@ digraph {
   // Broker4 -> Adapter [ label="MQTT", dir=both ];
   // OldMachine1 -> PLC4X; // [ label="proprietary\nprotocol" ];
   // PLC4X -> Broker3 [ label="" ];
-  Camera1 -> Adapter [ label="JSON /\nHTTP 8080", dir=both ];
-  Camera2 -> Adapter [ label="JSON /\nHTTP 8081", dir=both ];
+  // Camera1 -> Adapter [ label="JSON /\nHTTP 8080", dir=both ];
+  // Camera2 -> Adapter [ label="JSON /\nHTTP 8081", dir=both ];
+  Camera1 -> AdapterPlugin1 [ label="JSON /\nHTTP 8080", dir=both ];
+  Camera2 -> AdapterPlugin2 [ label="JSON /\nHTTP 8081", dir=both ];
+  // AdapterPlugin1 -> Adapter;
+  // AdapterPlugin2 -> Adapter;
+  // AdapterPlugin1 -> AdapterCache;
+  // AdapterPlugin2 -> AdapterCache;
+  // AdapterCache -> Adapter;
+  AdapterPlugin1 -> Agent [ label="SHDR /\nTCP 7878" ];
+  AdapterPlugin2 -> Agent [ label="SHDR /\nTCP 7879" ];
   // HMI -> Kepware1 [ label="ethernet/ip" ];
   // Motor -> Kepware1 [ label="modbus" ];
   // Kepware1 -> Adapter [ label="OPC/UA" ];
@@ -89,7 +104,7 @@ digraph {
   // Gateway -> Broker4 [ label="MQTT" ];
   // OldMachine3 -> Kepware2;
   // Kepware2 -> Broker4 [ label="MQTT" ];
-  Adapter -> Agent [ label="SHDR /   \nTCP 7878+         ", dir=both ];
+  // Adapter -> Agent [ label="SHDR /   \nTCP 7878+         ", dir=both ];
   // Adapter -> DiodeSender [ label="SHDR /   \nTCP 7878      ", dir=both, style=dotted ];
   // DiodeSender -> DiodeReceiver [ label="UDP    ", style=dotted ];
   // DiodeReceiver -> Agent [ label="SHDR /    \nTCP 7878        ", style=dotted ];

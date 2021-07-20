@@ -43,8 +43,7 @@ async function main() {
       // instantiate a plugin for the source protocol
       const {
         model,
-        driver,
-        protocol = 'mqtt-json',
+        driver = 'mqtt-json',
         host = 'localhost',
         port = 1883,
         loop = true,

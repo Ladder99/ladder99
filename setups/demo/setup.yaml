@@ -38,7 +38,7 @@ devices:
         host: adapter
         port: 7879
 #
-#. idea for templates - define macros/fns/templates
+#. idea for templates - define macros/fns/templates, then instantiate them
 
 # templates:
 #   - camera(id,name,sourcePort,destPort):

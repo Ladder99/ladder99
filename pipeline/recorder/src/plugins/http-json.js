@@ -1,4 +1,6 @@
-// test plugin
+// http-json plugin
+
+// experimental plugin - exposes values from csv files to an http port.
 
 import fs from 'fs' // node lib for filesystem
 import http from 'http' // node lib
@@ -12,8 +14,10 @@ export class RecorderPlugin {
     const server = http.createServer(requestListener)
     server.listen(port)
 
+    // contains data to make available on http
     const cache = {}
 
+    // publish data on GET request
     function requestListener(req, res) {
       res.writeHead(200)
       res.end(JSON.stringify(cache))
@@ -22,6 +26,7 @@ export class RecorderPlugin {
     if (mode === 'play') {
       await play()
     } else {
+      //. record
     }
 
     async function play() {
