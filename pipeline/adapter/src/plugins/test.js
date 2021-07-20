@@ -3,12 +3,17 @@
 // import fetch from 'node-fetch'
 
 export class AdapterPlugin {
-  init({ deviceId, host, port, cache, inputs }) {
+  init({ deviceId, host, port, cache, inputs, socket }) {
     console.log('init test plugin', { deviceId })
+    const url = `http://play:8080`
+    // const url = `http://${host}:${port}`
+
     //. poll device, send data directly to agent as shdr
-    const receivedTime = new Date()
+    const timestamp = new Date()
     // const payload = JSON.parse(message)
-    const payload = { connection: 'online' }
+    // const payload = { connection: 'online' }
+    const shdr = `${timestamp}|connection|AVAILABLE`
+    socket.write(shdr + '\n')
 
     // write to cache
     // //. but cache must have calcs defined for the diff keys eh?

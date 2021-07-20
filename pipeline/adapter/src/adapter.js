@@ -30,7 +30,7 @@ async function main() {
   // iterate over device definitions from setup.yaml file
   const { devices } = setup
   for (const device of devices) {
-    // console.log({ device })
+    console.log({ device })
     const deviceId = device.id
 
     // each device gets a tcp connection to the agent
@@ -71,7 +71,8 @@ async function main() {
         console.log(`Reading ${pathTypes}...`)
         const types = (common.importYaml(pathTypes) || {}).types
 
-        // compile output js strings from outputs.yaml and save to source
+        // compile value js strings from outputs.yaml.
+        // outputs is array of {key: string, value: function, dependsOn: string[]}.
         const outputs = getOutputs({
           templates: outputTemplates,
           types,
@@ -85,7 +86,7 @@ async function main() {
         // note: this must be done AFTER getOutputs and addOutputs,
         // as that is where the dependsOn values are set, and this needs those.
         console.log(`Initializing ${protocol} plugin...`)
-        plugin.init({ deviceId, host, port, cache, inputs })
+        plugin.init({ deviceId, host, port, cache, inputs, socket })
       }
 
       // handle incoming data - get PING from agent, return PONG
@@ -127,11 +128,10 @@ async function main() {
 main()
 
 // get outputs from from outputs.yaml templates - do substitutions etc.
-// templates is from outputs.yaml - array of { key, category, type, value },
-// but can have other keys also.
-// types is from types.yaml - object of objects with key:values
-// note: types IS used - it's in the closure formed by eval(str)
-// returns array of {key: string, value: function, dependsOn: string[]}
+// templates is from outputs.yaml - array of { key, category, type, value, ... }.
+// types is from types.yaml - object of objects with key:values.
+// note: types IS used - it's in the closure formed by eval(str).
+// returns array of {key: string, value: function, dependsOn: string[]}.
 function getOutputs({ templates, types, deviceId }) {
   // console.log('getOutputs - iterate over output templates')
   const outputs = templates.map(template => {
