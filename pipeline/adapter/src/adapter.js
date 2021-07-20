@@ -10,7 +10,7 @@ import { Cache } from './cache.js'
 const defaultDestination = { protocol: 'shdr', host: 'adapter', port: 7878 }
 
 // file system inputs
-const pluginsFolder = './plugins' // for protocol handlers, eg mqtt-json - must start with .
+const pluginsFolder = './plugins' // for drivers, eg mqtt-json - must start with .
 // these folders are defined in pipeline.yaml with docker volume mappings
 const setupFolder = '/data/setup' // incls setup.yaml etc
 const modelsFolder = `/data/models` // incls ccs-pa/model.yaml etc
@@ -48,12 +48,12 @@ async function main() {
       // iterate over sources, load plugin for that source, call init on it.
       for (const source of device.sources) {
         console.log({ source })
-        const { model, protocol, host, port } = source
+        const { model, driver, protocol, host, port } = source
 
-        // import protocol plugin
-        const pathProtocol = `${pluginsFolder}/${protocol}.js` // eg './plugins/mqtt-json.js'
-        console.log(`Adapter importing plugin code: ${pathProtocol}...`)
-        const AdapterPlugin = await import(pathProtocol)
+        // import driver plugin
+        const pathPlugin = `${pluginsFolder}/${driver}.js` // eg './plugins/mqtt-json.js'
+        console.log(`Adapter importing plugin code: ${pathPlugin}...`)
+        const AdapterPlugin = await import(pathPlugin)
         const plugin = new AdapterPlugin()
 
         // get input handlers
@@ -85,8 +85,17 @@ async function main() {
         // initialize plugin
         // note: this must be done AFTER getOutputs and addOutputs,
         // as that is where the dependsOn values are set, and this needs those.
-        console.log(`Initializing ${protocol} plugin...`)
-        plugin.init({ deviceId, host, port, cache, inputs, socket })
+        console.log(`Initializing ${driver} plugin...`)
+        plugin.init({
+          deviceId,
+          driver,
+          protocol,
+          host,
+          port,
+          cache,
+          inputs,
+          socket,
+        })
       }
 
       // handle incoming data - get PING from agent, return PONG

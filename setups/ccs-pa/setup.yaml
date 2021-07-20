@@ -21,11 +21,10 @@ devices:
     # define data sources that feed into this device
     sources:
       - model: ccs/print-apply # model defines inputs and outputs with yaml files
-        protocol: mqtt-json # type of adapter plugin - manages protocol and payload
-        # url: mqtt://broker:1883 #. pass in somehow - envar? or say url: mqtt://$sourceHost:1883?
-        # url: mqtt://localhost:1883
+        driver: mqtt-json # type of adapter plugin - manages protocol and payload
+        # url: mqtt://broker:1883
+        protocol: mqtt
         host: broker
-        # host: localhost
         port: 1883
 
       # - model: rockwell-hmi

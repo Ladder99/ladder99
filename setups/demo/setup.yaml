@@ -11,11 +11,11 @@ devices:
 
     sources:
       - model: ladder99/camera
-        protocol: test # type of adapter plugin - manages protocol and payload
+        driver: test # type of adapter plugin - manages protocol and payload
         # url: http://play:8080
-        # proto: http
-        # host: play
-        # port: 8080
+        protocol: http
+        host: play
+        port: 8080
         # host: broker # for mac/pi
         # host: localhost # for hydrant?
         # port: 1883
