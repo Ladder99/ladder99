@@ -1,7 +1,12 @@
 # inputs
 
-# handle messages, write values to cache, output shdr.
-# this is parsed by the adapter plugin mqtt-json.js.
+# Adapter subscribes to MQTT topics from devices.
+# MQTT broker sends data to Adapter.
+# Adapter parses messages, writes values to cache, which outputs shdr.
+
+#. call this adapter.yaml? cache.yaml?
+
+# this file is parsed by the adapter plugin mqtt-json.js.
 
 # define connect handler
 connect:

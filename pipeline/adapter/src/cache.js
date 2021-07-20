@@ -55,13 +55,16 @@ export class Cache {
 }
 
 // calculate SHDR using the given output object.
+// cache is the Cache object.
+// output has { key, category, type, representation, value, ... }.
 function getShdr(cache, output) {
   const timestamp = new Date().toISOString() //. get from item
-  const { category, type, representation, key } = output
   //. rename .value to .getValue or .valueFn
-  const value = output.value(cache) // do calculation - value is a fn of cache
+  const { key, category, type, representation, value: getValue } = output
+  const value = getValue(cache) // do calculation
   let shdr = ''
-  // handle different shdr types
+  // handle different shdr types and representations
+  //. shouldn't this be dataitemId, not key?
   if (category === 'EVENT' || category === 'SAMPLE') {
     shdr = `${timestamp}|${key}|${value}`
   } else if (category === 'CONDITION') {
@@ -77,7 +80,7 @@ function getShdr(cache, output) {
     //   const message = value + ' (msg here)'
     //   shdr = `${timestamp}|${key}|${nativeCode}|${message}`
   } else {
-    console.log(`warning: unknown category '${category}'`)
+    console.warn(`warning: unknown category '${category}'`)
   }
   return shdr
 }

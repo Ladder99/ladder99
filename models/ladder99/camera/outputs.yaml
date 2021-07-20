@@ -16,4 +16,5 @@ outputs:
   - key: connection
     category: EVENT
     type: AVAILABILITY
-    value: types.AVAILABILITY[<status-connection>]
+    # value: types.AVAILABILITY[<status-connection>]
+    value: "<status-connection> === 'online' ? 'AVAILABLE' : 'UNAVAILABLE'"

@@ -59,12 +59,12 @@ async function main() {
         const AdapterPlugin = await import(pathProtocol)
         const plugin = new AdapterPlugin()
 
-        // get inputs
+        // get input handlers
         const pathInputs = `${modelsFolder}/${model}/inputs.yaml`
         console.log(`Reading ${pathInputs}...`)
         const inputs = common.importYaml(pathInputs) || {}
 
-        // get outputs
+        // get output handlers
         const pathOutputs = `${modelsFolder}/${model}/outputs.yaml`
         console.log(`Reading ${pathOutputs}...`)
         const outputTemplates = (common.importYaml(pathOutputs) || {}).outputs
