@@ -1,7 +1,11 @@
 # inputs
 
-# handle messages, write values to cache, output shdr.
-# this is parsed by the adapter plugin test.js.
+# Adapter test plugin polls data from devices,
+# parses messages, writes values to cache, which outputs shdr.
+
+#. call this adapter.yaml? cache.yaml?
+
+# this file is parsed by the adapter plugin test.js.
 
 # define message handlers
 handlers:
