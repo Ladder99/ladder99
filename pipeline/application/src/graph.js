@@ -10,7 +10,7 @@ export class Graph {
     this.history = new History(this)
   }
 
-  // note: we don't implement addNode etc as would lead to too many
+  // NOTE: we don't implement addNode etc as would lead to too many
   // pass-through methods - just say graph.nodes.add() etc
 
   // read graph from a timegraph db
@@ -59,15 +59,18 @@ export class Graph {
   }
 }
 
-//
+//. split this into graph, graphNodes, graphEdges, graphHistory.js files?
 
 class Nodes {
   constructor(graph) {
     this.nodes = []
     this.indexByNodeId = {}
-    // this.indexByProps = {}
+    this.indexByProps = {}
+    this.indexByProps.id = {}
   }
+
   //. crud - add, get, update, delete
+
   // add node and return with any updated info (eg node_id)
   add(node) {
     // if (node._id) {
@@ -77,8 +80,13 @@ class Nodes {
     // }
     // this.nodes[node._id] = node
     this.nodes.push(node)
+    //. add to index also
+    if (node.props.id) {
+      this.indexByProps.id[node.props.id] = node
+    }
     return node
   }
+
   get(spec) {
     if (spec) {
       if (libapp.isObject(spec)) {
@@ -89,14 +97,21 @@ class Nodes {
             return node
           }
         }
+      } else {
+        const id = spec
+        const node = this.indexByProps.id[id]
+        return node
       }
       return null
     }
     return this.nodes
   }
-  //. extra - merge into crud?
-  has(node) {
-    return this.get(node) !== null
+
+  //. extra methods - merge into crud?
+
+  // has is useful as it doesn't return all the data
+  has(spec) {
+    return this.get(spec) !== null
   }
 }
 
