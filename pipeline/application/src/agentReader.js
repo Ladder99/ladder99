@@ -1,12 +1,12 @@
 // agent
-// class to represent an agent - handles probe, current, sample loop
+// class to read agent data - handles probe, current, sample loop
 
 import { Probe } from './dataProbe.js'
 import { Current } from './dataCurrent.js'
 import { Sample } from './dataSample.js'
 import * as libapp from './libapp.js'
 
-export class Agent {
+export class AgentReader {
   // db is a Db instance
   // endpoint is an Endpoint instance
   // params includes { }
@@ -23,7 +23,7 @@ export class Agent {
     this.count = params.fetchCount
   }
 
-  // // init agent
+  // // init agent reader
   // async init() {
   //   //. read probe info incl device info, instanceId
   //   //. read dataitems.yaml to translate shdr id to canonical id?
