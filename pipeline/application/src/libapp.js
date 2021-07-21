@@ -24,6 +24,7 @@ export function shallowCompare(obj1, obj2) {
 }
 
 // traverse a tree of nodes, adding nodes and edges to arrays
+//. refactor, add comments
 export function traverse(
   node,
   nodes,
@@ -40,24 +41,27 @@ export function traverse(
     for (const key of keys) {
       const value = node[key]
       if (key === '_declaration') {
-        // ignore this, eg { _attributes: { version: '1.0', encoding: 'UTF-8' }
+        // ignore, eg { _attributes: { version: '1.0', encoding: 'UTF-8' }
       } else if (key === '_instruction') {
-        // ignore this, eg { 'xml-stylesheet': 'type="text/xsl" href="/styles/Devices.xsl"' }
+        // ignore, eg { 'xml-stylesheet': 'type="text/xsl" href="/styles/Devices.xsl"' }
       } else if (key === '_attributes') {
         obj = { ...obj, ...value, parents }
       } else if (key === '_text') {
         obj = { ...obj, value, parents }
       } else if (key === 'Agent') {
-        // ignore Agent info - ok?
+        //. ignore Agent info for now
       } else {
         const newparents = [...parents, obj] // push obj onto parents path list
         traverse(value, nodes, edges, key, _key, newparents)
       }
     }
+    // get prop, eg 'DataItem(event,availability)'
     obj.prop = obj.parents.slice(4).map(getStep).join('/') + '/' + getStep(obj)
-    obj.device = getStep(obj.parents[3])
+    // ditch leading '/' and double '//'
     if (obj.prop.startsWith('/')) obj.prop = obj.prop.slice(1)
     obj.prop = obj.prop.replaceAll('//', '/')
+    // get device, eg 'Device(a234)'
+    obj.device = getStep(obj.parents[3])
     // obj.path = obj.device + '/' + obj.prop
     delete obj.parents
     nodes.push(obj)
