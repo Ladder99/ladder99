@@ -26,7 +26,7 @@ export class Graph {
     // edges
     sql = `SELECT * from edges;`
     result = await db.query(sql)
-    const edges = result.rows // [{from_id, to_id, props}]
+    const edges = result.rows // [{ from_id, to_id, props }]
     for (const edge of edges) {
       this.edges.add(edge)
     }
@@ -111,7 +111,7 @@ class Nodes {
 
   // has is useful as it doesn't return all the data
   has(spec) {
-    return this.get(spec) !== null
+    return !!this.get(spec)
   }
 }
 
