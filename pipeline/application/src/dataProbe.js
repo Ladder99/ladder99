@@ -7,6 +7,8 @@ import * as libapp from './libapp.js'
 export class Probe extends Data {
   type = 'probe'
 
+  // see base class Data for read method
+
   async write(db) {
     console.log(this.json)
     const nodes = []

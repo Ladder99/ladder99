@@ -13,7 +13,7 @@ export class Data {
 
   async read(endpoint, from, count) {
     this.json = await endpoint.fetchJson(this.type, from, count)
-    this.parseHeader()
+    this.parseHeader() // get .header and .instanceId
   }
 
   // get errors, header, and instanceId from json

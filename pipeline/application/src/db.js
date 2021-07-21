@@ -3,7 +3,7 @@
 
 import fs from 'fs' // node lib
 import pg from 'pg' // postgres driver https://github.com/brianc/node-postgres
-const { Pool } = pg // import { Client } from 'pg' gives error, so must do this
+const { Pool } = pg // note: import { Client } from 'pg' gives error, so must do this
 import * as libapp from './libapp.js'
 
 export class Db {
