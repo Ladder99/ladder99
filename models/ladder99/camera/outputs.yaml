@@ -15,8 +15,13 @@
 outputs:
   # - key: connection
   # - id: ${deviceId}/device-availability
-  - key: device-availability
+  # - id: device-availability${deviceNum}
+  # - key: device-availability
+  - canonicalKey: device-availability
+    shdrKey: conn
+    # cacheKey: connection
     category: EVENT
     type: AVAILABILITY
-    value: types.AVAILABILITY[<status-connection>]
+    # value: types.AVAILABILITY[<status-connection>]
+    value: types.AVAILABILITY[<connection>]
     # value: "<status-connection> === 'online' ? 'AVAILABLE' : 'UNAVAILABLE'"

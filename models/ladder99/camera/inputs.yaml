@@ -1,11 +1,11 @@
 # inputs
+# this file is parsed by the adapter plugin http-json.js.
+
+# in general, cache-key on left, json-key on right
 
 # Adapter test plugin polls data from devices,
 # parses messages, writes values to cache, which outputs shdr.
-
 #. call this adapter.yaml? cache.yaml?
-
-# this file is parsed by the adapter plugin test.js.
 
 # define message handlers
 handlers:
