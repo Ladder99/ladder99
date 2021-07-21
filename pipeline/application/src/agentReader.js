@@ -1,5 +1,6 @@
-// agent
-// class to read agent data - handles probe, current, sample loop
+// agent reader
+// class to read data from an agent - handles probe, current, sample loop.
+// a setup can have multiple agents running that it needs to pull data from.
 
 import { Probe } from './dataProbe.js'
 import { Current } from './dataCurrent.js'
@@ -39,8 +40,8 @@ export class AgentReader {
     // probe - get agent data structures and write to db
     probe: do {
       const probe = new Probe()
-      await probe.read(this.endpoint)
-      await probe.write(this.db)
+      await probe.read(this.endpoint) // read xml into probe.json
+      await probe.write(this.db) // write/sync dataitems to db
       this.instanceId = probe.instanceId
 
       // current - get last known values of all dataitems, write to db
