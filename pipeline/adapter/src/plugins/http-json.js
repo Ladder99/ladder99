@@ -1,4 +1,6 @@
-// test plugin
+// http-json plugin
+
+// polls data from http, parses as json
 
 import fetch from 'node-fetch'
 
