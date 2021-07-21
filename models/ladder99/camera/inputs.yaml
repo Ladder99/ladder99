@@ -17,4 +17,5 @@ handlers:
   # eg 'status-connection' => 'pa1-status_connection',
   # and part is some javascript calculation code to determine its value.
   inputs:
-    status-connection: $.connection
+    # status-connection: $.connection
+    device-availability: $.connection

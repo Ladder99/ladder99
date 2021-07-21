@@ -13,8 +13,10 @@
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
 
 outputs:
-  - key: connection
+  # - key: connection
+  # - id: ${deviceId}/device-availability
+  - key: device-availability
     category: EVENT
     type: AVAILABILITY
-    # value: types.AVAILABILITY[<status-connection>]
-    value: "<status-connection> === 'online' ? 'AVAILABLE' : 'UNAVAILABLE'"
+    value: types.AVAILABILITY[<status-connection>]
+    # value: "<status-connection> === 'online' ? 'AVAILABLE' : 'UNAVAILABLE'"

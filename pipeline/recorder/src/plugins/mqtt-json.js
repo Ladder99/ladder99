@@ -6,12 +6,8 @@ import parse from 'csv-parse/lib/sync.js' // see https://github.com/adaltas/node
 import * as common from '../common.js'
 
 export class RecorderPlugin {
-  //------------------------------------------------------------------------
-  // init
-  //------------------------------------------------------------------------
-
   init({ deviceId, mode, host, port, folder, csvfiles, loop, topic }) {
-    console.log(`Mode: ${mode}`)
+    console.log(`Initializing mqtt-json plugin, mode ${mode}...`)
 
     let fd // file descriptor for recording
 

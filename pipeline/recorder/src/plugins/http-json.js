@@ -9,8 +9,9 @@ import * as common from '../common.js'
 
 export class RecorderPlugin {
   async init({ deviceId, mode, host, port, loop, folder, csvfiles }) {
-    console.log(`init test, mode ${mode}`)
+    console.log(`Initializing http-json plugin, mode ${mode}...`)
 
+    console.log(`Create http server, listen on port ${port}...`)
     const server = http.createServer(requestListener)
     server.listen(port)
 

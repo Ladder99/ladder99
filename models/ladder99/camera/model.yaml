@@ -4,7 +4,7 @@
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from setup.yaml.
 # dataItems are defined in outputs.yaml.
-# compilation to devices.xml is done with sh/adapter/compile.
+# compilation to devices.xml is done with sh/adapter/src/compile.
 
 model:
   - id: ${deviceId}
@@ -20,4 +20,5 @@ model:
 
     dataItems:
       dataItem:
-        - connection
+        # - connection
+        - device-availability

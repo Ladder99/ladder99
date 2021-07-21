@@ -40,7 +40,6 @@ async function main() {
     // iterate over sources for each device
     const { sources } = device
     for (let source of sources) {
-      // instantiate a plugin for the source protocol
       const {
         model,
         driver = 'mqtt-json',
@@ -49,30 +48,35 @@ async function main() {
         loop = true,
         topic = '#',
       } = source
-      //. should we just pass the whole source to the plugin?
-      //.
+
+      // get plugin class for the source driver
       const pluginPath = `${pluginsFolder}/${driver}.js`
       console.log(`Importing plugin from ${pluginPath}...`)
       const { RecorderPlugin } = await import(pluginPath)
-      // initialize the plugin
+
+      // get list of recorded csv files for the source model
+      // do this here instead of in each plugin
       const folder = `${modelsFolder}/${model}/recordings`
-
-      console.log(`Reading list of files in folder '${folder}'...`)
-      let csvfiles
-      try {
-        csvfiles = fs
-          .readdirSync(folder)
-          .filter(csvfile => csvfile.endsWith('.csv'))
-          .sort()
-      } catch (error) {
-        console.log(`Problem reading files - does folder '${folder}' exist?`)
-        process.exit(1)
+      let csvfiles = []
+      if (mode === 'play') {
+        console.log(`Reading list of files in folder '${folder}'...`)
+        try {
+          csvfiles = fs
+            .readdirSync(folder)
+            .filter(csvfile => csvfile.endsWith('.csv'))
+            .sort()
+        } catch (error) {
+          console.log(`Problem reading files - does folder '${folder}' exist?`)
+          process.exit(1)
+        }
+        if (csvfiles.length === 0) {
+          console.log(`No csv files found in folder '${folder}'.`)
+          process.exit(1)
+        }
       }
-      if (csvfiles.length === 0) {
-        console.log(`No csv files found in folder '${folder}'.`)
-        process.exit(1)
-      }
 
+      // instantiate a plugin for the source driver
+      //. should we just pass the whole source to the plugin?
       const plugin = new RecorderPlugin()
       plugin.init({ deviceId, mode, host, port, folder, csvfiles, loop, topic })
     }
