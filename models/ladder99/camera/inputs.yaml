@@ -18,4 +18,5 @@ handlers:
   # and part is some javascript calculation code to determine its value.
   inputs:
     # status-connection: $.connection
-    device-availability: $.connection
+    # device-availability: $.connection
+    connection: $.connection

@@ -8,10 +8,11 @@ import { Endpoint } from './endpoint.js'
 console.log(`MTConnect Application starting`)
 console.log(`---------------------------------------------------`)
 
-// get envars
+// get envars - typically set in a setup's pipeline-overrides.yaml file
 const params = {
   // AGENT_URLS can be a single url, a comma-delim list of urls, or a txt filename with urls
   agentEndpoints: process.env.AGENT_ENDPOINTS || 'http://localhost:5000',
+  //. these should be dynamic - adjusted on the fly
   fetchInterval: Number(process.env.FETCH_INTERVAL || 2000), // how often to fetch sample data, msec
   fetchCount: Number(process.env.FETCH_COUNT || 800), // how many samples to fetch each time
   retryTime: 4000, // ms between connection retries etc
