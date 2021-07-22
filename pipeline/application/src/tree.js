@@ -18,7 +18,7 @@ const elementHandlers = {
   _text: (obj, value) => (obj.text = value),
 }
 
-const appendTags = getSet('Agent,Device,Description,DataItem')
+const appendTags = getSet('Device,Description,DataItem')
 const skipTags = getSet('Agent')
 
 //
@@ -106,8 +106,10 @@ function getPathStep(obj) {
       params = [obj.uuid] // standard says name may be optional in future versions, so use uuid
       break
     case 'DataItem':
+      // add primary params
       params = [obj.category, obj.type]
       if (obj.subType) params.push(obj.subType)
+      // add named params
       let namedParams = []
       for (const key of Object.keys(obj)) {
         if (!ignoreAttributes.has(key)) {
