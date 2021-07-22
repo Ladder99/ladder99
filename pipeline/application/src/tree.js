@@ -31,15 +31,8 @@ const elementHandlers = {
 //. handle parents differently - do in separate pass?
 function recurse(el, els, tag = '', parentKey = '', parents = []) {
   // el can be an object, an array, or an atomic value
-  // const elType = libapp.isObject(el) ? 'object' : Array.isArray(el) ? 'array' : 'atom'
-  // switch (elType) {
-  //   case 'object':
-  //   case 'array':
-  //   case 'atom':
-  //     break
-  // }
 
-  // el is an object with keyvalue pairs
+  // handle object with keyvalue pairs
   if (libapp.isObject(el)) {
     let obj = { tag, parents }
 
@@ -49,9 +42,8 @@ function recurse(el, els, tag = '', parentKey = '', parents = []) {
       // get key-value handler
       const handler = elementHandlers[key] || ignore
       obj = handler(obj, value)
-      // recurse
       const newparents = [...parents, obj] // push obj onto parents path list
-      recurse(value, els, key, '', newparents)
+      recurse(value, els, key, '', newparents) // recurse
     }
 
     // get prop, eg 'DataItem(event,availability)'
@@ -68,6 +60,7 @@ function recurse(el, els, tag = '', parentKey = '', parents = []) {
     delete obj.parents
     if (obj.tag === 'Device' || obj.tag === 'DataItem') els.push(obj)
   } else if (Array.isArray(el)) {
+    // handle array of subelements
     for (const subel of el) {
       recurse(subel, els, tag, parentKey, parents) // recurse
     }
