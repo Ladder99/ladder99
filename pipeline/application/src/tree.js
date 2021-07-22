@@ -3,7 +3,7 @@ import * as libapp from './libapp.js'
 // get flat list of nodes from given json tree
 export function getElements(json) {
   const els = []
-  traverseOld(json, els)
+  recurse(json, els)
   return els
 }
 
@@ -17,6 +17,7 @@ const elementHandlers = {
   _instruction: ignore,
 
   Agent: ignore,
+  // Resources: ignore,
 
   // eg { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
   _attributes: (obj, value) => ({ ...obj, ...value }),
@@ -28,23 +29,29 @@ const elementHandlers = {
 // traverse a tree of elements, adding them to an array
 //. refactor, add comments
 //. handle parents differently - do in separate pass?
-function traverseOld(el, els, parentTag = '', parentKey = '', parents = []) {
+function recurse(el, els, parentTag = '', parentKey = '', parents = []) {
   // el can be an object, an array, or an atomic value
+  // const elType = libapp.isObject(el) ? 'object' : Array.isArray(el) ? 'array' : 'atom'
+  // switch (elType) {
+  //   case 'object':
+  //   case 'array':
+  //   case 'atom':
+  //     break
+  // }
+
+  // el is an object with keyvalue pairs
   if (libapp.isObject(el)) {
     let obj = { tag: parentTag, parents }
 
-    // iterate over key-value pairs,
-    // eg key=_attributes, value={ id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
+    // iterate over keyvalue pairs,
+    // eg key='_attributes', value={ id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
     for (const [key, value] of Object.entries(el)) {
       // get key-value handler
-      const handler = elementHandlers[key]
-      if (handler) {
-        obj = handler(obj, value)
-      } else {
-        // recurse
-        const newparents = [...parents, obj] // push obj onto parents path list
-        traverseOld(value, els, key, '', newparents)
-      }
+      const handler = elementHandlers[key] || ignore
+      obj = handler(obj, value)
+      // recurse
+      const newparents = [...parents, obj] // push obj onto parents path list
+      recurse(value, els, key, '', newparents)
     }
 
     // get prop, eg 'DataItem(event,availability)'
@@ -62,7 +69,7 @@ function traverseOld(el, els, parentTag = '', parentKey = '', parents = []) {
     if (obj.tag === 'Device' || obj.tag === 'DataItem') els.push(obj)
   } else if (Array.isArray(el)) {
     for (const subel of el) {
-      traverseOld(subel, els, parentTag, parentKey, parents) // recurse
+      recurse(subel, els, parentTag, parentKey, parents) // recurse
     }
   } else {
     console.log('>>what is this?', { el })
@@ -71,7 +78,7 @@ function traverseOld(el, els, parentTag = '', parentKey = '', parents = []) {
 
 //
 
-function traverse(el, els) {
+function iterate(el, els) {
   const pairs = Object.entries(el)
   for (const [key, value] of pairs) {
     // console.log(key, value)
