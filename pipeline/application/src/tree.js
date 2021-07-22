@@ -148,6 +148,7 @@ export function getObservationObjects(json) {
   return objs
 }
 
+const appendTags2 = getSet('Angle')
 const skipTags2 = getSet('')
 
 // traverse a tree of elements, adding them to an array
@@ -163,9 +164,9 @@ function recurseObservations(el, objs, tag = '', parents = []) {
     let obj = { tag, parents }
 
     // add obj to return list if one of certain tags (eg DataItem)
-    // if (appendTags.has(tag)) objs.push(obj)
+    // if (appendTags2.has(tag)) objs.push(obj)
 
-    // get keyvalue pairs, skipping some tags (eg Agent)
+    // get keyvalue pairs, skipping unwanted tags
     const pairs = Object.entries(el).filter(([key]) => !skipTags2.has(key))
 
     // iterate over keyvalue pairs
@@ -177,15 +178,17 @@ function recurseObservations(el, objs, tag = '', parents = []) {
       recurseObservations(value, objs, key, newparents) // recurse
     }
 
-    // get device and signature for dataitems
-    // eg 'Device(a234)' and 'DataItem(event,availability)'
-    if (tag === 'DataItem') {
-      obj.device = getPathStep(obj.parents[3])
-      obj.signature = [...obj.parents.slice(4), obj]
-        .map(getPathStep)
-        .filter(step => !!step)
-        .join('/')
-    }
+    // // get device and signature for dataitems
+    // // eg 'Device(a234)' and 'DataItem(event,availability)'
+    // if (tag === 'DataItem') {
+    //   obj.device = getPathStep(obj.parents[3])
+    //   obj.signature = [...obj.parents.slice(4), obj]
+    //     .map(getPathStep)
+    //     .filter(step => !!step)
+    //     .join('/')
+    // }
+
+    if (obj.dataItemId) objs.push(obj)
 
     // get rid of the parents list
     delete obj.parents
