@@ -29,7 +29,7 @@ const elementHandlers = {
 // traverse a tree of elements, adding them to an array
 //. refactor, add comments
 //. handle parents differently - do in separate pass?
-function recurse(el, els, tag = '', parentKey = '', parents = []) {
+function recurse(el, els, tag = '', parents = []) {
   // el can be an object, an array, or an atomic value
 
   // handle object with keyvalue pairs
@@ -43,7 +43,7 @@ function recurse(el, els, tag = '', parentKey = '', parents = []) {
       const handler = elementHandlers[key] || ignore
       obj = handler(obj, value)
       const newparents = [...parents, obj] // push obj onto parents path list
-      recurse(value, els, key, '', newparents) // recurse
+      recurse(value, els, key, newparents) // recurse
     }
 
     // get prop, eg 'DataItem(event,availability)'
@@ -62,7 +62,7 @@ function recurse(el, els, tag = '', parentKey = '', parents = []) {
   } else if (Array.isArray(el)) {
     // handle array of subelements
     for (const subel of el) {
-      recurse(subel, els, tag, parentKey, parents) // recurse
+      recurse(subel, els, tag, parents) // recurse
     }
   } else {
     console.log('>>what is this?', { el })
