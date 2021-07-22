@@ -14,22 +14,21 @@ export class Probe extends Data {
 
   // write probe data in .json to db instance
   async write(db) {
-    // get lists of nodes and edges from json
-    //. return them from a fn, eg const graph = tree.getGraph(this.json) => { nodes, edges }?
+    // get lists of objs from json
     //. move this to the read or a parse method?
-    const nodes = []
-    const edges = []
-    tree.traverse(this.json, nodes, edges)
-    console.log('nodes', nodes)
+    const objs = tree.getObjects(this.json)
+    console.log('objs', objs)
 
     // const nodesPath = 'nodes-ex.json'
     // fs.writeFileSync(nodesPath, JSON.stringify(nodes, null, 2))
     // process.exit(0)
 
-    //. read db nodes into array, compare, add missing dataitem records
-    const graphDb = new Graph()
-    await graphDb.read(db)
-    console.log('graphdb', graphDb)
+    // read db nodes into array, compare, add missing dataitem records
+    //. what if other agentreader is writing props at same time though?
+    //. i guess need to write propdefs one by one, catch error from db.
+    // const graphDb = new Graph()
+    // await graphDb.read(db)
+    // console.log('graphdb', graphDb)
 
     // compare nodes with db nodes, get add/update/delete lists
     const missingNodes = []

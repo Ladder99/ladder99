@@ -13,12 +13,11 @@ const elementHandlers = {
   // handle attributes, eg { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
   _attributes: (obj, value) =>
     Object.keys(value).forEach(key => (obj[key] = value[key])),
-
-  // handle text, eg value = 'Mill w/Smooth-G'
-  _text: (obj, value) => (obj.text = value),
+  // handle text/value, eg value = 'Mill w/Smooth-G'
+  _text: (obj, value) => (obj.value = value),
 }
 
-const appendTags = getSet('Device,Description,DataItem')
+const appendTags = getSet('Device,Description,DataItem,Angle')
 const skipTags = getSet('Agent')
 
 //
@@ -51,15 +50,13 @@ function recurse(el, objs, tag = '', parents = []) {
     }
 
     // get device and signature for dataitems
+    // eg 'Device(a234)' and 'DataItem(event,availability)'
     if (tag === 'DataItem') {
-      // get device, eg 'Device(a234)'
       obj.device = getPathStep(obj.parents[3])
-      // get signature, eg 'DataItem(event,availability)'
       obj.signature = [...obj.parents.slice(4), obj]
         .map(getPathStep)
         .filter(step => !!step)
         .join('/')
-      // obj.path = obj.device + '/' + obj.signature
     }
 
     // get rid of the parents list

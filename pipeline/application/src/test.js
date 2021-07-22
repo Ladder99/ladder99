@@ -6,7 +6,8 @@ import fs from 'fs' // node lib - filesystem
 import convert from 'xml-js' // https://github.com/nashwaan/xml-js
 import * as tree from './tree.js'
 
-const path = 'examples/mazak/probe5717sm.xml'
+// const path = 'examples/mazak/probe5717sm.xml'
+const path = 'examples/mazak/current5717.xml'
 const xml = fs.readFileSync(path).toString()
 const json = JSON.parse(convert.xml2json(xml, { compact: true }))
 // console.log(json)
