@@ -31,16 +31,17 @@ function recurse(el, objs, tag = '', parents = []) {
 
   // handle object with keyvalue pairs
   if (libapp.isObject(el)) {
-    //
+    // start object, which is a translation of the json element to something usable.
+    // tag is eg 'DataItem', parents is list of ancestors - will be deleted before return.
     let obj = { tag, parents }
 
-    // add obj to list if one of certain tags (eg DataItem)
+    // add obj to return list if one of certain tags (eg DataItem)
     if (appendTags.has(tag)) objs.push(obj)
 
     // get keyvalue pairs, skipping some tags (eg Agent)
     const pairs = Object.entries(el).filter(([key]) => !skipTags.has(key))
 
-    // iterate over keyvalue pairs,
+    // iterate over keyvalue pairs
     // eg key='_attributes', value={ id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
     for (const [key, value] of pairs) {
       const handler = elementHandlers[key] || ignore // get keyvalue handler
