@@ -15,7 +15,7 @@ export class Probe extends Data {
   // write probe data in .json to db instance
   async write(db) {
     // get lists of nodes and edges from json
-    //. return them from a fn, eg const graph = libapp.getGraph(this.json) => { nodes, edges }?
+    //. return them from a fn, eg const graph = tree.getGraph(this.json) => { nodes, edges }?
     //. move this to the read or a parse method?
     const nodes = []
     const edges = []
@@ -47,6 +47,7 @@ export class Probe extends Data {
     }
 
     // add missing node records
+    //. hide sql inside the db module
     if (missingNodes.length > 0) {
       const records = missingNodes
         .map(node => {

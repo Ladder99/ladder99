@@ -11,11 +11,12 @@ export function traverse(
   parents = []
 ) {
   if (libapp.isObject(node)) {
-    const keys = Object.keys(node)
     // // assign random key to each node, use to define edges?
     // const _key = crypto.randomBytes(8).toString('hex')
     // let obj = { tag: parentTag, _key, parents }
     let obj = { tag: parentTag, parents }
+    // iterate over key-value pairs
+    const keys = Object.keys(node)
     for (const key of keys) {
       const value = node[key]
       if (key === '_declaration') {
