@@ -62,6 +62,7 @@ function recurse(el, objs, tag = '', parents = []) {
     }
 
     delete obj.parents
+    //
   } else if (Array.isArray(el)) {
     // handle array of subelements
     for (const subel of el) {
