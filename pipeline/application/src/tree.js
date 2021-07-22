@@ -108,10 +108,15 @@ function getPathStep(obj) {
     case 'DataItem':
       params = [obj.category, obj.type]
       if (obj.subType) params.push(obj.subType)
+      let namedParams = []
       for (const key of Object.keys(obj)) {
         if (!ignoreAttributes.has(key)) {
-          params.push(key + '=' + obj[key])
+          namedParams.push(key + '=' + obj[key])
         }
+      }
+      namedParams.sort()
+      for (const namedParam of namedParams) {
+        params.push(namedParam)
       }
       break
     case 'Specification':
