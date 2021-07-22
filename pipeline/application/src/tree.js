@@ -7,23 +7,15 @@ export function getElements(json) {
   return els
 }
 
-const ignore = obj => obj
+const ignore = () => {}
 
 const elementHandlers = {
-  // eg { _attributes: { version: '1.0', encoding: 'UTF-8' }
-  _declaration: ignore,
+  // handle attributes, eg { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
+  _attributes: (obj, value) =>
+    Object.keys(value).forEach(key => (obj[key] = value[key])),
 
-  // eg { 'xml-stylesheet': 'type="text/xsl" href="/styles/Devices.xsl"' }
-  _instruction: ignore,
-
-  Agent: ignore,
-  // Resources: ignore,
-
-  // eg { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
-  _attributes: (obj, value) => ({ ...obj, ...value }),
-
-  // eg value = 'Mill w/Smooth-G'
-  _text: (obj, value) => ({ ...obj, value }),
+  // handle text, eg value = 'Mill w/Smooth-G'
+  _text: (obj, value) => (obj.text = value),
 }
 
 // traverse a tree of elements, adding them to an array
@@ -36,18 +28,21 @@ function recurse(el, els, tag = '', parents = []) {
   if (libapp.isObject(el)) {
     let obj = { tag, parents }
 
+    if (tag === 'Device' || tag === 'DataItem' || tag === 'Agent') els.push(obj)
+
     // iterate over keyvalue pairs,
     // eg key='_attributes', value={ id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
     for (const [key, value] of Object.entries(el)) {
       // get key-value handler
       const handler = elementHandlers[key] || ignore
-      obj = handler(obj, value)
+      // obj = handler(obj, value)
+      handler(obj, value)
       const newparents = [...parents, obj] // push obj onto parents path list
       recurse(value, els, key, newparents) // recurse
     }
 
     // get prop, eg 'DataItem(event,availability)'
-    if (obj.tag === 'DataItem') {
+    if (tag === 'DataItem') {
       obj.prop =
         obj.parents.slice(4).map(getPathStep).join('/') + '/' + getPathStep(obj)
       // ditch leading '/' and double '//'
@@ -58,14 +53,15 @@ function recurse(el, els, tag = '', parents = []) {
     }
     // obj.path = obj.device + '/' + obj.prop
     delete obj.parents
-    if (obj.tag === 'Device' || obj.tag === 'DataItem') els.push(obj)
+    // if (tag === 'Device' || tag === 'DataItem') els.push(obj)
   } else if (Array.isArray(el)) {
     // handle array of subelements
     for (const subel of el) {
       recurse(subel, els, tag, parents) // recurse
     }
   } else {
-    console.log('>>what is this?', { el })
+    // ignore atomic values
+    // console.log('>>what is this?', { el })
   }
 }
 
