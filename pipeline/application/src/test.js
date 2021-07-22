@@ -10,11 +10,9 @@ import * as tree from './tree.js'
 const path = 'examples/mazak/current5717.xml'
 const xml = fs.readFileSync(path).toString()
 const json = JSON.parse(convert.xml2json(xml, { compact: true }))
-// console.log(json)
-// libapp.print(json)
-
-const objs = tree.getProbeObjects(json)
+// const objs = tree.getProbeObjects(json)
+const objs = tree.getObservationObjects(json)
 console.log(objs)
 
-// const nodesFile = 'nodes.json'
-// fs.writeFileSync(nodesFile, JSON.stringify(nodes, null, 2))
+// const nodesFile = 'foo.json'
+// fs.writeFileSync(nodesFile, JSON.stringify(json, null, 2))
