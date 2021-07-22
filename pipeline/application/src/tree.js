@@ -7,31 +7,34 @@ export function getElements(json) {
   return els
 }
 
-const ignore = () => {}
+const ignore = obj => obj
 
-const elHandlers = {
+const handlers = {
+  // eg { _attributes: { version: '1.0', encoding: 'UTF-8' }
   _declaration: ignore,
+  // eg { 'xml-stylesheet': 'type="text/xsl" href="/styles/Devices.xsl"' }
+  _instruction: ignore,
+  // MTConnectDevices: ignore,
+  Agent: ignore,
+  // eg { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
+  _attributes: (obj, value, parents) => ({ ...obj, ...value, parents }),
+  // eg value = 'Mill w/Smooth-G'
+  _text: (obj, value, parents) => ({ ...obj, value, parents }),
 }
 
 // traverse a tree of elements, adding them to an array
 //. refactor, add comments
+//. handle parents differently - do in separate pass?
 function traverse(el, els, parentTag = '', parentKey = '', parents = []) {
+  // el can be an object, an array, or an atomic value
   if (libapp.isObject(el)) {
     let obj = { tag: parentTag, parents }
     // iterate over key-value pairs
     for (const [key, value] of Object.entries(el)) {
-      if (key === '_declaration') {
-        // ignore, eg { _attributes: { version: '1.0', encoding: 'UTF-8' }
-      } else if (key === '_instruction') {
-        // ignore, eg { 'xml-stylesheet': 'type="text/xsl" href="/styles/Devices.xsl"' }
-      } else if (key === '_attributes') {
-        // eg value = { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
-        obj = { ...obj, ...value, parents }
-      } else if (key === '_text') {
-        // eg value = 'Mill w/Smooth-G'
-        obj = { ...obj, value, parents }
-      } else if (key === 'Agent') {
-        //. ignore Agent info for now
+      // get key-value handler
+      const handler = handlers[key]
+      if (handler) {
+        obj = handler(obj, value, parents)
       } else {
         // recurse
         const newparents = [...parents, obj] // push obj onto parents path list
@@ -50,7 +53,7 @@ function traverse(el, els, parentTag = '', parentKey = '', parents = []) {
     }
     // obj.path = obj.device + '/' + obj.prop
     delete obj.parents
-    els.push(obj)
+    if (obj.tag === 'Device' || obj.tag === 'DataItem') els.push(obj)
   } else if (Array.isArray(el)) {
     for (const subel of el) {
       // recurse
