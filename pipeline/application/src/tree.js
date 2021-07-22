@@ -3,44 +3,50 @@ import * as libapp from './libapp.js'
 // get flat list of nodes from given json tree
 export function getElements(json) {
   const els = []
-  traverse(json, els)
+  traverseOld(json, els)
   return els
 }
 
 const ignore = obj => obj
 
-const handlers = {
+const elementHandlers = {
   // eg { _attributes: { version: '1.0', encoding: 'UTF-8' }
   _declaration: ignore,
+
   // eg { 'xml-stylesheet': 'type="text/xsl" href="/styles/Devices.xsl"' }
   _instruction: ignore,
-  // MTConnectDevices: ignore,
+
   Agent: ignore,
+
   // eg { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
-  _attributes: (obj, value, parents) => ({ ...obj, ...value, parents }),
+  _attributes: (obj, value) => ({ ...obj, ...value }),
+
   // eg value = 'Mill w/Smooth-G'
-  _text: (obj, value, parents) => ({ ...obj, value, parents }),
+  _text: (obj, value) => ({ ...obj, value }),
 }
 
 // traverse a tree of elements, adding them to an array
 //. refactor, add comments
 //. handle parents differently - do in separate pass?
-function traverse(el, els, parentTag = '', parentKey = '', parents = []) {
+function traverseOld(el, els, parentTag = '', parentKey = '', parents = []) {
   // el can be an object, an array, or an atomic value
   if (libapp.isObject(el)) {
     let obj = { tag: parentTag, parents }
-    // iterate over key-value pairs
+
+    // iterate over key-value pairs,
+    // eg key=_attributes, value={ id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
     for (const [key, value] of Object.entries(el)) {
       // get key-value handler
-      const handler = handlers[key]
+      const handler = elementHandlers[key]
       if (handler) {
-        obj = handler(obj, value, parents)
+        obj = handler(obj, value)
       } else {
         // recurse
         const newparents = [...parents, obj] // push obj onto parents path list
-        traverse(value, els, key, '', newparents)
+        traverseOld(value, els, key, '', newparents)
       }
     }
+
     // get prop, eg 'DataItem(event,availability)'
     if (obj.tag === 'DataItem') {
       obj.prop =
@@ -56,13 +62,23 @@ function traverse(el, els, parentTag = '', parentKey = '', parents = []) {
     if (obj.tag === 'Device' || obj.tag === 'DataItem') els.push(obj)
   } else if (Array.isArray(el)) {
     for (const subel of el) {
-      // recurse
-      traverse(subel, els, parentTag, parentKey, parents)
+      traverseOld(subel, els, parentTag, parentKey, parents) // recurse
     }
   } else {
     console.log('>>what is this?', { el })
   }
 }
+
+//
+
+function traverse(el, els) {
+  const pairs = Object.entries(el)
+  for (const [key, value] of pairs) {
+    // console.log(key, value)
+  }
+}
+
+//
 
 // ignore these element types - don't add much info to the path
 const ignoreTags = new Set(
