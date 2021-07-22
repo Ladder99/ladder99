@@ -1,14 +1,16 @@
 # paths
-# defines canonical ids in terms of short xpath-like expressions
+# define canonical ids in terms of short xpath-like expressions
 
-# path expr on left, canonicalId on right
-# path exprs are abbreviated xpaths
-# just parens assumes element is a DataItem,
-# and attribute order is category,type,subtype, then have named attribs
-# Device for root element is assumed
-# if just element type is given assumes it's only for first one listed
+# the dataitem path expression is on left, canonicalId is on right.
+# path exprs are abbreviated xpaths.
+# DataItem attribute order is (category,type,subtype), then have named attribs.
+# Device as root element is assumed.
 
-definitionPaths:
+# if just element type is given assumes it's only for first one listed,
+# eg Controller/Path/DataItem(event,program_edit) - 1st controller, 1st path ?
+#
+
+paths:
   DataItem(event,availability): availability
   DataItem(event,functional_mode): functional-mode
   DataItem(event,asset_changed): asset-changed
@@ -17,7 +19,8 @@ definitionPaths:
   Axes(a)/DataItem(condition,actuator): axes-actuator-condition # servo-condition?
   Axes(a)/DataItem(condition,system): axes-system-condition # spindle-condition? distinguish from controller system-condition
 
-  #. use regex group capture and substitute into canonicalId string, eg
+  #. use regex group capture and substitute into canonicalId string?
+  # eg this could give canonicalId 'x-machine':
   # /Axes\((.*)\)/Linear\((.*)\)/DataItem(sample,position,actual,coordinateSystem=machine): $2-machine
 
   Axes(a)/Linear(x)/DataItem(sample,position,actual,coordinateSystem=machine): x-machine
@@ -109,15 +112,11 @@ definitionPaths:
   Controller/Path/DataItem(condition,system): path-system-condition
 
   Door/DataItem(event,door_state): door-state
-
-  Systems/DataItemElectric/DataItem(condition,system): electric-condition
-
-  Systems/DataItemHydraulic/DataItem(condition,system): hydraulic-condition
-
-  Systems/DataItemCoolant/DataItem(condition,system): coolant-condition
-  Systems/DataItemCoolant/DataItem(sample,temperature): coolant-temperature
-  Systems/DataItemCoolant/DataItem(sample,concentration): coolant-concentration
-
-  Systems/DataItemPneumatic/DataItem(condition,system): pneumatic-condition
-
-  Systems/DataItemLubrication/DataItem(condition,system): lubrication-condition
+  Resources/Personnel/DataItem(event,user): personnel-user # or operator
+  Systems/Electric/DataItem(condition,system): electric-condition
+  Systems/Hydraulic/DataItem(condition,system): hydraulic-condition
+  Systems/Coolant/DataItem(condition,system): coolant-condition
+  Systems/Coolant/DataItem(sample,temperature): coolant-temperature
+  Systems/Coolant/DataItem(sample,concentration): coolant-concentration
+  Systems/Pneumatic/DataItem(condition,system): pneumatic-condition
+  Systems/Lubrication/DataItem(condition,system): lubrication-condition

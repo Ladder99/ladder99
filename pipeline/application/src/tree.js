@@ -86,7 +86,7 @@ const ignoreTags = getSet(
 // ignore these DataItem attributes - not necessary to identify an element,
 // or are redundant.
 const ignoreAttributes = getSet(
-  'category,type,subType,_key,tag,parents,id,units,nativeUnits'
+  'category,type,subType,_key,tag,parents,id,units,nativeUnits,device'
 )
 
 function getSet(str) {
