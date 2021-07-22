@@ -1,57 +1,53 @@
 import * as libapp from './libapp.js'
 
-// traverse a tree of nodes, adding nodes and edges to arrays
+// traverse a tree of nodes, adding nodes to array
 //. refactor, add comments
 export function traverse(
   node,
   nodes,
-  edges,
   parentTag = '',
   parentKey = '',
   parents = []
 ) {
   if (libapp.isObject(node)) {
-    // // assign random key to each node, use to define edges?
-    // const _key = crypto.randomBytes(8).toString('hex')
-    // let obj = { tag: parentTag, _key, parents }
     let obj = { tag: parentTag, parents }
     // iterate over key-value pairs
-    const keys = Object.keys(node)
-    for (const key of keys) {
-      const value = node[key]
+    for (const [key, value] of Object.entries(node)) {
       if (key === '_declaration') {
         // ignore, eg { _attributes: { version: '1.0', encoding: 'UTF-8' }
       } else if (key === '_instruction') {
         // ignore, eg { 'xml-stylesheet': 'type="text/xsl" href="/styles/Devices.xsl"' }
       } else if (key === '_attributes') {
+        // eg value = { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
         obj = { ...obj, ...value, parents }
       } else if (key === '_text') {
+        // eg value = 'Mill w/Smooth-G'
         obj = { ...obj, value, parents }
       } else if (key === 'Agent') {
         //. ignore Agent info for now
       } else {
+        // recurse
         const newparents = [...parents, obj] // push obj onto parents path list
-        // traverse(value, nodes, edges, key, _key, newparents)
-        traverse(value, nodes, edges, key, '', newparents)
+        traverse(value, nodes, key, '', newparents)
       }
     }
     // get prop, eg 'DataItem(event,availability)'
-    obj.prop = obj.parents.slice(4).map(getStep).join('/') + '/' + getStep(obj)
-    // ditch leading '/' and double '//'
-    if (obj.prop.startsWith('/')) obj.prop = obj.prop.slice(1)
-    obj.prop = obj.prop.replaceAll('//', '/')
-    // get device, eg 'Device(a234)'
-    obj.device = getStep(obj.parents[3])
+    if (obj.tag === 'DataItem') {
+      obj.prop =
+        obj.parents.slice(4).map(getPathStep).join('/') + '/' + getPathStep(obj)
+      // ditch leading '/' and double '//'
+      if (obj.prop.startsWith('/')) obj.prop = obj.prop.slice(1)
+      obj.prop = obj.prop.replaceAll('//', '/')
+      // get device, eg 'Device(a234)'
+      obj.device = getPathStep(obj.parents[3])
+    }
     // obj.path = obj.device + '/' + obj.prop
     delete obj.parents
     nodes.push(obj)
-    // // add edge
-    // if (parentKey) {
-    //   edges.push({ _from: parentKey, _to: _key })
-    // }
   } else if (Array.isArray(node)) {
     for (const el of node) {
-      traverse(el, nodes, edges, parentTag, parentKey, parents)
+      // recurse
+      traverse(el, nodes, parentTag, parentKey, parents)
     }
   } else {
     console.log('>>what is this?', { node })
@@ -72,7 +68,7 @@ const ignoreAttributes = new Set(
 // get path step string for the given object.
 // eg if it has tag='DataItem', get params like it's a fn,
 // eg return 'DataItem(event,asset_changed,discrete=true)'
-function getStep(obj) {
+function getPathStep(obj) {
   let params = []
   if (!obj) return ''
   if (ignoreTags.has(obj.tag)) return ''
