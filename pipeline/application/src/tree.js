@@ -1,10 +1,10 @@
 import * as libapp from './libapp.js'
 
-// get flat list of elements from given json tree
-export function getElements(json) {
-  const els = []
-  recurse(json, els)
-  return els
+// get flat list of objects from given json tree
+export function getObjects(json) {
+  const objs = []
+  recurse(json, objs)
+  return objs
 }
 
 const ignore = () => {}
@@ -18,33 +18,35 @@ const elementHandlers = {
   _text: (obj, value) => (obj.text = value),
 }
 
-const skipTags = getSet('Agent')
 const appendTags = getSet('Agent,Device,Description,DataItem')
+const skipTags = getSet('Agent')
 
 //
 
 // traverse a tree of elements, adding them to an array
 //. refactor, add comments
 //. handle parents differently - do in separate pass?
-function recurse(el, els, tag = '', parents = []) {
+function recurse(el, objs, tag = '', parents = []) {
   // el can be an object, an array, or an atomic value
 
   // handle object with keyvalue pairs
   if (libapp.isObject(el)) {
     //
     let obj = { tag, parents }
-    if (appendTags.has(tag)) els.push(obj)
+
+    // add obj to list if one of certain tags (eg DataItem)
+    if (appendTags.has(tag)) objs.push(obj)
+
+    // get keyvalue pairs, skipping some tags (eg Agent)
+    const pairs = Object.entries(el).filter(([key]) => !skipTags.has(key))
 
     // iterate over keyvalue pairs,
     // eg key='_attributes', value={ id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
-    const pairs = Object.entries(el).filter(
-      ([key, value]) => !skipTags.has(key)
-    )
     for (const [key, value] of pairs) {
       const handler = elementHandlers[key] || ignore // get keyvalue handler
       handler(obj, value) // adds value data to obj
       const newparents = [...parents, obj] // push obj onto parents path list
-      recurse(value, els, key, newparents) // recurse
+      recurse(value, objs, key, newparents) // recurse
     }
 
     if (tag === 'DataItem') {
@@ -62,7 +64,7 @@ function recurse(el, els, tag = '', parents = []) {
   } else if (Array.isArray(el)) {
     // handle array of subelements
     for (const subel of el) {
-      recurse(subel, els, tag, parents) // recurse
+      recurse(subel, objs, tag, parents) // recurse
     }
   } else {
     // ignore atomic values

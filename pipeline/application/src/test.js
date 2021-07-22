@@ -12,8 +12,8 @@ const json = JSON.parse(convert.xml2json(xml, { compact: true }))
 // console.log(json)
 // libapp.print(json)
 
-const els = tree.getElements(json)
-console.log(els)
+const objs = tree.getObjects(json)
+console.log(objs)
 
 // const nodesFile = 'nodes.json'
 // fs.writeFileSync(nodesFile, JSON.stringify(nodes, null, 2))
