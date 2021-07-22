@@ -28,32 +28,34 @@ function recurse(el, els, tag = '', parents = []) {
   if (libapp.isObject(el)) {
     let obj = { tag, parents }
 
-    if (tag === 'Device' || tag === 'DataItem' || tag === 'Agent') els.push(obj)
+    if (
+      tag === 'Device' ||
+      tag === 'DataItem' ||
+      tag === 'Agent' ||
+      tag === 'Description'
+    )
+      els.push(obj)
 
     // iterate over keyvalue pairs,
     // eg key='_attributes', value={ id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
     for (const [key, value] of Object.entries(el)) {
-      // get key-value handler
-      const handler = elementHandlers[key] || ignore
-      // obj = handler(obj, value)
-      handler(obj, value)
+      const handler = elementHandlers[key] || ignore // get keyvalue handler
+      handler(obj, value) // adds value data to obj
       const newparents = [...parents, obj] // push obj onto parents path list
       recurse(value, els, key, newparents) // recurse
     }
 
     // get prop, eg 'DataItem(event,availability)'
     if (tag === 'DataItem') {
-      obj.prop =
-        obj.parents.slice(4).map(getPathStep).join('/') + '/' + getPathStep(obj)
-      // ditch leading '/' and double '//'
-      if (obj.prop.startsWith('/')) obj.prop = obj.prop.slice(1)
-      obj.prop = obj.prop.replaceAll('//', '/')
+      obj.prop = [...obj.parents.slice(4), obj]
+        .map(getPathStep)
+        .filter(step => !!step)
+        .join('/')
       // get device, eg 'Device(a234)'
       obj.device = getPathStep(obj.parents[3])
     }
     // obj.path = obj.device + '/' + obj.prop
     delete obj.parents
-    // if (tag === 'Device' || tag === 'DataItem') els.push(obj)
   } else if (Array.isArray(el)) {
     // handle array of subelements
     for (const subel of el) {
@@ -67,12 +69,12 @@ function recurse(el, els, tag = '', parents = []) {
 
 //
 
-function iterate(el, els) {
-  const pairs = Object.entries(el)
-  for (const [key, value] of pairs) {
-    // console.log(key, value)
-  }
-}
+// function iterate(el, els) {
+//   const pairs = Object.entries(el)
+//   for (const [key, value] of pairs) {
+//     // console.log(key, value)
+//   }
+// }
 
 //
 
