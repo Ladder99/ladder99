@@ -50,17 +50,19 @@ function recurse(el, objs, tag = '', parents = []) {
       recurse(value, objs, key, newparents) // recurse
     }
 
+    // get device and signature for dataitems
     if (tag === 'DataItem') {
+      // get device, eg 'Device(a234)'
+      obj.device = getPathStep(obj.parents[3])
       // get signature, eg 'DataItem(event,availability)'
       obj.signature = [...obj.parents.slice(4), obj]
         .map(getPathStep)
         .filter(step => !!step)
         .join('/')
-      // get device, eg 'Device(a234)'
-      obj.device = getPathStep(obj.parents[3])
       // obj.path = obj.device + '/' + obj.signature
     }
 
+    // get rid of the parents list
     delete obj.parents
     //
   } else if (Array.isArray(el)) {
