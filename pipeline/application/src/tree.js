@@ -1,6 +1,6 @@
 import * as libapp from './libapp.js'
 
-// get flat list of nodes from given json tree
+// get flat list of elements from given json tree
 export function getElements(json) {
   const els = []
   recurse(json, els)
@@ -18,6 +18,11 @@ const elementHandlers = {
   _text: (obj, value) => (obj.text = value),
 }
 
+const skipTags = getSet('Agent')
+const appendTags = getSet('Agent,Device,Description,DataItem')
+
+//
+
 // traverse a tree of elements, adding them to an array
 //. refactor, add comments
 //. handle parents differently - do in separate pass?
@@ -26,35 +31,33 @@ function recurse(el, els, tag = '', parents = []) {
 
   // handle object with keyvalue pairs
   if (libapp.isObject(el)) {
+    //
     let obj = { tag, parents }
-
-    if (
-      tag === 'Device' ||
-      tag === 'DataItem' ||
-      tag === 'Agent' ||
-      tag === 'Description'
-    )
-      els.push(obj)
+    if (appendTags.has(tag)) els.push(obj)
 
     // iterate over keyvalue pairs,
     // eg key='_attributes', value={ id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
-    for (const [key, value] of Object.entries(el)) {
+    const pairs = Object.entries(el).filter(
+      ([key, value]) => !skipTags.has(key)
+    )
+    for (const [key, value] of pairs) {
       const handler = elementHandlers[key] || ignore // get keyvalue handler
       handler(obj, value) // adds value data to obj
       const newparents = [...parents, obj] // push obj onto parents path list
       recurse(value, els, key, newparents) // recurse
     }
 
-    // get prop, eg 'DataItem(event,availability)'
     if (tag === 'DataItem') {
-      obj.prop = [...obj.parents.slice(4), obj]
+      // get signature, eg 'DataItem(event,availability)'
+      obj.signature = [...obj.parents.slice(4), obj]
         .map(getPathStep)
         .filter(step => !!step)
         .join('/')
       // get device, eg 'Device(a234)'
       obj.device = getPathStep(obj.parents[3])
+      // obj.path = obj.device + '/' + obj.signature
     }
-    // obj.path = obj.device + '/' + obj.prop
+
     delete obj.parents
   } else if (Array.isArray(el)) {
     // handle array of subelements
@@ -69,25 +72,20 @@ function recurse(el, els, tag = '', parents = []) {
 
 //
 
-// function iterate(el, els) {
-//   const pairs = Object.entries(el)
-//   for (const [key, value] of pairs) {
-//     // console.log(key, value)
-//   }
-// }
-
-//
-
 // ignore these element types - don't add much info to the path
-const ignoreTags = new Set(
-  'AssetCounts,Devices,DataItems,Components,Filters,Specifications'.split(',')
+const ignoreTags = getSet(
+  'Adapters,AssetCounts,Devices,DataItems,Components,Filters,Specifications'
 )
 
 // ignore these DataItem attributes - not necessary to identify an element,
 // or are redundant.
-const ignoreAttributes = new Set(
-  'category,type,subType,_key,tag,parents,id,units,nativeUnits'.split(',')
+const ignoreAttributes = getSet(
+  'category,type,subType,_key,tag,parents,id,units,nativeUnits'
 )
+
+function getSet(str) {
+  return new Set(str.split(','))
+}
 
 // get path step string for the given object.
 // eg if it has tag='DataItem', get params like it's a fn,
@@ -98,6 +96,7 @@ function getPathStep(obj) {
   if (ignoreTags.has(obj.tag)) return ''
   switch (obj.tag) {
     case 'Device':
+    case 'Agent':
       params = [obj.uuid] // standard says name may be optional in future versions, so use uuid
       break
     case 'DataItem':
