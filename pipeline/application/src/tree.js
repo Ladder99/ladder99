@@ -1,4 +1,4 @@
-import * as libapp from './libapp'
+import * as libapp from './libapp.js'
 
 // traverse a tree of nodes, adding nodes and edges to arrays
 //. refactor, add comments

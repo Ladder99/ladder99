@@ -7,7 +7,7 @@
   "target": "es2017",
   "scripts": {
     "start": "node src/application.js",
-    "test": "nodemon src/logic.test.js"
+    "test": "nodemon src/test.js"
   },
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "MIT",
