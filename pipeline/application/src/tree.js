@@ -29,7 +29,7 @@ const elementHandlers = {
 // traverse a tree of elements, adding them to an array
 //. refactor, add comments
 //. handle parents differently - do in separate pass?
-function recurse(el, els, parentTag = '', parentKey = '', parents = []) {
+function recurse(el, els, tag = '', parentKey = '', parents = []) {
   // el can be an object, an array, or an atomic value
   // const elType = libapp.isObject(el) ? 'object' : Array.isArray(el) ? 'array' : 'atom'
   // switch (elType) {
@@ -41,7 +41,7 @@ function recurse(el, els, parentTag = '', parentKey = '', parents = []) {
 
   // el is an object with keyvalue pairs
   if (libapp.isObject(el)) {
-    let obj = { tag: parentTag, parents }
+    let obj = { tag, parents }
 
     // iterate over keyvalue pairs,
     // eg key='_attributes', value={ id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
@@ -69,7 +69,7 @@ function recurse(el, els, parentTag = '', parentKey = '', parents = []) {
     if (obj.tag === 'Device' || obj.tag === 'DataItem') els.push(obj)
   } else if (Array.isArray(el)) {
     for (const subel of el) {
-      recurse(subel, els, parentTag, parentKey, parents) // recurse
+      recurse(subel, els, tag, parentKey, parents) // recurse
     }
   } else {
     console.log('>>what is this?', { el })
