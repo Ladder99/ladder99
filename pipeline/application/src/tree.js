@@ -1,18 +1,25 @@
 import * as libapp from './libapp.js'
 
-// traverse a tree of nodes, adding nodes to array
+// get flat list of nodes from given json tree
+export function getElements(json) {
+  const els = []
+  traverse(json, els)
+  return els
+}
+
+const ignore = () => {}
+
+const elHandlers = {
+  _declaration: ignore,
+}
+
+// traverse a tree of elements, adding them to an array
 //. refactor, add comments
-export function traverse(
-  node,
-  nodes,
-  parentTag = '',
-  parentKey = '',
-  parents = []
-) {
-  if (libapp.isObject(node)) {
+function traverse(el, els, parentTag = '', parentKey = '', parents = []) {
+  if (libapp.isObject(el)) {
     let obj = { tag: parentTag, parents }
     // iterate over key-value pairs
-    for (const [key, value] of Object.entries(node)) {
+    for (const [key, value] of Object.entries(el)) {
       if (key === '_declaration') {
         // ignore, eg { _attributes: { version: '1.0', encoding: 'UTF-8' }
       } else if (key === '_instruction') {
@@ -28,7 +35,7 @@ export function traverse(
       } else {
         // recurse
         const newparents = [...parents, obj] // push obj onto parents path list
-        traverse(value, nodes, key, '', newparents)
+        traverse(value, els, key, '', newparents)
       }
     }
     // get prop, eg 'DataItem(event,availability)'
@@ -43,14 +50,14 @@ export function traverse(
     }
     // obj.path = obj.device + '/' + obj.prop
     delete obj.parents
-    nodes.push(obj)
-  } else if (Array.isArray(node)) {
-    for (const el of node) {
+    els.push(obj)
+  } else if (Array.isArray(el)) {
+    for (const subel of el) {
       // recurse
-      traverse(el, nodes, parentTag, parentKey, parents)
+      traverse(subel, els, parentTag, parentKey, parents)
     }
   } else {
-    console.log('>>what is this?', { node })
+    console.log('>>what is this?', { el })
   }
 }
 
@@ -59,7 +66,7 @@ const ignoreTags = new Set(
   'AssetCounts,Devices,DataItems,Components,Filters,Specifications'.split(',')
 )
 
-// ignore these dataitem attributes - not necessary to identify an element,
+// ignore these DataItem attributes - not necessary to identify an element,
 // or are redundant.
 const ignoreAttributes = new Set(
   'category,type,subType,_key,tag,parents,id,units,nativeUnits'.split(',')
