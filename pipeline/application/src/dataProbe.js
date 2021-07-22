@@ -16,7 +16,7 @@ export class Probe extends Data {
   async write(db) {
     // get lists of objs from json
     //. move this to the read or a parse method?
-    const objs = tree.getObjects(this.json)
+    const objs = tree.getProbeObjects(this.json)
     console.log('objs', objs)
 
     // const nodesPath = 'nodes-ex.json'

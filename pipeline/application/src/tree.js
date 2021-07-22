@@ -1,7 +1,7 @@
 import * as libapp from './libapp.js'
 
 // get flat list of objects from given json tree
-export function getObjects(json) {
+export function getProbeObjects(json) {
   const objs = []
   recurse(json, objs)
   return objs

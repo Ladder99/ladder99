@@ -13,7 +13,7 @@ const json = JSON.parse(convert.xml2json(xml, { compact: true }))
 // console.log(json)
 // libapp.print(json)
 
-const objs = tree.getObjects(json)
+const objs = tree.getProbeObjects(json)
 console.log(objs)
 
 // const nodesFile = 'nodes.json'

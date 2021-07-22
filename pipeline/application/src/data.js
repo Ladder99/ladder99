@@ -25,6 +25,7 @@ export class Data {
       this.errors = this.json.MTConnectError.Errors.map(e => e.Error.errorCode)
       throw new Error(JSON.stringify(this.errors))
     }
+    // get header for probe, current, or sample xmls
     this.header = this.json.MTConnectDevices
       ? this.json.MTConnectDevices.Header
       : this.json.MTConnectStreams.Header
