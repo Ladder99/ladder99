@@ -8,11 +8,12 @@ import * as tree from './tree.js'
 
 // load and parse probe xml
 // const json = getJson('examples/mazak/probe5717sm.xml')
-const json = getJson('examples/ccs-pa/probe.xml')
+// const json = getJson('examples/ccs-pa/probe.xml')
+const json = getJson('examples/demo/devices.xml')
 const objs = tree.getProbeObjects(json)
-// console.log(objs)
-console.log(objs.map(obj => `${obj.signature}: ${obj.id}`))
-process.exit(0)
+console.log(objs)
+// console.log(objs.map(obj => `${obj.signature}: ${obj.id}`).join('\n'))
+// process.exit(0)
 
 // transform objs to db node structure
 const nodes = objs.map(obj => {
@@ -27,14 +28,13 @@ const nodes = objs.map(obj => {
   return node
 })
 console.log(nodes)
+process.exit(0)
 
 //. separate devices and props
 // const devices = []
 // const props = []
 
 //. add to db
-
-process.exit(0)
 
 // add objs to an index
 const propsById = {}

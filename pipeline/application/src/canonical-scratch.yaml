@@ -17,13 +17,16 @@ paths:
   DataItem(event,asset_changed): asset-changed
   DataItem(event,asset_removed): asset-removed
 
+  #. capture axes name -> part of canonical Id?
+  # or number eg Axes[1] -> axes1-actuator-condition?
   Axes(a)/DataItem(condition,actuator): axes-actuator-condition # servo-condition?
   Axes(a)/DataItem(condition,system): axes-system-condition # spindle-condition? distinguish from controller system-condition
 
   #. use regex group capture and substitute into canonicalId string?
   # eg this could give canonicalId 'x-machine':
   # /Axes\((.*)\)/Linear\((.*)\)/DataItem(sample,position,actual,coordinateSystem=machine): $2-machine
-  #. but what about $1? translate to sthing like Axes1/Linear1/pos-machine?
+  #. but what about $1? translate to sthing like axes1/linear1/pos-machine?
+  #. or axes1-linear1-pos-machine? hmm
 
   Axes(a)/Linear(x)/DataItem(sample,position,actual,coordinateSystem=machine): x-machine
   Axes(a)/Linear(x)/DataItem(sample,position,actual,coordinateSystem=work): x-work

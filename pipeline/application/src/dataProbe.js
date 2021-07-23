@@ -30,35 +30,35 @@ export class Probe extends Data {
     // await graphDb.read(db)
     // console.log('graphdb', graphDb)
 
-    const missingNodes = []
-    for (let node of nodes) {
-      if (node.tag === 'Device' || node.tag === 'DataItem') {
-        const isMissing = !graphDb.nodes.has(node.id) //. use { id: node.id }
-        if (isMissing) {
-          // const n = graphDb.nodes.get(node.id)
-          console.log(`add node to db:`, node)
-          //. add to db - how do? add to a list for now, or flag it
-          // node.addToDb = true
-          missingNodes.push(node)
-        }
-      }
-    }
+    // const missingNodes = []
+    // for (let node of nodes) {
+    //   if (node.tag === 'Device' || node.tag === 'DataItem') {
+    //     const isMissing = !graphDb.nodes.has(node.id) //. use { id: node.id }
+    //     if (isMissing) {
+    //       // const n = graphDb.nodes.get(node.id)
+    //       console.log(`add node to db:`, node)
+    //       //. add to db - how do? add to a list for now, or flag it
+    //       // node.addToDb = true
+    //       missingNodes.push(node)
+    //     }
+    //   }
+    // }
 
-    // add missing node records
-    //. hide sql inside the db module
-    if (missingNodes.length > 0) {
-      const records = missingNodes
-        .map(node => {
-          // eg '{"email": "thom22@gmail.com", "country": "US"}'
-          return `'${JSON.stringify(node)}'`
-        })
-        .join(',\n')
-      const sql = `INSERT INTO nodes (props) VALUES (${records});`
-      console.log(sql)
-      //. add try catch block - ignore error? or just print it?
-      // const res = await db.query(sql)
-      // console.log(res)
-    }
+    // // add missing node records
+    // //. hide sql inside the db module
+    // if (missingNodes.length > 0) {
+    //   const records = missingNodes
+    //     .map(node => {
+    //       // eg '{"email": "thom22@gmail.com", "country": "US"}'
+    //       return `'${JSON.stringify(node)}'`
+    //     })
+    //     .join(',\n')
+    //   const sql = `INSERT INTO nodes (props) VALUES (${records});`
+    //   console.log(sql)
+    //   //. add try catch block - ignore error? or just print it?
+    //   // const res = await db.query(sql)
+    //   // console.log(res)
+    // }
 
     process.exit(0)
 
