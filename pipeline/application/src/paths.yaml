@@ -23,6 +23,7 @@ paths:
   #. use regex group capture and substitute into canonicalId string?
   # eg this could give canonicalId 'x-machine':
   # /Axes\((.*)\)/Linear\((.*)\)/DataItem(sample,position,actual,coordinateSystem=machine): $2-machine
+  #. but what about $1? translate to sthing like Axes1/Linear1/pos-machine?
 
   Axes(a)/Linear(x)/DataItem(sample,position,actual,coordinateSystem=machine): x-machine
   Axes(a)/Linear(x)/DataItem(sample,position,actual,coordinateSystem=work): x-work

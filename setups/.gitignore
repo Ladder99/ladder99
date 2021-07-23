@@ -4,3 +4,4 @@
 **/database/data
 **/timescaledb/data
 **/portainer/data
+**/grafana/var

@@ -7,8 +7,12 @@ import convert from 'xml-js' // https://github.com/nashwaan/xml-js
 import * as tree from './tree.js'
 
 // load and parse probe xml
-const json = getJson('examples/mazak/probe5717sm.xml')
+// const json = getJson('examples/mazak/probe5717sm.xml')
+const json = getJson('examples/ccs-pa/probe.xml')
 const objs = tree.getProbeObjects(json)
+// console.log(objs)
+console.log(objs.map(obj => `${obj.signature}: ${obj.id}`))
+process.exit(0)
 
 // transform objs to db node structure
 const nodes = objs.map(obj => {
