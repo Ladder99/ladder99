@@ -1,3 +1,3 @@
 # demo
 
-Demo setup to simulate Ladder99 cameras and hydrant.
+Demo setup to simulate Ladder99 cameras and Glimpse status.

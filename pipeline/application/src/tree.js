@@ -17,7 +17,7 @@ const elementHandlers = {
   _text: (obj, value) => (obj.value = value),
 }
 
-const appendTags = getSet('Device,Description,DataItem,Angle')
+const appendTags = getSet('Device,DataItem') //. Description - add to Device obj?
 const skipTags = getSet('Agent')
 
 //

@@ -10,6 +10,28 @@ import * as tree from './tree.js'
 const json = getJson('examples/mazak/probe5717sm.xml')
 const objs = tree.getProbeObjects(json)
 
+// transform objs to db node structure
+const nodes = objs.map(obj => {
+  const node = { ...obj }
+  node.type = obj.tag === 'DataItem' ? 'PropertyDef' : obj.tag
+  //. or call this .id? but not unique unless include more of signature?
+  node.canonicalId = obj.id //. look this up via signature property //. what about collisions eg system condition?
+  // node.description = 'from pdf' //. or link to prepopulated nodes with descs
+  //. include category, type? not sure
+  delete node.tag
+  delete node.category
+  return node
+})
+console.log(nodes)
+
+//. separate devices and props
+// const devices = []
+// const props = []
+
+//. add to db
+
+process.exit(0)
+
 // add objs to an index
 const propsById = {}
 for (const obj of objs) {

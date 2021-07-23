@@ -8,7 +8,8 @@
 
 # if just element type is given assumes it's only for first one listed,
 # eg Controller/Path/DataItem(event,program_edit) - 1st controller, 1st path ?
-#
+
+# these are from mazak, vmc
 
 paths:
   DataItem(event,availability): availability
@@ -112,7 +113,7 @@ paths:
   Controller/Path/DataItem(condition,system): path-system-condition
 
   Door/DataItem(event,door_state): door-state
-  Resources/Personnel/DataItem(event,user): personnel-user # or operator
+  Resources/Personnel/DataItem(event,user): personnel-user # or operator?
   Systems/Electric/DataItem(condition,system): electric-condition
   Systems/Hydraulic/DataItem(condition,system): hydraulic-condition
   Systems/Coolant/DataItem(condition,system): coolant-condition

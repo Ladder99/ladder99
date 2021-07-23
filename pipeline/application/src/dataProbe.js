@@ -10,7 +10,7 @@ export class Probe extends Data {
   type = 'probe'
 
   // see base class Data for read method
-  // reads json into .json
+  // reads json into this.json
 
   // write probe data in .json to db instance
   async write(db) {
@@ -30,7 +30,6 @@ export class Probe extends Data {
     // await graphDb.read(db)
     // console.log('graphdb', graphDb)
 
-    // compare nodes with db nodes, get add/update/delete lists
     const missingNodes = []
     for (let node of nodes) {
       if (node.tag === 'Device' || node.tag === 'DataItem') {

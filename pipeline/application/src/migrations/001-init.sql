@@ -23,8 +23,9 @@ CREATE TABLE IF NOT EXISTS nodes (
   props jsonb
 );
 --. syntax for this?
--- CREATE INDEX nodes_node_type ON nodes (props.nodeType);
--- CREATE INDEX nodes_canonical_id ON nodes (props.canonicalId);
+-- see https://stackoverflow.com/questions/17807030/how-to-create-index-on-json-field-in-postgres
+-- CREATE INDEX IF NOT EXISTS nodes_node_type ON nodes (props.nodeType);
+-- CREATE INDEX IF NOT EXISTS nodes_canonical_id ON nodes (props.canonicalId);
 
 -- EDGES table --
 
