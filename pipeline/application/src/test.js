@@ -5,6 +5,7 @@
 import fs from 'fs' // node lib - filesystem
 import convert from 'xml-js' // https://github.com/nashwaan/xml-js
 import * as tree from './tree.js'
+import * as common from './common.js'
 
 // load and parse probe xml
 // const json = getJson('examples/mazak/probe5717sm.xml')
@@ -15,12 +16,16 @@ console.log(objs)
 // console.log(objs.map(obj => `${obj.signature}: ${obj.id}`).join('\n'))
 // process.exit(0)
 
+const yaml = common.importYaml('./src/canonical.yaml')
+console.log(yaml)
+
 // transform objs to db node structure
 const nodes = objs.map(obj => {
   const node = { ...obj }
   node.type = obj.tag === 'DataItem' ? 'PropertyDef' : obj.tag
   //. or call this .id? but not unique unless include more of signature?
-  node.canonicalId = obj.id //. look this up via signature property //. what about collisions eg system condition?
+  // node.canonicalId = obj.id //. look this up via signature property //. what about collisions eg system condition?
+  node.canonicalId = yaml.paths[obj.signature]
   // node.description = 'from pdf' //. or link to prepopulated nodes with descs
   //. include category, type? not sure
   delete node.tag
