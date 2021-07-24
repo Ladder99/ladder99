@@ -32,12 +32,13 @@ const nodes = objs.map(obj => {
   //. or call this .id? but not unique unless include more of signature?
   // node.canonicalId = obj.id //. look this up via signature property //. what about collisions eg system condition?
   // node.canonicalId = yaml.paths[obj.signature]
-  node.path =
-    obj.steps &&
-    obj.steps
-      .map(getCanonicalStep)
-      .filter(step => !!step)
-      .join('/')
+  // node.path =
+  //   obj.steps &&
+  //   obj.steps
+  //     .map(getCanonicalStep)
+  //     .filter(step => !!step)
+  //   .join('/')
+  node.path = obj.steps && obj.steps.filter(step => !!step).join('/')
   //. include category, type? not sure
   delete node.tag
   delete node.category

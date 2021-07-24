@@ -30,7 +30,7 @@ paths:
   Controller: controller
   Controller(controller): controller
   Coolant(coolant): coolant
-  DataItem(condition,actuator): actuator-condition # servo-condition?
+  DataItem(condition,actuator): actuator-condition
   DataItem(condition,angle): angle-condition
   DataItem(condition,communications): communications-condition
   DataItem(condition,level): level-condition
@@ -77,8 +77,8 @@ paths:
   DataItem(event,pallet_id): pallet-id
   DataItem(event,part_count): part-count
   DataItem(event,part_detect): part-detect
-  DataItem(event,path_feedrate_override,programmed): feedrate-override-programmed
-  DataItem(event,path_feedrate_override,rapid): feedrate-override-rapid
+  DataItem(event,path_feedrate_override,programmed): path-feedrate-override-programmed
+  DataItem(event,path_feedrate_override,rapid): path-feedrate-override-rapid
   DataItem(event,power_state): power-state
   DataItem(event,program_comment,main): program-comment-main
   DataItem(event,program_comment,x:sub): program-comment-sub
@@ -113,9 +113,9 @@ paths:
   DataItem(sample,concentration): concentration
   DataItem(sample,count): count
   DataItem(sample,cutting_speed,actual): cutting-speed-actual
-  DataItem(sample,equipment_timer,delay,unit=second): equipment-timer-delay
+  DataItem(sample,equipment_timer,delay): equipment-timer-delay
   DataItem(sample,equipment_timer,operating): equipment-timer-operating
-  DataItem(sample,equipment_timer,working,unit=second): equipment-timer-working
+  DataItem(sample,equipment_timer,working): equipment-timer-working
   DataItem(sample,load,name=S2load): load-s2load #?
   DataItem(sample,load,name=Sload): load-sload #? have this in a custom yaml file for setup?
   DataItem(sample,load): load
