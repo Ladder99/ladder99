@@ -26,125 +26,131 @@
 paths:
   Axes(a): axesA
   Components:
-  Controller(controller): controller
   Controller: controller
+  Controller(controller): controller
   Coolant(coolant): coolant
   DataItem(condition,actuator): actuator-condition # servo-condition?
   DataItem(condition,angle): angle-condition
   DataItem(condition,communications): communications-condition
+  DataItem(condition,level): level-condition
   DataItem(condition,load): load-condition
   DataItem(condition,logic_program): logic-program-condition
   DataItem(condition,motion_program): motion-program-condition
   DataItem(condition,position): position-condition
+  DataItem(condition,pressure): pressure-condition
   DataItem(condition,system): system-condition # spindle-condition? distinguish from controller system-condition
   DataItem(condition,temperature): temperature-condition
+  DataItem(condition,x:filter): filter-condition
   DataItem(event,actuator_state): actuator-state
+  DataItem(event,asset_changed,discrete=true): asset-changed-discrete
   DataItem(event,asset_changed): asset-changed
   DataItem(event,asset_removed): asset-removed
   DataItem(event,availability): availability
   DataItem(event,axis_state): axis-state
   DataItem(event,block): block
   DataItem(event,chuck_state): chuck-state
+  DataItem(event,controller_mode_override,dry_run): controller-mode-override-dry-run #.
+  DataItem(event,controller_mode_override,machine_axis_lock): controller-mode-override-machine-axis-lock #.
+  DataItem(event,controller_mode_override,single_block): controller-mode-override-single-block #.
   DataItem(event,controller_mode): controller-mode
   DataItem(event,door_state): door-state
   DataItem(event,emergency_stop): emergency-stop
+  DataItem(event,equipment_mode,delay): equipment-mode-delay
+  DataItem(event,equipment_mode,loaded): equipment-mode-loaded
+  DataItem(event,equipment_mode,operating): equipment-mode-operating
+  DataItem(event,equipment_mode,powered): equipment-mode-powered
+  DataItem(event,equipment_mode,working): equipment-mode-working
   DataItem(event,execution): execution
   DataItem(event,firmware,version): firmware-version
   DataItem(event,functional_mode): functional-mode
+  DataItem(event,line_label): line-label
+  DataItem(event,line_number,incremental): line-number-incremental
   DataItem(event,line): line
+  DataItem(event,material): material
   DataItem(event,message): message
+  DataItem(event,operating_system,install_date): operating-system-install-date
+  DataItem(event,operating_system,license): operating-system-license
+  DataItem(event,operating_system,manufacturer): operating-system-manufacturer
+  DataItem(event,operating_system,release_date): operating-system-release-date
+  DataItem(event,operating_system,version): operating-system-version
   DataItem(event,pallet_id): pallet-id
   DataItem(event,part_count): part-count
   DataItem(event,part_detect): part-detect
   DataItem(event,path_feedrate_override,programmed): feedrate-override-programmed
   DataItem(event,path_feedrate_override,rapid): feedrate-override-rapid
-  DataItem(event,program_comment,x:sub): subprogram-comment
+  DataItem(event,power_state): power-state
+  DataItem(event,program_comment,main): program-comment-main
+  DataItem(event,program_comment,x:sub): program-comment-sub
   DataItem(event,program_comment): program-comment
   DataItem(event,program_edit_name): program-edit-name
   DataItem(event,program_edit): program-edit
   DataItem(event,program,main): program-main
-  DataItem(event,program,x:sub): subprogram
+  DataItem(event,program,x:sub): program-sub
   DataItem(event,program): program
   DataItem(event,rotary_mode): rotary-mode
   DataItem(event,rotary_velocity_override): rotary-velocity-override
+  DataItem(event,tool_id): tool-id
   DataItem(event,tool_number): tool-number
   DataItem(event,user,operator): user-operator
   DataItem(event,user): user
+  DataItem(event,variable,representation=data_set): variable-data-set
   DataItem(event,wait_state): wait-state
   DataItem(event,x:sequence_number): sequence-number
   DataItem(event,x:tool_group): tool-group
   DataItem(event,x:tool_suffix): tool-suffix
   DataItem(event,x:unit): unit
-  DataItem(sample,accumulated_time,x:auto): auto-time
-  DataItem(sample,accumulated_time,x:cut): cut-time
-  DataItem(sample,accumulated_time,x:total): total-time
-  DataItem(sample,accumulated_time,x:totalcuttime): total-auto-cut-time
-  DataItem(sample,angle,actual,coordinateSystem=machine): machine-angle
-  DataItem(sample,angle,actual,coordinateSystem=work): work-angle
+  DataItem(sample,accumulated_time,x:auto): time-auto
+  DataItem(sample,accumulated_time,x:cut): time-cut
+  DataItem(sample,accumulated_time,x:total): time-total
+  DataItem(sample,accumulated_time,x:totalcuttime): time-totalcuttime
+  DataItem(sample,angle,actual,coordinatesystem=machine): angle-actual-machine
+  DataItem(sample,angle,actual,coordinatesystem=work): angle-actual-work
   DataItem(sample,angular_velocity): angular-velocity
-  DataItem(sample,axis_feed): feed
+  DataItem(sample,axis_feed): axis-feed #. diff from feedrate?
+  DataItem(sample,axis_feedrate): axis-feedrate #. diff from feed?
   DataItem(sample,clock_time): clock-time
   DataItem(sample,concentration): concentration
   DataItem(sample,count): count
-  DataItem(sample,equipment_timer,delay,unit=second): delay-equipment-timer
-  DataItem(sample,equipment_timer,operating): operating-equipment-timer
-  DataItem(sample,equipment_timer,working,unit=second): working-equipment-timer
-  DataItem(sample,load,name=S2load): s2load #?
-  DataItem(sample,load,name=Sload): sload #?? have this in a custom yaml file for setup?
+  DataItem(sample,cutting_speed,actual): cutting-speed-actual
+  DataItem(sample,equipment_timer,delay,unit=second): equipment-timer-delay
+  DataItem(sample,equipment_timer,operating): equipment-timer-operating
+  DataItem(sample,equipment_timer,working,unit=second): equipment-timer-working
+  DataItem(sample,load,name=S2load): load-s2load #?
+  DataItem(sample,load,name=Sload): load-sload #? have this in a custom yaml file for setup?
   DataItem(sample,load): load
-  DataItem(sample,path_feedrate): feedrate
-  DataItem(sample,position,actual,coordinateSystem=machine): machine-position
-  DataItem(sample,position,actual,coordinateSystem=work): work-position
-  DataItem(sample,process_timer,process,unit=seconds): process-timer
-  DataItem(sample,rotary_velocity,actual): rotary-velocity
+  DataItem(sample,path_feedrate,actual,coordinatesystem=work): path-feedrate-actual-work
+  DataItem(sample,path_feedrate): path-feedrate
+  DataItem(sample,path_position,actual): path-position-actual
+  DataItem(sample,position,actual,coordinatesystem=machine): position-actual-machine
+  DataItem(sample,position,actual,coordinatesystem=work): position-actual-work
+  DataItem(sample,position,actual): position-actual
+  DataItem(sample,position,commanded): position-commanded
+  DataItem(sample,process_timer,process,unit=seconds): process-timer-process
+  DataItem(sample,rotary_velocity,actual): rotary-velocity-actual
+  DataItem(sample,spindle_speed,actual): spindle-speed-actual
+  DataItem(sample,spindle_speed,override): spindle-speed-override
+  DataItem(sample,temperature,compositionid=bmotor): temperature-bmotor #.
+  DataItem(sample,temperature,compositionid=cmotor): temperature-cmotor #.
+  DataItem(sample,temperature,compositionid=xmotor): temperature-xmotor #.
+  DataItem(sample,temperature,compositionid=ymotor): temperature-ymotor #.
+  DataItem(sample,temperature,compositionid=z3motor): temperature-z3motor #.
+  DataItem(sample,temperature,compositionid=zmotor): temperature-zmotor #.
   DataItem(sample,temperature): temperature
   DataItems:
   Door(door): door
   Electric(electric): electric
   Hydraulic(hydraulic): hydraulic
-  Linear(x): linearX
-  Linear(y): linearY
-  Linear(z): linearZ
-  Linear(z3): linearZ3
+  Linear(x): x
+  Linear(y): y
+  Linear(z): z
+  Linear(z3): z3
   Lubrication(lubrication): lubrication
   Path(path): path
   Personnel(personnel): personnel
   Pneumatic(pneumatic): pneumatic
   Resources(resources): resources
-  Rotary(a): rotaryA
-  Rotary(b): rotaryB
-  Rotary(c): rotaryC
-  Rotary(c2): rotaryC2
+  Rotary(a): a
+  Rotary(b): b
+  Rotary(c): c
+  Rotary(c2): c2
   Systems(systems): systems
-  DataItem(event,equipment_mode,loaded): equipment-mode-loaded
-  DataItem(event,equipment_mode,working): equipment-mode-working
-  DataItem(event,equipment_mode,operating): equipment-mode-operating
-  DataItem(event,equipment_mode,powered): equipment-mode-powered
-  DataItem(event,equipment_mode,delay): equipment-mode-delay
-  DataItem(event,operating_system,license): operating-system-license
-  DataItem(event,operating_system,version): operating-system-version
-  DataItem(event,operating_system,release_date): operating-system-release-date
-  DataItem(event,operating_system,install_date): operating-system-install-date
-  DataItem(event,operating_system,manufacturer): operating-system-manufacturer
-  DataItem(event,asset_changed,discrete=true): asset-changed-discrete
-  DataItem(sample,temperature,compositionid=xmotor): temperature-xmotor #.
-  DataItem(sample,axis_feedrate): axis-feedrate
-  DataItem(sample,temperature,compositionid=ymotor): temperature-ymotor #.
-  DataItem(sample,position,actual,coordinatesystem=machine): actual-machine-position
-  DataItem(sample,position,actual,coordinatesystem=work): actual-work-position
-  DataItem(sample,temperature,compositionid=zmotor): temperature-zmotor #.
-  DataItem(sample,temperature,compositionid=z3motor): temperature-z3motor #.
-  DataItem(sample,angle,actual,coordinatesystem=machine): actual-machine-angle
-  DataItem(sample,angle,actual,coordinatesystem=work): actual-work-angle
-  DataItem(sample,temperature,compositionid=bmotor): temperature-bmotor #.
-  DataItem(sample,temperature,compositionid=cmotor): temperature-cmotor #.
-  DataItem(sample,path_feedrate,actual,coordinatesystem=work): actual-work-path-feedrate
-  DataItem(event,program_comment,main): program-comment-main
-  DataItem(event,controller_mode_override,machine_axis_lock): controller-mode-override-machine-axis-lock #.
-  DataItem(event,controller_mode_override,single_block): controller-mode-override-single-block #.
-  DataItem(event,controller_mode_override,dry_run): controller-mode-override-dry-run
-  DataItem(event,line_label): line-label
-  DataItem(event,line_number,incremental): line-number-incremental
-  DataItem(event,variable,representation=data_set): variable-data-set
-  DataItem(sample,cutting_speed,actual): actual-cutting-speed
-  DataItem(event,material): material
