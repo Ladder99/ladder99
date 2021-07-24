@@ -1,7 +1,7 @@
 import * as libapp from './libapp.js'
 
 // get flat list of objects from given json tree
-export function getProbeObjects(json) {
+function getProbeObjects(json) {
   const objs = []
   recurse(json, objs)
   return objs
@@ -172,6 +172,66 @@ function getParamString(param) {
   //   })
   //   .join('')
   return str
+}
+
+// transform objs to db node structure
+function getProbeNodes(json) {
+  const objs = getProbeObjects(json)
+  const nodes = objs.map(obj => {
+    const node = { ...obj }
+    node.type = obj.tag === 'DataItem' ? 'PropertyDef' : obj.tag
+    node.path = obj.steps && obj.steps.filter(step => !!step).join('/')
+    delete node.category
+    delete node.tag
+    delete node.steps
+    delete node.subType
+    return node
+  })
+  return nodes
+}
+// console.log(nodes)
+
+// function getCanonicalStep(step) {
+//   const canonicalStep = yaml.paths[step]
+//   if (canonicalStep === null) return ''
+//   return canonicalStep || step
+// }
+
+// process.exit(0)
+
+export function getProbeDicts(json) {
+  const nodes = getProbeNodes(json)
+  // separate devices and propdefs
+  const devices = {}
+  const propdefs = {}
+  for (const node of nodes) {
+    if (node.type === 'Device') {
+      // devices.push(node)
+      delete node.type
+      devices[node.id] = node
+    } else {
+      // propdefs.push(node)
+      const propdef = { ...node }
+      //. leave these in the propdef bag?
+      delete propdef.id
+      delete propdef.type
+      delete propdef.discrete
+      delete propdef.unit
+      delete propdef.nativeUnits
+      delete propdef.coordinateSystem
+      delete propdef.representation
+      delete propdef.compositionId
+      propdefs[node.path] = propdef
+    }
+  }
+  // console.log(Object.values(devices))
+  // console.log(
+  //   Object.values(propdefs)
+  //     .map(propdef => propdef.path)
+  //     .sort()
+  //     .join('\n')
+  // )
+  return { devices, propdefs }
 }
 
 // // get path step string for the given object.

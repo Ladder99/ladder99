@@ -17,7 +17,8 @@ console.log()
 // const json = getJson('examples/vmc/probe.xml')
 const json = getJson('examples/ccs-pa/probe.xml')
 // const json = getJson('examples/mazak/probe5717.xml')
-const objs = tree.getProbeObjects(json)
+
+// const objs = tree.getProbeObjects(json)
 // console.log(objs)
 // console.log(objs.map(obj => `${obj.signature}: ${obj.id}`).join('\n'))
 // process.exit(0)
@@ -25,76 +26,28 @@ const objs = tree.getProbeObjects(json)
 // const yaml = common.importYaml('./src/canonical.yaml')
 // console.log(yaml)
 
-// transform objs to db node structure
-const nodes = objs.map(obj => {
-  const node = { ...obj }
-  node.type = obj.tag === 'DataItem' ? 'PropertyDef' : obj.tag
-  node.path = obj.steps && obj.steps.filter(step => !!step).join('/')
-  delete node.category
-  delete node.tag
-  delete node.steps
-  delete node.subType
-  return node
-})
-// console.log(nodes)
-
-// function getCanonicalStep(step) {
-//   const canonicalStep = yaml.paths[step]
-//   if (canonicalStep === null) return ''
-//   return canonicalStep || step
-// }
-
-// process.exit(0)
-
-// separate devices and propdefs
-const devices = {}
-const propdefs = {}
-for (const node of nodes) {
-  if (node.type === 'Device') {
-    // devices.push(node)
-    delete node.type
-    devices[node.id] = node
-  } else {
-    // propdefs.push(node)
-    const propdef = { ...node }
-    delete propdef.id
-    delete propdef.type
-    delete propdef.discrete
-    delete propdef.unit
-    delete propdef.nativeUnits
-    delete propdef.coordinateSystem
-    delete propdef.representation
-    delete propdef.compositionId
-    propdefs[node.path] = propdef
-  }
-}
-console.log(Object.values(devices))
-console.log(
-  Object.values(propdefs)
-    .map(propdef => propdef.path)
-    .sort()
-    .join('\n')
-)
+const records = tree.getProbeDicts(json)
+console.log(records)
 
 process.exit(0)
 
 //. add to db
 
-// add objs to an index
-const propsById = {}
-for (const obj of objs) {
-  propsById[obj.id] = obj
-}
+// // add objs to an index
+// const propsById = {}
+// for (const obj of objs) {
+//   propsById[obj.id] = obj
+// }
 
-// show a prop
-console.log(propsById.operator)
+// // show a prop
+// console.log(propsById.operator)
 
-// load and parse current xml
-const json2 = getJson('examples/mazak/current5717.xml')
-const objs2 = tree.getObservationObjects(json2)
+// // load and parse current xml
+// const json2 = getJson('examples/mazak/current5717.xml')
+// const objs2 = tree.getObservationObjects(json2)
 
-// print an observation
-console.log(objs2[0])
+// // print an observation
+// console.log(objs2[0])
 
 //
 
