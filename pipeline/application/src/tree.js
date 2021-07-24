@@ -76,8 +76,6 @@ function recurse(el, objs, tag = '', parents = []) {
 
 //
 
-//
-
 // ignore these element types - don't add much info to the path
 const ignoreTags = getSet(
   'Adapters,AssetCounts,Devices,DataItems,Components,Filters,Specifications'
@@ -165,6 +163,7 @@ function getParamsStep(params) {
 
 function getParamString(param) {
   const str = param.replaceAll('_', '-').toLowerCase()
+  //. change chars AFTER - to uppercase - how do?
   // const str2 = str
   //   .split()
   //   .map(c => {
@@ -175,51 +174,51 @@ function getParamString(param) {
   return str
 }
 
-// get path step string for the given object.
-// eg if it has tag='DataItem', get params like it's a fn,
-// eg return 'DataItem(event,asset_changed,discrete=true)'
-function getPathStepOld(obj) {
-  let params = []
-  if (!obj) return ''
-  if (ignoreTags.has(obj.tag)) return ''
-  switch (obj.tag) {
-    case 'Device':
-    case 'Agent':
-      params = [obj.uuid] // standard says name may be optional in future versions, so use uuid
-      break
-    case 'DataItem':
-      // add primary params
-      params = [obj.category, obj.type]
-      if (obj.subType) params.push(obj.subType)
-      // add named params
-      let namedParams = []
-      for (const key of Object.keys(obj)) {
-        if (!ignoreAttributes.has(key)) {
-          namedParams.push(key + '=' + obj[key])
-        }
-      }
-      namedParams.sort()
-      for (const namedParam of namedParams) {
-        params.push(namedParam)
-      }
-      break
-    case 'Specification':
-    case 'Composition':
-      params = [obj.type]
-      if (obj.subType) params.push(obj.subType)
-      break
-    default:
-      // don't give param if it's like "Systems(systems)" - indicates just one in a document
-      if ((obj.name || '').toLowerCase() !== (obj.tag || '').toLowerCase()) {
-        // params = [obj.id] //. or obj.name ?? sometimes one is nicer than the other
-        params = [obj.name || obj.id || '']
-      }
-      break
-  }
-  const paramsStr =
-    params.length > 0 && params[0].length > 0
-      ? '(' + params.map(param => param.toLowerCase()).join(',') + ')'
-      : ''
-  const step = `${obj.tag}${paramsStr}`
-  return step
-}
+// // get path step string for the given object.
+// // eg if it has tag='DataItem', get params like it's a fn,
+// // eg return 'DataItem(event,asset_changed,discrete=true)'
+// function getPathStepOld(obj) {
+//   let params = []
+//   if (!obj) return ''
+//   if (ignoreTags.has(obj.tag)) return ''
+//   switch (obj.tag) {
+//     case 'Device':
+//     case 'Agent':
+//       params = [obj.uuid] // standard says name may be optional in future versions, so use uuid
+//       break
+//     case 'DataItem':
+//       // add primary params
+//       params = [obj.category, obj.type]
+//       if (obj.subType) params.push(obj.subType)
+//       // add named params
+//       let namedParams = []
+//       for (const key of Object.keys(obj)) {
+//         if (!ignoreAttributes.has(key)) {
+//           namedParams.push(key + '=' + obj[key])
+//         }
+//       }
+//       namedParams.sort()
+//       for (const namedParam of namedParams) {
+//         params.push(namedParam)
+//       }
+//       break
+//     case 'Specification':
+//     case 'Composition':
+//       params = [obj.type]
+//       if (obj.subType) params.push(obj.subType)
+//       break
+//     default:
+//       // don't give param if it's like "Systems(systems)" - indicates just one in a document
+//       if ((obj.name || '').toLowerCase() !== (obj.tag || '').toLowerCase()) {
+//         // params = [obj.id] //. or obj.name ?? sometimes one is nicer than the other
+//         params = [obj.name || obj.id || '']
+//       }
+//       break
+//   }
+//   const paramsStr =
+//     params.length > 0 && params[0].length > 0
+//       ? '(' + params.map(param => param.toLowerCase()).join(',') + ')'
+//       : ''
+//   const step = `${obj.tag}${paramsStr}`
+//   return step
+// }

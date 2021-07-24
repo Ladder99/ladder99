@@ -22,37 +22,27 @@ const objs = tree.getProbeObjects(json)
 // console.log(objs.map(obj => `${obj.signature}: ${obj.id}`).join('\n'))
 // process.exit(0)
 
-const yaml = common.importYaml('./src/canonical.yaml')
+// const yaml = common.importYaml('./src/canonical.yaml')
 // console.log(yaml)
 
 // transform objs to db node structure
 const nodes = objs.map(obj => {
   const node = { ...obj }
   node.type = obj.tag === 'DataItem' ? 'PropertyDef' : obj.tag
-  //. or call this .id? but not unique unless include more of signature?
-  // node.canonicalId = obj.id //. look this up via signature property //. what about collisions eg system condition?
-  // node.canonicalId = yaml.paths[obj.signature]
-  // node.path =
-  //   obj.steps &&
-  //   obj.steps
-  //     .map(getCanonicalStep)
-  //     .filter(step => !!step)
-  //   .join('/')
   node.path = obj.steps && obj.steps.filter(step => !!step).join('/')
-  //. include category, type? not sure
-  delete node.tag
   delete node.category
+  delete node.tag
   delete node.steps
   delete node.subType
   return node
 })
 // console.log(nodes)
 
-function getCanonicalStep(step) {
-  const canonicalStep = yaml.paths[step]
-  if (canonicalStep === null) return ''
-  return canonicalStep || step
-}
+// function getCanonicalStep(step) {
+//   const canonicalStep = yaml.paths[step]
+//   if (canonicalStep === null) return ''
+//   return canonicalStep || step
+// }
 
 // process.exit(0)
 
@@ -70,7 +60,7 @@ for (const node of nodes) {
     delete propdef.id
     delete propdef.type
     delete propdef.discrete
-    delete propdef.units
+    delete propdef.unit
     delete propdef.nativeUnits
     delete propdef.coordinateSystem
     delete propdef.representation
