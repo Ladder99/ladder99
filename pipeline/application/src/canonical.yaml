@@ -24,7 +24,8 @@
 #. or axes1-linear1-pos-machine? hmm
 
 paths:
-  Axes(a): axesA
+  Axes(a): axes
+  Axes(base): axes
   Components:
   Controller: controller
   Controller(controller): controller
@@ -131,10 +132,6 @@ paths:
   DataItem(sample,spindle_speed,override): spindle-speed-override
   # DataItem(sample,temperature,compositionid=bmotor): temperature-bmotor #.
   # DataItem(sample,temperature,compositionid=cmotor): temperature-cmotor #.
-  # DataItem(sample,temperature,compositionid=xmotor): temperature-xmotor #.
-  # DataItem(sample,temperature,compositionid=ymotor): temperature-ymotor #.
-  # DataItem(sample,temperature,compositionid=z3motor): temperature-z3motor #.
-  # DataItem(sample,temperature,compositionid=zmotor): temperature-zmotor #.
   DataItem(sample,temperature): temperature
   DataItems:
   Door(door): door
@@ -154,3 +151,10 @@ paths:
   Rotary(c): c
   Rotary(c2): c2
   Systems(systems): systems
+  Controller(pa1-controller): controller #. for pa
+  Systems(pa1-systems): systems #. for pa
+  EndEffector(pa1-end_effector): end-effector #.
+  Path: path
+  Feeder(pa1-feeder): feeder #.
+  Resources: resources
+  Personnel(pa1-personnel): personnel #.
