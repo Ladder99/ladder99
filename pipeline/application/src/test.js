@@ -8,8 +8,8 @@ import * as tree from './tree.js'
 import * as common from './common.js'
 
 // load and parse probe xml
-// const json = getJson('examples/mazak/probe5717sm.xml')
-const json = getJson('examples/ccs-pa/probe.xml')
+const json = getJson('examples/mazak/probe5717.xml')
+// const json = getJson('examples/ccs-pa/probe.xml')
 // const json = getJson('examples/demo/devices.xml')
 const objs = tree.getProbeObjects(json)
 console.log(objs)

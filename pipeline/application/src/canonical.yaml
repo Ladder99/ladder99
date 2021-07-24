@@ -27,6 +27,7 @@ paths:
   Axes(a): axesA
   Components:
   Controller(controller): controller
+  Controller: controller
   Coolant(coolant): coolant
   DataItem(condition,actuator): actuator-condition # servo-condition?
   DataItem(condition,angle): angle-condition
@@ -104,12 +105,46 @@ paths:
   Linear(x): linearX
   Linear(y): linearY
   Linear(z): linearZ
+  Linear(z3): linearZ3
   Lubrication(lubrication): lubrication
   Path(path): path
   Personnel(personnel): personnel
   Pneumatic(pneumatic): pneumatic
   Resources(resources): resources
   Rotary(a): rotaryA
+  Rotary(b): rotaryB
   Rotary(c): rotaryC
   Rotary(c2): rotaryC2
   Systems(systems): systems
+  DataItem(event,equipment_mode,loaded): equipment-mode-loaded
+  DataItem(event,equipment_mode,working): equipment-mode-working
+  DataItem(event,equipment_mode,operating): equipment-mode-operating
+  DataItem(event,equipment_mode,powered): equipment-mode-powered
+  DataItem(event,equipment_mode,delay): equipment-mode-delay
+  DataItem(event,operating_system,license): operating-system-license
+  DataItem(event,operating_system,version): operating-system-version
+  DataItem(event,operating_system,release_date): operating-system-release-date
+  DataItem(event,operating_system,install_date): operating-system-install-date
+  DataItem(event,operating_system,manufacturer): operating-system-manufacturer
+  DataItem(event,asset_changed,discrete=true): asset-changed-discrete
+  DataItem(sample,temperature,compositionid=xmotor): temperature-xmotor #.
+  DataItem(sample,axis_feedrate): axis-feedrate
+  DataItem(sample,temperature,compositionid=ymotor): temperature-ymotor #.
+  DataItem(sample,position,actual,coordinatesystem=machine): actual-machine-position
+  DataItem(sample,position,actual,coordinatesystem=work): actual-work-position
+  DataItem(sample,temperature,compositionid=zmotor): temperature-zmotor #.
+  DataItem(sample,temperature,compositionid=z3motor): temperature-z3motor #.
+  DataItem(sample,angle,actual,coordinatesystem=machine): actual-machine-angle
+  DataItem(sample,angle,actual,coordinatesystem=work): actual-work-angle
+  DataItem(sample,temperature,compositionid=bmotor): temperature-bmotor #.
+  DataItem(sample,temperature,compositionid=cmotor): temperature-cmotor #.
+  DataItem(sample,path_feedrate,actual,coordinatesystem=work): actual-work-path-feedrate
+  DataItem(event,program_comment,main): program-comment-main
+  DataItem(event,controller_mode_override,machine_axis_lock): controller-mode-override-machine-axis-lock #.
+  DataItem(event,controller_mode_override,single_block): controller-mode-override-single-block #.
+  DataItem(event,controller_mode_override,dry_run): controller-mode-override-dry-run
+  DataItem(event,line_label): line-label
+  DataItem(event,line_number,incremental): line-number-incremental
+  DataItem(event,variable,representation=data_set): variable-data-set
+  DataItem(sample,cutting_speed,actual): actual-cutting-speed
+  DataItem(event,material): material
