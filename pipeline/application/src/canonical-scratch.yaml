@@ -19,6 +19,7 @@ paths:
 
   #. capture axes name -> part of canonical Id?
   # or number eg Axes[1] -> axes1-actuator-condition?
+
   Axes(a)/DataItem(condition,actuator): axes-actuator-condition # servo-condition?
   Axes(a)/DataItem(condition,system): axes-system-condition # spindle-condition? distinguish from controller system-condition
 
