@@ -1,7 +1,3 @@
-paths:
-  DataItem(event,availability): availability
-
-
 # paths
 # define canonical ids in terms of short xpath-like expressions
 
@@ -15,117 +11,90 @@ paths:
 
 #. instead of breaking it into steps could check the whole path first?
 
-  # these get erased from the canonical path
-  Controller(controller):
-  Path(path):
+# to erase from the canonical path -
+# Controller(controller):
 
+#. capture axes name -> part of canonical Id?
+# or number eg Axes[1] -> axes1-actuator-condition?
 
-  DataItem(event,availability): availability
-  DataItem(event,functional_mode): functional-mode
+#. use regex group capture and substitute into canonicalId string?
+# eg this could give canonicalId 'x-machine':
+# /Axes\((.*)\)/Linear\((.*)\)/DataItem(sample,position,actual,coordinateSystem=machine): $2-machine
+#. but what about $1? translate to sthing like axes1/linear1/pos-machine?
+#. or axes1-linear1-pos-machine? hmm
+
+paths:
+  Axes(a): axesA
+  Controller(controller): controller #? or make it disappear?
+  Coolant(coolant): coolant
+  DataItem(condition,actuator): actuator-condition # servo-condition?
+  DataItem(condition,angle): angle-condition
+  DataItem(condition,communications): communications-condition
+  DataItem(condition,load): load-condition
+  DataItem(condition,logic_program): logic-program-condition
+  DataItem(condition,motion_program): motion-program-condition
+  DataItem(condition,position): pos-condition
+  DataItem(condition,system): system-condition # spindle-condition? distinguish from controller system-condition
+  DataItem(condition,temperature): temperature-condition
   DataItem(event,asset_changed): asset-changed
   DataItem(event,asset_removed): asset-removed
-
-  #. capture axes name -> part of canonical Id?
-  # or number eg Axes[1] -> axes1-actuator-condition?
-
-  Axes(a): axesA  
-  DataItem(condition,actuator): actuator-condition # servo-condition?
-  DataItem(condition,system): system-condition # spindle-condition? distinguish from controller system-condition
-
-  #. use regex group capture and substitute into canonicalId string?
-  # eg this could give canonicalId 'x-machine':
-  # /Axes\((.*)\)/Linear\((.*)\)/DataItem(sample,position,actual,coordinateSystem=machine): $2-machine
-  #. but what about $1? translate to sthing like axes1/linear1/pos-machine?
-  #. or axes1-linear1-pos-machine? hmm
-
-  Linear(x): linearX
-  DataItem(sample,position,actual,coordinateSystem=machine): pos-machine
-  DataItem(sample,position,actual,coordinateSystem=work): pos-work
-  DataItem(condition,position): pos-condition
-  DataItem(sample,load): load
-  DataItem(sample,axis_feed): feed
-  DataItem(event,axis_state): state
-
-  Linear(y): linearY
-  Linear(z): linearZ
-  Rotary(c): rotaryC
-
-  DataItem(sample,load): load
-  DataItem(sample,load,name=Sload): sload #?? have this in a custom yaml file for setup?
-  DataItem(sample,load,name=S2load): s2load #?
-  DataItem(condition,angle): angle-condition
-  DataItem(sample,angular_velocity): angular-velocity
-  DataItem(sample,rotary_velocity,actual): rotary-velocity
-  DataItem(sample,temperature): temperature
-  DataItem(sample,angle,actual,coordinateSystem=machine): angle-machine
-  DataItem(sample,angle,actual,coordinateSystem=work): angle-work
-  DataItem(event,rotary_mode): rotary-mode
-  DataItem(condition,load): load-condition
-  DataItem(condition,temperature): temperature-condition
-  DataItem(event,axis_state): state
-
-  Rotary(a): rotaryA
-  Rotary(c2): rotaryC2
-
-  Controller(controller): controller #? or make it disappear?
-  DataItem(condition,communications): communications-condition
-  DataItem(condition,logic_program): logic-program-condition
-  DataItem(condition,system): condition # distinguish from axes-condition
-  DataItem(event,emergency_stop): emergency-stop
-  DataItem(sample,accumulated_time,x:auto): auto-time
-  DataItem(sample,accumulated_time,x:total): total-time
-  DataItem(sample,accumulated_time,x:cut): cut-time
-  DataItem(sample,accumulated_time,x:totalcuttime): total-auto-cut-time
-  DataItem(event,pallet_id): pallet-id
-
-  Path(path): path
-  
-  DataItem(event,program_edit): program-edit
-  DataItem(event,program_edit_name): program-edit-name
+  DataItem(event,availability): availability
+  DataItem(event,axis_state): axis-state
   DataItem(event,chuck_state): chuck-state
-  DataItem(event,path_feedrate_override,rapid): feedrate-override-rapid
-  DataItem(event,path_feedrate_override,programmed): feedrate-override-programmed
-  DataItem(event,rotary_velocity_override): rotary-velocity-override
-  DataItem(event,program): program
-  DataItem(event,program,x:sub): subprogram
+  DataItem(event,controller_mode): controller-mode
+  DataItem(event,door_state): door-state
+  DataItem(event,emergency_stop): emergency-stop
+  DataItem(event,execution): execution
+  DataItem(event,functional_mode): functional-mode
   DataItem(event,line): line
-  DataItem(event,x:unit): unit
-  DataItem(event,x:sequence_number): sequence-number
+  DataItem(event,pallet_id): pallet-id
   DataItem(event,part_count): part-count
-  DataItem(sample,path_feedrate): feedrate
+  DataItem(event,path_feedrate_override,programmed): feedrate-override-programmed
+  DataItem(event,path_feedrate_override,rapid): feedrate-override-rapid
+  DataItem(event,program_comment,x:sub): subprogram-comment
+  DataItem(event,program_comment): program-comment
+  DataItem(event,program_edit_name): program-edit-name
+  DataItem(event,program_edit): program-edit
+  DataItem(event,program,x:sub): subprogram
+  DataItem(event,program): program
+  DataItem(event,rotary_mode): rotary-mode
+  DataItem(event,rotary_velocity_override): rotary-velocity-override
   DataItem(event,tool_number): tool-number
+  DataItem(event,user): user # aka operator
+  DataItem(event,x:sequence_number): sequence-number
   DataItem(event,x:tool_group): tool-group
   DataItem(event,x:tool_suffix): tool-suffix
-  DataItem(event,execution): execution
-  DataItem(event,controller_mode): controller-mode
-  DataItem(event,program_comment): program-comment
-  DataItem(event,program_comment,x:sub): subprogram-comment
-  DataItem(condition,motion_program): motion-program-condition
-  DataItem(condition,system): system-condition
-
-
+  DataItem(event,x:unit): unit
+  DataItem(sample,accumulated_time,x:auto): auto-time
+  DataItem(sample,accumulated_time,x:cut): cut-time
+  DataItem(sample,accumulated_time,x:total): total-time
+  DataItem(sample,accumulated_time,x:totalcuttime): total-auto-cut-time
+  DataItem(sample,angle,actual,coordinateSystem=machine): angle-machine
+  DataItem(sample,angle,actual,coordinateSystem=work): angle-work
+  DataItem(sample,angular_velocity): angular-velocity
+  DataItem(sample,axis_feed): feed
+  DataItem(sample,concentration): concentration
+  DataItem(sample,load,name=S2load): s2load #?
+  DataItem(sample,load,name=Sload): sload #?? have this in a custom yaml file for setup?
+  DataItem(sample,load): load
+  DataItem(sample,path_feedrate): feedrate
+  DataItem(sample,position,actual,coordinateSystem=machine): pos-machine
+  DataItem(sample,position,actual,coordinateSystem=work): pos-work
+  DataItem(sample,rotary_velocity,actual): rotary-velocity
+  DataItem(sample,temperature): temperature
+  DataItems:
   Door(door): door
-
-  DataItem(event,door_state): state
-
-  Resources(resources): resources
-  Personnel(personnel): personnel
-
-  DataItem(event,user): user # or operator?
-
-  Systems(systems): systems
   Electric(electric): electric
   Hydraulic(hydraulic): hydraulic
-  Coolant(coolant): coolant
-  Pneumatic(pneumatic): pneumatic
+  Linear(x): linearX
+  Linear(y): linearY
+  Linear(z): linearZ
   Lubrication(lubrication): lubrication
-
-  DataItem(condition,system): condition
-  DataItem(condition,system): condition
-  DataItem(condition,system): condition
-  DataItem(sample,temperature): temperature
-  DataItem(sample,concentration): concentration
-  DataItem(condition,system): condition
-  DataItem(condition,system): condition
-
-
+  Path(path): path
+  Personnel(personnel): personnel
+  Pneumatic(pneumatic): pneumatic
+  Resources(resources): resources
+  Rotary(a): rotaryA
+  Rotary(c): rotaryC
+  Rotary(c2): rotaryC2
+  Systems(systems): systems

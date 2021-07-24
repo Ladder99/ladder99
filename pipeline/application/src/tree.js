@@ -52,11 +52,13 @@ function recurse(el, objs, tag = '', parents = []) {
     // get device and signature for dataitems
     // eg 'Device(a234)' and 'DataItem(event,availability)'
     if (tag === 'DataItem') {
-      obj.device = getPathStep(obj.parents[3])
-      obj.signature = [...obj.parents.slice(4), obj]
-        .map(getPathStep)
-        .filter(step => !!step)
-        .join('/')
+      // obj.device = getPathStep(obj.parents[3])
+      // obj.signature = [...obj.parents.slice(4), obj]
+      //   .map(getPathStep)
+      //   .filter(step => !!step)
+      //   .join('/')
+      obj.steps = [...obj.parents.slice(4), obj].map(getPathStep)
+      // obj.path = obj.steps.map(getCanonicalStep)
     }
 
     // get rid of the parents list
@@ -75,9 +77,12 @@ function recurse(el, objs, tag = '', parents = []) {
 
 //
 
+//
+
 // ignore these element types - don't add much info to the path
 const ignoreTags = getSet(
-  'Adapters,AssetCounts,Devices,DataItems,Components,Filters,Specifications'
+  // 'Adapters,AssetCounts,Devices,DataItems,Components,Filters,Specifications'
+  ''
 )
 
 // ignore these DataItem attributes - not necessary to identify an element,

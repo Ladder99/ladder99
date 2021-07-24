@@ -25,7 +25,13 @@ const nodes = objs.map(obj => {
   node.type = obj.tag === 'DataItem' ? 'PropertyDef' : obj.tag
   //. or call this .id? but not unique unless include more of signature?
   // node.canonicalId = obj.id //. look this up via signature property //. what about collisions eg system condition?
-  node.canonicalId = yaml.paths[obj.signature]
+  // node.canonicalId = yaml.paths[obj.signature]
+  node.path =
+    obj.steps &&
+    obj.steps
+      .map(getCanonicalStep)
+      .filter(step => !!step)
+      .join('/')
   // node.description = 'from pdf' //. or link to prepopulated nodes with descs
   //. include category, type? not sure
   delete node.tag
@@ -33,6 +39,13 @@ const nodes = objs.map(obj => {
   return node
 })
 console.log(nodes)
+
+function getCanonicalStep(step) {
+  const canonicalStep = yaml.paths[step]
+  if (canonicalStep === null) return ''
+  return canonicalStep || step
+}
+
 process.exit(0)
 
 //. separate devices and props
