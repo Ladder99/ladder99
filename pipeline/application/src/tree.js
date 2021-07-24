@@ -214,7 +214,7 @@ export function getProbeDict(json) {
       // propdefs.push(node)
       const propdef = { ...node }
       //. leave these in the propdef bag?
-      delete propdef.id
+      // delete propdef.id
       // delete propdef.type
       delete propdef.discrete
       delete propdef.unit

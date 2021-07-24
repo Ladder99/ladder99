@@ -92,11 +92,13 @@ export class Db {
       const { node_id } = res.rows[0]
       return node_id
     } catch (e) {
+      // eg error: duplicate key value violates unique constraint "nodes_path"
+      // detail: "Key ((props ->> 'path'::text))=(Device(e05363af-95d1-4354-b749-8fbb09d3499e)) already exists.",
       console.log(e)
       const sql = `SELECT node_id FROM nodes WHERE props->>'path' = $1::text;`
-      console.log(sql)
+      console.log(sql, node.path)
       const res = await this.query(sql, [node.path])
-      console.log(res)
+      // console.log(res)
       const { node_id } = res.rows[0]
       return node_id
     }
