@@ -49,13 +49,17 @@ function getCanonicalStep(step) {
 // process.exit(0)
 
 // separate devices and propdefs
-const devices = []
-const propdefs = []
+const devices = {}
+const propdefs = {}
 for (const node of nodes) {
   if (node.type === 'Device') {
-    devices.push(node)
+    // devices.push(node)
+    devices[node.id] = node
   } else {
-    propdefs.push(node)
+    // propdefs.push(node)
+    const propdef = { ...node }
+    delete propdef.id
+    propdefs[node.path] = propdef
   }
 }
 console.log(devices)
