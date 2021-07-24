@@ -32,10 +32,10 @@ const nodes = objs.map(obj => {
       .map(getCanonicalStep)
       .filter(step => !!step)
       .join('/')
-  // node.description = 'from pdf' //. or link to prepopulated nodes with descs
   //. include category, type? not sure
   delete node.tag
   delete node.category
+  delete node.steps
   return node
 })
 console.log(nodes)
@@ -46,11 +46,22 @@ function getCanonicalStep(step) {
   return canonicalStep || step
 }
 
-process.exit(0)
+// process.exit(0)
 
-//. separate devices and props
-// const devices = []
-// const props = []
+// separate devices and propdefs
+const devices = []
+const propdefs = []
+for (const node of nodes) {
+  if (node.type === 'Device') {
+    devices.push(node)
+  } else {
+    propdefs.push(node)
+  }
+}
+console.log(devices)
+console.log(propdefs)
+
+process.exit(0)
 
 //. add to db
 

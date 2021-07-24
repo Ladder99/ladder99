@@ -33,7 +33,7 @@ paths:
   DataItem(condition,load): load-condition
   DataItem(condition,logic_program): logic-program-condition
   DataItem(condition,motion_program): motion-program-condition
-  DataItem(condition,position): pos-condition
+  DataItem(condition,position): position-condition
   DataItem(condition,system): system-condition # spindle-condition? distinguish from controller system-condition
   DataItem(condition,temperature): temperature-condition
   DataItem(event,asset_changed): asset-changed
@@ -69,8 +69,8 @@ paths:
   DataItem(sample,accumulated_time,x:cut): cut-time
   DataItem(sample,accumulated_time,x:total): total-time
   DataItem(sample,accumulated_time,x:totalcuttime): total-auto-cut-time
-  DataItem(sample,angle,actual,coordinateSystem=machine): angle-machine
-  DataItem(sample,angle,actual,coordinateSystem=work): angle-work
+  DataItem(sample,angle,actual,coordinateSystem=machine): machine-angle
+  DataItem(sample,angle,actual,coordinateSystem=work): work-angle
   DataItem(sample,angular_velocity): angular-velocity
   DataItem(sample,axis_feed): feed
   DataItem(sample,concentration): concentration
@@ -78,8 +78,8 @@ paths:
   DataItem(sample,load,name=Sload): sload #?? have this in a custom yaml file for setup?
   DataItem(sample,load): load
   DataItem(sample,path_feedrate): feedrate
-  DataItem(sample,position,actual,coordinateSystem=machine): pos-machine
-  DataItem(sample,position,actual,coordinateSystem=work): pos-work
+  DataItem(sample,position,actual,coordinateSystem=machine): machine-position
+  DataItem(sample,position,actual,coordinateSystem=work): work-position
   DataItem(sample,rotary_velocity,actual): rotary-velocity
   DataItem(sample,temperature): temperature
   DataItems:

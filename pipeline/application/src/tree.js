@@ -52,13 +52,13 @@ function recurse(el, objs, tag = '', parents = []) {
     // get device and signature for dataitems
     // eg 'Device(a234)' and 'DataItem(event,availability)'
     if (tag === 'DataItem') {
-      // obj.device = getPathStep(obj.parents[3])
       // obj.signature = [...obj.parents.slice(4), obj]
       //   .map(getPathStep)
       //   .filter(step => !!step)
       //   .join('/')
       obj.steps = [...obj.parents.slice(4), obj].map(getPathStep)
-      // obj.path = obj.steps.map(getCanonicalStep)
+    } else {
+      obj.steps = [obj].map(getPathStep)
     }
 
     // get rid of the parents list
