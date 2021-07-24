@@ -199,29 +199,30 @@ function getProbeNodes(json) {
 
 // process.exit(0)
 
-export function getProbeDicts(json) {
+export function getProbeDict(json) {
   const nodes = getProbeNodes(json)
   // separate devices and propdefs
-  const devices = {}
-  const propdefs = {}
+  // const devices = {}
+  // const propdefs = {}
+  const dict = {}
   for (const node of nodes) {
     if (node.type === 'Device') {
       // devices.push(node)
-      delete node.type
-      devices[node.id] = node
+      // delete node.type
+      dict[node.id] = node
     } else {
       // propdefs.push(node)
       const propdef = { ...node }
       //. leave these in the propdef bag?
       delete propdef.id
-      delete propdef.type
+      // delete propdef.type
       delete propdef.discrete
       delete propdef.unit
       delete propdef.nativeUnits
       delete propdef.coordinateSystem
       delete propdef.representation
       delete propdef.compositionId
-      propdefs[node.path] = propdef
+      dict[node.path] = propdef
     }
   }
   // console.log(Object.values(devices))
@@ -231,7 +232,8 @@ export function getProbeDicts(json) {
   //     .sort()
   //     .join('\n')
   // )
-  return { devices, propdefs }
+  // return { devices, propdefs }
+  return dict
 }
 
 // // get path step string for the given object.

@@ -76,7 +76,18 @@ export class Db {
   }
 
   async query(sql) {
+    //. add try catch block - ignore error? or just print it?
     return await this.client.query(sql)
+  }
+
+  async add(node) {
+    // eg '{"email": "thom22@gmail.com", "country": "US"}'
+    const values = `'${JSON.stringify(node)}'`
+    const sql = `INSERT INTO nodes (props) VALUES (${values});`
+    console.log(sql)
+    const res = await this.query(sql)
+    console.log(res)
+    return res
   }
 
   // //. read nodes and edges into graph structure

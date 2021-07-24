@@ -27,20 +27,22 @@ const json = getJson('examples/ccs-pa/probe.xml')
 // console.log(yaml)
 
 const records = tree.getProbeDicts(json)
-console.log(records)
+// console.log(records)
 
-process.exit(0)
+const { devices, propdefs } = records
+console.log(devices)
+console.log(Object.values(propdefs).map(propdef => propdef.path))
 
-//. add to db
+// show a propdef
+console.log(propdefs.message)
 
-// // add objs to an index
-// const propsById = {}
-// for (const obj of objs) {
-//   propsById[obj.id] = obj
+//. add devices and propdefs to db
+
+// for (let device of Object.values(devices)) {
+//   device.node_id = db.add(device)
 // }
 
-// // show a prop
-// console.log(propsById.operator)
+process.exit(0)
 
 // // load and parse current xml
 // const json2 = getJson('examples/mazak/current5717.xml')
