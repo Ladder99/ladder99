@@ -22,10 +22,9 @@ CREATE TABLE IF NOT EXISTS nodes (
   node_id SERIAL PRIMARY KEY,
   props jsonb
 );
---. syntax for this?
 -- see https://stackoverflow.com/questions/17807030/how-to-create-index-on-json-field-in-postgres
--- CREATE INDEX IF NOT EXISTS nodes_node_type ON nodes (props.nodeType);
--- CREATE INDEX IF NOT EXISTS nodes_canonical_id ON nodes (props.canonicalId);
+CREATE INDEX IF NOT EXISTS nodes_type ON nodes ((props->>'type'));
+CREATE UNIQUE INDEX IF NOT EXISTS nodes_path ON nodes ((props->>'path'));
 
 -- EDGES table --
 
