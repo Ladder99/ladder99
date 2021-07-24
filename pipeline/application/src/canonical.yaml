@@ -25,7 +25,8 @@
 
 paths:
   Axes(a): axesA
-  Controller(controller): controller #? or make it disappear?
+  Components:
+  Controller(controller): controller
   Coolant(coolant): coolant
   DataItem(condition,actuator): actuator-condition # servo-condition?
   DataItem(condition,angle): angle-condition
@@ -36,31 +37,39 @@ paths:
   DataItem(condition,position): position-condition
   DataItem(condition,system): system-condition # spindle-condition? distinguish from controller system-condition
   DataItem(condition,temperature): temperature-condition
+  DataItem(event,actuator_state): actuator-state
   DataItem(event,asset_changed): asset-changed
   DataItem(event,asset_removed): asset-removed
   DataItem(event,availability): availability
   DataItem(event,axis_state): axis-state
+  DataItem(event,block): block
   DataItem(event,chuck_state): chuck-state
   DataItem(event,controller_mode): controller-mode
   DataItem(event,door_state): door-state
   DataItem(event,emergency_stop): emergency-stop
   DataItem(event,execution): execution
+  DataItem(event,firmware,version): firmware-version
   DataItem(event,functional_mode): functional-mode
   DataItem(event,line): line
+  DataItem(event,message): message
   DataItem(event,pallet_id): pallet-id
   DataItem(event,part_count): part-count
+  DataItem(event,part_detect): part-detect
   DataItem(event,path_feedrate_override,programmed): feedrate-override-programmed
   DataItem(event,path_feedrate_override,rapid): feedrate-override-rapid
   DataItem(event,program_comment,x:sub): subprogram-comment
   DataItem(event,program_comment): program-comment
   DataItem(event,program_edit_name): program-edit-name
   DataItem(event,program_edit): program-edit
+  DataItem(event,program,main): program-main
   DataItem(event,program,x:sub): subprogram
   DataItem(event,program): program
   DataItem(event,rotary_mode): rotary-mode
   DataItem(event,rotary_velocity_override): rotary-velocity-override
   DataItem(event,tool_number): tool-number
-  DataItem(event,user): user # aka operator
+  DataItem(event,user,operator): user-operator
+  DataItem(event,user): user
+  DataItem(event,wait_state): wait-state
   DataItem(event,x:sequence_number): sequence-number
   DataItem(event,x:tool_group): tool-group
   DataItem(event,x:tool_suffix): tool-suffix
@@ -73,13 +82,19 @@ paths:
   DataItem(sample,angle,actual,coordinateSystem=work): work-angle
   DataItem(sample,angular_velocity): angular-velocity
   DataItem(sample,axis_feed): feed
+  DataItem(sample,clock_time): clock-time
   DataItem(sample,concentration): concentration
+  DataItem(sample,count): count
+  DataItem(sample,equipment_timer,delay,unit=second): delay-equipment-timer
+  DataItem(sample,equipment_timer,operating): operating-equipment-timer
+  DataItem(sample,equipment_timer,working,unit=second): working-equipment-timer
   DataItem(sample,load,name=S2load): s2load #?
   DataItem(sample,load,name=Sload): sload #?? have this in a custom yaml file for setup?
   DataItem(sample,load): load
   DataItem(sample,path_feedrate): feedrate
   DataItem(sample,position,actual,coordinateSystem=machine): machine-position
   DataItem(sample,position,actual,coordinateSystem=work): work-position
+  DataItem(sample,process_timer,process,unit=seconds): process-timer
   DataItem(sample,rotary_velocity,actual): rotary-velocity
   DataItem(sample,temperature): temperature
   DataItems:
