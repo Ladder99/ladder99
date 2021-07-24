@@ -83,10 +83,10 @@ export class Db {
   async add(node) {
     // eg '{"email": "thom22@gmail.com", "country": "US"}'
     const values = `'${JSON.stringify(node)}'`
-    const sql = `INSERT INTO nodes (props) VALUES (${values});`
+    const sql = `INSERT INTO nodes (props) VALUES (${values}) RETURNING node_id;`
     console.log(sql)
     const res = await this.query(sql)
-    console.log(res)
+    // console.log(res)
     return res
   }
 

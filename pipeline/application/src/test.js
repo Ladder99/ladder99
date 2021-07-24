@@ -26,15 +26,15 @@ const json = getJson('examples/ccs-pa/probe.xml')
 // const yaml = common.importYaml('./src/canonical.yaml')
 // console.log(yaml)
 
-const records = tree.getProbeDicts(json)
-// console.log(records)
+const dict = tree.getProbeDict(json)
+// console.log(dict)
 
-const { devices, propdefs } = records
-console.log(devices)
-console.log(Object.values(propdefs).map(propdef => propdef.path))
+const nodes = Object.values(dict)
+console.log(nodes)
+console.log(nodes.map(node => node.path))
 
 // show a propdef
-console.log(propdefs.message)
+console.log(dict.message)
 
 //. add devices and propdefs to db
 

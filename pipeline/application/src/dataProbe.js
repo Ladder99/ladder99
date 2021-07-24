@@ -37,21 +37,14 @@ export class Probe extends Data {
     // add nodes to db - devices and propdefs
     const nodes = Object.values(dict)
     for (let node of nodes) {
-      await db.add(node)
+      const res = await db.add(node)
+      const node_id = res.rows[0].node_id
+      console.log(node_id)
+      node.node_id = node_id
     }
 
-    // const nodesPath = 'nodes-ex.json'
-    // fs.writeFileSync(nodesPath, JSON.stringify(nodes, null, 2))
-    // process.exit(0)
+    console.log(nodes)
 
     process.exit(0)
-
-    // const probeGraph = data.getProbeGraph() // get probe data into graph structure
-    // libapp.print(probeGraph)
-    // const dbGraph = new Graph()
-    // await dbGraph.read(this.db)
-    // //. now compare probe graph with db graph, update db as needed
-    // await probeGraph.write(this.db)
-    // await probeGraph.synchTo(this.db)
   }
 }
