@@ -129,12 +129,12 @@ paths:
   DataItem(sample,rotary_velocity,actual): rotary-velocity-actual
   DataItem(sample,spindle_speed,actual): spindle-speed-actual
   DataItem(sample,spindle_speed,override): spindle-speed-override
-  DataItem(sample,temperature,compositionid=bmotor): temperature-bmotor #.
-  DataItem(sample,temperature,compositionid=cmotor): temperature-cmotor #.
-  DataItem(sample,temperature,compositionid=xmotor): temperature-xmotor #.
-  DataItem(sample,temperature,compositionid=ymotor): temperature-ymotor #.
-  DataItem(sample,temperature,compositionid=z3motor): temperature-z3motor #.
-  DataItem(sample,temperature,compositionid=zmotor): temperature-zmotor #.
+  # DataItem(sample,temperature,compositionid=bmotor): temperature-bmotor #.
+  # DataItem(sample,temperature,compositionid=cmotor): temperature-cmotor #.
+  # DataItem(sample,temperature,compositionid=xmotor): temperature-xmotor #.
+  # DataItem(sample,temperature,compositionid=ymotor): temperature-ymotor #.
+  # DataItem(sample,temperature,compositionid=z3motor): temperature-z3motor #.
+  # DataItem(sample,temperature,compositionid=zmotor): temperature-zmotor #.
   DataItem(sample,temperature): temperature
   DataItems:
   Door(door): door
