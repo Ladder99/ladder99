@@ -91,7 +91,7 @@ const plainTags = getSet(
 // ignore these DataItem attributes - not necessary to identify an element,
 // or are redundant.
 const ignoreAttributes = getSet(
-  'category,type,subType,_key,tag,parents,id,units,nativeUnits,device,name,compositionId'
+  'category,type,subType,_key,tag,parents,id,unit,nativeUnits,device,name,compositionId'
 )
 
 function getSet(str) {
@@ -105,14 +105,16 @@ function getPathStep(obj) {
   //. for plain tags, eg Path, will want to do two passes - first to see how many Paths there are,
   // then to assign numbers to the steps, eg path vs path1, path2.
   if (plainTags.has(obj.tag)) return obj.tag[0].toLowerCase() + obj.tag.slice(1)
+  let step = ''
   switch (obj.tag) {
     case 'Device':
     case 'Agent':
-      params = [obj.uuid] // standard says name may be optional in future versions, so use uuid
+      // params = [obj.uuid] // standard says name may be optional in future versions, so use uuid
+      step = `Device(${obj.uuid})`
       break
     case 'DataItem':
       // add primary params
-      params = [obj.category, obj.type]
+      params = [obj.type]
       if (obj.subType) params.push(obj.subType)
       // add named params
       let namedParams = []
@@ -125,6 +127,13 @@ function getPathStep(obj) {
       for (const namedParam of namedParams) {
         params.push(namedParam)
       }
+      // step = 'pokpok'
+      // step = obj.category.toLowerCase()
+      if (obj.category === 'CONDITION') {
+        step = getParamsStep(params) + '-condition'
+      } else {
+        step = getParamsStep(params)
+      }
       break
     case 'Specification':
     case 'Composition':
@@ -132,19 +141,38 @@ function getPathStep(obj) {
       if (obj.subType) params.push(obj.subType)
       break
     default:
-      // don't give param if it's like "Systems(systems)" - indicates just one in a document
-      if ((obj.name || '').toLowerCase() !== (obj.tag || '').toLowerCase()) {
-        // params = [obj.id] //. or obj.name ?? sometimes one is nicer than the other
-        params = [obj.name || obj.id || '']
-      }
+      params = [obj.name || obj.id || '']
       break
   }
+  // const paramsStr =
+  //   params.length > 0 && params[0].length > 0
+  //     ? '(' + params.map(param => param.toLowerCase()).join(',') + ')'
+  //     : ''
+  // const step = `${obj.tag}${paramsStr}`
+  return step
+}
+
+function getParamsStep(params) {
   const paramsStr =
     params.length > 0 && params[0].length > 0
-      ? '(' + params.map(param => param.toLowerCase()).join(',') + ')'
+      ? // ? params.map(param => param.toLowerCase()).join(',')
+        params.map(getParamString).join('-')
       : ''
-  const step = `${obj.tag}${paramsStr}`
+  // const step = `${obj.tag}${paramsStr}`
+  const step = `${paramsStr}`
   return step
+}
+
+function getParamString(param) {
+  const str = param.replaceAll('_', '-').toLowerCase()
+  // const str2 = str
+  //   .split()
+  //   .map(c => {
+  //     if (c === '-') return ''
+  //     return c
+  //   })
+  //   .join('')
+  return str
 }
 
 // get path step string for the given object.
