@@ -37,13 +37,12 @@ export class Probe extends Data {
     // add nodes to db - devices and propdefs
     const nodes = Object.values(dict)
     for (let node of nodes) {
-      const res = await db.add(node)
-      const node_id = res.rows[0].node_id
-      console.log(node_id)
+      const node_id = await db.add(node)
       node.node_id = node_id
     }
-
     console.log(nodes)
+
+    db.disconnect()
 
     process.exit(0)
   }

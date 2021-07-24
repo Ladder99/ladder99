@@ -75,19 +75,31 @@ export class Db {
     await this.client.query(sql)
   }
 
-  async query(sql) {
+  async query(sql, options) {
     //. add try catch block - ignore error? or just print it?
-    return await this.client.query(sql)
+    return await this.client.query(sql, options)
   }
 
+  // add a node to nodes table - if already there, return node_id of existing record.
+  // uses node.path to determine uniqueness and look up record.
+  // assumes nodes table has a unique index on that json prop.
   async add(node) {
-    // eg '{"email": "thom22@gmail.com", "country": "US"}'
-    const values = `'${JSON.stringify(node)}'`
-    const sql = `INSERT INTO nodes (props) VALUES (${values}) RETURNING node_id;`
-    console.log(sql)
-    const res = await this.query(sql)
-    // console.log(res)
-    return res
+    try {
+      const values = `'${JSON.stringify(node)}'`
+      const sql = `INSERT INTO nodes (props) VALUES (${values}) RETURNING node_id;`
+      console.log(sql)
+      const res = await this.query(sql)
+      const { node_id } = res.rows[0]
+      return node_id
+    } catch (e) {
+      console.log(e)
+      const sql = `SELECT node_id FROM nodes WHERE props->>'path' = $1::text;`
+      console.log(sql)
+      const res = await this.query(sql, [node.path])
+      console.log(res)
+      const { node_id } = res.rows[0]
+      return node_id
+    }
   }
 
   // //. read nodes and edges into graph structure
