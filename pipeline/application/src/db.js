@@ -89,6 +89,7 @@ export class Db {
       const sql = `INSERT INTO nodes (props) VALUES (${values}) RETURNING node_id;`
       console.log(sql)
       const res = await this.query(sql)
+      // @ts-ignore
       const { node_id } = res.rows[0]
       return node_id
     } catch (e) {
@@ -98,7 +99,7 @@ export class Db {
       const sql = `SELECT node_id FROM nodes WHERE props->>'path' = $1::text;`
       console.log(sql, node.path)
       const res = await this.query(sql, [node.path])
-      // console.log(res)
+      // @ts-ignore
       const { node_id } = res.rows[0]
       return node_id
     }

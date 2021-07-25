@@ -18,23 +18,27 @@ console.log()
 const json = getJson('examples/ccs-pa/probe.xml')
 // const json = getJson('examples/mazak/probe5717.xml')
 
-// const objs = tree.getProbeObjects(json)
-// console.log(objs)
-// console.log(objs.map(obj => `${obj.signature}: ${obj.id}`).join('\n'))
+const objs = tree.getObjects(json)
+console.log(objs)
+console.log(objs.map(obj => `${obj.id}`).join('\n'))
 // process.exit(0)
 
 // const yaml = common.importYaml('./src/canonical.yaml')
 // console.log(yaml)
 
-const dict = tree.getProbeDict(json)
-// console.log(dict)
+const nodes = tree.getNodes(objs)
 
-const nodes = Object.values(dict)
-console.log(nodes)
-console.log(nodes.map(node => node.path))
+// const dict = tree.getProbeDict(json)
+// console.log(dict)
+const propdefs = tree.getPropertyDefs(nodes)
+console.log(propdefs)
+
+// const nodes = Object.values(dict)
+// console.log(nodes)
+// console.log(nodes.map(node => node.path))
 
 // show a propdef
-console.log(dict.message)
+// console.log(dict.message)
 
 //. add devices and propdefs to db
 

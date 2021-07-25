@@ -34,16 +34,19 @@ export class Probe extends Data {
 
     const dict = tree.getProbeDict(this.json)
 
+    const index = {}
+
     // add nodes to db - devices and propdefs
     const nodes = Object.values(dict)
     for (let node of nodes) {
       const node_id = await db.add(node)
       node.node_id = node_id
+      index[node_id] = node
     }
     console.log(nodes)
 
-    db.disconnect()
-
-    process.exit(0)
+    // db.disconnect()
+    // process.exit(0)
+    return index
   }
 }

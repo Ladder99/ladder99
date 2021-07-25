@@ -1,7 +1,7 @@
 import * as libapp from './libapp.js'
 
 // get flat list of objects from given json tree
-function getProbeObjects(json) {
+export function getObjects(json) {
   const objs = []
   recurse(json, objs)
   return objs
@@ -74,7 +74,7 @@ function recurse(el, objs, tag = '', parents = []) {
   }
 }
 
-//
+//----------------------------------------------------------
 
 // ignore these element types - don't add much info to the path
 const ignoreTags = getSet(
@@ -174,12 +174,15 @@ function getParamString(param) {
   return str
 }
 
+//------------------------------------------------------------------------
+
 // transform objs to db node structure
-function getProbeNodes(json) {
-  const objs = getProbeObjects(json)
+export function getNodes(objs) {
+  // const objs = getProbeObjects(json)
   const nodes = objs.map(obj => {
     const node = { ...obj }
-    node.type = obj.tag === 'DataItem' ? 'PropertyDef' : obj.tag
+    // node.type = obj.tag === 'DataItem' ? 'PropertyDef' : obj.tag
+    node.type = obj.tag
     node.path = obj.steps && obj.steps.filter(step => !!step).join('/')
     delete node.category
     delete node.tag
@@ -199,23 +202,28 @@ function getProbeNodes(json) {
 
 // process.exit(0)
 
-export function getProbeDict(json) {
-  const nodes = getProbeNodes(json)
+//------------------------------------------------------------------------
+
+// export function getPropertyDefs(json) {
+export function getPropertyDefs(nodes) {
+  // const nodes = getProbeNodes(json)
   // separate devices and propdefs
   // const devices = {}
   // const propdefs = {}
   const dict = {}
+  // const propdefs = []
   for (const node of nodes) {
-    if (node.type === 'Device') {
-      // devices.push(node)
-      // delete node.type
-      dict[node.id] = node
-    } else {
+    // if (node.type === 'Device') {
+    // devices.push(node)
+    // delete node.type
+    // dict[node.id] = node
+    // } else {
+    if (node.type === 'DataItem') {
       // propdefs.push(node)
       const propdef = { ...node }
+      propdef.type = 'PropertyDef'
       //. leave these in the propdef bag?
-      // delete propdef.id
-      // delete propdef.type
+      delete propdef.id
       delete propdef.discrete
       delete propdef.unit
       delete propdef.nativeUnits
@@ -223,6 +231,7 @@ export function getProbeDict(json) {
       delete propdef.representation
       delete propdef.compositionId
       dict[node.path] = propdef
+      // propdefs.push(propdef)
     }
   }
   // console.log(Object.values(devices))
@@ -233,7 +242,9 @@ export function getProbeDict(json) {
   //     .join('\n')
   // )
   // return { devices, propdefs }
-  return dict
+  // return dict
+  const propdefs = Object.values(dict)
+  return propdefs
 }
 
 // // get path step string for the given object.
