@@ -16,11 +16,11 @@ console.log()
 //------------------------------------------------------------------------
 
 // load and parse probe xml
-const folder = 'examples/demo'
+// const folder = 'examples/demo'
 // const folder = 'examples/vmc'
-// const folder = 'examples/ccs-pa'
+const folder = 'examples/ccs-pa'
 // const folder = 'examples/mazak'
-const json = getJson(`${folder}/devices.xml`)
+const json = getJson(`${folder}/probe.xml`)
 
 // get objects (devices, all dataitems)
 const objs = tree.getObjects(json)
