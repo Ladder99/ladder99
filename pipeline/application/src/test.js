@@ -47,7 +47,7 @@ for (let obs of observations) {
   if (node) {
     const { device_id, property_id } = node
     console.log(
-      `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}: ${obs.value}`
+      `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}, value ${obs.value}`
     )
   }
 }
