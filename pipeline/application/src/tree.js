@@ -231,6 +231,7 @@ export function getNodes(objs) {
       node.type = 'PropertyDef'
       //. leave these in the node bag?
       delete node.id
+      delete node.device
       delete node.discrete
       delete node.unit
       delete node.nativeUnits
