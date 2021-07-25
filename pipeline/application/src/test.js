@@ -18,8 +18,8 @@ console.log()
 const json = getJson('examples/ccs-pa/probe.xml')
 // const json = getJson('examples/mazak/probe5717.xml')
 
-const objs = tree.getObjects(json)
-console.log(objs[1]) // {
+// const objs = tree.getObjects(json)
+// console.log(objs[1]) // {
 //   tag: 'DataItem',
 //   id: 'pa1-connection',
 //   category: 'EVENT',
@@ -27,24 +27,28 @@ console.log(objs[1]) // {
 //   steps: [ '', 'availability' ]
 // }
 
-//. these will get added to dict of id -> path, yes? or to node?
-const nodes = tree.getNodes(objs)
-console.log(nodes[1]) // { id: 'pa1-connection', type: 'DataItem', path: 'availability' }
-const d = {}
-nodes.forEach(node => (d[node.id] = node.path))
-// console.log(d)
+const foos = tree.getFoos(json)
+console.log(foos[1]) // { id: 'pa1-connection', type: 'DataItem', path: 'availability' }
+const dataItemIdToNodeId = {}
+
+// const devices = tree.getDevices(nodes)
 
 //. these will get added to db nodes table, and node_id added to them
 //. also keep dict of path -> node_id
-const propdefs = tree.getPropertyDefs(nodes)
-propdefs.forEach((propdef, i) => (propdef.node_id = i + 1))
-console.log(propdefs[0]) // { type: 'PropertyDef', path: 'availability' }
-const d2 = {}
-propdefs.forEach(propdef => (d2[propdef.path] = propdef.node_id))
-// console.log(d2)
+// const propdefs = tree.getPropertyDefs(nodes)
+// const { devices, propdefs } = tree.getNodes(foos)
+const nodes = tree.getNodes(foos)
 
-nodes.forEach(node => (d[node.id] = d2[node.path]))
-console.log(d)
+nodes.forEach((node, i) => (node.node_id = i + 1)) // emulate db add/get
+console.log(nodes[0]) // { type: 'PropertyDef', path: 'availability' }
+const propdefPathToNodeId = {}
+nodes.forEach(node => (propdefPathToNodeId[node.path] = node.node_id))
+
+nodes.forEach(
+  node => (dataItemIdToNodeId[node.id] = propdefPathToNodeId[node.path])
+)
+console.log(dataItemIdToNodeId) // maps current/sample id to propdef node_id
+
 process.exit(0)
 
 // // load and parse current xml

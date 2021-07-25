@@ -177,20 +177,20 @@ function getParamString(param) {
 //------------------------------------------------------------------------
 
 // transform objs to db node structure
-export function getNodes(objs) {
-  // const objs = getProbeObjects(json)
-  const nodes = objs.map(obj => {
-    const node = { ...obj }
-    // node.type = obj.tag === 'DataItem' ? 'PropertyDef' : obj.tag
-    node.type = obj.tag
-    node.path = obj.steps && obj.steps.filter(step => !!step).join('/')
-    delete node.category
-    delete node.tag
-    delete node.steps
-    delete node.subType
-    return node
+export function getFoos(json) {
+  const objs = getObjects(json)
+  const foos = objs.map(obj => {
+    const foo = { ...obj }
+    // foo.type = obj.tag === 'DataItem' ? 'PropertyDef' : obj.tag
+    foo.type = obj.tag
+    foo.path = obj.steps && obj.steps.filter(step => !!step).join('/')
+    delete foo.category
+    delete foo.tag
+    delete foo.steps
+    delete foo.subType
+    return foo
   })
-  return nodes
+  return foos
 }
 // console.log(nodes)
 
@@ -204,23 +204,42 @@ export function getNodes(objs) {
 
 //------------------------------------------------------------------------
 
-// export function getPropertyDefs(json) {
-export function getPropertyDefs(nodes) {
-  // const nodes = getProbeNodes(json)
-  // separate devices and propdefs
-  // const devices = {}
-  // const propdefs = {}
-  const dict = {}
+// export function getDevices(nodes) {
+//   const devices = []
+//   for (const node of nodes) {
+//     if (node.type === 'Device') {
+//       devices.push(node)
+//       delete node.type
+//     }
+//   }
+//   return devices
+// }
+
+//------------------------------------------------------------------------
+
+function getUniqueByPath(foos) {
+  const d = {}
+  foos.forEach(foo => (d[foo.path] = foo))
+  return Object.values(d)
+}
+
+export function getNodes(foos) {
+  foos = getUniqueByPath(foos)
+  // const dict = {}
+  // const devices = []
   // const propdefs = []
-  for (const node of nodes) {
-    // if (node.type === 'Device') {
-    // devices.push(node)
-    // delete node.type
-    // dict[node.id] = node
-    // } else {
-    if (node.type === 'DataItem') {
-      // propdefs.push(node)
-      const propdef = { ...node }
+  const nodes = []
+  for (const foo of foos) {
+    if (foo.type === 'Device') {
+      const device = { ...foo }
+      // devices.push(foo)
+      nodes.push(foo)
+      // delete device.type
+      // dict[foo.path] = foo
+    } else {
+      // if (foo.type === 'DataItem') {
+      // propdefs.push(foo)
+      const propdef = { ...foo }
       propdef.type = 'PropertyDef'
       //. leave these in the propdef bag?
       delete propdef.id
@@ -230,8 +249,9 @@ export function getPropertyDefs(nodes) {
       delete propdef.coordinateSystem
       delete propdef.representation
       delete propdef.compositionId
-      dict[node.path] = propdef
+      // dict[foo.path] = propdef
       // propdefs.push(propdef)
+      nodes.push(foo)
     }
   }
   // console.log(Object.values(devices))
@@ -243,8 +263,9 @@ export function getPropertyDefs(nodes) {
   // )
   // return { devices, propdefs }
   // return dict
-  const propdefs = Object.values(dict)
-  return propdefs
+  // const propdefs = Object.values(dict)
+  // return propdefs
+  return nodes
 }
 
 // // get path step string for the given object.
