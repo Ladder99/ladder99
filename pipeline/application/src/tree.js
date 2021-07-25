@@ -254,8 +254,8 @@ export function getIndexes(nodes, objs) {
   objs.forEach(obj => {
     if (obj.type === 'DataItem') {
       indexes.objById[obj.id] = obj
-      obj.device_id = indexes.nodeByPath[obj.device]
-      obj.property_id = indexes.nodeByPath[obj.path]
+      obj.device_id = indexes.nodeByPath[obj.device].node_id
+      obj.property_id = indexes.nodeByPath[obj.path].node_id
     }
   })
   return indexes

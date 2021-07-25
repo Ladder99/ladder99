@@ -13,14 +13,14 @@ console.log('test.js')
 console.log('------------------------------------------------')
 console.log()
 
+//------------------------------------------------------------------------
+
 // load and parse probe xml
 const folder = 'examples/demo'
 // const folder = 'examples/vmc'
 // const folder = 'examples/ccs-pa'
 // const folder = 'examples/mazak'
 const json = getJson(`${folder}/devices.xml`)
-
-//------------------------------------------------------------------------
 
 // get objects (devices, all dataitems)
 const objs = tree.getObjects(json)
@@ -34,17 +34,26 @@ nodes.forEach((node, i) => (node.node_id = i + 1))
 const indexes = tree.getIndexes(nodes, objs)
 console.log(indexes)
 
+//------------------------------------------------------------------------
+
 // load and parse current xml
 const json2 = getJson(`${folder}/current.xml`)
-// console.log(json2)
 
-const objs2 = treeObservations.getObjects(json2)
-console.log(objs2)
+const observations = treeObservations.getObjects(json2)
+// console.log(observations)
 
-// // print an observation
-// console.log(objs2[0])
+for (let obs of observations) {
+  const node = indexes.objById[obs.dataItemId]
+  if (node) {
+    // console.log(obj.dataItemId, node)
+    const { device_id, property_id } = node
+    console.log(
+      `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}: ${obs.value}`
+    )
+  }
+}
 
-//
+//------------------------------------------------------------------------
 
 // save json to a file
 // const nodesFile = 'foo.json'
