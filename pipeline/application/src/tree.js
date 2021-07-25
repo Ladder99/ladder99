@@ -219,32 +219,35 @@ export function getObjects(json) {
 //------------------------------------------------------------------------
 
 export function getNodes(objs) {
-  objs = getUniqueByPath(objs)
-  const nodes = []
+  // objs = getUniqueByPath(objs)
+  let nodes = []
   for (const obj of objs) {
-    if (obj.type === 'Device') {
-      const device = { ...obj }
-      nodes.push(device)
+    const node = { ...obj }
+    if (node.type === 'Device') {
+      // const device = { ...obj }
+      // nodes.push(node)
     } else {
-      const propdef = { ...obj }
-      propdef.type = 'PropertyDef'
-      //. leave these in the propdef bag?
-      delete propdef.id
-      delete propdef.discrete
-      delete propdef.unit
-      delete propdef.nativeUnits
-      delete propdef.coordinateSystem
-      delete propdef.representation
-      delete propdef.compositionId
-      nodes.push(propdef)
+      // const propdef = { ...obj }
+      node.type = 'PropertyDef'
+      //. leave these in the node bag?
+      delete node.id
+      delete node.discrete
+      delete node.unit
+      delete node.nativeUnits
+      delete node.coordinateSystem
+      delete node.representation
+      delete node.compositionId
+      // nodes.push(propdef)
     }
+    nodes.push(node)
   }
+  nodes = getUniqueByPath(nodes)
   return nodes
 }
 
-function getUniqueByPath(objs) {
+function getUniqueByPath(nodes) {
   const d = {}
-  objs.forEach(obj => (d[obj.path] = obj))
+  nodes.forEach(node => (d[node.path] = node))
   return Object.values(d)
 }
 
