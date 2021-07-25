@@ -4,6 +4,8 @@ import { Data } from './data.js'
 import * as libapp from './libapp.js'
 
 export class Sample extends Data {
+  type = 'sample' // used by read method
+
   async write(db) {}
   //   // get sequence info from header
   //   // const header = json.MTConnectStreams.Header

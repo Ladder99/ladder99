@@ -5,12 +5,14 @@ import * as libapp from './libapp.js'
 import * as treeObservations from './treeObservations.js'
 
 export class Current extends Data {
+  type = 'current' // used by read method
+
   // see base class Data for read method
   // reads json into this.json, this.header etc
 
   async write(db, indexes) {
     // get sequence info from header
-    const { firstSequence, nextSequence, lastSequence } = this.header
+    // const { firstSequence, nextSequence, lastSequence } = this.header
 
     const observations = treeObservations.getElements(this.json)
 
@@ -25,7 +27,7 @@ export class Current extends Data {
           node_id: device_id,
           property_id,
           time: obs.timestamp,
-          value: obs.value,
+          value: JSON.stringify(obs.value), //. okay with numbers also?
         }
         console.log(record)
         await db.addHistory(record) // write db

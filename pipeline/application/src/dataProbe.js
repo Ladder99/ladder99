@@ -8,7 +8,7 @@ import { Data } from './data.js'
 import * as tree from './tree.js'
 
 export class Probe extends Data {
-  // type = 'probe'
+  type = 'probe' // used by read method
 
   // see base class Data for read method
   // reads json into this.json, this.header etc
@@ -24,5 +24,7 @@ export class Probe extends Data {
     }
 
     this.indexes = tree.getIndexes(nodes, objs) // get { objById }
+
+    console.log(this.indexes)
   }
 }
