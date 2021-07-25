@@ -105,6 +105,26 @@ export class Db {
     }
   }
 
+  async addHistory(record) {
+    try {
+      // const values = `'${JSON.stringify(node)}'`
+      const sql = `INSERT INTO history (node_id, property_id, time, value) 
+VALUES ($1, $2, $3, $4::jsonb);`
+      console.log(sql)
+      const res = await this.query(sql, [
+        record.node_id,
+        record.property_id,
+        record.time,
+        record.value,
+      ])
+      return res
+    } catch (e) {
+      // eg error: duplicate key value violates unique constraint "nodes_path"
+      // detail: "Key ((props ->> 'path'::text))=(Device(e05363af-95d1-4354-b749-8fbb09d3499e)) already exists.",
+      console.log(e)
+    }
+  }
+
   // //. read nodes and edges into graph structure
   // async getGraph(Graph) {
   //   const graph = new Graph()

@@ -8,7 +8,7 @@ import { Data } from './data.js'
 import * as tree from './tree.js'
 
 export class Probe extends Data {
-  type = 'probe'
+  // type = 'probe'
 
   // see base class Data for read method
   // reads json into this.json, this.header etc
@@ -20,12 +20,9 @@ export class Probe extends Data {
 
     // add/get nodes to db - devices and propdefs
     for (let node of nodes) {
-      node.node_id = await db.add(node)
+      node.node_id = await db.add(node) // write db
     }
 
     this.indexes = tree.getIndexes(nodes, objs) // get { objById }
-
-    // db.disconnect()
-    // process.exit(0)
   }
 }
