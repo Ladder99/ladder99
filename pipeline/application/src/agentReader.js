@@ -44,13 +44,12 @@ export class AgentReader {
       await probe.write(this.db) // write/sync dataitems to db, get probe.indexes
       this.instanceId = probe.instanceId
 
-      // current - get last known values of all dataitems, write to db
+      // current - get last known values of all dataitems
       current: do {
-        // const current = new Observations() ?
         const current = new Current()
-        await current.read(this.endpoint)
+        await current.read(this.endpoint) // get this.sequence numbers
         if (instanceIdChanged(current, probe)) break probe
-        await current.write(this.db, probe.indexes)
+        // await current.write(this.db, probe.indexes) // don't need to write current values
 
         // sample - get sequence of dataitem values, write to db
         sample: do {

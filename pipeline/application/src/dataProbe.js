@@ -1,11 +1,9 @@
 // Probe
 // called from agentReader
 
-// import fs from 'fs'
 import { Data } from './data.js'
-// import { Graph } from './graph.js'
-// import * as libapp from './libapp.js'
 import * as tree from './tree.js'
+// import * as libapp from './libapp.js'
 
 export class Probe extends Data {
   type = 'probe' // used by read method
@@ -23,8 +21,9 @@ export class Probe extends Data {
       node.node_id = await db.add(node) // write db
     }
 
-    this.indexes = tree.getIndexes(nodes, objs) // get { objById }
+    // get { objById }
+    this.indexes = tree.getIndexes(nodes, objs)
 
-    console.log(this.indexes)
+    console.log('indexes', this.indexes)
   }
 }
