@@ -1,10 +1,10 @@
 import * as libapp from './libapp.js'
 
-// get flat list of objects from given json tree
-export function getObjects(json) {
-  const objs = []
-  recurse(json, objs)
-  return objs
+// get flat list of elements from given json tree (just devices and dataitems)
+export function getElements(json) {
+  const elements = []
+  recurse(json, elements)
+  return elements
 }
 
 const ignore = () => {}
@@ -177,20 +177,20 @@ function getParamString(param) {
 //------------------------------------------------------------------------
 
 // transform objs to db node structure
-export function getFoos(json) {
-  const objs = getObjects(json)
-  const foos = objs.map(obj => {
-    const foo = { ...obj }
-    // foo.type = obj.tag === 'DataItem' ? 'PropertyDef' : obj.tag
-    foo.type = obj.tag
-    foo.path = obj.steps && obj.steps.filter(step => !!step).join('/')
-    delete foo.category
-    delete foo.tag
-    delete foo.steps
-    delete foo.subType
-    return foo
+export function getObjects(json) {
+  const elements = getElements(json)
+  const objs = elements.map(element => {
+    const obj = { ...element }
+    // obj.type = element.tag === 'DataItem' ? 'PropertyDef' : element.tag
+    obj.type = element.tag
+    obj.path = element.steps && element.steps.filter(step => !!step).join('/')
+    delete obj.category
+    delete obj.tag
+    delete obj.steps
+    delete obj.subType
+    return obj
   })
-  return foos
+  return objs
 }
 // console.log(nodes)
 
@@ -217,29 +217,15 @@ export function getFoos(json) {
 
 //------------------------------------------------------------------------
 
-function getUniqueByPath(foos) {
-  const d = {}
-  foos.forEach(foo => (d[foo.path] = foo))
-  return Object.values(d)
-}
-
-export function getNodes(foos) {
-  foos = getUniqueByPath(foos)
-  // const dict = {}
-  // const devices = []
-  // const propdefs = []
+export function getNodes(objs) {
+  objs = getUniqueByPath(objs)
   const nodes = []
-  for (const foo of foos) {
-    if (foo.type === 'Device') {
-      const device = { ...foo }
-      // devices.push(foo)
-      nodes.push(foo)
-      // delete device.type
-      // dict[foo.path] = foo
+  for (const obj of objs) {
+    if (obj.type === 'Device') {
+      const device = { ...obj }
+      nodes.push(device)
     } else {
-      // if (foo.type === 'DataItem') {
-      // propdefs.push(foo)
-      const propdef = { ...foo }
+      const propdef = { ...obj }
       propdef.type = 'PropertyDef'
       //. leave these in the propdef bag?
       delete propdef.id
@@ -249,23 +235,16 @@ export function getNodes(foos) {
       delete propdef.coordinateSystem
       delete propdef.representation
       delete propdef.compositionId
-      // dict[foo.path] = propdef
-      // propdefs.push(propdef)
-      nodes.push(foo)
+      nodes.push(obj)
     }
   }
-  // console.log(Object.values(devices))
-  // console.log(
-  //   Object.values(propdefs)
-  //     .map(propdef => propdef.path)
-  //     .sort()
-  //     .join('\n')
-  // )
-  // return { devices, propdefs }
-  // return dict
-  // const propdefs = Object.values(dict)
-  // return propdefs
   return nodes
+}
+
+function getUniqueByPath(objs) {
+  const d = {}
+  objs.forEach(obj => (d[obj.path] = obj))
+  return Object.values(d)
 }
 
 // // get path step string for the given object.
