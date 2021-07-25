@@ -55,6 +55,9 @@ function recurse(el, objs, tag = '', parents = []) {
       //   .map(getPathStep)
       //   .filter(step => !!step)
       //   .join('/')
+      // save device path
+      obj.device = getPathStep(obj.parents[3])
+      // save steps for rest of path to array
       obj.steps = [...obj.parents.slice(4), obj].map(getPathStep)
     } else {
       obj.steps = [obj].map(getPathStep)
