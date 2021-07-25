@@ -10,14 +10,15 @@ import * as libapp from './libapp.js'
 export class AgentReader {
   // db is a Db instance
   // endpoint is an Endpoint instance
-  // params includes { }
+  // params includes { fetchInterval, fetchCount }
+  // called by application.js
   constructor({ db, endpoint, params }) {
     this.db = db
     this.endpoint = endpoint
     this.params = params
-    //
+
     this.instanceId = null
-    //
+
     this.from = null
     //. these will be dynamic - optimize on the fly
     this.interval = params.fetchInterval
@@ -50,6 +51,7 @@ export class AgentReader {
         await current.read(this.endpoint) // get this.sequence numbers
         if (instanceIdChanged(current, probe)) break probe
         // await current.write(this.db, probe.indexes) // don't need to write current values
+        this.from = current.sequence.next
 
         // sample - get sequence of dataitem values, write to db
         sample: do {
@@ -58,6 +60,7 @@ export class AgentReader {
           if (instanceIdChanged(sample, probe)) break probe
           await sample.write(this.db, probe.indexes)
           console.log('.')
+          this.from = sample.sequence.next
           await libapp.sleep(this.interval)
         } while (true)
       } while (true)

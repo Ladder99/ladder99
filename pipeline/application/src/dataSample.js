@@ -1,16 +1,16 @@
 // Sample
+// called from agentReader
 
 import { Data } from './data.js'
-import * as libapp from './libapp.js'
 import * as treeObservations from './treeObservations.js'
+// import * as libapp from './libapp.js'
 
 export class Sample extends Data {
   type = 'sample' // used by read method
 
-  async write(db, indexes) {
-    // get sequence info from header
-    // const { firstSequence, nextSequence, lastSequence } = this.header
+  // for read, see base class Data's read method
 
+  async write(db, indexes) {
     const observations = treeObservations.getElements(this.json)
 
     for (let obs of observations) {

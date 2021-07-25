@@ -21,7 +21,7 @@ export class Probe extends Data {
       node.node_id = await db.add(node) // write db
     }
 
-    // get { objById }
+    // get indexes, incl objById
     this.indexes = tree.getIndexes(nodes, objs)
 
     console.log('indexes', this.indexes)
