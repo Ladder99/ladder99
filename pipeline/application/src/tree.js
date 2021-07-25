@@ -128,8 +128,6 @@ function getPathStep(obj) {
       for (const namedParam of namedParams) {
         params.push(namedParam)
       }
-      // step = 'pokpok'
-      // step = obj.category.toLowerCase()
       if (obj.category === 'CONDITION') {
         step = getParamsStep(params) + '-condition'
       } else {
