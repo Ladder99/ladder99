@@ -41,7 +41,7 @@ export class AgentReader {
     probe: do {
       const probe = new Probe()
       await probe.read(this.endpoint) // read xml into probe.json
-      const index = await probe.write(this.db) // write/sync dataitems to db
+      await probe.write(this.db) // write/sync dataitems to db, write to probe.indexes
       this.instanceId = probe.instanceId
 
       // current - get last known values of all dataitems, write to db

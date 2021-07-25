@@ -22,18 +22,12 @@ const json = getJson('examples/demo/devices.xml')
 
 // get objects (devices, all dataitems)
 const objs = tree.getObjects(json)
-// console.log(objs)
-// exit()
 
 // get nodes (devices, unique propdefs)
 const nodes = tree.getNodes(objs)
-// console.log(nodes)
-// exit()
 
-// simulate db add/get - assign node_id
+// simulate db add/get - assign node_id to each node
 nodes.forEach((node, i) => (node.node_id = i + 1))
-// console.log(nodes)
-// exit()
 
 // map from propdef.path to node_id
 const pathToNodeId = {}
@@ -52,9 +46,8 @@ objs.forEach(obj => {
     obj.property_id = pathToNodeId[obj.path]
   }
 })
-console.log({ objs })
-
-process.exit(0)
+// console.log({ objs })
+// process.exit(0)
 
 // // load and parse current xml
 // const json2 = getJson('examples/mazak/current5717.xml')

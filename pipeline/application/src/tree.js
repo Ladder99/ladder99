@@ -1,3 +1,5 @@
+//. move this into dataProbe.js
+
 import * as libapp from './libapp.js'
 
 // get flat list of elements from given json tree (just devices and dataitems)
