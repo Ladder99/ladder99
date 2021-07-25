@@ -1,19 +1,29 @@
-//. put this in a different file? dataObservations.js?
+import * as libapp from './libapp.js'
 
 // get flat list of objects from given json tree
-export function getObservationObjects(json) {
+export function getObjects(json) {
   const objs = []
-  recurseObservations(json, objs)
+  recurse(json, objs)
   return objs
 }
 
-const appendTags2 = getSet('Angle')
-const skipTags2 = getSet('')
+const appendTags2 = libapp.getSet('Angle')
+const skipTags2 = libapp.getSet('')
+
+//. copypasted from treejs - bad
+const ignore = () => {}
+const elementHandlers = {
+  // handle attributes, eg { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
+  _attributes: (obj, value) =>
+    Object.keys(value).forEach(key => (obj[key] = value[key])),
+  // handle text/value, eg value = 'Mill w/Smooth-G'
+  _text: (obj, value) => (obj.value = value),
+}
 
 // traverse a tree of elements, adding them to an array
 //. refactor, add comments
 //. handle parents differently - do in separate pass?
-function recurseObservations(el, objs, tag = '', parents = []) {
+function recurse(el, objs, tag = '', parents = []) {
   // el can be an object, an array, or an atomic value
 
   // handle object with keyvalue pairs
@@ -34,7 +44,7 @@ function recurseObservations(el, objs, tag = '', parents = []) {
       const handler = elementHandlers[key] || ignore // get keyvalue handler
       handler(obj, value) // adds value data to obj
       const newparents = [...parents, obj] // push obj onto parents path list
-      recurseObservations(value, objs, key, newparents) // recurse
+      recurse(value, objs, key, newparents) // recurse
     }
 
     // // get device and signature for dataitems
@@ -55,7 +65,7 @@ function recurseObservations(el, objs, tag = '', parents = []) {
   } else if (Array.isArray(el)) {
     // handle array of subelements
     for (const subel of el) {
-      recurseObservations(subel, objs, tag, parents) // recurse
+      recurse(subel, objs, tag, parents) // recurse
     }
   } else {
     // ignore atomic values

@@ -5,6 +5,7 @@
 import fs from 'fs' // node lib - filesystem
 import convert from 'xml-js' // https://github.com/nashwaan/xml-js
 import * as tree from './tree.js'
+import * as treeObservations from './treeObservations.js'
 import * as common from './common.js'
 
 console.log()
@@ -13,10 +14,11 @@ console.log('------------------------------------------------')
 console.log()
 
 // load and parse probe xml
-const json = getJson('examples/demo/devices.xml')
-// const json = getJson('examples/vmc/probe.xml')
-// const json = getJson('examples/ccs-pa/probe.xml')
-// const json = getJson('examples/mazak/probe5717.xml')
+const folder = 'examples/demo'
+// const folder = 'examples/vmc'
+// const folder = 'examples/ccs-pa'
+// const folder = 'examples/mazak'
+const json = getJson(`${folder}/devices.xml`)
 
 //------------------------------------------------------------------------
 
@@ -29,29 +31,15 @@ const nodes = tree.getNodes(objs)
 // simulate db add/get - assign node_id to each node
 nodes.forEach((node, i) => (node.node_id = i + 1))
 
-// map from propdef.path to node_id
-const pathToNodeId = {}
-nodes.forEach(node => (pathToNodeId[node.path] = node.node_id))
+const indexes = tree.getIndexes(nodes, objs)
+console.log(indexes)
 
-// map from current/sample dataitem.id to propdef.node_id
-//.
-const dataItemIdToNodeId = {}
-objs.forEach(obj => (dataItemIdToNodeId[obj.id] = pathToNodeId[obj.path]))
-console.log({ dataItemIdToNodeId })
+// load and parse current xml
+const json2 = getJson(`${folder}/current.xml`)
+// console.log(json2)
 
-// assign device_id and property_id to dataitems
-objs.forEach(obj => {
-  if (obj.type === 'DataItem') {
-    obj.device_id = pathToNodeId[obj.device]
-    obj.property_id = pathToNodeId[obj.path]
-  }
-})
-// console.log({ objs })
-// process.exit(0)
-
-// // load and parse current xml
-// const json2 = getJson('examples/mazak/current5717.xml')
-// const objs2 = tree.getObservationObjects(json2)
+const objs2 = treeObservations.getObjects(json2)
+console.log(objs2)
 
 // // print an observation
 // console.log(objs2[0])

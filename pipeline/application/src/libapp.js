@@ -22,3 +22,7 @@ export function shallowCompare(obj1, obj2) {
     )
   )
 }
+
+export function getSet(str) {
+  return new Set(str.split(','))
+}

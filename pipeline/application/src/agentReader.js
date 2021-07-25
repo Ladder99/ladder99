@@ -46,6 +46,7 @@ export class AgentReader {
 
       // current - get last known values of all dataitems, write to db
       current: do {
+        // const current = new Observations() ?
         const current = new Current()
         await current.read(this.endpoint)
         if (instanceIdChanged(current, probe)) break probe
