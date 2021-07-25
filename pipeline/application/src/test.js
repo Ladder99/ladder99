@@ -22,8 +22,6 @@ const json = getJson('examples/ccs-pa/probe.xml')
 
 // get objects (devices, all dataitems)
 const objs = tree.getObjects(json)
-console.log(objs)
-exit()
 
 // get nodes (devices, unique propdefs)
 const nodes = tree.getNodes(objs)
@@ -39,6 +37,15 @@ nodes.forEach(node => (pathToNodeId[node.path] = node.node_id))
 const dataItemIdToNodeId = {}
 nodes.forEach(node => (dataItemIdToNodeId[node.id] = pathToNodeId[node.path]))
 console.log(dataItemIdToNodeId)
+
+// assign device_id and property_id to dataitems
+objs.forEach(obj => {
+  if (obj.type === 'DataItem') {
+    obj.device_id = pathToNodeId[obj.device]
+    obj.property_id = pathToNodeId[obj.path]
+  }
+})
+console.log(objs)
 
 process.exit(0)
 

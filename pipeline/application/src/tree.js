@@ -238,7 +238,7 @@ export function getNodes(objs) {
       delete propdef.coordinateSystem
       delete propdef.representation
       delete propdef.compositionId
-      nodes.push(obj)
+      nodes.push(propdef)
     }
   }
   return nodes
