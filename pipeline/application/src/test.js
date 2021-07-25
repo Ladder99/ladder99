@@ -39,13 +39,12 @@ console.log(indexes)
 // load and parse current xml
 const json2 = getJson(`${folder}/current.xml`)
 
-const observations = treeObservations.getObjects(json2)
+const observations = treeObservations.getElements(json2)
 // console.log(observations)
 
 for (let obs of observations) {
   const node = indexes.objById[obs.dataItemId]
   if (node) {
-    // console.log(obj.dataItemId, node)
     const { device_id, property_id } = node
     console.log(
       `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}: ${obs.value}`
