@@ -35,10 +35,5 @@ export class Current extends Data {
     }
 
     // this.from = nextSequence
-    // const dataitems = data.getCurrentData()
-    // const dataItems = getDataItems(data)
-    // await db.writeDataItems(dataItems)
-    // await db.writeGraphValues(graph)
-    // console.log(dataitems)
   }
 }
