@@ -1,12 +1,16 @@
-// Sample
-// read sample endpoint data and write to db - called from agentReader
+// Observations
+// read current/sample endpoint data and write to db - called from agentReader
 
 import { Data } from './data.js'
 import * as treeObservations from './treeObservations.js'
-// import * as libapp from './libapp.js'
 
-export class Sample extends Data {
-  type = 'sample' // used by read method
+export class Observations extends Data {
+  // type = 'sample' // used by read method
+
+  constructor(type) {
+    super()
+    this.type = type // used by read method
+  }
 
   // for read method, see base class Data
 
@@ -14,6 +18,7 @@ export class Sample extends Data {
     // get flat list of observations from xml/json
     const observations = treeObservations.getElements(this.json)
 
+    //. build up an array of history records to write, pass to addHistory - for speed
     for (let obs of observations) {
       const node = indexes.objById[obs.dataItemId]
       if (node) {

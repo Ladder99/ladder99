@@ -3,8 +3,9 @@
 // a setup can have multiple agents running that it needs to pull data from.
 
 import { Probe } from './dataProbe.js'
-import { Current } from './dataCurrent.js'
-import { Sample } from './dataSample.js'
+// import { Current } from './dataCurrent.js'
+// import { Sample } from './dataSample.js'
+import { Observations } from './dataObservations.js'
 import * as libapp from './libapp.js'
 
 export class AgentReader {
@@ -47,7 +48,7 @@ export class AgentReader {
 
       // current - get last known values of all dataitems and write to db
       current: do {
-        const current = new Current()
+        const current = new Observations('current')
         await current.read(this.endpoint) // get xml and this.sequence numbers
         if (instanceIdChanged(current, probe)) break probe
         await current.write(this.db, probe.indexes)
@@ -55,7 +56,7 @@ export class AgentReader {
 
         // sample - get sequence of dataitem values, write to db
         sample: do {
-          const sample = new Sample()
+          const sample = new Observations('sample')
           await sample.read(this.endpoint, this.from, this.count)
           if (instanceIdChanged(sample, probe)) break probe
           await sample.write(this.db, probe.indexes)
