@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 2,
   "links": [
     {
       "asDropdown": false,
@@ -33,56 +33,91 @@
   ],
   "panels": [
     {
-      "backgroundColor": "rgba(128,128,128,0.1)",
-      "colorMaps": [
-        {
-          "$$hashKey": "object:899",
-          "color": "#CCC",
-          "text": "N/A"
-        }
-      ],
-      "crosshairColor": "#8F070C",
       "datasource": null,
-      "display": "timeline",
-      "expandFromQueryS": 0,
-      "extendLastValue": true,
+      "description": "",
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [
+            {
+              "from": "",
+              "id": 1,
+              "text": "Inactive",
+              "to": "",
+              "type": 1,
+              "value": "2"
+            },
+            {
+              "from": "",
+              "id": 2,
+              "text": "Active",
+              "to": "",
+              "type": 1,
+              "value": "3"
+            },
+            {
+              "from": "",
+              "id": 3,
+              "text": "Unavailable",
+              "to": "",
+              "type": 1,
+              "value": "1"
+            }
+          ],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(119, 119, 119)",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 2
+              },
+              {
+                "color": "green",
+                "value": 3
+              }
+            ]
+          },
+          "unit": "none"
+        },
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 11,
+        "h": 2,
+        "w": 4,
         "x": 0,
         "y": 0
       },
-      "highlightOnMouseover": true,
-      "id": 6,
-      "legendSortBy": "-ms",
-      "lineColor": "rgba(0,0,0,0.1)",
-      "metricNameColor": "#000000",
+      "id": 23,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "/^valuepos$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "value"
+      },
       "pluginVersion": "7.5.5",
-      "rangeMaps": [
-        {
-          "$$hashKey": "object:904",
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "rowHeight": 50,
-      "showLegend": true,
-      "showLegendNames": true,
-      "showLegendPercent": true,
-      "showLegendValues": true,
-      "showTimeAxis": true,
       "targets": [
         {
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value::text\nFROM history\nWHERE id='ccs-pa-001-program'\nand $__timeFilter(\"time\")\norder by time\n",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value,\n  ARRAY_POSITION(array['UNAVAILABLE','INACTIVE','ACTIVE'], value) as valuepos\nFROM history_text \nWHERE property='systems/endEffector/actuator-state'\nand $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -92,72 +127,23 @@
               }
             ]
           ],
-          "table": "execution",
+          "table": "history_float",
           "timeColumn": "\"time\"",
-          "timeColumnType": "timestamptz",
-          "where": []
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
-      "textSize": 24,
-      "textSizeTime": 12,
       "timeFrom": null,
-      "timeOptions": [
-        {
-          "name": "Years",
-          "value": "years"
-        },
-        {
-          "name": "Months",
-          "value": "months"
-        },
-        {
-          "name": "Weeks",
-          "value": "weeks"
-        },
-        {
-          "name": "Days",
-          "value": "days"
-        },
-        {
-          "name": "Hours",
-          "value": "hours"
-        },
-        {
-          "name": "Minutes",
-          "value": "minutes"
-        },
-        {
-          "name": "Seconds",
-          "value": "seconds"
-        },
-        {
-          "name": "Milliseconds",
-          "value": "milliseconds"
-        }
-      ],
-      "timePrecision": {
-        "name": "Minutes",
-        "value": "minutes"
-      },
       "timeShift": null,
-      "timeTextColor": "#d8d9da",
-      "title": "Program",
-      "type": "natel-discrete-panel",
-      "units": "short",
-      "use12HourClock": false,
-      "useTimePrecision": false,
-      "valueMaps": [
-        {
-          "$$hashKey": "object:902",
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueTextColor": "#000000",
-      "writeAllValues": false,
-      "writeLastValue": true,
-      "writeMetricNames": false
+      "title": "Actuator State",
+      "transformations": [],
+      "type": "stat"
     },
     {
       "backgroundColor": "rgba(128,128,128,0.1)",
@@ -288,7 +274,7 @@
       "backgroundColor": "rgba(128,128,128,0.1)",
       "colorMaps": [
         {
-          "$$hashKey": "object:510",
+          "$$hashKey": "object:899",
           "color": "#CCC",
           "text": "N/A"
         }
@@ -306,17 +292,17 @@
         "h": 5,
         "w": 11,
         "x": 0,
-        "y": 5
+        "y": 2
       },
       "highlightOnMouseover": true,
-      "id": 13,
+      "id": 6,
       "legendSortBy": "-ms",
       "lineColor": "rgba(0,0,0,0.1)",
       "metricNameColor": "#000000",
       "pluginVersion": "7.5.5",
       "rangeMaps": [
         {
-          "$$hashKey": "object:464",
+          "$$hashKey": "object:904",
           "from": "null",
           "text": "N/A",
           "to": "null"
@@ -334,7 +320,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value::text\nFROM history\nWHERE id='ccs-pa-001-func_mode'\nand $__timeFilter(\"time\")\norder by time\n",
+          "rawSql": "SELECT\n  time,\n  value\nFROM history_text\nWHERE property='controller/path/block'\nand $__timeFilter(\"time\")\norder by time\n",
           "refId": "A",
           "select": [
             [
@@ -393,14 +379,14 @@
       },
       "timeShift": null,
       "timeTextColor": "#d8d9da",
-      "title": "Function Mode",
+      "title": "Program",
       "type": "natel-discrete-panel",
       "units": "short",
       "use12HourClock": false,
       "useTimePrecision": false,
       "valueMaps": [
         {
-          "$$hashKey": "object:462",
+          "$$hashKey": "object:902",
           "op": "=",
           "text": "N/A",
           "value": "null"
@@ -542,7 +528,7 @@
       "backgroundColor": "rgba(128,128,128,0.1)",
       "colorMaps": [
         {
-          "$$hashKey": "object:762",
+          "$$hashKey": "object:510",
           "color": "#CCC",
           "text": "N/A"
         }
@@ -560,17 +546,17 @@
         "h": 5,
         "w": 11,
         "x": 0,
-        "y": 10
+        "y": 7
       },
       "highlightOnMouseover": true,
-      "id": 4,
+      "id": 13,
       "legendSortBy": "-ms",
       "lineColor": "rgba(0,0,0,0.1)",
       "metricNameColor": "#000000",
       "pluginVersion": "7.5.5",
       "rangeMaps": [
         {
-          "$$hashKey": "object:767",
+          "$$hashKey": "object:464",
           "from": "null",
           "text": "N/A",
           "to": "null"
@@ -588,7 +574,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text \nFROM history\nWHERE id='ccs-pa-001-state' and \n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT\n  time,\n  value::text\nFROM history\nWHERE id='ccs-pa-001-func_mode'\nand $__timeFilter(\"time\")\norder by time\n",
           "refId": "A",
           "select": [
             [
@@ -598,16 +584,10 @@
               }
             ]
           ],
-          "table": "history",
+          "table": "execution",
           "timeColumn": "\"time\"",
           "timeColumnType": "timestamptz",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
+          "where": []
         }
       ],
       "textSize": 24,
@@ -653,14 +633,14 @@
       },
       "timeShift": null,
       "timeTextColor": "#d8d9da",
-      "title": "Execution State",
+      "title": "Function Mode",
       "type": "natel-discrete-panel",
       "units": "short",
       "use12HourClock": false,
       "useTimePrecision": false,
       "valueMaps": [
         {
-          "$$hashKey": "object:765",
+          "$$hashKey": "object:462",
           "op": "=",
           "text": "N/A",
           "value": "null"
@@ -879,6 +859,139 @@
       "writeMetricNames": true
     },
     {
+      "backgroundColor": "rgba(128,128,128,0.1)",
+      "colorMaps": [
+        {
+          "$$hashKey": "object:762",
+          "color": "#CCC",
+          "text": "N/A"
+        }
+      ],
+      "crosshairColor": "#8F070C",
+      "datasource": null,
+      "display": "timeline",
+      "expandFromQueryS": 0,
+      "extendLastValue": true,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 11,
+        "x": 0,
+        "y": 12
+      },
+      "highlightOnMouseover": true,
+      "id": 4,
+      "legendSortBy": "-ms",
+      "lineColor": "rgba(0,0,0,0.1)",
+      "metricNameColor": "#000000",
+      "pluginVersion": "7.5.5",
+      "rangeMaps": [
+        {
+          "$$hashKey": "object:767",
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "rowHeight": 50,
+      "showLegend": true,
+      "showLegendNames": true,
+      "showLegendPercent": true,
+      "showLegendValues": true,
+      "showTimeAxis": true,
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text \nFROM history\nWHERE id='ccs-pa-001-state' and \n  $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "textSize": 24,
+      "textSizeTime": 12,
+      "timeFrom": null,
+      "timeOptions": [
+        {
+          "name": "Years",
+          "value": "years"
+        },
+        {
+          "name": "Months",
+          "value": "months"
+        },
+        {
+          "name": "Weeks",
+          "value": "weeks"
+        },
+        {
+          "name": "Days",
+          "value": "days"
+        },
+        {
+          "name": "Hours",
+          "value": "hours"
+        },
+        {
+          "name": "Minutes",
+          "value": "minutes"
+        },
+        {
+          "name": "Seconds",
+          "value": "seconds"
+        },
+        {
+          "name": "Milliseconds",
+          "value": "milliseconds"
+        }
+      ],
+      "timePrecision": {
+        "name": "Minutes",
+        "value": "minutes"
+      },
+      "timeShift": null,
+      "timeTextColor": "#d8d9da",
+      "title": "Execution State",
+      "type": "natel-discrete-panel",
+      "units": "short",
+      "use12HourClock": false,
+      "useTimePrecision": false,
+      "valueMaps": [
+        {
+          "$$hashKey": "object:765",
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueTextColor": "#000000",
+      "writeAllValues": false,
+      "writeLastValue": true,
+      "writeMetricNames": false
+    },
+    {
       "aliasColors": {},
       "bars": false,
       "dashLength": 10,
@@ -896,7 +1009,7 @@
         "h": 5,
         "w": 11,
         "x": 0,
-        "y": 15
+        "y": 17
       },
       "hiddenSeries": false,
       "id": 11,
@@ -1032,7 +1145,7 @@
         "h": 10,
         "w": 11,
         "x": 0,
-        "y": 20
+        "y": 22
       },
       "id": 10,
       "options": {
@@ -1100,5 +1213,5 @@
   "timezone": "",
   "title": "CCS P&A",
   "uid": "dII-Qgzgz",
-  "version": 26
+  "version": 5
 }
