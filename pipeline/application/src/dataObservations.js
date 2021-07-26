@@ -26,19 +26,13 @@ export class Observations extends Data {
         console.log(
           `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}, value ${obs.value}`
         )
-        // const value = JSON.stringify(Number(obs.value) || obs.value)
+        // obs.value is always string, due to the way the xml is stored, like <value>10</value>
         const value = Number(obs.value) || JSON.stringify(obs.value)
         const record = {
           node_id: device_id,
           property_id,
           time: obs.timestamp,
           value,
-          // value: obs.value,
-          //. these values are always strings currently...
-          // value:
-          //   typeof obs.value === 'string'
-          //     ? JSON.stringify(obs.value)
-          //     : obs.value,
         }
         // console.log(record)
         await db.addHistory(record) // write db
