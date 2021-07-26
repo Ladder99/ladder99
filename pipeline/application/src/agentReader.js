@@ -55,12 +55,12 @@ export class AgentReader {
         this.from = current.sequence.next
 
         // sample - get sequence of dataitem values, write to db
+        const sample = new Observations('sample')
         sample: do {
-          const sample = new Observations('sample')
           await sample.read(this.endpoint, this.from, this.count)
           if (instanceIdChanged(sample, probe)) break probe
           await sample.write(this.db, probe.indexes)
-          this.from = sample.sequence.last + 1 //. ?
+          this.from = sample.sequence.next //. ?
           await libapp.sleep(this.interval)
         } while (true)
       } while (true)

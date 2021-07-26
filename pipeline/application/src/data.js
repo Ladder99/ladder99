@@ -14,6 +14,7 @@ export class Data {
   // read json from endpoint, store in .json,
   // and parse out .header, .instanceId, .sequence info from it.
   async read(endpoint, from, count) {
+    console.log(`read ${endpoint.baseUrl}, ${from}, ${count}`)
     this.json = await endpoint.fetchJson(this.type, from, count)
     this.parseHeader()
   }
@@ -29,8 +30,9 @@ export class Data {
 
     // get header for probe, current, or sample xmls
     this.header = this.json.MTConnectDevices
-      ? this.json.MTConnectDevices.Header
-      : this.json.MTConnectStreams.Header
+      ? this.json.MTConnectDevices.Header._attributes
+      : this.json.MTConnectStreams.Header._attributes
+    console.log('header', this.header)
 
     // get instanceId
     this.instanceId = this.header.instanceId
