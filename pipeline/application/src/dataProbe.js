@@ -3,7 +3,6 @@
 
 import { Data } from './data.js'
 import * as tree from './tree.js'
-// import * as libapp from './libapp.js'
 
 export class Probe extends Data {
   type = 'probe' // used by read method

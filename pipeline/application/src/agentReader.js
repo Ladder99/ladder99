@@ -59,7 +59,6 @@ export class AgentReader {
           await sample.read(this.endpoint, this.from, this.count)
           if (instanceIdChanged(sample, probe)) break probe
           await sample.write(this.db, probe.indexes)
-          console.log('.')
           this.from = sample.sequence.last + 1 //. ?
           await libapp.sleep(this.interval)
         } while (true)

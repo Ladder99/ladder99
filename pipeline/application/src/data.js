@@ -20,6 +20,7 @@ export class Data {
 
   // get errors, header, and instanceId from json
   parseHeader() {
+    //. handle errors as needed
     // eg <Errors><Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error></Errors>
     if (this.json.MTConnectError) {
       this.errors = this.json.MTConnectError.Errors.map(e => e.Error.errorCode)

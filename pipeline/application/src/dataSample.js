@@ -8,9 +8,10 @@ import * as treeObservations from './treeObservations.js'
 export class Sample extends Data {
   type = 'sample' // used by read method
 
-  // for read, see base class Data's read method
+  // for read method, see base class Data
 
   async write(db, indexes) {
+    // get flat list of observations from xml/json
     const observations = treeObservations.getElements(this.json)
 
     for (let obs of observations) {

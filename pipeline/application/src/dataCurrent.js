@@ -3,15 +3,16 @@
 
 import { Data } from './data.js'
 import * as treeObservations from './treeObservations.js'
-// import * as libapp from './libapp.js'
 
 export class Current extends Data {
   type = 'current' // used by read method
 
+  // for read method, see base class Data
+
   async write(db, indexes) {
-    // get sequence info from header
-    // const { firstSequence, nextSequence, lastSequence } = this.header
+    // get flat list of observations from xml/json
     const observations = treeObservations.getElements(this.json)
+
     for (let obs of observations) {
       const node = indexes.objById[obs.dataItemId]
       if (node) {
@@ -29,6 +30,5 @@ export class Current extends Data {
         await db.addHistory(record) // write db
       }
     }
-    // this.from = nextSequence
   }
 }
