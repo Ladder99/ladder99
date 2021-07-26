@@ -34,13 +34,6 @@ class Application {
       endpoint => new AgentReader({ db, endpoint, params })
     )
 
-    // // initialize agents
-    // //. read the agent yaml file and set up propdefs in the db
-    // // run this in serial so don't have db conflicts
-    // for (const agentReader of agentReaders) {
-    //   await agentReader.init()
-    // }
-
     // run agent readers
     // node is single threaded with an event loop
     // run in parallel so agent readers run independently of each other

@@ -1,5 +1,5 @@
 // Sample
-// called from agentReader
+// read sample endpoint data and write to db - called from agentReader
 
 import { Data } from './data.js'
 import * as treeObservations from './treeObservations.js'

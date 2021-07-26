@@ -1,5 +1,5 @@
 // Probe
-// called from agentReader
+// read probe endpoint data and write to db - called from agentReader
 
 import { Data } from './data.js'
 import * as tree from './tree.js'
