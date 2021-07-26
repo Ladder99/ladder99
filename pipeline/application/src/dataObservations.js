@@ -30,7 +30,12 @@ export class Observations extends Data {
           node_id: device_id,
           property_id,
           time: obs.timestamp,
-          value: JSON.stringify(obs.value), //. okay with numbers also?
+          // value: obs.value,
+          //. these values are always strings currently...
+          value:
+            typeof obs.value === 'string'
+              ? JSON.stringify(obs.value)
+              : obs.value,
         }
         // console.log(record)
         await db.addHistory(record) // write db
