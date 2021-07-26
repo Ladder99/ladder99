@@ -50,10 +50,8 @@ CREATE INDEX IF NOT EXISTS history_node_id ON history (node_id);
 -- HISTORY_ALL view --
 
 CREATE OR REPLACE VIEW history_all AS
-SELECT devices.props->>'uuid' AS device_uuid,
-  properties.props->>'definitionPath' AS property_definition_path, 
-  properties.props->>'valuePath' AS property_value_path, 
-  properties.props->>'canonicalId' AS property_canonical_id, 
+SELECT devices.props->>'uuid' AS device,
+  properties.props->>'path' AS property, 
   history.time, 
   history.value -- value is a jsonb object - need to cast it as in below views
 FROM history
@@ -64,15 +62,13 @@ JOIN nodes AS properties ON history.property_id=properties.node_id;
 
 -- note: float is an alias for 'double precision'
 CREATE OR REPLACE VIEW history_float AS
-SELECT device_uuid, property_definition_path, property_value_path, 
-  property_canonical_id, value::float
+SELECT device, property, time, value::float
 FROM history_all
-WHERE jsonb_typeof(value) = 'number'::text;
+WHERE jsonb_typeof(value) = 'number';
 
 -- HISTORY_TEXT view --
 
 CREATE OR REPLACE VIEW history_text AS
-SELECT device_uuid, property_definition_path, property_value_path, 
-  property_canonical_id, value::text
+SELECT device, property, time, value::text
 FROM history_all
-WHERE jsonb_typeof(value) = 'text'::text;
+WHERE jsonb_typeof(value) = 'string';
