@@ -107,8 +107,8 @@ export class Db {
 
   async addHistory(record) {
     try {
-      const sql = `INSERT INTO history (node_id, property_id, time, value) VALUES ($1, $2, $3, $4::jsonb);`
-      // const sql = `INSERT INTO history (node_id, property_id, time, value) VALUES ($1, $2, $3, $4);`
+      const sql = `INSERT INTO history (node_id, property_id, time, value) 
+VALUES ($1, $2, $3, $4::jsonb);`
       console.log(sql)
       const res = await this.query(sql, [
         record.node_id,

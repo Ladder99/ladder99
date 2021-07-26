@@ -27,6 +27,7 @@ export class Observations extends Data {
           `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}, value ${obs.value}`
         )
         // obs.value is always string, due to the way the xml is stored, like <value>10</value>
+        // const value = Number(obs.value) || obs.value
         const value = Number(obs.value) || JSON.stringify(obs.value)
         const record = {
           node_id: device_id,

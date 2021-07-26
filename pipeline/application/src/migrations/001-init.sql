@@ -68,7 +68,9 @@ WHERE jsonb_typeof(value) = 'number';
 
 -- HISTORY_TEXT view --
 
+-- note: #>>'{}' extracts the top-level json string without enclosing double quotes
+-- see https://dba.stackexchange.com/questions/207984/unquoting-json-strings-print-json-strings-without-quotes
 CREATE OR REPLACE VIEW history_text AS
-SELECT device, property, time, value::text
+SELECT device, property, time, value#>>'{}' as value
 FROM history_all
 WHERE jsonb_typeof(value) = 'string';
