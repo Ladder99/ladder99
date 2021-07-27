@@ -211,6 +211,7 @@ outputs:
   - key: web_take_up_motor_state
     category: EVENT
     type: ACTUATOR_STATE
+    subType: x:TAKE_UP
     # TODO: commanded?
     value: types.ACTUATOR_STATE[<web_take_up_motor_state>]
 
