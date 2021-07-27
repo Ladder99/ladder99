@@ -9,32 +9,32 @@
       <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="001">Emergent Next Generation Print and Apply</Description>
       <DataItems>
         <DataItem id="pa1-connection" category="EVENT" type="AVAILABILITY"/>
+        <DataItem id="pa1-dev_cond" category="CONDITION" type="SYSTEM"/>
+        <DataItem id="pa1-dev_msg" category="EVENT" type="MESSAGE"/>
+        <DataItem id="pa1-fw_ver" category="EVENT" type="FIRMWARE" subType="VERSION"/>
+        <DataItem id="pa1-func_mode" category="EVENT" type="FUNCTIONAL_MODE"/>
         <DataItem id="pa1-asset_changed" category="EVENT" type="ASSET_CHANGED"/>
         <DataItem id="pa1-asset_removed" category="EVENT" type="ASSET_REMOVED"/>
-        <!-- <DataItem id="pa1-dev_cond" category="CONDITION" type="SYSTEM"/> -->
-        <!-- <DataItem id="pa1-dev_msg" category="EVENT" type="MESSAGE"/> -->
-        <!-- <DataItem id="pa1-fw_ver" category="EVENT" type="FIRMWARE" subType="VERSION"/> -->
-        <!-- <DataItem id="pa1-func_mode" category="EVENT" type="FUNCTIONAL_MODE"/> -->
       </DataItems>
       <Components>
         <Controller id="pa1-controller" nativeName="plc">
           <Description>Electronic board set responsible for coordinating all machine function.</Description>
           <DataItems>
-            <!-- <DataItem id="pa1-e_stop" category="EVENT" type="EMERGENCY_STOP"/> -->
+            <DataItem id="pa1-e_stop" category="EVENT" type="EMERGENCY_STOP"/>
           </DataItems>
           <Components>
             <Path id="pa1-path1" name="path">
               <DataItems>
-                <!-- <DataItem id="pa1-state" category="EVENT" type="EXECUTION"/> -->
-                <!-- <DataItem id="pa1-wait_state" category="EVENT" type="WAIT_STATE"/> -->
-                <!-- <DataItem id="pa1-program" category="EVENT" type="PROGRAM" subType="MAIN"/> -->
-                <!-- <DataItem id="pa1-step" category="EVENT" type="BLOCK"/> -->
-                <!-- <DataItem id="pa1-clk_time" category="SAMPLE" type="CLOCK_TIME"/> -->
-                <!-- <DataItem id="pa1-up_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="OPERATING"/> -->
-                <!-- <DataItem id="pa1-fault_count" category="SAMPLE" type="COUNT" subType="x:FAULT"/> -->
-                <!-- <DataItem id="pa1-cycle_count" category="SAMPLE" type="COUNT" subType="x:CYCLE"/> -->
-                <!-- <DataItem id="pa1-life_count" category="SAMPLE" type="COUNT" subType="x:LIFE"/> -->
-                <!-- <DataItem id="pa1-cycle_time" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" unit="SECONDS"/> -->
+                <DataItem id="pa1-state" category="EVENT" type="EXECUTION"/>
+                <DataItem id="pa1-wait_state" category="EVENT" type="WAIT_STATE"/>
+                <DataItem id="pa1-program" category="EVENT" type="PROGRAM" subType="MAIN"/>
+                <DataItem id="pa1-step" category="EVENT" type="BLOCK"/>
+                <DataItem id="pa1-clk_time" category="SAMPLE" type="CLOCK_TIME"/>
+                <DataItem id="pa1-up_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="OPERATING"/>
+                <DataItem id="pa1-cycle_time" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" unit="SECONDS"/>
+                <DataItem id="pa1-fault_count" category="SAMPLE" type="COUNT" subType="x:FAULT"/>
+                <DataItem id="pa1-cycle_count" category="SAMPLE" type="COUNT" subType="x:CYCLE"/>
+                <DataItem id="pa1-life_count" category="SAMPLE" type="COUNT" subType="x:LIFE"/>
               </DataItems>
             </Path>
           </Components>
@@ -46,7 +46,7 @@
             <DataItems>
               <!-- <DataItem id="pa1-end_eff_cond" category="CONDITION" type="SYSTEM"/> -->
               <!-- <DataItem id="pa1-end_eff_message" category="EVENT" type="MESSAGE"/> -->
-              <!-- <DataItem id="pa1-smart_tamp_part_detect" category="EVENT" type="PART_DETECT"/> -->
+              <DataItem id="pa1-smart_tamp_part_detect" category="EVENT" type="PART_DETECT"/>
               <!-- <DataItem id="pa1-tamp_air_assist" category="EVENT" type="ACTUATOR_STATE"/> -->
               <!-- <DataItem id="pa1-tamp_vacuum" category="EVENT" type="ACTUATOR_STATE"/> -->
               <!-- <DataItem id="pa1-tamp_cylinder" category="EVENT" type="ACTUATOR_STATE"/> -->
@@ -60,7 +60,7 @@
             <DataItems>
               <!-- <DataItem id="pa1-feed_cond" category="CONDITION" type="SYSTEM"/> -->
               <!-- <DataItem id="pa1-feed_message" category="EVENT" type="MESSAGE"/> -->
-              <!-- <DataItem id="pa1-feed_part_detect" category="EVENT" type="PART_DETECT"/> -->
+              <DataItem id="pa1-feed_part_detect" category="EVENT" type="PART_DETECT"/>
               <!-- <DataItem id="pa1-web_take_up_motor_state" category="EVENT" type="ACTUATOR_STATE"/> -->
               <!-- <DataItem id="pa1-printer_reprint" category="EVENT" type="ACTUATOR_STATE"/> -->
               <!-- <DataItem id="pa1-printer_pause" category="EVENT" type="ACTUATOR_STATE"/> -->
