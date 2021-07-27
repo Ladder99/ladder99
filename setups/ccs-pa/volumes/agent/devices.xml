@@ -63,10 +63,10 @@
               <DataItem id="pa1-feed_message" category="EVENT" type="MESSAGE"/>
               <DataItem id="pa1-feed_part_detect" category="EVENT" type="PART_DETECT"/>
               <DataItem id="pa1-web_take_up_motor_state" category="EVENT" type="ACTUATOR_STATE" subType="x:TAKE_UP"/>
-              <!-- <DataItem id="pa1-printer_reprint" category="EVENT" type="ACTUATOR_STATE"/> -->
-              <!-- <DataItem id="pa1-printer_pause" category="EVENT" type="ACTUATOR_STATE"/> -->
-              <!-- <DataItem id="pa1-printer_feed" category="EVENT" type="ACTUATOR_STATE"/> -->
-              <!-- <DataItem id="pa1-printer_start_print" category="EVENT" type="ACTUATOR_STATE"/> -->
+              <DataItem id="pa1-printer_reprint" category="EVENT" type="ACTUATOR_STATE" subType="x:REPRINT"/>
+              <DataItem id="pa1-printer_pause" category="EVENT" type="ACTUATOR_STATE" subType="x:PAUSE"/>
+              <DataItem id="pa1-printer_feed" category="EVENT" type="ACTUATOR_STATE" subType="x:FEED"/>
+              <DataItem id="pa1-printer_start_print" category="EVENT" type="ACTUATOR_STATE" subType="x:START"/>
               <!-- <DataItem id="pa1-print_signal_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/> -->
               <!-- <DataItem id="pa1-print_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND"/> -->
               <!-- <DataItem id="pa1-transport_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/> -->

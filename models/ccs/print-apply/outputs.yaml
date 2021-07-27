@@ -218,21 +218,25 @@ outputs:
   - key: printer_reprint
     category: EVENT
     type: ACTUATOR_STATE
+    subType: x:REPRINT
     value: types.ACTUATOR_STATE[<printer_reprint>]
 
   - key: printer_pause
     category: EVENT
     type: ACTUATOR_STATE
+    subType: x:PAUSE
     value: types.ACTUATOR_STATE[<printer_pause>]
 
   - key: printer_feed
     category: EVENT
     type: ACTUATOR_STATE
+    subType: x:FEED
     value: types.ACTUATOR_STATE[<printer_feed>]
 
   - key: printer_start_print
     category: EVENT
     type: ACTUATOR_STATE
+    subType: x:START
     value: types.ACTUATOR_STATE[<printer_start_print>]
 
   - key: print_signal_time
