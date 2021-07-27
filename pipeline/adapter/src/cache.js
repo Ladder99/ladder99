@@ -73,7 +73,8 @@ function getShdr(cache, output) {
     const nativeCode = 'nativeCode'
     const nativeSeverity = 'nativeSeverity'
     const qualifier = 'qualifier'
-    const message = value + ' (msg here)'
+    // const message = value + ' (msg here)'
+    const message = value
     shdr = `${timestamp}|${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
     // } else if (representation === 'DATA_SET') {
     //   const nativeCode = 'nativeCode'
