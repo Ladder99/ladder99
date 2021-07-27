@@ -107,16 +107,19 @@ outputs:
   - key: fault_count
     category: SAMPLE
     type: COUNT
+    subType: x:FAULT
     value: <fault_count>
 
   - key: cycle_count
     category: SAMPLE
     type: COUNT
+    subType: x:CYCLE
     value: <cycle_count>
 
   - key: life_count
     category: SAMPLE
     type: COUNT
+    subType: x:LIFE
     value: <life_count>
 
   - key: end_eff_cond
