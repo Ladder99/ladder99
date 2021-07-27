@@ -91,7 +91,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 2,
+        "h": 3,
         "w": 4,
         "x": 0,
         "y": 1
@@ -204,7 +204,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 2,
+        "h": 3,
         "w": 4,
         "x": 4,
         "y": 1
@@ -260,11 +260,87 @@
     },
     {
       "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 4
+      },
+      "id": 29,
+      "interval": null,
+      "maxDataPoints": 400,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["last"],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  time,\n  value\nFROM history_float\nWHERE property='systems/feeder/equipment-timer-delay'\nand $__timeFilter(\"time\")\norder by time\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "execution",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Print Signal Time",
+      "type": "stat"
+    },
+    {
+      "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 3
+        "y": 8
       },
       "id": 25,
       "title": "Row title",
@@ -302,6 +378,26 @@
           "$$hashKey": "object:1732",
           "color": "#EF843C",
           "text": "APPLY_LABEL"
+        },
+        {
+          "$$hashKey": "object:3520",
+          "color": "#7EB26D",
+          "text": "STEP1"
+        },
+        {
+          "$$hashKey": "object:3521",
+          "color": "#EAB839",
+          "text": "STEP2"
+        },
+        {
+          "$$hashKey": "object:3522",
+          "color": "#6ED0E0",
+          "text": "STEP3"
+        },
+        {
+          "$$hashKey": "object:3523",
+          "color": "#EF843C",
+          "text": "NULL"
         }
       ],
       "crosshairColor": "#8F070C",
@@ -318,7 +414,7 @@
         "h": 5,
         "w": 11,
         "x": 0,
-        "y": 4
+        "y": 9
       },
       "highlightOnMouseover": true,
       "id": 6,
@@ -408,7 +504,7 @@
       },
       "timeShift": null,
       "timeTextColor": "#d8d9da",
-      "title": "Controller Path Block",
+      "title": "Step",
       "type": "natel-discrete-panel",
       "units": "short",
       "use12HourClock": false,
@@ -425,834 +521,6 @@
       "writeAllValues": false,
       "writeLastValue": true,
       "writeMetricNames": false
-    },
-    {
-      "backgroundColor": "rgba(128,128,128,0.1)",
-      "colorMaps": [
-        {
-          "color": "#CCC",
-          "text": "N/A"
-        }
-      ],
-      "crosshairColor": "#8F070C",
-      "datasource": null,
-      "description": "",
-      "display": "timeline",
-      "expandFromQueryS": 0,
-      "extendLastValue": true,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 11,
-        "x": 11,
-        "y": 4
-      },
-      "highlightOnMouseover": true,
-      "id": 7,
-      "legendSortBy": "-ms",
-      "lineColor": "rgba(0,0,0,0.1)",
-      "metricNameColor": "#000000",
-      "pluginVersion": "7.5.5",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "rowHeight": 50,
-      "showLegend": true,
-      "showLegendNames": true,
-      "showLegendPercent": true,
-      "showLegendValues": true,
-      "showTimeAxis": true,
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value::text\nFROM history\nWHERE id='ccs-pa-001-step'\nand $__timeFilter(\"time\")\norder by time\n",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "execution",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamptz",
-          "where": []
-        }
-      ],
-      "textSize": 24,
-      "textSizeTime": 12,
-      "timeFrom": null,
-      "timeOptions": [
-        {
-          "name": "Years",
-          "value": "years"
-        },
-        {
-          "name": "Months",
-          "value": "months"
-        },
-        {
-          "name": "Weeks",
-          "value": "weeks"
-        },
-        {
-          "name": "Days",
-          "value": "days"
-        },
-        {
-          "name": "Hours",
-          "value": "hours"
-        },
-        {
-          "name": "Minutes",
-          "value": "minutes"
-        },
-        {
-          "name": "Seconds",
-          "value": "seconds"
-        },
-        {
-          "name": "Milliseconds",
-          "value": "milliseconds"
-        }
-      ],
-      "timePrecision": {
-        "name": "Minutes",
-        "value": "minutes"
-      },
-      "timeShift": null,
-      "timeTextColor": "#d8d9da",
-      "title": "Step",
-      "type": "natel-discrete-panel",
-      "units": "short",
-      "use12HourClock": false,
-      "useTimePrecision": false,
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueTextColor": "#000000",
-      "writeAllValues": false,
-      "writeLastValue": true,
-      "writeMetricNames": false
-    },
-    {
-      "backgroundColor": "rgba(128,128,128,0.1)",
-      "colorMaps": [
-        {
-          "$$hashKey": "object:510",
-          "color": "#CCC",
-          "text": "N/A"
-        }
-      ],
-      "crosshairColor": "#8F070C",
-      "datasource": null,
-      "display": "timeline",
-      "expandFromQueryS": 0,
-      "extendLastValue": true,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 11,
-        "x": 0,
-        "y": 9
-      },
-      "highlightOnMouseover": true,
-      "id": 13,
-      "legendSortBy": "-ms",
-      "lineColor": "rgba(0,0,0,0.1)",
-      "metricNameColor": "#000000",
-      "pluginVersion": "7.5.5",
-      "rangeMaps": [
-        {
-          "$$hashKey": "object:464",
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "rowHeight": 50,
-      "showLegend": true,
-      "showLegendNames": true,
-      "showLegendPercent": true,
-      "showLegendValues": true,
-      "showTimeAxis": true,
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value::text\nFROM history\nWHERE id='ccs-pa-001-func_mode'\nand $__timeFilter(\"time\")\norder by time\n",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "execution",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamptz",
-          "where": []
-        }
-      ],
-      "textSize": 24,
-      "textSizeTime": 12,
-      "timeFrom": null,
-      "timeOptions": [
-        {
-          "name": "Years",
-          "value": "years"
-        },
-        {
-          "name": "Months",
-          "value": "months"
-        },
-        {
-          "name": "Weeks",
-          "value": "weeks"
-        },
-        {
-          "name": "Days",
-          "value": "days"
-        },
-        {
-          "name": "Hours",
-          "value": "hours"
-        },
-        {
-          "name": "Minutes",
-          "value": "minutes"
-        },
-        {
-          "name": "Seconds",
-          "value": "seconds"
-        },
-        {
-          "name": "Milliseconds",
-          "value": "milliseconds"
-        }
-      ],
-      "timePrecision": {
-        "name": "Minutes",
-        "value": "minutes"
-      },
-      "timeShift": null,
-      "timeTextColor": "#d8d9da",
-      "title": "Function Mode",
-      "type": "natel-discrete-panel",
-      "units": "short",
-      "use12HourClock": false,
-      "useTimePrecision": false,
-      "valueMaps": [
-        {
-          "$$hashKey": "object:462",
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueTextColor": "#000000",
-      "writeAllValues": false,
-      "writeLastValue": true,
-      "writeMetricNames": false
-    },
-    {
-      "backgroundColor": "rgba(128,128,128,0.1)",
-      "colorMaps": [
-        {
-          "$$hashKey": "object:647",
-          "color": "#CCC",
-          "text": "N/A"
-        }
-      ],
-      "crosshairColor": "#8F070C",
-      "datasource": null,
-      "display": "timeline",
-      "expandFromQueryS": 0,
-      "extendLastValue": true,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 11,
-        "x": 11,
-        "y": 9
-      },
-      "highlightOnMouseover": true,
-      "id": 12,
-      "legendSortBy": "-ms",
-      "lineColor": "rgba(0,0,0,0.1)",
-      "metricNameColor": "#000000",
-      "pluginVersion": "7.5.5",
-      "rangeMaps": [
-        {
-          "$$hashKey": "object:652",
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "rowHeight": 50,
-      "showLegend": true,
-      "showLegendNames": true,
-      "showLegendPercent": true,
-      "showLegendValues": true,
-      "showTimeAxis": true,
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value::text\nFROM history\nWHERE id='ccs-pa-001-feed_part_detect'\nand $__timeFilter(\"time\")\norder by time\n",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "execution",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamptz",
-          "where": []
-        }
-      ],
-      "textSize": 24,
-      "textSizeTime": 12,
-      "timeFrom": null,
-      "timeOptions": [
-        {
-          "name": "Years",
-          "value": "years"
-        },
-        {
-          "name": "Months",
-          "value": "months"
-        },
-        {
-          "name": "Weeks",
-          "value": "weeks"
-        },
-        {
-          "name": "Days",
-          "value": "days"
-        },
-        {
-          "name": "Hours",
-          "value": "hours"
-        },
-        {
-          "name": "Minutes",
-          "value": "minutes"
-        },
-        {
-          "name": "Seconds",
-          "value": "seconds"
-        },
-        {
-          "name": "Milliseconds",
-          "value": "milliseconds"
-        }
-      ],
-      "timePrecision": {
-        "name": "Minutes",
-        "value": "minutes"
-      },
-      "timeShift": null,
-      "timeTextColor": "#d8d9da",
-      "title": "Feed Part Detect",
-      "type": "natel-discrete-panel",
-      "units": "short",
-      "use12HourClock": false,
-      "useTimePrecision": false,
-      "valueMaps": [
-        {
-          "$$hashKey": "object:650",
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueTextColor": "#000000",
-      "writeAllValues": false,
-      "writeLastValue": true,
-      "writeMetricNames": false
-    },
-    {
-      "backgroundColor": "rgba(128,128,128,0.1)",
-      "colorMaps": [
-        {
-          "$$hashKey": "object:762",
-          "color": "#CCC",
-          "text": "N/A"
-        }
-      ],
-      "crosshairColor": "#8F070C",
-      "datasource": null,
-      "display": "timeline",
-      "expandFromQueryS": 0,
-      "extendLastValue": true,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 11,
-        "x": 0,
-        "y": 14
-      },
-      "highlightOnMouseover": true,
-      "id": 4,
-      "legendSortBy": "-ms",
-      "lineColor": "rgba(0,0,0,0.1)",
-      "metricNameColor": "#000000",
-      "pluginVersion": "7.5.5",
-      "rangeMaps": [
-        {
-          "$$hashKey": "object:767",
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "rowHeight": 50,
-      "showLegend": true,
-      "showLegendNames": true,
-      "showLegendPercent": true,
-      "showLegendValues": true,
-      "showTimeAxis": true,
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text \nFROM history\nWHERE id='ccs-pa-001-state' and \n  $__timeFilter(\"time\")\nORDER BY time",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamptz",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "textSize": 24,
-      "textSizeTime": 12,
-      "timeFrom": null,
-      "timeOptions": [
-        {
-          "name": "Years",
-          "value": "years"
-        },
-        {
-          "name": "Months",
-          "value": "months"
-        },
-        {
-          "name": "Weeks",
-          "value": "weeks"
-        },
-        {
-          "name": "Days",
-          "value": "days"
-        },
-        {
-          "name": "Hours",
-          "value": "hours"
-        },
-        {
-          "name": "Minutes",
-          "value": "minutes"
-        },
-        {
-          "name": "Seconds",
-          "value": "seconds"
-        },
-        {
-          "name": "Milliseconds",
-          "value": "milliseconds"
-        }
-      ],
-      "timePrecision": {
-        "name": "Minutes",
-        "value": "minutes"
-      },
-      "timeShift": null,
-      "timeTextColor": "#d8d9da",
-      "title": "Execution State",
-      "type": "natel-discrete-panel",
-      "units": "short",
-      "use12HourClock": false,
-      "useTimePrecision": false,
-      "valueMaps": [
-        {
-          "$$hashKey": "object:765",
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueTextColor": "#000000",
-      "writeAllValues": false,
-      "writeLastValue": true,
-      "writeMetricNames": false
-    },
-    {
-      "backgroundColor": "rgba(128,128,128,0.1)",
-      "colorMaps": [
-        {
-          "$$hashKey": "object:925",
-          "color": "#CCC",
-          "text": "N/A"
-        }
-      ],
-      "crosshairColor": "#8F070C",
-      "datasource": null,
-      "display": "timeline",
-      "expandFromQueryS": 0,
-      "extendLastValue": true,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 14,
-        "w": 11,
-        "x": 11,
-        "y": 14
-      },
-      "highlightOnMouseover": true,
-      "id": 18,
-      "legendSortBy": "-ms",
-      "lineColor": "rgba(0,0,0,0.1)",
-      "metricNameColor": "#ffffff",
-      "pluginVersion": "7.5.5",
-      "rangeMaps": [
-        {
-          "$$hashKey": "object:930",
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "rowHeight": 50,
-      "showLegend": true,
-      "showLegendNames": true,
-      "showLegendPercent": true,
-      "showLegendValues": true,
-      "showTimeAxis": true,
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text as step\nFROM history\nWHERE id='ccs-pa-001-step' and \n  $__timeFilter(\"time\")\nORDER BY time\n",
-          "refId": "B",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        },
-        {
-          "format": "table",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text as func_mode\nFROM history\nWHERE id='ccs-pa-001-func_mode' and \n  $__timeFilter(\"time\")\nORDER BY time\n\n",
-          "refId": "C",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        },
-        {
-          "format": "table",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text as state\nFROM history\nWHERE id='ccs-pa-001-state' and \n  $__timeFilter(\"time\")\nORDER BY time\n\n",
-          "refId": "D",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        },
-        {
-          "format": "table",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value::text as feed_part_detect\nFROM history\nWHERE id='ccs-pa-001-feed_part_detect' and \n  $__timeFilter(\"time\")\nORDER BY time\n\n",
-          "refId": "E",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "timeColumn": "time",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "textSize": 24,
-      "textSizeTime": 12,
-      "timeFrom": null,
-      "timeOptions": [
-        {
-          "name": "Years",
-          "value": "years"
-        },
-        {
-          "name": "Months",
-          "value": "months"
-        },
-        {
-          "name": "Weeks",
-          "value": "weeks"
-        },
-        {
-          "name": "Days",
-          "value": "days"
-        },
-        {
-          "name": "Hours",
-          "value": "hours"
-        },
-        {
-          "name": "Minutes",
-          "value": "minutes"
-        },
-        {
-          "name": "Seconds",
-          "value": "seconds"
-        },
-        {
-          "name": "Milliseconds",
-          "value": "milliseconds"
-        }
-      ],
-      "timePrecision": {
-        "name": "Minutes",
-        "value": "minutes"
-      },
-      "timeShift": null,
-      "timeTextColor": "#d8d9da",
-      "title": "Combined",
-      "type": "natel-discrete-panel",
-      "units": "short",
-      "use12HourClock": false,
-      "useTimePrecision": false,
-      "valueMaps": [
-        {
-          "$$hashKey": "object:928",
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueTextColor": "white",
-      "writeAllValues": false,
-      "writeLastValue": true,
-      "writeMetricNames": true
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "fill": 1,
-      "fillGradient": 0,
-      "gridPos": {
-        "h": 5,
-        "w": 11,
-        "x": 0,
-        "y": 19
-      },
-      "hiddenSeries": false,
-      "id": 11,
-      "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": true,
-        "total": false,
-        "values": false
-      },
-      "lines": true,
-      "linewidth": 1,
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "percentage": false,
-      "pluginVersion": "7.5.5",
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value\nFROM history_numeric\nWHERE id='ccs-pa-001-print_time'\nand $__timeFilter(\"time\")\n",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "execution",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamptz",
-          "where": []
-        }
-      ],
-      "thresholds": [],
-      "timeFrom": null,
-      "timeRegions": [],
-      "timeShift": null,
-      "title": "Print Time",
-      "tooltip": {
-        "shared": true,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "time",
-        "name": null,
-        "show": true,
-        "values": []
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": null,
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
     },
     {
       "datasource": null,
@@ -1292,14 +560,38 @@
                 "value": 253
               }
             ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 178
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "property"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 303
+              }
+            ]
           }
         ]
       },
       "gridPos": {
-        "h": 10,
-        "w": 11,
+        "h": 9,
+        "w": 14,
         "x": 0,
-        "y": 24
+        "y": 14
       },
       "id": 10,
       "options": {
@@ -1313,7 +605,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value\nFROM history\nWHERE\n  $__timeFilter(\"time\")\nORDER BY time desc",
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  property,\n  value\nFROM history_all\nWHERE\n  $__timeFilter(\"time\")\nORDER BY time desc",
           "refId": "A",
           "select": [
             [
@@ -1347,7 +639,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
@@ -1367,5 +659,5 @@
   "timezone": "",
   "title": "CCS P&A",
   "uid": "dII-Qgzgz",
-  "version": 7
+  "version": 11
 }
