@@ -143,16 +143,19 @@ outputs:
   - key: tamp_air_assist
     category: EVENT
     type: ACTUATOR_STATE
+    subType: x:AIR_ASSIST
     value: types.ACTUATOR_STATE[<tamp_air_assist>]
 
   - key: tamp_vacuum
     category: EVENT
     type: ACTUATOR_STATE
+    subType: x:VACUUM
     value: types.ACTUATOR_STATE[<tamp_vacuum>]
 
   - key: tamp_cylinder
     category: EVENT
     type: ACTUATOR_STATE
+    subType: x:CYLINDER
     value: types.ACTUATOR_STATE[<tamp_cylinder>]
 
   - key: cylinder_extend_time
@@ -162,19 +165,21 @@ outputs:
     unit: SECOND
     value: <cylinder_extend_time>
 
-  - key: cylinder_home_disengage_time
-    category: SAMPLE
-    type: EQUIPMENT_TIMER
-    subType: WORKING
-    unit: SECOND
-    value: <cylinder_home_disengage_time>
+  # #. duplicate path
+  # - key: cylinder_home_disengage_time
+  #   category: SAMPLE
+  #   type: EQUIPMENT_TIMER
+  #   subType: WORKING
+  #   unit: SECOND
+  #   value: <cylinder_home_disengage_time>
 
-  - key: cylinder_travel_time
-    category: SAMPLE
-    type: EQUIPMENT_TIMER
-    subType: WORKING
-    unit: SECOND
-    value: <cylinder_travel_time>
+  # #. duplicate path
+  # - key: cylinder_travel_time
+  #   category: SAMPLE
+  #   type: EQUIPMENT_TIMER
+  #   subType: WORKING
+  #   unit: SECOND
+  #   value: <cylinder_travel_time>
 
   - key: tamp_vacuum_delay
     category: SAMPLE
