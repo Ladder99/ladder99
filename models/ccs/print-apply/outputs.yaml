@@ -86,13 +86,6 @@ outputs:
     type: BLOCK
     value: <status-step>
 
-  - key: cycle_time
-    category: SAMPLE
-    type: PROCESS_TIMER
-    subType: PROCESS
-    unit: SECONDS
-    value: <status-cycle_time>
-
   - key: clk_time
     category: SAMPLE
     type: CLOCK_TIME
@@ -103,6 +96,13 @@ outputs:
     type: EQUIPMENT_TIMER
     subType: OPERATING
     value: <status-cpu_time>
+
+  - key: cycle_time
+    category: SAMPLE
+    type: PROCESS_TIMER
+    subType: PROCESS
+    unit: SECONDS
+    value: <status-cycle_time>
 
   - key: fault_count
     category: SAMPLE

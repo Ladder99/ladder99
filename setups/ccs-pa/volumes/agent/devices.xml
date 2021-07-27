@@ -25,16 +25,16 @@
           <Components>
             <Path id="pa1-path1" name="path">
               <DataItems>
-                <!-- <DataItem id="pa1-state" category="EVENT" type="EXECUTION"/> -->
-                <!-- <DataItem id="pa1-wait_state" category="EVENT" type="WAIT_STATE"/> -->
-                <!-- <DataItem id="pa1-program" category="EVENT" type="PROGRAM" subType="MAIN"/> -->
-                <!-- <DataItem id="pa1-step" category="EVENT" type="BLOCK"/> -->
-                <!-- <DataItem id="pa1-clk_time" category="SAMPLE" type="CLOCK_TIME"/> -->
-                <!-- <DataItem id="pa1-up_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="OPERATING"/> -->
-                <!-- <DataItem id="pa1-fault_count" category="SAMPLE" type="COUNT" subType="x:FAULT"/> -->
-                <!-- <DataItem id="pa1-cycle_count" category="SAMPLE" type="COUNT" subType="x:CYCLE"/> -->
-                <!-- <DataItem id="pa1-life_count" category="SAMPLE" type="COUNT" subType="x:LIFE"/> -->
-                <!-- <DataItem id="pa1-cycle_time" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" unit="SECONDS"/> -->
+                <DataItem id="pa1-state" category="EVENT" type="EXECUTION"/>
+                <DataItem id="pa1-wait_state" category="EVENT" type="WAIT_STATE"/>
+                <DataItem id="pa1-program" category="EVENT" type="PROGRAM" subType="MAIN"/>
+                <DataItem id="pa1-step" category="EVENT" type="BLOCK"/>
+                <DataItem id="pa1-clk_time" category="SAMPLE" type="CLOCK_TIME"/>
+                <DataItem id="pa1-up_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="OPERATING"/>
+                <DataItem id="pa1-cycle_time" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" unit="SECONDS"/>
+                <DataItem id="pa1-fault_count" category="SAMPLE" type="COUNT" subType="x:FAULT"/>
+                <DataItem id="pa1-cycle_count" category="SAMPLE" type="COUNT" subType="x:CYCLE"/>
+                <DataItem id="pa1-life_count" category="SAMPLE" type="COUNT" subType="x:LIFE"/>
               </DataItems>
             </Path>
           </Components>
