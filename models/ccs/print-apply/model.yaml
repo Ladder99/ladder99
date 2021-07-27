@@ -21,12 +21,12 @@ model:
   dataItems:
     dataItem:
       - connection
-      - asset_changed
-      - asset_removed
       - dev_cond
       - dev_msg
       - fw_ver
       - func_mode
+      - asset_changed
+      - asset_removed
 
   components:
     controller:

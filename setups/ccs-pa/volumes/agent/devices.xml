@@ -9,18 +9,18 @@
       <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="001">Emergent Next Generation Print and Apply</Description>
       <DataItems>
         <DataItem id="pa1-connection" category="EVENT" type="AVAILABILITY"/>
+        <DataItem id="pa1-dev_cond" category="CONDITION" type="SYSTEM"/>
+        <DataItem id="pa1-dev_msg" category="EVENT" type="MESSAGE"/>
+        <DataItem id="pa1-fw_ver" category="EVENT" type="FIRMWARE" subType="VERSION"/>
+        <DataItem id="pa1-func_mode" category="EVENT" type="FUNCTIONAL_MODE"/>
         <DataItem id="pa1-asset_changed" category="EVENT" type="ASSET_CHANGED"/>
         <DataItem id="pa1-asset_removed" category="EVENT" type="ASSET_REMOVED"/>
-        <DataItem id="pa1-dev_cond" category="CONDITION" type="SYSTEM"/>
-        <!-- <DataItem id="pa1-dev_msg" category="EVENT" type="MESSAGE"/> -->
-        <!-- <DataItem id="pa1-fw_ver" category="EVENT" type="FIRMWARE" subType="VERSION"/> -->
-        <!-- <DataItem id="pa1-func_mode" category="EVENT" type="FUNCTIONAL_MODE"/> -->
       </DataItems>
       <Components>
         <Controller id="pa1-controller" nativeName="plc">
           <Description>Electronic board set responsible for coordinating all machine function.</Description>
           <DataItems>
-            <!-- <DataItem id="pa1-e_stop" category="EVENT" type="EMERGENCY_STOP"/> -->
+            <DataItem id="pa1-e_stop" category="EVENT" type="EMERGENCY_STOP"/>
           </DataItems>
           <Components>
             <Path id="pa1-path1" name="path">
