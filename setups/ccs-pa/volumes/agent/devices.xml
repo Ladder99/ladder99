@@ -44,9 +44,9 @@
         <Components>
           <EndEffector id="pa1-end_effector">
             <DataItems>
-              <!-- <DataItem id="pa1-end_eff_cond" category="CONDITION" type="SYSTEM"/> -->
-              <!-- <DataItem id="pa1-end_eff_message" category="EVENT" type="MESSAGE"/> -->
-              <DataItem id="pa1-smart_tamp_part_detect" category="EVENT" type="PART_DETECT"/>
+              <DataItem id="pa1-end_eff_cond" category="CONDITION" type="SYSTEM"/>
+              <DataItem id="pa1-end_eff_message" category="EVENT" type="MESSAGE"/>
+              <!-- <DataItem id="pa1-smart_tamp_part_detect" category="EVENT" type="PART_DETECT"/> -->
               <!-- <DataItem id="pa1-tamp_air_assist" category="EVENT" type="ACTUATOR_STATE"/> -->
               <!-- <DataItem id="pa1-tamp_vacuum" category="EVENT" type="ACTUATOR_STATE"/> -->
               <!-- <DataItem id="pa1-tamp_cylinder" category="EVENT" type="ACTUATOR_STATE"/> -->
@@ -60,7 +60,7 @@
             <DataItems>
               <!-- <DataItem id="pa1-feed_cond" category="CONDITION" type="SYSTEM"/> -->
               <!-- <DataItem id="pa1-feed_message" category="EVENT" type="MESSAGE"/> -->
-              <DataItem id="pa1-feed_part_detect" category="EVENT" type="PART_DETECT"/>
+              <!-- <DataItem id="pa1-feed_part_detect" category="EVENT" type="PART_DETECT"/> -->
               <!-- <DataItem id="pa1-web_take_up_motor_state" category="EVENT" type="ACTUATOR_STATE"/> -->
               <!-- <DataItem id="pa1-printer_reprint" category="EVENT" type="ACTUATOR_STATE"/> -->
               <!-- <DataItem id="pa1-printer_pause" category="EVENT" type="ACTUATOR_STATE"/> -->

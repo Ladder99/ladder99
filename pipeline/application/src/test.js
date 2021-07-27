@@ -16,9 +16,9 @@ console.log()
 //------------------------------------------------------------------------
 
 // load and parse probe xml
-const folder = 'examples/demo'
+// const folder = 'examples/demo'
 // const folder = 'examples/vmc'
-// const folder = 'examples/ccs-pa'
+const folder = 'examples/ccs-pa'
 // const folder = 'examples/mazak'
 const json = getJson(`${folder}/probe.xml`)
 
@@ -54,21 +54,21 @@ for (let obs of observations) {
 
 //------------------------------------------------------------------------
 
-// load and parse sample xml
-const json3 = getJson(`${folder}/sample.xml`)
+// // load and parse sample xml
+// const json3 = getJson(`${folder}/sample.xml`)
 
-const observations3 = treeObservations.getElements(json3)
-// console.log(observations)
+// const observations3 = treeObservations.getElements(json3)
+// // console.log(observations)
 
-for (let obs of observations3) {
-  const node = indexes.objById[obs.dataItemId]
-  if (node) {
-    const { device_id, property_id } = node
-    console.log(
-      `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}, value ${obs.value}`
-    )
-  }
-}
+// for (let obs of observations3) {
+//   const node = indexes.objById[obs.dataItemId]
+//   if (node) {
+//     const { device_id, property_id } = node
+//     console.log(
+//       `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}, value ${obs.value}`
+//     )
+//   }
+// }
 
 //------------------------------------------------------------------------
 
