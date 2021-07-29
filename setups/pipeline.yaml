@@ -70,7 +70,8 @@ services:
       AGENT_ENDPOINTS: http://agent:5000
       FETCH_INTERVAL: 2000
       FETCH_COUNT: 800
-      PGHOST:
+      # PGHOST:
+      PGHOST: database
       PGPORT:
       PGDATABASE:
       PGUSER:
@@ -250,8 +251,8 @@ services:
     ports:
       - '9001:9000' #.... changed from 9000:9000 - make envar
     volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
+      # - /etc/localtime:/etc/localtime:ro
+      # - /etc/timezone:/etc/timezone:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - ./$SETUP/volumes/portainer/data:/data
     restart: always
