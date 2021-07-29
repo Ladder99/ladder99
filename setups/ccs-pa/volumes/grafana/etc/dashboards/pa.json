@@ -16,8 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1627414715604,
+  "id": 1,
   "links": [
     {
       "asDropdown": false,
@@ -160,6 +159,119 @@
           "mappings": [
             {
               "from": "",
+              "id": 1,
+              "text": "Production",
+              "to": "",
+              "type": 1,
+              "value": "2"
+            },
+            {
+              "from": "",
+              "id": 2,
+              "text": "Maintenance",
+              "to": "",
+              "type": 1,
+              "value": "3"
+            },
+            {
+              "from": "",
+              "id": 3,
+              "text": "Unavailable",
+              "to": "",
+              "type": 1,
+              "value": "1"
+            }
+          ],
+          "max": 2,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(119, 119, 119)",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 2
+              },
+              {
+                "color": "blue",
+                "value": 3
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "id": 41,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "/^pos$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "value"
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value,\n  ARRAY_POSITION(array['UNAVAILABLE','PRODUCTION','MAINTENANCE'], value) as pos\nFROM history_text \nWHERE property='functional-mode'\nand $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Functional Mode",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [
+            {
+              "from": "",
               "id": 3,
               "text": "Unavailable",
               "to": "",
@@ -221,7 +333,7 @@
       "gridPos": {
         "h": 4,
         "w": 4,
-        "x": 4,
+        "x": 8,
         "y": 1
       },
       "id": 35,
@@ -279,10 +391,82 @@
       "fieldConfig": {
         "defaults": {
           "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "center",
+            "displayMode": "color-text",
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 12,
+        "y": 1
+      },
+      "id": 40,
+      "options": {
+        "showHeader": false
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  value\nFROM history_text \nWHERE property='firmware-version'\nand $__timeFilter(\"time\")\nORDER BY time desc\nLIMIT 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Firmware Version",
+      "transformations": [],
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
             "mode": "thresholds"
           },
           "custom": {
-            "align": null,
+            "align": "center",
+            "displayMode": "color-text",
             "filterable": false
           },
           "mappings": [],
@@ -292,10 +476,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -303,14 +483,14 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 7,
-        "x": 8,
-        "y": 1
+        "h": 2,
+        "w": 4,
+        "x": 12,
+        "y": 3
       },
       "id": 34,
       "options": {
-        "showHeader": true
+        "showHeader": false
       },
       "pluginVersion": "7.5.5",
       "targets": [
@@ -319,7 +499,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value\nFROM history_text \nWHERE property='message'\nand $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT\n  value\nFROM history_text \nWHERE property='message'\nand $__timeFilter(\"time\")\nORDER BY time DESC\nLIMIT 1",
           "refId": "A",
           "select": [
             [
@@ -475,105 +655,53 @@
       "type": "stat"
     },
     {
-      "backgroundColor": "rgba(128,128,128,0.1)",
-      "colorMaps": [
-        {
-          "$$hashKey": "object:899",
-          "color": "#CCC",
-          "text": "N/A"
-        },
-        {
-          "$$hashKey": "object:1728",
-          "color": "#6ED0E0",
-          "text": "PRINT_JOB_WITH_DANCER_ARM"
-        },
-        {
-          "$$hashKey": "object:1729",
-          "color": "#E24D42",
-          "text": "FAULT"
-        },
-        {
-          "$$hashKey": "object:1730",
-          "color": "#7EB26D",
-          "text": "WAIT_FOR_PRINTER_DATA_READY"
-        },
-        {
-          "$$hashKey": "object:1731",
-          "color": "#EAB839",
-          "text": "WAIT_FOR_SENSOR_ONE"
-        },
-        {
-          "$$hashKey": "object:1732",
-          "color": "#EF843C",
-          "text": "APPLY_LABEL"
-        },
-        {
-          "$$hashKey": "object:3520",
-          "color": "#7EB26D",
-          "text": "STEP1"
-        },
-        {
-          "$$hashKey": "object:3521",
-          "color": "#EAB839",
-          "text": "STEP2"
-        },
-        {
-          "$$hashKey": "object:3522",
-          "color": "#6ED0E0",
-          "text": "STEP3"
-        },
-        {
-          "$$hashKey": "object:3523",
-          "color": "#EF843C",
-          "text": "NULL"
-        }
-      ],
-      "crosshairColor": "#8F070C",
       "datasource": null,
       "description": "",
-      "display": "timeline",
-      "expandFromQueryS": 0,
-      "extendLastValue": true,
       "fieldConfig": {
-        "defaults": {},
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "align": null,
+            "displayMode": "color-background",
+            "filterable": false
+          },
+          "decimals": 0,
+          "mappings": [],
+          "max": 2,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(119, 119, 119)",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
         "overrides": []
       },
       "gridPos": {
-        "h": 4,
-        "w": 10,
+        "h": 2,
+        "w": 7,
         "x": 4,
         "y": 6
       },
-      "highlightOnMouseover": true,
-      "id": 6,
-      "interval": null,
-      "legendMaxValues": null,
-      "legendSortBy": "-ms",
-      "lineColor": "rgba(0,0,0,0.1)",
-      "maxDataPoints": 400,
-      "metricNameColor": "#000000",
+      "id": 42,
+      "options": {
+        "showHeader": false
+      },
       "pluginVersion": "7.5.5",
-      "rangeMaps": [
-        {
-          "$$hashKey": "object:904",
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "rowHeight": 50,
-      "showLegend": false,
-      "showLegendNames": true,
-      "showLegendPercent": true,
-      "showLegendValues": true,
-      "showTimeAxis": true,
       "targets": [
         {
           "format": "table",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value\nFROM history_text\nWHERE property='controller/path/block'\nand $__timeFilter(\"time\")\norder by time\n",
+          "rawSql": "SELECT\n  value\nFROM history_text \nWHERE property='controller/path/block'\nand $__timeFilter(\"time\")\nORDER BY time DESC\nLIMIT 1",
           "refId": "A",
           "select": [
             [
@@ -583,72 +711,23 @@
               }
             ]
           ],
-          "table": "execution",
+          "table": "history_float",
           "timeColumn": "\"time\"",
-          "timeColumnType": "timestamptz",
-          "where": []
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
-      "textSize": 24,
-      "textSizeTime": 12,
       "timeFrom": null,
-      "timeOptions": [
-        {
-          "name": "Years",
-          "value": "years"
-        },
-        {
-          "name": "Months",
-          "value": "months"
-        },
-        {
-          "name": "Weeks",
-          "value": "weeks"
-        },
-        {
-          "name": "Days",
-          "value": "days"
-        },
-        {
-          "name": "Hours",
-          "value": "hours"
-        },
-        {
-          "name": "Minutes",
-          "value": "minutes"
-        },
-        {
-          "name": "Seconds",
-          "value": "seconds"
-        },
-        {
-          "name": "Milliseconds",
-          "value": "milliseconds"
-        }
-      ],
-      "timePrecision": {
-        "name": "Minutes",
-        "value": "minutes"
-      },
       "timeShift": null,
-      "timeTextColor": "#d8d9da",
       "title": "Step",
-      "type": "natel-discrete-panel",
-      "units": "short",
-      "use12HourClock": false,
-      "useTimePrecision": false,
-      "valueMaps": [
-        {
-          "$$hashKey": "object:902",
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueTextColor": "#000000",
-      "writeAllValues": false,
-      "writeLastValue": true,
-      "writeMetricNames": false
+      "transformations": [],
+      "type": "table"
     },
     {
       "collapsed": true,
@@ -832,8 +911,8 @@
         ]
       },
       "gridPos": {
-        "h": 11,
-        "w": 19,
+        "h": 9,
+        "w": 14,
         "x": 0,
         "y": 17
       },
@@ -880,32 +959,7 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": [
-      {
-        "allValue": null,
-        "current": {},
-        "datasource": null,
-        "definition": "",
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "includeAll": false,
-        "label": null,
-        "multi": false,
-        "name": "query0",
-        "options": [],
-        "query": "",
-        "refresh": 0,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tags": [],
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      }
-    ]
+    "list": []
   },
   "time": {
     "from": "now-15m",
@@ -928,5 +982,5 @@
   "timezone": "",
   "title": "CCS P&A",
   "uid": "dII-Qgzgz",
-  "version": 18
+  "version": 4
 }
