@@ -17,6 +17,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 1,
+  "iteration": 1627555164655,
   "links": [
     {
       "asDropdown": false,
@@ -409,88 +410,31 @@
             ]
           }
         },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 8,
-        "x": 12,
-        "y": 1
-      },
-      "id": 34,
-      "options": {
-        "showHeader": false
-      },
-      "pluginVersion": "7.5.5",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  value\nFROM history_text \nWHERE property='message'\nORDER BY time DESC\nLIMIT 1",
-          "refId": "A",
-          "select": [
-            [
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "name"
+            },
+            "properties": [
               {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Message",
-      "transformations": [],
-      "type": "table"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "fixed"
-          },
-          "custom": {
-            "align": "left",
-            "displayMode": "color-text",
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
+                "id": "custom.width",
+                "value": 162
               }
             ]
           }
-        },
-        "overrides": []
+        ]
       },
       "gridPos": {
-        "h": 2,
-        "w": 4,
+        "h": 4,
+        "w": 12,
         "x": 12,
-        "y": 3
+        "y": 1
       },
-      "id": 40,
+      "id": 48,
       "options": {
-        "showHeader": false
+        "showHeader": true,
+        "sortBy": []
       },
       "pluginVersion": "7.5.5",
       "targets": [
@@ -499,8 +443,35 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  value\nFROM history_text \nWHERE property='firmware-version'\nORDER BY time desc\nLIMIT 1",
+          "rawSql": "SELECT\n  'Message' as name,\n  value\nFROM history_text \nWHERE property='message'\nORDER BY time DESC\nLIMIT 1",
           "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  'Firmware Version' as name,\n  value\nFROM history_text\nWHERE property='firmware-version'\nORDER BY time DESC\nLIMIT 1",
+          "refId": "B",
           "select": [
             [
               {
@@ -523,8 +494,13 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Firmware Version",
-      "transformations": [],
+      "title": "Stats",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        }
+      ],
       "type": "table"
     },
     {
@@ -660,16 +636,43 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "fixedColor": "blue",
-            "mode": "fixed"
-          },
-          "custom": {
-            "align": null,
-            "displayMode": "color-background",
-            "filterable": false
+            "mode": "thresholds"
           },
           "decimals": 0,
-          "mappings": [],
+          "mappings": [
+            {
+              "from": "",
+              "id": 3,
+              "text": "Unavailable",
+              "to": "",
+              "type": 1,
+              "value": "1"
+            },
+            {
+              "from": "",
+              "id": 4,
+              "text": "Program Stopped",
+              "to": "",
+              "type": 1,
+              "value": "2"
+            },
+            {
+              "from": "",
+              "id": 5,
+              "text": "Wait",
+              "to": "",
+              "type": 1,
+              "value": "3"
+            },
+            {
+              "from": "",
+              "id": 6,
+              "text": "Active",
+              "to": "",
+              "type": 1,
+              "value": "4"
+            }
+          ],
           "max": 2,
           "min": 0,
           "thresholds": {
@@ -678,6 +681,18 @@
               {
                 "color": "rgb(119, 119, 119)",
                 "value": null
+              },
+              {
+                "color": "red",
+                "value": 2
+              },
+              {
+                "color": "#EAB839",
+                "value": 3
+              },
+              {
+                "color": "green",
+                "value": 4
               }
             ]
           },
@@ -686,14 +701,24 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 2,
-        "w": 8,
+        "h": 4,
+        "w": 4,
         "x": 4,
         "y": 6
       },
-      "id": 42,
+      "id": 44,
       "options": {
-        "showHeader": false
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "/^pos$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "value"
       },
       "pluginVersion": "7.5.5",
       "targets": [
@@ -702,7 +727,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  value\nFROM history_text \nWHERE property='controller/path/block'\nand $__timeFilter(\"time\")\nORDER BY time DESC\nLIMIT 1",
+          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','PROGRAM_STOPPED', 'WAIT', 'ACTIVE'], value) as pos\nFROM history_text \nWHERE property='controller/path/execution'\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -726,8 +751,399 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "Step",
+      "title": "State",
       "transformations": [],
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [
+            {
+              "from": "",
+              "id": 1,
+              "text": "Pausing",
+              "to": "",
+              "type": 1,
+              "value": "2"
+            },
+            {
+              "from": "",
+              "id": 2,
+              "text": "Resuming",
+              "to": "",
+              "type": 1,
+              "value": "3"
+            },
+            {
+              "from": "",
+              "id": 3,
+              "text": "Unavailable",
+              "to": "",
+              "type": 1,
+              "value": "1"
+            }
+          ],
+          "max": 2,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(119, 119, 119)",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 2
+              },
+              {
+                "color": "green",
+                "value": 3
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 6
+      },
+      "id": 46,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["lastNotNull"],
+          "fields": "/^pos$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "value"
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','PAUSING','RESUMING'], value) as pos\nFROM history_text \nWHERE property='controller/path/wait-state'\nORDER BY time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Wait State",
+      "transformations": [],
+      "type": "stat"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "blue",
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": null,
+            "displayMode": "color-background",
+            "filterable": false
+          },
+          "decimals": 0,
+          "mappings": [],
+          "max": 2,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "rgb(119, 119, 119)",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 7,
+        "x": 12,
+        "y": 6
+      },
+      "id": 45,
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  'Program' as name,\n  value\nFROM history_text \nWHERE property='controller/path/program-main'\nORDER BY time DESC\nLIMIT 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  'Step' as name,\n  value\nFROM history_text \nWHERE property='controller/path/block'\nORDER BY time DESC\nLIMIT 1",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Program",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        }
+      ],
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "left",
+            "displayMode": "color-text",
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "label"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 113
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "name"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 122
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 19,
+        "y": 6
+      },
+      "id": 47,
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  'Cycle Count' as name,\n  value\nFROM history_float \nWHERE property like 'controller/path/count-cycle'\nORDER BY time desc\nLIMIT 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  'Life Count' as name,\n  value\nFROM history_float \nWHERE property like 'controller/path/count-life'\nORDER BY time desc\nLIMIT 1",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  'Fault Count' as name,\n  value\nFROM history_float \nWHERE property like 'controller/path/count-fault'\nORDER BY time desc\nLIMIT 1",
+          "refId": "C",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Counts",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        }
+      ],
       "type": "table"
     },
     {
@@ -737,7 +1153,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 11
       },
       "id": 37,
       "panels": [],
@@ -750,7 +1166,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 12
       },
       "id": 25,
       "title": "Feeder",
@@ -786,7 +1202,7 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 12
+        "y": 13
       },
       "id": 29,
       "interval": null,
@@ -839,7 +1255,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 17
       },
       "id": 33,
       "panels": [],
@@ -915,7 +1331,7 @@
         "h": 9,
         "w": 14,
         "x": 0,
-        "y": 17
+        "y": 18
       },
       "id": 10,
       "options": {
@@ -983,5 +1399,5 @@
   "timezone": "",
   "title": "CCS P&A",
   "uid": "dII-Qgzgz",
-  "version": 5
+  "version": 10
 }
