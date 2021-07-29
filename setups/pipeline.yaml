@@ -146,8 +146,9 @@ services:
       - $GRAFANA_PORT:3000/tcp
     environment:
       # need these for provisioning datasources
-      # PGHOST: timescaledb
-      PGHOST:
+      #. if don't override this, starts with host.docker.internal, or whatever is in .env
+      PGHOST: database
+      # PGHOST:
       PGPORT:
       PGDATABASE:
       PGUSER:
