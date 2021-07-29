@@ -161,25 +161,28 @@ outputs:
   - key: cylinder_extend_time
     category: SAMPLE
     type: EQUIPMENT_TIMER
-    subType: WORKING
+    # subType: WORKING
+    subType: x:EXTEND
     unit: SECOND
     value: <cylinder_extend_time>
 
-  # #. duplicate path
-  # - key: cylinder_home_disengage_time
-  #   category: SAMPLE
-  #   type: EQUIPMENT_TIMER
-  #   subType: WORKING
-  #   unit: SECOND
-  #   value: <cylinder_home_disengage_time>
+  #. duplicate path
+  - key: cylinder_home_disengage_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    # subType: WORKING
+    subType: x:DISENGAGE
+    unit: SECOND
+    value: <cylinder_home_disengage_time>
 
-  # #. duplicate path
-  # - key: cylinder_travel_time
-  #   category: SAMPLE
-  #   type: EQUIPMENT_TIMER
-  #   subType: WORKING
-  #   unit: SECOND
-  #   value: <cylinder_travel_time>
+  #. duplicate path
+  - key: cylinder_travel_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    # subType: WORKING
+    subType: x:TRAVEL
+    unit: SECOND
+    value: <cylinder_travel_time>
 
   - key: tamp_vacuum_delay
     category: SAMPLE

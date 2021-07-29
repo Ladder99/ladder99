@@ -50,10 +50,9 @@
               <DataItem id="pa1-tamp_air_assist" category="EVENT" type="ACTUATOR_STATE" subType="x:AIR_ASSIST"/>
               <DataItem id="pa1-tamp_vacuum" category="EVENT" type="ACTUATOR_STATE" subType="x:VACUUM"/>
               <DataItem id="pa1-tamp_cylinder" category="EVENT" type="ACTUATOR_STATE" subType="x:CYLINDER"/>
-              <DataItem id="pa1-cylinder_extend_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND"/>
-              <!-- duplicate paths - fix -->
-              <!-- <DataItem id="pa1-cylinder_home_disengage_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND"/> -->
-              <!-- <DataItem id="pa1-cylinder_travel_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND"/> -->
+              <DataItem id="pa1-cylinder_extend_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:EXTEND" unit="SECOND"/>
+              <DataItem id="pa1-cylinder_home_disengage_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:DISENGAGE" unit="SECOND"/>
+              <DataItem id="pa1-cylinder_travel_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:TRAVEL" unit="SECOND"/>
               <DataItem id="pa1-tamp_vacuum_delay" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/>
             </DataItems>
           </EndEffector>
@@ -137,10 +136,9 @@
               <DataItem id="pa2-tamp_air_assist" category="EVENT" type="ACTUATOR_STATE" subType="x:AIR_ASSIST"/>
               <DataItem id="pa2-tamp_vacuum" category="EVENT" type="ACTUATOR_STATE" subType="x:VACUUM"/>
               <DataItem id="pa2-tamp_cylinder" category="EVENT" type="ACTUATOR_STATE" subType="x:CYLINDER"/>
-              <DataItem id="pa2-cylinder_extend_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND"/>
-              <!-- duplicate paths - fix -->
-              <!-- <DataItem id="pa2-cylinder_home_disengage_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND"/> -->
-              <!-- <DataItem id="pa2-cylinder_travel_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND"/> -->
+              <DataItem id="pa2-cylinder_extend_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:EXTEND" unit="SECOND"/>
+              <DataItem id="pa2-cylinder_home_disengage_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:DISENGAGE" unit="SECOND"/>
+              <DataItem id="pa2-cylinder_travel_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:TRAVEL" unit="SECOND"/>
               <DataItem id="pa2-tamp_vacuum_delay" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/>
             </DataItems>
           </EndEffector>
