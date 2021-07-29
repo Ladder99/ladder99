@@ -17,7 +17,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
-  "iteration": 1627592953494,
+  "iteration": 1627595283200,
   "links": [
     {
       "asDropdown": false,
@@ -26,7 +26,7 @@
       "keepTime": false,
       "tags": [],
       "targetBlank": false,
-      "title": "",
+      "title": "Switch to",
       "tooltip": "",
       "type": "dashboards",
       "url": ""
@@ -913,7 +913,7 @@
         ]
       },
       "gridPos": {
-        "h": 5,
+        "h": 4,
         "w": 7,
         "x": 12,
         "y": 6
@@ -1392,7 +1392,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "e05363",
           "value": "e05363"
         },
@@ -1402,7 +1402,7 @@
         "error": null,
         "hide": 0,
         "includeAll": false,
-        "label": null,
+        "label": "Device",
         "multi": false,
         "name": "device",
         "options": [],
@@ -1440,5 +1440,5 @@
   "timezone": "",
   "title": "CCS P&A",
   "uid": "dII-Qgzgz",
-  "version": 23
+  "version": 28
 }
