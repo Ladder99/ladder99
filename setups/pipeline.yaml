@@ -70,8 +70,7 @@ services:
       AGENT_ENDPOINTS: http://agent:5000
       FETCH_INTERVAL: 2000
       FETCH_COUNT: 800
-      # PGHOST:
-      PGHOST: database
+      PGHOST:
       PGPORT:
       PGDATABASE:
       PGUSER:
@@ -147,9 +146,7 @@ services:
       - $GRAFANA_PORT:3000/tcp
     environment:
       # need these for provisioning datasources
-      #. if don't override this, starts with host.docker.internal, or whatever is in .env
-      PGHOST: database
-      # PGHOST:
+      PGHOST:
       PGPORT:
       PGDATABASE:
       PGUSER:
