@@ -17,6 +17,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
+  "iteration": 1627414715604,
   "links": [
     {
       "asDropdown": false,
@@ -831,8 +832,8 @@
         ]
       },
       "gridPos": {
-        "h": 9,
-        "w": 14,
+        "h": 11,
+        "w": 19,
         "x": 0,
         "y": 17
       },
@@ -879,10 +880,35 @@
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": null,
+        "definition": "",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "query0",
+        "options": [],
+        "query": "",
+        "refresh": 0,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -902,5 +928,5 @@
   "timezone": "",
   "title": "CCS P&A",
   "uid": "dII-Qgzgz",
-  "version": 16
+  "version": 18
 }
