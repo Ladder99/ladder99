@@ -119,7 +119,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value,\n  ARRAY_POSITION(array['UNAVAILABLE','AVAILABLE'], value) as pos\nFROM history_text \nWHERE property='availability'\nand $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','AVAILABLE'], value) as pos\nFROM history_text \nWHERE property='availability'\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -232,7 +232,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value,\n  ARRAY_POSITION(array['UNAVAILABLE','PRODUCTION','MAINTENANCE'], value) as pos\nFROM history_text \nWHERE property='functional-mode'\nand $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','PRODUCTION','MAINTENANCE'], value) as pos\nFROM history_text \nWHERE property='functional-mode'\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -357,7 +357,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value,\n  ARRAY_POSITION(array['UNAVAILABLE','NORMAL', 'WARNING', 'FAULT'], value) as pos\nFROM history_text \nWHERE property='system-condition'\nand $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','NORMAL', 'WARNING', 'FAULT'], value) as pos\nFROM history_text \nWHERE property='system-condition'\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -394,78 +394,7 @@
             "mode": "fixed"
           },
           "custom": {
-            "align": "center",
-            "displayMode": "color-text",
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "blue",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 2,
-        "w": 4,
-        "x": 12,
-        "y": 1
-      },
-      "id": 40,
-      "options": {
-        "showHeader": false
-      },
-      "pluginVersion": "7.5.5",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  value\nFROM history_text \nWHERE property='firmware-version'\nand $__timeFilter(\"time\")\nORDER BY time desc\nLIMIT 1",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Firmware Version",
-      "transformations": [],
-      "type": "table"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": "center",
+            "align": "left",
             "displayMode": "color-text",
             "filterable": false
           },
@@ -484,9 +413,9 @@
       },
       "gridPos": {
         "h": 2,
-        "w": 4,
+        "w": 8,
         "x": 12,
-        "y": 3
+        "y": 1
       },
       "id": 34,
       "options": {
@@ -499,7 +428,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  value\nFROM history_text \nWHERE property='message'\nand $__timeFilter(\"time\")\nORDER BY time DESC\nLIMIT 1",
+          "rawSql": "SELECT\n  value\nFROM history_text \nWHERE property='message'\nORDER BY time DESC\nLIMIT 1",
           "refId": "A",
           "select": [
             [
@@ -524,6 +453,77 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Message",
+      "transformations": [],
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "align": "left",
+            "displayMode": "color-text",
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 12,
+        "y": 3
+      },
+      "id": 40,
+      "options": {
+        "showHeader": false
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  value\nFROM history_text \nWHERE property='firmware-version'\nORDER BY time desc\nLIMIT 1",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Firmware Version",
       "transformations": [],
       "type": "table"
     },
@@ -626,7 +626,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value,\n  ARRAY_POSITION(array['UNAVAILABLE','ARMED','TRIGGERED'], value) as pos\nFROM history_text \nWHERE property='controller/emergency-stop'\nand $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','ARMED','TRIGGERED'], value) as pos\nFROM history_text \nWHERE property='controller/emergency-stop'\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -660,7 +660,8 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "palette-classic"
+            "fixedColor": "blue",
+            "mode": "fixed"
           },
           "custom": {
             "align": null,
@@ -686,7 +687,7 @@
       },
       "gridPos": {
         "h": 2,
-        "w": 7,
+        "w": 8,
         "x": 4,
         "y": 6
       },
@@ -982,5 +983,5 @@
   "timezone": "",
   "title": "CCS P&A",
   "uid": "dII-Qgzgz",
-  "version": 4
+  "version": 5
 }
