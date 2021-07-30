@@ -15,7 +15,8 @@ devices:
       - model: asc/econoclave
         driver: cpc # type of adapter plugin - manages protocol and payload
         protocol: tcp
-        host: 10.20.30.101
+        # host: 10.20.30.101
+        host: fanuc-rdp
         port: 9999
 
     destinations: # where to post output - just handles one output for now
