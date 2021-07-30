@@ -9,11 +9,11 @@ export class AdapterDriver {
     // handle tcp connection from cpc
     tcp.on('connection', async socket => {
       const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
-      console.log('TCP new client connection from', remoteAddress)
+      console.log('CPC driver new client connection from', remoteAddress)
     })
 
     // start tcp connection for this device
-    console.log(`TCP try listening to socket at`, { host, port }, `...`)
+    console.log(`CPC driver try listening to socket at`, { host, port }, `...`)
     tcp.listen(port, host) // eg 10.20.30.101:9999
   }
 }

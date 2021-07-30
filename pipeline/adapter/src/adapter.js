@@ -107,7 +107,7 @@ async function main() {
         const str = buffer.toString().trim()
         if (str === '* PING') {
           const response = '* PONG 10000' //. msec - where get from?
-          console.log(`TCP received PING - sending PONG:`, response)
+          console.log(`TCP received PING from agent - sending PONG:`, response)
           socket.write(response + '\n')
         } else {
           console.log('TCP received data:', str.slice(0, 20), '...')
