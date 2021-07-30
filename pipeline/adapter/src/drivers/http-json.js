@@ -2,7 +2,7 @@
 
 // polls data from http, parses as json
 
-import fetch from 'node-fetch'
+import fetch from 'node-fetch' // https://github.com/node-fetch/node-fetch
 
 export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {

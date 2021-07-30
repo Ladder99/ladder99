@@ -14,9 +14,10 @@ devices:
     sources:
       - model: asc/econoclave
         driver: cpc # type of adapter plugin - manages protocol and payload
-        protocol: http
-        host: play
-        port: 8080
+        protocol: tcp
+        host: 10.20.30.101
+        port: 9999
+
     destinations: # where to post output - just handles one output for now
       - protocol: shdr
         host: adapter
