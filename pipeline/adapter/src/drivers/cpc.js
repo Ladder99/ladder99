@@ -8,8 +8,12 @@ export class AdapterDriver {
     const client = net.connect(port, host, () => {
       console.log('CPC driver connected...')
     })
-    client.on('error', function (error) {
+    client.on('error', error => {
       console.log(error)
+    })
+    client.on('connect', () => {
+      console.log(`CPC connected 2`)
+      // client.
     })
   }
 }
