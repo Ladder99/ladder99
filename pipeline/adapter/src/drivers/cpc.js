@@ -4,11 +4,13 @@ import net from 'net' // node lib for tcp
 
 export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
-    // const tcp = net.createServer()
-    const options = { host, port }
-    console.log(`CPC driver trying to connect to TCP server at`, options, '...')
-    const client = net.connect(options, () => {
-      console.log('connected to tcp server')
+    console.log(`CPC driver connecting to TCP server at`, { host, port }, '...')
+    const client = net.connect(port, host, () => {
+      console.log('CPC driver connected...')
+    })
+    client.on('error', function (error) {
+      console.log('handled error')
+      console.log(error)
     })
 
     // // handle tcp connection from cpc
