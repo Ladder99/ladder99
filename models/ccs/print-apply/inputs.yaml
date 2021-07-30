@@ -6,9 +6,9 @@
 # mqtt broker sends data to adapter.
 # adapter parses messages, writes values to cache, which outputs shdr.
 
-#. call this adapter.yaml? cache.yaml? cache-inputs.yaml?
+#. call this adapter.yaml? cache.yaml? cache-inputs.yaml? driver.yaml?
 
-# this file is parsed by the adapter plugin mqtt-json.js.
+# this file is parsed by the adapter driver pipeline/adapter/src/drivers/mqtt-json.js.
 
 # define connect handler
 connect:

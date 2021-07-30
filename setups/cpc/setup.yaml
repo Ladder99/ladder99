@@ -1,0 +1,23 @@
+# setup for cpc autoclaves
+
+#. will compile this with sh/adapter/compile
+#. will compile to agent.cfg, devices.xml, pipeline-overrides.yaml, topology.dot?
+#. include in sh/pipeline steps? ie always compile this file (or if changed)
+
+devices:
+  - id: ac1
+    name: autoclave1 # this must match name in agent.cfg and devices.xml
+    model: asc/econoclave
+    #. do we really want/need ability to have >1 source per device?
+    # won't it lead to conflicts with dataitem ids, eg connection/device-availability?
+    #. just have single source and destination for now?
+    sources:
+      - model: asc/econoclave
+        driver: cpc # type of adapter plugin - manages protocol and payload
+        protocol: http
+        host: play
+        port: 8080
+    destinations: # where to post output - just handles one output for now
+      - protocol: shdr
+        host: adapter
+        port: 7878

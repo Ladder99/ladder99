@@ -1,3 +1,8 @@
+# inputs
+# this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
+
+#. call this adapter.yaml? cache.yaml? cache-inputs.yaml? driver.yaml?
+
 # note: batching allows req-resp protocols to limit the number of
 # data items per request.
 

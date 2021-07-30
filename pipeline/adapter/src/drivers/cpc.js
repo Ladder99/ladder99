@@ -4,10 +4,10 @@ import fetch from 'node-fetch'
 
 export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
-    const url = `${protocol}://${host}:${port}` // eg http://play:8080
-    console.log('init test plugin', { deviceId, url })
+    // const url = `${protocol}://${host}:${port}` // eg http://play:8080
+    // console.log('init test plugin', { deviceId, url })
 
-    const timer = setInterval(poll, 1000)
+    // const timer = setInterval(poll, 1000)
 
     //. poll device, send data directly to agent as shdr
     //. hmm, if connection broke, this would start piling up awaiting fn calls -
