@@ -19,7 +19,7 @@ devices:
         # host: localhost
         port: 9999
 
-    #. this should be server(s), not destinations - for agent to connect to
+    #. this should be server, not destinations - for agent to connect to
     destinations: # where to post output - just handles one output for now
       - protocol: shdr
         host: adapter
