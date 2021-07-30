@@ -3,22 +3,23 @@
 # run ladder99 pipeline with docker compose.
 
 usage="
-Usage: sh/stop SETUP SERVICES
+Usage: sh/start SETUP SERVICES
 
-Stop Ladder99 setup service(s)
+Run a Ladder99 setup with list of services to include.
 
 SETUP     setup subfolder, eg vmc, ccs-pa
-SERVICES  space-delim list of services to stop, eg agent, all
+SERVICES  space-delim list of services to start, eg agent, all
 
 Examples
 
-    sh/stop ccs-pa agent
-    sh/stop ccs-pa all
-    sh/stop ccs-pa all play
+    sh/start ccs-pa agent
+    sh/start ccs-pa all
+    sh/start ccs-pa all play
 
 Note: services are referenced by their 'profile' attribute in pipeline.yaml.
-Note: cal also use 'docker kill SERVICE' to stop an individual service.
+Note: use sh/stop to stop a service.
 "
+# use 'docker kill SERVICE' to stop an individual service.
 
 if [ $# -eq 0 ]; then
     echo "$usage"
@@ -31,6 +32,6 @@ shift
 services=$* # eg 'agent play'
 
 # get command and call it
-cmd="sh/pipeline stop $setup $services"
+cmd="sh/pipeline start $setup $services"
 echo $cmd
 bash -c "$cmd"
