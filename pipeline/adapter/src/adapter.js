@@ -6,6 +6,7 @@ import net from 'net' // node lib for tcp
 import * as common from './common.js'
 import { Cache } from './cache.js'
 
+//. this is Adapter server, not destination
 // default destination if none provided in model.yaml
 const defaultDestination = { protocol: 'shdr', host: 'adapter', port: 7878 }
 
@@ -34,7 +35,7 @@ async function main() {
     const deviceId = device.id
 
     // each device gets a tcp connection to the agent
-    console.log(`TCP creating server for agent...`)
+    console.log(`Creating TCP server for Agent to connect to...`)
     const tcp = net.createServer()
 
     // handle tcp connection from agent.
@@ -107,10 +108,13 @@ async function main() {
         const str = buffer.toString().trim()
         if (str === '* PING') {
           const response = '* PONG 10000' //. msec - where get from?
-          console.log(`TCP received PING from agent - sending PONG:`, response)
+          console.log(
+            `Adapter received PING from Agent - sending PONG:`,
+            response
+          )
           socket.write(response + '\n')
         } else {
-          console.log('TCP received data:', str.slice(0, 20), '...')
+          console.log('Adapter received data:', str.slice(0, 20), '...')
         }
       }
     })
@@ -119,10 +123,13 @@ async function main() {
     const { destinations } = device
     //. just handle one for now
     const destination = destinations ? destinations[0] : defaultDestination
-    console.log(`TCP try listening to socket at`, destination, `...`)
+    console.log(`Adapter listen to socket at`, destination, `...`)
     // console.log('here')
     // try {
-    tcp.listen(destination.port, destination.host) // eg adapter:7878
+    // eg adapter:7878
+    tcp.listen(destination.port, destination.host, () => {
+      console.log(`Adapter listening...`)
+    })
     // } catch (error) {
     //   if (error.code === 'ENOTFOUND') {
     //     console.log(
