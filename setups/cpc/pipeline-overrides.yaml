@@ -1,4 +1,4 @@
-services:
-  adapter:
-    ports:
-      - 9999:9999
+# services:
+#   adapter:
+#     ports:
+#       - 9999:9999
