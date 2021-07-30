@@ -26,12 +26,18 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
+cmd=start
+if [ $1 = "-d" ]; then
+    shift
+    cmd=startd
+fi
+
 # get arguments
 setup=$1 # eg 'ccs-pa'
 shift
 services=$* # eg 'agent play'
 
 # get command and call it
-cmd="sh/pipeline start $setup $services"
+cmd="sh/pipeline $cmd $setup $services"
 echo $cmd
 bash -c "$cmd"
