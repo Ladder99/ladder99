@@ -71,16 +71,18 @@ async function main() {
         console.log(`Reading ${pathTypes}...`)
         const types = (common.importYaml(pathTypes) || {}).types
 
-        // compile value js strings from outputs.yaml.
-        // outputs is array of {key: string, value: function, dependsOn: string[]}.
-        const outputs = getOutputs({
-          templates: outputTemplates,
-          types,
-          deviceId,
-        })
+        if (outputTemplates) {
+          // compile value js strings from outputs.yaml.
+          // outputs is array of {key: string, value: function, dependsOn: string[]}.
+          const outputs = getOutputs({
+            templates: outputTemplates,
+            types,
+            deviceId,
+          })
 
-        // add outputs for each source to cache
-        cache.addOutputs(outputs, socket)
+          // add outputs for each source to cache
+          cache.addOutputs(outputs, socket)
+        }
 
         // initialize driver plugin
         // note: this must be done AFTER getOutputs and addOutputs,
