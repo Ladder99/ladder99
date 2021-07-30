@@ -6,9 +6,8 @@ import net from 'net' // node lib for tcp
 import * as common from './common.js'
 import { Cache } from './cache.js'
 
-//. this is Adapter server, not destination
-// default destination if none provided in model.yaml
-const defaultDestination = { protocol: 'shdr', host: 'adapter', port: 7878 }
+// default server if none provided in model.yaml
+const defaultServer = { protocol: 'shdr', host: 'adapter', port: 7878 }
 
 // file system inputs
 const driversFolder = './drivers' // eg mqtt-json - must start with '.'
@@ -43,7 +42,7 @@ async function main() {
     // so know where to send SHDR strings.
     tcp.on('connection', async socket => {
       const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
-      console.log('TCP new client connection from', remoteAddress)
+      console.log('New client connection from Agent at', remoteAddress)
 
       // each device can have multiple sources.
       // iterate over sources, load driver for that source, call init on it.
@@ -53,7 +52,7 @@ async function main() {
 
         // import driver plugin
         const pathDriver = `${driversFolder}/${driver}.js` // eg './drivers/mqtt-json.js'
-        console.log(`Adapter importing driver code: ${pathDriver}...`)
+        console.log(`Importing driver code: ${pathDriver}...`)
         const { AdapterDriver } = await import(pathDriver)
         const plugin = new AdapterDriver()
 
@@ -88,7 +87,7 @@ async function main() {
         // initialize driver plugin
         // note: this must be done AFTER getOutputs and addOutputs,
         // as that is where the dependsOn values are set, and this needs those.
-        console.log(`Initializing ${driver} driver...`)
+        console.log(`Initializing driver for ${driver}...`)
         plugin.init({
           deviceId,
           driver,
@@ -108,27 +107,23 @@ async function main() {
         const str = buffer.toString().trim()
         if (str === '* PING') {
           const response = '* PONG 10000' //. msec - where get from?
-          console.log(
-            `Adapter received PING from Agent - sending PONG:`,
-            response
-          )
+          console.log(`Received PING from Agent - sending PONG:`, response)
           socket.write(response + '\n')
         } else {
-          console.log('Adapter received data:', str.slice(0, 20), '...')
+          console.log('Received data:', str.slice(0, 20), '...')
         }
       }
     })
 
-    // start tcp connection for this device
+    // start tcp server for Agent to listen to, eg at adapter:7878
+    //. rename to server(s)
     const { destinations } = device
     //. just handle one for now
-    const destination = destinations ? destinations[0] : defaultDestination
-    console.log(`Adapter listen to socket at`, destination, `...`)
-    // console.log('here')
+    const server = destinations ? destinations[0] : defaultServer
+    console.log(`Listen for Agent on TCP socket at`, server, `...`)
     // try {
-    // eg adapter:7878
-    tcp.listen(destination.port, destination.host, () => {
-      console.log(`Adapter listening...`)
+    tcp.listen(server.port, server.host, () => {
+      console.log(`Listening...`)
     })
     // } catch (error) {
     //   if (error.code === 'ENOTFOUND') {
@@ -139,7 +134,6 @@ async function main() {
     //     throw error
     //   }
     // }
-    // console.log('there')
   }
 }
 
