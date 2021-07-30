@@ -10,7 +10,7 @@ import { Cache } from './cache.js'
 const defaultDestination = { protocol: 'shdr', host: 'adapter', port: 7878 }
 
 // file system inputs
-const pluginsFolder = './plugins' // for drivers, eg mqtt-json - must start with .
+const driversFolder = './drivers' // eg mqtt-json - must start with '.'
 // these folders are defined in pipeline.yaml with docker volume mappings
 const setupFolder = '/data/setup' // incls setup.yaml etc
 const modelsFolder = `/data/models` // incls ccs-pa/model.yaml etc
@@ -45,16 +45,16 @@ async function main() {
       console.log('TCP new client connection from', remoteAddress)
 
       // each device can have multiple sources.
-      // iterate over sources, load plugin for that source, call init on it.
+      // iterate over sources, load driver for that source, call init on it.
       for (const source of device.sources) {
         console.log(`Source`, source)
         const { model, driver, protocol, host, port } = source
 
         // import driver plugin
-        const pathPlugin = `${pluginsFolder}/${driver}.js` // eg './plugins/mqtt-json.js'
-        console.log(`Adapter importing plugin code: ${pathPlugin}...`)
-        const { AdapterPlugin } = await import(pathPlugin)
-        const plugin = new AdapterPlugin()
+        const pathDriver = `${driversFolder}/${driver}.js` // eg './drivers/mqtt-json.js'
+        console.log(`Adapter importing driver code: ${pathDriver}...`)
+        const { AdapterDriver } = await import(pathDriver)
+        const plugin = new AdapterDriver()
 
         // get input handlers
         const pathInputs = `${modelsFolder}/${model}/inputs.yaml`
@@ -82,10 +82,10 @@ async function main() {
         // add outputs for each source to cache
         cache.addOutputs(outputs, socket)
 
-        // initialize plugin
+        // initialize driver plugin
         // note: this must be done AFTER getOutputs and addOutputs,
         // as that is where the dependsOn values are set, and this needs those.
-        console.log(`Initializing ${driver} plugin...`)
+        console.log(`Initializing ${driver} driver...`)
         plugin.init({
           deviceId,
           driver,

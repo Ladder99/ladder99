@@ -1,10 +1,10 @@
-// http-json plugin
+// http-json driver
 
 // polls data from http, parses as json
 
 import fetch from 'node-fetch'
 
-export class AdapterPlugin {
+export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
     const url = `${protocol}://${host}:${port}` // eg http://play:8080
     console.log('init test plugin', { deviceId, url })

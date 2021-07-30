@@ -1,4 +1,4 @@
-// opc
+// opc driver
 // client for opc server
 
 // note: multiline named import fails so must do this
@@ -13,6 +13,8 @@ const {
   // TimestampsToReturn,
   // ClientMonitoredItem,
 } = pkg
+
+//. convert to class
 
 // initialize the client plugin
 export async function init({ url, cache, deviceId }) {

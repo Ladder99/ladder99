@@ -1,4 +1,4 @@
-// mqtt-json
+// mqtt-json driver
 // adapter plugin - subscribes to mqtt topics, receives messages,
 // parses them out as JSON, updates cache values, which sends SHDR.
 
@@ -6,7 +6,7 @@ import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
 let cycleStart
 
-export class AdapterPlugin {
+export class AdapterDriver {
   // initialize the client plugin
   // queries the device for address space definitions, subscribes to topics.
   // inputs is the inputs.yaml file parsed to a js tree.
