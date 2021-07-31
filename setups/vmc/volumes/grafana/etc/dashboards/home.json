@@ -87,7 +87,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value\nFROM history_numeric\nWHERE\n  id='Frt' and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT\n  time,\n  value\nFROM history_float\nWHERE\n  property='controller/path/path-feedrate-units=millimeter/second' and\n  $__timeFilter(\"time\")",
           "refId": "A",
           "select": [
             [
@@ -227,7 +227,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  id,\n  value\nFROM history\nWHERE\n  (id <> 'cn2' and id <> 'x2' and id <> 'x3' and id <> 'y2' and id <> 'y3') and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT\n  property,\n  time,\n  value\nFROM history_all\nWHERE\n  property IN ('availability', 'load-condition')\n  AND $__timeFilter(\"time\")",
           "refId": "A",
           "select": [
             [
@@ -305,7 +305,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value as x\nFROM history_numeric\nWHERE id='x2' and\n  $__timeFilter(\"time\");",
+          "rawSql": "SELECT\n  time,\n  value as x\nFROM history_float\nWHERE property='asd' and\n  $__timeFilter(\"time\");",
           "refId": "A",
           "select": [
             [
@@ -1188,5 +1188,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 39
+  "version": 8
 }
