@@ -11,8 +11,25 @@
         ASC autoclave
       </Description>
       <DataItems>
-        <DataItem id="ac1-connection" category="EVENT" type="AVAILABILITY"/>
+        <DataItem id="ac1-operator_name" category="EVENT" type="USER" subType="OPERATOR"/>
+        <DataItem id="ac1-recipe_description" category="EVENT" type="PROCESS_KIND_ID" subType="PROCESS_NAME"/>
+        <DataItem id="ac1-vessel_air_temp" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
       </DataItems>
+
+      <Systems>
+        <Components>
+          <Electrical>
+            <DataItems>
+              <DataItem id="ac1-control_power_condition" category="CONDITION" type="VOLTAGE_DC" />
+            </DataItems>
+          </Electrical>
+          <Cooling>
+            <DataItems>
+              <DataItem id="ac1-cool_pump_a_hours" category="SAMPLE" type="EQUIPMENT_TIME" subType="OPERATING" units="SECOND" nativeScale="1" />
+            </DataItems>
+          </Cooling>
+        </Components>
+      </Systems>
     </Device>
 
   </Devices>
