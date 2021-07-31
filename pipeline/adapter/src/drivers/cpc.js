@@ -11,9 +11,16 @@ export class AdapterDriver {
     client.on('error', error => {
       console.log(error)
     })
+    client.on('data', data => {
+      console.log(data.toString())
+    })
     client.on('connect', () => {
       console.log(`CPC connected 2`)
-      // client.
+      client.write(
+        Buffer.from(
+          `PathListGet:ReadValues:.Autoclave.Inputs.AIRTC\\Value,.Autoclave.RecipeProcessor\\RunStatus`
+        )
+      )
     })
   }
 }
