@@ -16,7 +16,6 @@ devices:
         driver: cpc # type of adapter plugin - manages protocol and payload
         protocol: tcp
         host: 10.20.30.101
-        # host: localhost
         port: 9999
 
     #. this should be server, not destinations - for agent to connect to
