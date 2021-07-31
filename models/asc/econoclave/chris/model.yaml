@@ -1,0 +1,40 @@
+# asc econoclave model
+
+# this defines the structure of the xml that will get included in devices.xml.
+# text substitution is performed, eg ${deviceId} is replaced by
+# that value from the device yaml.
+# dataItems are defined in outputs.yaml.
+# compilation to devices.xml is done with sh/adapter/compile.
+
+model:
+  id: ${deviceId} # eg 'ac1'
+  name: ${deviceId} # must be unique in xml - might want to override in setup.yaml tho?
+  uuid: ${uuid} # eg 'e05363af'
+  sampleInterval: 10
+
+  description:
+    manufacturer: ASC
+    model: EC1X2
+    serialNumber: ${serialNumber} # eg '001'
+    text: ASC Econoclave 1x2ft
+
+  dataItems:
+    dataItem:
+      - operator_name
+      - recipe_description
+      - vessel_air_temp
+
+  systems:
+    id: ${deviceId}-systems
+    components:
+      electrical:
+        id: ${deviceId}-electrical
+        dataItems:
+          dataItem:
+            - control_power_condition
+
+      cooling:
+        id: ${deviceId}-cooling
+        dataItems:
+          dataItem:
+            - cool_pump_a_hours

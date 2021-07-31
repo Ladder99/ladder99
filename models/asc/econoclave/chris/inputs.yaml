@@ -1,0 +1,33 @@
+# inputs
+# this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
+
+#. call this adapter.yaml? cache.yaml? cache-inputs.yaml? driver.yaml?
+
+inputs:
+  - key: control_power_warning
+    path: .Autoclave.Alarms.ControlPower\Condition
+
+  - key: control_power_fault
+    path: .Autoclave.Alarms.ControlPower\AlarmActive
+
+  - key: operator_name
+    path: .Autoclave.Variables.OperatorName\Value
+
+  - key: cool_pump_a_hours
+    path: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
+
+  - key: recipe_description
+    path: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
+
+  - key: vessel_air_temp
+    path: .Autoclave.Inputs.AIRTC\Value
+
+  # note: batching allows req-resp protocols to limit the number of
+  # data items per request.
+  # - key: air_tc # data item alias
+  #   path: .Autoclave.AIR_TC\Value # data item path
+  #   batch: 1
+
+  # - key: temp_alarm
+  #   path: .Autoclave.Alarms.OverTemp\Active
+  #   batch: 1
