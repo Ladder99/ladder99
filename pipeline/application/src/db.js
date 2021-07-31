@@ -4,6 +4,7 @@
 import fs from 'fs' // node lib
 import pg from 'pg' // postgres driver https://github.com/brianc/node-postgres
 const { Pool } = pg // note: import { Client } from 'pg' gives error, so must do this
+import pgFormat from 'pg-format' // see https://github.com/datalanche/node-pg-format
 import * as libapp from './libapp.js'
 
 export class Db {
@@ -105,17 +106,27 @@ export class Db {
     }
   }
 
-  async addHistory(record) {
+  async addHistory(records) {
+    // if just one record, turn it into an array
+    if (!Array.isArray(records)) {
+      records = [records]
+    }
+    // write array of records
+    // see https://stackoverflow.com/a/63167970/243392 - uses pgformat library
     try {
-      const sql = `INSERT INTO history (node_id, property_id, time, value) 
-VALUES ($1, $2, $3, $4::jsonb);`
-      console.log(sql)
-      const res = await this.query(sql, [
+      // const sql = `INSERT INTO history (node_id, property_id, time, value)
+      // VALUES ($1, $2, $3, $4::jsonb);`
+      const values = records.map(record => [
         record.node_id,
         record.property_id,
         record.time,
         record.value,
       ])
+      const sql = pgFormat(
+        `INSERT INTO history (node_id, property_id, time, value) VALUES %L;`,
+        values
+      )
+      const res = await this.query(sql)
       return res
     } catch (e) {
       // eg error: duplicate key value violates unique constraint "nodes_path"

@@ -1,5 +1,6 @@
 # docker-compose overrides for vmc pipeline
 
+# minimally need version number
 version: '3.8'
 
 services:

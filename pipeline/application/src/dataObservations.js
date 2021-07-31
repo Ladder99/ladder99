@@ -18,16 +18,35 @@ export class Observations extends Data {
     // get flat list of observations from xml/json
     const observations = treeObservations.getElements(this.json)
 
-    //. build up an array of history records to write, pass to addHistory - for speed
+    // // write values one at a time (too cpu-intense)
+    // for (let obs of observations) {
+    //   const node = indexes.objById[obs.dataItemId]
+    //   if (node) {
+    //     const { device_id, property_id } = node
+    //     console.log(
+    //       `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}, value ${obs.value}`
+    //     )
+    //     // obs.value is always string, due to the way the xml is stored, like <value>10</value>
+    //     // const value = Number(obs.value) || obs.value
+    //     const value = Number(obs.value) || JSON.stringify(obs.value)
+    //     const record = {
+    //       node_id: device_id,
+    //       property_id,
+    //       time: obs.timestamp,
+    //       value,
+    //     }
+    //     // console.log(record)
+    //     await db.addHistory(record) // write db
+    //   }
+    // }
+
+    //. build up an array of history records to write for speed/lower cpu
+    const records = []
     for (let obs of observations) {
       const node = indexes.objById[obs.dataItemId]
       if (node) {
         const { device_id, property_id } = node
-        console.log(
-          `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}, value ${obs.value}`
-        )
         // obs.value is always string, due to the way the xml is stored, like <value>10</value>
-        // const value = Number(obs.value) || obs.value
         const value = Number(obs.value) || JSON.stringify(obs.value)
         const record = {
           node_id: device_id,
@@ -35,10 +54,13 @@ export class Observations extends Data {
           time: obs.timestamp,
           value,
         }
-        // console.log(record)
-        await db.addHistory(record) // write db
+        console.log(record)
+        records.push(record)
+      } else {
+        console.log(`Warning: objById index missing dataItem ${obs.dataItemId}`)
       }
     }
+    return await db.addHistory(records) // write db
 
     // this.from = nextSequence
   }
