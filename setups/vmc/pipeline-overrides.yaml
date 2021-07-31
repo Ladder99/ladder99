@@ -6,7 +6,8 @@ services:
   agent:
     working_dir: /etc/mtconnect/simulator
     # nowork - hangs - how do in parallel?
-    command: /bin/sh -c /usr/bin/ruby run_scenario.rb -l VMC-3Axis-Log.txt & agent debug
+    # command: /bin/sh -c /usr/bin/ruby run_scenario.rb -l VMC-3Axis-Log.txt & agent debug
+    command: ''
 
 networks:
   ladder99:
