@@ -111,6 +111,7 @@ export class Db {
     if (!Array.isArray(records)) {
       records = [records]
     }
+    if (records.length < 1) return // do nothing
     // write array of records
     // see https://stackoverflow.com/a/63167970/243392 - uses pgformat library
     try {
@@ -126,6 +127,7 @@ export class Db {
         `INSERT INTO history (node_id, property_id, time, value) VALUES %L;`,
         values
       )
+      console.log(sql.slice(0, 100))
       const res = await this.query(sql)
       return res
     } catch (e) {
