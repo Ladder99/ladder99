@@ -16,41 +16,46 @@ console.log()
 //------------------------------------------------------------------------
 
 // load and parse probe xml
+
+//. choose a folder
 // const folder = 'examples/demo'
-// const folder = 'examples/vmc'
-const folder = 'examples/ccs-pa'
+const folder = 'examples/vmc'
+// const folder = 'examples/ccs-pa'
 // const folder = 'examples/mazak'
+
+// get probe xml
 const json = getJson(`${folder}/probe.xml`)
 
 // get objects (devices, all dataitems)
 const objs = tree.getObjects(json)
+console.log(objs)
 
-// get nodes (devices, unique propdefs)
-const nodes = tree.getNodes(objs)
+// // get nodes (devices, unique propdefs)
+// const nodes = tree.getNodes(objs)
 
-// simulate db add/get - assign node_id to each node
-nodes.forEach((node, i) => (node.node_id = i + 1))
+// // simulate db add/get - assign node_id to each node
+// nodes.forEach((node, i) => (node.node_id = i + 1))
 
-const indexes = tree.getIndexes(nodes, objs)
-console.log(indexes)
+// const indexes = tree.getIndexes(nodes, objs)
+// console.log(indexes)
 
 //------------------------------------------------------------------------
 
-// load and parse current xml
-const json2 = getJson(`${folder}/current.xml`)
+// // load and parse current xml
+// const json2 = getJson(`${folder}/current.xml`)
 
-const observations = treeObservations.getElements(json2)
-// console.log(observations)
+// const observations = treeObservations.getElements(json2)
+// // console.log(observations)
 
-for (let obs of observations) {
-  const node = indexes.objById[obs.dataItemId]
-  if (node) {
-    const { device_id, property_id } = node
-    console.log(
-      `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}, value ${obs.value}`
-    )
-  }
-}
+// for (let obs of observations) {
+//   const node = indexes.objById[obs.dataItemId]
+//   if (node) {
+//     const { device_id, property_id } = node
+//     console.log(
+//       `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}, value ${obs.value}`
+//     )
+//   }
+// }
 
 //------------------------------------------------------------------------
 

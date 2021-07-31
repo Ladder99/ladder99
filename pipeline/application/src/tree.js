@@ -87,14 +87,17 @@ const ignoreTags = libapp.getSet(
   // ''
 )
 
+//. assume for now there there is only one of these in path, so can just lower case them
+//. in future, do two passes to determine if need to uniquify them with nums or names?
+//. or use aliases table to refer by number or name or id to a propertydef
 const plainTags = libapp.getSet(
-  'Systems,Feeder,Resources,Personnel,EndEffector,Controller,Path'
+  'Systems,Feeder,Resources,Personnel,EndEffector,Controller,Path,Axes'
 )
 
 // ignore these DataItem attributes - not necessary to identify an element,
 // or are redundant.
 const ignoreAttributes = libapp.getSet(
-  'category,type,subType,_key,tag,parents,id,unit,nativeUnits,device,name,compositionId'
+  'category,discrete,type,subType,_key,tag,parents,id,unit,units,nativeUnits,device,name,compositionId'
 )
 
 function getPathStep(obj) {
@@ -132,13 +135,15 @@ function getPathStep(obj) {
         step = getParamsStep(params)
       }
       break
-    case 'Specification':
-    case 'Composition':
-      params = [obj.type]
-      if (obj.subType) params.push(obj.subType)
-      break
+    // case 'Specification':
+    // case 'Composition':
+    //   // params = [obj.type]
+    //   // if (obj.subType) params.push(obj.subType)
+    //   step = '?'
+    //   break
     default:
-      params = [obj.name || obj.id || '']
+      // params = [obj.name || obj.id || '']
+      step = (obj.name || obj.id || '').toLowerCase()
       break
   }
   // const paramsStr =
@@ -216,9 +221,11 @@ export function getNodes(objs) {
       node.type = 'PropertyDef'
       //. leave these in the node bag?
       delete node.id
+      delete node.name
       delete node.device
       delete node.discrete
       delete node.unit
+      delete node.units
       delete node.nativeUnits
       delete node.coordinateSystem
       delete node.representation
