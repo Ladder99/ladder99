@@ -22,7 +22,9 @@ export class AdapterDriver {
       const cmd = `PathListGet:ReadValues:.Autoclave.Variables.OperatorName\\Value`
       console.log(`CPC driver writing ${cmd}...`)
       // client.write(Buffer.from(cmd + '\n'))
-      client.write(cmd + '\n')
+      client.write(cmd + '\n', error => {
+        console.log(error)
+      })
     })
   }
 }
