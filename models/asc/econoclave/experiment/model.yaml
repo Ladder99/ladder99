@@ -19,22 +19,17 @@ model:
     text: ASC Econoclave 1x2ft
 
   dataItems:
-    dataItem:
-      - operator_name
-      - recipe_description
-      - vessel_air_temp
+    event(user,operator): operator_name
+    event(process-kind-id,process-name): recipe_description
+    sample(temperature,units=celsius,native-units=fahrenheit): vessel_air_temp
 
   systems:
-    id: ${deviceId}-systems
     components:
       electrical:
-        id: ${deviceId}-electrical
         dataItems:
-          dataItem:
-            - control_power_condition
+          condition(voltage-dc): control_power_condition
 
       cooling:
-        id: ${deviceId}-cooling
         dataItems:
-          dataItem:
-            - cool_pump_a_hours
+          # cool_pump_a_hours is in hours, not sure what the correct scale there is - part 2, 7.2.2.7
+          sample(equipment-time,operating,units=second,native-scale=1): cool-pump-a-hours
