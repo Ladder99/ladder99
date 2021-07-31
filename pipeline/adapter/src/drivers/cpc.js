@@ -25,7 +25,7 @@ export class AdapterDriver {
       // const cmd = `PathListGet:ReadValues:.Autoclave.Inputs.AIRTC\\Value,.Autoclave.RecipeProcessor\\RunStatus`
       const cmd = `PathListGet:ReadValues:.Autoclave.Variables.OperatorName\\Value`
       console.log(`CPC driver writing ${cmd}...`)
-      client.write(cmd + '\n')
+      client.write(cmd + '\r\n')
     })
   }
 }
