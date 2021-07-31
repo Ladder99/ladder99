@@ -43,7 +43,7 @@
       "fieldConfig": {
         "defaults": {
           "displayName": "Frt",
-          "unit": "lengthmm"
+          "unit": "none"
         },
         "overrides": []
       },
@@ -87,7 +87,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value\nFROM history_float\nWHERE\n  property='controller/path/path-feedrate-units=millimeter/second' and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT\n  time,\n  value\nFROM history_float\nWHERE\n  property='controller/path/path-feedrate' and\n  $__timeFilter(\"time\")",
           "refId": "A",
           "select": [
             [
@@ -129,7 +129,7 @@
       },
       "yaxes": [
         {
-          "format": "lengthmm",
+          "format": "none",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -305,7 +305,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value as x\nFROM history_float\nWHERE property='asd' and\n  $__timeFilter(\"time\");",
+          "rawSql": "SELECT\n  time,\n  value as x\nFROM history_float\nWHERE property='axes/x/position-actual' and\n  $__timeFilter(\"time\");",
           "refId": "A",
           "select": [
             [
@@ -332,7 +332,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value as y\nFROM history_numeric\nWHERE id='y2' and\n  $__timeFilter(\"time\");",
+          "rawSql": "SELECT\n  time,\n  value as y\nFROM history_float\nWHERE property='axes/y/position-actual' and\n  $__timeFilter(\"time\");",
           "refId": "B",
           "select": [
             [
@@ -359,7 +359,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value as z\nFROM history_numeric\nWHERE id='z2' and\n  $__timeFilter(\"time\");\n",
+          "rawSql": "SELECT\n  time,\n  value as z\nFROM history_float\nWHERE property='axes/z/position-actual' and\n  $__timeFilter(\"time\");\n",
           "refId": "C",
           "select": [
             [
@@ -659,7 +659,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time,\n  SUM(CASE id WHEN 'x2' THEN value ELSE 0 END) AS x,\n  SUM(CASE id WHEN 'y2' THEN value ELSE 0 END) AS y\nFROM history_numeric\nWHERE $__timeFilter(\"time\")\nGROUP BY time\n;\n",
+          "rawSql": "SELECT time,\n  SUM(CASE property WHEN 'axes/x/position-actual' THEN value ELSE 0 END) AS x,\n  SUM(CASE property WHEN 'axes/y/position-actual' THEN value ELSE 0 END) AS y\nFROM history_float\nWHERE $__timeFilter(\"time\")\nGROUP BY time\n;\n",
           "refId": "A",
           "select": [
             [
@@ -767,7 +767,7 @@
                   "color": "#DDD",
                   "width": 0
                 },
-                "showscale": true,
+                "showscale": false,
                 "size": 5,
                 "sizemin": 3,
                 "sizemode": "diameter",
@@ -790,7 +790,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time,\n  SUM(CASE id WHEN 'x2' THEN value ELSE 0 END) AS x,\n  SUM(CASE id WHEN 'y2' THEN value ELSE 0 END) AS y,\n  SUM(CASE id WHEN 'z2' THEN value ELSE 0 END) AS z\nFROM history_numeric\nWHERE $__timeFilter(\"time\")\nGROUP BY time\n;\n",
+          "rawSql": "SELECT time,\n  SUM(CASE property WHEN 'axes/x/position-actual' THEN value ELSE 0 END) AS x,\n  SUM(CASE property WHEN 'axes/y/position-actual' THEN value ELSE 0 END) AS y,\n  SUM(CASE property WHEN 'axes/z/position-actual' THEN value ELSE 0 END) AS z\nFROM history_float\nWHERE $__timeFilter(\"time\")\nGROUP BY time\n;\n",
           "refId": "A",
           "select": [
             [
@@ -1188,5 +1188,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 8
+  "version": 14
 }
