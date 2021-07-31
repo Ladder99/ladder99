@@ -10,13 +10,15 @@ export class AdapterDriver {
       console.log(error)
     })
     client.on('data', data => {
-      console.log(data.toString())
+      const str = data.toString()
+      console.log(`CPC driver received ${str}...`)
     })
     client.on('connect', () => {
       console.log(`CPC driver connected...`)
-      const cmd = `PathListGet:ReadValues:.Autoclave.Inputs.AIRTC\\Value,.Autoclave.RecipeProcessor\\RunStatus\n`
+      // const cmd = `PathListGet:ReadValues:.Autoclave.Inputs.AIRTC\\Value,.Autoclave.RecipeProcessor\\RunStatus`
+      const cmd = `PathListGet:ReadValues:.Autoclave.Variables.OperatorName\\Value`
       console.log(`CPC driver writing ${cmd}...`)
-      client.write(Buffer.from(cmd))
+      client.write(Buffer.from(cmd + '\n'))
     })
   }
 }
