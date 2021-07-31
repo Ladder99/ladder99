@@ -19,49 +19,17 @@ model:
     text: ASC Econoclave 1x2ft
 
   dataItems:
-    # - operator_name
     event(user,operator): operator_name
-    # - recipe_description
-    # - key: recipe_description
-    # category: EVENT
-    # type: PROCESS_KIND_ID
-    # subType: PROCESS_NAME
-    # value: <recipe_description>
     event(process-kind-id,process-name): recipe_description
-    # - vessel_air_temp
-    # - key: vessel_air_temp
-    # category: SAMPLE
-    # type: TEMPERATURE
-    # nativeUnits: FAHRENHEIT
-    # units: CELSIUS
-    # value: <vessel_air_temp>
     sample(temperature,units=celsius,native-units=fahrenheit): vessel_air_temp
 
   systems:
     components:
       electrical:
         dataItems:
-          # - control_power_condition
-          # - key: control_power_condition
-          #   category: CONDITION
-          #   type: VOLTAGE_DC
-          #   value: "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
-          #. couldn't adapter do transform before storing in cache?
-          # condition(voltage-dc): "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING': 'NORMAL'"
-          # condition(voltage-dc): |
-          #   <control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING': 'NORMAL'
-          # control_power_condition: condition(voltage-dc)
           condition(voltage-dc): control_power_condition
 
       cooling:
         dataItems:
-          # - cool_pump_a_hours
-          # category: SAMPLE
-          # type: EQUIPMENT_TIMER
-          # subType: OPERATING
-          # units: SECOND
-          # # cool_pump_a_hours is in hours, not sure what the correct scale there is , part 2 , 7.2.2.7
-          # # nativeScale: ???
-          # value: <cool_pump_a_hours>
-          # cool-pump-a-hours: sample(equipment-time,operating,units=second)
+          # cool_pump_a_hours is in hours, not sure what the correct scale there is - part 2, 7.2.2.7
           sample(equipment-time,operating,units=second,native-scale=1): cool-pump-a-hours

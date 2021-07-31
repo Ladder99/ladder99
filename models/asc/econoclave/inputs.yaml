@@ -4,23 +4,26 @@
 #. call this adapter.yaml? cache.yaml? cache-inputs.yaml? driver.yaml?
 
 inputs:
-  - key: control_power_warning
-    path: .Autoclave.Alarms.ControlPower\Condition
-
-  - key: control_power_fault
-    path: .Autoclave.Alarms.ControlPower\AlarmActive
-
   - key: operator_name
     path: .Autoclave.Variables.OperatorName\Value
-
-  - key: cool_pump_a_hours
-    path: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
 
   - key: recipe_description
     path: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
 
   - key: vessel_air_temp
     path: .Autoclave.Inputs.AIRTC\Value
+
+  - key: control_power_warning
+    path: .Autoclave.Alarms.ControlPower\Condition
+
+  - key: control_power_fault
+    path: .Autoclave.Alarms.ControlPower\AlarmActive
+
+  - key: control_power_condition
+    calculation: "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
+
+  - key: cool_pump_a_hours
+    path: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
 
   # note: batching allows req-resp protocols to limit the number of
   # data items per request.
