@@ -3,8 +3,11 @@
 # this defines the structure of the xml that will get included in devices.xml.
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from the device yaml.
-# dataItems are defined in outputs.yaml.
+# adapter cache items are defined in cache.yaml.
 # compilation to devices.xml is done with sh/adapter/compile.
+
+# shdr key on left, xml desc on right
+# eg event(user,operator) translates to <DataItem category="EVENT" type="USER" subType="OPERATOR" />
 
 model:
   id: ${deviceId} # eg 'ac1'
@@ -19,22 +22,17 @@ model:
     text: ASC Econoclave 1x2ft
 
   dataItems:
-    dataItem:
-      - operator_name
-      - recipe_description
-      - vessel_air_temp
+    operator_name: event(user,operator)
+    recipe_description: event(process-kind-id,process-name)
+    vessel_air_temp: sample(temperature,units=celsius,native-units=fahrenheit)
 
   systems:
-    id: ${deviceId}-systems
     components:
       electrical:
-        id: ${deviceId}-electrical
         dataItems:
-          dataItem:
-            - control_power_condition
+          control_power_condition: condition(voltage-dc)
 
       cooling:
-        id: ${deviceId}-cooling
         dataItems:
-          dataItem:
-            - cool_pump_a_hours
+          # this is in hours, not sure what the correct scale there is - part 2, 7.2.2.7
+          cool_pump_a_hours: sample(equipment-time,operating,units=second,native-scale=1)
