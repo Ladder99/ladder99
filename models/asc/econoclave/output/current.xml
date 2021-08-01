@@ -1,2 +1,52 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<MTConnectStreams xmlns:m="urn:mtconnect.org:MTConnectStreams:1.7" xmlns="urn:mtconnect.org:MTConnectStreams:1.7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:mtconnect.org:MTConnectStreams:1.7 http://schemas.mtconnect.org/schemas/MTConnectStreams_1.7.xsd"><Header creationTime="2021-08-01T09:41:46Z" sender="7650819b8a6c" instanceId="1627810824" version="1.7.0.3" bufferSize="131072" nextSequence="38" firstSequence="1" lastSequence="37"/><Streams><DeviceStream name="autoclave1" uuid="a123"><Samples><EquipmentTime dataItemId="ac1-cool_pump_a_hours" sequence="27" subType="OPERATING" timestamp="2021-08-01T09:40:25.103Z">254.280816190243</EquipmentTime></Samples><Condition><Fault dataItemId="ac1-control_power_condition" nativeCode="nativeCode" nativeSeverity="nativeSeverity" qualifier="QUALIFIER" sequence="25" timestamp="2021-08-01T09:40:25.102Z" type="VOLTAGE_DC">FAULT</Fault></Condition><ComponentStream component="Device" name="autoclave1" componentId="ac1"><Samples><Temperature dataItemId="ac1-vessel_air_temp" sequence="29" timestamp="2021-08-01T09:40:25.103Z">-27.6543209876543</Temperature></Samples><Events><User dataItemId="ac1-operator_name" sequence="26" subType="OPERATOR" timestamp="2021-08-01T09:40:25.102Z">JOSHAU SCHNEIDER</User><ProcessKindId dataItemId="ac1-recipe_description" sequence="28" subType="PROCESS_NAME" timestamp="2021-08-01T09:40:25.103Z"></ProcessKindId><AssetChanged dataItemId="ac1_asset_chg" sequence="8" timestamp="2021-08-01T09:40:24.069046Z">UNAVAILABLE</AssetChanged><AssetRemoved dataItemId="ac1_asset_rem" sequence="7" timestamp="2021-08-01T09:40:24.069035Z">UNAVAILABLE</AssetRemoved><Availability dataItemId="ac1_avail" sequence="9" timestamp="2021-08-01T09:40:24.069052Z">UNAVAILABLE</Availability></Events></ComponentStream></DeviceStream><DeviceStream name="Agent" uuid="0b49a3a0-18ca-0139-8748-2cde48001122"><ComponentStream component="Adapter" name="adapter:7878" componentId="_7546f731da"><Samples><AssetUpdateRate dataItemId="_7546f731da_asset_update_rate" sequence="17" statistic="AVERAGE" timestamp="2021-08-01T09:40:24.072333Z">UNAVAILABLE</AssetUpdateRate><ObservationUpdateRate dataItemId="_7546f731da_observation_update_rate" duration="10" sequence="37" statistic="AVERAGE" timestamp="2021-08-01T09:41:44.075252Z">0</ObservationUpdateRate></Samples><Events><AdapterSoftwareVersion dataItemId="_7546f731da_adapter_software_version" sequence="16" timestamp="2021-08-01T09:40:24.072314Z">UNAVAILABLE</AdapterSoftwareVersion><AdapterURI dataItemId="_7546f731da_adapter_uri" sequence="20" timestamp="2021-08-01T09:40:24.072362Z">shdr://adapter:7878</AdapterURI><ConnectionStatus dataItemId="_7546f731da_connection_status" sequence="23" timestamp="2021-08-01T09:40:25.087045Z">ESTABLISHED</ConnectionStatus><MTConnectVersion dataItemId="_7546f731da_mtconnect_version" sequence="21" timestamp="2021-08-01T09:40:24.072371Z">UNAVAILABLE</MTConnectVersion></Events></ComponentStream><ComponentStream component="Agent" name="Agent" componentId="agent_2cde48001122"><Events><AssetChanged dataItemId="agent_2cde48001122_asset_chg" sequence="2" timestamp="2021-08-01T09:40:24.068558Z">UNAVAILABLE</AssetChanged><AssetRemoved dataItemId="agent_2cde48001122_asset_rem" sequence="1" timestamp="2021-08-01T09:40:24.068433Z">UNAVAILABLE</AssetRemoved><Availability dataItemId="agent_avail" sequence="6" timestamp="2021-08-01T09:40:24.068592Z">UNAVAILABLE</Availability><DeviceAdded dataItemId="device_added" sequence="15" timestamp="2021-08-01T09:40:24.069097Z">a123</DeviceAdded><DeviceChanged dataItemId="device_changed" sequence="3" timestamp="2021-08-01T09:40:24.068568Z">UNAVAILABLE</DeviceChanged><DeviceRemoved dataItemId="device_removed" sequence="4" timestamp="2021-08-01T09:40:24.068576Z">UNAVAILABLE</DeviceRemoved></Events></ComponentStream></DeviceStream></Streams></MTConnectStreams>
+<MTConnectStreams xmlns:m="urn:mtconnect.org:MTConnectStreams:1.7"
+  xmlns="urn:mtconnect.org:MTConnectStreams:1.7"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:mtconnect.org:MTConnectStreams:1.7 http://schemas.mtconnect.org/schemas/MTConnectStreams_1.7.xsd">
+  <Header creationTime="2021-08-01T09:41:46Z" sender="7650819b8a6c" instanceId="1627810824" version="1.7.0.3" bufferSize="131072" nextSequence="38" firstSequence="1" lastSequence="37"/>
+  <Streams>
+    <DeviceStream name="autoclave1" uuid="a123">
+      <Samples>
+        <EquipmentTime dataItemId="ac1-cool_pump_a_hours" sequence="27" subType="OPERATING" timestamp="2021-08-01T09:40:25.103Z">254.280816190243</EquipmentTime>
+      </Samples>
+      <Condition>
+        <Fault dataItemId="ac1-control_power_condition" nativeCode="nativeCode" nativeSeverity="nativeSeverity" qualifier="QUALIFIER" sequence="25" timestamp="2021-08-01T09:40:25.102Z" type="VOLTAGE_DC">FAULT</Fault>
+      </Condition>
+      <ComponentStream component="Device" name="autoclave1" componentId="ac1">
+        <Samples>
+          <Temperature dataItemId="ac1-vessel_air_temp" sequence="29" timestamp="2021-08-01T09:40:25.103Z">-27.6543209876543</Temperature>
+        </Samples>
+        <Events>
+          <User dataItemId="ac1-operator_name" sequence="26" subType="OPERATOR" timestamp="2021-08-01T09:40:25.102Z">JOSHAU SCHNEIDER</User>
+          <ProcessKindId dataItemId="ac1-recipe_description" sequence="28" subType="PROCESS_NAME" timestamp="2021-08-01T09:40:25.103Z"></ProcessKindId>
+          <AssetChanged dataItemId="ac1_asset_chg" sequence="8" timestamp="2021-08-01T09:40:24.069046Z">UNAVAILABLE</AssetChanged>
+          <AssetRemoved dataItemId="ac1_asset_rem" sequence="7" timestamp="2021-08-01T09:40:24.069035Z">UNAVAILABLE</AssetRemoved>
+          <Availability dataItemId="ac1_avail" sequence="9" timestamp="2021-08-01T09:40:24.069052Z">UNAVAILABLE</Availability>
+        </Events>
+      </ComponentStream>
+    </DeviceStream>
+    <DeviceStream name="Agent" uuid="0b49a3a0-18ca-0139-8748-2cde48001122">
+      <ComponentStream component="Adapter" name="adapter:7878" componentId="_7546f731da">
+        <Samples>
+          <AssetUpdateRate dataItemId="_7546f731da_asset_update_rate" sequence="17" statistic="AVERAGE" timestamp="2021-08-01T09:40:24.072333Z">UNAVAILABLE</AssetUpdateRate>
+          <ObservationUpdateRate dataItemId="_7546f731da_observation_update_rate" duration="10" sequence="37" statistic="AVERAGE" timestamp="2021-08-01T09:41:44.075252Z">0</ObservationUpdateRate>
+        </Samples>
+        <Events>
+          <AdapterSoftwareVersion dataItemId="_7546f731da_adapter_software_version" sequence="16" timestamp="2021-08-01T09:40:24.072314Z">UNAVAILABLE</AdapterSoftwareVersion>
+          <AdapterURI dataItemId="_7546f731da_adapter_uri" sequence="20" timestamp="2021-08-01T09:40:24.072362Z">shdr://adapter:7878</AdapterURI>
+          <ConnectionStatus dataItemId="_7546f731da_connection_status" sequence="23" timestamp="2021-08-01T09:40:25.087045Z">ESTABLISHED</ConnectionStatus>
+          <MTConnectVersion dataItemId="_7546f731da_mtconnect_version" sequence="21" timestamp="2021-08-01T09:40:24.072371Z">UNAVAILABLE</MTConnectVersion>
+        </Events>
+      </ComponentStream>
+      <ComponentStream component="Agent" name="Agent" componentId="agent_2cde48001122">
+        <Events>
+          <AssetChanged dataItemId="agent_2cde48001122_asset_chg" sequence="2" timestamp="2021-08-01T09:40:24.068558Z">UNAVAILABLE</AssetChanged>
+          <AssetRemoved dataItemId="agent_2cde48001122_asset_rem" sequence="1" timestamp="2021-08-01T09:40:24.068433Z">UNAVAILABLE</AssetRemoved>
+          <Availability dataItemId="agent_avail" sequence="6" timestamp="2021-08-01T09:40:24.068592Z">UNAVAILABLE</Availability>
+          <DeviceAdded dataItemId="device_added" sequence="15" timestamp="2021-08-01T09:40:24.069097Z">a123</DeviceAdded>
+          <DeviceChanged dataItemId="device_changed" sequence="3" timestamp="2021-08-01T09:40:24.068568Z">UNAVAILABLE</DeviceChanged>
+          <DeviceRemoved dataItemId="device_removed" sequence="4" timestamp="2021-08-01T09:40:24.068576Z">UNAVAILABLE</DeviceRemoved>
+        </Events>
+      </ComponentStream>
+    </DeviceStream>
+  </Streams>
+</MTConnectStreams>
