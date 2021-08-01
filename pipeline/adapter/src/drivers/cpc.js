@@ -42,11 +42,15 @@ export class AdapterDriver {
       //. write values to cache, which will output shdr
       const [_, str2] = str.split(':=')
       const values = str2.split(',')
-      // console.log(this.keys)
-      // console.log(values)
-      const pairs = {}
-      this.keys.forEach((key, i) => (pairs[key] = values[i]))
-      console.log(pairs)
+
+      // const pairs = {}
+      // this.keys.forEach((key, i) => (pairs[key] = values[i]))
+      // console.log(pairs)
+
+      for (let [key, i] of this.keys) {
+        const value = values[i]
+        cache.set(key, value)
+      }
     })
 
     // 'poll' endpoint using tcp client.write

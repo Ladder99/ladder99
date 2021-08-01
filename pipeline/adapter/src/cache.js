@@ -39,7 +39,7 @@ export class Cache {
 
   // set a key-item pair in the cache.
   // each item is an object that can have a value property.
-  //. eg ____
+  //. eg set('', {}) -
   set(key, item) {
     console.log('cache.set', key, JSON.stringify(item).slice(0, 99))
     // update the cache item
@@ -49,9 +49,12 @@ export class Cache {
     // calculate outputs and send dependent shdr values to tcp
     for (const output of outputs) {
       const shdr = getShdr(this, output)
-      // send shdr to agent via tcp socket
-      console.log(`TCP sending string`, shdr.slice(0, 60), `...`)
-      output.socket.write(shdr + '\n')
+      // send shdr to agent via tcp socket if value changed
+      if (shdr !== output.shdr) {
+        console.log(`shdr changed - sending to tcp -`, shdr.slice(0, 60), `...`)
+        output.socket.write(shdr + '\n')
+        output.shdr = shdr
+      }
     }
   }
 
