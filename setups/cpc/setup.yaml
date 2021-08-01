@@ -8,9 +8,9 @@ devices:
   - id: ac1
     name: autoclave1 # this must match name in agent.cfg and devices.xml
     model: asc/econoclave
-    #. do we really want/need ability to have >1 source per device?
-    # won't it lead to conflicts with dataitem ids, eg 'availability'?
-    #. just have single source and destination for now?
+    # specify sources for dataitem values
+    #. eg could have multiple thermometers for a machine, or doors?
+    #. be careful with multiple sources - don't want to clobber dataitems.
     sources:
       - model: asc/econoclave
         driver: cpc # type of adapter plugin - manages protocol and payload
@@ -19,7 +19,7 @@ devices:
         port: 9999
 
     #. this should be server, not destinations - for agent to connect to
-    destinations: # where to post output - just handles one output for now
+    destinations: # where to post output - just uses first output for now
       - protocol: shdr
         host: adapter
         port: 7878

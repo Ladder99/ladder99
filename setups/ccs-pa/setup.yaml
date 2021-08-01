@@ -35,7 +35,7 @@ devices:
       #   protocol: opc
       #   url: opc.tcp://simulator-opc:4334/UA/LittleServer
 
-    destinations: # where to post output - just handles one output for now
+    destinations: # where to post output - just uses first output for now
       - protocol: shdr
         host: adapter
         port: 7878
@@ -60,7 +60,7 @@ devices:
       #   protocol: opc
       #   url: opc.tcp://simulator-opc:4334/UA/LittleServer
 
-    destinations: # where to post output - just handles one output for now
+    destinations: # where to post output - just uses first output for now
       - protocol: shdr
         host: adapter
         port: 7879
