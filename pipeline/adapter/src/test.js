@@ -4,5 +4,7 @@
 // /data/setup includes setup.yaml, which includes a list of devices to setup.
 
 import { Cache } from './cache.js'
+import { AdapterDriver } from './drivers/cpc.js'
 
 console.log(Cache)
+console.log(AdapterDriver)
