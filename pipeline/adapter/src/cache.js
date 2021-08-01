@@ -68,7 +68,7 @@ export class Cache {
 
 // calculate SHDR using the given output object.
 // cache is the Cache object.
-// output has { key, category, type, representation, value, ... }.
+// output has { key, category, type, representation, value, shdr, ... }.
 //. eg ____
 function getShdr(cache, output) {
   const timestamp = new Date().toISOString() //. get from item

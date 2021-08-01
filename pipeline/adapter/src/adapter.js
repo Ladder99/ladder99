@@ -125,7 +125,7 @@ async function main() {
     // start tcp server for Agent to listen to, eg at adapter:7878
     //. rename to server(s)
     const { destinations } = device
-    //. just handle one for now
+    //. just handle one server/destination for now
     const server = destinations ? destinations[0] : defaultServer
     console.log(`Listen for Agent on TCP socket at`, server, `...`)
     // try {
@@ -150,9 +150,9 @@ main()
 // each element defines a shdr output.
 // templates is from outputs.yaml - array of { key, category, type, value, ... }.
 // types is from types.yaml - object of objects with key:values.
-// note: types IS used - it's in the closure formed by eval(str).
 // returns array of {key: string, value: function, dependsOn: string[]}.
-//. eg ___
+//. eg { key: 'power_condition', value: __, dependsOn: ['power_fault', 'power_warning']}
+// note: types IS used - it's in the closure formed by eval(str).
 function getOutputs({ templates, types, deviceId }) {
   // console.log('getOutputs - iterate over output templates')
   const outputs = templates.map(template => {
@@ -160,7 +160,9 @@ function getOutputs({ templates, types, deviceId }) {
     // eg <status_faults> => cache.get(`${deviceId}-status_faults`).value
     // note: .*? is a non-greedy match, so doesn't eat other occurrences also.
     const regexp1 = /(<(.*?)>)/gm
+    // eg "<power_fault> ? 'FAULT' : <power_warning> ? 'WARNING' : 'NORMAL'"
     let valueStr = template.value || ''
+    // eg "cache.get('ac1-power_fault').value ? 'FAULT' : cache.get('ac1-power_warning').value ? 'WARNING' : 'NORMAL'"
     valueStr = valueStr.replaceAll(
       regexp1,
       `cache.get('${deviceId}-$2').value` // $2 is the matched substring
@@ -168,13 +170,14 @@ function getOutputs({ templates, types, deviceId }) {
     if (valueStr.includes('\n')) {
       valueStr = '{\n' + valueStr + '\n}'
     }
-    // console.log(`${template.key} new value: "${valueStr}"`)
 
     // evaluate the value function
+    // eg 'FAULT'
     const value = cache => eval(valueStr)
 
     // get list of cache ids this calculation depends on.
     // get AFTER transforms, because user could specify a cache get manually.
+    // eg dependsOn = ['ac1-power_fault', 'ac1-power_warning']
     const dependsOn = []
     const regexp2 = /cache\.get\('(.*?)'\).value/gm
     let match
@@ -182,9 +185,9 @@ function getOutputs({ templates, types, deviceId }) {
       const key = match[1]
       dependsOn.push(key)
     }
-    // console.log({ dependsOn })
 
     // get output object
+    // eg { key: 'ac1-power_condition', value: 'FAULT', dependsOn: ['ac1-power_fault','ac1-power_warning'], category: 'CONDITION', type:'VOLTAGE_DC', representation: undefined}
     const output = {
       //. assume each starts with deviceId?
       //. some might end with a number instead
