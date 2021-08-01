@@ -1,0 +1,48 @@
+# cache
+# this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
+
+# these outputs are placed in the model.yaml tree and define the
+# shdr strings that are calculated from the cache and sent to the agent.
+
+# the item's key (eg 'connection') together with the deviceId (eg 'pa1')
+# form its id in the xml (eg 'pa1-connection').
+
+# the shdr key is the same as the id.
+# the shdr value is defined with the item value code.
+
+# value is javascript, evaluated by the cache in calculating the shdr output.
+# <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
+
+cache:
+  operator_name:
+    source: .Autoclave.Variables.OperatorName\Value
+
+  recipe_description:
+    source: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
+
+  vessel_air_temp:
+    source: .Autoclave.Inputs.AIRTC\Value
+
+  cool_pump_a_hours:
+    source: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
+
+  control_power_warning:
+    source: .Autoclave.Alarms.ControlPower\Condition
+    output: false
+
+  control_power_fault:
+    source: .Autoclave.Alarms.ControlPower\AlarmActive
+    output: false
+
+  control_power_condition:
+    calculation: "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
+
+  # note: batching allows req-resp protocols to limit the number of
+  # data items per request.
+  air_tc:
+    source: .Autoclave.AIR_TC\Value
+    batch: 1
+
+  temp_alarm:
+    source: .Autoclave.Alarms.OverTemp\Active
+    batch: 1
