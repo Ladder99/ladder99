@@ -21,7 +21,7 @@ console.log(`posts to TCP.`)
 console.log(`----------------------------------------------------------------`)
 
 async function main() {
-  // read setup.yaml file
+  // read /data/setup/setup.yaml file
   const setup = readSetupYaml()
 
   // define cache shared across all devices and sources
