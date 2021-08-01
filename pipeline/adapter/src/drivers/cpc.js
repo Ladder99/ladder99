@@ -3,7 +3,21 @@
 import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
 
 export class AdapterDriver {
+  constructor() {
+    this.keys = []
+    this.keysStr = ''
+    this.query = ''
+  }
+
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
+    // get query keys and string
+    // eg ' PathListGet:ReadValues:.Autoclave.Alarms.ControlPower\Condition,.Autoclave.Alarms.ControlPower\AlarmActive,.Autoclave.Variables.OperatorName\Value,.Autoclave.Scripts.MotorHours.CoolPumpAOn\Value,.Autoclave.RecipeProcessor.Recipe.RecipeData\Description,.Autoclave.Inputs.AIRTC\Value'
+    this.keys = inputs.inputs.map(input => input.path)
+    this.keysStr = this.keys.join(',')
+    this.query = `PathListGet:ReadValues:${this.keysStr}`
+    // this.query = `PathListGet:ReadValues:.Autoclave.Inputs.AIRTC\\Value,.Autoclave.RecipeProcessor\\RunStatus`
+    // this.query = `PathListGet:ReadValues:.Autoclave.Variables.OperatorName\\Value`
+
     console.log(`CPC driver connecting to TCP server at`, { host, port }, '...')
     const client = net.connect(port, host)
 
@@ -17,19 +31,27 @@ export class AdapterDriver {
 
     client.on('connect', () => {
       console.log(`CPC driver connected...`)
-      //. combine inputs to 'poll' endpoint using client.write.
-      // const cmd = `PathListGet:ReadValues:.Autoclave.Inputs.AIRTC\\Value,.Autoclave.RecipeProcessor\\RunStatus`
-      // const cmd = `PathListGet:ReadValues:.Autoclave.Variables.OperatorName\\Value`
-      const keys = inputs.inputs.map(input => input.path).join(',')
-      const cmd = `PathListGet:ReadValues:${keys}`
-      console.log(`CPC driver writing ${cmd}...`)
-      client.write(cmd + '\r\n')
+      poll()
     })
 
     client.on('data', data => {
       const str = data.toString()
       console.log(`CPC driver received ${str}...`)
+      // eg 'PathListGet:ReadValues:=,True,Joshau Schneider,254.280816,,0'
       //. write values to cache, which will output shdr
+      const [_, str2] = str.split(':=')
+      const values = str2.split(',')
+      // console.log(this.keys)
+      // console.log(values)
+      const pairs = {}
+      this.keys.forEach((key, i) => (pairs[key] = values[i]))
+      console.log(pairs)
     })
+
+    function poll() {
+      // 'poll' endpoint using client.write.
+      console.log(`CPC driver writing ${this.query}...`)
+      client.write(this.query + '\r\n')
+    }
   }
 }
