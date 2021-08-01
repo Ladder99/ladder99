@@ -41,10 +41,11 @@ export class AdapterDriver {
       // this.keys.forEach((key, i) => (pairs[key] = values[i]))
       // console.log(pairs)
 
-      for (let [key, i] of Object.entries(this.keys)) {
+      // for (let [key, i] of Object.entries(this.keys)) {
+      this.keys.forEach((key, i) => {
         const value = values[i]
         cache.set(key, { value })
-      }
+      })
     })
 
     client.on('error', error => {
