@@ -187,10 +187,16 @@ function getOutputs({ templates, types, deviceId }) {
     }
 
     // get output object
-    // eg { key: 'ac1-power_condition', value: 'FAULT', dependsOn: ['ac1-power_fault','ac1-power_warning'], category: 'CONDITION', type:'VOLTAGE_DC', representation: undefined}
+    // eg {
+    //   key: 'ac1-power_condition',
+    //   value: 'FAULT',
+    //   dependsOn: ['ac1-power_fault', 'ac1-power_warning'],
+    //   category: 'CONDITION',
+    //   type: 'VOLTAGE_DC',
+    //   representation: undefined,
+    // }
     const output = {
-      //. assume each starts with deviceId?
-      //. some might end with a number instead
+      //. assume each starts with deviceId? some might end with a number instead
       //. call this id, as it's such in the devices.xml?
       key: `${deviceId}-${template.key}`,
       value, //. getValue

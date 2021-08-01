@@ -19,7 +19,7 @@ export class Cache {
   // this builds a map from a key to a list of outputs.
   // each output goes to the same socket.
   // outputs is an array of Output objects.
-  // Output has { category, type, representation, key, socket, dependsOn, value }
+  // Output has { key, category, type, representation, socket, dependsOn, value }
   // dependsOn is array of strings
   // value is a fn
   //. eg __
