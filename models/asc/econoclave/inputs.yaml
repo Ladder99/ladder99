@@ -1,8 +1,6 @@
 # inputs
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
 
-#. call this adapter.yaml? cache.yaml? cache-inputs.yaml? driver.yaml?
-
 inputs:
   - key: control_power_warning
     path: .Autoclave.Alarms.ControlPower\Condition
