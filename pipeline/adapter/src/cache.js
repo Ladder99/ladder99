@@ -19,13 +19,13 @@ export class Cache {
   // this builds a map from a key to a list of outputs.
   // each output goes to the same socket.
   // output is [{ key, category, type, representation, socket, dependsOn, value }, ...]
-  // eg [{ key: 'ac1-power_condition', value: 'FAULT', dependsOn: ['ac1-power_fault', 'ac1-power_warning'] }, ...]
+  // eg [{ key: 'ac1-power_condition', value: (fn), dependsOn: ['ac1-power_fault', 'ac1-power_warning'] }, ...]
   addOutputs(outputs, socket) {
     console.log(`cache.addOutputs - add ${outputs.length} outputs`)
     for (const output of outputs) {
-      console.log(output)
+      console.log(output.key, output.dependsOn)
       output.socket = socket // attach tcp socket to each output also
-      // eg dependsOn is ['ac1-power_fault', 'ac1-power_warning']
+      // add dependsOn eg ['ac1-power_fault', 'ac1-power_warning']
       for (const key of output.dependsOn) {
         if (this._mapKeyToOutputs[key]) {
           this._mapKeyToOutputs[key].push(output)
@@ -34,7 +34,6 @@ export class Cache {
         }
       }
     }
-    // console.log('mapKeyToOutputs', this._mapKeyToOutputs)
   }
 
   // set a key-item pair in the cache.
@@ -47,7 +46,6 @@ export class Cache {
     // get list of outputs associated with this key
     // eg ['ac1-power_condition']
     const outputs = this._mapKeyToOutputs[key] || []
-    console.log('outputs', outputs)
     // calculate outputs and send dependent shdr values to tcp
     for (const output of outputs) {
       const shdr = getShdr(this, output)
