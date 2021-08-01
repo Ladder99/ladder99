@@ -3,21 +3,16 @@
 import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
 
 export class AdapterDriver {
-  constructor() {
-    this.keys = []
-    this.keysStr = ''
-    this.query = ''
-    this.ids = []
-  }
-
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
-    // get query string
-    // eg ' PathListGet:ReadValues:.Autoclave.Alarms.ControlPower\Condition,.Autoclave.Alarms.ControlPower\AlarmActive,.Autoclave.Variables.OperatorName\Value,.Autoclave.Scripts.MotorHours.CoolPumpAOn\Value,.Autoclave.RecipeProcessor.Recipe.RecipeData\Description,.Autoclave.Inputs.AIRTC\Value'
-    this.ids = inputs.inputs.map(input => `${deviceId}-${input.key}`)
-    this.paths = inputs.inputs.map(input => input.path).join(',')
-    this.query = `PathListGet:ReadValues:${this.paths}`
-    console.log('ids', this.ids)
-    console.log('paths', this.paths)
+    console.log(`Initialize cpc plugin...`)
+
+    // get ids and query string
+    // eg 'PathListGet:ReadValues:.Autoclave.Alarms.ControlPower\Condition,.Autoclave.Alarms.ControlPower\AlarmActive,.Autoclave.Variables.OperatorName\Value,.Autoclave.Scripts.MotorHours.CoolPumpAOn\Value,.Autoclave.RecipeProcessor.Recipe.RecipeData\Description,.Autoclave.Inputs.AIRTC\Value'
+    const ids = inputs.inputs.map(input => `${deviceId}-${input.key}`)
+    const paths = inputs.inputs.map(input => input.path).join(',')
+    const query = `PathListGet:ReadValues:${paths}`
+    console.log('ids', ids)
+    console.log('query', query)
 
     console.log(`CPC driver connecting to TCP server at`, { host, port }, '...')
     const client = net.connect(port, host)
@@ -25,11 +20,11 @@ export class AdapterDriver {
     // connected to device - poll it for data
     client.on('connect', () => {
       console.log(`CPC driver connected...`)
-      poll(this.query)
-      // setInterval(poll.bind(null, this.query), 2000)
+      poll()
+      // setInterval(poll, 2000)
     })
 
-    // receive data from device, write to cache
+    // receive data from device, write to cache, output shdr to agent
     client.on('data', data => {
       // eg 'PathListGet:ReadValues:=,True,Joshau Schneider,254.280816,,0'
       const str = data.toString()
@@ -37,8 +32,8 @@ export class AdapterDriver {
       // get values eg ['', 'True', 'Joshau Schneider', ...]
       const [_, valuesStr] = str.split(':=')
       const values = valuesStr.split(',')
-      // write values to cache, which will output shdr
-      this.ids.forEach((id, i) => {
+      // write values to cache, which will output shdr to agent
+      ids.forEach((id, i) => {
         const value = values[i]
         cache.set(id, { value })
       })
@@ -53,7 +48,7 @@ export class AdapterDriver {
     })
 
     // 'poll' device using tcp client.write
-    function poll(query) {
+    function poll() {
       console.log(`CPC driver writing ${query}...`)
       client.write(query + '\r\n')
     }
