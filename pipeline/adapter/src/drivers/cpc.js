@@ -20,7 +20,7 @@ export class AdapterDriver {
       //. combine inputs to 'poll' endpoint using client.write.
       // const cmd = `PathListGet:ReadValues:.Autoclave.Inputs.AIRTC\\Value,.Autoclave.RecipeProcessor\\RunStatus`
       // const cmd = `PathListGet:ReadValues:.Autoclave.Variables.OperatorName\\Value`
-      const keys = inputs.inputs.map(input => input.key).join(',')
+      const keys = inputs.inputs.map(input => input.path).join(',')
       const cmd = `PathListGet:ReadValues:${keys}`
       console.log(`CPC driver writing ${cmd}...`)
       client.write(cmd + '\r\n')
