@@ -1,4 +1,4 @@
-// dymo scale driver
+// dymo m10 scale driver
 
 // adapted from https://gist.github.com/PhantomRay/cbccda0d3ab9a9f42d7346cc378d808b
 

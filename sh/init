@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# initialize a setup
+
+usage="
+Usage: sh/init SETUP
+
+Initialize a Ladder99 setup.
+
+SETUP     setup subfolder, eg vmc, ccs-pa
+"
+
+if [ $# -eq 0 ]; then
+    echo "$usage"
+    exit 1
+fi
