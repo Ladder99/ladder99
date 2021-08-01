@@ -1,4 +1,5 @@
 // mqtt-json driver
+
 // adapter plugin - subscribes to mqtt topics, receives messages,
 // parses them out as JSON, updates cache values, which sends SHDR.
 

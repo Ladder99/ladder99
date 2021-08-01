@@ -1,5 +1,14 @@
 // cpc autoclave driver
 
+// CPC (Composite Processing Control) is ASC's flagship software and
+// control system designed specifically for control of composite
+// processes in autoclaves, ovens, presses, formers, and bond tools.
+// Since its creation, CPC has been at the forefront of composite technology.
+// CPC has evolved over the last 31-years and is now the leader in the
+// control of autoclaves and ovens. Most Tier I, II, and III aerospace
+// companies standardize their controls on CPC. Every day, more than
+// 1500 pieces of equipment are controlled by CPC.
+
 import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
 
 const typeFns = {
@@ -9,7 +18,7 @@ const typeFns = {
 
 export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
-    console.log(`Initialize cpc plugin...`)
+    console.log(`Initialize CPC driver...`)
 
     // get ids and query string
     const ids = inputs.inputs.map(input => `${deviceId}-${input.key}`) // eg ['ac1-operator_name', 'ac1-recipe_description', ...]
