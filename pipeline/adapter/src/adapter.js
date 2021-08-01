@@ -80,7 +80,7 @@ async function main() {
         if (outputTemplates) {
           // compile value js strings from outputs.yaml.
           // outputs is array of {key: string, value: function, dependsOn: string[]}.
-          //. eg { key: '', value: _, dependsOn: ['', ''] }
+          // eg [{ key: 'ac1-power_condition', value: 'FAULT', dependsOn: ['ac1-power_fault', 'ac1-power_warning'] }, ...]
           const outputs = getOutputs({
             templates: outputTemplates,
             types,
@@ -150,8 +150,8 @@ main()
 // each element defines a shdr output.
 // templates is from outputs.yaml - array of { key, category, type, value, ... }.
 // types is from types.yaml - object of objects with key:values.
-// returns array of {key: string, value: function, dependsOn: string[]}.
-//. eg { key: 'power_condition', value: __, dependsOn: ['power_fault', 'power_warning']}
+// returns array of {key: string, value: int|str, dependsOn: string[]}.
+// eg [{ key: 'ac1-power_condition', value: 'FAULT', dependsOn: ['ac1-power_fault', 'ac1-power_warning']}, ...]
 // note: types IS used - it's in the closure formed by eval(str).
 function getOutputs({ templates, types, deviceId }) {
   // console.log('getOutputs - iterate over output templates')
@@ -171,8 +171,7 @@ function getOutputs({ templates, types, deviceId }) {
       valueStr = '{\n' + valueStr + '\n}'
     }
 
-    // evaluate the value function
-    // eg 'FAULT'
+    // evaluate the value function -> eg 'FAULT'
     const value = cache => eval(valueStr)
 
     // get list of cache ids this calculation depends on.
@@ -196,8 +195,9 @@ function getOutputs({ templates, types, deviceId }) {
     //   representation: undefined,
     // }
     const output = {
+      // this is key in sense of shdr key
       //. assume each starts with deviceId? some might end with a number instead
-      //. call this id, as it's such in the devices.xml?
+      //. call this id, as it's such in the devices.xml
       key: `${deviceId}-${template.key}`,
       value, //. getValue
       dependsOn,
@@ -210,6 +210,7 @@ function getOutputs({ templates, types, deviceId }) {
   return outputs
 }
 
+//. use common.js fn
 function readSetupYaml() {
   // load setup, eg from setups/ccs-pa/setup.yaml
   const yamlfile = `${setupFolder}/setup.yaml`

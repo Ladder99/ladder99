@@ -15,18 +15,17 @@ export class Cache {
   }
 
   // addOutputs
-  // each key can have multiple outputs calculations associated with it.
+  // each cache key can have multiple output calculations associated with it.
   // this builds a map from a key to a list of outputs.
   // each output goes to the same socket.
-  // outputs is an array of Output objects.
-  // Output has { key, category, type, representation, socket, dependsOn, value }
-  // dependsOn is array of strings
-  // value is a fn
-  //. eg __
+  // output is [{ key, category, type, representation, socket, dependsOn, value }, ...]
+  // eg [{ key: 'ac1-power_condition', value: 'FAULT', dependsOn: ['ac1-power_fault', 'ac1-power_warning'] }, ...]
   addOutputs(outputs, socket) {
     console.log(`cache.addOutputs - add ${outputs.length} outputs`)
     for (const output of outputs) {
+      console.log(output)
       output.socket = socket // attach tcp socket to each output also
+      // eg dependsOn is ['ac1-power_fault', 'ac1-power_warning']
       for (const key of output.dependsOn) {
         if (this._mapKeyToOutputs[key]) {
           this._mapKeyToOutputs[key].push(output)
