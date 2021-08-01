@@ -31,7 +31,8 @@ export class AdapterDriver {
 
     client.on('connect', () => {
       console.log(`CPC driver connected...`)
-      poll()
+      poll(this.query)
+      // setInterval(poll.bind(null, this.query), 2000)
     })
 
     client.on('data', data => {
@@ -48,10 +49,10 @@ export class AdapterDriver {
       console.log(pairs)
     })
 
-    function poll() {
-      // 'poll' endpoint using client.write.
-      console.log(`CPC driver writing ${this.query}...`)
-      client.write(this.query + '\r\n')
+    // 'poll' endpoint using tcp client.write
+    function poll(query) {
+      console.log(`CPC driver writing ${query}...`)
+      client.write(query + '\r\n')
     }
   }
 }
