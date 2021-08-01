@@ -7,6 +7,7 @@ export class AdapterDriver {
     this.keys = []
     this.keysStr = ''
     this.query = ''
+    this.ids = []
   }
 
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
@@ -17,6 +18,7 @@ export class AdapterDriver {
     this.keys = inputs.inputs.map(input => input.path)
     this.keysStr = this.keys.join(',')
     this.query = `PathListGet:ReadValues:${this.keysStr}`
+    this.ids = this.keys.map(key => `${deviceId}-${key}`)
 
     console.log(`CPC driver connecting to TCP server at`, { host, port }, '...')
     const client = net.connect(port, host)
@@ -41,10 +43,9 @@ export class AdapterDriver {
       // this.keys.forEach((key, i) => (pairs[key] = values[i]))
       // console.log(pairs)
 
-      // for (let [key, i] of Object.entries(this.keys)) {
-      this.keys.forEach((key, i) => {
+      this.ids.forEach((id, i) => {
         const value = values[i]
-        cache.set(key, { value })
+        cache.set(id, { value })
       })
     })
 
