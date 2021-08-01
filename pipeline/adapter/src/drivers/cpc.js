@@ -11,9 +11,7 @@ export class AdapterDriver {
   }
 
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
-    // get query keys and string
-    // this.query = `PathListGet:ReadValues:.Autoclave.Inputs.AIRTC\\Value,.Autoclave.RecipeProcessor\\RunStatus`
-    // this.query = `PathListGet:ReadValues:.Autoclave.Variables.OperatorName\\Value`
+    // get query string
     // eg ' PathListGet:ReadValues:.Autoclave.Alarms.ControlPower\Condition,.Autoclave.Alarms.ControlPower\AlarmActive,.Autoclave.Variables.OperatorName\Value,.Autoclave.Scripts.MotorHours.CoolPumpAOn\Value,.Autoclave.RecipeProcessor.Recipe.RecipeData\Description,.Autoclave.Inputs.AIRTC\Value'
     this.ids = inputs.inputs.map(input => `${deviceId}-${input.key}`)
     this.paths = inputs.inputs.map(input => input.path).join(',')
@@ -33,7 +31,7 @@ export class AdapterDriver {
 
     // receive data from device, write to cache
     client.on('data', data => {
-      // get str eg 'PathListGet:ReadValues:=,True,Joshau Schneider,254.280816,,0'
+      // eg 'PathListGet:ReadValues:=,True,Joshau Schneider,254.280816,,0'
       const str = data.toString()
       console.log(`CPC driver received ${str}...`)
       // get values eg ['', 'True', 'Joshau Schneider', ...]
