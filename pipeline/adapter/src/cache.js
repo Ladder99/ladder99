@@ -34,6 +34,7 @@ export class Cache {
         }
       }
     }
+    console.log('mapKeyToOutputs', this._mapKeyToOutputs)
   }
 
   // set a key-item pair in the cache.
