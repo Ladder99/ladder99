@@ -7,9 +7,11 @@
 inputs:
   - key: control_power_warning
     path: .Autoclave.Alarms.ControlPower\Condition
+    type: boolean
 
   - key: control_power_fault
     path: .Autoclave.Alarms.ControlPower\AlarmActive
+    type: boolean
 
   - key: operator_name
     path: .Autoclave.Variables.OperatorName\Value

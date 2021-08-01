@@ -2,16 +2,22 @@
 
 import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
 
+const typeFns = {
+  undefined: value => value,
+  boolean: value => value === 'True',
+}
+
 export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
     console.log(`Initialize cpc plugin...`)
 
     // get ids and query string
-    const ids = inputs.inputs.map(input => `${deviceId}-${input.key}`)
+    const ids = inputs.inputs.map(input => `${deviceId}-${input.key}`) // eg ['ac1-operator_name', 'ac1-recipe_description', ...]
     const paths = inputs.inputs.map(input => input.path).join(',')
-    const query = `PathListGet:ReadValues:${paths}`
-    console.log('ids', ids) // eg ['ac1-operator_name', 'ac1-recipe_description', ...]
-    console.log('query', query) // eg 'PathListGet:ReadValues:.Autoclave.Alarms.ControlPower\Condition,...'
+    const types = inputs.inputs.map(input => input.type) // eg [undefined, undefined, boolean, ...]
+    const query = `PathListGet:ReadValues:${paths}` // eg 'PathListGet:ReadValues:.Autoclave.Alarms.ControlPower\Condition,...'
+    console.log('ids', ids)
+    console.log('query', query)
 
     console.log(`CPC driver connecting to TCP server at`, { host, port }, '...')
     const client = net.connect(port, host)
@@ -31,7 +37,9 @@ export class AdapterDriver {
       const values = valuesStr.split(',') // eg ['', 'True', 'Joshau Schneider', ...]
       // write values to cache, which will output shdr to agent
       ids.forEach((id, i) => {
-        const value = values[i]
+        const type = types[i] // eg 'boolean'
+        const typeFn = typeFns[type] // eg value => value==='True'
+        const value = typeFn(values[i]) // eg true
         cache.set(id, { value })
       })
     })
