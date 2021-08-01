@@ -58,16 +58,18 @@ async function main() {
         const plugin = new AdapterDriver()
 
         // get input handlers
+        //. rename to cache-inputs.yaml
         const pathInputs = `${modelsFolder}/${model}/inputs.yaml`
         console.log(`Reading ${pathInputs}...`)
         const inputs = common.importYaml(pathInputs) || {}
 
         // get output handlers
+        //. rename to cache-outputs.yaml
         const pathOutputs = `${modelsFolder}/${model}/outputs.yaml`
         console.log(`Reading ${pathOutputs}...`)
         const outputTemplates = (common.importYaml(pathOutputs) || {}).outputs
 
-        // get types
+        // get types, if any
         const pathTypes = `${modelsFolder}/${model}/types.yaml`
         console.log(`Reading ${pathTypes}...`)
         const types = (common.importYaml(pathTypes) || {}).types
@@ -141,7 +143,8 @@ async function main() {
 
 main()
 
-// get outputs from from outputs.yaml templates - do substitutions etc.
+// get cache outputs from from outputs.yaml templates - do substitutions etc.
+// each element defines a shdr output.
 // templates is from outputs.yaml - array of { key, category, type, value, ... }.
 // types is from types.yaml - object of objects with key:values.
 // note: types IS used - it's in the closure formed by eval(str).

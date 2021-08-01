@@ -1,5 +1,7 @@
 # outputs
 
+#. rename to cache-outputs.yaml
+
 # these outputs are placed in the model.yaml tree and define the
 # shdr strings that are calculated from the cache and sent to the agent.
 
