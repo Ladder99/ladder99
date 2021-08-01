@@ -1,8 +1,5 @@
 // test adapter
 
-// when adapter.js is run, it expects config in /data/setup and /data/models.
-// /data/setup includes setup.yaml, which includes a list of devices to setup.
-
 import { Cache } from './cache.js'
 import { AdapterDriver } from './drivers/cpc.js'
 import * as common from './common.js'
@@ -18,16 +15,23 @@ const source = {
   port: '9999',
 }
 
-console.log(source)
+// console.log(source)
+
+const { model } = source
 
 async function main() {
   const plugin = new AdapterDriver()
   console.log(plugin)
 
-  const pathInputs = `../../models/asc/econoclave/inputs.yaml`
+  const pathInputs = `../../models/${model}/inputs.yaml`
   console.log(`Reading ${pathInputs}...`)
   const inputs = common.importYaml(pathInputs) || {}
   console.log(inputs)
+
+  const pathOutputs = `../../models/${model}/outputs.yaml`
+  console.log(`Reading ${pathOutputs}...`)
+  const outputTemplates = (common.importYaml(pathOutputs) || {}).outputs
+  console.log(outputTemplates)
 }
 
 main()

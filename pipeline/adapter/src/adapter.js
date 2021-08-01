@@ -2,6 +2,9 @@
 // polls or subscribes to data via plugins, updates cache,
 // updates shdr strings, passes them to agent via tcp.
 
+// when adapter.js is run, it expects config in /data/setup and /data/models.
+// /data/setup includes setup.yaml, which includes a list of devices to setup.
+
 import net from 'net' // node lib for tcp
 import * as common from './common.js'
 import { Cache } from './cache.js'
@@ -77,7 +80,7 @@ async function main() {
         if (outputTemplates) {
           // compile value js strings from outputs.yaml.
           // outputs is array of {key: string, value: function, dependsOn: string[]}.
-          // eg { key: '', value: _, dependsOn: ['', ''] }
+          //. eg { key: '', value: _, dependsOn: ['', ''] }
           const outputs = getOutputs({
             templates: outputTemplates,
             types,
@@ -149,6 +152,7 @@ main()
 // types is from types.yaml - object of objects with key:values.
 // note: types IS used - it's in the closure formed by eval(str).
 // returns array of {key: string, value: function, dependsOn: string[]}.
+//. eg ___
 function getOutputs({ templates, types, deviceId }) {
   // console.log('getOutputs - iterate over output templates')
   const outputs = templates.map(template => {

@@ -11,21 +11,25 @@ export class AdapterDriver {
       console.log(error)
     })
 
-    client.on('data', data => {
-      const str = data.toString()
-      console.log(`CPC driver received ${str}...`)
-    })
-
     client.on('end', () => {
       console.log('CPC driver disconnected from server...')
     })
 
     client.on('connect', () => {
       console.log(`CPC driver connected...`)
+      //. combine inputs to 'poll' endpoint using client.write.
       // const cmd = `PathListGet:ReadValues:.Autoclave.Inputs.AIRTC\\Value,.Autoclave.RecipeProcessor\\RunStatus`
-      const cmd = `PathListGet:ReadValues:.Autoclave.Variables.OperatorName\\Value`
+      // const cmd = `PathListGet:ReadValues:.Autoclave.Variables.OperatorName\\Value`
+      const keys = inputs.map(input => input.key).join(',')
+      const cmd = `PathListGet:ReadValues:${keys}`
       console.log(`CPC driver writing ${cmd}...`)
       client.write(cmd + '\r\n')
+    })
+
+    client.on('data', data => {
+      const str = data.toString()
+      console.log(`CPC driver received ${str}...`)
+      //. write values to cache, which will output shdr
     })
   }
 }
