@@ -15,10 +15,11 @@ export class AdapterDriver {
     // this.query = `PathListGet:ReadValues:.Autoclave.Inputs.AIRTC\\Value,.Autoclave.RecipeProcessor\\RunStatus`
     // this.query = `PathListGet:ReadValues:.Autoclave.Variables.OperatorName\\Value`
     // eg ' PathListGet:ReadValues:.Autoclave.Alarms.ControlPower\Condition,.Autoclave.Alarms.ControlPower\AlarmActive,.Autoclave.Variables.OperatorName\Value,.Autoclave.Scripts.MotorHours.CoolPumpAOn\Value,.Autoclave.RecipeProcessor.Recipe.RecipeData\Description,.Autoclave.Inputs.AIRTC\Value'
-    this.keys = inputs.inputs.map(input => input.path)
-    this.keysStr = this.keys.join(',')
-    this.query = `PathListGet:ReadValues:${this.keysStr}`
-    this.ids = this.keys.map(key => `${deviceId}-${key}`)
+    this.ids = inputs.inputs.map(input => `${deviceId}-${input.key}`)
+    this.paths = inputs.inputs.map(input => input.path).join(',')
+    this.query = `PathListGet:ReadValues:${this.paths}`
+    console.log('ids', this.ids)
+    console.log('paths', this.paths)
 
     console.log(`CPC driver connecting to TCP server at`, { host, port }, '...')
     const client = net.connect(port, host)
@@ -32,17 +33,13 @@ export class AdapterDriver {
 
     // receive data from device, write to cache
     client.on('data', data => {
+      // get str eg 'PathListGet:ReadValues:=,True,Joshau Schneider,254.280816,,0'
       const str = data.toString()
       console.log(`CPC driver received ${str}...`)
-      // eg 'PathListGet:ReadValues:=,True,Joshau Schneider,254.280816,,0'
-      //. write values to cache, which will output shdr
-      const [_, str2] = str.split(':=')
-      const values = str2.split(',')
-
-      // const pairs = {}
-      // this.keys.forEach((key, i) => (pairs[key] = values[i]))
-      // console.log(pairs)
-
+      // get values eg ['', 'True', 'Joshau Schneider', ...]
+      const [_, valuesStr] = str.split(':=')
+      const values = valuesStr.split(',')
+      // write values to cache, which will output shdr
       this.ids.forEach((id, i) => {
         const value = values[i]
         cache.set(id, { value })
