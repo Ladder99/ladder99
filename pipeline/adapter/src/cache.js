@@ -1,6 +1,12 @@
-// cache of key-item pairs.
-// when key-item is set, will perform any associated outputs calculations and
-// send shdr output to attached tcp socket.
+// cache
+// manages a set of key-item pairs.
+
+// this is an intermediary between the raw device data and the shdr output.
+
+// when a key-item value is set, the cache will perform any associated output
+// calculations and send shdr output to attached tcp socket, IF value changed.
+
+//. eg ___
 
 export class Cache {
   constructor() {
@@ -10,12 +16,13 @@ export class Cache {
 
   // addOutputs
   // each key can have multiple outputs calculations associated with it.
-  // this builds a map from key to list of outputs.
+  // this builds a map from a key to a list of outputs.
   // each output goes to the same socket.
-  // outputs is an array of Output objects
-  // Output is { category, type, representation, key, socket, dependsOn, value }
+  // outputs is an array of Output objects.
+  // Output has { category, type, representation, key, socket, dependsOn, value }
   // dependsOn is array of strings
   // value is a fn
+  //. eg __
   addOutputs(outputs, socket) {
     console.log(`cache.addOutputs - add ${outputs.length} outputs`)
     for (const output of outputs) {
@@ -30,8 +37,9 @@ export class Cache {
     }
   }
 
-  // set a cache key-item pair.
-  // called item, because each item is an object that can have a value property.
+  // set a key-item pair in the cache.
+  // each item is an object that can have a value property.
+  //. eg ____
   set(key, item) {
     console.log('cache.set', key, JSON.stringify(item).slice(0, 99))
     // update the cache item
@@ -47,7 +55,8 @@ export class Cache {
     }
   }
 
-  // get item from cache
+  // get an item object from cache
+  //. eg ____
   get(key) {
     const item = this._map.get(key) || {} //. have default? return undefined?
     return item
@@ -57,6 +66,7 @@ export class Cache {
 // calculate SHDR using the given output object.
 // cache is the Cache object.
 // output has { key, category, type, representation, value, ... }.
+//. eg ____
 function getShdr(cache, output) {
   const timestamp = new Date().toISOString() //. get from item
   //. rename .value to .getValue or .valueFn
@@ -68,7 +78,7 @@ function getShdr(cache, output) {
   if (category === 'EVENT' || category === 'SAMPLE') {
     shdr = `${timestamp}|${key}|${value}`
   } else if (category === 'CONDITION') {
-    //. pick these values out of the value, which should be an object, eh?
+    //. pick these values out of the value, which should be an object
     const level = value // eg 'WARNING' -> element 'Warning'
     const nativeCode = 'nativeCode'
     const nativeSeverity = 'nativeSeverity'
