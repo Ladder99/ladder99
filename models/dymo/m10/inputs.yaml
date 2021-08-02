@@ -5,5 +5,5 @@
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/dymo.js.
 
 inputs:
-  - key: weight
-    path: weight
+  - key: mass
+    path: mass

@@ -15,8 +15,8 @@
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
 
 outputs:
-  - key: weight
+  - key: mass
     category: SAMPLE
-    type: WEIGHT
-    units: POUNDS #. unit? units?
-    value: <weight>
+    type: MASS
+    units: KILOGRAMS
+    value: <mass>

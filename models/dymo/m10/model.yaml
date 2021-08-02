@@ -20,4 +20,4 @@ model:
 
   dataItems:
     dataItem:
-      - weight
+      - mass
