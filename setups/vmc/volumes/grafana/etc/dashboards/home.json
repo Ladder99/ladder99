@@ -305,7 +305,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value as x\nFROM history_float\nWHERE property='axes/x/position-actual' and\n  $__timeFilter(\"time\");",
+          "rawSql": "SELECT\n  time,\n  value as x\nFROM history_float\nWHERE property='axes/x/position-commanded' and\n  $__timeFilter(\"time\");",
           "refId": "A",
           "select": [
             [
@@ -332,7 +332,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value as y\nFROM history_float\nWHERE property='axes/y/position-actual' and\n  $__timeFilter(\"time\");",
+          "rawSql": "SELECT\n  time,\n  value as y\nFROM history_float\nWHERE property='axes/y/position-commanded' and\n  $__timeFilter(\"time\");",
           "refId": "B",
           "select": [
             [
@@ -359,7 +359,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value as z\nFROM history_float\nWHERE property='axes/z/position-actual' and\n  $__timeFilter(\"time\");\n",
+          "rawSql": "SELECT\n  time,\n  value as z\nFROM history_float\nWHERE property='axes/z/position-commanded' and\n  $__timeFilter(\"time\");\n",
           "refId": "C",
           "select": [
             [
@@ -475,7 +475,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value as x\nFROM history_numeric\nWHERE id='x3' and\n  $__timeFilter(\"time\");",
+          "rawSql": "SELECT\n  time,\n  value as x\nFROM history_float\nWHERE property='axes/x/position-actual' and\n  $__timeFilter(\"time\");",
           "refId": "A",
           "select": [
             [
@@ -502,7 +502,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value as y\nFROM history_numeric\nWHERE id='y3' and\n  $__timeFilter(\"time\");",
+          "rawSql": "SELECT\n  time,\n  value as y\nFROM history_float\nWHERE property='axes/y/position-actual' and\n  $__timeFilter(\"time\");",
           "refId": "B",
           "select": [
             [
@@ -529,7 +529,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  \"time\" AS \"time\",\n  value as z\nFROM history_numeric\nWHERE id='z3' and\n  $__timeFilter(\"time\");\n",
+          "rawSql": "SELECT\n  time,\n  value as z\nFROM history_float\nWHERE property='axes/z/position-actual' and\n  $__timeFilter(\"time\");\n",
           "refId": "C",
           "select": [
             [
@@ -1188,5 +1188,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 14
+  "version": 2
 }
