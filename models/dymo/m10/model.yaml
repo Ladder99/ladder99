@@ -1,0 +1,23 @@
+# dymo m10 model
+
+# this defines the structure of the xml that will get included in devices.xml.
+# text substitution is performed, eg ${deviceId} is replaced by
+# that value from the device yaml.
+# dataItems are defined in outputs.yaml.
+# compilation to devices.xml is done with sh/compile.
+
+model:
+  id: ${deviceId} # eg 'd1'
+  name: ${deviceId} # must be unique in xml - might want to override in setup.yaml tho?
+  uuid: ${uuid} # eg 'e0143'
+  sampleInterval: 10
+
+  description:
+    manufacturer: Dymo
+    model: M10
+    serialNumber: ${serialNumber} # eg '001'
+    text: Dymo USB Scale
+
+  dataItems:
+    dataItem:
+      - weight

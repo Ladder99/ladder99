@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# compile a setup's config/setup.yaml to devices.xml
+# compile a setup's config/setup.yaml to devices.xml etc
 
 SETUP=$1  # setup subfolder, eg 'ccs-pa'
 
