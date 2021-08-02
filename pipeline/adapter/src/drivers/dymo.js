@@ -54,6 +54,8 @@ export class AdapterDriver {
           const buf = Buffer.from(data)
           const grams = buf[4] + 256 * buf[5]
           console.log(new Date().toISOString() + ': ' + grams + ' grams')
+          const kg = grams / 1000
+          cache.set(`${deviceId}-mass`, { value: kg })
         })
 
         device.on('error', function (error) {

@@ -1,9 +1,0 @@
-# inputs
-
-#. rename to cache-inputs.yaml
-
-# this file is parsed by the adapter driver pipeline/adapter/src/drivers/dymo.js.
-
-inputs:
-  - key: mass
-    path: mass
