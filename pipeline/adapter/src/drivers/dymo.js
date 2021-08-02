@@ -1,6 +1,7 @@
 // dymo m10 scale driver
 
 // adapted from https://gist.github.com/PhantomRay/cbccda0d3ab9a9f42d7346cc378d808b
+// and https://github.com/null-none/python-dymo-scale/blob/master/dymo/scale.py
 
 import HID from 'node-hid' // see https://github.com/node-hid/node-hid
 import usb from 'usb' // see https://github.com/tessel/node-usb
@@ -9,6 +10,8 @@ const interval = 1000 // msec
 
 const vendorId = 0x0922
 const productId = 0x8003
+const dataModeGrams = 2
+const dataModeOunces = 11
 
 export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
@@ -51,10 +54,20 @@ export class AdapterDriver {
         reading = true
 
         device.on('data', function (data) {
-          const buf = Buffer.from(data)
-          const grams = buf[4] + 256 * buf[5]
-          console.log(new Date().toISOString() + ': ' + grams + ' grams')
+          const buffer = Buffer.from(data)
+          const mass = buffer[4] + 256 * buffer[5]
+
+          let grams = 0
+          if (buffer[2] === dataModeOunces) {
+            const scalingFactor = Math.pow(10, data[3] - 256)
+            const ounces = mass * scalingFactor
+            grams = ounces * 0.035274
+          } else if (buffer[2] === dataModeGrams) {
+            grams = mass
+          }
+
           const kg = grams / 1000
+          console.log(new Date().toISOString() + ': ' + kg + ' kg')
           cache.set(`${deviceId}-mass`, { value: kg })
         })
 
