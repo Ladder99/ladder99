@@ -10,57 +10,64 @@ const interval = 1000 // msec
 const vendorId = 0x0922
 const productId = 0x8003
 
-let reading = false
-let timer
+export class AdapterDriver {
+  init({ deviceId, protocol, host, port, cache, inputs, socket }) {
+    console.log(`Initialize Dymo M10 driver...`)
 
-// try to connect to the scale if available
-startReading()
+    let reading = false
+    let timer = null
 
-usb.on('attach', function (device) {
-  if (
-    device.deviceDescriptor.idVendor === vendorId &&
-    device.deviceDescriptor.idProduct === productId
-  ) {
-    console.log('Dymo M10 attached')
-    timer = setInterval(startReading, interval)
-  }
-})
+    // try to connect to the scale if available
+    startReading()
 
-usb.on('detach', function (device) {
-  if (
-    device.deviceDescriptor.idVendor === vendorId &&
-    device.deviceDescriptor.idProduct === productId
-  ) {
-    console.log('Dymo M10 detached')
-    reading = false
-    clearInterval(timer)
-  }
-})
-
-function startReading() {
-  if (reading) return
-  try {
-    const device = new HID.HID(vendorId, productId)
-
-    console.log('Starting to read data from scale')
-    reading = true
-
-    device.on('data', function (data) {
-      const buf = Buffer.from(data)
-      const grams = buf[4] + 256 * buf[5]
-      console.log(new Date().toISOString() + ': ' + grams + ' grams')
+    usb.on('attach', function (device) {
+      if (
+        device.deviceDescriptor.idVendor === vendorId &&
+        device.deviceDescriptor.idProduct === productId
+      ) {
+        console.log('Dymo M10 attached')
+        timer = setInterval(startReading, interval)
+      }
     })
 
-    device.on('error', function (error) {
-      console.log(error)
-      reading = false
-      device.close()
+    usb.on('detach', function (device) {
+      if (
+        device.deviceDescriptor.idVendor === vendorId &&
+        device.deviceDescriptor.idProduct === productId
+      ) {
+        console.log('Dymo M10 detached')
+        reading = false
+        clearInterval(timer)
+        timer = null
+      }
     })
-  } catch (err) {
-    if (/cannot open device/.test(err.message)) {
-      console.log('Dymo M10 cannot be found')
-    } else {
-      console.log(err)
+
+    function startReading() {
+      if (reading) return
+      try {
+        const device = new HID.HID(vendorId, productId)
+
+        console.log('Starting to read data from scale')
+        reading = true
+
+        device.on('data', function (data) {
+          const buf = Buffer.from(data)
+          const grams = buf[4] + 256 * buf[5]
+          console.log(new Date().toISOString() + ': ' + grams + ' grams')
+        })
+
+        device.on('error', function (error) {
+          console.log(error)
+          reading = false
+          device.close()
+        })
+      } catch (err) {
+        if (/cannot open device/.test(err.message)) {
+          console.log('Dymo M10 cannot be found')
+        } else {
+          console.log(err)
+        }
+      }
     }
   }
 }
