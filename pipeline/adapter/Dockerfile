@@ -4,7 +4,13 @@
 
 # FROM node:15  # huge 350mb compressed images
 # FROM node:15-alpine  # smallest, but harder to work with
-FROM node:15.14-slim
+# FROM node:15.14-slim
+
+# need python also for dymo.js driver - usb module compilation -
+# can't use slim version because need `make` etc.
+FROM nikolaik/python-nodejs:python3.9-nodejs16
+
+RUN apt-get update -y && apt-get install -y libudev-dev
 
 # install javascript dependencies
 WORKDIR /data
