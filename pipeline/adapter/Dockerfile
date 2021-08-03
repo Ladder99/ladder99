@@ -5,10 +5,16 @@
 # FROM node:15  # huge 350mb compressed images
 # FROM node:15-alpine  # smallest, but harder to work with
 # FROM node:15.14-slim
+
 # need python also for dymo.js driver - usb module compilation -
 # can't use slim version because need `make` etc.
+# see https://hub.docker.com/r/nikolaik/python-nodejs
 FROM nikolaik/python-nodejs:python3.9-nodejs16
 
+# need these for dymo driver else get errors -
+# error: libudev.h: No such file or directory
+# error: libusb-1.0.so.0: cannot open shared object file: No such file or directory
+# https://askubuntu.com/questions/852337/libusb-1-0-so-0-error
 RUN apt-get update -y && apt-get install -y libudev-dev libusb-1.0-0
 
 # install javascript dependencies
