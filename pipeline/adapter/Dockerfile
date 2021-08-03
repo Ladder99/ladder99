@@ -9,11 +9,16 @@
 # need python also for dymo.js driver - usb module compilation -
 # can't use slim version because need `make` etc.
 # see https://hub.docker.com/r/nikolaik/python-nodejs
-# this nowork because no arm image available
+# this nowork because no ARM image available
 # FROM nikolaik/python-nodejs:python3.9-nodejs16
 
+# ubuntu includes python and has images for ARM also
 # see https://hub.docker.com/_/ubuntu
 FROM ubuntu:21.04
+
+# prevent apt install from getting stuck at timezone info
+# see https://askubuntu.com/questions/909277/avoiding-user-interaction-with-tzdata-when-installing-certbot-in-a-docker-contai
+ENV DEBIAN_FRONTEND=noninteractive 
 
 # need these for dymo driver else get errors -
 # error: libudev.h: No such file or directory
