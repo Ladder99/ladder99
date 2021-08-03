@@ -227,7 +227,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  property,\n  time,\n  value\nFROM history_all\nWHERE\n  property IN ('availability', 'load-condition')\n  AND $__timeFilter(\"time\")",
+          "rawSql": "SELECT\n  property,\n  time,\n  value\nFROM history_all\nWHERE\n  property IN ('availability', 'load-condition', 'message', 'functional-mode',\n  'system-condition', 'controller/emergency-stop')\n  AND $__timeFilter(\"time\")",
           "refId": "A",
           "select": [
             [
@@ -1188,5 +1188,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 2
+  "version": 17
 }
