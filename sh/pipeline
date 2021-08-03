@@ -52,6 +52,11 @@ fi
 # . should be per setup folder? can you have multiple?
 if [ -e $envfile ]; then
     args="$args --env-file $envfile"
+else
+    echo No setups/.env file found - copying from default...
+    cp setups/.env-default setups/.env
+    echo PLEASE EDIT setups/.env!
+    exit 1
 fi
 
 # get profile flags
