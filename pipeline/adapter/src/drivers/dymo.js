@@ -20,8 +20,9 @@ export class AdapterDriver {
     let reading = false
     let timer = null
 
-    // try to connect to the scale if available
-    startReading()
+    // keep trying to connect to scale
+    // startReading()
+    setInterval(startReading, 5000)
 
     usb.on('attach', function (device) {
       if (
