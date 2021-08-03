@@ -27,6 +27,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 # RUN apt-get update -y && apt-get install -y libudev-dev libusb-1.0-0
 RUN apt-get update -y && apt-get install -y apt-transport-https nodejs npm libudev-dev libusb-1.0-0
 
+# got prebuild-install WARN install No prebuilt binaries found (target=3 runtime=napi arch=arm64 libc= platform=linux)
+# gyp info using node-gyp@7.1.2
+# gyp info using node@12.21.0 | linux | arm64
+# gyp info find Python using Python version 3.9.5 found at "/usr/bin/python3"
+# will this fix problem? get newer version of node-gyp?
+# RUN npm install -g node-gyp
+RUN npm install -g npm
+
 # install javascript dependencies
 WORKDIR /data
 ENV NODE_ENV production
