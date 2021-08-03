@@ -1,5 +1,7 @@
 #!/bin/bash
 
+#. is this obsolete? we can use sh/start foo record, yes?
+
 # recorder - a nodejs app to play/record device messages.
 # first param is folder relative to current directory.
 # specify play/record as parameter, eg
@@ -12,7 +14,7 @@ if [ -z "$1" ]; then echo "Error: folder required as first argument"; exit 1; fi
 HOST_FOLDER=$1
 shift
 
-# build docker image for tape
+# build docker image for recorder
 docker build --tag recorder pipeline/recorder
 
 # run the docker image as a container
