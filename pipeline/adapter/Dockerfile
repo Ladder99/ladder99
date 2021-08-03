@@ -33,7 +33,7 @@ RUN apt-get update -y && apt-get install -y apt-transport-https nodejs npm libud
 # gyp info find Python using Python version 3.9.5 found at "/usr/bin/python3"
 # will this fix problem? get newer version of node-gyp?
 # RUN npm install -g node-gyp
-RUN npm install -g npm
+# RUN npm install -g npm
 
 # install javascript dependencies
 WORKDIR /data

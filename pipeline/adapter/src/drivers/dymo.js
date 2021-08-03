@@ -6,7 +6,8 @@
 import HID from 'node-hid' // see https://github.com/node-hid/node-hid
 import usb from 'usb' // see https://github.com/tessel/node-usb
 
-const interval = 1000 // msec
+const pollInterval = 1000 // msec
+const reconnectInterval = 5000 // msec
 
 const vendorId = 0x0922
 const productId = 0x8003
@@ -20,9 +21,21 @@ export class AdapterDriver {
     let reading = false
     let timer = null
 
-    // keep trying to connect to scale
     // startReading()
-    setInterval(startReading, 5000)
+
+    // keep trying to connect to scale
+    // note: readme says
+    // Cost of HID.devices() and new HID.HID() for detecting device plug/unplug -
+    // Both HID.devices() and new HID.HID() are relatively costly, each causing a
+    // USB(and potentially Bluetooth) enumeration. This takes time and OS
+    // resources. Doing either can slow down the read / write that you do in
+    // parallel with a device, and cause other USB devices to slow down too.
+    // This is how USB works.
+    //. If you are polling HID.devices() or doing repeated new HID.HID(vid,pid)
+    // to detect device plug / unplug, consider instead using node-usb-detection.
+    // node-usb-detection uses OS-specific, non-bus enumeration ways to
+    // detect device plug / unplug.
+    setInterval(startReading, reconnectInterval)
 
     usb.on('attach', function (device) {
       if (
@@ -30,7 +43,7 @@ export class AdapterDriver {
         device.deviceDescriptor.idProduct === productId
       ) {
         console.log('Dymo M10 attached')
-        timer = setInterval(startReading, interval)
+        timer = setInterval(startReading, pollInterval)
       }
     })
 
