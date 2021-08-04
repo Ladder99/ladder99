@@ -820,7 +820,7 @@
         },
         {
           "$$hashKey": "object:790",
-          "color": "#73BF69",
+          "color": "#C0D8FF",
           "text": "ACTIVE"
         },
         {
@@ -839,7 +839,7 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 7,
+        "h": 9,
         "w": 24,
         "x": 0,
         "y": 2
@@ -1087,241 +1087,240 @@
       "writeMetricNames": true
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 11
       },
       "id": 27,
-      "panels": [
-        {
-          "datasource": null,
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 6,
-            "x": 0,
-            "y": 2
-          },
-          "id": 20,
-          "options": {
-            "border": {
-              "color": "yellow",
-              "show": false,
-              "size": 1
-            },
-            "fieldSets": [
-              {
-                "col": 2,
-                "color": "#e04c7b",
-                "dotSize": 2,
-                "hidden": false,
-                "lineSize": 1,
-                "lineType": "none"
-              }
-            ],
-            "grid": {
-              "color": "gray"
-            },
-            "legend": {
-              "show": false,
-              "size": 3
-            },
-            "rotateYAxisTitle": false,
-            "xAxis": {
-              "col": 1,
-              "inverted": false
-            },
-            "xAxisExtents": {
-              "max": 2,
-              "min": -2
-            },
-            "xAxisTitle": {
-              "color": "white",
-              "text": "x",
-              "textSize": 1
-            },
-            "yAxisExtents": {
-              "max": 2,
-              "min": -2
-            },
-            "yAxisTitle": {
-              "color": "#777",
-              "text": "y",
-              "textSize": 1
-            }
-          },
-          "pluginVersion": "7.5.5",
-          "targets": [
-            {
-              "format": "table",
-              "group": [],
-              "metricColumn": "none",
-              "rawQuery": true,
-              "rawSql": "SELECT time,\n  SUM(CASE property WHEN 'axes/x/position-actual' THEN value ELSE 0 END) AS x,\n  SUM(CASE property WHEN 'axes/y/position-actual' THEN value ELSE 0 END) AS y\nFROM history_float\nWHERE $__timeFilter(\"time\")\nGROUP BY time\n;\n",
-              "refId": "A",
-              "select": [
-                [
-                  {
-                    "params": ["value"],
-                    "type": "column"
-                  }
-                ]
-              ],
-              "table": "\"values\"",
-              "timeColumn": "\"time\"",
-              "timeColumnType": "timestamptz",
-              "where": [
-                {
-                  "name": "$__timeFilter",
-                  "params": [],
-                  "type": "macro"
-                }
-              ]
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Path 2d",
-          "type": "michaeldmoore-scatter-panel"
-        },
-        {
-          "datasource": null,
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 8,
-            "w": 10,
-            "x": 6,
-            "y": 2
-          },
-          "id": 24,
-          "pconfig": {
-            "fixScale": "x",
-            "layout": {
-              "dragmode": "lasso",
-              "font": {
-                "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
-              },
-              "hovermode": "closest",
-              "legend": {
-                "orientation": "h"
-              },
-              "showlegend": false,
-              "xaxis": {
-                "range": [-2, 2],
-                "rangemode": "between",
-                "showgrid": true,
-                "title": "x",
-                "type": "linear",
-                "zeroline": false
-              },
-              "yaxis": {
-                "range": [-2, 2],
-                "rangemode": "between",
-                "showgrid": true,
-                "title": "y",
-                "type": "linear",
-                "zeroline": false
-              },
-              "zaxis": {
-                "rangemode": "normal",
-                "showgrid": true,
-                "title": "z",
-                "type": "linear",
-                "zeroline": false
-              }
-            },
-            "loadFromCDN": false,
-            "settings": {
-              "displayModeBar": false,
-              "type": "scatter3d"
-            },
-            "showAnnotations": true,
-            "traces": [
-              {
-                "mapping": {
-                  "color": "time",
-                  "size": null,
-                  "text": null,
-                  "x": "x",
-                  "y": "y",
-                  "z": "z"
-                },
-                "name": "Trace 1",
-                "settings": {
-                  "color_option": "ramp",
-                  "line": {
-                    "color": "#005f81",
-                    "dash": "solid",
-                    "shape": "linear",
-                    "width": 6
-                  },
-                  "marker": {
-                    "color": "#33B5E5",
-                    "colorscale": "Earth",
-                    "line": {
-                      "color": "#DDD",
-                      "width": 0
-                    },
-                    "showscale": false,
-                    "size": 5,
-                    "sizemin": 3,
-                    "sizemode": "diameter",
-                    "sizeref": 0.2,
-                    "symbol": "circle"
-                  }
-                },
-                "show": {
-                  "line": true,
-                  "lines": false,
-                  "markers": true
-                }
-              }
-            ]
-          },
-          "pluginVersion": "7.5.5",
-          "targets": [
-            {
-              "format": "table",
-              "group": [],
-              "metricColumn": "none",
-              "rawQuery": true,
-              "rawSql": "SELECT time,\n  SUM(CASE property WHEN 'axes/x/position-actual' THEN value ELSE 0 END) AS x,\n  SUM(CASE property WHEN 'axes/y/position-actual' THEN value ELSE 0 END) AS y,\n  SUM(CASE property WHEN 'axes/z/position-actual' THEN value ELSE 0 END) AS z\nFROM history_float\nWHERE $__timeFilter(\"time\")\nGROUP BY time\n;\n",
-              "refId": "A",
-              "select": [
-                [
-                  {
-                    "params": ["value"],
-                    "type": "column"
-                  }
-                ]
-              ],
-              "timeColumn": "time",
-              "where": [
-                {
-                  "name": "$__timeFilter",
-                  "params": [],
-                  "type": "macro"
-                }
-              ]
-            }
-          ],
-          "title": "Path 3d",
-          "type": "natel-plotly-panel",
-          "version": 1
-        }
-      ],
+      "panels": [],
       "title": "Paths",
       "type": "row"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 6,
+        "x": 0,
+        "y": 12
+      },
+      "id": 20,
+      "options": {
+        "border": {
+          "show": false,
+          "color": "yellow",
+          "size": 1
+        },
+        "fieldSets": [
+          {
+            "col": 2,
+            "color": "#e04c7b",
+            "dotSize": 2,
+            "hidden": false,
+            "lineSize": 1,
+            "lineType": "none"
+          }
+        ],
+        "grid": {
+          "color": "gray"
+        },
+        "legend": {
+          "show": false,
+          "size": 3
+        },
+        "rotateYAxisTitle": false,
+        "xAxis": {
+          "col": 1,
+          "inverted": false
+        },
+        "xAxisExtents": {
+          "min": -2,
+          "max": 2
+        },
+        "xAxisTitle": {
+          "text": "x",
+          "color": "white",
+          "textSize": 1
+        },
+        "yAxisExtents": {
+          "min": -2,
+          "max": 2
+        },
+        "yAxisTitle": {
+          "text": "y",
+          "color": "#777",
+          "textSize": 1
+        }
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time,\n  SUM(CASE property WHEN 'axes/x/position-actual' THEN value ELSE 0 END) AS x,\n  SUM(CASE property WHEN 'axes/y/position-actual' THEN value ELSE 0 END) AS y\nFROM history_float\nWHERE $__timeFilter(\"time\")\nGROUP BY time\n;\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "\"values\"",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Path 2d",
+      "type": "michaeldmoore-scatter-panel"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 6,
+        "y": 12
+      },
+      "id": 24,
+      "pconfig": {
+        "fixScale": "x",
+        "layout": {
+          "dragmode": "lasso",
+          "font": {
+            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
+          },
+          "hovermode": "closest",
+          "legend": {
+            "orientation": "h"
+          },
+          "showlegend": false,
+          "xaxis": {
+            "range": [-2, 2],
+            "rangemode": "between",
+            "showgrid": true,
+            "title": "x",
+            "type": "linear",
+            "zeroline": false
+          },
+          "yaxis": {
+            "range": [-2, 2],
+            "rangemode": "between",
+            "showgrid": true,
+            "title": "y",
+            "type": "linear",
+            "zeroline": false
+          },
+          "zaxis": {
+            "rangemode": "normal",
+            "showgrid": true,
+            "title": "z",
+            "type": "linear",
+            "zeroline": false
+          }
+        },
+        "loadFromCDN": false,
+        "settings": {
+          "displayModeBar": false,
+          "type": "scatter3d"
+        },
+        "showAnnotations": true,
+        "traces": [
+          {
+            "mapping": {
+              "color": "time",
+              "size": null,
+              "text": null,
+              "x": "x",
+              "y": "y",
+              "z": "z"
+            },
+            "name": "Trace 1",
+            "settings": {
+              "color_option": "ramp",
+              "line": {
+                "color": "#005f81",
+                "dash": "solid",
+                "shape": "linear",
+                "width": 6
+              },
+              "marker": {
+                "color": "#33B5E5",
+                "colorscale": "Earth",
+                "line": {
+                  "color": "#DDD",
+                  "width": 0
+                },
+                "showscale": false,
+                "size": 3,
+                "sizemin": 3,
+                "sizemode": "diameter",
+                "sizeref": 0.2,
+                "symbol": "circle"
+              }
+            },
+            "show": {
+              "line": true,
+              "lines": false,
+              "markers": true
+            }
+          }
+        ]
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time,\n  SUM(CASE property WHEN 'axes/x/position-actual' THEN value ELSE 0 END) AS x,\n  SUM(CASE property WHEN 'axes/y/position-actual' THEN value ELSE 0 END) AS y,\n  SUM(CASE property WHEN 'axes/z/position-actual' THEN value ELSE 0 END) AS z\nFROM history_float\nWHERE $__timeFilter(\"time\")\nGROUP BY time\n;\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Path 3d",
+      "type": "natel-plotly-panel",
+      "version": 1
     }
   ],
   "refresh": "10s",
@@ -1332,7 +1331,7 @@
     "list": []
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -1352,5 +1351,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 19
+  "version": 25
 }
