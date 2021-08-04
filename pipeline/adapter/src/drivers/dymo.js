@@ -19,7 +19,7 @@ export class AdapterDriver {
     console.log(`Initialize Dymo M10 driver...`)
 
     const devices = usb.getDeviceList()
-    console.log('USB devices attached:', devices)
+    console.log('USB devices attached:', devices.length)
 
     let reading = false
     let timer = null
@@ -84,7 +84,7 @@ export class AdapterDriver {
           }
 
           const kg = grams / 1000
-          console.log(new Date().toISOString() + ': ' + kg + ' kg')
+          // console.log(new Date().toISOString() + ': ' + kg + ' kg')
           cache.set(`${deviceId}-mass`, { value: kg })
         })
 
