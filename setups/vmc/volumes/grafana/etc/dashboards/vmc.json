@@ -1,0 +1,1034 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Vertical Machining Center (VMC) Dashboard",
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 1,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": true,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 14,
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "displayName": "Frt",
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 8,
+            "w": 11,
+            "x": 0,
+            "y": 1
+          },
+          "hiddenSeries": false,
+          "id": 8,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "7.5.5",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "format": "time_series",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  time,\n  value\nFROM history_float\nWHERE\n  property='controller/path/path-feedrate' and\n  $__timeFilter(\"time\")",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "\"values\"",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Path Feedrate (mm/sec)",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "datasource": null,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": null,
+                "displayMode": "json-view",
+                "filterable": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.displayMode",
+                    "value": "auto"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 153
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "id"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 70
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 11,
+            "x": 11,
+            "y": 1
+          },
+          "id": 22,
+          "options": {
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "7.5.5",
+          "targets": [
+            {
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  property,\n  time,\n  value\nFROM history_all\nWHERE\n  property IN ('availability', 'load-condition', 'message', 'functional-mode',\n  'system-condition', 'controller/emergency-stop')\n  AND $__timeFilter(\"time\")",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "\"values\"",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "title": "Events",
+          "type": "table"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "lengthmm"
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 11,
+            "x": 0,
+            "y": 9
+          },
+          "hiddenSeries": false,
+          "id": 10,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "7.5.5",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "format": "time_series",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  time,\n  value as x\nFROM history_float\nWHERE property='axes/x/position-commanded' and\n  $__timeFilter(\"time\");",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "\"values\"",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            },
+            {
+              "format": "time_series",
+              "group": [],
+              "hide": false,
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  time,\n  value as y\nFROM history_float\nWHERE property='axes/y/position-commanded' and\n  $__timeFilter(\"time\");",
+              "refId": "B",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "\"values\"",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            },
+            {
+              "format": "time_series",
+              "group": [],
+              "hide": false,
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  time,\n  value as z\nFROM history_float\nWHERE property='axes/z/position-commanded' and\n  $__timeFilter(\"time\");\n",
+              "refId": "C",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "\"values\"",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Commanded Position (mm)",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "lengthmm",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": null,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "unit": "lengthmm"
+            },
+            "overrides": []
+          },
+          "fill": 1,
+          "fillGradient": 0,
+          "gridPos": {
+            "h": 6,
+            "w": 11,
+            "x": 11,
+            "y": 9
+          },
+          "hiddenSeries": false,
+          "id": 25,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
+          "pluginVersion": "7.5.5",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "format": "time_series",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  time,\n  value as x\nFROM history_float\nWHERE property='axes/x/position-actual' and\n  $__timeFilter(\"time\");",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "\"values\"",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            },
+            {
+              "format": "time_series",
+              "group": [],
+              "hide": false,
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  time,\n  value as y\nFROM history_float\nWHERE property='axes/y/position-actual' and\n  $__timeFilter(\"time\");",
+              "refId": "B",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "\"values\"",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            },
+            {
+              "format": "time_series",
+              "group": [],
+              "hide": false,
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  time,\n  value as z\nFROM history_float\nWHERE property='axes/z/position-actual' and\n  $__timeFilter(\"time\");\n",
+              "refId": "C",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "\"values\"",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Actual Position (mm)",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "lengthmm",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
+        }
+      ],
+      "title": "Overview",
+      "type": "row"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 29,
+      "panels": [],
+      "title": "Timeline",
+      "type": "row"
+    },
+    {
+      "backgroundColor": "rgba(128,128,128,0.1)",
+      "colorMaps": [
+        {
+          "$$hashKey": "object:21403",
+          "color": "#CCC",
+          "text": "N/A"
+        }
+      ],
+      "crosshairColor": "#8F070C",
+      "datasource": null,
+      "display": "timeline",
+      "expandFromQueryS": 0,
+      "extendLastValue": true,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "highlightOnMouseover": true,
+      "id": 31,
+      "legendSortBy": "-ms",
+      "lineColor": "rgba(0,0,0,0.1)",
+      "metricNameColor": "#000000",
+      "pluginVersion": "7.5.5",
+      "rangeMaps": [
+        {
+          "$$hashKey": "object:21408",
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "rowHeight": 50,
+      "showLegend": true,
+      "showLegendNames": true,
+      "showLegendPercent": true,
+      "showLegendValues": true,
+      "showTimeAxis": true,
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as Availability\nFROM history_text\nWHERE property='availability' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as Avail2  \nFROM history_text\nWHERE property='availability' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "textSize": 24,
+      "textSizeTime": 12,
+      "timeOptions": [
+        {
+          "name": "Years",
+          "value": "years"
+        },
+        {
+          "name": "Months",
+          "value": "months"
+        },
+        {
+          "name": "Weeks",
+          "value": "weeks"
+        },
+        {
+          "name": "Days",
+          "value": "days"
+        },
+        {
+          "name": "Hours",
+          "value": "hours"
+        },
+        {
+          "name": "Minutes",
+          "value": "minutes"
+        },
+        {
+          "name": "Seconds",
+          "value": "seconds"
+        },
+        {
+          "name": "Milliseconds",
+          "value": "milliseconds"
+        }
+      ],
+      "timePrecision": {
+        "name": "Minutes",
+        "value": "minutes"
+      },
+      "timeTextColor": "#d8d9da",
+      "title": "Timeline",
+      "type": "natel-discrete-panel",
+      "units": "short",
+      "useTimePrecision": false,
+      "valueMaps": [
+        {
+          "$$hashKey": "object:21406",
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueTextColor": "#000000",
+      "writeAllValues": false,
+      "writeLastValue": true,
+      "writeMetricNames": false
+    },
+    {
+      "collapsed": true,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 27,
+      "panels": [
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 2
+          },
+          "id": 20,
+          "options": {
+            "border": {
+              "color": "yellow",
+              "show": false,
+              "size": 1
+            },
+            "fieldSets": [
+              {
+                "col": 2,
+                "color": "#e04c7b",
+                "dotSize": 2,
+                "hidden": false,
+                "lineSize": 1,
+                "lineType": "none"
+              }
+            ],
+            "grid": {
+              "color": "gray"
+            },
+            "legend": {
+              "show": false,
+              "size": 3
+            },
+            "rotateYAxisTitle": false,
+            "xAxis": {
+              "col": 1,
+              "inverted": false
+            },
+            "xAxisExtents": {
+              "max": 2,
+              "min": -2
+            },
+            "xAxisTitle": {
+              "color": "white",
+              "text": "x",
+              "textSize": 1
+            },
+            "yAxisExtents": {
+              "max": 2,
+              "min": -2
+            },
+            "yAxisTitle": {
+              "color": "#777",
+              "text": "y",
+              "textSize": 1
+            }
+          },
+          "pluginVersion": "7.5.5",
+          "targets": [
+            {
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT time,\n  SUM(CASE property WHEN 'axes/x/position-actual' THEN value ELSE 0 END) AS x,\n  SUM(CASE property WHEN 'axes/y/position-actual' THEN value ELSE 0 END) AS y\nFROM history_float\nWHERE $__timeFilter(\"time\")\nGROUP BY time\n;\n",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "\"values\"",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Path 2d",
+          "type": "michaeldmoore-scatter-panel"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {},
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 10,
+            "x": 6,
+            "y": 2
+          },
+          "id": 24,
+          "pconfig": {
+            "fixScale": "x",
+            "layout": {
+              "dragmode": "lasso",
+              "font": {
+                "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
+              },
+              "hovermode": "closest",
+              "legend": {
+                "orientation": "h"
+              },
+              "showlegend": false,
+              "xaxis": {
+                "range": [-2, 2],
+                "rangemode": "between",
+                "showgrid": true,
+                "title": "x",
+                "type": "linear",
+                "zeroline": false
+              },
+              "yaxis": {
+                "range": [-2, 2],
+                "rangemode": "between",
+                "showgrid": true,
+                "title": "y",
+                "type": "linear",
+                "zeroline": false
+              },
+              "zaxis": {
+                "rangemode": "normal",
+                "showgrid": true,
+                "title": "z",
+                "type": "linear",
+                "zeroline": false
+              }
+            },
+            "loadFromCDN": false,
+            "settings": {
+              "displayModeBar": false,
+              "type": "scatter3d"
+            },
+            "showAnnotations": true,
+            "traces": [
+              {
+                "mapping": {
+                  "color": "time",
+                  "size": null,
+                  "text": null,
+                  "x": "x",
+                  "y": "y",
+                  "z": "z"
+                },
+                "name": "Trace 1",
+                "settings": {
+                  "color_option": "ramp",
+                  "line": {
+                    "color": "#005f81",
+                    "dash": "solid",
+                    "shape": "linear",
+                    "width": 6
+                  },
+                  "marker": {
+                    "color": "#33B5E5",
+                    "colorscale": "Earth",
+                    "line": {
+                      "color": "#DDD",
+                      "width": 0
+                    },
+                    "showscale": false,
+                    "size": 5,
+                    "sizemin": 3,
+                    "sizemode": "diameter",
+                    "sizeref": 0.2,
+                    "symbol": "circle"
+                  }
+                },
+                "show": {
+                  "line": true,
+                  "lines": false,
+                  "markers": true
+                }
+              }
+            ]
+          },
+          "pluginVersion": "7.5.5",
+          "targets": [
+            {
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT time,\n  SUM(CASE property WHEN 'axes/x/position-actual' THEN value ELSE 0 END) AS x,\n  SUM(CASE property WHEN 'axes/y/position-actual' THEN value ELSE 0 END) AS y,\n  SUM(CASE property WHEN 'axes/z/position-actual' THEN value ELSE 0 END) AS z\nFROM history_float\nWHERE $__timeFilter(\"time\")\nGROUP BY time\n;\n",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "timeColumn": "time",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "title": "Path 3d",
+          "type": "natel-plotly-panel",
+          "version": 1
+        }
+      ],
+      "title": "Paths",
+      "type": "row"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 27,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "VMC",
+  "uid": "dII-Qgzgz",
+  "version": 23
+}
