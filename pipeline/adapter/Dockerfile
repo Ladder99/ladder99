@@ -25,7 +25,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 # error: libusb-1.0.so.0: cannot open shared object file: No such file or directory
 # https://askubuntu.com/questions/852337/libusb-1-0-so-0-error
 # RUN apt-get update -y && apt-get install -y libudev-dev libusb-1.0-0
-RUN apt-get update -y && apt-get install -y nodejs npm libudev-dev libusb-1.0-0 libusb-1.0-0-dev
+RUN apt-get update -y && apt-get install -y nodejs npm libudev-dev \
+  libusb-1.0-0 libusb-1.0-0-dev pkg-config
 
 # got prebuild-install WARN install No prebuilt binaries found (target=3 runtime=napi arch=arm64 libc= platform=linux)
 # gyp info using node-gyp@7.1.2
