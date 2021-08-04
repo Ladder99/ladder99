@@ -48,13 +48,15 @@ export class Cache {
     const outputs = this._mapKeyToOutputs[key] || []
     // calculate outputs and send dependent shdr values to tcp
     for (const output of outputs) {
-      const shdr = getShdr(this, output)
-      console.log('shdr', shdr)
+      // calculate value of this cache output
+      const value = getValue(this, output)
       // send shdr to agent via tcp socket if value changed
-      if (shdr !== output.shdr) {
+      if (value !== output.lastValue) {
+        const shdr = getShdr(this, output, value)
+        console.log('shdr', shdr)
         console.log(`shdr changed - sending to tcp -`, shdr.slice(0, 60), `...`)
         output.socket.write(shdr + '\n')
-        output.shdr = shdr
+        output.lastValue = value
       }
     }
   }
@@ -67,15 +69,21 @@ export class Cache {
   }
 }
 
+// calculate value for the given cache output (can use other cache keyvalues)
+function getValue(cache, output) {
+  //. rename .value to .getValue or .valueFn
+  const { value: getValue } = output
+  const value = getValue(cache) // do calculation
+  return value
+}
+
 // calculate SHDR using the given output object.
 // cache is the Cache object.
 // output has { key, category, type, representation, value, shdr, ... }.
 //. eg ____
-function getShdr(cache, output) {
+function getShdr(cache, output, value) {
   const timestamp = new Date().toISOString() //. get from item
-  //. rename .value to .getValue or .valueFn
-  const { key, category, type, representation, value: getValue } = output
-  const value = getValue(cache) // do calculation
+  const { key, category, type, subType, representation } = output
   let shdr = ''
   // handle different shdr types and representations
   //. shouldn't this be dataitemId, not key?
