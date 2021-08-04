@@ -166,7 +166,9 @@ function getParamsStep(params) {
 }
 
 function getParamString(param) {
-  const str = param.replace('x:', '').replaceAll('_', '-').toLowerCase()
+  // const str = param.replace('x:', '').replaceAll('_', '-').toLowerCase() // needs node15
+  const regexp = new RegExp('_', 'g')
+  const str = param.replace('x:', '').replace(regexp, '-').toLowerCase()
   //. change chars AFTER - to uppercase - how do?
   // const str2 = str
   //   .split()

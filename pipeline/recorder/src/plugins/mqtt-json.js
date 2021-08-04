@@ -71,7 +71,9 @@ export class RecorderPlugin {
           console.log(`Reading and publishing ${csvpath}...`)
           let csv = await fs.readFileSync(csvpath).toString()
           // @ts-ignore
-          csv = csv.replaceAll('${deviceId}', deviceId)
+          // csv = csv.replaceAll('${deviceId}', deviceId) // needs node15
+          const regexp = new RegExp('${deviceId}', 'g')
+          csv = csv.replace(regexp, deviceId)
 
           const rows = parse(csv, { columns: true, skip_empty_lines: true })
 
@@ -131,7 +133,8 @@ export class RecorderPlugin {
         function onMessage(topic, message, packet) {
           message = message.toString()
           console.log('Message received:', topic, message.slice(0, 60))
-          message = message.replaceAll('"', '""') // make ready to write as json string
+          // message = message.replaceAll('"', '""') // make ready to write as json string // needs node15
+          message = message.replace(new RegExp('"', 'g'), '""') // make ready to write as json string
           const { qos, retain } = packet
           const time_now = Number(new Date()) / 1000 // seconds
           const time_delta = time_now - time_last // seconds

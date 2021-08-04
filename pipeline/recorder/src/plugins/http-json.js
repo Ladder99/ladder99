@@ -39,7 +39,9 @@ export class RecorderPlugin {
           console.log(`Reading and publishing ${csvpath}...`)
           let csv = await fs.readFileSync(csvpath).toString()
           // @ts-ignore
-          csv = csv.replaceAll('${deviceId}', deviceId)
+          // csv = csv.replaceAll('${deviceId}', deviceId) // replaceAll needs node15
+          const regexp = new RegExp('${deviceId}', 'g')
+          csv = csv.replace(regexp, deviceId)
           const rows = parse(csv, { columns: true, skip_empty_lines: true })
           for (const row of rows) {
             const { topic, message, qos, retain, time_delta } = row

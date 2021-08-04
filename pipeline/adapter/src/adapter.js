@@ -163,7 +163,10 @@ function getOutputs({ templates, types, deviceId }) {
     // eg "<power_fault> ? 'FAULT' : <power_warning> ? 'WARNING' : 'NORMAL'"
     let valueStr = template.value || ''
     // eg "cache.get('ac1-power_fault').value ? 'FAULT' : cache.get('ac1-power_warning').value ? 'WARNING' : 'NORMAL'"
-    valueStr = valueStr.replaceAll(
+    // should be okay to ditch replaceAll because we have /g for the regexp
+    //. test this with two cache refs in a string "<foo> + <bar>" etc
+    // valueStr = valueStr.replaceAll( // needs node15
+    valueStr = valueStr.replace(
       regexp1,
       `cache.get('${deviceId}-$2').value` // $2 is the matched substring
     )
