@@ -1,6 +1,6 @@
 # Architecture
 
-Data flows from devices through the Adapter, Agent, and Application to the Database and Visualizer.
+Data flows from devices through the Adapter, Agent, and Relay to the Database and Visualizer.
 
 ## Diagram
 
@@ -12,7 +12,7 @@ The Adapter polls or subscribes to messages from devices, and translates them to
 
 The Agent fits that data into an XML tree representing the device structures. This XML can be viewed in the browser, or transformed into HTML.
 
-The Application then consumes the XML and feeds it to the Database and Visualizer.
+The Relay then consumes the XML and feeds it to the Database and Dashboard.
 
 <!-- MQTT is a publish/subscribe message protocol. Messages from factory devices go to an MQTT Broker (Mosquitto). -->
 <!-- via an optional one-way data diode (Java + RabbitMQ) -->

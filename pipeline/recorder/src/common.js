@@ -1,5 +1,5 @@
 // important: keep this in synch by copying between services -
-//   adapter, application, recorder
+//   adapter, relay, recorder
 // simpler than making a library somewhere, for now
 
 import fs from 'fs' // node lib for filesystem

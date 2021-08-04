@@ -1,6 +1,6 @@
 # Pipeline
 
-Ladder99 forms a pipeline, with data flowing from factory devices up through Adapter, Agent, Application, Database, and Visualizer.
+Ladder99 forms a pipeline, with data flowing from factory devices up through Adapter, Agent, Relay, Database, and Dashboard.
 
 <!-- add ladder image -->
 

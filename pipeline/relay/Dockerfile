@@ -1,4 +1,4 @@
-# application dockerfile
+# relay dockerfile
 # based on https://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
 # keep in synch with pipeline/adapter/Dockerfile
 
@@ -18,7 +18,7 @@ ENV PATH /data/node_modules/.bin:$PATH
 COPY ./src ./src
 
 # base command - can pass params with CMD
-ENTRYPOINT ["node", "/data/app/src/application.js"]
+ENTRYPOINT ["node", "/data/app/src/relay.js"]
 
 # default command when run container
-# CMD ["node", "/data/app/src/application.js"]
+# CMD ["node", "/data/app/src/relay.js"]

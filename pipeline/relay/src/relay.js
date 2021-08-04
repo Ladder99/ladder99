@@ -1,11 +1,11 @@
-// mtconnect application
-// capture data from mtconnect agent(s) and write to database
+// ladder99 relay
+// capture data from ladder99 agent(s) and write to database
 
 import { Db } from './db.js'
 import { AgentReader } from './agentReader.js'
 import { Endpoint } from './endpoint.js'
 
-console.log(`MTConnect Application starting`)
+console.log(`MTConnect Relay starting`)
 console.log(`---------------------------------------------------`)
 
 // get envars - typically set in pipeline.yaml and pipeline-overrides.yaml files

@@ -17,9 +17,10 @@ Device models are defined in subfolders of the `models` folder, and typically co
 
 For example, the Chicago Coding Systems (CCS) Print and Apply model is defined in `models/ccs-pa` - you can see the definitions there.
 
-To develop a new model, you could make a copy of the `ccs-pa` folder and make changes to those files.
+To develop a new model, you could make a copy of the `ccs/pa` folder and make changes to those files.
 
-    cp -r models/ccs-pa models/my-model
+    cp -r models/ccs/pa models/my/model
+    ...
 
 ## Defining Devices
 
@@ -33,21 +34,21 @@ Make changes to the setup as needed.
 
 Then generate the devices.xml and docker files (former partially implemented, latter not implemented yet - hand-edit) - e.g.
 
-    sh/adapter/compile my-setup
+    sh/compile my-setup
 
 ## Testing a setup
 
 You can test a setup by running the pipeline in Docker -
 
-    sh/pipeline start my-setup
+    sh/start my-setup
 
-or an individual service (e.g. application) with
+or an individual service (e.g. play) with
 
-    sh/pipeline start my-setup [servicename]
+    sh/start my-setup [servicename]
 
 You can stop all services with
 
-    sh/pipeline stop my-setup
+    sh/stop my-setup all
 
 or an individual service with
 

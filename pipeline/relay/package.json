@@ -1,12 +1,12 @@
 {
-  "name": "ladder99-application",
+  "name": "ladder99-relay",
   "version": "0.1.0",
-  "description": "Ladder99 Application",
+  "description": "Ladder99 Relay",
   "type": "module",
   "module": "esnext",
   "target": "es2017",
   "scripts": {
-    "start": "node src/application.js",
+    "start": "node src/relay.js",
     "test": "nodemon src/test.js"
   },
   "author": "Brian Burns <bburns.km@gmail.com>",

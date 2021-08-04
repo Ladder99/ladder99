@@ -1,4 +1,4 @@
-# Ladder99 Application
+# Ladder99 Relay
 
 This transfers data from the Agent to the Database.
 
