@@ -12,7 +12,7 @@ export class AgentReader {
   // db is a Db instance
   // endpoint is an Endpoint instance
   // params includes { fetchInterval, fetchCount }
-  // called by application.js
+  // called by relay.js
   constructor({ db, endpoint, params }) {
     this.db = db
     this.endpoint = endpoint

@@ -1,5 +1,5 @@
 // run:
-// cd pipeline/application
+// cd pipeline/relay
 // npm test
 
 import fs from 'fs' // node lib - filesystem

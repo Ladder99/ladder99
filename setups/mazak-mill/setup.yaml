@@ -1,7 +1,7 @@
 # setup
 #. wip
 
-application:
+relay:
   agents:
     - http://mtconnect.mazakcorp.com:5609
     - http://mtconnect.mazakcorp.com:5610

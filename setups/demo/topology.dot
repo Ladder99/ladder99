@@ -49,7 +49,7 @@ digraph {
   // Adapter [ fillcolor=greenyellow, label="Adapter\nwith cache and\nplugins\n(NodeJS)" ];
   Adapter [ fillcolor=greenyellow, label="Adapter\n(NodeJS)" ];
   Agent [ fillcolor=greenyellow, label="Agent\n(C++/cppagent)" ];
-  Application [ fillcolor=greenyellow, label="Application\n(NodeJS)" ];
+  Relay [ fillcolor=greenyellow, label="Relay\n(NodeJS)" ];
 
   // adapter
   AdapterPlugin1 [ fillcolor=lemonchiffon, label="Adapter\nPlugin1" ];
@@ -108,13 +108,13 @@ digraph {
   // Adapter -> DiodeSender [ label="SHDR /   \nTCP 7878      ", dir=both, style=dotted ];
   // DiodeSender -> DiodeReceiver [ label="UDP    ", style=dotted ];
   // DiodeReceiver -> Agent [ label="SHDR /    \nTCP 7878        ", style=dotted ];
-  Agent -> Application [ dir=both; label="XML / \nHTTP 5000          " ];
+  Agent -> Relay [ dir=both; label="XML / \nHTTP 5000          " ];
   Agent -> Browser [ label="XML/HTML /\nHTTP 5000" ];
-  Application -> Database [ label="SQL  ", dir=both ];
+  Relay -> Database [ label="SQL  ", dir=both ];
   Database -> Dashboard [ label="SQL  ", dir=both ];
   Database -> Cloud;
   Dashboard -> Browser2 [ dir=both ];
-  // Application -> LOI;
+  // Relay -> LOI;
   // LOI -> Operator;
 
 
@@ -122,7 +122,7 @@ digraph {
   // ranks
   //------------------------------------------------------------------------
 
-  { rank=same; Adapter Agent Application Database Dashboard };
+  { rank=same; Adapter Agent Relay Database Dashboard };
   // { rank=same; DiodeSender DiodeReceiver Cloud Admin };
   // { rank=same; Cloud Admin };
 }

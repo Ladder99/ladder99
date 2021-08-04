@@ -5,8 +5,8 @@
 version: '3.8'
 
 services:
-  # application - retrieves data from agent and sends to db
-  application:
+  # relay - retrieves data from agent and sends to db
+  relay:
     environment:
       - AGENT_ENDPOINTS=http://mtconnect.mazakcorp.com:5717
       # - AGENT_ENDPOINTS=agents.txt

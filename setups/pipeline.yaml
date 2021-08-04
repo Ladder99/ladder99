@@ -6,9 +6,9 @@
 #   sh/pipeline start ccs-pa html play
 
 # profiles include
-#   all - adapter, agent, application, database, broker
+#   all - adapter, agent, relay, database, broker
 #   html - adapter, agent, broker
-#   dashboard - adapter, agent, application, broker
+#   dashboard - adapter, agent, relay, broker
 
 version: '3.8'
 
@@ -52,39 +52,6 @@ services:
       - 5000:5000
     networks:
       - ladder99
-    logging:
-      options:
-        max-size: '1m'
-
-  # application - fetch data from agent and send to db
-  application:
-    container_name: application
-    build: ../pipeline/application
-    profiles:
-      - all
-      - dashboard
-      - application
-    init: true
-    environment:
-      # override these as needed in pipeline-overrides.yaml
-      AGENT_ENDPOINTS: http://agent:5000
-      FETCH_INTERVAL: 2000
-      FETCH_COUNT: 800
-      PGHOST:
-      PGPORT:
-      PGDATABASE:
-      PGUSER:
-      PGPASSWORD:
-    # this fixes a problem on ubuntu - works on mac okay also
-    #. but not on friendlywrt - host-gateway doesn't exist, or need docker>=20.10
-    # see https://stackoverflow.com/a/67158212/243392
-    # and https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
-    # extra_hosts:
-    #   - host.docker.internal:host-gateway
-    networks:
-      - ladder99
-    # volumes:
-    #   - ../pipeline/application:/home/node/app # has source code
     logging:
       options:
         max-size: '1m'
@@ -270,6 +237,39 @@ services:
       - ../models:/data/models # has model-specific recordings folder
     networks:
       - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
+  # relay - fetch data from agent and send to db
+  relay:
+    container_name: relay
+    build: ../pipeline/relay
+    profiles:
+      - all
+      - dashboard
+      - relay
+    init: true
+    environment:
+      # override these as needed in pipeline-overrides.yaml
+      AGENT_ENDPOINTS: http://agent:5000
+      FETCH_INTERVAL: 2000
+      FETCH_COUNT: 800
+      PGHOST:
+      PGPORT:
+      PGDATABASE:
+      PGUSER:
+      PGPASSWORD:
+    # this fixes a problem on ubuntu - works on mac okay also
+    #. but not on friendlywrt - host-gateway doesn't exist, or need docker>=20.10
+    # see https://stackoverflow.com/a/67158212/243392
+    # and https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
+    # extra_hosts:
+    #   - host.docker.internal:host-gateway
+    networks:
+      - ladder99
+    # volumes:
+    #   - ../pipeline/relay:/home/node/app # has source code
     logging:
       options:
         max-size: '1m'
