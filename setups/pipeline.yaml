@@ -18,9 +18,11 @@ services:
     container_name: adapter
     # image: ladder99/adapter:latest # use this if build docker image and push to hub
     build: ../pipeline/adapter
-    #. why this nowork?
     security_opt:
       - seccomp:unconfined
+    privileged: true
+    # devices:
+    #   - "/dev/i2c-1:/dev/i2c-1"
     profiles:
       - all
       - html
