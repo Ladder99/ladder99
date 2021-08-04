@@ -26,6 +26,14 @@ ENV DEBIAN_FRONTEND=noninteractive
 # https://askubuntu.com/questions/852337/libusb-1-0-so-0-error
 # got prebuild-install WARN install No prebuilt binaries found (target=3 runtime=napi arch=arm64 libc= platform=linux)
 # see https://github.com/node-hid/node-hid#compiling-from-source
+# note: if apt-get update fails on raspberry pi with something about http and returns 100,
+# there might be an issue with libseccomp2 on the host system. 
+# you can upgrade it with the following -
+#   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC 648ACFD622F3D138
+#   echo "deb http://deb.debian.org/debian buster-backports main" | sudo tee -a /etc/apt/sources.list.d/buster-backports.list
+#   sudo apt update
+#   sudo apt install -t buster-backports libseccomp2
+# see https://www.reddit.com/r/Readarr/comments/ixajkk/working_docker_image_for_raspberry_pi_os_buster/glh774f/
 RUN apt-get update -y && apt-get install --fix-missing -y nodejs npm libudev-dev \
   libusb-1.0-0 libusb-1.0-0-dev pkg-config
 

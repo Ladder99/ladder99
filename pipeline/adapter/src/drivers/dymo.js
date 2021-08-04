@@ -18,6 +18,9 @@ export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
     console.log(`Initialize Dymo M10 driver...`)
 
+    const devices = usb.getDeviceList()
+    console.log('USB devices attached:', devices)
+
     let reading = false
     let timer = null
 
