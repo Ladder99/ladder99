@@ -593,6 +593,20 @@
       }
     },
     {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 27,
+      "panels": [],
+      "title": "Paths",
+      "type": "row"
+    },
+    {
       "datasource": null,
       "fieldConfig": {
         "defaults": {},
@@ -602,7 +616,7 @@
         "h": 8,
         "w": 6,
         "x": 0,
-        "y": 15
+        "y": 16
       },
       "id": 20,
       "options": {
@@ -696,7 +710,7 @@
         "h": 8,
         "w": 10,
         "x": 6,
-        "y": 15
+        "y": 16
       },
       "id": 24,
       "pconfig": {
@@ -821,11 +835,11 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 24
       },
       "id": 16,
       "panels": [],
-      "title": "Raspberry Pi",
+      "title": "Microcontroller",
       "type": "row"
     },
     {
@@ -847,7 +861,7 @@
         "h": 6,
         "w": 7,
         "x": 0,
-        "y": 24
+        "y": 25
       },
       "hiddenSeries": false,
       "id": 12,
@@ -958,7 +972,7 @@
         "h": 6,
         "w": 7,
         "x": 7,
-        "y": 24
+        "y": 25
       },
       "hiddenSeries": false,
       "id": 17,
@@ -1067,7 +1081,7 @@
         "h": 6,
         "w": 8,
         "x": 14,
-        "y": 24
+        "y": 25
       },
       "hiddenSeries": false,
       "id": 18,
@@ -1188,5 +1202,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 17
+  "version": 19
 }
