@@ -766,12 +766,47 @@
       "type": "row"
     },
     {
-      "backgroundColor": "rgba(128,128,128,0.1)",
+      "backgroundColor": "rgba(155, 155, 155, .1)",
       "colorMaps": [
         {
           "$$hashKey": "object:21403",
           "color": "#CCC",
           "text": "N/A"
+        },
+        {
+          "$$hashKey": "object:110845",
+          "color": "rgb(77, 77, 77)",
+          "text": "AVAILABLE"
+        },
+        {
+          "$$hashKey": "object:110846",
+          "color": "rgb(77, 77, 77)",
+          "text": "SPINDLE"
+        },
+        {
+          "$$hashKey": "object:110847",
+          "color": "#F2495C",
+          "text": "TRIGGERED"
+        },
+        {
+          "$$hashKey": "object:110848",
+          "color": "rgb(78, 78, 78)",
+          "text": "ARMED"
+        },
+        {
+          "$$hashKey": "object:110849",
+          "color": "rgb(77, 77, 77)",
+          "text": "ON"
+        },
+        {
+          "$$hashKey": "object:110850",
+          "color": "rgb(0, 0, 0)",
+          "text": "OFF"
+        },
+        {
+          "$$hashKey": "object:483",
+          "color": "black",
+          "text": "UNAVAILABLE"
         }
       ],
       "crosshairColor": "#8F070C",
@@ -792,7 +827,7 @@
       "highlightOnMouseover": true,
       "id": 31,
       "legendSortBy": "-ms",
-      "lineColor": "rgba(0,0,0,0.1)",
+      "lineColor": "black",
       "metricNameColor": "rgb(126, 126, 126)",
       "pluginVersion": "7.5.5",
       "rangeMaps": [
@@ -817,7 +852,7 @@
           "metricColumn": "none",
           "rawQuery": true,
           "rawSql": "SELECT time, value as \"Availability\"\nFROM history_text\nWHERE property='availability' and $__timeFilter(\"time\")\nORDER BY time",
-          "refId": "A",
+          "refId": "Av",
           "select": [
             [
               {
@@ -844,7 +879,34 @@
           "metricColumn": "none",
           "rawQuery": true,
           "rawSql": "SELECT time, value as \"Rotary Mode\"\nFROM history_text\nWHERE property='axes/c/rotary-mode' and $__timeFilter(\"time\")\nORDER BY time",
-          "refId": "B",
+          "refId": "Ro",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as \"Electric Power\"\nFROM history_text\nWHERE property='systems/electric/power-state' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "El",
           "select": [
             [
               {
@@ -871,7 +933,34 @@
           "metricColumn": "none",
           "rawQuery": true,
           "rawSql": "SELECT time, value as \"Emergency Stop\"\nFROM history_text\nWHERE property='controller/emergency-stop' and $__timeFilter(\"time\")\nORDER BY time",
-          "refId": "C",
+          "refId": "Em",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as \"Controller Mode\"\nFROM history_text\nWHERE property='controller/path/controller-mode' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "Co",
           "select": [
             [
               {
@@ -932,7 +1021,7 @@
         "name": "Minutes",
         "value": "minutes"
       },
-      "timeTextColor": "#d8d9da",
+      "timeTextColor": "rgb(146, 146, 146)",
       "title": "Timeline",
       "type": "natel-discrete-panel",
       "units": "short",
@@ -945,7 +1034,7 @@
           "value": "null"
         }
       ],
-      "valueTextColor": "#000000",
+      "valueTextColor": "rgb(126, 126, 126)",
       "writeAllValues": true,
       "writeLastValue": false,
       "writeMetricNames": true
@@ -1216,5 +1305,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 9
+  "version": 17
 }
