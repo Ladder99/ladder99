@@ -16,8 +16,21 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
-  "links": [],
+  "id": 5,
+  "links": [
+    {
+      "asDropdown": false,
+      "icon": "external link",
+      "includeVars": false,
+      "keepTime": false,
+      "tags": [],
+      "targetBlank": false,
+      "title": "",
+      "tooltip": "",
+      "type": "dashboards",
+      "url": ""
+    }
+  ],
   "panels": [
     {
       "collapsed": true,
@@ -148,83 +161,59 @@
           }
         },
         {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
           "datasource": null,
           "description": "",
           "fieldConfig": {
             "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "custom": {
-                "align": null,
-                "displayMode": "json-view",
-                "filterable": false
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              }
+              "unit": "none"
             },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "time"
-                },
-                "properties": [
-                  {
-                    "id": "custom.displayMode",
-                    "value": "auto"
-                  },
-                  {
-                    "id": "custom.width",
-                    "value": 153
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byName",
-                  "options": "id"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 70
-                  }
-                ]
-              }
-            ]
+            "overrides": []
           },
+          "fill": 1,
+          "fillGradient": 0,
           "gridPos": {
             "h": 8,
             "w": 11,
             "x": 11,
             "y": 1
           },
-          "id": 22,
-          "options": {
-            "showHeader": true,
-            "sortBy": []
+          "hiddenSeries": false,
+          "id": 32,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
           },
+          "lines": true,
+          "linewidth": 1,
+          "nullPointMode": "null",
+          "options": {
+            "alertThreshold": true
+          },
+          "percentage": false,
           "pluginVersion": "7.5.5",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
           "targets": [
             {
-              "format": "table",
+              "format": "time_series",
               "group": [],
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT\n  property,\n  time,\n  value\nFROM history_all\nWHERE\n  property IN ('availability', 'load-condition', 'message', 'functional-mode',\n  'system-condition', 'controller/emergency-stop')\n  AND $__timeFilter(\"time\")",
+              "rawSql": "SELECT time, value as Actual\nFROM history_float\nWHERE\n  property='axes/c/spindle-speed-actual' and\n  $__timeFilter(\"time\")",
               "refId": "A",
               "select": [
                 [
@@ -244,10 +233,77 @@
                   "type": "macro"
                 }
               ]
+            },
+            {
+              "format": "time_series",
+              "group": [],
+              "hide": false,
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT time, value as Override\nFROM history_float\nWHERE\n  property='axes/c/spindle-speed-override' and\n  $__timeFilter(\"time\")",
+              "refId": "B",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "history_float",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamp",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
             }
           ],
-          "title": "Events",
-          "type": "table"
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Spindle Speed",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "$$hashKey": "object:203",
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "$$hashKey": "object:204",
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ],
+          "yaxis": {
+            "align": false,
+            "alignLevel": null
+          }
         },
         {
           "aliasColors": {},
@@ -588,6 +644,108 @@
             "align": false,
             "alignLevel": null
           }
+        },
+        {
+          "datasource": null,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": null,
+                "displayMode": "json-view",
+                "filterable": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.displayMode",
+                    "value": "auto"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 153
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "id"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 70
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 16,
+            "x": 0,
+            "y": 15
+          },
+          "id": 22,
+          "options": {
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "7.5.5",
+          "targets": [
+            {
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  property,\n  time,\n  value\nFROM history_all\nWHERE\n  property IN ('availability', 'load-condition', 'message', 'functional-mode',\n  'system-condition', 'controller/emergency-stop', 'axes/c/rotary-mode')\n  AND $__timeFilter(\"time\")",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "\"values\"",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "title": "Events",
+          "type": "table"
         }
       ],
       "title": "Overview",
@@ -635,7 +793,7 @@
       "id": 31,
       "legendSortBy": "-ms",
       "lineColor": "rgba(0,0,0,0.1)",
-      "metricNameColor": "#000000",
+      "metricNameColor": "rgb(126, 126, 126)",
       "pluginVersion": "7.5.5",
       "rangeMaps": [
         {
@@ -645,8 +803,9 @@
           "to": "null"
         }
       ],
-      "rowHeight": 50,
-      "showLegend": true,
+      "rowHeight": 40,
+      "showDistinctCount": false,
+      "showLegend": false,
       "showLegendNames": true,
       "showLegendPercent": true,
       "showLegendValues": true,
@@ -657,7 +816,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as Availability\nFROM history_text\nWHERE property='availability' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Availability\"\nFROM history_text\nWHERE property='availability' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -684,8 +843,35 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as Avail2  \nFROM history_text\nWHERE property='availability' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Rotary Mode\"\nFROM history_text\nWHERE property='axes/c/rotary-mode' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "B",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as \"Emergency Stop\"\nFROM history_text\nWHERE property='controller/emergency-stop' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "C",
           "select": [
             [
               {
@@ -706,7 +892,7 @@
           ]
         }
       ],
-      "textSize": 24,
+      "textSize": 20,
       "textSizeTime": 12,
       "timeOptions": [
         {
@@ -760,9 +946,9 @@
         }
       ],
       "valueTextColor": "#000000",
-      "writeAllValues": false,
-      "writeLastValue": true,
-      "writeMetricNames": false
+      "writeAllValues": true,
+      "writeLastValue": false,
+      "writeMetricNames": true
     },
     {
       "collapsed": true,
@@ -1010,7 +1196,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -1030,5 +1216,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 23
+  "version": 9
 }
