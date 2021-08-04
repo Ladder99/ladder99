@@ -26,7 +26,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # https://askubuntu.com/questions/852337/libusb-1-0-so-0-error
 # got prebuild-install WARN install No prebuilt binaries found (target=3 runtime=napi arch=arm64 libc= platform=linux)
 # see https://github.com/node-hid/node-hid#compiling-from-source
-RUN apt-get update -y && apt-get install -y nodejs npm libudev-dev \
+RUN apt-get clean && apt-get update -y && apt-get install -y nodejs npm libudev-dev \
   libusb-1.0-0 libusb-1.0-0-dev pkg-config
 
 # install javascript dependencies
