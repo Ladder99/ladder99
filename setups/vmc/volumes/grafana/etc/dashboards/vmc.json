@@ -785,7 +785,7 @@
         },
         {
           "$$hashKey": "object:110847",
-          "color": "#F2495C",
+          "color": "rgb(220, 42, 64)",
           "text": "TRIGGERED"
         },
         {
@@ -807,6 +807,26 @@
           "$$hashKey": "object:483",
           "color": "black",
           "text": "UNAVAILABLE"
+        },
+        {
+          "$$hashKey": "object:210",
+          "color": "rgb(77, 77, 77)",
+          "text": "AUTOMATIC"
+        },
+        {
+          "$$hashKey": "object:789",
+          "color": "rgb(0, 0, 0)",
+          "text": "STOPPED"
+        },
+        {
+          "$$hashKey": "object:790",
+          "color": "#73BF69",
+          "text": "ACTIVE"
+        },
+        {
+          "$$hashKey": "object:791",
+          "color": "rgb(77, 77, 77)",
+          "text": "READY"
         }
       ],
       "crosshairColor": "#8F070C",
@@ -979,6 +999,33 @@
               "type": "macro"
             }
           ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as \"Execution\"\nFROM history_text\nWHERE property='controller/path/execution' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "Ex",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "textSize": 20,
@@ -1035,8 +1082,8 @@
         }
       ],
       "valueTextColor": "rgb(126, 126, 126)",
-      "writeAllValues": true,
-      "writeLastValue": false,
+      "writeAllValues": false,
+      "writeLastValue": true,
       "writeMetricNames": true
     },
     {
@@ -1305,5 +1352,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 17
+  "version": 19
 }
