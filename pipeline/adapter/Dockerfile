@@ -24,17 +24,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 # error: libudev.h: No such file or directory
 # error: libusb-1.0.so.0: cannot open shared object file: No such file or directory
 # https://askubuntu.com/questions/852337/libusb-1-0-so-0-error
-# RUN apt-get update -y && apt-get install -y libudev-dev libusb-1.0-0
+# got prebuild-install WARN install No prebuilt binaries found (target=3 runtime=napi arch=arm64 libc= platform=linux)
+# see https://github.com/node-hid/node-hid#compiling-from-source
 RUN apt-get update -y && apt-get install -y nodejs npm libudev-dev \
   libusb-1.0-0 libusb-1.0-0-dev pkg-config
-
-# got prebuild-install WARN install No prebuilt binaries found (target=3 runtime=napi arch=arm64 libc= platform=linux)
-# gyp info using node-gyp@7.1.2
-# gyp info using node@12.21.0 | linux | arm64
-# gyp info find Python using Python version 3.9.5 found at "/usr/bin/python3"
-# will this fix problem? get newer version of node-gyp?
-# RUN npm install -g node-gyp
-# RUN npm install -g npm
 
 # install javascript dependencies
 WORKDIR /data
