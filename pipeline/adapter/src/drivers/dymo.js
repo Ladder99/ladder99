@@ -111,7 +111,7 @@ export class AdapterDriver {
     }
 
     function setUnavailable() {
-      cache.set(`${deviceId}-availability`, { value: 'AVAILABLE' })
+      cache.set(`${deviceId}-availability`, { value: 'UNAVAILABLE' })
       cache.set(`${deviceId}-mass`, { value: 'UNAVAILABLE' })
     }
   }
