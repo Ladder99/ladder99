@@ -15,8 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 4,
-  "iteration": 1628151160922,
+  "id": 7,
+  "iteration": 1628154374967,
   "links": [
     {
       "asDropdown": false,
@@ -219,7 +219,7 @@
                 "value": 2
               },
               {
-                "color": "#EAB839",
+                "color": "yellow",
                 "value": 3
               },
               {
@@ -341,7 +341,7 @@
                 "value": null
               },
               {
-                "color": "green",
+                "color": "#444444",
                 "value": 2
               },
               {
@@ -427,7 +427,7 @@
       },
       "id": 14,
       "panels": [],
-      "repeatIteration": 1628151160922,
+      "repeatIteration": 1628154374967,
       "repeatPanelId": 2,
       "scopedVars": {
         "device": {
@@ -506,7 +506,7 @@
         "textMode": "value"
       },
       "pluginVersion": "7.5.5",
-      "repeatIteration": 1628151160922,
+      "repeatIteration": 1628154374967,
       "repeatPanelId": 8,
       "repeatedByRow": true,
       "scopedVars": {
@@ -607,7 +607,7 @@
                 "value": 2
               },
               {
-                "color": "#EAB839",
+                "color": "yellow",
                 "value": 3
               },
               {
@@ -643,7 +643,7 @@
       "pluginVersion": "7.5.5",
       "repeat": null,
       "repeatDirection": "h",
-      "repeatIteration": 1628151160922,
+      "repeatIteration": 1628154374967,
       "repeatPanelId": 4,
       "repeatedByRow": true,
       "scopedVars": {
@@ -732,7 +732,7 @@
                 "value": null
               },
               {
-                "color": "green",
+                "color": "#444444",
                 "value": 2
               },
               {
@@ -766,7 +766,7 @@
         "textMode": "value"
       },
       "pluginVersion": "7.5.5",
-      "repeatIteration": 1628151160922,
+      "repeatIteration": 1628154374967,
       "repeatPanelId": 13,
       "repeatedByRow": true,
       "scopedVars": {
@@ -855,5 +855,5 @@
   "timezone": "",
   "title": "Devices",
   "uid": "Q3YFl9Znz",
-  "version": 18
+  "version": 2
 }
