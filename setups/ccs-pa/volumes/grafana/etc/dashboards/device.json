@@ -17,7 +17,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 8,
-  "iteration": 1628154167403,
+  "iteration": 1628154529915,
   "links": [
     {
       "asDropdown": false,
@@ -420,7 +420,7 @@
       "writeMetricNames": true
     },
     {
-      "collapsed": false,
+      "collapsed": true,
       "datasource": null,
       "gridPos": {
         "h": 1,
@@ -429,465 +429,466 @@
         "y": 10
       },
       "id": 27,
-      "panels": [],
+      "panels": [
+        {
+          "datasource": null,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "decimals": 0,
+              "mappings": [
+                {
+                  "from": "",
+                  "id": 1,
+                  "text": "Available",
+                  "to": "",
+                  "type": 1,
+                  "value": "2"
+                },
+                {
+                  "from": "",
+                  "id": 3,
+                  "text": "Unavailable",
+                  "to": "",
+                  "type": 1,
+                  "value": "1"
+                }
+              ],
+              "max": 2,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "rgb(0, 0, 0)",
+                    "value": null
+                  },
+                  {
+                    "color": "light-green",
+                    "value": 2
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 0,
+            "y": 11
+          },
+          "id": 28,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": ["lastNotNull"],
+              "fields": "/^pos$/",
+              "values": false
+            },
+            "text": {},
+            "textMode": "value"
+          },
+          "pluginVersion": "7.5.5",
+          "targets": [
+            {
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','AVAILABLE'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='availability'\nORDER BY time DESC\nLIMIT 1",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "history_float",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamp",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Availability",
+          "transformations": [],
+          "type": "stat"
+        },
+        {
+          "datasource": null,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "decimals": 0,
+              "mappings": [
+                {
+                  "from": "",
+                  "id": 1,
+                  "text": "Maintenance",
+                  "to": "",
+                  "type": 1,
+                  "value": "2"
+                },
+                {
+                  "from": "",
+                  "id": 2,
+                  "text": "Production",
+                  "to": "",
+                  "type": 1,
+                  "value": "3"
+                },
+                {
+                  "from": "",
+                  "id": 3,
+                  "text": "Unavailable",
+                  "to": "",
+                  "type": 1,
+                  "value": "1"
+                }
+              ],
+              "max": 2,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "rgb(119, 119, 119)",
+                    "value": null
+                  },
+                  {
+                    "color": "#444444",
+                    "value": 2
+                  },
+                  {
+                    "color": "light-green",
+                    "value": 3
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 4,
+            "y": 11
+          },
+          "id": 41,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": ["lastNotNull"],
+              "fields": "/^pos$/",
+              "values": false
+            },
+            "text": {},
+            "textMode": "value"
+          },
+          "pluginVersion": "7.5.5",
+          "targets": [
+            {
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','MAINTENANCE','PRODUCTION'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='functional-mode'\nORDER BY time desc\nlimit 1",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "history_float",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamp",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Functional Mode",
+          "transformations": [],
+          "type": "stat"
+        },
+        {
+          "datasource": null,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "decimals": 0,
+              "mappings": [
+                {
+                  "from": "",
+                  "id": 3,
+                  "text": "Unavailable",
+                  "to": "",
+                  "type": 1,
+                  "value": "1"
+                },
+                {
+                  "from": "",
+                  "id": 4,
+                  "text": "Normal",
+                  "to": "",
+                  "type": 1,
+                  "value": "2"
+                },
+                {
+                  "from": "",
+                  "id": 5,
+                  "text": "Warning",
+                  "to": "",
+                  "type": 1,
+                  "value": "3"
+                },
+                {
+                  "from": "",
+                  "id": 6,
+                  "text": "Fault",
+                  "to": "",
+                  "type": 1,
+                  "value": "4"
+                }
+              ],
+              "max": 2,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "rgb(0, 0, 0)",
+                    "value": null
+                  },
+                  {
+                    "color": "rgb(77, 77, 77)",
+                    "value": 2
+                  },
+                  {
+                    "color": "light-yellow",
+                    "value": 3
+                  },
+                  {
+                    "color": "red",
+                    "value": 4
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 4,
+            "x": 8,
+            "y": 11
+          },
+          "id": 35,
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": ["lastNotNull"],
+              "fields": "/^pos$/",
+              "values": false
+            },
+            "text": {},
+            "textMode": "value"
+          },
+          "pluginVersion": "7.5.5",
+          "targets": [
+            {
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','NORMAL', 'WARNING', 'FAULT'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='system-condition'\nORDER BY time desc\nlimit 1 ",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "history_float",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamp",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Condition",
+          "transformations": [],
+          "type": "stat"
+        },
+        {
+          "datasource": null,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "fixed"
+              },
+              "custom": {
+                "align": "left",
+                "displayMode": "color-text",
+                "filterable": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "name"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 162
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 4,
+            "w": 8,
+            "x": 12,
+            "y": 11
+          },
+          "id": 48,
+          "options": {
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "7.5.5",
+          "targets": [
+            {
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  'Message' as name,\n  value\nFROM history_text \nWHERE device='${device}' AND property='message'\nORDER BY time DESC\nLIMIT 1",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "history_float",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamp",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            },
+            {
+              "format": "table",
+              "group": [],
+              "hide": false,
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  'Firmware Version' as name,\n  value\nFROM history_text\nWHERE device='${device}' AND property='firmware-version'\nORDER BY time DESC\nLIMIT 1",
+              "refId": "B",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "history_float",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamp",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Stats",
+          "transformations": [
+            {
+              "id": "merge",
+              "options": {}
+            }
+          ],
+          "type": "table"
+        }
+      ],
       "title": "Device",
       "type": "row"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 0,
-          "mappings": [
-            {
-              "from": "",
-              "id": 1,
-              "text": "Available",
-              "to": "",
-              "type": 1,
-              "value": "2"
-            },
-            {
-              "from": "",
-              "id": 3,
-              "text": "Unavailable",
-              "to": "",
-              "type": 1,
-              "value": "1"
-            }
-          ],
-          "max": 2,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "rgb(0, 0, 0)",
-                "value": null
-              },
-              {
-                "color": "light-green",
-                "value": 2
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 0,
-        "y": 11
-      },
-      "id": 28,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "/^pos$/",
-          "values": false
-        },
-        "text": {},
-        "textMode": "value"
-      },
-      "pluginVersion": "7.5.5",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','AVAILABLE'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='availability'\nORDER BY time DESC\nLIMIT 1",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Availability",
-      "transformations": [],
-      "type": "stat"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 0,
-          "mappings": [
-            {
-              "from": "",
-              "id": 1,
-              "text": "Maintenance",
-              "to": "",
-              "type": 1,
-              "value": "2"
-            },
-            {
-              "from": "",
-              "id": 2,
-              "text": "Production",
-              "to": "",
-              "type": 1,
-              "value": "3"
-            },
-            {
-              "from": "",
-              "id": 3,
-              "text": "Unavailable",
-              "to": "",
-              "type": 1,
-              "value": "1"
-            }
-          ],
-          "max": 2,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "rgb(119, 119, 119)",
-                "value": null
-              },
-              {
-                "color": "#444444",
-                "value": 2
-              },
-              {
-                "color": "light-green",
-                "value": 3
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 4,
-        "y": 11
-      },
-      "id": 41,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "/^pos$/",
-          "values": false
-        },
-        "text": {},
-        "textMode": "value"
-      },
-      "pluginVersion": "7.5.5",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','MAINTENANCE','PRODUCTION'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='functional-mode'\nORDER BY time desc\nlimit 1",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Functional Mode",
-      "transformations": [],
-      "type": "stat"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 0,
-          "mappings": [
-            {
-              "from": "",
-              "id": 3,
-              "text": "Unavailable",
-              "to": "",
-              "type": 1,
-              "value": "1"
-            },
-            {
-              "from": "",
-              "id": 4,
-              "text": "Normal",
-              "to": "",
-              "type": 1,
-              "value": "2"
-            },
-            {
-              "from": "",
-              "id": 5,
-              "text": "Warning",
-              "to": "",
-              "type": 1,
-              "value": "3"
-            },
-            {
-              "from": "",
-              "id": 6,
-              "text": "Fault",
-              "to": "",
-              "type": 1,
-              "value": "4"
-            }
-          ],
-          "max": 2,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "rgb(0, 0, 0)",
-                "value": null
-              },
-              {
-                "color": "rgb(77, 77, 77)",
-                "value": 2
-              },
-              {
-                "color": "light-yellow",
-                "value": 3
-              },
-              {
-                "color": "red",
-                "value": 4
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 4,
-        "x": 8,
-        "y": 11
-      },
-      "id": 35,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "/^pos$/",
-          "values": false
-        },
-        "text": {},
-        "textMode": "value"
-      },
-      "pluginVersion": "7.5.5",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','NORMAL', 'WARNING', 'FAULT'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='system-condition'\nORDER BY time desc\nlimit 1 ",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Condition",
-      "transformations": [],
-      "type": "stat"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "fixed"
-          },
-          "custom": {
-            "align": "left",
-            "displayMode": "color-text",
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "name"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 162
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 8,
-        "x": 12,
-        "y": 11
-      },
-      "id": 48,
-      "options": {
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "7.5.5",
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  'Message' as name,\n  value\nFROM history_text \nWHERE device='${device}' AND property='message'\nORDER BY time DESC\nLIMIT 1",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        },
-        {
-          "format": "table",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  'Firmware Version' as name,\n  value\nFROM history_text\nWHERE device='${device}' AND property='firmware-version'\nORDER BY time DESC\nLIMIT 1",
-          "refId": "B",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Stats",
-      "transformations": [
-        {
-          "id": "merge",
-          "options": {}
-        }
-      ],
-      "type": "table"
     },
     {
       "collapsed": true,
@@ -896,7 +897,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 15
+        "y": 11
       },
       "id": 31,
       "panels": [
@@ -1074,7 +1075,7 @@
                     "value": 3
                   },
                   {
-                    "color": "rgb(209, 209, 212)",
+                    "color": "green",
                     "value": 4
                   }
                 ]
@@ -1583,7 +1584,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 12
       },
       "id": 37,
       "panels": [],
@@ -1597,7 +1598,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 13
       },
       "id": 25,
       "panels": [
@@ -1629,9 +1630,9 @@
           },
           "gridPos": {
             "h": 4,
-            "w": 4,
+            "w": 8,
             "x": 0,
-            "y": 4
+            "y": 14
           },
           "id": 29,
           "interval": null,
@@ -1688,7 +1689,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 18
+        "y": 14
       },
       "id": 33,
       "panels": [
@@ -1854,7 +1855,7 @@
     ]
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-3m",
     "to": "now"
   },
   "timepicker": {
@@ -1874,5 +1875,5 @@
   "timezone": "",
   "title": "Device",
   "uid": "dII-Qgzgy",
-  "version": 18
+  "version": 23
 }
