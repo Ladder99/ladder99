@@ -72,7 +72,7 @@ export class RecorderPlugin {
           let csv = await fs.readFileSync(csvpath).toString()
           // @ts-ignore
           // csv = csv.replaceAll('${deviceId}', deviceId) // needs node15
-          const regexp = new RegExp('${deviceId}', 'g')
+          const regexp = new RegExp('\\${deviceId}', 'g')
           csv = csv.replace(regexp, deviceId)
 
           const rows = parse(csv, { columns: true, skip_empty_lines: true })

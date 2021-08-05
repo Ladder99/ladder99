@@ -65,7 +65,7 @@ function getTransforms(properties, deviceId) {
   const transforms = Object.keys(properties).map(key => {
     const value = properties[key]
     // return str => str.replaceAll('${' + key + '}', value) // replaceAll needs node15
-    const regexp = new RegExp('${' + key + '}', 'g')
+    const regexp = new RegExp('\\${' + key + '}', 'g')
     return str => str.replace(regexp, value)
   })
   return transforms
