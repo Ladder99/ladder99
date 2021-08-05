@@ -46,7 +46,7 @@ export class AdapterDriver {
         device.deviceDescriptor.idProduct === productId
       ) {
         console.log('Dymo M10 attached')
-        cache.set(`${deviceId}-availability`, { value: 'AVAILABLE' })
+        setAvailable()
         timer = setInterval(startReading, pollInterval)
       }
     })
@@ -57,11 +57,10 @@ export class AdapterDriver {
         device.deviceDescriptor.idProduct === productId
       ) {
         console.log('Dymo M10 detached')
-        cache.set(`${deviceId}-availability`, { value: 'UNAVAILABLE' })
-        cache.set(`${deviceId}-mass`, { value: 'UNAVAILABLE' })
         reading = false
         clearInterval(timer)
         timer = null
+        setUnavailable()
       }
     })
 
@@ -88,20 +87,32 @@ export class AdapterDriver {
 
           const kg = grams / 1000
           cache.set(`${deviceId}-mass`, { value: kg })
+          setAvailable()
         })
 
         device.on('error', function (error) {
+          setUnavailable()
           console.log(error)
           reading = false
           device.close()
         })
       } catch (err) {
+        setUnavailable()
         if (/cannot open device/.test(err.message)) {
           console.log('Dymo M10 cannot be found')
         } else {
           console.log(err)
         }
       }
+    }
+
+    function setAvailable() {
+      cache.set(`${deviceId}-availability`, { value: 'AVAILABLE' })
+    }
+
+    function setUnavailable() {
+      cache.set(`${deviceId}-availability`, { value: 'AVAILABLE' })
+      cache.set(`${deviceId}-mass`, { value: 'UNAVAILABLE' })
     }
   }
 }
