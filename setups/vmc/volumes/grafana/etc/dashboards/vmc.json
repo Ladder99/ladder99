@@ -120,8 +120,8 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 9,
-        "w": 24,
+        "h": 10,
+        "w": 23,
         "x": 0,
         "y": 1
       },
@@ -260,8 +260,8 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Controller Mode\"\nFROM history_text\nWHERE property='controller/path/controller-mode' and $__timeFilter(\"time\")\nORDER BY time",
-          "refId": "Co",
+          "rawSql": "SELECT time, value as \"Execution\"\nFROM history_text\nWHERE property='controller/path/execution' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "Ex",
           "select": [
             [
               {
@@ -287,8 +287,35 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Execution\"\nFROM history_text\nWHERE property='controller/path/execution' and $__timeFilter(\"time\")\nORDER BY time",
-          "refId": "Ex",
+          "rawSql": "SELECT time, value as \"System Condition\"\nFROM history_text\nWHERE property='system-condition' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "Sys",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as \"Controller Mode\"\nFROM history_text\nWHERE property='controller/path/controller-mode' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "Co",
           "select": [
             [
               {
@@ -374,7 +401,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 11
       },
       "id": 14,
       "panels": [
@@ -398,7 +425,7 @@
             "h": 8,
             "w": 11,
             "x": 0,
-            "y": 2
+            "y": 11
           },
           "hiddenSeries": false,
           "id": 8,
@@ -514,7 +541,7 @@
             "h": 8,
             "w": 11,
             "x": 11,
-            "y": 2
+            "y": 11
           },
           "hiddenSeries": false,
           "id": 32,
@@ -659,7 +686,7 @@
             "h": 6,
             "w": 11,
             "x": 0,
-            "y": 10
+            "y": 19
           },
           "hiddenSeries": false,
           "id": 10,
@@ -829,7 +856,7 @@
             "h": 6,
             "w": 11,
             "x": 11,
-            "y": 10
+            "y": 19
           },
           "hiddenSeries": false,
           "id": 25,
@@ -991,7 +1018,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 12
       },
       "id": 27,
       "panels": [
@@ -1228,7 +1255,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 12
+        "y": 13
       },
       "id": 34,
       "panels": [
@@ -1367,5 +1394,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 38
+  "version": 44
 }
