@@ -16,8 +16,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1628151016345,
+  "id": 8,
+  "iteration": 1628152888648,
   "links": [
     {
       "asDropdown": false,
@@ -57,7 +57,7 @@
         },
         {
           "$$hashKey": "object:110845",
-          "color": "rgb(77, 77, 77)",
+          "color": "#ccc",
           "text": "AVAILABLE"
         },
         {
@@ -102,7 +102,7 @@
         },
         {
           "$$hashKey": "object:790",
-          "color": "#C0D8FF",
+          "color": "#ccc",
           "text": "ACTIVE"
         },
         {
@@ -142,7 +142,7 @@
         },
         {
           "$$hashKey": "object:718",
-          "color": "#C0D8FF",
+          "color": "#ccc",
           "text": "PRODUCTION"
         }
       ],
@@ -323,7 +323,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Execution\"\nFROM history_text\nWHERE property='controller/path/execution' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Execution State\"\nFROM history_text\nWHERE property='controller/path/execution' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "Ex",
           "select": [
             [
@@ -401,7 +401,7 @@
       ],
       "valueTextColor": "rgb(126, 126, 126)",
       "writeAllValues": false,
-      "writeLastValue": true,
+      "writeLastValue": false,
       "writeMetricNames": true
     },
     {
@@ -451,11 +451,11 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgb(119, 119, 119)",
+                "color": "rgb(0, 0, 0)",
                 "value": null
               },
               {
-                "color": "green",
+                "color": "#cccccc",
                 "value": 2
               }
             ]
@@ -491,7 +491,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','AVAILABLE'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='availability'\nORDER BY time desc",
+          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','AVAILABLE'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='availability'\nORDER BY time DESC\nLIMIT 1",
           "refId": "A",
           "select": [
             [
@@ -532,7 +532,7 @@
             {
               "from": "",
               "id": 1,
-              "text": "Production",
+              "text": "Maintenance",
               "to": "",
               "type": 1,
               "value": "2"
@@ -540,7 +540,7 @@
             {
               "from": "",
               "id": 2,
-              "text": "Maintenance",
+              "text": "Production",
               "to": "",
               "type": 1,
               "value": "3"
@@ -564,11 +564,11 @@
                 "value": null
               },
               {
-                "color": "green",
+                "color": "#444444",
                 "value": 2
               },
               {
-                "color": "blue",
+                "color": "#cccccc",
                 "value": 3
               }
             ]
@@ -604,7 +604,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','PRODUCTION','MAINTENANCE'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='functional-mode'\nORDER BY time desc",
+          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','MAINTENANCE','PRODUCTION'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='functional-mode'\nORDER BY time desc\nlimit 1",
           "refId": "A",
           "select": [
             [
@@ -681,15 +681,15 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "rgb(119, 119, 119)",
+                "color": "rgb(0, 0, 0)",
                 "value": null
               },
               {
-                "color": "green",
+                "color": "rgb(77, 77, 77)",
                 "value": 2
               },
               {
-                "color": "#EAB839",
+                "color": "orange",
                 "value": 3
               },
               {
@@ -729,7 +729,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','NORMAL', 'WARNING', 'FAULT'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='system-condition'\nORDER BY time desc",
+          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','NORMAL', 'WARNING', 'FAULT'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='system-condition'\nORDER BY time desc\nlimit 1 ",
           "refId": "A",
           "select": [
             [
@@ -926,11 +926,11 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(119, 119, 119)",
+                    "color": "rgb(0, 0, 0)",
                     "value": null
                   },
                   {
-                    "color": "green",
+                    "color": "rgb(79, 79, 79)",
                     "value": 2
                   },
                   {
@@ -947,7 +947,7 @@
             "h": 4,
             "w": 4,
             "x": 0,
-            "y": 2
+            "y": 12
           },
           "id": 23,
           "options": {
@@ -970,7 +970,7 @@
               "group": [],
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','ARMED','TRIGGERED'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='controller/emergency-stop'\nORDER BY time desc",
+              "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','ARMED','TRIGGERED'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='controller/emergency-stop'\nORDER BY time ",
               "refId": "A",
               "select": [
                 [
@@ -1047,19 +1047,19 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "rgb(119, 119, 119)",
+                    "color": "rgb(0, 0, 0)",
                     "value": null
                   },
                   {
-                    "color": "red",
+                    "color": "rgb(78, 78, 78)",
                     "value": 2
                   },
                   {
-                    "color": "#EAB839",
+                    "color": "super-light-yellow",
                     "value": 3
                   },
                   {
-                    "color": "green",
+                    "color": "rgb(209, 209, 212)",
                     "value": 4
                   }
                 ]
@@ -1072,7 +1072,7 @@
             "h": 4,
             "w": 4,
             "x": 4,
-            "y": 2
+            "y": 12
           },
           "id": 44,
           "options": {
@@ -1095,7 +1095,7 @@
               "group": [],
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','PROGRAM_STOPPED', 'WAIT', 'ACTIVE'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='controller/path/execution'\nORDER BY time desc",
+              "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','PROGRAM_STOPPED', 'WAIT', 'ACTIVE'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='controller/path/execution'\nORDER BY time ",
               "refId": "A",
               "select": [
                 [
@@ -1119,120 +1119,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "State",
-          "transformations": [],
-          "type": "stat"
-        },
-        {
-          "datasource": null,
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
-              },
-              "decimals": 0,
-              "mappings": [
-                {
-                  "from": "",
-                  "id": 1,
-                  "text": "Pausing",
-                  "to": "",
-                  "type": 1,
-                  "value": "2"
-                },
-                {
-                  "from": "",
-                  "id": 2,
-                  "text": "Resuming",
-                  "to": "",
-                  "type": 1,
-                  "value": "3"
-                },
-                {
-                  "from": "",
-                  "id": 3,
-                  "text": "Unavailable",
-                  "to": "",
-                  "type": 1,
-                  "value": "1"
-                }
-              ],
-              "max": 2,
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "rgb(119, 119, 119)",
-                    "value": null
-                  },
-                  {
-                    "color": "yellow",
-                    "value": 2
-                  },
-                  {
-                    "color": "green",
-                    "value": 3
-                  }
-                ]
-              },
-              "unit": "none"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 4,
-            "w": 4,
-            "x": 8,
-            "y": 2
-          },
-          "id": 46,
-          "options": {
-            "colorMode": "background",
-            "graphMode": "none",
-            "justifyMode": "auto",
-            "orientation": "auto",
-            "reduceOptions": {
-              "calcs": ["lastNotNull"],
-              "fields": "/^pos$/",
-              "values": false
-            },
-            "text": {},
-            "textMode": "value"
-          },
-          "pluginVersion": "7.5.5",
-          "targets": [
-            {
-              "format": "table",
-              "group": [],
-              "metricColumn": "none",
-              "rawQuery": true,
-              "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','PAUSING','RESUMING'], value) as pos\nFROM history_text \nWHERE device='${device}' AND property='controller/path/wait-state'\nORDER BY time desc",
-              "refId": "A",
-              "select": [
-                [
-                  {
-                    "params": ["value"],
-                    "type": "column"
-                  }
-                ]
-              ],
-              "table": "history_float",
-              "timeColumn": "\"time\"",
-              "timeColumnType": "timestamp",
-              "where": [
-                {
-                  "name": "$__timeFilter",
-                  "params": [],
-                  "type": "macro"
-                }
-              ]
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Wait State",
+          "title": "Execution State",
           "transformations": [],
           "type": "stat"
         },
@@ -1283,8 +1170,8 @@
           "gridPos": {
             "h": 4,
             "w": 8,
-            "x": 12,
-            "y": 2
+            "x": 8,
+            "y": 12
           },
           "id": 45,
           "options": {
@@ -1413,7 +1300,7 @@
             "h": 5,
             "w": 8,
             "x": 0,
-            "y": 6
+            "y": 16
           },
           "id": 50,
           "options": {
@@ -1569,7 +1456,7 @@
             "h": 5,
             "w": 7,
             "x": 8,
-            "y": 6
+            "y": 16
           },
           "id": 47,
           "options": {
@@ -1924,7 +1811,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "e05363",
           "value": "e05363"
         },
@@ -1952,7 +1839,7 @@
     ]
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
@@ -1972,5 +1859,5 @@
   "timezone": "",
   "title": "Device",
   "uid": "dII-Qgzgy",
-  "version": 67
+  "version": 11
 }
