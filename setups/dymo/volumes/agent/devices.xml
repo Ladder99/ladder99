@@ -11,6 +11,7 @@
         Dymo USB Scale
       </Description>
       <DataItems>
+        <DataItem id="d1-availability" category="EVENT" type="AVAILABILITY" />
         <DataItem id="d1-mass" category="SAMPLE" type="MASS" units="KILOGRAMS" />
       </DataItems>
     </Device>
