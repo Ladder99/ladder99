@@ -1,5 +1,7 @@
 # docker-compose overrides for vmc pipeline
 
+# vmc is included with mtconnect agent - no adapter or broker or recorder needed
+
 # minimally need version number
 version: '3.8'
 
@@ -9,6 +11,14 @@ services:
     # nowork - hangs - how do in parallel?
     # command: /bin/sh -c /usr/bin/ruby run_scenario.rb -l VMC-3Axis-Log.txt & agent debug
     command: ''
+    profiles:
+      - dashboard
+  influxdb:
+    profiles:
+      - dashboard
+  telegraf:
+    profiles:
+      - dashboard
 
 networks:
   ladder99:

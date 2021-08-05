@@ -56,7 +56,7 @@
         },
         {
           "$$hashKey": "object:110845",
-          "color": "rgb(77, 77, 77)",
+          "color": "#73BF69",
           "text": "AVAILABLE"
         },
         {
@@ -71,12 +71,12 @@
         },
         {
           "$$hashKey": "object:110848",
-          "color": "rgb(78, 78, 78)",
+          "color": "#73BF69",
           "text": "ARMED"
         },
         {
           "$$hashKey": "object:110849",
-          "color": "rgb(77, 77, 77)",
+          "color": "#73BF69",
           "text": "ON"
         },
         {
@@ -101,7 +101,7 @@
         },
         {
           "$$hashKey": "object:790",
-          "color": "#C0D8FF",
+          "color": "#73BF69",
           "text": "ACTIVE"
         },
         {
@@ -364,7 +364,7 @@
       ],
       "valueTextColor": "rgb(126, 126, 126)",
       "writeAllValues": false,
-      "writeLastValue": true,
+      "writeLastValue": false,
       "writeMetricNames": true
     },
     {
@@ -1005,13 +1005,13 @@
             "h": 8,
             "w": 6,
             "x": 0,
-            "y": 3
+            "y": 12
           },
           "id": 20,
           "options": {
             "border": {
-              "show": false,
               "color": "yellow",
+              "show": false,
               "size": 1
             },
             "fieldSets": [
@@ -1037,21 +1037,21 @@
               "inverted": false
             },
             "xAxisExtents": {
-              "min": -2,
-              "max": 2
+              "max": 2,
+              "min": -2
             },
             "xAxisTitle": {
-              "text": "x",
               "color": "white",
+              "text": "x",
               "textSize": 1
             },
             "yAxisExtents": {
-              "min": -2,
-              "max": 2
+              "max": 2,
+              "min": -2
             },
             "yAxisTitle": {
-              "text": "y",
               "color": "#777",
+              "text": "y",
               "textSize": 1
             }
           },
@@ -1099,7 +1099,7 @@
             "h": 8,
             "w": 12,
             "x": 6,
-            "y": 3
+            "y": 12
           },
           "id": 24,
           "pconfig": {
@@ -1367,5 +1367,5 @@
   "timezone": "",
   "title": "VMC",
   "uid": "dII-Qgzgz",
-  "version": 32
+  "version": 38
 }
