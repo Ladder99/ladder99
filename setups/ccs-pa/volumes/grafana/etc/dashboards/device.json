@@ -17,7 +17,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 8,
-  "iteration": 1628152888648,
+  "iteration": 1628154167403,
   "links": [
     {
       "asDropdown": false,
@@ -57,7 +57,7 @@
         },
         {
           "$$hashKey": "object:110845",
-          "color": "#ccc",
+          "color": "#73BF69",
           "text": "AVAILABLE"
         },
         {
@@ -102,7 +102,7 @@
         },
         {
           "$$hashKey": "object:790",
-          "color": "#ccc",
+          "color": "#73BF69",
           "text": "ACTIVE"
         },
         {
@@ -132,7 +132,7 @@
         },
         {
           "$$hashKey": "object:814",
-          "color": "#FF9830",
+          "color": "#FFEE52",
           "text": "WARNING"
         },
         {
@@ -142,8 +142,23 @@
         },
         {
           "$$hashKey": "object:718",
-          "color": "#ccc",
+          "color": "#73BF69",
           "text": "PRODUCTION"
+        },
+        {
+          "$$hashKey": "object:3066",
+          "color": "#73BF69",
+          "text": "PRESENT"
+        },
+        {
+          "$$hashKey": "object:3067",
+          "color": "#444",
+          "text": "NOT_PRESENT"
+        },
+        {
+          "$$hashKey": "object:3068",
+          "color": "#444",
+          "text": "INACTIVE"
         }
       ],
       "crosshairColor": "#8F070C",
@@ -188,8 +203,8 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Availability\"\nFROM history_text\nWHERE property='availability' and $__timeFilter(\"time\")\nORDER BY time",
-          "refId": "Av",
+          "rawSql": "SELECT time, value as \"Part Detect\"\nFROM history_text\nWHERE property='systems/feeder/part-detect' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "Part",
           "select": [
             [
               {
@@ -242,8 +257,8 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Message\"\nFROM history_text\nWHERE property='message' and $__timeFilter(\"time\")\nORDER BY time",
-          "refId": "Me",
+          "rawSql": "SELECT time, value as \"Feeder\"\nFROM history_text\nWHERE property='systems/feeder/actuator-state-start' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "Fe",
           "select": [
             [
               {
@@ -455,7 +470,7 @@
                 "value": null
               },
               {
-                "color": "#cccccc",
+                "color": "light-green",
                 "value": 2
               }
             ]
@@ -568,7 +583,7 @@
                 "value": 2
               },
               {
-                "color": "#cccccc",
+                "color": "light-green",
                 "value": 3
               }
             ]
@@ -689,7 +704,7 @@
                 "value": 2
               },
               {
-                "color": "orange",
+                "color": "light-yellow",
                 "value": 3
               },
               {
@@ -1859,5 +1874,5 @@
   "timezone": "",
   "title": "Device",
   "uid": "dII-Qgzgy",
-  "version": 11
+  "version": 18
 }
