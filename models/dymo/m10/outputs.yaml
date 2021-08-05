@@ -15,6 +15,11 @@
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
 
 outputs:
+  - key: availability
+    category: EVENT
+    type: AVAILABILITY
+    value: <availability>
+
   - key: mass
     category: SAMPLE
     type: MASS

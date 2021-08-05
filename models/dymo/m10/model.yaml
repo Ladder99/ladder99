@@ -20,4 +20,5 @@ model:
 
   dataItems:
     dataItem:
+      - availability
       - mass

@@ -18,8 +18,8 @@ export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
     console.log(`Initialize Dymo M10 driver...`)
 
-    const devices = usb.getDeviceList()
-    console.log('USB devices attached:', devices.length)
+    // const devices = usb.getDeviceList()
+    // console.log('USB devices attached:', devices.length)
 
     let reading = false
     let timer = null
@@ -46,6 +46,7 @@ export class AdapterDriver {
         device.deviceDescriptor.idProduct === productId
       ) {
         console.log('Dymo M10 attached')
+        cache.set(`${deviceId}-availability`, { value: 'AVAILABLE' })
         timer = setInterval(startReading, pollInterval)
       }
     })
@@ -56,6 +57,8 @@ export class AdapterDriver {
         device.deviceDescriptor.idProduct === productId
       ) {
         console.log('Dymo M10 detached')
+        cache.set(`${deviceId}-availability`, { value: 'UNAVAILABLE' })
+        cache.set(`${deviceId}-mass`, { value: 'UNAVAILABLE' })
         reading = false
         clearInterval(timer)
         timer = null
@@ -84,7 +87,6 @@ export class AdapterDriver {
           }
 
           const kg = grams / 1000
-          // console.log(new Date().toISOString() + ': ' + kg + ' kg')
           cache.set(`${deviceId}-mass`, { value: kg })
         })
 
