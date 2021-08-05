@@ -82,7 +82,8 @@ export class AdapterDriver {
             const ounces = mass * scalingFactor
             grams = ounces * 0.035274
           } else if (buffer[2] === dataModeGrams) {
-            grams = mass
+            // grams = mass
+            grams = mass * 0.1 // chris says 10g was reporting as 0.1kg, so scale it
           }
 
           const kg = grams / 1000
