@@ -4,7 +4,22 @@
 
 version: '3.8'
 
-# no overrides yet
+services:
+  adapter:
+    profiles:
+      - dashboard
+  agent:
+    profiles:
+      - dashboard
+  broker:
+    profiles:
+      - dashboard
+  influxdb:
+    profiles:
+      - dashboard
+  telegraf:
+    profiles:
+      - dashboard
 
 networks:
   ladder99:

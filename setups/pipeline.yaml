@@ -18,15 +18,10 @@ services:
     container_name: adapter
     # image: ladder99/adapter:latest # use this if build docker image and push to hub
     build: ../pipeline/adapter
-    #. do we need this?
-    # security_opt:
-    #   - seccomp:unconfined
-    # this gives permission to access hardware (e.g. dymo scale in usb port)
+    # set this to give permission to access hardware (e.g. dymo scale in usb port)
     privileged: true
     profiles:
       - all
-      - html
-      - dashboard
       - adapter
     volumes:
       - ./$SETUP:/data/setup # has setup.yaml etc
@@ -43,7 +38,7 @@ services:
     profiles:
       - all
       - html
-      - dashboard
+      # - dashboard
       - agent
     image: ladder99/agent:latest
     working_dir: /data/agent
@@ -67,8 +62,8 @@ services:
     image: eclipse-mosquitto
     profiles:
       - all
-      - html
-      - dashboard
+      # - html
+      # - dashboard
       - broker
     ports:
       - 1883:1883
