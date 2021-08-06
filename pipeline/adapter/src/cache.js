@@ -90,7 +90,7 @@ function getShdr(cache, output, value) {
     if (type === 'MESSAGE') {
       // The next special format is the Message. There is one additional field,
       // native_code, which needs to be included:
-      // 2014 - 09 - 29T23: 59: 33.460470Z | message | CHG_INSRT | Change Inserts
+      // 2014-09-29T23:59:33.460470Z|message|CHG_INSRT|Change Inserts
       // From https://github.com/mtconnect/cppagent#adapter-agent-protocol-version-17 -
       shdr = `${timestamp}|${key}|${nativeCode}|${value}`
     } else {
