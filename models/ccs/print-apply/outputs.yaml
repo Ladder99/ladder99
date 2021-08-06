@@ -47,7 +47,7 @@ outputs:
     # value: "Object.entries(<status-faults>).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
     #. escape any pipes and enclose in double quotes
     value: "Object.entries(<status-faults>).map(([id, fault]) => fault.description).join(', ')"
-    nativeValue: NativeValue #.
+    nativeCode: NativeCode #.
 
   - key: fw_ver
     category: EVENT
@@ -137,7 +137,7 @@ outputs:
     # value: "Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + ': ' + fault.description).join(', ')"
     #. escape any pipes and enclose in double quotes
     value: "Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => fault.description).join(', ')"
-    nativeValue: NativeValue #.
+    nativeCode: NativeCode #.
 
   - key: smart_tamp_part_detect
     category: EVENT
@@ -210,7 +210,7 @@ outputs:
     #. escape any pipes and enclose in double quotes
     # value: "Object.entries(<status-faults>).map(([id, fault]) => fault.description).join(', ')"
     value: "Object.entries(<status-faults>).filter(([key,]) => [1,11,12,13,14,15,50,51].includes(Number(key))).map(([id, fault]) => fault.description).join(', ')"
-    nativeValue: NativeValue #.
+    nativeCode: NativeCode #.
 
   - key: feed_part_detect
     category: EVENT

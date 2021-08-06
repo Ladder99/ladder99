@@ -207,7 +207,7 @@ function getOutputs({ templates, types, deviceId }) {
       category: template.category, // needed for cache getShdr fn
       type: template.type, // ditto
       representation: template.representation, // ditto
-      nativeValue: template.nativeValue,
+      nativeCode: template.nativeCode,
     }
     return output
   })

@@ -83,7 +83,7 @@ function getValue(cache, output) {
 //. eg ____
 function getShdr(cache, output, value) {
   const timestamp = new Date().toISOString() //. get from item
-  const { key, category, type, subType, representation, nativeValue } = output
+  const { key, category, type, subType, representation, nativeCode } = output
   let shdr = ''
   // handle different shdr types and representations
   if (category === 'EVENT' || category === 'SAMPLE') {
@@ -92,7 +92,7 @@ function getShdr(cache, output, value) {
       // native_code, which needs to be included:
       // 2014 - 09 - 29T23: 59: 33.460470Z | message | CHG_INSRT | Change Inserts
       // From https://github.com/mtconnect/cppagent#adapter-agent-protocol-version-17 -
-      shdr = `${timestamp}|${key}|${nativeValue}|${value}`
+      shdr = `${timestamp}|${key}|${nativeCode}|${value}`
     } else {
       //. shouldn't this be dataitemId, not key?
       shdr = `${timestamp}|${key}|${value}`
