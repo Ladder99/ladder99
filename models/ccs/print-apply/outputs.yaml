@@ -41,11 +41,13 @@ outputs:
   - key: dev_msg
     category: EVENT
     type: MESSAGE
-    #. nowork here? or maybe the xsl used doesn't transform it properly.
     # representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
     # value: Object.entries(<status-faults>).map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
     # value: "'msg|' + Object.entries(<status-faults>).map(([id, fault]) => 'f' + id + '=pokpok').join(' ')"
-    value: "Object.entries(<status-faults>).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
+    # value: "Object.entries(<status-faults>).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
+    #. escape any pipes and enclose in double quotes
+    value: "Object.entries(<status-faults>).map(([id, fault]) => fault.description).join(', ')"
+    nativeValue: NativeValue #.
 
   - key: fw_ver
     category: EVENT
@@ -132,7 +134,10 @@ outputs:
     type: MESSAGE
     # representation: DATA_SET
     # value: Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + '=' + fault.description.replaceAll(' ','')).join(' ')
-    value: "Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + ': ' + fault.description).join(', ')"
+    # value: "Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + ': ' + fault.description).join(', ')"
+    #. escape any pipes and enclose in double quotes
+    value: "Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => fault.description).join(', ')"
+    nativeValue: NativeValue #.
 
   - key: smart_tamp_part_detect
     category: EVENT
@@ -201,9 +206,11 @@ outputs:
     category: EVENT
     type: MESSAGE
     # representation: DATA_SET #. not available for agent xsl yet
-    # representation: VALUE #. nowork - stuck as dataset
-    #. nowork - blank ?
-    value: "Object.entries(<status-faults>).filter(([key,]) => [1,11,12,13,14,15,50,51].includes(Number(key))).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
+    # value: "Object.entries(<status-faults>).filter(([key,]) => [1,11,12,13,14,15,50,51].includes(Number(key))).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
+    #. escape any pipes and enclose in double quotes
+    # value: "Object.entries(<status-faults>).map(([id, fault]) => fault.description).join(', ')"
+    value: "Object.entries(<status-faults>).filter(([key,]) => [1,11,12,13,14,15,50,51].includes(Number(key))).map(([id, fault]) => fault.description).join(', ')"
+    nativeValue: NativeValue #.
 
   - key: feed_part_detect
     category: EVENT

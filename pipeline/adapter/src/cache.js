@@ -54,7 +54,7 @@ export class Cache {
       if (value !== output.lastValue) {
         const shdr = getShdr(this, output, value)
         console.log('shdr', shdr)
-        console.log(`shdr changed - sending to tcp -`, shdr.slice(0, 60), `...`)
+        console.log(`shdr changed - sending to tcp - ${shdr.slice(0, 60)}...`)
         output.socket.write(shdr + '\n')
         output.lastValue = value
       }
@@ -83,12 +83,20 @@ function getValue(cache, output) {
 //. eg ____
 function getShdr(cache, output, value) {
   const timestamp = new Date().toISOString() //. get from item
-  const { key, category, type, subType, representation } = output
+  const { key, category, type, subType, representation, nativeValue } = output
   let shdr = ''
   // handle different shdr types and representations
-  //. shouldn't this be dataitemId, not key?
   if (category === 'EVENT' || category === 'SAMPLE') {
-    shdr = `${timestamp}|${key}|${value}`
+    if (type === 'MESSAGE') {
+      // The next special format is the Message. There is one additional field,
+      // native_code, which needs to be included:
+      // 2014 - 09 - 29T23: 59: 33.460470Z | message | CHG_INSRT | Change Inserts
+      // From https://github.com/mtconnect/cppagent#adapter-agent-protocol-version-17 -
+      shdr = `${timestamp}|${key}|${nativeValue}|${value}`
+    } else {
+      //. shouldn't this be dataitemId, not key?
+      shdr = `${timestamp}|${key}|${value}`
+    }
   } else if (category === 'CONDITION') {
     //. pick these values out of the value, which should be an object
     const level = value // eg 'WARNING' -> element 'Warning'
