@@ -1,8 +1,7 @@
 .env
 
-**/db/data
-**/database/data
-**/postgres/data
-**/timescaledb/data
-**/portainer/data
 **/grafana/var
+**/mosquitto/data
+**/mosquitto/log
+**/portainer/data
+**/postgres/data

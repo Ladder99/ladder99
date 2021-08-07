@@ -52,25 +52,6 @@ services:
       options:
         max-size: '1m'
 
-  # broker - get mqtt data from devices and publish to mtconnect adapter
-  broker:
-    container_name: broker
-    image: eclipse-mosquitto
-    profiles:
-      - all
-      # - html
-      # - dashboard
-      - broker
-    ports:
-      - 1883:1883
-    volumes:
-      - ./$SETUP/volumes/broker:/mosquitto # has config/mosquitto.conf
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '1m'
-
   # grafana - show real-time data from the database, handle notifications
   grafana:
     container_name: grafana
@@ -136,6 +117,23 @@ services:
     volumes:
       - ./$SETUP/volumes/influxdb/config:/etc/influxdb
       - ./$SETUP/volumes/influxdb/data:/var/lib/influxdb
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
+
+  # mosquitto - get mqtt data from devices and publish to mtconnect adapter
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto
+    profiles:
+      - all
+      - mosquitto
+    ports:
+      - 1883:1883
+    volumes:
+      - ./$SETUP/volumes/mosquitto:/mosquitto # has config/mosquitto.conf
     networks:
       - ladder99
     logging:
