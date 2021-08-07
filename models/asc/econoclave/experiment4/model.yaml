@@ -19,17 +19,20 @@ model:
     text: ASC Econoclave 1x2ft
 
   dataItems:
-    operator_name:
+    - key: op
+      name: operator_name
       category: EVENT
       type: USER
       subType: OPERATOR
 
-    recipe_description:
+    - key: recipe
+      name: recipe_description
       category: EVENT
       type: PROCESS_KIND_ID
       subType: PROCESS_NAME
 
-    vessel_air_temp:
+    - key: airtemp
+      name: vessel_air_temp
       category: SAMPLE
       type: TEMPERATURE
       nativeUnits: FAHRENHEIT
@@ -39,13 +42,15 @@ model:
     components:
       electrical:
         dataItems:
-          control_power_condition:
+          - key: powercond
+            name: control_power_condition
             category: CONDITION
             type: VOLTAGE_DC
 
       cooling:
         dataItems:
-          cool_pump_a_hours:
+          - key: pumptime
+            name: cool_pump_a_hours
             category: SAMPLE
             type: EQUIPMENT_TIMER
             subType: OPERATING

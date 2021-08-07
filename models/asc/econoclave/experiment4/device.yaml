@@ -6,25 +6,28 @@
 device:
   - input: .Autoclave.Alarms.ControlPower\Condition
     cache: control_power_warning
+    internal: true
 
   - input: .Autoclave.Alarms.ControlPower\AlarmActive
     cache: control_power_fault
+    internal: true
 
   - cache: control_power_condition
-    output: "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
+    calculation: "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
+    key: powercond
 
   - input: .Autoclave.Variables.OperatorName\Value
-    cache: operator
-    output: operator
+    cache: operator_name
+    key: op
 
   - input: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
     cache: cool_pump_a_hours
-    output: same
+    key: pumptime
 
   - input: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
     cache: recipe_description
-    output: same
+    key: recipe
 
   - input: .Autoclave.Inputs.AIRTC\Value
     cache: vessel_air_temp
-    output: same
+    key: airtemp
