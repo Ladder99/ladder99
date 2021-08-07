@@ -11,10 +11,10 @@ services:
   agent:
     profiles:
       - dashboard
-  broker:
+  influxdb:
     profiles:
       - dashboard
-  influxdb:
+  mosquitto:
     profiles:
       - dashboard
   telegraf:
