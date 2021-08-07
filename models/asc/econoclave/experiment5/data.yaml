@@ -8,6 +8,7 @@
 #   name - a unique name for the cache key - will be prefixed with deviceId.
 #   calculation - a javascript expression for how to calculate shdr value -
 #     if missing, assumes a cache lookup of the name.
+#     can perform a cache lookup with <foo> => cache.get(`${deviceId}-foo`)
 #   output - shdr output key - if false no shdr output, if missing assumes key=name.
 
 device:
