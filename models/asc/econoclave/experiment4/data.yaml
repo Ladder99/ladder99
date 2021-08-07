@@ -1,33 +1,33 @@
 # data
-# defines device inputs, cache keys, and output shdr
+# defines device inputs, cacheKey keys, and output shdr
 
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
 
 device:
   - input: .Autoclave.Alarms.ControlPower\Condition
-    cache: control_power_warning
-    internal: true
+    cacheKey: control_power_warning
+    hidden: true
 
   - input: .Autoclave.Alarms.ControlPower\AlarmActive
-    cache: control_power_fault
-    internal: true
+    cacheKey: control_power_fault
+    hidden: true
 
-  - cache: control_power_condition
+  - cacheKey: control_power_condition
     calculation: "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
-    key: powercond
+    shdrKey: powercond
 
   - input: .Autoclave.Variables.OperatorName\Value
-    cache: operator_name
-    key: op
+    cacheKey: operator_name
+    shdrKey: op
 
   - input: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
-    cache: cool_pump_a_hours
-    key: pumptime
+    cacheKey: cool_pump_a_hours
+    shdrKey: pumptime
 
   - input: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
-    cache: recipe_description
-    key: recipe
+    cacheKey: recipe_description
+    shdrKey: recipe
 
   - input: .Autoclave.Inputs.AIRTC\Value
-    cache: vessel_air_temp
-    key: airtemp
+    cacheKey: vessel_air_temp
+    shdrKey: airtemp
