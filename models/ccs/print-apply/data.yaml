@@ -25,7 +25,8 @@
 
 cache:
   - key: connection
-    value: types.AVAILABILITY[<status-connection>]
+    calculation: types.AVAILABILITY[<status-connection>]
+    output: avail
 
   - key: dev_cond
     value: "<status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'"
