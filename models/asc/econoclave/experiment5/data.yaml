@@ -3,6 +3,13 @@
 
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
 
+# each dataitem can include the following:
+#   input - a device-dependent descriptor for the input source.
+#   name - a unique name for the cache key - will be prefixed with deviceId.
+#   calculation - a javascript expression for how to calculate shdr value -
+#     if missing, assumes a cache lookup of the name.
+#   output - shdr output key - if false no shdr output, if missing assumes key=name.
+
 device:
   - input: .Autoclave.Alarms.ControlPower\Condition
     name: control_power_warning
@@ -30,4 +37,4 @@ device:
 
   - input: .Autoclave.Inputs.AIRTC\Value
     name: vessel_air_temp
-    id: airtemp
+    output: airtemp
