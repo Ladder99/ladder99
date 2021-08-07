@@ -4,26 +4,31 @@
 
 cache:
   control_power_warning:
-    input: .Autoclave.Alarms.ControlPower\Condition
+    source: .Autoclave.Alarms.ControlPower\Condition
+    internal: true
 
   control_power_fault:
-    input: .Autoclave.Alarms.ControlPower\AlarmActive
+    source: .Autoclave.Alarms.ControlPower\AlarmActive
+    internal: true
 
   control_power_condition:
     output: "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
 
   operator_name:
-    input: .Autoclave.Variables.OperatorName\Value
-    output: <operator_name>
+    source: .Autoclave.Variables.OperatorName\Value
+    output: same
 
   - key: cool_pump_a_hours
     source: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
+    output: same
 
   - key: recipe_description
     source: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
+    output: same
 
   - key: vessel_air_temp
     source: .Autoclave.Inputs.AIRTC\Value
+    output: same
 
   # note: batching allows req-resp protocols to limit the number of
   # data items per request.
@@ -34,15 +39,3 @@ cache:
   # - key: temp_alarm
   #   source: .Autoclave.Alarms.OverTemp\Active
   #   batch: 1
-
-outputs:
-  - key: operator_name
-
-  - key: recipe_description
-    value: <recipe_description>
-
-  - key: vessel_air_temp
-    value: <vessel_air_temp>
-
-  - key: cool_pump_a_hours
-    value: <cool_pump_a_hours>

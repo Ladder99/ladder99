@@ -25,16 +25,13 @@ model:
       - vessel_air_temp
 
   systems:
-    id: ${deviceId}-systems
     components:
       electrical:
-        id: ${deviceId}-electrical
         dataItems:
           dataItem:
             - control_power_condition
 
       cooling:
-        id: ${deviceId}-cooling
         dataItems:
           dataItem:
             - cool_pump_a_hours

@@ -12,4 +12,10 @@ inputs:
   # air_tc: .Autoclave.AIR_TC\Value # data item path
   # temp_alarm: .Autoclave.Alarms.OverTemp\Active
 
-outputs: pok
+outputs:
+  operator_name: same
+  recipe_description: same
+  vessel_air_temp: same
+  cool_pump_a_hours: same
+  control_power_condition: |
+    <control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'
