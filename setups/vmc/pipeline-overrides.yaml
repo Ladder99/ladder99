@@ -8,9 +8,7 @@ version: '3.8'
 services:
   agent:
     working_dir: /etc/mtconnect/simulator
-    # nowork - hangs - how do in parallel?
-    # command: /bin/sh -c /usr/bin/ruby run_scenario.rb -l VMC-3Axis-Log.txt & agent debug
-    command: ''
+    command: '' # run the default command (simulation)
     profiles:
       - dashboard
   influxdb:

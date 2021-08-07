@@ -2,6 +2,7 @@
 
 **/db/data
 **/database/data
+**/postgres/data
 **/timescaledb/data
 **/portainer/data
 **/grafana/var

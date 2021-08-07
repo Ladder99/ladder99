@@ -38,14 +38,10 @@ services:
     profiles:
       - all
       - html
-      # - dashboard
       - agent
     image: ladder99/agent:latest
     working_dir: /data/agent
     command: agent debug agent.cfg
-    # see https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
-    # extra_hosts:
-    #   - foo:bar
     volumes:
       - ./$SETUP/volumes/agent:/data/agent # should have agent.cfg, devices.xml
     ports:
@@ -69,32 +65,6 @@ services:
       - 1883:1883
     volumes:
       - ./$SETUP/volumes/broker:/mosquitto # has config/mosquitto.conf
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '1m'
-
-  # database - store structure and time-series data
-  database:
-    container_name: database
-    image: timescale/timescaledb:2.3.0-pg13
-    ports:
-      - $PGPORT:5432/tcp
-    profiles:
-      - all
-      - dashboard
-      - database
-    # init: true
-    environment:
-      POSTGRES_DB: $PGDATABASE
-      POSTGRES_USERNAME: $PGUSER
-      POSTGRES_PASSWORD: $PGPASSWORD
-    volumes:
-      - ./$SETUP/volumes/database/data:/var/lib/postgresql/data
-    deploy:
-      restart_policy:
-        condition: on-failure
     networks:
       - ladder99
     logging:
@@ -224,6 +194,32 @@ services:
       - ladder99
     logging:
       driver: 'none'
+
+  # postgres - store structure and time-series data
+  postgres:
+    container_name: postgres
+    image: timescale/timescaledb:2.3.0-pg13
+    ports:
+      - $PGPORT:5432/tcp
+    profiles:
+      - all
+      - dashboard
+      - postgres
+    # init: true
+    environment:
+      POSTGRES_DB: $PGDATABASE
+      POSTGRES_USERNAME: $PGUSER
+      POSTGRES_PASSWORD: $PGPASSWORD
+    volumes:
+      - ./$SETUP/volumes/postgres/data:/var/lib/postgresql/data
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
 
   # record - record device messages for future playback
   record:
