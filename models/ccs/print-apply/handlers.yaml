@@ -130,10 +130,10 @@ handlers:
     # define lookup function, which returns a value given a part calculation.
     lookup: '($, part) => ({ value: eval(part) })'
     # define key-part pairs, where key is mapped to a cache id,
-    # eg 'status-connection' => 'pa1-status_connection',
+    # eg 'connection' => 'pa1-connection',
     # and part is some javascript calculation code to determine its value.
     inputs:
-      status-connection: $.connection
+      connection: $.connection
       status-build_no: $.build_no
       status-state: $.state
       status-program: $.program

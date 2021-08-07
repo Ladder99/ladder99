@@ -11,22 +11,11 @@
 #     can perform a cache lookup with <foo> => cache.get(`${deviceId}-foo`)
 #   output - shdr output key - if false no shdr output, if missing assumes key=name.
 
-# these outputs are placed in the model.yaml tree and define the
-# shdr strings that are calculated from the cache and sent to the agent.
-
-# the item's key (eg 'connection') together with the deviceId (eg 'pa1')
-# form its id in the xml (eg 'pa1-connection').
-
-# the shdr key is the same as the id.
-# the shdr value is defined with the item value code.
-
-# value is javascript, evaluated by the cache in calculating the shdr output.
-# <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
-
-cache:
-  - key: connection
-    calculation: types.AVAILABILITY[<status-connection>]
-    output: avail
+data:
+  - input: connection
+    name: connection
+    calculation: types.AVAILABILITY[<connection>]
+    output: connection
 
   - key: dev_cond
     value: "<status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'"
