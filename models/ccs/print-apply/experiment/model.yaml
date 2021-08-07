@@ -3,8 +3,8 @@
 # this defines the structure of the xml that will get included in devices.xml.
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from setup.yaml.
-# dataItems are defined in outputs.yaml.
-# compilation to devices.xml is done with sh/adapter/compile.
+# dataItems are defined in data.yaml.
+# compilation to devices.xml is done with sh/compile.
 
 model:
   id: ${deviceId} # eg 'ccs-pa'
@@ -19,14 +19,22 @@ model:
     text: Emergent Next Generation Print and Apply
 
   dataItems:
-    dataItem:
-      - connection
-      - dev_cond
-      - dev_msg
-      - fw_ver
-      - func_mode
-      - asset_changed
-      - asset_removed
+    - key: conn
+      name: connection
+      category: EVENT
+      type: AVAILABILITY
+
+    - dev_cond
+
+    - dev_msg
+
+    - fw_ver
+
+    - func_mode
+
+    - asset_changed
+
+    - asset_removed
 
   components:
     controller:

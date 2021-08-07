@@ -16,8 +16,6 @@
 
 outputs:
   - key: connection
-    category: EVENT
-    type: AVAILABILITY
     value: types.AVAILABILITY[<status-connection>]
 
   # # eg change tool to a drill etc - irrelevant to p&a

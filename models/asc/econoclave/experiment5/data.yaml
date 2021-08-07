@@ -1,0 +1,33 @@
+# data
+# defines device inputs, cache keys, output shdr keys, and any calculations
+
+# this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
+
+device:
+  - input: .Autoclave.Alarms.ControlPower\Condition
+    name: control_power_warning
+    output: false
+
+  - input: .Autoclave.Alarms.ControlPower\AlarmActive
+    name: control_power_fault
+    output: false
+
+  - name: control_power_condition
+    calculation: "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
+    output: powercond
+
+  - input: .Autoclave.Variables.OperatorName\Value
+    name: operator_name
+    output: op
+
+  - input: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
+    name: cool_pump_a_hours
+    output: pumptime
+
+  - input: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
+    name: recipe_description
+    output: recipe
+
+  - input: .Autoclave.Inputs.AIRTC\Value
+    name: vessel_air_temp
+    id: airtemp
