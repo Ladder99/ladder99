@@ -1,5 +1,5 @@
-# device.yaml
-# device inputs, cache keys, and output shdr
+# data
+# defines device inputs, cache keys, and output shdr
 
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
 
