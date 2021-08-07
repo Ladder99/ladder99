@@ -4,7 +4,7 @@
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from the device yaml.
 # adapter cache items are defined in cache.yaml.
-# compilation to devices.xml is done with sh/adapter/compile.
+# compilation to devices.xml is done with sh/compile.
 
 # shdr key on left, xml desc on right
 # eg event(user,operator) translates to <DataItem category="EVENT" type="USER" subType="OPERATOR" />

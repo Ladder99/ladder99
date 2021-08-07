@@ -1,17 +1,20 @@
-# inputs
+# cache inputs and outputs
+
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
 
-#. call this cache.yaml? cache-inputs.yaml? driver.yaml?
+cache:
+  control_power_warning:
+    input: .Autoclave.Alarms.ControlPower\Condition
 
-inputs:
-  - key: control_power_warning
-    source: .Autoclave.Alarms.ControlPower\Condition
+  control_power_fault:
+    input: .Autoclave.Alarms.ControlPower\AlarmActive
 
-  - key: control_power_fault
-    source: .Autoclave.Alarms.ControlPower\AlarmActive
+  control_power_condition:
+    output: "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
 
-  - key: operator_name
-    source: .Autoclave.Variables.OperatorName\Value
+  operator_name:
+    input: .Autoclave.Variables.OperatorName\Value
+    output: <operator_name>
 
   - key: cool_pump_a_hours
     source: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
@@ -31,3 +34,15 @@ inputs:
   # - key: temp_alarm
   #   source: .Autoclave.Alarms.OverTemp\Active
   #   batch: 1
+
+outputs:
+  - key: operator_name
+
+  - key: recipe_description
+    value: <recipe_description>
+
+  - key: vessel_air_temp
+    value: <vessel_air_temp>
+
+  - key: cool_pump_a_hours
+    value: <cool_pump_a_hours>
