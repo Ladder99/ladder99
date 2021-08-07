@@ -1,9 +1,18 @@
-# outputs
+# data
+# defines device inputs, cache keys, output shdr keys, and any calculations
+
+# this file is parsed by the adapter driver pipeline/adapter/src/drivers/mqtt-json.js.
+
+# each dataitem can include the following:
+#   input - a device-dependent descriptor for the input source.
+#   name - a unique name for the cache key - will be prefixed with deviceId.
+#   calculation - a javascript expression for how to calculate shdr value -
+#     if missing, assumes a cache lookup of the name.
+#     can perform a cache lookup with <foo> => cache.get(`${deviceId}-foo`)
+#   output - shdr output key - if false no shdr output, if missing assumes key=name.
 
 # these outputs are placed in the model.yaml tree and define the
 # shdr strings that are calculated from the cache and sent to the agent.
-
-#. call this dataitems.yaml? properties.yaml? cache-outputs.yaml?
 
 # the item's key (eg 'connection') together with the deviceId (eg 'pa1')
 # form its id in the xml (eg 'pa1-connection').
@@ -14,7 +23,7 @@
 # value is javascript, evaluated by the cache in calculating the shdr output.
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
 
-outputs:
+cache:
   - key: connection
     value: types.AVAILABILITY[<status-connection>]
 

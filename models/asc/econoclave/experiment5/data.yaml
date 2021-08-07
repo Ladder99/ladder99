@@ -11,7 +11,7 @@
 #     can perform a cache lookup with <foo> => cache.get(`${deviceId}-foo`)
 #   output - shdr output key - if false no shdr output, if missing assumes key=name.
 
-device:
+data:
   - input: .Autoclave.Alarms.ControlPower\Condition
     name: control_power_warning
     output: false
