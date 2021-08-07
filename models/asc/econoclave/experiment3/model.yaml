@@ -19,16 +19,36 @@ model:
     text: ASC Econoclave 1x2ft
 
   dataItems:
-    - operator_name
-    - recipe_description
-    - vessel_air_temp
+    operator_name:
+      category: EVENT
+      type: USER
+      subType: OPERATOR
+
+    recipe_description:
+      category: EVENT
+      type: PROCESS_KIND_ID
+      subType: PROCESS_NAME
+
+    vessel_air_temp:
+      category: SAMPLE
+      type: TEMPERATURE
+      nativeUnits: FAHRENHEIT
+      units: CELSIUS
 
   systems:
     components:
       electrical:
         dataItems:
-          - control_power_condition
+          control_power_condition:
+            category: CONDITION
+            type: VOLTAGE_DC
 
       cooling:
         dataItems:
-          - cool_pump_a_hours
+          cool_pump_a_hours:
+            category: SAMPLE
+            type: EQUIPMENT_TIMER
+            subType: OPERATING
+            units: SECOND
+            # not sure what the correct scale there is - part 2, 7.2.2.7
+            # nativeScale: ???
