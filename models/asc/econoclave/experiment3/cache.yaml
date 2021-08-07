@@ -1,41 +1,21 @@
-# cache inputs and outputs
+# inputs
 
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
 
-cache:
-  control_power_warning:
-    source: .Autoclave.Alarms.ControlPower\Condition
-    internal: true
+inputs:
+  control_power_warning: .Autoclave.Alarms.ControlPower\Condition
+  control_power_fault: .Autoclave.Alarms.ControlPower\AlarmActive
+  operator_name: .Autoclave.Variables.OperatorName\Value
+  cool_pump_a_hours: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
+  recipe_description: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
+  vessel_air_temp: .Autoclave.Inputs.AIRTC\Value
+  # air_tc: .Autoclave.AIR_TC\Value # data item path
+  # temp_alarm: .Autoclave.Alarms.OverTemp\Active
 
-  control_power_fault:
-    source: .Autoclave.Alarms.ControlPower\AlarmActive
-    internal: true
-
-  control_power_condition:
-    output: "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
-
-  operator_name:
-    source: .Autoclave.Variables.OperatorName\Value
-    output: same
-
-  - key: cool_pump_a_hours
-    source: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
-    output: same
-
-  - key: recipe_description
-    source: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
-    output: same
-
-  - key: vessel_air_temp
-    source: .Autoclave.Inputs.AIRTC\Value
-    output: same
-
-  # note: batching allows req-resp protocols to limit the number of
-  # data items per request.
-  # - key: air_tc # data item alias
-  #   source: .Autoclave.AIR_TC\Value # data item path
-  #   batch: 1
-
-  # - key: temp_alarm
-  #   source: .Autoclave.Alarms.OverTemp\Active
-  #   batch: 1
+outputs:
+  operator_name: same
+  recipe_description: same
+  vessel_air_temp: same
+  cool_pump_a_hours: same
+  control_power_condition: |
+    <control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'

@@ -1,0 +1,30 @@
+# device.yaml
+# device inputs, cache keys, and output shdr
+
+# this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
+
+device:
+  - input: .Autoclave.Alarms.ControlPower\Condition
+    cache: control_power_warning
+
+  - input: .Autoclave.Alarms.ControlPower\AlarmActive
+    cache: control_power_fault
+
+  - cache: control_power_condition
+    output: "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
+
+  - input: .Autoclave.Variables.OperatorName\Value
+    cache: operator
+    output: operator
+
+  - input: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
+    cache: cool_pump_a_hours
+    output: same
+
+  - input: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
+    cache: recipe_description
+    output: same
+
+  - input: .Autoclave.Inputs.AIRTC\Value
+    cache: vessel_air_temp
+    output: same
