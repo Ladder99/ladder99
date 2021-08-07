@@ -1,0 +1,162 @@
+# inputs
+# define cache inputs - mqtt topics, how to parse them and put them into cache.
+# see outputs.yaml for cache output as shdr.
+
+# adapter subscribes to mqtt topics from devices.
+# mqtt broker sends data to adapter.
+# adapter parses messages, writes values to cache, which outputs shdr.
+
+#. call this adapter.yaml? cache.yaml? cache-inputs.yaml? driver.yaml?
+
+# this file is parsed by the adapter driver pipeline/adapter/src/drivers/mqtt-json.js.
+
+# define connect handler
+connect:
+  # subscribe to these topics
+  subscribe:
+    - topic: l99/${deviceId}/evt/query
+    - topic: l99/${deviceId}/evt/status
+    - topic: l99/${deviceId}/evt/read
+  # publish an empty message to receive the query response
+  publish:
+    - topic: l99/${deviceId}/cmd/query
+      message: '{}'
+
+# define message topic handlers
+handlers:
+  # handle query responses
+  l99/${deviceId}/evt/query:
+    unsubscribe:
+      - topic: l99/${deviceId}/evt/query
+    # subscribe:
+    #   - topic: l99/${deviceId}/evt/status
+    #   - topic: l99/${deviceId}/evt/read
+
+    # $ is a way to do quick lookups on the mqtt payload.
+    # in this case the payload is an array of items like { keys, default }.
+    # what we want to do is assign the default value to each item's key,
+    # where the key is keys[0], eg 'printer_ribbon_low'.
+    # $ is a variable declared as `let $ = {}` before this code is executed.
+    #. this complexity could be hidden from the user in the plugin code somehow.
+    initialize: 'payload.forEach(item => $[item.keys[0]] = item)'
+    lookup: '($, part) => ({ value: ($[part] || {}).default })'
+
+    # define key-part pairs
+    # the & syntax saves this list for later, as the read message handler
+    # uses the same pairs.
+    # 'key' defines the cache id, with id = {deviceId}-{key},
+    # eg for key='printer_ribbon_low', id = 'pa1-printer_ribbon_low'.
+    # 'part' defines the part of the payload to get using the above defined
+    # lookup fn, eg for part='%I0.0', the value is obtained with $['%I0.0'].
+    # then it sets item = { value }, then calls cache.set(id, item),
+    # eg cache.set('pa1-printer_ribbon_low', { value: 0 })
+    # this might trigger SHDR output to be sent to the mtconnect agent,
+    # according to the outputs defined in outputs.yaml.
+    inputs: &queryInputs
+      printer_ribbon_low: '%I0.0'
+      printer_service_required: '%I0.1'
+      printer_print_end: '%I0.2'
+      printer_media_out: '%I0.3'
+      printer_ribbon_out: '%I0.4'
+      printer_data_ready: '%I0.5'
+      product_sensor_one: '%I0.6'
+      tamp_head_up: '%I0.7'
+      input_9: '%I0.8'
+      smart_tamp_proximity: '%I0.9'
+      safety_e_stop: '%I0.10'
+      product_sensor_aux: '%I0.11'
+      web_media_low: '%I0.12'
+      web_dancer_arm: '%I0.13'
+      input_15: '%I0.14'
+      input_16: '%I0.15'
+      printer_start_print: '%Q0.0'
+      printer_feed: '%Q0.1'
+      printer_pause: '%Q0.2'
+      printer_reprint: '%Q0.3'
+      tamp_air_assist: '%Q0.4'
+      tamp_vacuum: '%Q0.5'
+      tamp_cylinder: '%Q0.6'
+      output_8: '%Q0.7'
+      output_9: '%Q0.8'
+      andon_green: '%Q0.9'
+      andon_red: '%Q0.10'
+      andon_yellow: '%Q0.11'
+      output_13: '%Q0.12'
+      output_14: '%Q0.13'
+      output_15: '%Q0.14'
+      output_16: '%Q0.15'
+      web_take_up_motor_state: '%Q1.0'
+      life_count: '%M55.0'
+      cycle_count: '%M55.1'
+      fault_count: '%M55.2'
+      idle_time: '%M55.3'
+      transport_time: '%M55.4'
+      print_time: '%M55.5'
+      labels_applied: '%M55.6'
+      cylinder_travel_time: '%M55.7'
+      cylinder_home_disengage_time: '%M55.8'
+      cylinder_extend_time: '%M55.9'
+      print_signal_time: '%M55.10'
+      tamp_vacuum_delay: '%M56.0'
+      printer_start_print_duration: '%M56.1'
+      printer_end_print_wait: '%M56.2'
+      product_sensor_one_edge_trigger: '%M56.3'
+      product_sensor_one_debounce: '%M56.4'
+      product_sensor_one_delay: '%M56.5'
+      tamp_cylinder_extend_duration: '%M56.6'
+      tamp_cylinder_travel_duration_multiplier: '%M56.7'
+      tamp_head_up_wait_duration: '%M56.8'
+      multi_feed_count: '%M56.9'
+      multi_feed_delay: '%M56.10'
+      product_sensor_aux_enabled: '%M56.11'
+      product_sensor_aux_edge_trigger: '%M56.12'
+      product_sensor_aux_debounce: '%M56.13'
+      product_sensor_aux_delay: '%M56.14'
+      machine_operating_mode: '%M56.15'
+      web_take_up_motor_timeout: '%M56.16'
+      web_take_up_motor_operating_mode: '%M56.17'
+      web_take_up_motor_start_delay: '%M56.18'
+      smart_tamp_enabled: '%M56.19'
+      product_sensor_one_bypass: '%M56.20'
+      printer_make: '%M56.21'
+      web_take_up_motor_anti_twitch_enabled: '%M56.22'
+      web_take_up_motor_anti_twitch_count: '%M56.23'
+      web_take_up_motor_anti_twitch_counter: '%Z55.0'
+      web_take_up_motor_anti_twitch_active: '%Z55.1'
+
+  # handle status messages
+  l99/${deviceId}/evt/status:
+    # make '$' the message payload dictionary and add faultKeys for quick
+    # lookups of faults - payload.faults is a dictionary of faults.
+    initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
+    # define lookup function, which returns a value given a part calculation.
+    lookup: '($, part) => ({ value: eval(part) })'
+    # define key-part pairs, where key is mapped to a cache id,
+    # eg 'status-connection' => 'pa1-status_connection',
+    # and part is some javascript calculation code to determine its value.
+    inputs:
+      status-connection: $.connection
+      status-build_no: $.build_no
+      status-state: $.state
+      status-program: $.program
+      status-step: $.step
+      status-utc_time: $.utc_time
+      status-cpu_time: $.cpu_time
+      status-faults: $.faults
+      status-cycle_time: 5 #. fake - need fsm?
+      status-has-no-faults: $.faultKeys.length === 0
+      status-has-faults: $.faultKeys.length > 0
+      status-has-soft-faults: $.faultKeys.some(f => f>='50')
+      status-has-hard-faults: $.faultKeys.some(f => f<'50')
+      status-has-fault-ten: $.faultKeys.some(f => f==='10')
+      status-has-tamp-fault: $.faultKeys.some(f=>['2','3','5'].includes(f))
+      status-has-feed-fault: $.faultKeys.some(f=>['1','11','12','13','14','15'].includes(f))
+      status-has-feed-warning: $.faultKeys.some(f=>['50','51'].includes(f))
+
+  # handle read messages
+  l99/${deviceId}/evt/read:
+    # make $ a dictionary keyed on the item addresses
+    initialize: 'payload.forEach(item => $[item.address] = item)'
+    lookup: '($, part) => ({ value: ($[part] || {}).value })'
+    # reuse the query input list here, as the key-part pairs are the same
+    inputs: *queryInputs
