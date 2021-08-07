@@ -1,4 +1,4 @@
-# ccs-pa
+# CCS models
 
 Model setup for CCS (Chicago Coding Systems) Print & Apply machines.
 
