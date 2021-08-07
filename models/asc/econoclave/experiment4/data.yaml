@@ -1,5 +1,5 @@
 # data
-# defines device inputs, cacheKey keys, and output shdr
+# defines device inputs, cache keys, output shdr keys, and any calculations
 
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
 
