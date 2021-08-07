@@ -4,7 +4,7 @@
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from the device yaml.
 # dataItems are defined in outputs.yaml.
-# compilation to devices.xml is done with sh/compile.
+# compilation to devices.xml is done with sh/adapter/compile.
 
 model:
   id: ${deviceId} # eg 'ac1'
@@ -19,22 +19,16 @@ model:
     text: ASC Econoclave 1x2ft
 
   dataItems:
-    dataItem:
-      - operator_name
-      - recipe_description
-      - vessel_air_temp
+    - operator_name
+    - recipe_description
+    - vessel_air_temp
 
   systems:
-    id: ${deviceId}-systems
     components:
       electrical:
-        id: ${deviceId}-electrical
         dataItems:
-          dataItem:
-            - control_power_condition
+          - control_power_condition
 
       cooling:
-        id: ${deviceId}-cooling
         dataItems:
-          dataItem:
-            - cool_pump_a_hours
+          - cool_pump_a_hours

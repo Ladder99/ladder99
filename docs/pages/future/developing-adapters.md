@@ -11,9 +11,9 @@ This diagram shows the sequence of operations for data going from a device throu
 Device models are defined in subfolders of the `models` folder, and typically contain:
 
 - model.yaml - defines the structure of the xml that is included in devices.xml, which is fed to the mtconnect agent
-- inputs.yaml - defines how to parse mqtt messages using the mqtt-json plugin, which writes values to a key-value cache
-- outputs.yaml - defines the shdr strings that are calculated from the cache and sent on to the agent
-- types.yaml - (optional) used by outputs.yaml
+- cache-inputs.yaml - defines how to parse mqtt messages using the mqtt-json plugin, which writes values to a key-value cache
+- cache-outputs.yaml - defines the shdr strings that are calculated from the cache and sent on to the agent
+- types.yaml - (optional) used by cache-outputs.yaml
 
 For example, the Chicago Coding Systems (CCS) Print and Apply model is defined in `models/ccs-pa` - you can see the definitions there.
 
