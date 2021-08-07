@@ -50,5 +50,6 @@ model:
             type: EQUIPMENT_TIMER
             subType: OPERATING
             units: SECOND
+            # nativeUnits: HOURS
             # not sure what the correct scale there is - part 2, 7.2.2.7
             # nativeScale: ???
