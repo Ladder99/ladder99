@@ -1,4 +1,4 @@
-# message handlers
+# cache inputs
 
 # device driver subscribes to mqtt topics from devices.
 # mqtt broker sends data to driver.
