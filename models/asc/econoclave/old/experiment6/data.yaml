@@ -39,10 +39,10 @@ data:
     units: CELSIUS
 
   - input: .Autoclave.Alarms.ControlPower\Condition
-    output: control_power_warning
+    name: control_power_warning
 
   - input: .Autoclave.Alarms.ControlPower\AlarmActive
-    output: control_power_warning
+    name: control_power_warning
 
   - id: powercond
     name: control_power_condition
