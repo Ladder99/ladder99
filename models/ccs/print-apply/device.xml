@@ -1,5 +1,6 @@
 <Device id="$id" name="$name" uuid="$uuid" sampleInterval="$sampleInterval">
   <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="$serialNumber">Emergent Next Generation Print and Apply</Description>
+  <!-- id's are postfixed with deviceNum, names prefixed with deviceId -->
   <DataItems>
     <DataItem id="conn" name="connection" category="EVENT" type="AVAILABILITY"/>
     <DataItem id="cond" name="condition" category="CONDITION" type="SYSTEM"/>
