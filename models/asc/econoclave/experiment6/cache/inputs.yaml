@@ -1,0 +1,21 @@
+# inputs
+
+# this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
+
+inputs:
+  control_power_warning: .Autoclave.Alarms.ControlPower\Condition
+  control_power_fault: .Autoclave.Alarms.ControlPower\AlarmActive
+  operator_name: .Autoclave.Variables.OperatorName\Value
+  cool_pump_a_hours: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
+  recipe_description: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
+  vessel_air_temp: .Autoclave.Inputs.AIRTC\Value
+  # air_tc: .Autoclave.AIR_TC\Value # data item path
+  # temp_alarm: .Autoclave.Alarms.OverTemp\Active
+
+outputs:
+  operator_name: same
+  recipe_description: same
+  vessel_air_temp: same
+  cool_pump_a_hours: same
+  control_power_condition: |
+    <control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'
