@@ -1,0 +1,260 @@
+# ccs print-apply model
+
+# this defines the structure of the xml that will get included in devices.xml.
+# text substitution is performed, eg ${deviceId} is replaced by
+# that value from setup.yaml.
+# dataItems are defined in data.yaml.
+# compilation to devices.xml is done with sh/compile.
+
+data:
+  - id: conn
+    name: connection
+    calc: types.AVAILABILITY[<connection>]
+    output: device/dataitems
+    category: EVENT
+    type: AVAILABILITY
+
+  - id: cond
+    name: condition
+    calc: "<has-hard-faults> ? 'FAULT' : <has-soft-faults> ? 'WARNING' : 'NORMAL'"
+    output: device/dataitems
+    category: CONDITION
+    type: SYSTEM
+
+  - id: msg
+    name: message
+    calc: "Object.entries(<faults>).map(([id, fault]) => fault.description).join(', ')"
+    output: device/dataitems
+    category: EVENT
+    type: MESSAGE
+
+  - id: fw
+    name: build_no
+    input: <build_no>
+    output: device/dataitems
+    category: EVENT
+    type: FIRMWARE
+    subType: VERSION
+
+  - id: func
+    name: functional_mode
+    calc: "<has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
+    output: device/dataitems
+    category: EVENT
+    type: FUNCTIONAL_MODE
+
+
+------------
+
+  components:
+    controller:
+      id: ${deviceId}-controller
+      nativeName: plc
+      description:
+        text: Electronic board set responsible for coordinating all machine function.
+      dataItems:
+        - id: e_stop
+          category: EVENT
+          type: EMERGENCY_STOP
+
+      components:
+        path:
+          name: path
+          dataItems:
+            - id: state
+              category: EVENT
+              type: EXECUTION
+
+            - id: wait_state
+              category: EVENT
+              type: WAIT_STATE
+
+            - id: program
+              category: EVENT
+              type: PROGRAM
+              subType: MAIN
+
+            - id: step
+              category: EVENT
+              type: BLOCK
+
+            - id: clk_time
+              category: SAMPLE
+              type: CLOCK_TIME
+
+            - id: up_time
+              category: SAMPLE
+              type: EQUIPMENT_TIMER
+              subType: OPERATING
+
+            - id: fault_count
+              category: SAMPLE
+              type: COUNT
+              subType: x:FAULT
+
+            - id: cycle_count
+              category: SAMPLE
+              type: COUNT
+              subType: x:CYCLE
+
+            - id: life_count
+              category: SAMPLE
+              type: COUNT
+              subType: x:LIFE
+
+            - id: cycle_time #. ok here?
+              category: SAMPLE
+              type: PROCESS_TIMER
+              subType: PROCESS
+              unit: SECONDS
+
+  systems:
+    components:
+      endEffector:
+        dataItems:
+          - id: end_eff_cond
+            category: CONDITION
+            type: SYSTEM
+
+          - id: end_eff_message
+            category: EVENT
+            type: MESSAGE
+
+          - id: smart_tamp_part_detect
+            category: EVENT
+            type: PART_DETECT
+
+          - id: tamp_air_assist
+            category: EVENT
+            type: ACTUATOR_STATE
+            subType: x:AIR_ASSIST
+
+          - id: tamp_vacuum
+            category: EVENT
+            type: ACTUATOR_STATE
+            subType: x:VACUUM
+
+          - id: tamp_cylinder
+            category: EVENT
+            type: ACTUATOR_STATE
+            subType: x:CYLINDER
+
+          - id: cylinder_extend_time
+            category: SAMPLE
+            type: EQUIPMENT_TIMER
+            # subType: WORKING
+            subType: x:EXTEND
+            unit: SECOND
+
+          - id: cylinder_home_disengage_time
+            category: SAMPLE
+            type: EQUIPMENT_TIMER
+            # subType: WORKING
+            subType: x:DISENGAGE
+            unit: SECOND
+
+          - id: cylinder_travel_time
+            category: SAMPLE
+            type: EQUIPMENT_TIMER
+            # subType: WORKING
+            subType: x:TRAVEL
+            unit: SECOND
+
+          - id: tamp_vacuum_delay
+            category: SAMPLE
+            type: EQUIPMENT_TIMER
+            subType: DELAY
+            unit: SECOND
+
+        #compositions: []
+      feeder:
+        dataItems:
+          - id: feed_cond
+            category: CONDITION
+            type: SYSTEM
+
+          - id: feed_message
+            category: EVENT
+            type: MESSAGE
+
+          - id: feed_part_detect
+            category: EVENT
+            type: PART_DETECT
+
+          - id: web_take_up_motor_state
+            category: EVENT
+            type: ACTUATOR_STATE
+            subType: x:TAKE_UP
+
+          - id: printer_reprint
+            category: EVENT
+            type: ACTUATOR_STATE
+            subType: x:REPRINT
+
+          - id: printer_pause
+            category: EVENT
+            type: ACTUATOR_STATE
+            subType: x:PAUSE
+
+          - id: printer_feed
+            category: EVENT
+            type: ACTUATOR_STATE
+            subType: x:FEED
+
+          - id: printer_start_print
+            category: EVENT
+            type: ACTUATOR_STATE
+            subType: x:START
+
+          - id: print_signal_time
+            category: SAMPLE
+            type: EQUIPMENT_TIMER
+            subType: DELAY
+            unit: SECOND
+
+          - id: print_time
+            category: SAMPLE
+            type: EQUIPMENT_TIMER
+            subType: WORKING
+            unit: SECOND
+
+          - id: transport_time
+            category: SAMPLE
+            type: EQUIPMENT_TIMER
+            subType: DELAY
+            unit: SECOND
+
+          - id: idle_time
+            category: SAMPLE
+            type: EQUIPMENT_TIMER
+            subType: DELAY
+            unit: SECOND
+
+          - id: printer_start_print_duration
+            category: SAMPLE
+            type: EQUIPMENT_TIMER
+            subType: DELAY
+            unit: SECOND
+
+          - id: printer_end_print_wait
+            category: SAMPLE
+            type: EQUIPMENT_TIMER
+            subType: DELAY
+            unit: SECOND
+
+          - id: product_sensor_one_edge_trigger
+            category: SAMPLE
+            type: UNKNOWN #. ?
+
+          - id: product_sensor_one_debounce
+            category: SAMPLE
+            type: EQUIPMENT_TIMER
+            subType: DELAY
+            unit: SECOND
+
+        #compositions: []
+    resources:
+      components:
+        personnel:
+          dataItems:
+            - operator
