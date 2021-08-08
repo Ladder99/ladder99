@@ -1,0 +1,74 @@
+# outputs
+
+# these outputs are placed in the model.yaml tree and define the
+# shdr strings that are calculated and sent to the agent.
+
+# the item's key (eg 'connection') together with the deviceId (eg 'racetrack1')
+# form its id in the xml (eg 'racetrack1-connection').
+
+# the shdr key is the same as the id.
+# the shdr value is defined with the item value code.
+
+# value is javascript, evaluated by the cache in calculating the shdr output.
+# <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
+
+outputs:
+  - key: connection
+    category: EVENT
+    type: AVAILABILITY
+    value: types.AVAILABILITY[<connection>]
+
+  - key: condition
+    category: CONDITION
+    type: SYSTEM
+    value: "<has-faults> ? 'FAULT' : 'NORMAL'"
+
+  - key: func_mode
+    category: EVENT
+    type: FUNCTIONAL_MODE
+    value: "<status-has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
+
+  - key: state
+    category: EVENT
+    type: EXECUTION
+    # one of WAIT, ACTIVE, PROGRAM_STOPPED
+    value: types.EXECUTION[<status-state>]
+
+  - key: wait_state
+    category: EVENT
+    type: WAIT_STATE
+    value: types.WAIT_STATE[<status-state>]
+
+  - key: step
+    category: EVENT
+    type: BLOCK
+    value: <status-step>
+
+  - key: up_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: OPERATING
+    value: <status-cpu_time>
+
+  - key: track_length
+    category: SAMPLE
+    type: LENGTH
+    subType: STANDARD
+    value: <distance>
+
+  - key: race_duration
+    category: SAMPLE
+    type: PROCESS_TIMER
+    subType: PROCESS
+    value: <timer>
+
+  - key: race_speed
+    category: SAMPLE
+    type: PROCESS_TIMER
+    subType: PROCESS
+    value: <speed>
+
+  - key: runner
+    category: EVENT
+    type: MESSAGE
+    value: <running_man>

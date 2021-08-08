@@ -134,22 +134,22 @@ handlers:
     # and part is some javascript calculation code to determine its value.
     inputs:
       connection: $.connection
-      status-build_no: $.build_no
-      status-state: $.state
-      status-program: $.program
-      status-step: $.step
-      status-utc_time: $.utc_time
-      status-cpu_time: $.cpu_time
-      status-faults: $.faults
-      status-cycle_time: 5 #. fake - need fsm?
-      status-has-no-faults: $.faultKeys.length === 0
-      status-has-faults: $.faultKeys.length > 0
-      status-has-soft-faults: $.faultKeys.some(f => f>='50')
-      status-has-hard-faults: $.faultKeys.some(f => f<'50')
-      status-has-fault-ten: $.faultKeys.some(f => f==='10')
-      status-has-tamp-fault: $.faultKeys.some(f=>['2','3','5'].includes(f))
-      status-has-feed-fault: $.faultKeys.some(f=>['1','11','12','13','14','15'].includes(f))
-      status-has-feed-warning: $.faultKeys.some(f=>['50','51'].includes(f))
+      build_no: $.build_no
+      state: $.state
+      program: $.program
+      step: $.step
+      utc_time: $.utc_time
+      cpu_time: $.cpu_time
+      faults: $.faults
+      cycle_time: 5 #. fake - need fsm?
+      has-no-faults: $.faultKeys.length === 0
+      has-faults: $.faultKeys.length > 0
+      has-soft-faults: $.faultKeys.some(f => f>='50')
+      has-hard-faults: $.faultKeys.some(f => f<'50')
+      has-fault-ten: $.faultKeys.some(f => f==='10')
+      has-tamp-fault: $.faultKeys.some(f=>['2','3','5'].includes(f))
+      has-feed-fault: $.faultKeys.some(f=>['1','11','12','13','14','15'].includes(f))
+      has-feed-warning: $.faultKeys.some(f=>['50','51'].includes(f))
 
   # handle read messages
   l99/${deviceId}/evt/read:

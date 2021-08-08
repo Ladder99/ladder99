@@ -1,0 +1,31 @@
+# racetrack model
+# this defines the structure of the xml that will get included in devices.xml.
+# text substitution is performed, eg ${deviceId} is replaced by
+# that value from devices.yaml.
+# dataItems are defined in outputs.yaml.
+# compilation is done with sh/adapter/compile.
+
+model:
+  id: ${deviceId} # eg 'racetrack1'
+  name: ${deviceId} # must be unique in xml - might want to override in devices.yaml tho?
+  uuid: ${uuid} # eg 'e05363af'
+  sampleInterval: 10
+
+  description:
+    manufacturer: TW
+    model: Race-Track
+    serialNumber: '${serialNumber}' # eg '001'
+
+  dataItems:
+    dataItem:
+      - connection
+      - condition
+      - func_mode
+      - state
+      - wait_state
+      - step
+      - up_time
+      - track_length
+      - race_duration
+      - runner
+      - race_speed

@@ -12,28 +12,25 @@
 #   output - shdr output key - if false no shdr output, if missing assumes key=name.
 
 data:
-  - input: connection
-    name: connection
-    calculation: types.AVAILABILITY[<connection>]
+  - calculation: types.AVAILABILITY[<connection>]
     output: connection
 
-  - key: dev_cond
-    value: "<status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'"
+  - calculation: "<has-hard-faults> ? 'FAULT' : <has-soft-faults> ? 'WARNING' : 'NORMAL'"
+    output: condition
 
-  - key: dev_msg
+  - name: message
     # representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
     # value: Object.entries(<status-faults>).map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
     # value: "'msg|' + Object.entries(<status-faults>).map(([id, fault]) => 'f' + id + '=pokpok').join(' ')"
     # value: "Object.entries(<status-faults>).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
     #. escape any pipes and enclose in double quotes
-    value: "Object.entries(<status-faults>).map(([id, fault]) => fault.description).join(', ')"
-    nativeCode: NativeCode #.
+    value: "Object.entries(<faults>).map(([id, fault]) => fault.description).join(', ')"
+    nativeCode: NativeCode #.?
 
-  - key: fw_ver
-    value: <status-build_no>
+  - name: build_no
 
-  - key: func_mode
-    value: "<status-has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
+  - name: func_mode
+    value: "<has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
 
   # # eg change tool to a drill etc - irrelevant to p&a
   # # see std pt 4 line 347
