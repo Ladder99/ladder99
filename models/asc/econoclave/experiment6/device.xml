@@ -3,24 +3,24 @@
     ASC autoclave
   </Description>
   <DataItems>
-    <DataItem name="$id-operator_name" category="EVENT" type="USER" subType="OPERATOR"/>
-    <DataItem name="$id-recipe_description" category="EVENT" type="PROCESS_KIND_ID" subType="PROCESS_NAME"/>
-    <DataItem name="$id-vessel_air_temp" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
-    <DataItem name="ac1_avail" category="EVENT" type="AVAILABILITY"/>
-    <DataItem name="ac1_asset_chg" category="EVENT" type="ASSET_CHANGED" discrete="true"/>
-    <DataItem name="ac1_asset_rem" category="EVENT" type="ASSET_REMOVED"/>
+    <DataItem id="op$num" name="$id-operator_name" category="EVENT" type="USER" subType="OPERATOR"/>
+    <DataItem id="rec$num" name="$id-recipe_description" category="EVENT" type="PROCESS_KIND_ID" subType="PROCESS_NAME"/>
+    <DataItem id="air$num" name="$id-vessel_air_temp" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
+    <DataItem id="avail$num" name="$id_avail" category="EVENT" type="AVAILABILITY"/>
+    <DataItem id="chg$num" name="$id_asset_chg" category="EVENT" type="ASSET_CHANGED" discrete="true"/>
+    <DataItem id="rem$num" name="$id_asset_rem" category="EVENT" type="ASSET_REMOVED"/>
   </DataItems>
   <Components>
     <Systems>
       <Components>
         <Electrical>
           <DataItems>
-            <DataItem name="$id-control_power_condition" category="CONDITION" type="VOLTAGE_DC"/>
+            <DataItem id="power$num" name="$id-control_power_condition" category="CONDITION" type="VOLTAGE_DC"/>
           </DataItems>
         </Electrical>
         <Cooling>
           <DataItems>
-            <DataItem name="$id-cool_pump_a_hours" category="SAMPLE" type="EQUIPMENT_TIME" subType="OPERATING" nativeScale="1" nativeUnits="SECOND" units="SECOND"/>
+            <DataItem id="pump$num" name="$id-cool_pump_a_hours" category="SAMPLE" type="EQUIPMENT_TIME" subType="OPERATING" nativeScale="1" nativeUnits="SECOND" units="SECOND"/>
           </DataItems>
         </Cooling>
       </Components>
