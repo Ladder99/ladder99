@@ -4,7 +4,7 @@
 
 SETUP=$1  # setup subfolder, eg 'ccs-pa'
 
-node pipeline/adapter/src/compiler/compile-xml.js \
+node pipeline/compiler/src/compile-xml.js \
   setups/$SETUP/setup.yaml \
   setups/$SETUP/volumes/agent/devices.xml
 
@@ -15,7 +15,7 @@ node pipeline/adapter/src/compiler/compile-xml.js \
 
 # # compile devices.xml from model setup.yaml
 # compile-xml SETUP='demo':
-#     node pipeline/adapter/src/compiler/compile-xml.js \
+#     node pipeline/compiler/src/compile-xml.js \
 #     setups/{{SETUP}}/setup.yaml \
 #     setups/{{SETUP}}/volumes/agent/devices.xml
 
