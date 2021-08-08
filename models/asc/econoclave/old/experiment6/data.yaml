@@ -46,7 +46,7 @@ data:
 
   - id: powercond
     name: control_power_condition
-    input: "=<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
+    calc: "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
     output: device/systems/components/electrical/dataitems
     category: CONDITION
     type: VOLTAGE_DC
