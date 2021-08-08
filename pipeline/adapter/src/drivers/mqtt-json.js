@@ -64,7 +64,7 @@ export class AdapterDriver {
       handlers.forEach(([topic, handler]) => {
         topic = replaceDeviceId(topic)
 
-        // eg msgTopic => 'l99/ccs-pa-001/evt/query'
+        // eg msgTopic => 'l99/pa1/evt/query'
         if (topic === msgTopic) {
           // unsubscribe from topics as needed
           for (const entry of handler.unsubscribe || []) {

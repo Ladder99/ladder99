@@ -1,0 +1,24 @@
+# asc econoclave model
+
+# this defines the structure of the xml that will get included in devices.xml.
+# text substitution is performed, eg ${deviceId} is replaced by
+# that value from the device yaml.
+# dataItems are defined in data.yaml.
+# compilation to devices.xml is done with sh/compile.
+
+# each dataitem can have the following values:
+#   id - a short unique identifier - will be prefixed with deviceId. typically shdr key.
+#   name - a longer unique identifier - will be prefixed with deviceId
+#   category, type, subType, units, etc. - mtconnect values
+
+model:
+  id: ${deviceId} # eg 'ac1'
+  name: ${deviceId} # must be unique in xml - might want to override in setup.yaml tho?
+  uuid: ${uuid} # eg 'e05363af'
+  sampleInterval: 10
+
+  description:
+    manufacturer: ASC
+    model: EC1X2
+    serialNumber: ${serialNumber} # eg '001'
+    text: ASC Econoclave 1x2ft

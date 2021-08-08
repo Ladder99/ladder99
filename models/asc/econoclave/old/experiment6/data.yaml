@@ -1,0 +1,62 @@
+# data
+# defines device inputs, cache keys, output shdr keys, and any calculations
+
+# this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
+
+# each dataitem can include the following:
+#   id - unique id - $deviceNum will be appended. used for shdr key.
+#   name - unique name - $deviceId- will be prefixed.
+#   input - a device-dependent descriptor for the source.
+#     if starts with an = sign, treat as a js expression.
+#     can perform a cache lookup with <foo> => cache.get(`${deviceId}-foo`).value
+#   output - path in the device tree for storing the value
+
+data:
+  - id: recipe
+    name: recipe_description
+    source: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
+    outputPath: device/dataitems
+    category: EVENT
+    type: PROCESS_KIND_ID
+    subType: PROCESS_NAME
+
+  - id: op
+    name: operator_name
+    source: .Autoclave.Variables.OperatorName\Value
+    outputPath: device/dataitems
+    category: EVENT
+    type: USER
+    subType: OPERATOR
+
+  - id: airtemp
+    name: vessel_air_temp
+    source: .Autoclave.Inputs.AIRTC\Value
+    path: device/dataitems
+    category: SAMPLE
+    type: TEMPERATURE
+    nativeUnits: FAHRENHEIT
+    units: CELSIUS
+
+  - input: .Autoclave.Alarms.ControlPower\Condition
+    output: control_power_warning
+
+  - input: .Autoclave.Alarms.ControlPower\AlarmActive
+    output: control_power_warning
+
+  - id: powercond
+    name: control_power_condition
+    input: "=<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
+    output: device/systems/components/electrical/dataitems
+    category: CONDITION
+    type: VOLTAGE_DC
+
+  - id: pumptime
+    name: cool_pump_a_hours
+    source: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
+    path: device/systems/components/coolant/dataitems
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: OPERATING
+    units: SECOND
+    # nativeUnits: HOURS
+    # nativeScale: ?
