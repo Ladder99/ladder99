@@ -1,8 +1,8 @@
 # cache outputs
 
-# define outputs from the cache
-# shdr key is on left, calculation on right
-# if calculation is blank, looks up cache key of same name
+# left side is shdr key (will have $deviceNum appended).
+# right side is javascript, evaluated by the cache in calculating the shdr output.
+# <foo> is a cache lookup, short for cache.get('${deviceId}-foo').value
 
 outputs:
   conn: types.AVAILABILITY[<connection>]
@@ -21,8 +21,8 @@ outputs:
   estop: "<has-fault-ten> ? 'TRIGGERED' : 'ARMED'"
   state: types.EXECUTION[<state>]
   wait: types.WAIT_STATE[<state>]
-  program:
-  step:
+  pgm: <program>
+  step: <step>
   clktime: <utc_time>
   uptime: <cpu_time>
   faultct: <fault_count>
