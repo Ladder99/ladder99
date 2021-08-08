@@ -6,6 +6,8 @@
 # dataItems are defined in data.yaml.
 # compilation to devices.xml is done with sh/compile.
 
+# element - DataItem by default, but could be Controller, Path etc
+
 data:
   - id: conn
     name: connection
@@ -43,218 +45,219 @@ data:
     category: EVENT
     type: FUNCTIONAL_MODE
 
+  - id: controller
+    element: Controller
+    output: device/components
+    nativeName: plc
+    description: Electronic board set responsible for coordinating all machine function.
 
-------------
+  - id: estop
+    output: device/components/controller/dataitems
+    category: EVENT
+    type: EMERGENCY_STOP
 
-  components:
-    controller:
-      id: ${deviceId}-controller
-      nativeName: plc
-      description:
-        text: Electronic board set responsible for coordinating all machine function.
-      dataItems:
-        - id: e_stop
-          category: EVENT
-          type: EMERGENCY_STOP
+  - id: state
+    output: device/components/controller/components/path/dataitems
+    category: EVENT
+    type: EXECUTION
 
-      components:
-        path:
-          name: path
-          dataItems:
-            - id: state
-              category: EVENT
-              type: EXECUTION
-
-            - id: wait_state
-              category: EVENT
-              type: WAIT_STATE
-
-            - id: program
-              category: EVENT
-              type: PROGRAM
-              subType: MAIN
-
-            - id: step
-              category: EVENT
-              type: BLOCK
-
-            - id: clk_time
-              category: SAMPLE
-              type: CLOCK_TIME
-
-            - id: up_time
-              category: SAMPLE
-              type: EQUIPMENT_TIMER
-              subType: OPERATING
-
-            - id: fault_count
-              category: SAMPLE
-              type: COUNT
-              subType: x:FAULT
-
-            - id: cycle_count
-              category: SAMPLE
-              type: COUNT
-              subType: x:CYCLE
-
-            - id: life_count
-              category: SAMPLE
-              type: COUNT
-              subType: x:LIFE
-
-            - id: cycle_time #. ok here?
-              category: SAMPLE
-              type: PROCESS_TIMER
-              subType: PROCESS
-              unit: SECONDS
-
-  systems:
+---
+components:
+  controller:
     components:
-      endEffector:
+      path:
+        name: path
         dataItems:
-          - id: end_eff_cond
-            category: CONDITION
-            type: SYSTEM
-
-          - id: end_eff_message
+          - id: wait_state
             category: EVENT
-            type: MESSAGE
+            type: WAIT_STATE
 
-          - id: smart_tamp_part_detect
+          - id: program
             category: EVENT
-            type: PART_DETECT
+            type: PROGRAM
+            subType: MAIN
 
-          - id: tamp_air_assist
+          - id: step
             category: EVENT
-            type: ACTUATOR_STATE
-            subType: x:AIR_ASSIST
+            type: BLOCK
 
-          - id: tamp_vacuum
-            category: EVENT
-            type: ACTUATOR_STATE
-            subType: x:VACUUM
+          - id: clk_time
+            category: SAMPLE
+            type: CLOCK_TIME
 
-          - id: tamp_cylinder
-            category: EVENT
-            type: ACTUATOR_STATE
-            subType: x:CYLINDER
-
-          - id: cylinder_extend_time
+          - id: up_time
             category: SAMPLE
             type: EQUIPMENT_TIMER
-            # subType: WORKING
-            subType: x:EXTEND
-            unit: SECOND
+            subType: OPERATING
 
-          - id: cylinder_home_disengage_time
+          - id: fault_count
             category: SAMPLE
-            type: EQUIPMENT_TIMER
-            # subType: WORKING
-            subType: x:DISENGAGE
-            unit: SECOND
+            type: COUNT
+            subType: x:FAULT
 
-          - id: cylinder_travel_time
+          - id: cycle_count
             category: SAMPLE
-            type: EQUIPMENT_TIMER
-            # subType: WORKING
-            subType: x:TRAVEL
-            unit: SECOND
+            type: COUNT
+            subType: x:CYCLE
 
-          - id: tamp_vacuum_delay
+          - id: life_count
             category: SAMPLE
-            type: EQUIPMENT_TIMER
-            subType: DELAY
-            unit: SECOND
+            type: COUNT
+            subType: x:LIFE
 
-        #compositions: []
-      feeder:
+          - id: cycle_time #. ok here?
+            category: SAMPLE
+            type: PROCESS_TIMER
+            subType: PROCESS
+            unit: SECONDS
+
+systems:
+  components:
+    endEffector:
+      dataItems:
+        - id: end_eff_cond
+          category: CONDITION
+          type: SYSTEM
+
+        - id: end_eff_message
+          category: EVENT
+          type: MESSAGE
+
+        - id: smart_tamp_part_detect
+          category: EVENT
+          type: PART_DETECT
+
+        - id: tamp_air_assist
+          category: EVENT
+          type: ACTUATOR_STATE
+          subType: x:AIR_ASSIST
+
+        - id: tamp_vacuum
+          category: EVENT
+          type: ACTUATOR_STATE
+          subType: x:VACUUM
+
+        - id: tamp_cylinder
+          category: EVENT
+          type: ACTUATOR_STATE
+          subType: x:CYLINDER
+
+        - id: cylinder_extend_time
+          category: SAMPLE
+          type: EQUIPMENT_TIMER
+          # subType: WORKING
+          subType: x:EXTEND
+          unit: SECOND
+
+        - id: cylinder_home_disengage_time
+          category: SAMPLE
+          type: EQUIPMENT_TIMER
+          # subType: WORKING
+          subType: x:DISENGAGE
+          unit: SECOND
+
+        - id: cylinder_travel_time
+          category: SAMPLE
+          type: EQUIPMENT_TIMER
+          # subType: WORKING
+          subType: x:TRAVEL
+          unit: SECOND
+
+        - id: tamp_vacuum_delay
+          category: SAMPLE
+          type: EQUIPMENT_TIMER
+          subType: DELAY
+          unit: SECOND
+
+      #compositions: []
+    feeder:
+      dataItems:
+        - id: feed_cond
+          category: CONDITION
+          type: SYSTEM
+
+        - id: feed_message
+          category: EVENT
+          type: MESSAGE
+
+        - id: feed_part_detect
+          category: EVENT
+          type: PART_DETECT
+
+        - id: web_take_up_motor_state
+          category: EVENT
+          type: ACTUATOR_STATE
+          subType: x:TAKE_UP
+
+        - id: printer_reprint
+          category: EVENT
+          type: ACTUATOR_STATE
+          subType: x:REPRINT
+
+        - id: printer_pause
+          category: EVENT
+          type: ACTUATOR_STATE
+          subType: x:PAUSE
+
+        - id: printer_feed
+          category: EVENT
+          type: ACTUATOR_STATE
+          subType: x:FEED
+
+        - id: printer_start_print
+          category: EVENT
+          type: ACTUATOR_STATE
+          subType: x:START
+
+        - id: print_signal_time
+          category: SAMPLE
+          type: EQUIPMENT_TIMER
+          subType: DELAY
+          unit: SECOND
+
+        - id: print_time
+          category: SAMPLE
+          type: EQUIPMENT_TIMER
+          subType: WORKING
+          unit: SECOND
+
+        - id: transport_time
+          category: SAMPLE
+          type: EQUIPMENT_TIMER
+          subType: DELAY
+          unit: SECOND
+
+        - id: idle_time
+          category: SAMPLE
+          type: EQUIPMENT_TIMER
+          subType: DELAY
+          unit: SECOND
+
+        - id: printer_start_print_duration
+          category: SAMPLE
+          type: EQUIPMENT_TIMER
+          subType: DELAY
+          unit: SECOND
+
+        - id: printer_end_print_wait
+          category: SAMPLE
+          type: EQUIPMENT_TIMER
+          subType: DELAY
+          unit: SECOND
+
+        - id: product_sensor_one_edge_trigger
+          category: SAMPLE
+          type: UNKNOWN #. ?
+
+        - id: product_sensor_one_debounce
+          category: SAMPLE
+          type: EQUIPMENT_TIMER
+          subType: DELAY
+          unit: SECOND
+
+      #compositions: []
+  resources:
+    components:
+      personnel:
         dataItems:
-          - id: feed_cond
-            category: CONDITION
-            type: SYSTEM
-
-          - id: feed_message
-            category: EVENT
-            type: MESSAGE
-
-          - id: feed_part_detect
-            category: EVENT
-            type: PART_DETECT
-
-          - id: web_take_up_motor_state
-            category: EVENT
-            type: ACTUATOR_STATE
-            subType: x:TAKE_UP
-
-          - id: printer_reprint
-            category: EVENT
-            type: ACTUATOR_STATE
-            subType: x:REPRINT
-
-          - id: printer_pause
-            category: EVENT
-            type: ACTUATOR_STATE
-            subType: x:PAUSE
-
-          - id: printer_feed
-            category: EVENT
-            type: ACTUATOR_STATE
-            subType: x:FEED
-
-          - id: printer_start_print
-            category: EVENT
-            type: ACTUATOR_STATE
-            subType: x:START
-
-          - id: print_signal_time
-            category: SAMPLE
-            type: EQUIPMENT_TIMER
-            subType: DELAY
-            unit: SECOND
-
-          - id: print_time
-            category: SAMPLE
-            type: EQUIPMENT_TIMER
-            subType: WORKING
-            unit: SECOND
-
-          - id: transport_time
-            category: SAMPLE
-            type: EQUIPMENT_TIMER
-            subType: DELAY
-            unit: SECOND
-
-          - id: idle_time
-            category: SAMPLE
-            type: EQUIPMENT_TIMER
-            subType: DELAY
-            unit: SECOND
-
-          - id: printer_start_print_duration
-            category: SAMPLE
-            type: EQUIPMENT_TIMER
-            subType: DELAY
-            unit: SECOND
-
-          - id: printer_end_print_wait
-            category: SAMPLE
-            type: EQUIPMENT_TIMER
-            subType: DELAY
-            unit: SECOND
-
-          - id: product_sensor_one_edge_trigger
-            category: SAMPLE
-            type: UNKNOWN #. ?
-
-          - id: product_sensor_one_debounce
-            category: SAMPLE
-            type: EQUIPMENT_TIMER
-            subType: DELAY
-            unit: SECOND
-
-        #compositions: []
-    resources:
-      components:
-        personnel:
-          dataItems:
-            - operator
+          - operator
