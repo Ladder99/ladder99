@@ -54,7 +54,7 @@ data:
   - id: pumptime
     name: cool_pump_a_hours
     input: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
-    path: device/systems/components/coolant/dataitems
+    output: device/systems/components/coolant/dataitems
     category: SAMPLE
     type: EQUIPMENT_TIMER
     subType: OPERATING
