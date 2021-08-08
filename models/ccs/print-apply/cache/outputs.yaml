@@ -1,10 +1,5 @@
 # cache outputs
 
-# how convert key to id
-meta:
-  # prefix: $deviceId
-  suffix: $deviceNum
-
 # define outputs from the cache
 # shdr key is on left, calculation on right
 # if calculation is blank, looks up cache key of same name
@@ -28,50 +23,47 @@ outputs:
   wait: types.WAIT_STATE[<state>]
   program:
   step:
-  clk_time: <utc_time>
-  up_time: <cpu_time>
-  fault_count:
-  cycle_count:
-  life_count:
-  cycle_time:
-  end_eff_cond: "<has-tamp-fault> ? 'FAULT' : 'NORMAL'"
-  end_eff_message: 
+  clktime: <utc_time>
+  uptime: <cpu_time>
+  faultct: <fault_count>
+  cyclect: <cycle_count>
+  lifect: <life_count>
+  cycletime: <cycle_time>
+  eecond: "<has-tamp-fault> ? 'FAULT' : 'NORMAL'"
+  eemsg:
     representation: DATA_SET
     # value: Object.entries(<faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + '=' + fault.description.replaceAll(' ','')).join(' ')
     # value: "Object.entries(<faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + ': ' + fault.description).join(', ')"
     #. escape any pipes and enclose in double quotes
     value: "Object.entries(<faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => fault.description).join(', ')"
     nativeCode: NativeCode #.
-  smart_tamp_part_detect:
-    value: "<smart_tamp_enabled> ? types.PART_DETECT[<tamp_part_detect>] : 'UNAVAILABLE'"
-  tamp_air_assist: types.ACTUATOR_STATE[<tamp_air_assist>]
-  tamp_vacuum: types.ACTUATOR_STATE[<tamp_vacuum>]
-  tamp_cylinder: types.ACTUATOR_STATE[<tamp_cylinder>]
-  cylinder_extend_time: <cylinder_extend_time>
-  cylinder_home_disengage_time: <cylinder_home_disengage_time>
-  cylinder_travel_time: <cylinder_travel_time>
-  tamp_vacuum_delay: <tamp_vacuum_delay>
-  feed_cond: : types.CONDITION_TRIPLE[[<has-feed-fault>, <has-feed-warning>, true].indexOf(true)]
-    value: "<has-feed-fault> ? 'FAULT' : <has-feed-warning> ? 'WARNING' : 'NORMAL'"
-  feed_message: sentation: DATA_SET #. not available for agent xsl yet
+  pdetect: "<smart_tamp_enabled> ? types.PART_DETECT[<tamp_part_detect>] : 'UNAVAILABLE'"
+  assist: types.ACTUATOR_STATE[<tamp_air_assist>]
+  vac: types.ACTUATOR_STATE[<tamp_vacuum>]
+  tampcyl: types.ACTUATOR_STATE[<tamp_cylinder>]
+  exttime: <cylinder_extend_time>
+  distime: <cylinder_home_disengage_time>
+  travtime: <cylinder_travel_time>
+  vacdelay: <tamp_vacuum_delay>
+  fcond: "<has-feed-fault> ? 'FAULT' : <has-feed-warning> ? 'WARNING' : 'NORMAL'"
+  fmsg:
+    # representation: DATA_SET #. not available for agent xsl yet
     # value: "Object.entries(<faults>).filter(([key,]) => [1,11,12,13,14,15,50,51].includes(Number(key))).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
     #. escape any pipes and enclose in double quotes
     # value: "Object.entries(<faults>).map(([id, fault]) => fault.description).join(', ')"
     value: "Object.entries(<faults>).filter(([key,]) => [1,11,12,13,14,15,50,51].includes(Number(key))).map(([id, fault]) => fault.description).join(', ')"
     nativeCode: NativeCode #.
-  feed_part_detect:  depends on mode of operation and trigger edge
-    value: types.PART_DETECT[<product_sensor_one>]
-  web_take_up_motor_state:  commanded?
-    value: types.ACTUATOR_STATE[<web_take_up_motor_state>]
-  printer_reprint: types.ACTUATOR_STATE[<printer_reprint>]
-  printer_pause: types.ACTUATOR_STATE[<printer_pause>]
-  printer_feed: types.ACTUATOR_STATE[<printer_feed>]
-  printer_start_print: types.ACTUATOR_STATE[<printer_start_print>]
-  print_signal_time: <print_signal_time>
-  print_time: <print_time>
-  transport_time: <transport_time>
-  idle_time: <idle_time>
-  printer_start_print_duration: <printer_start_print_duration>
-  printer_end_print_wait: <printer_end_print_wait>
-  product_sensor_one_edge_trigger: <product_sensor_one_edge_trigger>
-  product_sensor_one_debounce: <product_sensor_one_debounce>
+  fpart: types.PART_DETECT[<product_sensor_one>]
+  mstate: types.ACTUATOR_STATE[<web_take_up_motor_state>]
+  reprint: types.ACTUATOR_STATE[<printer_reprint>]
+  pause: types.ACTUATOR_STATE[<printer_pause>]
+  feed: types.ACTUATOR_STATE[<printer_feed>]
+  start: types.ACTUATOR_STATE[<printer_start_print>]
+  sigtime: <print_signal_time>
+  ptime: <print_time>
+  ttime: <transport_time>
+  itime: <idle_time>
+  starttime: <printer_start_print_duration>
+  endwait: <printer_end_print_wait>
+  debounce: <product_sensor_one_debounce>
+  trig: <product_sensor_one_edge_trigger>
