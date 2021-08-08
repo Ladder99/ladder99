@@ -6,31 +6,32 @@
 # each dataitem can include the following:
 #   id - unique id - $deviceNum will be appended. used for shdr key.
 #   name - unique name - $deviceId- will be prefixed.
-#   input - a device-dependent descriptor for the source.
+#   input - a device-dependent descriptor for the input source.
 #     if starts with an = sign, treat as a js expression.
 #     can perform a cache lookup with <foo> => cache.get(`${deviceId}-foo`).value
 #   output - path in the device tree for storing the value
+#   category, type, subType, units, etc - xml dataitem attributes
 
 data:
   - id: recipe
     name: recipe_description
-    source: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
-    outputPath: device/dataitems
+    input: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
+    output: device/dataitems
     category: EVENT
     type: PROCESS_KIND_ID
     subType: PROCESS_NAME
 
   - id: op
     name: operator_name
-    source: .Autoclave.Variables.OperatorName\Value
-    outputPath: device/dataitems
+    input: .Autoclave.Variables.OperatorName\Value
+    output: device/dataitems
     category: EVENT
     type: USER
     subType: OPERATOR
 
   - id: airtemp
     name: vessel_air_temp
-    source: .Autoclave.Inputs.AIRTC\Value
+    input: .Autoclave.Inputs.AIRTC\Value
     path: device/dataitems
     category: SAMPLE
     type: TEMPERATURE
@@ -52,7 +53,7 @@ data:
 
   - id: pumptime
     name: cool_pump_a_hours
-    source: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
+    input: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
     path: device/systems/components/coolant/dataitems
     category: SAMPLE
     type: EQUIPMENT_TIMER
