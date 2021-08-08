@@ -32,7 +32,7 @@ data:
   - id: airtemp
     name: vessel_air_temp
     input: .Autoclave.Inputs.AIRTC\Value
-    path: device/dataitems
+    output: device/dataitems
     category: SAMPLE
     type: TEMPERATURE
     nativeUnits: FAHRENHEIT
