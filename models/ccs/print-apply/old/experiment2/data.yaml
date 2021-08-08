@@ -52,11 +52,13 @@ data:
     description: Electronic board set responsible for coordinating all machine function.
 
   - id: estop
+    calc: "<has-fault-ten> ? 'TRIGGERED' : 'ARMED'"
     output: device/components/controller/dataitems
     category: EVENT
     type: EMERGENCY_STOP
 
   - id: state
+    calc: types.EXECUTION[<state>]
     output: device/components/controller/components/path/dataitems
     category: EVENT
     type: EXECUTION

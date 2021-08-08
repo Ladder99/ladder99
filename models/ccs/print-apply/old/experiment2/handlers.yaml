@@ -164,8 +164,6 @@ handlers:
 # shdr key is on left, calculation on right
 # if calculation is blank, looks up cache key of same name
 outputs:
-  # connection: types.AVAILABILITY[<connection>]
-  # condition: "<has-hard-faults> ? 'FAULT' : <has-soft-faults> ? 'WARNING' : 'NORMAL'"
   # message:
   #   # representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
   #   # value: Object.entries(<faults>).map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
@@ -174,10 +172,6 @@ outputs:
   #   #. escape any pipes and enclose in double quotes
   #   value: "Object.entries(<faults>).map(([id, fault]) => fault.description).join(', ')"
   #   nativeCode: NativeCode #.?
-  # build_no:
-  # func_mode: "<has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
-  # e_stop: "<has-fault-ten> ? 'TRIGGERED' : 'ARMED'"
-  state: types.EXECUTION[<state>]
   wait_state: types.WAIT_STATE[<state>]
   program:
   step:
