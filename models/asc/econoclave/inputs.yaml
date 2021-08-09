@@ -5,6 +5,7 @@
 # the device driver polls each input using the source field.
 # results are written to the cache, which outputs shdr to the agent as needed.
 # if shdr field is specified it will be used in place of name as the shdr key.
+# names are prefixed with $deviceId, shdrs suffixed with $deviceNum.
 
 inputs:
   - name: control_power_warning

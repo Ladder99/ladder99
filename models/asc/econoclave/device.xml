@@ -3,7 +3,7 @@
     ASC autoclave
   </Description>
   <DataItems>
-    <!-- ids are suffixed with $deviceNum, names are prefixed with $deviceId- -->
+    <!-- names are prefixed with $deviceId, shdrs suffixed with $deviceNum. -->
     <DataItem id="avail" name="avail" category="EVENT" type="AVAILABILITY"/>
     <DataItem id="op" name="operator_name" category="EVENT" type="USER" subType="OPERATOR"/>
     <DataItem id="rec" name="recipe_description" category="EVENT" type="PROCESS_KIND_ID" subType="PROCESS_NAME"/>
