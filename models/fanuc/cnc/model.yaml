@@ -5,6 +5,8 @@
 # that value from setup.yaml.
 # compilation to devices.xml is done with sh/compile.
 
+# borrowing bits from system-insights, mazak, hurco, and agie cnc xmls
+
 model:
   id: ${deviceId} # eg 'f1'
   name: ${deviceId} # must be unique in xml - might want to override in setup.yaml tho?
@@ -18,88 +20,157 @@ model:
     text: Fanuc m1
 
   dataItems:
+    # all
+    # <DataItem category="EVENT" id="avail" type="AVAILABILITY"/>
+    # <DataItem category="EVENT" id="GFAgie01-dtop_1" name="avail" type="AVAILABILITY"/>
     - id: avail
       name: availability
       category: EVENT
       type: AVAILABILITY
       value: types.AVAILABILITY[<connection>]
 
-  components:
-    axes:
-      axis:
-        id: ax
-        name: axes
+    # agie
+    # <DataItem category="EVENT" id="GFAgie01-dtop_2" name="estop" type="EMERGENCY_STOP"/>
+    - id: estop
+      name: emergency-stop
+      category: EVENT
+      type: EMERGENCY_STOP
+      # value
 
+    # agie
+    # <DataItem category="CONDITION" id="GFAgie01-dtop_3" name="system" type="SYSTEM"/>
+    - id: cond
+      name: system-condition
+      category: CONDITION
+      type: SYSTEM
+      # value
+
+    # mazak
+    # <DataItem category="EVENT" id="emloaded" subType="LOADED" type="EQUIPMENT_MODE"/>
+    # <DataItem category="EVENT" id="emworking" subType="WORKING" type="EQUIPMENT_MODE"/>
+    # <DataItem category="EVENT" id="emoperating" subType="OPERATING" type="EQUIPMENT_MODE"/>
+    # <DataItem category="EVENT" id="empowered" subType="POWERED" type="EQUIPMENT_MODE"/>
+    # <DataItem category="EVENT" id="emdelay" subType="DELAY" type="EQUIPMENT_MODE"/>
+    # <DataItem category="EVENT" id="osl" subType="LICENSE" type="OPERATING_SYSTEM"/>
+    # <DataItem category="EVENT" id="os" subType="VERSION" type="OPERATING_SYSTEM"/>
+    # <DataItem category="EVENT" id="osrd" subType="RELEASE_DATE" type="OPERATING_SYSTEM"/>
+    # <DataItem category="EVENT" id="osid" subType="INSTALL_DATE" type="OPERATING_SYSTEM"/>
+    # <DataItem category="EVENT" id="osmfg" subType="MANUFACTURER" type="OPERATING_SYSTEM"/>
+
+    components:
+      axes:
+        id: a
+        name: base # axes
         components:
-          rotary:
-            id: c1
-            name: c
 
-            dataItems:
-              - id: sspd
-                name: spindle_speed
-                category: SAMPLE
-                type: SPINDLE_SPEED
-                subType: ACTUAL
-                units: REVOLUTION/MINUTE
-                value: <spindle_speed>
+          # <Linear id="x1" name="X">
+          linear:
+            id: x1
+            name: X
+            dataitems:
+              # examples from mazak v1.7
+              # there's no consistency for x1, x2 across devices - just uniquifying the x-axis dataitems
+              # <DataItem category="SAMPLE" id="x2" name="Xact" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER"/>
+              id: xact
+              name: x-actual
+              category: SAMPLE
+              type: POSITION
+              subType: ACTUAL
+              units: MILLIMETER
+              nativeUnits: MILLIMETER
 
-              - id: sovr
-                name: spindle_speed_over
-                category: SAMPLE
-                type: SPINDLE_SPEED
-                subType: OVERRIDE
-                units: PERCENT
-                value: <spindle_speed_over>
+              # <DataItem category="SAMPLE" id="x3" name="Xcom" nativeUnits="MILLIMETER" subType="COMMANDED" type="POSITION" units="MILLIMETER"/>
+              id: xcom
+              name: x-commanded
+              category: SAMPLE
+              type: POSITION
+              subType: COMMANDED
+              units: MILLIMETER
+              nativeUnits: MILLIMETER
 
-              - id: cmode
-                name: spindle-mode
-                category: EVENT
-                type: ROTARY_MODE
-                value: <spindle-mode>
-                constraints:
-                  - SPINDLE
-                # <DataItem>
-                #   <Constraints>
-                #     <Value>SPINDLE</Value>
+              # <DataItem category="SAMPLE" id="n3" name="Xload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
+              id: xload
+              name: x-load
+              category: SAMPLE
+              type: LOAD
+              units: PERCENT
+              nativeUnits: PERCENT
 
-              # <DataItem category="CONDITION" id="Cloadc" type="LOAD"/>
-              - id: cloadc
-                name: spindle-load-condition
-                category: CONDITION
-                type: LOAD
-                value: <spindle-load-condition>
+              # <DataItem category="CONDITION" id="Xloadc" type="LOAD"/>
+              id: xloadc
+              name: x-load-condition
+              category: CONDITION
+              type: LOAD
 
-                <DataItem category="CONDITION" id="Csystem" type="SYSTEM"/>
+              # <DataItem category="CONDITION" id="Xsystem" type="SYSTEM"/>
+              id: xc
+              name: x-system-condition
+              category: CONDITION
+              type: SYSTEM
 
-                <DataItem category="SAMPLE" id="cl3" name="Cload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
+        # <Linear id="y1" name="Y">
+        #   <DataItems>
+        #     <DataItem category="SAMPLE" id="y2" name="Yact" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER"/>
+        #     <DataItem category="SAMPLE" id="y3" name="Ycom" nativeUnits="MILLIMETER" subType="COMMANDED" type="POSITION" units="MILLIMETER"/>
+        #     <DataItem category="SAMPLE" id="y4" name="Yload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
+        #     <DataItem category="CONDITION" id="Yloadc" type="LOAD"/>
+        #     <DataItem category="CONDITION" id="Ysystem" type="SYSTEM"/>
+        # <Linear id="z1" name="Z">
+        #   <DataItems>
+        #     <DataItem category="SAMPLE" id="z2" name="Zact" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER"/>
+        #     <DataItem category="SAMPLE" id="z3" name="Zcom" nativeUnits="MILLIMETER" subType="COMMANDED" type="POSITION" units="MILLIMETER"/>
+        #     <DataItem category="SAMPLE" id="z4" name="Zload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
+        #     <DataItem category="CONDITION" id="Zloadc" type="LOAD"/>
+        #     <DataItem category="CONDITION" id="Zsystem" type="SYSTEM"/>
+        # </Linear>
+
+          # rotary:
+          #   id: c1
+          #   name: c
+          #   dataItems:
+          #     - id: sspd
+          #       name: spindle_speed
+          #       category: SAMPLE
+          #       type: SPINDLE_SPEED
+          #       subType: ACTUAL
+          #       units: REVOLUTION/MINUTE
+          #       value: <spindle_speed>
+
+          #     - id: sovr
+          #       name: spindle_speed_over
+          #       category: SAMPLE
+          #       type: SPINDLE_SPEED
+          #       subType: OVERRIDE
+          #       units: PERCENT
+          #       value: <spindle_speed_over>
+
+          #     - id: cmode
+          #       name: spindle-mode
+          #       category: EVENT
+          #       type: ROTARY_MODE
+          #       value: <spindle-mode>
+          #       constraints:
+          #         - SPINDLE
+          #       # <DataItem>
+          #       #   <Constraints>
+          #       #     <Value>SPINDLE</Value>
+
+          #     # <DataItem category="CONDITION" id="Cloadc" type="LOAD"/>
+          #     - id: cloadc
+          #       name: spindle-load-condition
+          #       category: CONDITION
+          #       type: LOAD
+          #       value: <spindle-load-condition>
+
+          #     <DataItem category="CONDITION" id="Csystem" type="SYSTEM"/>
+
+          #     <DataItem category="SAMPLE" id="cl3" name="Cload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
 
 
 
-            <Linear id="x1" name="X">
-              <DataItems>
-                <DataItem category="SAMPLE" id="x2" name="Xact" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER"/>
-                <DataItem category="SAMPLE" id="x3" name="Xcom" nativeUnits="MILLIMETER" subType="COMMANDED" type="POSITION" units="MILLIMETER"/>
-                <DataItem category="SAMPLE" id="n3" name="Xload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
-                <DataItem category="CONDITION" id="Xloadc" type="LOAD"/>
-                <DataItem category="CONDITION" id="Xsystem" type="SYSTEM"/>
-            <Linear id="y1" name="Y">
-              <DataItems>
-                <DataItem category="SAMPLE" id="y2" name="Yact" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER"/>
-                <DataItem category="SAMPLE" id="y3" name="Ycom" nativeUnits="MILLIMETER" subType="COMMANDED" type="POSITION" units="MILLIMETER"/>
-                <DataItem category="SAMPLE" id="y4" name="Yload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
-                <DataItem category="CONDITION" id="Yloadc" type="LOAD"/>
-                <DataItem category="CONDITION" id="Ysystem" type="SYSTEM"/>
-            <Linear id="z1" name="Z">
-              <DataItems>
-                <DataItem category="SAMPLE" id="z2" name="Zact" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER"/>
-                <DataItem category="SAMPLE" id="z3" name="Zcom" nativeUnits="MILLIMETER" subType="COMMANDED" type="POSITION" units="MILLIMETER"/>
-                <DataItem category="SAMPLE" id="z4" name="Zload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
-                <DataItem category="CONDITION" id="Zloadc" type="LOAD"/>
-                <DataItem category="CONDITION" id="Zsystem" type="SYSTEM"/>
-            </Linear>
           </Components>
         </Axes>
+
         <Controller id="cn1" name="controller">
           <DataItems>
             <DataItem category="EVENT" id="msg" type="MESSAGE"/>
