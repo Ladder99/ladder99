@@ -2,7 +2,9 @@
 # define cache inputs - mqtt topics, how to parse them and put them into cache.
 # see outputs.yaml for cache output as shdr.
 
-#.. move this stuff into code, as it's more code than data at this point
+#. move initialize and lookup code into the driver js -
+# reference them by a keyword here, for how to process a json message.
+# then can expand those methods in future.
 
 # adapter subscribes to mqtt topics from devices.
 # mqtt broker sends data to adapter.
@@ -10,20 +12,20 @@
 
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/mqtt-json.js.
 
-# define connect handler
-connect:
-  # subscribe to these topics
-  subscribe:
-    - topic: l99/${deviceId}/evt/query
-    - topic: l99/${deviceId}/evt/status
-    - topic: l99/${deviceId}/evt/read
-  # publish an empty message to receive the query response
-  publish:
-    - topic: l99/${deviceId}/cmd/query
-      message: '{}'
-
-# define message topic handlers
+# define handlers
 handlers:
+  # connect handler
+  connect:
+    # subscribe to these topics
+    subscribe:
+      - topic: l99/${deviceId}/evt/query
+      - topic: l99/${deviceId}/evt/status
+      - topic: l99/${deviceId}/evt/read
+    # publish an empty message to receive the query response
+    publish:
+      - topic: l99/${deviceId}/cmd/query
+        message: '{}'
+
   # handle query responses
   l99/${deviceId}/evt/query:
     unsubscribe:
