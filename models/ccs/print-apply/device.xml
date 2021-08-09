@@ -1,16 +1,17 @@
 <Device id="$deviceId" name="$deviceName" sampleInterval="$sampleInterval" uuid="$uuid">
-  <Description manufacturer="ASC" model="autoclave" serialNumber="$serialNumber">
-    ASC autoclave
-  </Description>
+  <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="$serialNumber">Emergent Next Generation Print and Apply</Description>
   <!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
   <!-- source and calc attributes are parsed and stripped from the xml before compilation -->
   <DataItems>
-    <DataItem id="op" name="operator_name" source=".Autoclave.Variables.OperatorName\Value" category="EVENT" type="USER" subType="OPERATOR"/>
-    <DataItem id="rec" name="recipe_description" source=".Autoclave.RecipeProcessor.Recipe.RecipeData\Description" category="EVENT" type="PROCESS_KIND_ID" subType="PROCESS_NAME"/>
-    <DataItem id="air" name="vessel_air_temp" source=".Autoclave.Inputs.AIRTC\Value" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
-    <DataItem id="avail" name="avail" category="EVENT" type="AVAILABILITY"/>
-    <DataItem id="chg" name="asset_chg" category="EVENT" type="ASSET_CHANGED" discrete="true"/>
-    <DataItem id="rem" name="asset_rem" category="EVENT" type="ASSET_REMOVED"/>
+    <DataItem id="avail" name="availability" calc="types.AVAILABILITY[<availability>]" category="EVENT" type="AVAILABILITY"/>
+    <DataItem id="cond" name="condition" calc="<has-hard-faults> ? 'FAULT' : <has-soft-faults> ? 'WARNING' : 'NORMAL'" category="CONDITION" type="SYSTEM"/>
+    <!-- todo -->
+    <DataItem id="msg" name="message" calc="?" category="EVENT" type="MESSAGE"/>
+    <!-- how best indicate plain cache lookup? -->
+    <DataItem id="build" name="build_no" calc="<build_no>" category="EVENT" type="FIRMWARE" subType="VERSION"/>
+    <DataItem id="func" name="func_mode" calc="<has-faults> ? 'PRODUCTION' : 'MAINTENANCE'" category="EVENT" type="FUNCTIONAL_MODE"/>
+    <DataItem id="chg" name="asset_changed" category="EVENT" type="ASSET_CHANGED" discrete="true"/>
+    <DataItem id="rem" name="asset_removed" category="EVENT" type="ASSET_REMOVED"/>
   </DataItems>
   <Components>
     <Systems>
