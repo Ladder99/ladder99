@@ -6,7 +6,7 @@
 # compilation to devices.xml is done with sh/compile.
 
 model:
-  id: ${deviceId} # eg 'ccs-pa'
+  id: ${deviceId} # eg 'pa1'
   name: ${deviceId} # must be unique in xml - might want to override in setup.yaml tho?
   uuid: ${uuid} # eg 'e05363af'
   sampleInterval: 10
