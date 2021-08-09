@@ -5,7 +5,14 @@
 # that value from setup.yaml.
 # compilation to devices.xml is done with sh/compile.
 
-# borrowing bits from system-insights, mazak, hurco, and agie cnc xmls
+# borrowing bits from system-insights vmc, mazak, and agie cnc xmls:
+# vmc
+#   https://github.com/Ladder99/ladder99/blob/main/pipeline/relay/examples/vmc/probe.xml
+# mazak 
+#   http://mtconnect.mazakcorp.com:5717/
+#   https://smstestbed.nist.gov/vds/
+# agie
+#   https://smstestbed.nist.gov/vds/
 
 model:
   id: ${deviceId} # eg 'f1'
@@ -77,8 +84,14 @@ model:
           type: SYSTEM
           
         components:
+          # note: agie only has x,y,z,a,c actual positions, eg
+          # <Linear id="GFAgie01-X_1" name="X">
+          #   <DataItems>
+          #     <DataItem category="SAMPLE" id="GFAgie01-X_2" name="Xposition" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER"/>
+          #   </DataItems>
+          # </Linear>
+          # hurco only has rotary c spindle speed and override, so must be just a drill
 
-          # <Linear id="x1" name="X">
           linear:
             id: x1
             name: X
