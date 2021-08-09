@@ -4,28 +4,24 @@
     <DataItem category="EVENT" id="avail" type="AVAILABILITY">
       <Value><![CDATA[  calcs here  ]]></Value>
     </DataItem>
-    <DataItem category="EVENT" discrete="true" id="asset_chg" type="ASSET_CHANGED"/>
+    <DataItem category="EVENT" id="asset_chg" type="ASSET_CHANGED" discrete="true"/>
     <DataItem category="EVENT" id="asset_rem" type="ASSET_REMOVED"/>
   </DataItems>
   <Components>
-    <Axes id="ax" name="Axes">
+    <Axes id="axes">
       <Components>
-        <Rotary id="c1" name="C">
+        <Rotary id="c">
           <DataItems>
-            <DataItem category="SAMPLE" id="c2" name="Sspeed" nativeUnits="REVOLUTION/MINUTE" subType="ACTUAL" type="SPINDLE_SPEED" units="REVOLUTION/MINUTE">
-              <Source>spindle_speed</Source>
-            </DataItem>
-            <DataItem category="SAMPLE" id="c3" name="Sovr" nativeUnits="PERCENT" subType="OVERRIDE" type="SPINDLE_SPEED" units="PERCENT">
-              <Source>SspeedOvr</Source>
-            </DataItem>
-            <DataItem category="EVENT" id="cm" name="Cmode" type="ROTARY_MODE">
+            <DataItem category="SAMPLE" id="cspeed" name="spindle-speed" nativeUnits="REVOLUTION/MINUTE" subType="ACTUAL" type="SPINDLE_SPEED" units="REVOLUTION/MINUTE" />
+            <DataItem category="SAMPLE" id="covr" name="spindle-override" nativeUnits="PERCENT" subType="OVERRIDE" type="SPINDLE_SPEED" units="PERCENT" />
+            <DataItem category="EVENT" id="cm" name="cmode" type="ROTARY_MODE">
               <Constraints>
                 <Value>SPINDLE</Value>
               </Constraints>
             </DataItem>
-            <DataItem category="CONDITION" id="Cloadc" type="LOAD"/>
-            <DataItem category="CONDITION" id="Csystem" type="SYSTEM"/>
-            <DataItem category="SAMPLE" id="cl3" name="Cload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
+            <DataItem category="CONDITION" id="cloadc" type="LOAD"/>
+            <DataItem category="CONDITION" id="csystem" type="SYSTEM"/>
+            <DataItem category="SAMPLE" id="cload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
           </DataItems>
         </Rotary>
         <Linear id="x1" name="X">
