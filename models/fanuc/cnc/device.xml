@@ -1,9 +1,9 @@
-<Device id="$id" name="$name" sampleInterval="$interval" uuid="$uuid">
+<Device id="$deviceId" name="$deviceName" sampleInterval="$sampleInterval" uuid="$deviceUuid">
   <Description manufacturer="Fanuc"/>
+  <!-- this is extended from the vmc probe that comes with mtc agent -->
+  <!-- prob want to merge with other models - eg mazak -->
   <DataItems>
-    <DataItem category="EVENT" id="avail" type="AVAILABILITY">
-      <Value><![CDATA[  calcs here  ]]></Value>
-    </DataItem>
+    <DataItem category="EVENT" id="avail" type="AVAILABILITY" />
     <DataItem category="EVENT" id="asset_chg" type="ASSET_CHANGED" discrete="true"/>
     <DataItem category="EVENT" id="asset_rem" type="ASSET_REMOVED"/>
   </DataItems>
