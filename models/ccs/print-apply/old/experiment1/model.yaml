@@ -3,7 +3,6 @@
 # this defines the structure of the xml that will get included in devices.xml.
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from setup.yaml.
-# dataItems are defined in data.yaml.
 # compilation to devices.xml is done with sh/compile.
 
 model:
@@ -49,6 +48,10 @@ model:
       category: EVENT
       type: FUNCTIONAL_MODE
       value: "<has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
+
+    - id: has-faults
+      value: $.faultKeys.length > 0
+      hidden: true
 
   components:
     controller:
