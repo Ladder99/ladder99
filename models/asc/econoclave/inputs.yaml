@@ -1,12 +1,32 @@
-# cache inputs
+# inputs
+
+#. rename to cache-inputs.yaml
 
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
 
-# cache key on left, source path on right
 inputs:
-  control_power_warning: .Autoclave.Alarms.ControlPower\Condition
-  control_power_fault: .Autoclave.Alarms.ControlPower\AlarmActive
-  operator_name: .Autoclave.Variables.OperatorName\Value
-  cool_pump_a_hours: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
-  recipe_description: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
-  vessel_air_temp: .Autoclave.Inputs.AIRTC\Value
+  - key: control_power_warning
+    path: .Autoclave.Alarms.ControlPower\Condition
+    type: boolean
+    hidden: true
+
+  - key: control_power_fault
+    path: .Autoclave.Alarms.ControlPower\AlarmActive
+    type: boolean
+    hidden: true
+
+  - key: operator_name
+    path: .Autoclave.Variables.OperatorName\Value
+    shdr: op
+
+  - key: cool_pump_a_hours
+    path: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
+    shdr: pump
+
+  - key: recipe_description
+    path: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
+    shdr: rec
+
+  - key: vessel_air_temp
+    path: .Autoclave.Inputs.AIRTC\Value
+    shdr: air
