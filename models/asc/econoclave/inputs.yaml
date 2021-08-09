@@ -8,12 +8,12 @@ inputs:
   - key: control_power_warning
     path: .Autoclave.Alarms.ControlPower\Condition
     type: boolean
-    hidden: true
+    shdr: false
 
   - key: control_power_fault
     path: .Autoclave.Alarms.ControlPower\AlarmActive
     type: boolean
-    hidden: true
+    shdr: false
 
   - key: operator_name
     path: .Autoclave.Variables.OperatorName\Value
