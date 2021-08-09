@@ -1,32 +1,32 @@
 # inputs
 
-#. rename to cache-inputs.yaml
-
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
 
+# the device driver polls each input using the source field.
+# results are written to the cache, which outputs shdr to the agent as needed.
+# if shdr field is specified it will be used in place of name as the shdr key.
+
 inputs:
-  - key: control_power_warning
-    path: .Autoclave.Alarms.ControlPower\Condition
+  - name: control_power_warning
+    source: .Autoclave.Alarms.ControlPower\Condition
     type: boolean
-    shdr: false
 
-  - key: control_power_fault
-    path: .Autoclave.Alarms.ControlPower\AlarmActive
+  - name: control_power_fault
+    source: .Autoclave.Alarms.ControlPower\AlarmActive
     type: boolean
-    shdr: false
 
-  - key: operator_name
-    path: .Autoclave.Variables.OperatorName\Value
+  - name: operator_name
+    source: .Autoclave.Variables.OperatorName\Value
     shdr: op
 
-  - key: cool_pump_a_hours
-    path: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
+  - name: cool_pump_a_hours
+    source: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
     shdr: pump
 
-  - key: recipe_description
-    path: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
+  - name: recipe_description
+    source: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
     shdr: rec
 
-  - key: vessel_air_temp
-    path: .Autoclave.Inputs.AIRTC\Value
+  - name: vessel_air_temp
+    source: .Autoclave.Inputs.AIRTC\Value
     shdr: air
