@@ -6,13 +6,9 @@
 # compilation to devices.xml is done with sh/compile.
 
 # borrowing bits from system-insights vmc, mazak, and agie cnc xmls:
-# vmc
-#   https://github.com/Ladder99/ladder99/blob/main/pipeline/relay/examples/vmc/probe.xml
-# mazak 
-#   http://mtconnect.mazakcorp.com:5717/
-#   https://smstestbed.nist.gov/vds/
-# agie
-#   https://smstestbed.nist.gov/vds/
+# vmc https://github.com/Ladder99/ladder99/blob/main/pipeline/relay/examples/vmc/probe.xml
+# mazak http://mtconnect.mazakcorp.com:5717/  https://smstestbed.nist.gov/vds/
+# agie https://smstestbed.nist.gov/vds/
 
 model:
   id: ${deviceId} # eg 'f1'
@@ -95,6 +91,46 @@ model:
           linear:
             id: x1
             name: X
+
+            configuration:
+              # mazak1.7
+              # <Specifications>
+              specifications:
+                # <Specification type="LENGTH" units="MILLIMETER">
+                # <Nominal>2010</Nominal>
+                # </Specification>
+                specification:
+                  type: LENGTH
+                  units: MILLIMETER
+                    nominal: 2010
+                # <Specification type="LINEAR_FORCE" units="NEWTON">
+                # <Maximum>400</Maximum>
+                # <Minimum>0</Minimum>
+                # </Specification>
+                specification:
+                  type: LINEAR_FORCE
+                  units: NEWTON
+                    maximum: 400
+                    minimum: 0
+            # <Specification subType="RAPID" type="VELOCITY" units="MILLIMETER/SECOND">
+            # <Maximum>1180</Maximum>
+            # <Minimum>1</Minimum>
+            # </Specification>
+            # <Specification subType="PROGRAMMED" type="VELOCITY" units="MILLIMETER/SECOND">
+            # <Maximum>315</Maximum>
+            # <Minimum>1</Minimum>
+            # </Specification>
+            # <Specification subType="RAPID" type="ACCELERATION" units="MILLIMETER/SECOND^2">
+            # <Maximum>1180</Maximum>
+            # <Minimum>1</Minimum>
+            # </Specification>
+            # <Specification subType="PROGRAMMED" type="ACCELERATION" units="MILLIMETER/SECOND^2">
+            # <Maximum>1180</Maximum>
+            # <Minimum>1</Minimum>
+            # <Nominal>380</Nominal>
+            # </Specification>
+
+
             dataItems:
               # there's no consistency for x1, x2 etc across devices - just uniquifying the x-axis dataitems
               # vmc
@@ -129,6 +165,13 @@ model:
               type: LOAD
               units: PERCENT
               nativeUnits: PERCENT
+              # <Filters>
+              # <Filter type="MINIMUM_DELTA">3</Filter>
+              # </Filters>
+              filters:
+                filter:
+                  type: MINIMUM_DELTA
+                  text: 3
 
               # mazak
               # <DataItem category="CONDITION" id="Mazak01-X_2" name="Xtravel" type="POSITION"/>
@@ -160,6 +203,7 @@ model:
               category: CONDITION
               type: SYSTEM
 
+        # copypaste for these
         # <Linear id="y1" name="Y">
         # <Linear id="z1" name="Z">
 
