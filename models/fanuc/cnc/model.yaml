@@ -52,13 +52,30 @@ model:
                 units: PERCENT
                 value: <spindle_speed_over>
 
-              <DataItems>
-                <DataItem category="EVENT" id="cm" name="Cmode" type="ROTARY_MODE">
-                  <Constraints>
-                    <Value>SPINDLE</Value>
-                <DataItem category="CONDITION" id="Cloadc" type="LOAD"/>
+              - id: cmode
+                name: spindle-mode
+                category: EVENT
+                type: ROTARY_MODE
+                value: <spindle-mode>
+                constraints:
+                  - SPINDLE
+                # <DataItem>
+                #   <Constraints>
+                #     <Value>SPINDLE</Value>
+
+              # <DataItem category="CONDITION" id="Cloadc" type="LOAD"/>
+              - id: cloadc
+                name: spindle-load-condition
+                category: CONDITION
+                type: LOAD
+                value: <spindle-load-condition>
+
                 <DataItem category="CONDITION" id="Csystem" type="SYSTEM"/>
+
                 <DataItem category="SAMPLE" id="cl3" name="Cload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
+
+
+
             <Linear id="x1" name="X">
               <DataItems>
                 <DataItem category="SAMPLE" id="x2" name="Xact" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER"/>
