@@ -45,7 +45,7 @@ model:
       type: SYSTEM
       # value
 
-    # mazak
+    # mazak1.7
     # <DataItem category="EVENT" id="emloaded" subType="LOADED" type="EQUIPMENT_MODE"/>
     # <DataItem category="EVENT" id="emworking" subType="WORKING" type="EQUIPMENT_MODE"/>
     # <DataItem category="EVENT" id="emoperating" subType="OPERATING" type="EQUIPMENT_MODE"/>
@@ -61,24 +61,43 @@ model:
       axes:
         id: a
         name: base # axes
+        dataItems:
+          # mazak1.7
+          # <DataItem category="CONDITION" id="servo_cond" type="ACTUATOR"/>
+          id: servocond
+          name: servo-condition
+          category: CONDITION
+          type: ACTUATOR
+          
+          # mazak1.7
+          # <DataItem category="CONDITION" id="spindle_cond" type="SYSTEM"/>
+          id: spindlecond
+          name: spindle-condition
+          category: CONDITION
+          type: SYSTEM
+          
         components:
 
           # <Linear id="x1" name="X">
           linear:
             id: x1
             name: X
-            dataitems:
-              # examples from mazak v1.7
-              # there's no consistency for x1, x2 across devices - just uniquifying the x-axis dataitems
+            dataItems:
+              # there's no consistency for x1, x2 etc across devices - just uniquifying the x-axis dataitems
+              # vmc
               # <DataItem category="SAMPLE" id="x2" name="Xact" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER"/>
+              # mazak1.7
+              # <DataItem category="SAMPLE" coordinateSystem="MACHINE" id="Mazak01-X_1" name="Xabs" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER"/>
               id: xact
               name: x-actual
               category: SAMPLE
               type: POSITION
               subType: ACTUAL
               units: MILLIMETER
-              nativeUnits: MILLIMETER
+              nativeUnits: MILLIMETER # default to same as units?
+              # coordinateSystem: MACHINE # is this the default?
 
+              # vmc
               # <DataItem category="SAMPLE" id="x3" name="Xcom" nativeUnits="MILLIMETER" subType="COMMANDED" type="POSITION" units="MILLIMETER"/>
               id: xcom
               name: x-commanded
@@ -88,7 +107,9 @@ model:
               units: MILLIMETER
               nativeUnits: MILLIMETER
 
+              # vmc, mazak
               # <DataItem category="SAMPLE" id="n3" name="Xload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
+              # <DataItem category="SAMPLE" id="Mazak01-X_3" name="Xload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
               id: xload
               name: x-load
               category: SAMPLE
@@ -96,12 +117,30 @@ model:
               units: PERCENT
               nativeUnits: PERCENT
 
+              # mazak
+              # <DataItem category="CONDITION" id="Mazak01-X_2" name="Xtravel" type="POSITION"/>
+              id: xactc
+              name: x-actual-condition
+              category: CONDITION
+              type: POSITION
+              
+              # mazak
+              # <DataItem category="SAMPLE" id="Mazak01-X_4" name="Xfrt" nativeUnits="MILLIMETER/SECOND" type="AXIS_FEEDRATE" units="MILLIMETER/SECOND"/>
+              id: xfrt
+              name: x-feedrate
+              category: SAMPLE
+              type: AXIS_FEEDRATE
+              units: MILLIMETER/SECOND
+              nativeUnits: MILLIMETER/SECOND
+
+              # vmc
               # <DataItem category="CONDITION" id="Xloadc" type="LOAD"/>
               id: xloadc
               name: x-load-condition
               category: CONDITION
               type: LOAD
 
+              # vmc
               # <DataItem category="CONDITION" id="Xsystem" type="SYSTEM"/>
               id: xc
               name: x-system-condition
@@ -109,20 +148,7 @@ model:
               type: SYSTEM
 
         # <Linear id="y1" name="Y">
-        #   <DataItems>
-        #     <DataItem category="SAMPLE" id="y2" name="Yact" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER"/>
-        #     <DataItem category="SAMPLE" id="y3" name="Ycom" nativeUnits="MILLIMETER" subType="COMMANDED" type="POSITION" units="MILLIMETER"/>
-        #     <DataItem category="SAMPLE" id="y4" name="Yload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
-        #     <DataItem category="CONDITION" id="Yloadc" type="LOAD"/>
-        #     <DataItem category="CONDITION" id="Ysystem" type="SYSTEM"/>
         # <Linear id="z1" name="Z">
-        #   <DataItems>
-        #     <DataItem category="SAMPLE" id="z2" name="Zact" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER"/>
-        #     <DataItem category="SAMPLE" id="z3" name="Zcom" nativeUnits="MILLIMETER" subType="COMMANDED" type="POSITION" units="MILLIMETER"/>
-        #     <DataItem category="SAMPLE" id="z4" name="Zload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
-        #     <DataItem category="CONDITION" id="Zloadc" type="LOAD"/>
-        #     <DataItem category="CONDITION" id="Zsystem" type="SYSTEM"/>
-        # </Linear>
 
           # rotary:
           #   id: c1
@@ -166,11 +192,6 @@ model:
 
           #     <DataItem category="SAMPLE" id="cl3" name="Cload" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
 
-
-
-          </Components>
-        </Axes>
-
         <Controller id="cn1" name="controller">
           <DataItems>
             <DataItem category="EVENT" id="msg" type="MESSAGE"/>
@@ -178,7 +199,7 @@ model:
             <DataItem category="CONDITION" id="clp" type="LOGIC_PROGRAM"/>
             <DataItem category="CONDITION" id="motion" type="MOTION_PROGRAM"/>
             <DataItem category="CONDITION" id="system" type="SYSTEM"/>
-          </DataItems>
+
           <Components>
             <Path id="pth" name="path">
               <DataItems>
@@ -191,39 +212,21 @@ model:
                 <DataItem category="SAMPLE" id="Ppos" nativeUnits="MILLIMETER_3D" subType="ACTUAL" type="PATH_POSITION" units="MILLIMETER_3D"/>
                 <DataItem category="SAMPLE" id="Frt" nativeUnits="MILLIMETER/SECOND" type="PATH_FEEDRATE" units="MILLIMETER/SECOND">
                   <Source>path_feedrate</Source>
-                </DataItem>
                 <DataItem category="SAMPLE" id="Fovr" nativeUnits="PERCENT" type="PATH_FEEDRATE" units="PERCENT">
                   <Source>feed_ovr</Source>
-                </DataItem>
-              </DataItems>
-            </Path>
-          </Components>
-        </Controller>
         <Systems id="systems" name="systems">
           <Components>
             <Electric id="el" name="electric">
               <DataItems>
                 <DataItem category="EVENT" id="p2" name="power" type="POWER_STATE"/>
-              </DataItems>
-            </Electric>
             <Coolant id="cool" name="coolant">
               <DataItems>
                 <DataItem category="CONDITION" id="clow" type="LEVEL"/>
                 <DataItem category="CONDITION" id="coolpres" type="PRESSURE"/>
                 <DataItem category="CONDITION" id="filter" type="x:FILTER"/>
                 <DataItem category="CONDITION" id="coolantmotor" type="ACTUATOR"/>
-              </DataItems>
-            </Coolant>
             <Hydraulic id="hsys" name="hydrolic">
               <DataItems>
                 <DataItem category="CONDITION" id="hlow" type="LEVEL"/>
                 <DataItem category="CONDITION" id="hpres" type="PRESSURE"/>
                 <DataItem category="CONDITION" id="htemp" type="TEMPERATURE"/>
-              </DataItems>
-            </Hydraulic>
-          </Components>
-        </Systems>
-      </Components>
-    </Device>
-  </Devices>
-</MTConnectDevices>
