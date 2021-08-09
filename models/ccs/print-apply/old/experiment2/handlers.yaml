@@ -172,9 +172,6 @@ outputs:
   #   #. escape any pipes and enclose in double quotes
   #   value: "Object.entries(<faults>).map(([id, fault]) => fault.description).join(', ')"
   #   nativeCode: NativeCode #.?
-  wait_state: types.WAIT_STATE[<state>]
-  program:
-  step:
   clk_time: <utc_time>
   up_time: <cpu_time>
   fault_count:

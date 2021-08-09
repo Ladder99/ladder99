@@ -57,32 +57,41 @@ data:
     category: EVENT
     type: EMERGENCY_STOP
 
+  - id: path
+    element: Path
+    location: device/components/controller/components
+
   - id: state
     calc: types.EXECUTION[<state>]
-    output: device/components/controller/components/path/dataitems
+    location: device/components/controller/components/path/dataitems
     category: EVENT
     type: EXECUTION
+
+  - id: wait
+    name: wait_state
+    calc: types.WAIT_STATE[<state>] #?
+    location: device/components/controller/components/path/dataitems
+    category: EVENT
+    type: WAIT_STATE
+
+  - id: pgm
+    name: program
+    location: device/components/controller/components/path/dataitems
+    category: EVENT
+    type: PROGRAM
+    subType: MAIN
+
+  - id: step
+    location: device/components/controller/components/path/dataitems
+    category: EVENT
+    type: BLOCK
 
 ---
 components:
   controller:
     components:
       path:
-        name: path
         dataItems:
-          - id: wait_state
-            category: EVENT
-            type: WAIT_STATE
-
-          - id: program
-            category: EVENT
-            type: PROGRAM
-            subType: MAIN
-
-          - id: step
-            category: EVENT
-            type: BLOCK
-
           - id: clk_time
             category: SAMPLE
             type: CLOCK_TIME
