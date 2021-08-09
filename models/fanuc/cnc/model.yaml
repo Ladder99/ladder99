@@ -165,6 +165,7 @@ model:
               type: LOAD
               units: PERCENT
               nativeUnits: PERCENT
+              # mazak1.7
               # <Filters>
               # <Filter type="MINIMUM_DELTA">3</Filter>
               # </Filters>
@@ -202,6 +203,42 @@ model:
               name: x-system-condition
               category: CONDITION
               type: SYSTEM
+
+              # mazak1.7
+              # <DataItem category="SAMPLE" compositionId="Xmotor" id="servotemp1" nativeUnits="CELSIUS" type="TEMPERATURE" units="CELSIUS">
+              # <Filters>
+              # <Filter type="MINIMUM_DELTA">0.5</Filter>
+              id: xtemp
+              name: x-servotemp
+              category: SAMPLE
+              type: TEMPERATURE
+              units: CELSIUS
+              nativeUnits: CELSIUS
+              compositionId: xmotor
+              filters:
+                filter:
+                  type: MINIMUM_DELTA
+                  text: 0.5
+                  
+              # mazak1.7
+              # <DataItem category="EVENT" id="xaxisstate" type="AXIS_STATE"/>
+              id: xstate
+              name: x-state
+              category: EVENT
+              type: AXIS_STATE
+
+              # mazak1.7
+              # <Compositions>
+              # <Composition id="Xballscrew" type="BALLSCREW"/>
+              # <Composition id="Xmotor" type="MOTOR"/>
+              compositions:
+                composition:
+                  id: xballscrew
+                  type: BALLSCREW
+                composition:
+                  id: xmotor
+                  type: MOTOR
+
 
         # copypaste for these
         # <Linear id="y1" name="Y">
