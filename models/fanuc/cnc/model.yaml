@@ -30,6 +30,7 @@ model:
       name: availability
       category: EVENT
       type: AVAILABILITY
+      # specify value with javascript cache lookup/calculation
       value: types.AVAILABILITY[<connection>]
 
     # agie
@@ -38,7 +39,7 @@ model:
       name: emergency-stop
       category: EVENT
       type: EMERGENCY_STOP
-      # value
+      # value: ARMED or TRIGGERED #.
 
     # agie
     # <DataItem category="CONDITION" id="GFAgie01-dtop_3" name="system" type="SYSTEM"/>
@@ -46,7 +47,7 @@ model:
       name: system-condition
       category: CONDITION
       type: SYSTEM
-      # value
+      # value: NORMAL WARNING ERROR #.
 
     # mazak1.7
     # <DataItem category="EVENT" id="emloaded" subType="LOADED" type="EQUIPMENT_MODE"/>
