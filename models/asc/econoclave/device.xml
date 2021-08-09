@@ -24,15 +24,14 @@
             </Inputs>
             <!-- calc attributes will be parsed and removed also -->
             <DataItem id="power" name="control_power_condition" calc="<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'" category="CONDITION" type="VOLTAGE_DC" />
-          </DataItem>
-        </DataItems>
-      </Electrical>
-      <Cooling>
-        <DataItems>
-          <DataItem id="pump" name="cool_pump_a_hours" source=".Autoclave.Scripts.MotorHours.CoolPumpAOn\Value" category="SAMPLE" type="EQUIPMENT_TIME" subType="OPERATING" nativeScale="1" nativeUnits="SECOND" units="SECOND"/>
-        </DataItems>
-      </Cooling>
-    </Components>
-  </Systems>
-</Components>
+          </DataItems>
+        </Electrical>
+        <Cooling>
+          <DataItems>
+            <DataItem id="pump" name="cool_pump_a_hours" source=".Autoclave.Scripts.MotorHours.CoolPumpAOn\Value" category="SAMPLE" type="EQUIPMENT_TIME" subType="OPERATING" nativeScale="1" nativeUnits="SECOND" units="SECOND"/>
+          </DataItems>
+        </Cooling>
+      </Components>
+    </Systems>
+  </Components>
 </Device>
