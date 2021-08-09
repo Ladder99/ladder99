@@ -1,0 +1,35 @@
+<Device id="$deviceId" name="$deviceName" sampleInterval="$sampleInterval" uuid="$uuid">
+  <Description manufacturer="ASC" model="autoclave" serialNumber="$serialNumber">
+    ASC autoclave
+  </Description>
+  <DataItems>
+    <!-- names are prefixed with $deviceId, shdrs suffixed with $deviceNum. -->
+    <DataItem id="avail" name="avail" category="EVENT" type="AVAILABILITY"/>
+    <DataItem id="op" name="operator_name" category="EVENT" type="USER" subType="OPERATOR"/>
+    <DataItem id="rec" name="recipe_description" category="EVENT" type="PROCESS_KIND_ID" subType="PROCESS_NAME"/>
+    <DataItem id="air" name="vessel_air_temp" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
+    <DataItem id="chg" name="asset_chg" category="EVENT" type="ASSET_CHANGED" discrete="true"/>
+    <DataItem id="rem" name="asset_rem" category="EVENT" type="ASSET_REMOVED"/>
+  </DataItems>
+  <Components>
+    <Systems>
+      <Components>
+        <Electrical>
+          <DataItems>
+            <DataItem id="power" name="control_power_condition" category="CONDITION" type="VOLTAGE_DC">
+              <Value><![CDATA[
+              "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
+              ]]>]
+              </Value>
+            </DataItem>
+          </DataItems>
+        </Electrical>
+        <Cooling>
+          <DataItems>
+            <DataItem id="pump" name="cool_pump_a_hours" category="SAMPLE" type="EQUIPMENT_TIME" subType="OPERATING" nativeScale="1" nativeUnits="SECOND" units="SECOND"/>
+          </DataItems>
+        </Cooling>
+      </Components>
+    </Systems>
+  </Components>
+</Device>
