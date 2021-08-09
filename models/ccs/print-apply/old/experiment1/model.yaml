@@ -19,45 +19,50 @@ model:
     text: Emergent Next Generation Print and Apply
 
   dataItems:
-    - id: connection
+    - id: conn
+      name: connection
       category: EVENT
       type: AVAILABILITY
+      value: types.AVAILABILITY[<connection>]
 
-    - id: dev_cond
+    - id: cond
+      name: condition
       category: CONDITION
       type: SYSTEM
+      value: "<has-hard-faults> ? 'FAULT' : <has-soft-faults> ? 'WARNING' : 'NORMAL'"
 
-    - id: dev_msg
+    - id: msg
+      name: message
       category: EVENT
       type: MESSAGE
+      value: "Object.entries(<faults>).map(([id, fault]) => fault.description).join(', ')"
 
-    - id: fw_ver
+    - id: bld
+      name: build_no
       category: EVENT
       type: FIRMWARE
       subType: VERSION
+      value: <build_no>
 
-    - id: func_mode
+    - id: func
+      name: func_mode
       category: EVENT
       type: FUNCTIONAL_MODE
-
-    # - id: asset_changed
-    #   category: EVENT
-    #   type: ASSET_CHANGED
-
-    # - id: asset_removed
-    #   category: EVENT
-    #   type: ASSET_REMOVED
+      value: "<has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
 
   components:
     controller:
-      id: ${deviceId}-controller
+      id: controller
       nativeName: plc
       description:
         text: Electronic board set responsible for coordinating all machine function.
       dataItems:
-        - id: e_stop
+        - id: estop
           category: EVENT
           type: EMERGENCY_STOP
+          value: "<has-fault-ten> ? 'TRIGGERED' : 'ARMED'"
+
+---
 
       components:
         path:
