@@ -12,28 +12,28 @@ data:
   - id: conn
     name: connection
     calc: types.AVAILABILITY[<connection>]
-    output: device/dataitems
+    location: device/dataitems
     category: EVENT
     type: AVAILABILITY
 
   - id: cond
     name: condition
     calc: "<has-hard-faults> ? 'FAULT' : <has-soft-faults> ? 'WARNING' : 'NORMAL'"
-    output: device/dataitems
+    location: device/dataitems
     category: CONDITION
     type: SYSTEM
 
   - id: msg
     name: message
     calc: "Object.entries(<faults>).map(([id, fault]) => fault.description).join(', ')"
-    output: device/dataitems
+    location: device/dataitems
     category: EVENT
     type: MESSAGE
 
   - id: fw
     name: build_no
     input: <build_no>
-    output: device/dataitems
+    location: device/dataitems
     category: EVENT
     type: FIRMWARE
     subType: VERSION
@@ -41,19 +41,19 @@ data:
   - id: func
     name: functional_mode
     calc: "<has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
-    output: device/dataitems
+    location: device/dataitems
     category: EVENT
     type: FUNCTIONAL_MODE
 
   - id: controller
     element: Controller
-    output: device/components
+    location: device/components
     nativeName: plc
     description: Electronic board set responsible for coordinating all machine function.
 
   - id: estop
     calc: "<has-fault-ten> ? 'TRIGGERED' : 'ARMED'"
-    output: device/components/controller/dataitems
+    location: device/components/controller/dataitems
     category: EVENT
     type: EMERGENCY_STOP
 
