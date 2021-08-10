@@ -18,5 +18,5 @@ fi
 #. mkdir
 #. create minimal setup.yaml
 #. create minimal pipeline-overrides.yaml - or let adapter compile it?
-#. create minimal volumes/agent/agent.cfg and devices.xml
+#. create minimal volumes/agent/agent.cfg and devices.xml - xml can't be empty
 

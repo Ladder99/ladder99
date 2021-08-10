@@ -1,6 +1,7 @@
 // http-json plugin
 
 // experimental plugin - exposes values from csv files to an http port.
+// it's up to the device driver to read the data via http GET.
 
 import fs from 'fs' // node lib for filesystem
 import http from 'http' // node lib

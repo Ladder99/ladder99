@@ -40,6 +40,7 @@ async function main() {
     // iterate over sources for each device
     const { sources } = device
     for (let source of sources) {
+      // get source, with defaults //. change defaults?
       const {
         model,
         driver = 'mqtt-json',
