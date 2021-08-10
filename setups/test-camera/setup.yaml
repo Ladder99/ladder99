@@ -1,6 +1,6 @@
 # demo setup with camera simulations
 
-#. compile this with sh/adapter/compile
+#. compile this with sh/compile
 #. will compile to agent.cfg, devices.xml, pipeline-overrides.yaml, topology.dot?
 #. include in sh/pipeline steps? ie always compile this file (or if changed)
 
