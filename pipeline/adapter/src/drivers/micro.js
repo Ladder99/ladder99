@@ -14,13 +14,37 @@ export class AdapterDriver {
 
     async function readData() {
       try {
-        const data = await si.cpu()
-        console.log('CPU Information:')
-        console.log('- manufucturer: ' + data.manufacturer)
-        console.log('- brand: ' + data.brand)
-        console.log('- speed: ' + data.speed)
-        console.log('- cores: ' + data.cores)
-        console.log('- physical cores: ' + data.physicalCores)
+        // const data = await si.cpu()
+        // console.log('CPU Information:')
+        // console.log('- manufucturer: ' + data.manufacturer)
+        // console.log('- brand: ' + data.brand)
+        // console.log('- speed: ' + data.speed)
+        // console.log('- cores: ' + data.cores)
+        // console.log('- physical cores: ' + data.physicalCores)
+
+        // console.log(data)
+
+        const data = await si.get({
+          cpu: 'manufacturer, brand, speed, cores',
+          cpuTemperature: 'main, cores',
+          mem: 'total, free, used',
+          battery:
+            'hasBattery, currentCapacity, maxCapacity, capacityUnit, percent', // mWh
+          osInfo: 'platform, distro, release, codename, arch, hostname',
+          currentLoad: 'currentLoad, currentLoadUser, currentLoadSystem',
+          disksIO: 'rIO, wIO',
+          fsSize: 'fs, type, size, available',
+          wifiInterfaces: 'id, model, vendor',
+          dockerContainers: 'name, createdAt, state',
+        })
+        console.log(data)
+
+        // const sys = await si.system() // { manufacturer, model, version } - docker
+        // console.log(sys)
+
+        // const temps = await si.cpuTemperature()
+        // console.log(temps)
+
         setAvailable()
       } catch (e) {
         setUnavailable()
@@ -100,7 +124,7 @@ export class AdapterDriver {
 
     function setUnavailable() {
       cache.set(`${deviceId}-availability`, { value: 'UNAVAILABLE' })
-      cache.set(`${deviceId}-temperature`, { value: 'UNAVAILABLE' })
+      cache.set(`${deviceId}-cpu-temperature`, { value: 'UNAVAILABLE' })
     }
   }
 }
