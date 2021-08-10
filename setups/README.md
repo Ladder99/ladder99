@@ -6,10 +6,6 @@ The pipeline service defaults are set in pipeline.yaml - each setup should have 
 
 ## Folders
 
-**vmc** is the 'default' setup, which comes with the MTConnect Agent - it supplies simulation data to the agent, which can be viewed in a browser.
+**test-vmc** is the 'default' setup, which comes with the MTConnect Agent - it supplies simulation data to the agent, which can be viewed in a browser.
 
-**ccs-pa** is the main testing ground for the pipeline, a work in progress.
-
-**mazak-mill** is another work in progress.
-
-**dev** is for development work on the agent html output.
+**test-pa** is the main testing ground for the pipeline, a work in progress.
