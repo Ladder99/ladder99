@@ -14,8 +14,8 @@ Ladder99 is a free and open source application that transfers data from factory 
    pages/architecture
    pages/installation
    .. pages/pipeline
-   .. pages/adapter
-   pages/agent
+   pages/adapter
+   .. pages/agent
    .. pages/application
    .. pages/database
    .. pages/visualizer
