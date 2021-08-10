@@ -1,4 +1,4 @@
-# output / cache id is deviceId + key, eg 'ccs-pa-001-operator'
+# output / cache id is deviceId + key, eg 'pa1-operator'
 #. see inputs-new.yaml
 
 inputs:
