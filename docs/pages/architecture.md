@@ -1,6 +1,6 @@
 # Architecture
 
-Data flows from devices through the Adapter, Agent, and Relay to the Database and Visualizer.
+Data flows from devices through the Adapter, Agent, and Relay to the Database, Dashboard, and other applications.
 
 ## Diagram
 
