@@ -15,8 +15,7 @@
 devices:
   - id: pa1 # this is substituted into the model yaml and sources
     name: pa1 # this must match name in agent.cfg and devices.xml
-    #. call this 'structure: ccs/print-apply' ?
-    model: ccs/print-apply # for xml structure - see models/ccs/print-apply/model.yaml
+    model: ccs/print-apply # for xml structure - see models/ccs/print-apply/device.xml
     #. shift these up, look for each explicitly
     properties: # these are substituted into the model yaml
       uuid: e05363
@@ -26,13 +25,11 @@ devices:
     sources:
       - model: ccs/print-apply # model defines inputs and outputs with yaml files
         driver: mqtt-json # type of adapter plugin - manages protocol and payload
-        # url: mqtt://broker:1883
-        protocol: mqtt
         host: broker
         port: 1883
 
-      # - model: rockwell-hmi
-      #   protocol: opc
+      # - model: rockwell/hmi
+      #   driver: opc
       #   url: opc.tcp://simulator-opc:4334/UA/LittleServer
 
     destinations: # where to post output - just uses first output for now
@@ -43,7 +40,6 @@ devices:
   - id: pa2 # this is substituted into the model yaml and sources
     name: pa2 # this must match name in agent.cfg and devices.xml
     model: ccs/print-apply # for xml structure - see models/ccs/print-apply/model.yaml
-    #. shift these up, look for each explicitly
     properties: # these are substituted into the model yaml
       uuid: e09123
       serialNumber: '002'
@@ -52,12 +48,11 @@ devices:
     sources:
       - model: ccs/print-apply # model defines inputs and outputs with yaml files
         driver: mqtt-json # type of adapter plugin - manages protocol and payload
-        protocol: mqtt
         host: broker
         port: 1883
 
-      # - model: rockwell-hmi
-      #   protocol: opc
+      # - model: rockwell/hmi
+      #   driver: opc
       #   url: opc.tcp://simulator-opc:4334/UA/LittleServer
 
     destinations: # where to post output - just uses first output for now
