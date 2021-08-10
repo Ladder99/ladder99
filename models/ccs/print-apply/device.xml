@@ -13,14 +13,14 @@
   </Inputs>
 
   <!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
-  <!-- source and calc attributes are parsed and stripped from the xml before compilation -->
+  <!-- source attributes are parsed and stripped from the xml before compilation -->
   <DataItems>
-    <DataItem id="avail" name="availability" calc="types.AVAILABILITY[<availability>]" category="EVENT" type="AVAILABILITY"/>
-    <DataItem id="cond" name="condition" calc="<has-hard-faults> ? 'FAULT' : <has-soft-faults> ? 'WARNING' : 'NORMAL'" category="CONDITION" type="SYSTEM"/>
-    <DataItem id="msg" name="message" calc="?" category="EVENT" type="MESSAGE"/>
-    <!-- how best indicate plain cache lookup? just empty calc? dot? try dot -->
-    <DataItem id="build" name="build_no" calc="." category="EVENT" type="FIRMWARE" subType="VERSION"/>
-    <DataItem id="func" name="func_mode" calc="<has-faults> ? 'PRODUCTION' : 'MAINTENANCE'" category="EVENT" type="FUNCTIONAL_MODE"/>
+    <DataItem id="avail" name="availability" source="=types.AVAILABILITY[<availability>]" category="EVENT" type="AVAILABILITY"/>
+    <DataItem id="cond" name="condition" source="=<has-hard-faults> ? 'FAULT' : <has-soft-faults> ? 'WARNING' : 'NORMAL'" category="CONDITION" type="SYSTEM"/>
+    <DataItem id="msg" name="message" source="" category="EVENT" type="MESSAGE"/>
+    <!-- how best indicate plain cache lookup? just empty source? dot? try dot -->
+    <DataItem id="build" name="build_no" source="." category="EVENT" type="FIRMWARE" subType="VERSION"/>
+    <DataItem id="func" name="func_mode" source="=<has-faults> ? 'PRODUCTION' : 'MAINTENANCE'" category="EVENT" type="FUNCTIONAL_MODE"/>
     <DataItem id="chg" name="asset_changed" category="EVENT" type="ASSET_CHANGED" discrete="true"/>
     <DataItem id="rem" name="asset_removed" category="EVENT" type="ASSET_REMOVED"/>
   </DataItems>
@@ -32,21 +32,21 @@
     <Controller name="plc">
       <Description>Electronic board set responsible for coordinating all machine function.</Description>
       <DataItems>
-        <DataItem id="estop" name="estop" calc="<has-fault-ten> ? 'TRIGGERED' : 'ARMED'" category="EVENT" type="EMERGENCY_STOP"/>
+        <DataItem id="estop" name="estop" source="=<has-fault-ten> ? 'TRIGGERED' : 'ARMED'" category="EVENT" type="EMERGENCY_STOP"/>
       </DataItems>
       <Components>
         <Path>
           <DataItems>
-            <DataItem id="state" name="state" calc="types.EXECUTION[<state>]" category="EVENT" type="EXECUTION"/>
-            <DataItem id="wait" name="wait_state" calc="types.WAIT_STATE[<state>]" category="EVENT" type="WAIT_STATE"/>
-            <DataItem id="pgm" name="program" calc="." category="EVENT" type="PROGRAM" subType="MAIN"/>
-            <DataItem id="step" name="step" calc="." category="EVENT" type="BLOCK"/>
-            <DataItem id="clktime" name="clock_time" calc="<utc_time>" category="SAMPLE" type="CLOCK_TIME"/>
-            <DataItem id="uptime" name="up_time" calc="<cpu_time>" category="SAMPLE" type="EQUIPMENT_TIMER" subType="OPERATING"/>
-            <DataItem id="cycletime" name="cycle_time" calc="." category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" unit="SECONDS"/>
-            <DataItem id="faultct" name="fault_count" calc="<%M55.2>" category="SAMPLE" type="COUNT" subType="x:FAULT"/>
-            <DataItem id="cyclect" name="cycle_count" calc="<%M55.1>" category="SAMPLE" type="COUNT" subType="x:CYCLE"/>
-            <DataItem id="lifect" name="life_count" calc="<%M55.0>" category="SAMPLE" type="COUNT" subType="x:LIFE"/>
+            <DataItem id="state" name="state" source="=types.EXECUTION[<state>]" category="EVENT" type="EXECUTION"/>
+            <DataItem id="wait" name="wait_state" source="=types.WAIT_STATE[<state>]" category="EVENT" type="WAIT_STATE"/>
+            <DataItem id="pgm" name="program" source="." category="EVENT" type="PROGRAM" subType="MAIN"/>
+            <DataItem id="step" name="step" source="." category="EVENT" type="BLOCK"/>
+            <DataItem id="clktime" name="clock_time" source="=<utc_time>" category="SAMPLE" type="CLOCK_TIME"/>
+            <DataItem id="uptime" name="up_time" source="=<cpu_time>" category="SAMPLE" type="EQUIPMENT_TIMER" subType="OPERATING"/>
+            <DataItem id="cycletime" name="cycle_time" source="." category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" unit="SECONDS"/>
+            <DataItem id="faultct" name="fault_count" source="=<%M55.2>" category="SAMPLE" type="COUNT" subType="x:FAULT"/>
+            <DataItem id="cyclect" name="cycle_count" source="=<%M55.1>" category="SAMPLE" type="COUNT" subType="x:CYCLE"/>
+            <DataItem id="lifect" name="life_count" source="=<%M55.0>" category="SAMPLE" type="COUNT" subType="x:LIFE"/>
           </DataItems>
         </Path>
       </Components>
