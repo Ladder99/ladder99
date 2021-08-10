@@ -1,9 +1,9 @@
 # ccs-pa setup
 
 # define the devices.xml structure, using the model yamls for dataitems.
-# read by pipeline/adapter/src/adapter.js.
+# read by pipeline/adapter.
 # sources define the inputs to the cache.
-# compiled by pipeline/src/adapter/compiler into volumes/agent/devices.xml
+# compiled by pipeline/compiler into volumes/agent/devices.xml
 # and volumes/agent/agent.cfg.
 #. see also devices-future.yaml for future dev.
 

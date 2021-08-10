@@ -16,7 +16,7 @@ const defaultServer = { protocol: 'shdr', host: 'adapter', port: 7878 }
 const driversFolder = './drivers' // eg mqtt-json - must start with '.'
 // these folders are defined in pipeline.yaml with docker volume mappings
 const setupFolder = '/data/setup' // incls setup.yaml etc
-const modelsFolder = `/data/models` // incls ccs-pa/model.yaml etc
+const modelsFolder = `/data/models` // incls ccs/print-apply/device.xml etc
 
 console.log(`Ladder99 Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
@@ -214,9 +214,8 @@ function getOutputs({ templates, types, deviceId }) {
   return outputs
 }
 
-//. use common.js fn
+// load setup, eg from setups/ccs-pa/setup.yaml
 function readSetupYaml() {
-  // load setup, eg from setups/ccs-pa/setup.yaml
   const yamlfile = `${setupFolder}/setup.yaml`
   console.log(`Reading ${yamlfile}...`)
   const yamltree = common.importYaml(yamlfile)
