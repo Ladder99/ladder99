@@ -18,7 +18,7 @@ then visit http://localhost:5000/current.
 
 ![adapter](_images/adapter.png)
 
-## Explanation
+## How it works
 
 ### Compiler
 

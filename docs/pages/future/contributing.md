@@ -12,11 +12,11 @@ This documentation is hosted by readthedocs.org, and is built and deployed autom
 
 To develop and view the documentation locally, first install the Python dependencies, including Sphinx, the documentation generator -
 
-    shell/install/python
+    sh/install/python
 
 Then serve the documents, viewable at localhost:8080 -
 
-    shell/docs
+    sh/docs/start
 
 ## Issues
 
