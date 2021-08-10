@@ -1,0 +1,23 @@
+# outputs
+
+# these outputs are placed in the model.yaml tree and define the
+# shdr strings that are calculated from the cache and sent to the agent.
+
+# value is javascript, evaluated by the cache in calculating the shdr output.
+# <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
+
+outputs:
+  - key: availability
+    category: EVENT
+    type: AVAILABILITY
+    value: <availability>
+
+  - key: temperature
+    category: SAMPLE
+    type: TEMPERATURE
+    value: <temperature>
+
+  - key: statistics
+    category: SAMPLE
+    type: VARIABLE
+    value: <statistics>

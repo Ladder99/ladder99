@@ -11,8 +11,9 @@
         Ladder99 Glimpse
       </Description>
       <DataItems>
-        <DataItem id="m1-availability" category="EVENT" type="AVAILABILITY" />
-        <DataItem id="m1-temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" />
+        <DataItem id="temp1" name="m1-temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
+        <DataItem id="stats1" name="m1-statistics" category="SAMPLE" type="VARIABLE" representation="DATA_SET" />
+        <DataItem id="avail1" name="m1-availability" category="EVENT" type="AVAILABILITY"/>
       </DataItems>
     </Device>
 

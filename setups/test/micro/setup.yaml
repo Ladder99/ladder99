@@ -10,12 +10,12 @@
 devices:
   - id: m1
     name: micro1 # this must match name in agent.cfg and devices.xml
-    model: ladder99/micro
+    model: ladder99/glimpse
     # specify sources for dataitem values
     #. eg could have multiple thermometers for a machine, or doors?
     #. be careful with multiple sources - don't want to clobber dataitems.
     sources:
-      - model: ladder99/micro
+      - model: ladder99/glimpse
         driver: micro # adapter plugin - manages protocol and payload
 
     #. this should be server, not destinations - for agent to connect to

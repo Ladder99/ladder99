@@ -3,7 +3,7 @@
 
 import si from 'systeminformation'
 
-const pollInterval = 1000 // msec
+const pollInterval = 2000 // msec
 // const reconnectInterval = 5000 // msec
 
 export class AdapterDriver {
@@ -39,16 +39,15 @@ export class AdapterDriver {
         })
         console.log(data)
 
-        // const sys = await si.system() // { manufacturer, model, version } - docker
-        // console.log(sys)
-
-        // const temps = await si.cpuTemperature()
-        // console.log(temps)
-
+        const str = JSON.stringify(data)
+        cache.set(`${deviceId}-statistics`, { value: str })
+        cache.set(`${deviceId}-temperature`, {
+          value: data.cpuTemperature.main,
+        })
         setAvailable()
       } catch (e) {
-        setUnavailable()
-        console.log(e)
+        // setUnavailable()
+        console.error(e)
       }
     }
 
@@ -124,7 +123,8 @@ export class AdapterDriver {
 
     function setUnavailable() {
       cache.set(`${deviceId}-availability`, { value: 'UNAVAILABLE' })
-      cache.set(`${deviceId}-cpu-temperature`, { value: 'UNAVAILABLE' })
+      cache.set(`${deviceId}-temperature`, { value: 'UNAVAILABLE' })
+      cache.set(`${deviceId}-statistics`, { value: 'UNAVAILABLE' })
     }
   }
 }

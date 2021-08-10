@@ -14,24 +14,9 @@
   <!-- source attributes are parsed and stripped from the xml before compilation -->
   <DataItems>
     <DataItem id="temp" name="cpu-temperature" source="." category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
-    <DataItem id="avail" name="avail" category="EVENT" type="AVAILABILITY"/>
+    <DataItem id="stats" name="statistics" source="." category="SAMPLE" type="VARIABLE" representation="DATA_SET" />
+    <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
     <DataItem id="chg" name="asset_changed" category="EVENT" type="ASSET_CHANGED" discrete="true"/>
     <DataItem id="rem" name="asset_removed" category="EVENT" type="ASSET_REMOVED"/>
   </DataItems>
-  <Components>
-    <Systems>
-      <Components>
-        <Electrical>
-          <DataItems>
-            <DataItem id="power" name="control_power_condition" source="=<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'" category="CONDITION" type="VOLTAGE_DC" />
-          </DataItems>
-        </Electrical>
-        <Cooling>
-          <DataItems>
-            <DataItem id="pump" name="cool_pump_a_hours" source=".Autoclave.Scripts.MotorHours.CoolPumpAOn\Value" category="SAMPLE" type="EQUIPMENT_TIME" subType="OPERATING" nativeScale="1" nativeUnits="SECOND" units="SECOND"/>
-          </DataItems>
-        </Cooling>
-      </Components>
-    </Systems>
-  </Components>
 </Device>
