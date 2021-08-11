@@ -1,4 +1,4 @@
-# id is formed from deviceId + key, eg 'ccs-pa-001-operator'
+# id is formed from deviceId + key, eg 'pa1-operator'
 # value is javascript
 # <foo> is a cache lookup operation - shorthand for cache.get('${deviceId}-foo')
 
