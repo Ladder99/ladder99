@@ -1,29 +1,27 @@
-# inputs
+# cache inputs
+
+# device driver subscribes to mqtt topics from devices.
+# mqtt broker sends data to driver.
+# driver parses messages, writes values to cache, which outputs shdr.
+
 # define cache inputs - mqtt topics, how to parse them and put them into cache.
 # see outputs.yaml for cache output as shdr.
 
-# adapter subscribes to mqtt topics from devices.
-# mqtt broker sends data to adapter.
-# adapter parses messages, writes values to cache, which outputs shdr.
-
-#. call this adapter.yaml? cache.yaml? cache-inputs.yaml? driver.yaml?
-
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/mqtt-json.js.
 
-# define connect handler
-connect:
-  # subscribe to these topics
-  subscribe:
-    - topic: l99/${deviceId}/evt/query
-    - topic: l99/${deviceId}/evt/status
-    - topic: l99/${deviceId}/evt/read
-  # publish an empty message to receive the query response
-  publish:
-    - topic: l99/${deviceId}/cmd/query
-      message: '{}'
-
-# define message topic handlers
+# define handlers
 handlers:
+  connect:
+    # subscribe to these topics
+    subscribe:
+      - topic: l99/${deviceId}/evt/query
+      - topic: l99/${deviceId}/evt/status
+      - topic: l99/${deviceId}/evt/read
+    # publish an empty message to receive the query response
+    publish:
+      - topic: l99/${deviceId}/cmd/query
+        message: '{}'
+
   # handle query responses
   l99/${deviceId}/evt/query:
     unsubscribe:
@@ -132,26 +130,26 @@ handlers:
     # define lookup function, which returns a value given a part calculation.
     lookup: '($, part) => ({ value: eval(part) })'
     # define key-part pairs, where key is mapped to a cache id,
-    # eg 'status-connection' => 'pa1-status_connection',
+    # eg 'connection' => 'pa1-connection',
     # and part is some javascript calculation code to determine its value.
     inputs:
-      status-connection: $.connection
-      status-build_no: $.build_no
-      status-state: $.state
-      status-program: $.program
-      status-step: $.step
-      status-utc_time: $.utc_time
-      status-cpu_time: $.cpu_time
-      status-faults: $.faults
-      status-cycle_time: 5 #. fake - need fsm?
-      status-has-no-faults: $.faultKeys.length === 0
-      status-has-faults: $.faultKeys.length > 0
-      status-has-soft-faults: $.faultKeys.some(f => f>='50')
-      status-has-hard-faults: $.faultKeys.some(f => f<'50')
-      status-has-fault-ten: $.faultKeys.some(f => f==='10')
-      status-has-tamp-fault: $.faultKeys.some(f=>['2','3','5'].includes(f))
-      status-has-feed-fault: $.faultKeys.some(f=>['1','11','12','13','14','15'].includes(f))
-      status-has-feed-warning: $.faultKeys.some(f=>['50','51'].includes(f))
+      connection: $.connection
+      build_no: $.build_no
+      state: $.state
+      program: $.program
+      step: $.step
+      utc_time: $.utc_time
+      cpu_time: $.cpu_time
+      faults: $.faults
+      cycle_time: 5 #. fake - need fsm?
+      has-no-faults: $.faultKeys.length === 0
+      has-faults: $.faultKeys.length > 0
+      has-soft-faults: $.faultKeys.some(f => f>='50')
+      has-hard-faults: $.faultKeys.some(f => f<'50')
+      has-fault-ten: $.faultKeys.some(f => f==='10')
+      has-tamp-fault: $.faultKeys.some(f=>['2','3','5'].includes(f))
+      has-feed-fault: $.faultKeys.some(f=>['1','11','12','13','14','15'].includes(f))
+      has-feed-warning: $.faultKeys.some(f=>['50','51'].includes(f))
 
   # handle read messages
   l99/${deviceId}/evt/read:

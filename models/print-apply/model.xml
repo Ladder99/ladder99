@@ -1,0 +1,95 @@
+<Device id="$deviceId" name="$deviceName" sampleInterval="$sampleInterval" uuid="$uuid">
+  <Description manufacturer="$manufacturer" model="$model" serialNumber="$serialNumber">
+    $description
+  </Description>
+
+  <!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
+  <DataItems>
+    <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
+    <DataItem id="cond" name="condition" category="CONDITION" type="SYSTEM"/>
+    <DataItem id="msg" name="message" category="EVENT" type="MESSAGE"/>
+    <!-- how best indicate plain cache lookup? just empty source? try dot -->
+    <DataItem id="build" name="build_no" category="EVENT" type="FIRMWARE" subType="VERSION"/>
+    <DataItem id="func" name="func_mode" category="EVENT" type="FUNCTIONAL_MODE"/>
+    <DataItem id="chg" name="asset_changed" category="EVENT" type="ASSET_CHANGED" discrete="true"/>
+    <DataItem id="rem" name="asset_removed" category="EVENT" type="ASSET_REMOVED"/>
+  </DataItems>
+  <Components>
+
+    <!-- <Controller name="controller" nativeName="plc"> -->
+    <!-- do controllers have ids and names? what is nativeName? -->
+    <!-- don't use id plc$num because eg for paths, could have multiple paths IN a device -->
+    <Controller name="plc">
+      <Description>Electronic board set responsible for coordinating all machine function.</Description>
+      <DataItems>
+        <DataItem id="estop" name="estop" category="EVENT" type="EMERGENCY_STOP"/>
+      </DataItems>
+      <Components>
+        <Path>
+          <DataItems>
+            <DataItem id="state" name="state" category="EVENT" type="EXECUTION"/>
+            <DataItem id="wait" name="wait_state" category="EVENT" type="WAIT_STATE"/>
+            <DataItem id="pgm" name="program" category="EVENT" type="PROGRAM" subType="MAIN"/>
+            <DataItem id="step" name="step" category="EVENT" type="BLOCK"/>
+            <DataItem id="clktime" name="clock_time" category="SAMPLE" type="CLOCK_TIME"/>
+            <DataItem id="uptime" name="up_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="OPERATING"/>
+            <DataItem id="cycletime" name="cycle_time" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" unit="SECONDS"/>
+            <DataItem id="faultct" name="fault_count" category="SAMPLE" type="COUNT" subType="x:FAULT"/>
+            <DataItem id="cyclect" name="cycle_count" category="SAMPLE" type="COUNT" subType="x:CYCLE"/>
+            <DataItem id="lifect" name="life_count" category="SAMPLE" type="COUNT" subType="x:LIFE"/>
+          </DataItems>
+        </Path>
+      </Components>
+    </Controller>
+  </Components>
+
+  <Systems>
+    <Components>
+      <EndEffector>
+        <DataItems>
+          <DataItem id="eecond" name="end_eff_cond" category="CONDITION" type="SYSTEM"/>
+          <DataItem id="eemsg" name="end_eff_message" category="EVENT" type="MESSAGE"/>
+          <DataItem id="pdetect" name="smart_tamp_part_detect" category="EVENT" type="PART_DETECT"/>
+          <DataItem id="assist" name="tamp_air_assist" category="EVENT" type="ACTUATOR_STATE" subType="x:AIR_ASSIST"/>
+          <DataItem id="vac" name="tamp_vacuum" category="EVENT" type="ACTUATOR_STATE" subType="x:VACUUM"/>
+          <DataItem id="tampcyl" name="tamp_cylinder" category="EVENT" type="ACTUATOR_STATE" subType="x:CYLINDER"/>
+          <DataItem id="exttime" name="cylinder_extend_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:EXTEND" unit="SECOND"/>
+          <DataItem id="distime" name="cylinder_home_disengage_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:DISENGAGE" unit="SECOND"/>
+          <DataItem id="travtime" name="cylinder_travel_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:TRAVEL" unit="SECOND"/>
+          <DataItem id="vacdelay" name="tamp_vacuum_delay" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/>
+        </DataItems>
+      </EndEffector>
+      <Feeder>
+        <DataItems>
+          <DataItem id="fcond" name="feed_cond" category="CONDITION" type="SYSTEM"/>
+          <DataItem id="fmsg" name="feed_message" category="EVENT" type="MESSAGE"/>
+          <DataItem id="fpart" name="feed_part_detect" category="EVENT" type="PART_DETECT"/>
+          <DataItem id="mstate" name="web_take_up_motor_state" category="EVENT" type="ACTUATOR_STATE" subType="x:TAKE_UP"/>
+          <DataItem id="reprint" name="printer_reprint" category="EVENT" type="ACTUATOR_STATE" subType="x:REPRINT"/>
+          <DataItem id="pause" name="printer_pause" category="EVENT" type="ACTUATOR_STATE" subType="x:PAUSE"/>
+          <DataItem id="feed" name="printer_feed" category="EVENT" type="ACTUATOR_STATE" subType="x:FEED"/>
+          <DataItem id="start" name="printer_start_print" category="EVENT" type="ACTUATOR_STATE" subType="x:START"/>
+          <DataItem id="sigtime" name="print_signal_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/>
+          <DataItem id="ptime" name="print_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND"/>
+          <!-- duplicate paths -->
+          <!-- <DataItem id="ttime" name="transport_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/> -->
+          <!-- <DataItem id="itime" name="idle_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/> -->
+          <!-- <DataItem id="starttime" name="printer_start_print_duration" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/> -->
+          <!-- <DataItem id="endwait" name="printer_end_print_wait" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/> -->
+          <!-- <DataItem id="debounce" name="product_sensor_one_debounce" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/> -->
+          <!-- ? -->
+          <!-- <DataItem id="trig" name="product_sensor_one_edge_trigger" category="SAMPLE" type="UNKNOWN"/> -->
+        </DataItems>
+      </Feeder>
+    </Components>
+    <Resources>
+      <Components>
+        <Personnel>
+          <DataItems>
+            <!-- <DataItem id="op" name="operator" category="EVENT" type="USER" subType="OPERATOR"/> -->
+          </DataItems>
+        </Personnel>
+      </Components>
+    </Resources>
+  </Systems>
+</Device>
