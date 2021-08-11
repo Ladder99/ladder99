@@ -1,40 +1,28 @@
-<Device id="$deviceId" name="$deviceName" uuid="$uuid">
+<!-- treat sensor as an independent device -->
+
+<Device id="$id" name="$name" uuid="$uuid">
   <Description manufacturer="$manufacturer">$description</Description>
   <DataItems>
-    <DataItem id="ct" name="ctemp" category="SAMPLE" type="TEMPERATURE" category="SAMPLE" units="CELSIUS" statistic="AVERAGE">
-      <Source componentId="s1">channel:1</Source>
-    </DataItem>
-    <DataItem id="sa" name="sacc" category="SAMPLE" type="ACCELERATION" units="MILLIMETERS/SECOND^2" statistic="MAXIMUM">
-      <Source componentId="s2">channel:2</Source>
-    </DataItem>
+    <DataItem id="ct" name="ctemp" category="SAMPLE" type="TEMPERATURE" category="SAMPLE" units="CELSIUS" statistic="AVERAGE" />
+    <DataItem id="sa" name="sacc" category="SAMPLE" type="ACCELERATION" units="MILLIMETERS/SECOND^2" statistic="MAXIMUM" />
   </DataItems>
 </Device>
 
-<!-- or -->
+<!-- or as a Component with element Sensor -->
 
-<Sensor id="$deviceId" name="$deviceName" uuid="$uuid">
-  <Description manufacturer="$manufacturer">$description</Description>
-  <DataItems>
-    <DataItem id="ct" name="ctemp" category="SAMPLE" type="TEMPERATURE" category="SAMPLE" units="CELSIUS" statistic="AVERAGE">
-      <Source componentId="s1">channel:1</Source>
-    </DataItem>
-    <DataItem id="sa" name="sacc" category="SAMPLE" type="ACCELERATION" units="MILLIMETERS/SECOND^2" statistic="MAXIMUM">
-      <Source componentId="s2">channel:2</Source>
-    </DataItem>
-  </DataItems>
-</Sensor>
+<Components>
+  <Sensor id="$id" name="$name" uuid="$uuid">
+    <DataItems>
+      <DataItem id="ct" name="ctemp" category="SAMPLE" type="TEMPERATURE" category="SAMPLE" units="CELSIUS" statistic="AVERAGE" />
+    </DataItems>
+  </Sensor>
+</Components>
 
-<!-- or -->
-
-<!-- just embed the dataitems where used -->
+<!-- or just embed the dataitems where used -->
 
 <Rotary id="c" name="C">
   <DataItems>
-    <DataItem id="ct" name="ctemp" category="SAMPLE" type="TEMPERATURE" category="SAMPLE" units="CELSIUS" statistic="AVERAGE">
-      <Source componentId="s1">channel:1</Source>
-    </DataItem>
-    <DataItem id="sa" name="sacc" category="SAMPLE" type="ACCELERATION" units="MILLIMETERS/SECOND^2" statistic="MAXIMUM">
-      <Source componentId="s2">channel:2</Source>
-    </DataItem>
+    <DataItem id="ct" name="ctemp" category="SAMPLE" type="TEMPERATURE" category="SAMPLE" units="CELSIUS" statistic="AVERAGE" />
+    <DataItem id="sa" name="sacc" category="SAMPLE" type="ACCELERATION" units="MILLIMETERS/SECOND^2" statistic="MAXIMUM" />
   </DataItems>
 </Rotary>

@@ -13,11 +13,11 @@
 # eg set defaults for all devices at the top, overrides per device?
 
 devices:
-  - id: pa1 # this is substituted into the model yaml and sources
+  - id: pa1 # this is substituted into the model.xml and sources
     name: pa1 # this must match name in agent.cfg and devices.xml
-    model: print-apply/ccs # for xml structure - see models/print-apply/ccs/device.xml
+    structure: print-apply # for xml structure - see models/print-apply/model.xml
     #. shift these up, look for each explicitly
-    properties: # these are substituted into the model yaml
+    properties: # these are substituted into the model.xml
       uuid: e05363
       serialNumber: '001'
 
@@ -28,24 +28,25 @@ devices:
         host: broker
         port: 1883
 
-      - model: microcontroller
+      - model: sensor/ladder99
         driver: micro
         host: micro
         port: 8888
 
-      # - model: rockwell/hmi
-      #   driver: opc
-      #   url: opc.tcp://simulator-opc:4334/UA/LittleServer
+      - model: hmi/rockwell
+        driver: opc
+        url: opc.tcp://simulator-opc:4334/UA/LittleServer
 
     destinations: # where to post output - just uses first output for now
       - protocol: shdr
         host: adapter
         port: 7878
 
-  - id: pa2 # this is substituted into the model yaml and sources
+  - id: pa2 # this is substituted into the model.xml and sources
     name: pa2 # this must match name in agent.cfg and devices.xml
-    model: print-apply/ccs # for xml structure - see models/print-apply/ccs/model.yaml
-    properties: # these are substituted into the model yaml
+    structure: print-apply # for xml structure - see models/print-apply/model.xml
+    #. shift these up, look for each explicitly
+    properties: # these are substituted into the model.xml
       uuid: e09123
       serialNumber: '002'
 
@@ -55,10 +56,6 @@ devices:
         driver: mqtt-json # type of adapter plugin - manages protocol and payload
         host: broker
         port: 1883
-
-      # - model: hmi/rockwell
-      #   driver: opc
-      #   url: opc.tcp://simulator-opc:4334/UA/LittleServer
 
     destinations: # where to post output - just uses first output for now
       - protocol: shdr
