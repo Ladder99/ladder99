@@ -1,0 +1,14 @@
+# inputs
+# define values to be read by micro.js driver
+
+values:
+  cpuTemperature: main, cores
+  mem: total, free, used
+  # battery: hasBattery, currentCapacity, maxCapacity, capacityUnit, percent # mWh
+  # cpu: manufacturer, brand, speed, cores
+  # currentLoad: currentLoad, currentLoadUser, currentLoadSystem
+  # disksIO: rIO, wIO
+  # dockerContainers: name, createdAt, state
+  # fsSize: fs, type, size, available
+  # osInfo: platform, distro, release, codename, arch, hostname
+  # wifiInterfaces: id, model, vendor

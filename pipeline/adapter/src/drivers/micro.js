@@ -11,22 +11,24 @@ export class AdapterDriver {
     console.log(`Initialize microcontroller driver...`)
 
     setUnavailable()
+    setInterval(readData, pollInterval)
 
     async function readData() {
       try {
-        const data = await si.get({
-          // cpu: 'manufacturer, brand, speed, cores',
-          cpuTemperature: 'main, cores',
-          mem: 'total, free, used',
-          // battery:
-          //   'hasBattery, currentCapacity, maxCapacity, capacityUnit, percent', // mWh
-          // osInfo: 'platform, distro, release, codename, arch, hostname',
-          // currentLoad: 'currentLoad, currentLoadUser, currentLoadSystem',
-          // disksIO: 'rIO, wIO',
-          // fsSize: 'fs, type, size, available',
-          // wifiInterfaces: 'id, model, vendor',
-          // dockerContainers: 'name, createdAt, state',
-        })
+        // const data = await si.get({
+        //   // cpu: 'manufacturer, brand, speed, cores',
+        //   cpuTemperature: 'main, cores',
+        //   mem: 'total, free, used',
+        //   // battery:
+        //   //   'hasBattery, currentCapacity, maxCapacity, capacityUnit, percent', // mWh
+        //   // osInfo: 'platform, distro, release, codename, arch, hostname',
+        //   // currentLoad: 'currentLoad, currentLoadUser, currentLoadSystem',
+        //   // disksIO: 'rIO, wIO',
+        //   // fsSize: 'fs, type, size, available',
+        //   // wifiInterfaces: 'id, model, vendor',
+        //   // dockerContainers: 'name, createdAt, state',
+        // })
+        const data = await si.get(inputs.values)
         console.log(data)
 
         // get memory in DATA_SET format for shdr,
@@ -42,21 +44,18 @@ export class AdapterDriver {
 
         setAvailable()
       } catch (e) {
-        // setUnavailable()
+        setUnavailable()
         console.error(e)
       }
-    }
-
-    setInterval(readData, pollInterval)
-
-    function setAvailable() {
-      cache.set(`${deviceId}-availability`, { value: 'AVAILABLE' })
     }
 
     function setUnavailable() {
       cache.set(`${deviceId}-availability`, { value: 'UNAVAILABLE' })
       cache.set(`${deviceId}-memory`, { value: 'UNAVAILABLE' })
       cache.set(`${deviceId}-temperature`, { value: 'UNAVAILABLE' })
+    }
+    function setAvailable() {
+      cache.set(`${deviceId}-availability`, { value: 'AVAILABLE' })
     }
   }
 }
