@@ -1,4 +1,4 @@
-# ccs-pa setup
+# print-apply setup
 
 # define the devices.xml structure, using the model yamls for dataitems.
 # read by pipeline/adapter.
@@ -7,19 +7,20 @@
 # and volumes/agent/agent.cfg.
 #. see also devices-future.yaml for future dev.
 
-#. add a meta section
-
 #. could we get this to one line per device? a site might have dozens of machines
 # eg set defaults for all devices at the top, overrides per device?
 
 devices:
   - id: pa1 # this is substituted into the model.xml and sources
     name: pa1 # this must match name in agent.cfg and devices.xml
-    structure: print-apply # for xml structure - see models/print-apply/model.xml
-    #. shift these up, look for each explicitly
-    properties: # these are substituted into the model.xml
-      uuid: e05363
-      serialNumber: '001'
+    uuid: e05363
+    manufacturer: CCS
+    model: CCS P&A
+    serialNumber: '001'
+    machine: print-apply # for xml structure - see models/print-apply/model.xml
+
+    filters:
+      - inputs: print-apply/ccs # location of inputs.yaml
 
     # define data sources that feed into this device
     sources:
@@ -27,37 +28,20 @@ devices:
         driver: mqtt-json # type of adapter plugin - manages protocol and payload
         host: broker
         port: 1883
+        attach: top
 
       - model: sensor/ladder99
         driver: micro
         host: micro
         port: 8888
+        attach: top
 
       - model: hmi/rockwell
         driver: opc
         url: opc.tcp://simulator-opc:4334/UA/LittleServer
+        attach: top
 
     destinations: # where to post output - just uses first output for now
       - protocol: shdr
         host: adapter
         port: 7878
-
-  - id: pa2 # this is substituted into the model.xml and sources
-    name: pa2 # this must match name in agent.cfg and devices.xml
-    structure: print-apply # for xml structure - see models/print-apply/model.xml
-    #. shift these up, look for each explicitly
-    properties: # these are substituted into the model.xml
-      uuid: e09123
-      serialNumber: '002'
-
-    # define data sources that feed into this device
-    sources:
-      - model: print-apply/ccs # model defines inputs and outputs with yaml files
-        driver: mqtt-json # type of adapter plugin - manages protocol and payload
-        host: broker
-        port: 1883
-
-    destinations: # where to post output - just uses first output for now
-      - protocol: shdr
-        host: adapter
-        port: 7879
