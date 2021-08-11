@@ -17,7 +17,9 @@ outputs:
     type: TEMPERATURE
     value: <temperature>
 
-  - key: statistics
+  - key: memory
     category: SAMPLE
     type: VARIABLE
-    value: <statistics>
+    subType: x:MEMORY
+    representation: DATA_SET
+    value: <memory>

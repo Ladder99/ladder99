@@ -40,10 +40,15 @@ export class AdapterDriver {
         console.log(data)
 
         const str = JSON.stringify(data)
-        cache.set(`${deviceId}-statistics`, { value: str })
+        // cache.set(`${deviceId}-statistics`, { value: str })
         cache.set(`${deviceId}-temperature`, {
           value: data.cpuTemperature.main,
         })
+        const memstr = Object.keys(data.mem)
+          .map(key => `${key}=${data.mem[key]}`)
+          .join(' ')
+        cache.set(`${deviceId}-memory`, { value: memstr })
+
         setAvailable()
       } catch (e) {
         // setUnavailable()

@@ -13,7 +13,7 @@
   <!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
   <!-- source attributes are parsed and stripped from the xml before compilation -->
   <DataItems>
-    <DataItem id="temp" name="cpu-temperature" source="." category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
+    <DataItem id="temp" name="temperature" source="." category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
     <DataItem id="stats" name="statistics" source="." category="SAMPLE" type="VARIABLE" representation="DATA_SET" />
     <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
     <DataItem id="chg" name="asset_changed" category="EVENT" type="ASSET_CHANGED" discrete="true"/>
