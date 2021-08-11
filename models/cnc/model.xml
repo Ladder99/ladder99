@@ -1,3 +1,5 @@
+<!-- this model comes mostly from the mazak here: -->
+<!-- http://mtconnect.mazakcorp.com:5717/ -->
 <Device id="$deviceId" name="$deviceName" uuid="$uuid">
   <Description manufacturer="$manufacturer">$description</Description>
   <DataItems>

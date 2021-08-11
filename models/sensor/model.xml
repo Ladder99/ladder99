@@ -1,0 +1,40 @@
+<Device id="$deviceId" name="$deviceName" uuid="$uuid">
+  <Description manufacturer="$manufacturer">$description</Description>
+  <DataItems>
+    <DataItem id="ct" name="ctemp" category="SAMPLE" type="TEMPERATURE" category="SAMPLE" units="CELSIUS" statistic="AVERAGE">
+      <Source componentId="s1">channel:1</Source>
+    </DataItem>
+    <DataItem id="sa" name="sacc" category="SAMPLE" type="ACCELERATION" units="MILLIMETERS/SECOND^2" statistic="MAXIMUM">
+      <Source componentId="s2">channel:2</Source>
+    </DataItem>
+  </DataItems>
+</Device>
+
+<!-- or -->
+
+<Sensor id="$deviceId" name="$deviceName" uuid="$uuid">
+  <Description manufacturer="$manufacturer">$description</Description>
+  <DataItems>
+    <DataItem id="ct" name="ctemp" category="SAMPLE" type="TEMPERATURE" category="SAMPLE" units="CELSIUS" statistic="AVERAGE">
+      <Source componentId="s1">channel:1</Source>
+    </DataItem>
+    <DataItem id="sa" name="sacc" category="SAMPLE" type="ACCELERATION" units="MILLIMETERS/SECOND^2" statistic="MAXIMUM">
+      <Source componentId="s2">channel:2</Source>
+    </DataItem>
+  </DataItems>
+</Sensor>
+
+<!-- or -->
+
+<!-- just embed the dataitems where used -->
+
+<Rotary id="c" name="C">
+  <DataItems>
+    <DataItem id="ct" name="ctemp" category="SAMPLE" type="TEMPERATURE" category="SAMPLE" units="CELSIUS" statistic="AVERAGE">
+      <Source componentId="s1">channel:1</Source>
+    </DataItem>
+    <DataItem id="sa" name="sacc" category="SAMPLE" type="ACCELERATION" units="MILLIMETERS/SECOND^2" statistic="MAXIMUM">
+      <Source componentId="s2">channel:2</Source>
+    </DataItem>
+  </DataItems>
+</Rotary>
