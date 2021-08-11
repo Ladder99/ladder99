@@ -1,0 +1,5 @@
+<Personnel>
+  <DataItems>
+    <DataItem id="op" name="operator" category="EVENT" type="USER" subType="OPERATOR"/>
+  </DataItems>
+</Personnel>
