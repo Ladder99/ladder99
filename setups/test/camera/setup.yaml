@@ -12,12 +12,12 @@ meta:
 devices:
   - id: d1
     name: camera1 # this must match name in agent.cfg and devices.xml
-    model: ladder99/camera
+    model: camera/ladder99
     #. do we really want/need ability to have >1 source per device?
     # won't it lead to conflicts with dataitem ids, eg connection/device-availability?
     #. just have single source and destination for now?
     sources:
-      - model: ladder99/camera
+      - model: camera/ladder99
         driver: http-json # type of adapter plugin - manages protocol and payload
         protocol: http
         host: play
@@ -29,9 +29,9 @@ devices:
 
   - id: d2
     name: camera2 #. is this used yet? check code
-    model: ladder99/camera
+    model: camera/ladder99
     sources:
-      - model: ladder99/camera
+      - model: camera/ladder99
         driver: http-json # type of adapter plugin - manages protocol and payload
         protocol: http
         host: play

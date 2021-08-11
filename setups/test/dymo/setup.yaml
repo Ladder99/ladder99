@@ -3,12 +3,12 @@
 devices:
   - id: d1
     name: dymo1 # this must match name in agent.cfg and devices.xml
-    model: dymo/m10
+    model: scale/dymo
     # specify sources for dataitem values
     #. eg could have multiple thermometers for a machine, or doors?
     #. be careful with multiple sources - don't want to clobber dataitems.
     sources:
-      - model: dymo/m10
+      - model: scale/dymo
         driver: dymo # adapter plugin - manages protocol and payload
         # protocol: tcp
         # host: 10.20.30.101

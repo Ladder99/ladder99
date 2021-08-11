@@ -15,7 +15,7 @@
 devices:
   - id: pa1 # this is substituted into the model yaml and sources
     name: pa1 # this must match name in agent.cfg and devices.xml
-    model: ccs/print-apply # for xml structure - see models/ccs/print-apply/device.xml
+    model: print-apply/ccs # for xml structure - see models/print-apply/ccs/device.xml
     #. shift these up, look for each explicitly
     properties: # these are substituted into the model yaml
       uuid: e05363
@@ -23,7 +23,7 @@ devices:
 
     # define data sources that feed into this device
     sources:
-      - model: ccs/print-apply # model defines inputs and outputs with yaml files
+      - model: print-apply/ccs # model defines inputs and outputs with yaml files
         driver: mqtt-json # type of adapter plugin - manages protocol and payload
         host: broker
         port: 1883
@@ -44,14 +44,14 @@ devices:
 
   - id: pa2 # this is substituted into the model yaml and sources
     name: pa2 # this must match name in agent.cfg and devices.xml
-    model: ccs/print-apply # for xml structure - see models/ccs/print-apply/model.yaml
+    model: print-apply/ccs # for xml structure - see models/print-apply/ccs/model.yaml
     properties: # these are substituted into the model yaml
       uuid: e09123
       serialNumber: '002'
 
     # define data sources that feed into this device
     sources:
-      - model: ccs/print-apply # model defines inputs and outputs with yaml files
+      - model: print-apply/ccs # model defines inputs and outputs with yaml files
         driver: mqtt-json # type of adapter plugin - manages protocol and payload
         host: broker
         port: 1883
