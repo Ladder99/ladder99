@@ -1,5 +1,5 @@
-<Device id="d1" name="M12346" uuid="M80104K162N">
-  <Description manufacturer="Mazak_Corporation">Mill w/SMooth-G</Description>
+<Device id="$deviceId" name="$deviceName" uuid="$uuid">
+  <Description manufacturer="$manufacturer">$description</Description>
   <DataItems>
     <DataItem category="EVENT" id="avail" type="AVAILABILITY"/>
     <DataItem category="EVENT" id="functionalmode" type="FUNCTIONAL_MODE"/>
