@@ -28,7 +28,7 @@ devices:
         host: broker
         port: 1883
 
-      - model: ladder99/glimpse
+      - model: microcontroller
         driver: micro
         host: micro
         port: 8888
@@ -56,7 +56,7 @@ devices:
         host: broker
         port: 1883
 
-      # - model: rockwell/hmi
+      # - model: hmi/rockwell
       #   driver: opc
       #   url: opc.tcp://simulator-opc:4334/UA/LittleServer
 
