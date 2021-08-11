@@ -11,15 +11,15 @@ services:
   agent:
     profiles:
       - dashboard
-  influxdb:
-    profiles:
-      - dashboard
+  # influxdb:
+  #   profiles:
+  #     - dashboard
   mosquitto:
     profiles:
       - dashboard
-  telegraf:
-    profiles:
-      - dashboard
+  # telegraf:
+  #   profiles:
+  #     - dashboard
 
 networks:
   ladder99:
