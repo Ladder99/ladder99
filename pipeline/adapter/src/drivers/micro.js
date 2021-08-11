@@ -4,7 +4,6 @@
 import si from 'systeminformation'
 
 const pollInterval = 2000 // msec
-// const reconnectInterval = 5000 // msec
 
 export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
@@ -16,32 +15,15 @@ export class AdapterDriver {
     async function readData() {
       try {
         // const data = await si.get({
-        //   // cpu: 'manufacturer, brand, speed, cores',
         //   cpuTemperature: 'main, cores',
         //   mem: 'total, free, used',
-        //   // battery:
-        //   //   'hasBattery, currentCapacity, maxCapacity, capacityUnit, percent', // mWh
-        //   // osInfo: 'platform, distro, release, codename, arch, hostname',
-        //   // currentLoad: 'currentLoad, currentLoadUser, currentLoadSystem',
-        //   // disksIO: 'rIO, wIO',
-        //   // fsSize: 'fs, type, size, available',
-        //   // wifiInterfaces: 'id, model, vendor',
-        //   // dockerContainers: 'name, createdAt, state',
         // })
         const data = await si.get(inputs.values)
         console.log(data)
 
-        // get memory in DATA_SET format for shdr,
-        // eg "free=48237472 used=12387743 total=38828348"
-        const memstr = Object.keys(data.mem)
-          .map(key => `${key}=${data.mem[key]}`)
-          .join(' ')
-        cache.set(`${deviceId}-memory`, { value: memstr })
-
-        cache.set(`${deviceId}-temperature`, {
-          value: data.cpuTemperature.main,
-        })
-
+        // write values to cache
+        setValue('memory', getDataSet(data.mem))
+        setValue('temperature', data.cpuTemperature.main)
         setAvailable()
       } catch (e) {
         setUnavailable()
@@ -49,13 +31,26 @@ export class AdapterDriver {
       }
     }
 
+    function setValue(name, value) {
+      cache.set(`${deviceId}-${name}`, { value })
+    }
+
     function setUnavailable() {
-      cache.set(`${deviceId}-availability`, { value: 'UNAVAILABLE' })
-      cache.set(`${deviceId}-memory`, { value: 'UNAVAILABLE' })
-      cache.set(`${deviceId}-temperature`, { value: 'UNAVAILABLE' })
+      setValue('availability', 'UNAVAILABLE')
+      setValue('memory', 'UNAVAILABLE')
+      setValue('temperature', 'UNAVAILABLE')
     }
     function setAvailable() {
-      cache.set(`${deviceId}-availability`, { value: 'AVAILABLE' })
+      setValue('availability', 'AVAILABLE')
     }
   }
+}
+
+// get object in DATA_SET format for shdr,
+// eg "free=48237472 used=12387743 total=38828348"
+function getDataSet(obj) {
+  const str = Object.keys(obj)
+    .map(key => `${key}=${obj[key]}`)
+    .join(' ')
+  return str
 }
