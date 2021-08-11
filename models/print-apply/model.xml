@@ -8,7 +8,6 @@
     <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
     <DataItem id="cond" name="condition" category="CONDITION" type="SYSTEM"/>
     <DataItem id="msg" name="message" category="EVENT" type="MESSAGE"/>
-    <!-- how best indicate plain cache lookup? just empty source? try dot -->
     <DataItem id="build" name="build_no" category="EVENT" type="FIRMWARE" subType="VERSION"/>
     <DataItem id="func" name="func_mode" category="EVENT" type="FUNCTIONAL_MODE"/>
     <DataItem id="chg" name="asset_changed" category="EVENT" type="ASSET_CHANGED" discrete="true"/>
