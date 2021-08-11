@@ -11,15 +11,16 @@ devices:
   - id: m1
     name: micro1 # this must match name in agent.cfg and devices.xml
     model: microcontroller/ladder99
+
     # specify sources for dataitem values
-    #. eg could have multiple thermometers for a machine, or doors?
-    #. be careful with multiple sources - don't want to clobber dataitems.
+    #. eg could have multiple thermometers for a machine, or doors
+    #. be careful with multiple sources - don't want to clobber dataitems
     sources:
       - model: microcontroller/ladder99
         driver: micro # adapter plugin - manages protocol and payload
 
-    #. this should be server, not destinations - for agent to connect to
-    destinations: # where to post output - just uses first output for now
+    # where to post output - just uses first output for now
+    destinations:
       - protocol: shdr
         host: adapter
         port: 7878
