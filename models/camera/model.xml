@@ -1,0 +1,17 @@
+<!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
+<Model>
+  <DataItems>
+    <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
+  </DataItems>
+  <Components>
+    <Systems>
+      <Components>
+        <Electrical>
+          <DataItems>
+            <DataItem id="power" name="control_power_condition" category="CONDITION" type="VOLTAGE_DC" />
+          </DataItems>
+        </Electrical>
+      </Components>
+    </Systems>
+  </Components>
+</Model>

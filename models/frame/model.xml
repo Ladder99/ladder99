@@ -1,0 +1,5 @@
+<Device id="$id" name="$name" sampleInterval="$sampleInterval" uuid="$uuid">
+  <Description manufacturer="$manufacturer" model="$model" serialNumber="$serialNumber">
+    $description
+  </Description>
+</Device>

@@ -1,9 +1,5 @@
-<Device id="$id" name="$name" sampleInterval="$sampleInterval" uuid="$uuid">
-  <Description manufacturer="$manufacturer" model="$model" serialNumber="$serialNumber">
-    $description
-  </Description>
-
-  <!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
+<!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
+<Model>
   <DataItems>
     <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
     <DataItem id="op" name="operator_name" category="EVENT" type="USER" subType="OPERATOR"/>
@@ -28,4 +24,4 @@
       </Components>
     </Systems>
   </Components>
-</Device>
+</Model>
