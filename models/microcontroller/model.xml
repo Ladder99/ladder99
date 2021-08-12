@@ -1,15 +1,27 @@
+<!-- when treated as an independent device, -->
+
 <Device id="$id" name="$name" sampleInterval="$sampleInterval" uuid="$uuid">
   <Description manufacturer="$manufacturer" model="$model" serialNumber="$serialNumber">
     $description
   </Description>
 
-  <!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
+  <!-- dataitem ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
   <!-- source attributes are parsed and stripped from the xml before compilation -->
   <DataItems>
+    <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
     <DataItem id="temp" name="temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
     <DataItem id="mem" name="memory" category="EVENT" type="VARIABLE" representation="DATA_SET" />
-    <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
-    <DataItem id="chg" name="asset_changed" category="EVENT" type="ASSET_CHANGED" discrete="true"/>
-    <DataItem id="rem" name="asset_removed" category="EVENT" type="ASSET_REMOVED"/>
   </DataItems>
 </Device>
+
+<!-- or when added on to a machine, -->
+
+<Auxiliaries>
+  <Sensor id="" name="">
+    <DataItems>
+      <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
+      <DataItem id="temp" name="temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
+      <DataItem id="mem" name="memory" category="EVENT" type="VARIABLE" representation="DATA_SET" />
+    </DataItems>
+  </Sensor>
+</Auxiliaries>

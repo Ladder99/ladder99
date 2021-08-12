@@ -1,5 +1,24 @@
-<Personnel>
-  <DataItems>
-    <DataItem id="op" name="operator" category="EVENT" type="USER" subType="OPERATOR"/>
-  </DataItems>
-</Personnel>
+<!-- specify tree like this,  -->
+
+<Device>
+  <Systems>
+    <Components>
+      <Resources>
+        <Components>
+          <Personnel>
+            <DataItems>
+              <DataItem id="op" name="operator" category="EVENT" type="USER" subType="OPERATOR"/>
+            </DataItems>
+          </Personnel>
+        </Components>
+      </Resources>
+    </Components>
+  </Systems>
+</Device>
+
+<!-- or just the dataitems and their place in the tree in a config.yaml file -->
+<!-- place: device/systems/components/resources/components/personnel -->
+
+<DataItems>
+  <DataItem id="op" name="operator" category="EVENT" type="USER" subType="OPERATOR"/>
+</DataItems>
