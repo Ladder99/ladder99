@@ -14,14 +14,11 @@ export class AdapterDriver {
 
     async function readData() {
       try {
-        // const data = await si.get({
-        //   cpuTemperature: 'main, cores',
-        //   mem: 'total, free, used',
-        // })
         const data = await si.get(inputs.values)
         console.log(data)
 
         // write values to cache
+        //. get this info from inputs also
         setValue('temperature', data.cpuTemperature.main)
         setValue('memory', getDataSet(data.mem))
         setValue('cpu', getDataSet(data.currentLoad))
@@ -37,6 +34,7 @@ export class AdapterDriver {
     }
 
     function setUnavailable() {
+      //. get this list from inputs also
       setValue('availability', 'UNAVAILABLE')
       setValue('memory', 'UNAVAILABLE')
       setValue('temperature', 'UNAVAILABLE')

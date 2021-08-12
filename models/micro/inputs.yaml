@@ -3,7 +3,12 @@
 
 # these values are defined by https://github.com/sebhildebrandt/systeminformation
 
+#. we need this more detailed structure up top so know what to read,
+# where to write it, and what representation to use
 values:
+  #. how get this?
+  # - name: availability
+
   # - name: temperature
   #   item: cpuTemperature
   #   subitems: main, cores
@@ -12,6 +17,14 @@ values:
   # - name: memory
   #   item: mem
   #   subitems: total, free, used
+  #   representation: dataset
+
+  # - name: cpu
+  #   item: currentLoad
+  #   subitems: currentLoad, currentLoadUser, currentLoadSystem
+  #   representation: dataset
+
+  # ---- these are temporary
 
   # battery: hasBattery, currentCapacity, maxCapacity, capacityUnit, percent # mWh
   # cpu: manufacturer, brand, speed, cores
