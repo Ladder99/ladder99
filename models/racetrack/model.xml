@@ -1,0 +1,21 @@
+<Device id="$id" name="$name" sampleInterval="$sampleInterval" uuid="$uuid">
+  <Description manufacturer="$manufacturer" model="$model" serialNumber="$serialNumber">
+    $description
+  </Description>
+
+  <!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
+  <DataItems>
+    <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
+    <DataItem id="cond" name="condition" category="CONDITION" type="SYSTEM"/>
+    <DataItem id="func" name="func_mode" category="EVENT" type="FUNCTIONAL_MODE"/>
+    <DataItem id="state" name="state" category="EVENT" type="EXECUTION"/>
+    <DataItem id="wait" name="wait_state" category="EVENT" type="WAIT_STATE"/>
+    <DataItem id="step" name="step" category="EVENT" type="BLOCK"/>
+    <DataItem id="up" name="up_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="OPERATING"/>
+    <DataItem id="len" name="track_length" category="SAMPLE" type="LENGTH" subType="STANDARD"/>
+    <DataItem id="dur" name="race_duration" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS"/>
+    <DataItem id="runner" name="runner" category="EVENT" type="MESSAGE"/>
+    <!-- duplicate, and speed should have meters/sec units etc -->
+    <!-- <DataItem id="spd" name="race_speed" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS"/> -->
+  </DataItems>
+</Device>
