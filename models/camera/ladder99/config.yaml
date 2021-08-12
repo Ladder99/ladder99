@@ -1,0 +1,5 @@
+config:
+  manufacturer: Ladder99
+  model: PiCamera
+  serialNumber: ${serialNumber}
+  text: Ladder99 PiCamera
