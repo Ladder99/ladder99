@@ -14,7 +14,9 @@ export class AdapterDriver {
 
     async function readData() {
       try {
-        const data = await si.get(inputs.values)
+        const specs = {}
+        inputs.values.forEach(value => (specs[value.item] = value.subitems))
+        const data = await si.get(specs)
         console.log(data)
 
         // write values to cache
@@ -45,6 +47,7 @@ export class AdapterDriver {
 
 // get object in DATA_SET format for shdr,
 // eg "free=48237472 used=12387743 total=38828348"
+//. this should be part of cache.js
 function getDataSet(obj) {
   const str = Object.keys(obj)
     .map(key => `${key}=${obj[key]}`)

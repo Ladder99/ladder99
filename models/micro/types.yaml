@@ -1,0 +1,8 @@
+# types
+
+# these types can be used in output expressions
+
+types:
+  AVAILABILITY:
+    online: AVAILABLE
+    offline: UNAVAILABLE

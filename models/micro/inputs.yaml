@@ -1,38 +1,41 @@
 # inputs
 # define values to be read by micro.js driver and how to write to cache
 
-# these values are defined by https://github.com/sebhildebrandt/systeminformation
-
-#. we need this more detailed structure up top so know what to read,
-# where to write it, and what representation to use
+# we need this detailed structure so know what to read,
+# where to write it, and what representation to use for writing to the agent.
+# this yaml format is specific to the micro.js adapter driver.
+# the item and subitem names are defined by https://github.com/sebhildebrandt/systeminformation
 values:
   #. how get this?
-  # - name: availability
+  # - name: connection
 
-  # - name: temperature
-  #   item: cpuTemperature
-  #   subitems: main, cores
-  #   representation: dataset
+  #. not sure yet if better to use dataset or individual items.
+  # indiv items might be easier for downstream apps to consume?
 
-  # - name: memory
-  #   item: mem
-  #   subitems: total, free, used
-  #   representation: dataset
+  - name: temperature
+    item: cpuTemperature
+    subitems: main, cores
+    representation: dataset
 
-  # - name: cpu
-  #   item: currentLoad
-  #   subitems: currentLoad, currentLoadUser, currentLoadSystem
-  #   representation: dataset
+  - name: memory
+    item: mem
+    subitems: total, free, used
+    representation: dataset
 
-  # ---- these are temporary
+  - name: cpu
+    item: currentLoad
+    subitems: currentLoad, currentLoadUser, currentLoadSystem
+    representation: dataset
+
+  # ---- most interesting ones avail
 
   # battery: hasBattery, currentCapacity, maxCapacity, capacityUnit, percent # mWh
   # cpu: manufacturer, brand, speed, cores
-  cpuTemperature: main, cores
-  currentLoad: currentLoad, currentLoadUser, currentLoadSystem
+  # cpuTemperature: main, cores
+  # currentLoad: currentLoad, currentLoadUser, currentLoadSystem
   # disksIO: rIO, wIO
   # dockerContainers: name, createdAt, state
   # fsSize: fs, type, size, available
-  mem: total, free, used
+  # mem: total, free, used
   # osInfo: platform, distro, release, codename, arch, hostname
   # wifiInterfaces: id, model, vendor

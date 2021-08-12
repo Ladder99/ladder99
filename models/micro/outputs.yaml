@@ -10,7 +10,7 @@ outputs:
   - key: availability
     category: EVENT
     type: AVAILABILITY
-    value: <availability>
+    value: types.AVAILABILITY<connection>
 
   - key: temperature
     category: SAMPLE
