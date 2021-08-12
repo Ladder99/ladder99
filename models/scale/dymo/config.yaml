@@ -1,0 +1,4 @@
+config:
+  manufacturer: Dymo
+  model: M10
+  description: Dymo USB Scale

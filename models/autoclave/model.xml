@@ -1,0 +1,31 @@
+<Device id="$id" name="$name" sampleInterval="$sampleInterval" uuid="$uuid">
+  <Description manufacturer="$manufacturer" model="$model" serialNumber="$serialNumber">
+    $description
+  </Description>
+
+  <!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
+  <DataItems>
+    <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
+    <DataItem id="op" name="operator_name" category="EVENT" type="USER" subType="OPERATOR"/>
+    <DataItem id="rec" name="recipe_description" category="EVENT" type="PROCESS_KIND_ID" subType="PROCESS_NAME"/>
+    <DataItem id="air" name="vessel_air_temp" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
+    <DataItem id="chg" name="asset_changed" category="EVENT" type="ASSET_CHANGED" discrete="true"/>
+    <DataItem id="rem" name="asset_removed" category="EVENT" type="ASSET_REMOVED"/>
+  </DataItems>
+  <Components>
+    <Systems>
+      <Components>
+        <Electrical>
+          <DataItems>
+            <DataItem id="power" name="control_power_condition" category="CONDITION" type="VOLTAGE_DC" />
+          </DataItems>
+        </Electrical>
+        <Cooling>
+          <DataItems>
+            <DataItem id="pump" name="cool_pump_a_hours" category="SAMPLE" type="EQUIPMENT_TIME" subType="OPERATING" nativeScale="1" nativeUnits="SECOND" units="SECOND"/>
+          </DataItems>
+        </Cooling>
+      </Components>
+    </Systems>
+  </Components>
+</Device>

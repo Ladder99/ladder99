@@ -1,0 +1,11 @@
+<Device id="$id" name="$name" sampleInterval="$sampleInterval" uuid="$uuid">
+  <Description manufacturer="$manufacturer" model="$model" serialNumber="$serialNumber">
+    $description
+  </Description>
+
+  <!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
+  <DataItems>
+    <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
+    <DataItem id="mass" name="mass" category="SAMPLE" type="MASS" units="KILOGRAM"/>
+  </DataItems>
+</Device>
