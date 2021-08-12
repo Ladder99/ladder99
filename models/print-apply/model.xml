@@ -1,9 +1,6 @@
-<Device id="$deviceId" name="$deviceName" sampleInterval="$sampleInterval" uuid="$uuid">
-  <Description manufacturer="$manufacturer" model="$model" serialNumber="$serialNumber">
-    $description
-  </Description>
+<!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
 
-  <!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
+<Model>
   <DataItems>
     <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
     <DataItem id="cond" name="condition" category="CONDITION" type="SYSTEM"/>
@@ -13,6 +10,7 @@
     <DataItem id="chg" name="asset_changed" category="EVENT" type="ASSET_CHANGED" discrete="true"/>
     <DataItem id="rem" name="asset_removed" category="EVENT" type="ASSET_REMOVED"/>
   </DataItems>
+
   <Components>
 
     <!-- <Controller name="controller" nativeName="plc"> -->
@@ -81,14 +79,19 @@
         </DataItems>
       </Feeder>
     </Components>
-    <Resources>
+
+    <!-- define an attachment point here, or just let submodels attach anywhere -->
+    <!-- yeah, the latter -->
+
+    <!-- <Resources>
       <Components>
         <Personnel>
           <DataItems>
-            <!-- <DataItem id="op" name="operator" category="EVENT" type="USER" subType="OPERATOR"/> -->
+            <DataItem id="op" name="operator" category="EVENT" type="USER" subType="OPERATOR"/>
           </DataItems>
         </Personnel>
       </Components>
-    </Resources>
+    </Resources> -->
+
   </Systems>
-</Device>
+</Model>

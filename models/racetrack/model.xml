@@ -1,9 +1,5 @@
-<Device id="$id" name="$name" sampleInterval="$sampleInterval" uuid="$uuid">
-  <Description manufacturer="$manufacturer" model="$model" serialNumber="$serialNumber">
-    $description
-  </Description>
-
-  <!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
+<!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
+<Model>
   <DataItems>
     <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
     <DataItem id="cond" name="condition" category="CONDITION" type="SYSTEM"/>
@@ -18,4 +14,4 @@
     <!-- duplicate, and speed should have meters/sec units etc -->
     <!-- <DataItem id="spd" name="race_speed" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS"/> -->
   </DataItems>
-</Device>
+</Model>

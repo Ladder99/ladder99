@@ -1,7 +1,5 @@
-<!-- this model comes mostly from the mazak here: -->
-<!-- http://mtconnect.mazakcorp.com:5717/ -->
-<Device id="$deviceId" name="$deviceName" uuid="$uuid">
-  <Description manufacturer="$manufacturer">$description</Description>
+<!-- this model comes mostly from the mazak here: http://mtconnect.mazakcorp.com:5717/ -->
+<Model>
   <DataItems>
     <DataItem category="EVENT" id="avail" type="AVAILABILITY"/>
     <DataItem category="EVENT" id="functionalmode" type="FUNCTIONAL_MODE"/>
@@ -498,4 +496,4 @@
       </Components>
     </Resources>
   </Components>
-</Device>
+</Model>

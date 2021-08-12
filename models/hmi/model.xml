@@ -17,8 +17,8 @@
 </Device>
 
 <!-- or just the dataitems and their place in the tree in a config.yaml file -->
-<!-- place: device/systems/components/resources/components/personnel -->
+<!-- place: device/systems/components/resources/components/personnel/dataitems -->
 
-<DataItems>
+<Model>
   <DataItem id="op" name="operator" category="EVENT" type="USER" subType="OPERATOR"/>
-</DataItems>
+</Model>

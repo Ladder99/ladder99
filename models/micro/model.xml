@@ -1,22 +1,19 @@
-<!-- when treated as an independent device, -->
+<!-- dataitem ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
 
-<Device id="$id" name="$name" sampleInterval="$sampleInterval" uuid="$uuid">
-  <Description manufacturer="$manufacturer" model="$model" serialNumber="$serialNumber">
-    $description
-  </Description>
-
-  <!-- dataitem ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
-  <!-- source attributes are parsed and stripped from the xml before compilation -->
+<Model>
   <DataItems>
     <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
     <DataItem id="temp" name="temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
     <DataItem id="mem" name="memory" category="EVENT" type="VARIABLE" representation="DATA_SET" />
+    <DataItem id="cpu" name="cpu" category="EVENT" type="VARIABLE" representation="DATA_SET" />
   </DataItems>
-</Device>
+</Model>
 
 <!-- or when added on to a machine, -->
+<!-- so could use above and say  -->
+<!-- path = Auxiliaries/Sensor[@id="" @name=""]/DataItems -->
 
-<Auxiliaries>
+<!-- <Auxiliaries>
   <Sensor id="" name="">
     <DataItems>
       <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
@@ -24,4 +21,4 @@
       <DataItem id="mem" name="memory" category="EVENT" type="VARIABLE" representation="DATA_SET" />
     </DataItems>
   </Sensor>
-</Auxiliaries>
+</Auxiliaries> -->
