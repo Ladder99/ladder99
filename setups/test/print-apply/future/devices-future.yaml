@@ -26,6 +26,7 @@ devices:
         #   url: opc.tcp://simulator-opc:4334/UA/LittleServer
         #   poll: 5
 
+      # variable frequency drive - eg for spindle/drill
       - inputs: lapond/vfd
         type: opc
         active: true

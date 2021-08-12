@@ -1,9 +1,10 @@
 # print-apply setup
 
-# define the devices.xml structure, using the model yamls for dataitems.
-# read by pipeline/adapter.
+# define the devices.xml structure, using a model.xml for dataitems.
+# read by the ladder99 adapter.
+
 # sources define the inputs to the cache.
-# compiled by pipeline/compiler into volumes/agent/devices.xml
+# compiled by ladder99 compiler into volumes/agent/devices.xml
 # and volumes/agent/agent.cfg.
 #. see also devices-future.yaml for future dev.
 
@@ -28,13 +29,11 @@ devices:
         driver: mqtt-json # type of adapter plugin - manages protocol and payload
         host: broker
         port: 1883
-        path: /
 
-      - model: sensor/ladder99
+      - model: micro
         driver: micro
         host: micro
         port: 8888
-        path: /
 
       - model: hmi/rockwell
         driver: opc
