@@ -13,7 +13,10 @@
 <!-- so could use above and say  -->
 <!-- path = Auxiliaries/Sensor[@id="" @name=""]/DataItems -->
 
-<!-- <Auxiliaries>
+<Model path="Device/Auxiliaries/Sensor">
+
+  <!-- 
+<Auxiliaries>
   <Sensor id="" name="">
     <DataItems>
       <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
@@ -21,4 +24,5 @@
       <DataItem id="mem" name="memory" category="EVENT" type="VARIABLE" representation="DATA_SET" />
     </DataItems>
   </Sensor>
-</Auxiliaries> -->
+</Auxiliaries> 
+-->

@@ -13,8 +13,8 @@
     <DataItem category="EVENT" id="osrd" subType="RELEASE_DATE" type="OPERATING_SYSTEM"/>
     <DataItem category="EVENT" id="osid" subType="INSTALL_DATE" type="OPERATING_SYSTEM"/>
     <DataItem category="EVENT" id="osmfg" subType="MANUFACTURER" type="OPERATING_SYSTEM"/>
-    <DataItem category="EVENT" discrete="true" id="d1_asset_chg" type="ASSET_CHANGED"/>
-    <DataItem category="EVENT" id="d1_asset_rem" type="ASSET_REMOVED"/>
+    <DataItem category="EVENT" id="asset_changed" type="ASSET_CHANGED" discrete="true"/>
+    <DataItem category="EVENT" id="asset_removed" type="ASSET_REMOVED"/>
   </DataItems>
   <Components>
     <Axes id="a" name="base">
