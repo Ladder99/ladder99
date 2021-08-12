@@ -19,29 +19,26 @@ export class AdapterDriver {
 
         // write values to cache
         //. get this info from inputs also
+        setValue('availability', 'AVAILABLE')
         setValue('temperature', data.cpuTemperature.main)
         setValue('memory', getDataSet(data.mem))
         setValue('cpu', getDataSet(data.currentLoad))
-        setAvailable()
       } catch (e) {
         setUnavailable()
         console.error(e)
       }
     }
 
-    function setValue(name, value) {
-      cache.set(`${deviceId}-${name}`, { value })
-    }
-
+    //. get this list from inputs also
     function setUnavailable() {
-      //. get this list from inputs also
       setValue('availability', 'UNAVAILABLE')
       setValue('memory', 'UNAVAILABLE')
       setValue('temperature', 'UNAVAILABLE')
       setValue('cpu', 'UNAVAILABLE')
     }
-    function setAvailable() {
-      setValue('availability', 'AVAILABLE')
+
+    function setValue(name, value) {
+      cache.set(`${deviceId}-${name}`, { value })
     }
   }
 }

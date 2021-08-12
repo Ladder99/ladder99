@@ -13,7 +13,7 @@ devices:
     #. eg could have multiple thermometers for a machine, or doors
     #. be careful with multiple sources - don't want to clobber dataitems
     sources:
-      - model: micro/ladder99/glimpse
+      - model: micro #/ladder99/glimpse
         driver: micro # adapter plugin - manages protocol and payload
 
     # where to post output - just uses first output for now
