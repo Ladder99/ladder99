@@ -1,9 +1,9 @@
 // microcontroller driver
 // fetches data from microcontroller/pc etc
 
-import si from 'systeminformation'
+import si from 'systeminformation' // see https://github.com/sebhildebrandt/systeminformation
 
-const pollInterval = 2000 // msec
+const pollInterval = 2000 // msec //. get from setup
 
 export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
@@ -22,8 +22,9 @@ export class AdapterDriver {
         console.log(data)
 
         // write values to cache
-        setValue('memory', getDataSet(data.mem))
         setValue('temperature', data.cpuTemperature.main)
+        setValue('memory', getDataSet(data.mem))
+        setValue('cpu', getDataSet(data.currentLoad))
         setAvailable()
       } catch (e) {
         setUnavailable()
@@ -39,6 +40,7 @@ export class AdapterDriver {
       setValue('availability', 'UNAVAILABLE')
       setValue('memory', 'UNAVAILABLE')
       setValue('temperature', 'UNAVAILABLE')
+      setValue('cpu', 'UNAVAILABLE')
     }
     function setAvailable() {
       setValue('availability', 'AVAILABLE')

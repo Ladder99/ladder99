@@ -1,6 +1,8 @@
 # inputs
 # define values to be read by micro.js driver and how to write to cache
 
+# these values are defined by https://github.com/sebhildebrandt/systeminformation
+
 values:
   # - name: temperature
   #   item: cpuTemperature
@@ -14,7 +16,7 @@ values:
   # battery: hasBattery, currentCapacity, maxCapacity, capacityUnit, percent # mWh
   # cpu: manufacturer, brand, speed, cores
   cpuTemperature: main, cores
-  # currentLoad: currentLoad, currentLoadUser, currentLoadSystem
+  currentLoad: currentLoad, currentLoadUser, currentLoadSystem
   # disksIO: rIO, wIO
   # dockerContainers: name, createdAt, state
   # fsSize: fs, type, size, available
