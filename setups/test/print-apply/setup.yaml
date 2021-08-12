@@ -18,7 +18,7 @@ devices:
     manufacturer: CCS
     model: CCS P&A
     serialNumber: '001'
-    machine: print-apply # for xml structure - see models/print-apply/model.xml
+    structure: print-apply # for xml structure - see models/print-apply/model.xml
 
     filters:
       - inputs: print-apply/ccs # location of inputs.yaml

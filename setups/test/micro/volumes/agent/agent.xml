@@ -6,14 +6,15 @@
   <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.7.0.3"/>
   <Devices>
 
-    <Device id="m1" name="micro1" uuid="a123" sampleInterval="10">
+    <Device id="m1" name="micro1" uuid="a123" sampleInterval="5">
       <Description manufacturer="Ladder99" model="Glimpse" serialNumber="001">
         Ladder99 Glimpse
       </Description>
       <DataItems>
+        <DataItem id="avail1" name="m1-availability" category="EVENT" type="AVAILABILITY"/>
         <DataItem id="temp1" name="m1-temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
         <DataItem id="mem1" name="m1-memory" category="EVENT" type="VARIABLE" subType="x:MEMORY" representation="DATA_SET"/>
-        <DataItem id="avail1" name="m1-availability" category="EVENT" type="AVAILABILITY"/>
+        <DataItem id="cpu1" name="m1-cpu" category="EVENT" type="VARIABLE" subType="x:CPU" representation="DATA_SET"/>
       </DataItems>
     </Device>
 

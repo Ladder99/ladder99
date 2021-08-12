@@ -1,22 +1,19 @@
 # setup for microcontroller
 
-#. compile this with sh/compile
-#. will compile to agent.cfg, devices.xml, pipeline-overrides.yaml, topology.dot?
-#. include in sh/pipeline steps? ie always compile this file (or if changed)
-
-# meta:
-#   foo: bar
+# compile this with sh/compile
+#. will compile to agent.cfg, agent.xml, pipeline-overrides.yaml, topology.dot?
+#. include that in sh/pipeline steps? ie always compile this file (or if changed)
 
 devices:
   - id: m1
-    name: micro1 # this must match name in agent.cfg and devices.xml
-    model: microcontroller/ladder99
+    name: micro1 # this must match name in agent.cfg and agent.xml
+    structure: micro
 
     # specify sources for dataitem values
     #. eg could have multiple thermometers for a machine, or doors
     #. be careful with multiple sources - don't want to clobber dataitems
     sources:
-      - model: microcontroller/ladder99
+      - model: micro/ladder99/glimpse
         driver: micro # adapter plugin - manages protocol and payload
 
     # where to post output - just uses first output for now

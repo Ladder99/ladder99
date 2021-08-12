@@ -4,8 +4,8 @@
   <DataItems>
     <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
     <DataItem id="temp" name="temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
-    <DataItem id="mem" name="memory" category="EVENT" type="VARIABLE" representation="DATA_SET" />
-    <DataItem id="cpu" name="cpu" category="EVENT" type="VARIABLE" representation="DATA_SET" />
+    <DataItem id="mem" name="memory" category="EVENT" type="VARIABLE" subType="x:MEMORY" representation="DATA_SET" />
+    <DataItem id="cpu" name="cpu" category="EVENT" type="VARIABLE" subType="x:CPU" representation="DATA_SET" />
   </DataItems>
 </Model>
 
