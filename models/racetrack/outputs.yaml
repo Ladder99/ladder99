@@ -1,0 +1,39 @@
+# outputs
+
+# value is javascript, evaluated by the cache in calculating the shdr output.
+# <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
+
+outputs:
+  - key: connection
+    value: types.AVAILABILITY[<connection>]
+
+  - key: condition
+    value: "<has-faults> ? 'FAULT' : 'NORMAL'"
+
+  - key: func_mode
+    value: "<status-has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
+
+  - key: state
+    # one of WAIT, ACTIVE, PROGRAM_STOPPED
+    value: types.EXECUTION[<status-state>]
+
+  - key: wait_state
+    value: types.WAIT_STATE[<status-state>]
+
+  - key: step
+    value: <status-step>
+
+  - key: up_time
+    value: <status-cpu_time>
+
+  - key: track_length
+    value: <distance>
+
+  - key: race_duration
+    value: <timer>
+
+  - key: race_speed
+    value: <speed>
+
+  - key: runner
+    value: <running_man>
