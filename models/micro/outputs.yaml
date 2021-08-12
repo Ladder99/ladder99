@@ -23,3 +23,10 @@ outputs:
     subType: x:MEMORY
     representation: DATA_SET
     value: <memory>
+
+  - key: cpu
+    category: SAMPLE
+    type: VARIABLE
+    subType: x:CPU
+    representation: DATA_SET
+    value: <cpu>
