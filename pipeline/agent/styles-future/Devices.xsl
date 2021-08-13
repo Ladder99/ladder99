@@ -62,7 +62,7 @@
 				</div>
 			</nav>
 
-			<div class="container-fluid" style="margin-top: 60px;">
+			<div class="container-fluid page-container">
 				<!-- <p> -->
 				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Header" /> -->
 				<!-- </p> -->

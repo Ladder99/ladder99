@@ -1,3 +1,8 @@
+/* define global variables */
+:root {
+  --header-height: 60px;
+}
+
 .panel-default > .panel-heading {
   padding: 5px 15px;
 }
@@ -41,9 +46,13 @@ body {
   overflow-y: hidden;
 }
 
+.page-container {
+  margin-top: var(--header-height);
+}
+
 .stickytable-container {
   width: 100%;
-  height: calc(100vh - 60px);
+  height: calc(100vh - var(--header-height));
   overflow-y: auto;
 }
 
