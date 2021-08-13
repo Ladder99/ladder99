@@ -1,0 +1,69 @@
+# cache outputs
+
+# left side is shdr key (will have $deviceNum appended).
+# right side is javascript, evaluated by the cache in calculating the shdr output.
+# <foo> is a cache lookup, short for cache.get('${deviceId}-foo').value
+
+outputs:
+  conn: types.AVAILABILITY[<connection>]
+  cond: "<has-hard-faults> ? 'FAULT' : <has-soft-faults> ? 'WARNING' : 'NORMAL'"
+  msg:
+    # representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
+    # value: Object.entries(<faults>).map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
+    # value: "'msg|' + Object.entries(<faults>).map(([id, fault]) => 'f' + id + '=pokpok').join(' ')"
+    # value: "Object.entries(<faults>).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
+    #. escape any pipes and enclose in double quotes
+    #. what if value returned "nativecode|msg"? then no need for separate value and nativeCode calcs
+    value: "Object.entries(<faults>).map(([id, fault]) => fault.description).join(', ')"
+    nativeCode: NativeCode #.?
+  build: <build_no>
+  func: "<has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
+  estop: "<has-fault-ten> ? 'TRIGGERED' : 'ARMED'"
+  state: types.EXECUTION[<state>]
+  wait: types.WAIT_STATE[<state>]
+  pgm: <program>
+  step: <step>
+  clktime: <utc_time>
+  uptime: <cpu_time>
+  faultct: <fault_count>
+  cyclect: <cycle_count>
+  lifect: <life_count>
+  cycletime: <cycle_time>
+  eecond: "<has-tamp-fault> ? 'FAULT' : 'NORMAL'"
+  eemsg:
+    representation: DATA_SET
+    # value: Object.entries(<faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + '=' + fault.description.replaceAll(' ','')).join(' ')
+    # value: "Object.entries(<faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + ': ' + fault.description).join(', ')"
+    #. escape any pipes and enclose in double quotes
+    value: "Object.entries(<faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => fault.description).join(', ')"
+    nativeCode: NativeCode #.
+  pdetect: "<smart_tamp_enabled> ? types.PART_DETECT[<tamp_part_detect>] : 'UNAVAILABLE'"
+  assist: types.ACTUATOR_STATE[<tamp_air_assist>]
+  vac: types.ACTUATOR_STATE[<tamp_vacuum>]
+  tampcyl: types.ACTUATOR_STATE[<tamp_cylinder>]
+  exttime: <cylinder_extend_time>
+  distime: <cylinder_home_disengage_time>
+  travtime: <cylinder_travel_time>
+  vacdelay: <tamp_vacuum_delay>
+  fcond: "<has-feed-fault> ? 'FAULT' : <has-feed-warning> ? 'WARNING' : 'NORMAL'"
+  fmsg:
+    # representation: DATA_SET #. not available for agent xsl yet
+    # value: "Object.entries(<faults>).filter(([key,]) => [1,11,12,13,14,15,50,51].includes(Number(key))).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
+    #. escape any pipes and enclose in double quotes
+    # value: "Object.entries(<faults>).map(([id, fault]) => fault.description).join(', ')"
+    value: "Object.entries(<faults>).filter(([key,]) => [1,11,12,13,14,15,50,51].includes(Number(key))).map(([id, fault]) => fault.description).join(', ')"
+    nativeCode: NativeCode #.
+  fpart: types.PART_DETECT[<product_sensor_one>]
+  mstate: types.ACTUATOR_STATE[<web_take_up_motor_state>]
+  reprint: types.ACTUATOR_STATE[<printer_reprint>]
+  pause: types.ACTUATOR_STATE[<printer_pause>]
+  feed: types.ACTUATOR_STATE[<printer_feed>]
+  start: types.ACTUATOR_STATE[<printer_start_print>]
+  sigtime: <print_signal_time>
+  ptime: <print_time>
+  ttime: <transport_time>
+  itime: <idle_time>
+  starttime: <printer_start_print_duration>
+  endwait: <printer_end_print_wait>
+  debounce: <product_sensor_one_debounce>
+  trig: <product_sensor_one_edge_trigger>
