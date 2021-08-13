@@ -35,7 +35,7 @@
 							<span class="icon-bar"></span>
 						</button>
 						<a class="navbar-brand" style="padding: 5px 20px;" href="#">
-							<img alt="Brand" src="/styles/Ladder99Logo-gray.png" height="40"/>
+							<img alt="Brand" src="/styles/LogoLadder99-gray.png" height="40"/>
 						</a>
 					</div>
 
@@ -87,7 +87,7 @@
 		<div class="">
 			<details>
 				<!-- <summary class="panel-heading"> -->
-				<summary class="">
+				<summary style="font-size:medium">
 					<!-- <h3>&#x25B6; Agent Header</h3> -->
 					<b>Header</b>
 				</summary>
