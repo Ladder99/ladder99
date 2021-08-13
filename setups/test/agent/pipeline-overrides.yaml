@@ -6,9 +6,8 @@ services:
   # we're using this to develop the agent html output
   agent:
     volumes:
-      - ./$SETUP/volumes/agent:/data/agent # has ccs-pa agent.cfg, devices.xml
+      - ./$SETUP/volumes/agent:/data/agent # has agent.cfg, agent.xml
       - ../pipeline/agent/styles-future:/data/styles
-
-networks:
-  ladder99:
-    name: ladder99
+# networks:
+#   ladder99:
+#     name: ladder99

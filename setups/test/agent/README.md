@@ -4,4 +4,4 @@ This setup is for Ladder99 development - agent xsl etc. It uses the styles defin
 
 To run the agent with this configuration,
 
-    sh/start test-agent agent
+    sh/start test/agent agent
