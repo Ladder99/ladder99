@@ -1,4 +1,4 @@
-# docker-compose overrides for development pipeline.
+# docker-compose overrides for development pipeline
 
 version: '3.8'
 
@@ -8,6 +8,3 @@ services:
     volumes:
       - ./$SETUP/volumes/agent:/data/agent # has agent.cfg, agent.xml
       - ../pipeline/agent/styles-future:/data/styles
-# networks:
-#   ladder99:
-#     name: ladder99

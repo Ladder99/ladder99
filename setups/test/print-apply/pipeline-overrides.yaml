@@ -1,9 +1,8 @@
-# docker-compose overrides for ccs-pa pipeline.
+# docker-compose overrides for ccs-pa pipeline
 
 #. this will be generated from setup.yaml, but edit manually for now.
 
 version: '3.8'
-
 # services:
 #   adapter:
 #     profiles:
@@ -14,7 +13,3 @@ version: '3.8'
 #   mosquitto:
 #     profiles:
 #       - dashboard
-
-networks:
-  ladder99:
-    name: ladder99
