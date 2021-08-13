@@ -121,14 +121,20 @@
 				</thead>
 				<tbody>
 					<!-- <xsl:for-each select="//*[local-name(.) != 'Agent']"> -->
-					<xsl:for-each select="//*">
+					<!-- works but includes Agent and descendents -->
+					<!-- <xsl:for-each select="//*"> -->
+					<!-- works but doesn't include Device row -->
+					<xsl:for-each select="*[local-name(.) != 'Agent']//*">
+						<!-- <xsl:for-each select="*[local-name(.) != 'Agent']/descendent-or-self::node()"> -->
 						<xsl:variable name="indent" select="count(ancestor::*)" />
 						<!-- <xsl:variable name="isDevice" select="local-name(.) == 'Device'" /> -->
 						<tr>
 							<td>
+								<!-- indent according to depth -->
 								<span style="color:white">
 									<xsl:value-of select="substring('............',1,$indent)"/>
 								</span>
+								<!-- show element type, eg Device, DataItem -->
 								<xsl:value-of select="local-name()"/>
 							</td>
 							<td>

@@ -3,10 +3,6 @@
   --header-height: 60px;
 }
 
-/* .panel-default > .panel-heading {
-  padding: 5px 15px;
-} */
-
 .nav,
 .navbar,
 .navbar-default,
@@ -32,6 +28,29 @@ summary {
   /* display: list-item; */
 }
 
+/* change icons for summary/detail */
+/* https://stackoverflow.com/questions/10813581/replace-the-expand-icon-of-html5-details-tag */
+details > summary {
+  list-style-type: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
+}
+details > summary::before {
+  content: '▶️';
+}
+details[open] > summary::before {
+  content: '🔽';
+}
+details {
+  border: 1px solid gray;
+  border-radius: 0.2rem;
+  padding: 0.5rem;
+}
+details[open] > summary {
+  margin-bottom: 0.5rem;
+}
+
 h1,
 h2,
 h3,
@@ -43,6 +62,7 @@ h6 {
 
 body {
   /* since the table is the scroller, hide body scrollbars... */
+  /* see https://dev.to/debadeepsen/a-table-with-a-fixed-sticky-header-54gm */
   overflow-y: hidden;
 }
 
