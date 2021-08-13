@@ -119,15 +119,16 @@
 					<th>Category</th>
 					<th>Type</th>
 					<th>SubType</th>
-					<th>Units</th>
 				</thead>
 				<tbody>
+					<!-- <xsl:for-each select="//*[local-name(.) != 'Agent']"> -->
 					<xsl:for-each select="//*">
 						<xsl:variable name="indent" select="count(ancestor::*)" />
+						<!-- <xsl:variable name="isDevice" select="local-name(.) == 'Device'" /> -->
 						<tr>
 							<td>
 								<span style="color:white">
-									<xsl:value-of select="substring('........',1,$indent)"/>
+									<xsl:value-of select="substring('............',1,$indent)"/>
 								</span>
 								<xsl:value-of select="local-name()"/>
 							</td>
@@ -146,15 +147,11 @@
 							<td>
 								<xsl:value-of select="@subType"/>
 							</td>
-							<td>
-								<xsl:value-of select="@units"/>
-							</td>
 						</tr>
 					</xsl:for-each>
 				</tbody>
 			</table>
 		</div>
-
 
 	</xsl:template>
 

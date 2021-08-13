@@ -56,6 +56,12 @@ tbody {
   max-height: calc(100vh - 60px);
 }
 
+table tbody tr:nth-child(odd) td {
+  background: #fafafa;
+}
+/* table tr:nth-child(even) td{
+} */
+
 /* .tableFixHead thead th {
   position: sticky;
   top: 0;
