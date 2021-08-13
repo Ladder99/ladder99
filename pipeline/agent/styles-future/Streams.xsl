@@ -87,7 +87,9 @@
 	</xsl:template>
 
 	<xsl:template match="m:DeviceStream">
-
+		<div class="panel-body">
+			<xsl:apply-templates select="m:ComponentStream"/>
+		</div>
 		<div class="table-responsive stickytable-container">
 			<table class="table table-hover">
 				<thead>
@@ -147,56 +149,12 @@
 
 	</xsl:template>
 
-	<!-- <xsl:template match="m:DeviceStream">
-
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<div class="container-fluid">
-					<div class="row">
-
-						<div class="col-lg-3 col-md-4 col-xs-12">
-							<h6 style="margin-bottom: 0px;">Device</h6>
-							<h2 style="margin-top: 0px; margin-bottom: 5px;">
-								<xsl:value-of select="@name"/>
-							</h2>
-						</div>
-
-						<div class="col-lg-3 col-md-4 hidden-xs">
-							<h6 style="margin-bottom: 0px;">ID</h6>
-							<h4 style="margin-top: 0px; margin-bottom: 5px;">
-								<xsl:value-of select="@id"/>
-							</h4>
-						</div>
-
-						<div class="col-lg-3 col-md-4 hidden-xs">
-							<h6 style="margin-bottom: 0px;">UUID</h6>
-							<h4 style="margin-top: 0px; margin-bottom: 5px;">
-								<xsl:value-of select="@uuid"/>
-							</h4>
-						</div>
-
-					</div>
-				</div>
-			</div>
-
-			<div class="panel-body">
-				<xsl:apply-templates select="m:ComponentStream"/>
-			</div>
-
-		</div>
-
-	</xsl:template> -->
-
 	<xsl:template match="m:Header">
-
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<i class="fa fa-bar-chart-o fa-fw"></i>Agent Information
+				Agent Information
 			</div>
-
 			<div class="panel-body">
-
-				<!-- Standard Header Table-->
 				<table class="table table-hover visible-lg visible-md">
 					<thead>
 						<xsl:for-each select="@*">
@@ -215,28 +173,11 @@
 						</tr>
 					</tbody>
 				</table>
-
-				<!-- Small/Mobile Header List -->
-				<ul class="list-group visible-sm visible-xs">
-					<xsl:for-each select="@*">
-						<li class="list-group-item col-md-3">
-							<h6 class="list-group-item-header">
-								<xsl:value-of select="name()"/>
-							</h6>
-							<h4 class="list-group-item-text">
-								<xsl:value-of select="." />
-							</h4>
-						</li>
-					</xsl:for-each>
-				</ul>
-
 			</div>
 		</div>
-
 	</xsl:template>
 
 	<xsl:template match="m:ComponentStream">
-
 		<div style="margin-left: 10px;">
 			<h6 style="margin-bottom: 0px;">
 				<xsl:value-of select="@component" />
@@ -245,27 +186,19 @@
 				<xsl:value-of select="@name" />
 			</h3>
 		</div>
-
 		<div class="panel-group">
 			<xsl:apply-templates select="	m:Samples"/>
 			<xsl:apply-templates select="	m:Events"/>
 			<xsl:apply-templates select="	m:Condition"/>
 		</div>
-
 	</xsl:template>
 
 	<xsl:template match="*">
-
 		<div class="panel panel-default">
-
 			<div class="panel-heading">
-				<i class="fa fa-bar-chart-o fa-fw"></i>
 				<xsl:value-of select="name()"/>
 			</div>
-
 			<div class="panel-body">
-
-				<!-- Standard Table -->
 				<div class="table-responsive visible-lg visible-md">
 					<table class="table table-hover">
 						<thead>
@@ -306,53 +239,8 @@
 						</tbody>
 					</table>
 				</div>
-
-				<!-- Small Table -->
-				<div class="table-responsive hidden-xs visible-sm">
-					<table class="table table-hover hidden-xs visible-sm">
-						<thead>
-							<th>Type</th>
-							<th>Name</th>
-							<th>Id</th>
-							<th>Value</th>
-						</thead>
-						<tbody>
-							<xsl:for-each select="*">
-								<tr>
-									<td>
-										<xsl:value-of select="name()"/>
-									</td>
-									<td>
-										<xsl:value-of select="@name"/>
-									</td>
-									<td>
-										<xsl:value-of select="@dataItemId"/>
-									</td>
-									<td>
-										<xsl:value-of select="."/>
-									</td>
-								</tr>
-							</xsl:for-each>
-						</tbody>
-					</table>
-				</div>
-
-				<!-- Extra Small List -->
-				<ul class="list-group visible-xs">
-					<xsl:for-each select="*">
-						<li class="list-group-item col-sm-12">
-							<h6 class="list-group-item-header">
-								<xsl:value-of select="@dataItemId"/>
-							</h6>
-							<h4 class="list-group-item-text">
-								<xsl:value-of select="."/>
-							</h4>
-						</li>
-					</xsl:for-each>
-				</ul>
 			</div>
 		</div>
-
 	</xsl:template>
 
 </xsl:stylesheet>
