@@ -45,5 +45,5 @@ table {
 .table > tfoot > tr > th,
 .table > thead > tr > td,
 .table > thead > tr > th {
-  padding: 0;
+  padding: 1px;
 }
