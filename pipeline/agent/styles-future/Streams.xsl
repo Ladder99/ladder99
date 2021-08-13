@@ -20,7 +20,7 @@
 
 			<title>MTConnect Device Streams</title>
 
-			<!-- autorefresh -->
+			<!-- autorefresh - works but resets page position -->
 			<!-- <meta http-equiv="refresh" content="2"></meta> -->
 
 			<link href="/styles/bootstrap.min.css" rel="stylesheet"></link>

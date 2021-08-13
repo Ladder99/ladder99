@@ -11,16 +11,12 @@
 	<xsl:template match="/">
 
 		<head>
-
 			<meta charset="utf-8"></meta>
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
 			<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-
 			<title>MTConnect Devices</title>
-
 			<link href="/styles/bootstrap.min.css" rel="stylesheet"></link>
 			<link href="/styles/Custom.css" rel="stylesheet"></link>
-
 		</head>
 
 		<body>
@@ -95,13 +91,37 @@
 
 	</xsl:template>
 
-	<xsl:template match="m:Device">
+	<!-- Device -->
 
+	<xsl:template match="m:Device">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<div class="container-fluid">
 					<div class="row">
-						<div class="col-lg-3 col-md-4 col-xs-12">
+						<h3>Device</h3>
+
+						<!-- Standard Header Table-->
+						<!-- shows id, name, uuid, sampleInterval -->
+						<table class="table table-hover visible-lg visible-md">
+							<thead>
+								<xsl:for-each select="@*">
+									<th>
+										<xsl:value-of select="name()"/>
+									</th>
+								</xsl:for-each>
+							</thead>
+							<tbody>
+								<tr>
+									<xsl:for-each select="@*">
+										<td>
+											<xsl:value-of select="."/>
+										</td>
+									</xsl:for-each>
+								</tr>
+							</tbody>
+						</table>
+
+						<!-- <div class="col-lg-3 col-md-4 col-xs-12">
 							<h6 style="margin-bottom: 0px;">Device</h6>
 							<h2 style="margin-top: 0px; margin-bottom: 5px;">
 								<xsl:value-of select="@name"/>
@@ -112,27 +132,24 @@
 							<h4 style="margin-top: 0px; margin-bottom: 5px;">
 								<xsl:value-of select="@uuid"/>
 							</h4>
-						</div>
+						</div> -->
 					</div>
 				</div>
 			</div>
-
 			<div class="panel-body">
 				<xsl:apply-templates select="m:Components"/>
 			</div>
-
 		</div>
-
 	</xsl:template>
+
+	<!-- Header -->
 
 	<xsl:template match="m:Header">
 
 		<div class="panel panel-default">
-
 			<div class="panel-heading">
 				<i class="fa fa-bar-chart-o fa-fw"></i>Agent Information
 			</div>
-
 			<div class="panel-body">
 
 				<!-- Standard Header Table-->
@@ -174,15 +191,15 @@
 
 	</xsl:template>
 
-	<xsl:template match="m:Components">
+	<!-- Components -->
 
+	<xsl:template match="m:Components">
 		<div class="panel-group">
 			<details>
-				<summary>Contents</summary>
+				<summary>Components</summary>
 				<xsl:apply-templates select="*"/>
 			</details>
 		</div>
-
 	</xsl:template>
 
 	<xsl:template match="m:Components/*">
@@ -226,6 +243,8 @@
 		</div>
 
 	</xsl:template>
+
+	<!-- DataItems -->
 
 	<xsl:template match="m:DataItems">
 
