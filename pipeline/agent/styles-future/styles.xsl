@@ -83,37 +83,29 @@
 
 	<!-- Header -->
 	<xsl:template match="m:Header|s:Header">
-		<!-- <div class="panel panel-default"> -->
-		<div class="">
-			<details>
-				<!-- <summary class="panel-heading"> -->
-				<summary style="font-size:medium">
-					<!-- <h3>&#x25B6; Agent Header</h3> -->
-					<b>Header</b>
-				</summary>
-				<!-- <div class="panel-body"> -->
-				<div class="">
-					<table class="table table-hover">
-						<thead>
-							<xsl:for-each select="@*">
-								<th>
-									<xsl:value-of select="name()"/>
-								</th>
-							</xsl:for-each>
-						</thead>
-						<tbody>
-							<tr>
-								<xsl:for-each select="@*">
-									<td>
-										<xsl:value-of select="."/>
-									</td>
-								</xsl:for-each>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</details>
-		</div>
+		<details style="margin-bottom: 5px;">
+			<summary style="font-size:medium;">
+				<b>Header</b>
+			</summary>
+			<table class="table table-hover">
+				<thead>
+					<xsl:for-each select="@*">
+						<th>
+							<xsl:value-of select="name()"/>
+						</th>
+					</xsl:for-each>
+				</thead>
+				<tbody>
+					<tr>
+						<xsl:for-each select="@*">
+							<td>
+								<xsl:value-of select="."/>
+							</td>
+						</xsl:for-each>
+					</tr>
+				</tbody>
+			</table>
+		</details>
 	</xsl:template>
 
 	<!-- Device -->
@@ -162,135 +154,6 @@
 							</td>
 							<td>
 								<xsl:value-of select="@subType"/>
-							</td>
-						</tr>
-					</xsl:for-each>
-				</tbody>
-			</table>
-		</div>
-
-	</xsl:template>
-
-	<!-- Device -->
-	<!-- <xsl:template match="m:Device">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<div class="container-fluid">
-					<div class="row">
-						<h3>&#x25B6; Device</h3>
-						<div class="table-responsive visible-lg visible-md">
-							<table class="table table-hover">
-								<thead>
-									<th>id</th>
-									<th>name</th>
-									<th>uuid</th>
-									<th>sampleInterval</th>
-								</thead>
-								<tbody>
-									<tr>
-										<td>
-											<xsl:value-of select="@id"/>
-										</td>
-										<td>
-											<xsl:value-of select="@name"/>
-										</td>
-										<td>
-											<xsl:value-of select="@uuid"/>
-										</td>
-										<td>
-											<xsl:value-of select="@sampleInterval"/>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-
-					</div>
-				</div>
-			</div>
-			<div class="panel-body">
-				<xsl:apply-templates select="m:Components"/>
-			</div>
-		</div>
-	</xsl:template> -->
-
-	<!-- Components -->
-	<xsl:template match="m:Components">
-		<div class="panel-group">
-			<details open="true">
-				<summary>Components</summary>
-				<xsl:apply-templates select="*"/>
-			</details>
-		</div>
-	</xsl:template>
-
-	<xsl:template match="m:Components/*">
-		<div class="panel panel-default">
-			<!--	
-			<div class="panel-heading">
-				<div class="container-fluid">
-					<div class="row">
-						<div class="col-lg-3 col-md-4 hidden-xs">
-							<h6 style="margin-bottom: 0px;">ID</h6>
-							<h3 style="margin-top: 0px; margin-bottom: 5px;">
-								<xsl:value-of select="@id"/>
-							</h3>
-						</div>
-						<div class="col-lg-3 col-md-4 col-xs-12">
-							<h6 style="margin-bottom: 0px;">Name</h6>
-							<h3 style="margin-top: 0px; margin-bottom: 5px;">
-								<xsl:value-of select="@name"/>
-							</h3>
-						</div>
-						<div class="col-lg-3 col-md-4 hidden-xs">
-							<h6 style="margin-bottom: 0px;">Native Name</h6>
-							<h3 style="margin-top: 0px; margin-bottom: 5px;">
-								<xsl:value-of select="@nativeName"/>
-							</h3>
-						</div>
-					</div>
-				</div>
-			</div> -->
-			<div class="panel-body">
-				<div class="panel-group">
-					<xsl:apply-templates select="*"/>
-				</div>
-			</div>
-		</div>
-	</xsl:template>
-
-	<!-- DataItems -->
-	<xsl:template match="m:DataItems">
-		<div class="table-responsive">
-			<table class="table table-hover">
-				<thead>
-					<th>id</th>
-					<th>name</th>
-					<th>category</th>
-					<th>type</th>
-					<th>subType</th>
-					<th>units</th>
-				</thead>
-				<tbody>
-					<xsl:for-each select="*">
-						<tr>
-							<td>
-								<xsl:value-of select="@id"/>
-							</td>
-							<td>
-								<xsl:value-of select="@name"/>
-							</td>
-							<td>
-								<xsl:value-of select="@category"/>
-							</td>
-							<td>
-								<xsl:value-of select="@type"/>
-							</td>
-							<td>
-								<xsl:value-of select="@subType"/>
-							</td>
-							<td>
-								<xsl:value-of select="@units"/>
 							</td>
 						</tr>
 					</xsl:for-each>
