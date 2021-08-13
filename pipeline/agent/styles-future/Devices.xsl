@@ -76,19 +76,12 @@
 		</body>
 	</xsl:template>
 
-	<!-- <details open="true">
-		<summary>Components</summary>
-		<xsl:apply-templates select="*"/>
-	</details> -->
-
 	<!-- Header -->
 	<xsl:template match="m:Header">
-		<div class="panel panel-default panel-heading">
+		<div class="panel panel-default">
 			<details>
-				<summary>
-					<div class="panel-heading">
-						<h3>&#x25B6; Agent</h3>
-					</div>
+				<summary class="panel-heading">
+					<h3>&#x25B6; Agent</h3>
 				</summary>
 				<div class="panel-body">
 					<table class="table table-hover">
@@ -114,13 +107,60 @@
 		</div>
 	</xsl:template>
 
-	<!-- Device -->
+
 	<xsl:template match="m:Device">
+
+		<div class="table-responsive">
+			<table class="table table-hover">
+				<thead>
+					<th>element</th>
+					<th>id</th>
+					<th>name</th>
+					<th>category</th>
+					<th>type</th>
+					<th>subType</th>
+					<th>units</th>
+				</thead>
+				<tbody>
+					<xsl:for-each select="//*">
+						<tr>
+							<td>
+								<xsl:value-of select="local-name()"/>
+							</td>
+							<td>
+								<xsl:value-of select="@id"/>
+							</td>
+							<td>
+								<xsl:value-of select="@name"/>
+							</td>
+							<td>
+								<xsl:value-of select="@category"/>
+							</td>
+							<td>
+								<xsl:value-of select="@type"/>
+							</td>
+							<td>
+								<xsl:value-of select="@subType"/>
+							</td>
+							<td>
+								<xsl:value-of select="@units"/>
+							</td>
+						</tr>
+					</xsl:for-each>
+				</tbody>
+			</table>
+		</div>
+
+
+	</xsl:template>
+
+	<!-- Device -->
+	<!-- <xsl:template match="m:Device">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				<div class="container-fluid">
 					<div class="row">
-						<h2>Device</h2>
+						<h3>&#x25B6; Device</h3>
 						<div class="table-responsive visible-lg visible-md">
 							<table class="table table-hover">
 								<thead>
@@ -155,7 +195,7 @@
 				<xsl:apply-templates select="m:Components"/>
 			</div>
 		</div>
-	</xsl:template>
+	</xsl:template> -->
 
 	<!-- Components -->
 	<xsl:template match="m:Components">
@@ -169,6 +209,7 @@
 
 	<xsl:template match="m:Components/*">
 		<div class="panel panel-default">
+			<!--	
 			<div class="panel-heading">
 				<div class="container-fluid">
 					<div class="row">
@@ -192,7 +233,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 			<div class="panel-body">
 				<div class="panel-group">
 					<xsl:apply-templates select="*"/>
