@@ -66,7 +66,8 @@
 			</nav>
 
 			<div class="container-fluid page-container">
-				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Header" /> -->
+				<xsl:apply-templates select="/m:MTConnectDevices/m:Header" />
+				<xsl:apply-templates select="/s:MTConnectStreams/s:Header" />
 				<xsl:apply-templates select="/m:MTConnectDevices/m:Devices/m:Device" />
 				<xsl:apply-templates select="/s:MTConnectStreams/s:Streams/s:DeviceStream" />
 			</div>
@@ -79,7 +80,7 @@
 	</xsl:template>
 
 	<!-- Header -->
-	<xsl:template match="m:Header">
+	<xsl:template match="m:Header|s:Header">
 		<div class="panel panel-default">
 			<details>
 				<summary class="panel-heading">
