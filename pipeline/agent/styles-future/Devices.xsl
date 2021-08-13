@@ -63,9 +63,9 @@
 			</nav>
 
 			<div class="container-fluid" style="margin-top: 60px;">
-				<p>
-					<xsl:apply-templates select="/m:MTConnectDevices/m:Header" />
-				</p>
+				<!-- <p> -->
+				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Header" /> -->
+				<!-- </p> -->
 				<xsl:apply-templates select="/m:MTConnectDevices/m:Devices/m:Device" />
 			</div>
 
@@ -111,15 +111,15 @@
 	<xsl:template match="m:Device">
 
 		<div class="table-responsive">
-			<table class="table table-hover">
+			<table class="table table-hover tableFixHead">
 				<thead>
-					<th>element</th>
-					<th>id</th>
-					<th>name</th>
-					<th>category</th>
-					<th>type</th>
-					<th>subType</th>
-					<th>units</th>
+					<th>Element</th>
+					<th>Id</th>
+					<th>Name</th>
+					<th>Category</th>
+					<th>Type</th>
+					<th>SubType</th>
+					<th>Units</th>
 				</thead>
 				<tbody>
 					<xsl:for-each select="//*">

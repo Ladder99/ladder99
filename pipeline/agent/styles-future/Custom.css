@@ -39,6 +39,29 @@ table {
   margin: 0;
 }
 
+table {
+  width: 100%;
+}
+thead,
+tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+tbody {
+  display: block;
+  overflow-y: auto;
+  table-layout: fixed;
+  /* max-height: 200px; */
+  max-height: calc(100vh - 60px);
+}
+
+/* .tableFixHead thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+} */
+
 .table > tbody > tr > td,
 .table > tbody > tr > th,
 .table > tfoot > tr > td,
