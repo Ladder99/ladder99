@@ -19,7 +19,7 @@
 			<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
 			<title>MTConnect Devices</title>
 			<link href="/styles/bootstrap.min.css" rel="stylesheet"></link>
-			<link href="/styles/Custom.css" rel="stylesheet"></link>
+			<link href="/styles/styles.css" rel="stylesheet"></link>
 		</head>
 
 		<body>
@@ -76,7 +76,7 @@
 
 			<script src="/styles/jquery-1.12.4.min.js"></script>
 			<script src="/styles/bootstrap.min.js"></script>
-			<script src="/styles/GetSample.js"></script>
+			<script src="/styles/script.js"></script>
 
 		</body>
 	</xsl:template>

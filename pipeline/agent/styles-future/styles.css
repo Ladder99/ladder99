@@ -38,9 +38,13 @@ details > summary::-webkit-details-marker {
 }
 details > summary::before {
   content: '▶️';
+  /* content: '&boxplus;'; */
+  /* content: '⊞'; */
 }
 details[open] > summary::before {
   content: '🔽';
+  /* content: '&boxminus;'; */
+  /* content: '⊟'; */
 }
 /* details { */
 /* border: 1px solid gray; */
@@ -99,5 +103,5 @@ table tbody tr:nth-child(odd) td {
 .table > thead > tr > td,
 .table > thead > tr > th {
   padding: 1px 8px;
-  border: 1px solid #eee;
+  border: 1px solid #ddd;
 }
