@@ -68,7 +68,9 @@
 			<div class="container-fluid page-container">
 				<xsl:apply-templates select="/m:MTConnectDevices/m:Header" />
 				<xsl:apply-templates select="/s:MTConnectStreams/s:Header" />
-				<xsl:apply-templates select="/m:MTConnectDevices/m:Devices/m:Device" />
+				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Devices/m:Device" /> -->
+				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Devices" /> -->
+				<xsl:apply-templates select="/m:MTConnectDevices" />
 				<xsl:apply-templates select="/s:MTConnectStreams/s:Streams/s:DeviceStream" />
 			</div>
 
@@ -81,13 +83,16 @@
 
 	<!-- Header -->
 	<xsl:template match="m:Header|s:Header">
-		<div class="panel panel-default">
+		<!-- <div class="panel panel-default"> -->
+		<div class="">
 			<details>
-				<summary class="panel-heading">
+				<!-- <summary class="panel-heading"> -->
+				<summary class="">
 					<!-- <h3>&#x25B6; Agent Header</h3> -->
 					<b>Header</b>
 				</summary>
-				<div class="panel-body">
+				<!-- <div class="panel-body"> -->
+				<div class="">
 					<table class="table table-hover">
 						<thead>
 							<xsl:for-each select="@*">
@@ -111,11 +116,10 @@
 		</div>
 	</xsl:template>
 
-	<xsl:template match="s:DeviceStream">
-	  STREAM
-	</xsl:template>
-
-	<xsl:template match="m:Device">
+	<!-- Device -->
+	<!-- <xsl:template match="m:Device"> -->
+	<!-- <xsl:template match="m:Devices"> -->
+	<xsl:template match="m:MTConnectDevices">
 		<div class="table-responsive stickytable-container">
 			<table class="table table-hover">
 				<thead>

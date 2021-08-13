@@ -42,11 +42,11 @@ details > summary::before {
 details[open] > summary::before {
   content: '🔽';
 }
-details {
-  border: 1px solid gray;
-  border-radius: 0.2rem;
-  padding: 0.5rem;
-}
+/* details { */
+/* border: 1px solid gray; */
+/* border-radius: 0.2rem; */
+/* padding: 0.5rem; */
+/* } */
 details[open] > summary {
   margin-bottom: 0.5rem;
 }
