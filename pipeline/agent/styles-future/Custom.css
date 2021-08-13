@@ -36,35 +36,32 @@ h6 {
   margin: 0;
 }
 
-table {
-  margin: 0;
-  width: 100%;
+body {
+  /* since the table is the scroller, hide body scrollbars... */
+  overflow-y: hidden;
 }
-thead,
-tbody tr {
-  display: table;
+
+.stickytable-container {
   width: 100%;
-  table-layout: fixed;
-}
-tbody {
-  display: block;
+  height: calc(100vh - 60px);
   overflow-y: auto;
-  table-layout: fixed;
-  /* max-height: 200px; */
-  max-height: calc(100vh - 60px);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  background: #eee;
+  position: sticky;
+  top: 0px;
 }
 
 table tbody tr:nth-child(odd) td {
   background: #fafafa;
 }
-/* table tr:nth-child(even) td{
-} */
-
-/* .tableFixHead thead th {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-} */
 
 .table > tbody > tr > td,
 .table > tbody > tr > th,

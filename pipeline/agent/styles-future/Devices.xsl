@@ -110,8 +110,8 @@
 
 	<xsl:template match="m:Device">
 
-		<div class="table-responsive">
-			<table class="table table-hover tableFixHead">
+		<div class="table-responsive stickytable-container">
+			<table class="table table-hover">
 				<thead>
 					<th>Element</th>
 					<th>Id</th>
