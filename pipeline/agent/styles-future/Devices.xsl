@@ -123,8 +123,12 @@
 				</thead>
 				<tbody>
 					<xsl:for-each select="//*">
+						<xsl:variable name="indent" select="count(ancestor::*)" />
 						<tr>
 							<td>
+								<span style="color:white">
+									<xsl:value-of select="substring('........',1,$indent)"/>
+								</span>
 								<xsl:value-of select="local-name()"/>
 							</td>
 							<td>
