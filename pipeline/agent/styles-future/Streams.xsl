@@ -20,6 +20,9 @@
 
 			<title>MTConnect Device Streams</title>
 
+			<!-- autorefresh -->
+			<!-- <meta http-equiv="refresh" content="2"></meta> -->
+
 			<link href="/styles/bootstrap.min.css" rel="stylesheet"></link>
 			<link href="/styles/Custom.css" rel="stylesheet"></link>
 
