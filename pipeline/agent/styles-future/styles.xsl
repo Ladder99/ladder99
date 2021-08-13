@@ -26,7 +26,7 @@
 			<nav class="navbar navbar-default navbar-fixed-top">
 				<div class="container-fluid">
 
-					<!-- Brand and toggle get grouped for better mobile display -->
+					<!-- brand and toggle get grouped for better mobile display -->
 					<div class="navbar-header">
 						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
 							<span class="sr-only">Toggle navigation</span>
@@ -39,7 +39,7 @@
 						</a>
 					</div>
 
-					<!-- Collect the nav links, forms, and other content for toggling -->
+					<!-- collect the nav links, forms, and other content for toggling -->
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
 							<li>
@@ -56,7 +56,7 @@
 							<div class="form-group">
 								<input id="fromText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="From"/>
 								<input id="countText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="Count"/>
-								<input id="queryText" type="text" class="form-control" style="margin-right: 10px;" placeholder="Query"/>
+								<input id="queryText" type="text" class="form-control" style="margin-right: 10px;" placeholder="XPath Query"/>
 							</div>
 							<button onclick="getSample();" class="btn btn-default">Get Sample</button>
 						</div>
@@ -71,7 +71,8 @@
 				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Devices/m:Device" /> -->
 				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Devices" /> -->
 				<xsl:apply-templates select="/m:MTConnectDevices" />
-				<xsl:apply-templates select="/s:MTConnectStreams/s:Streams/s:DeviceStream" />
+				<!-- <xsl:apply-templates select="/s:MTConnectStreams/s:Streams/s:DeviceStream" /> -->
+				<xsl:apply-templates select="/s:MTConnectStreams" />
 			</div>
 
 			<script src="/styles/jquery-1.12.4.min.js"></script>
@@ -108,7 +109,7 @@
 		</details>
 	</xsl:template>
 
-	<!-- Device -->
+	<!-- Probe -->
 	<!-- <xsl:template match="m:Device"> -->
 	<!-- <xsl:template match="m:Devices"> -->
 	<xsl:template match="m:MTConnectDevices">
@@ -161,5 +162,66 @@
 			</table>
 		</div>
 	</xsl:template>
+
+	<!-- Current/Sample -->
+	<xsl:template match="s:MTConnectStreams">
+		<div class="table-responsive stickytable-container">
+			<table class="table table-hover">
+				<thead>
+					<th>Element</th>
+					<th>Id</th>
+					<th>Name</th>
+					<th>Category</th>
+					<th>Type</th>
+					<th>SubType</th>
+					<th>Value</th>
+					<th>Units</th>
+				</thead>
+				<tbody>
+					<!-- <xsl:for-each select="//*[local-name(.) != 'Agent']"> -->
+					<!-- works but includes Agent and descendents -->
+					<!-- <xsl:for-each select="//*"> -->
+					<!-- works but doesn't include Device row -->
+					<xsl:for-each select="*[local-name(.) != 'Agent']//*">
+						<!-- <xsl:for-each select="*[local-name(.) != 'Agent']/descendent-or-self::node()"> -->
+						<xsl:variable name="indent" select="count(ancestor::*)" />
+						<!-- <xsl:variable name="isDevice" select="local-name(.) == 'Device'" /> -->
+						<tr>
+							<td>
+								<!-- indent according to depth -->
+								<span style="color:white">
+									<xsl:value-of select="substring('............',1,$indent)"/>
+								</span>
+								<!-- show element type, eg Device, DataItem -->
+								<xsl:value-of select="local-name()"/>
+							</td>
+							<td>
+								<xsl:value-of select="@id"/>
+							</td>
+							<td>
+								<xsl:value-of select="@name"/>
+							</td>
+							<td>
+								<xsl:value-of select="@category"/>
+							</td>
+							<td>
+								<xsl:value-of select="@type"/>
+							</td>
+							<td>
+								<xsl:value-of select="@subType"/>
+							</td>
+							<td>
+								<xsl:value-of select="@value"/>
+							</td>
+							<td>
+								<xsl:value-of select="@units"/>
+							</td>
+						</tr>
+					</xsl:for-each>
+				</tbody>
+			</table>
+		</div>
+	</xsl:template>
+
 
 </xsl:stylesheet>

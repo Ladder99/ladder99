@@ -1,10 +1,10 @@
-# Ladder99 Agent Stylesheets
-
-Adapted for Ladder99 from https://github.com/TrakHound/MTConnect-Agent-Stylesheet.
+# Ladder99 Agent Stylesheet
 
 To keep up-to-date with MTConnect standard, change the version in the xsl:stylesheet element in styles.xsl.
 
 The MTConnect cppagent doesn't allow using subfolders in the styles folder, so keep it flat.
+
+This is a reworking of https://github.com/TrakHound/MTConnect-Agent-Stylesheet.
 
 ## About
 
