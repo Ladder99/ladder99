@@ -63,9 +63,7 @@
 			</nav>
 
 			<div class="container-fluid page-container">
-				<!-- <p> -->
 				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Header" /> -->
-				<!-- </p> -->
 				<xsl:apply-templates select="/m:MTConnectDevices/m:Devices/m:Device" />
 			</div>
 
@@ -81,7 +79,8 @@
 		<div class="panel panel-default">
 			<details>
 				<summary class="panel-heading">
-					<h3>&#x25B6; Agent</h3>
+					<!-- <h3>&#x25B6; Agent Header</h3> -->
+					<b>Header</b>
 				</summary>
 				<div class="panel-body">
 					<table class="table table-hover">
