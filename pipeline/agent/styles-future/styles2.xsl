@@ -34,8 +34,8 @@
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand" style="padding: 5px 20px;" href="#">
-							<img alt="Brand" src="/styles/LogoLadder99-gray.png" height="40"/>
+						<a class="navbar-brand" style="padding: 5px 10px;" href="#">
+							<img alt="Brand" src="/styles/LogoLadder99-text.png" height="40"/>
 						</a>
 					</div>
 
