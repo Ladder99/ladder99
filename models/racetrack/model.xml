@@ -11,7 +11,7 @@
     <DataItem id="len" name="track_length" category="SAMPLE" type="LENGTH" subType="STANDARD" units="METERS"/>
     <DataItem id="dur" name="race_duration" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" units="SECONDS"/>
     <DataItem id="runner" name="runner" category="EVENT" type="MESSAGE"/>
-    <!-- duplicate, and speed should have meters/sec units etc -->
+    <!-- duplicate type/subtype, and speed should have meters/sec units etc -->
     <!-- <DataItem id="spd" name="race_speed" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS"/> -->
   </DataItems>
 </Model>

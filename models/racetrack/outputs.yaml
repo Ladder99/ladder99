@@ -11,20 +11,20 @@ outputs:
     value: "<has-faults> ? 'FAULT' : 'NORMAL'"
 
   - key: func_mode
-    value: "<status-has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
+    value: "<has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
 
   - key: state
     # one of WAIT, ACTIVE, PROGRAM_STOPPED
-    value: types.EXECUTION[<status-state>]
+    value: types.EXECUTION[<state>]
 
   - key: wait_state
-    value: types.WAIT_STATE[<status-state>]
+    value: types.WAIT_STATE[<state>]
 
   - key: step
-    value: <status-step>
+    value: <step>
 
   - key: up_time
-    value: <status-cpu_time>
+    value: <cpu_time>
 
   - key: track_length
     value: <distance>

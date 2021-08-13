@@ -14,17 +14,26 @@ export class AdapterDriver {
 
     async function readData() {
       try {
+        // get specs object like { mem: 'total, free, used' }, as expected by si module
         const specs = {}
         inputs.values.forEach(value => (specs[value.item] = value.subitems))
+
+        // read the specs data
         const data = await si.get(specs)
         console.log(data)
 
         // write values to cache
-        //. get this info from inputs also
-        setValue('availability', 'AVAILABLE')
-        setValue('temperature', data.cpuTemperature.main)
-        setValue('memory', getDataSet(data.mem))
-        setValue('cpu', getDataSet(data.currentLoad))
+        setValue('availability', 'AVAILABLE') //. get from inputs
+        // setValue('temperature', data.cpuTemperature.main)
+        // setValue('memory', getDataSet(data.mem))
+        // setValue('cpu', getDataSet(data.currentLoad))
+        inputs.values.forEach(value => {
+          const foo =
+            value.representation === 'dataset'
+              ? getDataSet(data[value.item])
+              : data[value.item].main
+          setValue(value.name, foo)
+        })
       } catch (e) {
         setUnavailable()
         console.error(e)

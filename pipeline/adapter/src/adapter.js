@@ -16,7 +16,7 @@ const defaultServer = { protocol: 'shdr', host: 'adapter', port: 7878 }
 const driversFolder = './drivers' // eg mqtt-json - must start with '.'
 // these folders are defined in pipeline.yaml with docker volume mappings
 const setupFolder = '/data/setup' // incls setup.yaml etc
-const modelsFolder = `/data/models` // incls ccs/print-apply/device.xml etc
+const modelsFolder = `/data/models` // incls print-apply/model.xml etc
 
 console.log(`Ladder99 Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
@@ -61,7 +61,6 @@ async function main() {
         const plugin = new AdapterDriver()
 
         // get input handlers
-        //. rename to cache-inputs.yaml
         const pathInputs = `${modelsFolder}/${model}/inputs.yaml`
         console.log(`Reading ${pathInputs}...`)
         const inputs = common.importYaml(pathInputs) || {}

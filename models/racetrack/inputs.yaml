@@ -61,17 +61,17 @@ handlers:
     # eg 'status-connection' => 'pa-status_connection',
     # and part is some javascript calculation code to determine its value.
     inputs:
-      status-connection: $.connection
-      status-build_no: $.build_no
-      status-state: $.state
-      status-program: $.program
-      status-step: $.step
-      status-utc_time: $.utc_time
-      status-cpu_time: $.cpu_time
-      status-faults: $.faults
-      status-has-no-faults: $.faultKeys.length === 0
-      status-has-faults: $.faultKeys.length > 0
-      
+      connection: $.connection
+      build_no: $.build_no
+      state: $.state
+      program: $.program
+      step: $.step
+      utc_time: $.utc_time
+      cpu_time: $.cpu_time
+      faults: $.faults
+      has-no-faults: $.faultKeys.length === 0
+      has-faults: $.faultKeys.length > 0
+
   # handle read messages
   l99/${deviceId}/evt/read:
     # make $ a dictionary keyed on the item addresses
