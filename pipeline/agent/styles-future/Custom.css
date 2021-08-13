@@ -21,6 +21,7 @@
   color: white;
 }
 
+/* can make +/- icons automatically? */
 summary {
   cursor: pointer;
   /* display: list-item; */
@@ -37,9 +38,6 @@ h6 {
 
 table {
   margin: 0;
-}
-
-table {
   width: 100%;
 }
 thead,
@@ -74,5 +72,6 @@ table tbody tr:nth-child(odd) td {
 .table > tfoot > tr > th,
 .table > thead > tr > td,
 .table > thead > tr > th {
-  padding: 1px;
+  padding: 1px 8px;
+  border: 1px solid #eee;
 }
