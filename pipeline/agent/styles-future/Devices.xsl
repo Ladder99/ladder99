@@ -51,8 +51,8 @@
 						</ul>
 						<div class="navbar-form navbar-left">
 							<div class="form-group">
-								<input id="fromText" type="text" class="form-control" style="margin-right: 10px;" placeholder="From"/>
-								<input id="countText" type="text" class="form-control" style="margin-right: 10px;" placeholder="Count"/>
+								<input id="fromText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="From"/>
+								<input id="countText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="Count"/>
 								<input id="queryText" type="text" class="form-control" style="margin-right: 10px;" placeholder="Query"/>
 							</div>
 							<button onclick="getSample();" class="btn btn-default">Get Sample</button>
