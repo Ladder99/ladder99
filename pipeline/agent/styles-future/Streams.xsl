@@ -13,26 +13,20 @@
 	<xsl:template match="/">
 
 		<head>
-
 			<meta charset="utf-8"></meta>
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
 			<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-
 			<title>MTConnect Device Streams</title>
-
 			<!-- autorefresh - works but resets page position -->
 			<!-- <meta http-equiv="refresh" content="2"></meta> -->
-
 			<link href="/styles/bootstrap.min.css" rel="stylesheet"></link>
 			<link href="/styles/Custom.css" rel="stylesheet"></link>
-
 		</head>
 
 		<body>
 
 			<nav class="navbar navbar-default navbar-fixed-top">
 				<div class="container-fluid">
-
 					<!-- Brand and toggle get grouped for better mobile display -->
 					<div class="navbar-header">
 						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
@@ -45,7 +39,6 @@
 							<img alt="Brand" src="/styles/Ladder99Logo-gray.png" height="40"/>
 						</a>
 					</div>
-
 					<!-- Collect the nav links, forms, and other content for toggling -->
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
@@ -59,7 +52,6 @@
 								<a href="../sample">Sample</a>
 							</li>
 						</ul>
-
 						<div class="navbar-form navbar-left hidden-sm hidden-xs">
 							<div class="form-group">
 								<input id="fromText" type="text" class="form-control" style="margin-right: 10px;" placeholder="From"/>
@@ -67,40 +59,95 @@
 							</div>
 							<button onclick="getSample();" class="btn btn-default">Get Sample</button>
 						</div>
-
-					</div>					<!-- /.navbar-collapse -->
-				</div>				<!-- /.container-fluid -->
+					</div>
+				</div>
 			</nav>
 
-			<div class="container-fluid" style="margin-top: 60px;">
-				<p>
-					<xsl:apply-templates select="/m:MTConnectStreams/m:Header" />
-				</p>
-				<hr/>
+			<div class="container-fluid page-container">
+				<!-- <xsl:apply-templates select="/m:MTConnectStreams/m:Header" /> -->
 				<xsl:apply-templates select="/m:MTConnectStreams/m:Streams/m:DeviceStream" />
 			</div>
 
-			<footer class="footer" style="margin-top: 20px; margin-bottom: 20px;">
+			<!-- <footer class="footer" style="margin-top: 20px; margin-bottom: 20px;">
 				<div class="container">
-					<!-- <div class="row">
+					<div class="row">
 							<p class="col-md-3 text-muted">This template is designed by Feenux LLC and is available for use through the MIT license.</p>
 							<p class="col-md-3 text-muted">Source code for this template is available at 
 								<a href="https://github.com/TrakHound/MTConnect-Agent-Stylesheet">GitHub</a>
 							</p>
 							<p class="col-md-3 text-muted">© 2016 Feenux LLC, All Rights Reserved</p>
-						</div> -->
+						</div>
 				</div>
-			</footer>
+			</footer> -->
 
 			<script src="/styles/jquery-1.12.4.min.js"></script>
 			<script src="/styles/bootstrap.min.js"></script>
 			<script src="/styles/GetSample.js"></script>
-
 		</body>
-
 	</xsl:template>
 
 	<xsl:template match="m:DeviceStream">
+
+		<div class="table-responsive stickytable-container">
+			<table class="table table-hover">
+				<thead>
+					<th>Element</th>
+					<th>Id</th>
+					<th>Name</th>
+					<th>Category</th>
+					<th>Type</th>
+					<th>SubType</th>
+					<th>Value</th>
+					<th>Units</th>
+				</thead>
+				<tbody>
+					<!-- <xsl:for-each select="//*[local-name(.) != 'Agent']"> -->
+					<!-- works but includes Agent and descendents -->
+					<!-- <xsl:for-each select="//*"> -->
+					<!-- works but doesn't include Device row -->
+					<xsl:for-each select="*[local-name(.) != 'Agent']//*">
+						<!-- <xsl:for-each select="*[local-name(.) != 'Agent']/descendent-or-self::node()"> -->
+						<xsl:variable name="indent" select="count(ancestor::*)" />
+						<!-- <xsl:variable name="isDevice" select="local-name(.) == 'Device'" /> -->
+						<tr>
+							<td>
+								<!-- indent according to depth -->
+								<span style="color:white">
+									<xsl:value-of select="substring('............',1,$indent)"/>
+								</span>
+								<!-- show element type, eg Device, DataItem -->
+								<xsl:value-of select="local-name()"/>
+							</td>
+							<td>
+								<xsl:value-of select="@id"/>
+							</td>
+							<td>
+								<xsl:value-of select="@name"/>
+							</td>
+							<td>
+								<xsl:value-of select="@category"/>
+							</td>
+							<td>
+								<xsl:value-of select="@type"/>
+							</td>
+							<td>
+								<xsl:value-of select="@subType"/>
+							</td>
+							<td>
+								<xsl:value-of select="@value"/>
+							</td>
+							<td>
+								<xsl:value-of select="@units"/>
+							</td>
+						</tr>
+					</xsl:for-each>
+				</tbody>
+			</table>
+		</div>
+
+	</xsl:template>
+
+	<!-- <xsl:template match="m:DeviceStream">
 
 		<div class="panel panel-default">
 			<div class="panel-heading">
@@ -138,7 +185,7 @@
 
 		</div>
 
-	</xsl:template>
+	</xsl:template> -->
 
 	<xsl:template match="m:Header">
 
