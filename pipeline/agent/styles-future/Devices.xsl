@@ -49,16 +49,16 @@
 								<a href="../sample">Sample</a>
 							</li>
 						</ul>
-
 						<div class="navbar-form navbar-left">
 							<div class="form-group">
 								<input id="fromText" type="text" class="form-control" style="margin-right: 10px;" placeholder="From"/>
 								<input id="countText" type="text" class="form-control" style="margin-right: 10px;" placeholder="Count"/>
+								<input id="queryText" type="text" class="form-control" style="margin-right: 10px;" placeholder="Query"/>
 							</div>
 							<button onclick="getSample();" class="btn btn-default">Get Sample</button>
 						</div>
-
 					</div>
+
 				</div>
 			</nav>
 
@@ -74,6 +74,44 @@
 			<script src="/styles/GetSample.js"></script>
 
 		</body>
+	</xsl:template>
+
+	<!-- <details open="true">
+		<summary>Components</summary>
+		<xsl:apply-templates select="*"/>
+	</details> -->
+
+	<!-- Header -->
+	<xsl:template match="m:Header">
+		<div class="panel panel-default panel-heading">
+			<details>
+				<summary>
+					<div class="panel-heading">
+						<h3>&#x25B6; Agent</h3>
+					</div>
+				</summary>
+				<div class="panel-body">
+					<table class="table table-hover">
+						<thead>
+							<xsl:for-each select="@*">
+								<th>
+									<xsl:value-of select="name()"/>
+								</th>
+							</xsl:for-each>
+						</thead>
+						<tbody>
+							<tr>
+								<xsl:for-each select="@*">
+									<td>
+										<xsl:value-of select="."/>
+									</td>
+								</xsl:for-each>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</details>
+		</div>
 	</xsl:template>
 
 	<!-- Device -->
@@ -110,53 +148,11 @@
 							</table>
 						</div>
 
-						<!-- <div class="col-lg-3 col-md-4 col-xs-12">
-							<h6 style="margin-bottom: 0px;">Device</h6>
-							<h2 style="margin-top: 0px; margin-bottom: 5px;">
-								<xsl:value-of select="@name"/>
-							</h2>
-						</div>
-						<div class="col-lg-3 col-md-4 hidden-xs">
-							<h6 style="margin-bottom: 0px;">UUID</h6>
-							<h4 style="margin-top: 0px; margin-bottom: 5px;">
-								<xsl:value-of select="@uuid"/>
-							</h4>
-						</div> -->
-
 					</div>
 				</div>
 			</div>
 			<div class="panel-body">
 				<xsl:apply-templates select="m:Components"/>
-			</div>
-		</div>
-	</xsl:template>
-
-	<!-- Header -->
-	<xsl:template match="m:Header">
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h3>Agent Information</h3>
-			</div>
-			<div class="panel-body">
-				<table class="table table-hover">
-					<thead>
-						<xsl:for-each select="@*">
-							<th>
-								<xsl:value-of select="name()"/>
-							</th>
-						</xsl:for-each>
-					</thead>
-					<tbody>
-						<tr>
-							<xsl:for-each select="@*">
-								<td>
-									<xsl:value-of select="."/>
-								</td>
-							</xsl:for-each>
-						</tr>
-					</tbody>
-				</table>
 			</div>
 		</div>
 	</xsl:template>

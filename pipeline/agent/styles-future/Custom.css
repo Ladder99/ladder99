@@ -23,7 +23,7 @@
 
 summary {
   cursor: pointer;
-  display: list-item;
+  /* display: list-item; */
 }
 
 h1,
