@@ -193,15 +193,14 @@
 								<xsl:value-of select="@subType"/>
 							</td>
 							<td>
-								<!-- replace T with space -->
+								<!-- replace T with space? -->
 								<xsl:value-of select="@timestamp"/>
 							</td>
 							<td>
 								<xsl:value-of select="@sequence"/>
 							</td>
 							<td>
-								<!-- <xsl:value-of select="."/> -->
-								<xsl:value-of select="."/>
+								<xsl:value-of select="text()"/>
 							</td>
 						</tr>
 					</xsl:for-each>
