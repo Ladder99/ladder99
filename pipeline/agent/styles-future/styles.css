@@ -17,15 +17,13 @@
   background: black;
 }
 
-.navbar-default .navbar-nav > li > a:focus,
+/* .navbar-default .navbar-nav > li > a:focus,
 .navbar-default .navbar-nav > li > a:hover {
   color: white;
-}
+} */
 
-/* can make +/- icons automatically? */
 summary {
   cursor: pointer;
-  /* display: list-item; */
 }
 
 /* change icons for summary/detail */

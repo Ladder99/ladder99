@@ -24,7 +24,8 @@
 		</head>
 
 		<body>
-			<nav class="navbar navbar-default navbar-fixed-top">
+			<!-- <nav class="navbar navbar-default navbar-fixed-top"> -->
+			<nav class="navbar navbar-inverse navbar-fixed-top">
 				<div class="container-fluid">
 
 					<!-- brand and toggle get grouped for better mobile display -->
@@ -59,7 +60,8 @@
 								<input id="countText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="Count"/>
 								<input id="queryText" type="text" class="form-control" style="margin-right: 10px;" placeholder="Query"/>
 								<!-- <button onclick="showHelp()" class="btn btn-default">?</button> -->
-								<button type="button" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#exampleModal">?</button>
+								<!-- <button type="button" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#exampleModal">?</button> -->
+								<button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">?</button>
 							</div>
 							<button onclick="getSample()" class="btn btn-default">Get Sample</button>
 						</div>
@@ -79,7 +81,7 @@
 			</div>
 
 			<!-- Modal -->
-			<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content">
 						<div class="modal-header">
@@ -90,19 +92,36 @@
 							this is a bunch of help text
 						</div>
 						<div class="modal-footer">
-							<!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
 							<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div> -->
+			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				<div class="modal-dialog" role="document">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">x</span>
+							</button>
+							<h4 class="modal-title" id="myModalLabel">Help</h4>
+						</div>
+						<div class="modal-body">
+        poaksoew erwer
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 							<!-- <button type="button" class="btn btn-primary">Save changes</button> -->
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<!-- <script src="/styles/jquery-1.12.4.min.js"></script> -->
+			<!-- jquery is needed for bootstrap modal -->
+			<script src="/styles/jquery-1.12.4.min.js"></script>
 			<!-- ...download this? -->
 			<script src="https://kit.fontawesome.com/1dd18af014.js" crossorigin="anonymous"></script>
 			<script src="/styles/bootstrap.min.js"></script>
-			<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script> -->
 			<script src="/styles/script.js"></script>
 
 		</body>
@@ -181,7 +200,7 @@
 								<!-- &#160; -->
 								<!-- &#8239; -->
 								&#8198;
-																																																																																																																																																																																																																																																																																																																																																	<!-- <xsl:value-of select="local-name()"/> -->
+																																																																																																																																																																																																																																																																																																																																																																																																									<!-- <xsl:value-of select="local-name()"/> -->
 								<xsl:value-of select="$element" />
 							</td>
 
