@@ -3,18 +3,23 @@
   --header-height: 60px;
 }
 
+.container-fluid {
+  /* padding-left: 0; */
+  /* padding-right: 0; */
+}
+
 .nav,
 .navbar,
 .navbar-default,
 .navbar-nav,
 .navbar-collapse,
 .navbar-header,
-.navbar-form {
-  background: black;
-}
-
+.navbar-form,
 .navbar-brand {
   background: black;
+}
+.navbar-header {
+  padding-left: 10px;
 }
 
 /* .navbar-default .navbar-nav > li > a:focus,

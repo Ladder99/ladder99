@@ -81,24 +81,8 @@
 			</div>
 
 			<!-- Modal -->
-			<!-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-				<div class="modal-dialog modal-dialog-centered">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLabel">Help</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-						</div>
-						<div class="modal-body">
-							this is a bunch of help text
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-						</div>
-					</div>
-				</div>
-			</div> -->
 			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-				<div class="modal-dialog" role="document">
+				<div class="modal-dialog modal-dialog-centered" role="document">
 					<div class="modal-content">
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -107,11 +91,13 @@
 							<h4 class="modal-title" id="myModalLabel">Help</h4>
 						</div>
 						<div class="modal-body">
-        poaksoew erwer
+							<h4>Ladder99 Agent</h4>
+
+The Ladder99 Agent ...
+
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-							<!-- <button type="button" class="btn btn-primary">Save changes</button> -->
 						</div>
 					</div>
 				</div>
@@ -200,7 +186,7 @@
 								<!-- &#160; -->
 								<!-- &#8239; -->
 								&#8198;
-																																																																																																																																																																																																																																																																																																																																																																																																									<!-- <xsl:value-of select="local-name()"/> -->
+																																																																																																																																																																																																																																																																																																																																																																																																																																	<!-- <xsl:value-of select="local-name()"/> -->
 								<xsl:value-of select="$element" />
 							</td>
 
