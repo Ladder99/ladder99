@@ -127,22 +127,39 @@
 					<th>SubType</th>
 				</thead>
 				<tbody>
-					<!-- <xsl:for-each select="//*[local-name(.) != 'Agent']"> -->
 					<xsl:for-each select="//*">
+						<!-- <xsl:for-each select="//*[local-name(.) != 'Agent']"> -->
 						<!-- <xsl:for-each select="*[local-name(.) != 'Agent']//*"> -->
 						<!-- <xsl:for-each select="*[local-name(.) != 'Agent']/descendent-or-self::node()"> -->
 						<xsl:variable name="indent" select="count(ancestor::*)" />
-						<!-- <xsl:variable name="isDevice" select="local-name(.) == 'Device'" /> -->
+						<!-- <xsl:variable name="isDevice" select="local-name(.)='Device'" /> -->
+						<!-- <xsl:variable name="isDataItem" select="local-name(.)='DataItem'" /> -->
 						<tr>
+
 							<td>
 								<!-- indent according to depth and show type, eg Device, DataItem -->
 								<span style="color:white">
 									<xsl:value-of select="substring('xxxxxxxxxxxx',1,$indent)"/>
 								</span>
-								<i class="far fa-plus-square" style="color:#aaa"></i>
-								<span style="color:white">.</span>
+
+								<!-- add +/- if item has any child elements -->
+								<xsl:choose>
+									<xsl:when test="*">
+										<i class="far fa-plus-square" style="color:#aaa"></i>
+									</xsl:when>
+									<xsl:otherwise>
+										&#8198;
+									</xsl:otherwise>
+								</xsl:choose>
+
+								<!-- narrow space - see https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
+								<!-- <span style="color:white">.</span> -->
+								<!-- &#160; -->
+								<!-- &#8239; -->
+								&#8198;
 								<xsl:value-of select="local-name()"/>
 							</td>
+
 							<td>
 								<xsl:value-of select="@id"/>
 							</td>
@@ -173,7 +190,7 @@
 					<th>Element</th>
 					<th>Id</th>
 					<th>Name</th>
-					<th>SubType</th>
+					<!-- <th>SubType</th> -->
 					<th>Timestamp</th>
 					<th>Sequence</th>
 					<th>Value</th>
@@ -181,10 +198,13 @@
 				<tbody>
 					<xsl:for-each select="//*">
 						<xsl:variable name="indent" select="count(ancestor::*)" />
+
+						<!-- get style for the row -->
 						<!-- so verbose... -->
 						<xsl:variable name="weight">
 							<xsl:choose>
-								<xsl:when test="$indent=1">
+								<!-- <xsl:when test="$indent=1"> -->
+								<xsl:when test="local-name()='DeviceStream'">
 									<xsl:text>bold</xsl:text>
 								</xsl:when>
 								<xsl:otherwise>
@@ -194,18 +214,38 @@
 						</xsl:variable>
 
 						<tr>
+
 							<td>
 								<!-- indent according to depth and show type, eg Device, DataItem -->
 								<span style="color:white">
 									<xsl:value-of select="substring('xxxxxxxxxxxx',1,$indent)"/>
 								</span>
-								<i class="far fa-plus-square" style="color:#aaa"></i>
+
+								<!-- <i class="far fa-plus-square" style="color:#aaa"></i> -->
 								<!-- why &nbsp; no work here? -->
-								<span style="color:white">.</span>
+								<!-- <span style="color:white">.</span> -->
+
+								<!-- add +/- if item has any child elements -->
+								<xsl:choose>
+									<xsl:when test="*">
+										<i class="far fa-plus-square" style="color:#aaa"></i>
+									</xsl:when>
+									<xsl:otherwise>
+										&#8198;
+									</xsl:otherwise>
+								</xsl:choose>
+
+								<!-- narrow space - see https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
+								<!-- <span style="color:white">.</span> -->
+								<!-- &#160; -->
+								<!-- &#8239; -->
+								&#8198;
+
 								<span style="font-weight:{$weight};">
 									<xsl:value-of select="local-name()"/>
 								</span>
 							</td>
+
 							<td>
 								<!-- <i class="fas fa-cogs"></i> -->
 								<xsl:value-of select="@dataItemId"/>
@@ -213,12 +253,14 @@
 							<td>
 								<xsl:value-of select="@name"/>
 							</td>
-							<td>
+							<!-- <td>
 								<xsl:value-of select="@subType"/>
-							</td>
+							</td> -->
 							<td>
 								<!-- replace T with space? -->
-								<xsl:value-of select="@timestamp"/>
+								<!-- <xsl:value-of select="@timestamp"/> -->
+								<!-- <xsl:value-of select="substring(@timestamp,12)"/> -->
+								<xsl:value-of select="translate(@timestamp,'T',' ')"/>
 							</td>
 							<td>
 								<xsl:value-of select="@sequence"/>
