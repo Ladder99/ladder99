@@ -37,14 +37,14 @@ details > summary::-webkit-details-marker {
   display: none;
 }
 details > summary::before {
-  content: '▶️';
+  /* content: '▶️'; */
   /* content: '&boxplus;'; */
-  /* content: '⊞'; */
+  content: '⊞';
 }
 details[open] > summary::before {
-  content: '🔽';
+  /* content: '🔽'; */
   /* content: '&boxminus;'; */
-  /* content: '⊟'; */
+  content: '⊟';
 }
 /* details { */
 /* border: 1px solid gray; */
@@ -92,9 +92,9 @@ th {
   top: 0px;
 }
 
-table tbody tr:nth-child(odd) td {
+/* table tbody tr:nth-child(odd) td {
   background: #fafafa;
-}
+} */
 
 .table > tbody > tr > td,
 .table > tbody > tr > th,

@@ -112,12 +112,10 @@
 	</xsl:template>
 
 	<!-- Probe template -->
-	<!-- <xsl:template match="m:Device"> -->
-	<!-- <xsl:template match="m:Devices"> -->
 	<xsl:template match="m:MTConnectDevices">
-		<!-- <xsl:template match="/"> -->
 		<div class="table-responsive stickytable-container">
 			<table class="table table-hover">
+				<!-- <table class="table"> -->
 				<thead>
 					<th>Element</th>
 					<th>Id</th>
@@ -132,6 +130,8 @@
 						<!-- <xsl:for-each select="*[local-name(.) != 'Agent']//*"> -->
 						<!-- <xsl:for-each select="*[local-name(.) != 'Agent']/descendent-or-self::node()"> -->
 						<xsl:variable name="indent" select="count(ancestor::*)" />
+						<xsl:variable name="element" select="local-name()"/>
+
 						<!-- <xsl:variable name="isDevice" select="local-name(.)='Device'" /> -->
 						<!-- <xsl:variable name="isDataItem" select="local-name(.)='DataItem'" /> -->
 						<tr>
@@ -157,7 +157,8 @@
 								<!-- &#160; -->
 								<!-- &#8239; -->
 								&#8198;
-								<xsl:value-of select="local-name()"/>
+																								<!-- <xsl:value-of select="local-name()"/> -->
+								<xsl:value-of select="$element" />
 							</td>
 
 							<td>
@@ -186,6 +187,7 @@
 	<xsl:template match="s:MTConnectStreams">
 		<div class="table-responsive stickytable-container">
 			<table class="table table-hover">
+				<!-- <table class="table"> -->
 				<thead>
 					<th>Element</th>
 					<th>Id</th>
@@ -209,6 +211,18 @@
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:text>normal</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+
+						<!-- get element name -->
+						<xsl:variable name="element">
+							<xsl:choose>
+								<xsl:when test="local-name()='Condition'">
+									<xsl:text>Conditions</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="local-name()" />
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
@@ -242,7 +256,8 @@
 								&#8198;
 
 								<span style="font-weight:{$weight};">
-									<xsl:value-of select="local-name()"/>
+									<!-- <xsl:value-of select="local-name()"/> -->
+									<xsl:value-of select="$element" />
 								</span>
 							</td>
 
