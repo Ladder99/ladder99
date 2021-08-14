@@ -24,11 +24,9 @@
 		</head>
 
 		<body>
-			<!-- <nav class="navbar navbar-default navbar-fixed-top"> -->
+
 			<nav class="navbar navbar-inverse navbar-fixed-top">
 				<div class="container-fluid">
-
-					<!-- brand and toggle get grouped for better mobile display -->
 					<div class="navbar-header">
 						<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
 							<span class="sr-only">Toggle navigation</span>
@@ -40,8 +38,6 @@
 							<img alt="Brand" src="/styles/LogoLadder99-text.png" height="40"/>
 						</a>
 					</div>
-
-					<!-- collect the nav links, forms, and other content for toggling -->
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
 							<li>
@@ -59,17 +55,13 @@
 								<input id="fromText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="From"/>
 								<input id="countText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="Count"/>
 								<input id="queryText" type="text" class="form-control" style="margin-right: 10px;" placeholder="Query"/>
-								<!-- <button onclick="showHelp()" class="btn btn-default">?</button> -->
-								<!-- <button type="button" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#exampleModal">?</button> -->
 								<button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">?</button>
 							</div>
 							<button onclick="getSample()" class="btn btn-default">Get Sample</button>
 						</div>
 					</div>
-
 				</div>
 			</nav>
-
 
 			<div class="container-fluid page-container">
 				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Header" /> -->
@@ -88,11 +80,9 @@
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">x</span>
 							</button>
-							<h4 class="modal-title" id="myModalLabel">Help</h4>
+							<h4 class="modal-title" id="myModalLabel">Ladder99 Agent Help</h4>
 						</div>
 						<div class="modal-body">
-							<h4>Ladder99 Agent</h4>
-
 The Ladder99 Agent ...
 
 						</div>
@@ -105,7 +95,7 @@ The Ladder99 Agent ...
 
 			<!-- jquery is needed for bootstrap modal -->
 			<script src="/styles/jquery-1.12.4.min.js"></script>
-			<!-- ...download this? -->
+			<!-- ...download this? oh, can't do that -->
 			<script src="https://kit.fontawesome.com/1dd18af014.js" crossorigin="anonymous"></script>
 			<script src="/styles/bootstrap.min.js"></script>
 			<script src="/styles/script.js"></script>
@@ -144,7 +134,6 @@ The Ladder99 Agent ...
 	<xsl:template match="m:MTConnectDevices">
 		<div class="table-responsive stickytable-container">
 			<table class="table table-hover">
-				<!-- <table class="table"> -->
 				<thead>
 					<th>Element</th>
 					<th>Id</th>
@@ -186,7 +175,7 @@ The Ladder99 Agent ...
 								<!-- &#160; -->
 								<!-- &#8239; -->
 								&#8198;
-																																																																																																																																																																																																																																																																																																																																																																																																																																	<!-- <xsl:value-of select="local-name()"/> -->
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									<!-- <xsl:value-of select="local-name()"/> -->
 								<xsl:value-of select="$element" />
 							</td>
 
@@ -216,7 +205,6 @@ The Ladder99 Agent ...
 	<xsl:template match="s:MTConnectStreams">
 		<div class="table-responsive stickytable-container">
 			<table class="table table-hover">
-				<!-- <table class="table"> -->
 				<thead>
 					<th>Element</th>
 					<th>Id</th>
@@ -233,7 +221,6 @@ The Ladder99 Agent ...
 						<!-- so verbose... -->
 						<xsl:variable name="weight">
 							<xsl:choose>
-								<!-- <xsl:when test="$indent=1"> -->
 								<xsl:when test="local-name()='DeviceStream'">bold</xsl:when>
 								<xsl:when test="local-name()='Samples'">bold</xsl:when>
 								<xsl:when test="local-name()='Events'">bold</xsl:when>
@@ -262,8 +249,7 @@ The Ladder99 Agent ...
 								<xsl:when test="local-name()='Normal'">NORMAL</xsl:when>
 								<xsl:when test="local-name()='Warning'">WARNING</xsl:when>
 								<xsl:when test="local-name()='Error'">ERROR</xsl:when>
-								<!-- ....put back to UNAVAILABLE -->
-								<xsl:when test="local-name()='Unavailable'">NORMAL</xsl:when>
+								<xsl:when test="local-name()='Unavailable'">UNAVAILABLE</xsl:when>
 								<xsl:otherwise>
 									<xsl:value-of select="text()" />
 								</xsl:otherwise>
@@ -276,6 +262,8 @@ The Ladder99 Agent ...
 							<!-- <xsl:when test="local-name()='Condition'"> -->
 							<xsl:choose>
 								<xsl:when test="$value='NORMAL'">#9fe473</xsl:when>
+								<xsl:when test="$value='WARNING'">#ffe989</xsl:when>
+								<xsl:when test="$value='ERROR'">#e47373</xsl:when>
 								<xsl:otherwise>white</xsl:otherwise>
 							</xsl:choose>
 							<!-- </xsl:when> -->
