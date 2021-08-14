@@ -157,7 +157,7 @@
 								<!-- &#160; -->
 								<!-- &#8239; -->
 								&#8198;
-																																																								<!-- <xsl:value-of select="local-name()"/> -->
+																																																																																																																																<!-- <xsl:value-of select="local-name()"/> -->
 								<xsl:value-of select="$element" />
 							</td>
 
@@ -192,7 +192,6 @@
 					<th>Element</th>
 					<th>Id</th>
 					<th>Name</th>
-					<!-- <th>SubType</th> -->
 					<th>Timestamp</th>
 					<th>Sequence</th>
 					<th>Value</th>
@@ -206,33 +205,22 @@
 						<xsl:variable name="weight">
 							<xsl:choose>
 								<!-- <xsl:when test="$indent=1"> -->
-								<xsl:when test="local-name()='DeviceStream'">
-									<xsl:text>bold</xsl:text>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:text>normal</xsl:text>
-								</xsl:otherwise>
+								<xsl:when test="local-name()='DeviceStream'">bold</xsl:when>
+								<xsl:when test="local-name()='Samples'">bold</xsl:when>
+								<xsl:when test="local-name()='Events'">bold</xsl:when>
+								<xsl:when test="local-name()='Condition'">bold</xsl:when>
+								<xsl:otherwise>normal</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
 
 						<!-- get element name -->
 						<xsl:variable name="element">
 							<xsl:choose>
-								<xsl:when test="local-name()='Condition'">
-									Conditions
-								</xsl:when>
-								<xsl:when test="local-name()='Normal'">
-								  Condition
-								</xsl:when>
-								<xsl:when test="local-name()='Warning'">
-								  Condition
-								</xsl:when>
-								<xsl:when test="local-name()='Error'">
-								  Condition
-								</xsl:when>
-								<xsl:when test="local-name()='Unavailable'">
-								  Condition
-								</xsl:when>
+								<xsl:when test="local-name()='Condition'">Conditions</xsl:when>
+								<xsl:when test="local-name()='Normal'">Condition</xsl:when>
+								<xsl:when test="local-name()='Warning'">Condition</xsl:when>
+								<xsl:when test="local-name()='Error'">Condition</xsl:when>
+								<xsl:when test="local-name()='Unavailable'">Condition</xsl:when>
 								<xsl:otherwise>
 									<xsl:value-of select="local-name()" />
 								</xsl:otherwise>
@@ -242,26 +230,30 @@
 						<!-- get value -->
 						<xsl:variable name="value">
 							<xsl:choose>
-								<xsl:when test="local-name()='Normal'">
-								  NORMAL
-								</xsl:when>
-								<xsl:when test="local-name()='Warning'">
-								  WARNING
-								</xsl:when>
-								<xsl:when test="local-name()='Error'">
-								  ERROR
-								</xsl:when>
-								<xsl:when test="local-name()='Unavailable'">
-								  UNAVAILABLE
-								</xsl:when>
+								<xsl:when test="local-name()='Normal'">NORMAL</xsl:when>
+								<xsl:when test="local-name()='Warning'">WARNING</xsl:when>
+								<xsl:when test="local-name()='Error'">ERROR</xsl:when>
+								<!-- ....put back to UNAVAILABLE -->
+								<xsl:when test="local-name()='Unavailable'">NORMAL</xsl:when>
 								<xsl:otherwise>
 									<xsl:value-of select="text()" />
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
 
-						<tr>
+						<!-- get value color -->
+						<xsl:variable name="valueColor">
+							<!-- <xsl:choose> -->
+							<!-- <xsl:when test="local-name()='Condition'"> -->
+							<xsl:choose>
+								<xsl:when test="$value='NORMAL'">#9fe473</xsl:when>
+								<xsl:otherwise>white</xsl:otherwise>
+							</xsl:choose>
+							<!-- </xsl:when> -->
+							<!-- </xsl:choose> -->
+						</xsl:variable>
 
+						<tr>
 							<td>
 								<!-- indent according to depth and show type, eg Device, DataItem -->
 								<span style="color:white">
@@ -301,9 +293,6 @@
 							<td>
 								<xsl:value-of select="@name"/>
 							</td>
-							<!-- <td>
-								<xsl:value-of select="@subType"/>
-							</td> -->
 							<td>
 								<!-- replace T with space? -->
 								<!-- <xsl:value-of select="@timestamp"/> -->
@@ -313,7 +302,7 @@
 							<td>
 								<xsl:value-of select="@sequence"/>
 							</td>
-							<td>
+							<td style="background:{$valueColor};">
 								<!-- <xsl:value-of select="text()"/> -->
 								<xsl:value-of select="$value"/>
 							</td>
