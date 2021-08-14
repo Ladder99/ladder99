@@ -11,13 +11,14 @@
 
 	<xsl:output method="html" version="1.0" encoding="UTF-8" indent="yes"/>
 
+	<!-- Root template -->
 	<xsl:template match="/">
 
 		<head>
 			<meta charset="utf-8"></meta>
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
 			<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-			<title>MTConnect Devices</title>
+			<title>Ladder99 Agent</title>
 			<link href="/styles/bootstrap.min.css" rel="stylesheet"></link>
 			<link href="/styles/styles.css" rel="stylesheet"></link>
 		</head>
@@ -56,9 +57,10 @@
 							<div class="form-group">
 								<input id="fromText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="From"/>
 								<input id="countText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="Count"/>
-								<input id="queryText" type="text" class="form-control" style="margin-right: 10px;" placeholder="XPath Query"/>
+								<input id="queryText" type="text" class="form-control" style="margin-right: 10px;" placeholder="Query"/>
+								<button onclick="showHelp()" class="btn btn-default">?</button>
 							</div>
-							<button onclick="getSample();" class="btn btn-default">Get Sample</button>
+							<button onclick="getSample()" class="btn btn-default">Get Sample</button>
 						</div>
 					</div>
 
@@ -68,18 +70,21 @@
 			<div class="container-fluid page-container">
 				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Header" /> -->
 				<!-- <xsl:apply-templates select="/s:MTConnectStreams/s:Header" /> -->
-				<xsl:apply-templates select="/m:MTConnectDevices" />
+				<!-- <xsl:apply-templates select="/m:MTConnectDevices" /> -->
+				<!-- <xsl:apply-templates select="*" /> -->
+				<xsl:apply-templates />
 				<xsl:apply-templates select="/s:MTConnectStreams" />
 			</div>
 
 			<script src="/styles/jquery-1.12.4.min.js"></script>
 			<script src="/styles/bootstrap.min.js"></script>
+			<script src="https://kit.fontawesome.com/1dd18af014.js" crossorigin="anonymous"></script>
 			<script src="/styles/script.js"></script>
 
 		</body>
 	</xsl:template>
 
-	<!-- Header -->
+	<!-- Header template -->
 	<xsl:template match="m:Header|s:Header">
 		<details style="margin-bottom: 5px;">
 			<summary style="font-size:medium;">
@@ -106,10 +111,11 @@
 		</details>
 	</xsl:template>
 
-	<!-- Probe -->
+	<!-- Probe template -->
 	<!-- <xsl:template match="m:Device"> -->
 	<!-- <xsl:template match="m:Devices"> -->
 	<xsl:template match="m:MTConnectDevices">
+		<!-- <xsl:template match="/"> -->
 		<div class="table-responsive stickytable-container">
 			<table class="table table-hover">
 				<thead>
@@ -122,10 +128,8 @@
 				</thead>
 				<tbody>
 					<!-- <xsl:for-each select="//*[local-name(.) != 'Agent']"> -->
-					<!-- works but includes Agent and descendents -->
-					<!-- <xsl:for-each select="//*"> -->
-					<!-- works but doesn't include Device row -->
-					<xsl:for-each select="*[local-name(.) != 'Agent']//*">
+					<xsl:for-each select="//*">
+						<!-- <xsl:for-each select="*[local-name(.) != 'Agent']//*"> -->
 						<!-- <xsl:for-each select="*[local-name(.) != 'Agent']/descendent-or-self::node()"> -->
 						<xsl:variable name="indent" select="count(ancestor::*)" />
 						<!-- <xsl:variable name="isDevice" select="local-name(.) == 'Device'" /> -->
@@ -133,8 +137,10 @@
 							<td>
 								<!-- indent according to depth and show type, eg Device, DataItem -->
 								<span style="color:white">
-									<xsl:value-of select="substring('............',1,$indent)"/>
+									<xsl:value-of select="substring('xxxxxxxxxxxx',1,$indent)"/>
 								</span>
+								<i class="far fa-plus-square" style="color:#aaa"></i>
+								<span style="color:white">.</span>
 								<xsl:value-of select="local-name()"/>
 							</td>
 							<td>
@@ -159,7 +165,7 @@
 		</div>
 	</xsl:template>
 
-	<!-- Current/Sample -->
+	<!-- Current/Sample template -->
 	<xsl:template match="s:MTConnectStreams">
 		<div class="table-responsive stickytable-container">
 			<table class="table table-hover">
@@ -191,13 +197,17 @@
 							<td>
 								<!-- indent according to depth and show type, eg Device, DataItem -->
 								<span style="color:white">
-									<xsl:value-of select="substring('............',1,$indent)"/>
+									<xsl:value-of select="substring('xxxxxxxxxxxx',1,$indent)"/>
 								</span>
+								<i class="far fa-plus-square" style="color:#aaa"></i>
+								<!-- why &nbsp; no work here? -->
+								<span style="color:white">.</span>
 								<span style="font-weight:{$weight};">
 									<xsl:value-of select="local-name()"/>
 								</span>
 							</td>
 							<td>
+								<!-- <i class="fas fa-cogs"></i> -->
 								<xsl:value-of select="@dataItemId"/>
 							</td>
 							<td>
