@@ -175,13 +175,27 @@
 				<tbody>
 					<xsl:for-each select="//*">
 						<xsl:variable name="indent" select="count(ancestor::*)" />
+						<!-- so verbose... -->
+						<xsl:variable name="weight">
+							<xsl:choose>
+								<xsl:when test="$indent=1">
+									<xsl:text>bold</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:text>normal</xsl:text>
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+
 						<tr>
 							<td>
 								<!-- indent according to depth and show type, eg Device, DataItem -->
 								<span style="color:white">
 									<xsl:value-of select="substring('............',1,$indent)"/>
 								</span>
-								<xsl:value-of select="local-name()"/>
+								<span style="font-weight:{$weight};">
+									<xsl:value-of select="local-name()"/>
+								</span>
 							</td>
 							<td>
 								<xsl:value-of select="@dataItemId"/>
