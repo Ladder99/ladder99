@@ -66,12 +66,9 @@
 			</nav>
 
 			<div class="container-fluid page-container">
-				<xsl:apply-templates select="/m:MTConnectDevices/m:Header" />
-				<xsl:apply-templates select="/s:MTConnectStreams/s:Header" />
-				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Devices/m:Device" /> -->
-				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Devices" /> -->
+				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Header" /> -->
+				<!-- <xsl:apply-templates select="/s:MTConnectStreams/s:Header" /> -->
 				<xsl:apply-templates select="/m:MTConnectDevices" />
-				<!-- <xsl:apply-templates select="/s:MTConnectStreams/s:Streams/s:DeviceStream" /> -->
 				<xsl:apply-templates select="/s:MTConnectStreams" />
 			</div>
 
@@ -134,11 +131,10 @@
 						<!-- <xsl:variable name="isDevice" select="local-name(.) == 'Device'" /> -->
 						<tr>
 							<td>
-								<!-- indent according to depth -->
+								<!-- indent according to depth and show type, eg Device, DataItem -->
 								<span style="color:white">
 									<xsl:value-of select="substring('............',1,$indent)"/>
 								</span>
-								<!-- show element type, eg Device, DataItem -->
 								<xsl:value-of select="local-name()"/>
 							</td>
 							<td>
@@ -171,50 +167,41 @@
 					<th>Element</th>
 					<th>Id</th>
 					<th>Name</th>
-					<th>Category</th>
-					<th>Type</th>
 					<th>SubType</th>
+					<th>Timestamp</th>
+					<th>Sequence</th>
 					<th>Value</th>
-					<th>Units</th>
 				</thead>
 				<tbody>
-					<!-- <xsl:for-each select="//*[local-name(.) != 'Agent']"> -->
-					<!-- works but includes Agent and descendents -->
-					<!-- <xsl:for-each select="//*"> -->
-					<!-- works but doesn't include Device row -->
-					<xsl:for-each select="*[local-name(.) != 'Agent']//*">
-						<!-- <xsl:for-each select="*[local-name(.) != 'Agent']/descendent-or-self::node()"> -->
+					<xsl:for-each select="//*">
 						<xsl:variable name="indent" select="count(ancestor::*)" />
-						<!-- <xsl:variable name="isDevice" select="local-name(.) == 'Device'" /> -->
 						<tr>
 							<td>
-								<!-- indent according to depth -->
+								<!-- indent according to depth and show type, eg Device, DataItem -->
 								<span style="color:white">
 									<xsl:value-of select="substring('............',1,$indent)"/>
 								</span>
-								<!-- show element type, eg Device, DataItem -->
 								<xsl:value-of select="local-name()"/>
 							</td>
 							<td>
-								<xsl:value-of select="@id"/>
+								<xsl:value-of select="@dataItemId"/>
 							</td>
 							<td>
 								<xsl:value-of select="@name"/>
 							</td>
 							<td>
-								<xsl:value-of select="@category"/>
-							</td>
-							<td>
-								<xsl:value-of select="@type"/>
-							</td>
-							<td>
 								<xsl:value-of select="@subType"/>
 							</td>
 							<td>
-								<xsl:value-of select="@value"/>
+								<!-- replace T with space -->
+								<xsl:value-of select="@timestamp"/>
 							</td>
 							<td>
-								<xsl:value-of select="@units"/>
+								<xsl:value-of select="@sequence"/>
+							</td>
+							<td>
+								<!-- <xsl:value-of select="."/> -->
+								<xsl:value-of select="."/>
 							</td>
 						</tr>
 					</xsl:for-each>
