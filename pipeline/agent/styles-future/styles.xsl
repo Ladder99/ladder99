@@ -157,7 +157,7 @@
 								<!-- &#160; -->
 								<!-- &#8239; -->
 								&#8198;
-																								<!-- <xsl:value-of select="local-name()"/> -->
+																																																								<!-- <xsl:value-of select="local-name()"/> -->
 								<xsl:value-of select="$element" />
 							</td>
 
@@ -219,10 +219,43 @@
 						<xsl:variable name="element">
 							<xsl:choose>
 								<xsl:when test="local-name()='Condition'">
-									<xsl:text>Conditions</xsl:text>
+									Conditions
+								</xsl:when>
+								<xsl:when test="local-name()='Normal'">
+								  Condition
+								</xsl:when>
+								<xsl:when test="local-name()='Warning'">
+								  Condition
+								</xsl:when>
+								<xsl:when test="local-name()='Error'">
+								  Condition
+								</xsl:when>
+								<xsl:when test="local-name()='Unavailable'">
+								  Condition
 								</xsl:when>
 								<xsl:otherwise>
 									<xsl:value-of select="local-name()" />
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:variable>
+
+						<!-- get value -->
+						<xsl:variable name="value">
+							<xsl:choose>
+								<xsl:when test="local-name()='Normal'">
+								  NORMAL
+								</xsl:when>
+								<xsl:when test="local-name()='Warning'">
+								  WARNING
+								</xsl:when>
+								<xsl:when test="local-name()='Error'">
+								  ERROR
+								</xsl:when>
+								<xsl:when test="local-name()='Unavailable'">
+								  UNAVAILABLE
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:value-of select="text()" />
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
@@ -281,7 +314,8 @@
 								<xsl:value-of select="@sequence"/>
 							</td>
 							<td>
-								<xsl:value-of select="text()"/>
+								<!-- <xsl:value-of select="text()"/> -->
+								<xsl:value-of select="$value"/>
 							</td>
 						</tr>
 					</xsl:for-each>
