@@ -58,7 +58,8 @@
 								<input id="fromText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="From"/>
 								<input id="countText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="Count"/>
 								<input id="queryText" type="text" class="form-control" style="margin-right: 10px;" placeholder="Query"/>
-								<button onclick="showHelp()" class="btn btn-default">?</button>
+								<!-- <button onclick="showHelp()" class="btn btn-default">?</button> -->
+								<button type="button" class="btn btn-default" data-bs-toggle="modal" data-bs-target="#exampleModal">?</button>
 							</div>
 							<button onclick="getSample()" class="btn btn-default">Get Sample</button>
 						</div>
@@ -66,6 +67,7 @@
 
 				</div>
 			</nav>
+
 
 			<div class="container-fluid page-container">
 				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Header" /> -->
@@ -76,9 +78,31 @@
 				<xsl:apply-templates select="/s:MTConnectStreams" />
 			</div>
 
-			<script src="/styles/jquery-1.12.4.min.js"></script>
-			<script src="/styles/bootstrap.min.js"></script>
+			<!-- Modal -->
+			<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">Help</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							this is a bunch of help text
+						</div>
+						<div class="modal-footer">
+							<!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+							<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+							<!-- <button type="button" class="btn btn-primary">Save changes</button> -->
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- <script src="/styles/jquery-1.12.4.min.js"></script> -->
+			<!-- ...download this? -->
 			<script src="https://kit.fontawesome.com/1dd18af014.js" crossorigin="anonymous"></script>
+			<script src="/styles/bootstrap.min.js"></script>
+			<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script> -->
 			<script src="/styles/script.js"></script>
 
 		</body>
@@ -157,7 +181,7 @@
 								<!-- &#160; -->
 								<!-- &#8239; -->
 								&#8198;
-																																																																																																																																<!-- <xsl:value-of select="local-name()"/> -->
+																																																																																																																																																																																																																																																																																																																																																	<!-- <xsl:value-of select="local-name()"/> -->
 								<xsl:value-of select="$element" />
 							</td>
 
