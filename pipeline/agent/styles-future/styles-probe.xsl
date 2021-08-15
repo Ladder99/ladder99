@@ -48,15 +48,12 @@
 										<img style="width:12px;" src="/styles/icon-minus.png" />
 									</xsl:when>
 									<xsl:otherwise>
-										&#8198; 																																																																																																																																																																																																							<!-- space -->
+										&#8198; 																																																																																																																																																																																																																	<!-- space -->
 									</xsl:otherwise>
 								</xsl:choose>
 
 								<!-- narrow space - see https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
-								<!-- <span style="color:white">.</span> -->
-								<!-- &#160; -->
-								<!-- &#8239; -->
-								&#8198;																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																										<!-- <xsl:value-of select="local-name()"/> -->
+								&#8198;																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		<!-- <xsl:value-of select="local-name()"/> -->
 								<xsl:value-of select="$element" />
 							</td>
 
