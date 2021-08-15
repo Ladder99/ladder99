@@ -113,3 +113,7 @@ th {
   padding: 1px 8px;
   border: 1px solid #ddd;
 }
+
+.subtable {
+  margin-left: 3em;
+}
