@@ -123,3 +123,15 @@ td > .truncate {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+/* tabs */
+/* border: 1px solid transparent; */
+.nav > li {
+  background: #333;
+  margin-right: 2px;
+  border-radius: 5px 5px 0 0;
+}
+.nav > li.selected {
+  background: #444;
+  color: white;
+}
