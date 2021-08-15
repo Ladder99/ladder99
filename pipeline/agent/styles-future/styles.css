@@ -87,9 +87,13 @@ table {
   margin: 8px 8px 8px 3em;
 }
 
-th {
+table th {
   text-align: left;
   background: #e2e2e2;
+}
+
+/* don't do sticky unless it's a top-level table */
+.table > thead > tr > th {
   position: sticky;
   top: 0px;
 }
@@ -107,4 +111,15 @@ th {
 .subtable td {
   padding: 1px 8px;
   border: 1px solid #ddd;
+}
+
+th > .truncate,
+td > .truncate {
+  width: auto;
+  min-width: 0;
+  max-width: 200px;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

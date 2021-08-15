@@ -37,24 +37,26 @@
 						<tr style="{$rowStyle}">
 
 							<td>
-								<!-- indent according to depth and show type, eg Device, DataItem -->
-								<span style="color:white">
-									<xsl:value-of select="substring('xxxxxxxxxxxx',1,$indent)"/>
-								</span>
+								<div class="truncate">
+									<!-- indent according to depth and show type, eg Device, DataItem -->
+									<span style="color:white">
+										<xsl:value-of select="substring('xxxxxxxxxxxx',1,$indent)"/>
+									</span>
 
-								<!-- add +/- if item has any child elements -->
-								<xsl:choose>
-									<xsl:when test="*">
-										<img style="width:12px;" src="/styles/icon-minus.png" />
-									</xsl:when>
-									<xsl:otherwise>
-										&#8198; 																																																																																																																																																																																																																	<!-- space -->
-									</xsl:otherwise>
-								</xsl:choose>
+									<!-- add +/- if item has any child elements -->
+									<xsl:choose>
+										<xsl:when test="*">
+											<img style="width:12px;" src="/styles/icon-minus.png" />
+										</xsl:when>
+										<xsl:otherwise>
+										&#8198; 																																																																																																																																																																																																																												<!-- space -->
+										</xsl:otherwise>
+									</xsl:choose>
 
-								<!-- narrow space - see https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
-								&#8198;																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																		<!-- <xsl:value-of select="local-name()"/> -->
-								<xsl:value-of select="$element" />
+									<!-- narrow space - see https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
+								&#8198;
+									<xsl:value-of select="$element" />
+								</div>
 							</td>
 
 							<td>

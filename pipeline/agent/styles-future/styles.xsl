@@ -53,7 +53,7 @@
 						</ul>
 						<div class="navbar-form navbar-left">
 							<div class="form-group">
-								<input id="pathText" type="text" class="form-control" style="width: 10em; margin-right: 10px;" placeholder="Path"/>
+								<input id="pathText" type="text" class="form-control" style="width: 20em; margin-right: 10px;" placeholder="Path"/>
 								<input id="fromText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="From"/>
 								<input id="countText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="Count"/>
 								<button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" style="margin-right: 0px;">?</button>
