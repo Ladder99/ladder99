@@ -1,6 +1,6 @@
 # Ladder99 Agent Docker image build instructions
-# Adapted from http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu.
-# See also pipeline/mtconnect-agent for MTConnect Agent..
+# Adapted from http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu
+# See also pipeline/mtconnect-agent for MTConnect Agent
 
 FROM ladder99/mtconnect-agent:latest
 
@@ -38,6 +38,7 @@ CMD /usr/bin/ruby /etc/mtconnect/simulator/run_scenario.rb -l \
 #  |-- schemas - xsd files
 #  |-- simulator - agent.cfg, simulator.rb, vmc-3axis.xml, log.txt
 #  |-- styles - our devices.xsl, streams.xsl, custom.css, logo.png, favicon.ico
+#
 # /usr/local/bin
 #  |-- agent - the agent application
 #
@@ -51,8 +52,9 @@ CMD /usr/bin/ruby /etc/mtconnect/simulator/run_scenario.rb -l \
 #     command: agent debug /data/agent/agent.cfg
 #     volumes:
 #       - ./$SETUP/volumes/agent:/data/agent # should have agent.cfg, devices.xml
+#
 # so it lets the user override the agent.cfg by mapping /data/agent to
-# a local folder eg setups/ccs-pa/volumes/agent. 
+# a local folder eg setups/test/print-apply/volumes/agent. 
 #
 # so if you want plain xml output, you'd need to comment out the xsl
 # file references from the agent.cfg file.

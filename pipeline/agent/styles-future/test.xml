@@ -1,5 +1,11 @@
+<!-- wip -->
+<!-- use this for testing the xsl locally, without going through docker -->
+<!-- run `python -m http.server` in this folder -->
+<!-- open http://localhost:8000/test.xml in browser -->
+
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="styles.xsl"?>
+
 <MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.7"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="urn:mtconnect.org:MTConnectDevices:1.7" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.7 http://www.mtconnect.org/schemas/MTConnectDevices_1.7.xsd">
