@@ -53,12 +53,12 @@
 						</ul>
 						<div class="navbar-form navbar-left">
 							<div class="form-group">
+								<input id="pathText" type="text" class="form-control" style="width: 10em; margin-right: 10px;" placeholder="Path"/>
 								<input id="fromText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="From"/>
 								<input id="countText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="Count"/>
-								<input id="queryText" type="text" class="form-control" style="margin-right: 10px;" placeholder="Query"/>
-								<button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal">?</button>
+								<button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" style="margin-right: 0px;">?</button>
 							</div>
-							<button onclick="getSample()" class="btn btn-default">Get Sample</button>
+							<button onclick="fetchData()" class="btn btn-default">Fetch Data</button>
 						</div>
 					</div>
 				</div>

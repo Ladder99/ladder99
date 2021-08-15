@@ -3,10 +3,10 @@
   --header-height: 60px;
 }
 
-.container-fluid {
-  /* padding-left: 0; */
-  /* padding-right: 0; */
-}
+/* .container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+} */
 
 .nav,
 .navbar,
@@ -20,15 +20,6 @@
 }
 .navbar-header {
   padding-left: 10px;
-}
-
-/* .navbar-default .navbar-nav > li > a:focus,
-.navbar-default .navbar-nav > li > a:hover {
-  color: white;
-} */
-
-summary {
-  cursor: pointer;
 }
 
 /* change icons for summary/detail */
@@ -56,6 +47,10 @@ details[open] > summary::before {
 /* } */
 details[open] > summary {
   margin-bottom: 0.5rem;
+}
+
+summary {
+  cursor: pointer;
 }
 
 h1,
@@ -89,7 +84,7 @@ table {
 }
 
 .subtable {
-  margin: 8px 0;
+  margin: 8px 8px 8px 3em;
 }
 
 th {
@@ -112,8 +107,4 @@ th {
 .subtable td {
   padding: 1px 8px;
   border: 1px solid #ddd;
-}
-
-.subtable {
-  margin-left: 3em;
 }
