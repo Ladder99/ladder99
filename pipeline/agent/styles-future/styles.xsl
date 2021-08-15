@@ -66,8 +66,6 @@
 
 			<!-- Main contents -->
 			<div class="container-fluid page-container">
-				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Header" /> -->
-				<!-- <xsl:apply-templates select="/s:MTConnectStreams/s:Header" /> -->
 				<!-- <xsl:apply-templates select="/m:MTConnectDevices" /> -->
 				<!-- <xsl:apply-templates select="*" /> -->
 				<xsl:apply-templates />
@@ -126,33 +124,6 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 			<script src="/styles/script.js"></script>
 
 		</body>
-	</xsl:template>
-
-	<!-- Agent header template -->
-	<xsl:template match="m:Header|s:Header">
-		<details style="margin-bottom: 5px;">
-			<summary style="font-size:medium;">
-				<b>Header</b>
-			</summary>
-			<table class="table table-hover">
-				<thead>
-					<xsl:for-each select="@*">
-						<th>
-							<xsl:value-of select="name()"/>
-						</th>
-					</xsl:for-each>
-				</thead>
-				<tbody>
-					<tr>
-						<xsl:for-each select="@*">
-							<td>
-								<xsl:value-of select="."/>
-							</td>
-						</xsl:for-each>
-					</tr>
-				</tbody>
-			</table>
-		</details>
 	</xsl:template>
 
 	<!-- Probe template -->
