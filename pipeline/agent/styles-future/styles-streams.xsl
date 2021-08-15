@@ -41,7 +41,7 @@
             <!-- get style for the row -->
             <xsl:variable name="rowStyle">
               <xsl:choose>
-                <xsl:when test="$element='Header' or $element='DeviceStream' or $element='Samples' or $element='Events' or $element='Condition'">
+                <xsl:when test="$element='Header' or $element='DeviceStream' or $element='Samples' or $element='Events' or $element='Conditions'">
 								  font-weight:bold;
                 </xsl:when>
               </xsl:choose>
@@ -88,7 +88,7 @@
                     <img style="width:12px;" src="/styles/icon-minus.png" />
                   </xsl:when>
                   <xsl:otherwise>
-										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                    <!-- space -->
+										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                            <!-- space -->
                   </xsl:otherwise>
                 </xsl:choose>
 
@@ -115,6 +115,35 @@
                 <xsl:value-of select="$value"/>
               </td>
             </tr>
+
+            <!-- Header subtable -->
+            <xsl:choose>
+              <xsl:when test="$element='Header'">
+                <tr>
+                  <td colspan="7">
+                    <table class="subtable">
+                      <thead>
+                        <xsl:for-each select="@*">
+                          <th>
+                            <xsl:value-of select="name()"/>
+                          </th>
+                        </xsl:for-each>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <xsl:for-each select="@*">
+                            <td>
+                              <xsl:value-of select="."/>
+                            </td>
+                          </xsl:for-each>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </xsl:when>
+            </xsl:choose>
+
           </xsl:for-each>
         </tbody>
       </table>
