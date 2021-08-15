@@ -178,7 +178,7 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 
 						<xsl:variable name="rowStyle">
 							<xsl:choose>
-								<xsl:when test="$element='Agent' or $element='Device'">
+								<xsl:when test="$element='Header' or $element='Agent' or $element='Device'">
 								  font-weight:bold;
 								</xsl:when>
 							</xsl:choose>
@@ -200,7 +200,7 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 										<img style="width:12px;" src="/styles/icon-minus.png" />
 									</xsl:when>
 									<xsl:otherwise>
-										&#8198; 																																																																																																																																																																<!-- space -->
+										&#8198; 																																																																																																																																																																										<!-- space -->
 									</xsl:otherwise>
 								</xsl:choose>
 
@@ -208,7 +208,7 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 								<!-- <span style="color:white">.</span> -->
 								<!-- &#160; -->
 								<!-- &#8239; -->
-								&#8198;																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											<!-- <xsl:value-of select="local-name()"/> -->
+								&#8198;																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			<!-- <xsl:value-of select="local-name()"/> -->
 								<xsl:value-of select="$element" />
 							</td>
 
@@ -236,8 +236,6 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 						<xsl:choose>
 							<xsl:when test="$element='Header'">
 								<tr>
-									<!-- <td></td> -->
-									<!-- <td colspan="6"> -->
 									<td colspan="7">
 										<table class="subtable">
 											<thead>
@@ -266,7 +264,6 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 						<xsl:choose>
 							<xsl:when test="$element='Agent'">
 								<tr>
-									<!-- <td></td> -->
 									<td colspan="3">
 										<table class="subtable">
 											<thead>
@@ -293,7 +290,6 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 						<xsl:choose>
 							<xsl:when test="$element='Device'">
 								<tr>
-									<!-- <td></td> -->
 									<td colspan="3">
 										<table class="subtable">
 											<thead>
@@ -405,7 +401,7 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 										<img style="width:12px;" src="/styles/icon-minus.png" />
 									</xsl:when>
 									<xsl:otherwise>
-										&#8198; 																																																																																																																																																																<!-- space -->
+										&#8198; 																																																																																																																																																																										<!-- space -->
 									</xsl:otherwise>
 								</xsl:choose>
 
