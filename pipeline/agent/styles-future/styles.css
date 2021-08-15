@@ -108,7 +108,8 @@ th {
 .table > tfoot > tr > td,
 .table > tfoot > tr > th,
 .table > thead > tr > td,
-.table > thead > tr > th {
+.table > thead > tr > th,
+.subtable td {
   padding: 1px 8px;
   border: 1px solid #ddd;
 }

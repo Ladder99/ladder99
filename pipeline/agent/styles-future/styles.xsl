@@ -176,9 +176,17 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 						<xsl:variable name="indent" select="count(ancestor::*)" />
 						<xsl:variable name="element" select="local-name()"/>
 
+						<xsl:variable name="rowStyle">
+							<xsl:choose>
+								<xsl:when test="$element='Agent' or $element='Device'">
+								  font-weight:bold;
+								</xsl:when>
+							</xsl:choose>
+						</xsl:variable>
+
 						<!-- <xsl:variable name="isDevice" select="local-name(.)='Device'" /> -->
 						<!-- <xsl:variable name="isDataItem" select="local-name(.)='DataItem'" /> -->
-						<tr>
+						<tr style="{$rowStyle}">
 
 							<td>
 								<!-- indent according to depth and show type, eg Device, DataItem -->
@@ -192,7 +200,7 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 										<img style="width:12px;" src="/styles/icon-minus.png" />
 									</xsl:when>
 									<xsl:otherwise>
-										&#8198; 																																																																																																														<!-- space -->
+										&#8198; 																																																																																																																																																						<!-- space -->
 									</xsl:otherwise>
 								</xsl:choose>
 
@@ -200,7 +208,7 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 								<!-- <span style="color:white">.</span> -->
 								<!-- &#160; -->
 								<!-- &#8239; -->
-								&#8198;																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			<!-- <xsl:value-of select="local-name()"/> -->
+								&#8198;																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			<!-- <xsl:value-of select="local-name()"/> -->
 								<xsl:value-of select="$element" />
 							</td>
 
@@ -258,11 +266,11 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 							<xsl:when test="$element='Agent'">
 								<tr>
 									<td></td>
-									<td colspan="6">
+									<td colspan="3">
 										<table class="subtable">
 											<thead>
-												<th>UUID</th>
-												<th>MTConnect Version</th>
+												<th>uuid</th>
+												<th>mtconnectVersion</th>
 											</thead>
 											<tbody>
 												<tr>
@@ -285,11 +293,11 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 							<xsl:when test="$element='Device'">
 								<tr>
 									<td></td>
-									<td colspan="6">
+									<td colspan="3">
 										<table class="subtable">
 											<thead>
-												<th>UUID</th>
-												<th>SampleInterval</th>
+												<th>uuid</th>
+												<th>sampleInterval</th>
 											</thead>
 											<tbody>
 												<tr>
@@ -396,7 +404,7 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 										<img style="width:12px;" src="/styles/icon-minus.png" />
 									</xsl:when>
 									<xsl:otherwise>
-										&#8198; 																																																																																																														<!-- space -->
+										&#8198; 																																																																																																																																																						<!-- space -->
 									</xsl:otherwise>
 								</xsl:choose>
 
