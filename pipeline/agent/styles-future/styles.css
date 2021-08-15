@@ -88,6 +88,10 @@ table {
   border-collapse: collapse;
 }
 
+.subtable {
+  margin: 8px 0;
+}
+
 th {
   text-align: left;
   background: #e2e2e2;

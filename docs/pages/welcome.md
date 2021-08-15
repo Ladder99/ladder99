@@ -4,7 +4,7 @@
 
 Ladder99 is a free and open-source software pipeline that transforms data from your devices to a standard vocabulary, which you can then use with any MTConnect-compatible application.
 
-It uses the MTConnect Adapter, Agent, and Application scheme.
+<!-- It uses the MTConnect Adapter, Agent, and Application scheme. -->
 
 <!-- ## Goals
 - Connect factory devices to database and visualizations

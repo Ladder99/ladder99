@@ -156,7 +156,6 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 	</xsl:template>
 
 	<!-- Probe template -->
-
 	<xsl:template match="m:MTConnectDevices">
 		<div class="table-responsive stickytable-container">
 			<table class="table table-hover">
@@ -193,7 +192,7 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 										<img style="width:12px;" src="/styles/icon-minus.png" />
 									</xsl:when>
 									<xsl:otherwise>
-										&#8198; 																				<!-- space -->
+										&#8198; 																																																																																																														<!-- space -->
 									</xsl:otherwise>
 								</xsl:choose>
 
@@ -201,8 +200,7 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 								<!-- <span style="color:white">.</span> -->
 								<!-- &#160; -->
 								<!-- &#8239; -->
-								&#8198;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											<!-- <xsl:value-of select="local-name()"/> -->
+								&#8198;																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																			<!-- <xsl:value-of select="local-name()"/> -->
 								<xsl:value-of select="$element" />
 							</td>
 
@@ -225,6 +223,90 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 								<xsl:value-of select="@units"/>
 							</td>
 						</tr>
+
+						<!-- Header subtable -->
+						<xsl:choose>
+							<xsl:when test="$element='Header'">
+								<tr>
+									<td></td>
+									<td colspan="6">
+										<table class="subtable">
+											<thead>
+												<xsl:for-each select="@*">
+													<th>
+														<xsl:value-of select="name()"/>
+													</th>
+												</xsl:for-each>
+											</thead>
+											<tbody>
+												<tr>
+													<xsl:for-each select="@*">
+														<td>
+															<xsl:value-of select="."/>
+														</td>
+													</xsl:for-each>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</xsl:when>
+						</xsl:choose>
+
+						<!-- Agent subtable -->
+						<xsl:choose>
+							<xsl:when test="$element='Agent'">
+								<tr>
+									<td></td>
+									<td colspan="6">
+										<table class="subtable">
+											<thead>
+												<th>UUID</th>
+												<th>MTConnect Version</th>
+											</thead>
+											<tbody>
+												<tr>
+													<td>
+														<xsl:value-of select="@uuid"/>
+													</td>
+													<td>
+														<xsl:value-of select="@mtconnectVersion"/>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</xsl:when>
+						</xsl:choose>
+
+						<!-- Device subtable -->
+						<xsl:choose>
+							<xsl:when test="$element='Device'">
+								<tr>
+									<td></td>
+									<td colspan="6">
+										<table class="subtable">
+											<thead>
+												<th>UUID</th>
+												<th>SampleInterval</th>
+											</thead>
+											<tbody>
+												<tr>
+													<td>
+														<xsl:value-of select="@uuid"/>
+													</td>
+													<td>
+														<xsl:value-of select="@sampleInterval"/>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</xsl:when>
+						</xsl:choose>
+
 					</xsl:for-each>
 				</tbody>
 			</table>
@@ -314,7 +396,7 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 										<img style="width:12px;" src="/styles/icon-minus.png" />
 									</xsl:when>
 									<xsl:otherwise>
-										&#8198; 																				<!-- space -->
+										&#8198; 																																																																																																														<!-- space -->
 									</xsl:otherwise>
 								</xsl:choose>
 
