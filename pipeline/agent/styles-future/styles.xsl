@@ -82,20 +82,35 @@
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">x</span>
 							</button>
-							<h4 class="modal-title" id="myModalLabel">Ladder99 Agent</h4>
+							<h3 class="modal-title" id="myModalLabel">Ladder99 Agent</h3>
 						</div>
 						<div class="modal-body">
 
-The Ladder99 Agent transforms XML data from the MTConnect Agent 
-into a spreadsheet-like UI.
+							<h4>Probe/Current/Sample</h4>
+							<p>
+								<b>Probe</b> shows the structure of the available devices and their data items.
+								<b>Current</b> shows the latest values for each data item, along with a timestamp.
+								<b>Sample</b> shows a sequence of values and their timestamps.</p>
 
-The MTConnect Agent receives data from one or more devices
-and makes it available as XML.
+							<h4>Sequence numbers</h4>
+							<p>The MTConnect Agent stores a certain number of observations, called sequences. You can specify which ones and how many to view with the <b>From</b> and <b>Count</b> fields.</p>
 
-For more information, see <a href="https://mtconnect.org">MTConnect.org</a>,
+							<h4>Queries</h4>
+							<p>You can query the available data using a simple language called XPath.</p>
+							<p>e.g. </p>
+							<p></p>
+							<p></p>
+
+							<h4>How it works</h4>
+							<p>The <b>MTConnect Agent</b> receives data from one or more devices
+and makes it available as XML, a text data format. The <b>Ladder99 Agent</b> transforms the XML data from the MTConnect Agent 
+into a spreadsheet-like UI.</p>
+
+							<h4>Links</h4>
+							<p>For more information, see <a href="https://mtconnect.org">MTConnect.org</a>,
 and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
-
-Developed by <a href="https://mriiot.com">MRIIOT</a>.
+							</p>
+							<p>Developed by <a href="https://mriiot.com">MRIIOT</a>, your agile digital transformation partner.</p>
 
 						</div>
 						<div class="modal-footer">
@@ -152,6 +167,7 @@ Developed by <a href="https://mriiot.com">MRIIOT</a>.
 					<th>Category</th>
 					<th>Type</th>
 					<th>SubType</th>
+					<th>Units</th>
 				</thead>
 				<tbody>
 					<xsl:for-each select="//*">
@@ -174,10 +190,10 @@ Developed by <a href="https://mriiot.com">MRIIOT</a>.
 								<!-- add +/- if item has any child elements -->
 								<xsl:choose>
 									<xsl:when test="*">
-										<img style="width:14px;" src="/styles/square-plus.jpg" />
+										<img style="width:12px;" src="/styles/icon-minus.png" />
 									</xsl:when>
 									<xsl:otherwise>
-										&#8198;
+										&#8198; 																				<!-- space -->
 									</xsl:otherwise>
 								</xsl:choose>
 
@@ -186,7 +202,7 @@ Developed by <a href="https://mriiot.com">MRIIOT</a>.
 								<!-- &#160; -->
 								<!-- &#8239; -->
 								&#8198;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											<!-- <xsl:value-of select="local-name()"/> -->
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											<!-- <xsl:value-of select="local-name()"/> -->
 								<xsl:value-of select="$element" />
 							</td>
 
@@ -204,6 +220,9 @@ Developed by <a href="https://mriiot.com">MRIIOT</a>.
 							</td>
 							<td>
 								<xsl:value-of select="@subType"/>
+							</td>
+							<td>
+								<xsl:value-of select="@units"/>
 							</td>
 						</tr>
 					</xsl:for-each>
@@ -276,7 +295,7 @@ Developed by <a href="https://mriiot.com">MRIIOT</a>.
 								<xsl:when test="$value='NORMAL'">#9fe473</xsl:when>
 								<xsl:when test="$value='WARNING'">#ffe989</xsl:when>
 								<xsl:when test="$value='ERROR'">#e47373</xsl:when>
-								<xsl:otherwise>white</xsl:otherwise>
+								<xsl:otherwise>transparent</xsl:otherwise>
 							</xsl:choose>
 							<!-- </xsl:when> -->
 							<!-- </xsl:choose> -->
@@ -292,10 +311,10 @@ Developed by <a href="https://mriiot.com">MRIIOT</a>.
 								<!-- add +/- if item has any child elements -->
 								<xsl:choose>
 									<xsl:when test="*">
-										<img style="width:14px;" src="/styles/square-plus.jpg" />
+										<img style="width:12px;" src="/styles/icon-minus.png" />
 									</xsl:when>
 									<xsl:otherwise>
-										&#8198;
+										&#8198; 																				<!-- space -->
 									</xsl:otherwise>
 								</xsl:choose>
 
