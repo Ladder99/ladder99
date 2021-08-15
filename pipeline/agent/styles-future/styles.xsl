@@ -25,6 +25,7 @@
 
 		<body>
 
+			<!-- Header with logo, navigation, form and buttons -->
 			<nav class="navbar navbar-inverse navbar-fixed-top">
 				<div class="container-fluid">
 					<div class="navbar-header">
@@ -63,6 +64,7 @@
 				</div>
 			</nav>
 
+			<!-- Main contents -->
 			<div class="container-fluid page-container">
 				<!-- <xsl:apply-templates select="/m:MTConnectDevices/m:Header" /> -->
 				<!-- <xsl:apply-templates select="/s:MTConnectStreams/s:Header" /> -->
@@ -80,10 +82,20 @@
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">x</span>
 							</button>
-							<h4 class="modal-title" id="myModalLabel">Ladder99 Agent Help</h4>
+							<h4 class="modal-title" id="myModalLabel">Ladder99 Agent</h4>
 						</div>
 						<div class="modal-body">
-The Ladder99 Agent ...
+
+The Ladder99 Agent transforms XML data from the MTConnect Agent 
+into a spreadsheet-like UI.
+
+The MTConnect Agent receives data from one or more devices
+and makes it available as XML.
+
+For more information, see <a href="https://mtconnect.org">MTConnect.org</a>,
+and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
+
+Developed by <a href="https://mriiot.com">MRIIOT</a>.
 
 						</div>
 						<div class="modal-footer">
@@ -95,15 +107,13 @@ The Ladder99 Agent ...
 
 			<!-- jquery is needed for bootstrap modal -->
 			<script src="/styles/jquery-1.12.4.min.js"></script>
-			<!-- ...download this? oh, can't do that -->
-			<script src="https://kit.fontawesome.com/1dd18af014.js" crossorigin="anonymous"></script>
 			<script src="/styles/bootstrap.min.js"></script>
 			<script src="/styles/script.js"></script>
 
 		</body>
 	</xsl:template>
 
-	<!-- Header template -->
+	<!-- Agent header template -->
 	<xsl:template match="m:Header|s:Header">
 		<details style="margin-bottom: 5px;">
 			<summary style="font-size:medium;">
@@ -131,6 +141,7 @@ The Ladder99 Agent ...
 	</xsl:template>
 
 	<!-- Probe template -->
+
 	<xsl:template match="m:MTConnectDevices">
 		<div class="table-responsive stickytable-container">
 			<table class="table table-hover">
@@ -163,7 +174,7 @@ The Ladder99 Agent ...
 								<!-- add +/- if item has any child elements -->
 								<xsl:choose>
 									<xsl:when test="*">
-										<i class="far fa-plus-square" style="color:#aaa"></i>
+										<img style="width:14px;" src="/styles/square-plus.jpg" />
 									</xsl:when>
 									<xsl:otherwise>
 										&#8198;
@@ -175,7 +186,7 @@ The Ladder99 Agent ...
 								<!-- &#160; -->
 								<!-- &#8239; -->
 								&#8198;
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																									<!-- <xsl:value-of select="local-name()"/> -->
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											<!-- <xsl:value-of select="local-name()"/> -->
 								<xsl:value-of select="$element" />
 							</td>
 
@@ -202,6 +213,7 @@ The Ladder99 Agent ...
 	</xsl:template>
 
 	<!-- Current/Sample template -->
+
 	<xsl:template match="s:MTConnectStreams">
 		<div class="table-responsive stickytable-container">
 			<table class="table table-hover">
@@ -277,14 +289,10 @@ The Ladder99 Agent ...
 									<xsl:value-of select="substring('xxxxxxxxxxxx',1,$indent)"/>
 								</span>
 
-								<!-- <i class="far fa-plus-square" style="color:#aaa"></i> -->
-								<!-- why &nbsp; no work here? -->
-								<!-- <span style="color:white">.</span> -->
-
 								<!-- add +/- if item has any child elements -->
 								<xsl:choose>
 									<xsl:when test="*">
-										<i class="far fa-plus-square" style="color:#aaa"></i>
+										<img style="width:14px;" src="/styles/square-plus.jpg" />
 									</xsl:when>
 									<xsl:otherwise>
 										&#8198;
@@ -292,26 +300,20 @@ The Ladder99 Agent ...
 								</xsl:choose>
 
 								<!-- narrow space - see https://stackoverflow.com/questions/8515365/are-there-other-whitespace-codes-like-nbsp-for-half-spaces-em-spaces-en-space -->
-								<!-- <span style="color:white">.</span> -->
-								<!-- &#160; -->
-								<!-- &#8239; -->
 								&#8198;
 
 								<span style="font-weight:{$weight};">
-									<!-- <xsl:value-of select="local-name()"/> -->
 									<xsl:value-of select="$element" />
 								</span>
 							</td>
 
 							<td>
-								<!-- <i class="fas fa-cogs"></i> -->
 								<xsl:value-of select="@dataItemId"/>
 							</td>
 							<td>
 								<xsl:value-of select="@name"/>
 							</td>
 							<td>
-								<!-- replace T with space? -->
 								<!-- <xsl:value-of select="@timestamp"/> -->
 								<!-- <xsl:value-of select="substring(@timestamp,12)"/> -->
 								<xsl:value-of select="translate(@timestamp,'T',' ')"/>
@@ -320,7 +322,6 @@ The Ladder99 Agent ...
 								<xsl:value-of select="@sequence"/>
 							</td>
 							<td style="background:{$valueColor};">
-								<!-- <xsl:value-of select="text()"/> -->
 								<xsl:value-of select="$value"/>
 							</td>
 						</tr>
@@ -329,6 +330,5 @@ The Ladder99 Agent ...
 			</table>
 		</div>
 	</xsl:template>
-
 
 </xsl:stylesheet>
