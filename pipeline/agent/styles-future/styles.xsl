@@ -84,20 +84,30 @@
 						</div>
 						<div class="modal-body">
 
-							<h4>Probe/Current/Sample</h4>
-							<p>
-								<b>Probe</b> shows the structure of the available devices and their data items.
-								<b>Current</b> shows the latest values for each data item, along with a timestamp.
-								<b>Sample</b> shows a sequence of values and their timestamps.</p>
+							<h4>Tabs</h4>
+							<ul>
+								<li>
+									<b>Probe</b> shows the structure of the available devices and their data items.</li>
+								<li>
+									<b>Current</b> shows the latest values for each data item, along with a timestamp.</li>
+								<li>
+									<b>Sample</b> shows a sequence of values and their timestamps.</li>
+							</ul>
+
+							<h4>Paths</h4>
+							<p>You can search the available data using a simple query language (called XPath).</p>
+							<p>e.g. </p>
+							<ul>
+								<li>Door status: //Door</li>
+								<li>Availability of all devices: //DataItem[@type="AVAILABILITY"]</li>
+								<li>All linear axis data items: //Axes/Components/Linear/DataItems</li>
+								<li>X-axis data items: //Axes/Components/Linear[@id="x"]</li>
+								<li>All condition statuses: //DataItems/DataItem[@category="CONDITION"]</li>
+								<li>All controller data items: //Controller/*</li>
+							</ul>
 
 							<h4>Sequence numbers</h4>
 							<p>The MTConnect Agent stores a certain number of observations, called sequences. You can specify which ones and how many to view with the <b>From</b> and <b>Count</b> fields.</p>
-
-							<h4>Queries</h4>
-							<p>You can query the available data using a simple language called XPath.</p>
-							<p>e.g. </p>
-							<p></p>
-							<p></p>
 
 							<h4>How it works</h4>
 							<p>The <b>MTConnect Agent</b> receives data from one or more devices
