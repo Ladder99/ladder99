@@ -53,14 +53,14 @@ summary {
   cursor: pointer;
 }
 
-h1,
+/* h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
-  /* margin: 0; */
-}
+  margin: 0;
+} */
 
 body {
   /* since the table is the scroller, hide body scrollbars... */
@@ -125,15 +125,16 @@ td > .truncate {
 }
 
 /* tabs */
-/* border: 1px solid transparent; */
 .nav > li {
   background: #333;
   margin-right: 2px;
-  border-radius: 5px 5px 0 0;
+  border-radius: 6px 6px 0 0;
+  /* border-bottom: 2px solid #333; */
+  border-bottom: 4px solid #333;
 }
-/* .nav > li.selected { */
 .navbar-inverse .navbar-nav > li.selected {
   background: #555;
+  border-bottom: 4px solid limegreen;
 }
 .navbar-inverse .navbar-nav > li.selected > a {
   color: white;
