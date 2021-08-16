@@ -15,15 +15,23 @@ function fetchData() {
   var p = document.getElementById('pathText').value
   var f = document.getElementById('fromText').value
   var c = document.getElementById('countText').value
-  // window.location = '../sample?from=' + f + '&count=' + c
+  let base = '../probe'
+  let params = []
   if (p) {
-    window.location = '../current?path=' + p
-  } else if (f || c) {
-    window.location = '../sample?path=' + p + '&from=' + f + '&count=' + c
-  } else {
-    window.location = '../probe'
-    // alert('enter somethings')
+    params.push('path=' + p)
+    base = '../current'
   }
+  if (f) {
+    params.push('from=' + f)
+    base = '../sample'
+  }
+  if (c) {
+    params.push('count=' + c)
+    base = '../sample'
+  }
+  const query = base + (params.length === 0) ? '' : '?' + params.join('&')
+  console.log(base, params, query)
+  window.location = query
 }
 
 function getParameterByName(name) {

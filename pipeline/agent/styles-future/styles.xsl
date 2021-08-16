@@ -56,7 +56,7 @@
 								<input id="pathText" type="text" class="form-control" style="width: 20em; margin-right: 10px;" placeholder="Path"/>
 								<input id="fromText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="From"/>
 								<input id="countText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="Count"/>
-								<button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" style="margin-right: 0px;">?</button>
+								<button type="button" class="btn" data-toggle="modal" data-target="#myModal" style="margin-right: 0px;">?</button>
 							</div>
 							<button onclick="fetchData()" class="btn btn-default">Fetch Data</button>
 						</div>
@@ -94,7 +94,7 @@
 									<b>Sample</b> shows a sequence of values and their timestamps.</li>
 							</ul>
 
-							<h4>Paths</h4>
+							<h4>Path</h4>
 							<p>You can search the available data using a simple query language called XPath, e.g.</p>
 							<ul>
 								<li>Availability of all devices: <a href='../current?path=//DataItem[@type="AVAILABILITY"]'>//DataItem[@type="AVAILABILITY"]</a>
@@ -111,7 +111,7 @@
 								</li>
 							</ul>
 
-							<h4>Sequence numbers</h4>
+							<h4>From/Count</h4>
 							<p>The MTConnect Agent stores a certain number of observations, called sequences. You can specify which ones and how many to view with the <b>From</b> and <b>Count</b> fields.</p>
 
 							<h4>How it works</h4>
