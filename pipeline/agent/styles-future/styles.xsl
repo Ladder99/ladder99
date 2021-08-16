@@ -95,15 +95,20 @@
 							</ul>
 
 							<h4>Paths</h4>
-							<p>You can search the available data using a simple query language (called XPath).</p>
-							<p>e.g. </p>
+							<p>You can search the available data using a simple query language called XPath, e.g.</p>
 							<ul>
-								<li>Door status: //Door</li>
-								<li>Availability of all devices: //DataItem[@type="AVAILABILITY"]</li>
-								<li>All linear axis data items: //Axes/Components/Linear/DataItems</li>
-								<li>X-axis data items: //Axes/Components/Linear[@id="x"]</li>
-								<li>All condition statuses: //DataItems/DataItem[@category="CONDITION"]</li>
-								<li>All controller data items: //Controller/*</li>
+								<li>Availability of all devices: <a href='../current?path=//DataItem[@type="AVAILABILITY"]'>//DataItem[@type="AVAILABILITY"]</a>
+								</li>
+								<li>All condition statuses: <a href='../current?path=//DataItems/DataItem[@category="CONDITION"]'>//DataItems/DataItem[@category="CONDITION"]</a>
+								</li>
+								<li>All controller data items: <a href='../current?path=//Controller/*'>//Controller/*</a>
+								</li>
+								<li>All linear axis data items: <a href='../current?path=//Axes/Components/Linear/DataItems'>//Axes/Components/Linear/DataItems</a>
+								</li>
+								<li>X-axis data items: <a href='../current?path=//Axes/Components/Linear[@id="x"]'>//Axes/Components/Linear[@id="x"]</a>
+								</li>
+								<li>Door status: <a href='../current?path=//Door'>//Door</a>
+								</li>
 							</ul>
 
 							<h4>Sequence numbers</h4>
