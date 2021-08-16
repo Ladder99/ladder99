@@ -131,7 +131,10 @@ td > .truncate {
   margin-right: 2px;
   border-radius: 5px 5px 0 0;
 }
-.nav > li.selected {
-  background: #444;
+/* .nav > li.selected { */
+.navbar-inverse .navbar-nav > li.selected {
+  background: #555;
+}
+.navbar-inverse .navbar-nav > li.selected > a {
   color: white;
 }

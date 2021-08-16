@@ -2,8 +2,13 @@ window.onload = function () {
   document.getElementById('pathText').value = getParameterByName('path')
   document.getElementById('fromText').value = getParameterByName('from')
   document.getElementById('countText').value = getParameterByName('count')
+
   // // autorefresh - this works but resets page position
   // setTimeout(() => window.location.reload(), 2000)
+
+  // highlight the current tab
+  const tabname = window.location.pathname.slice(1) // probe|current|sample
+  document.getElementById('tab-' + tabname).classList.add('selected')
 }
 
 function fetchData() {

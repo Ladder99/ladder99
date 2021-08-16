@@ -41,13 +41,13 @@
 					</div>
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 						<ul class="nav navbar-nav">
-							<li>
+							<li id="tab-probe">
 								<a href="../probe">Probe</a>
 							</li>
-							<li>
+							<li id="tab-current">
 								<a href="../current">Current</a>
 							</li>
-							<li>
+							<li id="tab-sample">
 								<a href="../sample">Sample</a>
 							</li>
 						</ul>
