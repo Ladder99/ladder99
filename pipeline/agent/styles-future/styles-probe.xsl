@@ -49,7 +49,7 @@
 											<img style="width:12px;" src="/styles/icon-minus.png" />
 										</xsl:when>
 										<xsl:otherwise>
-										&#8198; 																																																																																																																																																																																																																												<!-- space -->
+										&#8198; 																																																																																																																																																																																																																																																																								<!-- space -->
 										</xsl:otherwise>
 									</xsl:choose>
 
@@ -150,6 +150,38 @@
 													</td>
 													<td>
 														<xsl:value-of select="@sampleInterval"/>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</td>
+								</tr>
+							</xsl:when>
+						</xsl:choose>
+
+						<!-- Description subtable -->
+						<xsl:choose>
+							<xsl:when test="$element='Description'">
+								<tr>
+									<td colspan="7">
+										<table class="subtable">
+											<thead>
+												<xsl:for-each select="@*">
+													<th>
+														<xsl:value-of select="name()"/>
+													</th>
+												</xsl:for-each>
+												<th>value</th>
+											</thead>
+											<tbody>
+												<tr>
+													<xsl:for-each select="@*">
+														<td>
+															<xsl:value-of select="."/>
+														</td>
+													</xsl:for-each>
+													<td>
+														<xsl:value-of select="text()"/>
 													</td>
 												</tr>
 											</tbody>
