@@ -67,7 +67,7 @@
               <xsl:choose>
                 <xsl:when test="$value='NORMAL'">background: #9fe473</xsl:when>
                 <xsl:when test="$value='WARNING'">background: #ffe989</xsl:when>
-                <xsl:when test="$value='ERROR'">background: #e47373</xsl:when>
+                <xsl:when test="$value='FAULT'">background: #e47373</xsl:when>
                 <xsl:when test="$value='UNAVAILABLE'">color: #aaa</xsl:when>
                 <xsl:otherwise>transparent</xsl:otherwise>
               </xsl:choose>
@@ -89,7 +89,7 @@
                     <img style="width:12px;" src="/styles/icon-minus.png" />
                   </xsl:when>
                   <xsl:otherwise>
-										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                            <!-- space -->
+										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                                                <!-- space -->
                   </xsl:otherwise>
                 </xsl:choose>
 
