@@ -50,7 +50,7 @@ export class AdapterDriver {
     // message - array of bytes (assumed to be a json string)
     function onMessage(msgTopic, message) {
       message = message.toString()
-      // console.log(`Got message on topic ${msgTopic}: ${message.slice(0, 20)}`)
+      console.log(`Got message on topic ${msgTopic}: ${message.slice(0, 20)}`)
 
       const receivedTime = new Date()
 
@@ -92,6 +92,9 @@ export class AdapterDriver {
           for (const [key, part] of inputs) {
             // use the lookup function to get item from payload, if there
             const item = lookup($, part)
+            if (part === '%M56.1') {
+              console.log(key, part, $, item)
+            }
             // if we have the part in the payload, add it to the cache
             if (item && item.value !== undefined) {
               console.log(`MQTT part '${part}' in payload - set cache`)
