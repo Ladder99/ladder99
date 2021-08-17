@@ -90,7 +90,7 @@
                     <img style="width:12px;" src="/styles/icon-minus.png" />
                   </xsl:when>
                   <xsl:otherwise>
-										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                                                                                        <!-- space -->
+										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                                                                                                            <!-- space -->
                   </xsl:otherwise>
                 </xsl:choose>
 
@@ -123,7 +123,7 @@
             <xsl:choose>
               <xsl:when test="$element='Header'">
                 <tr>
-                  <td colspan="7">
+                  <td colspan="6">
                     <table class="subtable">
                       <thead>
                         <xsl:for-each select="@*">
