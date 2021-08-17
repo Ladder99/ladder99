@@ -1,5 +1,5 @@
 topic,message,qos,retain,time_now,time_delta
-l99/${deviceId}/evt/query,"[{""address"": ""%M56.1"", ""keys"": [""%M56.1", ""printer_start_print_duration""], ""value"": 1 }]",0,1,1616701190,0.0097
+l99/${deviceId}/evt/query,"[{""address"": ""%M56.1"", ""keys"": [""%M56.1"", ""printer_start_print_duration""], ""value"": 1 }]",0,1,1616701190,0.0097
 l99/${deviceId}/evt/status,"{""connection"": ""online"", ""state"": 200, ""program"": ""emergent_pa_rc2"", ""step"": ""fault"", ""faults"": {}, ""cpu_time"": 282.025067024, ""utc_time"": 1616701065.9328506, ""build_no"": ""1.3.0.2"", ""_ts"": 1616701066007}",0,1,1616701191.275063,0.009734869003295898
 l99/${deviceId}/cmd/write,"[{""name"":""%M56.5"",""value"":0.7}]",0,0,1616701211.013003,19.737940073013306
 l99/${deviceId}/evt/read,"[{""address"": ""%M56.5"", ""keys"": [""product.sensor_one.delay""], ""value"": 0.7, ""_ts"": 1616701211141}]",0,0,1616701211.126136,0.11313295364379883
