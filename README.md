@@ -27,7 +27,7 @@ For the Ladder99 documentation, see https://docs.ladder99.com.
 
 For more on MTConnect, see https://www.mtconnect.org.
 
-For more on MRIIOT and what we can offer you, see https://mriiot.com.
+For more on MRIIOT and what we offer, see https://mriiot.com.
 
 ## License
 
