@@ -1,4 +1,4 @@
-<!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
+<!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId- -->
 <Model>
   <DataItems>
     <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
