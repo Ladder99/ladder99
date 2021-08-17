@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--Generated file - DO NOT EDIT!-->
+<!-- hand-created file for testing -->
 <MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.7"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="urn:mtconnect.org:MTConnectDevices:1.7" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.7 http://www.mtconnect.org/schemas/MTConnectDevices_1.7.xsd">
@@ -101,6 +101,8 @@
       </Systems>
     </Device>
 
+    <!-- live data didn't work when in a different device like this - why not? -->
+    <!-- something with device id or name? -->
     <!-- <Device id="micro1" name="m1" uuid="a123" sampleInterval="5">
       <Description manufacturer="Ladder99" model="Glimpse" serialNumber="001">
         Ladder99 Glimpse

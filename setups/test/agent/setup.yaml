@@ -27,7 +27,7 @@ devices:
     sources:
       - model: print-apply/ccs # model defines inputs and outputs with yaml files
         driver: mqtt-json # type of adapter plugin - manages protocol and payload
-        host: mosquitto
+        host: mosquitto # mosquitto requires a volumes/mosquitto/config/mosquitto.conf file
         port: 1883
 
       - model: micro
