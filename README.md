@@ -17,12 +17,12 @@ Ladder99 is a free and open source application that transfers data from factory 
 
 MTConnect standardizes factory device data flow and vocabulary - it was started by UC Berkeley, Georgia Institute of Technology, and Sun Microsystems in 2008, and continues under active development.
 
-Ladder99 is developed by MRIIOT, a Chicago-based company that provides IIoT integration services. See our site at https://mriiot.com.
+Ladder99 is developed by MRIIOT, a Chicago-based company that provides IIoT integration services. Let us be your agile digital transformation partners.
 
 ![image](docs/pages/_images/agent-html.jpg)
 
-See the Ladder99 documentation here - https://docs.ladder99.com.
-
-For more on MTConnect, see https://www.mtconnect.org.
+- Ladder99: https://docs.ladder99.com
+- MTConnect: https://www.mtconnect.org
+- MRIIOT: https://mriiot.com
 
 License: MIT
