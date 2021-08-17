@@ -24,11 +24,11 @@ outputs:
     representation: DATA_SET
     value: <memory>
 
-  - key: memory-total
+  - key: memory-free
     category: SAMPLE
     type: x:MEMORY
-    subType: x:TOTAL
-    value: <memory-total>
+    subType: x:FREE
+    value: <memory-free>
 
   - key: cpu
     category: EVENT

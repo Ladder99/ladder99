@@ -19,6 +19,16 @@
         <DataItem id="pa1-func_mode" name="funcmode1" category="EVENT" type="FUNCTIONAL_MODE"/>
       </DataItems>
       <Components>
+        <Controller id="pa1-micro">
+          <Description>Ladder99 Glimpse</Description>
+          <DataItems>
+            <DataItem id="pa1-availability" name="avail2" category="EVENT" type="AVAILABILITY"/>
+            <DataItem id="pa1-temperature" name="temp2" category="EVENT" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT" representation="DATA_SET"/>
+            <DataItem id="pa1-memory" name="mem2" category="EVENT" type="VARIABLE" subType="x:MEMORY" representation="DATA_SET"/>
+            <DataItem id="pa1-memory-free" name="memfree2" category="SAMPLE" type="x:MEMORY" subType="x:FREE"/>
+            <DataItem id="pa1-cpu" name="cpu2" category="EVENT" type="VARIABLE" subType="x:CPU" representation="DATA_SET"/>
+          </DataItems>
+        </Controller>
         <Controller id="pa1-controller" nativeName="plc">
           <Description>Electronic board set responsible for coordinating all machine function.</Description>
           <DataItems>
@@ -91,20 +101,18 @@
       </Systems>
     </Device>
 
-    <Device id="micro1" name="m1" uuid="a123" sampleInterval="5">
+    <!-- <Device id="micro1" name="m1" uuid="a123" sampleInterval="5">
       <Description manufacturer="Ladder99" model="Glimpse" serialNumber="001">
         Ladder99 Glimpse
       </Description>
       <DataItems>
         <DataItem id="pa1-availability" name="avail2" category="EVENT" type="AVAILABILITY"/>
-        <!-- <DataItem id="pa1-asset_changed" name="chg2" category="EVENT" type="ASSET_CHANGED"/> -->
-        <!-- <DataItem id="pa1-asset_removed" name="rem2" category="EVENT" type="ASSET_REMOVED"/> -->
-        <DataItem id="pa1-temperature" name="temp2" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
+        <DataItem id="pa1-temperature" name="temp2" category="EVENT" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT" representation="DATA_SET"/>
         <DataItem id="pa1-memory" name="mem2" category="EVENT" type="VARIABLE" subType="x:MEMORY" representation="DATA_SET"/>
-        <DataItem id="pa1-memory-total" name="memtot2" category="SAMPLE" type="x:MEMORY" subType="x:TOTAL"/>
+        <DataItem id="pa1-memory-free" name="memfree2" category="SAMPLE" type="x:MEMORY" subType="x:FREE"/>
         <DataItem id="pa1-cpu" name="cpu2" category="EVENT" type="VARIABLE" subType="x:CPU" representation="DATA_SET"/>
       </DataItems>
-    </Device>
+    </Device> -->
 
   </Devices>
 </MTConnectDevices>
