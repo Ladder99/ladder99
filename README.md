@@ -13,12 +13,22 @@
 <!-- <a href="https://www.npmjs.com/package/neomem"><img alt="weekly downloads from npm" src="https://img.shields.io/npm/dw/ladder99.svg?style=flat-square"></a> -->
 <!-- [![lerna](https://img.shields.io/badge/maintained%20with-lerna-cc00ff.svg)](https://lerna.js.org/) -->
 
-Ladder99 is a free and open source application that transfers data from factory devices to a database and end-user visualizations using MTConnect, an open standard - https://docs.ladder99.com.
+Ladder99 is a free and open source application that transfers data from factory devices to a database and end-user visualizations using MTConnect, an open standard.
 
-MTConnect standardizes factory device data flow and vocabulary - it was started by UC Berkeley, Georgia Institute of Technology, and Sun Microsystems in 2008, and continues under active development - https://www.mtconnect.org.
+MTConnect standardizes factory device data flow and vocabulary - it was started by UC Berkeley, Georgia Institute of Technology, and Sun Microsystems in 2008, and continues under active development.
 
-Ladder99 is developed by MRIIOT, a Chicago-based company that provides IIoT integration services. We are your agile digital transformation partners - https://mriiot.com.
+Ladder99 is developed by MRIIOT, your agile digital transformation partners.
 
 ![image](docs/pages/_images/agent-html.jpg)
 
-License: MIT
+## Links
+
+For the Ladder99 documentation, see https://docs.ladder99.com.
+
+For more on MTConnect, see https://www.mtconnect.org.
+
+For more on MRIIOT and what we can offer you, see https://mriiot.com.
+
+## License
+
+MIT
