@@ -46,7 +46,7 @@
                 <DataItem id="pa1-fault_count" category="SAMPLE" type="COUNT"/>
                 <DataItem id="pa1-cycle_count" category="SAMPLE" type="COUNT"/>
                 <DataItem id="pa1-life_count" category="SAMPLE" type="COUNT"/>
-                <DataItem id="pa1-cycle_time" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" unit="SECONDS"/>
+                <DataItem id="pa1-cycle_time" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" units="SECONDS"/>
               </DataItems>
             </Path>
           </Components>
@@ -62,10 +62,10 @@
               <DataItem id="pa1-tamp_air_assist" category="EVENT" type="ACTUATOR_STATE"/>
               <DataItem id="pa1-tamp_vacuum" category="EVENT" type="ACTUATOR_STATE"/>
               <DataItem id="pa1-tamp_cylinder" category="EVENT" type="ACTUATOR_STATE"/>
-              <DataItem id="pa1-cylinder_extend_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND"/>
-              <DataItem id="pa1-cylinder_home_disengage_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND"/>
-              <DataItem id="pa1-cylinder_travel_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND"/>
-              <DataItem id="pa1-tamp_vacuum_delay" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/>
+              <DataItem id="pa1-cylinder_extend_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" units="SECOND"/>
+              <DataItem id="pa1-cylinder_home_disengage_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" units="SECOND"/>
+              <DataItem id="pa1-cylinder_travel_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" units="SECOND"/>
+              <DataItem id="pa1-tamp_vacuum_delay" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
             </DataItems>
           </EndEffector>
           <Feeder id="pa1-feeder">
@@ -78,14 +78,14 @@
               <DataItem id="pa1-printer_pause" category="EVENT" type="ACTUATOR_STATE"/>
               <DataItem id="pa1-printer_feed" category="EVENT" type="ACTUATOR_STATE"/>
               <DataItem id="pa1-printer_start_print" category="EVENT" type="ACTUATOR_STATE"/>
-              <DataItem id="pa1-print_signal_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/>
-              <DataItem id="pa1-print_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND"/>
-              <DataItem id="pa1-transport_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/>
-              <DataItem id="pa1-idle_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/>
-              <DataItem id="pa1-printer_start_print_duration" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/>
-              <DataItem id="pa1-printer_end_print_wait" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/>
+              <DataItem id="pa1-print_signal_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
+              <DataItem id="pa1-print_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" units="SECOND"/>
+              <DataItem id="pa1-transport_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
+              <DataItem id="pa1-idle_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
+              <DataItem id="pa1-printer_start_print_duration" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
+              <DataItem id="pa1-printer_end_print_wait" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
               <DataItem id="pa1-product_sensor_one_edge_trigger" type="UNKNOWN" category="SAMPLE"/>
-              <DataItem id="pa1-product_sensor_one_debounce" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/>
+              <DataItem id="pa1-product_sensor_one_debounce" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
             </DataItems>
           </Feeder>
         </Components>

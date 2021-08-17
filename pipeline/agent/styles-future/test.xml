@@ -40,7 +40,7 @@
                 <DataItem id="pa1-fault_count" category="SAMPLE" type="COUNT"/>
                 <DataItem id="pa1-cycle_count" category="SAMPLE" type="COUNT"/>
                 <DataItem id="pa1-life_count" category="SAMPLE" type="COUNT"/>
-                <DataItem id="pa1-cycle_time" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" unit="SECONDS"/>
+                <DataItem id="pa1-cycle_time" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" units="SECONDS"/>
               </DataItems>
             </Path>
           </Components>
@@ -56,7 +56,7 @@
               <DataItem id="pa1-tamp_air_assist" category="EVENT" type="ACTUATOR_STATE"/>
               <DataItem id="pa1-tamp_vacuum" category="EVENT" type="ACTUATOR_STATE"/>
               <DataItem id="pa1-tamp_cylinder" category="EVENT" type="ACTUATOR_STATE"/>
-              <DataItem id="pa1-cylinder_extend_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND"/>
+              <DataItem id="pa1-cylinder_extend_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" units="SECOND"/>
             </DataItems>
           </EndEffector>
           <Feeder id="pa1-feeder">

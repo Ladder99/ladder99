@@ -43,7 +43,7 @@
             <DataItem id="step" name="step" source="." category="EVENT" type="BLOCK"/>
             <DataItem id="clktime" name="clock_time" source="=<utc_time>" category="SAMPLE" type="CLOCK_TIME"/>
             <DataItem id="uptime" name="up_time" source="=<cpu_time>" category="SAMPLE" type="EQUIPMENT_TIMER" subType="OPERATING"/>
-            <DataItem id="cycletime" name="cycle_time" source="." category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" unit="SECONDS"/>
+            <DataItem id="cycletime" name="cycle_time" source="." category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" units="SECONDS"/>
             <DataItem id="faultct" name="fault_count" source="=<%M55.2>" category="SAMPLE" type="COUNT" subType="x:FAULT"/>
             <DataItem id="cyclect" name="cycle_count" source="=<%M55.1>" category="SAMPLE" type="COUNT" subType="x:CYCLE"/>
             <DataItem id="lifect" name="life_count" source="=<%M55.0>" category="SAMPLE" type="COUNT" subType="x:LIFE"/>
@@ -65,10 +65,10 @@
           <DataItem id="assist" name="tamp_air_assist" category="EVENT" type="ACTUATOR_STATE" subType="x:AIR_ASSIST"/>
           <DataItem id="vac" name="tamp_vacuum" category="EVENT" type="ACTUATOR_STATE" subType="x:VACUUM"/>
           <DataItem id="tampcyl" name="tamp_cylinder" category="EVENT" type="ACTUATOR_STATE" subType="x:CYLINDER"/>
-          <DataItem id="exttime" name="cylinder_extend_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:EXTEND" unit="SECOND"/>
-          <DataItem id="distime" name="cylinder_home_disengage_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:DISENGAGE" unit="SECOND"/>
-          <DataItem id="travtime" name="cylinder_travel_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:TRAVEL" unit="SECOND"/>
-          <DataItem id="vacdelay" name="tamp_vacuum_delay" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/>
+          <DataItem id="exttime" name="cylinder_extend_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:EXTEND" units="SECOND"/>
+          <DataItem id="distime" name="cylinder_home_disengage_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:DISENGAGE" units="SECOND"/>
+          <DataItem id="travtime" name="cylinder_travel_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:TRAVEL" units="SECOND"/>
+          <DataItem id="vacdelay" name="tamp_vacuum_delay" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
         </DataItems>
       </EndEffector>
       <Feeder>
@@ -81,14 +81,14 @@
           <DataItem id="pause" name="printer_pause" category="EVENT" type="ACTUATOR_STATE" subType="x:PAUSE"/>
           <DataItem id="feed" name="printer_feed" category="EVENT" type="ACTUATOR_STATE" subType="x:FEED"/>
           <DataItem id="start" name="printer_start_print" category="EVENT" type="ACTUATOR_STATE" subType="x:START"/>
-          <DataItem id="sigtime" name="print_signal_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/>
-          <DataItem id="ptime" name="print_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" unit="SECOND"/>
+          <DataItem id="sigtime" name="print_signal_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
+          <DataItem id="ptime" name="print_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" units="SECOND"/>
           <!-- duplicate paths -->
-          <!-- <DataItem id="ttime" name="transport_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/> -->
-          <!-- <DataItem id="itime" name="idle_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/> -->
-          <!-- <DataItem id="starttime" name="printer_start_print_duration" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/> -->
-          <!-- <DataItem id="endwait" name="printer_end_print_wait" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/> -->
-          <!-- <DataItem id="debounce" name="product_sensor_one_debounce" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" unit="SECOND"/> -->
+          <!-- <DataItem id="ttime" name="transport_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/> -->
+          <!-- <DataItem id="itime" name="idle_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/> -->
+          <!-- <DataItem id="starttime" name="printer_start_print_duration" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/> -->
+          <!-- <DataItem id="endwait" name="printer_end_print_wait" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/> -->
+          <!-- <DataItem id="debounce" name="product_sensor_one_debounce" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/> -->
           <!-- ? -->
           <!-- <DataItem id="trig" name="product_sensor_one_edge_trigger" category="SAMPLE" type="UNKNOWN"/> -->
         </DataItems>

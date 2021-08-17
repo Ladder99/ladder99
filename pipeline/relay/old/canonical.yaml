@@ -126,7 +126,7 @@ paths:
   DataItem(sample,position,actual,coordinatesystem=work): position-actual-work
   DataItem(sample,position,actual): position-actual
   DataItem(sample,position,commanded): position-commanded
-  DataItem(sample,process_timer,process,unit=seconds): process-timer-process
+  DataItem(sample,process_timer,process,units=seconds): process-timer-process
   DataItem(sample,rotary_velocity,actual): rotary-velocity-actual
   DataItem(sample,spindle_speed,actual): spindle-speed-actual
   DataItem(sample,spindle_speed,override): spindle-speed-override

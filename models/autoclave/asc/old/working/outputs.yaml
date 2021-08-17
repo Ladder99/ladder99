@@ -44,6 +44,7 @@ outputs:
     type: EQUIPMENT_TIMER
     subType: OPERATING
     units: SECOND
+    nativeUnits: HOUR
     # cool_pump_a_hours is in hours, not sure what the correct scale there is , part 2 , 7.2.2.7
     # nativeScale: ???
     value: <cool_pump_a_hours>
