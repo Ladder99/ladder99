@@ -16,7 +16,7 @@ export class AdapterDriver {
       try {
         // get specs object like { mem: 'total, free, used' }, as expected by si module
         const specs = {}
-        inputs.values.forEach(value => (specs[value.item] = value.subitems))
+        inputs.inputs.forEach(input => (specs[input.item] = input.subitems))
 
         // read the specs data
         const data = await si.get(specs)
@@ -27,12 +27,16 @@ export class AdapterDriver {
         // setValue('temperature', data.cpuTemperature.main)
         // setValue('memory', getDataSet(data.mem))
         // setValue('cpu', getDataSet(data.currentLoad))
-        inputs.values.forEach(value => {
-          const foo =
-            value.representation === 'dataset'
-              ? getDataSet(data[value.item])
-              : data[value.item].main
-          setValue(value.name, foo)
+        inputs.inputs.forEach(input => {
+          const value =
+            input.representation === 'dataset'
+              ? getDataSet(data[input.item])
+              : data[input.item].main
+          setValue(input.name, value)
+          //. add each subitem individually also - experimental
+          input.subitems.split(', ').forEach(subitem => {
+            setValue(input.name + '-' + subitem, data[input.item][subitem])
+          })
         })
       } catch (e) {
         setUnavailable()

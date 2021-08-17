@@ -5,7 +5,7 @@
 # where to write it, and what representation to use for writing to the agent.
 # this yaml format is specific to the micro.js adapter driver.
 # the item and subitem names are defined by https://github.com/sebhildebrandt/systeminformation
-values:
+inputs:
   #. how get this?
   # - name: connection
 

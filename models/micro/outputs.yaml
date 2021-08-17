@@ -13,19 +13,25 @@ outputs:
     value: types.AVAILABILITY<connection>
 
   - key: temperature
-    category: SAMPLE
+    category: EVENT
     type: TEMPERATURE
     value: <temperature>
 
   - key: memory
-    category: SAMPLE
+    category: EVENT
     type: VARIABLE
     subType: x:MEMORY
     representation: DATA_SET
     value: <memory>
 
-  - key: cpu
+  - key: memory-total
     category: SAMPLE
+    type: x:MEMORY
+    subType: x:TOTAL
+    value: <memory-total>
+
+  - key: cpu
+    category: EVENT
     type: VARIABLE
     subType: x:CPU
     representation: DATA_SET

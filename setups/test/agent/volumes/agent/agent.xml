@@ -101,8 +101,8 @@
         <!-- <DataItem id="pa1-asset_removed" name="rem2" category="EVENT" type="ASSET_REMOVED"/> -->
         <DataItem id="pa1-temperature" name="temp2" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
         <DataItem id="pa1-memory" name="mem2" category="EVENT" type="VARIABLE" subType="x:MEMORY" representation="DATA_SET"/>
+        <DataItem id="pa1-memory-total" name="memtot2" category="SAMPLE" type="x:MEMORY" subType="x:TOTAL"/>
         <DataItem id="pa1-cpu" name="cpu2" category="EVENT" type="VARIABLE" subType="x:CPU" representation="DATA_SET"/>
-        <DataItem id="pa1-cpu-x" name="cpu2" category="EVENT" type="VARIABLE" subType="x:CPU" representation="DATA_SET"/>
       </DataItems>
     </Device>
 
