@@ -61,13 +61,15 @@
             </xsl:variable>
 
             <!-- get value color -->
-            <xsl:variable name="valueColor">
+            <!-- <xsl:variable name="valueColor"> -->
+            <xsl:variable name="valueStyle">
               <!-- <xsl:choose> -->
               <!-- <xsl:when test="$element='Condition'"> -->
               <xsl:choose>
-                <xsl:when test="$value='NORMAL'">#9fe473</xsl:when>
-                <xsl:when test="$value='WARNING'">#ffe989</xsl:when>
-                <xsl:when test="$value='ERROR'">#e47373</xsl:when>
+                <xsl:when test="$value='NORMAL'">background: #9fe473</xsl:when>
+                <xsl:when test="$value='WARNING'">background: #ffe989</xsl:when>
+                <xsl:when test="$value='ERROR'">background: #e47373</xsl:when>
+                <xsl:when test="$value='UNAVAILABLE'">color: #aaa</xsl:when>
                 <xsl:otherwise>transparent</xsl:otherwise>
               </xsl:choose>
               <!-- </xsl:when> -->
@@ -88,7 +90,7 @@
                     <img style="width:12px;" src="/styles/icon-minus.png" />
                   </xsl:when>
                   <xsl:otherwise>
-										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                            <!-- space -->
+										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                    <!-- space -->
                   </xsl:otherwise>
                 </xsl:choose>
 
@@ -111,7 +113,8 @@
               <td>
                 <xsl:value-of select="@sequence"/>
               </td>
-              <td style="background:{$valueColor};">
+              <!-- <td style="background:{$valueColor};"> -->
+              <td style="{$valueStyle};">
                 <xsl:value-of select="$value"/>
               </td>
             </tr>
