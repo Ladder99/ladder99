@@ -3,9 +3,12 @@
 <Model>
   <DataItems>
     <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
-    <DataItem id="temp" name="temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
+    <DataItem id="temp" name="temperature" category="EVENT" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
     <DataItem id="mem" name="memory" category="EVENT" type="VARIABLE" subType="x:MEMORY" representation="DATA_SET" />
     <DataItem id="cpu" name="cpu" category="EVENT" type="VARIABLE" subType="x:CPU" representation="DATA_SET" />
+
+    <DataItem id="mem-total" name="memory-total" category="SAMPLE" type="VARIABLE" subType="x:MEMORY_TOTAL" />
+
   </DataItems>
 </Model>
 
@@ -13,9 +16,9 @@
 <!-- so could use above and say  -->
 <!-- path = Auxiliaries/Sensor[@id="" @name=""]/DataItems -->
 
-<Model path="Device/Auxiliaries/Sensor">
+<!-- <Model path="Device/Auxiliaries/Sensor"> -->
 
-  <!-- 
+<!-- 
 <Auxiliaries>
   <Sensor id="" name="">
     <DataItems>

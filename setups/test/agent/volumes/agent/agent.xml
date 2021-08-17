@@ -6,15 +6,17 @@
   <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="12345678" bufferSize="131072" version="1.7.0.3"/>
   <Devices>
     <Device id="pa1" name="pa1" uuid="e05363af" sampleInterval="10">
-      <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="001">Emergent Next Generation Print and Apply</Description>
+      <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="001">
+        Emergent Next Generation Print and Apply
+      </Description>
       <DataItems>
-        <DataItem id="pa1-connection" category="EVENT" type="AVAILABILITY"/>
-        <DataItem id="pa1-asset_changed" category="EVENT" type="ASSET_CHANGED"/>
-        <DataItem id="pa1-asset_removed" category="EVENT" type="ASSET_REMOVED"/>
-        <DataItem id="pa1-dev_cond" category="CONDITION" type="SYSTEM"/>
-        <DataItem id="pa1-dev_msg" category="EVENT" type="MESSAGE"/>
-        <DataItem id="pa1-fw_ver" category="EVENT" type="FIRMWARE" subType="VERSION"/>
-        <DataItem id="pa1-func_mode" category="EVENT" type="FUNCTIONAL_MODE"/>
+        <DataItem id="pa1-connection" name="avail1" category="EVENT" type="AVAILABILITY"/>
+        <DataItem id="pa1-asset_changed" name="chg1" category="EVENT" type="ASSET_CHANGED"/>
+        <DataItem id="pa1-asset_removed" name="rem1" category="EVENT" type="ASSET_REMOVED"/>
+        <DataItem id="pa1-dev_cond" name="cond1" category="CONDITION" type="SYSTEM"/>
+        <DataItem id="pa1-dev_msg" name="msg1" category="EVENT" type="MESSAGE"/>
+        <DataItem id="pa1-fw_ver" name="fw1" category="EVENT" type="FIRMWARE" subType="VERSION"/>
+        <DataItem id="pa1-func_mode" name="funcmode1" category="EVENT" type="FUNCTIONAL_MODE"/>
       </DataItems>
       <Components>
         <Controller id="pa1-controller" nativeName="plc">
@@ -23,7 +25,7 @@
             <DataItem id="pa1-e_stop" category="EVENT" type="EMERGENCY_STOP"/>
           </DataItems>
           <Components>
-            <Path id="pa1-path1" name="path">
+            <Path id="pa1-path1">
               <DataItems>
                 <DataItem id="pa1-state" category="EVENT" type="EXECUTION"/>
                 <DataItem id="pa1-wait_state" category="EVENT" type="WAIT_STATE"/>
@@ -88,5 +90,21 @@
         </Resources>
       </Systems>
     </Device>
+
+    <Device id="micro1" name="m1" uuid="a123" sampleInterval="5">
+      <Description manufacturer="Ladder99" model="Glimpse" serialNumber="001">
+        Ladder99 Glimpse
+      </Description>
+      <DataItems>
+        <DataItem id="pa1-availability" name="avail2" category="EVENT" type="AVAILABILITY"/>
+        <!-- <DataItem id="pa1-asset_changed" name="chg2" category="EVENT" type="ASSET_CHANGED"/> -->
+        <!-- <DataItem id="pa1-asset_removed" name="rem2" category="EVENT" type="ASSET_REMOVED"/> -->
+        <DataItem id="pa1-temperature" name="temp2" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
+        <DataItem id="pa1-memory" name="mem2" category="EVENT" type="VARIABLE" subType="x:MEMORY" representation="DATA_SET"/>
+        <DataItem id="pa1-cpu" name="cpu2" category="EVENT" type="VARIABLE" subType="x:CPU" representation="DATA_SET"/>
+        <DataItem id="pa1-cpu-x" name="cpu2" category="EVENT" type="VARIABLE" subType="x:CPU" representation="DATA_SET"/>
+      </DataItems>
+    </Device>
+
   </Devices>
 </MTConnectDevices>

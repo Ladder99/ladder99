@@ -1,10 +1,10 @@
 # print-apply setup
 
-# define the devices.xml structure, using a model.xml for dataitems.
-# read by the ladder99 adapter.
+# define the agent.xml structure, using a model.xml for dataitems.
+# read by the ladder99 compiler and adapter.
 
 # sources define the inputs to the cache.
-# compiled by ladder99 compiler into volumes/agent/devices.xml
+# compiled by ladder99 compiler into volumes/agent/agent.xml
 # and volumes/agent/agent.cfg.
 #. see also devices-future.yaml for future dev.
 
@@ -13,7 +13,7 @@
 
 devices:
   - id: pa1 # this is substituted into the model.xml and sources
-    name: pa1 # this must match name in agent.cfg and devices.xml
+    name: pa1 # this must match name in agent.cfg and agent.xml
     uuid: e05363
     manufacturer: CCS
     model: CCS P&A
