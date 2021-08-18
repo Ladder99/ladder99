@@ -1,7 +1,7 @@
 {
   "name": "ladder99-simulator",
   "version": "0.1.0",
-  "description": "send test device messages to opc client",
+  "description": "wip - send test device messages to opc client",
   "scripts": {
     "start": "node src/simulator.js"
   },

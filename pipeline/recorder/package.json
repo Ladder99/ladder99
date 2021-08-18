@@ -1,7 +1,7 @@
 {
   "name": "ladder99-recorder",
   "version": "0.1.0",
-  "description": "plays/records device messages",
+  "description": "Ladder99 Recorder - plays/records device messages",
   "type": "module",
   "target": "es2021",
   "author": "Brian Burns <bburns.km@gmail.com>",

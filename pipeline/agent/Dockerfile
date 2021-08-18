@@ -4,6 +4,8 @@
 
 FROM ladder99/mtconnect-agent:latest
 
+LABEL com.ladder99.version="0.1.0"
+
 # change to non-root user for better security
 USER agent
 
