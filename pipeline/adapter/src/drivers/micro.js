@@ -23,7 +23,8 @@ export class AdapterDriver {
         console.log(data)
 
         // write values to cache
-        setValue('availability', 'AVAILABLE') //. get from inputs
+        setValue('availability', 'AVAILABLE')
+        setValue('condition', 'NORMAL')
         // setValue('temperature', data.cpuTemperature.main)
         // setValue('memory', getDataSet(data.mem))
         // setValue('cpu', getDataSet(data.currentLoad))
@@ -47,9 +48,11 @@ export class AdapterDriver {
     //. get this list from inputs also
     function setUnavailable() {
       setValue('availability', 'UNAVAILABLE')
+      setValue('condition', 'UNAVAILABLE')
       setValue('memory', 'UNAVAILABLE')
       setValue('temperature', 'UNAVAILABLE')
       setValue('cpu', 'UNAVAILABLE')
+      setValue('os', 'UNAVAILABLE')
     }
 
     function setValue(name, value) {

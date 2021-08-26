@@ -6,12 +6,6 @@
 # this yaml format is specific to the micro.js adapter driver.
 # the item and subitem names are defined by https://github.com/sebhildebrandt/systeminformation
 inputs:
-  #. how get this?
-  # - name: connection
-
-  #. not sure yet if better to use dataset or individual items.
-  # indiv items might be easier for downstream apps to consume?
-
   - name: temperature
     item: cpuTemperature
     subitems: main, cores
@@ -25,6 +19,11 @@ inputs:
   - name: cpu
     item: currentLoad
     subitems: currentLoad, currentLoadUser, currentLoadSystem
+    representation: dataset
+
+  - name: os
+    item: osInfo
+    subitems: platform, distro, release, codename, arch, hostname
     representation: dataset
 
   # ---- most interesting ones avail

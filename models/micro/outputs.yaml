@@ -10,7 +10,12 @@ outputs:
   - key: availability
     category: EVENT
     type: AVAILABILITY
-    value: types.AVAILABILITY<connection>
+    value: <availability>
+
+  - key: condition
+    category: CONDITION
+    type: SYSTEM
+    value: <condition>
 
   - key: temperature
     category: EVENT
@@ -36,3 +41,10 @@ outputs:
     subType: x:CPU
     representation: DATA_SET
     value: <cpu>
+
+  - key: os
+    category: EVENT
+    type: VARIABLE
+    subType: x:OS
+    representation: DATA_SET
+    value: <os>
