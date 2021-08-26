@@ -11,10 +11,10 @@
         Ladder99 Glimpse
       </Description>
       <DataItems>
-        <DataItem id="avail1" name="m1-availability" category="EVENT" type="AVAILABILITY"/>
-        <DataItem id="temp1" name="m1-temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
-        <DataItem id="mem1" name="m1-memory" category="EVENT" type="VARIABLE" subType="x:MEMORY" representation="DATA_SET"/>
-        <DataItem id="cpu1" name="m1-cpu" category="EVENT" type="VARIABLE" subType="x:CPU" representation="DATA_SET"/>
+        <DataItem id="m1/avail" name="m1/availability" category="EVENT" type="AVAILABILITY"/>
+        <DataItem id="m1/temp" name="m1/temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
+        <DataItem id="m1/mem" name="m1/memory" category="EVENT" type="VARIABLE" subType="x:MEMORY" representation="DATA_SET"/>
+        <DataItem id="m1/cpu" name="m1/cpu" category="EVENT" type="VARIABLE" subType="x:CPU" representation="DATA_SET"/>
       </DataItems>
     </Device>
 

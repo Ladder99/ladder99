@@ -14,7 +14,7 @@
 devices:
   - id: m1
     name: micro1 # this must match name in agent.cfg and agent.xml
-    structure: micro
+    model: micro
 
     # specify sources for dataitem values
     #. eg could have multiple thermometers for a machine, or doors

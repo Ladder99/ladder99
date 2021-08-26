@@ -167,7 +167,7 @@ function getOutputs({ templates, types, deviceId }) {
     // valueStr = valueStr.replaceAll( // needs node15
     valueStr = valueStr.replace(
       regexp1,
-      `cache.get('${deviceId}-$2').value` // $2 is the matched substring
+      `cache.get('${deviceId}/$2').value` // $2 is the matched substring
     )
     if (valueStr.includes('\n')) {
       valueStr = '{\n' + valueStr + '\n}'
@@ -200,7 +200,7 @@ function getOutputs({ templates, types, deviceId }) {
       // this is key in sense of shdr key
       //. assume each starts with deviceId? some might end with a number instead
       //. call this id, as it's such in the devices.xml
-      key: `${deviceId}-${template.key}`,
+      key: `${deviceId}/${template.key}`,
       value, //. getValue
       dependsOn,
       category: template.category, // needed for cache getShdr fn
