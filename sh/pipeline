@@ -9,15 +9,15 @@ Usage: sh/pipeline COMMAND SETUP SERVICES
 Run the Ladder99 pipeline with optional list of services to include.
 
 COMMAND   start (run in console), startd (run detached), stop (stop all)
-SETUP     setup subfolder, eg vmc (default), ccs-pa
+SETUP     setup subfolder, eg test/vmc (default)
 SERVICES  space-delim list of services to start, eg agent (default), all
 
 Examples
 
     sh/pipeline start
-    sh/pipeline start ccs-pa agent
-    sh/pipeline start ccs-pa dashboard
-    sh/pipeline start ccs-pa dashboard play
+    sh/pipeline start test/print-apply agent
+    sh/pipeline start test/print-apply dashboard
+    sh/pipeline start test/print-apply dashboard play
 
 Note: services are referenced by their 'profile' attribute in pipeline.yaml.
 Note: use 'docker kill SERVICE' to stop an individual service.
@@ -30,7 +30,7 @@ fi
 
 # get arguments
 cmd=$1 # eg 'start', 'startd', 'stop'
-setup=${2:-"vmc"} # eg 'ccs-pa'
+setup=${2:-"test/vmc"} # eg 'test/print-apply'
 shift
 shift
 services=${*:-"agent"} # eg 'agent play'

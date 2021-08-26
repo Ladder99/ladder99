@@ -7,14 +7,13 @@ Usage: sh/stop SETUP SERVICES
 
 Stop Ladder99 setup service(s)
 
-SETUP     setup subfolder, eg vmc, ccs-pa
+SETUP     setup subfolder, eg test/micro
 SERVICES  space-delim list of services to stop, eg agent, all
 
 Examples
 
-    sh/stop ccs-pa agent
-    sh/stop ccs-pa all
-    sh/stop ccs-pa all play
+    sh/stop test/micro agent
+    sh/stop test/micro all
 
 Note: services are referenced by their 'profile' attribute in pipeline.yaml.
 Note: cal also use 'docker kill SERVICE' to stop an individual service.
