@@ -6,6 +6,7 @@
 	xmlns:fn="http://www.w3.org/2005/xpath-functions"
 	xmlns:m="urn:mtconnect.org:MTConnectDevices:1.7"
 	xmlns:s="urn:mtconnect.org:MTConnectStreams:1.7"
+	xmlns:e="urn:mtconnect.org:MTConnectError:1.7"
 	xmlns:js="urn:custom-javascript" exclude-result-prefixes="msxsl js"
 	xmlns:msxsl="urn:schemas-microsoft-com:xslt">
 
@@ -51,15 +52,15 @@
 								<a href="../sample">Sample</a>
 							</li>
 						</ul>
-						<div class="navbar-form navbar-left">
+						<form class="navbar-form navbar-left">
 							<div class="form-group">
 								<input id="pathText" type="text" class="form-control" style="width: 20em; margin-right: 10px;" placeholder="Path"/>
 								<input id="fromText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="From"/>
 								<input id="countText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="Count"/>
 								<button type="button" class="btn" data-toggle="modal" data-target="#myModal" style="margin-right: 0px;">?</button>
 							</div>
-							<button onclick="fetchData()" class="btn btn-default">Fetch Data</button>
-						</div>
+							<button type="submit" onclick="fetchData()" class="btn btn-default">Fetch Data</button>
+						</form>
 					</div>
 				</div>
 			</nav>
@@ -67,9 +68,9 @@
 			<!-- Main contents -->
 			<div class="container-fluid page-container">
 				<!-- <xsl:apply-templates select="/m:MTConnectDevices" /> -->
+				<!-- <xsl:apply-templates select="/s:MTConnectStreams" /> -->
 				<!-- <xsl:apply-templates select="*" /> -->
 				<xsl:apply-templates />
-				<!-- <xsl:apply-templates select="/s:MTConnectStreams" /> -->
 			</div>
 
 			<!-- Modal -->
@@ -141,10 +142,9 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 		</body>
 	</xsl:template>
 
-	<!-- Probe template -->
+	<!-- include other templates -->
 	<xsl:include href="styles-probe.xsl"/>
-
-	<!-- Current/Sample template -->
 	<xsl:include href="styles-streams.xsl"/>
+	<xsl:include href="styles-error.xsl"/>
 
 </xsl:stylesheet>

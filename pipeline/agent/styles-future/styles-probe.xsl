@@ -6,6 +6,7 @@
 	xmlns:fn="http://www.w3.org/2005/xpath-functions"
 	xmlns:m="urn:mtconnect.org:MTConnectDevices:1.7"
 	xmlns:s="urn:mtconnect.org:MTConnectStreams:1.7"
+	xmlns:e="urn:mtconnect.org:MTConnectError:1.7"
 	xmlns:js="urn:custom-javascript" exclude-result-prefixes="msxsl js"
 	xmlns:msxsl="urn:schemas-microsoft-com:xslt">
 
@@ -49,7 +50,7 @@
 											<img style="width:12px;" src="/styles/icon-minus.png" />
 										</xsl:when>
 										<xsl:otherwise>
-										&#8198; 																																																																																																																																																																																																																																																																																														<!-- space -->
+										&#8198; 																																																																																																																																																																																																																																																																																																																															<!-- space -->
 										</xsl:otherwise>
 									</xsl:choose>
 

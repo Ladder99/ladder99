@@ -44,21 +44,20 @@ window.onbeforeunload = function () {
 }
 
 function fetchData() {
-  var p = document.getElementById('pathText').value
-  var f = document.getElementById('fromText').value
-  var c = document.getElementById('countText').value
-  let base = '../probe'
+  var path = document.getElementById('pathText').value
+  var from = document.getElementById('fromText').value
+  var count = document.getElementById('countText').value
+  let base = '../current'
   let params = []
-  if (p) {
-    params.push('path=' + p)
-    base = '../current'
+  if (path) {
+    params.push('path=' + path)
   }
-  if (f) {
-    params.push('from=' + f)
+  if (from) {
+    params.push('from=' + from)
     base = '../sample'
   }
-  if (c) {
-    params.push('count=' + c)
+  if (count) {
+    params.push('count=' + count)
     base = '../sample'
   }
   const query = base + (params.length === 0) ? '' : '?' + params.join('&')

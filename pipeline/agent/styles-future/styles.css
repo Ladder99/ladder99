@@ -134,7 +134,8 @@ td > .truncate {
 }
 .navbar-inverse .navbar-nav > li.selected {
   background: #555;
-  border-bottom: 4px solid limegreen;
+  /* border-bottom: 4px solid limegreen; */
+  border-bottom: 4px solid #21b4ec;
 }
 .navbar-inverse .navbar-nav > li.selected > a {
   color: white;
