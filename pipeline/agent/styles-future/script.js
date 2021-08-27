@@ -3,8 +3,8 @@ window.onload = function () {
   document.getElementById('fromText').value = getParameterByName('from')
   document.getElementById('countText').value = getParameterByName('count')
 
-  // // autorefresh - this works but resets page position
-  // setTimeout(() => window.location.reload(), 2000)
+  // autorefresh
+  setTimeout(() => window.location.reload(), 2000)
 
   // highlight the current tab
   const tabname = window.location.pathname.slice(1) // probe|current|sample
