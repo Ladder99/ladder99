@@ -50,10 +50,10 @@
             <!-- get value -->
             <xsl:variable name="value">
               <xsl:choose>
-                <xsl:when test="$element='Normal'">NORMAL</xsl:when>
-                <xsl:when test="$element='Warning'">WARNING</xsl:when>
-                <xsl:when test="$element='Error'">ERROR</xsl:when>
-                <xsl:when test="$element='Unavailable'">UNAVAILABLE</xsl:when>
+                <xsl:when test="local-name()='Normal'">NORMAL</xsl:when>
+                <xsl:when test="local-name()='Warning'">WARNING</xsl:when>
+                <xsl:when test="local-name()='Error'">ERROR</xsl:when>
+                <xsl:when test="local-name()='Unavailable'">UNAVAILABLE</xsl:when>
                 <xsl:otherwise>
                   <xsl:value-of select="text()" />
                 </xsl:otherwise>
@@ -70,7 +70,7 @@
                 <xsl:when test="$value='WARNING'">background: #ffe989</xsl:when>
                 <xsl:when test="$value='FAULT'">background: #ff4c41</xsl:when>
                 <xsl:when test="$value='UNAVAILABLE'">color: #aaa</xsl:when>
-                <xsl:otherwise>transparent</xsl:otherwise>
+                <xsl:otherwise></xsl:otherwise>
               </xsl:choose>
               <!-- </xsl:when> -->
               <!-- </xsl:choose> -->
@@ -90,7 +90,7 @@
                     <img style="width:12px;" src="/styles/icon-minus.png" />
                   </xsl:when>
                   <xsl:otherwise>
-										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                                                                                                                                <!-- space -->
+										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                                                                                                                                                                        <!-- space -->
                   </xsl:otherwise>
                 </xsl:choose>
 
