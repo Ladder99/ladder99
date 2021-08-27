@@ -69,7 +69,7 @@
 				<!-- <xsl:apply-templates select="/m:MTConnectDevices" /> -->
 				<!-- <xsl:apply-templates select="*" /> -->
 				<xsl:apply-templates />
-				<xsl:apply-templates select="/s:MTConnectStreams" />
+				<!-- <xsl:apply-templates select="/s:MTConnectStreams" /> -->
 			</div>
 
 			<!-- Modal -->

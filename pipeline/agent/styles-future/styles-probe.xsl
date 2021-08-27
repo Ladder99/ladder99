@@ -11,7 +11,7 @@
 
 	<xsl:template match="m:MTConnectDevices">
 		<div class="table-responsive stickytable-container">
-			<table class="table table-hover">
+			<table id="main-table" class="table table-hover">
 				<thead>
 					<th>Element</th>
 					<th>Id</th>
@@ -49,7 +49,7 @@
 											<img style="width:12px;" src="/styles/icon-minus.png" />
 										</xsl:when>
 										<xsl:otherwise>
-										&#8198; 																																																																																																																																																																																																																																																																																			<!-- space -->
+										&#8198; 																																																																																																																																																																																																																																																																																														<!-- space -->
 										</xsl:otherwise>
 									</xsl:choose>
 
