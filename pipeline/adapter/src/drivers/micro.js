@@ -66,8 +66,13 @@ export class AdapterDriver {
 // eg "free=48237472 used=12387743 total=38828348"
 //. this should be part of cache.js
 function getDataSet(obj) {
+  const regexp = new RegExp('[ ]')
   const str = Object.keys(obj)
-    .map(key => `${key}=${obj[key]}`)
+    // .map(key => `${key}=${obj[key]}`)
+    .map(key => {
+      const value = String(obj[key] || '').replace(regexp, '_')
+      return `${key}=${value}`
+    })
     .join(' ')
   return str
 }
