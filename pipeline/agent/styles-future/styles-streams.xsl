@@ -32,6 +32,7 @@
                 <xsl:when test="local-name()='Warning'">Condition</xsl:when>
                 <xsl:when test="local-name()='Error'">Condition</xsl:when>
                 <xsl:when test="local-name()='Unavailable'">Condition</xsl:when>
+                <xsl:when test="local-name()='Entry'"></xsl:when>
                 <xsl:otherwise>
                   <xsl:value-of select="local-name()" />
                 </xsl:otherwise>
@@ -60,11 +61,21 @@
               </xsl:choose>
             </xsl:variable>
 
+            <!-- get sequence (or entry key) -->
+            <xsl:variable name="sequence">
+              <xsl:choose>
+                <xsl:when test="local-name()='Entry'">
+                  <xsl:value-of select="@key"/>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:value-of select="@sequence"/>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:variable>
+
             <!-- get value style -->
-            <!-- or assign a class and define colors in stylesheet -->
+            <!-- . or assign a class and define colors in stylesheet -->
             <xsl:variable name="valueStyle">
-              <!-- <xsl:choose> -->
-              <!-- <xsl:when test="$element='Condition'"> -->
               <xsl:choose>
                 <xsl:when test="$value='NORMAL'">background: #9fe473</xsl:when>
                 <xsl:when test="$value='WARNING'">background: #ffe989</xsl:when>
@@ -72,8 +83,14 @@
                 <xsl:when test="$value='UNAVAILABLE'">color: #aaa</xsl:when>
                 <xsl:otherwise></xsl:otherwise>
               </xsl:choose>
-              <!-- </xsl:when> -->
-              <!-- </xsl:choose> -->
+            </xsl:variable>
+
+            <!-- get sequence style -->
+            <xsl:variable name="sequenceStyle">
+              <xsl:choose>
+                <xsl:when test="local-name()='Entry'">text-align:right;</xsl:when>
+                <xsl:otherwise></xsl:otherwise>
+              </xsl:choose>
             </xsl:variable>
 
             <tr style="{$rowStyle}">
@@ -90,7 +107,7 @@
                     <img style="width:12px;" src="/styles/icon-minus.png" />
                   </xsl:when>
                   <xsl:otherwise>
-										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                                                                                                                                                                        <!-- space -->
+										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <!-- space -->
                   </xsl:otherwise>
                 </xsl:choose>
 
@@ -100,6 +117,8 @@
                 <xsl:value-of select="$element" />
               </td>
 
+              <!-- . and truncate with ellipsis -->
+              <!-- <td style="max-width:12em;"> -->
               <td>
                 <xsl:value-of select="@dataItemId"/>
               </td>
@@ -111,8 +130,9 @@
                 <!-- <xsl:value-of select="substring(@timestamp,12)"/> -->
                 <xsl:value-of select="translate(@timestamp,'T',' ')"/>
               </td>
-              <td>
-                <xsl:value-of select="@sequence"/>
+              <td style="{$sequenceStyle};">
+                <!-- <xsl:value-of select="@sequence"/> -->
+                <xsl:value-of select="$sequence"/>
               </td>
               <td style="{$valueStyle};">
                 <xsl:value-of select="$value"/>
@@ -152,5 +172,27 @@
       </table>
     </div>
   </xsl:template>
+
+  <!-- <xsl:template match="s:VariableDataSet">
+    <table>
+      <thead>
+        <xsl:for-each select="@*">
+          <th>
+            <xsl:value-of select="name()"/>
+          </th>
+        </xsl:for-each>
+      </thead>
+      <tbody>
+        <tr>
+          <xsl:for-each select="@*">
+            <td>
+              <xsl:value-of select="."/>
+            </td>
+          </xsl:for-each>
+        </tr>
+      </tbody>
+    </table>
+  </xsl:template> -->
+
 
 </xsl:stylesheet>
