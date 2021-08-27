@@ -97,6 +97,7 @@
 
 							<h4>Path</h4>
 							<p>You can search the available data using a simple query language called XPath, e.g.</p>
+							<p>Note: these will fail if the given path cannot be found in the document.</p>
 							<ul>
 								<li>Availability of all devices: <a href='../current?path=//DataItem[@type="AVAILABILITY"]'>//DataItem[@type="AVAILABILITY"]</a>
 								</li>

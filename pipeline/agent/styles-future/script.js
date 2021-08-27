@@ -1,48 +1,44 @@
+let timer = null
+
 window.onload = function () {
   document.getElementById('pathText').value = getParameterByName('path')
   document.getElementById('fromText').value = getParameterByName('from')
   document.getElementById('countText').value = getParameterByName('count')
 
-  // autorefresh
-  setTimeout(() => window.location.reload(), 2000)
+  // document
+  //   .querySelector('#tab-probe a')
+  //   .addEventListener('shown.bs.tab', () => alert('hi'))
+
+  // $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+  //   var target = $(e.target).attr('href') // activated tab
+  //   alert(target)
+  // })
+
+  // // autorefresh
+  // document.querySelector("#autorefresh").
+  // timer = setTimeout(() => window.location.reload(), 2000)
 
   // highlight the current tab
-  const tabname = window.location.pathname.slice(1) // probe|current|sample
+  const tabname = window.location.pathname.slice(1).split('?')[0] // probe|current|sample
   document.getElementById('tab-' + tabname).classList.add('selected')
 
   // restore to last vertical position
-  const scrollTop = localStorage.getItem('scrollTop')
+  const scrollTop = localStorage.getItem('scrollTop-' + tabname)
   if (scrollTop != null) {
-    const table = document.getElementById('main-table')
-    table.scrollTop = parseInt(scrollTop)
+    const container = document.getElementById('main-container')
+    container.scrollTop = parseInt(scrollTop)
   }
-  // if (document.cookie.includes(window.location.href)) {
-  //   if (document.cookie.match(/scrollTop=([^;]+)(;|$)/) != null) {
-  //     var arr = document.cookie.match(/scrollTop=([^;]+)(;|$)/)
-  //     document.documentElement.scrollTop = parseInt(arr[1])
-  //     document.body.scrollTop = parseInt(arr[1])
-  //   }
-  // }
 }
 
+// save last vertical position
 window.onbeforeunload = function () {
-  // var scrollPos
-  // if (typeof window.pageYOffset != 'undefined') {
-  //   scrollPos = window.pageYOffset
-  // } else if (
-  //   typeof document.compatMode != 'undefined' &&
-  //   document.compatMode != 'BackCompat'
-  // ) {
-  //   scrollPos = document.documentElement.scrollTop
-  // } else if (typeof document.body != 'undefined') {
-  //   scrollPos = document.body.scrollTop
-  // }
-  // document.cookie = 'scrollTop=' + scrollTop + 'URL=' + window.location.href
-  const table = document.getElementById('main-table')
-  const scrollTop = table != null ? table.scrollTop : 0
-  localStorage.setItem('scrollTop', String(scrollTop))
+  const container = document.getElementById('main-container')
+  const scrollTop = container != null ? container.scrollTop : 0
+  const tabname = window.location.pathname.slice(1).split('?')[0] // probe|current|sample
+  localStorage.setItem('scrollTop-' + tabname, String(scrollTop))
 }
 
+// user clicked on fetch data button
 function fetchData() {
   var path = document.getElementById('pathText').value
   var from = document.getElementById('fromText').value

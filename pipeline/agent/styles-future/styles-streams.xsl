@@ -11,7 +11,7 @@
   xmlns:msxsl="urn:schemas-microsoft-com:xslt">
 
   <xsl:template match="s:MTConnectStreams">
-    <div id="main-table" class="table-responsive stickytable-container">
+    <div id="main-container" class="table-responsive stickytable-container">
       <table class="table table-hover">
         <thead>
           <th>Element</th>
@@ -108,7 +108,7 @@
                     <img style="width:12px;" src="/styles/icon-minus.png" />
                   </xsl:when>
                   <xsl:otherwise>
-										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <!-- space -->
+										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <!-- space -->
                   </xsl:otherwise>
                 </xsl:choose>
 
