@@ -80,7 +80,7 @@
 
               <td>
                 <!-- indent according to depth and show type, eg Device, DataItem -->
-                <span style="color:white">
+                <span style="color:transparent">
                   <xsl:value-of select="substring('xxxxxxxxxxxx',1,$indent)"/>
                 </span>
 
@@ -90,7 +90,7 @@
                     <img style="width:12px;" src="/styles/icon-minus.png" />
                   </xsl:when>
                   <xsl:otherwise>
-										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                                                                                                            <!-- space -->
+										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                                                                                                                                <!-- space -->
                   </xsl:otherwise>
                 </xsl:choose>
 
