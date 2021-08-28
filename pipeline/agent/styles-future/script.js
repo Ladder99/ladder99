@@ -1,18 +1,10 @@
 let timer = null
 
 window.onload = function () {
-  document.getElementById('path').value = getParameterByName('path')
-  document.getElementById('from').value = getParameterByName('from')
-  document.getElementById('count').value = getParameterByName('count')
-
-  // document
-  //   .querySelector('#tab-probe a')
-  //   .addEventListener('shown.bs.tab', () => alert('hi'))
-
-  // $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-  //   var target = $(e.target).attr('href') // activated tab
-  //   alert(target)
-  // })
+  // typescript complains if use .value here
+  document.getElementById('path')['value'] = getParameterByName('path')
+  document.getElementById('from')['value'] = getParameterByName('from')
+  document.getElementById('count')['value'] = getParameterByName('count')
 
   // // autorefresh
   // document.querySelector("#autorefresh").
@@ -40,9 +32,10 @@ window.onbeforeunload = function () {
 
 // user clicked on fetch data button
 function fetchData() {
-  var path = document.getElementById('path').value
-  var from = document.getElementById('from').value
-  var count = document.getElementById('count').value
+  // typescript complains if use .value here
+  var path = document.getElementById('path')['value']
+  var from = document.getElementById('from')['value']
+  var count = document.getElementById('count')['value']
   let base = '../current'
   let params = []
   if (path) {
