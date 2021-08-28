@@ -68,9 +68,6 @@
 
 			<!-- Main contents -->
 			<div class="container-fluid page-container">
-				<!-- <xsl:apply-templates select="/m:MTConnectDevices" /> -->
-				<!-- <xsl:apply-templates select="/s:MTConnectStreams" /> -->
-				<!-- <xsl:apply-templates select="*" /> -->
 				<xsl:apply-templates />
 			</div>
 
@@ -121,6 +118,7 @@
 							<p>The <b>MTConnect Agent</b> receives data from one or more devices
 and makes it available as XML, a text data format. The <b>Ladder99 Agent</b> transforms the XML data from the MTConnect Agent 
 into a spreadsheet-like UI.</p>
+							<p>Note: Conditions are transformed from Normal, Warning, Fault elements to Condition elements with value of NORMAL, WARNING, FAULT.</p>
 
 							<h4>Links</h4>
 							<p>For more information, see <a href="https://mtconnect.org">MTConnect.org</a>,
