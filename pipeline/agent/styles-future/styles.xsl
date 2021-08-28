@@ -37,7 +37,7 @@
 							<span class="icon-bar"></span>
 						</button>
 						<a class="navbar-brand" style="padding: 5px 10px;" href="#">
-							<img alt="Brand" src="/styles/LogoLadder99-text.png" height="40"/>
+							<img alt="Brand" src="/styles/LogoLadder99-text.png"/>
 						</a>
 					</div>
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

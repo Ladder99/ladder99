@@ -81,7 +81,7 @@
                 <xsl:when test="$value='NORMAL'">background: #9fe473</xsl:when>
                 <xsl:when test="$value='WARNING'">background: #ffe989</xsl:when>
                 <xsl:when test="$value='FAULT'">background: #ff4c41</xsl:when>
-                <xsl:when test="$value='AVAILABLE'">background: #bcf38b</xsl:when>
+                <xsl:when test="$value='AVAILABLE'">background: #e7f38b</xsl:when>
                 <xsl:when test="$value='UNAVAILABLE'">color: #aaa</xsl:when>
                 <xsl:otherwise></xsl:otherwise>
               </xsl:choose>
@@ -109,7 +109,7 @@
                     <img style="width:12px;" src="/styles/icon-minus.png" />
                   </xsl:when>
                   <xsl:otherwise>
-										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <!-- space -->
+										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <!-- space -->
                   </xsl:otherwise>
                 </xsl:choose>
 
