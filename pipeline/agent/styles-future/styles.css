@@ -155,7 +155,7 @@ td > .truncate {
   border: none;
   outline: none;
   color: black;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.08);
   cursor: pointer;
   padding: 12px;
   border-radius: 6px;

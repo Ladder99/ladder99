@@ -54,11 +54,11 @@
 						</ul>
 						<form class="navbar-form navbar-left" onsubmit="return false;">
 							<div class="form-group">
-								<input id="path" type="text" class="form-control" style="width: 20em; margin-right: 8px;" placeholder="Path"/>
-								<input id="from" type="text" class="form-control" style="width: 6em; margin-right: 8px;" placeholder="From"/>
-								<input id="count" type="text" class="form-control" style="width: 6em; margin-right: 8px;" placeholder="Count"/>
-								<button type="button" class="btn" data-toggle="modal" data-target="#myModal" style="margin-right: 8px;">?</button>
-								<button type="submit" onclick="fetchData()" class="btn btn-default" style="margin-right: 8px;">Fetch Data</button>
+								<input id="path" type="text" class="form-control" style="width: 18em; margin-right: 6px;" placeholder="Path"/>
+								<input id="from" type="text" class="form-control" style="width: 6em; margin-right: 6px;" placeholder="From"/>
+								<input id="count" type="text" class="form-control" style="width: 6em; margin-right: 6px;" placeholder="Count"/>
+								<button type="button" class="btn" data-toggle="modal" data-target="#myModal" style="margin-right: 6px;">?</button>
+								<button type="submit" onclick="fetchData()" class="btn btn-default" style="margin-right: 6px;">Fetch</button>
 							</div>
 							<button id="autorefresh" type="button" class="btn">Autorefresh</button>
 						</form>
