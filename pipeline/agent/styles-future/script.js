@@ -73,3 +73,11 @@ function getParameterByName(name) {
   var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search)
   return match && decodeURIComponent(match[1].replace(/\+/g, ' '))
 }
+
+function gotoTop() {
+  const container = document.getElementById('main-container')
+  container.scrollTo({
+    top: 0,
+    behavior: 'smooth',
+  })
+}

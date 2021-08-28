@@ -145,3 +145,23 @@ td > .truncate {
   /* background: yellowgreen; */
   background: #649fec;
 }
+
+#gotoTop {
+  position: fixed;
+  bottom: 15px;
+  right: 20px;
+  z-index: 99;
+  border: none;
+  outline: none;
+  /* background-color: red; */
+  /* color: white; */
+  color: black;
+  background: rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 6px;
+}
+
+#gotoTop img {
+  width: 40px;
+}

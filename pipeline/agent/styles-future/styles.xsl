@@ -136,6 +136,10 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 				</div>
 			</div>
 
+			<button onclick="gotoTop()" id="gotoTop" title="Go to top">
+				<img src="/styles/icon-up.png"/>
+			</button>
+
 			<!-- jquery is needed for bootstrap modal -->
 			<script src="/styles/jquery-1.12.4.min.js"></script>
 			<script src="/styles/bootstrap.min.js"></script>
