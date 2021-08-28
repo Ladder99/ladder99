@@ -52,11 +52,11 @@
 								<a href="../sample">Sample</a>
 							</li>
 						</ul>
-						<form class="navbar-form navbar-left">
+						<form class="navbar-form navbar-left" onsubmit="return false;">
 							<div class="form-group">
-								<input id="pathText" type="text" class="form-control" style="width: 20em; margin-right: 10px;" placeholder="Path"/>
-								<input id="fromText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="From"/>
-								<input id="countText" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="Count"/>
+								<input id="path" type="text" class="form-control" style="width: 20em; margin-right: 10px;" placeholder="Path"/>
+								<input id="from" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="From"/>
+								<input id="count" type="text" class="form-control" style="width: 6em; margin-right: 10px;" placeholder="Count"/>
 								<button type="button" class="btn" data-toggle="modal" data-target="#myModal" style="margin-right: 0px;">?</button>
 							</div>
 							<button type="submit" onclick="fetchData()" class="btn btn-default">Fetch Data</button>
@@ -125,7 +125,7 @@ into a spreadsheet-like UI.</p>
 							<p>For more information, see <a href="https://mtconnect.org">MTConnect.org</a>,
 and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 							</p>
-							<p>Developed by <a href="https://mriiot.com">MRIIOT</a>, your agile digital transformation partner.</p>
+							<p>Ladder99 is developed by <a href="https://mriiot.com">MRIIOT</a>, your agile digital transformation partner.</p>
 
 						</div>
 						<div class="modal-footer">

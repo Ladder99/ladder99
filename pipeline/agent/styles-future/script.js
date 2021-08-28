@@ -1,9 +1,9 @@
 let timer = null
 
 window.onload = function () {
-  document.getElementById('pathText').value = getParameterByName('path')
-  document.getElementById('fromText').value = getParameterByName('from')
-  document.getElementById('countText').value = getParameterByName('count')
+  document.getElementById('path').value = getParameterByName('path')
+  document.getElementById('from').value = getParameterByName('from')
+  document.getElementById('count').value = getParameterByName('count')
 
   // document
   //   .querySelector('#tab-probe a')
@@ -40,9 +40,9 @@ window.onbeforeunload = function () {
 
 // user clicked on fetch data button
 function fetchData() {
-  var path = document.getElementById('pathText').value
-  var from = document.getElementById('fromText').value
-  var count = document.getElementById('countText').value
+  var path = document.getElementById('path').value
+  var from = document.getElementById('from').value
+  var count = document.getElementById('count').value
   let base = '../current'
   let params = []
   if (path) {
@@ -56,9 +56,9 @@ function fetchData() {
     params.push('count=' + count)
     base = '../sample'
   }
-  const query = base + (params.length === 0) ? '' : '?' + params.join('&')
-  console.log(base, params, query)
-  window.location = query
+  const query = base + (params.length === 0 ? '' : '?' + params.join('&'))
+  console.log(base, params, params.length, query)
+  window.location.assign(query)
 }
 
 function getParameterByName(name) {
