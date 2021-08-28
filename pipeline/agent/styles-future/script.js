@@ -1,14 +1,10 @@
-let timer = null
+let autorefreshTimer = null
 
 window.onload = function () {
   // typescript complains if use .value here
   document.getElementById('path')['value'] = getParameterByName('path')
   document.getElementById('from')['value'] = getParameterByName('from')
   document.getElementById('count')['value'] = getParameterByName('count')
-
-  // // autorefresh
-  // document.querySelector("#autorefresh").
-  // timer = setTimeout(() => window.location.reload(), 2000)
 
   // highlight the current tab
   const tabname = window.location.pathname.slice(1).split('?')[0] // probe|current|sample
@@ -19,6 +15,25 @@ window.onload = function () {
   if (scrollTop != null) {
     const container = document.getElementById('main-container')
     container.scrollTop = parseInt(scrollTop)
+  }
+
+  // autorefresh
+  const autorefreshBtn = document.querySelector('#autorefresh')
+  if (localStorage.getItem('autorefresh')) {
+    autorefreshTimer = setTimeout(() => window.location.reload(), 2000)
+    autorefreshBtn.classList.add('active')
+  }
+  autorefreshBtn['onclick'] = function () {
+    if (autorefreshTimer) {
+      clearTimeout(autorefreshTimer)
+      autorefreshTimer = null
+      localStorage.setItem('autorefresh', '')
+      autorefreshBtn.classList.remove('active')
+    } else {
+      autorefreshTimer = setTimeout(() => window.location.reload(), 2000)
+      localStorage.setItem('autorefresh', 'on')
+      autorefreshBtn.classList.add('active')
+    }
   }
 }
 

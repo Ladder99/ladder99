@@ -140,3 +140,8 @@ td > .truncate {
 .navbar-inverse .navbar-nav > li.selected > a {
   color: white;
 }
+
+.btn.active {
+  /* background: yellowgreen; */
+  background: #649fec;
+}
