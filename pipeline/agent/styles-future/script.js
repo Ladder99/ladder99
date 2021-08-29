@@ -101,28 +101,40 @@ const XML = {
 
   minify: node => XML.toString(node, false),
   prettify: node => XML.toString(node, true),
+
   toString: (node, pretty, level = 0, singleton = false) => {
-    // einzelkind
+    if (node === null) return 'pokpok'
+    console.log(level, node, typeof node, node.nodeType, node.tagName)
+    if (typeof node == 'object' && node == 'xml-stylesheet') return ''
+
     if (typeof node == 'string') node = XML.parse(node)
-    // if (node === null) return ''
+
     let tabs = pretty
       ? Array(level + 1)
           .fill('')
           .join('\t')
       : ''
+
     let newLine = pretty ? '\n' : ''
+
     if (node.nodeType == 3)
       return (
         (singleton ? '' : tabs) +
         node.textContent.trim() +
         (singleton ? '' : newLine)
       )
+
+    //. problem - if nodeType==7 ie stylesheet, node.firstChild is null
+    // if (node.nodeType == 7) return 'lkmlkm'
+
     if (!node.tagName) return XML.toString(node.firstChild, pretty)
+
     let output = tabs + `<${node.tagName}` // >\n
     for (let i = 0; i < node.attributes.length; i++)
       output += ` ${node.attributes[i].name}="${node.attributes[i].value}"`
     if (node.childNodes.length == 0) return output + ' />' + newLine
     else output += '>'
+
     let onlyOneTextChild =
       node.childNodes.length == 1 && node.childNodes[0].nodeType == 3
     if (!onlyOneTextChild) output += newLine
@@ -148,6 +160,7 @@ async function showXml() {
 
   var parser = new DOMParser()
   var doc = parser.parseFromString(xml, 'text/xml') // type Document
+  doc.removeChild(doc.firstChild) // ditch stylesheet?
   console.log(doc)
 
   const str = XML.prettify(doc)
