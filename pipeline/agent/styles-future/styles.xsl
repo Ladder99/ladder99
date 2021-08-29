@@ -57,10 +57,11 @@
 								<input id="path" type="text" class="form-control" style="width: 18em; margin-right: 6px;" placeholder="Path"/>
 								<input id="from" type="text" class="form-control" style="width: 6em; margin-right: 6px;" placeholder="From"/>
 								<input id="count" type="text" class="form-control" style="width: 6em; margin-right: 6px;" placeholder="Count"/>
-								<button type="button" class="btn" data-toggle="modal" data-target="#myModal" style="margin-right: 6px;">?</button>
-								<button type="submit" onclick="fetchData()" class="btn btn-default" style="margin-right: 6px;">Fetch</button>
+								<button type="submit" onclick="fetchData()" class="btn" style="margin-right: 6px;">Fetch</button>
+								<button id="autorefresh" type="button" class="btn" style="margin-right: 6px;">Autorefresh</button>
 							</div>
-							<button id="autorefresh" type="button" class="btn">Autorefresh</button>
+							<button id="xml" onclick="showXml()" type="button" class="btn" style="margin-right: 6px;">XML</button>
+							<button type="button" class="btn" data-toggle="modal" data-target="#myModal" style="margin-right: 6px;">?</button>
 						</form>
 					</div>
 				</div>
@@ -69,7 +70,11 @@
 			<!-- Main contents -->
 			<div class="container-fluid page-container">
 				<xsl:apply-templates />
+				<!-- the iframe automatically applies the stylesheet also -->
+				<!-- <iframe id="iframe" src="http://localhost:5000/current" /> -->
+				<!-- <textarea id="textarea" rows="100" cols="100" readonly="true" /> -->
 			</div>
+
 
 			<!-- Modal -->
 			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -114,6 +119,12 @@
 							<h4>From/Count</h4>
 							<p>The MTConnect Agent stores a certain number of observations, called sequences. You can specify which ones and how many to view with the <b>From</b> and <b>Count</b> fields.</p>
 
+							<h4>Fetch</h4>
+							<p>Click Fetch to retrieve Current or Sample data - if From or Count values are supplied, the relevant Sample data will be shown.</p>
+
+							<h4>Autorefresh</h4>
+							<p>Toggles autorefresh of page every 2 seconds.</p>
+
 							<h4>How it works</h4>
 							<p>The <b>MTConnect Agent</b> receives data from one or more devices
 and makes it available as XML, a text data format. The <b>Ladder99 Agent</b> transforms the XML data from the MTConnect Agent 
@@ -138,7 +149,7 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 				<img src="/styles/icon-up.png"/>
 			</button>
 
-			<!-- jquery is needed for bootstrap modal -->
+			<!-- note: jquery is needed for bootstrap modal -->
 			<script src="/styles/jquery-1.12.4.min.js"></script>
 			<script src="/styles/bootstrap.min.js"></script>
 			<script src="/styles/script.js"></script>
@@ -150,5 +161,6 @@ and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
 	<xsl:include href="styles-probe.xsl"/>
 	<xsl:include href="styles-streams.xsl"/>
 	<xsl:include href="styles-error.xsl"/>
+	<!-- <xsl:include href="styles-plain.xsl"/> -->
 
 </xsl:stylesheet>

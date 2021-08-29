@@ -10,11 +10,13 @@
   xmlns:js="urn:custom-javascript" exclude-result-prefixes="msxsl js"
   xmlns:msxsl="urn:schemas-microsoft-com:xslt">
 
-  <!-- this template doesn't work because the agent doesn't assign the styles.xsl -->
-  <!-- stylesheet to the xml -->
-  <!-- maybe in the future though -->
-  <xsl:template match="m:MTConnectError">
-	  ERROR
+  <!-- <xsl:output method="xml" indent="yes" /> -->
+
+  <!-- this does render the xml indented, but browser tries to show it as html? -->
+  <xsl:template match="@*|node()|comment()">
+    <xsl:copy>
+      <xsl:apply-templates select="@*|node()|comment()"/>
+    </xsl:copy>
   </xsl:template>
 
 </xsl:stylesheet>
