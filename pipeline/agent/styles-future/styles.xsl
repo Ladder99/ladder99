@@ -36,7 +36,7 @@
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand" style="padding: 5px 10px;" href="#">
+						<a class="navbar-brand" style="padding: 5px 10px;" href="https://mtconnect.org">
 							<!-- <img alt="Brand" src="/styles/LogoLadder99-text.png"/> -->
 							<!-- <img alt="Brand" src="/styles/LogoMTConnect.png"/> -->
 							<!-- <img alt="Brand" src="/styles/LogoMTConnect-alpha.png"/> -->
@@ -62,9 +62,9 @@
 								<input id="count" type="text" class="form-control" style="width: 6em; margin-right: 6px;" placeholder="Count"/>
 								<button type="submit" onclick="fetchData()" class="btn" style="margin-right: 6px;">Fetch</button>
 								<button id="autorefresh" type="button" class="btn" style="margin-right: 6px;">Autorefresh</button>
+								<button id="xml" onclick="showXml()" type="button" class="btn" style="margin-right: 6px;">XML</button>
+								<button type="button" class="btn" data-toggle="modal" data-target="#myModal" style="margin-right: 6px;">?</button>
 							</div>
-							<button id="xml" onclick="showXml()" type="button" class="btn" style="margin-right: 6px;">XML</button>
-							<button type="button" class="btn" data-toggle="modal" data-target="#myModal" style="margin-right: 6px;">?</button>
 						</form>
 					</div>
 				</div>
