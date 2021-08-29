@@ -165,11 +165,16 @@ td > .truncate {
   width: 32px;
 }
 
+.navbar-header {
+  background: white;
+  padding: 2px;
+  border-radius: 5px;
+}
 .navbar-brand {
-  font-weight: bold;
-  font-size: 36px;
+  margin: 0 !important;
+  padding: 0;
+  background: white;
 }
 .navbar-brand img {
   height: 40px;
-  /* display: inline; */
 }

@@ -37,7 +37,10 @@
 							<span class="icon-bar"></span>
 						</button>
 						<a class="navbar-brand" style="padding: 5px 10px;" href="#">
-							<img alt="Brand" src="/styles/LogoLadder99-text.png"/>
+							<!-- <img alt="Brand" src="/styles/LogoLadder99-text.png"/> -->
+							<!-- <img alt="Brand" src="/styles/LogoMTConnect.png"/> -->
+							<!-- <img alt="Brand" src="/styles/LogoMTConnect-alpha.png"/> -->
+							<img alt="Brand" src="/styles/LogoMTConnect-shadow.png?v=3"/>
 						</a>
 					</div>
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
