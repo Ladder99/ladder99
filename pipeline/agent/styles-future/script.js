@@ -16,7 +16,6 @@ window.onload = function () {
   // restore to last vertical position
   const scrollTop = localStorage.getItem('scrollTop-' + tabname)
   if (scrollTop != null) {
-    // const container = document.getElementById('main-container')
     container.scrollTop = parseInt(scrollTop)
   }
 
@@ -72,20 +71,21 @@ function fetchData() {
   window.location.assign(query)
 }
 
+// extract a parameter value from url
 function getParameterByName(name) {
   var match = RegExp('[?&]' + name + '=([^&]*)').exec(window.location.search)
   return match && decodeURIComponent(match[1].replace(/\+/g, ' '))
 }
 
+// scroll back to top of page
 function gotoTop() {
-  container.scrollTo({
-    top: 0,
-    behavior: 'smooth',
-  })
+  container.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
+// mini xml parser/formatter - from https://stackoverflow.com/a/57771987/243392
 const XML = {
   parse: (string, type = 'text/xml') =>
+    // @ts-ignore
     new DOMParser().parseFromString(string, type), // like JSON.parse
   stringify: DOM => new XMLSerializer().serializeToString(DOM), // like JSON.stringify
 
@@ -103,8 +103,8 @@ const XML = {
   prettify: node => XML.toString(node, true),
 
   toString: (node, pretty, level = 0, singleton = false) => {
-    if (node === null) return 'pokpok'
-    console.log(level, node, typeof node, node.nodeType, node.tagName)
+    if (node === null) return 'error - try deleting stylesheet node?'
+    // console.log(level, node, typeof node, node.nodeType, node.tagName)
     if (typeof node == 'object' && node == 'xml-stylesheet') return ''
 
     if (typeof node == 'string') node = XML.parse(node)
@@ -112,7 +112,8 @@ const XML = {
     let tabs = pretty
       ? Array(level + 1)
           .fill('')
-          .join('\t')
+          // .join('\t')
+          .join('&nbsp;&nbsp;')
       : ''
 
     let newLine = pretty ? '\n' : ''
@@ -151,37 +152,35 @@ const XML = {
   },
 }
 
+// show raw xml in a new tab
 async function showXml() {
+  // get the raw xml string from current url - no indentation or spaces
   const response = await fetch(window.location.href)
-  let xml = await response.text()
-  // xml = xml.replace('styles.xsl', 'styles-plain.xsl')
+  const xml = await response.text()
 
-  // document.body.innerText = xml
-
+  // parse the string to a Document object with nodes
   var parser = new DOMParser()
-  var doc = parser.parseFromString(xml, 'text/xml') // type Document
-  doc.removeChild(doc.firstChild) // ditch stylesheet?
-  console.log(doc)
+  var doc = parser.parseFromString(xml, 'text/xml') // typeof doc is Document
 
+  // need to delete the stylesheet node, as it breaks the prettify fn
+  doc.removeChild(doc.firstChild)
+
+  // convert Document object to an xml string with indentation etc
   const str = XML.prettify(doc)
-  console.log(str)
 
-  container.innerText = str
+  // open a new tab and write xml string to it in a textarea
+  var tab = window.open('about:blank', '_blank')
+  tab.document.write('<body style="margin:0">')
+  tab.document.write(
+    '<textarea style="width:100%; height:100%; white-space:nowrap;">'
+  )
+  tab.document.write(str)
+  tab.document.write('</textarea>')
+  tab.document.write('</body>')
+  tab.document.close()
 
-  // const xs = new XMLSerializer()
-  // const str = xs.serializeToString(doc)
-  // console.log(str)
-
+  //. eventually could toggle xml vs html views in container area
   // container.innerHTML = str
-
   // const textarea = document.querySelector('#textarea')
   // textarea['innerText'] = xml
-  // alert(xml)
-
-  // document.body = str
-
-  // var tab = window.open('about:blank', '_blank')
-  // tab.document.write(xml)
-  // tab.document.write('<textarea>' + xml + '</textarea>')
-  // tab.document.close()
 }
