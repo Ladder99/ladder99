@@ -125,6 +125,11 @@
 							<h4>Autorefresh</h4>
 							<p>Toggles autorefresh of page every 2 seconds.</p>
 
+							<h4>XML</h4>
+							<p>Click the XML button to open the underlying raw XML in a new tab.</p>
+
+							<br/>
+
 							<h4>How it works</h4>
 							<p>The <b>MTConnect Agent</b> receives data from one or more devices
 and makes it available as XML, a text data format. The <b>Ladder99 Agent</b> transforms the XML data from the MTConnect Agent 
