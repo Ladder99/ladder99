@@ -92,7 +92,9 @@
 						</div>
 						<div class="modal-body">
 
-							<h4>Tabs</h4>
+							<p>The MTConnect Agent receives data from one or more devices and makes it available as XML, a text data format. It can also transform the XML into HTML, as seen on this page. </p>
+
+							<!-- <h4>Tabs</h4>
 							<ul>
 								<li>
 									<b>Probe</b> shows the structure of the available devices and their data items.</li>
@@ -100,11 +102,19 @@
 									<b>Current</b> shows the latest values for each data item, along with a timestamp.</li>
 								<li>
 									<b>Sample</b> shows a sequence of values and their timestamps.</li>
-							</ul>
+							</ul> -->
+							<h4>Probe</h4>
+							<p>The Probe tab shows the structure of the available devices and their data items.</p>
+
+							<h4>Current</h4>
+							<p>The Current tab shows the latest values for each data item, along with a timestamp.</p>
+
+							<h4>Sample</h4>
+							<p>The Sample tab shows a sequence of values and their timestamps.</p>
 
 							<h4>Path</h4>
-							<p>You can search the available data using a simple query language called XPath, e.g.</p>
-							<p>Note: these will fail if the given path cannot be found in the document.</p>
+							<p>You can search the available data using a simple query language called <a href="https://en.wikipedia.org/wiki/XPath">XPath</a>, e.g.</p>
+							<p>Note: these will give an error if the given path cannot be found in the document.</p>
 							<ul>
 								<li>Availability of all devices: <a href='../current?path=//DataItem[@type="AVAILABILITY"]'>//DataItem[@type="AVAILABILITY"]</a>
 								</li>
@@ -132,17 +142,16 @@
 							<h4>XML</h4>
 							<p>Click the XML button to open the underlying raw XML in a new tab.</p>
 
-							<br/>
-
-							<h4>How it works</h4>
-							<p>The <b>MTConnect Agent</b> receives data from one or more devices
-and makes it available as XML, a text data format. It can also transform the XML into HTML, as seen on this page. </p>
+							<!-- <h4>How it works</h4> -->
 							<!-- The <b>Ladder99 Agent</b> transforms the XML data from the MTConnect Agent  -->
 							<!-- into a spreadsheet-like UI.</p> -->
-							<p>Note: Conditions are transformed from Normal, Warning, Fault elements to Condition elements with value of NORMAL, WARNING, FAULT.</p>
+							<!-- <p>Note: Conditions are transformed from Normal, Warning, Fault elements to Condition elements with value of NORMAL, WARNING, FAULT.</p> -->
 
-							<h4>Links</h4>
-							<p>For more information, see <a href="https://mtconnect.org">MTConnect.org</a>.
+							<h4>Note</h4>
+							<p>Conditions are transformed from Normal, Warning, Fault elements to Condition elements with value of NORMAL, WARNING, FAULT.</p>
+
+							<h4>About</h4>
+							<p>For more information on MTConnect, see <a href="https://mtconnect.org">MTConnect.org</a>.
 							</p>
 							<!-- <p>For more information, see <a href="https://mtconnect.org">MTConnect.org</a>, -->
 							<!-- and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>. -->
