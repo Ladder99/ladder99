@@ -16,6 +16,7 @@
 name: build-agent
 
 # define variables
+# note: service name corresponds to folders in the pipeline folder
 env:
   # service: mtconnect-agent
   service: agent
