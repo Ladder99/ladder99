@@ -87,7 +87,8 @@
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">x</span>
 							</button>
-							<h3 class="modal-title" id="myModalLabel">Ladder99 Agent</h3>
+							<!-- <h3 class="modal-title" id="myModalLabel">Ladder99 Agent</h3> -->
+							<h3 class="modal-title" id="myModalLabel">MTConnect Agent</h3>
 						</div>
 						<div class="modal-body">
 
@@ -135,16 +136,19 @@
 
 							<h4>How it works</h4>
 							<p>The <b>MTConnect Agent</b> receives data from one or more devices
-and makes it available as XML, a text data format. The <b>Ladder99 Agent</b> transforms the XML data from the MTConnect Agent 
-into a spreadsheet-like UI.</p>
+and makes it available as XML, a text data format. It can also transform the XML into HTML, as seen on this page. </p>
+							<!-- The <b>Ladder99 Agent</b> transforms the XML data from the MTConnect Agent  -->
+							<!-- into a spreadsheet-like UI.</p> -->
 							<p>Note: Conditions are transformed from Normal, Warning, Fault elements to Condition elements with value of NORMAL, WARNING, FAULT.</p>
 
 							<h4>Links</h4>
-							<p>For more information, see <a href="https://mtconnect.org">MTConnect.org</a>,
-and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>.
+							<p>For more information, see <a href="https://mtconnect.org">MTConnect.org</a>.
 							</p>
-							<p>Ladder99 is developed by <a href="https://mriiot.com">MRIIOT</a>, your agile digital transformation partner.</p>
-
+							<!-- <p>For more information, see <a href="https://mtconnect.org">MTConnect.org</a>, -->
+							<!-- and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>. -->
+							<!-- </p> -->
+							<!-- <p>Ladder99 is developed by <a href="https://mriiot.com">MRIIOT</a>, your agile digital transformation partner.</p> -->
+							<p>This UI for the MTConnect Agent was developed by <a href="https://mriiot.com">MRIIOT</a>, your agile digital transformation partner. Our signature product, <a href="https://mriiot.com/ladder99">Ladder99</a>, extends the ecosystem around MTConnect with module drivers and more.</p>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

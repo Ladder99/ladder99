@@ -168,7 +168,7 @@ td > .truncate {
 .navbar-header {
   background: white;
   padding: 2px;
-  border-radius: 5px;
+  border-radius: 4px 4px 0 0;
 }
 .navbar-brand {
   margin: 0 !important;
