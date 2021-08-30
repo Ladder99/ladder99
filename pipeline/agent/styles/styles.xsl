@@ -94,16 +94,16 @@
 						</div>
 						<div class="modal-body">
 
-							<p>The Agent receives data from one or more devices and makes it available as XML, then transforms that into HTML, as on this page.</p>
+							<p>The MTConnect Agent receives data from one or more devices and makes it available as XML, then transforms that into HTML.</p>
 
 							<h4>Probe</h4>
-							<p>Probe shows the structure of the available devices and their data items.</p>
+							<p>The Probe tab shows the structure of the available devices and their data items.</p>
 
 							<h4>Current</h4>
-							<p>Current shows the latest values for each data item, along with a timestamp.</p>
+							<p>The Current tab shows the latest values for each data item, along with a timestamp.</p>
 
 							<h4>Sample</h4>
-							<p>Sample shows a sequence of values and their timestamps.</p>
+							<p>The Sample tab shows a sequence of values and their timestamps.</p>
 
 							<h4>Path</h4>
 							<p>You can search the available data using a simple query language called <a href="https://en.wikipedia.org/wiki/XPath">XPath</a>, e.g.</p>
