@@ -178,3 +178,11 @@ td > .truncate {
 .navbar-brand img {
   height: 40px;
 }
+
+.modal-content {
+  font-size: 1.2em;
+}
+
+.modal-content h4 {
+  font-weight: bold;
+}

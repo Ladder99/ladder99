@@ -92,7 +92,7 @@
 						</div>
 						<div class="modal-body">
 
-							<p>The MTConnect Agent receives data from one or more devices and makes it available as XML, a text data format. It can also transform the XML into HTML, as seen on this page. </p>
+							<p>MTConnect Agent receives data from one or more devices and makes it available as XML, a text data format. It can also transform the XML into HTML, as seen on this page. </p>
 
 							<!-- <h4>Tabs</h4>
 							<ul>
@@ -103,14 +103,15 @@
 								<li>
 									<b>Sample</b> shows a sequence of values and their timestamps.</li>
 							</ul> -->
+
 							<h4>Probe</h4>
-							<p>The Probe tab shows the structure of the available devices and their data items.</p>
+							<p>This tab shows the structure of the available devices and their data items.</p>
 
 							<h4>Current</h4>
-							<p>The Current tab shows the latest values for each data item, along with a timestamp.</p>
+							<p>This tab shows the latest values for each data item, along with a timestamp.</p>
 
 							<h4>Sample</h4>
-							<p>The Sample tab shows a sequence of values and their timestamps.</p>
+							<p>This tab shows a sequence of values and their timestamps.</p>
 
 							<h4>Path</h4>
 							<p>You can search the available data using a simple query language called <a href="https://en.wikipedia.org/wiki/XPath">XPath</a>, e.g.</p>
@@ -157,7 +158,10 @@
 							<!-- and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>. -->
 							<!-- </p> -->
 							<!-- <p>Ladder99 is developed by <a href="https://mriiot.com">MRIIOT</a>, your agile digital transformation partner.</p> -->
-							<p>This UI for the MTConnect Agent was developed by <a href="https://mriiot.com">MRIIOT</a>, your agile digital transformation partner. Our signature product, <a href="https://mriiot.com/ladder99">Ladder99</a>, extends the ecosystem around MTConnect with module drivers and more.</p>
+							<p>This UI was developed by <a href="https://mriiot.com">MRIIOT</a>, your agile digital transformation partner.</p>
+							<p>License: MIT</p>
+							<!-- <p>This UI was developed by <a href="https://mriiot.com">MRIIOT</a>, your agile digital transformation partner. -->
+							<!-- Our signature product, <a href="https://mriiot.com/ladder99">Ladder99</a>, extends the ecosystem around MTConnect with module drivers and more.</p> -->
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
