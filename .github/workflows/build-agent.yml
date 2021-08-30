@@ -6,21 +6,21 @@
 
 # instructions:
 # 1. get current agent version from https://github.com/mtconnect/cppagent/blob/master/CMakeLists.txt
-#    and update the version value below.
+#    and update the version value below - the second version number is the xsl version.
 # 2. build the mtconnect-agent by using that for the service name,
 #    and triggering it manually from github actions page.
 #    that might take a few hours for the multiarch build.
 # 3. build the ladder99 agent by switching service name to 'agent',
-#    PUSH the change, then trigger the workflow.
+#    PUSH the change, then trigger the workflow. this shouldn't take long.
 
 name: build-agent
 
-# define variables
-# note: service name corresponds to folders in the pipeline folder
+# define variables - used below
 env:
+  # note: service names correspond to folders in the pipeline folder
   # service: mtconnect-agent
   service: agent
-  version: 1.7.0.3
+  version: 1.7.0.3-0.1.0
   # for available platforms see output of a previous run -
   # ie the "Setup Docker BuildX" / "Inspect Builder" section
   # has eg "node_platforms": "linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6"
