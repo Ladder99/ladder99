@@ -7,4 +7,4 @@ services:
   agent:
     volumes:
       - ./$SETUP/volumes/agent:/data/agent # has agent.cfg, agent.xml
-      - ../pipeline/agent/styles-0.1.0:/data/styles
+      - ../pipeline/agent/styles:/data/styles

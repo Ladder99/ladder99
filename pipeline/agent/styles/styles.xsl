@@ -41,7 +41,8 @@
 							<!-- <img alt="Brand" src="/styles/LogoLadder99-text.png"/> -->
 							<!-- <img alt="Brand" src="/styles/LogoMTConnect.png"/> -->
 							<!-- <img alt="Brand" src="/styles/LogoMTConnect-alpha.png"/> -->
-							<img alt="Brand" src="/styles/LogoMTConnect-shadow.png?v=3"/>
+							<!-- <img alt="Brand" src="/styles/LogoMTConnect-shadow.png"/> -->
+							<img alt="Brand" src="/styles/LogoMTConnect-inverse.png?v=2"/>
 						</a>
 					</div>
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

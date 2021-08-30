@@ -166,14 +166,14 @@ td > .truncate {
 }
 
 .navbar-header {
-  background: white;
+  /* background: white; */
   padding: 2px;
   border-radius: 4px 4px 0 0;
 }
 .navbar-brand {
   margin: 0 !important;
   padding: 0;
-  background: white;
+  /* background: white; */
 }
 .navbar-brand img {
   height: 40px;
