@@ -36,7 +36,7 @@
 							<span class="icon-bar"></span>
 							<span class="icon-bar"></span>
 						</button>
-						<a class="navbar-brand" style="padding: 5px 10px;" href="https://mtconnect.org">
+						<a class="navbar-brand" style="padding: 5px 10px;" href="https://mtconnect.org" target="_blank" rel="noopener noreferrer">
 							<!-- <img alt="Brand" src="/styles/LogoLadder99-text.png"/> -->
 							<!-- <img alt="Brand" src="/styles/LogoMTConnect.png"/> -->
 							<!-- <img alt="Brand" src="/styles/LogoMTConnect-alpha.png"/> -->
