@@ -4,15 +4,12 @@
 
 FROM ladder99/mtconnect-agent:latest
 
-# WARNING: before building, update the reference to the correct styles 
-# folder version on line 15 (eg styles-0.1.0).
-
 # change to non-root user for better security
 USER agent
 
 # replace xsl/html/css stylesheets with our versions
 RUN rm -r /etc/mtconnect/styles
-COPY --chown=agent:agent styles-0.1.0 /etc/mtconnect/styles
+COPY --chown=agent:agent styles /etc/mtconnect/styles
 
 # add link to our additional stylesheet
 # RUN echo "DevicesStyle { Location = /styles/Devices.xsl }" >> /etc/mtconnect/simulator/agent.cfg
