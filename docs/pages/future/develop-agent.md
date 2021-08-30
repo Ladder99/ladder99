@@ -1,5 +1,7 @@
 # Development
 
+(cross-platform builds are best done now using github workflows)
+
 ## Agent
 
 ### Install
