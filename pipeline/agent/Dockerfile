@@ -14,7 +14,11 @@ RUN rm -r /etc/mtconnect/styles
 COPY --chown=agent:agent styles /etc/mtconnect/styles
 
 # add link to our additional stylesheet
-RUN echo "DevicesStyle { Location = /styles/Devices.xsl }" >> /etc/mtconnect/simulator/agent.cfg
+# RUN echo "DevicesStyle { Location = /styles/Devices.xsl }" >> /etc/mtconnect/simulator/agent.cfg
+
+# update links to our new stylesheet
+RUN sed -i 's/Streams.xsl/styles.xsl/g' /etc/mtconnect/simulator/agent.cfg
+RUN echo "DevicesStyle { Location = /styles/styles.xsl }" >> /etc/mtconnect/simulator/agent.cfg
 
 # expose port
 EXPOSE 5000

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- handmade version for testing -->
+<!-- keep in synch with test/agent and test/micro setups, for now -->
 <MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.7"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="urn:mtconnect.org:MTConnectDevices:1.7" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.7 http://www.mtconnect.org/schemas/MTConnectDevices_1.7.xsd">
@@ -11,10 +12,14 @@
         Ladder99 Glimpse
       </Description>
       <DataItems>
-        <DataItem id="avail1" name="m1-availability" category="EVENT" type="AVAILABILITY"/>
-        <DataItem id="temp1" name="m1-temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
-        <DataItem id="mem1" name="m1-memory" category="EVENT" type="VARIABLE" subType="x:MEMORY" representation="DATA_SET"/>
-        <DataItem id="cpu1" name="m1-cpu" category="EVENT" type="VARIABLE" subType="x:CPU" representation="DATA_SET"/>
+        <DataItem id="m1/avail" name="m1/availability" category="EVENT" type="AVAILABILITY"/>
+        <DataItem id="m1/cond" name="m1/condition" category="CONDITION" type="SYSTEM"/>
+        <DataItem id="m1/temp" name="m1/temperature" category="EVENT" type="VARIABLE" subType="x:TEMPERATURE" representation="DATA_SET"/>
+        <!-- <DataItem id="m1/temp" name="m1/temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/> -->
+        <DataItem id="m1/mem" name="m1/memory" category="EVENT" type="VARIABLE" subType="x:MEMORY" representation="DATA_SET"/>
+        <DataItem id="m1/memfree" name="m1/memory-free" category="SAMPLE" type="x:MEMORY" subType="x:FREE" units="x:BYTES"/>
+        <DataItem id="m1/cpu" name="m1/cpu" category="EVENT" type="VARIABLE" subType="x:CPU" representation="DATA_SET"/>
+        <DataItem id="m1/os" name="m1/os" category="EVENT" type="VARIABLE" subType="x:OS" representation="DATA_SET"/>
       </DataItems>
     </Device>
 
