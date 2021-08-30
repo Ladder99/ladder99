@@ -30,15 +30,15 @@ devices:
         host: mosquitto
         port: 1883
 
-      - model: micro
-        driver: micro
-        host: micro
-        port: 8888
+      # - model: micro
+      #   driver: micro
+      #   host: micro
+      #   port: 8888
 
-      - model: hmi/rockwell
-        driver: opc
-        url: opc.tcp://simulator-opc:4334/UA/LittleServer
-        path: /Device/Systems/Resources/Components
+      # - model: hmi/rockwell
+      #   driver: opc
+      #   url: opc.tcp://simulator-opc:4334/UA/LittleServer
+      #   path: /Device/Systems/Resources/Components
 
     destinations: # where to post output - just uses first output for now
       - protocol: shdr
