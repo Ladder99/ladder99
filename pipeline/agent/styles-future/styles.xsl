@@ -93,7 +93,7 @@
 						</div>
 						<div class="modal-body">
 
-							<p>MTConnect Agent receives data from one or more devices and makes it available as XML, a text data format. It can also transform the XML into HTML, as seen on this page. </p>
+							<p>MTConnect Agent receives data from one or more devices and makes it available as XML, then transforms that into HTML, as on this page.</p>
 
 							<!-- <h4>Tabs</h4>
 							<ul>

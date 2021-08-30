@@ -179,10 +179,14 @@ td > .truncate {
   height: 40px;
 }
 
+.modal-dialog {
+  /* width: 600px; */
+  width: 960px;
+  /* margin: 30px auto; */
+}
 .modal-content {
   font-size: 1.2em;
 }
-
 .modal-content h4 {
   font-weight: bold;
 }
