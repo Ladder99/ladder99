@@ -19,7 +19,8 @@
 			<meta charset="utf-8"></meta>
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
 			<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-			<title>Ladder99 Agent</title>
+			<!-- <title>Ladder99 Agent</title> -->
+			<title>MTConnect Agent</title>
 			<link href="/styles/bootstrap.min.css" rel="stylesheet"></link>
 			<link href="/styles/styles.css" rel="stylesheet"></link>
 		</head>
