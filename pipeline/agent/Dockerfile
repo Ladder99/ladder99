@@ -11,10 +11,7 @@ USER agent
 RUN rm -r /etc/mtconnect/styles
 COPY --chown=agent:agent styles /etc/mtconnect/styles
 
-# add link to our additional stylesheet
-# RUN echo "DevicesStyle { Location = /styles/Devices.xsl }" >> /etc/mtconnect/simulator/agent.cfg
-
-# update links to our new stylesheet
+# update/add links to our stylesheet
 RUN sed -i 's/Streams.xsl/styles.xsl/g' /etc/mtconnect/simulator/agent.cfg
 RUN echo "DevicesStyle { Location = /styles/styles.xsl }" >> /etc/mtconnect/simulator/agent.cfg
 
@@ -39,9 +36,9 @@ CMD /usr/bin/ruby /etc/mtconnect/simulator/run_scenario.rb -l \
 # After setup, the dirs look like this -
 #
 # /etc/mtconnect
-#  |-- schemas - xsd files
-#  |-- simulator - agent.cfg, simulator.rb, vmc-3axis.xml, log.txt
-#  |-- styles - our devices.xsl, streams.xsl, custom.css, logo.png, favicon.ico
+#  |-- schemas - mtconnect xsd files
+#  |-- simulator - agent.cfg, simulator.rb, vmc-3axis.xml, log.txt - vmc sim
+#  |-- styles - our styles.xsl, styles.css, favicon.ico, logo.png
 #
 # /usr/local/bin
 #  |-- agent - the agent application
@@ -55,10 +52,7 @@ CMD /usr/bin/ruby /etc/mtconnect/simulator/run_scenario.rb -l \
 #   agent:
 #     command: agent debug /data/agent/agent.cfg
 #     volumes:
-#       - ./$SETUP/volumes/agent:/data/agent # should have agent.cfg, devices.xml
+#       - ./$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
 #
 # so it lets the user override the agent.cfg by mapping /data/agent to
 # a local folder eg setups/test/print-apply/volumes/agent. 
-#
-# so if you want plain xml output, you'd need to comment out the xsl
-# file references from the agent.cfg file.
