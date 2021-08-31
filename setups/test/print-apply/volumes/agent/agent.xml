@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--Generated file - DO NOT EDIT!-->
+<!-- edit this file by hand until get compiler working -->
 <MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.7"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="urn:mtconnect.org:MTConnectDevices:1.7" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.7 http://www.mtconnect.org/schemas/MTConnectDevices_1.7.xsd">
@@ -68,7 +68,7 @@
               <DataItem id="pa1/printer_start_print" category="EVENT" type="ACTUATOR_STATE" subType="x:START"/>
               <DataItem id="pa1/print_signal_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
               <DataItem id="pa1/print_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" units="SECOND"/>
-              <!-- duplicate paths -->
+              <!-- duplicate types - okay to do with mtconnect? -->
               <!-- <DataItem id="pa1/transport_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/> -->
               <!-- <DataItem id="pa1/idle_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/> -->
               <!-- <DataItem id="pa1/printer_start_print_duration" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/> -->
@@ -83,7 +83,7 @@
           <Components>
             <Personnel id="pa1/personnel">
               <DataItems>
-                <!-- <DataItem id="pa1/operator" category="EVENT" type="USER" subType="OPERATOR"/> -->
+                <DataItem id="pa1/operator" category="EVENT" type="USER" subType="OPERATOR"/>
               </DataItems>
             </Personnel>
           </Components>
