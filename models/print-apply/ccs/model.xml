@@ -1,4 +1,4 @@
-<!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
+<!-- this is experimental syntax - compiler will handle it eventually -->
 
 <Model>
   <DataItems>
@@ -15,7 +15,6 @@
 
     <!-- <Controller name="controller" nativeName="plc"> -->
     <!-- do controllers have ids and names? what is nativeName? -->
-    <!-- don't use id plc$num because eg for paths, could have multiple paths IN a device -->
     <Controller name="plc">
       <Description>Electronic board set responsible for coordinating all machine function.</Description>
       <DataItems>
