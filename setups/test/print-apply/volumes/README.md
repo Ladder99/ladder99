@@ -4,11 +4,8 @@ These folders are exposed to the services through pipeline.yaml.
 
 Put anything the services will need here, but be careful you don't add too much to the repo - use .gitignore.
 
-- agent - mtconnect agent settings - agent.cfg and devices.xml
-- broker - mqtt broker
-- database - timeseries db for agent dataitem history
+- agent - mtconnect agent settings - agent.cfg and agent.xml
 - grafana - visualization dashboard
-- influxdb - timeseries db for raspberry pi monitoring
+- mosquitto - mqtt broker
 - portainer - docker container monitoring
-- recorder - record/playback device data
-- telegraf - feeds raspberry pi metrics to influxdb
+- postgres - timeseries db for agent dataitem history
