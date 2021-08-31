@@ -101,7 +101,8 @@ CMD /usr/bin/ruby /etc/mtconnect/simulator/run_scenario.rb -l \
 # /etc/mtconnect
 #  |-- schemas - xsd files
 #  |-- simulator - agent.cfg, simulator.rb, vmc-3axis.xml, log.txt
-#  |-- styles - streams.xsl, streams.css, favicon.ico
+#  |-- styles - Streams.xsl, Streams.css, favicon.ico
+#
 # /usr/local/bin
 #  |-- agent - the agent application
 #
@@ -109,6 +110,3 @@ CMD /usr/bin/ruby /etc/mtconnect/simulator/run_scenario.rb -l \
 #   Devices = ../simulator/VMC-3Axis.xml
 #   Files { styles { Path = ../styles } }
 # see https://github.com/mtconnect/cppagent/blob/master/simulator/agent.cfg
-#
-# if you want plain xml output, you currently need to comment out the files
-# section in the agent.cfg file and restart the agent.
