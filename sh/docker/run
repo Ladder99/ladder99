@@ -2,16 +2,16 @@
 
 # run pipeline with docker run.
 # use when docker-compose is not available, as used in sh/pipeline.
-# runs broker, adapter, agent, recorder, and portainer services.
+# runs mosquitto, adapter, agent, recorder, and portainer services.
 # examples:
 #   sh/docker/run
-#   sh/docker/run ccs-pa ladder99
+#   sh/docker/run test/print-apply ladder99
 
-SETUP=${1:-"ccs-pa"}
+SETUP=${1:-"test/print-apply"}
 NETWORK=${2:-"host"}
 shift
 shift
-SERVICES=${*:-"portainer broker adapter agent recorder"}
+SERVICES=${*:-"portainer mosquitto adapter agent recorder"}
 MODEL=ccs-pa
 MODE=play
 
@@ -28,9 +28,9 @@ do
       portainer/portainer-ce
   fi
 
-  if [ $service = "broker" ]; then
-    $RUN --name broker --network $NETWORK -p 1883 -p 9001 \
-      -v $(pwd)/setups/$SETUP/volumes/broker:/mosquitto \
+  if [ $service = "mosquitto" ]; then
+    $RUN --name mosquitto --network $NETWORK -p 1883 -p 9001 \
+      -v $(pwd)/setups/$SETUP/volumes/mosquitto:/mosquitto \
       eclipse-mosquitto
   fi
 
