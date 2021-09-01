@@ -4,7 +4,7 @@
 # use when docker-compose is not available, as used in sh/pipeline.
 # runs mosquitto, adapter, agent, recorder, and portainer services.
 # usage:
-#   sh/docker/run [SETUP [NETWORK]]
+#   sh/docker/run [SETUP [NETWORK [SERVICES]]]
 # examples:
 #   sh/docker/run
 #   sh/docker/run test/print-apply ladder99
