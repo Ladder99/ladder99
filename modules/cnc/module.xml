@@ -1,5 +1,5 @@
-<!-- this model comes mostly from the mazak here: http://mtconnect.mazakcorp.com:5717/ -->
-<Model>
+<!-- this module comes mostly from the mazak here: http://mtconnect.mazakcorp.com:5717/ -->
+<Module>
   <DataItems>
     <DataItem category="EVENT" id="avail" type="AVAILABILITY"/>
     <DataItem category="EVENT" id="functionalmode" type="FUNCTIONAL_MODE"/>
@@ -496,4 +496,4 @@
       </Components>
     </Resources>
   </Components>
-</Model>
+</Module>
