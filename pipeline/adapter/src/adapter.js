@@ -16,7 +16,7 @@ const defaultServer = { protocol: 'shdr', host: 'adapter', port: 7878 }
 const driversFolder = './drivers' // eg mqtt-json - must start with '.'
 // these folders are defined in pipeline.yaml with docker volume mappings
 const setupFolder = '/data/setup' // incls setup.yaml etc
-const modelsFolder = `/data/models` // incls print-apply/model.xml etc
+const modulesFolder = `/data/modules` // incls print-apply/module.xml etc
 
 console.log(`Ladder99 Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
@@ -52,7 +52,7 @@ async function main() {
       // iterate over sources, load driver for that source, call init on it.
       for (const source of device.sources) {
         console.log(`Source`, source)
-        const { model, driver, protocol, host, port } = source
+        const { module, driver, protocol, host, port } = source
 
         // import driver plugin
         const pathDriver = `${driversFolder}/${driver}.js` // eg './drivers/mqtt-json.js'
@@ -61,18 +61,17 @@ async function main() {
         const plugin = new AdapterDriver()
 
         // get input handlers
-        const pathInputs = `${modelsFolder}/${model}/inputs.yaml`
+        const pathInputs = `${modulesFolder}/${module}/inputs.yaml`
         console.log(`Reading ${pathInputs}...`)
         const inputs = common.importYaml(pathInputs) || {}
 
         // get output handlers
-        //. rename to cache-outputs.yaml
-        const pathOutputs = `${modelsFolder}/${model}/outputs.yaml`
+        const pathOutputs = `${modulesFolder}/${module}/outputs.yaml`
         console.log(`Reading ${pathOutputs}...`)
         const outputTemplates = (common.importYaml(pathOutputs) || {}).outputs
 
         // get types, if any
-        const pathTypes = `${modelsFolder}/${model}/types.yaml`
+        const pathTypes = `${modulesFolder}/${module}/types.yaml`
         console.log(`Reading ${pathTypes}...`)
         const types = (common.importYaml(pathTypes) || {}).types
 
@@ -203,6 +202,9 @@ function getOutputs({ templates, types, deviceId }) {
       key: `${deviceId}/${template.key}`,
       value, //. getValue
       dependsOn,
+      //. currently these need to be defined in the outputs.yaml file,
+      // instead of using the types in the module.xml file -
+      // will need to fix that.
       category: template.category, // needed for cache getShdr fn
       type: template.type, // ditto
       representation: template.representation, // ditto

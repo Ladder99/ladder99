@@ -17,7 +17,7 @@ const { mode = 'play' } = options
 const pluginsFolder = './plugins'
 // these folders are defined in pipeline.yaml with docker volume mappings
 const setupFolder = '/data/setup' // incls setup.yaml etc
-const modelsFolder = '/data/models' // incls ccs/print-apply/recordings, etc
+const modulesFolder = '/data/modules' // incls ccs/print-apply/recordings, etc
 
 console.log()
 console.log(`Recorder`)
@@ -42,7 +42,7 @@ async function main() {
     for (let source of sources) {
       // get source, with defaults //. change defaults?
       const {
-        model,
+        module,
         driver = 'mqtt-json',
         host = 'localhost',
         port = 1883,
@@ -56,9 +56,9 @@ async function main() {
         console.log(`Importing plugin from ${pluginPath}...`)
         const { RecorderPlugin } = await import(pluginPath)
 
-        // get list of recorded csv files for the source model
+        // get list of recorded csv files for the source module.
         // do this here instead of in each plugin
-        const folder = `${modelsFolder}/${model}/recordings`
+        const folder = `${modulesFolder}/${module}/recordings`
         let csvfiles = []
         if (mode === 'play') {
           console.log(`Reading list of files in folder '${folder}'...`)

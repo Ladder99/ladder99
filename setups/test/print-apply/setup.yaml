@@ -19,24 +19,24 @@ devices:
     manufacturer: CCS
     model: CCS P&A
     serialNumber: '001'
-    structure: print-apply # for xml structure - see models/print-apply/model.xml
+    module: print-apply # for xml structure - see models/print-apply/model.xml
 
-    filters:
-      - inputs: print-apply # location of inputs.yaml
+    # filters:
+    #   - inputs: print-apply # location of inputs.yaml
 
     # define data sources that feed into this device
     sources:
-      - model: print-apply # model defines inputs and outputs with yaml files
+      - module: print-apply # model defines inputs and outputs with yaml files
         driver: mqtt-json # type of adapter plugin - manages protocol and payload
         host: mosquitto
         port: 1883
 
-      # - model: micro
+      # - module: micro
       #   driver: micro
       #   host: micro
       #   port: 8888
 
-      # - model: hmi/rockwell
+      # - module: hmi/rockwell
       #   driver: opc
       #   url: opc.tcp://simulator-opc:4334/UA/LittleServer
       #   path: /Device/Systems/Resources/Components
