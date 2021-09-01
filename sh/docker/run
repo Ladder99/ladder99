@@ -42,6 +42,7 @@ do
     $RUN --name adapter --network $NETWORK \
       -v $(pwd)/setups/$SETUP:/data/setup \
       -v $(pwd)/modules:/data/modules \
+      --pull always \
       ladder99/adapter:latest
   fi
 
