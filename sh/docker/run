@@ -12,7 +12,7 @@ NETWORK=${2:-"host"}
 shift
 shift
 SERVICES=${*:-"portainer mosquitto adapter agent recorder"}
-MODEL=ccs-pa
+MODULE=print-apply
 MODE=play
 
 RUN="docker run -dit --init --rm --log-opt max-size=1m --log-opt max-file=5"
@@ -38,7 +38,7 @@ do
     docker build --tag ladder99/adapter:latest pipeline/adapter
     $RUN --name adapter --network $NETWORK \
       -v $(pwd)/setups/$SETUP:/data/setup \
-      -v $(pwd)/models:/data/models \
+      -v $(pwd)/modules:/data/modules \
       ladder99/adapter:latest
   fi
 
@@ -52,9 +52,9 @@ do
   if [ $service = "recorder" ]; then
     docker build --tag ladder99/recorder:latest pipeline/recorder
     $RUN --name recorder --network $NETWORK \
-      -v $(pwd)/models:/data/models \
+      -v $(pwd)/modules:/data/modules \
       ladder99/recorder:latest \
-      recorder --mode $MODE --host localhost --folder /data/models/$MODEL/recorder
+      recorder --mode $MODE --host localhost --folder /data/modules/$MODULE/recordings
   fi
 
   echo ""
