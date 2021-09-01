@@ -2,6 +2,7 @@
 # install node dependencies
 
 npm --prefix pipeline/adapter install
+npm --prefix pipeline/compiler install
 npm --prefix pipeline/recorder install
 
 # npm --prefix pipeline/relay install
