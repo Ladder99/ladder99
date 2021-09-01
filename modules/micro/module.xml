@@ -1,6 +1,6 @@
 <!-- dataitem ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
 
-<Model>
+<Module>
   <DataItems>
     <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
     <DataItem id="temp" name="temperature" category="EVENT" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
@@ -10,13 +10,13 @@
     <DataItem id="mem-total" name="memory-total" category="SAMPLE" type="VARIABLE" subType="x:MEMORY_TOTAL" />
 
   </DataItems>
-</Model>
+</Module>
 
 <!-- or when added on to a machine, -->
 <!-- so could use above and say  -->
 <!-- path = Auxiliaries/Sensor[@id="" @name=""]/DataItems -->
 
-<!-- <Model path="Device/Auxiliaries/Sensor"> -->
+<!-- <Module path="Device/Auxiliaries/Sensor"> -->
 
 <!-- 
 <Auxiliaries>
