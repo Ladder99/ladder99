@@ -14,12 +14,12 @@
 
 devices:
   - id: pa1 # this is substituted into the model.xml and sources
-    name: pa1 # this must match name in agent.cfg and devices.xml
+    name: pa1 # this must match name in agent.cfg and agent.xml
     uuid: e05363
     manufacturer: CCS
     model: CCS P&A
     serialNumber: '001'
-    module: print-apply # for xml structure - see models/print-apply/model.xml
+    module: print-apply # for xml structure - see modules/print-apply/module.xml
 
     # filters:
     #   - inputs: print-apply # location of inputs.yaml
