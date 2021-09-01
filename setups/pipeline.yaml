@@ -18,7 +18,7 @@ services:
       - adapter
     volumes:
       - ./$SETUP:/data/setup # has setup.yaml etc
-      - ../models:/data/models # has model yamls
+      - ../modules:/data/modules # has module yamls
     networks:
       - ladder99
     logging:
@@ -133,7 +133,7 @@ services:
       - 8080:8080
     volumes:
       - ./$SETUP:/data/setup # has setup-specific recordings folder
-      - ../models:/data/models # has model-specific recordings folder
+      - ../modules:/data/modules # has module-specific recordings folder
     networks:
       - ladder99
     logging:
@@ -195,7 +195,7 @@ services:
     command: recorder --mode record
     volumes:
       - ./$SETUP:/data/setup # has setup-specific recordings folder
-      - ../models:/data/models # has model-specific recordings folder
+      - ../modules:/data/modules # has module-specific recordings folder
     networks:
       - ladder99
     logging:
