@@ -38,7 +38,7 @@ do
   fi
 
   if [ $service = "adapter" ]; then
-    docker build --tag ladder99/adapter:latest pipeline/adapter
+    #docker build --tag ladder99/adapter:latest pipeline/adapter
     $RUN --name adapter --network $NETWORK \
       -v $(pwd)/setups/$SETUP:/data/setup \
       -v $(pwd)/modules:/data/modules \
