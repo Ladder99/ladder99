@@ -9,11 +9,13 @@
 #   sh/docker/run
 #   sh/docker/run test/print-apply ladder99
 
-SETUP=${1:-"test/print-apply"}
-NETWORK=${2:-"host"}
+# SETUP=${1:-"test/print-apply"}
+# NETWORK=${2:-"host"}
 # shift
 # shift
 # SERVICES=${*:-"portainer mosquitto adapter agent recorder"}
+SETUP=test/print-apply
+NETWORK=host
 SERVICES=portainer mosquitto adapter agent
 MODULE=print-apply
 MODE=play
