@@ -26,7 +26,7 @@ devices:
 
     # define data sources that feed into this device
     sources:
-      - module: print-apply # model defines inputs and outputs with yaml files
+      - module: print-apply # module defines inputs and outputs with yaml files
         driver: mqtt-json # type of adapter plugin - manages protocol and payload
         host: mosquitto
         port: 1883
