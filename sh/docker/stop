@@ -3,5 +3,5 @@
 # stop pipeline
 # use when docker-compose is not available, as used in sh/pipeline.
 
-docker stop broker adapter agent recorder
+docker stop mosquitto adapter agent recorder
 docker container prune -f

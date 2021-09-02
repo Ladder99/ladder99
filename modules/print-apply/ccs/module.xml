@@ -1,6 +1,6 @@
 <!-- this is experimental syntax - compiler will handle it eventually -->
 
-<Model>
+<Module>
   <DataItems>
     <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
     <DataItem id="cond" name="condition" category="CONDITION" type="SYSTEM"/>
@@ -93,4 +93,4 @@
     </Resources> -->
 
   </Systems>
-</Model>
+</Module>
