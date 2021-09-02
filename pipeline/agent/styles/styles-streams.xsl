@@ -82,6 +82,8 @@
                 <xsl:when test="$value='FAULT'">background: #ff4c41</xsl:when>
                 <xsl:when test="$value='AVAILABLE'">background: #e7f38b</xsl:when>
                 <xsl:when test="$value='UNAVAILABLE'">color: #aaa</xsl:when>
+                <xsl:when test="$value='ACTIVE'">background: #9fe473</xsl:when>
+                <xsl:when test="$value='INACTIVE'">background: #f0f0f0</xsl:when>
                 <xsl:otherwise></xsl:otherwise>
               </xsl:choose>
             </xsl:variable>
@@ -108,7 +110,7 @@
                     <img style="width:12px;" src="/styles/icon-minus.png" />
                   </xsl:when>
                   <xsl:otherwise>
-										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <!-- space -->
+										&#8198; 																																																																																																																																																																																				                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <!-- space -->
                   </xsl:otherwise>
                 </xsl:choose>
 
@@ -128,8 +130,12 @@
               </td>
               <td>
                 <!-- <xsl:value-of select="@timestamp"/> -->
+                <!-- <xsl:value-of select="translate(@timestamp,'T',' ')"/> -->
                 <!-- <xsl:value-of select="substring(@timestamp,12)"/> -->
-                <xsl:value-of select="translate(@timestamp,'T',' ')"/>
+                <!-- <xsl:value-of select="substring(@timestamp,12,10)"/> -->
+                <span title="{@timestamp}">
+                  <xsl:value-of select="substring(@timestamp,12,10)"/>
+                </span>
               </td>
               <td style="{$sequenceStyle};">
                 <!-- <xsl:value-of select="@sequence"/> -->
