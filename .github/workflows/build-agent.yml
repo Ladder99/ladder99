@@ -1,17 +1,27 @@
-# github workflow to build ladder99/mtconnect agent docker image
-
+# github workflow to build mtconnect and ladder99 agent docker images
+#
+# note: this workflow is used to build BOTH mtconnect AND ladder99 images
+#
+# instructions:
+#
+# to build the mtconnect agent (only need to do when version changes enough):
+# 1. get current version from https://github.com/mtconnect/cppagent/blob/master/CMakeLists.txt
+# 2. update the version value below - the second version number is the ladder99 xsl version.
+# 3. use 'mtconnect-agent' for the service name below
+# 4. COMMIT and PUSH the change to github
+# 5. trigger the build-agent workflow manually from github actions page.
+#    will take a few hours for the multiarch build.
+#
+# to build the ladder99 agent:
+# 1. update the version value below - second number is ladder99 xsl version.
+# 2. use 'agent' for service name below
+# 3. COMMIT and PUSH the change to github
+# 4. trigger the build-agent workflow manually from github actions page.
+#     this should just take a few minutes.
+#
 # run manually at https://github.com/Ladder99/ladder99/actions
 # secrets set at https://github.com/Ladder99/ladder99/settings/secrets/actions
 # image hosted on https://hub.docker.com/repository/docker/ladder99
-
-# instructions:
-# 1. get current agent version from https://github.com/mtconnect/cppagent/blob/master/CMakeLists.txt
-#    and update the version value below - the second version number is the xsl version.
-# 2. build the mtconnect-agent by using that for the service name,
-#    and triggering it manually from github actions page.
-#    that might take a few hours for the multiarch build.
-# 3. build the ladder99 agent by switching service name to 'agent',
-#    PUSH the change, then trigger the workflow. this shouldn't take long.
 
 name: build-agent
 
