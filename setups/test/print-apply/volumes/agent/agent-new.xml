@@ -29,13 +29,13 @@
                 <DataItem id="pa1/state" name="pa1/state" category="EVENT" type="EXECUTION"/>
                 <DataItem id="pa1/wait" name="pa1/wait_state" category="EVENT" type="WAIT_STATE"/>
                 <DataItem id="pa1/prog" name="pa1/program" category="EVENT" type="PROGRAM" subType="MAIN"/>
-                <DataItem id="step" name="pa1/step" category="EVENT" type="BLOCK"/>
-                <DataItem id="clock" name="pa1/clk_time" category="SAMPLE" type="CLOCK_TIME"/>
-                <DataItem id="up" name="pa1/up_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="OPERATING"/>
-                <DataItem id="cycle" name="pa1/cycle_time" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" units="SECONDS"/>
-                <DataItem id="fault" name="pa1/fault_count" category="SAMPLE" type="COUNT" subType="x:FAULT"/>
-                <DataItem id="cycles" name="pa1/cycle_count" category="SAMPLE" type="COUNT" subType="x:CYCLE"/>
-                <DataItem id="lifes" name="pa1/life_count" category="SAMPLE" type="COUNT" subType="x:LIFE"/>
+                <DataItem id="pa1/step" name="pa1/step" category="EVENT" type="BLOCK"/>
+                <DataItem id="pa1/clock" name="pa1/clk_time" category="SAMPLE" type="CLOCK_TIME"/>
+                <DataItem id="pa1/up" name="pa1/up_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="OPERATING"/>
+                <DataItem id="pa1/cycle" name="pa1/cycle_time" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" units="SECONDS"/>
+                <DataItem id="pa1/faults" name="pa1/fault_count" category="SAMPLE" type="COUNT" subType="x:FAULT"/>
+                <DataItem id="pa1/cycles" name="pa1/cycle_count" category="SAMPLE" type="COUNT" subType="x:CYCLE"/>
+                <DataItem id="pa1/lifes" name="pa1/life_count" category="SAMPLE" type="COUNT" subType="x:LIFE"/>
               </DataItems>
             </Path>
           </Components>
@@ -45,16 +45,16 @@
         <Components>
           <EndEffector name="pa1/end_effector">
             <DataItems>
-              <DataItem id="eecond" name="pa1/end_eff_cond" category="CONDITION" type="SYSTEM"/>
-              <DataItem id="eemsg" name="pa1/end_eff_message" category="EVENT" type="MESSAGE"/>
-              <DataItem id="eepart" name="pa1/smart_tamp_part_detect" category="EVENT" type="PART_DETECT"/>
-              <DataItem id="eeair" name="pa1/tamp_air_assist" category="EVENT" type="ACTUATOR_STATE" subType="x:AIR_ASSIST"/>
-              <DataItem id="eevac" name="pa1/tamp_vacuum" category="EVENT" type="ACTUATOR_STATE" subType="x:VACUUM"/>
-              <DataItem id="eecyl" name="pa1/tamp_cylinder" category="EVENT" type="ACTUATOR_STATE" subType="x:CYLINDER"/>
-              <DataItem id="eeextend" name="pa1/cylinder_extend_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:EXTEND" units="SECOND"/>
-              <DataItem id="eedis" name="pa1/cylinder_home_disengage_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:DISENGAGE" units="SECOND"/>
-              <DataItem id="eetrav" name="pa1/cylinder_travel_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:TRAVEL" units="SECOND"/>
-              <DataItem id="eevacdel" name="pa1/tamp_vacuum_delay" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
+              <DataItem id="pa1/eecond" name="pa1/end_eff_cond" category="CONDITION" type="SYSTEM"/>
+              <DataItem id="pa1/eemsg" name="pa1/end_eff_message" category="EVENT" type="MESSAGE"/>
+              <DataItem id="pa1/eepart" name="pa1/smart_tamp_part_detect" category="EVENT" type="PART_DETECT"/>
+              <DataItem id="pa1/eeair" name="pa1/tamp_air_assist" category="EVENT" type="ACTUATOR_STATE" subType="x:AIR_ASSIST"/>
+              <DataItem id="pa1/eevac" name="pa1/tamp_vacuum" category="EVENT" type="ACTUATOR_STATE" subType="x:VACUUM"/>
+              <DataItem id="pa1/eecyl" name="pa1/tamp_cylinder" category="EVENT" type="ACTUATOR_STATE" subType="x:CYLINDER"/>
+              <DataItem id="pa1/eeextend" name="pa1/cylinder_extend_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:EXTEND" units="SECOND"/>
+              <DataItem id="pa1/eedis" name="pa1/cylinder_home_disengage_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:DISENGAGE" units="SECOND"/>
+              <DataItem id="pa1/eetrav" name="pa1/cylinder_travel_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:TRAVEL" units="SECOND"/>
+              <DataItem id="pa1/eevacdel" name="pa1/tamp_vacuum_delay" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
             </DataItems>
           </EndEffector>
           <Feeder name="pa1/feeder">

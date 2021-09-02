@@ -10,6 +10,7 @@
         Emergent Next Generation Print and Apply
       </Description>
       <DataItems>
+        <!-- <DataItem id="pa1/connection" name="avail1" category="EVENT" type="AVAILABILITY"/> -->
         <DataItem id="pa1/connection" name="avail1" category="EVENT" type="AVAILABILITY"/>
         <DataItem id="pa1/asset_changed" name="chg1" category="EVENT" type="ASSET_CHANGED"/>
         <DataItem id="pa1/asset_removed" name="rem1" category="EVENT" type="ASSET_REMOVED"/>
