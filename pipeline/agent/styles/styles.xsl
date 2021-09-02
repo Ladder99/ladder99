@@ -19,7 +19,6 @@
 			<meta charset="utf-8"></meta>
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
 			<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
-			<!-- <title>Ladder99 Agent</title> -->
 			<title>MTConnect Agent</title>
 			<link href="/styles/bootstrap.min.css" rel="stylesheet"></link>
 			<link href="/styles/styles.css" rel="stylesheet"></link>
@@ -38,11 +37,7 @@
 							<span class="icon-bar"></span>
 						</button>
 						<a class="navbar-brand" style="padding: 5px 10px;" href="https://mtconnect.org" target="_blank" rel="noopener noreferrer">
-							<!-- <img alt="Brand" src="/styles/LogoLadder99-text.png"/> -->
-							<!-- <img alt="Brand" src="/styles/LogoMTConnect.png"/> -->
-							<!-- <img alt="Brand" src="/styles/LogoMTConnect-alpha.png"/> -->
-							<!-- <img alt="Brand" src="/styles/LogoMTConnect-shadow.png"/> -->
-							<img alt="Brand" src="/styles/LogoMTConnect-inverse.png?v=2"/>
+							<img alt="Brand" src="/styles/LogoMTConnect-inverse.png"/>
 						</a>
 					</div>
 					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
@@ -75,11 +70,7 @@
 			<!-- Main contents -->
 			<div class="container-fluid page-container">
 				<xsl:apply-templates />
-				<!-- the iframe automatically applies the stylesheet also -->
-				<!-- <iframe id="iframe" src="http://localhost:5000/current" /> -->
-				<!-- <textarea id="textarea" rows="100" cols="100" readonly="true" /> -->
 			</div>
-
 
 			<!-- Modal -->
 			<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -89,7 +80,6 @@
 							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 								<span aria-hidden="true">x</span>
 							</button>
-							<!-- <h3 class="modal-title" id="myModalLabel">Ladder99 Agent</h3> -->
 							<h3 class="modal-title" id="myModalLabel">MTConnect Agent</h3>
 						</div>
 						<div class="modal-body">
@@ -146,14 +136,8 @@
 							<h4>About</h4>
 							<p>For more information on MTConnect, see <a href="https://mtconnect.org">MTConnect.org</a>.
 							</p>
-							<!-- <p>For more information, see <a href="https://mtconnect.org">MTConnect.org</a>, -->
-							<!-- and the <a href="https://docs.ladder99.com">Ladder99 documentation</a>. -->
-							<!-- </p> -->
-							<!-- <p>Ladder99 is developed by <a href="https://mriiot.com">MRIIOT</a>, your agile digital transformation partner.</p> -->
 							<p>This UI was developed by <a href="https://mriiot.com">MRIIOT</a>, your agile digital transformation partner.</p>
 							<p>License: MIT</p>
-							<!-- <p>This UI was developed by <a href="https://mriiot.com">MRIIOT</a>, your agile digital transformation partner. -->
-							<!-- Our signature product, <a href="https://mriiot.com/ladder99">Ladder99</a>, extends the ecosystem around MTConnect with module drivers and more.</p> -->
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -178,6 +162,5 @@
 	<xsl:include href="styles-probe.xsl"/>
 	<xsl:include href="styles-streams.xsl"/>
 	<xsl:include href="styles-error.xsl"/>
-	<!-- <xsl:include href="styles-plain.xsl"/> -->
 
 </xsl:stylesheet>
