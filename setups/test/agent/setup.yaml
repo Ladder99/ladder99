@@ -31,7 +31,8 @@
 
 devices:
   - id: pa1 # this is substituted into the module.xml and sources
-    name: pa1 # this must match name in agent.cfg and agent.xml
+    # name: pa1 # this must match name in agent.cfg and agent.xml
+    name: print-apply1 # this must match name in agent.cfg and agent.xml
     uuid: e05363
     manufacturer: CCS
     model: CCS P&A

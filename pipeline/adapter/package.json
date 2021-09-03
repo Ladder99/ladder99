@@ -10,6 +10,7 @@
     "test": "nodemon src/test.js"
   },
   "dependencies": {
+    "date-fns": "^2.23.0",
     "js-yaml": "^4.0.0",
     "mqtt": "^4.2.6",
     "node-fetch": "^2.6.1",

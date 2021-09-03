@@ -11,7 +11,7 @@ export class AdapterDriver {
   // initialize the client plugin
   // queries the device for address space definitions, subscribes to topics.
   // inputs is the inputs.yaml file parsed to a js tree.
-  init({ deviceId, host, port, cache, inputs }) {
+  init({ deviceId, deviceName, host, port, cache, inputs }) {
     console.log('init', { deviceId })
     const url = `mqtt://${host}:${port}`
 
@@ -98,7 +98,6 @@ export class AdapterDriver {
             // if we have the part in the payload, add it to the cache
             if (item && item.value !== undefined) {
               console.log(`MQTT part '${part}' in payload - set cache`)
-              // const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
               const cacheId = deviceId + '/' + key // eg 'pa1/fault_count'
               // item.receivedTime = receivedTime
               cache.set(cacheId, item) // save to the cache - may send shdr to tcp
@@ -117,7 +116,6 @@ export class AdapterDriver {
             } else if (step === 'Cycle_Finish') {
               if (cycleStart) {
                 const cycleTime = (new Date().getTime() - cycleStart) / 1000 // sec
-                // cache.set(`${deviceId}-status-cycle_time`, { value: cycleTime }) // sec
                 cache.set(`${deviceId}/status-cycle_time`, { value: cycleTime }) // sec
                 cycleStart = null
               }
