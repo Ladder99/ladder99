@@ -8,6 +8,8 @@
 
 //. eg ___
 
+import { lightFormat } from 'date-fns'
+
 export class Cache {
   constructor() {
     this._map = new Map() // key-item pairs //. why not just {} ?
@@ -82,7 +84,8 @@ function getValue(cache, output) {
 // output has { key, category, type, representation, value, shdr, ... }.
 //. eg ____
 function getShdr(cache, output, value) {
-  const timestamp = new Date().toISOString() //. get from item
+  // const timestamp = new Date().toISOString() //. get from item
+  const timestamp = lightFormat(new Date(), 'yyyy-MM-ddTHH:mm:ss') //. get from item
   const { key, category, type, subType, representation, nativeCode } = output
   let shdr = ''
   // handle different shdr types and representations
