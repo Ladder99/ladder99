@@ -6,7 +6,7 @@
   xmlns="urn:mtconnect.org:MTConnectDevices:1.7" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.7 http://www.mtconnect.org/schemas/MTConnectDevices_1.7.xsd">
   <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="12345678" bufferSize="131072" version="1.7.0.3"/>
   <Devices>
-    <Device id="pa1" name="pa1" uuid="e05363" sampleInterval="10">
+    <Device id="pa1" name="print-apply1" uuid="e05363" sampleInterval="10">
       <Description manufacturer="CCS" model="Emergent-PA-Pneumatic" serialNumber="001">
         Emergent Next Generation Print and Apply
       </Description>
