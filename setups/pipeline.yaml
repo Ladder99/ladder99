@@ -45,50 +45,50 @@ services:
       options:
         max-size: '1m'
 
-  # # grafana - show real-time data from the database, handle notifications
-  # grafana:
-  #   container_name: grafana
-  #   image: grafana/grafana:7.5.5
-  #   profiles:
-  #     - all
-  #     - dashboard
-  #     - grafana
-  #   ports:
-  #     - $GRAFANA_PORT:3000/tcp
-  #   environment:
-  #     # need these for provisioning datasources
-  #     PGHOST:
-  #     PGPORT:
-  #     PGDATABASE:
-  #     PGUSER:
-  #     PGPASSWORD:
-  #     INFLUXDB_DB:
-  #     INFLUXDB_USER:
-  #     INFLUXDB_PASSWORD:
-  #     # grafana will download and install these automatically
-  #     # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
-  #     GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel
-  #   volumes:
-  #     # note: grafana.ini is located in /etc/grafana by default -
-  #     # other folders are specified there.
-  #     - ./$SETUP/volumes/grafana/etc:/etc/grafana
-  #     - ./$SETUP/volumes/grafana/var:/var/lib/grafana
-  #   # user: grafana
-  #   #. get warning that these are blank, though echo $UID works - why?
-  #   # but even if blank, now grafana is able to write to /var/lib/grafana.
-  #   # gives permission error without this.
-  #   # does blank here mean root?
-  #   # user: '$UID:$GID'
-  #   #.. don't use root here
-  #   user: root
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '1m'
+  # grafana - show real-time data from the database, handle notifications
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:7.5.5
+    profiles:
+      - all
+      - dashboard
+      - grafana
+    ports:
+      - $GRAFANA_PORT:3000/tcp
+    environment:
+      # need these for provisioning datasources
+      PGHOST:
+      PGPORT:
+      PGDATABASE:
+      PGUSER:
+      PGPASSWORD:
+      INFLUXDB_DB:
+      INFLUXDB_USER:
+      INFLUXDB_PASSWORD:
+      # grafana will download and install these automatically
+      # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
+      GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel
+    volumes:
+      # note: grafana.ini is located in /etc/grafana by default -
+      # other folders are specified there.
+      - ./$SETUP/volumes/grafana/etc:/etc/grafana
+      - ./$SETUP/volumes/grafana/var:/var/lib/grafana
+    # user: grafana
+    #. get warning that these are blank, though echo $UID works - why?
+    # but even if blank, now grafana is able to write to /var/lib/grafana.
+    # gives permission error without this.
+    # does blank here mean root?
+    # user: '$UID:$GID'
+    #.. don't use root here
+    user: root
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
 
   # mosquitto - get mqtt data from devices and publish to mtconnect adapter
   mosquitto:
@@ -160,31 +160,31 @@ services:
     logging:
       driver: 'none'
 
-  # # postgres - store structure and time-series data
-  # postgres:
-  #   container_name: postgres
-  #   image: timescale/timescaledb:2.3.0-pg13
-  #   ports:
-  #     - $PGPORT:5432/tcp
-  #   profiles:
-  #     - all
-  #     - dashboard
-  #     - postgres
-  #   # init: true
-  #   environment:
-  #     POSTGRES_DB: $PGDATABASE
-  #     POSTGRES_USERNAME: $PGUSER
-  #     POSTGRES_PASSWORD: $PGPASSWORD
-  #   volumes:
-  #     - ./$SETUP/volumes/postgres/data:/var/lib/postgresql/data
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '1m'
+  # postgres - store structure and time-series data
+  postgres:
+    container_name: postgres
+    image: timescale/timescaledb:2.3.0-pg13
+    ports:
+      - $PGPORT:5432/tcp
+    profiles:
+      - all
+      - dashboard
+      - postgres
+    # init: true
+    environment:
+      POSTGRES_DB: $PGDATABASE
+      POSTGRES_USERNAME: $PGUSER
+      POSTGRES_PASSWORD: $PGPASSWORD
+    volumes:
+      - ./$SETUP/volumes/postgres/data:/var/lib/postgresql/data
+    deploy:
+      restart_policy:
+        condition: on-failure
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '1m'
 
   # record - record device messages for future playback
   record:
@@ -202,38 +202,38 @@ services:
       options:
         max-size: '1m'
 
-  # # relay - fetch data from agent and send to db
-  # relay:
-  #   container_name: relay
-  #   build: ../pipeline/relay
-  #   profiles:
-  #     - all
-  #     - dashboard
-  #     - relay
-  #   init: true
-  #   environment:
-  #     # override these as needed in pipeline-overrides.yaml
-  #     AGENT_ENDPOINTS: http://agent:5000
-  #     FETCH_INTERVAL: 2000
-  #     FETCH_COUNT: 800
-  #     PGHOST:
-  #     PGPORT:
-  #     PGDATABASE:
-  #     PGUSER:
-  #     PGPASSWORD:
-  #   # this fixes a problem on ubuntu - works on mac okay also
-  #   #. but not on friendlywrt - host-gateway doesn't exist, or need docker>=20.10
-  #   # see https://stackoverflow.com/a/67158212/243392
-  #   # and https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
-  #   # extra_hosts:
-  #   #   - host.docker.internal:host-gateway
-  #   networks:
-  #     - ladder99
-  #   # volumes:
-  #   #   - ../pipeline/relay:/home/node/app # has source code
-  #   logging:
-  #     options:
-  #       max-size: '1m'
+  # relay - fetch data from agent and send to db
+  relay:
+    container_name: relay
+    build: ../pipeline/relay
+    profiles:
+      - all
+      - dashboard
+      - relay
+    init: true
+    environment:
+      # override these as needed in pipeline-overrides.yaml
+      AGENT_ENDPOINTS: http://agent:5000
+      FETCH_INTERVAL: 2000
+      FETCH_COUNT: 800
+      PGHOST:
+      PGPORT:
+      PGDATABASE:
+      PGUSER:
+      PGPASSWORD:
+    # this fixes a problem on ubuntu - works on mac okay also
+    #. but not on friendlywrt - host-gateway doesn't exist, or need docker>=20.10
+    # see https://stackoverflow.com/a/67158212/243392
+    # and https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
+    # extra_hosts:
+    #   - host.docker.internal:host-gateway
+    networks:
+      - ladder99
+    # volumes:
+    #   - ../pipeline/relay:/home/node/app # has source code
+    logging:
+      options:
+        max-size: '1m'
 
 networks:
   ladder99:

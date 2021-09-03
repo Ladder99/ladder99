@@ -11,12 +11,6 @@ services:
     command: '' # run the default command (simulation)
     profiles:
       - dashboard
-  influxdb:
-    profiles:
-      - dashboard
-  telegraf:
-    profiles:
-      - dashboard
 
 networks:
   ladder99:
