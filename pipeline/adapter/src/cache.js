@@ -9,7 +9,8 @@
 //. eg ___
 
 // import { lightFormat } from 'date-fns'
-import { formatISO9075 } from 'date-fns'
+// import { formatISO9075 } from 'date-fns'
+import dayjs from 'dayjs'
 
 const includeTimestamp = true
 
@@ -88,6 +89,7 @@ function getValue(cache, output) {
 //. eg ____
 function getShdr(cache, output, value) {
   const timestamp = new Date().toISOString() //. get from item
+  // const timestamp = dayjs().format()
   // const timestamp = lightFormat(new Date(), "yyyy-MM-dd'T'HH:mm:ss") //. get from item
   // const timestamp = formatISO9075(new Date()) // datetime but uses zulu time
   const head = includeTimestamp ? timestamp + '|' : '' // timestamp is optional for cppagent
