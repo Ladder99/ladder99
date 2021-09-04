@@ -8,6 +8,12 @@
 
 //. eg ___
 
+// import { lightFormat } from 'date-fns'
+// import { formatISO9075 } from 'date-fns'
+import dayjs from 'dayjs'
+
+const includeTimestamp = true
+
 export class Cache {
   constructor() {
     this._map = new Map() // key-item pairs //. why not just {} ?
@@ -83,6 +89,10 @@ function getValue(cache, output) {
 //. eg ____
 function getShdr(cache, output, value) {
   const timestamp = new Date().toISOString() //. get from item
+  // const timestamp = dayjs().format()
+  // const timestamp = lightFormat(new Date(), "yyyy-MM-dd'T'HH:mm:ss") //. get from item
+  // const timestamp = formatISO9075(new Date()) // datetime but uses zulu time
+  const head = includeTimestamp ? timestamp + '|' : '' // timestamp is optional for cppagent
   const { key, category, type, subType, representation, nativeCode } = output
   let shdr = ''
   // handle different shdr types and representations
@@ -92,10 +102,10 @@ function getShdr(cache, output, value) {
       // native_code, which needs to be included:
       // 2014-09-29T23:59:33.460470Z|message|CHG_INSRT|Change Inserts
       // From https://github.com/mtconnect/cppagent#adapter-agent-protocol-version-17 -
-      shdr = `${timestamp}|${key}|${nativeCode}|${value}`
+      shdr = `${head}${key}|${nativeCode}|${value}`
     } else {
       //. shouldn't this be dataitemId, not key?
-      shdr = `${timestamp}|${key}|${value}`
+      shdr = `${head}${key}|${value}`
     }
   } else if (category === 'CONDITION') {
     //. pick these values out of the value, which should be an object
@@ -105,11 +115,11 @@ function getShdr(cache, output, value) {
     const qualifier = 'qualifier'
     // const message = value + ' (msg here)'
     const message = value
-    shdr = `${timestamp}|${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
+    shdr = `${head}${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
     // } else if (representation === 'DATA_SET') {
     //   const nativeCode = 'nativeCode'
     //   const message = value + ' (msg here)'
-    //   shdr = `${timestamp}|${key}|${nativeCode}|${message}`
+    //   shdr = `${head}${key}|${nativeCode}|${message}`
   } else {
     console.warn(`warning: unknown category '${category}'`)
   }

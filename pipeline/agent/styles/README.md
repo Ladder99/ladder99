@@ -1,14 +1,14 @@
-# Ladder99 Agent Stylesheet
+# MTConnect Agent Stylesheet
 
 To keep up-to-date with MTConnect standard, change the version in the xsl:stylesheet element in styles.xsl.
 
 The MTConnect cppagent doesn't allow using subfolders in the styles folder, so keep it flat.
 
-This is a reworking of https://github.com/TrakHound/MTConnect-Agent-Stylesheet.
+This was initially based on https://github.com/TrakHound/MTConnect-Agent-Stylesheet, but changed to a grid-based ui.It retains the Bootstrap/jQuery, Probe/Current/Sample links, and From and Count fields.
 
 ## About
 
-XML Stylesheet for MTConnect Agents using [Bootstrap](http://getbootstrap.com/). This provides a better appearance than the default stylesheet and also adds the ability to switch between Probe, Current, and Sample requests.
+XML Stylesheet for MTConnect Agents using [Bootstrap](http://getbootstrap.com/).
 
 ## Installation
 

@@ -27,12 +27,12 @@
             <DataItem id="wait" name="wait_state" category="EVENT" type="WAIT_STATE"/>
             <DataItem id="pgm" name="program" category="EVENT" type="PROGRAM" subType="MAIN"/>
             <DataItem id="step" name="step" category="EVENT" type="BLOCK"/>
-            <DataItem id="clktime" name="clock_time" category="SAMPLE" type="CLOCK_TIME"/>
-            <DataItem id="uptime" name="up_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="OPERATING"/>
-            <DataItem id="cycletime" name="cycle_time" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" units="SECONDS"/>
-            <DataItem id="faultct" name="fault_count" category="SAMPLE" type="COUNT" subType="x:FAULT"/>
-            <DataItem id="cyclect" name="cycle_count" category="SAMPLE" type="COUNT" subType="x:CYCLE"/>
-            <DataItem id="lifect" name="life_count" category="SAMPLE" type="COUNT" subType="x:LIFE"/>
+            <DataItem id="clock" name="clock_time" category="SAMPLE" type="CLOCK_TIME"/>
+            <DataItem id="up" name="up_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="OPERATING"/>
+            <DataItem id="cycle" name="cycle_time" category="SAMPLE" type="PROCESS_TIMER" subType="PROCESS" units="SECONDS"/>
+            <DataItem id="faults" name="fault_count" category="SAMPLE" type="COUNT" subType="x:FAULT"/>
+            <DataItem id="cycles" name="cycle_count" category="SAMPLE" type="COUNT" subType="x:CYCLE"/>
+            <DataItem id="lifes" name="life_count" category="SAMPLE" type="COUNT" subType="x:LIFE"/>
           </DataItems>
         </Path>
       </Components>
@@ -45,14 +45,14 @@
         <DataItems>
           <DataItem id="eecond" name="end_eff_cond" category="CONDITION" type="SYSTEM"/>
           <DataItem id="eemsg" name="end_eff_message" category="EVENT" type="MESSAGE"/>
-          <DataItem id="pdetect" name="smart_tamp_part_detect" category="EVENT" type="PART_DETECT"/>
-          <DataItem id="assist" name="tamp_air_assist" category="EVENT" type="ACTUATOR_STATE" subType="x:AIR_ASSIST"/>
-          <DataItem id="vac" name="tamp_vacuum" category="EVENT" type="ACTUATOR_STATE" subType="x:VACUUM"/>
-          <DataItem id="tampcyl" name="tamp_cylinder" category="EVENT" type="ACTUATOR_STATE" subType="x:CYLINDER"/>
-          <DataItem id="exttime" name="cylinder_extend_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:EXTEND" units="SECOND"/>
-          <DataItem id="distime" name="cylinder_home_disengage_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:DISENGAGE" units="SECOND"/>
-          <DataItem id="travtime" name="cylinder_travel_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:TRAVEL" units="SECOND"/>
-          <DataItem id="vacdelay" name="tamp_vacuum_delay" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
+          <DataItem id="eedetect" name="smart_tamp_part_detect" category="EVENT" type="PART_DETECT"/>
+          <DataItem id="eeassist" name="tamp_air_assist" category="EVENT" type="ACTUATOR_STATE" subType="x:AIR_ASSIST"/>
+          <DataItem id="eevac" name="tamp_vacuum" category="EVENT" type="ACTUATOR_STATE" subType="x:VACUUM"/>
+          <DataItem id="eecyl" name="tamp_cylinder" category="EVENT" type="ACTUATOR_STATE" subType="x:CYLINDER"/>
+          <DataItem id="eeextend" name="cylinder_extend_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:EXTEND" units="SECOND"/>
+          <DataItem id="eedis" name="cylinder_home_disengage_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:DISENGAGE" units="SECOND"/>
+          <DataItem id="eetrav" name="cylinder_travel_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="x:TRAVEL" units="SECOND"/>
+          <DataItem id="eedelay" name="tamp_vacuum_delay" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
         </DataItems>
       </EndEffector>
       <Feeder>
@@ -60,13 +60,13 @@
           <DataItem id="fcond" name="feed_cond" category="CONDITION" type="SYSTEM"/>
           <DataItem id="fmsg" name="feed_message" category="EVENT" type="MESSAGE"/>
           <DataItem id="fpart" name="feed_part_detect" category="EVENT" type="PART_DETECT"/>
-          <DataItem id="mstate" name="web_take_up_motor_state" category="EVENT" type="ACTUATOR_STATE" subType="x:TAKE_UP"/>
-          <DataItem id="reprint" name="printer_reprint" category="EVENT" type="ACTUATOR_STATE" subType="x:REPRINT"/>
-          <DataItem id="pause" name="printer_pause" category="EVENT" type="ACTUATOR_STATE" subType="x:PAUSE"/>
-          <DataItem id="feed" name="printer_feed" category="EVENT" type="ACTUATOR_STATE" subType="x:FEED"/>
-          <DataItem id="start" name="printer_start_print" category="EVENT" type="ACTUATOR_STATE" subType="x:START"/>
-          <DataItem id="sigtime" name="print_signal_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
-          <DataItem id="ptime" name="print_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" units="SECOND"/>
+          <DataItem id="fstate" name="web_take_up_motor_state" category="EVENT" type="ACTUATOR_STATE" subType="x:TAKE_UP"/>
+          <DataItem id="freprint" name="printer_reprint" category="EVENT" type="ACTUATOR_STATE" subType="x:REPRINT"/>
+          <DataItem id="fpause" name="printer_pause" category="EVENT" type="ACTUATOR_STATE" subType="x:PAUSE"/>
+          <DataItem id="ffeed" name="printer_feed" category="EVENT" type="ACTUATOR_STATE" subType="x:FEED"/>
+          <DataItem id="fstart" name="printer_start_print" category="EVENT" type="ACTUATOR_STATE" subType="x:START"/>
+          <DataItem id="fsig" name="print_signal_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/>
+          <DataItem id="fptime" name="print_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="WORKING" units="SECOND"/>
           <!-- duplicate paths -->
           <!-- <DataItem id="ttime" name="transport_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/> -->
           <!-- <DataItem id="itime" name="idle_time" category="SAMPLE" type="EQUIPMENT_TIMER" subType="DELAY" units="SECOND"/> -->

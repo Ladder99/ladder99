@@ -35,6 +35,7 @@ async function main() {
   for (const device of devices) {
     console.log(`Device`, device)
     const deviceId = device.id
+    const deviceName = device.name
 
     // each device gets a tcp connection to the agent
     console.log(`Creating TCP server for Agent to connect to...`)
@@ -95,6 +96,7 @@ async function main() {
         console.log(`Initializing driver for ${driver}...`)
         plugin.init({
           deviceId,
+          deviceName,
           driver,
           protocol,
           host,
@@ -198,7 +200,7 @@ function getOutputs({ templates, types, deviceId }) {
     const output = {
       // this is key in sense of shdr key
       //. assume each starts with deviceId? some might end with a number instead
-      //. call this id, as it's such in the devices.xml
+      //. call this id, as it's such in the agent.xml
       key: `${deviceId}/${template.key}`,
       value, //. getValue
       dependsOn,
