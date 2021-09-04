@@ -12,6 +12,10 @@
 # 5. trigger the build-agent workflow manually from github actions page.
 #     make sure you use the right branch - select in the 'Run workflow' dropdown.
 #     will take a few hours for the multiarch build.
+# 5. check docker hub to see that it's there
+# 6. test the image with
+#     docker run -it --rm -p 5000:5000 --pull always ladder99/mtconnect-agent:latest
+#     and view in http://localhost:5000
 #
 # to build the ladder99 agent (the xsl ui on top of the mtconnect agent):
 # 1. update the version value below - second number is ladder99 xsl version.
@@ -20,10 +24,14 @@
 # 4. trigger the build-agent workflow manually from github actions page.
 #     make sure you use the right branch - select in the 'Run workflow' dropdown.
 #     this should just take a few minutes.
+# 5. check docker hub to see that it's there
+# 6. test the image with
+#     docker run -it --rm -p 5000:5000 --pull always ladder99/agent:latest
+#     and view in http://localhost:5000
 #
 # run manually at https://github.com/Ladder99/ladder99/actions
 # secrets set at https://github.com/Ladder99/ladder99/settings/secrets/actions
-# image hosted on https://hub.docker.com/repository/docker/ladder99
+# images hosted at https://hub.docker.com/r/ladder99/agent
 
 name: build-agent
 
