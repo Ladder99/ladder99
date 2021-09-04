@@ -10,7 +10,8 @@ window.onload = function () {
   document.getElementById('count')['value'] = getParameterByName('count')
 
   // highlight the current tab
-  const tabname = window.location.pathname.slice(1).split('?')[0] // probe|current|sample
+  // const tabname = window.location.pathname.slice(1).split('?')[0] || 'probe' // probe|current|sample
+  const tabname = getTabname()
   document.getElementById('tab-' + tabname).classList.add('selected')
 
   // restore to last vertical position
@@ -43,7 +44,8 @@ window.onload = function () {
 window.onbeforeunload = function () {
   // const container = document.getElementById('main-container')
   const scrollTop = container != null ? container.scrollTop : 0
-  const tabname = window.location.pathname.slice(1).split('?')[0] // probe|current|sample
+  // const tabname = window.location.pathname.slice(1).split('?')[0] // probe|current|sample
+  const tabname = getTabname()
   localStorage.setItem('scrollTop-' + tabname, String(scrollTop))
 }
 
@@ -183,4 +185,9 @@ async function showXml() {
   // container.innerHTML = str
   // const textarea = document.querySelector('#textarea')
   // textarea['innerText'] = xml
+}
+
+function getTabname() {
+  const tabname = window.location.pathname.slice(1).split('?')[0] || 'probe' // probe|current|sample
+  return tabname
 }
