@@ -10,15 +10,15 @@
 # 3. use 'mtconnect-agent' for the service name below
 # 4. COMMIT and PUSH the change to github
 # 5. trigger the build-agent workflow manually from github actions page.
-#     (make sure you're in the right branch!)
-#    will take a few hours for the multiarch build.
+#     make sure you use the right branch - select in the 'Run workflow' dropdown.
+#     will take a few hours for the multiarch build.
 #
 # to build the ladder99 agent (the xsl ui on top of the mtconnect agent):
 # 1. update the version value below - second number is ladder99 xsl version.
 # 2. use 'agent' for service name below
 # 3. COMMIT and PUSH the change to github
 # 4. trigger the build-agent workflow manually from github actions page.
-#     (make sure you're in the right branch!)
+#     make sure you use the right branch - select in the 'Run workflow' dropdown.
 #     this should just take a few minutes.
 #
 # run manually at https://github.com/Ladder99/ladder99/actions
