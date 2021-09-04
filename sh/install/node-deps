@@ -4,6 +4,6 @@
 npm --prefix pipeline/adapter install
 npm --prefix pipeline/compiler install
 npm --prefix pipeline/recorder install
+npm --prefix pipeline/relay install
 
-# npm --prefix pipeline/relay install
 # npm --prefix pipeline/diode/code/application/datadiode/contrib/nodejs install
