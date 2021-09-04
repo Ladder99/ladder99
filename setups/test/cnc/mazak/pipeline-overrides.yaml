@@ -7,5 +7,7 @@ version: '3.8'
 services:
   relay:
     environment:
-      - AGENT_ENDPOINTS=http://mtconnect.mazakcorp.com:5717
+      - AGENT_ENDPOINTS=http://mtconnect.mazakcorp.com:5609
+      # - AGENT_ENDPOINTS=http://mtconnect.mazakcorp.com:5609,http://mtconnect.mazakcorp.com:5610
+      # - AGENT_ENDPOINTS=http://mtconnect.mazakcorp.com:5717
       # - AGENT_ENDPOINTS=agents.txt

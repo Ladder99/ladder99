@@ -10,10 +10,11 @@ console.log(`---------------------------------------------------`)
 
 // get envars - typically set in pipeline.yaml and pipeline-overrides.yaml files
 const params = {
-  // AGENT_URLS can be a single url, a comma-delim list of urls, or a txt filename with urls
-  //. or read from setup.yaml?
+  // AGENT_URLS can be a single url, a comma-delim list of urls, or a txt filename with urls.
+  // currently set in pipeline-overrides.yaml, but
+  //. eventually will read from setup.xml
   agentEndpoints: process.env.AGENT_ENDPOINTS || 'http://localhost:5000',
-  //. these should be dynamic - adjusted on the fly
+  //. these will need to be dynamic - adjusted on the fly
   fetchInterval: Number(process.env.FETCH_INTERVAL || 2000), // how often to fetch sample data, msec
   fetchCount: Number(process.env.FETCH_COUNT || 800), // how many samples to fetch each time
   retryTime: 4000, // ms between connection retries etc
