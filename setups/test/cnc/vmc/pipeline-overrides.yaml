@@ -11,7 +11,6 @@ services:
     command: '' # run the default command (simulation)
     profiles:
       - dashboard
-
-networks:
-  ladder99:
-    name: ladder99
+# networks:
+#   ladder99:
+#     name: ladder99
