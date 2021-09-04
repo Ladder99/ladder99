@@ -12,7 +12,7 @@
 # 5. trigger the build-agent workflow manually from github actions page.
 #    will take a few hours for the multiarch build.
 #
-# to build the ladder99 agent:
+# to build the ladder99 agent (the xsl ui on top of the mtconnect agent):
 # 1. update the version value below - second number is ladder99 xsl version.
 # 2. use 'agent' for service name below
 # 3. COMMIT and PUSH the change to github
@@ -30,7 +30,7 @@ env:
   # note: service names correspond to folders in the pipeline folder
   # service: mtconnect-agent
   service: agent
-  version: 1.7.0.3-0.1.0
+  version: 1.7.0.3-0.1.2
   # for available platforms see output of a previous run -
   # ie the "Setup Docker BuildX" / "Inspect Builder" section
   # has eg "node_platforms": "linux/amd64,linux/arm64,linux/riscv64,linux/ppc64le,linux/s390x,linux/386,linux/arm/v7,linux/arm/v6"
