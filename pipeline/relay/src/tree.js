@@ -190,10 +190,10 @@ export function getObjects(json) {
     // obj.type = element.tag === 'DataItem' ? 'PropertyDef' : element.tag
     obj.type = element.tag
     obj.path = element.steps && element.steps.filter(step => !!step).join('/')
-    // delete obj.category
-    // delete obj.tag
-    // delete obj.subType
+    delete obj.tag
     delete obj.steps
+    // delete obj.category
+    // delete obj.subType
     return obj
   })
   return objs
