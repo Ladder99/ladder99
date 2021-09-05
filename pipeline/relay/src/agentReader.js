@@ -3,8 +3,6 @@
 // a setup can have multiple agents running that it needs to pull data from.
 
 import { Probe } from './dataProbe.js'
-// import { Current } from './dataCurrent.js'
-// import { Sample } from './dataSample.js'
 import { Observations } from './dataObservations.js'
 import * as libapp from './libapp.js'
 

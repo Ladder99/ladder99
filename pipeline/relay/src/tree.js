@@ -81,10 +81,9 @@ function recurse(el, objs, tag = '', parents = []) {
 
 //----------------------------------------------------------
 
-// ignore these element types - don't add much info to the path
+// ignore these element types for path parts - don't add much info to the path
 const ignoreTags = libapp.getSet(
   'Adapters,AssetCounts,Devices,DataItems,Components,Filters,Specifications'
-  // ''
 )
 
 //. assume for now there there is only one of these in path, so can just lower case them
@@ -95,11 +94,15 @@ const plainTags = libapp.getSet(
 )
 
 // ignore these DataItem attributes - not necessary to identify an element,
-// or are redundant.
+// are accounted for explicitly, or are redundant.
 const ignoreAttributes = libapp.getSet(
-  'category,discrete,type,subType,_key,tag,parents,id,unit,units,nativeUnits,device,name,compositionId'
+  'category,type,subType,discrete,_key,tag,parents,id,unit,units,nativeUnits,device,name,compositionId'
 )
 
+// get path step for the given object
+// eg
+// for a Device element, return 'Device(Mazak31, M41283-12A)'
+// for a DataItem element, return 'position'
 function getPathStep(obj) {
   let params = []
   if (!obj) return ''
@@ -112,13 +115,16 @@ function getPathStep(obj) {
     case 'Device':
     case 'Agent':
       // params = [obj.uuid] // standard says name may be optional in future versions, so use uuid
-      step = `Device(${obj.uuid})`
+      // step = `Device(${obj.uuid})`
+      // but for the mazak machines, uuid is not actually unique across the installation -
+      // they seem to be using it for model number. so name helps uniquify this.
+      step = `Device(${obj.name}, ${obj.uuid})`
       break
     case 'DataItem':
       // add primary params
       params = [obj.type]
       if (obj.subType) params.push(obj.subType)
-      // add named params
+      // add named params to help uniquify the path
       let namedParams = []
       for (const key of Object.keys(obj)) {
         if (!ignoreAttributes.has(key)) {
@@ -154,22 +160,24 @@ function getPathStep(obj) {
   return step
 }
 
+// get step for the given array of params
+// eg ['position'] => '
 function getParamsStep(params) {
   const paramsStr =
     params.length > 0 && params[0].length > 0
-      ? // ? params.map(param => param.toLowerCase()).join(',')
-        params.map(getParamString).join('-')
+      ? params.map(getParamString).join('-')
       : ''
-  // const step = `${obj.tag}${paramsStr}`
   const step = `${paramsStr}`
   return step
 }
 
+// get string representation of a param
+// eg 'x:SOME_TYPE' -> 'some-type'
 function getParamString(param) {
   // const str = param.replace('x:', '').replaceAll('_', '-').toLowerCase() // needs node15
   const regexp = new RegExp('_', 'g')
   const str = param.replace('x:', '').replace(regexp, '-').toLowerCase()
-  //. change chars AFTER - to uppercase - how do?
+  //. change chars AFTER '-' to uppercase - how do?
   // const str2 = str
   //   .split()
   //   .map(c => {
@@ -182,57 +190,39 @@ function getParamString(param) {
 
 //------------------------------------------------------------------------
 
-// transform objs to db node structure
+// transform json to elements to object structures
+// eg ___
 export function getObjects(json) {
   const elements = getElements(json)
   const objs = elements.map(element => {
     const obj = { ...element }
-    // obj.type = element.tag === 'DataItem' ? 'PropertyDef' : element.tag
-    obj.type = element.tag
+    obj.node_type = element.tag === 'DataItem' ? 'PropertyDef' : element.tag
     obj.path = element.steps && element.steps.filter(step => !!step).join('/')
     delete obj.tag
     delete obj.steps
-    // delete obj.category
-    // delete obj.subType
     return obj
   })
   return objs
 }
-// console.log(nodes)
-
-// function getCanonicalStep(step) {
-//   const canonicalStep = yaml.paths[step]
-//   if (canonicalStep === null) return ''
-//   return canonicalStep || step
-// }
-
-// process.exit(0)
-
-//------------------------------------------------------------------------
 
 export function getNodes(objs) {
   // objs = getUniqueByPath(objs)
   let nodes = []
   for (const obj of objs) {
     const node = { ...obj }
-    if (node.type === 'Device') {
-      // const device = { ...obj }
-      // nodes.push(node)
-    } else {
-      // const propdef = { ...obj }
-      node.type = 'PropertyDef'
-      //. leave these in the node bag?
+    if (node.node_type === 'PropertyDef') {
+      // remove any unneeded attributes
       delete node.id
       delete node.name
       delete node.device
-      delete node.discrete
-      delete node.unit
-      delete node.units
-      delete node.nativeUnits
-      delete node.coordinateSystem
-      delete node.representation
-      delete node.compositionId
-      // nodes.push(propdef)
+      // leave these in propdef
+      // delete node.discrete
+      // delete node.unit
+      // delete node.units
+      // delete node.nativeUnits
+      // delete node.coordinateSystem
+      // delete node.representation
+      // delete node.compositionId
     }
     nodes.push(node)
   }
@@ -261,7 +251,8 @@ export function getIndexes(nodes, objs) {
 
   // assign device_id and property_id to dataitems
   objs.forEach(obj => {
-    if (obj.type === 'DataItem') {
+    // if (obj.type === 'DataItem') {
+    if (obj.node_type === 'PropertyDef') {
       indexes.objById[obj.id] = obj
       obj.device_id = indexes.nodeByPath[obj.device].node_id
       obj.property_id = indexes.nodeByPath[obj.path].node_id

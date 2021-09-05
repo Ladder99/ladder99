@@ -63,9 +63,10 @@ CREATE INDEX IF NOT EXISTS history_node_id ON history (node_id);
 ---------------------------------------------------------------------
 
 CREATE OR REPLACE VIEW history_all AS
-SELECT devices.props->>'uuid' AS device,
-  properties.props->>'path' AS property, 
-  history.time, 
+SELECT 
+  devices.props->>'uuid' AS device,
+  properties.props->>'path' AS property,
+  history.time,
   history.value -- value is a jsonb object - need to cast it as in below views
 FROM history
 JOIN nodes AS devices ON history.node_id=devices.node_id
@@ -98,13 +99,17 @@ WHERE jsonb_typeof(value) = 'string';
 
 CREATE OR REPLACE VIEW devices AS
 SELECT
-nodes.node_id,
-nodes.props->>'uuid' as uuid, 
-nodes.props->>'name' as name,
-nodes.props->>'path' as path
-FROM nodes
+  nodes.node_id,
+  concat(nodes.props->>'name', ' (', nodes.props->>'uuid', ')') as name_uuid,
+  nodes.props->>'name' as name,
+  nodes.props->>'uuid' as uuid, 
+  nodes.props->>'path' as path
+FROM 
+  nodes
 WHERE
-nodes.props->>'type'='Device';
+  -- nodes.props->>'type'='Device';
+  -- nodes.node_type='Device';
+  nodes.props->>'node_type'='Device';
 
 ---------------------------------------------------------------------
 -- PROPERTY_DEFS view
@@ -112,11 +117,14 @@ nodes.props->>'type'='Device';
 
 CREATE OR REPLACE VIEW property_defs AS
 SELECT
-nodes.node_id,
-nodes.props->>'path' as path,
-nodes.props->>'category' as category, 
-nodes.props->>'type' as type,
-nodes.props->>'subType' as subType
-FROM nodes
+  nodes.node_id,
+  nodes.props->>'path' as path,
+  nodes.props->>'category' as category, 
+  nodes.props->>'type' as type,
+  nodes.props->>'subType' as subtype
+FROM 
+  nodes
 WHERE
-nodes.props->>'type'='PropertyDef';
+  -- nodes.props->>'type'='PropertyDef';
+  -- nodes.node_type='PropertyDef';
+  nodes.props->>'node_type'='PropertyDef';

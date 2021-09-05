@@ -5,8 +5,6 @@ import { Data } from './data.js'
 import * as treeObservations from './treeObservations.js'
 
 export class Observations extends Data {
-  // type = 'sample' // used by read method
-
   constructor(type) {
     super()
     this.type = type // used by read method

@@ -2,7 +2,7 @@
 // wraps agent data returned from probe, current, and sample endpoints
 
 export class Data {
-  type = null
+  type = null // will be probe|current|sample
 
   constructor() {
     this.json = null
