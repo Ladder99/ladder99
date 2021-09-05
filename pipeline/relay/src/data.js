@@ -32,7 +32,7 @@ export class Data {
     this.header = this.json.MTConnectDevices
       ? this.json.MTConnectDevices.Header._attributes
       : this.json.MTConnectStreams.Header._attributes
-    console.log('header', this.header)
+    // console.log('header', this.header)
 
     // get instanceId
     this.instanceId = this.header.instanceId
