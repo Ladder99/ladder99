@@ -17,6 +17,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 3,
+  "iteration": 1630833533980,
   "links": [
     {
       "asDropdown": false,
@@ -83,7 +84,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as c\nFROM history_float\nWHERE\n  property='axes/c/temperature' and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT time, value as c\nFROM history_float\nWHERE\n  device='$device' and\n  property='axes/c/temperature' and\n  $__timeFilter(\"time\")",
           "refId": "c",
           "select": [
             [
@@ -110,7 +111,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as x\nFROM history_float\nWHERE\n  property='axes/x/temperature' and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT time, value as x\nFROM history_float\nWHERE\n  device='$device' and\n  property='axes/x/temperature' and\n  $__timeFilter(\"time\")",
           "refId": "x",
           "select": [
             [
@@ -137,7 +138,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as y\nFROM history_float\nWHERE\n  property='axes/y/temperature' and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT time, value as y\nFROM history_float\nWHERE\n  device='$device' and\n  property='axes/y/temperature' and\n  $__timeFilter(\"time\")",
           "refId": "y",
           "select": [
             [
@@ -164,7 +165,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as z\nFROM history_float\nWHERE\n  property='axes/z/temperature' and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT time, value as z\nFROM history_float\nWHERE\n  device='$device' and\n  property='axes/z/temperature' and\n  $__timeFilter(\"time\")",
           "refId": "z",
           "select": [
             [
@@ -191,7 +192,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as c2\nFROM history_float\nWHERE\n  property='axes/c2/temperature' and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT time, value as c2\nFROM history_float\nWHERE\n  device='$device' and\n  property='axes/c2/temperature' and\n  $__timeFilter(\"time\")",
           "refId": "c2",
           "select": [
             [
@@ -218,7 +219,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as coolant\nFROM history_float\nWHERE\n  property='systems/coolant/temperature' and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT time, value as coolant\nFROM history_float\nWHERE\n  device='$device' and\n  property='systems/coolant/temperature' and\n  $__timeFilter(\"time\")",
           "refId": "coolant",
           "select": [
             [
@@ -334,7 +335,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as c\nFROM history_float\nWHERE\n  property='axes/c/load' and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT time, value as c\nFROM history_float\nWHERE\n  device='$device' and\n  property='axes/c/load' and\n  $__timeFilter(\"time\")",
           "refId": "c",
           "select": [
             [
@@ -361,7 +362,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as x\nFROM history_float\nWHERE\n  property='axes/x/load' and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT time, value as x\nFROM history_float\nWHERE\n  device='$device' and\n  property='axes/x/load' and\n  $__timeFilter(\"time\")",
           "refId": "x",
           "select": [
             [
@@ -388,7 +389,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as y\nFROM history_float\nWHERE\n  property='axes/y/load' and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT time, value as y\nFROM history_float\nWHERE\n  device='$device' and\n  property='axes/y/load' and\n  $__timeFilter(\"time\")",
           "refId": "y",
           "select": [
             [
@@ -415,7 +416,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as z\nFROM history_float\nWHERE\n  property='axes/z/load' and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT time, value as z\nFROM history_float\nWHERE\n  device='$device' and\n  property='axes/z/load' and\n  $__timeFilter(\"time\")",
           "refId": "z",
           "select": [
             [
@@ -442,7 +443,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as c2\nFROM history_float\nWHERE\n  property='axes/c2/load' and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT time, value as c2\nFROM history_float\nWHERE\n  device='$device' and\n  property='axes/c2/load' and\n  $__timeFilter(\"time\")",
           "refId": "c2",
           "select": [
             [
@@ -627,7 +628,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Availability\"\nFROM history_text\nWHERE property='availability' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Availability\"\nFROM history_text\nWHERE \n  device='$device' and\n  property='availability' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "Av",
           "select": [
             [
@@ -654,7 +655,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Rotary Mode\"\nFROM history_text\nWHERE property='axes/c/rotary-mode' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Rotary Mode\"\nFROM history_text\nWHERE \n  device='$device' and\n  property='axes/c/rotary-mode' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "Ro",
           "select": [
             [
@@ -681,7 +682,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Electric Power\"\nFROM history_text\nWHERE property='systems/electric/power-state' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Electric Power\"\nFROM history_text\nWHERE \n  device='$device' and\n  property='systems/electric/power-state' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "El",
           "select": [
             [
@@ -708,7 +709,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Emergency Stop\"\nFROM history_text\nWHERE property='controller/emergency-stop' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Emergency Stop\"\nFROM history_text\nWHERE \n  device='$device' and\n  property='controller/emergency-stop' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "Em",
           "select": [
             [
@@ -735,7 +736,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Execution\"\nFROM history_text\nWHERE property='controller/path/execution' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Execution\"\nFROM history_text\nWHERE \n  device='$device' and\n  property='controller/path/execution' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "Ex",
           "select": [
             [
@@ -762,7 +763,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"System Condition\"\nFROM history_text\nWHERE property='system-condition' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"System Condition\"\nFROM history_text\nWHERE \n  device='$device' and\n  property='system-condition' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "Sys",
           "select": [
             [
@@ -789,7 +790,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Controller Mode\"\nFROM history_text\nWHERE property='controller/path/controller-mode' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Controller Mode\"\nFROM history_text\nWHERE \n  device='$device' and\n  property='controller/path/controller-mode' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "Co",
           "select": [
             [
@@ -935,7 +936,7 @@
               "group": [],
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT\n  time,\n  value\nFROM history_float\nWHERE\n  property='controller/path/path-feedrate' and\n  $__timeFilter(\"time\")",
+              "rawSql": "SELECT\n  time,\n  value\nFROM history_float\nWHERE\n  device='$device' and\n  property='controller/path/path-feedrate' and\n  $__timeFilter(\"time\")",
               "refId": "A",
               "select": [
                 [
@@ -977,6 +978,7 @@
           },
           "yaxes": [
             {
+              "$$hashKey": "object:2609",
               "format": "none",
               "label": null,
               "logBase": 1,
@@ -985,6 +987,7 @@
               "show": true
             },
             {
+              "$$hashKey": "object:2610",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -1051,7 +1054,7 @@
               "group": [],
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT time, value as Actual\nFROM history_float\nWHERE\n  property='axes/c/spindle-speed-actual' and\n  $__timeFilter(\"time\")",
+              "rawSql": "SELECT time, value as Actual\nFROM history_float\nWHERE\n  device='$device' and\n  property='axes/c/spindle-speed-actual' and\n  $__timeFilter(\"time\")",
               "refId": "A",
               "select": [
                 [
@@ -1196,7 +1199,7 @@
               "group": [],
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT\n  time,\n  value as x\nFROM history_float\nWHERE property='axes/x/position-commanded' and\n  $__timeFilter(\"time\");",
+              "rawSql": "SELECT\n  time,\n  value as x\nFROM history_float\nWHERE \n  device='$device' and\n  property='axes/x/position-commanded' and\n  $__timeFilter(\"time\");",
               "refId": "A",
               "select": [
                 [
@@ -1223,7 +1226,7 @@
               "hide": false,
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT\n  time,\n  value as y\nFROM history_float\nWHERE property='axes/y/position-commanded' and\n  $__timeFilter(\"time\");",
+              "rawSql": "SELECT\n  time,\n  value as y\nFROM history_float\nWHERE \n  device='$device' and\n  property='axes/y/position-commanded' and\n  $__timeFilter(\"time\");",
               "refId": "B",
               "select": [
                 [
@@ -1250,7 +1253,7 @@
               "hide": false,
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT\n  time,\n  value as z\nFROM history_float\nWHERE property='axes/z/position-commanded' and\n  $__timeFilter(\"time\");\n",
+              "rawSql": "SELECT\n  time,\n  value as z\nFROM history_float\nWHERE \n  device='$device' and\n  property='axes/z/position-commanded' and\n  $__timeFilter(\"time\");\n",
               "refId": "C",
               "select": [
                 [
@@ -1292,6 +1295,7 @@
           },
           "yaxes": [
             {
+              "$$hashKey": "object:2761",
               "format": "lengthmm",
               "label": null,
               "logBase": 1,
@@ -1300,6 +1304,7 @@
               "show": true
             },
             {
+              "$$hashKey": "object:2762",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -1366,7 +1371,7 @@
               "group": [],
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT\n  time,\n  value as x\nFROM history_float\nWHERE property='axes/x/position-actual' and\n  $__timeFilter(\"time\");",
+              "rawSql": "SELECT\n  time,\n  value as x\nFROM history_float\nWHERE \n  device='$device' and\n  property='axes/x/position-actual' and\n  $__timeFilter(\"time\");",
               "refId": "A",
               "select": [
                 [
@@ -1393,7 +1398,7 @@
               "hide": false,
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT\n  time,\n  value as y\nFROM history_float\nWHERE property='axes/y/position-actual' and\n  $__timeFilter(\"time\");",
+              "rawSql": "SELECT\n  time,\n  value as y\nFROM history_float\nWHERE \n  device='$device' and\n  property='axes/y/position-actual' and\n  $__timeFilter(\"time\");",
               "refId": "B",
               "select": [
                 [
@@ -1420,7 +1425,7 @@
               "hide": false,
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT\n  time,\n  value as z\nFROM history_float\nWHERE property='axes/z/position-actual' and\n  $__timeFilter(\"time\");\n",
+              "rawSql": "SELECT\n  time,\n  value as z\nFROM history_float\nWHERE \n  device='$device' and\n  property='axes/z/position-actual' and\n  $__timeFilter(\"time\");\n",
               "refId": "C",
               "select": [
                 [
@@ -1462,6 +1467,7 @@
           },
           "yaxes": [
             {
+              "$$hashKey": "object:2856",
               "format": "lengthmm",
               "label": null,
               "logBase": 1,
@@ -1470,6 +1476,7 @@
               "show": true
             },
             {
+              "$$hashKey": "object:2857",
               "format": "short",
               "label": null,
               "logBase": 1,
@@ -1508,13 +1515,13 @@
             "h": 8,
             "w": 6,
             "x": 0,
-            "y": 12
+            "y": 35
           },
           "id": 20,
           "options": {
             "border": {
-              "color": "yellow",
               "show": false,
+              "color": "yellow",
               "size": 1
             },
             "fieldSets": [
@@ -1540,21 +1547,21 @@
               "inverted": false
             },
             "xAxisExtents": {
-              "max": 2,
-              "min": -2
+              "min": -2,
+              "max": 2
             },
             "xAxisTitle": {
-              "color": "white",
               "text": "x",
+              "color": "white",
               "textSize": 1
             },
             "yAxisExtents": {
-              "max": 2,
-              "min": -2
+              "min": -2,
+              "max": 2
             },
             "yAxisTitle": {
-              "color": "#777",
               "text": "y",
+              "color": "#777",
               "textSize": 1
             }
           },
@@ -1565,7 +1572,7 @@
               "group": [],
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT time,\n  SUM(CASE property WHEN 'axes/x/position-actual' THEN value ELSE 0 END) AS x,\n  SUM(CASE property WHEN 'axes/y/position-actual' THEN value ELSE 0 END) AS y\nFROM history_float\nWHERE $__timeFilter(\"time\")\nGROUP BY time\n;\n",
+              "rawSql": "SELECT time,\n  SUM(CASE property WHEN 'axes/x/position-actual' THEN value ELSE 0 END) AS x,\n  SUM(CASE property WHEN 'axes/y/position-actual' THEN value ELSE 0 END) AS y\nFROM history_float\nWHERE \n  device='$device' and\n  $__timeFilter(\"time\")\nGROUP BY time\n;\n",
               "refId": "A",
               "select": [
                 [
@@ -1602,7 +1609,7 @@
             "h": 8,
             "w": 12,
             "x": 6,
-            "y": 12
+            "y": 35
           },
           "id": 24,
           "pconfig": {
@@ -1696,7 +1703,7 @@
               "group": [],
               "metricColumn": "none",
               "rawQuery": true,
-              "rawSql": "SELECT time,\n  SUM(CASE property WHEN 'axes/x/position-actual' THEN value ELSE 0 END) AS x,\n  SUM(CASE property WHEN 'axes/y/position-actual' THEN value ELSE 0 END) AS y,\n  SUM(CASE property WHEN 'axes/z/position-actual' THEN value ELSE 0 END) AS z\nFROM history_float\nWHERE $__timeFilter(\"time\")\nGROUP BY time\n;\n",
+              "rawSql": "SELECT time,\n  SUM(CASE property WHEN 'axes/x/position-actual' THEN value ELSE 0 END) AS x,\n  SUM(CASE property WHEN 'axes/y/position-actual' THEN value ELSE 0 END) AS y,\n  SUM(CASE property WHEN 'axes/z/position-actual' THEN value ELSE 0 END) AS z\nFROM history_float\nWHERE \n  device='$device' and\n  $__timeFilter(\"time\")\nGROUP BY time\n;\n",
               "refId": "A",
               "select": [
                 [
@@ -1815,7 +1822,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  property,\n  time,\n  value\nFROM history_all\nWHERE\n  property LIKE 'controller%'\n  OR property IN ('availability', 'load-condition', 'message', 'functional-mode',\n  'system-condition', 'controller/emergency-stop', 'axes/c/rotary-mode')\n  AND $__timeFilter(\"time\")",
+          "rawSql": "SELECT\n  property,\n  time,\n  value\nFROM history_all\nWHERE\n  device='$device' and\n  (property LIKE 'controller%'\n  OR property IN ('availability', 'load-condition', 'message', 'functional-mode',\n  'system-condition', 'controller/emergency-stop', 'axes/c/rotary-mode')\n  )\n  AND $__timeFilter(\"time\")",
           "refId": "A",
           "select": [
             [
@@ -1841,16 +1848,45 @@
       "type": "table"
     }
   ],
-  "refresh": false,
+  "refresh": "10s",
   "schemaVersion": 27,
   "style": "dark",
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "MAZAK-M77KP290337",
+          "value": "MAZAK-M77KP290337"
+        },
+        "datasource": null,
+        "definition": "select uuid from devices",
+        "description": "Device Unique Identifier",
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Device UUID",
+        "multi": false,
+        "name": "device",
+        "options": [],
+        "query": "select uuid from devices",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
   },
   "time": {
-    "from": "2021-09-01T19:07:37.565Z",
-    "to": "2021-09-05T08:52:49.520Z"
+    "from": "now-12h",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -1869,5 +1905,5 @@
   "timezone": "",
   "title": "Mazak",
   "uid": "mazak-a577345",
-  "version": 5
+  "version": 7
 }
