@@ -7,12 +7,12 @@
 ---------------------------------------------------------------------
 -- EXTENSIONS
 ---------------------------------------------------------------------
+-- add functions to postgres
 
 ---------------------------------------------------------------------
 -- timescaledb
 ---------------------------------------------------------------------
 -- lets us make hypertables for storing time-series data
-
 CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
 
@@ -123,8 +123,6 @@ SELECT
 FROM 
   nodes
 WHERE
-  -- nodes.props->>'type'='Device';
-  -- nodes.node_type='Device';
   nodes.props->>'node_type'='Device';
 
 ---------------------------------------------------------------------
@@ -136,10 +134,9 @@ SELECT
   nodes.props->>'path' as path,
   nodes.props->>'category' as category, 
   nodes.props->>'type' as type,
-  nodes.props->>'subType' as subtype
+  nodes.props->>'subType' as subtype,
+  nodes.props->>'units' as units
 FROM 
   nodes
 WHERE
-  -- nodes.props->>'type'='PropertyDef';
-  -- nodes.node_type='PropertyDef';
   nodes.props->>'node_type'='PropertyDef';
