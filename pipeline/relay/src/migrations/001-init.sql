@@ -1,30 +1,39 @@
--- migrate
+---------------------------------------------------------------------
+-- migration script
 -- create tables and views
 -- these are run by src/db.js on opening the db
+---------------------------------------------------------------------
 
 ---------------------------------------------------------------------
--- TIMESCALE extension
+-- EXTENSIONS
+---------------------------------------------------------------------
+
+---------------------------------------------------------------------
+-- timescaledb
 ---------------------------------------------------------------------
 -- lets us make hypertables for storing time-series data
 
 CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
+
 ---------------------------------------------------------------------
--- META table
+-- TABLES
 ---------------------------------------------------------------------
 
+---------------------------------------------------------------------
+-- meta
+---------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS meta (
   name text PRIMARY KEY,
   value jsonb
 );
 
 ---------------------------------------------------------------------
--- NODES table
+-- nodes
 ---------------------------------------------------------------------
 -- note: Adding a primary key will automatically create a unique B-tree index
 -- on the column or group of columns listed in the primary key, and will force
 -- the column(s) to be marked NOT NULL.
-
 CREATE TABLE IF NOT EXISTS nodes (
   node_id SERIAL PRIMARY KEY,
   props jsonb
@@ -34,9 +43,9 @@ CREATE INDEX IF NOT EXISTS nodes_type ON nodes ((props->>'type'));
 CREATE UNIQUE INDEX IF NOT EXISTS nodes_path ON nodes ((props->>'path'));
 
 ---------------------------------------------------------------------
--- EDGES table
+-- edges
 ---------------------------------------------------------------------
-
+-- stores devices, propertydefs
 CREATE TABLE IF NOT EXISTS edges (
   from_id integer REFERENCES nodes,
   to_id integer REFERENCES nodes,
@@ -46,9 +55,9 @@ CREATE INDEX IF NOT EXISTS edges_from_id ON edges (from_id);
 CREATE INDEX IF NOT EXISTS edges_to_id ON edges (to_id);
 
 ---------------------------------------------------------------------
--- HISTORY table
+-- history
 ---------------------------------------------------------------------
-
+-- stores data values
 CREATE TABLE IF NOT EXISTS history (
   node_id integer REFERENCES nodes,
   property_id integer REFERENCES nodes,
@@ -59,9 +68,19 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 CREATE INDEX IF NOT EXISTS history_node_id ON history (node_id);
 
 ---------------------------------------------------------------------
--- HISTORY_ALL view
+-- VIEWS
 ---------------------------------------------------------------------
+-- delete the views in case the structure has changed
+-- (will eventually have to use migrations for this)
+DROP VIEW IF EXISTS property_defs;
+DROP VIEW IF EXISTS devices;
+DROP VIEW IF EXISTS history_text;
+DROP VIEW IF EXISTS history_float;
+DROP VIEW IF EXISTS history_all;
 
+---------------------------------------------------------------------
+-- history_all
+---------------------------------------------------------------------
 CREATE OR REPLACE VIEW history_all AS
 SELECT 
   devices.props->>'uuid' AS device,
@@ -73,9 +92,8 @@ JOIN nodes AS devices ON history.node_id=devices.node_id
 JOIN nodes AS properties ON history.property_id=properties.node_id;
 
 ---------------------------------------------------------------------
--- HISTORY_FLOAT view
+-- history_float
 ---------------------------------------------------------------------
-
 -- note: float is an alias for 'double precision'
 CREATE OR REPLACE VIEW history_float AS
 SELECT device, property, time, value::float
@@ -83,9 +101,8 @@ FROM history_all
 WHERE jsonb_typeof(value) = 'number';
 
 ---------------------------------------------------------------------
--- HISTORY_TEXT view
+-- history_text
 ---------------------------------------------------------------------
-
 -- note: #>>'{}' extracts the top-level json string without enclosing double quotes
 -- see https://dba.stackexchange.com/questions/207984/unquoting-json-strings-print-json-strings-without-quotes
 CREATE OR REPLACE VIEW history_text AS
@@ -94,9 +111,8 @@ FROM history_all
 WHERE jsonb_typeof(value) = 'string';
 
 ---------------------------------------------------------------------
--- DEVICES view
+-- devices
 ---------------------------------------------------------------------
-
 CREATE OR REPLACE VIEW devices AS
 SELECT
   nodes.node_id,
@@ -112,9 +128,8 @@ WHERE
   nodes.props->>'node_type'='Device';
 
 ---------------------------------------------------------------------
--- PROPERTY_DEFS view
+-- property_defs
 ---------------------------------------------------------------------
-
 CREATE OR REPLACE VIEW property_defs AS
 SELECT
   nodes.node_id,
