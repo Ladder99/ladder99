@@ -235,6 +235,8 @@ services:
       options:
         max-size: '1m'
 
+  # superset - a sql-based dashboard application
+
 networks:
   ladder99:
     name: ladder99
