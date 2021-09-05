@@ -508,7 +508,7 @@
       }
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "datasource": null,
       "gridPos": {
         "h": 1,
@@ -517,359 +517,358 @@
         "y": 8
       },
       "id": 29,
-      "panels": [
-        {
-          "backgroundColor": "rgba(155, 155, 155, .1)",
-          "colorMaps": [
-            {
-              "$$hashKey": "object:21403",
-              "color": "#CCC",
-              "text": "N/A"
-            },
-            {
-              "$$hashKey": "object:110845",
-              "color": "#73BF69",
-              "text": "AVAILABLE"
-            },
-            {
-              "$$hashKey": "object:110846",
-              "color": "rgb(77, 77, 77)",
-              "text": "SPINDLE"
-            },
-            {
-              "$$hashKey": "object:110847",
-              "color": "rgb(220, 42, 64)",
-              "text": "TRIGGERED"
-            },
-            {
-              "$$hashKey": "object:110848",
-              "color": "#73BF69",
-              "text": "ARMED"
-            },
-            {
-              "$$hashKey": "object:110849",
-              "color": "#73BF69",
-              "text": "ON"
-            },
-            {
-              "$$hashKey": "object:110850",
-              "color": "rgb(0, 0, 0)",
-              "text": "OFF"
-            },
-            {
-              "$$hashKey": "object:483",
-              "color": "black",
-              "text": "UNAVAILABLE"
-            },
-            {
-              "$$hashKey": "object:210",
-              "color": "rgb(77, 77, 77)",
-              "text": "AUTOMATIC"
-            },
-            {
-              "$$hashKey": "object:789",
-              "color": "rgb(0, 0, 0)",
-              "text": "STOPPED"
-            },
-            {
-              "$$hashKey": "object:790",
-              "color": "#73BF69",
-              "text": "ACTIVE"
-            },
-            {
-              "$$hashKey": "object:791",
-              "color": "rgb(77, 77, 77)",
-              "text": "READY"
-            }
-          ],
-          "crosshairColor": "#8F070C",
-          "datasource": null,
-          "display": "timeline",
-          "expandFromQueryS": 0,
-          "extendLastValue": true,
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 10,
-            "w": 23,
-            "x": 0,
-            "y": 1
-          },
-          "highlightOnMouseover": true,
-          "id": 31,
-          "legendSortBy": "-ms",
-          "lineColor": "black",
-          "metricNameColor": "rgb(126, 126, 126)",
-          "pluginVersion": "7.5.5",
-          "rangeMaps": [
-            {
-              "$$hashKey": "object:21408",
-              "from": "null",
-              "text": "N/A",
-              "to": "null"
-            }
-          ],
-          "rowHeight": 40,
-          "showDistinctCount": false,
-          "showLegend": false,
-          "showLegendNames": true,
-          "showLegendPercent": true,
-          "showLegendValues": true,
-          "showTimeAxis": true,
-          "targets": [
-            {
-              "format": "table",
-              "group": [],
-              "metricColumn": "none",
-              "rawQuery": true,
-              "rawSql": "SELECT time, value as \"Availability\"\nFROM history_text\nWHERE property='availability' and $__timeFilter(\"time\")\nORDER BY time",
-              "refId": "Av",
-              "select": [
-                [
-                  {
-                    "params": ["value"],
-                    "type": "column"
-                  }
-                ]
-              ],
-              "table": "history_float",
-              "timeColumn": "\"time\"",
-              "timeColumnType": "timestamp",
-              "where": [
-                {
-                  "name": "$__timeFilter",
-                  "params": [],
-                  "type": "macro"
-                }
-              ]
-            },
-            {
-              "format": "table",
-              "group": [],
-              "hide": false,
-              "metricColumn": "none",
-              "rawQuery": true,
-              "rawSql": "SELECT time, value as \"Rotary Mode\"\nFROM history_text\nWHERE property='axes/c/rotary-mode' and $__timeFilter(\"time\")\nORDER BY time",
-              "refId": "Ro",
-              "select": [
-                [
-                  {
-                    "params": ["value"],
-                    "type": "column"
-                  }
-                ]
-              ],
-              "table": "history_float",
-              "timeColumn": "\"time\"",
-              "timeColumnType": "timestamp",
-              "where": [
-                {
-                  "name": "$__timeFilter",
-                  "params": [],
-                  "type": "macro"
-                }
-              ]
-            },
-            {
-              "format": "table",
-              "group": [],
-              "hide": false,
-              "metricColumn": "none",
-              "rawQuery": true,
-              "rawSql": "SELECT time, value as \"Electric Power\"\nFROM history_text\nWHERE property='systems/electric/power-state' and $__timeFilter(\"time\")\nORDER BY time",
-              "refId": "El",
-              "select": [
-                [
-                  {
-                    "params": ["value"],
-                    "type": "column"
-                  }
-                ]
-              ],
-              "table": "history_float",
-              "timeColumn": "\"time\"",
-              "timeColumnType": "timestamp",
-              "where": [
-                {
-                  "name": "$__timeFilter",
-                  "params": [],
-                  "type": "macro"
-                }
-              ]
-            },
-            {
-              "format": "table",
-              "group": [],
-              "hide": false,
-              "metricColumn": "none",
-              "rawQuery": true,
-              "rawSql": "SELECT time, value as \"Emergency Stop\"\nFROM history_text\nWHERE property='controller/emergency-stop' and $__timeFilter(\"time\")\nORDER BY time",
-              "refId": "Em",
-              "select": [
-                [
-                  {
-                    "params": ["value"],
-                    "type": "column"
-                  }
-                ]
-              ],
-              "table": "history_float",
-              "timeColumn": "\"time\"",
-              "timeColumnType": "timestamp",
-              "where": [
-                {
-                  "name": "$__timeFilter",
-                  "params": [],
-                  "type": "macro"
-                }
-              ]
-            },
-            {
-              "format": "table",
-              "group": [],
-              "hide": false,
-              "metricColumn": "none",
-              "rawQuery": true,
-              "rawSql": "SELECT time, value as \"Execution\"\nFROM history_text\nWHERE property='controller/path/execution' and $__timeFilter(\"time\")\nORDER BY time",
-              "refId": "Ex",
-              "select": [
-                [
-                  {
-                    "params": ["value"],
-                    "type": "column"
-                  }
-                ]
-              ],
-              "table": "history_float",
-              "timeColumn": "\"time\"",
-              "timeColumnType": "timestamp",
-              "where": [
-                {
-                  "name": "$__timeFilter",
-                  "params": [],
-                  "type": "macro"
-                }
-              ]
-            },
-            {
-              "format": "table",
-              "group": [],
-              "hide": false,
-              "metricColumn": "none",
-              "rawQuery": true,
-              "rawSql": "SELECT time, value as \"System Condition\"\nFROM history_text\nWHERE property='system-condition' and $__timeFilter(\"time\")\nORDER BY time",
-              "refId": "Sys",
-              "select": [
-                [
-                  {
-                    "params": ["value"],
-                    "type": "column"
-                  }
-                ]
-              ],
-              "table": "history_float",
-              "timeColumn": "\"time\"",
-              "timeColumnType": "timestamp",
-              "where": [
-                {
-                  "name": "$__timeFilter",
-                  "params": [],
-                  "type": "macro"
-                }
-              ]
-            },
-            {
-              "format": "table",
-              "group": [],
-              "hide": false,
-              "metricColumn": "none",
-              "rawQuery": true,
-              "rawSql": "SELECT time, value as \"Controller Mode\"\nFROM history_text\nWHERE property='controller/path/controller-mode' and $__timeFilter(\"time\")\nORDER BY time",
-              "refId": "Co",
-              "select": [
-                [
-                  {
-                    "params": ["value"],
-                    "type": "column"
-                  }
-                ]
-              ],
-              "table": "history_float",
-              "timeColumn": "\"time\"",
-              "timeColumnType": "timestamp",
-              "where": [
-                {
-                  "name": "$__timeFilter",
-                  "params": [],
-                  "type": "macro"
-                }
-              ]
-            }
-          ],
-          "textSize": 20,
-          "textSizeTime": 12,
-          "timeOptions": [
-            {
-              "name": "Years",
-              "value": "years"
-            },
-            {
-              "name": "Months",
-              "value": "months"
-            },
-            {
-              "name": "Weeks",
-              "value": "weeks"
-            },
-            {
-              "name": "Days",
-              "value": "days"
-            },
-            {
-              "name": "Hours",
-              "value": "hours"
-            },
-            {
-              "name": "Minutes",
-              "value": "minutes"
-            },
-            {
-              "name": "Seconds",
-              "value": "seconds"
-            },
-            {
-              "name": "Milliseconds",
-              "value": "milliseconds"
-            }
-          ],
-          "timePrecision": {
-            "name": "Minutes",
-            "value": "minutes"
-          },
-          "timeTextColor": "rgb(146, 146, 146)",
-          "title": "Timeline",
-          "type": "natel-discrete-panel",
-          "units": "short",
-          "use12HourClock": false,
-          "useTimePrecision": false,
-          "valueMaps": [
-            {
-              "$$hashKey": "object:21406",
-              "op": "=",
-              "text": "N/A",
-              "value": "null"
-            }
-          ],
-          "valueTextColor": "rgb(126, 126, 126)",
-          "writeAllValues": false,
-          "writeLastValue": false,
-          "writeMetricNames": true
-        }
-      ],
+      "panels": [],
       "title": "Timeline",
       "type": "row"
+    },
+    {
+      "backgroundColor": "rgba(155, 155, 155, .1)",
+      "colorMaps": [
+        {
+          "$$hashKey": "object:21403",
+          "color": "#CCC",
+          "text": "N/A"
+        },
+        {
+          "$$hashKey": "object:110845",
+          "color": "#73BF69",
+          "text": "AVAILABLE"
+        },
+        {
+          "$$hashKey": "object:110846",
+          "color": "rgb(77, 77, 77)",
+          "text": "SPINDLE"
+        },
+        {
+          "$$hashKey": "object:110847",
+          "color": "rgb(220, 42, 64)",
+          "text": "TRIGGERED"
+        },
+        {
+          "$$hashKey": "object:110848",
+          "color": "#73BF69",
+          "text": "ARMED"
+        },
+        {
+          "$$hashKey": "object:110849",
+          "color": "#73BF69",
+          "text": "ON"
+        },
+        {
+          "$$hashKey": "object:110850",
+          "color": "rgb(0, 0, 0)",
+          "text": "OFF"
+        },
+        {
+          "$$hashKey": "object:483",
+          "color": "black",
+          "text": "UNAVAILABLE"
+        },
+        {
+          "$$hashKey": "object:210",
+          "color": "rgb(77, 77, 77)",
+          "text": "AUTOMATIC"
+        },
+        {
+          "$$hashKey": "object:789",
+          "color": "rgb(0, 0, 0)",
+          "text": "STOPPED"
+        },
+        {
+          "$$hashKey": "object:790",
+          "color": "#73BF69",
+          "text": "ACTIVE"
+        },
+        {
+          "$$hashKey": "object:791",
+          "color": "rgb(77, 77, 77)",
+          "text": "READY"
+        }
+      ],
+      "crosshairColor": "#8F070C",
+      "datasource": null,
+      "display": "timeline",
+      "expandFromQueryS": 0,
+      "extendLastValue": true,
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 23,
+        "x": 0,
+        "y": 9
+      },
+      "highlightOnMouseover": true,
+      "id": 31,
+      "legendSortBy": "-ms",
+      "lineColor": "black",
+      "metricNameColor": "rgb(126, 126, 126)",
+      "pluginVersion": "7.5.5",
+      "rangeMaps": [
+        {
+          "$$hashKey": "object:21408",
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "rowHeight": 40,
+      "showDistinctCount": false,
+      "showLegend": false,
+      "showLegendNames": true,
+      "showLegendPercent": true,
+      "showLegendValues": true,
+      "showTimeAxis": true,
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as \"Availability\"\nFROM history_text\nWHERE property='availability' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "Av",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as \"Rotary Mode\"\nFROM history_text\nWHERE property='axes/c/rotary-mode' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "Ro",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as \"Electric Power\"\nFROM history_text\nWHERE property='systems/electric/power-state' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "El",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as \"Emergency Stop\"\nFROM history_text\nWHERE property='controller/emergency-stop' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "Em",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as \"Execution\"\nFROM history_text\nWHERE property='controller/path/execution' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "Ex",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as \"System Condition\"\nFROM history_text\nWHERE property='system-condition' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "Sys",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as \"Controller Mode\"\nFROM history_text\nWHERE property='controller/path/controller-mode' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "Co",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "textSize": 20,
+      "textSizeTime": 12,
+      "timeOptions": [
+        {
+          "name": "Years",
+          "value": "years"
+        },
+        {
+          "name": "Months",
+          "value": "months"
+        },
+        {
+          "name": "Weeks",
+          "value": "weeks"
+        },
+        {
+          "name": "Days",
+          "value": "days"
+        },
+        {
+          "name": "Hours",
+          "value": "hours"
+        },
+        {
+          "name": "Minutes",
+          "value": "minutes"
+        },
+        {
+          "name": "Seconds",
+          "value": "seconds"
+        },
+        {
+          "name": "Milliseconds",
+          "value": "milliseconds"
+        }
+      ],
+      "timePrecision": {
+        "name": "Minutes",
+        "value": "minutes"
+      },
+      "timeTextColor": "rgb(146, 146, 146)",
+      "title": "Timeline",
+      "type": "natel-discrete-panel",
+      "units": "short",
+      "use12HourClock": false,
+      "useTimePrecision": false,
+      "valueMaps": [
+        {
+          "$$hashKey": "object:21406",
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueTextColor": "rgb(126, 126, 126)",
+      "writeAllValues": false,
+      "writeLastValue": false,
+      "writeMetricNames": true
     },
     {
       "collapsed": true,
@@ -878,7 +877,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 19
       },
       "id": 14,
       "panels": [
@@ -902,7 +901,7 @@
             "h": 8,
             "w": 11,
             "x": 0,
-            "y": 10
+            "y": 20
           },
           "hiddenSeries": false,
           "id": 8,
@@ -1018,7 +1017,7 @@
             "h": 8,
             "w": 11,
             "x": 11,
-            "y": 10
+            "y": 20
           },
           "hiddenSeries": false,
           "id": 32,
@@ -1163,7 +1162,7 @@
             "h": 6,
             "w": 11,
             "x": 0,
-            "y": 18
+            "y": 28
           },
           "hiddenSeries": false,
           "id": 10,
@@ -1333,7 +1332,7 @@
             "h": 6,
             "w": 11,
             "x": 11,
-            "y": 18
+            "y": 28
           },
           "hiddenSeries": false,
           "id": 25,
@@ -1495,7 +1494,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 20
       },
       "id": 27,
       "panels": [
@@ -1726,124 +1725,123 @@
       "type": "row"
     },
     {
-      "collapsed": true,
+      "collapsed": false,
       "datasource": null,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 21
       },
       "id": 34,
-      "panels": [
-        {
-          "datasource": null,
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "thresholds"
+      "panels": [],
+      "title": "Events",
+      "type": "row"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": null,
+            "displayMode": "json-view",
+            "filterable": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
               },
-              "custom": {
-                "align": null,
-                "displayMode": "json-view",
-                "filterable": false
-              },
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green",
-                    "value": null
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
+              {
+                "color": "red",
+                "value": 80
               }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "time"
             },
-            "overrides": [
+            "properties": [
               {
-                "matcher": {
-                  "id": "byName",
-                  "options": "time"
-                },
-                "properties": [
-                  {
-                    "id": "custom.displayMode",
-                    "value": "auto"
-                  },
-                  {
-                    "id": "custom.width",
-                    "value": 153
-                  }
-                ]
+                "id": "custom.displayMode",
+                "value": "auto"
               },
               {
-                "matcher": {
-                  "id": "byName",
-                  "options": "id"
-                },
-                "properties": [
-                  {
-                    "id": "custom.width",
-                    "value": 70
-                  }
-                ]
+                "id": "custom.width",
+                "value": 153
               }
             ]
           },
-          "gridPos": {
-            "h": 8,
-            "w": 16,
-            "x": 0,
-            "y": 12
-          },
-          "id": 22,
-          "options": {
-            "showHeader": true,
-            "sortBy": []
-          },
-          "pluginVersion": "7.5.5",
-          "targets": [
-            {
-              "format": "table",
-              "group": [],
-              "metricColumn": "none",
-              "rawQuery": true,
-              "rawSql": "SELECT\n  property,\n  time,\n  value\nFROM history_all\nWHERE\n  property IN ('availability', 'load-condition', 'message', 'functional-mode',\n  'system-condition', 'controller/emergency-stop', 'axes/c/rotary-mode')\n  AND $__timeFilter(\"time\")",
-              "refId": "A",
-              "select": [
-                [
-                  {
-                    "params": ["value"],
-                    "type": "column"
-                  }
-                ]
-              ],
-              "table": "\"values\"",
-              "timeColumn": "\"time\"",
-              "timeColumnType": "timestamptz",
-              "where": [
-                {
-                  "name": "$__timeFilter",
-                  "params": [],
-                  "type": "macro"
-                }
-              ]
-            }
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "id"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 70
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 16,
+        "x": 0,
+        "y": 22
+      },
+      "id": 22,
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "7.5.5",
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  property,\n  time,\n  value\nFROM history_all\nWHERE\n  property LIKE 'controller%'\n  OR property IN ('availability', 'load-condition', 'message', 'functional-mode',\n  'system-condition', 'controller/emergency-stop', 'axes/c/rotary-mode')\n  AND $__timeFilter(\"time\")",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
           ],
-          "title": "Events",
-          "type": "table"
+          "table": "\"values\"",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamptz",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "title": "Events",
-      "type": "row"
+      "type": "table"
     }
   ],
-  "refresh": "10s",
+  "refresh": false,
   "schemaVersion": 27,
   "style": "dark",
   "tags": [],
@@ -1851,8 +1849,8 @@
     "list": []
   },
   "time": {
-    "from": "now-12h",
-    "to": "now"
+    "from": "2021-09-01T19:07:37.565Z",
+    "to": "2021-09-05T08:52:49.520Z"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -1871,5 +1869,5 @@
   "timezone": "",
   "title": "Mazak",
   "uid": "mazak-a577345",
-  "version": 3
+  "version": 5
 }
