@@ -17,7 +17,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 3,
-  "iteration": 1630834017143,
+  "iteration": 1630843996252,
   "links": [
     {
       "asDropdown": false,
@@ -1733,7 +1733,7 @@
       "type": "row"
     },
     {
-      "collapsed": false,
+      "collapsed": true,
       "datasource": null,
       "gridPos": {
         "h": 1,
@@ -1742,111 +1742,112 @@
         "y": 11
       },
       "id": 34,
-      "panels": [],
-      "title": "Events",
-      "type": "row"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "custom": {
-            "align": null,
-            "displayMode": "json-view",
-            "filterable": false
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": [
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "time"
-            },
-            "properties": [
-              {
-                "id": "custom.displayMode",
-                "value": "auto"
-              },
-              {
-                "id": "custom.width",
-                "value": 153
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "id"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 70
-              }
-            ]
-          }
-        ]
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 16,
-        "x": 0,
-        "y": 12
-      },
-      "id": 22,
-      "options": {
-        "showHeader": true,
-        "sortBy": []
-      },
-      "pluginVersion": "7.5.5",
-      "targets": [
+      "panels": [
         {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  property,\n  time,\n  value\nFROM history_all\nWHERE\n  device='$device' and\n  (property LIKE 'controller%'\n  OR property IN ('availability', 'load-condition', 'message', 'functional-mode',\n  'system-condition', 'controller/emergency-stop', 'axes/c/rotary-mode')\n  )\n  AND $__timeFilter(\"time\")",
-          "refId": "A",
-          "select": [
-            [
+          "datasource": null,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "custom": {
+                "align": null,
+                "displayMode": "json-view",
+                "filterable": false
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
               {
-                "params": ["value"],
-                "type": "column"
+                "matcher": {
+                  "id": "byName",
+                  "options": "time"
+                },
+                "properties": [
+                  {
+                    "id": "custom.displayMode",
+                    "value": "auto"
+                  },
+                  {
+                    "id": "custom.width",
+                    "value": 153
+                  }
+                ]
+              },
+              {
+                "matcher": {
+                  "id": "byName",
+                  "options": "id"
+                },
+                "properties": [
+                  {
+                    "id": "custom.width",
+                    "value": 70
+                  }
+                ]
               }
             ]
-          ],
-          "table": "\"values\"",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamptz",
-          "where": [
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 16,
+            "x": 0,
+            "y": 12
+          },
+          "id": 22,
+          "options": {
+            "showHeader": true,
+            "sortBy": []
+          },
+          "pluginVersion": "7.5.5",
+          "targets": [
             {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
+              "format": "table",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": true,
+              "rawSql": "SELECT\n  property,\n  time,\n  value\nFROM history_all\nWHERE\n  device='$device' and\n  (property LIKE 'controller%'\n  OR property IN ('availability', 'load-condition', 'message', 'functional-mode',\n  'system-condition', 'controller/emergency-stop', 'axes/c/rotary-mode')\n  )\n  AND $__timeFilter(\"time\")",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "\"values\"",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamptz",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
             }
-          ]
+          ],
+          "title": "Events",
+          "type": "table"
         }
       ],
       "title": "Events",
-      "type": "table"
+      "type": "row"
     }
   ],
   "refresh": "10s",
@@ -1858,17 +1859,17 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "MFMS10-MC1 (MAZAK-M77KP290337)",
           "value": "MFMS10-MC1 (MAZAK-M77KP290337)"
         },
         "datasource": null,
         "definition": "select name_uuid from devices",
-        "description": "Device Unique Identifier",
+        "description": "Device Name and Unique Identifier",
         "error": null,
         "hide": 0,
         "includeAll": false,
-        "label": "Device UUID",
+        "label": "Device Name/UUID",
         "multi": false,
         "name": "device",
         "options": [],
@@ -1906,5 +1907,5 @@
   "timezone": "",
   "title": "Mazak",
   "uid": "mazak-a577345",
-  "version": 10
+  "version": 13
 }
