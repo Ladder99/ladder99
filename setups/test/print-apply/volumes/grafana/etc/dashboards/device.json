@@ -16,8 +16,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 8,
-  "iteration": 1628154529915,
+  "id": 1,
+  "iteration": 1630864259666,
   "links": [
     {
       "asDropdown": false,
@@ -203,7 +203,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Part Detect\"\nFROM history_text\nWHERE property='systems/feeder/part-detect' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Part Detect\"\nFROM history_text\nWHERE \ndevice='$device' and\nproperty='systems/feeder/part-detect' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "Part",
           "select": [
             [
@@ -230,7 +230,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"System Condition\"\nFROM history_text\nWHERE property='system-condition' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"System Condition\"\nFROM history_text\nWHERE \ndevice='$device' and\nproperty='system-condition' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "Sy",
           "select": [
             [
@@ -257,7 +257,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Feeder\"\nFROM history_text\nWHERE property='systems/feeder/actuator-state-start' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Feeder\"\nFROM history_text\nWHERE device='$device' and\nproperty='systems/feeder/actuator-state-start' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "Fe",
           "select": [
             [
@@ -284,7 +284,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Emergency Stop\"\nFROM history_text\nWHERE property='controller/emergency-stop' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Emergency Stop\"\nFROM history_text\nWHERE device='$device' and\nproperty='controller/emergency-stop' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "Em",
           "select": [
             [
@@ -311,7 +311,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Functional Mode\"\nFROM history_text\nWHERE property='functional-mode' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Functional Mode\"\nFROM history_text\nWHERE device='$device' and\nproperty='functional-mode' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "Fu",
           "select": [
             [
@@ -338,7 +338,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Execution State\"\nFROM history_text\nWHERE property='controller/path/execution' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Execution State\"\nFROM history_text\nWHERE device='$device' and\nproperty='controller/path/execution' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "Ex",
           "select": [
             [
@@ -963,7 +963,7 @@
             "h": 4,
             "w": 4,
             "x": 0,
-            "y": 12
+            "y": 3
           },
           "id": 23,
           "options": {
@@ -1088,7 +1088,7 @@
             "h": 4,
             "w": 4,
             "x": 4,
-            "y": 12
+            "y": 3
           },
           "id": 44,
           "options": {
@@ -1187,7 +1187,7 @@
             "h": 4,
             "w": 8,
             "x": 8,
-            "y": 12
+            "y": 3
           },
           "id": 45,
           "options": {
@@ -1316,7 +1316,7 @@
             "h": 5,
             "w": 8,
             "x": 0,
-            "y": 16
+            "y": 7
           },
           "id": 50,
           "options": {
@@ -1472,7 +1472,7 @@
             "h": 5,
             "w": 7,
             "x": 8,
-            "y": 16
+            "y": 7
           },
           "id": 47,
           "options": {
@@ -1632,7 +1632,7 @@
             "h": 4,
             "w": 8,
             "x": 0,
-            "y": 14
+            "y": 5
           },
           "id": 29,
           "interval": null,
@@ -1774,7 +1774,7 @@
             "h": 9,
             "w": 18,
             "x": 0,
-            "y": 10
+            "y": 6
           },
           "id": 10,
           "options": {
@@ -1828,11 +1828,11 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "e05363",
-          "value": "e05363"
+          "text": "pa1 (e05363)",
+          "value": "pa1 (e05363)"
         },
         "datasource": null,
-        "definition": "select nodes.props->>'uuid' as device from nodes where nodes.props->>'type'='Device'",
+        "definition": "select name_uuid from devices",
         "description": null,
         "error": null,
         "hide": 0,
@@ -1841,7 +1841,7 @@
         "multi": false,
         "name": "device",
         "options": [],
-        "query": "select nodes.props->>'uuid' as device from nodes where nodes.props->>'type'='Device'",
+        "query": "select name_uuid from devices",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -1875,5 +1875,5 @@
   "timezone": "",
   "title": "Device",
   "uid": "dII-Qgzgy",
-  "version": 23
+  "version": 4
 }

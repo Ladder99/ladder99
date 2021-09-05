@@ -15,8 +15,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 7,
-  "iteration": 1628154374967,
+  "id": 2,
+  "iteration": 1630864197670,
   "links": [
     {
       "asDropdown": false,
@@ -47,8 +47,8 @@
       "scopedVars": {
         "device": {
           "selected": false,
-          "text": "e05363",
-          "value": "e05363"
+          "text": "pa1 (e05363)",
+          "value": "pa1 (e05363)"
         }
       },
       "title": "P&A $device",
@@ -124,8 +124,8 @@
       "scopedVars": {
         "device": {
           "selected": false,
-          "text": "e05363",
-          "value": "e05363"
+          "text": "pa1 (e05363)",
+          "value": "pa1 (e05363)"
         }
       },
       "targets": [
@@ -258,8 +258,8 @@
       "scopedVars": {
         "device": {
           "selected": false,
-          "text": "e05363",
-          "value": "e05363"
+          "text": "pa1 (e05363)",
+          "value": "pa1 (e05363)"
         }
       },
       "targets": [
@@ -378,402 +378,8 @@
       "scopedVars": {
         "device": {
           "selected": false,
-          "text": "e05363",
-          "value": "e05363"
-        }
-      },
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','ARMED','TRIGGERED'], value) as pos\nFROM history_text \nWHERE device=$device AND property='controller/emergency-stop'\nORDER BY time",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Emergency Stop",
-      "transformations": [],
-      "type": "stat"
-    },
-    {
-      "collapsed": false,
-      "datasource": null,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 4
-      },
-      "id": 14,
-      "panels": [],
-      "repeatIteration": 1628154374967,
-      "repeatPanelId": 2,
-      "scopedVars": {
-        "device": {
-          "selected": false,
-          "text": "e09123",
-          "value": "e09123"
-        }
-      },
-      "title": "P&A $device",
-      "type": "row"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 0,
-          "mappings": [
-            {
-              "from": "",
-              "id": 1,
-              "text": "Available",
-              "to": "",
-              "type": 1,
-              "value": "2"
-            },
-            {
-              "from": "",
-              "id": 3,
-              "text": "Unavailable",
-              "to": "",
-              "type": 1,
-              "value": "1"
-            }
-          ],
-          "max": 2,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "rgb(119, 119, 119)",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 2
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 0,
-        "y": 5
-      },
-      "id": 15,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "/^pos$/",
-          "values": false
-        },
-        "text": {},
-        "textMode": "value"
-      },
-      "pluginVersion": "7.5.5",
-      "repeatIteration": 1628154374967,
-      "repeatPanelId": 8,
-      "repeatedByRow": true,
-      "scopedVars": {
-        "device": {
-          "selected": false,
-          "text": "e09123",
-          "value": "e09123"
-        }
-      },
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','AVAILABLE'], value) as pos\nFROM history_text \nWHERE device=$device AND property='availability'\nORDER BY time",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Availability",
-      "transformations": [],
-      "type": "stat"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 0,
-          "mappings": [
-            {
-              "from": "",
-              "id": 3,
-              "text": "Unavailable",
-              "to": "",
-              "type": 1,
-              "value": "1"
-            },
-            {
-              "from": "",
-              "id": 4,
-              "text": "Normal",
-              "to": "",
-              "type": 1,
-              "value": "2"
-            },
-            {
-              "from": "",
-              "id": 5,
-              "text": "Warning",
-              "to": "",
-              "type": 1,
-              "value": "3"
-            },
-            {
-              "from": "",
-              "id": 6,
-              "text": "Fault",
-              "to": "",
-              "type": 1,
-              "value": "4"
-            }
-          ],
-          "max": 2,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "rgb(119, 119, 119)",
-                "value": null
-              },
-              {
-                "color": "green",
-                "value": 2
-              },
-              {
-                "color": "yellow",
-                "value": 3
-              },
-              {
-                "color": "red",
-                "value": 4
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 4,
-        "y": 5
-      },
-      "id": 16,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "/^pos$/",
-          "values": false
-        },
-        "text": {},
-        "textMode": "value"
-      },
-      "pluginVersion": "7.5.5",
-      "repeat": null,
-      "repeatDirection": "h",
-      "repeatIteration": 1628154374967,
-      "repeatPanelId": 4,
-      "repeatedByRow": true,
-      "scopedVars": {
-        "device": {
-          "selected": false,
-          "text": "e09123",
-          "value": "e09123"
-        }
-      },
-      "targets": [
-        {
-          "format": "table",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  ARRAY_POSITION(array['UNAVAILABLE','NORMAL', 'WARNING', 'FAULT'], value) as pos\nFROM history_text \nWHERE device=$device AND property='system-condition'\nORDER BY time",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "Condition",
-      "transformations": [],
-      "type": "stat"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "decimals": 0,
-          "mappings": [
-            {
-              "from": "",
-              "id": 1,
-              "text": "Armed",
-              "to": "",
-              "type": 1,
-              "value": "2"
-            },
-            {
-              "from": "",
-              "id": 2,
-              "text": "Triggered",
-              "to": "",
-              "type": 1,
-              "value": "3"
-            },
-            {
-              "from": "",
-              "id": 3,
-              "text": "Unavailable",
-              "to": "",
-              "type": 1,
-              "value": "1"
-            }
-          ],
-          "max": 2,
-          "min": 0,
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "rgb(119, 119, 119)",
-                "value": null
-              },
-              {
-                "color": "#444444",
-                "value": 2
-              },
-              {
-                "color": "red",
-                "value": 3
-              }
-            ]
-          },
-          "unit": "none"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 4,
-        "x": 8,
-        "y": 5
-      },
-      "id": 17,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "none",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "/^pos$/",
-          "values": false
-        },
-        "text": {},
-        "textMode": "value"
-      },
-      "pluginVersion": "7.5.5",
-      "repeatIteration": 1628154374967,
-      "repeatPanelId": 13,
-      "repeatedByRow": true,
-      "scopedVars": {
-        "device": {
-          "selected": false,
-          "text": "e09123",
-          "value": "e09123"
+          "text": "pa1 (e05363)",
+          "value": "pa1 (e05363)"
         }
       },
       "targets": [
@@ -825,7 +431,7 @@
           "value": "$__all"
         },
         "datasource": null,
-        "definition": "select nodes.props->>'uuid' as device from nodes where nodes.props->>'type'='Device'",
+        "definition": "select name_uuid from devices",
         "description": null,
         "error": null,
         "hide": 0,
@@ -834,7 +440,7 @@
         "multi": false,
         "name": "device",
         "options": [],
-        "query": "select nodes.props->>'uuid' as device from nodes where nodes.props->>'type'='Device'",
+        "query": "select name_uuid from devices",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -855,5 +461,5 @@
   "timezone": "",
   "title": "Devices",
   "uid": "Q3YFl9Znz",
-  "version": 2
+  "version": 3
 }
