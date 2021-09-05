@@ -12,7 +12,7 @@
 ---------------------------------------------------------------------
 -- timescaledb
 ---------------------------------------------------------------------
--- lets us make hypertables for storing time-series data
+-- make hypertables for storing time-series data
 CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
 
@@ -83,7 +83,8 @@ DROP VIEW IF EXISTS history_all;
 ---------------------------------------------------------------------
 CREATE OR REPLACE VIEW history_all AS
 SELECT 
-  devices.props->>'uuid' AS device,
+  -- devices.props->>'uuid' AS device,
+  devices.props->>'name_uuid' AS device,
   properties.props->>'path' AS property,
   history.time,
   history.value -- value is a jsonb object - need to cast it as in below views

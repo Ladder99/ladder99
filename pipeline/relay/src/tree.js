@@ -210,7 +210,9 @@ export function getNodes(objs) {
   let nodes = []
   for (const obj of objs) {
     const node = { ...obj }
-    if (node.node_type === 'PropertyDef') {
+    if (node.node_type === 'Device') {
+      node.name_uuid = `${node.name} (${node.uuid})`
+    } else if (node.node_type === 'PropertyDef') {
       // remove any unneeded attributes
       delete node.id
       delete node.name
