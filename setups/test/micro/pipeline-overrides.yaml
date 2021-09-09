@@ -1,0 +1,13 @@
+# docker-compose overrides
+
+#. this will be generated from setup.yaml, but edit manually for now.
+
+version: '3.8'
+
+services:
+  adapter:
+    profiles:
+      - dashboard
+  agent:
+    profiles:
+      - dashboard
