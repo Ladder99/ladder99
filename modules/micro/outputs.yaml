@@ -22,12 +22,18 @@ outputs:
     type: TEMPERATURE
     value: <temperature>
 
-  - key: memory
-    category: EVENT
-    type: VARIABLE
-    subType: x:MEMORY
-    representation: DATA_SET
-    value: <memory>
+  # - key: memory
+  #   category: EVENT
+  #   type: VARIABLE
+  #   subType: x:MEMORY
+  #   representation: DATA_SET
+  #   value: <memory>
+
+  - key: memory-total
+    category: SAMPLE
+    type: x:MEMORY
+    subType: x:TOTAL
+    value: <memory-total>
 
   - key: memory-free
     category: SAMPLE
@@ -35,12 +41,36 @@ outputs:
     subType: x:FREE
     value: <memory-free>
 
-  - key: cpu
-    category: EVENT
-    type: VARIABLE
-    subType: x:CPU
-    representation: DATA_SET
-    value: <cpu>
+  - key: memory-used
+    category: SAMPLE
+    type: x:MEMORY
+    subType: x:USED
+    value: <memory-used>
+
+  # - key: cpu
+  #   category: EVENT
+  #   type: VARIABLE
+  #   subType: x:CPU
+  #   representation: DATA_SET
+  #   value: <cpu>
+
+  - key: cpu-total
+    category: SAMPLE
+    type: x:CPU
+    subType: x:TOTAL
+    value: <cpu-total>
+
+  - key: cpu-user
+    category: SAMPLE
+    type: x:CPU
+    subType: x:USER
+    value: <cpu-user>
+
+  - key: cpu-system
+    category: SAMPLE
+    type: x:CPU
+    subType: x:SYSTEM
+    value: <cpu-system>
 
   - key: os
     category: EVENT

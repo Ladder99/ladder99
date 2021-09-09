@@ -15,8 +15,14 @@ export class AdapterDriver {
     async function readData() {
       try {
         // get specs object like { mem: 'total, free, used' }, as expected by si module
-        const specs = {}
-        inputs.inputs.forEach(input => (specs[input.item] = input.subitems))
+        // const specs = {}
+        // inputs.inputs.forEach(input => (specs[input.item] = input.subitems))
+        const specs = {
+          cpuTemperature: 'main',
+          mem: 'total, free, used',
+          currentLoad: 'currentLoad, currentLoadUser, currentLoadSystem',
+          osInfo: 'platform, distro, release, codename, arch, hostname',
+        }
 
         // read the specs data
         const data = await si.get(specs)
@@ -25,20 +31,30 @@ export class AdapterDriver {
         // write values to cache
         setValue('availability', 'AVAILABLE')
         setValue('condition', 'NORMAL')
-        // setValue('temperature', data.cpuTemperature.main)
+
+        setValue('temperature', data.cpuTemperature.main)
+        setValue('memory-total', data.mem.total)
+        setValue('memory-free', data.mem.free)
+        setValue('memory-used', data.mem.used)
+        setValue('cpu-total', data.currentLoad.currentLoad)
+        setValue('cpu-user', data.currentLoad.currentLoadUser)
+        setValue('cpu-system', data.currentLoad.currentLoadSystem)
+
+        setValue('os', getDataSet(data.osInfo))
+
         // setValue('memory', getDataSet(data.mem))
         // setValue('cpu', getDataSet(data.currentLoad))
-        inputs.inputs.forEach(input => {
-          const value =
-            input.representation === 'dataset'
-              ? getDataSet(data[input.item])
-              : data[input.item].main
-          setValue(input.name, value)
-          //. add each subitem individually also - experimental
-          input.subitems.split(', ').forEach(subitem => {
-            setValue(input.name + '-' + subitem, data[input.item][subitem])
-          })
-        })
+        // inputs.inputs.forEach(input => {
+        //   const value =
+        //     input.representation === 'dataset'
+        //       ? getDataSet(data[input.item])
+        //       : data[input.item].main
+        //   setValue(input.name, value)
+        //   //. add each subitem individually also - experimental
+        //   input.subitems.split(', ').forEach(subitem => {
+        //     setValue(input.name + '-' + subitem, data[input.item][subitem])
+        //   })
+        // })
       } catch (e) {
         setUnavailable()
         console.error(e)
