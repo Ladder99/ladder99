@@ -1,4 +1,4 @@
-# Ladder99
+# Ladder99 Community Edition
 
 [![License](https://img.shields.io/badge/license-Apache2.0-green)](./LICENSE)
 [![Open Issues](https://img.shields.io/github/issues/Ladder99/ladder99.svg)](https://github.com/Ladder99/ladder99/issues)
