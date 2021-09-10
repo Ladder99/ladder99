@@ -10,7 +10,7 @@
 <!-- [![Formatted with Prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier) -->
 <!-- <a href="https://codecov.io/gh/Ladder99/neomem"><img alt="Codecov Coverage Status" src="https://img.shields.io/ladder99/c/github/Ladder99/ladder99.svg?style=flat"></a> -->
 
-Ladder99 is a free and open source application that transfers data from factory devices to a database and end-user visualizations using MTConnect, an open standard.
+Ladder99 Community Edition is a free and open source software pipeline that transfers data from factory devices to a database and end-user visualizations using MTConnect, an open standard.
 
 MTConnect standardizes factory device data flow and vocabulary - it was started by UC Berkeley, Georgia Institute of Technology, and Sun Microsystems in 2008, and continues under active development.
 
