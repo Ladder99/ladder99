@@ -10,7 +10,7 @@
     "test": "nodemon src/test.js"
   },
   "author": "Brian Burns <bburns.km@gmail.com>",
-  "license": "MIT",
+  "license": "Apache2.0",
   "dependencies": {
     "js-yaml": "^4.1.0",
     "node-fetch": "^2.6.1",

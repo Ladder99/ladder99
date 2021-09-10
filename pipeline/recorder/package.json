@@ -5,7 +5,7 @@
   "type": "module",
   "target": "es2021",
   "author": "Brian Burns <bburns.km@gmail.com>",
-  "license": "MIT",
+  "license": "Apache2.0",
   "dependencies": {
     "commander": "^7.2.0",
     "csv": "^5.5.0",

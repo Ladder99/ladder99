@@ -14,4 +14,4 @@ time_now and time_delta are in seconds
 
 ## License
 
-MIT
+Apache 2.0
