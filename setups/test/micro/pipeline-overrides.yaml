@@ -1,0 +1,12 @@
+# docker-compose overrides
+
+# minimally need version number
+version: '3.8'
+
+services:
+  adapter:
+    profiles:
+      - dashboard
+  agent:
+    profiles:
+      - dashboard

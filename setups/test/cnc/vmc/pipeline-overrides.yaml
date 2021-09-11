@@ -1,4 +1,4 @@
-# docker-compose overrides for vmc pipeline
+# docker-compose overrides
 
 # vmc is included with mtconnect agent - no adapter or broker or recorder needed
 
@@ -11,6 +11,3 @@ services:
     command: '' # run the default command (simulation)
     profiles:
       - dashboard
-# networks:
-#   ladder99:
-#     name: ladder99
