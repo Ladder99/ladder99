@@ -73,6 +73,7 @@ services:
       # other folders are specified there.
       - ./$SETUP/volumes/grafana/etc:/etc/grafana
       - ./$SETUP/volumes/grafana/var:/var/lib/grafana
+      - ../dashboards/grafana:/etc/dashboards
     # user: grafana
     #. get warning that these are blank, though echo $UID works - why?
     # but even if blank, now grafana is able to write to /var/lib/grafana.
