@@ -5,13 +5,13 @@ apiVersion: 1
 
 providers:
   # a unique provider name. Required
-  - name: 'Ladder99'
+  - name: Ladder99
 
     # Org id. Default to 1
     # orgId: 1
 
     # name of the dashboard folder.
-    folder: 'home'
+    folder: home
 
     # folder UID. will be automatically generated if not specified
     # folderUid: ''
@@ -31,7 +31,8 @@ providers:
     options:
       # path to dashboard files on disk.
       # Required when using the 'file' type
-      path: /etc/grafana/dashboards
+      # path: /etc/grafana/dashboards
+      path: /etc/dashboards
 
       # use folder names from filesystem to create folders in Grafana
       foldersFromFilesStructure: true
