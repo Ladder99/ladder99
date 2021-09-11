@@ -1,4 +1,4 @@
-# docker-compose overrides for ccs-pa pipeline
+# docker-compose overrides
 
 #. this will be generated from setup.yaml, but edit manually for now.
 
