@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+  Here knowing the 0-200 range lets the adapter know that “xlc”  LOAD <200 =
+  NORMAL, LOAD 200+ = FAULT.  As far as the application, “x3" of 400 indicates 2X
+  of normal operating range.  Knowing 2X by itself doesn’t tell us much, but maybe
+  knowing the axis’ load of 2X, spindle load, spindle speed, axis speed could help
+  us formulate an equation around predicted tool life? Or maybe the question is
+  “what is the optimal load” for tool A if tool life expetancy is 800hours?
+  knowing that we ran at load of 400 should shorten tool life by 30 hours. Then we
+  can recommend tool change at 780 hours instead of 800 
+-->
+
 <MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.7"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="urn:mtconnect.org:MTConnectDevices:1.7" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.7 http://schemas.mtconnect.org/schemas/MTConnectDevices_1.7.xsd">
