@@ -4,28 +4,13 @@
   <DataItems>
     <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
     <DataItem id="temp" name="temperature" category="EVENT" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
-    <DataItem id="mem" name="memory" category="EVENT" type="VARIABLE" subType="x:MEMORY" representation="DATA_SET" />
-    <DataItem id="cpu" name="cpu" category="EVENT" type="VARIABLE" subType="x:CPU" representation="DATA_SET" />
-
-    <DataItem id="mem-total" name="memory-total" category="SAMPLE" type="VARIABLE" subType="x:MEMORY_TOTAL" />
-
+    <!-- <DataItem id="mem" name="memory" category="EVENT" type="VARIABLE" subType="x:MEMORY" representation="DATA_SET" /> -->
+    <!-- <DataItem id="cpu" name="cpu" category="EVENT" type="VARIABLE" subType="x:CPU" representation="DATA_SET" /> -->
+    <DataItem id="memtot" name="memory-total" category="SAMPLE" type="VARIABLE" subType="x:MEMORY_TOTAL" units="x:BYTES" />
+    <DataItem id="memfr" name="memory-free" category="SAMPLE" type="VARIABLE" subType="x:MEMORY_FREE" units="x:BYTES" />
+    <DataItem id="memus" name="memory-used" category="SAMPLE" type="VARIABLE" subType="x:MEMORY_USED" units="x:BYTES" />
+    <DataItem id="cputot" name="cpu-total" category="SAMPLE" type="VARIABLE" subType="x:CPU_TOTAL" units="x:PERCENTAGE" />
+    <DataItem id="cpusys" name="cpu-system" category="SAMPLE" type="VARIABLE" subType="x:CPU_SYSTEM" units="x:PERCENTAGE" />
+    <DataItem id="cpuus" name="cpu-user" category="SAMPLE" type="VARIABLE" subType="x:CPU_USER" units="x:PERCENTAGE" />
   </DataItems>
 </Module>
-
-<!-- or when added on to a machine, -->
-<!-- so could use above and say  -->
-<!-- path = Auxiliaries/Sensor[@id="" @name=""]/DataItems -->
-
-<!-- <Module path="Device/Auxiliaries/Sensor"> -->
-
-<!-- 
-<Auxiliaries>
-  <Sensor id="" name="">
-    <DataItems>
-      <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
-      <DataItem id="temp" name="temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
-      <DataItem id="mem" name="memory" category="EVENT" type="VARIABLE" representation="DATA_SET" />
-    </DataItems>
-  </Sensor>
-</Auxiliaries> 
--->
