@@ -16,8 +16,8 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 3,
-  "iteration": 1630843996252,
+  "id": 7,
+  "iteration": 1631004551596,
   "links": [
     {
       "asDropdown": false,
@@ -33,6 +33,20 @@
     }
   ],
   "panels": [
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 39,
+      "panels": [],
+      "title": "Temp/Load",
+      "type": "row"
+    },
     {
       "aliasColors": {},
       "bars": false,
@@ -50,7 +64,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "hiddenSeries": false,
       "id": 36,
@@ -301,7 +315,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 0
+        "y": 1
       },
       "hiddenSeries": false,
       "id": 37,
@@ -515,7 +529,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 9
       },
       "id": 29,
       "panels": [
@@ -596,7 +610,7 @@
             "h": 10,
             "w": 23,
             "x": 0,
-            "y": 9
+            "y": 2
           },
           "highlightOnMouseover": true,
           "id": 31,
@@ -879,7 +893,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 9
+        "y": 10
       },
       "id": 14,
       "panels": [
@@ -903,7 +917,7 @@
             "h": 8,
             "w": 11,
             "x": 0,
-            "y": 20
+            "y": 3
           },
           "hiddenSeries": false,
           "id": 8,
@@ -1021,7 +1035,7 @@
             "h": 8,
             "w": 11,
             "x": 11,
-            "y": 20
+            "y": 3
           },
           "hiddenSeries": false,
           "id": 32,
@@ -1166,7 +1180,7 @@
             "h": 6,
             "w": 11,
             "x": 0,
-            "y": 28
+            "y": 11
           },
           "hiddenSeries": false,
           "id": 10,
@@ -1338,7 +1352,7 @@
             "h": 6,
             "w": 11,
             "x": 11,
-            "y": 28
+            "y": 11
           },
           "hiddenSeries": false,
           "id": 25,
@@ -1502,7 +1516,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 10
+        "y": 11
       },
       "id": 27,
       "panels": [
@@ -1516,13 +1530,13 @@
             "h": 8,
             "w": 6,
             "x": 0,
-            "y": 35
+            "y": 4
           },
           "id": 20,
           "options": {
             "border": {
-              "color": "yellow",
               "show": false,
+              "color": "yellow",
               "size": 1
             },
             "fieldSets": [
@@ -1548,21 +1562,21 @@
               "inverted": false
             },
             "xAxisExtents": {
-              "max": 2,
-              "min": -2
+              "min": -25,
+              "max": 25
             },
             "xAxisTitle": {
-              "color": "white",
               "text": "x",
+              "color": "white",
               "textSize": 1
             },
             "yAxisExtents": {
-              "max": 2,
-              "min": -2
+              "min": -25,
+              "max": 25
             },
             "yAxisTitle": {
-              "color": "#777",
               "text": "y",
+              "color": "#777",
               "textSize": 1
             }
           },
@@ -1610,7 +1624,7 @@
             "h": 8,
             "w": 12,
             "x": 6,
-            "y": 35
+            "y": 4
           },
           "id": 24,
           "pconfig": {
@@ -1626,16 +1640,14 @@
               },
               "showlegend": false,
               "xaxis": {
-                "range": [-2, 2],
-                "rangemode": "between",
+                "rangemode": "normal",
                 "showgrid": true,
                 "title": "x",
                 "type": "linear",
                 "zeroline": false
               },
               "yaxis": {
-                "range": [-2, 2],
-                "rangemode": "between",
+                "rangemode": "normal",
                 "showgrid": true,
                 "title": "y",
                 "type": "linear",
@@ -1739,7 +1751,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 12
       },
       "id": 34,
       "panels": [
@@ -1859,9 +1871,9 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
-          "text": "MFMS10-MC1 (MAZAK-M77KP290337)",
-          "value": "MFMS10-MC1 (MAZAK-M77KP290337)"
+          "selected": true,
+          "text": "GFAgie01 (mtc_adapter001)",
+          "value": "GFAgie01 (mtc_adapter001)"
         },
         "datasource": null,
         "definition": "select name_uuid from devices",
@@ -1887,7 +1899,7 @@
     ]
   },
   "time": {
-    "from": "now-12h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
@@ -1905,7 +1917,7 @@
     ]
   },
   "timezone": "",
-  "title": "Yetter",
-  "uid": "yetter-a134772",
-  "version": 13
+  "title": "NIST",
+  "uid": "nist-a138882",
+  "version": 2
 }
