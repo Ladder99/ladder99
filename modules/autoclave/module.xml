@@ -1,5 +1,4 @@
-<!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId- -->
-<Model>
+<Module>
   <DataItems>
     <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY"/>
     <DataItem id="op" name="operator_name" category="EVENT" type="USER" subType="OPERATOR"/>
@@ -24,4 +23,4 @@
       </Components>
     </Systems>
   </Components>
-</Model>
+</Module>
