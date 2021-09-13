@@ -7,10 +7,8 @@
 # will be compiled by ladder99 compiler into volumes/agent/agent.xml
 # and volumes/agent/agent.cfg.
 
-#. see also devices-future.yaml for future dev ideas
-
 devices:
-  - id: pa1 # this is substituted into the model.xml and sources
+  - id: pa1 # this is substituted into the module.xml and sources
     name: pa1 # this must match name in agent.cfg and agent.xml
     uuid: e05363
     manufacturer: CCS
@@ -26,9 +24,9 @@ devices:
         port: 1883
 
       - module: erp/plex
-        driver: http-rest
-        host: sql
-        port: 9999
+        driver: erp/plex
+        host: erp-ip-address
+        port: erp-port
 
       # - module: micro
       #   driver: micro

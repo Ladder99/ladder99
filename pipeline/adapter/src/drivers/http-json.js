@@ -11,7 +11,7 @@ export class AdapterDriver {
 
     const timer = setInterval(poll, 1000)
 
-    //. poll device, send data directly to agent as shdr
+    //. poll device, send data directly to agent as shdr for now
     //. hmm, if connection broke, this would start piling up awaiting fn calls -
     //  how avoid that?
     async function poll() {
@@ -20,9 +20,10 @@ export class AdapterDriver {
         const text = await response.text()
         const json = JSON.parse(text)
         console.log(json)
+        //.
         const value = json.status === 'online' ? 'AVAILABLE' : 'UNAVAILABLE'
         const timestamp = new Date().toISOString() //. get from json
-        const shdr = `${timestamp}|${deviceId}-connection|${value}`
+        const shdr = `${timestamp}|${deviceId}/connection|${value}` //..
         console.log(shdr)
         socket.write(shdr + '\n')
       } catch (error) {
@@ -35,10 +36,10 @@ export class AdapterDriver {
     }
 
     // write to cache
-    // //. but cache must have calcs defined for the diff keys eh?
+    // //. cache must have calcs defined for the diff keys in outputs.yaml
     // const key = 'connection'
     // const item = lookup($, part)
-    // const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
+    // const cacheId = deviceId + '/' + key // eg 'pa1/fault_count'
     // // item.receivedTime = receivedTime
     // cache.set(cacheId, item) // save to the cache - may send shdr to tcp
   }
