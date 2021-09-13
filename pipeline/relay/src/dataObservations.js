@@ -1,5 +1,6 @@
 // Observations
-// read current/sample endpoint data and write to db - called from agentReader
+// read current and sample endpoints and write data to db
+// called from agentReader
 
 import { Data } from './data.js'
 import * as treeObservations from './treeObservations.js'
@@ -16,13 +17,15 @@ export class Observations extends Data {
     // get flat list of observations from xml/json
     const observations = treeObservations.getElements(this.json)
 
-    // build up an array of history records to write for speed/lower cpu
+    // build up an array of history records to write
     const records = []
     for (let obs of observations) {
       const node = indexes.objById[obs.dataItemId]
       if (node) {
         const { device_id, property_id } = node
         // obs.value is always string, due to the way the xml is stored, like <value>10</value>
+        //. better to use dataitem category to convert to number?
+        //  ie SAMPLES are numeric, EVENTS are strings
         const value = Number(obs.value) || JSON.stringify(obs.value)
         const record = {
           node_id: device_id,
@@ -30,7 +33,6 @@ export class Observations extends Data {
           time: obs.timestamp,
           value,
         }
-        // console.log(record)
         records.push(record)
       } else {
         console.log(`Warning: objById index missing dataItem ${obs.dataItemId}`)
