@@ -18,10 +18,10 @@ export class AdapterDriver {
     // ie skip the cache for now
     async function poll() {
       const timestamp = new Date().toISOString() //. get from json?
-      const value = 'AVAILABLE' // : 'UNAVAILABLE'
+      const value = Math.random() > 0.5 ? 'AVAILABLE' : 'UNAVAILABLE'
       const shdr = `${timestamp}|${deviceId}/availability|${value}`
       console.log(shdr)
-      socket.write(shdr + '\n')
+      socket.write(shdr + '\n') // write to agent
 
       // try {
       //   const response = await fetch(url)

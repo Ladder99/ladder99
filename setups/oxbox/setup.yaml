@@ -23,10 +23,10 @@ devices:
         host: mosquitto
         port: 1883
 
-      - module: erp/plex
-        driver: erp/plex
-        host: erp-ip-address
-        port: erp-port
+      # - module: erp/plex # see modules/erp/plex/module.xml
+      #   driver: erp/plex # see pipeline/adapter/src/plugins/erp/plex.js
+      #   # host: erp-ip-address
+      #   # port: erp-port
 
       # - module: micro
       #   driver: micro
