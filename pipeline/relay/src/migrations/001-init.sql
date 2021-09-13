@@ -9,10 +9,7 @@
 ---------------------------------------------------------------------
 -- add functions to postgres
 
----------------------------------------------------------------------
--- timescaledb
----------------------------------------------------------------------
--- make hypertables for storing time-series data
+-- timescale - makes hypertables for storing time-series data
 CREATE EXTENSION IF NOT EXISTS timescaledb CASCADE;
 
 
@@ -66,6 +63,16 @@ CREATE TABLE IF NOT EXISTS history (
 );
 SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 CREATE INDEX IF NOT EXISTS history_node_id ON history (node_id);
+
+---------------------------------------------------------------------
+-- bins
+---------------------------------------------------------------------
+-- store data for metrics
+CREATE TABLE IF NOT EXISTS bins (
+  date integer, -- days since 1970-01-01
+  dimensions jsonb, -- incl hour, shift, plant, machine, etc
+  values jsonb -- incl 
+);
 
 ---------------------------------------------------------------------
 -- VIEWS
