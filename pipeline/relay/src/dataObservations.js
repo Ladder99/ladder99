@@ -17,7 +17,11 @@ export class Observations extends Data {
     // get flat list of observations from xml tree
     const observations = treeObservations.getElements(this.json)
 
+    //. sort observations by timestamp, for state machine transitions
+    observations.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+
     // build up an array of history records to write
+    // see https://stackoverflow.com/a/63167970/243392
     const records = []
     for (let obs of observations) {
       const node = indexes.objById[obs.dataItemId]
@@ -26,6 +30,7 @@ export class Observations extends Data {
         // obs.value is always string, due to the way the xml is stored, like <value>10</value>
         //. better to use dataitem category to convert to number?
         //  ie SAMPLES are numeric, EVENTS are strings
+        //. keep in mind that conditions can have >1 value also
         const value = Number(obs.value) || JSON.stringify(obs.value)
         const record = {
           node_id: device_id,
