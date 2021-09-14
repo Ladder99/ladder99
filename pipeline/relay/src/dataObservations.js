@@ -57,9 +57,10 @@ export class Observations extends Data {
     // sort observations by timestamp, for correct state machine transitions.
     // because sequence nums could be out of order, depending on network.
     //. filter first to make shorter?
-    this.observations.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+    // this.observations.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
 
     //. where get machine id/name, component path, operator, job, product, part, etc?
+    // const machine = 'plex1' // plex
     const machine = 'p1' // plex
     const name = `${machine}/availability`
     const bin = `${machine}/available-time`
@@ -70,13 +71,17 @@ export class Observations extends Data {
     // might have multiples of the same one -
     // need to run each through the state machine in order
     //. linear search bad - build an index+array by name
+    console.log(this.observations)
     const dataitems = this.observations.filter(obs => obs.name === name)
+    console.log(dataitems)
     for (let dataitem of dataitems) {
       //. catch edge transitions, add value to bins table
       if (dataitem.value === 'AVAILABLE') {
+        //. use dataitem.timestamp -> sec or ms
         this.bins[key] = new Date().getTime() // ms
       } else if (dataitem.value === 'UNAVAILABLE') {
         if (this.bins[key]) {
+          //. use dataitem.timestamp -> sec or ms
           const value = (new Date().getTime() - this.bins[key]) * 0.001 // sec
           //. write to cache, which will write to db
           // cache.set(cacheKey, { value: this.bins[key] }) // sec

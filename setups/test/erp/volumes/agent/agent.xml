@@ -11,7 +11,8 @@
         Plex ERP System
       </Description>
       <DataItems>
-        <DataItem id="p1/avail" name="plex1/availability" category="EVENT" type="AVAILABILITY" />
+        <!-- will be plex1/availability yes? -->
+        <DataItem id="p1/avail" name="p1/availability" category="EVENT" type="AVAILABILITY" />
       </DataItems>
     </Device>
 
