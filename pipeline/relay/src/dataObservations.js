@@ -59,23 +59,23 @@ export class Observations extends Data {
     //. filter first to make shorter?
     this.observations.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
 
-    //. linear search bad - build an index+array by name
-    //. where get deviceId or component path?
-    // might have multiples of the same one -
-    // need to run each through the state machine in order
-    const machine = 'pa1'
+    //. where get machine id/name, component path, operator, job, product, part, etc?
+    const machine = 'p1' // plex
     const name = `${machine}/availability`
     const bin = `${machine}/available-time`
     const operator = 'lucy'
     const dimensions = `${machine}:${operator}`
     const key = `${dimensions}:${bin}`
 
-    const avails = this.observations.filter(obs => obs.name === name)
-    for (let avail of avails) {
+    // might have multiples of the same one -
+    // need to run each through the state machine in order
+    //. linear search bad - build an index+array by name
+    const dataitems = this.observations.filter(obs => obs.name === name)
+    for (let dataitem of dataitems) {
       //. catch edge transitions, add value to bins table
-      if (avail.value === 'AVAILABLE') {
+      if (dataitem.value === 'AVAILABLE') {
         this.bins[key] = new Date().getTime() // ms
-      } else if (avail.value === 'UNAVAILABLE') {
+      } else if (dataitem.value === 'UNAVAILABLE') {
         if (this.bins[key]) {
           const value = (new Date().getTime() - this.bins[key]) * 0.001 // sec
           //. write to cache, which will write to db
