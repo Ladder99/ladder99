@@ -12,18 +12,18 @@ export class Observations extends Data {
   }
 
   // for read method, see base class Data
-
-  async write(db, indexes) {
+  async read() {
+    await super.read(...arguments)
     // get flat list of observations from xml tree
-    const observations = treeObservations.getElements(this.json)
+    this.observations = treeObservations.getElements(this.json)
+  }
 
-    //. sort observations by timestamp, for state machine transitions
-    observations.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
-
+  // get flat list of observations and write values to db
+  async write(db, indexes) {
     // build up an array of history records to write
     // see https://stackoverflow.com/a/63167970/243392
     const records = []
-    for (let obs of observations) {
+    for (let obs of this.observations) {
       const node = indexes.objById[obs.dataItemId]
       if (node) {
         const { device_id, property_id } = node
@@ -48,6 +48,12 @@ export class Observations extends Data {
     return await db.addHistory(records)
 
     // this.from = nextSequence
+  }
+
+  async calculate(db) {
+    //. sort observations by timestamp, for state machine transitions
+    //. could filter first to make shorter
+    this.observations.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
   }
 
   //   // get sequence info from header
