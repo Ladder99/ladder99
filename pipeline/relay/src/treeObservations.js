@@ -1,6 +1,14 @@
 import * as libapp from './libapp.js'
 
 // get flat list of elements from given json tree
+// eg [{
+//   tag: 'Availability',
+//   dataItemId: 'm1/avail',
+//   name: 'm1/availability',
+//   sequence: '30',
+//   timestamp: '2021-09-14T17:53:21.414Z',
+//   value: 'AVAILABLE'
+// }, ...]
 export function getElements(json) {
   const elements = []
   recurse(json, elements)

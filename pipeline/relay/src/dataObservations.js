@@ -9,16 +9,18 @@ export class Observations extends Data {
   constructor(type) {
     super()
     this.type = type // used by read method
+    this.bins = {} // bins for calculate method
   }
 
-  // for read method, see base class Data
   async read() {
-    await super.read(...arguments)
+    await super.read(...arguments) // see base class in data.js
+
     // get flat list of observations from xml tree
+    // observations is [{ tag, dataItemId, name, timestamp, value }, ...]
     this.observations = treeObservations.getElements(this.json)
   }
 
-  // get flat list of observations and write values to db
+  // write values to db
   async write(db, indexes) {
     // build up an array of history records to write
     // see https://stackoverflow.com/a/63167970/243392
@@ -50,10 +52,37 @@ export class Observations extends Data {
     // this.from = nextSequence
   }
 
+  // do calculations on values and write to db - history and bins table
   async calculate(db) {
-    //. sort observations by timestamp, for state machine transitions
-    //. could filter first to make shorter
+    //. sort observations by timestamp, for correct state machine transitions.
+    // because sequence nums could be out of order, depending on network conditions
+    //. could filter first to make shorter?
     this.observations.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+
+    //. linear search bad - make an index
+    //. where get deviceId or component path?
+    //. might have multiples of the same one -
+    // need to run each through the state machine in order
+    const name = 'm1/availability'
+    const avail = this.observations.find(obs => obs.name === name) || {}
+
+    //. catch edge transitions, add value to bins table
+    const machine = 'm1'
+    const operator = 'lucy'
+    const dimensions = `${machine}:${operator}`
+    const bin = 'm1/available-time'
+    const key = `${dimensions}:${bin}`
+    if (avail.value === 'AVAILABLE') {
+      this.bins[key] = new Date().getTime() // ms
+    } else if (avail.value === 'UNAVAILABLE') {
+      if (this.bins[key]) {
+        const value = (new Date().getTime() - this.bins[key]) * 0.001 // sec
+        // cache.set(cacheKey, { value: this.bins[key] }) // sec
+        this.bins[key] = null
+      }
+    }
+
+    // process.exit(1) //...
   }
 
   //   // get sequence info from header
