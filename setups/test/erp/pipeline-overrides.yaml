@@ -4,13 +4,13 @@ version: '3.8'
 services:
   adapter:
     profiles:
-      - dashboard
+      - db
   agent:
     profiles:
-      - dashboard
+      - db
   relay:
     profiles:
-      - dashboard
+      - db
   postgres:
     profiles:
-      - dashboard
+      - db
