@@ -6,13 +6,12 @@
   <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.7.0.3"/>
   <Devices>
 
-    <Device id="d1" name="dymo1" uuid="a123" sampleInterval="10">
-      <Description manufacturer="Dymo" model="M10" serialNumber="001">
-        Dymo USB Scale
+    <Device id="p1" name="plex1" uuid="a123" sampleInterval="10">
+      <Description manufacturer="Plex" model="uhh" serialNumber="001">
+        Plex ERP System
       </Description>
       <DataItems>
-        <DataItem id="d1/availability" category="EVENT" type="AVAILABILITY" />
-        <DataItem id="d1/mass" category="SAMPLE" type="MASS" units="KILOGRAMS" />
+        <DataItem id="p1/avail" name="plex1/availability" category="EVENT" type="AVAILABILITY" />
       </DataItems>
     </Device>
 

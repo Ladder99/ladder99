@@ -1,6 +1,0 @@
-# must minimally have version num
-version: '3.8'
-# services:
-#   adapter:
-#     ports:
-#       - 9999:9999

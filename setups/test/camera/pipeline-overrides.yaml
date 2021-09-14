@@ -1,9 +1,0 @@
-# docker-compose overrides for demo pipeline.
-
-#. this will be generated from setup.yaml, but edit manually for now.
-
-version: '3.8'
-
-networks:
-  ladder99:
-    name: ladder99

@@ -1,8 +1,8 @@
-# setup for dymo m10 scale
+# setup for plex erp test
 
 devices:
-  - id: d1
-    name: dymo1 # this must match name in agent.cfg and agent.xml
+  - id: p1
+    name: plex1 # this must match name in agent.cfg and agent.xml
     model: scale/dymo
     # specify sources for dataitem values
     #. eg could have multiple thermometers for a machine, or doors?
