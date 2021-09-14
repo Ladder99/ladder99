@@ -32,6 +32,10 @@ export class Endpoint {
   // best to always get xml and transform to json,
   // so don't need to know agent version.
   // type is 'probe', 'current', or 'sample'.
+  //. q. why do we convert from xml to json then parse it?
+  //  can't we just parse the xml directly?
+  //  was this a leftover of initially reading json from the agent?
+  //  (gave up on that as older agents didn't support it)
   async fetchJson(type, from, count) {
     let json
     do {

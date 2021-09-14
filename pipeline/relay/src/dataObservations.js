@@ -14,7 +14,7 @@ export class Observations extends Data {
   // for read method, see base class Data
 
   async write(db, indexes) {
-    // get flat list of observations from xml/json
+    // get flat list of observations from xml tree
     const observations = treeObservations.getElements(this.json)
 
     // build up an array of history records to write

@@ -11,7 +11,7 @@ export class Data {
     this.instanceId = null
   }
 
-  // read json from endpoint, store in .json,
+  // read xml from endpoint, convert to json, store in .json,
   // and parse out .header, .instanceId, .sequence info from it.
   async read(endpoint, from, count) {
     console.log(`read ${endpoint.baseUrl}, ${from}, ${count}`)
