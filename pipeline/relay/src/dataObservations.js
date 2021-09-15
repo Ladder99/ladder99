@@ -54,7 +54,7 @@ export class Observations extends Data {
 
   // do calculations on values and write to db - history and bins table
   //. hardcoded calcs for now - put in yaml later
-  async calculate(bins, db) {
+  async calculate(db, indexes, bins) {
     // sort observations by timestamp, for correct state machine transitions.
     // because sequence nums could be out of order, depending on network.
     //. filter first to make shorter?
@@ -63,6 +63,13 @@ export class Observations extends Data {
     const foo = {
       'available-time': {},
     }
+    const foo2 = [
+      {
+        bin: 'available-time',
+        dataname: 'availability',
+        fn: '',
+      },
+    ]
 
     //. where get machine id/name, component path, operator, job, product, part, etc?
     const machine = 'p1' // plex
@@ -74,10 +81,11 @@ export class Observations extends Data {
 
     // might have multiples of the same one -
     // need to run each through the state machine in order
-    //. linear search bad - build an index+array by name
-    console.log(this.observations)
+    //. linear search bad - build an index+array by name,
+    //  then lookup those that are needed and loop over the subarray?
+    // console.log(this.observations)
     const dataitems = this.observations.filter(obs => obs.name === name)
-    console.log(dataitems)
+    // console.log(dataitems)
     for (let dataitem of dataitems) {
       //. catch edge transitions, add value to bins table
       if (dataitem.value === 'AVAILABLE') {
