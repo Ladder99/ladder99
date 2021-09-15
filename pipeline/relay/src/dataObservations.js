@@ -9,7 +9,7 @@ export class Observations extends Data {
   constructor(type) {
     super()
     this.type = type // used by read method
-    this.bins = {} // bins for calculate method
+    // this.bins = {} // bins for calculate method
   }
 
   async read() {
@@ -53,14 +53,18 @@ export class Observations extends Data {
   }
 
   // do calculations on values and write to db - history and bins table
-  async calculate(db) {
+  //. hardcoded calcs for now - put in yaml later
+  async calculate(bins, db) {
     // sort observations by timestamp, for correct state machine transitions.
     // because sequence nums could be out of order, depending on network.
     //. filter first to make shorter?
-    // this.observations.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+    this.observations.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+
+    const foo = {
+      'available-time': {},
+    }
 
     //. where get machine id/name, component path, operator, job, product, part, etc?
-    // const machine = 'plex1' // plex
     const machine = 'p1' // plex
     const name = `${machine}/availability`
     const bin = `${machine}/available-time`
@@ -78,18 +82,18 @@ export class Observations extends Data {
       //. catch edge transitions, add value to bins table
       if (dataitem.value === 'AVAILABLE') {
         //. use dataitem.timestamp -> sec or ms
-        this.bins[key] = new Date().getTime() // ms
+        bins[key] = new Date().getTime() // ms
       } else if (dataitem.value === 'UNAVAILABLE') {
-        if (this.bins[key]) {
+        if (bins[key]) {
           //. use dataitem.timestamp -> sec or ms
-          const value = (new Date().getTime() - this.bins[key]) * 0.001 // sec
+          const value = (new Date().getTime() - bins[key]) * 0.001 // sec
           //. write to cache, which will write to db
-          // cache.set(cacheKey, { value: this.bins[key] }) // sec
+          // cache.set(cacheKey, { value: bins[key] }) // sec
           //. just write to db for now
           // db.write()
           //. just print for now
           console.log('METRIC', key, value)
-          this.bins[key] = null
+          bins[key] = null
         }
       }
     }
