@@ -72,7 +72,8 @@ CREATE TABLE IF NOT EXISTS bins (
   date integer, -- days since 1970-01-01
   -- hour integer, -- hour of day, 0-23
   dimensions jsonb, -- incl hour, shift, plant, machine, etc
-  values jsonb -- incl activeTime, availableTime, goodParts, badParts, etc
+  values jsonb, -- incl activeTime, availableTime, goodParts, badParts, etc
+  PRIMARY KEY (date, dimensions)
 );
 
 ---------------------------------------------------------------------
