@@ -3,4 +3,4 @@
 
 # this yaml format is specific to the erp.js adapter driver.
 inputs:
-  #. currently just hardcoded in erp.js driver
+  #. currently just hardcoded in erp.js or random.js driver

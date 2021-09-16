@@ -9,7 +9,8 @@ devices:
     #. be careful with multiple sources - don't want to clobber dataitems.
     sources:
       - module: erp/plex
-        driver: erp/plex # adapter plugin - manages protocol and payload
+        driver: random # adapter plugin - manages protocol and payload
+        # driver: erp/plex # adapter plugin - manages protocol and payload
         # protocol: tcp
         # host: 10.20.30.101
         # port: 9999
