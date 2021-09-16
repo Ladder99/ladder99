@@ -57,24 +57,27 @@ export class Observations extends Data {
   async calculate(db, indexes, bins) {
     // sort observations by timestamp, for correct state machine transitions.
     // because sequence nums could be out of order, depending on network.
-    //. filter first to make shorter?
+    //. could filter first to make shorter
     this.observations.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
 
-    const foo = {
-      'available-time': {},
-    }
-    const foo2 = [
+    const foo = [
       {
-        bin: 'available-time',
+        bin: 'timeActive',
+        dataname: 'execution',
+        value: 'ACTIVE',
+        // condition: `execution==='ACTIVE'`,
+      },
+      {
+        bin: 'timeAvailable',
         dataname: 'availability',
-        fn: '',
+        value: 'AVAILABLE',
       },
     ]
 
     //. where get machine id/name, component path, operator, job, product, part, etc?
     const machine = 'p1' // plex
     const name = `${machine}/availability`
-    const bin = `${machine}/available-time`
+    const bin = `timeAvailable`
     const operator = 'lucy'
     const dimensions = `${machine}:${operator}`
     const key = `${dimensions}:${bin}`
@@ -83,11 +86,10 @@ export class Observations extends Data {
     // need to run each through the state machine in order
     //. linear search bad - build an index+array by name,
     //  then lookup those that are needed and loop over the subarray?
-    // console.log(this.observations)
     const dataitems = this.observations.filter(obs => obs.name === name)
-    // console.log(dataitems)
     for (let dataitem of dataitems) {
       //. catch edge transitions, add value to bins table
+      //. or if value is anything other than unavailable?
       if (dataitem.value === 'AVAILABLE') {
         //. use dataitem.timestamp -> sec or ms
         bins[key] = new Date().getTime() // ms
