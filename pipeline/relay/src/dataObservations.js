@@ -61,27 +61,20 @@ export class Observations extends Data {
     //. could filter first to make shorter
     this.observations.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
 
-    //. this should be a dict keyed on dataitem name?
-    // then can loop over dataitem observations and grab these quickly
-    // const foo = [
-    //   {
-    //     bin: 'timeActive',
-    //     dataname: 'execution',
-    //     value: 'ACTIVE',
-    //     // condition: `execution==='ACTIVE'`,
-    //   },
-    //   {
-    //     bin: 'timeAvailable',
-    //     dataname: 'availability',
-    //     value: 'AVAILABLE',
-    //   },
-    // ]
+    // dimensionDefs
     // these are keyed on dataitem/observation name
-    const values = {
-      // calendar: {
-      //   bin: 'timeCalendar',
-      //   when: 'always',
-      // },
+    // if any one of these changes, start putting the time/count values in other bins
+    const dimensionDefs = {
+      operator: {},
+      machine: {},
+      component: {},
+      job: {},
+      operation: {},
+    }
+
+    // valueDefs
+    // these are keyed on dataitem/observation name
+    const valueDefs = {
       execution: {
         bin: 'timeActive',
         when: 'ACTIVE',
@@ -92,51 +85,64 @@ export class Observations extends Data {
       },
     }
 
-    // if any one of these changes, start putting the time/count values in other bins
-    const dims = {
-      operator: {},
-      machine: {},
-      component: {},
-      job: {},
-      operation: {},
-    }
-
     //. where get machine id/name, component path, operator, job, product, part, etc?
-    const machine = 'p1' // plex
-    const name = `${machine}/availability`
-    const bin = `timeAvailable`
-    const operator = 'lucy'
-    const dimensions = `${machine}:${operator}`
-    const key = `${dimensions}:${bin}`
+    // could come from current endpoint, so need to track them in something common to both.
+    const dims = {}
+    // const machine = 'p1' // plex
+    // const operator = 'lucy'
+
+    // const name = `${machine}/availability`
+    // const bin = `timeAvailable`
+    // const dimensions = `${machine}:${operator}`
+    // const key = `${dimensions}:${bin}`
+
+    const currentBins = {}
+    const accumulatorBins = {}
+
+    const startTimes = {} //. pass this in
 
     // might have multiples of the same one -
     // need to run each through the state machine in order
     //. linear search bad - build an index+array by name,
     //  then lookup those that are needed and loop over the subarray?
     //. or just loop over all dataitems, do stuff if obs.name matches dict names
-    const dataitems = this.observations.filter(obs => obs.name === name)
-    for (let dataitem of dataitems) {
-      //. catch edge transitions, add value to bins table
-      //. or if value is anything other than unavailable?
-      if (dataitem.value === 'AVAILABLE') {
-        //. use dataitem.timestamp -> sec or ms
-        bins[key] = new Date().getTime() // ms
-      } else if (dataitem.value === 'UNAVAILABLE') {
-        if (bins[key]) {
-          //. use dataitem.timestamp -> sec or ms
-          const value = (new Date().getTime() - bins[key]) * 0.001 // sec
-          //. write to cache, which will write to db
-          // cache.set(cacheKey, { value: bins[key] }) // sec
-          //. just write to db for now
-          // db.write()
-          //. just print for now
-          console.log('METRIC', key, value)
-          bins[key] = null
+    // const dataitems = this.observations.filter(obs => obs.name === name)
+    // for (let dataitem of dataitems) {
+    for (let observation of this.observations) {
+      let dimensionDef
+      let valueDef
+      let startTime
+      const dataname = dims.machine + '/' + observation.name
+      if ((dimensionDef = dimensionDefs[dataname])) {
+        // dump current bins to accumulator bins, clear them
+        // do this so can dump all accumulator bins to db in one go, at end
+      } else if ((valueDef = valueDefs[dataname])) {
+        // handle edge transition - start or stop timetracking for the value
+        const value = observation.value
+        // valueDef.when could be eg 'AVAILABLE' or 'ACTIVE' etc
+        const timestampSecs = observation.timestamp //. -> secs
+        if (value === valueDef.when) {
+          // start 'timer' for this observation
+          //. what if agent is defective and it sends these out every time, instead of just at start?
+          // startTimes[dataname] = new Date().getTime() // ms
+          startTimes[dataname] = timestampSecs
+        } else {
+          if ((startTime = startTimes[dataname])) {
+            const value = timestampSecs - startTime // sec
+            console.log('METRIC', dataname, value)
+            startTimes[dataname] = null
+          }
         }
       }
     }
 
-    // process.exit(1) //...
+    //. dump accumulator bins to db
+    //. write to cache, which will write to db
+    // cache.set(cacheKey, { value: bins[key] }) // sec
+    //. just write to db for now
+    // db.write()
+    //. just print for now
+    console.log(accumulatorBins)
   }
 
   //   // get sequence info from header
