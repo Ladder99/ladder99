@@ -5,6 +5,30 @@
 import { Data } from './data.js'
 import * as treeObservations from './treeObservations.js'
 
+//. move these into yaml
+// dimensionDefs
+// these are keyed on dataitem/observation name
+// if any one of these changes, start putting the time/count values in other bins
+const dimensionDefs = {
+  operator: {},
+  machine: {},
+  component: {},
+  job: {},
+  operation: {},
+}
+// valueDefs
+// these are keyed on dataitem/observation name
+const valueDefs = {
+  availability: {
+    bin: 'timeAvailable',
+    when: 'AVAILABLE',
+  },
+  execution: {
+    bin: 'timeActive',
+    when: 'ACTIVE',
+  },
+}
+
 export class Observations extends Data {
   constructor(type) {
     super()
@@ -53,79 +77,63 @@ export class Observations extends Data {
     // this.from = nextSequence
   }
 
-  // do calculations on values and write to db - history and bins table
-  //. hardcoded calcs for now - put in yaml later
-  async calculate(db, indexes, dimensionValues, startTimes) {
+  // do calculations on values and write to db - bins table.
+  // db is database object
+  // indexes is dict of indexes referring to probe dataitems
+  // currentDimensions is dict eg { operator: 'Alice' }
+  // startTimes is dict eg { availability: 18574734.321 }
+  async calculate(db, indexes, currentDimensions, startTimes) {
+    // convert iso timestamps to seconds since 1970-01-01
+    this.observations.forEach(observation => {
+      observation.timestampSecs =
+        new Date(observation.timestamp).getTime() * 0.001
+    })
+
     // sort observations by timestamp, for correct state machine transitions.
     // because sequence nums could be out of order, depending on network.
-    //. could filter first to make shorter
-    //. convert to seconds first, then could compare floats?
-    this.observations.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
-
-    //. move these to top if unchanging - then into yaml
-
-    // dimensionDefs
-    // these are keyed on dataitem/observation name
-    // if any one of these changes, start putting the time/count values in other bins
-    const dimensionDefs = {
-      operator: {},
-      machine: {},
-      component: {},
-      job: {},
-      operation: {},
-    }
-
-    // valueDefs
-    // these are keyed on dataitem/observation name
-    const valueDefs = {
-      availability: {
-        bin: 'timeAvailable',
-        when: 'AVAILABLE',
-      },
-      execution: {
-        bin: 'timeActive',
-        when: 'ACTIVE',
-      },
-    }
-
-    //. where get machine id/name, component path, operator, job, product, part, etc?
-    // could come from current endpoint, so need to track them in something common to both.
-    // const dims = {}
-
-    // const machine = 'p1' // plex
-    // const operator = 'lucy'
-    // const bin = `timeAvailable`
-    // const dimensions = `${machine}:${operator}`
-    // const key = `${dimensions}:${bin}`
+    //. make sure this is ascending order!
+    this.observations.sort((a, b) => a.timestampSecs - b.timestampSecs)
 
     const currentBins = {}
     const accumulatorBins = {}
-    // const startTimes = {} //. will pass this in
+
+    // const row = ''
+    // for (let key of Object.keys(dimensionDefs)) {
+    //   accumulatorBins[row] = {}
+    // }
 
     // might have multiple observations of the same dataitem -
     // so need to run each through the state machine in order
     for (let observation of this.observations) {
       if (!observation.name) continue // skip observations without data names
-      // console.log(observation)
-      // for now, name includes machineId/ - remove it to get dataname
+      //. for now, name includes machineId/ - remove it to get dataname, eg 'availability'
       const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
       // if value of a dimension changes, dump bins and update current value
       if (dimensionDefs[dataname]) {
         const value = observation.value
-        if (value !== dimensionValues[dataname]) {
+        if (value !== currentDimensions[dataname]) {
           // const dimensionDef = dimensionDefs[dataname]
-          // dump current bins to accumulator bins, clear them
+          const dimensionKey = Object.values(currentDimensions).join(',')
+          if (accumulatorBins[dimensionKey] === undefined) {
+            accumulatorBins[dimensionKey] = {}
+          }
           // do this so can dump all accumulator bins to db in one go, at end
+          // dump current bins to accumulator bins, then clear them
+          for (let bin of Object.keys(currentBins)) {
+            accumulatorBins[dimensionKey][bin] += currentBins[bin]
+            delete currentBins[bin]
+          }
           // update current dimension value
-          dimensionValues[dataname] = value
+          currentDimensions[dataname] = value
         }
         //
       } else if (valueDefs[dataname]) {
         const valueDef = valueDefs[dataname]
-        console.log('valuedef', dataname, valueDef, observation)
+        const bin = valueDef.bin // eg 'timeActive'
+        // console.log('valuedef', dataname, valueDef, observation)
         // handle edge transition - start or stop timetracking for the value
         const value = observation.value // eg 'ACTIVE'
-        const timestampSecs = observation.timestamp //. -> secs
+        const timestampSecs = observation.timestampSecs
         // `when` could be eg 'AVAILABLE' or 'ACTIVE' etc
         if (value === valueDef.when) {
           // start 'timer' for this observation
@@ -136,23 +144,29 @@ export class Observations extends Data {
         } else {
           // otherwise, observation is 'off' - dump the time to the current bin
           if (startTimes[dataname]) {
-            // const delta = timestampSecs - startTimes[dataname] // sec
+            const delta = timestampSecs - startTimes[dataname] // sec
             console.log(
               dataname,
               'subtract',
               timestampSecs,
-              startTimes[dataname]
+              startTimes[dataname],
+              delta
             )
             // console.log('METRIC', dataname, delta)
-            // currentBins[valueDef.bin] += delta
+            if (currentBins[bin] === undefined) {
+              currentBins[bin] = delta
+            } else {
+              currentBins[bin] += delta
+            }
             startTimes[dataname] = null
           }
         }
       }
     }
 
-    console.log('dimvals', dimensionValues)
+    console.log('dimvals', currentDimensions)
     console.log('starts', startTimes)
+    console.log('currBins', currentBins)
 
     //. dump accumulator bins to db
     //. write to cache, which will write to db
@@ -160,7 +174,7 @@ export class Observations extends Data {
     //. just write to db for now
     // db.write()
     //. just print for now
-    // console.log(accumulatorBins)
+    console.log('accumBins', accumulatorBins)
   }
 
   //   // get sequence info from header
