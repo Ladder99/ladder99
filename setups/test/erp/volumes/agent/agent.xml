@@ -14,6 +14,7 @@
         <!-- will be plex1/availability etc? -->
         <DataItem id="p1/avail" name="p1/availability" category="EVENT" type="AVAILABILITY" />
         <DataItem id="p1/exec" name="p1/execution" category="EVENT" type="EXECUTION" />
+        <DataItem id="p1/op" name="p1/operator" category="EVENT" type="USER" subType="OPERATOR" />
       </DataItems>
     </Device>
 
