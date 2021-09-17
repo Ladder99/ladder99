@@ -55,7 +55,7 @@ export class Observations extends Data {
 
   // do calculations on values and write to db - history and bins table
   //. hardcoded calcs for now - put in yaml later
-  async calculate(db, indexes, bins) {
+  async calculate(db, indexes, currentDimensionValues) {
     // sort observations by timestamp, for correct state machine transitions.
     // because sequence nums could be out of order, depending on network.
     //. could filter first to make shorter
@@ -87,7 +87,7 @@ export class Observations extends Data {
 
     //. where get machine id/name, component path, operator, job, product, part, etc?
     // could come from current endpoint, so need to track them in something common to both.
-    const dims = {}
+    // const dims = {}
     // const machine = 'p1' // plex
     // const operator = 'lucy'
 
@@ -109,11 +109,9 @@ export class Observations extends Data {
     // const dataitems = this.observations.filter(obs => obs.name === name)
     // for (let dataitem of dataitems) {
     for (let observation of this.observations) {
-      let dimensionDef
-      let valueDef
-      let startTime
-      const dataname = dims.machine + '/' + observation.name
-      if ((dimensionDef = dimensionDefs[dataname])) {
+      const dataname = currentDimensionValues.machine + '/' + observation.name //. ok?
+      if (dimensionDefs[dataname]) {
+        const dimensionDef = dimensionDefs[dataname]
         // dump current bins to accumulator bins, clear them
         // do this so can dump all accumulator bins to db in one go, at end
       } else if (valueDefs[dataname]) {

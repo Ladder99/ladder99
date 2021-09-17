@@ -23,8 +23,8 @@ export class AgentReader {
     this.interval = params.fetchInterval
     this.count = params.fetchCount
 
-    // dict of bins
-    this.bins = {}
+    // dict of current dimension values, eg operator='Alice'
+    this.currentDimensionValues = {}
   }
 
   // // init agent reader
@@ -53,7 +53,11 @@ export class AgentReader {
         await current.read(this.endpoint) // get xml and this.sequence numbers
         if (instanceIdChanged(current, probe)) break probe
         await current.write(this.db, probe.indexes)
-        await current.calculate(this.db, probe.indexes, this.bins)
+        await current.calculate(
+          this.db,
+          probe.indexes,
+          this.currentDimensionValues
+        )
         this.from = current.sequence.next
 
         // sample - get sequence of dataitem values, write to db
@@ -62,7 +66,11 @@ export class AgentReader {
           await sample.read(this.endpoint, this.from, this.count)
           if (instanceIdChanged(sample, probe)) break probe
           await sample.write(this.db, probe.indexes)
-          await sample.calculate(this.db, probe.indexes, this.bins)
+          await sample.calculate(
+            this.db,
+            probe.indexes,
+            this.currentDimensionValues
+          )
           this.from = sample.sequence.next //. ?
           await libapp.sleep(this.interval)
         } while (true)
