@@ -10,6 +10,7 @@ export class Observations extends Data {
     super()
     this.type = type // used by read method
     // this.bins = {} // bins for calculate method
+    // this.previousTime = null
   }
 
   async read() {
@@ -60,19 +61,45 @@ export class Observations extends Data {
     //. could filter first to make shorter
     this.observations.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
 
-    const foo = [
-      {
+    //. this should be a dict keyed on dataitem name?
+    // then can loop over dataitem observations and grab these quickly
+    // const foo = [
+    //   {
+    //     bin: 'timeActive',
+    //     dataname: 'execution',
+    //     value: 'ACTIVE',
+    //     // condition: `execution==='ACTIVE'`,
+    //   },
+    //   {
+    //     bin: 'timeAvailable',
+    //     dataname: 'availability',
+    //     value: 'AVAILABLE',
+    //   },
+    // ]
+    // these are keyed on dataitem/observation name
+    const values = {
+      // calendar: {
+      //   bin: 'timeCalendar',
+      //   when: 'always',
+      // },
+      execution: {
         bin: 'timeActive',
-        dataname: 'execution',
-        value: 'ACTIVE',
-        // condition: `execution==='ACTIVE'`,
+        when: 'ACTIVE',
       },
-      {
+      availability: {
         bin: 'timeAvailable',
-        dataname: 'availability',
-        value: 'AVAILABLE',
+        when: 'AVAILABLE',
       },
-    ]
+    }
+
+    // if any one of these changes, start putting the time/count values in other bins
+    const dims = {
+      operator: {},
+      machine: {},
+      component: {},
+      job: {},
+      operation: {},
+    }
 
     //. where get machine id/name, component path, operator, job, product, part, etc?
     const machine = 'p1' // plex
@@ -86,6 +113,7 @@ export class Observations extends Data {
     // need to run each through the state machine in order
     //. linear search bad - build an index+array by name,
     //  then lookup those that are needed and loop over the subarray?
+    //. or just loop over all dataitems, do stuff if obs.name matches dict names
     const dataitems = this.observations.filter(obs => obs.name === name)
     for (let dataitem of dataitems) {
       //. catch edge transitions, add value to bins table
