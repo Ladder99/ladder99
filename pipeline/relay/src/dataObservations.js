@@ -55,12 +55,14 @@ export class Observations extends Data {
 
   // do calculations on values and write to db - history and bins table
   //. hardcoded calcs for now - put in yaml later
-  async calculate(db, indexes, dimensionValues) {
+  async calculate(db, indexes, dimensionValues, startTimes) {
     // sort observations by timestamp, for correct state machine transitions.
     // because sequence nums could be out of order, depending on network.
     //. could filter first to make shorter
     //. convert to seconds first, then could compare floats?
     this.observations.sort((a, b) => a.timestamp.localeCompare(b.timestamp))
+
+    //. move these to top if unchanging - then into yaml
 
     // dimensionDefs
     // these are keyed on dataitem/observation name
@@ -76,13 +78,13 @@ export class Observations extends Data {
     // valueDefs
     // these are keyed on dataitem/observation name
     const valueDefs = {
-      execution: {
-        bin: 'timeActive',
-        when: 'ACTIVE',
-      },
       availability: {
         bin: 'timeAvailable',
         when: 'AVAILABLE',
+      },
+      execution: {
+        bin: 'timeActive',
+        when: 'ACTIVE',
       },
     }
 
@@ -98,7 +100,7 @@ export class Observations extends Data {
 
     const currentBins = {}
     const accumulatorBins = {}
-    const startTimes = {} //. pass this in
+    // const startTimes = {} //. will pass this in
 
     // might have multiple observations of the same dataitem -
     // so need to run each through the state machine in order
@@ -118,32 +120,39 @@ export class Observations extends Data {
           dimensionValues[dataname] = value
         }
         //
+      } else if (valueDefs[dataname]) {
+        const valueDef = valueDefs[dataname]
+        console.log('valuedef', dataname, valueDef, observation)
+        // handle edge transition - start or stop timetracking for the value
+        const value = observation.value // eg 'ACTIVE'
+        const timestampSecs = observation.timestamp //. -> secs
+        // `when` could be eg 'AVAILABLE' or 'ACTIVE' etc
+        if (value === valueDef.when) {
+          // start 'timer' for this observation
+          // add guard in case agent is defective and sends these out every time, instead of just at start
+          if (!startTimes[dataname]) {
+            startTimes[dataname] = timestampSecs
+          }
+        } else {
+          // otherwise, observation is 'off' - dump the time to the current bin
+          if (startTimes[dataname]) {
+            // const delta = timestampSecs - startTimes[dataname] // sec
+            console.log(
+              dataname,
+              'subtract',
+              timestampSecs,
+              startTimes[dataname]
+            )
+            // console.log('METRIC', dataname, delta)
+            // currentBins[valueDef.bin] += delta
+            startTimes[dataname] = null
+          }
+        }
       }
-
-      // else if (valueDefs[dataname]) {
-      //   const valueDef = valueDefs[dataname]
-      //   // handle edge transition - start or stop timetracking for the value
-      //   const value = observation.value
-      //   const timestampSecs = observation.timestamp //. -> secs
-      //   // valueDef.when could be eg 'AVAILABLE' or 'ACTIVE' etc
-      //   if (value === valueDef.when) {
-      //     // start 'timer' for this observation
-      //     // add guard in case agent is defective and sends these out every time, instead of just at start
-      //     if (!startTimes[dataname]) {
-      //       startTimes[dataname] = timestampSecs
-      //     }
-      //   } else {
-      //     if (startTimes[dataname]) {
-      //       const delta = timestampSecs - startTimes[dataname] // sec
-      //       console.log('METRIC', dataname, delta)
-      //       currentBins[valueDef.bin] += delta
-      //       startTimes[dataname] = null
-      //     }
-      //   }
-      // }
     }
 
     console.log('dimvals', dimensionValues)
+    console.log('starts', startTimes)
 
     //. dump accumulator bins to db
     //. write to cache, which will write to db
