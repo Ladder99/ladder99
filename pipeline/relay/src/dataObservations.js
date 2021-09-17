@@ -116,20 +116,23 @@ export class Observations extends Data {
       if ((dimensionDef = dimensionDefs[dataname])) {
         // dump current bins to accumulator bins, clear them
         // do this so can dump all accumulator bins to db in one go, at end
-      } else if ((valueDef = valueDefs[dataname])) {
+      } else if (valueDefs[dataname]) {
+        const valueDef = valueDefs[dataname]
         // handle edge transition - start or stop timetracking for the value
         const value = observation.value
-        // valueDef.when could be eg 'AVAILABLE' or 'ACTIVE' etc
         const timestampSecs = observation.timestamp //. -> secs
+        // valueDef.when could be eg 'AVAILABLE' or 'ACTIVE' etc
         if (value === valueDef.when) {
           // start 'timer' for this observation
-          //. what if agent is defective and it sends these out every time, instead of just at start?
-          // startTimes[dataname] = new Date().getTime() // ms
-          startTimes[dataname] = timestampSecs
+          // add guard in case agent is defective and sends these out every time, instead of just at start
+          if (!startTimes[dataname]) {
+            startTimes[dataname] = timestampSecs
+          }
         } else {
-          if ((startTime = startTimes[dataname])) {
-            const value = timestampSecs - startTime // sec
-            console.log('METRIC', dataname, value)
+          if (startTimes[dataname]) {
+            const delta = timestampSecs - startTimes[dataname] // sec
+            console.log('METRIC', dataname, delta)
+            currentBins[valueDef.bin] += delta
             startTimes[dataname] = null
           }
         }
