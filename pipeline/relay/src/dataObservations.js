@@ -89,26 +89,24 @@ export class Observations extends Data {
     //. where get machine id/name, component path, operator, job, product, part, etc?
     // could come from current endpoint, so need to track them in something common to both.
     // const dims = {}
+
     // const machine = 'p1' // plex
     // const operator = 'lucy'
-
-    // const name = `${machine}/availability`
     // const bin = `timeAvailable`
     // const dimensions = `${machine}:${operator}`
     // const key = `${dimensions}:${bin}`
 
     const currentBins = {}
     const accumulatorBins = {}
-
     const startTimes = {} //. pass this in
 
     // might have multiple observations of the same dataitem -
     // so need to run each through the state machine in order
     for (let observation of this.observations) {
-      // const dataname = observation.name
-      // for now, obs.name includes machineId/ - remove it to get dataname
+      if (!observation.name) continue // skip observations without data names
+      // console.log(observation)
+      // for now, name includes machineId/ - remove it to get dataname
       const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
-
       // if value of a dimension changes, dump bins and update current value
       if (dimensionDefs[dataname]) {
         const value = observation.value

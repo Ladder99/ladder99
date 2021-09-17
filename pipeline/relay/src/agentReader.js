@@ -50,7 +50,7 @@ export class AgentReader {
       // current - get last known values of all dataitems and write to db
       current: do {
         const current = new Observations('current')
-        await current.read(this.endpoint) // get xml and this.sequence numbers
+        await current.read(this.endpoint) // get observations and this.sequence numbers
         if (instanceIdChanged(current, probe)) break probe
         await current.write(this.db, probe.indexes)
         await current.calculate(this.db, probe.indexes, this.dimensionValues)
@@ -59,7 +59,7 @@ export class AgentReader {
         // sample - get sequence of dataitem values, write to db
         const sample = new Observations('sample')
         sample: do {
-          await sample.read(this.endpoint, this.from, this.count)
+          await sample.read(this.endpoint, this.from, this.count) // get observations
           if (instanceIdChanged(sample, probe)) break probe
           await sample.write(this.db, probe.indexes)
           await sample.calculate(this.db, probe.indexes, this.dimensionValues)
