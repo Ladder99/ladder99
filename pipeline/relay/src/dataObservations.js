@@ -6,18 +6,17 @@ import { Data } from './data.js'
 import * as treeObservations from './treeObservations.js'
 
 //. move these into yaml
-// dimensionDefs
-// these are keyed on dataitem/observation name
+// dimensionDefs - keyed on dataitem/observation name
 // if any one of these changes, start putting the time/count values in other bins
 const dimensionDefs = {
+  hour: {}, //. okay? what if some need higher resolution? eg minute?
   operator: {},
   machine: {},
   component: {},
   job: {},
   operation: {},
 }
-// valueDefs
-// these are keyed on dataitem/observation name
+// valueDefs - keyed on dataitem/observation name
 const valueDefs = {
   availability: {
     bin: 'timeAvailable',
@@ -77,11 +76,11 @@ export class Observations extends Data {
     // this.from = nextSequence
   }
 
-  // do calculations on values and write to db - bins table.
+  // do calculations on values and write to db - bins table
   // db is database object
   // indexes is dict of indexes referring to probe dataitems
-  // currentDimensions is dict eg { operator: 'Alice' }
-  // startTimes is dict eg { availability: 18574734.321 }
+  // currentDimensions is dict with current dimension values, eg { operator: 'Alice' }
+  // startTimes is dict with start times for each bin, eg { availability: 18574734.321 }
   async calculate(db, indexes, currentDimensions, startTimes) {
     // convert iso timestamps to seconds since 1970-01-01
     this.observations.forEach(observation => {
@@ -89,28 +88,30 @@ export class Observations extends Data {
         new Date(observation.timestamp).getTime() * 0.001
     })
 
-    // sort observations by timestamp, for correct state machine transitions.
+    // sort observations by timestamp asc, for correct state machine transitions.
     // because sequence nums could be out of order, depending on network.
-    //. make sure this is ascending order!
     this.observations.sort((a, b) => a.timestampSecs - b.timestampSecs)
 
-    const currentBins = {}
+    // accumulated bins for this calculation run - will add to db at end
     const accumulatorBins = {}
 
-    // const row = ''
-    // for (let key of Object.keys(dimensionDefs)) {
-    //   accumulatorBins[row] = {}
-    // }
+    // bins for the current set of dimension values
+    // added to accumulator and cleared on each change of a dimension value
+    const currentBins = {}
 
-    // might have multiple observations of the same dataitem -
-    // so need to run each through the state machine in order
+    // could have multiple observations of the same dataitem -
+    // so need to run each observation through the state machine in order
     for (let observation of this.observations) {
       if (!observation.name) continue // skip observations without data names
+
       //. for now, name includes machineId/ - remove it to get dataname, eg 'availability'
       const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
-      // if value of a dimension changes, dump bins and update current value
+
+      // check if this dataitem is a dimension we need to track, eg dataname='operator'
       if (dimensionDefs[dataname]) {
-        const value = observation.value
+        //
+        // if value of a dimension changes, dump current bins and update current value.
+        const value = observation.value // eg 'Alice'
         if (value !== currentDimensions[dataname]) {
           // const dimensionDef = dimensionDefs[dataname]
           const dimensionKey = Object.values(currentDimensions).join(',')
@@ -127,6 +128,7 @@ export class Observations extends Data {
           currentDimensions[dataname] = value
         }
         //
+        // if observation is something we need for a metric, update start time or current bin
       } else if (valueDefs[dataname]) {
         const valueDef = valueDefs[dataname]
         const bin = valueDef.bin // eg 'timeActive'
