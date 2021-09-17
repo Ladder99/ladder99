@@ -121,7 +121,12 @@ export class Observations extends Data {
           // do this so can dump all accumulator bins to db in one go, at end
           // dump current bins to accumulator bins, then clear them
           for (let bin of Object.keys(currentBins)) {
-            accumulatorBins[dimensionKey][bin] += currentBins[bin]
+            // const k = bin
+            if (accumulatorBins[dimensionKey][bin] === undefined) {
+              accumulatorBins[dimensionKey][bin] = currentBins[bin]
+            } else {
+              accumulatorBins[dimensionKey][bin] += currentBins[bin]
+            }
             delete currentBins[bin]
           }
           // update current dimension value
