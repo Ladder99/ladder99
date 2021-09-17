@@ -8,10 +8,10 @@ export class AdapterDriver {
 
     const timer = setInterval(poll, pollInterval)
 
-    //. poll and send data directly to agent as shdr
-    // ie skip the cache for now
+    // send data directly to agent as shdr - ie skip the cache for now
+    //. these should only send something if value CHANGED
     async function poll() {
-      const timestamp = new Date().toISOString() //. get from json?
+      const timestamp = new Date().toISOString()
       const availability = Math.random() > 0.5 ? 'AVAILABLE' : 'UNAVAILABLE'
       const execution =
         availability === 'AVAILABLE'
@@ -19,7 +19,12 @@ export class AdapterDriver {
             ? 'ACTIVE'
             : 'WAIT'
           : 'WAIT'
-      const shdr = `${timestamp}|${deviceId}/availability|${availability}|${deviceId}/execution|${execution}`
+      const operator = Math.random() > 0.5 ? 'Alice' : 'Bob'
+
+      let shdr = timestamp
+      shdr += `|${deviceId}/availability|${availability}`
+      shdr += `|${deviceId}/execution|${execution}`
+      shdr += `|${deviceId}/operator|${operator}`
       console.log(shdr)
       socket.write(shdr + '\n') // write to agent
 
