@@ -82,10 +82,13 @@ export class Observations extends Data {
   // currentDimensions is dict with current dimension values, eg { operator: 'Alice' }
   // startTimes is dict with start times for each bin, eg { availability: 18574734.321 }
   async calculate(db, indexes, currentDimensions, startTimes) {
+    //
     // convert iso timestamps to seconds since 1970-01-01
     this.observations.forEach(observation => {
-      observation.timestampSecs =
-        new Date(observation.timestamp).getTime() * 0.001
+      // observation.timestampDateObj = new Date(observation.timestamp)
+      const date = new Date(observation.timestamp)
+      observation.timestampSecs = date.getTime() * 0.001
+      observation.hour = date.getHours()
     })
 
     // sort observations by timestamp asc, for correct state machine transitions.
@@ -99,6 +102,8 @@ export class Observations extends Data {
     // added to accumulator and cleared on each change of a dimension value
     const currentBins = {}
 
+    let previousHour = null
+
     // could have multiple observations of the same dataitem -
     // so need to run each observation through the state machine in order
     for (let observation of this.observations) {
@@ -107,11 +112,15 @@ export class Observations extends Data {
       //. for now, name includes machineId/ - remove it to get dataname, eg 'availability'
       const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
 
+      const { timestampSecs, hour, value } = observation
+      if (hour !== previousHour) {
+      }
+
       // check if this dataitem is a dimension we need to track, eg dataname='operator'
       if (dimensionDefs[dataname]) {
         //
         // if value of a dimension changes, dump current bins and update current value.
-        const value = observation.value // eg 'Alice'
+        // const value = observation.value // eg 'Alice'
         if (value !== currentDimensions[dataname]) {
           // const dimensionDef = dimensionDefs[dataname]
           const dimensionKey = Object.values(currentDimensions).join(',')
@@ -139,8 +148,8 @@ export class Observations extends Data {
         const bin = valueDef.bin // eg 'timeActive'
         // console.log('valuedef', dataname, valueDef, observation)
         // handle edge transition - start or stop timetracking for the value
-        const value = observation.value // eg 'ACTIVE'
-        const timestampSecs = observation.timestampSecs
+        // const value = observation.value // eg 'ACTIVE'
+        // const timestampSecs = observation.timestampSecs
         // `when` could be eg 'AVAILABLE' or 'ACTIVE' etc
         if (value === valueDef.when) {
           // start 'timer' for this observation
@@ -174,6 +183,10 @@ export class Observations extends Data {
     console.log('dimvals', currentDimensions)
     console.log('starts', startTimes)
     console.log('currBins', currentBins)
+
+    // const currentTime = new Date().getTime()
+    // accumulatorBins.timeCalendar = (currentTime - previousTime) * 0.001 // sec
+    // previousTime = currentTime
 
     //. dump accumulator bins to db
     //. write to cache, which will write to db
