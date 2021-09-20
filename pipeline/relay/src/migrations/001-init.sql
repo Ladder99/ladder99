@@ -105,7 +105,7 @@ JOIN nodes AS properties ON history.property_id=properties.node_id;
 ---------------------------------------------------------------------
 -- history_float
 ---------------------------------------------------------------------
--- note: float is an alias for 'double precision'
+-- note: float is an alias for 'double precision' or float8
 CREATE OR REPLACE VIEW history_float AS
 SELECT device, property, time, value::float
 FROM history_all
