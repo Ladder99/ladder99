@@ -199,14 +199,15 @@ export class Observations extends Data {
     //. write to cache, which will write to db
     // cache.set(cacheKey, { value: bins[key] }) // sec
     //. just print for now
+    // eg { '{"operator":"Alice"}': { timeActive: 1 } }
     console.log('accumulatorBins', accumulatorBins)
+
     //. write to db
     const keys = Object.keys(accumulatorBins)
     for (let key of keys) {
-      const acc = accumulatorBins[key]
-      // const pairs = splitDimensionKey(key)
-      // console.log(key, pairs)
-      console.log('add to', key, 'values', acc)
+      const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
+      const acc = accumulatorBins[key] // eg { timeActive: 1 }
+      console.log('add to', dims, 'vals', acc)
     }
     // const sql = ``
     // db.write(sql)
@@ -329,16 +330,18 @@ function dimensionValueChanged(
 }
 
 function getDimensionKey(currentDimensionValues) {
-  const dimensionKey = Object.entries(currentDimensionValues)
-    .map(([key, value]) => `${key}=${value}`)
-    .join(',')
-  return dimensionKey
+  // const dimensionKey = Object.entries(currentDimensionValues)
+  //   .map(([key, value]) => `${key}=${value}`)
+  //   .join(',')
+  // return dimensionKey
+  return JSON.stringify(currentDimensionValues)
 }
 
 function splitDimensionKey(dimensionKey) {
-  const parts = dimensionKey.split(',')
-  const pairs = parts.map(part => part.split('='))
-  return pairs
+  // const parts = dimensionKey.split(',')
+  // const pairs = parts.map(part => part.split('='))
+  // return pairs
+  return JSON.parse(dimensionKey)
 }
 
 function getDayOfYear(date) {

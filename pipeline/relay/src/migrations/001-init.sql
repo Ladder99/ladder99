@@ -71,7 +71,7 @@ CREATE INDEX IF NOT EXISTS history_node_id ON history (node_id);
 CREATE TABLE IF NOT EXISTS bins (
   time timestamptz NOT NULL, -- rounded down by hour, for now
   dimensions jsonb, -- incl hour, shift, plant, machine, etc
-  values jsonb, -- incl activeTime, availableTime, goodParts, badParts, etc
+  vals jsonb, -- incl activeTime, availableTime, goodParts, badParts, etc
   PRIMARY KEY (time, dimensions)
 );
 
