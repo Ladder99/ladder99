@@ -122,7 +122,7 @@ export class Observations extends Data {
 
       // hour is another dimension we need to track
       if (hour !== currentDimensionValues.hour) {
-        onValueChange(
+        onDimensionValueChange(
           accumulatorBins,
           currentBins,
           currentDimensionValues,
@@ -136,7 +136,7 @@ export class Observations extends Data {
         //
         // if value of a dimension changes, dump current bins and update current value.
         if (value !== currentDimensionValues[dataname]) {
-          onValueChange(
+          onDimensionValueChange(
             accumulatorBins,
             currentBins,
             currentDimensionValues,
@@ -279,7 +279,7 @@ export class Observations extends Data {
 
 // a dimension value changed - dump current bins into accumulator bins,
 // and update current dimension value
-function onValueChange(
+function onDimensionValueChange(
   accumulatorBins,
   currentBins,
   currentDimensionValues,
@@ -287,18 +287,23 @@ function onValueChange(
   value
 ) {
   // const dimensionDef = dimensionDefs[dataname]
-  const dimensionKey = Object.values(currentDimensionValues).join(',')
+  //
+  // get key for this row, like 'hour=8,operator=Alice'
+  const dimensionKey = Object.entries(currentDimensionValues)
+    .map(([key, value]) => `${key}=${value}`)
+    .join(',')
+  // start new dict if needed
   if (accumulatorBins[dimensionKey] === undefined) {
     accumulatorBins[dimensionKey] = {}
   }
   // dump current bins to accumulator bins, then clear them.
   // do this so can dump all accumulator bins to db in one go, at end.
   for (let bin of Object.keys(currentBins)) {
-    // const k = bin
-    if (accumulatorBins[dimensionKey][bin] === undefined) {
-      accumulatorBins[dimensionKey][bin] = currentBins[bin]
+    const acc = accumulatorBins[dimensionKey]
+    if (acc[bin] === undefined) {
+      acc[bin] = currentBins[bin]
     } else {
-      accumulatorBins[dimensionKey][bin] += currentBins[bin]
+      acc[bin] += currentBins[bin]
     }
     delete currentBins[bin]
   }
