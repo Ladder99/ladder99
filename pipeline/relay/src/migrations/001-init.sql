@@ -69,8 +69,6 @@ CREATE INDEX IF NOT EXISTS history_node_id ON history (node_id);
 ---------------------------------------------------------------------
 -- store data for metrics
 CREATE TABLE IF NOT EXISTS bins (
-  -- date integer, -- days since 1970-01-01
-  -- hour integer, -- hour of day, 0-23
   time timestamptz NOT NULL, -- rounded down by hour, for now
   dimensions jsonb, -- incl hour, shift, plant, machine, etc
   values jsonb, -- incl activeTime, availableTime, goodParts, badParts, etc
