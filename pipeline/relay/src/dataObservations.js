@@ -122,7 +122,7 @@ export class Observations extends Data {
 
       // hour is another dimension we need to track
       if (hour !== currentDimensionValues.hour) {
-        onDimensionValueChange(
+        dimensionValueChanged(
           accumulatorBins,
           currentBins,
           currentDimensionValues,
@@ -134,9 +134,10 @@ export class Observations extends Data {
       // check if this dataitem is a dimension we need to track, eg dataname='operator'
       if (dimensionDefs[dataname]) {
         //
-        // if value of a dimension changes, dump current bins and update current value.
+        // if value of a dimension changes, dump current bins to accumulator bins
+        // and update current value.
         if (value !== currentDimensionValues[dataname]) {
-          onDimensionValueChange(
+          dimensionValueChanged(
             accumulatorBins,
             currentBins,
             currentDimensionValues,
@@ -145,9 +146,10 @@ export class Observations extends Data {
           )
         }
         //
-        // if observation is something we need for a metric, update start time or current bin
+        // otherwise, if observation is something we need to track the lifespan of,
+        // update start time or current bin.
       } else if (valueDefs[dataname]) {
-        const valueDef = valueDefs[dataname]
+        const valueDef = valueDefs[dataname] // eg { bin: 'timeActive', when: 'ACTIVE' }
         const bin = valueDef.bin // eg 'timeActive'
         // handle edge transition - start or stop timetracking for the value.
         // eg valueDef.when could be 'AVAILABLE' or 'ACTIVE' etc.
@@ -158,17 +160,10 @@ export class Observations extends Data {
             startTimes[dataname] = timestampSecs
           }
         } else {
-          // otherwise, observation is 'off' - dump the time to the current bin
+          // otherwise, observation is turning 'off' - dump the time to the current bin
           if (startTimes[dataname]) {
             const delta = timestampSecs - startTimes[dataname] // sec
-            console.log(
-              dataname,
-              'subtract',
-              timestampSecs,
-              startTimes[dataname],
-              delta
-            )
-            // console.log('METRIC', dataname, delta)
+            console.log('turning off:', dataname, 'delta:', delta)
             if (currentBins[bin] === undefined) {
               currentBins[bin] = delta
             } else {
@@ -279,7 +274,7 @@ export class Observations extends Data {
 
 // a dimension value changed - dump current bins into accumulator bins,
 // and update current dimension value
-function onDimensionValueChange(
+function dimensionValueChanged(
   accumulatorBins,
   currentBins,
   currentDimensionValues,
