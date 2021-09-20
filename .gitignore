@@ -11,3 +11,8 @@ pi.sh
 .venv
 _old
 
+**/grafana/var
+**/mosquitto/data
+**/mosquitto/log
+**/portainer/data
+**/postgres/data
