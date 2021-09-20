@@ -116,6 +116,8 @@ export class Observations extends Data {
 
       // value is eg 'Alice' for operator, 'ACTIVE' for execution, etc
       const { timestampSecs, hour, value } = observation
+
+      // hour is another dimension we need to track
       if (hour !== previousHour) {
       }
 
@@ -123,15 +125,14 @@ export class Observations extends Data {
       if (dimensionDefs[dataname]) {
         //
         // if value of a dimension changes, dump current bins and update current value.
-        const value = observation.value // eg 'Alice'
         if (value !== currentDimensions[dataname]) {
           // const dimensionDef = dimensionDefs[dataname]
           const dimensionKey = Object.values(currentDimensions).join(',')
           if (accumulatorBins[dimensionKey] === undefined) {
             accumulatorBins[dimensionKey] = {}
           }
-          // do this so can dump all accumulator bins to db in one go, at end
-          // dump current bins to accumulator bins, then clear them
+          // dump current bins to accumulator bins, then clear them.
+          // do this so can dump all accumulator bins to db in one go, at end.
           for (let bin of Object.keys(currentBins)) {
             // const k = bin
             if (accumulatorBins[dimensionKey][bin] === undefined) {
@@ -149,11 +150,8 @@ export class Observations extends Data {
       } else if (valueDefs[dataname]) {
         const valueDef = valueDefs[dataname]
         const bin = valueDef.bin // eg 'timeActive'
-        // console.log('valuedef', dataname, valueDef, observation)
-        // handle edge transition - start or stop timetracking for the value
-        // const value = observation.value // eg 'ACTIVE'
-        // const timestampSecs = observation.timestampSecs
-        // `when` could be eg 'AVAILABLE' or 'ACTIVE' etc
+        // handle edge transition - start or stop timetracking for the value.
+        // eg valueDef.when could be 'AVAILABLE' or 'ACTIVE' etc.
         if (value === valueDef.when) {
           // start 'timer' for this observation
           // add guard in case agent is defective and sends these out every time, instead of just at start
