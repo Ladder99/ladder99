@@ -88,30 +88,33 @@ export class Observations extends Data {
       // observation.timestampDateObj = new Date(observation.timestamp)
       const date = new Date(observation.timestamp)
       observation.timestampSecs = date.getTime() * 0.001
-      observation.hour = date.getHours()
+      observation.hour = date.getHours() // 0-23
     })
 
     // sort observations by timestamp asc, for correct state machine transitions.
     // because sequence nums could be out of order, depending on network.
     this.observations.sort((a, b) => a.timestampSecs - b.timestampSecs)
 
-    // accumulated bins for this calculation run - will add to db at end
+    // accumulated bins for this calculation run - will add to db at end.
+    // this is a dict of dicts - keyed on dimensions (glommed together), then bin name.
     const accumulatorBins = {}
 
-    // bins for the current set of dimension values
-    // added to accumulator and cleared on each change of a dimension value
+    // bins for the current set of dimension values.
+    // added to accumulator and cleared on each change of a dimension value.
+    // keyed on bin name.
     const currentBins = {}
 
     let previousHour = null
 
     // could have multiple observations of the same dataitem -
-    // so need to run each observation through the state machine in order
+    // so need to run each observation through the state machine in order.
     for (let observation of this.observations) {
       if (!observation.name) continue // skip observations without data names
 
       //. for now, name includes machineId/ - remove it to get dataname, eg 'availability'
       const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
 
+      // value is eg 'Alice' for operator, 'ACTIVE' for execution, etc
       const { timestampSecs, hour, value } = observation
       if (hour !== previousHour) {
       }
@@ -120,7 +123,7 @@ export class Observations extends Data {
       if (dimensionDefs[dataname]) {
         //
         // if value of a dimension changes, dump current bins and update current value.
-        // const value = observation.value // eg 'Alice'
+        const value = observation.value // eg 'Alice'
         if (value !== currentDimensions[dataname]) {
           // const dimensionDef = dimensionDefs[dataname]
           const dimensionKey = Object.values(currentDimensions).join(',')
