@@ -175,9 +175,9 @@ export class Observations extends Data {
       }
     }
 
-    console.log('dimvals', currentDimensionValues)
-    console.log('starts', startTimes)
-    console.log('currBins', currentBins)
+    console.log('currentDimensionValues', currentDimensionValues)
+    console.log('startTimes', startTimes)
+    console.log('currentBins', currentBins)
 
     // const currentTime = new Date().getTime()
     // accumulatorBins.timeCalendar = (currentTime - previousTime) * 0.001 // sec
@@ -186,10 +186,19 @@ export class Observations extends Data {
     //. dump accumulator bins to db
     //. write to cache, which will write to db
     // cache.set(cacheKey, { value: bins[key] }) // sec
-    //. just write to db for now
-    // db.write()
     //. just print for now
-    console.log('accumBins', accumulatorBins)
+    console.log('accumulatorBins', accumulatorBins)
+    //. write to db
+    const keys = Object.keys(accumulatorBins)
+    for (let key of keys) {
+      const acc = accumulatorBins[key]
+      // const pairs = splitDimensionKey(key)
+      // console.log(key, pairs)
+      console.log('add to', key, 'values', acc)
+    }
+    // const sql = ``
+    // db.write(sql)
+    console.log()
   }
 
   //   // get sequence info from header
@@ -281,20 +290,20 @@ function dimensionValueChanged(
   dataname,
   value
 ) {
+  console.log('dimensionValueChanged', dataname, value)
   // const dimensionDef = dimensionDefs[dataname]
   //
   // get key for this row, like 'hour=8,operator=Alice'
-  const dimensionKey = Object.entries(currentDimensionValues)
-    .map(([key, value]) => `${key}=${value}`)
-    .join(',')
+  const dimensionKey = getDimensionKey(currentDimensionValues)
+  console.log('dimensionKey', dimensionKey)
   // start new dict if needed
   if (accumulatorBins[dimensionKey] === undefined) {
     accumulatorBins[dimensionKey] = {}
   }
   // dump current bins to accumulator bins, then clear them.
   // do this so can dump all accumulator bins to db in one go, at end.
+  const acc = accumulatorBins[dimensionKey]
   for (let bin of Object.keys(currentBins)) {
-    const acc = accumulatorBins[dimensionKey]
     if (acc[bin] === undefined) {
       acc[bin] = currentBins[bin]
     } else {
@@ -302,6 +311,20 @@ function dimensionValueChanged(
     }
     delete currentBins[bin]
   }
+  console.log('accbins[dimkey]', acc)
   // update current dimension value
   currentDimensionValues[dataname] = value
+}
+
+function getDimensionKey(currentDimensionValues) {
+  const dimensionKey = Object.entries(currentDimensionValues)
+    .map(([key, value]) => `${key}=${value}`)
+    .join(',')
+  return dimensionKey
+}
+
+function splitDimensionKey(dimensionKey) {
+  const parts = dimensionKey.split(',')
+  const pairs = parts.map(part => part.split('='))
+  return pairs
 }
