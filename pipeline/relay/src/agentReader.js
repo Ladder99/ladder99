@@ -23,8 +23,9 @@ export class AgentReader {
     this.interval = params.fetchInterval
     this.count = params.fetchCount
 
-    this.currentDimensions = {} // eg incl operator:'Alice'
-    this.startTimes = {} // eg availability: '2021-09-17T05:27:00Z'
+    // for metric calcs
+    this.currentDimensionValues = {} // eg { hour: 8, operator:'Alice' }
+    this.startTimes = {} // eg { availability: '2021-09-17T05:27:00Z' }
   }
 
   // // init agent reader
@@ -56,7 +57,7 @@ export class AgentReader {
         await current.calculate(
           this.db,
           probe.indexes,
-          this.currentDimensions,
+          this.currentDimensionValues,
           this.startTimes
         )
         this.from = current.sequence.next
@@ -70,7 +71,7 @@ export class AgentReader {
           await sample.calculate(
             this.db,
             probe.indexes,
-            this.currentDimensions,
+            this.currentDimensionValues,
             this.startTimes
           )
           this.from = sample.sequence.next //. ?

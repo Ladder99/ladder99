@@ -79,9 +79,9 @@ export class Observations extends Data {
   // do calculations on values and write to db - bins table
   // db is database object
   // indexes is dict of indexes referring to probe dataitems
-  // currentDimensions is dict with current dimension values, eg { operator: 'Alice' }
+  // currentDimensionValues is dict with current dimension values, eg { operator: 'Alice' }
   // startTimes is dict with start times for each bin, eg { availability: 18574734.321 }
-  async calculate(db, indexes, currentDimensions, startTimes) {
+  async calculate(db, indexes, currentDimensionValues, startTimes) {
     //
     // convert iso timestamps to seconds since 1970-01-01
     this.observations.forEach(observation => {
@@ -89,6 +89,11 @@ export class Observations extends Data {
       const date = new Date(observation.timestamp)
       observation.timestampSecs = date.getTime() * 0.001
       observation.hour = date.getHours() // 0-23
+      //. etc - like this eventually
+      // observation.slices = {
+      //   hour: date.getHours(), // 0-23
+      //   minute: date.getMinutes(), // 0-59
+      // }
     })
 
     // sort observations by timestamp asc, for correct state machine transitions.
@@ -104,8 +109,6 @@ export class Observations extends Data {
     // keyed on bin name.
     const currentBins = {}
 
-    let previousHour = null
-
     // could have multiple observations of the same dataitem -
     // so need to run each observation through the state machine in order.
     for (let observation of this.observations) {
@@ -118,32 +121,28 @@ export class Observations extends Data {
       const { timestampSecs, hour, value } = observation
 
       // hour is another dimension we need to track
-      if (hour !== previousHour) {
+      if (hour !== currentDimensionValues.hour) {
+        onValueChange(
+          accumulatorBins,
+          currentBins,
+          currentDimensionValues,
+          'hour',
+          hour
+        )
       }
 
       // check if this dataitem is a dimension we need to track, eg dataname='operator'
       if (dimensionDefs[dataname]) {
         //
         // if value of a dimension changes, dump current bins and update current value.
-        if (value !== currentDimensions[dataname]) {
-          // const dimensionDef = dimensionDefs[dataname]
-          const dimensionKey = Object.values(currentDimensions).join(',')
-          if (accumulatorBins[dimensionKey] === undefined) {
-            accumulatorBins[dimensionKey] = {}
-          }
-          // dump current bins to accumulator bins, then clear them.
-          // do this so can dump all accumulator bins to db in one go, at end.
-          for (let bin of Object.keys(currentBins)) {
-            // const k = bin
-            if (accumulatorBins[dimensionKey][bin] === undefined) {
-              accumulatorBins[dimensionKey][bin] = currentBins[bin]
-            } else {
-              accumulatorBins[dimensionKey][bin] += currentBins[bin]
-            }
-            delete currentBins[bin]
-          }
-          // update current dimension value
-          currentDimensions[dataname] = value
+        if (value !== currentDimensionValues[dataname]) {
+          onValueChange(
+            accumulatorBins,
+            currentBins,
+            currentDimensionValues,
+            dataname,
+            value
+          )
         }
         //
         // if observation is something we need for a metric, update start time or current bin
@@ -181,7 +180,7 @@ export class Observations extends Data {
       }
     }
 
-    console.log('dimvals', currentDimensions)
+    console.log('dimvals', currentDimensionValues)
     console.log('starts', startTimes)
     console.log('currBins', currentBins)
 
@@ -276,4 +275,33 @@ export class Observations extends Data {
   //     } while (errors)
   //     return data
   //   }
+}
+
+// a dimension value changed - dump current bins into accumulator bins,
+// and update current dimension value
+function onValueChange(
+  accumulatorBins,
+  currentBins,
+  currentDimensionValues,
+  dataname,
+  value
+) {
+  // const dimensionDef = dimensionDefs[dataname]
+  const dimensionKey = Object.values(currentDimensionValues).join(',')
+  if (accumulatorBins[dimensionKey] === undefined) {
+    accumulatorBins[dimensionKey] = {}
+  }
+  // dump current bins to accumulator bins, then clear them.
+  // do this so can dump all accumulator bins to db in one go, at end.
+  for (let bin of Object.keys(currentBins)) {
+    // const k = bin
+    if (accumulatorBins[dimensionKey][bin] === undefined) {
+      accumulatorBins[dimensionKey][bin] = currentBins[bin]
+    } else {
+      accumulatorBins[dimensionKey][bin] += currentBins[bin]
+    }
+    delete currentBins[bin]
+  }
+  // update current dimension value
+  currentDimensionValues[dataname] = value
 }
