@@ -89,6 +89,7 @@ export class Observations extends Data {
       const date = new Date(observation.timestamp)
       observation.timestampSecs = date.getTime() * 0.001
       observation.hour = date.getHours() // 0-23
+      observation.dayOfYear = getDayOfYear(date) // 1-366
       //. etc - like this eventually
       // observation.slices = {
       //   hour: date.getHours(), // 0-23
@@ -118,7 +119,18 @@ export class Observations extends Data {
       const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
 
       // value is eg 'Alice' for operator, 'ACTIVE' for execution, etc
-      const { timestampSecs, hour, value } = observation
+      const { timestampSecs, dayOfYear, hour, value } = observation
+
+      // dayOfYear is another dimension we need to track
+      if (dayOfYear !== currentDimensionValues.dayOfYear) {
+        dimensionValueChanged(
+          accumulatorBins,
+          currentBins,
+          currentDimensionValues,
+          'dayOfYear',
+          dayOfYear
+        )
+      }
 
       // hour is another dimension we need to track
       if (hour !== currentDimensionValues.hour) {
@@ -327,4 +339,15 @@ function splitDimensionKey(dimensionKey) {
   const parts = dimensionKey.split(',')
   const pairs = parts.map(part => part.split('='))
   return pairs
+}
+
+function getDayOfYear(date) {
+  const start = new Date(date.getFullYear(), 0, 0)
+  const diff =
+    date.getTime() -
+    start.getTime() +
+    (start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000
+  const oneDay = 60 * 60 * 24 * 1000
+  const day = Math.floor(diff / oneDay)
+  return day
 }
