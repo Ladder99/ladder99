@@ -1,10 +1,12 @@
 # asc econoclave model
 
-# this defines the structure of the xml that will get included in devices.xml.
+#. this is not used
+
+# this defines the structure of the xml that will get included in agent.xml.
 # text substitution is performed, eg ${deviceId} is replaced by
 # that value from the device yaml.
 # dataItems are defined in outputs.yaml.
-# compilation to devices.xml is done with sh/compile.
+# compilation to agent.xml is done with sh/compile.
 
 model:
   id: ${deviceId} # eg 'ac1'
