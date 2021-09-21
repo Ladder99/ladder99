@@ -23,6 +23,8 @@ export class AdapterDriver {
     //. do try catch
     // const client = net.connect(port, host)
 
+    //. send ~HQ__ command to get printer status
+
     // // connected to device - poll it for data by writing a command
     // client.on('connect', () => {
     //   console.log(`ZPL driver connected...`)
