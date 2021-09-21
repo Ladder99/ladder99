@@ -32,12 +32,14 @@ export class AdapterDriver {
       })
 
       // send ! U1 getvar "zpl.system_status" to get printer status
-      const cmd = `! U1 getvar "zpl.system_status"`
+      // const cmd = `! U1 getvar "zpl.system_status"`
+      const cmd = `~HQES`
 
       // receive data from device, write to cache, output shdr to agent
       client.on('data', data => {
-        const str = data.toString() // eg '0,0,00000000,00000000,0,00000000,00000000'
-        console.log(`ZPL driver received ${str}...`)
+        // const str = data.toString() // eg '0,0,00000000,00000000,0,00000000,00000000'
+        const str = data.toString() // eg 'PRINTER STATUS ERRORS: 1 00000000 00000005 WARNINGS: 1 00000000 00000002'
+        console.log(`ZPL driver received response:\n`, str)
         // const [_, valuesStr] = str.split(':=')
         // const values = valuesStr.split(',') // eg ['', 'True', 'Joshau Schneider', ...]
         // // write values to cache, which will output shdr to agent
