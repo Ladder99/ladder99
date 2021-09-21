@@ -46,7 +46,7 @@ devices:
         poll: 5
 
       - inputs: asc/econoclave
-        type: cpc
+        type: autoclave/cpc
         active: true
         configuration:
           primary:
