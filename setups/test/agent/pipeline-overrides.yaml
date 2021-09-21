@@ -6,5 +6,5 @@ services:
   # we're using this to develop the agent html output
   agent:
     volumes:
-      - ./$SETUP/volumes/agent:/data/agent # has agent.cfg, agent.xml
+      - ../$SETUP/volumes/agent:/data/agent # has agent.cfg, agent.xml
       - ../pipeline/agent/styles:/data/styles

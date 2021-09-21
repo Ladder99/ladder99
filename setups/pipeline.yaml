@@ -12,12 +12,13 @@ services:
     # image: ladder99/adapter:latest # use this if build docker image and push to hub
     build: ../pipeline/adapter
     # set this to give permission to access hardware (e.g. dymo scale in usb port)
+    #. is this a security hole?
     privileged: true
     profiles:
       - all
       - adapter
     volumes:
-      - ./$SETUP:/data/setup # has setup.yaml etc
+      - ../$SETUP:/data/setup # has setup.yaml etc
       - ../modules:/data/modules # has module yamls
     networks:
       - ladder99
@@ -36,7 +37,7 @@ services:
     working_dir: /data/agent
     command: agent debug agent.cfg
     volumes:
-      - ./$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
+      - ../$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
     ports:
       - 5000:5000
     networks:
@@ -71,8 +72,8 @@ services:
     volumes:
       # note: grafana.ini is located in /etc/grafana by default -
       # other folders are specified there.
-      - ./$SETUP/volumes/grafana/etc:/etc/grafana
-      - ./$SETUP/volumes/grafana/var:/var/lib/grafana
+      - ../$SETUP/volumes/grafana/etc:/etc/grafana
+      - ../$SETUP/volumes/grafana/var:/var/lib/grafana
       - ../dashboards/grafana:/etc/dashboards
     # user: grafana
     #. get warning that these are blank, though echo $UID works - why?
@@ -101,7 +102,7 @@ services:
     ports:
       - 1883:1883
     volumes:
-      - ./$SETUP/volumes/mosquitto:/mosquitto # has config/mosquitto.conf
+      - ../$SETUP/volumes/mosquitto:/mosquitto # has config/mosquitto.conf
     networks:
       - ladder99
     logging:
@@ -133,7 +134,7 @@ services:
     ports:
       - 8080:8080
     volumes:
-      - ./$SETUP:/data/setup # has setup-specific recordings folder
+      - ../$SETUP:/data/setup # has setup-specific recordings folder
       - ../modules:/data/modules # has module-specific recordings folder
     networks:
       - ladder99
@@ -154,7 +155,7 @@ services:
       # - /etc/localtime:/etc/localtime:ro
       # - /etc/timezone:/etc/timezone:ro
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./$SETUP/volumes/portainer/data:/data
+      - ../$SETUP/volumes/portainer/data:/data
     restart: always
     networks:
       - ladder99
@@ -177,7 +178,7 @@ services:
       POSTGRES_USERNAME: $PGUSER
       POSTGRES_PASSWORD: $PGPASSWORD
     volumes:
-      - ./$SETUP/volumes/postgres/data:/var/lib/postgresql/data
+      - ../$SETUP/volumes/postgres/data:/var/lib/postgresql/data
     deploy:
       restart_policy:
         condition: on-failure
@@ -195,7 +196,7 @@ services:
     build: ../pipeline/recorder
     command: recorder --mode record
     volumes:
-      - ./$SETUP:/data/setup # has setup-specific recordings folder
+      - ../$SETUP:/data/setup # has setup-specific recordings folder
       - ../modules:/data/modules # has module-specific recordings folder
     networks:
       - ladder99

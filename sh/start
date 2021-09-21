@@ -7,14 +7,14 @@ Usage: sh/start SETUP SERVICES
 
 Run a Ladder99 setup with list of services to include.
 
-SETUP     setup subfolder, eg test/micro, test/print-apply
+SETUP     setup folder, eg setups/test/micro
 SERVICES  space-delim list of services to start, eg agent, all
 
 Examples
 
-    sh/start test/micro agent
-    sh/start test/micro all
-    sh/start test/print-apply all play
+    sh/start setups/test/micro agent
+    sh/start setups/test/micro all
+    sh/start setups/test/print-apply all play
 
 Note: services are referenced by their 'profile' attribute in pipeline.yaml.
 Note: use sh/stop to stop a service.
@@ -33,7 +33,7 @@ if [ $1 = "-d" ]; then
 fi
 
 # get arguments
-setup=$1 # eg 'test/micro'
+setup=$1 # eg 'setups/test/micro'
 shift
 services=$* # eg 'agent play'
 

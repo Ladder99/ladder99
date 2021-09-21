@@ -1,23 +1,23 @@
 #!/bin/bash
 
-# compile a setup's config/setup.yaml to devices.xml etc
+# compile a setup's config/setup.yaml to agent.xml etc
 
-SETUP=$1  # setup subfolder, eg 'ccs-pa'
+SETUP=$1  # setup folder, eg 'setups/test/print-apply'
 
 node pipeline/compiler/src/compile-xml.js \
-  setups/$SETUP/setup.yaml \
-  setups/$SETUP/volumes/agent/devices.xml
+  $SETUP/setup.yaml \
+  $SETUP/volumes/agent/agent.xml
 
 # # compile-xml and compile-compose
-# compile SETUP='demo':
+# compile SETUP='setups/demo':
 #     just compile-xml {{SETUP}}
 #     just compile-compose {{SETUP}}
 
-# # compile devices.xml from model setup.yaml
-# compile-xml SETUP='demo':
+# # compile agent.xml from model setup.yaml
+# compile-xml SETUP='setups/demo':
 #     node pipeline/compiler/src/compile-xml.js \
-#     setups/{{SETUP}}/setup.yaml \
-#     setups/{{SETUP}}/volumes/agent/devices.xml
+#     {{SETUP}}/setup.yaml \
+#     {{SETUP}}/volumes/agent/agent.xml
 
 # # compile docker-compose.yaml from setup.yaml
 # compile-compose SETUP='demo':
