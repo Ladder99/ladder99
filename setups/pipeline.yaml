@@ -36,7 +36,7 @@ services:
     working_dir: /data/agent
     command: agent debug agent.cfg
     volumes:
-      - ./$SETUP/volumes/agent:/data/agent # should have agent.cfg, devices.xml
+      - ./$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
     ports:
       - 5000:5000
     networks:
