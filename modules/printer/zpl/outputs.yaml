@@ -3,8 +3,8 @@
 # these outputs are placed in the module.xml tree and define the
 # shdr strings that are calculated from the cache and sent to the agent.
 
-# the item's key (eg 'connection') together with the deviceId (eg 'pa1')
-# form its id in the xml (eg 'pa1/connection').
+# the item's key (eg 'avail') together with the deviceId (eg 'pr1')
+# form its id in the xml (eg 'pr1/avail').
 # the shdr key is the same as the id.
 # the shdr value is defined with the item value code.
 
@@ -13,12 +13,7 @@
 
 outputs:
   - key: operator_name
-    category: EVENT
-    type: USER
-    subType: OPERATOR
     value: <operator_name>
 
   - key: control_power_condition
-    category: CONDITION
-    type: VOLTAGE_DC
     value: "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"

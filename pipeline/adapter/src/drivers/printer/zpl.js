@@ -31,30 +31,31 @@ export class AdapterDriver {
         // setInterval(poll, 2000) //. do this
       })
 
-      // send ! U1 getvar "zpl.system_status" to get printer status
-      // const cmd = `! U1 getvar "zpl.system_status"`
-      const cmd = `~HQES`
+      // command to get printer status
+      // const cmd = `! U1 getvar "zpl.system_status"` // doesn't work on old printer
+      const cmd = `~HQES` // host query - see zpl programming guide p205 - works on old and new printers
 
       // receive data from device, write to cache, output shdr to agent
       client.on('data', data => {
-        // const str = data.toString() // eg '0,0,00000000,00000000,0,00000000,00000000'
-        const str = data.toString() // eg 'PRINTER STATUS ERRORS: 1 00000000 00000005 WARNINGS: 1 00000000 00000002'
+        // const str = data.toString() // eg '0,0,00000000,00000000,0,00000000,00000000' // sgd returns
+        // response starts with STX, has CR LF between each line, ends with ETX
+        const str = data.toString() // eg 'PRINTER STATUS ERRORS: 1 00000000 00000005 WARNINGS: 1 00000000 00000002' // zpl returns
         console.log(`ZPL driver received response:\n`, str)
-        // const [_, valuesStr] = str.split(':=')
-        // const values = valuesStr.split(',') // eg ['', 'True', 'Joshau Schneider', ...]
-        // // write values to cache, which will output shdr to agent
-        // ids.forEach((id, i) => {
+        //. parse status into cache keyvalues
+        // write to cache, which will trigger shdr output
         //   const type = types[i] // eg 'boolean'
         //   const typeFn = typeFns[type] // eg value => value==='True'
         //   const value = typeFn(values[i]) // eg true
-        //   cache.set(id, { value }) // set cache value, which triggers shdr output
-        // })
+        const id = `${deviceId}/avail`
+        const value = 'AVAILABLE'
+        cache.set(id, { value }) // set cache value, which triggers shdr output
       })
       client.on('error', error => {
         console.log(error)
       })
       client.on('end', () => {
         console.log('ZPL driver disconnected from server...')
+        //. set all values to UNAVAILABLE?
       })
       // 'poll' device using tcp client.write
       function poll() {
