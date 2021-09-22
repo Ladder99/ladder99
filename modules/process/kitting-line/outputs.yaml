@@ -1,0 +1,304 @@
+# outputs
+
+# these outputs are placed in the model.yaml tree and define the
+# shdr strings that are calculated from the cache and sent to the agent.
+
+#. call this dataitems.yaml? properties.yaml? cache-outputs.yaml?
+
+# the item's key (eg 'connection') together with the deviceId (eg 'pa1')
+# form its id in the xml (eg 'pa1-connection').
+
+# the shdr key is the same as the id.
+# the shdr value is defined with the item value code.
+
+# value is javascript, evaluated by the cache in calculating the shdr output.
+# <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
+
+outputs:
+  - key: connection
+    category: EVENT
+    type: AVAILABILITY
+    value: types.AVAILABILITY[<status-connection>]
+
+  # # eg change tool to a drill etc - irrelevant to p&a
+  # # see std pt 4 line 347
+  # - key: asset_changed
+  #   category: EVENT
+  #   type: ASSET_CHANGED
+  #   value:
+
+  # # see std pt 4 line 357
+  # - key: asset_removed
+  #   category: EVENT
+  #   type: ASSET_REMOVED
+  #   value:
+
+  - key: dev_cond
+    category: CONDITION
+    type: SYSTEM
+    value: "<status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'"
+
+  - key: dev_msg
+    category: EVENT
+    type: MESSAGE
+    # representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
+    # value: Object.entries(<status-faults>).map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
+    # value: "'msg|' + Object.entries(<status-faults>).map(([id, fault]) => 'f' + id + '=pokpok').join(' ')"
+    # value: "Object.entries(<status-faults>).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
+    #. escape any pipes and enclose in double quotes
+    value: "Object.entries(<status-faults>).map(([id, fault]) => fault.description).join(', ')"
+    nativeCode: NativeCode #.
+
+  - key: fw_ver
+    category: EVENT
+    type: FIRMWARE
+    subType: VERSION
+    value: <status-build_no>
+
+  - key: func_mode
+    category: EVENT
+    type: FUNCTIONAL_MODE
+    value: "<status-has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
+
+  - key: e_stop
+    category: EVENT
+    type: EMERGENCY_STOP
+    value: "<status-has-fault-ten> ? 'TRIGGERED' : 'ARMED'"
+
+  - key: state
+    category: EVENT
+    type: EXECUTION
+    # one of WAIT, ACTIVE, PROGRAM_STOPPED
+    value: types.EXECUTION[<status-state>]
+
+  - key: wait_state
+    category: EVENT
+    type: WAIT_STATE
+    #. what value goes here when status.state is not WAIT?
+    value: types.WAIT_STATE[<status-state>]
+
+  - key: program
+    category: EVENT
+    type: PROGRAM
+    subType: MAIN
+    value: <status-program>
+
+  - key: step
+    category: EVENT
+    type: BLOCK
+    value: <status-step>
+
+  - key: clk_time
+    category: SAMPLE
+    type: CLOCK_TIME
+    value: <status-utc_time>
+
+  - key: up_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: OPERATING
+    value: <status-cpu_time>
+
+  - key: cycle_time
+    category: SAMPLE
+    type: PROCESS_TIMER
+    subType: PROCESS
+    unit: SECONDS
+    value: <status-cycle_time>
+
+  - key: fault_count
+    category: SAMPLE
+    type: COUNT
+    subType: x:FAULT
+    value: <fault_count>
+
+  - key: cycle_count
+    category: SAMPLE
+    type: COUNT
+    subType: x:CYCLE
+    value: <cycle_count>
+
+  - key: life_count
+    category: SAMPLE
+    type: COUNT
+    subType: x:LIFE
+    value: <life_count>
+
+  - key: end_eff_cond
+    category: CONDITION
+    type: SYSTEM
+    value: "<status-has-tamp-fault> ? 'FAULT' : 'NORMAL'"
+
+  - key: end_eff_message
+    category: EVENT
+    type: MESSAGE
+    # representation: DATA_SET
+    # value: Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + '=' + fault.description.replaceAll(' ','')).join(' ')
+    # value: "Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + ': ' + fault.description).join(', ')"
+    #. escape any pipes and enclose in double quotes
+    value: "Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => fault.description).join(', ')"
+    nativeCode: NativeCode #.
+
+  - key: smart_tamp_part_detect
+    category: EVENT
+    type: PART_DETECT
+    #. tamp_part_detect not in inputs.yaml, so this will return undefined
+    value: "<smart_tamp_enabled> ? types.PART_DETECT[<tamp_part_detect>] : 'UNAVAILABLE'"
+
+  - key: tamp_air_assist
+    category: EVENT
+    type: ACTUATOR_STATE
+    subType: x:AIR_ASSIST
+    value: types.ACTUATOR_STATE[<tamp_air_assist>]
+
+  - key: tamp_vacuum
+    category: EVENT
+    type: ACTUATOR_STATE
+    subType: x:VACUUM
+    value: types.ACTUATOR_STATE[<tamp_vacuum>]
+
+  - key: tamp_cylinder
+    category: EVENT
+    type: ACTUATOR_STATE
+    subType: x:CYLINDER
+    value: types.ACTUATOR_STATE[<tamp_cylinder>]
+
+  - key: cylinder_extend_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    # subType: WORKING
+    subType: x:EXTEND
+    unit: SECOND
+    value: <cylinder_extend_time>
+
+  #. duplicate path
+  - key: cylinder_home_disengage_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    # subType: WORKING
+    subType: x:DISENGAGE
+    unit: SECOND
+    value: <cylinder_home_disengage_time>
+
+  #. duplicate path
+  - key: cylinder_travel_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    # subType: WORKING
+    subType: x:TRAVEL
+    unit: SECOND
+    value: <cylinder_travel_time>
+
+  - key: tamp_vacuum_delay
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: DELAY
+    unit: SECOND
+    value: <tamp_vacuum_delay>
+
+  - key: feed_cond
+    category: CONDITION
+    type: SYSTEM
+    # value: types.CONDITION_TRIPLE[[<status-has-feed-fault>, <status-has-feed-warning>, true].indexOf(true)]
+    value: "<status-has-feed-fault> ? 'FAULT' : <status-has-feed-warning> ? 'WARNING' : 'NORMAL'"
+
+  - key: feed_message
+    category: EVENT
+    type: MESSAGE
+    # representation: DATA_SET #. not available for agent xsl yet
+    # value: "Object.entries(<status-faults>).filter(([key,]) => [1,11,12,13,14,15,50,51].includes(Number(key))).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
+    #. escape any pipes and enclose in double quotes
+    # value: "Object.entries(<status-faults>).map(([id, fault]) => fault.description).join(', ')"
+    value: "Object.entries(<status-faults>).filter(([key,]) => [1,11,12,13,14,15,50,51].includes(Number(key))).map(([id, fault]) => fault.description).join(', ')"
+    nativeCode: NativeCode #.
+
+  - key: feed_part_detect
+    category: EVENT
+    type: PART_DETECT
+    # TODO: depends on mode of operation and trigger edge
+    value: types.PART_DETECT[<product_sensor_one>]
+
+  - key: web_take_up_motor_state
+    category: EVENT
+    type: ACTUATOR_STATE
+    subType: x:TAKE_UP
+    # TODO: commanded?
+    value: types.ACTUATOR_STATE[<web_take_up_motor_state>]
+
+  - key: printer_reprint
+    category: EVENT
+    type: ACTUATOR_STATE
+    subType: x:REPRINT
+    value: types.ACTUATOR_STATE[<printer_reprint>]
+
+  - key: printer_pause
+    category: EVENT
+    type: ACTUATOR_STATE
+    subType: x:PAUSE
+    value: types.ACTUATOR_STATE[<printer_pause>]
+
+  - key: printer_feed
+    category: EVENT
+    type: ACTUATOR_STATE
+    subType: x:FEED
+    value: types.ACTUATOR_STATE[<printer_feed>]
+
+  - key: printer_start_print
+    category: EVENT
+    type: ACTUATOR_STATE
+    subType: x:START
+    value: types.ACTUATOR_STATE[<printer_start_print>]
+
+  - key: print_signal_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: DELAY
+    unit: SECOND
+    value: <print_signal_time>
+
+  - key: print_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: WORKING
+    unit: SECOND
+    value: <print_time>
+
+  - key: transport_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: DELAY
+    unit: SECOND
+    value: <transport_time>
+
+  - key: idle_time
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: DELAY
+    unit: SECOND
+    value: <idle_time>
+
+  - key: printer_start_print_duration
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: DELAY
+    unit: SECOND
+    value: <printer_start_print_duration>
+
+  - key: printer_end_print_wait
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: DELAY
+    unit: SECOND
+    value: <printer_end_print_wait>
+
+  - key: product_sensor_one_edge_trigger
+    type: UNKNOWN #. ?
+    category: SAMPLE
+    value: <product_sensor_one_edge_trigger>
+
+  - key: product_sensor_one_debounce
+    category: SAMPLE
+    type: EQUIPMENT_TIMER
+    subType: DELAY
+    unit: SECOND
+    value: <product_sensor_one_debounce>
