@@ -23,7 +23,9 @@ connect:
 
 # define message topic handlers
 handlers:
+  # ----------------------------------------------------------------------------
   # handle status messages
+  # ----------------------------------------------------------------------------
   l99/${deviceId}/evt/status:
     # make '$' the message payload dictionary and add faultKeys for quick
     # lookups of faults - payload.faults is a dictionary of faults.
@@ -37,7 +39,9 @@ handlers:
       status-connection: $.connection
       status-program: $.program
 
-  # handle query responses
+  # ----------------------------------------------------------------------------
+  # handle query messages
+  # ----------------------------------------------------------------------------
   l99/${deviceId}/evt/query:
     unsubscribe:
       - topic: l99/${deviceId}/evt/query
@@ -63,9 +67,13 @@ handlers:
     # this might trigger SHDR output to be sent to the mtconnect agent,
     # according to the outputs defined in outputs.yaml.
     inputs: &queryInputs
-      foo: '%M56.5'
+      #. or should we use Q1.0 and Q1.1 ?
+      kit-on: '%I0.6' # kit placed on conveyer
+      kit-off: '%I0.11' # kit removed from conveyer
 
+  # ----------------------------------------------------------------------------
   # handle read messages
+  # ----------------------------------------------------------------------------
   l99/${deviceId}/evt/read:
     # make $ a dictionary keyed on the item addresses
     initialize: 'payload.forEach(item => $[item.address] = item)'
