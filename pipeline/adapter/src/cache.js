@@ -96,7 +96,8 @@ function getShdr(cache, output, value) {
   const { key, category, type, subType, representation, nativeCode } = output
   let shdr = ''
   // handle different shdr types and representations
-  if (category === 'EVENT' || category === 'SAMPLE') {
+  // this first is the default representation, so don't require category to be defined in outputs.yaml
+  if (category === 'EVENT' || category === 'SAMPLE' || category === undefined) {
     if (type === 'MESSAGE') {
       // The next special format is the Message. There is one additional field,
       // native_code, which needs to be included:

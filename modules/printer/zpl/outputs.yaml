@@ -13,5 +13,4 @@
 
 outputs:
   - key: avail
-    category: EVENT
     value: <avail>
