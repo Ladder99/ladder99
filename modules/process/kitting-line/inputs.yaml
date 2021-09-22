@@ -69,9 +69,8 @@ handlers:
     # the & syntax saves this list for later, as the read message handler
     # uses the same pairs.
     inputs: &queryInputs
-      #. or should we use Q1.0 and Q1.1 ?
-      kit-on: '%I0.6' # kit placed on conveyer
-      kit-off: '%I0.11' # kit removed from conveyer
+      kit-on: '%Z61.5' # kit placed on conveyer - eye1
+      kit-off: '%Z61.6' # kit removed from conveyer - eye2
 
   # ----------------------------------------------------------------------------
   # handle read messages

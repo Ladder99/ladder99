@@ -35,7 +35,7 @@ export class AdapterDriver {
     cache.set(`${deviceId}/uc`, { value: 3 }) // unload count
     cache.set(`${deviceId}/tl`, { value: 100 }) // total length
     cache.set(`${deviceId}/fr`, { value: 10 }) // feedrate
-    cache.set(`${deviceId}/dark`, { value: 'DARKEST' })
+    cache.set(`${deviceId}/dark`, { value: 'DARKEST' }) // -30 to +30 or sthing
     cache.set(`${deviceId}/ht`, { value: 40 }) // head temp
 
     try {
