@@ -1,7 +1,6 @@
 // mqtt-json driver
-
 // subscribes to mqtt topics, receives messages,
-// parses them out as JSON, updates cache values, which sends SHDR.
+// parses them out as JSON, updates cache values, which sends SHDR to agent.
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 

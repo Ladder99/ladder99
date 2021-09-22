@@ -11,6 +11,7 @@
 # define connect handler
 connect:
   # subscribe to these topics
+  # can use ${deviceId} in topics
   subscribe:
     - topic: l99/${deviceId}/evt/query
     - topic: l99/${deviceId}/evt/status
@@ -120,8 +121,7 @@ handlers:
       # web_take_up_motor_anti_twitch_counter: '%Z55.0'
       # web_take_up_motor_anti_twitch_active: '%Z55.1'
 
-      # handle status messages
-
+  # handle status messages
   l99/${deviceId}/evt/status:
     # make '$' the message payload dictionary and add faultKeys for quick
     # lookups of faults - payload.faults is a dictionary of faults.
@@ -132,7 +132,7 @@ handlers:
     # eg 'status-connection' => 'pa1-status_connection',
     # and part is some javascript calculation code to determine its value.
     inputs:
-      # status-connection: $.connection
+      status-connection: $.connection
       # status-build_no: $.build_no
       # status-state: $.state
       # status-program: $.program
