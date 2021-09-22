@@ -15,12 +15,11 @@ outputs:
   - key: avail
     value: types.AVAILABILITY[<status-connection>]
 
-  - key: procname
-    value: KITTING # nowork - needs a cache key to detect a change ehh
+  # - key: procname
+  #   value: KITTING # nowork - needs a cache key to detect a change ehh
 
-  - key: dev_cond
+  - key: cond
     category: CONDITION
-    type: SYSTEM
     value: "<status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'"
 
   - key: dev_msg
@@ -34,69 +33,47 @@ outputs:
     nativeCode: NativeCode #.
 
   - key: fw_ver
-    type: FIRMWARE
-    subType: VERSION
     value: <status-build_no>
 
   - key: func_mode
-    type: FUNCTIONAL_MODE
     value: "<status-has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
 
   - key: e_stop
-    type: EMERGENCY_STOP
     value: "<status-has-fault-ten> ? 'TRIGGERED' : 'ARMED'"
 
   - key: state
-    type: EXECUTION
-    # one of WAIT, ACTIVE, PROGRAM_STOPPED
     value: types.EXECUTION[<status-state>]
 
   - key: wait_state
-    type: WAIT_STATE
     #. what value goes here when status.state is not WAIT?
     value: types.WAIT_STATE[<status-state>]
 
   - key: pgm
-    # type: PROGRAM
     value: <status-program>
 
   - key: step
-    type: BLOCK
     value: <status-step>
 
   - key: clk_time
-    type: CLOCK_TIME
     value: <status-utc_time>
 
   - key: up_time
-    type: EQUIPMENT_TIMER
-    subType: OPERATING
     value: <status-cpu_time>
 
   - key: cycle_time
-    type: PROCESS_TIMER
-    subType: PROCESS
-    unit: SECONDS
     value: <status-cycle_time>
 
   - key: fault_count
-    type: COUNT
-    subType: x:FAULT
     value: <fault_count>
 
   - key: cycle_count
-    type: COUNT
-    subType: x:CYCLE
     value: <cycle_count>
 
   - key: life_count
-    type: COUNT
-    subType: x:LIFE
     value: <life_count>
 
   - key: end_eff_cond
     category: CONDITION
-    type: SYSTEM
     value: "<status-has-tamp-fault> ? 'FAULT' : 'NORMAL'"
 
   - key: end_eff_message
@@ -109,57 +86,32 @@ outputs:
     nativeCode: NativeCode #.
 
   - key: smart_tamp_part_detect
-    type: PART_DETECT
     #. tamp_part_detect not in inputs.yaml, so this will return undefined
     value: "<smart_tamp_enabled> ? types.PART_DETECT[<tamp_part_detect>] : 'UNAVAILABLE'"
 
   - key: tamp_air_assist
-    type: ACTUATOR_STATE
-    subType: x:AIR_ASSIST
     value: types.ACTUATOR_STATE[<tamp_air_assist>]
 
   - key: tamp_vacuum
-    type: ACTUATOR_STATE
-    subType: x:VACUUM
     value: types.ACTUATOR_STATE[<tamp_vacuum>]
 
   - key: tamp_cylinder
-    type: ACTUATOR_STATE
-    subType: x:CYLINDER
     value: types.ACTUATOR_STATE[<tamp_cylinder>]
 
   - key: cylinder_extend_time
-    type: EQUIPMENT_TIMER
-    # subType: WORKING
-    subType: x:EXTEND
-    unit: SECOND
     value: <cylinder_extend_time>
 
-  #. duplicate path
   - key: cylinder_home_disengage_time
-    type: EQUIPMENT_TIMER
-    # subType: WORKING
-    subType: x:DISENGAGE
-    unit: SECOND
     value: <cylinder_home_disengage_time>
 
-  #. duplicate path
   - key: cylinder_travel_time
-    type: EQUIPMENT_TIMER
-    # subType: WORKING
-    subType: x:TRAVEL
-    unit: SECOND
     value: <cylinder_travel_time>
 
   - key: tamp_vacuum_delay
-    type: EQUIPMENT_TIMER
-    subType: DELAY
-    unit: SECOND
     value: <tamp_vacuum_delay>
 
   - key: feed_cond
     category: CONDITION
-    type: SYSTEM
     # value: types.CONDITION_TRIPLE[[<status-has-feed-fault>, <status-has-feed-warning>, true].indexOf(true)]
     value: "<status-has-feed-fault> ? 'FAULT' : <status-has-feed-warning> ? 'WARNING' : 'NORMAL'"
 
@@ -173,78 +125,45 @@ outputs:
     nativeCode: NativeCode #.
 
   - key: feed_part_detect
-    type: PART_DETECT
     # TODO: depends on mode of operation and trigger edge
     value: types.PART_DETECT[<product_sensor_one>]
 
   - key: web_take_up_motor_state
-    type: ACTUATOR_STATE
-    subType: x:TAKE_UP
     # TODO: commanded?
     value: types.ACTUATOR_STATE[<web_take_up_motor_state>]
 
   - key: printer_reprint
-    type: ACTUATOR_STATE
-    subType: x:REPRINT
     value: types.ACTUATOR_STATE[<printer_reprint>]
 
   - key: printer_pause
-    type: ACTUATOR_STATE
-    subType: x:PAUSE
     value: types.ACTUATOR_STATE[<printer_pause>]
 
   - key: printer_feed
-    type: ACTUATOR_STATE
-    subType: x:FEED
     value: types.ACTUATOR_STATE[<printer_feed>]
 
   - key: printer_start_print
-    type: ACTUATOR_STATE
-    subType: x:START
     value: types.ACTUATOR_STATE[<printer_start_print>]
 
   - key: print_signal_time
-    type: EQUIPMENT_TIMER
-    subType: DELAY
-    unit: SECOND
     value: <print_signal_time>
 
   - key: print_time
-    type: EQUIPMENT_TIMER
-    subType: WORKING
-    unit: SECOND
     value: <print_time>
 
   - key: transport_time
-    type: EQUIPMENT_TIMER
-    subType: DELAY
-    unit: SECOND
     value: <transport_time>
 
   - key: idle_time
-    type: EQUIPMENT_TIMER
-    subType: DELAY
-    unit: SECOND
     value: <idle_time>
 
   - key: printer_start_print_duration
-    type: EQUIPMENT_TIMER
-    subType: DELAY
-    unit: SECOND
     value: <printer_start_print_duration>
 
   - key: printer_end_print_wait
-    type: EQUIPMENT_TIMER
-    subType: DELAY
-    unit: SECOND
     value: <printer_end_print_wait>
 
   - key: product_sensor_one_edge_trigger
-    type: UNKNOWN #. ?
     value: <product_sensor_one_edge_trigger>
 
   - key: product_sensor_one_debounce
-    type: EQUIPMENT_TIMER
-    subType: DELAY
-    unit: SECOND
     value: <product_sensor_one_debounce>

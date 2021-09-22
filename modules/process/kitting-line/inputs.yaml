@@ -23,6 +23,20 @@ connect:
 
 # define message topic handlers
 handlers:
+  # handle status messages
+  l99/${deviceId}/evt/status:
+    # make '$' the message payload dictionary and add faultKeys for quick
+    # lookups of faults - payload.faults is a dictionary of faults.
+    initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
+    # define lookup function, which returns a value given a part calculation.
+    lookup: '($, part) => ({ value: eval(part) })'
+    # define key-part pairs, where key is mapped to a cache id,
+    # eg 'status-connection' => 'pa1/status-connection',
+    # and part is some javascript calculation code to determine its value.
+    inputs:
+      status-connection: $.connection
+      status-program: $.program
+
   # handle query responses
   l99/${deviceId}/evt/query:
     unsubscribe:
@@ -50,35 +64,6 @@ handlers:
     # according to the outputs defined in outputs.yaml.
     inputs: &queryInputs
       foo: '%M56.5'
-
-  # handle status messages
-  l99/${deviceId}/evt/status:
-    # make '$' the message payload dictionary and add faultKeys for quick
-    # lookups of faults - payload.faults is a dictionary of faults.
-    initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
-    # define lookup function, which returns a value given a part calculation.
-    lookup: '($, part) => ({ value: eval(part) })'
-    # define key-part pairs, where key is mapped to a cache id,
-    # eg 'status-connection' => 'pa1/status-connection',
-    # and part is some javascript calculation code to determine its value.
-    inputs:
-      status-connection: $.connection
-      # status-build_no: $.build_no
-      # status-state: $.state
-      status-program: $.program
-      # status-step: $.step
-      # status-utc_time: $.utc_time
-      # status-cpu_time: $.cpu_time
-      # status-faults: $.faults
-      # status-cycle_time: 5 #. fake - need fsm?
-      # status-has-no-faults: $.faultKeys.length === 0
-      # status-has-faults: $.faultKeys.length > 0
-      # status-has-soft-faults: $.faultKeys.some(f => f>='50')
-      # status-has-hard-faults: $.faultKeys.some(f => f<'50')
-      # status-has-fault-ten: $.faultKeys.some(f => f==='10')
-      # status-has-tamp-fault: $.faultKeys.some(f=>['2','3','5'].includes(f))
-      # status-has-feed-fault: $.faultKeys.some(f=>['1','11','12','13','14','15'].includes(f))
-      # status-has-feed-warning: $.faultKeys.some(f=>['50','51'].includes(f))
 
   # handle read messages
   l99/${deviceId}/evt/read:
