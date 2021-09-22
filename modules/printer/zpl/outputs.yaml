@@ -11,6 +11,22 @@
 # value is javascript, evaluated by the cache in calculating the shdr output.
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}/foo').value
 
+# category is used to determine shdr representation
+# default category is EVENT or SAMPLE - specify for others
+# specify type if is MESSAGE
+# see end of pipeline/adapter/src/cache.js for details
+
 outputs:
   - key: avail
     value: <avail>
+
+  - key: emp
+    value: <emp>
+
+  - key: msg
+    value: <msg>
+    type: MESSAGE
+
+  - key: cond
+    value: <cond>
+    category: CONDITION

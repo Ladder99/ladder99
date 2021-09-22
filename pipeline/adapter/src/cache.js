@@ -110,6 +110,7 @@ function getShdr(cache, output, value) {
     }
   } else if (category === 'CONDITION') {
     //. pick these values out of the value, which should be an object
+    //. also, can have >1 value for a condition - how handle?
     const level = value // eg 'WARNING' -> element 'Warning'
     const nativeCode = 'nativeCode'
     const nativeSeverity = 'nativeSeverity'
