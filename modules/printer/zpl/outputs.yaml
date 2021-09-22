@@ -30,3 +30,21 @@ outputs:
   - key: cond
     value: <cond>
     category: CONDITION
+
+  - key: state
+    value: <state>
+
+  - key: uc
+    value: <uc>
+
+  - key: tl
+    value: <tl>
+
+  - key: fr
+    value: <fr>
+
+  - key: dark
+    value: <dark>
+
+  - key: ht
+    value: <ht>

@@ -27,6 +27,12 @@ export class AdapterDriver {
     cache.set(`${deviceId}/emp`, { value: 'ON' }) // or OFF
     cache.set(`${deviceId}/msg`, { value: 'Some message' })
     cache.set(`${deviceId}/cond`, { value: 'WARNING' }) // or NORMAL or ERROR
+    cache.set(`${deviceId}/state`, { value: 'ACTIVE' }) // or READY or WAIT
+    cache.set(`${deviceId}/uc`, { value: 3 }) // unload count
+    cache.set(`${deviceId}/tl`, { value: 100 }) // total length
+    cache.set(`${deviceId}/fr`, { value: 10 }) // feedrate
+    cache.set(`${deviceId}/dark`, { value: 'DARKEST' })
+    cache.set(`${deviceId}/ht`, { value: 40 }) // head temp
 
     try {
       const client = net.connect(port, host)
