@@ -1,4 +1,4 @@
-// zpl printer driver
+// zebra printer driver
 
 import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
 
@@ -9,7 +9,7 @@ const typeFns = {
 
 export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
-    console.log(`Initialize ZPL driver...`)
+    console.log(`Initialize Zebra printer driver...`)
 
     // // get ids and query string
     // const ids = inputs.inputs.map(input => `${deviceId}/${input.key}`) // eg ['pr1/operator_name', 'pr1/recipe_description', ...]
@@ -19,7 +19,11 @@ export class AdapterDriver {
     // console.log('ids', ids)
     // console.log('query', query)
 
-    console.log(`ZPL driver connecting to TCP server at`, { host, port }, '...')
+    console.log(
+      `Zebra printer driver connecting to TCP server at`,
+      { host, port },
+      '...'
+    )
 
     //... for testing - delete this
     // set cache values, which trigger shdr output
@@ -39,7 +43,7 @@ export class AdapterDriver {
 
       // connected to device - poll it for data by writing a command
       client.on('connect', () => {
-        console.log(`ZPL driver connected...`)
+        console.log(`Zebra printer driver connected...`)
         poll()
         // setInterval(poll, 2000) //. do this
       })
@@ -53,7 +57,7 @@ export class AdapterDriver {
         // const str = data.toString() // eg '0,0,00000000,00000000,0,00000000,00000000' // sgd returns
         // response starts with STX, has CR LF between each line, ends with ETX
         const str = data.toString() // eg 'PRINTER STATUS ERRORS: 1 00000000 00000005 WARNINGS: 1 00000000 00000002' // zpl returns
-        console.log(`ZPL driver received response:\n`, str)
+        console.log(`Zebra printer driver received response:\n`, str)
         //. parse status into cache keyvalues
         // write to cache, which will trigger shdr output
         //   const type = types[i] // eg 'boolean'
@@ -67,12 +71,12 @@ export class AdapterDriver {
         console.log(error)
       })
       client.on('end', () => {
-        console.log('ZPL driver disconnected from server...')
+        console.log('Zebra printer driver disconnected from server...')
         //. set all values to UNAVAILABLE?
       })
       // 'poll' device using tcp client.write
       function poll() {
-        console.log(`ZPL driver writing ${cmd}...`)
+        console.log(`Zebra printer driver writing ${cmd}...`)
         client.write(cmd + '\r\n')
       }
     } catch (err) {
