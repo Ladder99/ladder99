@@ -15,10 +15,11 @@
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
 
 outputs:
-  - key: connection
-    category: EVENT
-    type: AVAILABILITY
+  - key: avail
     value: types.AVAILABILITY[<status-connection>]
+
+  - key: procname
+    value: KITTING || <procname>
 
   # # eg change tool to a drill etc - irrelevant to p&a
   # # see std pt 4 line 347
