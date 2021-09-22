@@ -56,9 +56,8 @@ outputs:
     #. what value goes here when status.state is not WAIT?
     value: types.WAIT_STATE[<status-state>]
 
-  - key: program
-    type: PROGRAM
-    subType: MAIN
+  - key: pgm
+    # type: PROGRAM
     value: <status-program>
 
   - key: step
