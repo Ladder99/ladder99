@@ -1,5 +1,3 @@
-//. move this into dataProbe.js
-
 import * as libapp from './libapp.js'
 
 // get flat list of elements from given json tree (just devices and dataitems)
@@ -164,7 +162,8 @@ function getPathStep(obj) {
 // eg ['position'] => '
 function getParamsStep(params) {
   const paramsStr =
-    params.length > 0 && params[0].length > 0
+    // params.length > 0 && params[0].length > 0
+    params.length > 0 && params[0] && params[0].length > 0
       ? params.map(getParamString).join('-')
       : ''
   const step = `${paramsStr}`

@@ -14,13 +14,15 @@ export class Data {
   // read xml from endpoint, convert to json, store in .json,
   // and parse out .header, .instanceId, .sequence info from it.
   async read(endpoint, from, count) {
-    console.log(`read ${endpoint.baseUrl}, ${from}, ${count}`)
+    console.log(`Read ${endpoint.baseUrl}, ${from}, ${count}`)
     this.json = await endpoint.fetchJson(this.type, from, count)
     this.parseHeader()
   }
 
   // get errors, header, and instanceId from json
   parseHeader() {
+    console.log(`Parse header...`)
+
     //. handle errors as needed
     // eg <Errors><Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error></Errors>
     if (this.json.MTConnectError) {
