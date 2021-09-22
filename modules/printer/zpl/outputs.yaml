@@ -12,8 +12,6 @@
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}/foo').value
 
 outputs:
-  - key: operator_name
-    value: <operator_name>
-
-  - key: control_power_condition
-    value: "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
+  - key: avail
+    category: EVENT
+    value: <avail>

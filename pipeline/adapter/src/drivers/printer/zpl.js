@@ -21,6 +21,11 @@ export class AdapterDriver {
 
     console.log(`ZPL driver connecting to TCP server at`, { host, port }, '...')
 
+    //..
+    const id = `${deviceId}/avail`
+    const value = 'AVAILABLE'
+    cache.set(id, { value }) // set cache value, which triggers shdr output
+
     try {
       const client = net.connect(port, host)
 
