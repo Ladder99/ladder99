@@ -1,11 +1,9 @@
 # outputs
 
-# these outputs are placed in the model.yaml tree and define the
+# these outputs are placed in the agent.xml tree and define the
 # shdr strings that are calculated from the cache and sent to the agent.
 
-# the item's key (eg 'avail') together with the deviceId (eg 'kl1')
-# form its id in the xml (eg 'kl1/avail').
-# the shdr key is the same as the id.
+# the item's id in the xml and the shdr key is `${deviceId}/${key}`
 # the shdr value is defined with the item value code.
 
 # value is javascript, evaluated by the cache in calculating the shdr output.
