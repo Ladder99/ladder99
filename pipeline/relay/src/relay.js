@@ -5,7 +5,7 @@ import { Db } from './db.js'
 import { AgentReader } from './agentReader.js'
 import { Endpoint } from './endpoint.js'
 
-console.log(`MTConnect Relay starting`)
+console.log(`Ladder99 Relay`)
 console.log(`---------------------------------------------------`)
 
 // get envars - typically set in pipeline.yaml and pipeline-overrides.yaml files
