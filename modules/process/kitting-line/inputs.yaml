@@ -38,6 +38,7 @@ handlers:
     inputs:
       status-connection: $.connection
       status-program: $.program
+      status-powered: $.powered
 
   # ----------------------------------------------------------------------------
   # handle query messages

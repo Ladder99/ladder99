@@ -15,6 +15,9 @@ outputs:
   - key: avail
     value: types.AVAILABILITY[<status-connection>]
 
+  - key: emp
+    value: <status-powered>
+
   # - key: procname
   #   value: KITTING # nowork - needs a cache key to detect a change ehh
 
@@ -22,7 +25,7 @@ outputs:
     category: CONDITION
     value: "<status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'"
 
-  - key: dev_msg
+  - key: msg
     type: MESSAGE
     # representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
     # value: Object.entries(<status-faults>).map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
@@ -31,15 +34,6 @@ outputs:
     #. escape any pipes and enclose in double quotes
     value: "Object.entries(<status-faults>).map(([id, fault]) => fault.description).join(', ')"
     nativeCode: NativeCode #.
-
-  - key: fw_ver
-    value: <status-build_no>
-
-  - key: func_mode
-    value: "<status-has-faults> ? 'PRODUCTION' : 'MAINTENANCE'"
-
-  - key: e_stop
-    value: "<status-has-fault-ten> ? 'TRIGGERED' : 'ARMED'"
 
   - key: state
     value: types.EXECUTION[<status-state>]
@@ -50,120 +44,3 @@ outputs:
 
   - key: pgm
     value: <status-program>
-
-  - key: step
-    value: <status-step>
-
-  - key: clk_time
-    value: <status-utc_time>
-
-  - key: up_time
-    value: <status-cpu_time>
-
-  - key: cycle_time
-    value: <status-cycle_time>
-
-  - key: fault_count
-    value: <fault_count>
-
-  - key: cycle_count
-    value: <cycle_count>
-
-  - key: life_count
-    value: <life_count>
-
-  - key: end_eff_cond
-    category: CONDITION
-    value: "<status-has-tamp-fault> ? 'FAULT' : 'NORMAL'"
-
-  - key: end_eff_message
-    type: MESSAGE
-    # representation: DATA_SET
-    # value: Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + '=' + fault.description.replaceAll(' ','')).join(' ')
-    # value: "Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => key + ': ' + fault.description).join(', ')"
-    #. escape any pipes and enclose in double quotes
-    value: "Object.entries(<status-faults>).filter(([key,]) => [2,3,5].includes(Number(key))).map(([key, fault]) => fault.description).join(', ')"
-    nativeCode: NativeCode #.
-
-  - key: smart_tamp_part_detect
-    #. tamp_part_detect not in inputs.yaml, so this will return undefined
-    value: "<smart_tamp_enabled> ? types.PART_DETECT[<tamp_part_detect>] : 'UNAVAILABLE'"
-
-  - key: tamp_air_assist
-    value: types.ACTUATOR_STATE[<tamp_air_assist>]
-
-  - key: tamp_vacuum
-    value: types.ACTUATOR_STATE[<tamp_vacuum>]
-
-  - key: tamp_cylinder
-    value: types.ACTUATOR_STATE[<tamp_cylinder>]
-
-  - key: cylinder_extend_time
-    value: <cylinder_extend_time>
-
-  - key: cylinder_home_disengage_time
-    value: <cylinder_home_disengage_time>
-
-  - key: cylinder_travel_time
-    value: <cylinder_travel_time>
-
-  - key: tamp_vacuum_delay
-    value: <tamp_vacuum_delay>
-
-  - key: feed_cond
-    category: CONDITION
-    # value: types.CONDITION_TRIPLE[[<status-has-feed-fault>, <status-has-feed-warning>, true].indexOf(true)]
-    value: "<status-has-feed-fault> ? 'FAULT' : <status-has-feed-warning> ? 'WARNING' : 'NORMAL'"
-
-  - key: feed_message
-    type: MESSAGE
-    # representation: DATA_SET #. not available for agent xsl yet
-    # value: "Object.entries(<status-faults>).filter(([key,]) => [1,11,12,13,14,15,50,51].includes(Number(key))).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
-    #. escape any pipes and enclose in double quotes
-    # value: "Object.entries(<status-faults>).map(([id, fault]) => fault.description).join(', ')"
-    value: "Object.entries(<status-faults>).filter(([key,]) => [1,11,12,13,14,15,50,51].includes(Number(key))).map(([id, fault]) => fault.description).join(', ')"
-    nativeCode: NativeCode #.
-
-  - key: feed_part_detect
-    # TODO: depends on mode of operation and trigger edge
-    value: types.PART_DETECT[<product_sensor_one>]
-
-  - key: web_take_up_motor_state
-    # TODO: commanded?
-    value: types.ACTUATOR_STATE[<web_take_up_motor_state>]
-
-  - key: printer_reprint
-    value: types.ACTUATOR_STATE[<printer_reprint>]
-
-  - key: printer_pause
-    value: types.ACTUATOR_STATE[<printer_pause>]
-
-  - key: printer_feed
-    value: types.ACTUATOR_STATE[<printer_feed>]
-
-  - key: printer_start_print
-    value: types.ACTUATOR_STATE[<printer_start_print>]
-
-  - key: print_signal_time
-    value: <print_signal_time>
-
-  - key: print_time
-    value: <print_time>
-
-  - key: transport_time
-    value: <transport_time>
-
-  - key: idle_time
-    value: <idle_time>
-
-  - key: printer_start_print_duration
-    value: <printer_start_print_duration>
-
-  - key: printer_end_print_wait
-    value: <printer_end_print_wait>
-
-  - key: product_sensor_one_edge_trigger
-    value: <product_sensor_one_edge_trigger>
-
-  - key: product_sensor_one_debounce
-    value: <product_sensor_one_debounce>
