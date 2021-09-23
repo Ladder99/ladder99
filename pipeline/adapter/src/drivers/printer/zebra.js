@@ -34,9 +34,22 @@ export class AdapterDriver {
 
     const commandHandlers = {
       // host query status - errors and warnings - see guide p205
+
       '~HQES': str => {
         if (str) {
           //. parse response into keyvalues
+          const regex =
+            /.*PRINTER STATUS.*\r\n.*ERRORS.*(\d) (\d+) (\d+).*\r\n.*WARNINGS.*(\d) (\d+) (\d+).*/
+
+          const match = str.match(regex)
+          const values = match.slice(1)
+          const binaries = values.map(value =>
+            parseInt(value, 16).toString(2).split('')
+          )
+
+          const errorPresent = binaries[0] === '1'
+          const warningPresent = binaries[3] === '1'
+
           setCache('avail', 'AVAILABLE')
           setCache('emp', 'ON') //. where get? or OFF
           setCache('state', 'ACTIVE') // or READY or WAIT
@@ -51,14 +64,33 @@ export class AdapterDriver {
           setCache('msg')
         }
       },
+
       // host status
       // get paper out flag, pause flag, buffer full flag, under/over temp flags,
       // head up flag, ribbon out flag, label waiting flag
       '~HS': str => {},
+
       // host query odometer - nonresettable and user resettable 1 and 2
       '~HQOD': str => {},
+
       // host query maintenance info - messages
+      // MAINTENANCE ALERT MESSAGES
+      // CLEAN: PLEASE CLEAN PRINT HEAD
+      // REPLACE: PLEASE REPLACE PRINT HEAD
       '~HQMI': str => {},
+
+      // host query maintenance alert
+      // ~HQMA
+      // MAINTENANCE ALERT SETTINGS
+      // HEAD REPLACEMENT INTERVAL: 1 km
+      // HEAD REPLACEMENT FREQUENCY: 0 M
+      // HEAD CLEANING INTERVAL: 0 M
+      // HEAD CLEANING FREQUENCY: 0 M
+      // PRINT REPLACEMENT ALERT: NO
+      // PRINT CLEANING ALERT: NO
+      // UNITS: C
+      '~HQMA': str => {},
+
       // head diagnostic - get head temp, darkness adjust (?) - p199
       '~HD': str => {},
     }
