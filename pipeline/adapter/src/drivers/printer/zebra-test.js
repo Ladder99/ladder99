@@ -12,7 +12,17 @@ const match = str.match(regex)
 const values = match.slice(1)
 console.log(values)
 
-console.log('hex', 'binary')
-values.forEach(value => {
-  console.log('0x' + value, '=>', parseInt(value, 16).toString(2).split(''))
-})
+// console.log('hex', 'binary')
+// values.forEach(value => {
+//   console.log('0x' + value, '=>', parseInt(value, 16).toString(2).split(''))
+// })
+
+const binaries = values.map(value => parseInt(value, 16).toString(2).split(''))
+console.log(binaries)
+
+const errorPresent = binaries[0][0] === '1'
+const warningPresent = binaries[3][0] === '1'
+console.log(errorPresent, warningPresent)
+
+// const flags = binaries.map(binary => binary.map(digit => digit === '1'))
+// console.log(flags)
