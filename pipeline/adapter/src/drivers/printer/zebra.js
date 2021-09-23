@@ -42,11 +42,17 @@ export class AdapterDriver {
             /.*PRINTER STATUS.*\r\n.*ERRORS.*(\d) (\d+) (\d+).*\r\n.*WARNINGS.*(\d) (\d+) (\d+).*/
 
           const match = str.match(regex)
-          const values = match.slice(1) // eg [ '1', '00000000', '00010004', '0', '00000000', '00000000' ]
-          // binaries - eg [['1'], ['0'], ['1','0','0','0',...], ['0'],...]
+
+          // get values
+          // eg [ '1', '00000000', '00010004', '0', '00000000', '00000000' ]
+          const values = match.slice(1)
+
+          // get binaries
+          // eg[['1'], ['0'], ['1', '0', '0', '0', ...], ['0'],...]
           const binaries = values.map(value =>
             parseInt(value, 16).toString(2).split('')
           )
+
           // const flags = binaries.map(binary =>
           //   binary.map(digit => digit === '1')
           // )
@@ -54,12 +60,13 @@ export class AdapterDriver {
           //. get specific errors and warnings from bits
           //. need nice name for message output
           //. return multiple conditions? eg warning AND error? mtc allows that. how handle in relay etc?
+
           // const errorPresent = binaries[0][0] === '1'
           // const warningPresent = binaries[3][0] === '1'
-          const flagPositions = {
-            errorPresent: [0, 0],
-            warningPresent: [3, 0],
-          }
+          // const flagPositions = {
+          //   errorPresent: [0, 0],
+          //   warningPresent: [3, 0],
+          // }
 
           setCache('avail', 'AVAILABLE')
           setCache('emp', 'ON') //. where get? or OFF
