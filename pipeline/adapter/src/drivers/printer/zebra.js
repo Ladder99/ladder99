@@ -1,7 +1,7 @@
 // zebra printer driver
 
 import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
-import { parseHQES } from './zebra-handlers.js'
+import * as parsers from './zebra-parsers.js'
 
 const pollInterval = 5000 // ms
 
@@ -38,23 +38,26 @@ export class AdapterDriver {
 
       '~HQES': str => {
         if (str) {
-          const ret = parseHQES(str)
-          //. set multiple conditions? ieg a warning AND an error? mtc allows that.
-          // how handle in relay etc ?
-          // const errorPresent = binaries[0][0] === '1'
-          // const warningPresent = binaries[3][0] === '1'
-          // setCache('avail', 'AVAILABLE')
-          // setCache('emp', 'ON') //. where get? or OFF
-          // setCache('state', 'ACTIVE') // or READY or WAIT
-          // setCache('cond', 'WARNING') // or NORMAL or ERROR
-          // setCache('msg', 'Some message')
+          const ret = parsers.parseHQES(str)
+          //. set multiple conditions? eg a warning AND an error? mtc allows that.
+          //. how handle in relay and db and viz?
+          //. pass array of values here? let cache handle it?
+          //. how handle multiple messages - eg some warnings, some faults?
+          //. for now, just handle one condition value at a time
+          if (ret.errors.length > 0) {
+            setCache('cond', 'ERROR')
+            setCache('msg', ret.msgs)
+          } else if (ret.warnings.length > 0) {
+            setCache('cond', 'WARNING')
+            setCache('msg', ret.msgs)
+          } else {
+            setCache('cond', 'NORMAL')
+            setCache('msg')
+          }
         } else {
           // set all to unavail
-          // setCache('avail')
-          // setCache('emp')
-          // setCache('state')
-          // setCache('cond')
-          // setCache('msg')
+          setCache('cond')
+          setCache('msg')
         }
       },
 

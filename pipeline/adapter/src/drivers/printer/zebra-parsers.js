@@ -84,5 +84,10 @@ export function parseHQES(str) {
   const foundWarnings = foundWarningKeys.map(value => warnings.dict[value])
   console.log(foundWarnings)
 
-  return { foundErrors, foundWarnings }
+  const msgs = [
+    ...foundErrors.map(error => `ERROR: ${error}`),
+    ...foundWarnings.map(warning => `WARNING: ${warning}`),
+  ].join(', ')
+
+  return { errors: foundErrors, warnings: foundWarnings, msgs }
 }
