@@ -40,38 +40,37 @@ export class AdapterDriver {
       // host query status - errors and warnings - see guide p205
       '~HQES': str => {
         if (str) {
-          //. parse status into cache keyvalues
+          //. parse response into keyvalues
           setCache('avail', 'AVAILABLE')
           setCache('emp', 'ON') //. where get? or OFF
           setCache('state', 'ACTIVE') // or READY or WAIT
           setCache('cond', 'WARNING') // or NORMAL or ERROR
           setCache('msg', 'Some message')
         } else {
-          //. set all to unavail
-          setUnavailable('avail')
-          setUnavailable('emp')
-          setUnavailable('state')
-          setUnavailable('cond')
-          setUnavailable('msg')
+          // set all to unavail
+          setCache('avail')
+          setCache('emp')
+          setCache('state')
+          setCache('cond')
+          setCache('msg')
         }
       },
+      // host status
+      // get paper out flag, pause flag, buffer full flag, under/over temp flags,
+      // head up flag, ribbon out flag, label waiting flag
+      '~HS': str => {},
       // host query odometer - nonresettable and user resettable 1 and 2
       '~HQOD': str => {},
       // host query maintenance info - messages
       '~HQMI': str => {},
       // head diagnostic - get head temp, darkness adjust (?)
       '~HD': str => {},
-      // host status
-      // get paper out flag, pause flag, buffer full flag, under/over temp flags,
-      // head up flag, ribbon out flag, label waiting flag
-      '~HS': str => {},
     }
 
     // connected to device - poll it for data by writing a command
     client.on('connect', () => {
       console.log(`Zebra driver connected...`)
-      // poll()
-      setInterval(poll, pollInterval) //. do this
+      setInterval(poll, pollInterval)
     })
 
     // receive data from device, write to cache, output shdr to agent
@@ -107,7 +106,7 @@ export class AdapterDriver {
         console.log(`Zebra driver writing ${command}...`)
         //. do try/catch - handle disconnection, reconnection
         client.write(command + '\r\n') //
-        // give printer some time to respond
+        // give printer some time to respond?
         await new Promise(resolve => setTimeout(resolve, 500))
       }
     }
@@ -119,11 +118,11 @@ export class AdapterDriver {
       handlers.forEach(handler => handler())
     }
 
-    function setUnavailable(key) {
-      cache.set(`${deviceId}/${key}`, { value: 'UNAVAILABLE' })
-    }
+    // function setUnavailable(key) {
+    // cache.set(`${deviceId}/${key}`, { value: 'UNAVAILABLE' })
+    // }
 
-    function setCache(key, value) {
+    function setCache(key, value = 'UNAVAILABLE') {
       cache.set(`${deviceId}/${key}`, { value })
     }
   }
