@@ -51,6 +51,8 @@ const regex =
   /.*PRINTER STATUS.*\r\n.*ERRORS.*(\d) (\d+) (\d+).*\r\n.*WARNINGS.*(\d) (\d+) (\d+).*/
 // console.log(regex)
 
+//
+
 export function parseHQES(str) {
   const match = str.match(regex)
   // console.log(match)
@@ -90,4 +92,21 @@ export function parseHQES(str) {
   ].join(', ')
 
   return { errors: foundErrors, warnings: foundWarnings, msgs }
+}
+
+//
+
+export function parseHS(str) {
+  const foo = str
+    .split('')
+    .filter(c => c !== '\x02' && c !== '\x03')
+    .join('')
+    .split('\r\n')
+    .map(line => line.trim())
+    .join(',')
+    .split(',')
+  console.log(foo)
+  const paperOut = foo[1] === '1'
+  const ret = { paperOut }
+  return ret
 }

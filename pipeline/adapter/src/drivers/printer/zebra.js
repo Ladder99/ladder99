@@ -14,8 +14,8 @@ export class AdapterDriver {
     // cache.set(`${deviceId}/avail`, { value: 'AVAILABLE' }) // or UNAVAILABLE
     // cache.set(`${deviceId}/emp`, { value: 'ON' }) // or OFF
     // cache.set(`${deviceId}/state`, { value: 'ACTIVE' }) // or READY or WAIT
-    // cache.set(`${deviceId}/cond`, { value: 'WARNING' }) // or NORMAL or ERROR
-    // cache.set(`${deviceId}/msg`, { value: 'Some message' })
+    // // cache.set(`${deviceId}/cond`, { value: 'WARNING' }) // or NORMAL or ERROR
+    // // cache.set(`${deviceId}/msg`, { value: 'Some message' })
     // cache.set(`${deviceId}/uc`, { value: 3 }) // unload count
     // cache.set(`${deviceId}/tl`, { value: 100 }) // total length
     // cache.set(`${deviceId}/fr`, { value: 10 }) // feedrate
@@ -64,7 +64,14 @@ export class AdapterDriver {
       // host status
       // get paper out flag, pause flag, buffer full flag, under/over temp flags,
       // head up flag, ribbon out flag, label waiting flag
-      '~HS': str => {},
+      '~HS': str => {
+        if (str) {
+          const ret = parsers.parseHS(str)
+          setCache('foo', 1)
+        } else {
+          setCache('foo')
+        }
+      },
 
       // host query odometer - nonresettable and user resettable 1 and 2
       '~HQOD': str => {},
