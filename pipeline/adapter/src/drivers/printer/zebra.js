@@ -4,26 +4,6 @@ import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
 
 const pollInterval = 5000 // ms
 
-const commandHandlers = {
-  // status - errors and warnings
-  '~HQES': str => {
-    if (str) {
-    } else {
-      //. set to unavail
-    }
-  },
-  // odometer - nonresettable and user resettable 1 and 2
-  '~HQOD': str => {},
-  // maintenance info - messages
-  '~HQMI': str => {},
-  // head diagnostic - get head temp, darkness adjust (?)
-  '~HD': str => {},
-  // host status
-  // get paper out flag, pause flag, buffer full flag, under/over temp flags,
-  // head up flag, ribbon out flag, label waiting flag
-  '~HS': str => {},
-}
-
 export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
     console.log(`Initialize Zebra driver...`)
@@ -50,7 +30,29 @@ export class AdapterDriver {
     } catch (err) {
       console.log(err)
       //. set all values to UNAVAILABLE
+      setAllUnavailable()
       //. keep trying
+    }
+
+    const commandHandlers = {
+      // host query status - errors and warnings - see guide p205
+      '~HQES': str => {
+        if (str) {
+        } else {
+          //. set all to unavail
+          setUnavailable('foo')
+        }
+      },
+      // host query odometer - nonresettable and user resettable 1 and 2
+      '~HQOD': str => {},
+      // host query maintenance info - messages
+      '~HQMI': str => {},
+      // head diagnostic - get head temp, darkness adjust (?)
+      '~HD': str => {},
+      // host status
+      // get paper out flag, pause flag, buffer full flag, under/over temp flags,
+      // head up flag, ribbon out flag, label waiting flag
+      '~HS': str => {},
     }
 
     // connected to device - poll it for data by writing a command
@@ -60,13 +62,8 @@ export class AdapterDriver {
       setInterval(poll, pollInterval) //. do this
     })
 
-    // command to get printer status
-    // const cmd = `! U1 getvar "zpl.system_status"` // doesn't work on old printer
-    const cmd = `~HQES` // host query - see zpl programming guide p205 - works on old and new printers
-
     // receive data from device, write to cache, output shdr to agent
     client.on('data', data => {
-      // const str = data.toString() // eg '0,0,00000000,00000000,0,00000000,00000000' // sgd returns
       // response starts with STX, has CR LF between each line, ends with ETX
       const str = data.toString() // eg 'PRINTER STATUS ERRORS: 1 00000000 00000005 WARNINGS: 1 00000000 00000002' // zpl returns
       console.log(`Zebra driver received response:\n`, str)
@@ -76,25 +73,37 @@ export class AdapterDriver {
       // const value = 'AVAILABLE'
       // cache.set(id, { value }) // set cache value, which triggers shdr output
     })
+
     client.on('error', error => {
       console.log(error)
       //. set all values to UNAVAILABLE
     })
+
     client.on('end', () => {
       console.log('Zebra driver disconnected from server...')
       //. set all values to UNAVAILABLE
       //. try to reconnect
     })
+
     // 'poll' device using tcp client.write
-    function poll() {
-      //. iterate over cmds, set handler temporarily
-      //. handler = commandHandler
-      console.log(`Zebra driver writing ${cmd}...`)
-      //. do try catch - handle disconnection, reconnection
-      client.write(cmd + '\r\n')
+    async function poll() {
+      // iterate over cmds, set handler temporarily
+      const commands = Object.keys(commandHandlers)
+      for (let command of commands) {
+        handler = commandHandlers[command]
+        console.log(`Zebra driver writing ${command}...`)
+        //. do try catch - handle disconnection, reconnection
+        client.write(command + '\r\n')
+        await new Promise(resolve => setTimeout(resolve, 500))
+      }
     }
-    function setUnavailable() {
-      //. maybe call all the cmd parsers with blank str?
+
+    function setAllUnavailable() {
+      // call all the cmd handlers with no string
+      const handlers = Object.values(commandHandlers)
+      handlers.forEach(handler => handler())
     }
+
+    function setUnavailable(key) {}
   }
 }
