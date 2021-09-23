@@ -1,5 +1,5 @@
 const str =
-  '\x02\r\n\r\nPRINTER STATUS            \r\n   ERRORS:          1 00000000 00010004  \r\n   WARNINGS:        0 00000000 00000000   \r\n\x03'
+  '\x02\r\n\r\nPRINTER STATUS            \r\n   ERRORS:          1 00000000 00010004  \r\n   WARNINGS:        0 00000000 00000100   \r\n\x03'
 console.log(str)
 
 const regex =
@@ -72,3 +72,26 @@ const errorValues = errorKeys.map(errorKey => parseInt(errorKey))
 const foundValues = errorValues.filter(errorValue => errorFlags & errorValue)
 const foundErrors = foundValues.map(foundValue => hexErrors[foundValue])
 console.log(foundErrors)
+
+const hexWarnings = {
+  0x1: 'Need to Calibrate Media',
+  0x2: 'Clean Printhead',
+  0x4: 'Replace Printhead',
+  0x8: 'Paper-near-end Sensor',
+
+  0x10: 'Sensor 1 (Paper before head)',
+  0x20: 'Sensor 2 (Black mark)',
+  0x40: 'Sensor 3 (Paper after head)',
+  0x80: 'Sensor 4 (loop ready)',
+
+  0x100: 'Sensor 5 (presenter)',
+  0x200: 'Sensor 6 (retract ready)',
+  0x400: 'Sensor 7 (in retract)',
+  0x800: 'Sensor 8 (at bin)',
+}
+
+const warningKeys = Object.keys(hexWarnings)
+const warningValues = warningKeys.map(key => parseInt(key))
+const foundWarningValues = warningValues.filter(value => warningFlags & value)
+const foundWarnings = foundWarningValues.map(value => hexWarnings[value])
+console.log(foundWarnings)
