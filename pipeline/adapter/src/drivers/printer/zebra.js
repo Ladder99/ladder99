@@ -59,7 +59,7 @@ export class AdapterDriver {
       '~HQOD': str => {},
       // host query maintenance info - messages
       '~HQMI': str => {},
-      // head diagnostic - get head temp, darkness adjust (?)
+      // head diagnostic - get head temp, darkness adjust (?) - p199
       '~HD': str => {},
     }
 

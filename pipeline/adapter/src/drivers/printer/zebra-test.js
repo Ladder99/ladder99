@@ -5,6 +5,6 @@ console.log(str)
 const regex =
   /.*PRINTER STATUS.*\r\n.*ERRORS.*(\d) (\d+) (\d+).*\r\n.*WARNINGS.*(\d) (\d+) (\d+).*/
 const match = str.match(regex)
-console.log(match)
+// console.log(match)
 const values = match.slice(1)
 console.log(values)
