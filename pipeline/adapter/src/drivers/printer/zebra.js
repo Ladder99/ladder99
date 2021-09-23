@@ -64,12 +64,15 @@ export class AdapterDriver {
       // host status
       // get paper out flag, pause flag, buffer full flag, under/over temp flags,
       // head up flag, ribbon out flag, label waiting flag
+      // note: When a ~HS command is sent the printer will not send a response to the host if the printer is in one of these conditions:
+      // MEDIA OUT, RIBBON OUT, HEAD OPEN, REWINDER FULL, HEAD OVER-TEMPERATURE
       '~HS': str => {
         if (str) {
           const ret = parsers.parseHS(str)
-          setCache('foo', 1)
+          //. how know if it's printing? (ACTIVE)
+          setCache('state', ret.pause ? 'WAIT' : 'READY') // ACTIVE or READY or WAIT
         } else {
-          setCache('foo')
+          setCache('state')
         }
       },
 

@@ -45,36 +45,20 @@ const warningDict = {
 const warningKeys = Object.keys(warningDict).map(key => parseInt(key))
 const warnings = { dict: warningDict, keys: warningKeys }
 
-// export { errors, warnings }
-
 const regex =
   /.*PRINTER STATUS.*\r\n.*ERRORS.*(\d) (\d+) (\d+).*\r\n.*WARNINGS.*(\d) (\d+) (\d+).*/
-// console.log(regex)
 
 //
 
 export function parseHQES(str) {
   const match = str.match(regex)
-  // console.log(match)
-
-  // get values
-  // eg [ '1', '00000000', '00010004', '0', '00000000', '00000000' ]
-  const values = match.slice(1)
-  // console.log(values)
-
-  const errorPresent = values[0] === '1'
-  const warningPresent = values[3] === '1'
-  // console.log(errorPresent, warningPresent)
-
-  // get hexes
+  const values = match.slice(1) // eg [ '1', '00000000', '00010004', '0', '00000000', '00000000' ]
   const hexes = values.map(value => parseInt(value, 16))
-  // console.log(hexes)
 
   // const binaries = hexes.map(hex => hex.toString(2).split(''))
-  // console.log(binaries)
-
   // const flags = binaries.map(binary => binary.map(digit => digit === '1'))
-  // console.log(flags)
+  // const errorPresent = values[0] === '1'
+  // const warningPresent = values[3] === '1'
 
   const errorFlags = hexes[2]
   const foundValues = errors.keys.filter(errorValue => errorFlags & errorValue)
@@ -97,7 +81,7 @@ export function parseHQES(str) {
 //
 
 export function parseHS(str) {
-  const foo = str
+  const values = str
     .split('')
     .filter(c => c !== '\x02' && c !== '\x03')
     .join('')
@@ -105,8 +89,25 @@ export function parseHS(str) {
     .map(line => line.trim())
     .join(',')
     .split(',')
-  console.log(foo)
-  const paperOut = foo[1] === '1'
-  const ret = { paperOut }
+  const paperOut = values[1] === '1'
+  const pause = values[2] === '1'
+  const bufferFull = values[5] === '1'
+  const corruptRam = values[9] === '1'
+  const underTemperature = values[10] === '1'
+  const overTemperature = values[11] === '1'
+  const headUp = values[14] === '1'
+  const ribbonOut = values[15] === '1'
+  const labelsRemaining = parseInt(values[20])
+  const ret = {
+    paperOut,
+    pause,
+    bufferFull,
+    corruptRam,
+    underTemperature,
+    overTemperature,
+    headUp,
+    ribbonOut,
+    labelsRemaining,
+  }
   return ret
 }
