@@ -1,6 +1,7 @@
 // zebra printer driver
 
 import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
+import { parseHQES } from './zebra-handlers.js'
 
 const pollInterval = 5000 // ms
 
@@ -37,49 +38,23 @@ export class AdapterDriver {
 
       '~HQES': str => {
         if (str) {
-          //. parse response into keyvalues
-          const regex =
-            /.*PRINTER STATUS.*\r\n.*ERRORS.*(\d) (\d+) (\d+).*\r\n.*WARNINGS.*(\d) (\d+) (\d+).*/
-
-          const match = str.match(regex)
-
-          // get values
-          // eg [ '1', '00000000', '00010004', '0', '00000000', '00000000' ]
-          const values = match.slice(1)
-
-          // get binaries
-          // eg[['1'], ['0'], ['1', '0', '0', '0', ...], ['0'],...]
-          const binaries = values.map(value =>
-            parseInt(value, 16).toString(2).split('')
-          )
-
-          // const flags = binaries.map(binary =>
-          //   binary.map(digit => digit === '1')
-          // )
-
-          //. get specific errors and warnings from bits
-          //. need nice name for message output
-          //. return multiple conditions? eg warning AND error? mtc allows that. how handle in relay etc?
-
+          const ret = parseHQES(str)
+          //. set multiple conditions? ieg a warning AND an error? mtc allows that.
+          // how handle in relay etc ?
           // const errorPresent = binaries[0][0] === '1'
           // const warningPresent = binaries[3][0] === '1'
-          // const flagPositions = {
-          //   errorPresent: [0, 0],
-          //   warningPresent: [3, 0],
-          // }
-
-          setCache('avail', 'AVAILABLE')
-          setCache('emp', 'ON') //. where get? or OFF
-          setCache('state', 'ACTIVE') // or READY or WAIT
-          setCache('cond', 'WARNING') // or NORMAL or ERROR
-          setCache('msg', 'Some message')
+          // setCache('avail', 'AVAILABLE')
+          // setCache('emp', 'ON') //. where get? or OFF
+          // setCache('state', 'ACTIVE') // or READY or WAIT
+          // setCache('cond', 'WARNING') // or NORMAL or ERROR
+          // setCache('msg', 'Some message')
         } else {
           // set all to unavail
-          setCache('avail')
-          setCache('emp')
-          setCache('state')
-          setCache('cond')
-          setCache('msg')
+          // setCache('avail')
+          // setCache('emp')
+          // setCache('state')
+          // setCache('cond')
+          // setCache('msg')
         }
       },
 
