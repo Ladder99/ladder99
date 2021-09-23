@@ -8,8 +8,6 @@ export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
     console.log(`Initialize Zebra driver...`)
 
-    console.log(`Zebra driver connecting to printer at`, { host, port }, '...')
-
     // //... for testing - delete this
     // // set cache values, which trigger shdr output
     // cache.set(`${deviceId}/avail`, { value: 'AVAILABLE' }) // or UNAVAILABLE
@@ -26,10 +24,10 @@ export class AdapterDriver {
     let client
     let handler
     try {
+      console.log(`Zebra driver connecting to printer at`, { host, port }, '...')
       client = net.connect(port, host)
     } catch (err) {
       console.log(err)
-      //. set all values to UNAVAILABLE
       setAllUnavailable()
       //. keep trying
     }
@@ -38,9 +36,20 @@ export class AdapterDriver {
       // host query status - errors and warnings - see guide p205
       '~HQES': str => {
         if (str) {
+          //. parse status into cache keyvalues
+          // cache.set(`${deviceId}/avail`, { value: 'AVAILABLE' })
+          // cache.set(`${deviceId}/emp`, { value: 'ON' }) // or OFF
+          // cache.set(`${deviceId}/state`, { value: 'ACTIVE' }) // or READY or WAIT
+          // cache.set(`${deviceId}/cond`, { value: 'WARNING' }) // or NORMAL or ERROR
+          // cache.set(`${deviceId}/msg`, { value: 'Some message' })
+          // cache.set(`${deviceId}/uc`, { value: 3 }) // unload count
+          // cache.set(`${deviceId}/tl`, { value: 100 }) // total length
+          // cache.set(`${deviceId}/fr`, { value: 10 }) // feedrate
+          // cache.set(`${deviceId}/dark`, { value: 30 }) // -30 to +30 or sthing
+          // cache.set(`${deviceId}/ht`, { value: 40 }) // head temp - need SGD api
         } else {
           //. set all to unavail
-          setUnavailable('foo')
+          setUnavailable('avail')
         }
       },
       // host query odometer - nonresettable and user resettable 1 and 2
@@ -68,10 +77,6 @@ export class AdapterDriver {
       const str = data.toString() // eg 'PRINTER STATUS ERRORS: 1 00000000 00000005 WARNINGS: 1 00000000 00000002' // zpl returns
       console.log(`Zebra driver received response:\n`, str)
       if (handler) handler(str)
-      //. parse status into cache keyvalues
-      // const id = `${deviceId}/avail`
-      // const value = 'AVAILABLE'
-      // cache.set(id, { value }) // set cache value, which triggers shdr output
     })
 
     client.on('error', error => {
@@ -99,11 +104,13 @@ export class AdapterDriver {
     }
 
     function setAllUnavailable() {
-      // call all the cmd handlers with no string
+      // call all the cmd handlers with no param
       const handlers = Object.values(commandHandlers)
       handlers.forEach(handler => handler())
     }
 
-    function setUnavailable(key) {}
+    function setUnavailable(key) {
+      cache.set(`${deviceId}/${key}`, { value: 'UNAVAILABLE' })
+    }
   }
 }
