@@ -3,18 +3,16 @@
 # these outputs are placed in the module.xml tree and define the
 # shdr strings that are calculated from the cache and sent to the agent.
 
-# the item's key (eg 'avail') together with the deviceId (eg 'pr1')
-# form its id in the xml (eg 'pr1/avail').
-# the shdr key is the same as the id.
+# the item's id in the xml and the shdr key is `${deviceId}/${key}`
 # the shdr value is defined with the item value code.
 
 # value is javascript, evaluated by the cache in calculating the shdr output.
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}/foo').value
 
-# category is used to determine shdr representation
-# default category is EVENT or SAMPLE - specify for others
-# specify type if is MESSAGE
-# see end of pipeline/adapter/src/cache.js for details
+# category is used to determine shdr representation.
+# default category is EVENT or SAMPLE - specify for others.
+# specify type if is MESSAGE.
+# see end of pipeline/adapter/src/cache.js for details.
 
 outputs:
   - key: avail
