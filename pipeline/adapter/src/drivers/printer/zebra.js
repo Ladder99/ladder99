@@ -24,11 +24,7 @@ export class AdapterDriver {
     let client
     let handler
     try {
-      console.log(
-        `Zebra driver connecting to printer at`,
-        { host, port },
-        '...'
-      )
+      console.log(`Zebra driver connecting to`, { host, port }, '...')
       client = net.connect(port, host)
     } catch (err) {
       console.log(err)
@@ -79,7 +75,7 @@ export class AdapterDriver {
       const str = data.toString() // eg 'PRINTER STATUS ERRORS: 1 00000000 00000005 WARNINGS: 1 00000000 00000002' // zpl returns
       console.log(`Zebra driver received response:\n`, str)
       //. make sure that we're handling the right command
-      // eg set another var for current cmd being processed
+      // eg set another var for current cmd being processed?
       if (handler) {
         handler(str)
       }
@@ -87,12 +83,12 @@ export class AdapterDriver {
 
     client.on('error', error => {
       console.log(error)
-      //. set all values to UNAVAILABLE
+      setAllUnavailable()
     })
 
     client.on('end', () => {
       console.log('Zebra driver disconnected from server...')
-      //. set all values to UNAVAILABLE
+      setAllUnavailable()
       //. try to reconnect
     })
 
@@ -111,19 +107,16 @@ export class AdapterDriver {
       }
     }
 
-    // set all data items to UNAVAILABLE
+    // set a cache key to the given value, which will trigger shdr output
+    function setCache(key, value = 'UNAVAILABLE') {
+      cache.set(`${deviceId}/${key}`, { value })
+    }
+
+    // set all cache keys to UNAVAILABLE
     function setAllUnavailable() {
       // call all the cmd handlers with no param
       const handlers = Object.values(commandHandlers)
       handlers.forEach(handler => handler())
-    }
-
-    // function setUnavailable(key) {
-    // cache.set(`${deviceId}/${key}`, { value: 'UNAVAILABLE' })
-    // }
-
-    function setCache(key, value = 'UNAVAILABLE') {
-      cache.set(`${deviceId}/${key}`, { value })
     }
   }
 }
