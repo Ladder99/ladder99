@@ -76,6 +76,17 @@ export class AdapterDriver {
         }
       },
 
+      // head diagnostic - get head temp, darkness adjust (?) - p199
+      '~HD': str => {
+        if (str) {
+          const ret = parsers.parseHD(str)
+          // @ts-ignore
+          setCache('ht', ret['Head Temp'])
+        } else {
+          setCache('ht')
+        }
+      },
+
       // host query odometer - nonresettable and user resettable 1 and 2
       '~HQOD': str => {},
 
@@ -96,9 +107,6 @@ export class AdapterDriver {
       // PRINT CLEANING ALERT: NO
       // UNITS: C
       '~HQMA': str => {},
-
-      // head diagnostic - get head temp, darkness adjust (?) - p199
-      '~HD': str => {},
     }
 
     // connected to device - poll it for data by writing a command

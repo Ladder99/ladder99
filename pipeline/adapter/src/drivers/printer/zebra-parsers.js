@@ -1,23 +1,23 @@
+// parsers for printer responses
+
+// HQES
+
 // note: these keys get converted to decimal strings
 const errorDict = {
   0x1: 'Media Out',
   0x2: 'Ribbon Out',
   0x4: 'Head Open',
   0x8: 'Cutter Fault',
-
   0x10: 'Printhead Over Temperature',
   0x20: 'Motor Over Temperature',
   0x40: 'Bad Printhead Element',
   0x80: 'Printhead Detection Error',
-
   0x100: 'Invalid Firmware Config',
   0x200: 'Printhead Thermistor Open',
   0x400: 'Paper Feed Error',
-
   0x1000: 'Paper Jam during Retract',
   0x2000: 'Presenter Not Running',
   0x8000: 'Clear Paper Path Failed',
-
   0x10000: 'Paused',
   0x20000: 'Retract Function timed out',
   0x40000: 'Black Mark Calabrate Error',
@@ -31,12 +31,10 @@ const warningDict = {
   0x2: 'Clean Printhead',
   0x4: 'Replace Printhead',
   0x8: 'Paper-near-end Sensor',
-
   0x10: 'Sensor 1 (Paper before head)',
   0x20: 'Sensor 2 (Black mark)',
   0x40: 'Sensor 3 (Paper after head)',
   0x80: 'Sensor 4 (loop ready)',
-
   0x100: 'Sensor 5 (presenter)',
   0x200: 'Sensor 6 (retract ready)',
   0x400: 'Sensor 7 (in retract)',
@@ -47,8 +45,6 @@ const warnings = { dict: warningDict, keys: warningKeys }
 
 const regex =
   /.*PRINTER STATUS.*\r\n.*ERRORS.*(\d) (\d+) (\d+).*\r\n.*WARNINGS.*(\d) (\d+) (\d+).*/
-
-//
 
 export function parseHQES(str) {
   const match = str.match(regex)
@@ -78,14 +74,14 @@ export function parseHQES(str) {
   return { errors: foundErrors, warnings: foundWarnings, msgs }
 }
 
-//
+// HS
 
 export function parseHS(str) {
   const values = str
     .split('')
     .filter(c => c !== '\x02' && c !== '\x03')
     .join('')
-    .split('\r\n')
+    .split('\n')
     .map(line => line.trim())
     .join(',')
     .split(',')
@@ -110,4 +106,25 @@ export function parseHS(str) {
     labelsRemaining,
   }
   return ret
+}
+
+// HD
+
+export function parseHD(str) {
+  const pairs = str
+    .split('')
+    .filter(c => c !== '\x02' && c !== '\x03' && c !== '\r')
+    .join('')
+    .split('\n')
+    .map(line => line.split(' = '))
+  // console.log(pairs)
+  const d = {}
+  pairs.forEach(pair => (d[pair[0]] = pair[1]))
+  // const ret = {
+  //   headTemperature: d['Head Temp'],
+  //   ambientTemperature: d['Ambient Temp'],
+  //   darknessAdjust: d['Darkness Adjust'],
+  // }
+  // return ret
+  return d
 }
