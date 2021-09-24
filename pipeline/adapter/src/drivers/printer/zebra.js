@@ -9,19 +9,19 @@ export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
     console.log(`Initialize Zebra driver...`)
 
-    // //... for testing - delete this
     // // set cache values, which trigger shdr output
-    // // cache.set(`${deviceId}/cond`, { value: 'WARNING' }) // or NORMAL or ERROR
-    // // cache.set(`${deviceId}/msg`, { value: 'Some message' })
-    // // cache.set(`${deviceId}/dark`, { value: 30 }) // -30 to +30 or sthing
-    // // cache.set(`${deviceId}/ht`, { value: 40 }) // head temp
-
     // cache.set(`${deviceId}/avail`, { value: 'AVAILABLE' }) // or UNAVAILABLE
     // cache.set(`${deviceId}/emp`, { value: 'ON' }) // or OFF
+    // cache.set(`${deviceId}/cond`, { value: 'WARNING' }) // or NORMAL or ERROR
+    // cache.set(`${deviceId}/msg`, { value: 'Some message' })
+    // cache.set(`${deviceId}/dark`, { value: 30 }) // -30 to +30 or sthing
+    // cache.set(`${deviceId}/ht`, { value: 40 }) // head temp
     // cache.set(`${deviceId}/state`, { value: 'ACTIVE' }) // or READY or WAIT
-    // cache.set(`${deviceId}/uc`, { value: 3 }) // unload count
-    // cache.set(`${deviceId}/tl`, { value: 100 }) // total length
+
+    // TODO
+    // cache.set(`${deviceId}/tl`, { value: 100 }) // total length - odometer
     // cache.set(`${deviceId}/fr`, { value: 10 }) // feedrate
+    // cache.set(`${deviceId}/uc`, { value: 3 }) // unload count
 
     let client
     let handler
@@ -56,7 +56,7 @@ export class AdapterDriver {
             setCache('msg')
           }
         } else {
-          // set all to unavail
+          // set to unavailable
           setCache('cond')
           setCache('msg')
         }
@@ -71,7 +71,7 @@ export class AdapterDriver {
           // get paper out flag, pause flag, buffer full flag, under/over temp flags,
           // head up flag, ribbon out flag, label waiting flag
           const ret = parsers.parseHS(str)
-          //. how know if it's printing? (ACTIVE)
+          //. how know if it's printing, ie ACTIVE?
           setCache('state', ret.pause ? 'WAIT' : 'READY') // ACTIVE or READY or WAIT
         } else {
           setCache('state')
@@ -110,11 +110,15 @@ export class AdapterDriver {
     // connected to device - poll it for data by writing a command
     client.on('connect', () => {
       console.log(`Zebra driver connected...`)
+      setCache('avail', 'AVAILABLE') // printer is alive
+      setCache('emp', 'ON') // printer is on ?
       setInterval(poll, pollInterval)
     })
 
     // receive data from device, write to cache, output shdr to agent
     client.on('data', data => {
+      setCache('avail', 'AVAILABLE') // printer is alive
+      setCache('emp', 'ON') // printer is on ?
       // response starts with STX, has CR LF between each line, ends with ETX
       const str = data.toString() // eg 'PRINTER STATUS ERRORS: 1 00000000 00000005 WARNINGS: 1 00000000 00000002' // zpl returns
       console.log(`Zebra driver received response:\n`, str)
@@ -145,8 +149,8 @@ export class AdapterDriver {
         handler = commandHandlers[command]
         console.log(`Zebra driver writing ${command}...`)
         //. do try/catch - handle disconnection, reconnection
-        client.write(command + '\r\n') //
-        // give printer some time to respond?
+        client.write(command + '\r\n')
+        //. give printer some time to respond?
         await new Promise(resolve => setTimeout(resolve, 500))
       }
     }
@@ -161,6 +165,8 @@ export class AdapterDriver {
       // call all the cmd handlers with no param
       const handlers = Object.values(commandHandlers)
       handlers.forEach(handler => handler())
+      setCache('avail')
+      setCache('emp')
     }
   }
 }
