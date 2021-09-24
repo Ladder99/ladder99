@@ -162,13 +162,14 @@ function getOutputs({ templates, types, deviceId }) {
     const regexp1 = /(<(.*?)>)/gm
     // eg "<power_fault> ? 'FAULT' : <power_warning> ? 'WARNING' : 'NORMAL'"
     let valueStr = template.value || ''
-    // eg "cache.get('ac1-power_fault').value ? 'FAULT' : cache.get('ac1-power_warning').value ? 'WARNING' : 'NORMAL'"
+    // eg "cache.get('ac1_power-fault').value ? 'FAULT' : cache.get('ac1_power-warning').value ? 'WARNING' : 'NORMAL'"
     // should be okay to ditch replaceAll because we have /g for the regexp
     //. test this with two cache refs in a string "<foo> + <bar>" etc
     // valueStr = valueStr.replaceAll( // needs node15
     valueStr = valueStr.replace(
       regexp1,
-      `cache.get('${deviceId}/$2').value` // $2 is the matched substring
+      // `cache.get('${deviceId}/$2').value` // $2 is the matched substring
+      `cache.get('${deviceId}_$2').value` // $2 is the matched substring
     )
     if (valueStr.includes('\n')) {
       valueStr = '{\n' + valueStr + '\n}'
@@ -179,7 +180,7 @@ function getOutputs({ templates, types, deviceId }) {
 
     // get list of cache ids this calculation depends on.
     // get AFTER transforms, because user could specify a cache get manually.
-    // eg dependsOn = ['ac1-power_fault', 'ac1-power_warning']
+    // eg dependsOn = ['ac1_power-fault', 'ac1_power-warning']
     const dependsOn = []
     const regexp2 = /cache\.get\('(.*?)'\).value/gm
     let match
@@ -190,9 +191,9 @@ function getOutputs({ templates, types, deviceId }) {
 
     // get output object
     // eg {
-    //   key: 'ac1-power_condition',
+    //   key: 'ac1_power-condition',
     //   value: 'FAULT',
-    //   dependsOn: ['ac1-power_fault', 'ac1-power_warning'],
+    //   dependsOn: ['ac1_power-fault', 'ac1_power-warning'],
     //   category: 'CONDITION',
     //   type: 'VOLTAGE_DC',
     //   representation: undefined,
@@ -201,7 +202,7 @@ function getOutputs({ templates, types, deviceId }) {
       // this is key in sense of shdr key
       //. assume each starts with deviceId? some might end with a number instead
       //. call this id, as it's such in the agent.xml
-      key: `${deviceId}/${template.key}`,
+      key: `${deviceId}_${template.key}`,
       value, //. getValue
       dependsOn,
       //. currently these need to be defined in the outputs.yaml file,
