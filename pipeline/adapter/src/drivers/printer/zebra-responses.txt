@@ -1,0 +1,601 @@
+## device.friendly_name
+
+### ZT410
+
+`! U1 getvar "device.friendly_name"`
+
+```
+"18J161604846"
+```
+
+
+## device.unique_id
+
+### ZT410
+
+`! U1 getvar "device.host_identification"`
+
+`device.host_identification.@model`
+
+```
+"ZT410-200dpi,V75.19.15Z,8,4096KB"
+```
+
+
+## sensor.head.temp_avg
+
+### ZT410
+
+n/a
+
+
+## sensor.head.temp_celsius
+
+### ZT410
+
+n/a
+
+
+## sensor.head.temp
+
+### ZT410
+
+n/a
+
+
+## media.speed
+
+### ZT410
+
+`! U1 getvar "media.speed"`
+
+```
+"6.0"
+```
+
+
+## odometer.headclean
+
+### ZT410
+
+`! U1 getvar "odometer.headclean"`
+
+```
+"313247 INCHES, 795649 CENTIMETERS"
+```
+
+
+## odometer.headnew
+
+### ZT410
+
+`! U1 getvar "odometer.headnew"`
+
+```
+"313247 INCHES, 795649 CENTIMETERS"
+```
+
+
+## odometer.total_print_length
+
+### ZT410
+
+`! U1 getvar "odometer.total_print_length"`
+
+```
+"313247 INCHES, 795649 CENTIMETERS"
+```
+
+
+## print.tone
+
+### ZT410
+
+`! U1 getvar "print.tone"`
+
+```
+"10.0"
+```
+
+
+## device.uptime
+
+### ZT410
+
+`! U1 getvar "device.uptime"`
+
+```
+"00 days 00 hours 41 mins 15 secs"
+```
+
+
+## sensor.paper_supply
+
+### ZT410
+
+`! U1 getvar "sensor.paper_supply"`
+
+```
+"out"
+```
+
+
+## sensor.cover_open
+
+### ZT410
+
+`! U1 getvar "sensor.cover_open"`
+
+```
+"no"
+```
+
+
+## head.latch
+
+### ZT410
+
+`! U1 getvar "head.latch"`
+
+```
+"ok"
+```
+
+
+## device.host_status
+
+### ZT410
+
+`! U1 getvar "device.host_status"`
+
+```
+"030,1,1,1225,000,0,0,0,000,0,0,0
+001,0,0,1,1,2,6,0,00000000,1,000
+1234,0"
+```
+
+
+-------------------------------------------------------------------
+
+
+<!-- ## ~HQES
+
+### ZT410
+
+```
+  PRINTER STATUS                            
+   ERRORS:         1 00000000 00010003      
+   WARNINGS:       0 00000000 00000000      
+```
+
+### ZE500
+
+```
+  PRINTER STATUS                            
+   ERRORS:         1 00000000 00000004      
+   WARNINGS:       0 00000000 00000000       
+```
+-->
+
+
+## ~HQHA
+
+### ZT410
+
+  MAC ADDRESS                               
+   00:07:4D:69:58:80                        
+
+### ZE500
+
+  MAC ADDRESS                               
+   00:07:4d:6c:51:7b                        
+
+
+
+## ~HQJT
+
+### ZT410
+
+  HEAD TEST RESULTS                         
+   0,A,0000,0000,0000                       
+
+### ZE500
+
+  HEAD TEST RESULTS                         
+   0,A,0000,0000,0000                       
+
+
+## ~HQMA
+
+### ZT410
+
+  MAINTENANCE ALERT SETTINGS                
+   HEAD REPLACEMENT INTERVAL:        0 km   
+   HEAD REPLACEMENT FREQUENCY:       0 M    
+   HEAD CLEANING INTERVAL:           0 M    
+   HEAD CLEANING FREQUENCY:          0 M    
+   PRINT REPLACEMENT ALERT:           NO    
+   PRINT CLEANING ALERT:              NO    
+   UNITS:                              I    
+
+### ZE500
+
+  MAINTENANCE ALERT SETTINGS                
+   HEAD REPLACEMENT INTERVAL:       50 km   
+   HEAD REPLACEMENT FREQUENCY:       0 M    
+   HEAD CLEANING INTERVAL:           0 M    
+   HEAD CLEANING FREQUENCY:          0 M    
+   PRINT REPLACEMENT ALERT:           NO    
+   PRINT CLEANING ALERT:              NO    
+   UNITS:                              I    
+
+
+## ~HQMI
+
+### ZT410
+
+  MAINTENANCE ALERT MESSAGES                
+   CLEAN: PLEASE CLEAN PRINT HEAD
+   REPLACE: PLEASE REPLACE PRINT HEAD
+
+### ZE500
+
+  MAINTENANCE ALERT MESSAGES                
+   CLEAN: PLEASE CLEAN PRINT HEAD
+   REPLACE: PLEASE REPLACE PRINT HEAD
+
+
+## ~HQOD  odometer
+
+### ZT410
+
+  PRINT METERS                              
+   TOTAL NONRESETTABLE:         313248 "    
+   USER RESETTABLE CNTR1:       313248 "    
+   USER RESETTABLE CNTR2:       313248 "    
+
+### ZE500
+
+  PRINT METERS                              
+   TOTAL NONRESETTABLE:           2457 "    
+   USER RESETTABLE CNTR1:         2457 "    
+   USER RESETTABLE CNTR2:         2457 "    
+
+
+## ~HDPH
+
+### ZT410
+
+  LAST CLEANED:               313248 "      
+  HEAD LIFE HISTORY                         
+   #   DISTANCE                             
+   1:     313248 "                          
+
+### ZE500
+
+  LAST CLEANED:                 2457 "      
+  HEAD LIFE HISTORY                         
+   #   DISTANCE                             
+   1:       2457 "                          
+
+
+
+## ~HQPP
+
+### ZT410
+
+  PLUG AND PLAY MESSAGES                    
+   MFG: Zebra Technologies
+   CMD: ZPL
+   MDL: ZT410
+
+### ZE500
+
+  PLUG AND PLAY MESSAGES                    
+   MFG: Zebra Technologies
+   CMD: ZPL
+   MDL: ZE500-4 LH
+
+
+
+## ~HQSN
+
+### ZT410
+
+  SERIAL NUMBER                             
+   18J161604846                             
+
+### ZE500
+
+  SERIAL NUMBER                             
+   JJL107184.161270113.23630-02.YF.JABI     
+
+
+
+## ~HQUI
+
+### ZT410
+
+  USB INFORMATION                           
+   PID:                         00F9        
+   RELEASE VERSION:             01.01       
+
+### ZE500
+
+  USB INFORMATION                           
+   PID:                         00D8        
+   RELEASE VERSION:             17.22       
+
+
+
+
+<!-- ## ~HS
+
+### ZT410
+
+```
+02 30 33 30 2c 31 2c 31 2c 31 32 32 35 2c 30 30
+30 2c 30 2c 30 2c 30 2c 30 30 30 2c 30 2c 30 2c
+30 03 0d 0a 02 30 30 31 2c 30 2c 30 2c 31 2c 31
+2c 32 2c 36 2c 30 2c 30 30 30 30 30 30 30 30 2c
+31 2c 30 30 30 03 0d 0a 02 31 32 33 34 2c 30 03
+0d 0a
+
+030,1,1,1225,000,0,0,0,000,0,0,0
+001,0,0,1,1,2,6,0,00000000,1,000
+1234,0
+```
+
+\x02030,1,1,1225,000,0,0,0,000,0,0,0\x03\r\n
+\x02001,0,0,1,1,2,6,0,00000000,1,000\x03\r\n
+\x021234,0\x03\r\n
+
+
+### ZE500
+
+```
+02 30 31 34 2c 30 2c 31 2c 31 32 32 35 2c 30 30
+39 2c 30 2c 30 2c 30 2c 30 30 30 2c 31 2c 30 2c
+30 03 0d 0a 02 30 30 31 2c 30 2c 31 2c 30 2c 31
+2c 34 2c 36 2c 30 2c 30 30 30 30 30 30 30 30 2c
+31 2c 30 30 30 03 0d 0a 02 31 32 33 34 2c 30 03
+0d 0a
+
+014,0,1,1225,009,0,0,0,000,1,0,0
+001,0,1,0,1,4,6,0,00000000,1,000
+1234,0
+``` -->
+
+
+<!-- 
+## ~HD
+
+### ZT410
+
+```
+Head Temp = 22
+Ambient Temp = 153
+Head Test = Test Not Run
+Darkness Adjust = 10
+Print Speed = 6.0
+Slew Speed = 6.0
+Backfeed Speed = 2.0
+Static_pitch_length = 0420
+Dynamic_pitch_length = 0000
+Max_dynamic_pitch_length = 0000
+Min_dynamic_pitch_length = 0000
+COMMAND PFX = ~ : FORMAT PFX = ^ : DELIMITER = ,
+Dynamic_top_position = 0000
+
+No ribbon A/D = 0000
+
+PCB Temp = 177
+```
+
+### ZE500
+
+```
+Head Temp = 21 C 
+Ambient Temp = 24
+Head Test = Passed
+Darkness Adjust = 4.0
+Print Speed = 2
+Slew Speed = 6
+Backfeed Speed = 2
+Static_pitch_length = 1225
+Dynamic_pitch_length = 0641
+Max_dynamic_pitch_length = 0641
+Min_dynamic_pitch_length = 0641
+COMMAND PFX = ~ : FORMAT PFX = ^ : DELIMITER = ,
+P30 INTERFACE = None
+P31 INTERFACE = None
+P32 INTERFACE = PAX2 RTS Option         Revision 21
+P33 INTERFACE = Power Supply Option     Revision 15
+P34 INTERFACE = Applicator Option
+P35 INTERFACE = None
+Dynamic_top_position = 0000
+
+No ribbon A/D = 0000
+
+PCB Temp = None 
+``` -->
+
+
+## ~HI
+
+### ZT410
+
+ZT410-200dpi,V75.19.15Z,8,4096KB
+
+### ZE500
+
+ZE500-4 LH-200dpi ,V53.17.22Z,8,10840KB
+
+
+## ^XA^HH^XZ 
+
+! PRINTS A LABEL !
+
+### ZT410
+
+  +10.0               DARKNESS          
+  6.0 IPS             PRINT SPEED       
+  +000                TEAR OFF          
+  TEAR OFF            PRINT MODE        
+  GAP/NOTCH           MEDIA TYPE        
+  TRANSMISSIVE        SENSOR SELECT     
+  THERMAL-TRANS.      PRINT METHOD      
+  832                 PRINT WIDTH       
+  0420                LABEL LENGTH      
+  41000-71/1602-08078 PRINT HEAD ID     
+  39.0IN   988MM      MAXIMUM LENGTH    
+  MAINT. OFF          EARLY WARNING     
+  NOT CONNECTED       USB COMM.         
+  BIDIRECTIONAL       PARALLEL COMM.    
+  RS232               SERIAL COMM.      
+  9600                BAUD              
+  8 BITS              DATA BITS         
+  NONE                PARITY            
+  XON/XOFF            HOST HANDSHAKE    
+  NONE                PROTOCOL          
+  NORMAL MODE         COMMUNICATIONS    
+  <~>  7EH            CONTROL PREFIX    
+  <^>  5EH            FORMAT PREFIX     
+  <,>  2CH            DELIMITER CHAR    
+  ZPL II              ZPL MODE          
+  CALIBRATION         MEDIA POWER UP    
+  CALIBRATION         HEAD CLOSE        
+  DEFAULT             BACKFEED          
+  +000                LABEL TOP         
+  +0000               LEFT POSITION     
+  DISABLED            REPRINT MODE      
+  034                 WEB SENSOR        
+  080                 MEDIA SENSOR      
+  040                 RIBBON SENSOR     
+  255                 TAKE LABEL        
+  029                 MARK SENSOR       
+  029                 MARK MED SENSOR   
+  002                 TRANS GAIN        
+  017                 TRANS BASE        
+  037                 TRANS LED         
+  103                 RIBBON GAIN       
+  002                 MARK GAIN         
+  087                 MARK LED          
+  DPCSWFXM            MODES ENABLED     
+  ........            MODES DISABLED    
+   832 8/MM FULL      RESOLUTION        
+  3.0                 LINK-OS VERSION   
+  V75.19.15Z <-       FIRMWARE          
+  1.3                 XML SCHEMA        
+  6.5.0 18.86         HARDWARE ID       
+  4096k............R: RAM               
+  65536k...........E: ONBOARD FLASH     
+  NONE                FORMAT CONVERT    
+  FW VERSION          IDLE DISPLAY      
+  09/23/21            RTC DATE          
+  16:36               RTC TIME          
+  DISABLED            ZBI               
+  2.1                 ZBI VERSION       
+  READY               ZBI STATUS        
+  104,382 LABELS      NONRESET CNTR     
+  104,382 LABELS      RESET CNTR1       
+  104,382 LABELS      RESET CNTR2       
+  313,248 IN          NONRESET CNTR     
+  313,248 IN          RESET CNTR1       
+  313,248 IN          RESET CNTR2       
+  795,649 CM          NONRESET CNTR     
+  795,649 CM          RESET CNTR1       
+  795,649 CM          RESET CNTR2       
+  EMPTY               SLOT 1            
+  EMPTY               SLOT 2            
+  0                   MASS STORAGE COUNT
+  0                   HID COUNT         
+  OFF                 USB HOST LOCK OUT 
+
+### ZE500
+
+  JJL107184.161270113.23630-02.YF.JABI  
+  +4.0                DARKNESS          
+  2 IPS               PRINT SPEED       
+  6 IPS               SLEW SPEED        
+  2 IPS               BACKFEED SPEED    
+  +000                TEAR OFF          
+  APPLICATOR          PRINT MODE        
+  OFF                 APPLICATOR PORT   
+  PULSE MODE          START PRINT SIG   
+  NON-CONTINUOUS      MEDIA TYPE        
+  WEB                 SENSOR TYPE       
+  THERMAL-TRANS.      PRINT METHOD      
+  832                 PRINT WIDTH       
+  1225                LABEL LENGTH      
+  39.0IN   988MM      MAXIMUM LENGTH    
+  MEDIA DISABLED      EARLY WARNING     
+  MAINT. OFF          EARLY WARNING     
+  NOT CONNECTED       USB COMM.         
+  READY               EXTERNAL 5V       
+  BIDIRECTIONAL       PARALLEL COMM.    
+  RS232               SERIAL COMM.      
+  9600                BAUD              
+  8 BITS              DATA BITS         
+  NONE                PARITY            
+  XON/XOFF            HOST HANDSHAKE    
+  NONE                PROTOCOL          
+  000                 NETWORK ID        
+  NORMAL MODE         COMMUNICATIONS    
+  <~>  7EH            CONTROL PREFIX    
+  <^>  5EH            FORMAT PREFIX     
+  <,>  2CH            DELIMITER CHAR    
+  ZPL II              ZPL MODE          
+  INACTIVE            COMMAND OVERRIDE  
+  HIGH                RIBBON TENSION    
+  CALIBRATION         MEDIA POWER UP    
+  CALIBRATION         HEAD CLOSE        
+  AFTER               BACKFEED          
+  +000                LABEL TOP         
+  +0000               LEFT POSITION     
+  0750                HEAD RESISTOR     
+  ENABLED             ERROR ON PAUSE    
+  ENABLED             RIBBON LOW MODE   
+  ACTIVE HIGH         RIB LOW OUTPUT    
+  DISABLED            REPRINT MODE      
+  050                 WEB S.            
+  000                 MEDIA S.          
+  060                 RIBBON S.         
+  050                 MARK S.           
+  000                 MARK MED S.       
+  054                 TRANS GAIN        
+  033                 TRANS BASE        
+  116                 TRANS BRIGHT      
+  209                 RIBBON GAIN       
+  009                 MARK GAIN         
+  DPCSWFXM            MODES ENABLED     
+  ........            MODES DISABLED    
+   832 8/MM FULL      RESOLUTION        
+  V53.17.22Z <-       FIRMWARE          
+  1.3                 XML SCHEMA        
+  V52 ---------- 19   HARDWARE ID       
+  DEFAULTED           CONFIGURATION     
+  10840k...........R: RAM               
+  59392k...........E: ONBOARD FLASH     
+  NONE                FORMAT CONVERT    
+  021 PAX170 RTS      P32 INTERFACE     
+  015 POWER SUPPLY    P33 INTERFACE     
+  *** APPLICATOR      P34 INTERFACE     
+  FW VERSION          IDLE DISPLAY      
+  09/23/21            RTC DATE          
+  16:29               RTC TIME          
+  DISABLED            ZBI               
+  2.1                 ZBI VERSION       
+  2,457 IN            NONRESET CNTR     
+  2,457 IN            RESET CNTR1       
+  2,457 IN            RESET CNTR2       
+  6,240 CM            NONRESET CNTR     
+  6,240 CM            RESET CNTR1       
+  6,240 CM            RESET CNTR2       
+  SELECTED ITEMS      PASSWORD LEVEL    
+
+
+
+## ~
+
+### ZT410
