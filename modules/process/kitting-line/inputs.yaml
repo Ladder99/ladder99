@@ -8,7 +8,9 @@
 
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/mqtt-json.js.
 
-# define connect handler
+# ----------------------------------------------------------------------------
+# handle connection
+# ----------------------------------------------------------------------------
 connect:
   # subscribe to these topics
   # can use ${deviceId} in topics
@@ -29,8 +31,7 @@ handlers:
   l99/${deviceId}/evt/status:
     # make '$' the message payload dictionary and add faultKeys for quick
     # lookups of faults - payload.faults is a dictionary of faults.
-    # initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
-    initialize: '$ = payload'
+    initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
     # define lookup function, which returns a value given a part calculation.
     lookup: '($, part) => ({ value: eval(part) })'
     # define key-part pairs, where key is mapped to a cache id,

@@ -11,6 +11,10 @@ types:
     online: AVAILABLE
     offline: UNAVAILABLE
 
+  POWER:
+    online: ON
+    offline: OFF
+
   # EMERGENCY_STOP:
   #   false: ARMED
   #   true: TRIGGERED

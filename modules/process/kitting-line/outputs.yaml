@@ -15,7 +15,9 @@
 # see end of pipeline/adapter/src/cache.js for details.
 
 outputs:
+  # ------------------------------------------------------------------
   # device
+  # ------------------------------------------------------------------
 
   - key: avail
     value: types.AVAILABILITY[<status-connection>]
@@ -26,7 +28,9 @@ outputs:
       else if has_current_job and done == true      'TEARDOWN'
       else if not has_current_job                   'x:IDLE'
 
+  # ------------------------------------------------------------------
   # controller
+  # ------------------------------------------------------------------
 
   - key: exec
     value: types.EXECUTION[<status-state>]
@@ -35,27 +39,21 @@ outputs:
     value: types.WAIT_STATE[<status-state>]
 
   - key: emp
-    value: "types.AVAILABILITY[<status-connection>]=='AVAILABLE' ? 'ON' : 'OFF'"
+    value: "types.POWER[<status-connection>]
 
   - key: pgm
     value: <status-program>
 
   - key: step
-    type: BLOCK
     value: <status-step>
 
   - key: clk_time
-    type: CLOCK_TIME
     value: <status-utc_time>
 
   - key: up_time
-    type: EQUIPMENT_TIMER
-    subType: OPERATING
     value: <status-cpu_time>
 
   - key: fw
-    type: FIRMWARE
-    subType: VERSION
     value: <status-build_no>
 
   - key: msg
@@ -72,17 +70,19 @@ outputs:
     category: CONDITION
     value: "<status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'"
 
-  # parts
-
+  # ------------------------------------------------------------------
   # process
+  # ------------------------------------------------------------------
 
   - key: poid
-    type: PROCESS_OCCURENCE_ID
     value: <process-uuid>
 
   - key: salesord
-    type: PROCESS_AGGREGATE_ID
     value: <salesord>
+
+  # ------------------------------------------------------------------
+  # part
+  # ------------------------------------------------------------------
 
   # - key: procname
   #   value: KITTING # nowork - needs a cache key to detect a change ehh
