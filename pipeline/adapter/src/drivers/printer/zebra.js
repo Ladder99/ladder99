@@ -11,16 +11,17 @@ export class AdapterDriver {
 
     // //... for testing - delete this
     // // set cache values, which trigger shdr output
+    // // cache.set(`${deviceId}/cond`, { value: 'WARNING' }) // or NORMAL or ERROR
+    // // cache.set(`${deviceId}/msg`, { value: 'Some message' })
+    // // cache.set(`${deviceId}/dark`, { value: 30 }) // -30 to +30 or sthing
+    // // cache.set(`${deviceId}/ht`, { value: 40 }) // head temp
+
     // cache.set(`${deviceId}/avail`, { value: 'AVAILABLE' }) // or UNAVAILABLE
     // cache.set(`${deviceId}/emp`, { value: 'ON' }) // or OFF
     // cache.set(`${deviceId}/state`, { value: 'ACTIVE' }) // or READY or WAIT
-    // // cache.set(`${deviceId}/cond`, { value: 'WARNING' }) // or NORMAL or ERROR
-    // // cache.set(`${deviceId}/msg`, { value: 'Some message' })
     // cache.set(`${deviceId}/uc`, { value: 3 }) // unload count
     // cache.set(`${deviceId}/tl`, { value: 100 }) // total length
     // cache.set(`${deviceId}/fr`, { value: 10 }) // feedrate
-    // cache.set(`${deviceId}/dark`, { value: 30 }) // -30 to +30 or sthing
-    // cache.set(`${deviceId}/ht`, { value: 40 }) // head temp
 
     let client
     let handler
@@ -62,12 +63,13 @@ export class AdapterDriver {
       },
 
       // host status
-      // get paper out flag, pause flag, buffer full flag, under/over temp flags,
-      // head up flag, ribbon out flag, label waiting flag
-      // note: When a ~HS command is sent the printer will not send a response to the host if the printer is in one of these conditions:
+      // note: When a ~HS command is sent, the printer will not send a response
+      // to the host if the printer is in one of these conditions:
       // MEDIA OUT, RIBBON OUT, HEAD OPEN, REWINDER FULL, HEAD OVER-TEMPERATURE
       '~HS': str => {
         if (str) {
+          // get paper out flag, pause flag, buffer full flag, under/over temp flags,
+          // head up flag, ribbon out flag, label waiting flag
           const ret = parsers.parseHS(str)
           //. how know if it's printing? (ACTIVE)
           setCache('state', ret.pause ? 'WAIT' : 'READY') // ACTIVE or READY or WAIT
@@ -78,23 +80,19 @@ export class AdapterDriver {
 
       // head diagnostic - get head temp, darkness adjust (?) - p199
       '~HD': str => {
-        if (str) {
-          const ret = parsers.parseHD(str)
-          // @ts-ignore
-          setCache('ht', ret['Head Temp'])
-        } else {
-          setCache('ht')
-        }
+        const ret = str ? parsers.parseHD(str) : {}
+        setCache('ht', ret['Head Temp']) // Celsius
+        setCache('dark', ret['Darkness Adjust']) // -30 to +30 or sthing
       },
 
       // host query odometer - nonresettable and user resettable 1 and 2
-      '~HQOD': str => {},
+      // '~HQOD': str => {},
 
       // host query maintenance info - messages
       // MAINTENANCE ALERT MESSAGES
       // CLEAN: PLEASE CLEAN PRINT HEAD
       // REPLACE: PLEASE REPLACE PRINT HEAD
-      '~HQMI': str => {},
+      // '~HQMI': str => {},
 
       // host query maintenance alert
       // ~HQMA
@@ -106,7 +104,7 @@ export class AdapterDriver {
       // PRINT REPLACEMENT ALERT: NO
       // PRINT CLEANING ALERT: NO
       // UNITS: C
-      '~HQMA': str => {},
+      // '~HQMA': str => {},
     }
 
     // connected to device - poll it for data by writing a command
