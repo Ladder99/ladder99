@@ -117,14 +117,7 @@ export function parseHD(str) {
     .join('')
     .split('\n')
     .map(line => line.split(' = '))
-  // console.log(pairs)
   const d = {}
   pairs.forEach(pair => (d[pair[0]] = pair[1]))
-  // const ret = {
-  //   headTemperature: d['Head Temp'],
-  //   ambientTemperature: d['Ambient Temp'],
-  //   darknessAdjust: d['Darkness Adjust'],
-  // }
-  // return ret
   return d
 }
