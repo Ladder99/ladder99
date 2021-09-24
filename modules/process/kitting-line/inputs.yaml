@@ -82,7 +82,7 @@ handlers:
       kit-off: '%Z61.6' # kit removed from conveyer - eye2
 
       # before and after fire only when new incoming 'job_current'
-      job-changed#before: <job_current.last'> = <job_current>
+      job-changed#before: <job_current.last> = <job_current>
       job-changed: <job_current.last> != 'job_current'            # comparing cache to incoming data
       job-changed#after: <job_changed> ? false : <job_changed>    # needs to reset after evaluation back to 'false', 
                                                                   # account for same incoming 'job_current' as previous 'job_current'
