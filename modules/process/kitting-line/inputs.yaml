@@ -38,8 +38,16 @@ handlers:
     # and part is some javascript calculation code to determine its value.
     inputs:
       status-connection: $.connection
+      status-build_no: $.build_no
       status-program: $.program
-      status-powered: $.powered
+      status-step: $.step
+      status-utc_time: $.utc_time
+      status-cpu_time: $.cpu_time
+      status-faults: $.faults
+      status-has-no-faults: $.faultKeys.length === 0
+      status-has-faults: $.faultKeys.length > 0
+      status-has-soft-faults: $.faultKeys.some(f => f>='50')
+      status-has-hard-faults: $.faultKeys.some(f => f<'50')
 
   # ----------------------------------------------------------------------------
   # handle query messages
@@ -71,6 +79,19 @@ handlers:
     inputs: &queryInputs
       kit-on: '%Z61.5' # kit placed on conveyer - eye1
       kit-off: '%Z61.6' # kit removed from conveyer - eye2
+
+      # before and after fire only when new incoming 'job_current'
+      job-changed#before: <job_current.last'> = <job_current>
+      job-changed: <job_current.last> != 'job_current'            # comparing cache to incoming data
+      job-changed#after: <job_changed> ? false : <job_changed>    # needs to reset after evaluation back to 'false', 
+                                                                  # account for same incoming 'job_current' as previous 'job_current'
+
+      part-uuid: if <job-changed> new uuid()
+      process-uuid: if <job-changed> new uuid()
+
+      salesord: '%Z61.0'.to_json().sales_order_number
+
+
 
   # ----------------------------------------------------------------------------
   # handle read messages

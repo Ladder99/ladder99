@@ -15,18 +15,48 @@
 # see end of pipeline/adapter/src/cache.js for details.
 
 outputs:
+  # device
+
   - key: avail
     value: types.AVAILABILITY[<status-connection>]
 
+  - key: func
+    value: if has_current_job and piece_count == 0       'SETUP'
+      else if has_current_job and piece_count > 0   'PRODUCTION'
+      else if has_current_job and done == true      'TEARDOWN'
+      else if not has_current_job                   'x:IDLE'
+
+  # controller
+
+  - key: exec
+    value: types.EXECUTION[<status-state>]
+
+  - key: wait
+    value: types.WAIT_STATE[<status-state>]
+
   - key: emp
-    value: <status-powered>
+    value: "types.AVAILABILITY[<status-connection>]=='AVAILABLE' ? 'ON' : 'OFF'"
 
-  # - key: procname
-  #   value: KITTING # nowork - needs a cache key to detect a change ehh
+  - key: pgm
+    value: <status-program>
 
-  - key: cond
-    category: CONDITION
-    value: "<status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'"
+  - key: step
+    type: BLOCK
+    value: <status-step>
+
+  - key: clk_time
+    type: CLOCK_TIME
+    value: <status-utc_time>
+
+  - key: up_time
+    type: EQUIPMENT_TIMER
+    subType: OPERATING
+    value: <status-cpu_time>
+
+  - key: fw
+    type: FIRMWARE
+    subType: VERSION
+    value: <status-build_no>
 
   - key: msg
     type: MESSAGE
@@ -38,12 +68,21 @@ outputs:
     value: "Object.entries(<status-faults>).map(([id, fault]) => fault.description).join(', ')"
     nativeCode: NativeCode #.
 
-  - key: state
-    value: types.EXECUTION[<status-state>]
+  - key: cond
+    category: CONDITION
+    value: "<status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'"
 
-  - key: wait_state
-    #. what value goes here when status.state is not WAIT?
-    value: types.WAIT_STATE[<status-state>]
+  # parts
 
-  - key: pgm
-    value: <status-program>
+  # process
+
+  - key: poid
+    type: PROCESS_OCCURENCE_ID
+    value: <process-uuid>
+
+  - key: salesord
+    type: PROCESS_AGGREGATE_ID
+    value: <salesord>
+
+  # - key: procname
+  #   value: KITTING # nowork - needs a cache key to detect a change ehh
