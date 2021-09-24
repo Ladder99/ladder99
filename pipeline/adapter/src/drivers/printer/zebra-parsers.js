@@ -59,7 +59,7 @@ export function parseHQES(str) {
   const errorFlags = hexes[2]
   const foundValues = errors.keys.filter(errorValue => errorFlags & errorValue)
   const foundErrors = foundValues.map(foundValue => errors.dict[foundValue])
-  console.log(foundErrors)
+  // console.log(foundErrors)
 
   const warningFlags = hexes[5]
   const foundWarningKeys = warnings.keys.filter(value => warningFlags & value)
