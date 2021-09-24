@@ -9,19 +9,19 @@ export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
     console.log(`Initialize Zebra driver...`)
 
-    // // set cache values, which trigger shdr output
-    // cache.set(`${deviceId}/avail`, { value: 'AVAILABLE' }) // or UNAVAILABLE
-    // cache.set(`${deviceId}/emp`, { value: 'ON' }) // or OFF
-    // cache.set(`${deviceId}/cond`, { value: 'WARNING' }) // or NORMAL or ERROR
-    // cache.set(`${deviceId}/msg`, { value: 'Some message' })
-    // cache.set(`${deviceId}/dark`, { value: 30 }) // -30 to +30 or sthing
-    // cache.set(`${deviceId}/ht`, { value: 40 }) // head temp
-    // cache.set(`${deviceId}/state`, { value: 'ACTIVE' }) // or READY or WAIT
+    // set cache values, which trigger shdr output
+    // setCache('avail', 'AVAILABLE') // or UNAVAILABLE
+    // setCache('emp', 'ON') // or OFF
+    // setCache('state', 'ACTIVE') // or READY or WAIT
+    // setCache('cond', 'WARNING') // or NORMAL or ERROR
+    // setCache('msg', 'Some message')
+    // setCache('dark', 30) // -30 to +30 or sthing
+    // setCache('ht', 40) // head temp
 
     // TODO
-    // cache.set(`${deviceId}/tl`, { value: 100 }) // total length - odometer
-    // cache.set(`${deviceId}/fr`, { value: 10 }) // feedrate
-    // cache.set(`${deviceId}/uc`, { value: 3 }) // unload count
+    // setCache('tl', 100) // total length - odometer
+    // setCache('fr', 10) // feedrate
+    // setCache('uc', 3) // unload count
 
     let client
     let handler
