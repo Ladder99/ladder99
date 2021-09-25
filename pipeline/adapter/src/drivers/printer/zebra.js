@@ -21,7 +21,7 @@ export class AdapterDriver {
     // setCache('tl', 100) // total length - odometer
 
     // TODO
-    // setCache('uc', 3) // unload count
+    // setCache('uc', 3) // unload count = total lifetime label count
 
     let client
     let handler
