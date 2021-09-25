@@ -48,7 +48,7 @@ export class AdapterDriver {
           if (ret.errors.length > 0) {
             setCache('cond', 'ERROR')
             setCache('msg', ret.msgs)
-            setCache('state', 'INTERRUPTED') // execution state
+            setCache('state', 'INTERRUPTED') // execution state - see also HS handler below
           } else if (ret.warnings.length > 0) {
             setCache('cond', 'WARNING')
             setCache('msg', ret.msgs)
@@ -74,9 +74,12 @@ export class AdapterDriver {
           const ret = parsers.parseHS(str)
           // @ts-ignore
           setCache('labels-remaining', ret.labelsRemaining)
+          // execution state:
+          // -interrupted - if any error condition (set above in HQES handler)
+          // -active - if Number(labelsRemaining) > 0
+          // -ready - otherwise
           // execution MUST be READY, ACTIVE, INTERRUPTED, WAIT, FEED_HOLD,
           // STOPPED, OPTIONAL_STOP, PROGRAM_STOPPED, or PROGRAM_COMPLETED.
-          // see also HQES handler above, which sets this to INTERRUPTED if any error
           setCache('state', ret.labelsRemaining > 0 ? 'ACTIVE' : 'READY')
         } else {
           setCache('state')
