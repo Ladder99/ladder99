@@ -17,10 +17,10 @@ export class AdapterDriver {
     // setCache('msg', 'Some message')
     // setCache('dark', 30) // -30 to +30 or sthing
     // setCache('ht', 40) // head temp
+    // setCache('fr', 10) // feedrate - print speed
 
     // TODO
     // setCache('tl', 100) // total length - odometer
-    // setCache('fr', 10) // feedrate
     // setCache('uc', 3) // unload count
 
     let client
@@ -83,6 +83,7 @@ export class AdapterDriver {
         const ret = str ? parsers.parseHD(str) : {}
         setCache('ht', ret['Head Temp']) // Celsius
         setCache('dark', ret['Darkness Adjust']) // -30 to +30 or sthing
+        setCache('fr', ret['Print Speed']) // feed rate - inches/sec
       },
 
       // host query odometer - nonresettable and user resettable 1 and 2

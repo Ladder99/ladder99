@@ -59,12 +59,10 @@ export function parseHQES(str) {
   const errorFlags = hexes[2]
   const foundValues = errors.keys.filter(errorValue => errorFlags & errorValue)
   const foundErrors = foundValues.map(foundValue => errors.dict[foundValue])
-  // console.log(foundErrors)
 
   const warningFlags = hexes[5]
   const foundWarningKeys = warnings.keys.filter(value => warningFlags & value)
   const foundWarnings = foundWarningKeys.map(value => warnings.dict[value])
-  // console.log(foundWarnings)
 
   const msgs = [
     ...foundErrors.map(error => `ERROR: ${error}`),
@@ -109,6 +107,29 @@ export function parseHS(str) {
 }
 
 // HD
+
+// eg
+// Head Temp = 30 C
+// Ambient Temp = 31
+// Head Test = Passed
+// Darkness Adjust = 15.0
+// Print Speed = 8
+// Slew Speed = 8
+// Backfeed Speed = 8
+// Static_pitch_length = 1246
+// Dynamic_pitch_length = 1262
+// Max_dynamic_pitch_length = 1271
+// Min_dynamic_pitch_length = 1256
+// COMMAND PFX = ~ : FORMAT PFX = ^ : DELIMITER = ,
+// P30 INTERFACE = None
+// P31 INTERFACE = None
+// P32 INTERFACE = PAX2 RTS Option         Revision 23
+// P33 INTERFACE = Power Supply Option     Revision 16
+// P34 INTERFACE = Applicator Option
+// P35 INTERFACE = None
+// Dynamic_top_position = 0009
+// No ribbon A/D = 0000
+// PCB Temp = None
 
 export function parseHD(str) {
   const pairs = str
