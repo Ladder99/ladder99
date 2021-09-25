@@ -1,3 +1,7 @@
+// test the zebra response parsers
+// run with
+//   node zebra-test.js
+
 import * as parsers from './zebra-parsers.js'
 
 // HQES
@@ -39,3 +43,15 @@ PCB Temp = 177
 console.log(s3)
 const ret3 = parsers.parseHD(s3)
 console.log(ret3)
+
+// HQOD
+
+const s4 = `
+PRINT METERS                              
+TOTAL NONRESETTABLE:         313248 "    
+USER RESETTABLE CNTR1:       313248 "    
+USER RESETTABLE CNTR2:       313248 "    
+`
+console.log(s4)
+const ret4 = parsers.parseHQOD(s4)
+console.log(ret4)

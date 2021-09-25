@@ -18,9 +18,9 @@ export class AdapterDriver {
     // setCache('dark', 30) // -30 to +30 or sthing
     // setCache('ht', 40) // head temp
     // setCache('fr', 10) // feedrate - print speed
+    // setCache('tl', 100) // total length - odometer
 
     // TODO
-    // setCache('tl', 100) // total length - odometer
     // setCache('uc', 3) // unload count
 
     let client
@@ -87,7 +87,10 @@ export class AdapterDriver {
       },
 
       // host query odometer - nonresettable and user resettable 1 and 2
-      // '~HQOD': str => {},
+      '~HQOD': str => {
+        const length = str ? parsers.parseHQOD(str) : undefined
+        setCache('tl', length) // total length, inches
+      },
 
       // host query maintenance info - messages
       // MAINTENANCE ALERT MESSAGES

@@ -142,3 +142,11 @@ export function parseHD(str) {
   pairs.forEach(pair => (d[pair[0]] = pair[1]))
   return d
 }
+
+const regex2 = /.*TOTAL NONRESETTABLE:[ ]*(\d+).*/
+
+export function parseHQOD(str) {
+  const match = str.match(regex2)
+  const value = match[1]
+  return value
+}
