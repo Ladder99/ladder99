@@ -48,6 +48,7 @@ export class AdapterDriver {
           if (ret.errors.length > 0) {
             setCache('cond', 'ERROR')
             setCache('msg', ret.msgs)
+            setCache('state', 'INTERRUPTED') // execution state
           } else if (ret.warnings.length > 0) {
             setCache('cond', 'WARNING')
             setCache('msg', ret.msgs)
@@ -69,10 +70,14 @@ export class AdapterDriver {
       '~HS': str => {
         if (str) {
           // get paper out flag, pause flag, buffer full flag, under/over temp flags,
-          // head up flag, ribbon out flag, label waiting flag
+          // head up flag, ribbon out flag, label waiting flag, labels remaining
           const ret = parsers.parseHS(str)
-          //. how know if it's printing, ie ACTIVE?
-          setCache('state', ret.pause ? 'WAIT' : 'READY') // ACTIVE or READY or WAIT
+          // @ts-ignore
+          setCache('labels-remaining', ret.labelsRemaining)
+          // execution MUST be READY, ACTIVE, INTERRUPTED, WAIT, FEED_HOLD,
+          // STOPPED, OPTIONAL_STOP, PROGRAM_STOPPED, or PROGRAM_COMPLETED.
+          // see also HQES handler above, which sets this to INTERRUPTED if any error
+          setCache('state', ret.labelsRemaining > 0 ? 'ACTIVE' : 'READY')
         } else {
           setCache('state')
         }
