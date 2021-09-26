@@ -10,7 +10,8 @@ export class AdapterDriver {
   // initialize the client plugin
   // queries the device for address space definitions, subscribes to topics.
   // inputs is the inputs.yaml file parsed to a js tree.
-  init({ deviceId, deviceName, host, port, cache, inputs }) {
+  // note: types IS used - by the part(cache, $) fn evaluation
+  init({ deviceId, deviceName, host, port, cache, inputs, types }) {
     console.log('init', { deviceId })
     const url = `mqtt://${host}:${port}`
 
@@ -91,10 +92,7 @@ export class AdapterDriver {
           for (const [key, part] of inputs) {
             const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
             if (typeof part === 'function') {
-              // if string starts with =, treat as js code to evaluate to get value
-              // const js = part.slice(1)
-              // console.log(`Evaluating JS code: ${js}...`)
-              const value = part(cache, $)
+              const value = part(cache, $) // may use `types` dict
               console.log(`Got ${value} - set cache...`)
               cache.set(cacheId, { value }) // save value to cache - may send shdr to tcp
             } else {

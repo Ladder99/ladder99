@@ -95,9 +95,8 @@ async function main() {
         // vs value:'%M56.1' which would use the lookup fn
         // or stick .valueFn onto the input object, which call with cache.
         // might want to provide types in the closure also, when call eval.
-        if (inputs) {
+        if (inputs.handlers) {
           // iterate over handlers
-          console.log(100, inputs.handlers)
           const handlers = Object.values(inputs.handlers)
           for (let handler of handlers) {
             // iterate over keys and parts
@@ -106,8 +105,8 @@ async function main() {
               const part = handler.inputs[key]
               console.log('key,part', key, part)
               if (typeof part === 'string' && part.startsWith('=')) {
-                const code = part.slice(1)
-                const { value, dependsOn } = getValueFn(deviceId, code)
+                const code = part.slice(1) // eg '<avail>'
+                const { value, dependsOn } = getValueFn(deviceId, code, types)
                 handler.inputs[key] = value // replace str with fn
               }
             }
@@ -128,6 +127,7 @@ async function main() {
           cache,
           inputs,
           socket,
+          types,
         })
       }
 
@@ -180,7 +180,7 @@ main()
 function getOutputs({ templates, types, deviceId }) {
   // console.log('getOutputs - iterate over output templates')
   const outputs = templates.map(template => {
-    const { value, dependsOn } = getValueFn(deviceId, template.value)
+    const { value, dependsOn } = getValueFn(deviceId, template.value, types)
     // get output object
     // eg {
     //   key: 'ac1-power_condition',
@@ -212,7 +212,7 @@ function getOutputs({ templates, types, deviceId }) {
 
 // get valueFn and dependsOn array from a js code statement
 // eg "<foo>" becomes cache=>cache.get(`${deviceId}-foo`).value
-function getValueFn(deviceId, code = '') {
+function getValueFn(deviceId, code = '', types = {}) {
   // replace all occurrences of <key> with `cache.get('...').value`.
   // eg <status_faults> => cache.get(`${deviceId}-status_faults`).value
   // note: .*? is a non-greedy match, so doesn't eat other occurrences also.
