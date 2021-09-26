@@ -56,21 +56,25 @@ handlers:
       - topic: l99/ccs/evt/query
 
     # $ is a way to do quick lookups on the mqtt payload.
-    # in this case the payload is an array of items like { keys, default }.
+    # in this case the payload is an array of items like [{ keys, default }, ...].
     # what we want to do is assign the default value to each item's key,
     # where the key is keys[0], eg 'printer_ribbon_low'.
     # $ is a variable declared as `let $ = {}` before this code is executed.
-    #. this complexity could be hidden from the user in the plugin code somehow.
+    #. this complexity could be hidden from the user in the plugin code
     initialize: 'payload.forEach(item => $[item.keys[0]] = item)'
+
+    # define a lookup function to use to get item from payload, if there.
+    # the plugin has -
+    #   const item = lookup($, part)
     lookup: '($, part) => ({ value: ($[part] || {}).default })'
 
     # define key-part pairs
-    # 'key' defines the cache id, with id = {deviceId}/{key},
-    # eg for key='printer_ribbon_low', id = 'pa1/printer_ribbon_low'.
+    # 'key' defines the cache id, with id = {deviceId}_{key},
+    # eg for key='printer_ribbon_low', id = 'pa1_printer-ribbon-low'.
     # 'part' defines the part of the payload to get using the above defined
     # lookup fn, eg for part='%I0.0', the value is obtained with $['%I0.0'].
     # then it sets item = { value }, then calls cache.set(id, item),
-    # eg cache.set('pa1/printer_ribbon_low', { value: 0 })
+    # eg cache.set('pa1_printer-ribbon-low', { value: 0 })
     # this might trigger SHDR output to be sent to the mtconnect agent,
     # according to the outputs defined in outputs.yaml.
     # the & syntax saves this list for later, as the read message handler
@@ -78,7 +82,7 @@ handlers:
     inputs: &queryInputs
       foo: '%Z61.5'
 
-      # piece_count_at_p&a:                                         # piece count at print and apply
+      # piece_count_at_p&a: |                                        # piece count at print and apply
       #   '%Z61.0'.to_json().kit_count  - <pr1/ze500 labels remaining>
 
       # pieces_in_assembly: <kit_on> - <kit_off>                    # kits on assy line
