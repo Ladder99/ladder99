@@ -91,17 +91,18 @@ export class AdapterDriver {
           const inputs = Object.entries(handler.inputs) || []
           for (const [key, part] of inputs) {
             const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
-            if (typeof part === 'function') {
-              console.log(`key,part`, key, part.toString())
-              const value = part(cache, $) // may use `types` dict
-              console.log(`Got ${value} - set cache...`)
+            if (typeof part === 'object') {
+              const { code, value: valueFn } = part
+              console.log(`key,code`, key, code)
+              const value = valueFn(cache, $) // may use `types` dict also
+              console.log(`Got ${value} - set ${cacheId}...`)
               cache.set(cacheId, { value }) // save value to cache - may send shdr to tcp
             } else {
               // use the lookup function to get item from payload, if there
               const item = lookup($, part)
               // if we have the part in the payload, add it to the cache
               if (item && item.value !== undefined) {
-                console.log(`MQTT part '${part}' in payload - set cache`)
+                console.log(`MQTT part '${part}' in payload - set ${cacheId}`)
                 // item.receivedTime = receivedTime
                 cache.set(cacheId, item) // save to the cache - may send shdr to tcp
               }
