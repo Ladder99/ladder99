@@ -164,19 +164,17 @@ function getOutputs({ templates, types, deviceId }) {
     let valueStr = template.value || ''
     // eg "cache.get('ac1-power_fault').value ? 'FAULT' : cache.get('ac1-power_warning').value ? 'WARNING' : 'NORMAL'"
     // should be okay to ditch replaceAll because we have /g for the regexp
-    //. test this with two cache refs in a string "<foo> + <bar>" etc
     // valueStr = valueStr.replaceAll( // needs node15
+    //. test this with two cache refs in a string "<foo> + <bar>" etc
     valueStr = valueStr.replace(
       regexp1,
-      // `cache.get('${deviceId}/$2').value` // $2 is the matched substring
-      // `cache.get('${deviceId}_$2').value` // $2 is the matched substring
       `cache.get('${deviceId}-$2').value` // $2 is the matched substring
     )
     if (valueStr.includes('\n')) {
       valueStr = '{\n' + valueStr + '\n}'
     }
 
-    // evaluate the value function -> eg 'FAULT'
+    // define the value function //. call it valueFn?
     const value = cache => eval(valueStr)
 
     // get list of cache ids this calculation depends on.
@@ -193,7 +191,7 @@ function getOutputs({ templates, types, deviceId }) {
     // get output object
     // eg {
     //   key: 'ac1-power_condition',
-    //   value: 'FAULT',
+    //   value: cache => cache.get('pr1-avail').value,
     //   dependsOn: ['ac1-power_fault', 'ac1-power_warning'],
     //   category: 'CONDITION',
     //   type: 'VOLTAGE_DC',

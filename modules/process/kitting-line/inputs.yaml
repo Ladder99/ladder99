@@ -83,7 +83,7 @@ handlers:
       #
 
       #.. how specify printer assoc with this line? can't hardcode it like this
-      piece_count_at_print_apply: =($['%Z61.0'] || {}).kit_count  - cache.get('pr1-labels_remaining')
+      piece_count_at_print_apply: =($['%Z61.0'] || {}).kit_count  - cache.get('pr1-labels_remaining').value
 
       pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
       pieces_completed: =<kit_off> # kits finished
