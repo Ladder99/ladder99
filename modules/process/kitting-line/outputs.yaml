@@ -9,9 +9,9 @@
 # value is javascript, evaluated by the cache in calculating the shdr output.
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}/foo').value
 
-# category is used to determine shdr representation.
-# default category is EVENT or SAMPLE - specify for others.
-# specify type if is MESSAGE.
+# note: category is used to determine shdr representation.
+# only need to specify category if CONDITION.
+# only need to specify type if is MESSAGE.
 # see end of pipeline/adapter/src/cache.js for details.
 
 outputs:
@@ -23,10 +23,10 @@ outputs:
     value: types.AVAILABILITY[<status-connection>]
 
   - key: func
-    value: if has_current_job and piece_count == 0       'SETUP'
-      else if has_current_job and piece_count > 0   'PRODUCTION'
-      else if has_current_job and done == true      'TEARDOWN'
-      else if not has_current_job                   'x:IDLE'
+    value:  if <has_current_job> and <pieces_began> == 0        'SETUP'
+            else if <has_current_job> and <pieces_began> > 0    'PRODUCTION'
+            else if <has_current_job> and <job_done> == true    'TEARDOWN'
+            else if not <has_current_job>                       'UNAVAILABLE'
 
   # ------------------------------------------------------------------
   # controller
@@ -41,7 +41,7 @@ outputs:
   - key: emp
     value: "types.POWER[<status-connection>]
 
-  - key: pgm
+  - key: ctl_pgm
     value: <status-program>
 
   - key: step
@@ -80,9 +80,38 @@ outputs:
   - key: salesord
     value: <salesord>
 
+  - key: purchord
+    value: <purchord>
+
+  - key: procname
+    value: "KITTING" # nowork - needs a cache key to detect a change ehh
+
+  - key: start
+    value: <job-start>
+
+  - key: complete
+    value: "<job-complete> ? now() : 'UNAVAILABLE'"
+
+  - key: target
+    value: '?'
+
+  - key: pkuuid-ref
+    value: <part-uuid>
+
+  - key: procstate
+    value:  if <has_current_job> and <current_job_done>         'COMPLETED'
+            else if <has_current_job> and <first_eye_broken>    'ACTIVE'
+            else if <has_current_job>                           'READY'
+            else if not <has_current_job>                       'UNAVAILABLE'
+
+  - key: pgm
+    value: <status-program>
+
+  - key: cycle
+    representation: DATA_SET
+    value: '?'
+
   # ------------------------------------------------------------------
-  # part
+  # parts
   # ------------------------------------------------------------------
 
-  # - key: procname
-  #   value: KITTING # nowork - needs a cache key to detect a change ehh
