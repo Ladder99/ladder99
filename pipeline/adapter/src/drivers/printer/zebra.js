@@ -73,7 +73,7 @@ export class AdapterDriver {
           // head up flag, ribbon out flag, label waiting flag, labels remaining
           const ret = parsers.parseHS(str)
           // @ts-ignore
-          setCache('labels-remaining', ret.labelsRemaining)
+          setCache('labels_remaining', ret.labelsRemaining)
           // execution state:
           // -interrupted - if any error condition (set above in HQES handler)
           // -active - if Number(labelsRemaining) > 0
@@ -169,7 +169,8 @@ export class AdapterDriver {
 
     // set a cache key to the given value, which will trigger shdr output
     function setCache(key, value = 'UNAVAILABLE') {
-      cache.set(`${deviceId}_${key}`, { value })
+      // cache.set(`${deviceId}_${key}`, { value })
+      cache.set(`${deviceId}-${key}`, { value })
     }
 
     // set all cache keys to UNAVAILABLE
