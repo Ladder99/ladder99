@@ -72,7 +72,7 @@ export function parseHQES(str) {
   return { errors: foundErrors, warnings: foundWarnings, msgs }
 }
 
-// HS
+// HS - p212
 
 export function parseHS(str) {
   const values = str

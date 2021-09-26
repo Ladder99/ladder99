@@ -63,7 +63,7 @@ export class AdapterDriver {
         }
       },
 
-      // host status
+      // host status - p212
       // note: When a ~HS command is sent, the printer will not send a response
       // to the host if the printer is in one of these conditions:
       // MEDIA OUT, RIBBON OUT, HEAD OPEN, REWINDER FULL, HEAD OVER-TEMPERATURE
