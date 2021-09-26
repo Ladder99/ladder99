@@ -20,7 +20,7 @@ outputs:
   # ------------------------------------------------------------------
 
   - key: avail
-    value: types.AVAILABILITY[<status-connection>]
+    value: types.AVAILABILITY[<status_connection>]
 
   #.
   # - key: func
@@ -98,7 +98,7 @@ outputs:
   # - key: complete
   #   value: "<job_complete> ? now() : 'UNAVAILABLE'"
 
-  #.
+  #. calculate target completion time
   # - key: target
   #   value: '?'
 
