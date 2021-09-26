@@ -90,6 +90,10 @@ async function main() {
           cache.addOutputs(outputs, socket)
         }
 
+        //. transform input values to input value fns here if needed?
+        // ie value:=<on>+<off> would be translated to a fn with those cache lookups.
+        // vs value:'%M56.1' which would use the lookup fn
+
         // initialize driver plugin
         // note: this must be done AFTER getOutputs and addOutputs,
         // as that is where the dependsOn values are set, and this needs those.
