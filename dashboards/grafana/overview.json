@@ -17,7 +17,6 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 5,
-  "iteration": 1632609537413,
   "links": [
     {
       "asDropdown": false,
@@ -205,7 +204,61 @@
           "metricColumn": "none",
           "rawQuery": true,
           "rawSql": "SELECT time, value as \"ZT410\"\nFROM history_text\nWHERE \ndevice='ZT410 (18J161604846)' and\nproperty='system-condition' and $__timeFilter(\"time\")\nORDER BY time",
-          "refId": "Part",
+          "refId": "a1",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as \"ZE500-4 LH\"\nFROM history_text\nWHERE \ndevice='ZE500-4 LH (JJL107184.161270113.23630-02.YF.JABI)' and\nproperty='system-condition' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "a2",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "table",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as \"Kitting Line 1\"\nFROM history_text\nWHERE \ndevice='Kitting Line (1)' and\nproperty='system-condition' and $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "kl1",
           "select": [
             [
               {
@@ -314,5 +367,5 @@
   "timezone": "",
   "title": "Overview",
   "uid": "overview",
-  "version": 7
+  "version": 10
 }
