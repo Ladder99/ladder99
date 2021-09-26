@@ -92,18 +92,18 @@ outputs:
     #   nativeCode: NativeCode #.
 
   - key: start
-    value: <job-start>
+    value: <job_start>
 
   #.
   # - key: complete
-  #   value: "<job-complete> ? now() : 'UNAVAILABLE'"
+  #   value: "<job_complete> ? now() : 'UNAVAILABLE'"
 
   #.
   # - key: target
   #   value: '?'
 
   - key: pkuuid-ref
-    value: <part-uuid>
+    value: <part_uuid>
 
   #.
   # - key: procstate
@@ -113,7 +113,7 @@ outputs:
   #           else if not <has_current_job>                       'UNAVAILABLE'
 
   - key: pgm
-    value: <status-program>
+    value: <status_program>
 
   #.
   # - key: cycle
