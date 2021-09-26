@@ -94,7 +94,7 @@ export class AdapterDriver {
               // if string starts with =, treat as js code to evaluate to get value
               // const js = part.slice(1)
               // console.log(`Evaluating JS code: ${js}...`)
-              const value = part(cache)
+              const value = part(cache, $)
               console.log(`Got ${value} - set cache...`)
               cache.set(cacheId, { value }) // save value to cache - may send shdr to tcp
             } else {

@@ -97,16 +97,17 @@ async function main() {
         // might want to provide types in the closure also, when call eval.
         if (inputs) {
           // iterate over handlers
+          console.log(100, inputs.handlers)
           const handlers = Object.values(inputs.handlers)
           for (let handler of handlers) {
             // iterate over keys and parts
             const keys = Object.keys(handler.inputs)
             for (let key of keys) {
               const part = handler.inputs[key]
-              if (part.startsWith('=')) {
+              console.log('key,part', key, part)
+              if (typeof part === 'string' && part.startsWith('=')) {
                 const code = part.slice(1)
                 const { value, dependsOn } = getValueFn(deviceId, code)
-                // part.valueFn = value
                 handler.inputs[key] = value // replace str with fn
               }
             }
@@ -230,7 +231,7 @@ function getValueFn(deviceId, code = '') {
   }
 
   // define the value function //. call it valueFn?
-  const value = cache => eval(code)
+  const value = (cache, $) => eval(code)
 
   // get list of cache ids this calculation depends on.
   // get AFTER transforms, because user could specify a cache get manually.
