@@ -92,6 +92,7 @@ export class AdapterDriver {
           for (const [key, part] of inputs) {
             const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
             if (typeof part === 'function') {
+              console.log(`key,part`, key, part.toString())
               const value = part(cache, $) // may use `types` dict
               console.log(`Got ${value} - set cache...`)
               cache.set(cacheId, { value }) // save value to cache - may send shdr to tcp

@@ -68,9 +68,10 @@ export class Cache {
   }
 
   // get an item object from cache
-  //. eg ____
+  // eg get('pr1-avail').value
   get(key) {
-    const item = this._map.get(key) || {} //. have default? return undefined?
+    // best to return {} because user will do .value on result
+    const item = this._map.get(key) || {}
     return item
   }
 }

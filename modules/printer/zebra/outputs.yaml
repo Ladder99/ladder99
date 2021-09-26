@@ -38,6 +38,9 @@ outputs:
   - key: tl
     value: <tl>
 
+  - key: lr
+    value: <labels_remaining>
+
   - key: fr
     value: <fr>
 
