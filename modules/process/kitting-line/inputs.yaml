@@ -80,19 +80,17 @@ handlers:
     # the & syntax saves this list for later, as the read message handler
     # uses the same pairs.
     inputs: &queryInputs
-      foo: '%Z61.5'
+      piece_count_at_print_apply: =$['%Z61.0'].kit_count  - cache.get('pr1-labels_remaining')
+      # piece-count-at-print-apply: =$['%Z61.0'].kit_count  - cache.get('pr1_labels-remaining')
 
-      # piece-count-at-pa: |                                        # piece count at print and apply
-      #   '%Z61.0'.to_json().kit_count  - <pr1/ze500 labels remaining>
+      pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
+      pieces_completed: =<kit_off> # kits finished
+      pieces_began: =<kit_on> # kits work began
 
-      # pieces-in-assembly: <kit-on> - <kit-off>                    # kits on assy line
-      # pieces-completed: <kit-off>                                 # kits finished
-      # pieces-began: <kit-on>                                      # kits work began
-
-      # kit-on: '%Z61.5'                                            # kit placed on conveyer - eye1
+      kit_on: '%Z61.5' # kit placed on conveyer - eye1
       # kit-on#on_change: <piece-cycle-times>.add(<kit-on>, start=now(), end=null, c_t=null)
 
-      # kit-off: '%Z61.6'                                           # kit removed from conveyer - eye2
+      kit_off: '%Z61.6' # kit removed from conveyer - eye2
       # kit-on#on_change: <piece-cycle-times>[<kit-off>].end=now();
       #                   <piece-cycle-times>[<kit-off>].c_t=<piece-cycle-times>[<kit-off>].end - <piece-cycle-times>[<kit-off>].start
 
