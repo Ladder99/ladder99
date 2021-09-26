@@ -98,7 +98,7 @@ handlers:
 
       # piece_cycle_times: dict()
 
-      # has_current_job: not string.is_empty('%Z61.0')              # current job meta is not empty string
+      has_current_job: =!!$['%Z61.0'] # current job meta is not empty string
       # job_done: '%Z61.3'                                          # current job done, pieces remaining reached zero
       # job_current: '%Z61.0'.to_json().kit_number                  # kit assembly part number
       # job_previous: null

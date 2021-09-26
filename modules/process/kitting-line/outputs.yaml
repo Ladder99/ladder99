@@ -29,6 +29,13 @@ outputs:
   #           else if <has_current_job> and <job_done> == true    'TEARDOWN'
   #           else if not <has_current_job>                       'UNAVAILABLE'
 
+  key: func
+  value: |
+    <has_current_job> && <pieces_began> === 0 ? 'SETUP' : 
+    <has_current_job> && <pieces_began> > 0 ? 'PRODUCTION' :
+    <has_current_job> && <job_done> ? 'TEARDOWN' :
+    'UNAVAILABLE'
+
   # ------------------------------------------------------------------
   # controller
   # ------------------------------------------------------------------
