@@ -22,11 +22,12 @@ outputs:
   - key: avail
     value: types.AVAILABILITY[<status-connection>]
 
-  - key: func
-    value:  if <has_current_job> and <pieces_began> == 0        'SETUP'
-            else if <has_current_job> and <pieces_began> > 0    'PRODUCTION'
-            else if <has_current_job> and <job_done> == true    'TEARDOWN'
-            else if not <has_current_job>                       'UNAVAILABLE'
+  #.
+  # - key: func
+  #   value:  if <has_current_job> and <pieces_began> == 0        'SETUP'
+  #           else if <has_current_job> and <pieces_began> > 0    'PRODUCTION'
+  #           else if <has_current_job> and <job_done> == true    'TEARDOWN'
+  #           else if not <has_current_job>                       'UNAVAILABLE'
 
   # ------------------------------------------------------------------
   # controller
@@ -39,7 +40,7 @@ outputs:
     value: types.WAIT_STATE[<status-state>]
 
   - key: emp
-    value: "types.POWER[<status-connection>]
+    value: types.POWER[<status-connection>]
 
   - key: ctl_pgm
     value: <status-program>
@@ -56,20 +57,6 @@ outputs:
   - key: fw
     value: <status-build_no>
 
-  - key: msg
-    type: MESSAGE
-    # representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
-    # value: Object.entries(<status-faults>).map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
-    # value: "'msg|' + Object.entries(<status-faults>).map(([id, fault]) => 'f' + id + '=pokpok').join(' ')"
-    # value: "Object.entries(<status-faults>).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
-    #. escape any pipes and enclose in double quotes
-    value: "Object.entries(<status-faults>).map(([id, fault]) => fault.description).join(', ')"
-    nativeCode: NativeCode #.
-
-  - key: cond
-    category: CONDITION
-    value: "<status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'"
-
   # ------------------------------------------------------------------
   # process
   # ------------------------------------------------------------------
@@ -83,35 +70,56 @@ outputs:
   - key: purchord
     value: <purchord>
 
-  - key: procname
-    value: "KITTING" # nowork - needs a cache key to detect a change ehh
+  #.
+  # # nowork - needs a cache key to detect a change ehh
+  # - key: procname
+  #   value: KITTING
+
+  - key: cond
+    category: CONDITION
+    value: "<status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'"
+
+  - key: msg
+    type: MESSAGE
+    foo: (none)
+    #.
+    #   # representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
+    #   # value: Object.entries(<status-faults>).map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
+    #   # value: "'msg|' + Object.entries(<status-faults>).map(([id, fault]) => 'f' + id + '=pokpok').join(' ')"
+    #   # value: "Object.entries(<status-faults>).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
+    #   #. escape any pipes and enclose in double quotes
+    #   value: "Object.entries(<status-faults>).map(([id, fault]) => fault.description).join(', ')"
+    #   nativeCode: NativeCode #.
 
   - key: start
     value: <job-start>
 
-  - key: complete
-    value: "<job-complete> ? now() : 'UNAVAILABLE'"
+  #.
+  # - key: complete
+  #   value: "<job-complete> ? now() : 'UNAVAILABLE'"
 
-  - key: target
-    value: '?'
+  #.
+  # - key: target
+  #   value: '?'
 
   - key: pkuuid-ref
     value: <part-uuid>
 
-  - key: procstate
-    value:  if <has_current_job> and <current_job_done>         'COMPLETED'
-            else if <has_current_job> and <first_eye_broken>    'ACTIVE'
-            else if <has_current_job>                           'READY'
-            else if not <has_current_job>                       'UNAVAILABLE'
+  #.
+  # - key: procstate
+  #   value:  if <has_current_job> and <current_job_done>         'COMPLETED'
+  #           else if <has_current_job> and <first_eye_broken>    'ACTIVE'
+  #           else if <has_current_job>                           'READY'
+  #           else if not <has_current_job>                       'UNAVAILABLE'
 
   - key: pgm
     value: <status-program>
 
-  - key: cycle
-    representation: DATA_SET
-    value: '?'
+  #.
+  # - key: cycle
+  #   representation: DATA_SET
+  #   value: '?'
 
   # ------------------------------------------------------------------
   # parts
   # ------------------------------------------------------------------
-

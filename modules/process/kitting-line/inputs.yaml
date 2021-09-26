@@ -13,12 +13,12 @@ connect:
   # subscribe to these topics
   # can use ${deviceId} in topics
   subscribe:
-    - topic: l99/${deviceId}/evt/query
-    - topic: l99/${deviceId}/evt/status
-    - topic: l99/${deviceId}/evt/read
+    - topic: l99/ccs/evt/query
+    - topic: l99/ccs/evt/status
+    - topic: l99/ccs/evt/read
   # publish an empty message to receive the query response
   publish:
-    - topic: l99/${deviceId}/cmd/query
+    - topic: l99/ccs/cmd/query
       message: '{}'
 
 # define message topic handlers
@@ -26,7 +26,7 @@ handlers:
   # ----------------------------------------------------------------------------
   # handle status messages
   # ----------------------------------------------------------------------------
-  l99/${deviceId}/evt/status:
+  l99/ccs/evt/status:
     # make '$' the message payload dictionary and add faultKeys for quick
     # lookups of faults - payload.faults is a dictionary of faults.
     initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
@@ -51,9 +51,9 @@ handlers:
   # ----------------------------------------------------------------------------
   # handle query messages
   # ----------------------------------------------------------------------------
-  l99/${deviceId}/evt/query:
+  l99/ccs/evt/query:
     unsubscribe:
-      - topic: l99/${deviceId}/evt/query
+      - topic: l99/ccs/evt/query
 
     # $ is a way to do quick lookups on the mqtt payload.
     # in this case the payload is an array of items like { keys, default }.
@@ -76,48 +76,49 @@ handlers:
     # the & syntax saves this list for later, as the read message handler
     # uses the same pairs.
     inputs: &queryInputs
+      foo: '%Z61.5'
 
-      piece_count_at_p&a:                                         # piece count at print and apply
-        '%Z61.0'.to_json().kit_count  - <pr1/ze500 labels remaining>
+      # piece_count_at_p&a:                                         # piece count at print and apply
+      #   '%Z61.0'.to_json().kit_count  - <pr1/ze500 labels remaining>
 
-      pieces_in_assembly: <kit_on> - <kit_off>                    # kits on assy line
-      pieces_completed: <kit-off>                                 # kits finished
-      pieces_began: <kit-on>                                      # kits work began
+      # pieces_in_assembly: <kit_on> - <kit_off>                    # kits on assy line
+      # pieces_completed: <kit-off>                                 # kits finished
+      # pieces_began: <kit-on>                                      # kits work began
 
-      kit-on: '%Z61.5'                                            # kit placed on conveyer - eye1
-      kit-on#on_change: <piece_cycle_times>.add(<kit_on>, start=now(), end=null, c_t=null)
+      # kit-on: '%Z61.5'                                            # kit placed on conveyer - eye1
+      # kit-on#on_change: <piece_cycle_times>.add(<kit_on>, start=now(), end=null, c_t=null)
 
-      kit-off: '%Z61.6'                                           # kit removed from conveyer - eye2
-      kit-on#on_change: <piece_cycle_times>[<kit_off>].end=now(); 
-                        <piece_cycle_times>[<kit_off>].c_t=<piece_cycle_times>[<kit_off>].end - <piece_cycle_times>[<kit_off>].start
+      # kit-off: '%Z61.6'                                           # kit removed from conveyer - eye2
+      # kit-on#on_change: <piece_cycle_times>[<kit_off>].end=now();
+      #                   <piece_cycle_times>[<kit_off>].c_t=<piece_cycle_times>[<kit_off>].end - <piece_cycle_times>[<kit_off>].start
 
-      piece_cycle_times: dict()
+      # piece_cycle_times: dict()
 
-      has-current-job: not string.is_empty('%Z61.0')              # current job meta is not empty string
-      job-done: '%Z61.3'                                          # current job done, pieces remaining reached zero
-      job-current: '%Z61.0'.to_json().kit_number                  # kit assembly part number
-      job-previous: null
+      # has-current-job: not string.is_empty('%Z61.0')              # current job meta is not empty string
+      # job-done: '%Z61.3'                                          # current job done, pieces remaining reached zero
+      # job-current: '%Z61.0'.to_json().kit_number                  # kit assembly part number
+      # job-previous: null
 
-      # before and after fire only when new incoming 'job_current'
-      job-changed#before: <job_previous> = <job_current>
-      job-changed: <job_previous> != <job_current>                # comparing cache to incoming data
-      job-changed#after: <job_changed> ? false : <job_changed>    # needs to reset after evaluation back to 'false', 
-                                                                  # account for same incoming 'job_current' as previous 'job_current'
+      # # before and after fire only when new incoming 'job_current'
+      # job-changed#before: <job_previous> = <job_current>
+      # job-changed: <job_previous> != <job_current>                # comparing cache to incoming data
+      # job-changed#after: <job_changed> ? false : <job_changed>    # needs to reset after evaluation back to 'false',
+      #                                                             # account for same incoming 'job_current' as previous 'job_current'
 
-      part-uuid: if <job-changed> new uuid()
-      process-uuid: if <job-changed> new uuid()
+      # part-uuid: if <job-changed> new uuid()
+      # process-uuid: if <job-changed> new uuid()
 
-      salesord: '%Z61.0'.to_json().sales_order_number             # 61.0 is a json object, capture groups from kit label
-      purchord: '%Z61.x'.to_json().purchase_order_number          # data coming from skid label, ChrisE needs to define address
+      # salesord: '%Z61.0'.to_json().sales_order_number             # 61.0 is a json object, capture groups from kit label
+      # purchord: '%Z61.x'.to_json().purchase_order_number          # data coming from skid label, ChrisE needs to define address
 
-      job-start: if <job-changed> now()
-      job-complete: '%Z61.3'
+      # job-start: if <job-changed> now()
+      # job-complete: '%Z61.3'
 
+      # ----------------------------------------------------------------------------
+      # handle read messages
+      # ----------------------------------------------------------------------------
 
-  # ----------------------------------------------------------------------------
-  # handle read messages
-  # ----------------------------------------------------------------------------
-  l99/${deviceId}/evt/read:
+  l99/ccs/evt/read:
     # make $ a dictionary keyed on the item addresses
     initialize: 'payload.forEach(item => $[item.address] = item)'
     lookup: '($, part) => ({ value: ($[part] || {}).value })'
