@@ -90,11 +90,11 @@ export class AdapterDriver {
           const inputs = Object.entries(handler.inputs) || []
           for (const [key, part] of inputs) {
             const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
-            if (part.startsWith('=')) {
+            if (typeof part === 'function') {
               // if string starts with =, treat as js code to evaluate to get value
-              const js = part.slice(1)
-              console.log(`Evaluating JS code: ${js}...`)
-              const value = eval(js)
+              // const js = part.slice(1)
+              // console.log(`Evaluating JS code: ${js}...`)
+              const value = part(cache)
               console.log(`Got ${value} - set cache...`)
               cache.set(cacheId, { value }) // save value to cache - may send shdr to tcp
             } else {

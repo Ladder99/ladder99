@@ -93,6 +93,25 @@ async function main() {
         //. transform input values to input value fns here if needed?
         // ie value:=<on>+<off> would be translated to a fn with those cache lookups.
         // vs value:'%M56.1' which would use the lookup fn
+        // or stick .valueFn onto the input object, which call with cache.
+        // might want to provide types in the closure also, when call eval.
+        if (inputs) {
+          // iterate over handlers
+          const handlers = Object.values(inputs.handlers)
+          for (let handler of handlers) {
+            // iterate over keys and parts
+            const keys = Object.keys(handler.inputs)
+            for (let key of keys) {
+              const part = handler.inputs[key]
+              if (part.startsWith('=')) {
+                const code = part.slice(1)
+                const { value, dependsOn } = getValueFn(deviceId, code)
+                // part.valueFn = value
+                handler.inputs[key] = value // replace str with fn
+              }
+            }
+          }
+        }
 
         // initialize driver plugin
         // note: this must be done AFTER getOutputs and addOutputs,
@@ -160,38 +179,7 @@ main()
 function getOutputs({ templates, types, deviceId }) {
   // console.log('getOutputs - iterate over output templates')
   const outputs = templates.map(template => {
-    // replace all occurrences of <key> with `cache.get('...').value`.
-    // eg <status_faults> => cache.get(`${deviceId}-status_faults`).value
-    // note: .*? is a non-greedy match, so doesn't eat other occurrences also.
-    const regexp1 = /(<(.*?)>)/gm
-    // eg "<power_fault> ? 'FAULT' : <power_warning> ? 'WARNING' : 'NORMAL'"
-    let valueStr = template.value || ''
-    // eg "cache.get('ac1-power_fault').value ? 'FAULT' : cache.get('ac1-power_warning').value ? 'WARNING' : 'NORMAL'"
-    // should be okay to ditch replaceAll because we have /g for the regexp
-    // valueStr = valueStr.replaceAll( // needs node15
-    //. test this with two cache refs in a string "<foo> + <bar>" etc
-    valueStr = valueStr.replace(
-      regexp1,
-      `cache.get('${deviceId}-$2').value` // $2 is the matched substring
-    )
-    if (valueStr.includes('\n')) {
-      valueStr = '{\n' + valueStr + '\n}'
-    }
-
-    // define the value function //. call it valueFn?
-    const value = cache => eval(valueStr)
-
-    // get list of cache ids this calculation depends on.
-    // get AFTER transforms, because user could specify a cache get manually.
-    // eg dependsOn = ['ac1-power_fault', 'ac1-power_warning']
-    const dependsOn = []
-    const regexp2 = /cache\.get\('(.*?)'\).value/gm
-    let match
-    while ((match = regexp2.exec(valueStr)) !== null) {
-      const key = match[1]
-      dependsOn.push(key)
-    }
-
+    const { value, dependsOn } = getValueFn(deviceId, template.value)
     // get output object
     // eg {
     //   key: 'ac1-power_condition',
@@ -205,9 +193,8 @@ function getOutputs({ templates, types, deviceId }) {
       // this is key in sense of shdr key
       //. assume each starts with deviceId? some might end with a number instead
       //. call this id, as it's such in the agent.xml
-      // key: `${deviceId}_${template.key}`,
       key: `${deviceId}-${template.key}`,
-      value, //. getValue
+      value, //. getValue or valueFn
       dependsOn,
       //. currently these need to be defined in the outputs.yaml file,
       // instead of using the types in the module.xml file -
@@ -215,11 +202,47 @@ function getOutputs({ templates, types, deviceId }) {
       category: template.category, // needed for cache getShdr fn
       type: template.type, // ditto
       representation: template.representation, // ditto
-      nativeCode: template.nativeCode,
+      nativeCode: template.nativeCode, //. ?
     }
     return output
   })
   return outputs
+}
+
+// get valueFn and dependsOn array from a js code statement
+// eg "<foo>" becomes cache=>cache.get(`${deviceId}-foo`).value
+function getValueFn(deviceId, code = '') {
+  // replace all occurrences of <key> with `cache.get('...').value`.
+  // eg <status_faults> => cache.get(`${deviceId}-status_faults`).value
+  // note: .*? is a non-greedy match, so doesn't eat other occurrences also.
+  const regexp1 = /(<(.*?)>)/gm
+  // eg "<power_fault> ? 'FAULT' : <power_warning> ? 'WARNING' : 'NORMAL'"
+  // eg "cache.get('ac1-power_fault').value ? 'FAULT' : cache.get('ac1-power_warning').value ? 'WARNING' : 'NORMAL'"
+  // should be okay to ditch replaceAll because we have /g for the regexp
+  // valueStr = valueStr.replaceAll( // needs node15
+  //. test this with two cache refs in a string "<foo> + <bar>" etc
+  code = code.replace(
+    regexp1,
+    `cache.get('${deviceId}-$2').value` // $2 is the matched substring
+  )
+  if (code.includes('\n')) {
+    code = '{\n' + code + '\n}'
+  }
+
+  // define the value function //. call it valueFn?
+  const value = cache => eval(code)
+
+  // get list of cache ids this calculation depends on.
+  // get AFTER transforms, because user could specify a cache get manually.
+  // eg dependsOn = ['ac1-power_fault', 'ac1-power_warning']
+  const dependsOn = []
+  const regexp2 = /cache\.get\('(.*?)'\).value/gm
+  let match
+  while ((match = regexp2.exec(code)) !== null) {
+    const key = match[1]
+    dependsOn.push(key)
+  }
+  return { value, dependsOn }
 }
 
 // load setup, eg from setups/ccs-pa/setup.yaml
