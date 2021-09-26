@@ -61,7 +61,8 @@ handlers:
     # where the key is keys[0], eg 'printer_ribbon_low'.
     # $ is a variable declared as `let $ = {}` before this code is executed.
     #. this complexity could be hidden from the user in the plugin code
-    initialize: 'payload.forEach(item => $[item.keys[0]] = item)'
+    # initialize: 'payload.forEach(item => $[item.keys[0]] = item)'
+    initialize: 'payload.forEach(item => $[item.address] = item)'
 
     # define a lookup function to use to get item from payload, if there.
     # the plugin has -
