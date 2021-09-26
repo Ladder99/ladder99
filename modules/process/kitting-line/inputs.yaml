@@ -87,11 +87,13 @@ handlers:
         =(($['%Z61.0'] || {}).kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
 
       kit_on: '%Z61.5' # kit placed on conveyer - eye1
-      # kit_on#on_change: <piece_cycle_times>.add(<kit_on>, start=now(), end=null, c_t=null)
+      # kit_on#on_change: |
+      #   <piece_cycle_times>.add(<kit_on>, start=now(), end=null, c_t=null)
 
       kit_off: '%Z61.6' # kit removed from conveyer - eye2
-      # kit_on#on_change: <piece_cycle_times>[<kit_off>].end=now();
-      #                   <piece_cycle_times>[<kit_off>].c_t=<piece_cycle_times>[<kit_off>].end - <piece_cycle_times>[<kit_off>].start
+      # kit_off#on_change: |
+      #   <piece_cycle_times>[<kit_off>].end=now();
+      #   <piece_cycle_times>[<kit_off>].c_t = <piece_cycle_times>[<kit_off>].end - <piece_cycle_times>[<kit_off>].start
 
       pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
       pieces_completed: =<kit_off> # kits finished

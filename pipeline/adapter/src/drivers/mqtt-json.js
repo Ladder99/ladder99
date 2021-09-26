@@ -79,6 +79,7 @@ export class AdapterDriver {
           console.log(`MQTT initialize handler`)
           let $ = {} // a variable representing payload data
           eval(handler.initialize)
+          // console.log($)
 
           // define lookup function
           // eg lookup: '($, part) => ({ value: ($[part] || {}).default })'
@@ -100,6 +101,7 @@ export class AdapterDriver {
             } else {
               // use the lookup function to get item from payload, if there
               const item = lookup($, part)
+              console.log('part,item', part, item)
               // if we have the part in the payload, add it to the cache
               if (item && item.value !== undefined) {
                 console.log(`MQTT part '${part}' in payload - set ${cacheId}`)

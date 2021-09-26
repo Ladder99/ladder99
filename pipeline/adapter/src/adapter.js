@@ -107,7 +107,6 @@ async function main() {
               if (typeof part === 'string' && part.startsWith('=')) {
                 const code = part.slice(1) // eg '<avail>'
                 const { value, dependsOn } = getValueFn(deviceId, code, types)
-                // handler.inputs[key] = value // replace str with fn
                 handler.inputs[key] = { code, value }
               }
             }
