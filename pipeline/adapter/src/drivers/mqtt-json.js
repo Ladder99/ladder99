@@ -89,20 +89,23 @@ export class AdapterDriver {
           console.log(`MQTT iterate over inputs`)
           const inputs = Object.entries(handler.inputs) || []
           for (const [key, part] of inputs) {
-            // use the lookup function to get item from payload, if there
-            const item = lookup($, part)
-            //.
-            if (part === '%M56.1') {
-              console.log(key, part, $, item)
-            }
-            // if we have the part in the payload, add it to the cache
-            if (item && item.value !== undefined) {
-              console.log(`MQTT part '${part}' in payload - set cache`)
-              // const cacheId = deviceId + '/' + key // eg 'pa1/fault_count'
-              // const cacheId = deviceId + '_' + key // eg 'pa1/fault_count'
-              const cacheId = deviceId + '-' + key // eg 'pa1/fault_count'
-              // item.receivedTime = receivedTime
-              cache.set(cacheId, item) // save to the cache - may send shdr to tcp
+            const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
+            if (part.startsWith('=')) {
+              // if string starts with =, treat as js code to evaluate to get value
+              const js = part.slice(1)
+              console.log(`Evaluating JS code: ${js}...`)
+              const value = eval(js)
+              console.log(`Got ${value} - set cache...`)
+              cache.set(cacheId, { value }) // save value to cache - may send shdr to tcp
+            } else {
+              // use the lookup function to get item from payload, if there
+              const item = lookup($, part)
+              // if we have the part in the payload, add it to the cache
+              if (item && item.value !== undefined) {
+                console.log(`MQTT part '${part}' in payload - set cache`)
+                // item.receivedTime = receivedTime
+                cache.set(cacheId, item) // save to the cache - may send shdr to tcp
+              }
             }
           }
 

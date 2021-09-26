@@ -33,7 +33,7 @@ handlers:
     # define lookup function, which returns a value given a part calculation.
     lookup: '($, part) => ({ value: eval(part) })'
     # define key-part pairs, where key is mapped to a cache id,
-    # eg 'status-connection' => 'pa1/status-connection',
+    # eg 'status-connection' => 'pa1-status_connection',
     # and part is some javascript calculation code to determine its value.
     inputs:
       status_connection: $.connection
@@ -69,12 +69,12 @@ handlers:
     lookup: '($, part) => ({ value: ($[part] || {}).default })'
 
     # define key-part pairs
-    # 'key' defines the cache id, with id = {deviceId}_{key},
-    # eg for key='printer_ribbon_low', id = 'pa1_printer-ribbon-low'.
+    # 'key' defines the cache id, with id = {deviceId}-{key},
+    # eg for key='printer_ribbon_low', id = 'pa1-printer_ribbon_low'.
     # 'part' defines the part of the payload to get using the above defined
     # lookup fn, eg for part='%I0.0', the value is obtained with $['%I0.0'].
     # then it sets item = { value }, then calls cache.set(id, item),
-    # eg cache.set('pa1_printer-ribbon-low', { value: 0 })
+    # eg cache.set('pa1-printer_ribbon_low', { value: 0 })
     # this might trigger SHDR output to be sent to the mtconnect agent,
     # according to the outputs defined in outputs.yaml.
     # the & syntax saves this list for later, as the read message handler
@@ -83,7 +83,7 @@ handlers:
       #
 
       #.. how specify printer assoc with this line? can't hardcode it like this
-      piece_count_at_print_apply: =$['%Z61.0'].kit_count  - cache.get('pr1-labels_remaining')
+      piece_count_at_print_apply: =($['%Z61.0'] || {}).kit_count  - cache.get('pr1-labels_remaining')
 
       pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
       pieces_completed: =<kit_off> # kits finished
