@@ -1,4 +1,4 @@
 topic,message,qos,retain,time_now,time_delta
-l99/${deviceId}/evt/status,"{""connection"": ""online"", ""powered"": ""on"", ""program"": ""pg9999"", ""_ts"": 1616701066007}",0,1,1616701191.275063,0.00973486
-l99/${deviceId}/cmd/write,"[{""name"":""%M56.5"",""value"":0.7}]",0,0,1616701211.013003,1.73794
-l99/${deviceId}/evt/read,"[{""address"": ""%M56.5"", ""keys"": [""product.sensor_one.delay""], ""value"": 0.7, ""_ts"": 1616701211141}]",0,0,1616701211.126136,0.113132
+l99/ccs/evt/query,"[{""address"": ""%M56.5"", ""keys"": [""product.sensor_one.delay""], ""default"": 0.5, ""_ts"": 1616701211141}]",0,0,1616701211.1,0.1
+l99/ccs/evt/status,"{""connection"": ""online"", ""powered"": ""on"", ""program"": ""pg9999"", ""faults"": {""1"":""cool error""}, ""_ts"": 1616701066007}",0,1,1616701191.2,0.01
+l99/ccs/evt/read,"[{""address"": ""%M56.5"", ""keys"": [""product.sensor_one.delay""], ""value"": 0.7, ""_ts"": 1616701211141}]",0,0,1616701211.1,0.1
