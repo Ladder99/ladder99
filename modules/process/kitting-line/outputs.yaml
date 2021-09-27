@@ -104,20 +104,20 @@ outputs:
   - key: pkuuid-ref
     value: <part_uuid>
 
-  #.
-  # - key: procstate
-  #   value:  if <has_current_job> and <current_job_done>         'COMPLETED'
-  #           else if <has_current_job> and <first_eye_broken>    'ACTIVE'
-  #           else if <has_current_job>                           'READY'
-  #           else if not <has_current_job>                       'UNAVAILABLE'
+  - key: procstate
+    value: |
+      <has_current_job> && <current_job_done> ? 'COMPLETED' : 
+      <has_current_job> && <first_eye_broken> ? 'ACTIVE' :
+      <has_current_job> ? 'READY' :
+      'UNAVAILABLE'
 
   - key: pgm
     value: <status_program>
 
-  #.
-  # - key: cycle
-  #   representation: DATA_SET
-  #   value: '?'
+  #. dataset/array of times?
+  - key: cycle
+    value: '?'
+    #   representation: DATA_SET
 
   # ------------------------------------------------------------------
   # parts
