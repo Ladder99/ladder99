@@ -22,13 +22,6 @@ outputs:
   - key: avail
     value: types.AVAILABILITY[<status_connection>]
 
-  #.
-  # - key: func
-  #   value:  if <has_current_job> and <pieces_began> == 0        'SETUP'
-  #           else if <has_current_job> and <pieces_began> > 0    'PRODUCTION'
-  #           else if <has_current_job> and <job_done> == true    'TEARDOWN'
-  #           else if not <has_current_job>                       'UNAVAILABLE'
-
   - key: func
     value: |
       <has_current_job> && <pieces_began> === 0 ? 'SETUP' : 
@@ -58,7 +51,7 @@ outputs:
   - key: clk_time
     value: <status_utc_time>
 
-  - key: up_time
+  - key: up
     value: <status_cpu_time>
 
   - key: fw
