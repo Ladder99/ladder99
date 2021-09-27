@@ -83,9 +83,13 @@ handlers:
     inputs: &queryInputs
       procname: ='KITTING'
 
+      # get job meta data or empty object
+      job_meta: =$['%Z61.0'] || {}
+
       #.. how specify printer assoc with this line? can't hardcode it like this (pr1)
+      # =(($['%Z61.0'] || {}).kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
       piece_count_at_print_apply: |
-        =(($['%Z61.0'] || {}).kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
+        =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
 
       kit_on: '%Z61.5' # kit placed on conveyer - eye1
       # kit_on#on_change: |
@@ -103,10 +107,12 @@ handlers:
       # piece_cycle_times: dict()
 
       has_current_job: =!!$['%Z61.0'] # current job meta is not empty string
+      # has_current_job: =!!<job_meta> # current job meta is not empty string
       job_done: '%Z61.3' # current job done, pieces remaining reached zero
 
       job_changed: =<job_current> !== ($['%Z61.0'] || {}).kit_number # comparing cache to incoming data
-      job_current: =($['%Z61.0'] || {}).kit_number # kit assembly part number, can be empty string
+      # job_current: =($['%Z61.0'] || {}).kit_number # kit assembly part number, can be empty string
+      job_current: =<job_meta>.kit_number # kit assembly part number, can be empty string
 
       # job_previous: 'null'
       # before and after fire only when new incoming 'job_current'
@@ -120,10 +126,13 @@ handlers:
       part_uuid: '=<job_changed> ? uuid() : <part_uuid>'
       process_uuid: '=<job_changed> ? uuid() : <process_uuid>'
 
-      # salesord: '%Z61.0'.to_json().sales_order_number             # 61.0 is a json object, capture groups from kit label
-      # purchord: '%Z61.x'.to_json().purchase_order_number          # data coming from skid label, ChrisE needs to define address
+      # salesord: =($['%Z61.0'] || {}).sales_order_number # 61.0 is a json object, capture groups from kit label
+      salesord: =<job_meta>.sales_order_number # Z61.0 is a json object, capture groups from kit label
+
+      # purchord: =($['%Z61.x'] || {}).purchase_order_number # data coming from skid label, ChrisE needs to define address
 
       # job_start: if <job_changed> now()
+      job_start: '=<job_changed> ? new Date().toISOString() : <job_start>'
       job_complete: '%Z61.3'
 
       # ----------------------------------------------------------------------------
