@@ -233,7 +233,7 @@ function getValueFn(deviceId, code = '', types = {}) {
   }
 
   // define the value function //. call it valueFn?
-  const value = (cache, $) => eval(code)
+  const value = (cache, $, keyvalues) => eval(code)
 
   // get list of cache ids this calculation depends on.
   // get AFTER transforms, because user could specify a cache get manually.

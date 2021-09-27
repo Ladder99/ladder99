@@ -100,7 +100,7 @@ export class AdapterDriver {
             if (typeof part === 'object') {
               const { code, value: valueFn } = part
               console.log(`key,code`, key, code)
-              const value = valueFn(cache, $) // may use `types` dict also
+              const value = valueFn(cache, $, keyvalues) // may use `types` dict also
               console.log(`Got ${value} - set ${cacheId}...`)
               cache.set(cacheId, { value }) // save value to cache - may send shdr to tcp
             } else {
@@ -116,7 +116,8 @@ export class AdapterDriver {
             }
           }
 
-          console.log('keyvalues', keyvalues)
+          // console.log('keyvalues', keyvalues)
+          console.log(cache._map)
 
           // // check for step transitions to get timing info
           // //. genericize this, or let user write code

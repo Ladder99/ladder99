@@ -90,8 +90,11 @@ handlers:
       piece_count_at_print_apply: |
         =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
 
-      kit_on_changed: =$['Z61.5'] !== undefined && (<kit_on> !== $['Z61.5'])
-      kit_off_changed: =$['Z61.6'] !== undefined && (<kit_off> !== $['Z61.6'])
+      # check if eye1 or eye2 counts changed, set flags
+      # kit_on_changed: =$['Z61.5'] !== undefined && (<kit_on> !== $['Z61.5'])
+      # kit_off_changed: =$['Z61.6'] !== undefined && (<kit_off> !== $['Z61.6'])
+      kit_on_changed: =<kit_on> !== $['Z61.5']
+      kit_off_changed: =<kit_off> !== $['Z61.6']
 
       # kit placed on conveyer - eye1
       kit_on: '%Z61.5'
@@ -111,9 +114,9 @@ handlers:
 
       cycle_time: |
         =if (<kit_off_changed>) {
-          let koff = keyvalues[<kit_off>] || {}
-          koff.end = new Date()
-          koff.delta = koff.end - koff.start
+          let koff = keyvalues[<kit_off>] || {};
+          koff.end = new Date();
+          koff.delta = koff.end - koff.start;
         }
 
       #. output cycle_time for kit 123 = 54s or sthing
@@ -126,12 +129,12 @@ handlers:
       # piece_cycle_times: dict()
 
       # current job meta is not empty string
-      has_current_job: =!!$['%Z61.0']
+      has_current_job: =$['%Z61.0'] !== ''
 
-      # current job done, pieces remaining reached zero
-      job_done: '%Z61.3'
+      # # current job done, pieces remaining reached zero
+      job_complete: '%Z61.3'
 
-      # comparing cache to incoming data
+      # compare cache to incoming data
       job_changed: =<job_current> !== <job_meta>.kit_number
 
       # kit assembly part number, can be empty string
@@ -146,8 +149,6 @@ handlers:
 
       # #. data coming from skid label, ChrisE needs to define address
       # purchord: =($['%Z61.x'] || {}).purchase_order_number
-
-      job_complete: '%Z61.3'
 
   # ----------------------------------------------------------------------------
   # handle read messages

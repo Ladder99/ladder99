@@ -94,9 +94,10 @@ outputs:
   - key: pkuuid-ref
     value: <part_uuid>
 
+  # <has_current_job> && <current_job_done> ? 'COMPLETED' :
   - key: procstate
     value: |
-      <has_current_job> && <current_job_done> ? 'COMPLETED' : 
+      <has_current_job> && <job_complete> ? 'COMPLETED' : 
       <has_current_job> && <first_eye_broken> ? 'ACTIVE' :
       <has_current_job> ? 'READY' :
       'UNAVAILABLE'
