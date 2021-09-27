@@ -94,6 +94,9 @@ export class AdapterDriver {
           const inputs = Object.entries(handler.inputs) || []
           for (const [key, part] of inputs) {
             const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
+            // if part is an object, assume it's { code, value },
+            // where code is some js code string,
+            // and value is a function that needs to be evaluated like value(cache, $).
             if (typeof part === 'object') {
               const { code, value: valueFn } = part
               console.log(`key,code`, key, code)
