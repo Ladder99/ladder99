@@ -77,7 +77,8 @@ outputs:
 
   - key: cond
     category: CONDITION
-    value: "<status-has-hard-faults> ? 'FAULT' : <status-has-soft-faults> ? 'WARNING' : 'NORMAL'"
+    value: |
+      <status_has_hard_faults> ? 'FAULT' : <status_has_soft_faults> ? 'WARNING' : 'NORMAL'
 
   - key: msg
     type: MESSAGE
