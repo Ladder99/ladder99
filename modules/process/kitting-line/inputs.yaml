@@ -107,8 +107,8 @@ handlers:
 
       job_changed: =<job_current> !== ($['%Z61.0'] || {}).kit_number # comparing cache to incoming data
       job_current: =($['%Z61.0'] || {}).kit_number # kit assembly part number, can be empty string
-      # job_previous: 'null'
 
+      # job_previous: 'null'
       # before and after fire only when new incoming 'job_current'
       # job_changed_before: <job_previous> === <job_current>
       # job_changed: <job_previous> !== <job_current> # comparing cache to incoming data
@@ -116,8 +116,8 @@ handlers:
       # account for same incoming 'job_current' as previous 'job_current'
 
       # part_uuid: if <job_changed> new uuid()
-
       # process_uuid: if <job_changed> new uuid()
+      part_uuid: '=<job_changed> ? uuid() : <part_uuid>'
       process_uuid: '=<job_changed> ? uuid() : <process_uuid>'
 
       # salesord: '%Z61.0'.to_json().sales_order_number             # 61.0 is a json object, capture groups from kit label
