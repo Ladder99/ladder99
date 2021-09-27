@@ -106,9 +106,9 @@ outputs:
 
   #. dataset/array of times?
   #. output each cycle time as completed, let relay/db store array?
+  #   representation: DATA_SET
   - key: cycle
-    value: '?'
-    #   representation: DATA_SET
+    value: <cycle_time>
 
   #. calculate target completion time
   # - key: target

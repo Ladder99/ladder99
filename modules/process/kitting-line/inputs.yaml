@@ -100,17 +100,25 @@ handlers:
       # =<kit_on_changed> ? keyvalue[<kit_on>] = [new Date(), null, null] : 0
       # update_cycle_time1: |
       #   =<kit_on_changed> ? (keyvalue[<kit_on>] = new Date()) : 0
-      # update_cycle_time1: |
-      #   if (<kit_on_changed>) { keyvalue[<kit_on>] = [new Date(), null, null] }
+      update_cycle_time1: |
+        =if (<kit_on_changed>) { keyvalues[<kit_on>] = { start: new Date(), end: null, delta: null} }
 
       # kit removed from conveyer - eye2
       kit_off: '%Z61.6'
       # kit_off#on_change: |
       #   <piece_cycle_times>[<kit_off>].end=now();
       #   <piece_cycle_times>[<kit_off>].c_t = <piece_cycle_times>[<kit_off>].end - <piece_cycle_times>[<kit_off>].start
-      # update_cycle_time2: |
-      #   if (<kit_off_changed>) { keyvalue[<kit_off>] = new Date() - keyvalue[<kit_on>] }
 
+      cycle_time: |
+        =if (<kit_off_changed>) {
+          let koff = keyvalues[<kit_off>] || {}
+          koff.end = new Date()
+          koff.delta = koff.end - koff.start
+        }
+
+      #. output cycle_time for kit 123 = 54s or sthing
+
+      #
       pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
       pieces_completed: =<kit_off> # kits finished
       pieces_began: =<kit_on> # kits work began

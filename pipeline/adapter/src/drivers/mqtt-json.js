@@ -6,7 +6,7 @@ import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 
 let cycleStart
-let keyvalue = {} // keyvalue store for yaml code to use
+let keyvalues = {} // keyvalue store for yaml code to use
 
 export class AdapterDriver {
   // initialize the client plugin
@@ -116,25 +116,27 @@ export class AdapterDriver {
             }
           }
 
-          // check for step transitions to get timing info
-          //. genericize this, or let user write code
-          //. use message time, not new Date()
-          if (topic.includes('status')) {
-            const step = payload.step
-            if (step === 'Waiting') {
-              // nothing
-            } else if (step === 'Cycle_Start') {
-              cycleStart = new Date().getTime() // ms
-            } else if (step === 'Cycle_Finish') {
-              if (cycleStart) {
-                const cycleTime = (new Date().getTime() - cycleStart) / 1000 // sec
-                // cache.set(`${deviceId}/status-cycle_time`, { value: cycleTime }) // sec
-                // cache.set(`${deviceId}_status-cycle_time`, { value: cycleTime }) // sec
-                cache.set(`${deviceId}-status_cycle_time`, { value: cycleTime }) // sec
-                cycleStart = null
-              }
-            }
-          }
+          console.log('keyvalues', keyvalues)
+
+          // // check for step transitions to get timing info
+          // //. genericize this, or let user write code
+          // //. use message time, not new Date()
+          // if (topic.includes('status')) {
+          //   const step = payload.step
+          //   if (step === 'Waiting') {
+          //     // nothing
+          //   } else if (step === 'Cycle_Start') {
+          //     cycleStart = new Date().getTime() // ms
+          //   } else if (step === 'Cycle_Finish') {
+          //     if (cycleStart) {
+          //       const cycleTime = (new Date().getTime() - cycleStart) / 1000 // sec
+          //       // cache.set(`${deviceId}/status-cycle_time`, { value: cycleTime }) // sec
+          //       // cache.set(`${deviceId}_status-cycle_time`, { value: cycleTime }) // sec
+          //       cache.set(`${deviceId}-status_cycle_time`, { value: cycleTime }) // sec
+          //       cycleStart = null
+          //     }
+          //   }
+          // }
 
           // subscribe to any topics
           for (const entry of handler.subscribe || []) {
