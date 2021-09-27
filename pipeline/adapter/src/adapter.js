@@ -245,6 +245,7 @@ function getValueFn(deviceId, code = '', types = {}) {
     const key = match[1]
     dependsOn.push(key)
   }
+  //. sort/uniquify dependsOn array
   return { value, dependsOn }
 }
 
