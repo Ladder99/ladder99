@@ -117,7 +117,7 @@ export class AdapterDriver {
           }
 
           // console.log('keyvalues', keyvalues)
-          console.log(cache._map)
+          // console.log(cache._map)
 
           // // check for step transitions to get timing info
           // //. genericize this, or let user write code
