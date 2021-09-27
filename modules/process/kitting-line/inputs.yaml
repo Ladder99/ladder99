@@ -119,13 +119,6 @@ handlers:
       # kit assembly part number, can be empty string
       job_current: =<job_meta>.kit_number
 
-      # job_previous: 'null'
-      # before and after fire only when new incoming 'job_current'
-      # job_changed_before: <job_previous> === <job_current>
-      # job_changed: <job_previous> !== <job_current> # comparing cache to incoming data
-      # job_changed_after: <job_changed> ? false : <job_changed> # needs to reset after evaluation back to 'false',
-      # account for same incoming 'job_current' as previous 'job_current'
-
       # assign new uuid's and time on job change
       part_uuid: '=<job_changed> ? uuid() : <part_uuid>'
       process_uuid: '=<job_changed> ? uuid() : <process_uuid>'
