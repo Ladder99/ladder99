@@ -1,5 +1,10 @@
 topic,message,qos,retain,time_now,time_delta
-l99/ccs/evt/query,"[{""address"": ""%M56.5"", ""keys"": [""product.sensor_one.delay""], ""default"": 0.5, ""_ts"": 1616701211141}]",0,0,1616701211.1,0.1
-l99/ccs/evt/status,"{""connection"": ""online"", ""powered"": ""on"", ""program"": ""pg9999"", ""step"":""step1"", ""faults"": {""1"":{""description"": ""interesting error""}}}",0,1,1616701191.2,0.1
-l99/ccs/evt/read,"[{""address"": ""%M56.5"", ""keys"": [""product.sensor_one.delay""], ""value"": 0.7, ""_ts"": 1616701211141}]",0,0,1616701211.1,0.1
-l99/ccs/evt/read,"[{""address"": ""%Z61.0"", ""keys"": [""product.sensor_one.delay""], ""value"": {""kit_count"":100}, ""_ts"": 1616701211141}]",0,0,1616701211.1,0.1
+l99/ccs/evt/query,"[{""address"": ""%M56.5"", ""default"": 0.5}]",0,0,1,0.1
+l99/ccs/evt/status,"{""connection"": ""online"", ""powered"": ""on"", ""program"": ""pg9999"", ""step"":""step1"", ""faults"": {""1"":{""description"": ""interesting error""}}}",0,1,1,0.1
+l99/ccs/evt/read,"[{""address"": ""%Z61.0"", ""value"": {""kit_count"":100, ""kit_number"": 3, ""sales_order_number"": 12345}}]",0,0,1,0.1
+l99/ccs/evt/read,"[{""address"": ""%Z61.5"", ""value"": 1}]",0,0,1,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.5"", ""value"": 2}]",0,0,1,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.5"", ""value"": 3}]",0,0,1,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.5"", ""value"": 4}]",0,0,1,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.5"", ""value"": 5}]",0,0,1,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.6"", ""value"": 1}]",0,0,1,1

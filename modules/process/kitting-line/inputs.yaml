@@ -84,7 +84,7 @@ handlers:
       procname: ='KITTING'
 
       # get job meta data from kit label
-      job_meta: =$['%Z61.0'] || {}
+      job_meta: =(($['%Z61.0'] || {}).value) || {}
 
       #. how specify printer assoc with this line? can't hardcode it like this
       piece_count_at_print_apply: |
@@ -114,7 +114,7 @@ handlers:
       job_done: '%Z61.3'
 
       # comparing cache to incoming data
-      job_changed: =<job_current> !== ($['%Z61.0'] || {}).kit_number
+      job_changed: =<job_current> !== <job_meta>.kit_number
 
       # kit assembly part number, can be empty string
       job_current: =<job_meta>.kit_number
