@@ -108,6 +108,7 @@ outputs:
     value: <status_program>
 
   #. dataset/array of times?
+  #. output each cycle time as completed, let relay/db store array?
   - key: cycle
     value: '?'
     #   representation: DATA_SET
