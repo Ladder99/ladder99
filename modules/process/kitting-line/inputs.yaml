@@ -83,7 +83,7 @@ handlers:
     inputs: &queryInputs
       procname: ='KITTING'
 
-      # get job meta data or empty object
+      # get job meta data from kit label, or empty object
       job_meta: =$['%Z61.0'] || {}
 
       #.. how specify printer assoc with this line? can't hardcode it like this (pr1)
@@ -91,11 +91,13 @@ handlers:
       piece_count_at_print_apply: |
         =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
 
-      kit_on: '%Z61.5' # kit placed on conveyer - eye1
+      # kit placed on conveyer - eye1
+      kit_on: '%Z61.5'
       # kit_on#on_change: |
       #   <piece_cycle_times>.add(<kit_on>, start=now(), end=null, c_t=null)
 
-      kit_off: '%Z61.6' # kit removed from conveyer - eye2
+      # kit removed from conveyer - eye2
+      kit_off: '%Z61.6'
       # kit_off#on_change: |
       #   <piece_cycle_times>[<kit_off>].end=now();
       #   <piece_cycle_times>[<kit_off>].c_t = <piece_cycle_times>[<kit_off>].end - <piece_cycle_times>[<kit_off>].start
@@ -106,13 +108,17 @@ handlers:
 
       # piece_cycle_times: dict()
 
-      has_current_job: =!!$['%Z61.0'] # current job meta is not empty string
-      # has_current_job: =!!<job_meta> # current job meta is not empty string
-      job_done: '%Z61.3' # current job done, pieces remaining reached zero
+      # current job meta is not empty string
+      has_current_job: =!!$['%Z61.0']
 
-      job_changed: =<job_current> !== ($['%Z61.0'] || {}).kit_number # comparing cache to incoming data
-      # job_current: =($['%Z61.0'] || {}).kit_number # kit assembly part number, can be empty string
-      job_current: =<job_meta>.kit_number # kit assembly part number, can be empty string
+      # current job done, pieces remaining reached zero
+      job_done: '%Z61.3'
+
+      # comparing cache to incoming data
+      job_changed: =<job_current> !== ($['%Z61.0'] || {}).kit_number
+
+      # kit assembly part number, can be empty string
+      job_current: =<job_meta>.kit_number
 
       # job_previous: 'null'
       # before and after fire only when new incoming 'job_current'
@@ -121,18 +127,16 @@ handlers:
       # job_changed_after: <job_changed> ? false : <job_changed> # needs to reset after evaluation back to 'false',
       # account for same incoming 'job_current' as previous 'job_current'
 
-      # part_uuid: if <job_changed> new uuid()
-      # process_uuid: if <job_changed> new uuid()
+      # assign new uuid's and time on job change
       part_uuid: '=<job_changed> ? uuid() : <part_uuid>'
       process_uuid: '=<job_changed> ? uuid() : <process_uuid>'
-
-      # salesord: =($['%Z61.0'] || {}).sales_order_number # 61.0 is a json object, capture groups from kit label
-      salesord: =<job_meta>.sales_order_number # Z61.0 is a json object, capture groups from kit label
-
-      # purchord: =($['%Z61.x'] || {}).purchase_order_number # data coming from skid label, ChrisE needs to define address
-
-      # job_start: if <job_changed> now()
       job_start: '=<job_changed> ? new Date().toISOString() : <job_start>'
+
+      salesord: =<job_meta>.sales_order_number
+
+      # #. data coming from skid label, ChrisE needs to define address
+      # purchord: =($['%Z61.x'] || {}).purchase_order_number
+
       job_complete: '%Z61.3'
 
       # ----------------------------------------------------------------------------
