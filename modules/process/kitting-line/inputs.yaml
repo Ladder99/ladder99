@@ -103,15 +103,15 @@ handlers:
       # piece_cycle_times: dict()
 
       has_current_job: =!!$['%Z61.0'] # current job meta is not empty string
-      # job_done: '%Z61.3'                                          # current job done, pieces remaining reached zero
-      # job_current: '%Z61.0'.to_json().kit_number                  # kit assembly part number
-      # job_previous: null
+      job_done: '%Z61.3' # current job done, pieces remaining reached zero
+      job_current: =($['%Z61.0'] || {}).kit_number # kit assembly part number
+      job_previous: 'null'
 
-      # # before and after fire only when new incoming 'job_current'
-      # job_changed#before: <job_previous> = <job_current>
-      # job_changed: <job_previous> != <job_current> # comparing cache to incoming data
-      # job_changed#after: <job_changed> ? false : <job_changed>    # needs to reset after evaluation back to 'false',
-      # # account for same incoming 'job_current' as previous 'job_current'
+      # before and after fire only when new incoming 'job_current'
+      # job_changed_before: <job_previous> === <job_current>
+      job_changed: <job_previous> !== <job_current> # comparing cache to incoming data
+      # job_changed_after: <job_changed> ? false : <job_changed> # needs to reset after evaluation back to 'false',
+      # account for same incoming 'job_current' as previous 'job_current'
 
       # part_uuid: if <job_changed> new uuid()
 
