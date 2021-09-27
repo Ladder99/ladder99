@@ -83,7 +83,7 @@ handlers:
     inputs: &queryInputs
       procname: ='KITTING'
 
-      #.. how specify printer assoc with this line? can't hardcode it like this
+      #.. how specify printer assoc with this line? can't hardcode it like this (pr1)
       piece_count_at_print_apply: |
         =(($['%Z61.0'] || {}).kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
 
@@ -109,12 +109,14 @@ handlers:
 
       # # before and after fire only when new incoming 'job_current'
       # job_changed#before: <job_previous> = <job_current>
-      # job_changed: <job_previous> != <job_current>                # comparing cache to incoming data
+      # job_changed: <job_previous> != <job_current> # comparing cache to incoming data
       # job_changed#after: <job_changed> ? false : <job_changed>    # needs to reset after evaluation back to 'false',
-      #                                                             # account for same incoming 'job_current' as previous 'job_current'
+      # # account for same incoming 'job_current' as previous 'job_current'
 
       # part_uuid: if <job_changed> new uuid()
+
       # process_uuid: if <job_changed> new uuid()
+      process_uuid: =new uuid()
 
       # salesord: '%Z61.0'.to_json().sales_order_number             # 61.0 is a json object, capture groups from kit label
       # purchord: '%Z61.x'.to_json().purchase_order_number          # data coming from skid label, ChrisE needs to define address
