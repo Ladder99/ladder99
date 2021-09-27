@@ -105,8 +105,9 @@ async function main() {
             for (let key of keys) {
               const part = handler.inputs[key]
               console.log('key,part', key, part)
+              // replace part with { code, valueFn } if starts with '='
               if (typeof part === 'string' && part.startsWith('=')) {
-                const code = part.slice(1) // eg '<avail>'
+                const code = part.slice(1) // eg '<foo> + 1'
                 const { value, dependsOn } = getValueFn(deviceId, code, types)
                 handler.inputs[key] = { code, value }
               }
