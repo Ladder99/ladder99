@@ -96,10 +96,10 @@ handlers:
       kit_on_changed: =<kit_on> !== $['Z61.5']
       kit_off_changed: =<kit_off> !== $['Z61.6']
 
-      # count of kits that cross eye1 on conveyer
+      # count of kits that have crossed eye1 on conveyer
       kit_on: '%Z61.5'
 
-      # count of kits that cross eye2 on conveyer
+      # count of kits that have crossed eye2 on conveyer
       kit_off: '%Z61.6'
 
       # calculate cycle time for kit to go from eye1 to eye2
@@ -119,7 +119,7 @@ handlers:
       # current job meta is not empty string
       has_current_job: =$['%Z61.0'] !== ''
 
-      # # current job done, pieces remaining reached zero
+      # current job done, pieces remaining reached zero
       job_complete: '%Z61.3'
 
       # compare cache to incoming data
