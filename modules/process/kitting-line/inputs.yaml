@@ -97,13 +97,17 @@ handlers:
       kit_on: '%Z61.5'
       # kit_on#on_change: |
       #   <piece_cycle_times>.add(<kit_on>, start=now(), end=null, c_t=null)
-      # foo: =
+      # =<kit_on_changed> ? keyvalue[<kit_on>] = [new Date(), null, null] : 0
+      update_cycle_time1: |
+        =<kit_on_changed> ? (keyvalue[<kit_on>] = new Date()) : 0
 
       # kit removed from conveyer - eye2
       kit_off: '%Z61.6'
       # kit_off#on_change: |
       #   <piece_cycle_times>[<kit_off>].end=now();
       #   <piece_cycle_times>[<kit_off>].c_t = <piece_cycle_times>[<kit_off>].end - <piece_cycle_times>[<kit_off>].start
+      update_cycle_time2: |
+        =<kit_off_changed> ? (keyvalue[<kit_off>] = new Date() - keyvalue[<kit_on>]) : 0
 
       pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
       pieces_completed: =<kit_off> # kits finished

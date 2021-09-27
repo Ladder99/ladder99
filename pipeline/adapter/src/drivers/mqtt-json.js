@@ -6,6 +6,7 @@ import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 
 let cycleStart
+let keyvalue = {} // keyvalue store for yaml code to use
 
 export class AdapterDriver {
   // initialize the client plugin
@@ -74,7 +75,7 @@ export class AdapterDriver {
             mqtt.unsubscribe(topic)
           }
 
-          // initialize handler
+          // run initialize handler
           // eg can assign payload values to a dictionary $ here for fast lookups.
           // eg initialize: 'payload.forEach(item => $[item.keys[0]] = item)'
           console.log(`MQTT initialize handler`)

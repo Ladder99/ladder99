@@ -81,18 +81,15 @@ outputs:
   - key: msg
     type: MESSAGE
     #. escape any pipes in value
-    value: "Object.entries(<status_faults>).map(([id, fault]) => fault.description).join(', ')"
-    nativeCode: NativeCode #.
+    # value: "Object.entries(<status_faults>).map(([id, fault]) => fault.description).join(', ')"
+    value: "Object.values(<status_faults>).map(fault => fault.description).join(', ')"
+    nativeCode: NativeCode #. ?
 
   - key: start
     value: <job_start>
 
   - key: complete
     value: "<job_complete> ? (new Date().toISOString()) : 'UNAVAILABLE'"
-
-  #. calculate target completion time
-  # - key: target
-  #   value: '?'
 
   - key: pkuuid-ref
     value: <part_uuid>
@@ -112,6 +109,10 @@ outputs:
   - key: cycle
     value: '?'
     #   representation: DATA_SET
+
+  #. calculate target completion time
+  # - key: target
+  #   value: '?'
 
   # ------------------------------------------------------------------
   # parts
