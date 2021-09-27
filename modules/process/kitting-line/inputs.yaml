@@ -83,11 +83,10 @@ handlers:
     inputs: &queryInputs
       procname: ='KITTING'
 
-      # get job meta data from kit label, or empty object
+      # get job meta data from kit label
       job_meta: =$['%Z61.0'] || {}
 
-      #.. how specify printer assoc with this line? can't hardcode it like this (pr1)
-      # =(($['%Z61.0'] || {}).kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
+      #. how specify printer assoc with this line? can't hardcode it like this
       piece_count_at_print_apply: |
         =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
 
