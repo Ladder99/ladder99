@@ -93,9 +93,8 @@ outputs:
   - key: start
     value: <job_start>
 
-  #.
-  # - key: complete
-  #   value: "<job_complete> ? now() : 'UNAVAILABLE'"
+  - key: complete
+    value: "<job_complete> ? (new Date().toISOString()) : 'UNAVAILABLE'"
 
   #. calculate target completion time
   # - key: target

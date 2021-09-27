@@ -120,7 +120,7 @@ handlers:
       # purchord: '%Z61.x'.to_json().purchase_order_number          # data coming from skid label, ChrisE needs to define address
 
       # job_start: if <job_changed> now()
-      # job_complete: '%Z61.3'
+      job_complete: '%Z61.3'
 
       # ----------------------------------------------------------------------------
       # handle read messages
