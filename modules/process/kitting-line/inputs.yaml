@@ -105,11 +105,12 @@ handlers:
       # calculate cycle time for kit to go from eye1 to eye2
       update_cycle_time: |
         =if (<kit_on_changed>) { keyvalues[<kit_on>] = { start: new Date(), end: null, delta: null} }
+      # note: the if stmt evaluates to its last expression
       cycle_time: |
         =if (<kit_off_changed>) {
           let koff = keyvalues[<kit_off>] || {};
           koff.end = new Date();
-          koff.delta = koff.end - koff.start;
+          koff.delta = koff.end - koff.start; 
         }
 
       pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
