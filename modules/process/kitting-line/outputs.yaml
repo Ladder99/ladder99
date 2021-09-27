@@ -70,10 +70,8 @@ outputs:
   - key: purchord
     value: <purchord>
 
-  #.
-  # # nowork - needs a cache key to detect a change ehh
-  # - key: procname
-  #   value: KITTING
+  - key: procname
+    value: <procname>
 
   - key: cond
     category: CONDITION
