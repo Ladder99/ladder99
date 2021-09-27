@@ -3,6 +3,7 @@
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
+import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 
 let cycleStart
 

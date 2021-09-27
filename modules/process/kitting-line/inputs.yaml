@@ -116,7 +116,7 @@ handlers:
       # part_uuid: if <job_changed> new uuid()
 
       # process_uuid: if <job_changed> new uuid()
-      process_uuid: =new uuid()
+      process_uuid: =uuid()
 
       # salesord: '%Z61.0'.to_json().sales_order_number             # 61.0 is a json object, capture groups from kit label
       # purchord: '%Z61.x'.to_json().purchase_order_number          # data coming from skid label, ChrisE needs to define address

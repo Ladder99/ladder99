@@ -6,6 +6,7 @@
 // /data/setup includes setup.yaml, which includes a list of devices to setup.
 
 import net from 'net' // node lib for tcp
+import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 import * as common from './common.js'
 import { Cache } from './cache.js'
 

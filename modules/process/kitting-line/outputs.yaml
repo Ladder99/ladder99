@@ -62,7 +62,7 @@ outputs:
   # ------------------------------------------------------------------
 
   - key: poid
-    value: <process-uuid>
+    value: <process_uuid>
 
   - key: salesord
     value: <salesord>
