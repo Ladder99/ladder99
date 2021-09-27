@@ -40,6 +40,7 @@ handlers:
       status_build_no: $.build_no
       status_program: $.program
       status_step: $.step
+      status_state: $.state
       status_utc_time: $.utc_time
       status_cpu_time: $.cpu_time
       status_faults: $.faults
