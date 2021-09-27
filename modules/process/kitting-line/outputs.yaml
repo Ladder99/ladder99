@@ -80,12 +80,7 @@ outputs:
 
   - key: msg
     type: MESSAGE
-    # representation: DATA_SET # set of kv pairs, part2 7.2.2.12 line 1082
-    #. escape any pipes and enclose in double quotes
-    # # value: Object.entries(<status-faults>).map(([id, fault]) => id + '="' + fault.description + '"').join(' ')
-    # # value: "'msg|' + Object.entries(<status-faults>).map(([id, fault]) => 'f' + id + '=pokpok').join(' ')"
-    # # value: "Object.entries(<status-faults>).map(([id, fault]) => id + ': ' + fault.description).join(', ')"
-    # value: "Object.entries(<status-faults>).map(([id, fault]) => fault.description).join(', ')"
+    #. escape any pipes in value
     value: "Object.entries(<status_faults>).map(([id, fault]) => fault.description).join(', ')"
     nativeCode: NativeCode #.
 
