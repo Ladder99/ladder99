@@ -81,7 +81,6 @@ outputs:
   - key: msg
     type: MESSAGE
     #. escape any pipes in value
-    # value: "Object.entries(<status_faults>).map(([id, fault]) => fault.description).join(', ')"
     value: "Object.values(<status_faults>).map(fault => fault.description).join(', ')"
     nativeCode: NativeCode #. ?
 
@@ -94,7 +93,6 @@ outputs:
   - key: pkuuid-ref
     value: <part_uuid>
 
-  # <has_current_job> && <current_job_done> ? 'COMPLETED' :
   - key: procstate
     value: |
       <has_current_job> && <job_complete> ? 'COMPLETED' : 
@@ -105,9 +103,6 @@ outputs:
   - key: pgm
     value: <status_program>
 
-  #. dataset/array of times?
-  #. output each cycle time as completed, let relay/db store array?
-  #   representation: DATA_SET
   - key: cycle
     value: <cycle_time>
 
