@@ -62,12 +62,18 @@ handlers:
     # where the key is keys[0], eg 'printer_ribbon_low'.
     # $ is a variable declared as `let $ = {}` before this code is executed.
     #. this complexity could be hidden from the user in the plugin code
+    # eg have keywords for initialize fns to use
     initialize: 'payload.forEach(item => $[item.address] = item)'
 
     # define a lookup function to use to get item from payload, if there.
     # the plugin has -
     #   const item = lookup($, part)
-    lookup: '($, part) => ({ value: ($[part] || {}).default })'
+    #. define this in code as `lookupDefault(part)`, use below?
+    # lookup: '($, part) => ({ value: ($[part] || {}).default })'
+    lookup: 'part => ($[part] || {}).default'
+    #. or do this to define arbitrary fns to use
+    # functions:
+    #   lookup: ...
 
     # define key-part pairs
     # 'key' defines the cache id, with id = {deviceId}-{key},
@@ -81,75 +87,77 @@ handlers:
     # the & syntax saves this list for later, as the read message handler
     # uses the same pairs.
     inputs: &queryInputs
-      procname: ='KITTING'
+      procname: 'KITTING'
 
-      # get job meta data from kit label
-      job_meta: =(($['%Z61.0'] || {}).value) || {}
+      kit_on: lookup('%Z61.5')
 
-      # current job meta is not empty string
-      has_current_job: =$['%Z61.0'] !== ''
+      # # get job meta data from kit label
+      # job_meta: =(($['%Z61.0'] || {}).value) || {}
 
-      # #. how specify printer assoc with this line? can't hardcode it like this
-      # piece_count_at_print_apply: |
-      #   =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
+      # # current job meta is not empty string
+      # has_current_job: =$['%Z61.0'] !== ''
 
-      # check if eye1 or eye2 counts changed, set flags
-      # kit_on_changed: =$['Z61.5'] !== undefined && (<kit_on> !== $['Z61.5'])
-      # kit_off_changed: =$['Z61.6'] !== undefined && (<kit_off> !== $['Z61.6'])
-      kit_on_changed: =<kit_on> !== $['Z61.5']
-      kit_off_changed: =<kit_off> !== $['Z61.6']
+      # # #. how specify printer assoc with this line? can't hardcode it like this
+      # # piece_count_at_print_apply: |
+      # #   =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
 
-      # count of kits that have crossed eye1 on conveyer
-      kit_on: '%Z61.5'
+      # # check if eye1 or eye2 counts changed, set flags
+      # # kit_on_changed: =$['Z61.5'] !== undefined && (<kit_on> !== $['Z61.5'])
+      # # kit_off_changed: =$['Z61.6'] !== undefined && (<kit_off> !== $['Z61.6'])
+      # kit_on_changed: =<kit_on> !== $['Z61.5']
+      # kit_off_changed: =<kit_off> !== $['Z61.6']
 
-      # count of kits that have crossed eye2 on conveyer
-      kit_off: '%Z61.6'
+      # # count of kits that have crossed eye1 on conveyer
+      # kit_on: '%Z61.5'
 
-      # used in outputs yaml
-      first_eye_broken: =(<kit_on> > 0)
+      # # count of kits that have crossed eye2 on conveyer
+      # kit_off: '%Z61.6'
 
-      # calculate cycle time for kit to go from eye1 to eye2
-      update_cycle_time: |
-        =if (<kit_on_changed>) { keyvalues[<kit_on>] = { start: new Date(), end: null, delta: null} }
-      # note: the if stmt evaluates to its last expression
-      cycle_time: |
-        =if (<kit_off_changed>) {
-          let koff = keyvalues[<kit_off>] || {};
-          koff.end = new Date();
-          koff.delta = koff.end - koff.start; 
-        }
+      # # used in outputs yaml
+      # first_eye_broken: =(<kit_on> > 0)
 
-      # calculate average cycle time for current job
-      cycle_time_avg: |
-        =Object.values(keyvalues).reduce((a,b)=>a+b.delta,0) / Object.values(keyvalues).length
+      # # calculate cycle time for kit to go from eye1 to eye2
+      # update_cycle_time: |
+      #   =if (<kit_on_changed>) { keyvalues[<kit_on>] = { start: new Date(), end: null, delta: null} }
+      # # note: the if stmt evaluates to its last expression
+      # cycle_time: |
+      #   =if (<kit_off_changed>) {
+      #     let koff = keyvalues[<kit_off>] || {};
+      #     koff.end = new Date();
+      #     koff.delta = koff.end - koff.start;
+      #   }
 
-      cycle_times: |
-        =Object.entries(keyvalues).map(([key, value]) => `${key}=${value.delta}`).join(' ')
+      # # calculate average cycle time for current job
+      # cycle_time_avg: |
+      #   =Object.values(keyvalues).reduce((a,b)=>a+b.delta,0) / Object.values(keyvalues).length
 
-      pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
-      pieces_completed: =<kit_off> # kits finished
-      pieces_began: =<kit_on> # kits work began
+      # cycle_times: |
+      #   =Object.entries(keyvalues).map(([key, value]) => `${key}=${value.delta}`).join(' ')
 
-      # current job done, pieces remaining reached zero
-      job_complete: '%Z61.3'
+      # pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
+      # pieces_completed: =<kit_off> # kits finished
+      # pieces_began: =<kit_on> # kits work began
 
-      # compare cache to incoming data
-      job_changed: =<has_current_job> && (<job_current> !== <job_meta>.kit_number)
+      # # current job done, pieces remaining reached zero
+      # job_complete: '%Z61.3'
 
-      reset_key_values: =if (<job_changed>) { keyvalues = {} }
+      # # compare cache to incoming data
+      # job_changed: =<has_current_job> && (<job_current> !== <job_meta>.kit_number)
 
-      # kit assembly part number, can be empty string
-      job_current: =<job_meta>.kit_number
+      # reset_key_values: =if (<job_changed>) { keyvalues = {} }
 
-      # assign new uuid's and time on job change
-      part_uuid: '=<job_changed> ? uuid() : <part_uuid>'
-      process_uuid: '=<job_changed> ? uuid() : <process_uuid>'
-      job_start: '=<job_changed> ? new Date().toISOString() : <job_start>'
+      # # kit assembly part number, can be empty string
+      # job_current: =<job_meta>.kit_number
 
-      salesord: =<job_meta>.sales_order_number
+      # # assign new uuid's and time on job change
+      # part_uuid: '=<job_changed> ? uuid() : <part_uuid>'
+      # process_uuid: '=<job_changed> ? uuid() : <process_uuid>'
+      # job_start: '=<job_changed> ? new Date().toISOString() : <job_start>'
 
-      # #. data coming from skid label, ChrisE needs to define address
-      # purchord: =($['%Z61.x'] || {}).purchase_order_number
+      # salesord: =<job_meta>.sales_order_number
+
+      # # #. data coming from skid label, ChrisE needs to define address
+      # # purchord: =($['%Z61.x'] || {}).purchase_order_number
 
   # ----------------------------------------------------------------------------
   # handle read messages
