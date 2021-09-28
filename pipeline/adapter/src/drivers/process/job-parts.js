@@ -44,13 +44,6 @@ export class AdapterDriver {
         if (kitOnChanged) setCache('kit_on', kitOn)
         if (kitOffChanged) setCache('kit_off', kitOff)
 
-        // used in outputs yaml
-        //. is this formula ok?
-        setCache('first_eye_broken', getCache('kit_on') > 0)
-
-        // # calculate cycle time for kit to go from eye1 to eye2
-        // update_cycle_time: |
-        //   =if (<kit_on_changed>) { keyvalues[<kit_on>] = { start: new Date(), end: null, delta: null} }
         if (kitOnChanged) {
           keyvalues[getCache('kit_on')] = {
             start: new Date(),
@@ -60,12 +53,7 @@ export class AdapterDriver {
           console.log(keyvalues)
         }
 
-        // cycle_time: |
-        //   =if (<kit_off_changed>) {
-        //     let koff = keyvalues[<kit_off>] || {};
-        //     koff.end = new Date();
-        //     koff.delta = koff.end - koff.start;
-        //   }
+        // get current cycle_time from eye1 to eye2
         if (kitOffChanged) {
           let koff = keyvalues[kitOff] || {}
           koff.end = new Date()
@@ -75,19 +63,24 @@ export class AdapterDriver {
         }
 
         // # calculate average cycle time for current job
-        // cycle_time_avg: |
-        //   =Object.values(keyvalues).reduce((a,b)=>a+b.delta,0) / Object.values(keyvalues).length
-        const cycleTimes = Object.values(keyvalues).filter(time => !!time)
+        const cycleTimes = Object.values(keyvalues).filter(
+          value => !!value.delta
+        )
         const cycleTimeAvg =
           cycleTimes.reduce((a, b) => a + b.delta, 0) / cycleTimes.length
         setCache('cycle_time_avg', cycleTimeAvg)
 
-        // cycle_times: |
-        //   =Object.entries(keyvalues).map(([key, value]) => `${key}=${value.delta}`).join(' ')
         const cycleTimeDataset = Object.entries(keyvalues)
+          .filter((k, v) => !!v)
           .map(([key, value]) => `${key}=${value.delta}`)
           .join(' ')
         setCache('cycle_times', cycleTimeDataset)
+
+        //. get estimated completion time
+
+        // used in outputs yaml
+        //. is this formula ok?
+        setCache('first_eye_broken', getCache('kit_on') > 0)
 
         //. where used?
         // pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
