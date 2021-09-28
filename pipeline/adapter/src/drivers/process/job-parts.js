@@ -79,49 +79,38 @@ export class AdapterDriver {
         //. get estimated completion time
 
         // used in outputs yaml
-        //. is this formula ok?
-        setCache('first_eye_broken', getCache('kit_on') > 0)
+        setCache('first_eye_broken', getCache('kit_on') > 0) //. ok?
 
         //. where used?
         // pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
         // pieces_completed: =<kit_off> # kits finished
         // pieces_began: =<kit_on> # kits work began
 
-        // # current job done, pieces remaining reached zero
-        // job_complete: '%Z61.3'
+        // current job done, pieces remaining reached zero
         setCache('job_complete', lookup($, '%Z61.3').value)
 
-        // # compare cache to incoming data
-        // job_changed: =<has_current_job> && (<job_current> !== <job_meta>.kit_number)
+        // compare cache to incoming data
+        //. does outputs yaml need this also?
         const jobChanged =
           hasCurrentJob && getCache('job_current') !== jobMeta.kit_number
 
-        // reset_key_values: =if (<job_changed>) { keyvalues = {} }
         if (jobChanged) {
-          keyvalues = {} //. work?
-        }
+          // reset keyvalues for cycle times
+          keyvalues = {} //. ok?
 
-        // # kit assembly part number, can be empty string
-        // job_current: =<job_meta>.kit_number
-        if (jobChanged) {
+          // kit assembly part number, can be empty string
           setCache('job_current', jobMeta.kit_number)
-        }
 
-        // # assign new uuid's and time on job change
-        // part_uuid: '=<job_changed> ? uuid() : <part_uuid>'
-        // process_uuid: '=<job_changed> ? uuid() : <process_uuid>'
-        // job_start: '=<job_changed> ? new Date().toISOString() : <job_start>'
-        if (jobChanged) {
+          // assign new uuid's and time
           setCache('part_uuid', uuid())
           setCache('process_uuid', uuid())
           setCache('job_start', new Date().toISOString())
         }
 
-        // salesord: =<job_meta>.sales_order_number
         setCache('salesord', jobMeta.sales_order_number)
 
-        // # #. data coming from skid label, ChrisE needs to define address
-        // # purchord: =($['%Z61.x'] || {}).purchase_order_number
+        //. data coming from skid label, ChrisE needs to define address
+        // purchord: =($['%Z61.x'] || {}).purchase_order_number
       },
     }
 
