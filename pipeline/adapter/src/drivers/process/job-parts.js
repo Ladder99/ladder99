@@ -41,11 +41,11 @@ export class AdapterDriver {
         const kitOff = lookup($, '%Z61.6').value // kits crossed eye2
         const kitOnChanged = getCache('kit_on') !== kitOn
         const kitOffChanged = getCache('kit_off') !== kitOff
-        if (kitOnChanged) setCache('kit_on', kitOn)
-        if (kitOffChanged) setCache('kit_off', kitOff)
+        setCache('kit_on', kitOn)
+        setCache('kit_off', kitOff)
 
-        if (kitOnChanged) {
-          keyvalues[getCache('kit_on')] = {
+        if (kitOnChanged && kitOn) {
+          keyvalues[kitOn] = {
             start: new Date(),
             end: null,
             delta: null,
@@ -54,7 +54,7 @@ export class AdapterDriver {
         }
 
         // get current cycle_time from eye1 to eye2
-        if (kitOffChanged) {
+        if (kitOffChanged && kitOff) {
           let koff = keyvalues[kitOff] || {}
           koff.end = new Date()
           koff.delta = koff.end - koff.start
@@ -66,9 +66,11 @@ export class AdapterDriver {
         const cycleTimes = Object.values(keyvalues).filter(
           value => !!value.delta
         )
-        const cycleTimeAvg =
-          cycleTimes.reduce((a, b) => a + b.delta, 0) / cycleTimes.length
-        setCache('cycle_time_avg', cycleTimeAvg)
+        if (cycleTimes.length > 0) {
+          const cycleTimeAvg =
+            cycleTimes.reduce((a, b) => a + b.delta, 0) / cycleTimes.length
+          setCache('cycle_time_avg', cycleTimeAvg)
+        }
 
         const cycleTimeDataset = Object.entries(keyvalues)
           .filter((k, v) => !!v)
