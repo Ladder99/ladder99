@@ -7,7 +7,6 @@ import { AdapterDriver as MqttJson } from '../mqtt-json.js'
 
 export class AdapterDriver {
   // initialize the client plugin
-
   // queries the device for address space definitions, subscribes to topics.
   // inputs is the inputs.yaml file parsed to a js tree.
   // note: types IS used - by the part(cache, $) fn evaluation
@@ -26,6 +25,7 @@ export class AdapterDriver {
         setCache('procname', 'KITTING')
 
         // get job meta data from kit label
+        //. use .default here? .value?
         const jobMeta = ($['%Z61.0'] || {}).value || {}
 
         // check if current job meta is empty string
@@ -36,17 +36,11 @@ export class AdapterDriver {
         // piece_count_at_print_apply: |
         //   =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
 
-        // count of kits that have crossed eye1 on conveyer
-        console.log(40, lookup.toString(), $)
-        const kitOn = lookup($, '%Z61.5')
-
-        // count of kits that have crossed eye2 on conveyer
-        const kitOff = lookup($, '%Z61.6')
-
-        // check if eye1 or eye2 counts changed
+        // kit counts
+        const kitOn = lookup($, '%Z61.5').value // kits crossed eye1
+        const kitOff = lookup($, '%Z61.6').value // kits crossed eye2
         const kitOnChanged = getCache('kit_on') !== kitOn
         const kitOffChanged = getCache('kit_off') !== kitOff
-
         if (kitOnChanged) setCache('kit_on', kitOn)
         if (kitOffChanged) setCache('kit_off', kitOff)
 
@@ -58,7 +52,12 @@ export class AdapterDriver {
         // update_cycle_time: |
         //   =if (<kit_on_changed>) { keyvalues[<kit_on>] = { start: new Date(), end: null, delta: null} }
         if (kitOnChanged) {
-          keyvalues[getCache('kit_on')] = {} //.
+          keyvalues[getCache('kit_on')] = {
+            start: new Date(),
+            end: null,
+            delta: null,
+          }
+          console.log(keyvalues)
         }
 
         // cycle_time: |
@@ -72,6 +71,7 @@ export class AdapterDriver {
           koff.end = new Date()
           koff.delta = koff.end - koff.start
           setCache('cycle_time', koff.delta)
+          console.log(keyvalues)
         }
 
         // # calculate average cycle time for current job
@@ -85,7 +85,7 @@ export class AdapterDriver {
         // cycle_times: |
         //   =Object.entries(keyvalues).map(([key, value]) => `${key}=${value.delta}`).join(' ')
         const cycleTimeDataset = Object.entries(keyvalues)
-          .map(([key, value]) => `${key}=${value}`)
+          .map(([key, value]) => `${key}=${value.delta}`)
           .join(' ')
         setCache('cycle_times', cycleTimeDataset)
 
@@ -96,7 +96,7 @@ export class AdapterDriver {
 
         // # current job done, pieces remaining reached zero
         // job_complete: '%Z61.3'
-        setCache('job_complete', lookup($, '%Z61.3'))
+        setCache('job_complete', lookup($, '%Z61.3').value)
 
         // # compare cache to incoming data
         // job_changed: =<has_current_job> && (<job_current> !== <job_meta>.kit_number)
@@ -104,11 +104,15 @@ export class AdapterDriver {
           hasCurrentJob && getCache('job_current') !== jobMeta.kit_number
 
         // reset_key_values: =if (<job_changed>) { keyvalues = {} }
-        if (jobChanged) keyvalues = {} //. work?
+        if (jobChanged) {
+          keyvalues = {} //. work?
+        }
 
         // # kit assembly part number, can be empty string
         // job_current: =<job_meta>.kit_number
-        if (jobChanged) setCache('job_current', jobMeta.kit_number)
+        if (jobChanged) {
+          setCache('job_current', jobMeta.kit_number)
+        }
 
         // # assign new uuid's and time on job change
         // part_uuid: '=<job_changed> ? uuid() : <part_uuid>'
