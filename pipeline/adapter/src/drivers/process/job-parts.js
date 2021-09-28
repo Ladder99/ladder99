@@ -16,9 +16,8 @@ export class AdapterDriver {
 
     const mqttJson = new MqttJson()
 
-    const handlers = {}
+    const advice = {}
 
-    //. pass handler fns here? then inject them at certain points given conditions?
     mqttJson.init({
       deviceId,
       deviceName,
@@ -27,7 +26,7 @@ export class AdapterDriver {
       cache,
       inputs,
       types,
-      handlers,
+      advice,
     })
   }
 }

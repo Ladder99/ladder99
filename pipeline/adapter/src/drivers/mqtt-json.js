@@ -14,7 +14,7 @@ export class AdapterDriver {
   // inputs is the inputs.yaml file parsed to a js tree.
   // note: types IS used - by the part(cache, $) fn evaluation
   // handlers is a dict of optional fns that are called at various points in the code.
-  init({ deviceId, deviceName, host, port, cache, inputs, types, handlers }) {
+  init({ deviceId, deviceName, host, port, cache, inputs, types, advice }) {
     console.log('Initializing mqtt-json driver for', { deviceId })
     const url = `mqtt://${host}:${port}`
 
@@ -61,10 +61,10 @@ export class AdapterDriver {
       // sets payload as variable - used by handler.initialize
       const payload = JSON.parse(message)
 
-      // iterate over message handlers - handlers is an array of [topic, handler]
-      const handlers = Object.entries(inputs.handlers) || []
+      // iterate over message handlers - handlerEntries is an array of [topic, handler]
+      const handlerEntries = Object.entries(inputs.handlers) || []
       let msgHandled = false
-      handlers.forEach(([topic, handler]) => {
+      handlerEntries.forEach(([topic, handler]) => {
         topic = replaceDeviceId(topic)
 
         // eg msgTopic => 'l99/pa1/evt/query'
