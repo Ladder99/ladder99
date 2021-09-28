@@ -16,7 +16,142 @@ export class AdapterDriver {
 
     const mqttJson = new MqttJson()
 
-    const advice = {}
+    let keyvalues = {}
+
+    const advice = {
+      inputs: ({ $, lookup }) => {
+        console.log('advice', $)
+
+        // procname: ='KITTING'
+        setCache('procname', 'KITTING')
+
+        // # get job meta data from kit label
+        // job_meta: =(($['%Z61.0'] || {}).value) || {}
+        // setCache('job_meta', ($['%Z61.0'] || {}).value || {})
+        const jobMeta = ($['%Z61.0'] || {}).value || {}
+
+        // check if current job meta is empty string
+        //. not [].value ?
+        // has_current_job: =$['%Z61.0'] !== ''
+        const hasCurrentJob = $['%Z61.0'] !== ''
+
+        // # #. how specify printer assoc with this line? can't hardcode it like this
+        // # piece_count_at_print_apply: |
+        // #   =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
+
+        // count of kits that have crossed eye1 on conveyer
+        const kitOn = lookup($, '%Z61.5')
+
+        // count of kits that have crossed eye2 on conveyer
+        const kitOff = lookup($, '%Z61.5')
+
+        // # check if eye1 or eye2 counts changed
+        // # kit_on_changed: =$['Z61.5'] !== undefined && (<kit_on> !== $['Z61.5'])
+        // # kit_off_changed: =$['Z61.6'] !== undefined && (<kit_off> !== $['Z61.6'])
+        // kit_on_changed: =<kit_on> !== $['Z61.5']
+        // kit_off_changed: =<kit_off> !== $['Z61.6']
+        //. is this right? or need $[].value ?
+        // const kitOnChanged = getCache('kit_on') !== $['Z61.5']
+        // const kitOffChanged = getCache('kit_off') !== $['Z61.6']
+        const kitOnChanged = getCache('kit_on') !== kitOn
+        const kitOffChanged = getCache('kit_off') !== kitOff
+
+        // # count of kits that have crossed eye1 on conveyer
+        // kit_on: '%Z61.5'
+        // const kitOn = lookup($, '%Z61.5')
+        // setCache('kit_on', lookup($, '%Z61.5'))
+        // setCacheLookup('kit_on', '%Z61.5')
+        // function setCacheLookup(key, part) {
+        // setCache(key, lookup($, part))
+        // }
+
+        // # count of kits that have crossed eye2 on conveyer
+        // kit_off: '%Z61.6'
+        // setCacheLookup('kit_off', '%Z61.6')
+        // const kitOff = lookup($, '%Z61.5')
+
+        if (kitOnChanged) setCache('kit_on', kitOn)
+        if (kitOffChanged) setCache('kit_off', kitOff)
+
+        // # used in outputs yaml
+        //. is this formula ok?
+        // first_eye_broken: =(<kit_on> > 0)
+        setCache('first_eye_broken', getCache('kit_on') > 0)
+
+        // # calculate cycle time for kit to go from eye1 to eye2
+        // update_cycle_time: |
+        //   =if (<kit_on_changed>) { keyvalues[<kit_on>] = { start: new Date(), end: null, delta: null} }
+        if (kitOnChanged) {
+          keyvalues[getCache('kit_on')]
+        }
+
+        // # note: the if stmt evaluates to its last expression
+        // cycle_time: |
+        //   =if (<kit_off_changed>) {
+        //     let koff = keyvalues[<kit_off>] || {};
+        //     koff.end = new Date();
+        //     koff.delta = koff.end - koff.start;
+        //   }
+        if (kitOffChanged) {
+          let koff = keyvalues[kitOff] || {}
+          koff.end = new Date()
+          koff.delta = koff.end - koff.start
+          setCache('cycle_time', koff.delta)
+        }
+
+        // # calculate average cycle time for current job
+        // cycle_time_avg: |
+        //   =Object.values(keyvalues).reduce((a,b)=>a+b.delta,0) / Object.values(keyvalues).length
+        const cycleTimes = Object.values(keyvalues).filter(time => !!time)
+        const cycleTimeAvg =
+          cycleTimes.reduce((a, b) => a + b.delta, 0) / cycleTimes.length
+        setCache('cycle_time_avg', cycleTimeAvg)
+
+        // cycle_times: |
+        //   =Object.entries(keyvalues).map(([key, value]) => `${key}=${value.delta}`).join(' ')
+        const cycleTimeDataset = Object.entries(keyvalues)
+          .map(([key, value]) => `${key}=${value}`)
+          .join(' ')
+        setCache('cycle_times', cycleTimeDataset)
+
+        //. where used?
+        // pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
+        // pieces_completed: =<kit_off> # kits finished
+        // pieces_began: =<kit_on> # kits work began
+
+        // # current job done, pieces remaining reached zero
+        // job_complete: '%Z61.3'
+        setCache('job_complete', lookup($, '%Z61.3'))
+
+        // # compare cache to incoming data
+        // job_changed: =<has_current_job> && (<job_current> !== <job_meta>.kit_number)
+        const jobChanged =
+          hasCurrentJob && getCache('job_current') !== jobMeta.kit_number
+
+        // reset_key_values: =if (<job_changed>) { keyvalues = {} }
+        if (jobChanged) keyvalues = {} //. work?
+
+        // # kit assembly part number, can be empty string
+        // job_current: =<job_meta>.kit_number
+        if (jobChanged) setCache('job_current', jobMeta.kit_number)
+
+        // # assign new uuid's and time on job change
+        // part_uuid: '=<job_changed> ? uuid() : <part_uuid>'
+        // process_uuid: '=<job_changed> ? uuid() : <process_uuid>'
+        // job_start: '=<job_changed> ? new Date().toISOString() : <job_start>'
+        if (jobChanged) {
+          setCache('part_uuid', uuid())
+          setCache('process_uuid', uuid())
+          setCache('job_start', new Date().toISOString())
+        }
+
+        // salesord: =<job_meta>.sales_order_number
+        setCache('salesord', jobMeta.sales_order_number)
+
+        // # #. data coming from skid label, ChrisE needs to define address
+        // # purchord: =($['%Z61.x'] || {}).purchase_order_number
+      },
+    }
 
     mqttJson.init({
       deviceId,
@@ -28,5 +163,12 @@ export class AdapterDriver {
       types,
       advice,
     })
+
+    function getCache(key) {
+      return (cache.get(`${deviceId}-${key}`) || {}).value
+    }
+    function setCache(key, value) {
+      cache.set(`${deviceId}-${key}`, { value })
+    }
   }
 }

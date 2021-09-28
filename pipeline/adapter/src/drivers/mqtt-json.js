@@ -89,10 +89,13 @@ export class AdapterDriver {
           console.log(`MQTT define lookup function`)
           const lookup = eval(handler.lookup)
 
+          // call optional custom code
+          if (advice.inputs) advice.inputs({ $, lookup })
+
           // iterate over inputs - an array of [key, part], eg ['fault_count', '%M55.2'].
           // if part is in payload, add it to the cache.
           console.log(`MQTT iterate over inputs`)
-          const inputs = Object.entries(handler.inputs) || []
+          const inputs = Object.entries(handler.inputs || {})
           for (const [key, part] of inputs) {
             const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
             // if part is an object, assume it's { code, value },
