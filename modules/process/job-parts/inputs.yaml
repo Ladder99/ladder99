@@ -63,6 +63,7 @@ handlers:
     # $ is a variable declared as `let $ = {}` before this code is executed.
     #. this complexity could be hidden from the user in the plugin code
     # eg have keywords for initialize fns to use
+    # initialize: initializeQuery
     initialize: 'payload.forEach(item => $[item.address] = item)'
 
     # define a lookup function to use to get item from payload, if there.

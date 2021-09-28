@@ -50,7 +50,6 @@ async function main() {
       console.log('New client connection from Agent at', remoteAddress)
 
       // each device can have multiple sources.
-      //. are we sure we want to do that?
       // iterate over sources, load driver for that source, call init on it.
       for (const source of device.sources) {
         console.log(`Source`, source)
