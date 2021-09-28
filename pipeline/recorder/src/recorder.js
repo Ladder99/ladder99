@@ -48,11 +48,12 @@ async function main() {
         port = 1883,
         loop = true,
         topic = '#',
+        recorderDriver,
       } = source
 
       // get plugin class for the source driver
       try {
-        const pluginPath = `${pluginsFolder}/${driver}.js`
+        const pluginPath = `${pluginsFolder}/${recorderDriver || driver}.js`
         console.log(`Importing plugin from ${pluginPath}...`)
         const { RecorderPlugin } = await import(pluginPath)
 
