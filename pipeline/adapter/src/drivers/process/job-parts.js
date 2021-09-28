@@ -44,6 +44,7 @@ export class AdapterDriver {
         setCache('kit_on', kitOn)
         setCache('kit_off', kitOff)
 
+        // start cycle_time timer
         if (kitOnChanged && kitOn) {
           keyvalues[kitOn] = {
             start: new Date(),
@@ -53,7 +54,7 @@ export class AdapterDriver {
           console.log(keyvalues)
         }
 
-        // get current cycle_time from eye1 to eye2
+        // cycle_time - from eye1 to eye2
         if (kitOffChanged && kitOff) {
           let koff = keyvalues[kitOff] || {}
           koff.end = new Date()
@@ -62,7 +63,7 @@ export class AdapterDriver {
           console.log(keyvalues)
         }
 
-        // # calculate average cycle time for current job
+        // cycle_time_avg - for current job
         const cycleTimes = Object.values(keyvalues).filter(
           value => !!value.delta
         )
@@ -72,17 +73,17 @@ export class AdapterDriver {
           setCache('cycle_time_avg', cycleTimeAvg)
         }
 
-        // cycle_times
+        // cycle_times - dataset for debugging
         // const cycleTimeDataset = Object.entries(keyvalues)
         //   .filter((k, v) => !!v)
         //   .map(([key, value]) => `${key}=${value.delta}`)
         //   .join(' ')
         // setCache('cycle_times', cycleTimeDataset)
 
-        //. get estimated completion time
+        //. estimated completion time
 
-        // used in outputs yaml
-        setCache('first_eye_broken', getCache('kit_on') > 0) //. ok?
+        // first_eye_broken - used in outputs yaml
+        setCache('first_eye_broken', getCache('kit_on') > 0) //. calc ok?
 
         //. where used?
         // pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
