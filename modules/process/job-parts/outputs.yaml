@@ -1,0 +1,122 @@
+# outputs
+
+# these outputs are placed in the module.xml tree and define the
+# shdr strings that are calculated from the cache and sent to the agent.
+
+# the item's id in the xml and the shdr key is `${deviceId}_${key}`
+# the shdr value is defined with the item value code.
+
+# value is javascript, evaluated by the cache in calculating the shdr output.
+# <foo> is a cache lookup, shorthand for cache.get('${deviceId}_foo').value
+
+# note: category is used to determine shdr representation.
+# only need to specify category if CONDITION.
+# only need to specify type if is MESSAGE.
+# see end of pipeline/adapter/src/cache.js for details.
+
+outputs:
+  # ------------------------------------------------------------------
+  # device
+  # ------------------------------------------------------------------
+
+  - key: avail
+    value: types.AVAILABILITY[<status_connection>]
+
+  - key: func
+    value: |
+      <has_current_job> && <pieces_began> === 0 ? 'SETUP' : 
+      <has_current_job> && <pieces_began> > 0 ? 'PRODUCTION' :
+      <has_current_job> && <job_done> ? 'TEARDOWN' :
+      'UNAVAILABLE'
+
+  # ------------------------------------------------------------------
+  # controller
+  # ------------------------------------------------------------------
+
+  - key: exec
+    value: types.EXECUTION[<status_state>]
+
+  - key: wait
+    value: types.WAIT_STATE[<status_state>]
+
+  - key: emp
+    value: types.POWER[<status_connection>]
+
+  - key: ctl_pgm
+    value: <status_program>
+
+  - key: step
+    value: <status_step>
+
+  - key: clk_time
+    value: <status_utc_time>
+
+  - key: up
+    value: <status_cpu_time>
+
+  - key: fw
+    value: <status_build_no>
+
+  # ------------------------------------------------------------------
+  # process
+  # ------------------------------------------------------------------
+
+  - key: poid
+    value: <process_uuid>
+
+  - key: salesord
+    value: <salesord>
+
+  - key: purchord
+    value: <purchord>
+
+  - key: procname
+    value: <procname>
+
+  - key: cond
+    category: CONDITION
+    value: |
+      <status_has_hard_faults> ? 'FAULT' : <status_has_soft_faults> ? 'WARNING' : 'NORMAL'
+
+  - key: msg
+    type: MESSAGE
+    #. escape any pipes in value
+    value: "Object.values(<status_faults>).map(fault => fault.description).join(', ')"
+    nativeCode: NativeCode #. ?
+
+  - key: start
+    value: <job_start>
+
+  - key: complete
+    value: "<job_complete> ? (new Date().toISOString()) : 'UNAVAILABLE'"
+
+  - key: pkuuid-ref
+    value: <part_uuid>
+
+  - key: procstate
+    value: |
+      <has_current_job> && <job_complete> ? 'COMPLETED' : 
+      <has_current_job> && <first_eye_broken> ? 'ACTIVE' :
+      <has_current_job> ? 'READY' :
+      'UNAVAILABLE'
+
+  - key: pgm
+    value: <status_program>
+
+  - key: cycle
+    value: <cycle_time>
+
+  - key: cycleavg
+    value: <cycle_time_avg>
+
+  - key: cycles
+    representation: DATA_SET
+    value: <cycle_times>
+
+  #. calculate target completion time
+  # - key: target
+  #   value: '?'
+
+  # ------------------------------------------------------------------
+  # parts
+  # ------------------------------------------------------------------
