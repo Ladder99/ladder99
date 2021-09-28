@@ -86,9 +86,9 @@ handlers:
       # get job meta data from kit label
       job_meta: =(($['%Z61.0'] || {}).value) || {}
 
-      #. how specify printer assoc with this line? can't hardcode it like this
-      piece_count_at_print_apply: |
-        =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
+      # #. how specify printer assoc with this line? can't hardcode it like this
+      # piece_count_at_print_apply: |
+      #   =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
 
       # check if eye1 or eye2 counts changed, set flags
       # kit_on_changed: =$['Z61.5'] !== undefined && (<kit_on> !== $['Z61.5'])
@@ -127,6 +127,8 @@ handlers:
 
       # compare cache to incoming data
       job_changed: =<job_current> !== <job_meta>.kit_number
+
+      reset_key_values: =if (<job_changed>) { keyvalues = {} }
 
       # kit assembly part number, can be empty string
       job_current: =<job_meta>.kit_number

@@ -6,7 +6,7 @@ import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 
 let cycleStart
-let keyvalues = {} // keyvalue store for yaml code to use
+let keyvalues = {} // keyvalue store for yaml code to use - must use 'let' so yaml code can reset it
 
 export class AdapterDriver {
   // initialize the client plugin
