@@ -105,6 +105,9 @@ handlers:
       # count of kits that have crossed eye2 on conveyer
       kit_off: '%Z61.6'
 
+      # used in outputs yaml
+      first_eye_broken: =(<kit_on> > 0)
+
       # calculate cycle time for kit to go from eye1 to eye2
       update_cycle_time: |
         =if (<kit_on_changed>) { keyvalues[<kit_on>] = { start: new Date(), end: null, delta: null} }
@@ -131,7 +134,7 @@ handlers:
       job_complete: '%Z61.3'
 
       # compare cache to incoming data
-      job_changed: =<job_current> !== <job_meta>.kit_number
+      job_changed: =<has_current_job> && (<job_current> !== <job_meta>.kit_number)
 
       reset_key_values: =if (<job_changed>) { keyvalues = {} }
 
