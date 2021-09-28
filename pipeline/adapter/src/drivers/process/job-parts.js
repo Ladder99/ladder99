@@ -73,13 +73,11 @@ export class AdapterDriver {
         const cycleTimes = Object.values(keyvalues).filter(
           value => !!value.delta
         )
-        if (cycleTimes.length > 0) {
-          const cycleTimeAvg =
-            cycleTimes.reduce((a, b) => a + b.delta, 0) / cycleTimes.length
-          setCache('cycle_time_avg', cycleTimeAvg)
-        }
+        const cycleTimeAvg =
+          cycleTimes.reduce((a, b) => a + b.delta, 0) / (cycleTimes.length || 1)
+        setCache('cycle_time_avg', cycleTimeAvg)
 
-        // cycle_times - dataset for debugging
+        //. cycle_times - dataset of latest 5 or sthing for debugging
         // const cycleTimeDataset = Object.entries(keyvalues)
         //   .filter((k, v) => !!v)
         //   .map(([key, value]) => `${key}=${value.delta}`)
@@ -87,6 +85,8 @@ export class AdapterDriver {
         // setCache('cycle_times', cycleTimeDataset)
 
         //. estimated completion time
+        const targetTime = cycleTimeAvg * labelsRemaining
+        setCache('target_time', targetTime)
 
         // first_eye_broken - used in outputs yaml
         setCache('first_eye_broken', getCache('kit_on') > 0) //. calc ok?
@@ -96,7 +96,10 @@ export class AdapterDriver {
         // pieces_completed: =<kit_off> # kits finished
         // pieces_began: =<kit_on> # kits work began
 
-        // current job done, pieces remaining reached zero
+        // current job count from plc - decrements to zero
+        setCache('pcrem_plc', lookup($, '%Z61.2').value)
+
+        // current job done flag - pieces remaining reached zero
         setCache('job_complete', lookup($, '%Z61.3').value)
 
         // compare cache to incoming data

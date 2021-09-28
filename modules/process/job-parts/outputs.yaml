@@ -113,9 +113,8 @@ outputs:
     representation: DATA_SET
     value: <cycle_times>
 
-  #. calculate target completion time
-  # - key: target
-  #   value: '?'
+  - key: target
+    value: <target_time>
 
   # ------------------------------------------------------------------
   # parts
@@ -123,3 +122,6 @@ outputs:
 
   - key: pcrem_pr
     value: <pcrem_pr>
+
+  - key: pcrem_plc
+    value: <pcrem_plc>
