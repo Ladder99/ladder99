@@ -106,6 +106,9 @@ outputs:
   - key: cycle
     value: <cycle_time>
 
+  - key: cycleavg
+    value: <cycle_time_avg>
+
   #. calculate target completion time
   # - key: target
   #   value: '?'

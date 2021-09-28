@@ -112,6 +112,8 @@ handlers:
           koff.end = new Date();
           koff.delta = koff.end - koff.start; 
         }
+      cycle_time_avg: |
+        =Object.values(keyvalues).reduce((a,b)=>a+b.delta,0) / Object.values(keyvalues).length
 
       pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
       pieces_completed: =<kit_off> # kits finished
