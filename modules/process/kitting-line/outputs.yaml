@@ -109,6 +109,10 @@ outputs:
   - key: cycleavg
     value: <cycle_time_avg>
 
+  - key: cycles
+    representation: DATA_SET
+    value: <cycle_times>
+
   #. calculate target completion time
   # - key: target
   #   value: '?'

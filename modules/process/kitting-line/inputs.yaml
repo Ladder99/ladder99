@@ -120,6 +120,9 @@ handlers:
       cycle_time_avg: |
         =Object.values(keyvalues).reduce((a,b)=>a+b.delta,0) / Object.values(keyvalues).length
 
+      cycle_times: |
+        =Object.entries(keyvalues).map(([key, value]) => `${key}=${value.delta}`).join(' ')
+
       pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
       pieces_completed: =<kit_off> # kits finished
       pieces_began: =<kit_on> # kits work began

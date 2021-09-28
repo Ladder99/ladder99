@@ -119,10 +119,6 @@ function getShdr(cache, output, value) {
     // const message = value + ' (msg here)'
     const message = value
     shdr = `${head}${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
-    // } else if (representation === 'DATA_SET') {
-    //   const nativeCode = 'nativeCode'
-    //   const message = value + ' (msg here)'
-    //   shdr = `${head}${key}|${nativeCode}|${message}`
   } else {
     console.warn(`warning: unknown category '${category}'`)
   }
