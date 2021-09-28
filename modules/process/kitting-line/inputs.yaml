@@ -86,6 +86,9 @@ handlers:
       # get job meta data from kit label
       job_meta: =(($['%Z61.0'] || {}).value) || {}
 
+      # current job meta is not empty string
+      has_current_job: =$['%Z61.0'] !== ''
+
       # #. how specify printer assoc with this line? can't hardcode it like this
       # piece_count_at_print_apply: |
       #   =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
@@ -112,15 +115,14 @@ handlers:
           koff.end = new Date();
           koff.delta = koff.end - koff.start; 
         }
+
+      # calculate average cycle time for current job
       cycle_time_avg: |
         =Object.values(keyvalues).reduce((a,b)=>a+b.delta,0) / Object.values(keyvalues).length
 
       pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
       pieces_completed: =<kit_off> # kits finished
       pieces_began: =<kit_on> # kits work began
-
-      # current job meta is not empty string
-      has_current_job: =$['%Z61.0'] !== ''
 
       # current job done, pieces remaining reached zero
       job_complete: '%Z61.3'
