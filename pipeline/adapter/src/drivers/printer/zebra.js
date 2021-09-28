@@ -169,7 +169,6 @@ export class AdapterDriver {
 
     // set a cache key to the given value, which will trigger shdr output
     function setCache(key, value = 'UNAVAILABLE') {
-      // cache.set(`${deviceId}_${key}`, { value })
       cache.set(`${deviceId}-${key}`, { value })
     }
 

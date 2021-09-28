@@ -50,7 +50,7 @@ handlers:
       status_has_hard_faults: $.faultKeys.some(f => f<'50')
 
   # ----------------------------------------------------------------------------
-  # handle query messages
+  # handle query messages - read and set defaults
   # ----------------------------------------------------------------------------
   l99/ccs/evt/query:
     unsubscribe:
@@ -71,88 +71,6 @@ handlers:
 
     advice: true
 
-    # # define key-part pairs
-    # # 'key' defines the cache id, with id = {deviceId}-{key},
-    # # eg for key='printer_ribbon_low', id = 'pa1-printer_ribbon_low'.
-    # # 'part' defines the part of the payload to get using the above defined
-    # # lookup fn, eg for part='%I0.0', the value is obtained with $['%I0.0'].
-    # # then it sets item = { value }, then calls cache.set(id, item),
-    # # eg cache.set('pa1-printer_ribbon_low', { value: 0 })
-    # # this might trigger SHDR output to be sent to the mtconnect agent,
-    # # according to the outputs defined in outputs.yaml.
-    # # the & syntax saves this list for later, as the read message handler
-    # # uses the same pairs.
-    # inputs: &queryInputs
-    #   procname: ='KITTING'
-
-    #   # get job meta data from kit label
-    #   job_meta: =(($['%Z61.0'] || {}).value) || {}
-
-    #   # current job meta is not empty string
-    #   has_current_job: =$['%Z61.0'] !== ''
-
-    #   # #. how specify printer assoc with this line? can't hardcode it like this
-    #   # piece_count_at_print_apply: |
-    #   #   =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
-
-    #   # check if eye1 or eye2 counts changed, set flags
-    #   # kit_on_changed: =$['Z61.5'] !== undefined && (<kit_on> !== $['Z61.5'])
-    #   # kit_off_changed: =$['Z61.6'] !== undefined && (<kit_off> !== $['Z61.6'])
-    #   kit_on_changed: =<kit_on> !== $['Z61.5']
-    #   kit_off_changed: =<kit_off> !== $['Z61.6']
-
-    #   # count of kits that have crossed eye1 on conveyer
-    #   kit_on: '%Z61.5'
-
-    #   # count of kits that have crossed eye2 on conveyer
-    #   kit_off: '%Z61.6'
-
-    #   # used in outputs yaml
-    #   first_eye_broken: =(<kit_on> > 0)
-
-    #   # calculate cycle time for kit to go from eye1 to eye2
-    #   update_cycle_time: |
-    #     =if (<kit_on_changed>) { keyvalues[<kit_on>] = { start: new Date(), end: null, delta: null} }
-    #   # note: the if stmt evaluates to its last expression
-    #   cycle_time: |
-    #     =if (<kit_off_changed>) {
-    #       let koff = keyvalues[<kit_off>] || {};
-    #       koff.end = new Date();
-    #       koff.delta = koff.end - koff.start;
-    #     }
-
-    #   # calculate average cycle time for current job
-    #   cycle_time_avg: |
-    #     =Object.values(keyvalues).reduce((a,b)=>a+b.delta,0) / Object.values(keyvalues).length
-
-    #   cycle_times: |
-    #     =Object.entries(keyvalues).map(([key, value]) => `${key}=${value.delta}`).join(' ')
-
-    #   pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
-    #   pieces_completed: =<kit_off> # kits finished
-    #   pieces_began: =<kit_on> # kits work began
-
-    #   # current job done, pieces remaining reached zero
-    #   job_complete: '%Z61.3'
-
-    #   # compare cache to incoming data
-    #   job_changed: =<has_current_job> && (<job_current> !== <job_meta>.kit_number)
-
-    #   reset_key_values: =if (<job_changed>) { keyvalues = {} }
-
-    #   # kit assembly part number, can be empty string
-    #   job_current: =<job_meta>.kit_number
-
-    #   # assign new uuid's and time on job change
-    #   part_uuid: '=<job_changed> ? uuid() : <part_uuid>'
-    #   process_uuid: '=<job_changed> ? uuid() : <process_uuid>'
-    #   job_start: '=<job_changed> ? new Date().toISOString() : <job_start>'
-
-    #   salesord: =<job_meta>.sales_order_number
-
-    #   # #. data coming from skid label, ChrisE needs to define address
-    #   # purchord: =($['%Z61.x'] || {}).purchase_order_number
-
   # ----------------------------------------------------------------------------
   # handle read messages
   # ----------------------------------------------------------------------------
@@ -160,6 +78,4 @@ handlers:
     # make $ a dictionary keyed on the item addresses
     initialize: 'payload.forEach(item => $[item.address] = item)'
     lookup: '($, part) => ({ value: ($[part] || {}).value })'
-    # # reuse the query input list here with *, as the key-part pairs are the same
-    # inputs: *queryInputs
     advice: true

@@ -35,6 +35,12 @@ export class AdapterDriver {
         //. how specify printer assoc with this line? can't hardcode it like this
         // piece_count_at_print_apply: |
         //   =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
+        console.log(`reading cache labels remaining`)
+        console.log(cache._map)
+        const labelsRemaining = cache.get('pr1-labels_remaining').value || 0
+        // const labelsRemaining = cache.get('pr1-lr').value || 0 // labels remaining
+        setCache('pcrem_pr', labelsRemaining)
+        const kitCount = jobMeta.kit_count || 0
 
         // kit counts
         const kitOn = lookup($, '%Z61.5').value // kits crossed eye1
