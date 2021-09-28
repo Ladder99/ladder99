@@ -10,7 +10,11 @@ l99/ccs/evt/read,"[{""address"": ""%Z61.5"", ""value"": 5}]",0,0,4,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.6"", ""value"": 1}]",0,0,5,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.6"", ""value"": 2}]",0,0,6,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.5"", ""value"": 6}]",0,0,7,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.5"", ""value"": 7}]",0,0,7,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.5"", ""value"": 8}]",0,0,7,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.6"", ""value"": 3}]",0,0,8,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.6"", ""value"": 4}]",0,0,9,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.6"", ""value"": 5}]",0,0,10,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.6"", ""value"": 6}]",0,0,11,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.6"", ""value"": 7}]",0,0,11,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.6"", ""value"": 8}]",0,0,11,1
