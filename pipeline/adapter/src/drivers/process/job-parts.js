@@ -72,11 +72,12 @@ export class AdapterDriver {
           setCache('cycle_time_avg', cycleTimeAvg)
         }
 
-        const cycleTimeDataset = Object.entries(keyvalues)
-          .filter((k, v) => !!v)
-          .map(([key, value]) => `${key}=${value.delta}`)
-          .join(' ')
-        setCache('cycle_times', cycleTimeDataset)
+        // cycle_times
+        // const cycleTimeDataset = Object.entries(keyvalues)
+        //   .filter((k, v) => !!v)
+        //   .map(([key, value]) => `${key}=${value.delta}`)
+        //   .join(' ')
+        // setCache('cycle_times', cycleTimeDataset)
 
         //. get estimated completion time
 
