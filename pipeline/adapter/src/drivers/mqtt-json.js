@@ -86,11 +86,14 @@ export class AdapterDriver {
 
           // define lookup function
           // eg lookup: '($, part) => ({ value: ($[part] || {}).default })'
-          console.log(`MQTT define lookup function`)
+          console.log(`MQTT define lookup function`, handler.lookup.toString())
           const lookup = eval(handler.lookup)
 
           // call optional custom code
-          if (advice.inputs) advice.inputs({ $, lookup })
+          if (handler.advice && advice.inputs) {
+            console.log(`Calling advice.inputs...`)
+            advice.inputs({ $, lookup })
+          }
 
           // iterate over inputs - an array of [key, part], eg ['fault_count', '%M55.2'].
           // if part is in payload, add it to the cache.

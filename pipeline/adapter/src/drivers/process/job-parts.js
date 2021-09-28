@@ -18,74 +18,49 @@ export class AdapterDriver {
 
     let keyvalues = {}
 
+    //. lookup will either use .default or .value - careful
     const advice = {
       inputs: ({ $, lookup }) => {
         console.log('advice', $)
 
-        // procname: ='KITTING'
         setCache('procname', 'KITTING')
 
-        // # get job meta data from kit label
-        // job_meta: =(($['%Z61.0'] || {}).value) || {}
-        // setCache('job_meta', ($['%Z61.0'] || {}).value || {})
+        // get job meta data from kit label
         const jobMeta = ($['%Z61.0'] || {}).value || {}
 
         // check if current job meta is empty string
         //. not [].value ?
-        // has_current_job: =$['%Z61.0'] !== ''
         const hasCurrentJob = $['%Z61.0'] !== ''
 
-        // # #. how specify printer assoc with this line? can't hardcode it like this
-        // # piece_count_at_print_apply: |
-        // #   =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
+        //. how specify printer assoc with this line? can't hardcode it like this
+        // piece_count_at_print_apply: |
+        //   =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
 
         // count of kits that have crossed eye1 on conveyer
+        console.log(40, lookup.toString(), $)
         const kitOn = lookup($, '%Z61.5')
 
         // count of kits that have crossed eye2 on conveyer
-        const kitOff = lookup($, '%Z61.5')
+        const kitOff = lookup($, '%Z61.6')
 
-        // # check if eye1 or eye2 counts changed
-        // # kit_on_changed: =$['Z61.5'] !== undefined && (<kit_on> !== $['Z61.5'])
-        // # kit_off_changed: =$['Z61.6'] !== undefined && (<kit_off> !== $['Z61.6'])
-        // kit_on_changed: =<kit_on> !== $['Z61.5']
-        // kit_off_changed: =<kit_off> !== $['Z61.6']
-        //. is this right? or need $[].value ?
-        // const kitOnChanged = getCache('kit_on') !== $['Z61.5']
-        // const kitOffChanged = getCache('kit_off') !== $['Z61.6']
+        // check if eye1 or eye2 counts changed
         const kitOnChanged = getCache('kit_on') !== kitOn
         const kitOffChanged = getCache('kit_off') !== kitOff
-
-        // # count of kits that have crossed eye1 on conveyer
-        // kit_on: '%Z61.5'
-        // const kitOn = lookup($, '%Z61.5')
-        // setCache('kit_on', lookup($, '%Z61.5'))
-        // setCacheLookup('kit_on', '%Z61.5')
-        // function setCacheLookup(key, part) {
-        // setCache(key, lookup($, part))
-        // }
-
-        // # count of kits that have crossed eye2 on conveyer
-        // kit_off: '%Z61.6'
-        // setCacheLookup('kit_off', '%Z61.6')
-        // const kitOff = lookup($, '%Z61.5')
 
         if (kitOnChanged) setCache('kit_on', kitOn)
         if (kitOffChanged) setCache('kit_off', kitOff)
 
-        // # used in outputs yaml
+        // used in outputs yaml
         //. is this formula ok?
-        // first_eye_broken: =(<kit_on> > 0)
         setCache('first_eye_broken', getCache('kit_on') > 0)
 
         // # calculate cycle time for kit to go from eye1 to eye2
         // update_cycle_time: |
         //   =if (<kit_on_changed>) { keyvalues[<kit_on>] = { start: new Date(), end: null, delta: null} }
         if (kitOnChanged) {
-          keyvalues[getCache('kit_on')]
+          keyvalues[getCache('kit_on')] = {} //.
         }
 
-        // # note: the if stmt evaluates to its last expression
         // cycle_time: |
         //   =if (<kit_off_changed>) {
         //     let koff = keyvalues[<kit_off>] || {};

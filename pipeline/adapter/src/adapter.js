@@ -101,7 +101,7 @@ async function main() {
           const handlers = Object.values(inputs.handlers)
           for (let handler of handlers) {
             // iterate over keys and parts
-            const keys = Object.keys(handler.inputs)
+            const keys = Object.keys(handler.inputs || {})
             for (let key of keys) {
               const part = handler.inputs[key]
               console.log('key,part', key, part)
