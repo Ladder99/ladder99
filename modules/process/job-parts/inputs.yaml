@@ -233,7 +233,7 @@ handlers:
       # part occurrences
       # --------------------------------------------------------
 
-      date_code: =<job_meta> && <job_meta>.assembled_date
+      date_code: =(<job_meta> || {}).assembled_date
 
   # ----------------------------------------------------------------------------
   # handle read messages
