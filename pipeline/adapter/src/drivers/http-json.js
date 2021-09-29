@@ -23,7 +23,7 @@ export class AdapterDriver {
         //.
         const value = json.status === 'online' ? 'AVAILABLE' : 'UNAVAILABLE'
         const timestamp = new Date().toISOString() //. get from json
-        const shdr = `${timestamp}|${deviceId}/connection|${value}` //..
+        const shdr = `${timestamp}|${deviceId}-connection|${value}` //..
         console.log(shdr)
         socket.write(shdr + '\n')
       } catch (error) {
@@ -39,7 +39,7 @@ export class AdapterDriver {
     // //. cache must have calcs defined for the diff keys in outputs.yaml
     // const key = 'connection'
     // const item = lookup($, part)
-    // const cacheId = deviceId + '/' + key // eg 'pa1/fault_count'
+    // const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
     // // item.receivedTime = receivedTime
     // cache.set(cacheId, item) // save to the cache - may send shdr to tcp
   }

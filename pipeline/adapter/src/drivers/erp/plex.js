@@ -19,7 +19,7 @@ export class AdapterDriver {
     async function poll() {
       const timestamp = new Date().toISOString() //. get from json?
       const value = Math.random() > 0.5 ? 'AVAILABLE' : 'UNAVAILABLE'
-      const shdr = `${timestamp}|${deviceId}/availability|${value}`
+      const shdr = `${timestamp}|${deviceId}-availability|${value}`
       console.log(shdr)
       socket.write(shdr + '\n') // write to agent
 
@@ -30,7 +30,7 @@ export class AdapterDriver {
       //   console.log(json)
       //   const value = json.status === 'online' ? 'AVAILABLE' : 'UNAVAILABLE'
       //   const timestamp = new Date().toISOString() //. get from json
-      //   const shdr = `${timestamp}|${deviceId}/connection|${value}` //.
+      //   const shdr = `${timestamp}|${deviceId}-connection|${value}` //.
       //   console.log(shdr)
       //   socket.write(shdr + '\n')
       // } catch (error) {
@@ -46,7 +46,7 @@ export class AdapterDriver {
     // //. cache must have calcs defined for the diff keys via outputs.yaml
     // const key = 'connection'
     // const item = lookup($, part)
-    // const cacheId = deviceId + '/' + key // eg 'pa1/fault_count'
+    // const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
     // // item.receivedTime = receivedTime
     // cache.set(cacheId, item) // save to the cache - may send shdr to tcp
   }

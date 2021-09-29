@@ -87,7 +87,8 @@ export class AdapterDriver {
           }
 
           const kg = grams / 1000
-          cache.set(`${deviceId}-mass`, { value: kg })
+          // cache.set(`${deviceId}-mass`, { value: kg })
+          cache.set(`${deviceId}-mass`, kg)
           setAvailable()
         })
 
@@ -108,12 +109,15 @@ export class AdapterDriver {
     }
 
     function setAvailable() {
-      cache.set(`${deviceId}-availability`, { value: 'AVAILABLE' })
+      // cache.set(`${deviceId}-availability`, { value: 'AVAILABLE' })
+      cache.set(`${deviceId}-availability`, 'AVAILABLE')
     }
 
     function setUnavailable() {
-      cache.set(`${deviceId}-availability`, { value: 'UNAVAILABLE' })
-      cache.set(`${deviceId}-mass`, { value: 'UNAVAILABLE' })
+      // cache.set(`${deviceId}-availability`, { value: 'UNAVAILABLE' })
+      // cache.set(`${deviceId}-mass`, { value: 'UNAVAILABLE' })
+      cache.set(`${deviceId}-availability`, 'UNAVAILABLE')
+      cache.set(`${deviceId}-mass`, 'UNAVAILABLE')
     }
   }
 }
