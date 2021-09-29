@@ -67,6 +67,7 @@ async function main() {
         const inputs = common.importYaml(pathInputs) || {}
 
         // get output handlers
+        // output yamls should all follow the same format, unlike input yamls.
         const pathOutputs = `${modulesFolder}/${module}/outputs.yaml`
         console.log(`Reading ${pathOutputs}...`)
         const outputTemplates = (common.importYaml(pathOutputs) || {}).outputs
@@ -212,24 +213,20 @@ function getOutputs({ templates, types, deviceId }) {
 }
 
 // get valueFn and dependsOn array from a js code statement
-// eg "<foo>" becomes cache=>cache.get(`${deviceId}-foo`).value
 // eg "<foo>" becomes cache=>cache.get(`${deviceId}-foo`)
+//. call this getReferences - let caller do the fn eval - that's out of place here
 function getValueFn(deviceId, code = '', types = {}) {
-  // replace all occurrences of <key> with `cache.get('...').value`.
   // replace all occurrences of <key> with `cache.get('...')`.
-  // eg <status_faults> => cache.get(`${deviceId}-status_faults`).value
   // eg <status_faults> => cache.get(`${deviceId}-status_faults`)
   // note: .*? is a non-greedy match, so doesn't eat other occurrences also.
   const regexp1 = /(<(.*?)>)/gm
   // eg "<power_fault> ? 'FAULT' : <power_warning> ? 'WARNING' : 'NORMAL'"
-  // eg "cache.get('ac1-power_fault').value ? 'FAULT' : cache.get('ac1-power_warning').value ? 'WARNING' : 'NORMAL'"
   // eg "cache.get('ac1-power_fault') ? 'FAULT' : cache.get('ac1-power_warning') ? 'WARNING' : 'NORMAL'"
   // should be okay to ditch replaceAll because we have /g for the regexp
   // valueStr = valueStr.replaceAll( // needs node15
   //. test this with two cache refs in a string "<foo> + <bar>" etc
   code = code.replace(
     regexp1,
-    // `cache.get('${deviceId}-$2').value` // $2 is the matched substring
     `cache.get('${deviceId}-$2')` // $2 is the matched substring
   )
   if (code.includes('\n')) {
