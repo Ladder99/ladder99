@@ -69,6 +69,12 @@ handlers:
     # msg: '($, part) => ($[part] || {}).default'
     msg: 'part => ($[part] || {}).default'
 
+    # this code would get evaluated in the scope of the calculations
+    #. move initialize here etc
+    definitions:
+      - let msg = part => ($[part] || {}).default
+      - let kit_data = {}
+
     # define any static one-time cache values to set.
     # this works because l99/ccs/evt/query just gets sent on request on
     # adapter startup.
@@ -76,8 +82,8 @@ handlers:
       # this sets the cache value at eg 'kl1-procname' to 'KITTING'
       procname: KITTING
 
-      # initialize a keyvalue store for kit cycle times
-      kit_data: {}
+      # # initialize a keyvalue store for kit cycle times
+      # kit_data: {}
 
     # define key-code pairs
     # 'key' defines the cache id, with id = {deviceId}-{key},
@@ -131,8 +137,9 @@ handlers:
       # check if eye1 or eye2 counts changed, set flags
       # msg('Z61.5') gives you the part count in the CURRENT message, if any
       # <kits_on> gives you the current value in the cache
-      kits_on_changed: =msg('Z61.5') !== undefined && (<kits_on> !== msg('Z61.5'))
-      kits_off_changed: =msg('Z61.6') !== undefined && (<kits_off> !== msg('Z61.6'))
+      #. do we need these though? change detection will be automatic
+      # kits_on_changed: =msg('Z61.5') !== undefined && (<kits_on> !== msg('Z61.5'))
+      # kits_off_changed: =msg('Z61.6') !== undefined && (<kits_off> !== msg('Z61.6'))
 
       # count of kits that have crossed eye1 on conveyer
       # note: if this address is NOT in the current message, the value is undefined,
@@ -146,19 +153,28 @@ handlers:
       first_eye_broken: =(<kits_on> > 0)
 
       # instead of having a separate keyvalues dict,
-      # use a cache value for a dict, eg <kit_data>[<kits_on>] = ...
+      # use a cache value for a dict, eg <kit_data>[<kits_on>] = ...?
+      # eh, but then that would get added to dependencies list
 
       # calculate cycle time for kit to go from eye1 to eye2
 
       # don't care about the cache key here, just want to assign something to keyvalue store
-      start_cycle_timer: |
-        =if (<kits_on_changed>) { <kit_data>[<kits_on>] = { start: new Date(), end: null, delta: null} }
+      # start_cycle_timer: |
+      #   =if (<kits_on_changed>) { <kit_data>[<kits_on>] = { start: new Date(), end: null, delta: null} }
+      start_cycle_timer: =kit_data[<kits_on>] = { start:new Date(), end:null, delta:null}
 
       # get cycle time when kits_off count changes
       # note: the if stmt evaluates to its last expression
+      # cycle_time: |
+      #   =if (<kits_off_changed>) {
+      #     let koff = <kit_data>[<kits_off>] || {};
+      #     koff.end = new Date();
+      #     koff.delta = koff.end - koff.start;
+      #   }
+      # note: the block evaluates to its last expression
       cycle_time: |
-        =if (<kits_off_changed>) {
-          let koff = keyvalues[<kits_off>] || {};
+        {
+          const koff = kit_data[<kits_off>] || {};
           koff.end = new Date();
           koff.delta = koff.end - koff.start;
         }
