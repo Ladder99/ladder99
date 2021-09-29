@@ -58,19 +58,16 @@ handlers:
       - topic: l99/ccs/evt/query
 
     # $ is a way to do quick lookups on the mqtt payload.
-    # in this case the payload is an array of items like [{ keys, default }, ...].
-    # what we want to do is assign the default value to each item's key,
-    # where the key is keys[0], eg 'printer_ribbon_low'.
+    # the payload is an array of items like [{ address, keys, default, value }, ...].
     # $ is a variable declared as `let $ = {}` before this code is executed.
-    #. this complexity could be hidden from the user in the plugin code
-    # eg have keywords for initialize fns to use
-    # initialize: initializeQuery
+    #. hide this code from user in plugin code - eg have keywords for fn to use -
+    # initialize: queryInitializer
     initialize: 'payload.forEach(item => $[item.address] = item)'
 
     # define a lookup function to use to get item from payload, if there.
-    # the plugin has
-    #   const value = lookup($, part)
-    lookup: 'part => ($[part] || {}).default'
+    # lookup: 'part => ($[part] || {}).default'
+    # msg: '($, part) => ($[part] || {}).default'
+    msg: 'part => ($[part] || {}).default'
 
     # define any static one-time cache values to set.
     # this works because l99/ccs/evt/query just gets sent on request on
@@ -79,13 +76,12 @@ handlers:
       # this sets the cache value at eg 'kl1-procname' to 'KITTING'
       procname: KITTING
 
-    # define key-part pairs
+    # define key-code pairs
     # 'key' defines the cache id, with id = {deviceId}-{key},
     # eg for key='printer_ribbon_low', id = 'pa1-printer_ribbon_low'.
-    # 'part' defines the part of the payload to get using the above defined
-    # lookup fn, eg for part='%I0.0', the value is obtained with $['%I0.0'].
-    # then calls cache.set(id, value),
-    # eg cache.set('pa1-printer_ribbon_low', 0)
+    # 'code' defines the part of the payload to get using the above defined
+    # lookup fn, eg for code: =msg('%I0.0'), the value is obtained with msg('%I0.0').
+    # then calls cache.set(id, value), eg cache.set('pa1-printer_ribbon_low', 0).
     # this might trigger SHDR output to be sent to the mtconnect agent,
     # according to the outputs defined in outputs.yaml.
     # the & syntax saves this list for later, as the read message handler
@@ -100,7 +96,8 @@ handlers:
       # this looks up %Z61.0 in the $ dictionary, which indexes the message addresses
       # this value is true or false, so both will be written to the cache.
       # has_current_job: =($['%Z61.0'] || {}).value !== ''
-      has_current_job: "=!!$['%Z61.0']" # converts to object to true, undefined to false
+      # has_current_job: "=!!$['%Z61.0']" # converts object to true, undefined to false
+      has_current_job: "=!!msg('%Z61.0')" # converts object to true, string or undefined to false
 
       # get job meta data from kit label
       # this writes a value to the cache at eg key 'kl1-job_meta'.
@@ -109,7 +106,12 @@ handlers:
       # this will assign its value to job_meta,
       # otherwise value will be undefined, and cache.set will ignore it,
       # leaving any existing value there in the cache.
-      job_meta: '%Z61.0'
+      # this syntax would work, BUT we have other places where we need message refs,
+      # so make it more explicit - see below
+      # job_meta: '%Z61.0'
+      # we need to pull out .default OR .value, depending on which handler this is
+      # hence the msg lookup function def above.
+      job_meta: =msg('%Z61.0')
 
       #. how specify printer assoc with this line?
       # need to specify pr1, pr2, pr3, pr4 etc
@@ -204,6 +206,8 @@ handlers:
   l99/ccs/evt/read:
     # make $ a dictionary keyed on the item addresses
     initialize: 'payload.forEach(item => $[item.address] = item)'
-    lookup: '($, part) => ($[part] || {}).value'
+    # lookup: '($, part) => ($[part] || {}).value'
+    # msg: '($, part) => ($[part] || {}).value'
+    msg: 'part => ($[part] || {}).value'
     # reuse the query input list here with *, as the key-part pairs are the same
     inputs: *queryInputs
