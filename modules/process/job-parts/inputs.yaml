@@ -171,17 +171,22 @@ handlers:
       #     koff.end = new Date();
       #     koff.delta = koff.end - koff.start;
       #   }
-      # note: the block evaluates to its last expression
+      # note: block evaluates to its last expression
       cycle_time: |
-        {
+        ={
           const koff = kit_data[<kits_off>] || {};
           koff.end = new Date();
           koff.delta = koff.end - koff.start;
         }
 
       # calculate average cycle time for current job
+      # note: dividing by objs.length gives NaN if it's zero, which is what we want
       cycle_time_avg: |
-        =Object.values(keyvalues).length>0 ? (Object.values(keyvalues).filter(value=>value.delta>0).reduce((a,b)=>a+b.delta,0) / Object.values(keyvalues).length) : 'UNAVAILABLE'
+        ={
+          const objs = Object.values(kit_data);
+          const avg = objs.filter(obj=>obj.delta>0)
+            .reduce((a,b)=>a+b.delta,0) / objs.length;
+        }
 
       cycle_times: |
         =Object.entries(keyvalues).map(([key, value]) => `${key}=${value.delta}`).join(' ')
