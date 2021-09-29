@@ -3,11 +3,11 @@
 # these outputs are placed in the module.xml tree and define the
 # shdr strings that are calculated from the cache and sent to the agent.
 
-# the item's id in the xml and the shdr key is `${deviceId}_${key}`
+# the item's id in the xml and the shdr key is `${deviceId}-${key}`
 # the shdr value is defined with the item value code.
 
 # value is javascript, evaluated by the cache in calculating the shdr output.
-# <foo> is a cache lookup, shorthand for cache.get('${deviceId}_foo').value
+# <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo')
 
 # note: category is used to determine shdr representation.
 # only need to specify category if CONDITION.

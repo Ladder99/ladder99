@@ -1,4 +1,5 @@
 # inputs
+
 # define cache inputs - mqtt topics, how to parse them and put them into cache.
 # see outputs.yaml for cache output as shdr.
 
@@ -31,7 +32,6 @@ handlers:
     # lookups of faults - payload.faults is a dictionary of faults.
     initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
     # define lookup function, which returns a value given a part calculation.
-    # lookup: '($, part) => ({ value: eval(part) })'
     lookup: '($, part) => eval(part)'
     # define key-part pairs, where key is mapped to a cache id,
     # eg 'status-connection' => 'pa1-status_connection',

@@ -4,7 +4,7 @@
 # shdr strings that are calculated from the cache and sent to the agent.
 
 # value is javascript, evaluated by the cache in calculating the shdr output.
-# <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo').value
+# <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo')
 
 outputs:
   - key: availability

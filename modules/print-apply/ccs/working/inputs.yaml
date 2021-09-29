@@ -1,12 +1,11 @@
 # inputs
+
 # define cache inputs - mqtt topics, how to parse them and put them into cache.
 # see outputs.yaml for cache output as shdr.
 
 # adapter subscribes to mqtt topics from devices.
 # mqtt broker sends data to adapter.
 # adapter parses messages, writes values to cache, which outputs shdr.
-
-#. call this adapter.yaml? cache.yaml? cache-inputs.yaml? driver.yaml?
 
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/mqtt-json.js.
 
@@ -39,7 +38,8 @@ handlers:
     # $ is a variable declared as `let $ = {}` before this code is executed.
     #. this complexity could be hidden from the user in the plugin code somehow.
     initialize: 'payload.forEach(item => $[item.keys[0]] = item)'
-    lookup: '($, part) => ({ value: ($[part] || {}).default })'
+    # lookup: '($, part) => ({ value: ($[part] || {}).default })'
+    lookup: '($, part) => ($[part] || {}).default'
 
     # define key-part pairs
     # the & syntax saves this list for later, as the read message handler
@@ -48,8 +48,8 @@ handlers:
     # eg for key='printer_ribbon_low', id = 'pa1-printer_ribbon_low'.
     # 'part' defines the part of the payload to get using the above defined
     # lookup fn, eg for part='%I0.0', the value is obtained with $['%I0.0'].
-    # then it sets item = { value }, then calls cache.set(id, item),
-    # eg cache.set('pa1-printer_ribbon_low', { value: 0 })
+    # then calls cache.set(id, value),
+    # eg cache.set('pa1-printer_ribbon_low', 0)
     # this might trigger SHDR output to be sent to the mtconnect agent,
     # according to the outputs defined in outputs.yaml.
     inputs: &queryInputs
@@ -130,7 +130,8 @@ handlers:
     # lookups of faults - payload.faults is a dictionary of faults.
     initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
     # define lookup function, which returns a value given a part calculation.
-    lookup: '($, part) => ({ value: eval(part) })'
+    # lookup: '($, part) => ({ value: eval(part) })'
+    lookup: '($, part) => eval(part)'
     # define key-part pairs, where key is mapped to a cache id,
     # eg 'status-connection' => 'pa1-status_connection',
     # and part is some javascript calculation code to determine its value.
@@ -157,6 +158,7 @@ handlers:
   l99/${deviceId}/evt/read:
     # make $ a dictionary keyed on the item addresses
     initialize: 'payload.forEach(item => $[item.address] = item)'
-    lookup: '($, part) => ({ value: ($[part] || {}).value })'
+    # lookup: '($, part) => ({ value: ($[part] || {}).value })'
+    lookup: '($, part) => ($[part] || {}).value'
     # reuse the query input list here, as the key-part pairs are the same
     inputs: *queryInputs
