@@ -94,13 +94,11 @@ handlers:
 
       # # current job meta is not empty string
       # # this looks up %Z61.0 in the $ dictionary, which indexes the message addresses
-      #. but might be .default - need to use `lookup`
       # has_current_job: =($['%Z61.0'] || {}).value !== ''
 
       # get job meta data from kit label
       # if this message includes address %Z61.0, this will assign its value to job_meta
       # this writes the calculated value to the cache at eg key 'kl1-job_meta'
-      #. but might be .default - need to use `lookup`
       # job_meta: =(($['%Z61.0'] || {}).value) || {}
       # this makes <job_meta> be the json object from the message
       job_meta: '%Z61.0'
