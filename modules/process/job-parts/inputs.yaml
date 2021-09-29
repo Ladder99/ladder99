@@ -184,14 +184,22 @@ handlers:
       # note: dividing by objs.length gives NaN if it's zero, which is what we want
       cycle_time_avg: |
         ={
-          const ko = <kits_off>;
+          const ref = <kits_off>;
           const objs = Object.values(kit_data);
-          const avg = objs.filter(obj=>obj.delta>0)
+          const avg = objs
+            .filter(obj=>obj.delta>0)
             .reduce((a,b)=>a+b.delta,0) / objs.length;
         }
 
+      # get lastest cycle times to show in dataset
       cycle_times: |
-        =Object.entries(keyvalues).map(([key, value]) => `${key}=${value.delta}`).join(' ')
+        ={
+          const kv = Object.entries(kit_data)
+          const dataitems = kv
+            .slice(kv.length - 5)
+            .map(([key, value]) => `${key}=${value.delta}`)
+            .join(' ')
+        }
 
       # pieces_in_assembly: =<kits_on> - <kits_off> # kits on assy line
       # pieces_completed: =<kits_off> # kits finished
