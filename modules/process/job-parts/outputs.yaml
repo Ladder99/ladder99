@@ -128,3 +128,6 @@ outputs:
 
   - key: pcrem_plc
     value: <pcrem_plc>
+
+  - key: dc
+    value: <date_code>

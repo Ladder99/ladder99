@@ -1,7 +1,7 @@
 topic,message,qos,retain,time_now,time_delta
 l99/ccs/evt/query,"[{""address"": ""%M56.5"", ""default"": 0.5}]",0,0,1,1
 l99/ccs/evt/status,"{""connection"": ""online"", ""powered"": ""on"", ""program"": ""pg9999"", ""step"":""step1"", ""faults"": {""1"":{""description"": ""interesting error""}}}",0,1,0,1
-l99/ccs/evt/read,"[{""address"": ""%Z61.0"", ""value"": {""carton_quantity"":1, ""kit_number"": ""W11113362"", ""kit_name"": ""Interior Kit Assy"", ""sales_order_number"": ""a12345""}}]",0,0,0,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.0"", ""value"": {""carton_quantity"":1, ""kit_number"": ""W11113362"", ""kit_name"": ""Interior Kit Assy"", ""sales_order_number"": ""a12345"", ""assembled_date"":""(TODO)""}}]",0,0,0,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.5"", ""value"": 1}]",0,0,0,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.6"", ""value"": 1}]",0,0,0,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.3"", ""value"": true}]",0,0,0,1

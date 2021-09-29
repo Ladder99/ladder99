@@ -168,6 +168,8 @@ handlers:
       # # #. data coming from skid label, ChrisE needs to define address
       # # purchord: =($['%Z61.x'] || {}).purchase_order_number
 
+      date_code: =<job_meta> && <job_meta>.assembled_date
+
   # ----------------------------------------------------------------------------
   # handle read messages
   # ----------------------------------------------------------------------------
