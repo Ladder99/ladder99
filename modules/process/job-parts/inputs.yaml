@@ -103,7 +103,7 @@ handlers:
       # this writes the calculated value to the cache at eg key 'kl1-job_meta'
       #. but might be .default - need to use `lookup`
       # job_meta: =(($['%Z61.0'] || {}).value) || {}
-      # this makes <job_meta> be (the json object)
+      # this makes <job_meta> be the json object from the message
       job_meta: '%Z61.0'
 
       #. how specify printer assoc with this line? don't hardcode it like this.
@@ -111,7 +111,9 @@ handlers:
       #. did he mean .carton_quantity? yes i think so
       # piece_count_at_print_apply: |
       #   =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
-      carton_quantity: =<job_meta>.carton_quantity
+      # carton_quantity: =<job_meta> && <job_meta>.value.carton_quantity
+      # carton_quantity: =<job_meta> && <job_meta>.value
+      carton_quantity: =<job_meta> && <job_meta>.carton_quantity
 
       # # check if eye1 or eye2 counts changed, set flags
       # # kits_on_changed: =$['Z61.5'] !== undefined && (<kits_on> !== $['Z61.5'])

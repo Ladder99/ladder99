@@ -53,7 +53,8 @@ export class AdapterDriver {
     // message - array of bytes (assumed to be a json string)
     function onMessage(msgTopic, message) {
       message = message.toString()
-      console.log(`Got message on topic ${msgTopic}: ${message.slice(0, 20)}`)
+      // console.log(`Got message on topic ${msgTopic}: ${message.slice(0, 20)}`)
+      console.log(`Got message on topic ${msgTopic}: ${message}`)
 
       const receivedTime = new Date()
 
@@ -124,7 +125,7 @@ export class AdapterDriver {
           }
 
           // console.log('keyvalues', keyvalues)
-          // console.log(cache._map)
+          console.log(cache._map) // print contents of cache
 
           // // check for step transitions to get timing info
           // //. genericize this, or let user write code
