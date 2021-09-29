@@ -76,6 +76,9 @@ handlers:
       # this sets the cache value at eg 'kl1-procname' to 'KITTING'
       procname: KITTING
 
+      # initialize a keyvalue store for kit cycle times
+      kit_data: {}
+
     # define key-code pairs
     # 'key' defines the cache id, with id = {deviceId}-{key},
     # eg for key='printer_ribbon_low', id = 'pa1-printer_ribbon_low'.
@@ -126,24 +129,21 @@ handlers:
       carton_quantity: =(<job_meta> || {}).carton_quantity
 
       # check if eye1 or eye2 counts changed, set flags
-      # $['Z61.5'] gives you the item in the CURRENT message, if any
+      # msg('Z61.5') gives you the part count in the CURRENT message, if any
       # <kits_on> gives you the current value in the cache
-      # $['Z61.5'].value gives you the part count, 0+
-      # kits_on_changed: =$['Z61.5'] !== undefined && (<kits_on> !== $['Z61.5'].value)
-      # kits_off_changed: =$['Z61.6'] !== undefined && (<kits_off> !== $['Z61.6'].value)
       kits_on_changed: =msg('Z61.5') !== undefined && (<kits_on> !== msg('Z61.5'))
       kits_off_changed: =msg('Z61.6') !== undefined && (<kits_off> !== msg('Z61.6'))
 
       # count of kits that have crossed eye1 on conveyer
       # note: if this address is NOT in the current message, the value is undefined,
       # so the cache value is NOT updated.
-      kits_on: '%Z61.5'
+      kits_on: =msg('%Z61.5')
 
       # count of kits that have crossed eye2 on conveyer
-      kits_off: '%Z61.6'
+      kits_off: =msg('%Z61.6')
 
-      # # used in outputs yaml
-      # first_eye_broken: =(<kits_on> > 0)
+      # used in outputs yaml
+      first_eye_broken: =(<kits_on> > 0)
 
       #. instead of having a separate keyvalues dict,
       #  use a cache value for a dict? eg <kit_data>[<kits_on>] = ... ?
