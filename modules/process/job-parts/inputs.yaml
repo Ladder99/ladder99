@@ -31,7 +31,8 @@ handlers:
     # lookups of faults - payload.faults is a dictionary of faults.
     initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
     # define lookup function, which returns a value given a part calculation.
-    lookup: '($, part) => ({ value: eval(part) })'
+    # lookup: '($, part) => ({ value: eval(part) })'
+    lookup: '($, part) => eval(part)'
     # define key-part pairs, where key is mapped to a cache id,
     # eg 'status-connection' => 'pa1-status_connection',
     # and part is some javascript calculation code to determine its value.
@@ -70,8 +71,8 @@ handlers:
     # the plugin has -
     #   const item = lookup($, part)
     #. define this in code as `lookupDefault(part)`, use below?
-    lookup: '($, part) => ({ value: ($[part] || {}).default })'
-    # lookup: 'part => ($[part] || {}).default'
+    # lookup: '($, part) => ({ value: ($[part] || {}).default })'
+    lookup: 'part => ($[part] || {}).default'
     #. or do this to define arbitrary fns to use
     # functions:
     #   lookup: ...
@@ -173,6 +174,7 @@ handlers:
   l99/ccs/evt/read:
     # make $ a dictionary keyed on the item addresses
     initialize: 'payload.forEach(item => $[item.address] = item)'
-    lookup: '($, part) => ({ value: ($[part] || {}).value })'
+    # lookup: '($, part) => ({ value: ($[part] || {}).value })'
+    lookup: '($, part) => ($[part] || {}).value'
     # reuse the query input list here with *, as the key-part pairs are the same
     inputs: *queryInputs

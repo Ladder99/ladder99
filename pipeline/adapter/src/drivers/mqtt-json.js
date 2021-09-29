@@ -53,8 +53,8 @@ export class AdapterDriver {
     // message - array of bytes (assumed to be a json string)
     function onMessage(msgTopic, message) {
       message = message.toString()
-      // console.log(`Got message on topic ${msgTopic}: ${message.slice(0, 20)}`)
-      console.log(`Got message on topic ${msgTopic}: ${message}`)
+      console.log(`Got message on topic ${msgTopic}: ${message.slice(0, 99)}`)
+      // console.log(`Got message on topic ${msgTopic}: ${message}`)
 
       const receivedTime = new Date()
 
@@ -86,15 +86,16 @@ export class AdapterDriver {
           // console.log($)
 
           // define lookup function
-          // eg lookup: '($, part) => ({ value: ($[part] || {}).default })'
+          // // eg lookup: '($, part) => ({ value: ($[part] || {}).default })'
+          // eg lookup: '($, part) => ($[part] || {}).default'
           console.log(`MQTT define lookup function`, handler.lookup.toString())
           const lookup = eval(handler.lookup)
 
-          // call optional custom code
-          if (handler.advice && advice.inputs) {
-            console.log(`Calling advice.inputs...`)
-            advice.inputs({ $, lookup })
-          }
+          // // call optional custom code
+          // if (handler.advice && advice.inputs) {
+          //   console.log(`Calling advice.inputs...`)
+          //   advice.inputs({ $, lookup })
+          // }
 
           // iterate over inputs - an array of [key, part], eg ['fault_count', '%M55.2'].
           // if part is in payload, add it to the cache.
@@ -110,18 +111,24 @@ export class AdapterDriver {
               console.log(`key,code`, key, code)
               const value = valueFn(cache, $, keyvalues) // may use `types` dict also
               console.log(`Got ${value} - set ${cacheId}...`)
-              cache.set(cacheId, { value }) // save value to cache - may send shdr to tcp
+              // cache.set(cacheId, { value }) // save value to cache - may send shdr to tcp
+              cache.set(cacheId, value) // save value to cache - may send shdr to tcp
             } else {
-              // use the lookup function to get item from payload, if there
-              const item = lookup($, part)
-              console.log('part,item', part, item)
+              // // use the lookup function to get item from payload, if there
+              // const item = lookup($, part)
+              // console.log('part,item', part, item)
+              // use the lookup function to get value from payload, if there
+              const value = lookup($, part)
+              console.log('part,value', part, value)
               // if we have the part in the payload, add it to the cache
               //. why do we have a guard here for undefined? what if need to reset a cache value?
               //  i guess you'd have to pass item.value = 'UNAVAILABLE' explicitly?
-              if (item && item.value !== undefined) {
+              // if (item && item.value !== undefined) {
+              if (value !== undefined) {
                 console.log(`MQTT part '${part}' in payload - set ${cacheId}`)
                 // item.receivedTime = receivedTime
-                cache.set(cacheId, item) // save to the cache - may send shdr to tcp
+                // cache.set(cacheId, item) // save to the cache - may send shdr to tcp
+                cache.set(cacheId, value) // save to the cache - may send shdr to tcp
               }
             }
           }

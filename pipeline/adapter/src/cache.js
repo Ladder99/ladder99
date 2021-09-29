@@ -42,13 +42,19 @@ export class Cache {
     }
   }
 
-  // set a key-item pair in the cache.
-  // each item is an object that can have a value property.
-  //. eg set('ac1-power_warning', { value: true }) -
-  set(key, item) {
-    console.log('cache.set', key, JSON.stringify(item).slice(0, 99))
-    // update the cache item
-    this._map.set(key, item)
+  // set a key-value pair in the cache.
+  // // set a key-item pair in the cache.
+  // // each item is an object that can have a value property.
+  // // eg set('ac1-power_warning', { value: true }) -
+  // eg set('ac1-power_warning', true) -
+  // set(key, item) {
+  set(key, value) {
+    // console.log('cache.set', key, JSON.stringify(item).slice(0, 99))
+    console.log('cache.set', key, String(value).slice(0, 99))
+    // // update the cache item
+    // this._map.set(key, item)
+    // update the cache value
+    this._map.set(key, value)
     // get list of outputs associated with this key
     // eg ['ac1-power_condition']
     const outputs = this._mapKeyToOutputs[key] || []
@@ -69,10 +75,13 @@ export class Cache {
 
   // get an item object from cache
   // eg get('pr1-avail').value
+  // get a value from cache
+  // eg get('pr1-avail')
   get(key) {
-    // best to return {} because user will do .value on result
-    const item = this._map.get(key) || {}
-    return item
+    // // best to return {} because user will do .value on result
+    // const item = this._map.get(key) || {}
+    // return item
+    return this._map.get(key)
   }
 }
 

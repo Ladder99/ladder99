@@ -213,19 +213,24 @@ function getOutputs({ templates, types, deviceId }) {
 
 // get valueFn and dependsOn array from a js code statement
 // eg "<foo>" becomes cache=>cache.get(`${deviceId}-foo`).value
+// eg "<foo>" becomes cache=>cache.get(`${deviceId}-foo`)
 function getValueFn(deviceId, code = '', types = {}) {
   // replace all occurrences of <key> with `cache.get('...').value`.
+  // replace all occurrences of <key> with `cache.get('...')`.
   // eg <status_faults> => cache.get(`${deviceId}-status_faults`).value
+  // eg <status_faults> => cache.get(`${deviceId}-status_faults`)
   // note: .*? is a non-greedy match, so doesn't eat other occurrences also.
   const regexp1 = /(<(.*?)>)/gm
   // eg "<power_fault> ? 'FAULT' : <power_warning> ? 'WARNING' : 'NORMAL'"
   // eg "cache.get('ac1-power_fault').value ? 'FAULT' : cache.get('ac1-power_warning').value ? 'WARNING' : 'NORMAL'"
+  // eg "cache.get('ac1-power_fault') ? 'FAULT' : cache.get('ac1-power_warning') ? 'WARNING' : 'NORMAL'"
   // should be okay to ditch replaceAll because we have /g for the regexp
   // valueStr = valueStr.replaceAll( // needs node15
   //. test this with two cache refs in a string "<foo> + <bar>" etc
   code = code.replace(
     regexp1,
-    `cache.get('${deviceId}-$2').value` // $2 is the matched substring
+    // `cache.get('${deviceId}-$2').value` // $2 is the matched substring
+    `cache.get('${deviceId}-$2')` // $2 is the matched substring
   )
   if (code.includes('\n')) {
     code = '{\n' + code + '\n}'
@@ -238,7 +243,8 @@ function getValueFn(deviceId, code = '', types = {}) {
   // get AFTER transforms, because user could specify a cache get manually.
   // eg dependsOn = ['ac1-power_fault', 'ac1-power_warning']
   const dependsOn = []
-  const regexp2 = /cache\.get\('(.*?)'\).value/gm
+  // const regexp2 = /cache\.get\('(.*?)'\).value/gm
+  const regexp2 = /cache\.get\('(.*?)'\)/gm
   let match
   while ((match = regexp2.exec(code)) !== null) {
     const key = match[1]

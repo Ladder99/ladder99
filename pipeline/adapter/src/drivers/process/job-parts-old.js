@@ -1,6 +1,8 @@
 // job-parts driver
 // handles processes with jobs that have parts - calculate cycle times etc
 
+//. not used
+
 // import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 import { AdapterDriver as MqttJson } from '../mqtt-json.js'
