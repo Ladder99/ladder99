@@ -88,43 +88,49 @@ handlers:
     # the & syntax saves this list for later, as the read message handler
     # uses the same pairs.
     inputs: &queryInputs
+      #
+      # this sets the cache value at 'kl1-procname' to { value: 'KITTING' }
       procname: ='KITTING'
 
-      # # get job meta data from kit label
-      # job_meta: =(($['%Z61.0'] || {}).value) || {}
+      # current job meta is not empty string
+      # this looks up %Z61.0 in the $ dictionary, which indexes the message addresses
+      has_current_job: =$['%Z61.0'].value !== ''
 
-      # # current job meta is not empty string
-      # has_current_job: =$['%Z61.0'] !== ''
+      # get job meta data from kit label
+      # this writes the calculated value to the cache at eg key 'kl1-job_meta'
+      job_meta: =(($['%Z61.0'] || {}).value) || {}
 
-      # # #. how specify printer assoc with this line? can't hardcode it like this
-      # # piece_count_at_print_apply: |
-      # #   =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
+      #. how specify printer assoc with this line? don't hardcode it like this.
+      #. setup.yaml could specify? or part of the xml model?
+      # piece_count_at_print_apply: |
+      #   =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
+      # kit_count: =<job_meta>.kit_count
 
-      # # check if eye1 or eye2 counts changed, set flags
-      # # kit_on_changed: =$['Z61.5'] !== undefined && (<kit_on> !== $['Z61.5'])
-      # # kit_off_changed: =$['Z61.6'] !== undefined && (<kit_off> !== $['Z61.6'])
-      # kit_on_changed: =<kit_on> !== $['Z61.5']
-      # kit_off_changed: =<kit_off> !== $['Z61.6']
+      # check if eye1 or eye2 counts changed, set flags
+      # kits_on_changed: =$['Z61.5'] !== undefined && (<kits_on> !== $['Z61.5'])
+      # kits_off_changed: =$['Z61.6'] !== undefined && (<kits_off> !== $['Z61.6'])
+      kits_on_changed: =<kits_on> !== $['Z61.5']
+      kits_off_changed: =<kits_off> !== $['Z61.6']
 
-      # # count of kits that have crossed eye1 on conveyer
-      # kit_on: '%Z61.5'
+      # count of kits that have crossed eye1 on conveyer
+      kits_on: '%Z61.5'
 
-      # # count of kits that have crossed eye2 on conveyer
-      # kit_off: '%Z61.6'
+      # count of kits that have crossed eye2 on conveyer
+      kits_off: '%Z61.6'
 
-      # # used in outputs yaml
-      # first_eye_broken: =(<kit_on> > 0)
+      # used in outputs yaml
+      first_eye_broken: =(<kits_on> > 0)
 
-      # # calculate cycle time for kit to go from eye1 to eye2
-      # update_cycle_time: |
-      #   =if (<kit_on_changed>) { keyvalues[<kit_on>] = { start: new Date(), end: null, delta: null} }
-      # # note: the if stmt evaluates to its last expression
-      # cycle_time: |
-      #   =if (<kit_off_changed>) {
-      #     let koff = keyvalues[<kit_off>] || {};
-      #     koff.end = new Date();
-      #     koff.delta = koff.end - koff.start;
-      #   }
+      # calculate cycle time for kit to go from eye1 to eye2
+      update_cycle_time: |
+        =if (<kits_on_changed>) { keyvalues[<kits_on>] = { start: new Date(), end: null, delta: null} }
+      # note: the if stmt evaluates to its last expression
+      cycle_time: |
+        =if (<kits_off_changed>) {
+          let koff = keyvalues[<kits_off>] || {};
+          koff.end = new Date();
+          koff.delta = koff.end - koff.start;
+        }
 
       # # calculate average cycle time for current job
       # cycle_time_avg: |
@@ -133,9 +139,9 @@ handlers:
       # cycle_times: |
       #   =Object.entries(keyvalues).map(([key, value]) => `${key}=${value.delta}`).join(' ')
 
-      # pieces_in_assembly: =<kit_on> - <kit_off> # kits on assy line
-      # pieces_completed: =<kit_off> # kits finished
-      # pieces_began: =<kit_on> # kits work began
+      # pieces_in_assembly: =<kits_on> - <kits_off> # kits on assy line
+      # pieces_completed: =<kits_off> # kits finished
+      # pieces_began: =<kits_on> # kits work began
 
       # # current job done, pieces remaining reached zero
       # job_complete: '%Z61.3'
