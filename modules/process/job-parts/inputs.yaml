@@ -139,23 +139,28 @@ handlers:
 
       #. instead of having a separate keyvalues dict,
       #  use a cache value for a dict? eg <kit_data>[<kits_on>] = ... ?
-      # # calculate cycle time for kit to go from eye1 to eye2
-      # update_cycle_time: |
-      #   =if (<kits_on_changed>) { keyvalues[<kits_on>] = { start: new Date(), end: null, delta: null} }
-      # # note: the if stmt evaluates to its last expression
-      # cycle_time: |
-      #   =if (<kits_off_changed>) {
-      #     let koff = keyvalues[<kits_off>] || {};
-      #     koff.end = new Date();
-      #     koff.delta = koff.end - koff.start;
-      #   }
 
-      # # calculate average cycle time for current job
-      # cycle_time_avg: |
-      #   =Object.values(keyvalues).reduce((a,b)=>a+b.delta,0) / Object.values(keyvalues).length
+      # calculate cycle time for kit to go from eye1 to eye2
 
-      # cycle_times: |
-      #   =Object.entries(keyvalues).map(([key, value]) => `${key}=${value.delta}`).join(' ')
+      # don't care about the cache key here, just want to assign something to keyvalues dict
+      update_cycle_time: |
+        =if (<kits_on_changed>) { keyvalues[<kits_on>] = { start: new Date(), end: null, delta: null} }
+
+      # get cycle time when kits_off count changes
+      # note: the if stmt evaluates to its last expression
+      cycle_time: |
+        =if (<kits_off_changed>) {
+          let koff = keyvalues[<kits_off>] || {};
+          koff.end = new Date();
+          koff.delta = koff.end - koff.start;
+        }
+
+      # calculate average cycle time for current job
+      cycle_time_avg: |
+        =Object.values(keyvalues).length>0 ? (Object.values(keyvalues).filter(value=>value.delta>0).reduce((a,b)=>a+b.delta,0) / Object.values(keyvalues).length) : 'UNAVAILABLE'
+
+      cycle_times: |
+        =Object.entries(keyvalues).map(([key, value]) => `${key}=${value.delta}`).join(' ')
 
       # pieces_in_assembly: =<kits_on> - <kits_off> # kits on assy line
       # pieces_completed: =<kits_off> # kits finished
