@@ -201,13 +201,13 @@ handlers:
             .join(' ')
         }
 
-      # pieces_in_assembly: =<kits_on> - <kits_off> # kits on assy line
-      # pieces_completed: =<kits_off> # kits finished
-      # pieces_began: =<kits_on> # kits work began
+      pieces_in_assembly: =<kits_on> - <kits_off> # kits on assy line
+      pieces_completed: =<kits_off> # kits finished
+      pieces_began: =<kits_on> # kits work began
 
       # current job done, pieces remaining reached zero
-      # need explicit true here, so undefined -> false?
-      job_complete: '%Z61.3'
+      #. need explicit true here, so undefined -> false?
+      job_complete: =msg('%Z61.3') === true
 
       # # compare cache to incoming data
       # job_changed: =<has_current_job> && (<job_current> !== <job_meta>.kit_number)
