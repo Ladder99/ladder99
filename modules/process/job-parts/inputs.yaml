@@ -88,40 +88,47 @@ handlers:
     # uses the same pairs.
     inputs: &queryInputs
       # --------------------------------------------------------
-      # controller
-      # --------------------------------------------------------
-      # status has avail, clktime, uptime, ctlprog, power, execution,
-      # buildno, step, waitstate, message
-
-      # --------------------------------------------------------
       # process occurrence
       # --------------------------------------------------------
-      # this sets the cache value at 'kl1-procname' to { value: 'KITTING' }
+
+      # this sets the cache value at 'kl1-procname' to 'KITTING'
       procname: ='KITTING'
 
       # flag for current job meta is not empty string
       # used in outputs.yaml for funcmode
       # this looks up %Z61.0 in the $ dictionary, which indexes the message addresses
+      # this value is true or false, so both will be written to the cache.
       has_current_job: =($['%Z61.0'] || {}).value !== ''
 
       # get job meta data from kit label
-      # if this message includes address %Z61.0, this will assign its value to job_meta
-      # this writes the calculated value to the cache at eg key 'kl1-job_meta'
-      # job_meta: =(($['%Z61.0'] || {}).value) || {}
-      # this makes <job_meta> be the json object from the message
+      # this writes a value to the cache at eg key 'kl1-job_meta'.
+      # this makes <job_meta> be the json object from the message.
+      # if this mqtt message includes address %Z61.0,
+      # this will assign its value to job_meta,
+      # otherwise value will be undefined, and cache.set will ignore it,
+      # leaving any existing value there in the cache.
       job_meta: '%Z61.0'
 
-      #. how specify printer assoc with this line? don't hardcode it like this.
+      #. how specify printer assoc with this line?
+      #. need to specify pr1, pr2, pr3, pr4 etc
       #. setup.yaml could specify? or part of the xml model?
       # piece_count_at_print_apply: |
       #   =(<job_meta>.carton_quantity || 0) - (cache.get('pr1-labels_remaining').value || 0)
+
+      # if job_meta is undefined, this expression is undefined, and the cache won't be updated.
+      # aka pctarget
       carton_quantity: =<job_meta> && <job_meta>.carton_quantity
 
       # check if eye1 or eye2 counts changed, set flags
-      kits_on_changed: =<kits_on> !== ($['Z61.5'] || {}).value
-      kits_off_changed: =<kits_off> !== ($['Z61.6'] || {}).value
+      # $['Z61.5'] gives you the item in the CURRENT message, if any
+      # <kits_on> gives you the current value in the cache
+      # $['Z61.5'].value gives you the part count, 0+
+      kits_on_changed: =$['Z61.5'] !== undefined && (<kits_on> !== $['Z61.5'].value)
+      kits_off_changed: =$['Z61.6'] !== undefined && (<kits_off> !== $['Z61.6'].value)
 
       # count of kits that have crossed eye1 on conveyer
+      # note: if this address is NOT in the current message, the value is undefined,
+      # so the cache value is NOT updated.
       kits_on: '%Z61.5'
 
       # count of kits that have crossed eye2 on conveyer
@@ -181,6 +188,7 @@ handlers:
       # --------------------------------------------------------
       # part occurrences
       # --------------------------------------------------------
+
       date_code: =<job_meta> && <job_meta>.assembled_date
 
   # ----------------------------------------------------------------------------
