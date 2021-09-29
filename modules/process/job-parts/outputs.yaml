@@ -120,6 +120,9 @@ outputs:
   # parts
   # ------------------------------------------------------------------
 
+  - key: pctarg
+    value: <carton_quantity>
+
   - key: pcrem_pr
     value: <pcrem_pr>
 
