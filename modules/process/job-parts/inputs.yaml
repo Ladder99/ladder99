@@ -215,8 +215,6 @@ handlers:
       # kit assembly part number, can be empty string
       job_current: =<has_current_job> && <job_meta>.kit_number
 
-      reset_key_values: =if (<job_changed>) { kit_data = {} }
-
       # assign new uuid's and time on job change
       part_uuid: =<job_changed> && uuid()
       process_uuid: =<job_changed> && uuid()
@@ -225,7 +223,11 @@ handlers:
       salesord: =<job_changed> && <job_meta>.sales_order_number
 
       # #. data coming from skid label, ChrisE needs to define address
+      #. is this the salesqueue.dictionary? so multiple purchase orders?
       # purchord: =($['%Z61.x'] || {}).purchase_order_number
+      # purchord: =(msg('%Z61.13') || {}).purchase_order
+
+      reset_key_values: =if (<job_changed>) { kit_data = {} }
 
       # --------------------------------------------------------
       # part occurrences
