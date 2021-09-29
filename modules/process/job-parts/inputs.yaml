@@ -145,14 +145,14 @@ handlers:
       # used in outputs yaml
       first_eye_broken: =(<kits_on> > 0)
 
-      #. instead of having a separate keyvalues dict,
-      #  use a cache value for a dict? eg <kit_data>[<kits_on>] = ... ?
+      # instead of having a separate keyvalues dict,
+      # use a cache value for a dict, eg <kit_data>[<kits_on>] = ...
 
       # calculate cycle time for kit to go from eye1 to eye2
 
-      # don't care about the cache key here, just want to assign something to keyvalues dict
-      update_cycle_time: |
-        =if (<kits_on_changed>) { keyvalues[<kits_on>] = { start: new Date(), end: null, delta: null} }
+      # don't care about the cache key here, just want to assign something to keyvalue store
+      start_cycle_timer: |
+        =if (<kits_on_changed>) { <kit_data>[<kits_on>] = { start: new Date(), end: null, delta: null} }
 
       # get cycle time when kits_off count changes
       # note: the if stmt evaluates to its last expression
