@@ -1,0 +1,205 @@
+# inputs
+
+# define cache inputs - mqtt topics, how to parse them and put them into cache.
+# see outputs.yaml for cache output as shdr.
+
+# adapter subscribes to mqtt topics from devices.
+# mqtt broker sends data to adapter.
+# adapter parses messages, writes values to cache, which outputs shdr.
+
+# this file is parsed by the adapter driver pipeline/adapter/src/drivers/mqtt-json.js.
+
+# define connect handler
+connect:
+  # subscribe to these topics
+  # can use ${deviceId} in topics
+  subscribe:
+    - topic: l99/ccs/evt/query
+    - topic: l99/ccs/evt/status
+    - topic: l99/ccs/evt/read
+  # publish an empty message to receive the query response
+  publish:
+    - topic: l99/ccs/cmd/query
+      message: '{}'
+
+# define message topic handlers
+handlers:
+  # ----------------------------------------------------------------------------
+  # handle status messages
+  # ----------------------------------------------------------------------------
+  l99/ccs/evt/status:
+    # make '$' the message payload dictionary and add faultKeys for quick
+    # lookups of faults - payload.faults is a dictionary of faults.
+    initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
+    # define lookup function, which returns a value given a part calculation.
+    lookup: '($, part) => eval(part)'
+    # define key-part pairs, where key is mapped to a cache id,
+    # eg 'status-connection' => 'pa1-status_connection',
+    # and part is some javascript calculation code to determine its value.
+    inputs:
+      status_connection: $.connection
+      status_build_no: $.build_no
+      status_program: $.program
+      status_step: $.step
+      status_state: $.state
+      status_utc_time: $.utc_time
+      status_cpu_time: $.cpu_time
+      status_faults: $.faults
+      status_has_no_faults: $.faultKeys.length === 0
+      status_has_faults: $.faultKeys.length > 0
+      status_has_soft_faults: $.faultKeys.some(f => f>='50')
+      status_has_hard_faults: $.faultKeys.some(f => f<'50')
+
+  # ----------------------------------------------------------------------------
+  # handle query messages
+  # ----------------------------------------------------------------------------
+  l99/ccs/evt/query:
+    unsubscribe:
+      - topic: l99/ccs/evt/query
+
+    # $ is a way to do quick lookups on the mqtt payload.
+    # in this case the payload is an array of items like [{ keys, default }, ...].
+    # what we want to do is assign the default value to each item's key,
+    # where the key is keys[0], eg 'printer_ribbon_low'.
+    # $ is a variable declared as `let $ = {}` before this code is executed.
+    #. this complexity could be hidden from the user in the plugin code
+    # eg have keywords for initialize fns to use
+    # initialize: initializeQuery
+    initialize: 'payload.forEach(item => $[item.address] = item)'
+
+    # define a lookup function to use to get item from payload, if there.
+    # the plugin has
+    #   const value = lookup($, part)
+    lookup: 'part => ($[part] || {}).default'
+
+    # define key-part pairs
+    # 'key' defines the cache id, with id = {deviceId}-{key},
+    # eg for key='printer_ribbon_low', id = 'pa1-printer_ribbon_low'.
+    # 'part' defines the part of the payload to get using the above defined
+    # lookup fn, eg for part='%I0.0', the value is obtained with $['%I0.0'].
+    # then calls cache.set(id, value),
+    # eg cache.set('pa1-printer_ribbon_low', 0)
+    # this might trigger SHDR output to be sent to the mtconnect agent,
+    # according to the outputs defined in outputs.yaml.
+    # the & syntax saves this list for later, as the read message handler
+    # uses the same pairs.
+    inputs: &queryInputs
+      # --------------------------------------------------------
+      # process occurrence
+      # --------------------------------------------------------
+
+      # this sets the cache value at 'kl1-procname' to 'KITTING'
+      procname: ='KITTING'
+
+      # flag for current job meta is not empty string
+      # used in outputs.yaml for funcmode
+      # this looks up %Z61.0 in the $ dictionary, which indexes the message addresses
+      # this value is true or false, so both will be written to the cache.
+      # has_current_job: =($['%Z61.0'] || {}).value !== ''
+      has_current_job: "=!!$['%Z61.0']" # converts to object to true, undefined to false
+
+      # get job meta data from kit label
+      # this writes a value to the cache at eg key 'kl1-job_meta'.
+      # this makes <job_meta> be the json object from the message.
+      # if this mqtt message includes address %Z61.0,
+      # this will assign its value to job_meta,
+      # otherwise value will be undefined, and cache.set will ignore it,
+      # leaving any existing value there in the cache.
+      job_meta: '%Z61.0'
+
+      #. how specify printer assoc with this line?
+      # need to specify pr1, pr2, pr3, pr4 etc
+      # setup.yaml could specify? or part of the xml model?
+      # piece_count_at_print_apply: |
+      #   =(<job_meta>.carton_quantity || 0) - (cache.get('pr1-labels_remaining').value || 0)
+
+      # if job_meta is undefined, this expression is undefined, and the cache won't be updated.
+      # aka pctarget
+      carton_quantity: =<job_meta> && <job_meta>.carton_quantity
+
+      # check if eye1 or eye2 counts changed, set flags
+      # $['Z61.5'] gives you the item in the CURRENT message, if any
+      # <kits_on> gives you the current value in the cache
+      # $['Z61.5'].value gives you the part count, 0+
+      kits_on_changed: =$['Z61.5'] !== undefined && (<kits_on> !== $['Z61.5'].value)
+      kits_off_changed: =$['Z61.6'] !== undefined && (<kits_off> !== $['Z61.6'].value)
+
+      # count of kits that have crossed eye1 on conveyer
+      # note: if this address is NOT in the current message, the value is undefined,
+      # so the cache value is NOT updated.
+      kits_on: '%Z61.5'
+
+      # count of kits that have crossed eye2 on conveyer
+      kits_off: '%Z61.6'
+
+      # # used in outputs yaml
+      # first_eye_broken: =(<kits_on> > 0)
+
+      #. instead of having a separate keyvalues dict,
+      #  use a cache value for a dict? eg <kit_data>[<kits_on>] = ... ?
+
+      # calculate cycle time for kit to go from eye1 to eye2
+
+      # don't care about the cache key here, just want to assign something to keyvalues dict
+      update_cycle_time: |
+        =if (<kits_on_changed>) { keyvalues[<kits_on>] = { start: new Date(), end: null, delta: null} }
+
+      # get cycle time when kits_off count changes
+      # note: the if stmt evaluates to its last expression
+      cycle_time: |
+        =if (<kits_off_changed>) {
+          let koff = keyvalues[<kits_off>] || {};
+          koff.end = new Date();
+          koff.delta = koff.end - koff.start;
+        }
+
+      # calculate average cycle time for current job
+      cycle_time_avg: |
+        =Object.values(keyvalues).length>0 ? (Object.values(keyvalues).filter(value=>value.delta>0).reduce((a,b)=>a+b.delta,0) / Object.values(keyvalues).length) : 'UNAVAILABLE'
+
+      cycle_times: |
+        =Object.entries(keyvalues).map(([key, value]) => `${key}=${value.delta}`).join(' ')
+
+      # pieces_in_assembly: =<kits_on> - <kits_off> # kits on assy line
+      # pieces_completed: =<kits_off> # kits finished
+      # pieces_began: =<kits_on> # kits work began
+
+      # current job done, pieces remaining reached zero
+      # need explicit true here, so undefined -> false?
+      job_complete: '%Z61.3'
+
+      # # compare cache to incoming data
+      # job_changed: =<has_current_job> && (<job_current> !== <job_meta>.kit_number)
+
+      # reset_job_complete: =if (<job_changed>) { }
+
+      # reset_key_values: =if (<job_changed>) { keyvalues = {} }
+
+      # # kit assembly part number, can be empty string
+      # job_current: =<job_meta>.kit_number
+
+      # # assign new uuid's and time on job change
+      # part_uuid: '=<job_changed> ? uuid() : <part_uuid>'
+      # process_uuid: '=<job_changed> ? uuid() : <process_uuid>'
+      # job_start: '=<job_changed> ? new Date().toISOString() : <job_start>'
+
+      # salesord: =<job_meta>.sales_order_number
+
+      # # #. data coming from skid label, ChrisE needs to define address
+      # # purchord: =($['%Z61.x'] || {}).purchase_order_number
+
+      # --------------------------------------------------------
+      # part occurrences
+      # --------------------------------------------------------
+
+      date_code: =<job_meta> && <job_meta>.assembled_date
+
+  # ----------------------------------------------------------------------------
+  # handle read messages
+  # ----------------------------------------------------------------------------
+  l99/ccs/evt/read:
+    # make $ a dictionary keyed on the item addresses
+    initialize: 'payload.forEach(item => $[item.address] = item)'
+    lookup: '($, part) => ($[part] || {}).value'
+    # reuse the query input list here with *, as the key-part pairs are the same
+    inputs: *queryInputs
