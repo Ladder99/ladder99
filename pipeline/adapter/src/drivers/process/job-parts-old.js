@@ -26,6 +26,9 @@ export class AdapterDriver {
 
         setCache('procname', 'KITTING')
 
+        // if ($['%Z61.0']) {
+        // }
+
         // get job meta data from kit label
         const jobMeta = ($['%Z61.0'] || {}).value || {}
 

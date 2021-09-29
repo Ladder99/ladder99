@@ -68,12 +68,9 @@ handlers:
     initialize: 'payload.forEach(item => $[item.address] = item)'
 
     # define a lookup function to use to get item from payload, if there.
-    # the plugin has -
-    #   const item = lookup($, part)
+    # the plugin has
+    #   const value = lookup($, part)
     lookup: 'part => ($[part] || {}).default'
-    #. or do this to define arbitrary fns to use
-    # functions:
-    #   lookup: ...
 
     # define key-part pairs
     # 'key' defines the cache id, with id = {deviceId}-{key},
@@ -203,7 +200,6 @@ handlers:
   l99/ccs/evt/read:
     # make $ a dictionary keyed on the item addresses
     initialize: 'payload.forEach(item => $[item.address] = item)'
-    # lookup: '($, part) => ({ value: ($[part] || {}).value })'
     lookup: '($, part) => ($[part] || {}).value'
     # reuse the query input list here with *, as the key-part pairs are the same
     inputs: *queryInputs
