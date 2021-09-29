@@ -117,7 +117,7 @@ handlers:
       # need to specify pr1, pr2, pr3, pr4 etc
       # setup.yaml could specify? or part of the xml model?
       # piece_count_at_print_apply: |
-      #   =(<job_meta>.carton_quantity || 0) - (cache.get('pr1-labels_remaining').value || 0)
+      #   =(<job_meta> || {}).carton_quantity - cache.get('pr1-labels_remaining')
 
       # get value for pctarget
       # <foo> is a cache lookup, eg cache.get('kl1-foo')
@@ -129,8 +129,10 @@ handlers:
       # $['Z61.5'] gives you the item in the CURRENT message, if any
       # <kits_on> gives you the current value in the cache
       # $['Z61.5'].value gives you the part count, 0+
-      kits_on_changed: =$['Z61.5'] !== undefined && (<kits_on> !== $['Z61.5'].value)
-      kits_off_changed: =$['Z61.6'] !== undefined && (<kits_off> !== $['Z61.6'].value)
+      # kits_on_changed: =$['Z61.5'] !== undefined && (<kits_on> !== $['Z61.5'].value)
+      # kits_off_changed: =$['Z61.6'] !== undefined && (<kits_off> !== $['Z61.6'].value)
+      kits_on_changed: =msg('Z61.5') !== undefined && (<kits_on> !== msg('Z61.5'))
+      kits_off_changed: =msg('Z61.6') !== undefined && (<kits_off> !== msg('Z61.6'))
 
       # count of kits that have crossed eye1 on conveyer
       # note: if this address is NOT in the current message, the value is undefined,
