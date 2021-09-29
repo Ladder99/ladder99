@@ -98,8 +98,7 @@ handlers:
       # has_current_job: =($['%Z61.0'] || {}).value !== ''
 
       # get job meta data from kit label
-      # if this message includes address %Z61.0, this will assign its value
-      # to
+      # if this message includes address %Z61.0, this will assign its value to job_meta
       # this writes the calculated value to the cache at eg key 'kl1-job_meta'
       #. but might be .default - need to use `lookup`
       # job_meta: =(($['%Z61.0'] || {}).value) || {}
@@ -108,24 +107,19 @@ handlers:
 
       #. how specify printer assoc with this line? don't hardcode it like this.
       #. setup.yaml could specify? or part of the xml model?
-      #. did he mean .carton_quantity? yes i think so
       # piece_count_at_print_apply: |
-      #   =(<job_meta>.kit_count || 0) - (cache.get('pr1-labels_remaining').value || 0)
-      # carton_quantity: =<job_meta> && <job_meta>.value.carton_quantity
-      # carton_quantity: =<job_meta> && <job_meta>.value
+      #   =(<job_meta>.carton_quantity || 0) - (cache.get('pr1-labels_remaining').value || 0)
       carton_quantity: =<job_meta> && <job_meta>.carton_quantity
 
-      # # check if eye1 or eye2 counts changed, set flags
-      # # kits_on_changed: =$['Z61.5'] !== undefined && (<kits_on> !== $['Z61.5'])
-      # # kits_off_changed: =$['Z61.6'] !== undefined && (<kits_off> !== $['Z61.6'])
-      # kits_on_changed: =<kits_on> !== $['Z61.5']
-      # kits_off_changed: =<kits_off> !== $['Z61.6']
+      # check if eye1 or eye2 counts changed, set flags
+      kits_on_changed: =<kits_on> !== $['Z61.5']
+      kits_off_changed: =<kits_off> !== $['Z61.6']
 
-      # # count of kits that have crossed eye1 on conveyer
-      # kits_on: '%Z61.5'
+      # count of kits that have crossed eye1 on conveyer
+      kits_on: '%Z61.5'
 
-      # # count of kits that have crossed eye2 on conveyer
-      # kits_off: '%Z61.6'
+      # count of kits that have crossed eye2 on conveyer
+      kits_off: '%Z61.6'
 
       # # used in outputs yaml
       # first_eye_broken: =(<kits_on> > 0)
