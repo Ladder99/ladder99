@@ -98,7 +98,8 @@ handlers:
       # used in outputs.yaml for funcmode
       # this looks up %Z61.0 in the $ dictionary, which indexes the message addresses
       # this value is true or false, so both will be written to the cache.
-      has_current_job: =($['%Z61.0'] || {}).value !== ''
+      # has_current_job: =($['%Z61.0'] || {}).value !== ''
+      has_current_job: "=!!$['%Z61.0']" # converts to object to true, undefined to false
 
       # get job meta data from kit label
       # this writes a value to the cache at eg key 'kl1-job_meta'.
@@ -110,8 +111,8 @@ handlers:
       job_meta: '%Z61.0'
 
       #. how specify printer assoc with this line?
-      #. need to specify pr1, pr2, pr3, pr4 etc
-      #. setup.yaml could specify? or part of the xml model?
+      # need to specify pr1, pr2, pr3, pr4 etc
+      # setup.yaml could specify? or part of the xml model?
       # piece_count_at_print_apply: |
       #   =(<job_meta>.carton_quantity || 0) - (cache.get('pr1-labels_remaining').value || 0)
 
