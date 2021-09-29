@@ -70,8 +70,6 @@ handlers:
     # define a lookup function to use to get item from payload, if there.
     # the plugin has -
     #   const item = lookup($, part)
-    #. define this in code as `lookupDefault(part)`, use below?
-    # lookup: '($, part) => ({ value: ($[part] || {}).default })'
     lookup: 'part => ($[part] || {}).default'
     #. or do this to define arbitrary fns to use
     # functions:
@@ -82,20 +80,27 @@ handlers:
     # eg for key='printer_ribbon_low', id = 'pa1-printer_ribbon_low'.
     # 'part' defines the part of the payload to get using the above defined
     # lookup fn, eg for part='%I0.0', the value is obtained with $['%I0.0'].
-    # then it sets item = { value }, then calls cache.set(id, item),
-    # eg cache.set('pa1-printer_ribbon_low', { value: 0 })
+    # then calls cache.set(id, value),
+    # eg cache.set('pa1-printer_ribbon_low', 0)
     # this might trigger SHDR output to be sent to the mtconnect agent,
     # according to the outputs defined in outputs.yaml.
     # the & syntax saves this list for later, as the read message handler
     # uses the same pairs.
     inputs: &queryInputs
-      #
+      # --------------------------------------------------------
+      # controller
+      # --------------------------------------------------------
+
+      # --------------------------------------------------------
+      # process occurrence
+      # --------------------------------------------------------
       # this sets the cache value at 'kl1-procname' to { value: 'KITTING' }
       procname: ='KITTING'
 
-      # # current job meta is not empty string
-      # # this looks up %Z61.0 in the $ dictionary, which indexes the message addresses
-      # has_current_job: =($['%Z61.0'] || {}).value !== ''
+      # flag for current job meta is not empty string
+      # used in outputs.yaml for funcmode
+      # this looks up %Z61.0 in the $ dictionary, which indexes the message addresses
+      has_current_job: =($['%Z61.0'] || {}).value !== ''
 
       # get job meta data from kit label
       # if this message includes address %Z61.0, this will assign its value to job_meta
@@ -111,8 +116,8 @@ handlers:
       carton_quantity: =<job_meta> && <job_meta>.carton_quantity
 
       # check if eye1 or eye2 counts changed, set flags
-      kits_on_changed: =<kits_on> !== $['Z61.5']
-      kits_off_changed: =<kits_off> !== $['Z61.6']
+      kits_on_changed: =<kits_on> !== ($['Z61.5'] || {}).value
+      kits_off_changed: =<kits_off> !== ($['Z61.6'] || {}).value
 
       # count of kits that have crossed eye1 on conveyer
       kits_on: '%Z61.5'
@@ -147,8 +152,8 @@ handlers:
       # pieces_completed: =<kits_off> # kits finished
       # pieces_began: =<kits_on> # kits work began
 
-      # # current job done, pieces remaining reached zero
-      # job_complete: '%Z61.3'
+      # current job done, pieces remaining reached zero
+      job_complete: '%Z61.3'
 
       # # compare cache to incoming data
       # job_changed: =<has_current_job> && (<job_current> !== <job_meta>.kit_number)
@@ -168,6 +173,9 @@ handlers:
       # # #. data coming from skid label, ChrisE needs to define address
       # # purchord: =($['%Z61.x'] || {}).purchase_order_number
 
+      # --------------------------------------------------------
+      # part occurrences
+      # --------------------------------------------------------
       date_code: =<job_meta> && <job_meta>.assembled_date
 
   # ----------------------------------------------------------------------------

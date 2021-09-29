@@ -23,10 +23,12 @@ outputs:
     value: types.AVAILABILITY[<status_connection>]
 
   - key: func
+    # kits_on represents number of pieces started for a job
+    #. iron this out
     value: |
-      <has_current_job> && <pieces_began> === 0 ? 'SETUP' : 
-      <has_current_job> && <pieces_began> > 0 ? 'PRODUCTION' :
-      <has_current_job> && <job_done> ? 'TEARDOWN' :
+      <has_current_job> && <job_complete> ? 'TEARDOWN' :
+      <has_current_job> && !<kits_on> ? 'SETUP' : 
+      <has_current_job> && <kits_on> > 0 ? 'PRODUCTION' :
       'UNAVAILABLE'
 
   # ------------------------------------------------------------------
