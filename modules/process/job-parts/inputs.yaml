@@ -70,8 +70,8 @@ handlers:
     # the plugin has -
     #   const item = lookup($, part)
     #. define this in code as `lookupDefault(part)`, use below?
-    # lookup: '($, part) => ({ value: ($[part] || {}).default })'
-    lookup: 'part => ($[part] || {}).default'
+    lookup: '($, part) => ({ value: ($[part] || {}).default })'
+    # lookup: 'part => ($[part] || {}).default'
     #. or do this to define arbitrary fns to use
     # functions:
     #   lookup: ...
@@ -88,9 +88,7 @@ handlers:
     # the & syntax saves this list for later, as the read message handler
     # uses the same pairs.
     inputs: &queryInputs
-      procname: 'KITTING'
-
-      kit_on: lookup('%Z61.5')
+      procname: ='KITTING'
 
       # # get job meta data from kit label
       # job_meta: =(($['%Z61.0'] || {}).value) || {}
