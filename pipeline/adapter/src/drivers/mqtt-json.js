@@ -116,6 +116,7 @@ export class AdapterDriver {
               const item = lookup($, part)
               console.log('part,item', part, item)
               // if we have the part in the payload, add it to the cache
+              //. why do we have a guard here for undefined? what if need to reset a cache value?
               if (item && item.value !== undefined) {
                 console.log(`MQTT part '${part}' in payload - set ${cacheId}`)
                 // item.receivedTime = receivedTime
