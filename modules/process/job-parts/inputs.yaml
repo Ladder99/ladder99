@@ -72,6 +72,13 @@ handlers:
     #   const value = lookup($, part)
     lookup: 'part => ($[part] || {}).default'
 
+    # define any static one-time cache values to set.
+    # this works because l99/ccs/evt/query just gets sent on request on
+    # adapter startup.
+    static:
+      # this sets the cache value at eg 'kl1-procname' to 'KITTING'
+      procname: KITTING
+
     # define key-part pairs
     # 'key' defines the cache id, with id = {deviceId}-{key},
     # eg for key='printer_ribbon_low', id = 'pa1-printer_ribbon_low'.
@@ -87,9 +94,6 @@ handlers:
       # --------------------------------------------------------
       # process occurrence
       # --------------------------------------------------------
-
-      # this sets the cache value at 'kl1-procname' to 'KITTING'
-      procname: ='KITTING'
 
       # flag for current job meta is not empty string
       # used in outputs.yaml for funcmode
