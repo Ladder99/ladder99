@@ -119,9 +119,11 @@ handlers:
       # piece_count_at_print_apply: |
       #   =(<job_meta>.carton_quantity || 0) - (cache.get('pr1-labels_remaining').value || 0)
 
+      # get value for pctarget
+      # <foo> is a cache lookup, eg cache.get('kl1-foo')
       # if job_meta is undefined, this expression is undefined, and the cache won't be updated.
-      # aka pctarget
-      carton_quantity: =<job_meta> && <job_meta>.carton_quantity
+      # carton_quantity: =<job_meta> && <job_meta>.carton_quantity
+      carton_quantity: =(<job_meta> || {}).carton_quantity
 
       # check if eye1 or eye2 counts changed, set flags
       # $['Z61.5'] gives you the item in the CURRENT message, if any
