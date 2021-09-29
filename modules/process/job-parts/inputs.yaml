@@ -179,10 +179,12 @@ handlers:
           koff.delta = koff.end - koff.start;
         }
 
-      # calculate average cycle time for current job
+      # calculate average cycle time for current job.
+      # the reference to <kits_off> forces a recalc when that changes.
       # note: dividing by objs.length gives NaN if it's zero, which is what we want
       cycle_time_avg: |
         ={
+          const ko = <kits_off>;
           const objs = Object.values(kit_data);
           const avg = objs.filter(obj=>obj.delta>0)
             .reduce((a,b)=>a+b.delta,0) / objs.length;
