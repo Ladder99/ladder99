@@ -90,6 +90,8 @@ handlers:
       # --------------------------------------------------------
       # controller
       # --------------------------------------------------------
+      # status has avail, clktime, uptime, ctlprog, power, execution,
+      # buildno, step, waitstate, message
 
       # --------------------------------------------------------
       # process occurrence
@@ -153,10 +155,13 @@ handlers:
       # pieces_began: =<kits_on> # kits work began
 
       # current job done, pieces remaining reached zero
+      # need explicit true here, so undefined -> false?
       job_complete: '%Z61.3'
 
       # # compare cache to incoming data
       # job_changed: =<has_current_job> && (<job_current> !== <job_meta>.kit_number)
+
+      # reset_job_complete: =if (<job_changed>) { }
 
       # reset_key_values: =if (<job_changed>) { keyvalues = {} }
 

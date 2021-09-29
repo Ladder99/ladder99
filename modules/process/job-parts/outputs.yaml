@@ -59,6 +59,17 @@ outputs:
   - key: fw
     value: <status_build_no>
 
+  - key: cond
+    category: CONDITION
+    value: |
+      <status_has_hard_faults> ? 'FAULT' : <status_has_soft_faults> ? 'WARNING' : 'NORMAL'
+
+  - key: msg
+    type: MESSAGE
+    #. escape any pipes in value
+    value: "Object.values(<status_faults>).map(fault => fault.description).join(', ')"
+    nativeCode: NativeCode #. ?
+
   # ------------------------------------------------------------------
   # process
   # ------------------------------------------------------------------
@@ -74,17 +85,6 @@ outputs:
 
   - key: procname
     value: <procname>
-
-  - key: cond
-    category: CONDITION
-    value: |
-      <status_has_hard_faults> ? 'FAULT' : <status_has_soft_faults> ? 'WARNING' : 'NORMAL'
-
-  - key: msg
-    type: MESSAGE
-    #. escape any pipes in value
-    value: "Object.values(<status_faults>).map(fault => fault.description).join(', ')"
-    nativeCode: NativeCode #. ?
 
   - key: start
     value: <job_start>
