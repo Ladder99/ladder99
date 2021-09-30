@@ -136,25 +136,35 @@ export class AdapterDriver {
             }
           } else {
             // process = iterate-message-contents
-            //.. iterate over MESSAGE array,
+            // iterate over message array,
             // lookup what fns are associated with each address,
             // evaluate each once, and put the results in the cache.
             //. will need to recurse to handle cascade of updates. limit to some depth.
-            for (const [key, obj] of Object.entries(augmentedInputs)) {
-              const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
-              // code is some code source string, js is that translated to javascript,
-              // and refs is sthing like { '%Z61.0': Set(1) { 'has_current_job' } }
-              // fn is a function that needs to be evaluated like fn(cache, $).
-              const { code, js, refs } = obj
-              //.. can we precompile the js elsewhere?
-              const fn = eval(js)
-              const value = fn(cache, $)
-              if (value !== undefined) {
-                // console.log(`MQTT part '${part}' in payload - set ${cacheId}`)
-                // item.receivedTime = receivedTime
-                cache.set(cacheId, value) // save to the cache - may send shdr to tcp
+            // for (const [key, obj] of Object.entries(augmentedInputs)) {
+            const keys = new Set()
+            for (const item of payload) {
+              const { addr } = item
+              const set = maps.addr[addr]
+              if (set) {
+                for (let key of set) keys.add(key)
               }
             }
+            // now have a set of keys for eqns we need to execute
+            console.log(keys)
+
+            // // code is some code source string, js is that translated to javascript,
+            // // and refs is sthing like { '%Z61.0': Set(1) { 'has_current_job' } }
+            // // fn is a function that needs to be evaluated like fn(cache, $).
+            // // const { code, js, refs } = obj
+            // //.. precompile the js elsewhere - just need to pass in $ etc
+            // const fn = eval(js)
+            // const value = fn(cache, $)
+            // if (value !== undefined) {
+            //   // console.log(`MQTT part '${part}' in payload - set ${cacheId}`)
+            //   // item.receivedTime = receivedTime
+            // // const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
+            // cache.set(cacheId, value) // save to the cache - may send shdr to tcp
+            // }
           }
 
           // console.log('cache', cache._map) // print contents of cache
