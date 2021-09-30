@@ -46,8 +46,8 @@ export function precompile(code, macros) {
 
 export function compile(code, prefix) {
   const macros = getMacros(prefix)
-  const res = precompile(code, macros)
-  return res
+  const { js, refs } = precompile(code, macros)
+  return { js, refs }
 }
 
 export function compileInputs(inputs, prefix) {
@@ -59,19 +59,26 @@ export function compileInputs(inputs, prefix) {
     console.log(js)
     console.log(refs)
     console.log()
-    addToMaps(maps, refs)
+    addToMaps(maps, key, refs)
   }
   return maps
 }
 
-export function addToMaps(maps, refs) {
+// maps is eg {}
+// refs is eg { addr: Set(0) {}, cache: Set(1) { 'pr1-job_meta' } }
+// maps is eg { addr: {foo: Set(1) { '%Z61.0' }}, cache: {bar: Set(1) { 'pr1-job_meta' }} }
+export function addToMaps(maps, key, refs) {
+  // macroKey is addr or cache
   for (let macroKey of Object.keys(refs)) {
-    const refset = refs[macroKey] // set{'%Z61.0'}
+    const refset = refs[macroKey] // eg set{'%Z61.0'}
     for (let ref of refset) {
-      if (maps[macroKey]) {
-        maps[macroKey].add(ref)
+      if (!maps[macroKey]) {
+        maps[macroKey] = {}
+      }
+      if (maps[macroKey][key]) {
+        maps[macroKey][key].add(ref)
       } else {
-        maps[macroKey] = new Set([ref])
+        maps[macroKey][key] = new Set([ref])
       }
     }
   }
