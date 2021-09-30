@@ -13,11 +13,12 @@ const getMacros = prefix => ({
   },
 })
 
-// find all references in the given code
-// eg precompile(`msg('foo') + <bar>`, macros)
+// find all references in the given code - return transformed code and refs
+// eg
+//   precompile(`=msg('foo') + <bar>`, macros)
 // returns {
-//   code: `$['foo'] + <bar>`,
-//   refs: new Set(['foo']),
+//   js: "(cache, $) => ($['foo'] || {}).default + cache.get('pr1-bar')",
+//   refs: { addr: Set(1) { '%Z61.0' }, cache: Set(1) { 'pr1-bar' } }
 // }
 export function precompile(code, macros) {
   let js = code.slice(1)
@@ -27,7 +28,7 @@ export function precompile(code, macros) {
     macro.key = macroName
 
     // note: .*? is a non-greedy match, so doesn't eat other occurrences also.
-    // note: replaceAll needs node15
+    // note: replaceAll needs node15 - use /g flag for regexp here
     js = js.replace(macro.syntax, macro.transform)
 
     // get list of message addrs or cache keys the code references.
@@ -39,12 +40,14 @@ export function precompile(code, macros) {
       refs[macroName].add(key)
     }
   }
+  js = '(cache, $) => ' + js
   return { js, refs }
 }
 
 export function compile(code, prefix) {
   const macros = getMacros(prefix)
   const { js, refs } = precompile(code, macros)
+  console.log({ js, refs })
   return { js, refs }
 }
 
