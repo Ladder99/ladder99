@@ -75,10 +75,10 @@ export function addToMaps(maps, key, refs) {
       if (!maps[macroKey]) {
         maps[macroKey] = {}
       }
-      if (maps[macroKey][key]) {
-        maps[macroKey][key].add(ref)
+      if (maps[macroKey][ref]) {
+        maps[macroKey][ref].add(key)
       } else {
-        maps[macroKey][key] = new Set([ref])
+        maps[macroKey][ref] = new Set([key])
       }
     }
   }
