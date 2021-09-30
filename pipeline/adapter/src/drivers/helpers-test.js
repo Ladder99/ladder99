@@ -12,14 +12,15 @@ if (0) {
 
 {
   const inputs = {
-    has_current_job: "=!!msg('%Z61.0')",
+    // has_current_job: "=!!msg('%Z61.0')",
+    has_current_job: "=!!$['%Z61.0']",
     carton_quantity: '=(<job_meta> || {}).carton_quantity',
   }
   const { augmentedInputs, maps } = compileInputs(inputs, prefix)
   console.log(augmentedInputs)
   console.log(maps)
 
-  const payload = [{ addr: '%Z61.0', default: 1, value: 2 }]
+  const payload = [{ addr: '%Z61.0', value: 2 }]
 
   const keys = new Set()
   for (const item of payload) {
@@ -37,6 +38,7 @@ if (0) {
     '%Z61.0': { address: '%Z61.0', default: 1, value: 2 },
   }
 
+  // iterate over set of keys for eqns
   for (let key of keys) {
     const aug = augmentedInputs[key]
     aug.js2 = '(cache, $) => ' + aug.js
@@ -45,5 +47,7 @@ if (0) {
     console.log(aug.fn.toString())
     const value = aug.fn(cache, $)
     console.log(value)
+    cache[key] = value
   }
+  console.log(cache)
 }
