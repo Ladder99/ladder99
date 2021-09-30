@@ -1,4 +1,4 @@
-import { compile, getk } from './helpers.js'
+import { compile, compileInputs } from './helpers.js'
 
 const prefix = 'pr1-'
 
@@ -15,16 +15,6 @@ if (0) {
     has_current_job: "=!!msg('%Z61.0')",
     carton_quantity: '=(<job_meta> || {}).carton_quantity',
   }
-  const k = {}
-  for (let [key, code] of Object.entries(inputs)) {
-    const { js, refs } = compile(code, prefix)
-    console.log(key)
-    console.log(code)
-    console.log(js)
-    console.log(refs)
-    console.log()
-
-    getk(refs, k)
-  }
+  const k = compileInputs(inputs, prefix)
   console.log(k)
 }

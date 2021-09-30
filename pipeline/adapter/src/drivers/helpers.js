@@ -50,6 +50,20 @@ export function compile(code, prefix) {
   return res
 }
 
+export function compileInputs(inputs, prefix) {
+  const k = {}
+  for (let [key, code] of Object.entries(inputs)) {
+    const { js, refs } = compile(code, prefix)
+    console.log(key)
+    console.log(code)
+    console.log(js)
+    console.log(refs)
+    console.log()
+    getk(refs, k)
+  }
+  return k
+}
+
 export function getk(refs, k) {
   for (let macroKey of Object.keys(refs)) {
     const refset = refs[macroKey] // set{'%Z61.0'}
