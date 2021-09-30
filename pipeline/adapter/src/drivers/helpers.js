@@ -1,10 +1,8 @@
 const getMacros = prefix => ({
-  // replace all occurrences of msg('foo') with $['foo'].
+  // replace all occurrences of msg('foo') with ($['foo'] || {}).default or .value.
   addr: {
     syntax: /msg\('(.*?)'\)/gm, // eg msg('foo')
-    // transform: `$['$1']`, // $1 is the matched substring
-    // transform: `part => ($[part] || {}).default`,
-    transform: `($['$1'] || {}).default`,
+    transform: `($['$1'] || {}).default`, // $1 is the matched substring //...
     extract: /\$\['(.*?)'\]/gm, // eg $['foo']
   },
   // replace all occurrences of <foo> with cache.get('pr1-foo').
