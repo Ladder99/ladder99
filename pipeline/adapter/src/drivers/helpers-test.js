@@ -1,4 +1,4 @@
-import { compile, compileInputs } from './helpers.js'
+import { compile, compileInputs, getEquationKeys } from './helpers.js'
 
 const prefix = 'pr1-'
 
@@ -20,23 +20,16 @@ if (0) {
   // console.log(augmentedInputs)
   // console.log(maps)
 
-  const payload = [{ addr: '%Z61.0', value: { carton_quantity: 5 } }]
+  const payload = [{ address: '%Z61.0', value: { carton_quantity: 5 } }]
 
-  const keys = new Set()
-  for (const item of payload) {
-    const { addr } = item
-    const set = maps.addr[addr]
-    if (set) {
-      for (let key of set) keys.add(key)
-    }
-  }
+  // get eqn keys
+  const keys = getEquationKeys(payload, maps)
   // now have a set of keys for eqns we need to execute
-  // console.log('keys', keys)
+  console.log('keys', keys)
 
   const cache = {}
-  const $ = {
-    '%Z61.0': { address: '%Z61.0', default: '', value: { carton_quantity: 4 } },
-  }
+  const $ = {}
+  payload.forEach(item => ($[item.address] = item))
 
   // iterate over set of keys for eqns
   for (let key of keys) {

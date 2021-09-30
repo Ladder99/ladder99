@@ -86,3 +86,16 @@ export function addToMaps(maps, key, refs) {
     }
   }
 }
+
+export function getEquationKeys(payload, maps) {
+  const keys = new Set()
+  for (const item of payload) {
+    const { addr } = item
+    const set = maps.addr[addr]
+    if (set) {
+      for (let key of set) keys.add(key)
+    }
+    //. do same for maps.cache ? uhh
+  }
+  return keys
+}
