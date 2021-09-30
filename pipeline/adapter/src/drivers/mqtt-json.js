@@ -4,12 +4,10 @@
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
-import { getReferences } from './helpers.js'
+import { compile } from './helpers.js'
 
 // let cycleStart
-let keyvalues = {} // keyvalue store for yaml code to use - must use 'let' so yaml code can reset it
-
-//. keep regexps at top-level to save time
+let keyvalues = {} // keyvalue store for yaml code to use - use 'let' so yaml code can reset it
 
 export class AdapterDriver {
   // initialize the client plugin
@@ -21,20 +19,8 @@ export class AdapterDriver {
     console.log('Initializing mqtt-json driver for', { deviceId })
     const url = `mqtt://${host}:${port}`
 
-    const regexsMsgs = {
-      find1: /msg\('(.*?)'\)/gm, // eg msg('foo')
-      subst: `$['$1']`, // $1 is the matched substring
-      find2: /\$\['(.*?)'\]/gm, // eg $['foo']
-    }
-
-    const regexsCache = {
-      find1: /(<(.*?)>)/gm, // eg <foo>
-      subst: `cache.get('${deviceId}-$2')`, // $2 is the matched substring
-      find2: /cache\.get\('(.*?)'\)/gm, // eg cache.get('foo')
-    }
-
     //. parse input handler code, get dependency graph, compile fns
-    const foo = parseInputs({ inputs, regexsMsgs, regexsCache })
+    const foo = compileInputs(inputs)
 
     // connect to mqtt broker/server
     console.log(`MQTT connecting to broker on ${url}...`)
@@ -196,14 +182,15 @@ export class AdapterDriver {
   }
 }
 
-function parseInputs({ inputs, regexsMsgs, regexsCache }) {
+function compileInputs(inputs, deviceId) {
+  const prefix = deviceId + '-'
   for (let handler of inputs.handlers) {
     const keys = Object.keys(handler.inputs)
     for (let key of keys) {
       const part = handler.inputs[key]
-      const code1 = part.slice(1)
-      const { refs: refs1, code: code2 } = getReferences(code1, regexsMsgs)
-      const { refs: refs2, code: code3 } = getReferences(code2, regexsCache)
+      const code = part.slice(1)
+      const { js, refs } = compile(code, prefix)
+      const fn1 = eval(js)
     }
   }
 }
