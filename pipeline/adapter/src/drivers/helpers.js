@@ -51,7 +51,7 @@ export function compile(code, prefix) {
 }
 
 export function compileInputs(inputs, prefix) {
-  const k = {}
+  const maps = {}
   for (let [key, code] of Object.entries(inputs)) {
     const { js, refs } = compile(code, prefix)
     console.log(key)
@@ -59,19 +59,19 @@ export function compileInputs(inputs, prefix) {
     console.log(js)
     console.log(refs)
     console.log()
-    getk(refs, k)
+    addToMaps(maps, refs)
   }
-  return k
+  return maps
 }
 
-export function getk(refs, k) {
+export function addToMaps(maps, refs) {
   for (let macroKey of Object.keys(refs)) {
     const refset = refs[macroKey] // set{'%Z61.0'}
     for (let ref of refset) {
-      if (k[macroKey]) {
-        k[macroKey].add(ref)
+      if (maps[macroKey]) {
+        maps[macroKey].add(ref)
       } else {
-        k[macroKey] = new Set([ref])
+        maps[macroKey] = new Set([ref])
       }
     }
   }
