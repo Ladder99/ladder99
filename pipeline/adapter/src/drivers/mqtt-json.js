@@ -73,6 +73,7 @@ export class AdapterDriver {
       const payload = JSON.parse(message)
 
       // iterate over message handlers - handlerEntries is an array of [topic, handler]
+      // eg ['l99/ccs/evt/query', { unsubscribe, initialize, definitions, inputs, ... }]
       const handlerEntries = Object.entries(inputs.handlers) || []
       let msgHandled = false
       handlerEntries.forEach(([topic, handler]) => {
@@ -110,37 +111,39 @@ export class AdapterDriver {
           // iterate over inputs - an array of [key, part], eg ['fault_count', '%M55.2'].
           // if part is in payload, add it to the cache.
           console.log(`MQTT iterate over inputs`)
-          const inputs = Object.entries(handler.inputs || {})
-          for (const [key, part] of inputs) {
+          // const inputs = Object.entries(handler.inputs || {})
+          // for (const [key, part] of inputs) {
+          // for (const [key, part] of Object.entries(handler.inputs || {})) {
+          for (const [key, obj] of Object.entries(augmentedInputs)) {
             const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
-            // if part is an object, assume it's { code, value },
-            // where code is some js code string,
-            // and value is a function that needs to be evaluated like value(cache, $).
-            if (typeof part === 'object') {
-              const { code, value: valueFn } = part
-              console.log(`key,code`, key, code)
-              const value = valueFn(cache, $, keyvalues) // may use `types` dict also
-              console.log(`Got ${value} - set ${cacheId}...`)
-              // cache.set(cacheId, { value }) // save value to cache - may send shdr to tcp
-              cache.set(cacheId, value) // save value to cache - may send shdr to tcp
-            } else {
-              // // use the lookup function to get item from payload, if there
-              // const item = lookup($, part)
-              // console.log('part,item', part, item)
-              // use the lookup function to get value from payload, if there
-              const value = lookup($, part)
-              console.log('part,value', part, value)
-              // if we have the part in the payload, add it to the cache
-              //. why do we have a guard here for undefined? what if need to reset a cache value?
-              //  i guess you'd have to pass item.value = 'UNAVAILABLE' explicitly?
-              // if (item && item.value !== undefined) {
-              if (value !== undefined) {
-                console.log(`MQTT part '${part}' in payload - set ${cacheId}`)
-                // item.receivedTime = receivedTime
-                // cache.set(cacheId, item) // save to the cache - may send shdr to tcp
-                cache.set(cacheId, value) // save to the cache - may send shdr to tcp
-              }
-            }
+            const { code, js, refs } = obj
+            // code is some code source string, js is that translated to javascript,
+            // and refs is __
+            // fn is a function that needs to be evaluated like fn(cache, $).
+            //.. can we precompile the js though elsewhere?
+            const fn = eval(js)
+            const value = fn(cache, $, keyvalues) // may use `types` dict also
+            console.log(`Got ${value} - set ${cacheId}...`)
+            // cache.set(cacheId, { value }) // save value to cache - may send shdr to tcp
+            cache.set(cacheId, value) // save value to cache - may send shdr to tcp
+            // } else {
+            //   // // use the lookup function to get item from payload, if there
+            //   // const item = lookup($, part)
+            //   // console.log('part,item', part, item)
+            //   // use the lookup function to get value from payload, if there
+            //   const value = lookup($, part)
+            //   console.log('part,value', part, value)
+            //   // if we have the part in the payload, add it to the cache
+            //   //. why do we have a guard here for undefined? what if need to reset a cache value?
+            //   //  i guess you'd have to pass item.value = 'UNAVAILABLE' explicitly?
+            //   // if (item && item.value !== undefined) {
+            //   if (value !== undefined) {
+            //     console.log(`MQTT part '${part}' in payload - set ${cacheId}`)
+            //     // item.receivedTime = receivedTime
+            //     // cache.set(cacheId, item) // save to the cache - may send shdr to tcp
+            //     cache.set(cacheId, value) // save to the cache - may send shdr to tcp
+            //   }
+            // }
           }
 
           console.log('cache', cache._map) // print contents of cache
