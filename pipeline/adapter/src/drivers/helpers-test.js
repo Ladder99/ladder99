@@ -18,9 +18,21 @@ if (0) {
   const k = {}
   for (let [key, code] of Object.entries(inputs)) {
     const { js, refs } = compile(code, prefix)
-    console.log(key)
-    console.log(code)
-    console.log(js)
+    // console.log(key)
+    // console.log(code)
+    // console.log(js)
     console.log(refs)
+    for (let macroKey of Object.keys(refs)) {
+      // addr, cache
+      const refset = refs[macroKey] // set{'%Z61.0'}
+      for (let ref of refset) {
+        if (k[macroKey]) {
+          k[macroKey].add(ref)
+        } else {
+          k[macroKey] = new Set([ref])
+        }
+      }
+    }
   }
+  console.log(k)
 }
