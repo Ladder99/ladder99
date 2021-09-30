@@ -51,7 +51,7 @@ export function compile(code, prefix) {
 }
 
 export function compileInputs(inputs, prefix) {
-  const outputs = {}
+  const augmentedInputs = {}
   const maps = {}
   for (let [key, code] of Object.entries(inputs)) {
     const { js, refs } = compile(code, prefix)
@@ -60,10 +60,10 @@ export function compileInputs(inputs, prefix) {
     console.log(js)
     console.log(refs)
     console.log()
-    outputs[key] = { code, js, refs }
+    augmentedInputs[key] = { code, js, refs }
     addToMaps(maps, key, refs)
   }
-  return { outputs, maps }
+  return { augmentedInputs, maps }
 }
 
 // maps is eg {}

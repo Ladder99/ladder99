@@ -26,7 +26,7 @@ export class AdapterDriver {
     //   const keys = [...maps.addr[addr]] // = ['has_current_job']
     // so can know what formulas need to be evaluated for some given addr
     const prefix = deviceId + '-'
-    const { outputs, maps } = compileInputs(inputs, prefix)
+    const { augmentedInputs, maps } = compileInputs(inputs, prefix)
 
     // connect to mqtt broker/server
     console.log(`MQTT connecting to broker on ${url}...`)
