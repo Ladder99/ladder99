@@ -1,3 +1,6 @@
+// helper fns for different drivers
+
+// define macros to be used by input/output yamls
 const getMacros = prefix => ({
   // replace all occurrences of msg('foo') with ($['foo'] || {}).default or .value.
   addr: {
@@ -13,7 +16,8 @@ const getMacros = prefix => ({
   },
 })
 
-// find all references in the given code - return transformed code and refs
+// precompile code and find all references to message contents or cache.
+// returns transformed code and refs.
 // eg
 //   precompile(`=msg('foo') + <bar>`, macros)
 // returns {
