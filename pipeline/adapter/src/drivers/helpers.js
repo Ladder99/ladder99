@@ -2,7 +2,9 @@ const getMacros = prefix => ({
   // replace all occurrences of msg('foo') with $['foo'].
   addr: {
     syntax: /msg\('(.*?)'\)/gm, // eg msg('foo')
-    transform: `$['$1']`, // $1 is the matched substring
+    // transform: `$['$1']`, // $1 is the matched substring
+    // transform: `part => ($[part] || {}).default`,
+    transform: `($['$1'] || {}).default`,
     extract: /\$\['(.*?)'\]/gm, // eg $['foo']
   },
   // replace all occurrences of <foo> with cache.get('pr1-foo').
@@ -46,4 +48,17 @@ export function compile(code, prefix) {
   const macros = getMacros(prefix)
   const res = precompile(code, macros)
   return res
+}
+
+export function getk(refs, k) {
+  for (let macroKey of Object.keys(refs)) {
+    const refset = refs[macroKey] // set{'%Z61.0'}
+    for (let ref of refset) {
+      if (k[macroKey]) {
+        k[macroKey].add(ref)
+      } else {
+        k[macroKey] = new Set([ref])
+      }
+    }
+  }
 }

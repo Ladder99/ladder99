@@ -105,8 +105,8 @@ handlers:
       # this looks up %Z61.0 in the $ dictionary, which indexes the message addresses
       # this value is true or false, so both will be written to the cache.
       # has_current_job: =($['%Z61.0'] || {}).value !== ''
-      # has_current_job: "=!!$['%Z61.0']" # converts object to true, undefined to false
-      has_current_job: "=!!msg('%Z61.0')" # converts object to true, string or undefined to false
+      has_current_job: "=!!$['%Z61.0']" # converts object to true, undefined to false
+      # has_current_job: "=!!msg('%Z61.0')" # converts object to true, string or undefined to false
 
       # get job meta data from kit label
       # this writes a value to the cache at eg key 'kl1-job_meta'.
