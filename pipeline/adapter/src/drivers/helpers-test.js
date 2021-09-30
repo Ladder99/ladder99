@@ -1,7 +1,8 @@
-import { precompile } from './helpers.js'
+import { compile } from './helpers.js'
 
-const str = `msg('foo') + <bar>`
-const { code, refs } = precompile(str)
+const code = `msg('foo') + <bar>`
+const { js, refs } = compile(code, 'pr1')
 
 console.log(code)
+console.log(js)
 console.log(refs)

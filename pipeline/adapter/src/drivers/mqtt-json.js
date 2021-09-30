@@ -20,7 +20,7 @@ export class AdapterDriver {
     const url = `mqtt://${host}:${port}`
 
     //. parse input handler code, get dependency graph, compile fns
-    const foo = compileInputs(inputs)
+    const foo = compileInputs(inputs, deviceId)
 
     // connect to mqtt broker/server
     console.log(`MQTT connecting to broker on ${url}...`)

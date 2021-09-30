@@ -20,21 +20,24 @@ const getMacros = prefix => ({
 //   refs: new Set(['foo']),
 // }
 export function precompile(code, macros) {
-  // note: .*? is a non-greedy match, so doesn't eat other occurrences also.
-  // note: replaceAll needs node15
-  let js = code.replace(macros.syntax, macros.transform)
-  //. better to make user add any braces
-  // if (js.includes('\n')) {
-  //   js = '{\n' + js + '\n}'
-  // }
+  let js = code
+  let refs = {}
+  for (let macroName of Object.keys(macros)) {
+    const macro = macros[macroName]
+    macro.key = macroName
 
-  // get list of message addrs or cache keys the code references.
-  // need to get AFTER transforms, because user could specify this manually also.
-  const refs = new Set()
-  let match
-  while ((match = macros.extract.exec(js)) !== null) {
-    const key = match[1]
-    refs.add(key)
+    // note: .*? is a non-greedy match, so doesn't eat other occurrences also.
+    // note: replaceAll needs node15
+    js = js.replace(macro.syntax, macro.transform)
+
+    // get list of message addrs or cache keys the code references.
+    // need to get AFTER transforms, because user could specify this manually also.
+    refs[macroName] = new Set()
+    let match
+    while ((match = macro.extract.exec(js)) !== null) {
+      const key = match[1]
+      refs[macroName].add(key)
+    }
   }
   return { js, refs }
 }
