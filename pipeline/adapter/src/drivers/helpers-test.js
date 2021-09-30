@@ -15,6 +15,7 @@ if (0) {
     has_current_job: "=!!msg('%Z61.0')",
     carton_quantity: '=(<job_meta> || {}).carton_quantity',
   }
-  const maps = compileInputs(inputs, prefix)
+  const { outputs, maps } = compileInputs(inputs, prefix)
+  console.log(outputs)
   console.log(maps)
 }

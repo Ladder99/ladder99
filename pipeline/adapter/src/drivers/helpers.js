@@ -22,7 +22,7 @@ const getMacros = prefix => ({
 //   refs: new Set(['foo']),
 // }
 export function precompile(code, macros) {
-  let js = code
+  let js = code.slice(1)
   let refs = {}
   for (let macroName of Object.keys(macros)) {
     const macro = macros[macroName]
@@ -51,6 +51,7 @@ export function compile(code, prefix) {
 }
 
 export function compileInputs(inputs, prefix) {
+  const outputs = {}
   const maps = {}
   for (let [key, code] of Object.entries(inputs)) {
     const { js, refs } = compile(code, prefix)
@@ -59,9 +60,10 @@ export function compileInputs(inputs, prefix) {
     console.log(js)
     console.log(refs)
     console.log()
+    outputs[key] = { code, js, refs }
     addToMaps(maps, key, refs)
   }
-  return maps
+  return { outputs, maps }
 }
 
 // maps is eg {}

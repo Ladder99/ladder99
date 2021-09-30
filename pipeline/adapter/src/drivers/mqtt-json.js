@@ -4,7 +4,7 @@
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
-import { compile } from './helpers.js'
+import { compileInputs } from './helpers.js'
 
 // let cycleStart
 let keyvalues = {} // keyvalue store for yaml code to use - use 'let' so yaml code can reset it
@@ -26,7 +26,7 @@ export class AdapterDriver {
     //   const keys = [...maps.addr[addr]] // = ['has_current_job']
     // so can know what formulas need to be evaluated for some given addr
     const prefix = deviceId + '-'
-    const maps = compileInputs(inputs, prefix)
+    const { outputs, maps } = compileInputs(inputs, prefix)
 
     // connect to mqtt broker/server
     console.log(`MQTT connecting to broker on ${url}...`)
@@ -188,15 +188,15 @@ export class AdapterDriver {
   }
 }
 
-function compileInputs(inputs, deviceId) {
-  const prefix = deviceId + '-'
-  for (let handler of inputs.handlers) {
-    const keys = Object.keys(handler.inputs)
-    for (let key of keys) {
-      const part = handler.inputs[key]
-      const code = part.slice(1)
-      const { js, refs } = compile(code, prefix)
-      const fn1 = eval(js)
-    }
-  }
-}
+// function compileInputs(inputs, deviceId) {
+//   const prefix = deviceId + '-'
+//   for (let handler of inputs.handlers) {
+//     const keys = Object.keys(handler.inputs)
+//     for (let key of keys) {
+//       const part = handler.inputs[key]
+//       const code = part.slice(1)
+//       const { js, refs } = compile(code, prefix)
+//       const fn1 = eval(js)
+//     }
+//   }
+// }
