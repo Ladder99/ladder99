@@ -61,7 +61,8 @@ export function compileInputs(inputs, prefix) {
     console.log(js)
     console.log(refs)
     console.log()
-    augmentedInputs[key] = { code, js, refs }
+    const fn = eval(js)
+    augmentedInputs[key] = { code, js, fn, refs }
     addToMaps(maps, key, refs)
   }
   return { augmentedInputs, maps }
@@ -87,15 +88,19 @@ export function addToMaps(maps, key, refs) {
   }
 }
 
+// get equation keys
+// iterate over message array,
+// lookup what fns are associated with each address,
 export function getEquationKeys(payload, maps) {
-  const keys = new Set()
+  const equationKeys = new Set()
   for (const item of payload) {
     const { addr } = item
     const set = maps.addr[addr]
     if (set) {
-      for (let key of set) keys.add(key)
+      for (let key of set) {
+        equationKeys.add(key)
+      }
     }
-    //. do same for maps.cache ? uhh
   }
-  return keys
+  return equationKeys
 }

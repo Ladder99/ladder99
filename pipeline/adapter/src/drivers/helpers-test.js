@@ -22,24 +22,21 @@ if (0) {
 
   const payload = [{ address: '%Z61.0', value: { carton_quantity: 5 } }]
 
-  // get eqn keys
-  const keys = getEquationKeys(payload, maps)
-  // now have a set of keys for eqns we need to execute
-  console.log('keys', keys)
+  // get set of keys for eqns we need to execute
+  const equationKeys = getEquationKeys(payload, maps)
+  console.log('equationKeys', equationKeys)
 
   const cache = {}
   const $ = {}
   payload.forEach(item => ($[item.address] = item))
 
-  // iterate over set of keys for eqns
-  for (let key of keys) {
-    const aug = augmentedInputs[key]
-    aug.fn = eval(aug.js)
-    // console.log(aug)
-    // console.log(aug.fn.toString())
+  // iterate over set of eqnkeys and evaluate each
+  for (let equationKey of equationKeys) {
+    const aug = augmentedInputs[equationKey]
+    // aug.fn = eval(aug.js)
     const value = aug.fn(cache, $)
-    // console.log(value)
-    cache[key] = value
+    cache[equationKey] = value
   }
+
   console.log('cache', cache)
 }
