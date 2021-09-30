@@ -17,8 +17,8 @@ if (0) {
     carton_quantity: '=(<job_meta> || {}).carton_quantity',
   }
   const { augmentedInputs, maps } = compileInputs(inputs, prefix)
-  console.log(augmentedInputs)
-  console.log(maps)
+  // console.log(augmentedInputs)
+  // console.log(maps)
 
   const payload = [{ addr: '%Z61.0', value: { carton_quantity: 5 } }]
 
@@ -31,22 +31,22 @@ if (0) {
     }
   }
   // now have a set of keys for eqns we need to execute
-  console.log(keys)
+  // console.log('keys', keys)
 
   const cache = {}
   const $ = {
-    '%Z61.0': { address: '%Z61.0', default: 1, value: 2 },
+    '%Z61.0': { address: '%Z61.0', default: '', value: { carton_quantity: 4 } },
   }
 
   // iterate over set of keys for eqns
   for (let key of keys) {
     const aug = augmentedInputs[key]
     aug.fn = eval(aug.js)
-    console.log(aug)
-    console.log(aug.fn.toString())
+    // console.log(aug)
+    // console.log(aug.fn.toString())
     const value = aug.fn(cache, $)
-    console.log(value)
+    // console.log(value)
     cache[key] = value
   }
-  console.log(cache)
+  console.log('cache', cache)
 }
