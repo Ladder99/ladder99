@@ -30,10 +30,11 @@ handlers:
   l99/ccs/evt/status:
     # make '$' the message payload dictionary and add faultKeys for quick
     # lookups of faults - payload.faults is a dictionary of faults.
+    # initialize: status_initializer
     initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
     # define lookup function, which returns a value given a part calculation.
     lookup: '($, part) => eval(part)'
-    process: iterate-inputs
+    process: iterate_inputs
     # define key-part pairs, where key is mapped to a cache id,
     # eg 'status-connection' => 'pa1-status_connection',
     # and part is some javascript calculation code to determine its value.
@@ -62,7 +63,7 @@ handlers:
     # the payload is an array of items like [{ address, keys, default, value }, ...].
     # $ is a variable declared as `let $ = {}` before this code is executed.
     #. hide this code from user in plugin code - eg have keywords for fn to use -
-    # initialize: queryInitializer
+    # initialize: query_initializer
     initialize: 'payload.forEach(item => $[item.address] = item)'
 
     # define a lookup function to use to get item from payload, if there.
@@ -73,7 +74,7 @@ handlers:
     # this code would get evaluated in the scope of the calculations
     #. move initialize here etc
     definitions:
-      - let msg = part => ($[part] || {}).default
+      - let msg = ($, part) => ($[part] || {}).default
       - let kit_data = {}
 
     # define any static one-time cache values to set.
@@ -86,7 +87,7 @@ handlers:
       # # initialize a keyvalue store for kit cycle times
       # kit_data: {}
 
-    process: iterate-message-contents
+    process: iterate_message_contents
 
     # define key-code pairs
     # 'key' defines the cache id, with id = {deviceId}-{key},
@@ -107,9 +108,7 @@ handlers:
       # used in outputs.yaml for funcmode
       # this looks up %Z61.0 in the $ dictionary, which indexes the message addresses
       # this value is true or false, so both will be written to the cache.
-      # has_current_job: =($['%Z61.0'] || {}).value !== ''
       has_current_job: "=!!$['%Z61.0']" # converts object to true, undefined to false
-      # has_current_job: "=!!msg('%Z61.0')" # converts object to true, string or undefined to false
 
       # get job meta data from kit label
       # this writes a value to the cache at eg key 'kl1-job_meta'.

@@ -108,7 +108,7 @@ export class AdapterDriver {
           //   advice.inputs({ $, lookup })
           // }
 
-          if (handler.process === 'iterate-inputs') {
+          if (handler.process === 'iterate_inputs') {
             // iterate over inputs - an array of [key, part], eg ['fault_count', '%M55.2'].
             // if part is in payload, add it to the cache.
             console.log(`MQTT iterate over inputs`)
@@ -135,12 +135,11 @@ export class AdapterDriver {
               }
             }
           } else {
-            // process = iterate-message-contents
+            // process = iterate_message_contents
             // iterate over message array,
             // lookup what fns are associated with each address,
             // evaluate each once, and put the results in the cache.
             //. will need to recurse to handle cascade of updates. limit to some depth.
-            // for (const [key, obj] of Object.entries(augmentedInputs)) {
             const keys = new Set()
             for (const item of payload) {
               const { addr } = item
