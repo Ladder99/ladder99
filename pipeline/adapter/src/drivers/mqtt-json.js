@@ -168,7 +168,6 @@ export class AdapterDriver {
               console.log('eqnkeys', equationKeys)
               const equationKeys2 = new Set()
               // evaluate each eqn once, and put the results in the cache.
-              //. will need to recurse to handle cascade of updates. limit to some depth.
               for (let equationKey of equationKeys) {
                 const input = handler.augmentedInputs[equationKey]
                 const value = input.fn(cache, $, keyvalues)

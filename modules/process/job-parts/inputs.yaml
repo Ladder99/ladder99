@@ -203,6 +203,8 @@ handlers:
       #. need explicit true here, so undefined -> false?
       job_complete: =msg('%Z61.3') === true
 
+      #. these no longer get executed in order, so failing - what do?
+
       # compare cache to incoming data
       job_changed: =<has_current_job> && (<job_current> !== <job_meta>.kit_number)
 
