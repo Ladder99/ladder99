@@ -201,10 +201,12 @@ handlers:
       job_complete: =msg('%Z61.3') === true
 
       # compare cache to incoming data
-      job_changed: =<has_current_job> && (<job_current> !== <job_meta>.kit_number)
+      # this is truthy when get new job_meta values, undefined otherwise
+      job_changed: =<job_meta>
 
       # kit assembly part number, can be empty string
-      job_current: =<has_current_job> && <job_meta>.kit_number
+      # job_current: =<has_current_job> && <job_meta>.kit_number
+      job_current: '=<job_changed> ? <job_meta>.kit_number : undefined'
 
       # assign new uuid's and time on job change
       # return undefined to leave value the same
@@ -212,7 +214,9 @@ handlers:
       process_uuid: '=<job_changed> ? uuid() : undefined'
       job_start: '=<job_changed> ? new Date().toISOString() : undefined'
 
-      salesord: '=<job_changed> ? <job_meta>.sales_order_number : undefined'
+      # update sales order
+      # salesord: '=<job_changed> ? <job_meta>.sales_order_number : undefined'
+      salesord: =(<job_meta> || {}).sales_order_number
 
       # #. data coming from skid label, ChrisE needs to define address
       #. is this the salesqueue.dictionary? so multiple purchase orders?
@@ -226,6 +230,8 @@ handlers:
       # part occurrences
       # --------------------------------------------------------
 
+      # aka dc
+      # this returns undefined when no job_meta avail, which is a no-op, so leaves value as is
       date_code: =(<job_meta> || {}).assembled_date
 
   # ----------------------------------------------------------------------------
