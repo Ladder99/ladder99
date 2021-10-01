@@ -74,6 +74,7 @@ handlers:
     # # define a lookup function to use to get item from payload, if there.
     # lookup: '($, part) => ($[part] || {}).default'
 
+    # accessor to use to get value from message item
     accessor: default
 
     # # this code would get evaluated in the scope of the calculations
@@ -82,6 +83,7 @@ handlers:
     #   - let msg = ($, part) => ($[part] || {}).default
     #   - let kit_data = {}
 
+    # how to process inputs
     process: iterate_message_contents
 
     # define key-code pairs
@@ -239,8 +241,9 @@ handlers:
   l99/ccs/evt/read:
     # make $ a dictionary keyed on the item addresses
     initialize: 'payload.forEach(item => $[item.address] = item)'
-    # lookup: '($, part) => ($[part] || {}).value'
+    # accessor to use to get value from message item
     accessor: value
-    process: iterate-message-contents
+    # how to process inputs
+    process: iterate_message_contents
     # reuse the query input list here with *, as the key-part pairs are the same
     inputs: *queryInputs
