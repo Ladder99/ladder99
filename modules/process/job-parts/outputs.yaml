@@ -117,7 +117,7 @@ outputs:
     value: <cycle_times>
 
   - key: target
-    value: <target_time>
+    value: <target>
 
   # ------------------------------------------------------------------
   # part occurrence

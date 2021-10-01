@@ -196,6 +196,13 @@ handlers:
           return avg;
         }
 
+      # estimate time of completion
+      # convert new date to milliseconds, add cycletimeavg * npartsremaining, convert to iso string
+      # target: =new Date() + <cycle_time_avg> * cache.get('pr1-labels_remaining')
+      # target: =new Date((new Date()).toTime() + <cycle_time_avg> * 1)
+      # target: =new Date((new Date()).getTime() + Number(<cycle_time_avg>) * 1).toISOString()
+      target: '=<cycle_time_avg> ? new Date((new Date()).getTime() + Number(<cycle_time_avg>) * 1).toISOString() : undefined'
+
       # get lastest cycle times to show in dataset
       # note: the reference to <kits_off> causes this to be recalculated when that changes.
       # from cppagent readme:
@@ -219,7 +226,7 @@ handlers:
       pieces_completed: =<kits_off> # kits finished
       pieces_began: =<kits_on> # kits work began
 
-      # current job done, pieces remaining reached zero
+      # current job done flag, pieces remaining reached zero
       #. need explicit true here, so undefined -> false (undefined would leave this as true)
       job_complete: =msg('%Z61.3') === true
 
