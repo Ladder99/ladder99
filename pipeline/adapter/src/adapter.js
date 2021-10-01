@@ -9,7 +9,7 @@ import net from 'net' // node lib for tcp
 import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 import * as common from './common.js'
 import { Cache } from './cache.js'
-import { getMacros, compileInputs } from './drivers/helpers.js' //. move up
+import { getMacros, compileInputs } from './helpers.js' //. move up
 
 // default server if none provided in model.yaml
 const defaultServer = { protocol: 'shdr', host: 'adapter', port: 7878 }
@@ -119,12 +119,10 @@ async function main() {
             const macros = getMacros(prefix, handler.accessor)
 
             // parse input handler code, get dependency graph, compile fns
-            //. this updates inputs behind the scenes - not ideal
             // eg maps could be { addr: { '%Z61.0': Set(1) { 'has_current_job' } }, ...}
             // use like
             //   const keys = [...maps.addr['%Z61.0']] // = ['has_current_job', 'foo_bar']
             // so can know what formulas need to be evaluated for some given addr
-            // const maps = compileInputs(handler.inputs, macros)
             const { augmentedInputs, maps } = compileInputs(
               handler.inputs,
               macros

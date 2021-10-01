@@ -4,7 +4,7 @@
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
-import { getMacros, compileInputs, getEquationKeys } from './helpers.js'
+import { getEquationKeys } from '../helpers.js'
 
 // let cycleStart
 let keyvalues = {} // keyvalue store for yaml code to use - use 'let' so yaml code can reset it
@@ -123,7 +123,9 @@ export class AdapterDriver {
               // // } else {
               // const item = lookup($, part)
               // use the lookup function to get value from payload, if there
+              console.log(`calling lookup with $,part`, $, part)
               const value = lookup($, part)
+              console.log(`got value`, value)
               // if we have the part in the payload, add it to the cache
               //. why do we have a guard here for undefined? what if need to reset a cache value?
               //  i guess you'd have to pass item.value = 'UNAVAILABLE' explicitly?
@@ -140,14 +142,12 @@ export class AdapterDriver {
 
             // get set of keys for eqns we need to execute based on the payload
             // eg ['has_current_job', 'job_meta', ...]
-            // const equationKeys = getEquationKeys(payload, maps)
             const equationKeys = getEquationKeys(payload, handler.maps)
             console.log(equationKeys)
 
             // evaluate each eqn once, and put the results in the cache.
             //. will need to recurse to handle cascade of updates. limit to some depth.
             for (let equationKey of equationKeys) {
-              // const aug = augmentedInputs[equationKey]
               const aug = handler.augmentedInputs[equationKey]
               const value = aug.fn(cache, $)
               if (value !== undefined) {
