@@ -189,10 +189,13 @@ handlers:
           return avg;
         }
 
+      # estimated time remaining
+      # time_remaining: =<cycle_time_avg> * <pcrem_calc>
+      
       # estimate time of completion
-      # convert new date to milliseconds, add cycletimeavg * npartsremaining, convert to iso string
-      #. use <job_start> instead of new Date?
-      target: '=(<cycle_time_avg> && <pcrem_calc>) ? new Date((new Date()).getTime() + <cycle_time_avg> * <pcrem_calc>).toISOString() : undefined'
+      # convert jobstart time to milliseconds, add cycletimeavg * npartsremaining, convert to iso string
+      target: '=(<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <cycle_time_avg> * <pcrem_calc>).toISOString() : undefined'
+      # target: '=(<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <time_remaining>).toISOString() : undefined'
 
       # get lastest cycle times to show in dataset
       # note: the reference to <kits_off> causes this to be recalculated when that changes.
