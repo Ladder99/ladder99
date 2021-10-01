@@ -70,16 +70,8 @@ handlers:
     # initialize: query_initializer
     initialize: 'payload.forEach(item => $[item.address] = item)'
 
-    # # define a lookup function to use to get item from payload, if there.
-    # lookup: '($, part) => ($[part] || {}).default'
     # accessor to use to get value from message item
     accessor: default
-
-    # # this code would get evaluated in the scope of the calculations
-    # #. move initialize here etc
-    # definitions:
-    #   - let msg = ($, part) => ($[part] || {}).default
-    #   - let keyvalues = {}
 
     # algorithm to process inputs
     process: iterate_message_contents
@@ -94,13 +86,13 @@ handlers:
     # according to the outputs defined in outputs.yaml.
     # the & syntax saves this list for later, as the read message handler
     # uses the same pairs.
-    #. rename to codes?
+    #. rename to codes or sthing - confusing having two 'inputs'
     inputs: &queryInputs
       # --------------------------------------------------------
       # process occurrence
       # --------------------------------------------------------
 
-      # flag for current job meta is not empty string
+      # flag for current job meta
       # used in outputs.yaml for funcmode
       # this looks up %Z61.0 in the $ dictionary, which indexes the message addresses
       # this value is true or false, so both will be written to the cache.
@@ -188,8 +180,10 @@ handlers:
         }
 
       # get lastest cycle times to show in dataset
+      # note: the reference to <kits_off> causes this to be recalculated when that changes.
       cycle_times: |
         ={
+          <kits_off>;
           const kv = Object.entries(keyvalues);
           const dataitems = kv
             .slice(kv.length - 5)
@@ -206,8 +200,6 @@ handlers:
       #. need explicit true here, so undefined -> false (undefined would leave this as true)
       job_complete: =msg('%Z61.3') === true
 
-      #. these no longer get executed in order, so failing - what do?
-
       # compare cache to incoming data
       job_changed: =<has_current_job> && (<job_current> !== <job_meta>.kit_number)
 
@@ -215,6 +207,7 @@ handlers:
       job_current: =<has_current_job> && <job_meta>.kit_number
 
       # assign new uuid's and time on job change
+      # return undefined to leave value the same
       part_uuid: '=<job_changed> ? uuid() : undefined'
       process_uuid: '=<job_changed> ? uuid() : undefined'
       job_start: '=<job_changed> ? new Date().toISOString() : undefined'
@@ -226,6 +219,7 @@ handlers:
       # purchord: =($['%Z61.x'] || {}).purchase_order_number
       # purchord: =(msg('%Z61.13') || {}).purchase_order
 
+      #. does this work okay?
       reset_key_values: ={ if (<job_changed>) { keyvalues = {} } }
 
       # --------------------------------------------------------
