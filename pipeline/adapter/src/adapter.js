@@ -9,6 +9,7 @@ import net from 'net' // node lib for tcp
 import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 import * as common from './common.js'
 import { Cache } from './cache.js'
+import { getMacros, compileInputs } from './drivers/helpers.js' //. move up
 
 // default server if none provided in model.yaml
 const defaultServer = { protocol: 'shdr', host: 'adapter', port: 7878 }
@@ -100,18 +101,30 @@ async function main() {
           // iterate over handlers
           const handlers = Object.values(inputs.handlers)
           for (let handler of handlers) {
-            // iterate over keys and parts
-            const keys = Object.keys(handler.inputs || {})
-            for (let key of keys) {
-              const part = handler.inputs[key]
-              console.log('key,part', key, part)
-              // replace part with { code, valueFn } if starts with '='
-              if (typeof part === 'string' && part.startsWith('=')) {
-                const code = part.slice(1) // eg '<foo> + 1'
-                const { value, dependsOn } = getValueFn(deviceId, code, types)
-                handler.inputs[key] = { code, value }
-              }
-            }
+            // // iterate over keys and parts
+            // const keys = Object.keys(handler.inputs || {})
+            // for (let key of keys) {
+            //   const part = handler.inputs[key]
+            //   console.log('key,part', key, part)
+            //   // replace part with { code, valueFn } if starts with '='
+            //   if (typeof part === 'string' && part.startsWith('=')) {
+            //     const code = part.slice(1) // eg '<foo> + 1'
+            //     const { value, dependsOn } = getValueFn(deviceId, code, types)
+            //     handler.inputs[key] = { code, value }
+            //   }
+            // }
+
+            // parse input handler code, get dependency graph, compile fns
+            // eg maps could be { addr: { '%Z61.0': Set(1) { 'has_current_job' } }, ...}
+            // use like
+            //   const addr = '%Z61.0'
+            //   const keys = [...maps.addr[addr]] // = ['has_current_job']
+            // so can know what formulas need to be evaluated for some given addr
+            const prefix = deviceId + '-'
+            const macros = getMacros(prefix, handler.accessor)
+            const { augmentedInputs, maps } = compileInputs(inputs, macros)
+            handler.inputs = augmentedInputs
+            handler.maps = maps
           }
         }
 

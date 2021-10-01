@@ -1,12 +1,13 @@
 // helper fns for different drivers
 
 // define macros to be used by input/output yamls
+// prefix is deviceId- eg 'pr1-'
+// accessor is default or value
 export const getMacros = (prefix, accessor) => ({
   // replace all occurrences of msg('foo') with ($['foo'] || {}).default or .value
   addr: {
     syntax: /msg\('(.*?)'\)/gm, // eg msg('foo')
-    // transform: `($['$1'] || {}).default`, // $1 is the matched substring
-    transform: `($['$1'] || {}).${accessor}`, // $1 is the matched substring //...
+    transform: `($['$1'] || {}).${accessor}`, // $1 is the matched substring
     extract: /\$\['(.*?)'\]/gm, // eg $['foo']
   },
   // replace all occurrences of <foo> with cache.get('pr1-foo').
@@ -17,15 +18,15 @@ export const getMacros = (prefix, accessor) => ({
   },
 })
 
-// precompile code and find all references to message contents or cache.
+// compile code and find all references to message contents or cache.
 // returns transformed code and refs.
 // eg
-//   precompile(`=msg('foo') + <bar>`, macros)
+//   compile(`=msg('foo') + <bar>`, macros)
 // returns {
 //   js: "(cache, $) => ($['foo'] || {}).default + cache.get('pr1-bar')",
 //   refs: { addr: Set(1) { '%Z61.0' }, cache: Set(1) { 'pr1-bar' } }
 // }
-export function precompile(code, macros) {
+export function compile(code, macros) {
   let js = code.slice(1)
   let refs = {}
   for (let macroName of Object.keys(macros)) {
@@ -45,32 +46,22 @@ export function precompile(code, macros) {
       refs[macroName].add(key)
     }
   }
-  js = '(cache, $) => ' + js
-  return { js, refs }
-}
-
-export function compile(code, macros) {
-  // const macros = getMacros(prefix)
-  const { js, refs } = precompile(code, macros)
-  console.log({ js, refs })
+  js = '(cache, $) => ' + js //. needs to be assoc with all macros somehow
   return { js, refs }
 }
 
 export function compileInputs(inputs, macros) {
-  const augmentedInputs = {}
+  // const augmentedInputs = {}
   const maps = {}
   for (let [key, code] of Object.entries(inputs)) {
     const { js, refs } = compile(code, macros)
-    console.log(key)
-    console.log(code)
-    console.log(js)
-    console.log(refs)
-    console.log()
     const fn = eval(js)
-    augmentedInputs[key] = { code, js, fn, refs }
+    // augmentedInputs[key] = { code, js, fn, refs }
+    inputs[key] = { code, js, fn, refs } // replace code with object
     addToMaps(maps, key, refs)
   }
-  return { augmentedInputs, maps }
+  // return { augmentedInputs, maps }
+  return maps
 }
 
 // maps is eg {}

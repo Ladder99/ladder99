@@ -70,6 +70,7 @@ handlers:
     # lookup: 'part => ($[part] || {}).default'
     # msg: '($, part) => ($[part] || {}).default'
     msg: 'part => ($[part] || {}).default'
+    accessor: default
 
     # this code would get evaluated in the scope of the calculations
     #. move initialize here etc
@@ -246,6 +247,7 @@ handlers:
     # lookup: '($, part) => ($[part] || {}).value'
     # msg: '($, part) => ($[part] || {}).value'
     msg: 'part => ($[part] || {}).value'
+    accessor: value
     process: iterate-message-contents
     # reuse the query input list here with *, as the key-part pairs are the same
     inputs: *queryInputs

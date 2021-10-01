@@ -14,7 +14,7 @@ export class AdapterDriver {
   // queries the device for address space definitions, subscribes to topics.
   // inputs is the inputs.yaml file parsed to a js tree.
   // note: types IS used - by the part(cache, $) fn evaluation
-  // handlers is a dict of optional fns that are called at various points in the code.
+  // advice is a dict of optional fns that are called at various points in the code.
   init({ deviceId, deviceName, host, port, cache, inputs, types, advice }) {
     console.log('Initializing mqtt-json driver for', { deviceId })
     const url = `mqtt://${host}:${port}`
