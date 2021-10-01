@@ -230,7 +230,7 @@ handlers:
       # purchord: =($['%Z61.x'] || {}).purchase_order_number
       # purchord: =(msg('%Z61.13') || {}).purchase_order
 
-      reset_key_values: =if (<job_changed>) { kit_data = {} }
+      reset_key_values: ={ if (<job_changed>) { kit_data = {} } }
 
       # --------------------------------------------------------
       # part occurrences

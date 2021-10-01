@@ -137,12 +137,14 @@ export class AdapterDriver {
               }
             }
           } else {
-            // process = iterate_message_contents
-            // get set of keys for eqns we need to execute
+            // ie process = 'iterate_message_contents'
+
+            // get set of keys for eqns we need to execute based on the payload
+            // eg ['has_current_job', 'job_meta', ...]
             const equationKeys = getEquationKeys(payload, maps)
             console.log(equationKeys)
 
-            // evaluate each once, and put the results in the cache.
+            // evaluate each eqn once, and put the results in the cache.
             //. will need to recurse to handle cascade of updates. limit to some depth.
             for (let equationKey of equationKeys) {
               const aug = augmentedInputs[equationKey]

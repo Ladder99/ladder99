@@ -27,6 +27,7 @@ export const getMacros = (prefix, accessor) => ({
 //   refs: { addr: Set(1) { '%Z61.0' }, cache: Set(1) { 'pr1-bar' } }
 // }
 export function compile(code, macros) {
+  console.log(`compile`, code)
   let js = code.slice(1)
   let refs = {}
   for (let macroName of Object.keys(macros)) {
@@ -47,20 +48,26 @@ export function compile(code, macros) {
     }
   }
   js = '(cache, $) => ' + js //. needs to be assoc with all macros somehow
+  console.log({ js, refs })
   return { js, refs }
 }
 
 export function compileInputs(inputs, macros) {
+  console.log(`compileInputs`)
   // const augmentedInputs = {}
   const maps = {}
   for (let [key, code] of Object.entries(inputs)) {
-    const { js, refs } = compile(code, macros)
-    const fn = eval(js)
-    // augmentedInputs[key] = { code, js, fn, refs }
-    inputs[key] = { code, js, fn, refs } // replace code with object
-    addToMaps(maps, key, refs)
+    console.log({ key, code }) //.
+    if (code.startsWith('=')) {
+      const { js, refs } = compile(code, macros)
+      const fn = eval(js)
+      // augmentedInputs[key] = { code, js, fn, refs }
+      inputs[key] = { code, js, fn, refs } // replace code with object
+      addToMaps(maps, key, refs)
+    }
   }
   // return { augmentedInputs, maps }
+  console.log({ maps })
   return maps
 }
 

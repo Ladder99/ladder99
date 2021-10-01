@@ -114,16 +114,17 @@ async function main() {
             //   }
             // }
 
-            // parse input handler code, get dependency graph, compile fns
-            // eg maps could be { addr: { '%Z61.0': Set(1) { 'has_current_job' } }, ...}
-            // use like
-            //   const addr = '%Z61.0'
-            //   const keys = [...maps.addr[addr]] // = ['has_current_job']
-            // so can know what formulas need to be evaluated for some given addr
+            // get macros (regexs to extract references from code)
             const prefix = deviceId + '-'
             const macros = getMacros(prefix, handler.accessor)
-            const { augmentedInputs, maps } = compileInputs(inputs, macros)
-            handler.inputs = augmentedInputs
+
+            // parse input handler code, get dependency graph, compile fns
+            //. this updates inputs behind the scenes - not ideal
+            // eg maps could be { addr: { '%Z61.0': Set(1) { 'has_current_job' } }, ...}
+            // use like
+            //   const keys = [...maps.addr['%Z61.0']] // = ['has_current_job', 'foo_bar']
+            // so can know what formulas need to be evaluated for some given addr
+            const maps = compileInputs(handler.inputs, macros)
             handler.maps = maps
           }
         }
