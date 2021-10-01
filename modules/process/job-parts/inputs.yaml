@@ -126,10 +126,9 @@ handlers:
       # piece_count_at_print_apply: |
       #   =(<job_meta> || {}).carton_quantity - cache.get('pr1-labels_remaining')
 
-      # get value for pctarget
+      # get value for pctarg/pctarget
       # <foo> is a cache lookup, eg cache.get('kl1-foo')
       # if job_meta is undefined, this expression is undefined, and the cache won't be updated.
-      # carton_quantity: =<job_meta> && <job_meta>.carton_quantity
       carton_quantity: =(<job_meta> || {}).carton_quantity
 
       # check if eye1 or eye2 counts changed, set flags
@@ -169,8 +168,10 @@ handlers:
       cycle_time: |
         ={
           const koff = keyvalues[<kits_off>] || {};
+          console.log('koff', koff)
           koff.end = new Date();
           koff.delta = koff.end - koff.start;
+          return koff.delta;
         }
 
       # calculate average cycle time for current job.
@@ -183,16 +184,18 @@ handlers:
           const avg = objs
             .filter(obj=>obj.delta>0)
             .reduce((a,b)=>a+b.delta,0) / objs.length;
+          return avg;
         }
 
       # get lastest cycle times to show in dataset
       cycle_times: |
         ={
-          const kv = Object.entries(keyvalues)
+          const kv = Object.entries(keyvalues);
           const dataitems = kv
             .slice(kv.length - 5)
             .map(([key, value]) => `${key}=${value.delta}`)
-            .join(' ')
+            .join(' ');
+          return dataitems;
         }
 
       pieces_in_assembly: =<kits_on> - <kits_off> # kits on assy line

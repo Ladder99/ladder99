@@ -170,7 +170,9 @@ export class AdapterDriver {
               // evaluate each eqn once, and put the results in the cache.
               for (let equationKey of equationKeys) {
                 const input = handler.augmentedInputs[equationKey]
+                console.log('input.fn', input.fn.toString())
                 const value = input.fn(cache, $, keyvalues)
+                console.log('input.fn()', value)
                 if (value !== undefined) {
                   const cacheId = deviceId + '-' + equationKey // eg 'pa1-fault_count'
                   cache.set(cacheId, value) // save to the cache - may send shdr to tcp
