@@ -203,7 +203,7 @@ handlers:
       pieces_began: =<kits_on> # kits work began
 
       # current job done, pieces remaining reached zero
-      #. need explicit true here, so undefined -> false?
+      #. need explicit true here, so undefined -> false (undefined would leave this as true)
       job_complete: =msg('%Z61.3') === true
 
       #. these no longer get executed in order, so failing - what do?
@@ -215,11 +215,11 @@ handlers:
       job_current: =<has_current_job> && <job_meta>.kit_number
 
       # assign new uuid's and time on job change
-      part_uuid: =<job_changed> && uuid()
-      process_uuid: =<job_changed> && uuid()
-      job_start: =<job_changed> && new Date().toISOString()
+      part_uuid: '=<job_changed> ? uuid() : undefined'
+      process_uuid: '=<job_changed> ? uuid() : undefined'
+      job_start: '=<job_changed> ? new Date().toISOString() : undefined'
 
-      salesord: =<job_changed> && <job_meta>.sales_order_number
+      salesord: '=<job_changed> ? <job_meta>.sales_order_number : undefined'
 
       # #. data coming from skid label, ChrisE needs to define address
       #. is this the salesqueue.dictionary? so multiple purchase orders?
