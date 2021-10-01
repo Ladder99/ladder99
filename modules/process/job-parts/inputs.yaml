@@ -153,24 +153,14 @@ handlers:
 
       # calculate cycle time for kit to go from eye1 to eye2
 
-      #. does this work okay? yes but agent is hanging on to the dataset slots - how clear?
-      # reset_key_values: '=<job_meta> ? { while (keyvalues.length>0) { delete keyvalues[keyvalues[0]] }} : undefined'
+      # clear the keyvalues dict with cycle times
+      # don't care about the cache key here, just want to run the code
       reset_key_values: '=<job_meta> ? Object.keys(keyvalues).forEach(key => delete keyvalues[key]) : undefined'
 
       # don't care about the cache key here, just want to assign something to keyvalue store
-      # start_cycle_timer: |
-      #   =if (<kits_on_changed>) { <keyvalues>[<kits_on>] = { start: new Date(), end: null, delta: null} }
       start_cycle_timer: =keyvalues[<kits_on>] = { start:new Date(), end:null, delta:null}
-      # start_cycle_timer: =<keyvalues>[<kits_on>] = { start:new Date(), end:null, delta:null}
 
       # get cycle time when kits_off count changes
-      # note: the if stmt evaluates to its last expression
-      # cycle_time: |
-      #   =if (<kits_off_changed>) {
-      #     let koff = <keyvalues>[<kits_off>] || {};
-      #     koff.end = new Date();
-      #     koff.delta = koff.end - koff.start;
-      #   }
       # note: the expression is prefixed with '(cache, $, keyvalues) =>',
       # so need to return the final value.
       # otherwise, the block would evaluate to its last expression, as in lisp.
@@ -188,7 +178,7 @@ handlers:
       # note: dividing by objs.length gives NaN if it's zero, which is what we want
       cycle_time_avg: |
         ={
-          const ref = <kits_off>;
+          <kits_off>;
           const objs = Object.values(keyvalues);
           const avg = objs
             .filter(obj=>obj.delta>0)
@@ -198,9 +188,6 @@ handlers:
 
       # estimate time of completion
       # convert new date to milliseconds, add cycletimeavg * npartsremaining, convert to iso string
-      # target: =new Date() + <cycle_time_avg> * cache.get('pr1-labels_remaining')
-      # target: =new Date((new Date()).toTime() + <cycle_time_avg> * 1)
-      # target: =new Date((new Date()).getTime() + Number(<cycle_time_avg>) * 1).toISOString()
       target: '=<cycle_time_avg> ? new Date((new Date()).getTime() + Number(<cycle_time_avg>) * 1).toISOString() : undefined'
 
       # get lastest cycle times to show in dataset
