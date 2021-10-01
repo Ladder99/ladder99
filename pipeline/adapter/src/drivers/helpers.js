@@ -54,21 +54,23 @@ export function compile(code, macros) {
 
 export function compileInputs(inputs, macros) {
   console.log(`compileInputs`)
-  // const augmentedInputs = {}
+  const augmentedInputs = {}
   const maps = {}
   for (let [key, code] of Object.entries(inputs)) {
-    console.log({ key, code }) //.
-    if (code.startsWith('=')) {
+    // console.log({ key, code }) //.
+    // oh, code might be an object here with { code, js, refs, fn }
+    // because second time through with same inputs dict
+    if (typeof code === 'string' && code.startsWith('=')) {
       const { js, refs } = compile(code, macros)
       const fn = eval(js)
-      // augmentedInputs[key] = { code, js, fn, refs }
-      inputs[key] = { code, js, fn, refs } // replace code with object
+      augmentedInputs[key] = { code, js, fn, refs }
+      // inputs[key] = { code, js, fn, refs } // replace code with object
       addToMaps(maps, key, refs)
     }
   }
-  // return { augmentedInputs, maps }
   console.log({ maps })
-  return maps
+  return { augmentedInputs, maps }
+  // return maps
 }
 
 // maps is eg {}

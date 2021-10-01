@@ -124,7 +124,12 @@ async function main() {
             // use like
             //   const keys = [...maps.addr['%Z61.0']] // = ['has_current_job', 'foo_bar']
             // so can know what formulas need to be evaluated for some given addr
-            const maps = compileInputs(handler.inputs, macros)
+            // const maps = compileInputs(handler.inputs, macros)
+            const { augmentedInputs, maps } = compileInputs(
+              handler.inputs,
+              macros
+            )
+            handler.augmentedInputs = augmentedInputs
             handler.maps = maps
           }
         }

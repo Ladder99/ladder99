@@ -19,16 +19,15 @@ export class AdapterDriver {
     console.log('Initializing mqtt-json driver for', { deviceId })
     const url = `mqtt://${host}:${port}`
 
-    //. parse input handler code, get dependency graph, compile fns
-    // eg maps could be { addr: { '%Z61.0': Set(1) { 'has_current_job' } }, ...}
-    // use like
-    //   const addr = '%Z61.0'
-    //   const keys = [...maps.addr[addr]] // = ['has_current_job']
-    // so can know what formulas need to be evaluated for some given addr
-    const prefix = deviceId + '-'
-    const macros = getMacros(prefix, 'default')
-    // const { augmentedInputs, maps } = compileInputs(inputs, prefix)
-    const { augmentedInputs, maps } = compileInputs(inputs, macros)
+    // //. parse input handler code, get dependency graph, compile fns
+    // // eg maps could be { addr: { '%Z61.0': Set(1) { 'has_current_job' } }, ...}
+    // // use like
+    // //   const addr = '%Z61.0'
+    // //   const keys = [...maps.addr[addr]] // = ['has_current_job']
+    // // so can know what formulas need to be evaluated for some given addr
+    // const prefix = deviceId + '-'
+    // const macros = getMacros(prefix, 'default')
+    // const { augmentedInputs, maps } = compileInputs(inputs, macros)
 
     // connect to mqtt broker/server
     console.log(`MQTT connecting to broker on ${url}...`)
@@ -76,9 +75,10 @@ export class AdapterDriver {
 
       // iterate over message handlers - handlerEntries is an array of [topic, handler]
       // eg ['l99/ccs/evt/query', { unsubscribe, initialize, definitions, inputs, ... }]
-      const handlerEntries = Object.entries(inputs.handlers) || []
+      // const handlerEntries = Object.entries(inputs.handlers) || []
       let msgHandled = false
-      handlerEntries.forEach(([topic, handler]) => {
+      // handlerEntries.forEach(([topic, handler]) => {
+      for (let [topic, handler] of Object.entries(inputs.handlers)) {
         topic = replaceDeviceId(topic)
 
         // eg msgTopic => 'l99/pa1/evt/query'
@@ -99,7 +99,6 @@ export class AdapterDriver {
           // console.log($)
 
           // define lookup function
-          // // eg lookup: '($, part) => ({ value: ($[part] || {}).default })'
           // eg lookup: '($, part) => ($[part] || {}).default'
           console.log(`MQTT define lookup function`, handler.lookup.toString())
           const lookup = eval(handler.lookup)
@@ -141,13 +140,15 @@ export class AdapterDriver {
 
             // get set of keys for eqns we need to execute based on the payload
             // eg ['has_current_job', 'job_meta', ...]
-            const equationKeys = getEquationKeys(payload, maps)
+            // const equationKeys = getEquationKeys(payload, maps)
+            const equationKeys = getEquationKeys(payload, handler.maps)
             console.log(equationKeys)
 
             // evaluate each eqn once, and put the results in the cache.
             //. will need to recurse to handle cascade of updates. limit to some depth.
             for (let equationKey of equationKeys) {
-              const aug = augmentedInputs[equationKey]
+              // const aug = augmentedInputs[equationKey]
+              const aug = handler.augmentedInputs[equationKey]
               const value = aug.fn(cache, $)
               if (value !== undefined) {
                 const cacheId = deviceId + '-' + equationKey // eg 'pa1-fault_count'
@@ -188,7 +189,7 @@ export class AdapterDriver {
 
           msgHandled = true
         }
-      })
+      }
 
       if (!msgHandled) {
         console.log(`MQTT WARNING: no handler for topic`, msgTopic)
