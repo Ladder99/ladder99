@@ -79,8 +79,12 @@ handlers:
     # algorithm to process inputs
     process: iterate_message_contents
 
-    # when to reset keyvalues store
-    reset_keyvalues: =<job_meta>
+    # this wouldn't work
+    # see https://stackoverflow.com/questions/15189857/what-is-the-most-efficient-way-to-empty-a-plain-object-in-javascript
+    # so `keyvalues={}` would create a new object and leave the original object as is,
+    # ie not garbage collected.
+    # # when to reset keyvalues store
+    # reset_keyvalues: =<job_meta>
 
     # define key-code pairs
     # 'key' defines the cache id, with id = {deviceId}-{key},
@@ -149,12 +153,9 @@ handlers:
 
       # calculate cycle time for kit to go from eye1 to eye2
 
-      #. does this work okay? nooo
-      # reset_key_values: ={ if (<job_changed>) { keyvalues = {} } }
-      # reset_key_values: '=(keyvalues = <job_changed> ? {} : keyvalues)'
-      # keyvalues: ={ if (<job_changed>) { keyvalues = {} } }
-      # keyvalues: '=<job_meta> ? {} : undefined'
+      #. does this work okay? yes but agent is hanging on to the dataset slots - how clear?
       # reset_key_values: '=<job_meta> ? { while (keyvalues.length>0) { delete keyvalues[keyvalues[0]] }} : undefined'
+      reset_key_values: '=<job_meta> ? Object.keys(keyvalues).forEach(key => delete keyvalues[key]) : undefined'
 
       # don't care about the cache key here, just want to assign something to keyvalue store
       # start_cycle_timer: |
@@ -197,6 +198,12 @@ handlers:
 
       # get lastest cycle times to show in dataset
       # note: the reference to <kits_off> causes this to be recalculated when that changes.
+      # from cppagent readme:
+      # To clear the set, specify a resetTriggered value such as MANUAL or DAY by preceeding it with a colon : at the beginning of the line.
+      # 2014-09-29T23:59:33.460470Z|vars|:MANUAL
+      # This will remove all the values from the current set. The set can also be reset to a specific set of values:
+      # 2014-09-29T23:59:33.460470Z|vars|:MANUAL v5=1 v6=2
+      # This will remove all the old values from the set and set the current set.
       cycle_times: |
         ={
           <kits_off>;
@@ -205,7 +212,7 @@ handlers:
             .slice(kv.length - 5)
             .map(([key, value]) => `${key}=${value.delta}`)
             .join(' ');
-          return dataitems;
+          return ':MANUAL ' + dataitems;
         }
 
       pieces_in_assembly: =<kits_on> - <kits_off> # kits on assy line
@@ -257,7 +264,7 @@ handlers:
     accessor: value
     # how to process inputs
     process: iterate_message_contents
-    # when to reset keyvalues store
-    reset_keyvalues: =<job_meta>
+    # # when to reset keyvalues store
+    # reset_keyvalues: =<job_meta>
     # reuse the query input list here with *, as the key-part pairs are the same
     inputs: *queryInputs
