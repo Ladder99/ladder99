@@ -102,8 +102,9 @@ outputs:
       <has_current_job> ? 'READY' :
       'UNAVAILABLE'
 
-  - key: pgm
-    value: <status_program>
+  #. ?
+  # - key: pgm
+  #   value: <status_program>
 
   - key: cycle
     value: <cycle_time>
