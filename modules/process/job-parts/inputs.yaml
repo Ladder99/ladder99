@@ -190,8 +190,8 @@ handlers:
         }
 
       # estimated time remaining
-      # time_remaining: =<cycle_time_avg> * <pcrem_calc>
-      
+      time_remaining: =<cycle_time_avg> * <pcrem_calc>
+
       # estimate time of completion
       # convert jobstart time to milliseconds, add cycletimeavg * npartsremaining, convert to iso string
       target: '=(<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <cycle_time_avg> * <pcrem_calc>).toISOString() : undefined'
