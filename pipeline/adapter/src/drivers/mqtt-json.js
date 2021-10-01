@@ -98,10 +98,10 @@ export class AdapterDriver {
           eval(handler.initialize)
           // console.log($)
 
-          // define lookup function
-          // eg lookup: '($, part) => ($[part] || {}).default'
-          console.log(`MQTT define lookup function`, handler.lookup.toString())
-          const lookup = eval(handler.lookup)
+          // // define lookup function
+          // // eg lookup: '($, part) => ($[part] || {}).default'
+          // console.log(`MQTT define lookup function`, handler.lookup.toString())
+          // const lookup = eval(handler.lookup)
 
           // // call optional custom code
           // if (handler.advice && advice.inputs) {
@@ -110,6 +110,11 @@ export class AdapterDriver {
           // }
 
           if (handler.process === 'iterate_inputs') {
+            // define lookup function
+            // eg lookup: '($, part) => ($[part] || {}).default'
+            console.log(`MQTT define lookup`, handler.lookup.toString())
+            const lookup = eval(handler.lookup)
+
             // iterate over inputs - an array of [key, part], eg ['fault_count', '%M55.2'].
             // if part is in payload, add it to the cache.
             console.log(`MQTT iterate over inputs`)
@@ -123,9 +128,9 @@ export class AdapterDriver {
               // // } else {
               // const item = lookup($, part)
               // use the lookup function to get value from payload, if there
-              console.log(`calling lookup with $,part`, $, part)
+              // console.log(`calling lookup with $,part`, $, part)
               const value = lookup($, part)
-              console.log(`got value`, value)
+              // console.log(`got value`, value)
               // if we have the part in the payload, add it to the cache
               //. why do we have a guard here for undefined? what if need to reset a cache value?
               //  i guess you'd have to pass item.value = 'UNAVAILABLE' explicitly?

@@ -66,8 +66,8 @@ handlers:
     # initialize: query_initializer
     initialize: 'payload.forEach(item => $[item.address] = item)'
 
-    # define a lookup function to use to get item from payload, if there.
-    lookup: '($, part) => ($[part] || {}).default'
+    # # define a lookup function to use to get item from payload, if there.
+    # lookup: '($, part) => ($[part] || {}).default'
 
     accessor: default
 
@@ -243,7 +243,7 @@ handlers:
   l99/ccs/evt/read:
     # make $ a dictionary keyed on the item addresses
     initialize: 'payload.forEach(item => $[item.address] = item)'
-    lookup: '($, part) => ($[part] || {}).value'
+    # lookup: '($, part) => ($[part] || {}).value'
     accessor: value
     process: iterate-message-contents
     # reuse the query input list here with *, as the key-part pairs are the same
