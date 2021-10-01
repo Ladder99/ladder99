@@ -21,7 +21,6 @@ connect:
   publish:
     - topic: l99/ccs/cmd/query
       message: '{}'
-
   # define any static one-time cache values to set
   static:
     # this sets the cache value at eg 'kl1-procname' to 'KITTING'
@@ -35,7 +34,7 @@ handlers:
   l99/ccs/evt/status:
     # make '$' the message payload dictionary and add faultKeys for quick
     # lookups of faults - payload.faults is a dictionary of faults.
-    # initialize: status_initializer
+    #. initialize: status_initializer
     initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
     # define lookup function, which returns a value given a part calculation.
     lookup: '($, part) => eval(part)'
@@ -73,7 +72,6 @@ handlers:
 
     # # define a lookup function to use to get item from payload, if there.
     # lookup: '($, part) => ($[part] || {}).default'
-
     # accessor to use to get value from message item
     accessor: default
 
@@ -83,7 +81,7 @@ handlers:
     #   - let msg = ($, part) => ($[part] || {}).default
     #   - let keyvalues = {}
 
-    # how to process inputs
+    # algorithm to process inputs
     process: iterate_message_contents
 
     # define key-code pairs
@@ -151,10 +149,6 @@ handlers:
 
       # used in outputs yaml
       first_eye_broken: =(<kits_on> > 0)
-
-      # instead of having a separate keyvalues dict,
-      # use a cache value for a dict, eg <keyvalues>[<kits_on>] = ...?
-      # eh, but then that would get added to dependencies list
 
       # calculate cycle time for kit to go from eye1 to eye2
 
