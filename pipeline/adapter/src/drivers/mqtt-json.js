@@ -171,11 +171,11 @@ export class AdapterDriver {
               //. will need to recurse to handle cascade of updates. limit to some depth.
               for (let equationKey of equationKeys) {
                 const input = handler.augmentedInputs[equationKey]
-                const value = input.fn(cache, $)
+                const value = input.fn(cache, $, keyvalues)
                 if (value !== undefined) {
                   const cacheId = deviceId + '-' + equationKey // eg 'pa1-fault_count'
                   cache.set(cacheId, value) // save to the cache - may send shdr to tcp
-                  equationKeys2.add(equationKey)
+                  equationKeys2.add(cacheId)
                 }
               }
               equationKeys = getEquationKeys2(equationKeys2, handler.maps)

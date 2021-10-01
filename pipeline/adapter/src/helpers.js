@@ -1,5 +1,9 @@
 // helper fns for different drivers
 
+import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
+
+let keyvalues = {}
+
 // define macros to be used by input/output yamls
 // prefix is deviceId- eg 'pr1-'
 // accessor is default or value
@@ -47,7 +51,7 @@ export function compile(code, macros) {
       refs[macroName].add(key)
     }
   }
-  js = '(cache, $) => ' + js //. needs to be assoc with all macros somehow
+  js = '(cache, $, keyvalues) => ' + js //. needs to be assoc with all macros somehow
   console.log({ js, refs })
   return { js, refs }
 }
@@ -113,10 +117,10 @@ export function getEquationKeys(payload, maps) {
 // get equation keys ii
 // iterate over eqnkeys,
 // lookup what other eqns are associated with each eqnkey
+//. merge with above fn
 export function getEquationKeys2(eqnkeys, maps) {
   const equationKeys = new Set()
   for (const eqnkey of eqnkeys) {
-    // const set = maps.addr[address]
     const set = maps.cache[eqnkey]
     if (set) {
       for (let key of set) {
