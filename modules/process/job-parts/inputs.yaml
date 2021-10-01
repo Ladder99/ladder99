@@ -22,6 +22,11 @@ connect:
     - topic: l99/ccs/cmd/query
       message: '{}'
 
+  # define any static one-time cache values to set
+  static:
+    # this sets the cache value at eg 'kl1-procname' to 'KITTING'
+    procname: KITTING
+
 # define message topic handlers
 handlers:
   # ----------------------------------------------------------------------------
@@ -77,16 +82,6 @@ handlers:
     #   - let msg = ($, part) => ($[part] || {}).default
     #   - let kit_data = {}
 
-    #. define any static one-time cache values to set.
-    # this works because l99/ccs/evt/query just gets sent on request on
-    # adapter startup.
-    static:
-      # this sets the cache value at eg 'kl1-procname' to 'KITTING'
-      procname: KITTING
-
-      # # initialize a keyvalue store for kit cycle times
-      # kit_data: {}
-
     process: iterate_message_contents
 
     # define key-code pairs
@@ -99,6 +94,7 @@ handlers:
     # according to the outputs defined in outputs.yaml.
     # the & syntax saves this list for later, as the read message handler
     # uses the same pairs.
+    #. rename to codes?
     inputs: &queryInputs
       # --------------------------------------------------------
       # process occurrence

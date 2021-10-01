@@ -55,6 +55,14 @@ export class AdapterDriver {
         mqtt.publish(topic, entry.message)
       }
 
+      // do any static inits
+      console.log(inputs.connect.static)
+      for (const key of Object.keys(inputs.connect.static || {})) {
+        const cacheId = `${deviceId}-${key}`
+        const value = inputs.connect.static[key]
+        cache.set(cacheId, value)
+      }
+
       console.log(`MQTT listening for messages...`)
     })
 
@@ -111,6 +119,7 @@ export class AdapterDriver {
 
           if (handler.process === 'iterate_inputs') {
             // define lookup function
+            //. could do this before-hand somewhere - store .lookupFn
             // eg lookup: '($, part) => ($[part] || {}).default'
             console.log(`MQTT define lookup`, handler.lookup.toString())
             const lookup = eval(handler.lookup)
@@ -144,6 +153,7 @@ export class AdapterDriver {
             }
           } else {
             // ie process = 'iterate_message_contents'
+
             console.log('payload', payload)
             console.log('maps', handler.maps)
 
