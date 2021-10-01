@@ -4,7 +4,7 @@
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
-import { compileInputs, getEquationKeys } from './helpers.js'
+import { getMacros, compileInputs, getEquationKeys } from './helpers.js'
 
 // let cycleStart
 let keyvalues = {} // keyvalue store for yaml code to use - use 'let' so yaml code can reset it
@@ -26,7 +26,9 @@ export class AdapterDriver {
     //   const keys = [...maps.addr[addr]] // = ['has_current_job']
     // so can know what formulas need to be evaluated for some given addr
     const prefix = deviceId + '-'
-    const { augmentedInputs, maps } = compileInputs(inputs, prefix)
+    const macros = getMacros(prefix, 'default')
+    // const { augmentedInputs, maps } = compileInputs(inputs, prefix)
+    const { augmentedInputs, maps } = compileInputs(inputs, macros)
 
     // connect to mqtt broker/server
     console.log(`MQTT connecting to broker on ${url}...`)

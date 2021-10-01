@@ -1,11 +1,12 @@
 // helper fns for different drivers
 
 // define macros to be used by input/output yamls
-const getMacros = prefix => ({
-  // replace all occurrences of msg('foo') with ($['foo'] || {}).default or .value.
+export const getMacros = (prefix, accessor) => ({
+  // replace all occurrences of msg('foo') with ($['foo'] || {}).default or .value
   addr: {
     syntax: /msg\('(.*?)'\)/gm, // eg msg('foo')
-    transform: `($['$1'] || {}).default`, // $1 is the matched substring //...
+    // transform: `($['$1'] || {}).default`, // $1 is the matched substring
+    transform: `($['$1'] || {}).${accessor}`, // $1 is the matched substring //...
     extract: /\$\['(.*?)'\]/gm, // eg $['foo']
   },
   // replace all occurrences of <foo> with cache.get('pr1-foo').
@@ -48,18 +49,18 @@ export function precompile(code, macros) {
   return { js, refs }
 }
 
-export function compile(code, prefix) {
-  const macros = getMacros(prefix)
+export function compile(code, macros) {
+  // const macros = getMacros(prefix)
   const { js, refs } = precompile(code, macros)
   console.log({ js, refs })
   return { js, refs }
 }
 
-export function compileInputs(inputs, prefix) {
+export function compileInputs(inputs, macros) {
   const augmentedInputs = {}
   const maps = {}
   for (let [key, code] of Object.entries(inputs)) {
-    const { js, refs } = compile(code, prefix)
+    const { js, refs } = compile(code, macros)
     console.log(key)
     console.log(code)
     console.log(js)

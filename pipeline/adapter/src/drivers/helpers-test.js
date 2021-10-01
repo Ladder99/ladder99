@@ -1,6 +1,9 @@
-import { compile, compileInputs, getEquationKeys } from './helpers.js'
+// test helper fns
+
+import { getMacros, compileInputs, getEquationKeys } from './helpers.js'
 
 const prefix = 'pr1-'
+const accessor = 'default'
 
 // ~inputs.yaml
 const inputs = {
@@ -16,32 +19,25 @@ const payload = [{ address: '%Z61.0', value: { carton_quantity: 5 } }]
 const cache = {}
 const $ = {}
 
-// if (0) {
-//   const code = `msg('foo') + <bar>`
-//   const { js, refs } = compile(code, prefix)
-//   console.log(code)
-//   console.log(js)
-//   console.log(refs)
-// }
+// compile inputs yaml
+const macros = getMacros(prefix, accessor)
+// const { augmentedInputs, maps } = compileInputs(inputs, prefix)
+const { augmentedInputs, maps } = compileInputs(inputs, macros)
+// console.log(augmentedInputs)
+// console.log(maps)
 
-{
-  const { augmentedInputs, maps } = compileInputs(inputs, prefix)
-  // console.log(augmentedInputs)
-  // console.log(maps)
+// get set of keys for eqns we need to execute
+const equationKeys = getEquationKeys(payload, maps)
+console.log('equationKeys', equationKeys)
 
-  // get set of keys for eqns we need to execute
-  const equationKeys = getEquationKeys(payload, maps)
-  console.log('equationKeys', equationKeys)
+// initialize $ dictionary
+payload.forEach(item => ($[item.address] = item))
 
-  // initialize $ dictionary
-  payload.forEach(item => ($[item.address] = item))
-
-  // iterate over set of eqnkeys and evaluate each
-  for (let equationKey of equationKeys) {
-    const aug = augmentedInputs[equationKey]
-    const value = aug.fn(cache, $)
-    cache[equationKey] = value
-  }
-
-  console.log('cache', cache)
+// iterate over set of eqnkeys and evaluate each
+for (let equationKey of equationKeys) {
+  const aug = augmentedInputs[equationKey]
+  const value = aug.fn(cache, $)
+  cache[equationKey] = value
 }
+
+console.log('cache', cache)
