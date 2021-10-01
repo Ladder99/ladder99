@@ -109,3 +109,20 @@ export function getEquationKeys(payload, maps) {
   }
   return equationKeys
 }
+
+// get equation keys ii
+// iterate over eqnkeys,
+// lookup what other eqns are associated with each eqnkey
+export function getEquationKeys2(eqnkeys, maps) {
+  const equationKeys = new Set()
+  for (const eqnkey of eqnkeys) {
+    // const set = maps.addr[address]
+    const set = maps.cache[eqnkey]
+    if (set) {
+      for (let key of set) {
+        equationKeys.add(key)
+      }
+    }
+  }
+  return equationKeys
+}

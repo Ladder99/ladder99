@@ -4,7 +4,7 @@
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
-import { getEquationKeys } from '../helpers.js'
+import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 
 // let cycleStart
 let keyvalues = {} // keyvalue store for yaml code to use - use 'let' so yaml code can reset it
@@ -158,20 +158,29 @@ export class AdapterDriver {
             console.log('maps', handler.maps)
 
             // get set of keys for eqns we need to execute based on the payload
-            // eg ['has_current_job', 'job_meta', ...]
-            const equationKeys = getEquationKeys(payload, handler.maps)
-            console.log('eqnkeys', equationKeys)
+            // eg set{'has_current_job', 'job_meta', ...}
+            let equationKeys = getEquationKeys(payload, handler.maps)
 
-            // evaluate each eqn once, and put the results in the cache.
-            //. will need to recurse to handle cascade of updates. limit to some depth.
-            for (let equationKey of equationKeys) {
-              const aug = handler.augmentedInputs[equationKey]
-              const value = aug.fn(cache, $)
-              if (value !== undefined) {
-                const cacheId = deviceId + '-' + equationKey // eg 'pa1-fault_count'
-                cache.set(cacheId, value) // save to the cache - may send shdr to tcp
+            let depth = 0
+
+            do {
+              console.log('depth', depth)
+              console.log('eqnkeys', equationKeys)
+              const equationKeys2 = new Set()
+              // evaluate each eqn once, and put the results in the cache.
+              //. will need to recurse to handle cascade of updates. limit to some depth.
+              for (let equationKey of equationKeys) {
+                const input = handler.augmentedInputs[equationKey]
+                const value = input.fn(cache, $)
+                if (value !== undefined) {
+                  const cacheId = deviceId + '-' + equationKey // eg 'pa1-fault_count'
+                  cache.set(cacheId, value) // save to the cache - may send shdr to tcp
+                  equationKeys2.add(equationKey)
+                }
               }
-            }
+              equationKeys = getEquationKeys2(equationKeys2, handler.maps)
+              depth += 1
+            } while (equationKeys.size > 0 && depth < 3)
           }
 
           // console.log('cache', cache._map) // print contents of cache
