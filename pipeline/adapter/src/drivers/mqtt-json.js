@@ -181,7 +181,7 @@ export class AdapterDriver {
               }
               equationKeys = getEquationKeys2(equationKeys2, handler.maps)
               depth += 1
-            } while (equationKeys.size > 0 && depth < 3)
+            } while (equationKeys.size > 0 && depth < 4)
           }
 
           // console.log('cache', cache._map) // print contents of cache

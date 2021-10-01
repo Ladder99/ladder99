@@ -129,8 +129,14 @@ outputs:
   - key: pcrem_pr
     value: <pcrem_pr>
 
+  - key: pcrem_calc
+    value: <pcrem_calc>
+
   - key: pcrem_plc
     value: <pcrem_plc>
+
+  - key: pcall
+    value: <pcall>
 
   - key: dc
     value: <date_code>

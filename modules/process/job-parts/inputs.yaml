@@ -148,6 +148,9 @@ handlers:
       # count of kits that have crossed eye2 on conveyer
       kits_off: =msg('%Z61.6')
 
+      # pieces remaining
+      pcrem_calc: =<carton_quantity> - <kits_off>
+
       # used in outputs yaml
       first_eye_broken: =(<kits_on> > 0)
 
@@ -188,7 +191,7 @@ handlers:
 
       # estimate time of completion
       # convert new date to milliseconds, add cycletimeavg * npartsremaining, convert to iso string
-      target: '=<cycle_time_avg> ? new Date((new Date()).getTime() + Number(<cycle_time_avg>) * 1).toISOString() : undefined'
+      target: '=(<cycle_time_avg> && <pcrem_calc>) ? new Date((new Date()).getTime() + <cycle_time_avg> * <pcrem_calc>).toISOString() : undefined'
 
       # get lastest cycle times to show in dataset
       # note: the reference to <kits_off> causes this to be recalculated when that changes.
@@ -243,6 +246,9 @@ handlers:
       # --------------------------------------------------------
       # part occurrences
       # --------------------------------------------------------
+
+      # partcount total done
+      pcall: =<kits_off>
 
       # aka dc
       # this returns undefined when no job_meta avail, which is a no-op, so leaves value as is
