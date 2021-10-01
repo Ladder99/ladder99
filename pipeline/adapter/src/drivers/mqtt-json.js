@@ -144,11 +144,13 @@ export class AdapterDriver {
             }
           } else {
             // ie process = 'iterate_message_contents'
+            console.log('payload', payload)
+            console.log('maps', handler.maps)
 
             // get set of keys for eqns we need to execute based on the payload
             // eg ['has_current_job', 'job_meta', ...]
             const equationKeys = getEquationKeys(payload, handler.maps)
-            console.log(equationKeys)
+            console.log('eqnkeys', equationKeys)
 
             // evaluate each eqn once, and put the results in the cache.
             //. will need to recurse to handle cascade of updates. limit to some depth.

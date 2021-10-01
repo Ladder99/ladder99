@@ -99,8 +99,8 @@ export function addToMaps(maps, key, refs) {
 export function getEquationKeys(payload, maps) {
   const equationKeys = new Set()
   for (const item of payload) {
-    const { addr } = item
-    const set = maps.addr[addr]
+    const { address } = item
+    const set = maps.addr[address]
     if (set) {
       for (let key of set) {
         equationKeys.add(key)
