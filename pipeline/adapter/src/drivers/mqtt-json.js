@@ -106,9 +106,10 @@ export class AdapterDriver {
 
           // run initialize handler
           // eg can assign payload values to a dictionary $ here for fast lookups.
-          // eg initialize: 'payload.forEach(item => $[item.keys[0]] = item)'
+          // eg initialize: 'payload.forEach(item => $[item.address] = item)'
           console.log(`MQTT initialize handler`)
-          let $ = {} // a variable representing payload data
+          // let $ = {} // a variable representing payload data
+          const $ = {} // a variable representing payload data
           eval(handler.initialize)
           // console.log($)
 
@@ -165,6 +166,7 @@ export class AdapterDriver {
 
             // get set of keys for eqns we need to execute based on the payload
             // eg set{'has_current_job', 'job_meta', ...}
+            //. call this dependencies = getDependencies ... ? is this getReferences?
             let equationKeys = getEquationKeys(payload, handler.maps)
 
             let depth = 0
@@ -178,7 +180,7 @@ export class AdapterDriver {
                 const input = handler.augmentedInputs[equationKey]
                 console.log('input.fn', input.fn.toString())
                 const value = input.fn(cache, $, keyvalues) // run the input fn
-                console.log('input.fn()', value)
+                console.log('input.fn() -->', value)
                 if (value !== undefined) {
                   const cacheId = deviceId + '-' + equationKey // eg 'pa1-fault_count'
                   cache.set(cacheId, value) // save to the cache - may send shdr to tcp

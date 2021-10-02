@@ -3,16 +3,17 @@
 # define cache inputs - mqtt topics, how to parse them and put them into cache.
 # see outputs.yaml for cache output as shdr.
 
-# adapter subscribes to mqtt topics from devices.
-# mqtt broker sends data to adapter.
-# adapter parses messages, writes values to cache, which outputs shdr.
+# the ladder99 adapter subscribes to topics from an mqtt broker.
+# the mqtt broker sends data from the device(s) to adapter,
+# adapter parses messages, writes values to cache, which may output shdr
+# to the mtconnect agent.
 
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/mqtt-json.js.
 
 # define connect handler
 connect:
   # subscribe to these topics
-  # can use ${deviceId} in topics
+  # can use ${deviceId} in topic names
   subscribe:
     - topic: l99/ccs/evt/query
     - topic: l99/ccs/evt/status
@@ -21,12 +22,12 @@ connect:
   publish:
     - topic: l99/ccs/cmd/query
       message: '{}'
-  # define any static one-time cache values to set
+  # define any one-time cache values to set
   static:
     # this sets the cache value at eg 'kl1-procname' to 'KITTING'
     procname: KITTING
-    # initialize keyvalues store for cycle times
-    keyvalues: {}
+    # # initialize keyvalues store for cycle times
+    # keyvalues: {}
 
 # define message topic handlers
 handlers:
@@ -36,14 +37,16 @@ handlers:
   l99/ccs/evt/status:
     # make '$' the message payload dictionary and add faultKeys for quick
     # lookups of faults - payload.faults is a dictionary of faults.
-    #. initialize: status_initializer
     initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
-    # define lookup function, which returns a value given a part calculation.
-    lookup: '($, part) => eval(part)'
+    # define lookup function, which returns a value given some js code.
+    # lookup: '($, part) => eval(part)'
+    lookup: '($, js) => eval(js)'
+    # define algorithm to process inputs
+    #. this does what?
     process: iterate_inputs
-    # define key-part pairs, where key is mapped to a cache id,
-    # eg 'status-connection' => 'pa1-status_connection',
-    # and part is some javascript calculation code to determine its value.
+    # define key-js pairs
+    # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
+    # 'js' is some javascript calculation code to determine its value.
     inputs:
       status_connection: $.connection
       status_build_no: $.build_no
@@ -67,11 +70,9 @@ handlers:
     unsubscribe:
       - topic: l99/ccs/evt/query
 
-    # $ is a way to do quick lookups on the mqtt payload.
+    # $ is a variable declared as `const $ = {}` before this code is executed.
+    # it lets you do quick lookups on the mqtt payload.
     # the payload is an array of items like [{ address, keys, default, value }, ...].
-    # $ is a variable declared as `let $ = {}` before this code is executed.
-    #. hide this code from user in plugin code - eg have keywords for fn to use -
-    # initialize: query_initializer
     initialize: 'payload.forEach(item => $[item.address] = item)'
 
     # accessor to use to get value from message item
@@ -80,18 +81,20 @@ handlers:
 
     # algorithm to process inputs
     #. this does what?
+    #
     process: iterate_message_contents
 
     # define key-code pairs
     # 'key' defines the cache id, with id = {deviceId}-{key}, eg 'pa1-availability'.
     # 'code' defines the part of the payload to get using the above defined
     # lookup fn, eg for code: =msg('%I0.0'), the value is obtained with msg('%I0.0').
-    # then calls cache.set(id, value), eg cache.set('pa1-printer_ribbon_low', 0).
+    # then calls cache.set(id, value), eg cache.set('pa1-availability', 0).
     # this might trigger SHDR output to be sent to the mtconnect agent,
     # according to the outputs defined in outputs.yaml.
     # the & syntax saves this list for later, as the read message handler
     # uses the same pairs.
     #. rename to codes or sthing - confusing having two 'inputs'
+    #
     inputs: &queryInputs
       # --------------------------------------------------------
       # process occurrence
