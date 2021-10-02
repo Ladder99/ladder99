@@ -32,7 +32,8 @@ export const getMacros = (prefix, accessor) => ({
 // }
 export function compile(code, macros) {
   console.log(`compile`, code)
-  let js = code.slice(1)
+  // let js = code.slice(1) // ditch '='
+  let js = code
   let refs = {}
   for (let macroName of Object.keys(macros)) {
     const macro = macros[macroName]

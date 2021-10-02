@@ -100,7 +100,8 @@ handlers:
       # used in outputs.yaml for funcmode
       # this looks up %Z61.0 in the $ dictionary, which indexes the message addresses
       # this value is true or false, so both will be written to the cache.
-      has_current_job: "=!!$['%Z61.0']" # converts object to true, undefined to false
+      # note: !! is javascript syntax to convert any value from truthy to true/false.
+      has_current_job: "!!$['%Z61.0']" # converts object to true, undefined to false
 
       # get job meta data from kit label
       # this writes a value to the cache at eg key 'kl1-job_meta'.
@@ -114,18 +115,18 @@ handlers:
       # job_meta: '%Z61.0'
       # we need to pull out .default OR .value, depending on which handler this is
       # hence the msg lookup function def above.
-      job_meta: =msg('%Z61.0')
+      job_meta: msg('%Z61.0')
 
       #. how specify printer assoc with this line?
       # need to specify pr1, pr2, pr3, pr4 etc
       # setup.yaml could specify? or part of the xml model?
       # piece_count_at_print_apply: |
-      #   =(<job_meta> || {}).carton_quantity - cache.get('pr1-labels_remaining')
+      #   (<job_meta> || {}).carton_quantity - cache.get('pr1-labels_remaining')
 
       # get value for pctarg/pctarget
       # <foo> is a cache lookup, eg cache.get('kl1-foo')
       # if job_meta is undefined, this expression is undefined, and the cache won't be updated.
-      carton_quantity: =(<job_meta> || {}).carton_quantity
+      carton_quantity: (<job_meta> || {}).carton_quantity
 
       # check if eye1 or eye2 counts changed, set flags
       # msg('Z61.5') gives you the part count in the CURRENT message, if any
@@ -138,32 +139,32 @@ handlers:
       # note: if this address is NOT in the current message, the value is undefined,
       # so the cache value is NOT updated.
       #. will this fire if get 50 twice in a row?
-      kits_on: =msg('%Z61.5')
+      kits_on: msg('%Z61.5')
 
       # count of kits that have crossed eye2 on conveyer
-      kits_off: =msg('%Z61.6')
+      kits_off: msg('%Z61.6')
 
       # pieces remaining
-      pcrem_calc: =<carton_quantity> - <kits_off>
+      pcrem_calc: <carton_quantity> - <kits_off>
 
       # used in outputs yaml
-      first_eye_broken: =(<kits_on> > 0)
+      first_eye_broken: (<kits_on> > 0)
 
       # calculate cycle time for kit to go from eye1 to eye2
 
       # clear the keyvalues dict with cycle times
       # don't care about the cache key here, just want to run the code
-      reset_key_values: '=<job_meta> ? Object.keys(keyvalues).forEach(key => delete keyvalues[key]) : undefined'
+      reset_key_values: '<job_meta> ? Object.keys(keyvalues).forEach(key => delete keyvalues[key]) : undefined'
 
       # don't care about the cache key here, just want to assign something to keyvalue store
-      start_cycle_timer: =keyvalues[<kits_on>] = { start:new Date(), end:null, delta:null}
+      start_cycle_timer: keyvalues[<kits_on>] = { start:new Date(), end:null, delta:null}
 
       # get cycle time when kits_off count changes
       # note: the expression is prefixed with '(cache, $, keyvalues) =>',
       # so need to return the final value.
       # otherwise, the block would evaluate to its last expression, as in lisp.
       cycle_time: |
-        ={
+        {
           const koff = keyvalues[<kits_off>] || {};
           console.log('koff', koff)
           koff.end = new Date();
@@ -175,7 +176,7 @@ handlers:
       # the reference to <kits_off> forces a recalc when that changes.
       # note: dividing by objs.length gives NaN if it's zero, which is what we want
       cycle_time_avg: |
-        ={
+        {
           <kits_off>;
           const objs = Object.values(keyvalues);
           const avg = objs
@@ -185,12 +186,12 @@ handlers:
         }
 
       # estimated time remaining
-      time_remaining: =<cycle_time_avg> * <pcrem_calc>
+      time_remaining: <cycle_time_avg> * <pcrem_calc>
 
       # estimate time of completion
       # convert jobstart time to milliseconds, add cycletimeavg * npartsremaining, convert to iso string
-      target: '=(<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <cycle_time_avg> * <pcrem_calc>).toISOString() : undefined'
-      # target: '=(<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <time_remaining>).toISOString() : undefined'
+      target: '(<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <cycle_time_avg> * <pcrem_calc>).toISOString() : undefined'
+      # target: '(<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <time_remaining>).toISOString() : undefined'
 
       # get lastest cycle times to show in dataset
       # note: the reference to <kits_off> causes this to be recalculated when that changes.
@@ -201,7 +202,7 @@ handlers:
       # 2014-09-29T23:59:33.460470Z|vars|:MANUAL v5=1 v6=2
       # This will remove all the old values from the set and set the current set.
       cycle_times: |
-        ={
+        {
           <kits_off>;
           const kv = Object.entries(keyvalues);
           const dataitems = kv
@@ -211,49 +212,49 @@ handlers:
           return ':MANUAL ' + dataitems;
         }
 
-      pieces_in_assembly: =<kits_on> - <kits_off> # kits on assy line
-      pieces_completed: =<kits_off> # kits finished
-      pieces_began: =<kits_on> # kits work began
+      pieces_in_assembly: <kits_on> - <kits_off> # kits on assy line
+      pieces_completed: <kits_off> # kits finished
+      pieces_began: <kits_on> # kits work began
 
       # current job done flag, pieces remaining reached zero
       #. need explicit true here, so undefined -> false (undefined would leave this as true)
-      job_complete: =msg('%Z61.3') === true
+      job_complete: msg('%Z61.3') === true
 
       # kit assembly part number, can be empty string
-      # job_current: =<has_current_job> && <job_meta>.kit_number
-      # job_current: '=<job_changed> ? <job_meta>.kit_number : undefined'
-      job_current: =(<job_meta> || {}).kit_number
+      # job_current: <has_current_job> && <job_meta>.kit_number
+      # job_current: '<job_changed> ? <job_meta>.kit_number : undefined'
+      job_current: (<job_meta> || {}).kit_number
 
       # compare cache to incoming data
       # this is truthy when get new job_meta values, undefined otherwise
       #.. does this go to false?
       # cache.get('kl1-job_meta')
-      job_changed: =<job_meta>
+      job_changed: <job_meta>
 
       # assign new uuid's and time on job change
       # returns undefined to leave value the same
-      part_uuid: '=<job_changed> ? uuid() : undefined'
-      process_uuid: '=<job_changed> ? uuid() : undefined'
-      job_start: '=<job_changed> ? new Date().toISOString() : undefined'
+      part_uuid: '<job_changed> ? uuid() : undefined'
+      process_uuid: '<job_changed> ? uuid() : undefined'
+      job_start: '<job_changed> ? new Date().toISOString() : undefined'
 
       # update sales order if available
-      salesord: =(<job_meta> || {}).sales_order_number
+      salesord: (<job_meta> || {}).sales_order_number
 
       # #. data coming from skid label, ChrisE needs to define address
       #. is this the salesqueue.dictionary? so multiple purchase orders?
-      # purchord: =($['%Z61.x'] || {}).purchase_order_number
-      # purchord: =(msg('%Z61.13') || {}).purchase_order
+      # purchord: ($['%Z61.x'] || {}).purchase_order_number
+      # purchord: (msg('%Z61.13') || {}).purchase_order
 
       # --------------------------------------------------------
       # part occurrences
       # --------------------------------------------------------
 
       # partcount total done
-      pcall: =<kits_off>
+      pcall: <kits_off>
 
       # aka dc
       # this returns undefined when no job_meta avail, which is a no-op, so leaves value as is
-      date_code: =(<job_meta> || {}).assembled_date
+      date_code: (<job_meta> || {}).assembled_date
 
   # ----------------------------------------------------------------------------
   # handle read messages

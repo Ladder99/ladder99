@@ -108,9 +108,9 @@ export class AdapterDriver {
           // run initialize handler
           // eg can assign payload values to a dictionary $ here for fast lookups.
           // eg initialize: 'payload.forEach(item => $[item.address] = item)'
+          // eg initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
           console.log(`MQTT initialize handler`)
-          // let $ = {} // a variable representing payload data
-          const $ = {} // a variable representing payload data
+          let $ = {} // a variable representing payload data - must be let not const
           eval(handler.initialize)
           // console.log($)
 
