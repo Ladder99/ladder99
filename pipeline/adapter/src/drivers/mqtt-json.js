@@ -88,11 +88,9 @@ export class AdapterDriver {
       // sets payload as variable - used by handler.initialize
       const payload = JSON.parse(message)
 
-      // iterate over message handlers - handlerEntries is an array of [topic, handler]
-      // eg ['l99/ccs/evt/query', { unsubscribe, initialize, definitions, inputs, ... }]
-      // const handlerEntries = Object.entries(inputs.handlers) || []
+      // iterate over message handlers - array of [topic, handler]
+      // eg [['l99/ccs/evt/query', { unsubscribe, initialize, definitions, inputs, ... }], ...]
       let msgHandled = false
-      // handlerEntries.forEach(([topic, handler]) => {
       for (let [topic, handler] of Object.entries(inputs.handlers)) {
         topic = replaceDeviceId(topic)
 
@@ -124,7 +122,7 @@ export class AdapterDriver {
             // iterate over expressions - an array of [key, expression],
             // eg[['fault_count', '%M55.2'], ...]
             // evaluate each expression and add value to cache.
-            //. this should be like the other process - use msg('foo'), calculations,
+            //. this could be like the other process - use msg('foo'), calculations,
             // then would be reactive instead of evaluating each expression, and unifies code.
             console.log(`MQTT iterate over expressions`)
             const pairs = Object.entries(handler.expressions || {})
