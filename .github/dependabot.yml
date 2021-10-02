@@ -1,0 +1,30 @@
+version: 2
+updates:
+  - package-ecosystem: 'npm'
+    directory: pipeline/adapter
+    schedule:
+      interval: 'daily'
+    commit-message:
+      # Prefix all commit messages with "npm"
+      prefix: 'npm'
+
+  - package-ecosystem: 'npm'
+    directory: pipeline/compiler
+    schedule:
+      interval: 'daily'
+    commit-message:
+      prefix: 'npm'
+
+  - package-ecosystem: 'npm'
+    directory: pipeline/recorder
+    schedule:
+      interval: 'daily'
+    commit-message:
+      prefix: 'npm'
+
+  - package-ecosystem: 'npm'
+    directory: pipeline/relay
+    schedule:
+      interval: 'daily'
+    commit-message:
+      prefix: 'npm'
