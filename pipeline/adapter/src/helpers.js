@@ -56,25 +56,20 @@ export function compile(code, macros) {
   return { js, refs }
 }
 
-export function compileInputs(inputs, macros) {
-  console.log(`compileInputs`)
+export function compileExpressions(expressions, macros) {
+  console.log(`compileExpressions`)
   const augmentedExpressions = {}
   const maps = {}
-  for (let [key, code] of Object.entries(inputs)) {
-    // console.log({ key, code }) //.
-    // oh, code might be an object here with { code, js, refs, fn }
-    // because second time through with same inputs dict
-    if (typeof code === 'string' && code.startsWith('=')) {
-      const { js, refs } = compile(code, macros)
-      const fn = eval(js)
-      augmentedExpressions[key] = { code, js, fn, refs }
-      // inputs[key] = { code, js, fn, refs } // replace code with object
-      addToMaps(maps, key, refs)
-    }
+  for (let [key, expression] of Object.entries(expressions)) {
+    // if (typeof expression === 'string' && expression.startsWith('=')) {
+    const { js, refs } = compile(expression, macros)
+    const fn = eval(js) // define the fn
+    augmentedExpressions[key] = { expression, js, fn, refs }
+    addToMaps(maps, key, refs)
+    // }
   }
   console.log({ maps })
   return { augmentedExpressions, maps }
-  // return maps
 }
 
 // maps is eg {}

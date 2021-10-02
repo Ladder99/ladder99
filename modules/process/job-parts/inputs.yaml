@@ -1,11 +1,11 @@
 # inputs
 
-# define cache inputs - mqtt topics, how to parse them and put them into cache.
-# see outputs.yaml for cache output as shdr.
+# define inputs to cache
+# see outputs.yaml for cache outputs to mtconnect agent.
 
-# the ladder99 adapter subscribes to topics from an mqtt broker.
+# the ladder99 adapter subscribes to topics from an mqtt broker,
 # the mqtt broker sends data from the device(s) to adapter,
-# adapter parses messages, writes values to cache, which may output shdr
+# and adapter parses messages, writes values to cache, which may output shdr
 # to the mtconnect agent.
 
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/mqtt-json.js.
@@ -39,7 +39,6 @@ handlers:
     # lookups of faults - payload.faults is a dictionary of faults.
     initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
     # define lookup function, which returns a value given some js code.
-    # lookup: '($, part) => eval(part)'
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
     #. this does what?
@@ -47,7 +46,6 @@ handlers:
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
     # 'js' is some javascript calculation code to determine its value.
-    # inputs:
     expressions:
       status_connection: $.connection
       status_build_no: $.build_no
@@ -87,16 +85,12 @@ handlers:
     # define key-code pairs
     # 'key' defines the cache id, with id = {deviceId}-{key}, eg 'pa1-availability'.
     # 'code' defines the part of the payload to get using the above defined
-    # lookup fn, eg for code: =msg('%I0.0'), the value is obtained with msg('%I0.0').
-    # then calls cache.set(id, value), eg cache.set('pa1-availability', 0).
+    # lookup fn, eg for code=msg('%I0.0'), the value is obtained with msg('%I0.0').
+    # then calls cache.set(id, value), eg cache.set('pa1-availability', 'AVAILABLE').
     # this might trigger SHDR output to be sent to the mtconnect agent,
     # according to the outputs defined in outputs.yaml.
     # the & syntax saves this list for later, as the read message handler
     # uses the same pairs.
-    #. rename to codes or sthing - confusing having two 'inputs'
-    # call it equations? expressions? statements?
-    # i think expressions is the most accurate - you evaluate them
-    # inputs: &queryExpressions
     expressions: &queryExpressions
       # --------------------------------------------------------
       # process occurrence

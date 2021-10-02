@@ -1,13 +1,13 @@
 // test helper fns
 
-import { getMacros, compileInputs, getEquationKeys } from './helpers.js'
+import { getMacros, compileExpressions, getEquationKeys } from './helpers.js'
 
 // ~inputs.yaml
 const inputs = {
   handlers: {
     'l99/ccs/foo': {
       accessor: 'value',
-      inputs: {
+      expressions: {
         has_current_job: "=!!$['%Z61.0']",
         job_meta: "=msg('%Z61.0')",
         carton_quantity: '=(<job_meta> || {}).carton_quantity',
@@ -31,7 +31,7 @@ payload.forEach(item => ($[item.address] = item))
 // compile inputs yaml
 const handler = inputs.handlers['l99/ccs/foo']
 const macros = getMacros(prefix, handler.accessor)
-const maps = compileInputs(handler.inputs, macros)
+const maps = compileExpressions(handler.expressions, macros)
 console.log('maps', maps)
 
 // get set of keys for eqns we need to execute

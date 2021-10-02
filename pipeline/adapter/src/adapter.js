@@ -9,7 +9,7 @@ import net from 'net' // node lib for tcp
 // import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 import * as common from './common.js'
 import { Cache } from './cache.js'
-import { getMacros, compileInputs } from './helpers.js' //. move up
+import { getMacros, compileExpressions } from './helpers.js'
 
 // default server if none provided in model.yaml
 const defaultServer = { protocol: 'shdr', host: 'adapter', port: 7878 }
@@ -123,8 +123,8 @@ async function main() {
             // use like
             //   const keys = [...maps.addr['%Z61.0']] // = ['has_current_job', 'foo_bar']
             // so can know what formulas need to be evaluated for some given addr
-            const { augmentedExpressions, maps } = compileInputs(
-              handler.inputs,
+            const { augmentedExpressions, maps } = compileExpressions(
+              handler.expressions,
               macros
             )
             handler.augmentedExpressions = augmentedExpressions

@@ -9,7 +9,8 @@ import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 // let cycleStart
 //... move this into class
 //.. and make it a const - call it sthing else - data?
-// yamls could refer to it by `this.data.foo.bar = 3
+//. pass it into expression fns as this.data
+// then expressions could refer to it by eg `data.foo.bar = 3
 // see https://stackoverflow.com/questions/15189857/what-is-the-most-efficient-way-to-empty-a-plain-object-in-javascript
 // so `keyvalues={}` would create a new object and leave the original object as is,
 // ie not garbage collected.
@@ -33,7 +34,7 @@ export class AdapterDriver {
     // // so can know what formulas need to be evaluated for some given addr
     // const prefix = deviceId + '-'
     // const macros = getMacros(prefix, 'default')
-    // const { augmentedExpressions, maps } = compileInputs(inputs, macros)
+    // const { augmentedExpressions, maps } = compileExpressions(inputs, macros)
 
     // connect to mqtt broker/server
     console.log(`MQTT connecting to broker on ${url}...`)
@@ -113,44 +114,28 @@ export class AdapterDriver {
           eval(handler.initialize)
           // console.log($)
 
-          // // define lookup function
-          // // eg lookup: '($, part) => ($[part] || {}).default'
-          // console.log(`MQTT define lookup function`, handler.lookup.toString())
-          // const lookup = eval(handler.lookup)
-
-          // // call optional custom code
-          // if (handler.advice && advice.inputs) {
-          //   console.log(`Calling advice.inputs...`)
-          //   advice.inputs({ $, lookup })
-          // }
-
           if (handler.process === 'iterate_inputs') {
             // define lookup function
-            //. should do this before-hand somewhere - store .lookupFn
-            // eg lookup: '($, part) => ($[part] || {}).default'
+            // eg lookup: '($, js) => eval(js)'
+            //. do this before-hand somewhere and store as handler.lookupFn
             console.log(`MQTT define lookup`, handler.lookup.toString())
             const lookup = eval(handler.lookup)
 
-            // iterate over inputs - an array of [key, part], eg ['fault_count', '%M55.2'].
-            // if part is in payload, add it to the cache.
-            console.log(`MQTT iterate over inputs`)
-            // for (const [key, part] of Object.entries(handler.inputs || {})) {
-            for (const [key, part] of Object.entries(
-              handler.expressions || {}
-            )) {
-              const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
-              // const value = fn(cache, $, keyvalues) // may use `types` dict also
-              // console.log(`Got ${value} - set ${cacheId}...`)
-              // cache.set(cacheId, value) // save value to cache - may send shdr to tcp
-              // // } else {
+            // iterate over expressions - an array of [key, expression],
+            // eg[['fault_count', '%M55.2'], ...]
+            // evaluate each expression and add value to cache.
+            //. this should be like the other process - use msg('foo'), calculations,
+            // then would be reactive instead of evaluating each expression, and unifies code.
+            console.log(`MQTT iterate over expressions`)
+            const pairs = Object.entries(handler.expressions || {})
+            for (const [key, expression] of pairs) {
               // use the lookup function to get value from payload, if there
-              const value = lookup($, part)
-              // if we have the part in the payload, add it to the cache
+              const value = lookup($, expression)
               //. why do we have a guard here for undefined?
-              // what if need to reset a cache value ?
-              // i guess you'd have to pass value = 'UNAVAILABLE' explicitly?
+              // what if need to reset a cache value?
+              // you'd have to pass value 'UNAVAILABLE' explicitly?
               if (value !== undefined) {
-                console.log(`MQTT part '${part}' in payload - set ${cacheId}`)
+                const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
                 cache.set(cacheId, value) // save to the cache - may send shdr to agent
               }
             }
@@ -193,26 +178,6 @@ export class AdapterDriver {
           // console.log('cache', cache._map) // print contents of cache
           // console.log('keyvalues', keyvalues)
 
-          // // check for step transitions to get timing info
-          // //. genericize this, or let user write code
-          // //. use message time, not new Date()
-          // if (topic.includes('status')) {
-          //   const step = payload.step
-          //   if (step === 'Waiting') {
-          //     // nothing
-          //   } else if (step === 'Cycle_Start') {
-          //     cycleStart = new Date().getTime() // ms
-          //   } else if (step === 'Cycle_Finish') {
-          //     if (cycleStart) {
-          //       const cycleTime = (new Date().getTime() - cycleStart) / 1000 // sec
-          //       // cache.set(`${deviceId}/status-cycle_time`, { value: cycleTime }) // sec
-          //       // cache.set(`${deviceId}_status-cycle_time`, { value: cycleTime }) // sec
-          //       cache.set(`${deviceId}-status_cycle_time`, { value: cycleTime }) // sec
-          //       cycleStart = null
-          //     }
-          //   }
-          // }
-
           // subscribe to any topics
           for (const entry of handler.subscribe || []) {
             const topic = replaceDeviceId(entry.topic)
@@ -234,16 +199,3 @@ export class AdapterDriver {
     }
   }
 }
-
-// function compileInputs(inputs, deviceId) {
-//   const prefix = deviceId + '-'
-//   for (let handler of inputs.handlers) {
-//     const keys = Object.keys(handler.inputs)
-//     for (let key of keys) {
-//       const part = handler.inputs[key]
-//       const code = part.slice(1)
-//       const { js, refs } = compile(code, prefix)
-//       const fn1 = eval(js)
-//     }
-//   }
-// }
