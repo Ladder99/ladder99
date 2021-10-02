@@ -33,7 +33,7 @@ export class AdapterDriver {
     // // so can know what formulas need to be evaluated for some given addr
     // const prefix = deviceId + '-'
     // const macros = getMacros(prefix, 'default')
-    // const { augmentedInputs, maps } = compileInputs(inputs, macros)
+    // const { augmentedExpressions, maps } = compileInputs(inputs, macros)
 
     // connect to mqtt broker/server
     console.log(`MQTT connecting to broker on ${url}...`)
@@ -134,28 +134,24 @@ export class AdapterDriver {
             // iterate over inputs - an array of [key, part], eg ['fault_count', '%M55.2'].
             // if part is in payload, add it to the cache.
             console.log(`MQTT iterate over inputs`)
-            for (const [key, part] of Object.entries(handler.inputs || {})) {
+            // for (const [key, part] of Object.entries(handler.inputs || {})) {
+            for (const [key, part] of Object.entries(
+              handler.expressions || {}
+            )) {
               const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
-              // // const { code, value: valueFn } =
               // const value = fn(cache, $, keyvalues) // may use `types` dict also
               // console.log(`Got ${value} - set ${cacheId}...`)
-              // // cache.set(cacheId, { value }) // save value to cache - may send shdr to tcp
               // cache.set(cacheId, value) // save value to cache - may send shdr to tcp
               // // } else {
-              // const item = lookup($, part)
               // use the lookup function to get value from payload, if there
-              // console.log(`calling lookup with $,part`, $, part)
               const value = lookup($, part)
-              // console.log(`got value`, value)
               // if we have the part in the payload, add it to the cache
-              //. why do we have a guard here for undefined? what if need to reset a cache value?
-              //  i guess you'd have to pass item.value = 'UNAVAILABLE' explicitly?
-              // if (item && item.value !== undefined) {
+              //. why do we have a guard here for undefined?
+              // what if need to reset a cache value ?
+              // i guess you'd have to pass value = 'UNAVAILABLE' explicitly?
               if (value !== undefined) {
                 console.log(`MQTT part '${part}' in payload - set ${cacheId}`)
-                // item.receivedTime = receivedTime
-                // cache.set(cacheId, item) // save to the cache - may send shdr to tcp
-                cache.set(cacheId, value) // save to the cache - may send shdr to tcp
+                cache.set(cacheId, value) // save to the cache - may send shdr to agent
               }
             }
           } else {
@@ -166,7 +162,8 @@ export class AdapterDriver {
 
             // get set of keys for eqns we need to execute based on the payload
             // eg set{'has_current_job', 'job_meta', ...}
-            //. call this dependencies = getDependencies ... ? is this getReferences?
+            //. call this dependencies = getDependencies ... ?
+            // or is this references = getReferences ?
             let equationKeys = getEquationKeys(payload, handler.maps)
 
             let depth = 0
@@ -177,10 +174,11 @@ export class AdapterDriver {
               const equationKeys2 = new Set()
               // evaluate each eqn once, and put the results in the cache.
               for (let equationKey of equationKeys) {
-                const input = handler.augmentedInputs[equationKey]
-                console.log('input.fn', input.fn.toString())
-                const value = input.fn(cache, $, keyvalues) // run the input fn
-                console.log('input.fn() -->', value)
+                // const expression = handler.augmentedExpressions[equationKey]
+                const expression = handler.augmentedExpressions[equationKey]
+                console.log('expression.fn', expression.fn.toString())
+                const value = expression.fn(cache, $, keyvalues) // run the expression fn
+                console.log('expression.fn() -->', value)
                 if (value !== undefined) {
                   const cacheId = deviceId + '-' + equationKey // eg 'pa1-fault_count'
                   cache.set(cacheId, value) // save to the cache - may send shdr to tcp
@@ -189,7 +187,7 @@ export class AdapterDriver {
               }
               equationKeys = getEquationKeys2(equationKeys2, handler.maps)
               depth += 1
-            } while (equationKeys.size > 0 && depth < 4)
+            } while (equationKeys.size > 0 && depth < 5)
           }
 
           // console.log('cache', cache._map) // print contents of cache

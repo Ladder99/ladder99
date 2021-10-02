@@ -58,7 +58,7 @@ export function compile(code, macros) {
 
 export function compileInputs(inputs, macros) {
   console.log(`compileInputs`)
-  const augmentedInputs = {}
+  const augmentedExpressions = {}
   const maps = {}
   for (let [key, code] of Object.entries(inputs)) {
     // console.log({ key, code }) //.
@@ -67,13 +67,13 @@ export function compileInputs(inputs, macros) {
     if (typeof code === 'string' && code.startsWith('=')) {
       const { js, refs } = compile(code, macros)
       const fn = eval(js)
-      augmentedInputs[key] = { code, js, fn, refs }
+      augmentedExpressions[key] = { code, js, fn, refs }
       // inputs[key] = { code, js, fn, refs } // replace code with object
       addToMaps(maps, key, refs)
     }
   }
   console.log({ maps })
-  return { augmentedInputs, maps }
+  return { augmentedExpressions, maps }
   // return maps
 }
 
