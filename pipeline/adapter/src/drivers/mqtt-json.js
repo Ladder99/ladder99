@@ -7,6 +7,12 @@ import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 
 // let cycleStart
+//... move this into class
+//.. and make it a const - call it sthing else - data?
+// yamls could refer to it by `this.data.foo.bar = 3
+// see https://stackoverflow.com/questions/15189857/what-is-the-most-efficient-way-to-empty-a-plain-object-in-javascript
+// so `keyvalues={}` would create a new object and leave the original object as is,
+// ie not garbage collected.
 let keyvalues = {} // keyvalue store for yaml code to use - use 'let' so yaml code can reset it
 
 export class AdapterDriver {
@@ -119,7 +125,7 @@ export class AdapterDriver {
 
           if (handler.process === 'iterate_inputs') {
             // define lookup function
-            //. could do this before-hand somewhere - store .lookupFn
+            //. should do this before-hand somewhere - store .lookupFn
             // eg lookup: '($, part) => ($[part] || {}).default'
             console.log(`MQTT define lookup`, handler.lookup.toString())
             const lookup = eval(handler.lookup)
@@ -171,7 +177,7 @@ export class AdapterDriver {
               for (let equationKey of equationKeys) {
                 const input = handler.augmentedInputs[equationKey]
                 console.log('input.fn', input.fn.toString())
-                const value = input.fn(cache, $, keyvalues)
+                const value = input.fn(cache, $, keyvalues) // run the input fn
                 console.log('input.fn()', value)
                 if (value !== undefined) {
                   const cacheId = deviceId + '-' + equationKey // eg 'pa1-fault_count'

@@ -62,7 +62,8 @@ handlers:
   # handle query messages
   # ----------------------------------------------------------------------------
   l99/ccs/evt/query:
-    # unsubscribe after getting this message because this just sets the default values
+    # unsubscribe after getting this message because this just sets the default values -
+    # see l99/ccs/evt/read for getting the current values.
     unsubscribe:
       - topic: l99/ccs/evt/query
 
@@ -74,21 +75,15 @@ handlers:
     initialize: 'payload.forEach(item => $[item.address] = item)'
 
     # accessor to use to get value from message item
+    # eg `msg('%M56.1') becomes '(cache, $) => ($['%M56.1'] || {}).default'
     accessor: default
 
     # algorithm to process inputs
+    #. this does what?
     process: iterate_message_contents
 
-    # this wouldn't work
-    # see https://stackoverflow.com/questions/15189857/what-is-the-most-efficient-way-to-empty-a-plain-object-in-javascript
-    # so `keyvalues={}` would create a new object and leave the original object as is,
-    # ie not garbage collected.
-    # # when to reset keyvalues store
-    # reset_keyvalues: =<job_meta>
-
     # define key-code pairs
-    # 'key' defines the cache id, with id = {deviceId}-{key},
-    # eg for key='printer_ribbon_low', id = 'pa1-printer_ribbon_low'.
+    # 'key' defines the cache id, with id = {deviceId}-{key}, eg 'pa1-availability'.
     # 'code' defines the part of the payload to get using the above defined
     # lookup fn, eg for code: =msg('%I0.0'), the value is obtained with msg('%I0.0').
     # then calls cache.set(id, value), eg cache.set('pa1-printer_ribbon_low', 0).
@@ -143,6 +138,7 @@ handlers:
       # count of kits that have crossed eye1 on conveyer
       # note: if this address is NOT in the current message, the value is undefined,
       # so the cache value is NOT updated.
+      #. will this fire if get 50 twice in a row?
       kits_on: =msg('%Z61.5')
 
       # count of kits that have crossed eye2 on conveyer
@@ -231,6 +227,8 @@ handlers:
 
       # compare cache to incoming data
       # this is truthy when get new job_meta values, undefined otherwise
+      #.. does this go to false?
+      # cache.get('kl1-job_meta')
       job_changed: =<job_meta>
 
       # assign new uuid's and time on job change
@@ -265,6 +263,7 @@ handlers:
     # make $ a dictionary keyed on the item addresses
     initialize: 'payload.forEach(item => $[item.address] = item)'
     # accessor to use to get value from message item
+    # eg `msg('%M56.1') becomes '(cache, $) => ($['%M56.1'] || {}).value'
     accessor: value
     # how to process inputs
     process: iterate_message_contents
