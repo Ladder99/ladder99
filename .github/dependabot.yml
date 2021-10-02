@@ -2,6 +2,7 @@ version: 2
 updates:
   - package-ecosystem: 'npm'
     directory: pipeline/adapter
+    target-branch: 'develop'
     schedule:
       interval: 'daily'
     commit-message:
@@ -10,6 +11,7 @@ updates:
 
   - package-ecosystem: 'npm'
     directory: pipeline/compiler
+    target-branch: 'develop'
     schedule:
       interval: 'daily'
     commit-message:
@@ -17,6 +19,7 @@ updates:
 
   - package-ecosystem: 'npm'
     directory: pipeline/recorder
+    target-branch: 'develop'
     schedule:
       interval: 'daily'
     commit-message:
@@ -24,6 +27,7 @@ updates:
 
   - package-ecosystem: 'npm'
     directory: pipeline/relay
+    target-branch: 'develop'
     schedule:
       interval: 'daily'
     commit-message:
