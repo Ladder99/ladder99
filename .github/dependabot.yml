@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: 'npm'
-    directory: pipeline/adapter
+    directory: /pipeline/adapter
     target-branch: 'develop'
     schedule:
       interval: 'daily'
@@ -10,7 +10,7 @@ updates:
       prefix: 'npm'
 
   - package-ecosystem: 'npm'
-    directory: pipeline/compiler
+    directory: /pipeline/compiler
     target-branch: 'develop'
     schedule:
       interval: 'daily'
@@ -18,7 +18,7 @@ updates:
       prefix: 'npm'
 
   - package-ecosystem: 'npm'
-    directory: pipeline/recorder
+    directory: /pipeline/recorder
     target-branch: 'develop'
     schedule:
       interval: 'daily'
@@ -26,7 +26,7 @@ updates:
       prefix: 'npm'
 
   - package-ecosystem: 'npm'
-    directory: pipeline/relay
+    directory: /pipeline/relay
     target-branch: 'develop'
     schedule:
       interval: 'daily'
