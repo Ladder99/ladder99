@@ -9,7 +9,7 @@
 # value is javascript, evaluated by the cache in calculating the shdr output.
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo')
 
-# note: cache key references are ARBITRARY,
+# note: cache keys are ARBITRARY,
 # ie not necessarily the same as dataitem id OR name.
 # eg <status_step> references the cache value at 'kl1-status_step',
 # which was set in inputs.yaml, while the output key here is 'step',

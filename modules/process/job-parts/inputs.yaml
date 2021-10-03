@@ -10,7 +10,7 @@
 
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/mqtt-json.js.
 
-# note: cache key definitions are ARBITRARY,
+# note: cache keys are ARBITRARY,
 # ie not necessarily the same as dataitem id OR name.
 # eg the 'status_step' key references the cache value at 'kl1-status_step',
 # which is set below, while the output key in outputs.yaml is 'step',
