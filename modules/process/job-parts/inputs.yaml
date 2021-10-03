@@ -26,8 +26,6 @@ connect:
   static:
     # this sets the cache value at eg 'kl1-procname' to 'KITTING'
     procname: KITTING
-    # # initialize keyvalues store for cycle times
-    # keyvalues: {}
 
 # define message topic handlers
 handlers:
@@ -41,7 +39,7 @@ handlers:
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
-    #. this does what?
+    #. explain
     process: iterate_inputs
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
@@ -69,7 +67,7 @@ handlers:
     unsubscribe:
       - topic: l99/ccs/evt/query
 
-    # $ is a variable declared as `const $ = {}` before this code is executed.
+    # $ is a variable declared as `let $ = {}` before this code is executed.
     # it lets you do quick lookups on the mqtt payload.
     # the payload is an array of items like [{ address, keys, default, value }, ...].
     initialize: 'payload.forEach(item => $[item.address] = item)'
@@ -79,7 +77,7 @@ handlers:
     accessor: default
 
     # algorithm to process inputs
-    #. this does what?
+    #. explain
     process: iterate_message_contents
 
     # define key-code pairs
@@ -90,7 +88,7 @@ handlers:
     # this might trigger SHDR output to be sent to the mtconnect agent,
     # according to the outputs defined in outputs.yaml.
     # the & syntax saves this list for later, as the read message handler
-    # uses the same pairs.
+    # uses the same expressions.
     expressions: &queryExpressions
       # --------------------------------------------------------
       # process occurrence
@@ -110,9 +108,6 @@ handlers:
       # this will assign its value to job_meta,
       # otherwise value will be undefined, and cache.set will ignore it,
       # leaving any existing value there in the cache.
-      # this syntax would work, BUT we have other places where we need message refs,
-      # so make it more explicit - see below
-      # job_meta: '%Z61.0'
       # we need to pull out .default OR .value, depending on which handler this is
       # hence the msg lookup function def above.
       job_meta: msg('%Z61.0')
@@ -128,17 +123,10 @@ handlers:
       # if job_meta is undefined, this expression is undefined, and the cache won't be updated.
       carton_quantity: (<job_meta> || {}).carton_quantity
 
-      # check if eye1 or eye2 counts changed, set flags
-      # msg('Z61.5') gives you the part count in the CURRENT message, if any
-      # <kits_on> gives you the current value in the cache
-      #. do we need these though? change detection will be automatic
-      # kits_on_changed: =msg('Z61.5') !== undefined && (<kits_on> !== msg('Z61.5'))
-      # kits_off_changed: =msg('Z61.6') !== undefined && (<kits_off> !== msg('Z61.6'))
-
       # count of kits that have crossed eye1 on conveyer
       # note: if this address is NOT in the current message, the value is undefined,
       # so the cache value is NOT updated.
-      #. will this fire if get 50 twice in a row?
+      #. will this fire if get 50 twice in a row? check code - should ignore duplicates
       kits_on: msg('%Z61.5')
 
       # count of kits that have crossed eye2 on conveyer
@@ -154,6 +142,8 @@ handlers:
 
       # clear the keyvalues dict with cycle times
       # don't care about the cache key here, just want to run the code
+      #. instead, could have keyvalues.cycle_times = {}, then use
+      # keyvalues.cycle_times[<kits_on>] etc? would garbage collector work ok?
       reset_key_values: '<job_meta> ? Object.keys(keyvalues).forEach(key => delete keyvalues[key]) : undefined'
 
       # don't care about the cache key here, just want to assign something to keyvalue store
@@ -174,7 +164,7 @@ handlers:
 
       # calculate average cycle time for current job.
       # the reference to <kits_off> forces a recalc when that changes.
-      # note: dividing by objs.length gives NaN if it's zero, which is what we want
+      # note: dividing by objs.length gives NaN if it's zero, which is okay (?)
       cycle_time_avg: |
         {
           <kits_off>;
@@ -185,22 +175,23 @@ handlers:
           return avg;
         }
 
-      # estimated time remaining
+      # estimate time remaining
       time_remaining: <cycle_time_avg> * <pcrem_calc>
 
       # estimate time of completion
       # convert jobstart time to milliseconds, add cycletimeavg * npartsremaining, convert to iso string
-      target: '(<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <cycle_time_avg> * <pcrem_calc>).toISOString() : undefined'
-      # target: '(<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <time_remaining>).toISOString() : undefined'
+      # target: '(<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <cycle_time_avg> * <pcrem_calc>).toISOString() : undefined'
+      target: '(<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <time_remaining>).toISOString() : undefined'
 
       # get lastest cycle times to show in dataset
       # note: the reference to <kits_off> causes this to be recalculated when that changes.
+      # note: need :MANUAL in dataset string, otherwise agent holds onto all keyvalue pairs.
       # from cppagent readme:
-      # To clear the set, specify a resetTriggered value such as MANUAL or DAY by preceeding it with a colon : at the beginning of the line.
-      # 2014-09-29T23:59:33.460470Z|vars|:MANUAL
-      # This will remove all the values from the current set. The set can also be reset to a specific set of values:
-      # 2014-09-29T23:59:33.460470Z|vars|:MANUAL v5=1 v6=2
-      # This will remove all the old values from the set and set the current set.
+      #   To clear the set, specify a resetTriggered value such as MANUAL or DAY by preceeding it with a colon : at the beginning of the line.
+      #   2014-09-29T23:59:33.460470Z|vars|:MANUAL
+      #   This will remove all the values from the current set. The set can also be reset to a specific set of values:
+      #   2014-09-29T23:59:33.460470Z|vars|:MANUAL v5=1 v6=2
+      #   This will remove all the old values from the set and set the current set.
       cycle_times: |
         {
           <kits_off>;
@@ -221,18 +212,15 @@ handlers:
       job_complete: msg('%Z61.3') === true
 
       # kit assembly part number, can be empty string
-      # job_current: <has_current_job> && <job_meta>.kit_number
-      # job_current: '<job_changed> ? <job_meta>.kit_number : undefined'
       job_current: (<job_meta> || {}).kit_number
 
       # compare cache to incoming data
       # this is truthy when get new job_meta values, undefined otherwise
-      #.. does this go to false?
-      # cache.get('kl1-job_meta')
+      #. does this go to false? need explicit comparison to get true/false?
       job_changed: <job_meta>
 
       # assign new uuid's and time on job change
-      # returns undefined to leave value the same
+      # returning undefined will leave value the same
       part_uuid: '<job_changed> ? uuid() : undefined'
       process_uuid: '<job_changed> ? uuid() : undefined'
       job_start: '<job_changed> ? new Date().toISOString() : undefined'
@@ -253,7 +241,7 @@ handlers:
       pcall: <kits_off>
 
       # aka dc
-      # this returns undefined when no job_meta avail, which is a no-op, so leaves value as is
+      # this returns undefined when no job_meta avail, which is a no-op, so leaves value as is.
       date_code: (<job_meta> || {}).assembled_date
 
   # ----------------------------------------------------------------------------
@@ -266,6 +254,7 @@ handlers:
     # eg `msg('%M56.1') becomes '(cache, $) => ($['%M56.1'] || {}).value'
     accessor: value
     # how to process inputs
+    #. explain
     process: iterate_message_contents
     # reuse the query input list here with *, as the key-part pairs are the same
     # inputs: *queryExpressions
