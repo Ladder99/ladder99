@@ -10,6 +10,8 @@
 
 # this file is parsed by the adapter driver pipeline/adapter/src/drivers/mqtt-json.js.
 
+# note: cache keys are ARBITRARY - not necessarily same as dataitem id OR name.
+
 # define connect handler
 connect:
   # subscribe to these topics

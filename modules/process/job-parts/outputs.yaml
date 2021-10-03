@@ -9,6 +9,8 @@
 # value is javascript, evaluated by the cache in calculating the shdr output.
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo')
 
+# note: cache keys are ARBITRARY - not necessarily same as dataitem id OR name.
+
 # note: category is used to determine shdr representation.
 # only need to specify category if CONDITION.
 # only need to specify type if is MESSAGE.
