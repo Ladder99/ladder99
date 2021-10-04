@@ -1,7 +1,6 @@
 ---------------------------------------------------------------------
 -- migration script
 -- create tables and views
--- these are run by src/db.js on opening the db
 ---------------------------------------------------------------------
 
 ---------------------------------------------------------------------
@@ -28,6 +27,7 @@ CREATE TABLE IF NOT EXISTS meta (
 ---------------------------------------------------------------------
 -- nodes
 ---------------------------------------------------------------------
+-- stores devices, propertydefs
 -- note: Adding a primary key will automatically create a unique B-tree index
 -- on the column or group of columns listed in the primary key, and will force
 -- the column(s) to be marked NOT NULL.
@@ -42,7 +42,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS nodes_path ON nodes ((props->>'path'));
 ---------------------------------------------------------------------
 -- edges
 ---------------------------------------------------------------------
--- stores devices, propertydefs
+-- could store relations between nodes
 CREATE TABLE IF NOT EXISTS edges (
   from_id integer REFERENCES nodes,
   to_id integer REFERENCES nodes,
