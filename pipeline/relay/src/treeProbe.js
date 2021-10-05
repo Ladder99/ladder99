@@ -30,8 +30,9 @@ function recurse(el, objs, tag = '', parents = []) {
 
   // handle object with keyvalue pairs
   if (libapp.isObject(el)) {
-    // start object, which is a translation of the json element to something usable.
-    // tag is eg 'DataItem', parents is list of ancestors - will be deleted before return.
+    // make object, which translates the json element to something usable.
+    // tag is eg 'DataItem'
+    // parents is list of ancestors - will be deleted before return.
     let obj = { tag, parents }
 
     // add obj to return list if one of certain tags (eg DataItem)
