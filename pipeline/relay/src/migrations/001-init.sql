@@ -127,6 +127,8 @@ WHERE jsonb_typeof(value) = 'string';
 CREATE OR REPLACE VIEW devices AS
 SELECT
   nodes.node_id,
+  -- needed name to make a unique string when viewing multiple agents 
+  -- on the same device with the mazak endpoints.
   concat(nodes.props->>'name', ' (', nodes.props->>'uuid', ')') as name_uuid,
   nodes.props->>'name' as name,
   nodes.props->>'uuid' as uuid, 
