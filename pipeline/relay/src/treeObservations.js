@@ -15,10 +15,13 @@ export function getElements(json) {
   return elements
 }
 
+//.
 // const appendTags2 = libapp.getSet('Angle')
+
+//.
 const skipTags2 = libapp.getSet('')
 
-//. copypasted from treejs - fix
+//. copypasted from treeProbe.js - fix
 const ignore = () => {}
 const elementHandlers = {
   // handle attributes, eg { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }

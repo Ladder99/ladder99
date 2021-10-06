@@ -1,5 +1,29 @@
 import * as libapp from './libapp.js'
 
+//. add elements of this type to return list
+const appendTags = libapp.getSet('Device,DataItem') //. handle Description - add to Device obj?
+
+//. don't recurse down these elements - not interested in them
+const skipTags = libapp.getSet('Agent')
+
+// ignore these element types for path parts - don't add much info to the path
+const ignoreTags = libapp.getSet(
+  'Adapters,AssetCounts,Components,DataItems,Devices,Filters,Specifications'
+)
+
+//. assume for now there there is only one of these in path, so can just lower case them
+//. in future, do two passes to determine if need to uniquify them with nums or names?
+//. or use aliases table to refer by number or name or id to a propertydef
+const plainTags = libapp.getSet(
+  'Axes,Controller,EndEffector,Feeder,PartOccurrence,Path,Personnel,ProcessOccurrence,Resources,Systems'
+)
+
+// ignore these DataItem attributes - not necessary to identify an element,
+// are accounted for explicitly, or are redundant.
+const ignoreAttributes = libapp.getSet(
+  'category,type,subType,discrete,_key,tag,parents,id,unit,units,nativeUnits,device,name,compositionId'
+)
+
 // get flat list of elements from given json tree (just devices and dataitems)
 export function getElements(json) {
   const elements = []
@@ -16,9 +40,6 @@ const elementHandlers = {
   // handle text/value, eg value = 'Mill w/Smooth-G'
   _text: (obj, value) => (obj.value = value),
 }
-
-const appendTags = libapp.getSet('Device,DataItem') //. handle Description - add to Device obj?
-const skipTags = libapp.getSet('Agent')
 
 //
 
@@ -79,24 +100,6 @@ function recurse(el, objs, tag = '', parents = []) {
 }
 
 //----------------------------------------------------------
-
-// ignore these element types for path parts - don't add much info to the path
-const ignoreTags = libapp.getSet(
-  'Adapters,AssetCounts,Devices,DataItems,Components,Filters,Specifications'
-)
-
-//. assume for now there there is only one of these in path, so can just lower case them
-//. in future, do two passes to determine if need to uniquify them with nums or names?
-//. or use aliases table to refer by number or name or id to a propertydef
-const plainTags = libapp.getSet(
-  'Systems,Feeder,Resources,Personnel,EndEffector,Controller,Path,Axes'
-)
-
-// ignore these DataItem attributes - not necessary to identify an element,
-// are accounted for explicitly, or are redundant.
-const ignoreAttributes = libapp.getSet(
-  'category,type,subType,discrete,_key,tag,parents,id,unit,units,nativeUnits,device,name,compositionId'
-)
 
 // get path step for the given object
 // eg
