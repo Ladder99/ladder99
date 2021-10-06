@@ -178,8 +178,9 @@ function getParamsStep(params) {
 // eg 'x:SOME_TYPE' -> 'some-type'
 function getParamString(param) {
   // const str = param.replace('x:', '').replaceAll('_', '-').toLowerCase() // needs node15
-  const regexp = new RegExp('_', 'g')
-  const str = param.replace('x:', '').replace(regexp, '-').toLowerCase()
+  // const regexp = new RegExp('_', 'g')
+  // const str = param.replace('x:', '').replace(regexp, '-').toLowerCase()
+  const str = param.toLowerCase() // leave x: and underscores as is
   //. change chars AFTER '-' to uppercase - how do?
   // const str2 = str
   //   .split()
