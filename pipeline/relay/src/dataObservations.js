@@ -52,7 +52,8 @@ export class Observations extends Data {
     for (let obs of this.observations) {
       const node = indexes.objById[obs.dataItemId]
       if (node) {
-        const { device_id, property_id } = node
+        // const { device_id, property_id } = node
+        const { device_id, dataitem_id } = node
         // obs.value is always string, due to the way the xml is stored, like <value>10</value>
         //. better to use dataitem category to convert to number?
         //  ie SAMPLES are numeric, EVENTS are strings
@@ -60,7 +61,8 @@ export class Observations extends Data {
         const value = Number(obs.value) || JSON.stringify(obs.value)
         const record = {
           node_id: device_id,
-          property_id,
+          // property_id,
+          dataitem_id,
           time: obs.timestamp,
           value,
         }

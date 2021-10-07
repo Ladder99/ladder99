@@ -13,7 +13,7 @@ const ignoreTags = libapp.getSet(
 
 //. assume for now there there is only one of these in path, so can just lower case them
 //. in future, do two passes to determine if need to uniquify them with nums or names?
-//. or use aliases table to refer by number or name or id to a propertydef
+//. or use aliases table to refer by number or name or id to a dataitem
 const plainTags = libapp.getSet(
   'Axes,Controller,EndEffector,Feeder,PartOccurrence,Path,Personnel,ProcessOccurrence,Resources,Systems'
 )
@@ -273,14 +273,15 @@ export function getIndexes(nodes, objs) {
     indexes.nodeByPath[node.path] = node
   }
 
-  // assign device_id and property_id to dataitems
+  // assign device_id and dataitem_id to dataitems
   objs.forEach(obj => {
     // if (obj.type === 'DataItem') {
     // if (obj.node_type === 'PropertyDef') {
     if (obj.node_type === 'DataItem') {
       indexes.objById[obj.id] = obj
       obj.device_id = indexes.nodeByPath[obj.device].node_id
-      obj.property_id = indexes.nodeByPath[obj.path].node_id
+      // obj.property_id = indexes.nodeByPath[obj.path].node_id
+      obj.dataitem_id = indexes.nodeByPath[obj.path].node_id
     }
   })
   return indexes

@@ -115,16 +115,18 @@ export class Db {
     // write array of records
     // see https://stackoverflow.com/a/63167970/243392 - uses pgformat library
     try {
-      // const sql = `INSERT INTO history (node_id, property_id, time, value)
+      // const sql = `INSERT INTO history (node_id, dataitem_id, time, value)
       // VALUES ($1, $2, $3, $4::jsonb);`
       const values = records.map(record => [
         record.node_id,
-        record.property_id,
+        // record.property_id,
+        record.dataitem_id,
         record.time,
         record.value,
       ])
       const sql = pgFormat(
-        `INSERT INTO history (node_id, property_id, time, value) VALUES %L;`,
+        // `INSERT INTO history (node_id, property_id, time, value) VALUES %L;`,
+        `INSERT INTO history (node_id, dataitem_id, time, value) VALUES %L;`,
         values
       )
       console.log(sql.slice(0, 100))
