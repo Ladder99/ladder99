@@ -313,11 +313,10 @@ function getUniqueByPath(nodes) {
   return Object.values(d)
 }
 
-// get indexes for given nodes, elements
+// get indexes for given nodes and elements: nodeById, nodeByPath, elementById.
+// eg nodes = [{id:'foo', path:'bar'}, ...], elements = [{id:'foo'}, ...]
+// returns { nodeById: {foo:...}, nodeByPath: {bar:...}, elementById: {foo:...} }
 //. why do we need these 3 indexes?
-// eg nodes = [{id:'foo', path:'bar'}, {}, ...],
-// elements = [{id:'foo'}, ...]
-// returns { nodeById: {foo:{}}, nodeByPath: {bar:{}}, elementById: {foo:{}} }
 export function getIndexes(nodes, elements) {
   // initialize indexes
   const indexes = {
@@ -332,13 +331,10 @@ export function getIndexes(nodes, elements) {
     indexes.nodeByPath[node.path] = node
   }
 
+  // add elements
   elements.forEach(element => {
     if (element.node_type === 'DataItem') {
       indexes.elementById[element.id] = element
-      // //. do this in another fn/step
-      // // but do AFTER nodes have been written to db, as need node_id
-      // element.device_id = indexes.nodeByPath[element.device].node_id
-      // element.dataitem_id = indexes.nodeByPath[element.path].node_id
     }
   })
 

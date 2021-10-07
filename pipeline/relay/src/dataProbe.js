@@ -25,8 +25,8 @@ export class Probe extends Data {
       node.node_id = await db.add(node) // write db
     }
 
-    //. get indexes, { }
-    //. why do we need these 3 indexes?
+    // get indexes - nodeByPath, nodeById, elementById
+    //. why do we need those 3 indexes?
     this.indexes = tree.getIndexes(nodes, elements)
 
     // assign device_id and dataitem_id to dataitem elements
