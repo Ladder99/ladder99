@@ -4,16 +4,18 @@
 import * as libapp from './libapp.js'
 
 // these are the only elements we want to pick out of the probe xml.
-//. handle Description elements - add to Device obj
+//. add Description elements - will add to Device obj
 //. add Composition elements - will need for uniquification
 const appendTags = libapp.getSet('Device,DataItem')
+// const appendTags = libapp.getSet('Device,DataItem,Description,Composition')
 
 // don't recurse down these elements - not interested in them or their children
 const skipTags = libapp.getSet('Agent')
 
-// ignore these element types for path parts - they don't add much info to the path
+// ignore these element types for path parts - they don't add much info to the path,
+// as they're just containers.
 const ignoreTags = libapp.getSet(
-  'Adapters,AssetCounts,Components,DataItems,Devices,Filters,Specifications'
+  'Adapters,AssetCounts,Components,Compositions,Configurations,DataItems,Devices,Filters,Specifications'
 )
 
 //. assume for now there there is only one of these in path, so can just lower case them
@@ -147,7 +149,7 @@ function getPathStep(obj) {
   if (!obj) return ''
   if (ignoreTags.has(obj.tag)) return ''
   //. for plain tags, eg Path, will want to do two passes - first to see how many Paths there are,
-  // then to assign numbers to the steps, eg path vs path1, path2.
+  // then to assign numbers to the steps, eg path, path2, path3...
   if (plainTags.has(obj.tag)) return libapp.getCamelCase(obj.tag) // eg 'processOccurrence'
   let step = ''
   switch (obj.tag) {
