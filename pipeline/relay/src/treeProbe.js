@@ -131,8 +131,9 @@ function recurse(el, objs, tag = '', parents = []) {
 //----------------------------------------------------------
 
 // get path step for the given object
-// eg for a Device element, return 'Device(Mazak31, M41283-12A)'
-// for a DataItem element, return 'position'
+// eg,
+// for a Device element, return 'Device(Mazak31, M41283-12A)'
+// for a DataItem element, return 'position-actual'
 function getPathStep(obj) {
   let params = []
   if (!obj) return ''
@@ -142,19 +143,20 @@ function getPathStep(obj) {
   if (plainTags.has(obj.tag)) return obj.tag[0].toLowerCase() + obj.tag.slice(1)
   let step = ''
   switch (obj.tag) {
+    // case 'Agent':
     case 'Device':
-    case 'Agent':
-      // params = [obj.uuid] // standard says name may be optional in future versions, so use uuid
+      // standard says name may be optional in future versions, so could just use uuid, eg
       // step = `Device(${obj.uuid})`
-      // but for the mazak machines, uuid is not actually unique across the installation -
-      // they seem to be using it for model number. so name helps uniquify this.
+      // BUT for the mazak machines, uuid is not actually unique across the installation -
+      // they seem to be using it for model number.
+      // so name helps uniquify this.
       step = `Device(${obj.name}, ${obj.uuid})`
       break
     case 'DataItem':
       // add primary params
-      params = [obj.type]
-      if (obj.subType) params.push(obj.subType)
-      // add named params to help uniquify the path
+      params = [obj.type] // eg ['position']
+      if (obj.subType) params.push(obj.subType) // eg ['position', 'actual']
+      // add named params to help uniquify the path, eg ['temperature', 'statistic=average']
       let namedParams = []
       for (const key of Object.keys(obj)) {
         if (!ignoreAttributes.has(key)) {
@@ -192,8 +194,8 @@ function getPathStep(obj) {
   return step
 }
 
-// get step for the given array of params
-// eg ['position'] => '
+// get step string for the given array of params.
+// eg ['temperature', 'statistic=average'] => 'temperature-statistic=average'
 function getParamsStep(params) {
   const paramsStr =
     // params.length > 0 && params[0].length > 0
@@ -205,7 +207,7 @@ function getParamsStep(params) {
 }
 
 // get string representation of a param
-// eg 'x:SOME_TYPE' -> 'some-type'
+// eg 'x:SOME_TYPE' -> 'x:some_type'
 function getParamString(param) {
   // const str = param.replace('x:', '').replaceAll('_', '-').toLowerCase() // needs node15
   // const regexp = new RegExp('_', 'g')
@@ -224,12 +226,12 @@ function getParamString(param) {
 
 //------------------------------------------------------------------------
 
-// transform json to elements to object structures
-// eg
-//. json =
-//. elements =
-//. objects =
+// transform json tree to flat list of object structures,
+// filtering out unwanted elements.
+// eg for json = { MTConnectDevices: { Devices: { Device: [...] }}}
+// returns [ { node_type: 'Device', path, id, name, uuid }, { node_type: 'DataItem', path, id, name, category, type, subType }, ...]
 export function getObjects(json) {
+  //. elements =
   const elements = getElements(json)
   const objs = elements.map(element => {
     // const obj = { ...element } // copy object
@@ -246,9 +248,8 @@ export function getObjects(json) {
 }
 
 // get nodes from objects
-//. eg
-// objects =
-// nodes =
+//. eg for objects =
+// returns
 export function getNodes(objs) {
   let nodes = []
   for (const obj of objs) {
