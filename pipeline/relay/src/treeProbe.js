@@ -335,10 +335,13 @@ export function getIndexes(nodes, elements) {
   }
 
   // assign device_id and dataitem_id to dataitems
+  //. call this one dataItemByPath ?
+  //. but why element and not node?
   elements.forEach(element => {
     if (element.node_type === 'DataItem') {
       indexes.elementById[element.id] = element
-      //. do this elsewhere
+      //. do this in another fn/step
+      // but do AFTER nodes have been written to db, right? as need node_id
       element.device_id = indexes.nodeByPath[element.device].node_id
       element.dataitem_id = indexes.nodeByPath[element.path].node_id
     }
