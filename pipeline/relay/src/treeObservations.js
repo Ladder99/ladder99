@@ -1,3 +1,5 @@
+//. move these fns to dataObservations.js
+
 import * as libapp from './libapp.js'
 
 //.
@@ -34,9 +36,8 @@ const elementHandlers = {
 // traverse a tree of elements, adding them to an array
 //. refactor, add comments
 //. handle parents differently - do in separate pass?
+// element can be an object, an array, or an atomic value
 function recurse(element, elements, tag = '', parents = []) {
-  // element can be an object, an array, or an atomic value
-
   // handle object with keyvalue pairs
   if (libapp.isObject(element)) {
     // start object, which is a translation of the json element to something usable.

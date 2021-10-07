@@ -28,8 +28,18 @@ const ignoreAttributes = libapp.getSet(
   'id,name,type,subType,compositionId,category,discrete,_key,tag,parents,units,nativeUnits,device'
 )
 
-// get flat list of elements from given json tree (just devices and dataitems)
-//. eg
+// get flat list of elements from given json tree (just devices and dataitems).
+// eg json = { MTConnectDevices: { Header, Devices: { Agent, Device }}}
+// with Device = { _attributes, Description, DataItems, Components: { Axes, Controller, Systems }}
+// and DataItems = { DataItem: [ { _attributes: { id:'avail', type, category }}, ...]}
+//. returns [{
+//   node_type: 'DataItem',
+//   path: 'availability',
+//   id: 'avail',
+//   type: 'AVAILABILITY',
+//   category: 'EVENT',
+//   device: 'Device(VMC-3Axis, 000)'
+// }, ...]
 export function getElements(json) {
   const elements = []
   recurse(json, elements)
@@ -41,7 +51,10 @@ const ignore = () => {}
 
 //. explain / pull out fns
 const elementHandlers = {
-  // handle attributes, eg { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
+  // handle attributes - append attributes from the object `value` to obj
+  // eg obj = { foo: 123 }
+  // value = { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
+  // obj becomes { foo: 123, id: 'd1', name: 'M12346', uuid: 'M80104K162N'}
   _attributes: (obj, value) =>
     Object.keys(value).forEach(key => (obj[key] = value[key])),
   // handle text/value, eg value = 'Mill w/Smooth-G'
@@ -54,7 +67,9 @@ const elementHandlers = {
 //. refactor, add comments
 //. handle parents differently - do in separate pass?
 //. el can be an object, an array, or an atomic value, eg
-//. objs is
+//   { MTConnectDevices: { Header, Devices: { Agent, Device }}}
+//. objs is a growing flat list of objects we're interested in from the els,
+// eg [{ tag: 'DataItem', path, category, id, name }, ...]
 //. tag is
 //. parents is
 function recurse(el, objs, tag = '', parents = []) {
@@ -63,6 +78,7 @@ function recurse(el, objs, tag = '', parents = []) {
     // make object, which translates the json element to something usable.
     // tag is eg 'DataItem'
     // parents is list of ancestors - will be deleted before return.
+    // start object, eg { tag: 'DataItem', parents: [ {}, {}, {}, ... ] }
     let obj = { tag, parents }
 
     // add obj to return list if one of certain tags (eg Device, DataItem)
@@ -71,8 +87,12 @@ function recurse(el, objs, tag = '', parents = []) {
     // get keyvalue pairs, skipping some tags (eg Agent)
     const pairs = Object.entries(el).filter(([key]) => !skipTags.has(key))
 
-    // iterate over keyvalue pairs
-    // eg key='_attributes', value={ id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
+    // iterate over keyvalue pairs, handling each as needed
+    // eg if el is a Device element
+    // with key='_attributes', value={ id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
+    // this would add those attributes to the object obj,
+    // giving { tag, parents, id, name, uuid }.
+    // then recurse with the value as the element el.
     for (const [key, value] of pairs) {
       const handler = elementHandlers[key] || ignore // get keyvalue handler
       handler(obj, value) // adds value data to obj
@@ -83,11 +103,14 @@ function recurse(el, objs, tag = '', parents = []) {
     // get steps (path parts) for devices and dataitems
     if (tag === 'DataItem') {
       // save device path
-      obj.device = getPathStep(obj.parents[3])
+      obj.device = getPathStep(obj.parents[3]) // eg { tag, id, name, uuid }
       // save steps for rest of path to an array
       // will convert this to a full path string later
+      // eg ['axes', 'x', 'position-actual']
       obj.steps = [...obj.parents.slice(4), obj].map(getPathStep)
     } else {
+      // for non-dataitems (ie Devices), get steps array
+      // eg ['cnc1']
       obj.steps = [obj].map(getPathStep)
     }
 

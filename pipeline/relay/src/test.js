@@ -4,7 +4,7 @@
 
 import fs from 'fs' // node lib - filesystem
 import convert from 'xml-js' // https://github.com/nashwaan/xml-js
-import * as tree from './tree.js'
+import * as treeProbe from './treeProbe.js'
 import * as treeObservations from './treeObservations.js'
 import * as common from './common.js'
 
@@ -25,9 +25,12 @@ const folder = 'examples/vmc'
 
 // get probe xml
 const json = getJson(`${folder}/probe.xml`)
+// console.log(json)
+// console.log(json.MTConnectDevices.Devices.Device)
+console.log(json.MTConnectDevices.Devices.Device.DataItems.DataItem[0])
 
 // get objects (devices, all dataitems)
-const objs = tree.getObjects(json)
+const objs = treeProbe.getObjects(json)
 console.log(objs)
 
 // // get nodes (devices, unique propdefs)
