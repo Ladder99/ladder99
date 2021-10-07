@@ -3,20 +3,22 @@
 
 import * as libapp from './libapp.js'
 
-//. add elements of this type to return list
+// these are the only elements we want to pick out of the probe xml.
 //. handle Description elements - add to Device obj
+//. add Composition elements - need for uniquification
 const appendTags = libapp.getSet('Device,DataItem')
 
-// don't recurse down these elements - not interested in them
+// don't recurse down these elements - not interested in them or their children
 const skipTags = libapp.getSet('Agent')
 
-// ignore these element types for path parts - don't add much info to the path
+// ignore these element types for path parts - they don't add much info to the path
 const ignoreTags = libapp.getSet(
   'Adapters,AssetCounts,Components,DataItems,Devices,Filters,Specifications'
 )
 
 //. assume for now there there is only one of these in path, so can just lower case them
-//. in future, do two passes to determine if need to uniquify them with nums or names?
+//. in future, do two passes to determine if need to uniquify them with nums or names
+//. follow opcua-mtconnect convention of names in brackets eg 'tank[high]'
 //. or use aliases table to refer by number or name or id to a dataitem
 const plainTags = libapp.getSet(
   'Axes,Controller,EndEffector,Feeder,PartOccurrence,Path,Personnel,ProcessOccurrence,Resources,Systems'
@@ -24,15 +26,19 @@ const plainTags = libapp.getSet(
 
 // ignore these DataItem attributes - not necessary to identify an element,
 // are accounted for explicitly, or are redundant.
+// any other attributes would be included, eg '-statistic=average'
+//. maybe do other way around - list of attributes to include?
+// or this could be an ordered list of attributes to use to uniquify a path?
 const ignoreAttributes = libapp.getSet(
   'id,name,type,subType,compositionId,category,discrete,_key,tag,parents,units,nativeUnits,device'
 )
 
-// get flat list of elements from given json tree (just devices and dataitems).
+// get flat list of elements from given json by recursing through probe structure.
+// just gets Device and DataItem elements.
 // eg json = { MTConnectDevices: { Header, Devices: { Agent, Device }}}
-// with Device = { _attributes, Description, DataItems, Components: { Axes, Controller, Systems }}
-// and DataItems = { DataItem: [ { _attributes: { id:'avail', type, category }}, ...]}
-//. returns [{
+//   with Device = { _attributes, Description, DataItems, Components: { Axes, Controller, Systems }}
+//   and DataItems = { DataItem: [ { _attributes: { id:'avail', type, category }}, ...]}
+// returns [{
 //   node_type: 'DataItem',
 //   path: 'availability',
 //   id: 'avail',
@@ -46,7 +52,7 @@ export function getElements(json) {
   return elements
 }
 
-// do nothing fn
+// do nothing fn - used as default/fallback
 const ignore = () => {}
 
 //. explain / pull out fns
@@ -229,17 +235,19 @@ function getParamString(param) {
 // transform json tree to flat list of object structures,
 // filtering out unwanted elements.
 // eg for json = { MTConnectDevices: { Devices: { Device: [...] }}}
-// returns [ { node_type: 'Device', path, id, name, uuid }, { node_type: 'DataItem', path, id, name, category, type, subType }, ...]
-export function getObjects(json) {
+// returns [
+//   { node_type: 'Device', path, id, name, uuid },
+//   { node_type: 'DataItem', path, id, name, category, type, subType },
+// ...]
+// export function getObjects(json) {
+export function getObjects(elements) {
   //. elements =
-  const elements = getElements(json)
+  // const elements = getElements(json)
   const objs = elements.map(element => {
-    // const obj = { ...element } // copy object
-    // obj.node_type = element.tag === 'DataItem' ? 'PropertyDef' : element.tag
-    // obj.path = element.steps && element.steps.filter(step => !!step).join('/')
-    const node_type = element.tag
+    const node_type = element.tag // eg 'Device', 'DataItem'
     const path = element.steps && element.steps.filter(step => !!step).join('/')
-    const obj = { node_type, path, ...element } // copy object, with node_type and path first
+    const obj = { node_type, path, ...element } // copy object, put node_type and path first
+    // remove unneeded attributes
     delete obj.tag
     delete obj.steps
     return obj
@@ -248,22 +256,27 @@ export function getObjects(json) {
 }
 
 // get nodes from objects
-//. eg for objects =
-// returns
+// eg for objects = [{ node_type, id, name, device, path, category, type }, ...]
+// returns [{
+//   node_type: 'DataItem',
+//   path: 'availability',
+//   category: 'EVENT',
+//   type: 'AVAILABILITY'
+// }, ...]
+// note that id, name, device were removed
 export function getNodes(objs) {
   let nodes = []
   for (const obj of objs) {
     const node = { ...obj } // copy object
     if (node.node_type === 'Device') {
       node.name_uuid = `${node.name} (${node.uuid})`
-      // } else if (node.node_type === 'PropertyDef') {
     } else if (node.node_type === 'DataItem') {
       // remove any unneeded attributes
       delete node.id
       delete node.name
       delete node.device
       // leave these in propdef
-      // delete node.compositionId //. uhh, will need this only to obtain compositionType - delete later?
+      // delete node.compositionId //. will need this only to obtain compositionType - delete later?
       // delete node.discrete
       // delete node.units
       // delete node.nativeUnits
@@ -287,6 +300,7 @@ function getUniqueByPath(nodes) {
 }
 
 // get indexes for given nodes, objects
+//. why need both nodes and objects?
 //. eg
 // nodes =
 // objs =
@@ -299,6 +313,7 @@ export function getIndexes(nodes, objs) {
     objById: {},
   }
 
+  // add nodes
   for (let node of nodes) {
     indexes.nodeById[node.node_id] = node
     indexes.nodeByPath[node.path] = node
@@ -306,12 +321,9 @@ export function getIndexes(nodes, objs) {
 
   // assign device_id and dataitem_id to dataitems
   objs.forEach(obj => {
-    // if (obj.type === 'DataItem') {
-    // if (obj.node_type === 'PropertyDef') {
     if (obj.node_type === 'DataItem') {
       indexes.objById[obj.id] = obj
       obj.device_id = indexes.nodeByPath[obj.device].node_id
-      // obj.property_id = indexes.nodeByPath[obj.path].node_id
       obj.dataitem_id = indexes.nodeByPath[obj.path].node_id
     }
   })

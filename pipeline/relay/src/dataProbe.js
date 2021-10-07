@@ -13,8 +13,14 @@ export class Probe extends Data {
   // write probe data in .json to db instance, get indexes
   async write(db) {
     // get devices, dataitems
+    const elements = tree.getElements(this.json)
+
+    // get devices, dataitems
     //. eg objs =
-    const objs = tree.getObjects(this.json)
+    // const objs = tree.getObjects(this.json)
+    const objs = tree.getObjects(elements)
+
+    // make paths unique
 
     // get devices, dataitems with unique paths
     //. eg nodes =
