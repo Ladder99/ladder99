@@ -148,22 +148,22 @@ function getPathStep(obj) {
   if (ignoreTags.has(obj.tag)) return ''
   //. for plain tags, eg Path, will want to do two passes - first to see how many Paths there are,
   // then to assign numbers to the steps, eg path vs path1, path2.
-  if (plainTags.has(obj.tag)) return obj.tag[0].toLowerCase() + obj.tag.slice(1)
+  if (plainTags.has(obj.tag)) return libapp.getCamelCase(obj.tag) // eg 'processOccurrence'
   let step = ''
   switch (obj.tag) {
-    // case 'Agent':
     case 'Device':
-      // standard says name may be optional in future versions, so could just use uuid, eg
-      // step = `Device(${obj.uuid})`
+      // standard says name might be optional in future versions,
+      // so could just use uuid, eg step = `Device(${obj.uuid})`.
       // BUT for the mazak machines, uuid is not actually unique across the installation -
-      // they seem to be using it for model number.
-      // so name helps uniquify this.
-      step = `Device(${obj.name}, ${obj.uuid})`
+      // they seem to be using it for model number. so name helps uniquify this.
+      // step = `Device(${obj.name}, ${obj.uuid})`
+      step = `Device[${obj.name}, ${obj.uuid}]` //. try this
       break
     case 'DataItem':
       // add primary params
       params = [obj.type] // eg ['position']
       if (obj.subType) params.push(obj.subType) // eg ['position', 'actual']
+
       // add named params to help uniquify the path, eg ['temperature', 'statistic=average']
       let namedParams = []
       for (const key of Object.keys(obj)) {
@@ -175,13 +175,17 @@ function getPathStep(obj) {
       for (const namedParam of namedParams) {
         params.push(namedParam)
       }
-      // if (obj.category === 'CONDITION') {
-      //   step = getParamsStep(params) + '-condition'
-      // } else {
-      //   step = getParamsStep(params)
-      // }
+
+      // add condition to end
+      if (obj.category === 'CONDITION') {
+        params.push('condition')
+      }
+
+      // now convert the list of parameters to a path step string,
+      // eg ['foo_bar', 'baz'] -> 'foo_bar-baz'
       step = getParamsStep(params)
       break
+
     // case 'Specification':
     // case 'Composition':
     //   // params = [obj.type]

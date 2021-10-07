@@ -26,3 +26,8 @@ export function shallowCompare(obj1, obj2) {
 export function getSet(str) {
   return new Set(str.split(','))
 }
+
+// get camelCase of a string, eg convert DataItem to dataItem
+export function getCamelCase(str) {
+  return str[0].toLowerCase() + str.slice(1)
+}
