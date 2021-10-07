@@ -1,5 +1,11 @@
 import * as libapp from './libapp.js'
 
+//.
+// const appendTags2 = libapp.getSet('Angle')
+
+//.
+const skipTags2 = libapp.getSet('')
+
 // get flat list of elements from given json tree
 // eg [{
 //   tag: 'Availability',
@@ -14,12 +20,6 @@ export function getElements(json) {
   recurse(json, elements)
   return elements
 }
-
-//.
-// const appendTags2 = libapp.getSet('Angle')
-
-//.
-const skipTags2 = libapp.getSet('')
 
 //. copypasted from treeProbe.js - fix
 const ignore = () => {}

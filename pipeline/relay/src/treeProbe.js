@@ -1,9 +1,13 @@
+// companion functions for dataProbe.js
+//. move there
+
 import * as libapp from './libapp.js'
 
 //. add elements of this type to return list
-const appendTags = libapp.getSet('Device,DataItem') //. handle Description - add to Device obj?
+//. handle Description elements - add to Device obj
+const appendTags = libapp.getSet('Device,DataItem')
 
-//. don't recurse down these elements - not interested in them
+// don't recurse down these elements - not interested in them
 const skipTags = libapp.getSet('Agent')
 
 // ignore these element types for path parts - don't add much info to the path
@@ -21,18 +25,21 @@ const plainTags = libapp.getSet(
 // ignore these DataItem attributes - not necessary to identify an element,
 // are accounted for explicitly, or are redundant.
 const ignoreAttributes = libapp.getSet(
-  'category,type,subType,discrete,_key,tag,parents,id,unit,units,nativeUnits,device,name,compositionId'
+  'id,name,type,subType,compositionId,category,discrete,_key,tag,parents,units,nativeUnits,device'
 )
 
 // get flat list of elements from given json tree (just devices and dataitems)
+//. eg
 export function getElements(json) {
   const elements = []
   recurse(json, elements)
   return elements
 }
 
+// do nothing fn
 const ignore = () => {}
 
+//. explain / pull out fns
 const elementHandlers = {
   // handle attributes, eg { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
   _attributes: (obj, value) =>
@@ -46,9 +53,11 @@ const elementHandlers = {
 // traverse a tree of elements, adding them to an array
 //. refactor, add comments
 //. handle parents differently - do in separate pass?
+//. el can be an object, an array, or an atomic value, eg
+//. objs is
+//. tag is
+//. parents is
 function recurse(el, objs, tag = '', parents = []) {
-  // el can be an object, an array, or an atomic value
-
   // handle object with keyvalue pairs
   if (libapp.isObject(el)) {
     // make object, which translates the json element to something usable.
@@ -56,7 +65,7 @@ function recurse(el, objs, tag = '', parents = []) {
     // parents is list of ancestors - will be deleted before return.
     let obj = { tag, parents }
 
-    // add obj to return list if one of certain tags (eg DataItem)
+    // add obj to return list if one of certain tags (eg Device, DataItem)
     if (appendTags.has(tag)) objs.push(obj)
 
     // get keyvalue pairs, skipping some tags (eg Agent)
@@ -73,13 +82,10 @@ function recurse(el, objs, tag = '', parents = []) {
 
     // get steps (path parts) for devices and dataitems
     if (tag === 'DataItem') {
-      // obj.signature = [...obj.parents.slice(4), obj]
-      //   .map(getPathStep)
-      //   .filter(step => !!step)
-      //   .join('/')
       // save device path
       obj.device = getPathStep(obj.parents[3])
-      // save steps for rest of path to array
+      // save steps for rest of path to an array
+      // will convert this to a full path string later
       obj.steps = [...obj.parents.slice(4), obj].map(getPathStep)
     } else {
       obj.steps = [obj].map(getPathStep)
@@ -102,8 +108,7 @@ function recurse(el, objs, tag = '', parents = []) {
 //----------------------------------------------------------
 
 // get path step for the given object
-// eg
-// for a Device element, return 'Device(Mazak31, M41283-12A)'
+// eg for a Device element, return 'Device(Mazak31, M41283-12A)'
 // for a DataItem element, return 'position'
 function getPathStep(obj) {
   let params = []
@@ -137,11 +142,12 @@ function getPathStep(obj) {
       for (const namedParam of namedParams) {
         params.push(namedParam)
       }
-      if (obj.category === 'CONDITION') {
-        step = getParamsStep(params) + '-condition'
-      } else {
-        step = getParamsStep(params)
-      }
+      // if (obj.category === 'CONDITION') {
+      //   step = getParamsStep(params) + '-condition'
+      // } else {
+      //   step = getParamsStep(params)
+      // }
+      step = getParamsStep(params)
       break
     // case 'Specification':
     // case 'Composition':
@@ -151,6 +157,7 @@ function getPathStep(obj) {
     //   break
     default:
       // params = [obj.name || obj.id || '']
+      //..
       step = (obj.name || obj.id || '').toLowerCase()
       break
   }
