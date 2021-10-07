@@ -195,13 +195,19 @@ function getParamString(param) {
 //------------------------------------------------------------------------
 
 // transform json to elements to object structures
-// eg ___
+// eg
+//. json =
+//. elements =
+//. objects =
 export function getObjects(json) {
   const elements = getElements(json)
   const objs = elements.map(element => {
-    const obj = { ...element }
-    obj.node_type = element.tag === 'DataItem' ? 'PropertyDef' : element.tag
-    obj.path = element.steps && element.steps.filter(step => !!step).join('/')
+    // const obj = { ...element } // copy object
+    // obj.node_type = element.tag === 'DataItem' ? 'PropertyDef' : element.tag
+    // obj.path = element.steps && element.steps.filter(step => !!step).join('/')
+    const node_type = element.tag
+    const path = element.steps && element.steps.filter(step => !!step).join('/')
+    const obj = { node_type, path, ...element } // copy object, with node_type and path first
     delete obj.tag
     delete obj.steps
     return obj
@@ -209,26 +215,29 @@ export function getObjects(json) {
   return objs
 }
 
+// get nodes from objects
+//. eg
+// objects =
+// nodes =
 export function getNodes(objs) {
-  // objs = getUniqueByPath(objs)
   let nodes = []
   for (const obj of objs) {
-    const node = { ...obj }
+    const node = { ...obj } // copy object
     if (node.node_type === 'Device') {
       node.name_uuid = `${node.name} (${node.uuid})`
-    } else if (node.node_type === 'PropertyDef') {
+      // } else if (node.node_type === 'PropertyDef') {
+    } else if (node.node_type === 'DataItem') {
       // remove any unneeded attributes
       delete node.id
       delete node.name
       delete node.device
       // leave these in propdef
+      // delete node.compositionId //. uhh, will need this only to obtain compositionType - delete later?
       // delete node.discrete
-      // delete node.unit
       // delete node.units
       // delete node.nativeUnits
       // delete node.coordinateSystem
       // delete node.representation
-      // delete node.compositionId
     }
     nodes.push(node)
   }
@@ -236,12 +245,21 @@ export function getNodes(objs) {
   return nodes
 }
 
+// uniquify nodes by their path
+//. eg
+// nodes =
+// returns
 function getUniqueByPath(nodes) {
   const d = {}
   nodes.forEach(node => (d[node.path] = node))
   return Object.values(d)
 }
 
+// get indexes for given nodes, objects
+//. eg
+// nodes =
+// objs =
+// returns { nodeById, nodeByPath, objById }
 export function getIndexes(nodes, objs) {
   // initialize indexes
   const indexes = {
@@ -258,7 +276,8 @@ export function getIndexes(nodes, objs) {
   // assign device_id and property_id to dataitems
   objs.forEach(obj => {
     // if (obj.type === 'DataItem') {
-    if (obj.node_type === 'PropertyDef') {
+    // if (obj.node_type === 'PropertyDef') {
+    if (obj.node_type === 'DataItem') {
       indexes.objById[obj.id] = obj
       obj.device_id = indexes.nodeByPath[obj.device].node_id
       obj.property_id = indexes.nodeByPath[obj.path].node_id
