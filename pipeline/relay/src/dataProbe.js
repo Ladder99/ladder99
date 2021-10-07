@@ -13,25 +13,26 @@ export class Probe extends Data {
   // write probe data in .json to db instance, get indexes
   async write(db) {
     // get devices, dataitems
+    //. eg elements = [{}, ...]
     const elements = tree.getElements(this.json)
 
-    // get devices, dataitems
-    //. eg objs =
-    const objs = tree.getObjects(elements)
+    // // get devices, dataitems
+    // //. eg objs = [{}, ...]
+    // const objs = tree.getObjects(elements)
 
-    //. make paths unique
-
-    // get devices, dataitems with unique paths
-    //. eg nodes =
-    const nodes = tree.getNodes(objs)
+    // get devices, all dataitems with unique paths
+    //. eg nodes = [{}, ...]
+    // const nodes = tree.getNodes(objs)
+    const nodes = tree.getNodes(elements)
 
     // add/get nodes to db - devices and dataitems
     for (let node of nodes) {
       node.node_id = await db.add(node) // write db
     }
 
-    // get indexes, incl objById
-    this.indexes = tree.getIndexes(nodes, objs)
+    //. get indexes, { }
+    // this.indexes = tree.getIndexes(nodes, objs)
+    this.indexes = tree.getIndexes(nodes, elements)
 
     console.log('indexes', this.indexes)
   }

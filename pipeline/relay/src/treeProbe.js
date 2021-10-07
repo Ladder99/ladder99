@@ -36,7 +36,7 @@ const ignoreAttributes = libapp.getSet(
 )
 
 // get flat list of elements from given json by recursing through probe structure.
-// just gets Device and DataItem elements.
+// just gets Device and DataItem elements for now.
 // eg json = { MTConnectDevices: { Header, Devices: { Agent, Device }}}
 //   with Device = { _attributes, Description, DataItems, Components: { Axes, Controller, Systems }}
 //   and DataItems = { DataItem: [ { _attributes: { id:'avail', type, category }}, ...]}
@@ -49,10 +49,41 @@ const ignoreAttributes = libapp.getSet(
 //   device: 'Device(VMC-3Axis, 000)'
 // }, ...]
 export function getElements(json) {
-  const elements = []
-  recurse(json, elements)
+  const objs = []
+  recurse(json, objs)
+  // transform the json objects a bit
+  const elements = objs.map(obj => {
+    const node_type = obj.tag // eg 'Device', 'DataItem'
+    const path = obj.steps && obj.steps.filter(step => !!step).join('/')
+    const element = { node_type, path, ...obj } // copy object, put node_type and path first
+    // remove unneeded attributes
+    delete element.tag
+    delete element.steps
+    return element
+  })
   return elements
 }
+
+// // transform json tree to flat list of object structures,
+// // filtering out unwanted elements.
+// // eg for json = { MTConnectDevices: { Devices: { Device: [...] }}}
+// // returns [
+// //   { node_type: 'Device', path, id, name, uuid },
+// //   { node_type: 'DataItem', path, id, name, category, type, subType },
+// // ...]
+// //. merge this with getElements or getNodes? this doesn't do much, adds confusion
+// export function getObjects(elements) {
+//   const objs = elements.map(element => {
+//     const node_type = element.tag // eg 'Device', 'DataItem'
+//     const path = element.steps && element.steps.filter(step => !!step).join('/')
+//     const obj = { node_type, path, ...element } // copy object, put node_type and path first
+//     // remove unneeded attributes
+//     delete obj.tag
+//     delete obj.steps
+//     return obj
+//   })
+//   return objs
+// }
 
 // do nothing fn - used as default/fallback
 const ignore = () => {}
@@ -234,29 +265,8 @@ function getParamString(param) {
 
 //------------------------------------------------------------------------
 
-// transform json tree to flat list of object structures,
-// filtering out unwanted elements.
-// eg for json = { MTConnectDevices: { Devices: { Device: [...] }}}
-// returns [
-//   { node_type: 'Device', path, id, name, uuid },
-//   { node_type: 'DataItem', path, id, name, category, type, subType },
-// ...]
-//. merge this with getElements or getObjects? this doesn't do much, adds confusion
-export function getObjects(elements) {
-  const objs = elements.map(element => {
-    const node_type = element.tag // eg 'Device', 'DataItem'
-    const path = element.steps && element.steps.filter(step => !!step).join('/')
-    const obj = { node_type, path, ...element } // copy object, put node_type and path first
-    // remove unneeded attributes
-    delete obj.tag
-    delete obj.steps
-    return obj
-  })
-  return objs
-}
-
-// get nodes from objects
-// eg for objects = [{ node_type, id, name, device, path, category, type }, ...]
+// get nodes from elements
+// eg for elements = [{ node_type, id, name, device, path, category, type }, ...]
 // returns [{
 //   node_type: 'DataItem',
 //   path: 'availability',
@@ -264,10 +274,10 @@ export function getObjects(elements) {
 //   type: 'AVAILABILITY'
 // }, ...]
 // note that id, name, device were removed
-export function getNodes(objs) {
+export function getNodes(elements) {
   let nodes = []
-  for (const obj of objs) {
-    const node = { ...obj } // copy object
+  for (const element of elements) {
+    const node = { ...element } // copy element
     if (node.node_type === 'Device') {
       node.name_uuid = `${node.name} (${node.uuid})`
     } else if (node.node_type === 'DataItem') {
@@ -275,7 +285,7 @@ export function getNodes(objs) {
       delete node.id
       delete node.name
       delete node.device
-      // leave these in propdef
+      // leave these in dataitem
       // delete node.compositionId //. will need this to obtain compositionType - delete later?
       // delete node.discrete
       // delete node.units
@@ -304,18 +314,18 @@ function getUniqueByPath(nodes) {
   return Object.values(d)
 }
 
-// get indexes for given nodes, objects
-//. why need both nodes and objects?
+// get indexes for given nodes, elements
+//. why need both nodes and elements?
 //. eg
 // nodes =
-// objs =
-// returns { nodeById, nodeByPath, objById }
-export function getIndexes(nodes, objs) {
+// elements =
+// returns { nodeById, nodeByPath, elementById }
+export function getIndexes(nodes, elements) {
   // initialize indexes
   const indexes = {
     nodeById: {},
     nodeByPath: {},
-    objById: {},
+    elementById: {},
   }
 
   // add nodes
@@ -325,12 +335,14 @@ export function getIndexes(nodes, objs) {
   }
 
   // assign device_id and dataitem_id to dataitems
-  objs.forEach(obj => {
-    if (obj.node_type === 'DataItem') {
-      indexes.objById[obj.id] = obj
-      obj.device_id = indexes.nodeByPath[obj.device].node_id
-      obj.dataitem_id = indexes.nodeByPath[obj.path].node_id
+  elements.forEach(element => {
+    if (element.node_type === 'DataItem') {
+      indexes.elementById[element.id] = element
+      //. do this elsewhere
+      element.device_id = indexes.nodeByPath[element.device].node_id
+      element.dataitem_id = indexes.nodeByPath[element.path].node_id
     }
   })
+
   return indexes
 }

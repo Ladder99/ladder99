@@ -50,25 +50,31 @@ export class Observations extends Data {
     // see https://stackoverflow.com/a/63167970/243392
     const records = []
     for (let obs of this.observations) {
-      const node = indexes.objById[obs.dataItemId]
+      //. call these elements not nodes
+      // const node = indexes.objById[obs.dataItemId]
+      const node = indexes.elementById[obs.dataItemId]
       if (node) {
+        //. these had been tacked onto the element objects during index creation
         // const { device_id, property_id } = node
         const { device_id, dataitem_id } = node
         // obs.value is always string, due to the way the xml is stored, like <value>10</value>
         //. better to use dataitem category to convert to number?
         //  ie SAMPLES are numeric, EVENTS are strings
+        // but not always
         //. keep in mind that conditions can have >1 value also
         const value = Number(obs.value) || JSON.stringify(obs.value)
         const record = {
           node_id: device_id,
-          // property_id,
           dataitem_id,
           time: obs.timestamp,
           value,
         }
         records.push(record)
       } else {
-        console.log(`Warning: objById index missing dataItem ${obs.dataItemId}`)
+        // console.log(`Warning: objById index missing dataItem ${obs.dataItemId}`)
+        console.log(
+          `Warning: elementById index missing dataItem ${obs.dataItemId}`
+        )
       }
     }
 
