@@ -29,13 +29,9 @@ const json = getJson(`${folder}/probe.xml`)
 // console.log(json.MTConnectDevices.Devices.Device)
 // console.log(json.MTConnectDevices.Devices.Device.DataItems.DataItem[0])
 
-// get elements
+// get elements (devices, all dataitems)
 const elements = treeProbe.getElements(json)
 console.log(elements)
-
-// // get objects (devices, all dataitems)
-// const objs = treeProbe.getObjects(elements)
-// console.log(objs)
 
 // get nodes (devices, unique propdefs)
 const nodes = treeProbe.getNodes(elements)
@@ -44,7 +40,7 @@ console.log(nodes)
 // // simulate db add/get - assign node_id to each node
 // nodes.forEach((node, i) => (node.node_id = i + 1))
 
-// const indexes = treeProbe.getIndexes(nodes, objs)
+// const indexes = treeProbe.getIndexes(nodes, elements)
 // console.log(indexes)
 
 //------------------------------------------------------------------------
