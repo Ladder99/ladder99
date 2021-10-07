@@ -1,9 +1,9 @@
 // endpoint
 // fetch data from url endpoint as xml or json
 
-import fs from 'fs' // node lib - filesystem
+import fs from 'fs' // node filesystem lib
 import fetch from 'node-fetch' // https://github.com/node-fetch/node-fetch
-import convert from 'xml-js' // https://github.com/nashwaan/xml-js
+import convert from 'xml-js' // convert xml to json https://github.com/nashwaan/xml-js
 import * as libapp from './libapp.js'
 
 export class Endpoint {
