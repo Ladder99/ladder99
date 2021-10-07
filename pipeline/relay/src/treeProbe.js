@@ -5,7 +5,7 @@ import * as libapp from './libapp.js'
 
 // these are the only elements we want to pick out of the probe xml.
 //. handle Description elements - add to Device obj
-//. add Composition elements - need for uniquification
+//. add Composition elements - will need for uniquification
 const appendTags = libapp.getSet('Device,DataItem')
 
 // don't recurse down these elements - not interested in them or their children
@@ -159,22 +159,27 @@ function getPathStep(obj) {
       // step = `Device(${obj.name}, ${obj.uuid})`
       step = `Device[${obj.name}, ${obj.uuid}]` //. try this
       break
+
     case 'DataItem':
       // add primary params
       params = [obj.type] // eg ['position']
       if (obj.subType) params.push(obj.subType) // eg ['position', 'actual']
 
-      // add named params to help uniquify the path, eg ['temperature', 'statistic=average']
-      let namedParams = []
-      for (const key of Object.keys(obj)) {
-        if (!ignoreAttributes.has(key)) {
-          namedParams.push(key + '=' + obj[key])
-        }
-      }
-      namedParams.sort()
-      for (const namedParam of namedParams) {
-        params.push(namedParam)
-      }
+      //. follow compositionId to get the type
+      // if path still not unique, will add composition name in brackets also
+
+      //. do this later
+      // // add named params to help uniquify the path, eg ['temperature', 'statistic=average']
+      // let namedParams = []
+      // for (const key of Object.keys(obj)) {
+      //   if (!ignoreAttributes.has(key)) {
+      //     namedParams.push(key + '=' + obj[key])
+      //   }
+      // }
+      // namedParams.sort()
+      // for (const namedParam of namedParams) {
+      //   params.push(namedParam)
+      // }
 
       // add condition to end
       if (obj.category === 'CONDITION') {
@@ -192,17 +197,13 @@ function getPathStep(obj) {
     //   // if (obj.subType) params.push(obj.subType)
     //   step = '?'
     //   break
+
     default:
       // params = [obj.name || obj.id || '']
       //..
       step = (obj.name || obj.id || '').toLowerCase()
       break
   }
-  // const paramsStr =
-  //   params.length > 0 && params[0].length > 0
-  //     ? '(' + params.map(param => param.toLowerCase()).join(',') + ')'
-  //     : ''
-  // const step = `${obj.tag}${paramsStr}`
   return step
 }
 
@@ -218,21 +219,14 @@ function getParamsStep(params) {
   return step
 }
 
-// get string representation of a param
-// eg 'x:SOME_TYPE' -> 'x:some_type'
+// get string representation of a parameter
+// eg 'x:SOME_TYPE' -> 'some_type'
 function getParamString(param) {
   // const str = param.replace('x:', '').replaceAll('_', '-').toLowerCase() // needs node15
   // const regexp = new RegExp('_', 'g')
+  // const str = param.toLowerCase() // leave x: and underscores as is
   // const str = param.replace('x:', '').replace(regexp, '-').toLowerCase()
-  const str = param.toLowerCase() // leave x: and underscores as is
-  //. change chars AFTER '-' to uppercase - how do?
-  // const str2 = str
-  //   .split()
-  //   .map(c => {
-  //     if (c === '-') return ''
-  //     return c
-  //   })
-  //   .join('')
+  const str = param.replace('x:', '').toLowerCase() // leave underscores
   return str
 }
 
@@ -245,10 +239,8 @@ function getParamString(param) {
 //   { node_type: 'Device', path, id, name, uuid },
 //   { node_type: 'DataItem', path, id, name, category, type, subType },
 // ...]
-// export function getObjects(json) {
+//. merge this with getElements or getObjects? this doesn't do much, adds confusion
 export function getObjects(elements) {
-  //. elements =
-  // const elements = getElements(json)
   const objs = elements.map(element => {
     const node_type = element.tag // eg 'Device', 'DataItem'
     const path = element.steps && element.steps.filter(step => !!step).join('/')
@@ -282,7 +274,7 @@ export function getNodes(objs) {
       delete node.name
       delete node.device
       // leave these in propdef
-      // delete node.compositionId //. will need this only to obtain compositionType - delete later?
+      // delete node.compositionId //. will need this to obtain compositionType - delete later?
       // delete node.discrete
       // delete node.units
       // delete node.nativeUnits
@@ -291,7 +283,12 @@ export function getNodes(objs) {
     }
     nodes.push(node)
   }
+
+  // need to get list of unique nodes, because we're processing the whole
+  // xml probe file, which may have multiple devices, with the same dataitems
+  // and paths.
   nodes = getUniqueByPath(nodes)
+
   return nodes
 }
 

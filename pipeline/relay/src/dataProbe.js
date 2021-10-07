@@ -17,10 +17,9 @@ export class Probe extends Data {
 
     // get devices, dataitems
     //. eg objs =
-    // const objs = tree.getObjects(this.json)
     const objs = tree.getObjects(elements)
 
-    // make paths unique
+    //. make paths unique
 
     // get devices, dataitems with unique paths
     //. eg nodes =
