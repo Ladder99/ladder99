@@ -12,17 +12,12 @@ export class Probe extends Data {
 
   // write probe data in .json to db instance, get indexes
   async write(db) {
-    // get devices, dataitems
+    // get devices, descriptions, dataitems, compositions
     //. eg elements = [{}, ...]
     const elements = tree.getElements(this.json)
 
-    // // get devices, dataitems
-    // //. eg objs = [{}, ...]
-    // const objs = tree.getObjects(elements)
-
-    // get devices, all dataitems with unique paths
+    // get devices, dataitems with unique paths
     //. eg nodes = [{}, ...]
-    // const nodes = tree.getNodes(objs)
     const nodes = tree.getNodes(elements)
 
     // add/get nodes to db - devices and dataitems
@@ -31,8 +26,17 @@ export class Probe extends Data {
     }
 
     //. get indexes, { }
-    // this.indexes = tree.getIndexes(nodes, objs)
+    //. why do we need these 3 indexes?
     this.indexes = tree.getIndexes(nodes, elements)
+
+    // assign device_id and dataitem_id to dataitem elements
+    //. why?
+    elements.forEach(element => {
+      if (element.node_type === 'DataItem') {
+        element.device_id = this.indexes.nodeByPath[element.device].node_id
+        element.dataitem_id = this.indexes.nodeByPath[element.path].node_id
+      }
+    })
 
     console.log('indexes', this.indexes)
   }

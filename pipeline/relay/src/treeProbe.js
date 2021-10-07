@@ -305,9 +305,8 @@ export function getNodes(elements) {
 }
 
 // uniquify nodes by their path
-//. eg
-// nodes =
-// returns
+// eg given nodes = [{path:'foo'}, {path:'foo'}...]
+// returns [{path:'foo'}, ...]
 function getUniqueByPath(nodes) {
   const d = {}
   nodes.forEach(node => (d[node.path] = node))
@@ -315,11 +314,10 @@ function getUniqueByPath(nodes) {
 }
 
 // get indexes for given nodes, elements
-//. why need both nodes and elements?
-//. eg
-// nodes =
-// elements =
-// returns { nodeById, nodeByPath, elementById }
+//. why do we need these 3 indexes?
+// eg nodes = [{id:'foo', path:'bar'}, {}, ...],
+// elements = [{id:'foo'}, ...]
+// returns { nodeById: {foo:{}}, nodeByPath: {bar:{}}, elementById: {foo:{}} }
 export function getIndexes(nodes, elements) {
   // initialize indexes
   const indexes = {
@@ -334,16 +332,13 @@ export function getIndexes(nodes, elements) {
     indexes.nodeByPath[node.path] = node
   }
 
-  // assign device_id and dataitem_id to dataitems
-  //. call this one dataItemByPath ?
-  //. but why element and not node?
   elements.forEach(element => {
     if (element.node_type === 'DataItem') {
       indexes.elementById[element.id] = element
-      //. do this in another fn/step
-      // but do AFTER nodes have been written to db, right? as need node_id
-      element.device_id = indexes.nodeByPath[element.device].node_id
-      element.dataitem_id = indexes.nodeByPath[element.path].node_id
+      // //. do this in another fn/step
+      // // but do AFTER nodes have been written to db, as need node_id
+      // element.device_id = indexes.nodeByPath[element.device].node_id
+      // element.dataitem_id = indexes.nodeByPath[element.path].node_id
     }
   })
 
