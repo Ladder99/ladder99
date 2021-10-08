@@ -23,6 +23,7 @@ export class Probe extends Data {
     const nodes = tree.getNodes(elements)
 
     // add/get nodes to db - devices and dataitems
+    //. maybe should just get nodes here from elements?
     for (let node of nodes) {
       node.node_id = await db.add(node) // write to db and save resulting node_id
     }

@@ -284,6 +284,7 @@ export function getNodes(elements) {
   // handle path collisions by adding more type or name info as needed.
   //. might need indexes first?
   makeUniquePaths(elements)
+  // console.log(287, 'elements', elements)
 
   for (const element of elements) {
     const node = { ...element } // copy element
@@ -347,19 +348,21 @@ function makeUniquePaths(elements) {
     // iterate over attributes to try and see if n-1 elements have one
     for (const attribute of attributesToTry) {
       const nitemsWithAttribute = collision.filter(el => !!el[attribute]).length
-      //. check if at least n-1 items have attribute - if so use that for unique path
+      // check if at least n-1 items have attribute - if so use that for unique path
       if (nitemsWithAttribute >= n - 1) {
         //. do as switch with fallthroughs
         if (attribute === 'compositionId') {
           //. if items have compositionId find the composition elements referenced
           // and use their type eg 'motor'
-          //. if still not unique, add name in brackets eg '[high]'
+          //. if still not unique, add name in brackets also eg '[high]'.
+          // what if no name though, just an id? use name || id ?
         } else if (attribute === 'statistic') {
           for (const el of collision) {
             // check if has attribute (one of the array might not)
             if (el[attribute]) {
               el.path += '-statistic=' + el[attribute].toLowerCase()
               console.log(el.path)
+              //. works BUT not editing the elements object - how get that?
             }
           }
         } else if (attribute === 'name') {
