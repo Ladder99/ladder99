@@ -312,8 +312,18 @@ export function getNodes(elements) {
   return nodes
 }
 
-// make element paths unique by adding more type or name info as needed.
-function makeUniquePaths(elements) {}
+//. make element paths unique by adding more type or name info as needed.
+function makeUniquePaths(elements) {
+  const d = {}
+  for (const element of elements) {
+    const fullpath = element.device + '/' + element.path
+    if (d[fullpath]) {
+      //. collision - mark these elements as needing uniquification
+    } else {
+      d[fullpath] = element
+    }
+  }
+}
 
 // uniquify nodes by their path
 // eg given nodes = [{path:'foo'}, {path:'foo'}...]
