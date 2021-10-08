@@ -361,12 +361,18 @@ function makeUniquePaths(elements) {
             // check if has attribute (one of the array might not)
             if (el[attribute]) {
               el.path += '-statistic=' + el[attribute].toLowerCase()
-              console.log(el.path)
-              //. works BUT not editing the elements object - how get that?
+              // console.log(el.path)
             }
           }
+          break
         } else if (attribute === 'name') {
           //. use name as last resort - makes dashboard harder
+          for (const el of collision) {
+            if (el[attribute]) {
+              el.path += '[' + el[attribute] + ']'
+            }
+          }
+          break
         }
       }
     }
