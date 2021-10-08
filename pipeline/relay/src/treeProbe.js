@@ -27,11 +27,10 @@ const plainTags = libapp.getSet(
   'Axes,Controller,EndEffector,Feeder,PartOccurrence,Path,Personnel,ProcessOccurrence,Resources,Systems'
 )
 
-// ignore these DataItem attributes - not necessary to identify an element,
-// are accounted for explicitly, or are redundant.
+// ignore these DataItem attributes - not necessary to identify an element
+// in a path step, are accounted for explicitly, or are redundant.
 // any other attributes would be included, eg '-statistic=average'
 //. maybe do other way around - list of attributes to include?
-// or this could be an ordered list of attributes to use to uniquify a path?
 const ignoreAttributes = libapp.getSet(
   'id,name,type,subType,compositionId,category,discrete,_key,tag,parents,units,nativeUnits,device'
 )
@@ -146,7 +145,12 @@ function recurse(el, objs, tag = '', parents = []) {
     }
 
     // get steps (path parts) for devices and dataitems
-    if (tag === 'DataItem') {
+    if (tag === 'Device') {
+      // for Device get single step as an array, eg ['cnc1']
+      obj.steps = [obj].map(getPathStep)
+      //
+    } else {
+      // for DataItem, Composition, or other,
       // save device element, eg { tag, id, name, uuid }
       obj.device = getPathStep(obj.parents[3])
 
@@ -154,9 +158,6 @@ function recurse(el, objs, tag = '', parents = []) {
       // will convert this to a full path string later
       // eg ['axes', 'x', 'position-actual']
       obj.steps = [...obj.parents.slice(4), obj].map(getPathStep)
-    } else if (tag === 'Device') {
-      // for Device get single step as an array, eg ['cnc1']
-      obj.steps = [obj].map(getPathStep)
     }
 
     // get rid of the parents array
@@ -303,6 +304,8 @@ export function getNodes(elements) {
       // delete node.nativeUnits
       // delete node.coordinateSystem
       // delete node.representation
+    } else if (node.node_type === 'Composition') {
+      continue // don't add to node list
     }
     nodes.push(node)
   }
@@ -433,7 +436,7 @@ export function getIndexes(nodes, elements) {
 
   // add elements
   elements.forEach(element => {
-    if (element.node_type === 'DataItem') {
+    if (element.node_type !== 'Device') {
       indexes.elementById[element.id] = element
     }
   })
