@@ -18,8 +18,8 @@ console.log()
 // load and parse probe xml
 
 //. choose a folder
-// const folder = 'examples/demo'
-const folder = 'examples/vmc'
+const folder = 'examples/demo'
+// const folder = 'examples/vmc'
 // const folder = 'examples/ccs-pa'
 // const folder = 'examples/mazak'
 
@@ -30,11 +30,11 @@ const json = getJson(`${folder}/probe.xml`)
 // console.log(json.MTConnectDevices.Devices.Device.DataItems.DataItem[0])
 
 // get elements (devices, all dataitems)
-const elements = treeProbe.getElements(json).slice(0, 3)
+const elements = treeProbe.getElements(json) //.slice(0, 3)
 console.log('elements', elements)
 
 // get nodes (devices, unique propdefs)
-const nodes = treeProbe.getNodes(elements).slice(0, 3)
+const nodes = treeProbe.getNodes(elements) //.slice(0, 3)
 console.log('nodes', nodes)
 
 // simulate db add/get - assign node_id to each node

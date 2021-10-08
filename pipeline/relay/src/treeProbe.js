@@ -267,7 +267,9 @@ function getParamString(param) {
 
 //------------------------------------------------------------------------
 
-// get nodes from elements
+// get nodes from elements.
+// nodes includes devices and dataitems with unique paths, ready to write to db.
+// elements is the more complete list.
 // eg for elements = [{ node_type, id, name, device, path, category, type }, ...]
 // returns [{
 //   node_type: 'DataItem',
@@ -278,6 +280,10 @@ function getParamString(param) {
 // note that id, name, device were removed
 export function getNodes(elements) {
   let nodes = []
+
+  // handle path collisions by adding more type or name info as needed.
+  makeUniquePaths(elements)
+
   for (const element of elements) {
     const node = { ...element } // copy element
     if (node.node_type === 'Device') {
@@ -305,6 +311,9 @@ export function getNodes(elements) {
 
   return nodes
 }
+
+// make element paths unique by adding more type or name info as needed.
+function makeUniquePaths(elements) {}
 
 // uniquify nodes by their path
 // eg given nodes = [{path:'foo'}, {path:'foo'}...]
@@ -344,6 +353,7 @@ export function getIndexes(nodes, elements) {
 }
 
 // assign device_id and dataitem_id to dataitem elements.
+// will use these to write values to history table.
 export function updateElements(indexes, elements) {
   elements.forEach(element => {
     if (element.node_type === 'DataItem') {
