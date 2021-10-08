@@ -183,8 +183,10 @@ function getPathStep(obj) {
   let params = []
   if (!obj) return ''
   if (ignoreTags.has(obj.tag)) return ''
-  //. for plain tags, eg Path, will want to do two passes - first to see how many Paths there are,
-  // then to assign numbers to the steps, eg path, path2, path3...
+  // handle plain tags, eg Path - for now just convert to 'path'.
+  //. will want to do two passes though - first to see how many Paths there are,
+  // then to assign numbers to the steps, eg path, path2, path3...,
+  // or names in brackets [path]
   if (plainTags.has(obj.tag)) return libapp.getCamelCase(obj.tag) // eg 'processOccurrence'
   let step = ''
   switch (obj.tag) {
