@@ -342,3 +342,13 @@ export function getIndexes(nodes, elements) {
 
   return indexes
 }
+
+// assign device_id and dataitem_id to dataitem elements.
+export function updateElements(indexes, elements) {
+  elements.forEach(element => {
+    if (element.node_type === 'DataItem') {
+      element.device_id = indexes.nodeByPath[element.device].node_id
+      element.dataitem_id = indexes.nodeByPath[element.path].node_id
+    }
+  })
+}

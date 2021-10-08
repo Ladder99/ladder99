@@ -32,13 +32,8 @@ export class Probe extends Data {
     this.indexes = tree.getIndexes(nodes, elements)
 
     // assign device_id and dataitem_id to dataitem elements.
-    // used to write values to history table.
-    elements.forEach(element => {
-      if (element.node_type === 'DataItem') {
-        element.device_id = this.indexes.nodeByPath[element.device].node_id
-        element.dataitem_id = this.indexes.nodeByPath[element.path].node_id
-      }
-    })
+    // need these to write values to history table.
+    tree.updateElements(this.indexes, elements)
 
     console.log('indexes', this.indexes)
   }
