@@ -18,8 +18,8 @@
                 <DataItem category="SAMPLE" compositionId="Xballscrew" id="screwtemp1" nativeUnits="CELSIUS" type="TEMPERATURE" units="CELSIUS" />
               </DataItems>
               <Compositions>
-                <Composition id="Xballscrew" type="BALLSCREW" />
                 <Composition id="Xmotor" type="MOTOR" />
+                <Composition id="Xballscrew" type="BALLSCREW" />
               </Compositions>
             </Linear>
           </Components>

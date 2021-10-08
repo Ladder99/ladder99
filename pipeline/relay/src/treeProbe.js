@@ -6,7 +6,8 @@ import * as libapp from './libapp.js'
 // these are the only elements we want to pick out of the probe xml.
 //. add Description elements - will add to Device obj
 //. add Composition elements - will need for uniquification
-const appendTags = libapp.getSet('Device,DataItem')
+// const appendTags = libapp.getSet('Device,DataItem')
+const appendTags = libapp.getSet('Device,DataItem,Composition')
 // const appendTags = libapp.getSet('Device,DataItem,Description,Composition')
 
 // don't recurse down these elements - not interested in them or their children
@@ -336,8 +337,19 @@ function makeUniquePaths(elements) {
   }
   console.log('collisions', collisions)
 
-  // attributes to try for uniquification, in order
+  // attributes to try for uniquification, in order of preference
   const attributesToTry = 'compositionId,statistic,name'.split(',')
+
+  //. get index on elements by id
+  // const elementByCompositionId = {}
+  const elementById = {}
+  Object.keys(elements).forEach(key => {
+    // if (elements[key].compositionId) {
+    //   elementByCompositionId[elements[key].compositionId] = elements[key]
+    // }
+    elementById[elements[key].id] = elements[key]
+  })
+  console.log(elementById)
 
   // iterate over list of collisions
   // fullpath is device/path/to/type
@@ -354,6 +366,20 @@ function makeUniquePaths(elements) {
         if (attribute === 'compositionId') {
           //. if items have compositionId find the composition elements referenced
           // and use their type eg 'motor'
+          //. how get the composition element? need an index on id
+          //. make one above
+          for (const el of collision) {
+            if (el[attribute]) {
+              const compositionId = el[attribute]
+              console.log(compositionId)
+              // const composition = elementByCompositionId[compositionId]
+              const composition = elementById[compositionId]
+              console.log(373, composition)
+              const compositionType = composition.type.toLowerCase() // eg 'motor'
+              el.path += '-' + compositionType
+            }
+          }
+          //
           //. if still not unique, add name in brackets also eg '[high]'.
           // what if no name though, just an id? use name || id ?
         } else if (attribute === 'statistic') {
@@ -361,15 +387,14 @@ function makeUniquePaths(elements) {
             // check if has attribute (one of the array might not)
             if (el[attribute]) {
               el.path += '-statistic=' + el[attribute].toLowerCase()
-              // console.log(el.path)
             }
           }
           break
         } else if (attribute === 'name') {
-          //. use name as last resort - makes dashboard harder
+          // use name as last resort - makes dashboard harder
           for (const el of collision) {
             if (el[attribute]) {
-              el.path += '[' + el[attribute] + ']'
+              el.path += '[' + el[attribute].toLowerCase() + ']'
             }
           }
           break
