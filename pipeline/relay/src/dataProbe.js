@@ -12,25 +12,27 @@ export class Probe extends Data {
 
   // write probe data in .json to db instance, get indexes
   async write(db) {
-    // get devices, descriptions, dataitems, compositions
-    //. eg elements = [{}, ...]
+    // get devices, descriptions, dataitems, compositions from xml/json.
+    // eg elements = [{node_type, path, id, name, device, category}, ...]
     const elements = tree.getElements(this.json)
 
-    // get devices, dataitems with unique paths
-    //. eg nodes = [{}, ...]
+    // get devices and dataitems with unique paths.
+    // nodes are just what we'll add to the db, elements are more complete.
+    // nodes should just include devices and dataitems.
+    // eg nodes = [{node_type, path, category}, ...]
     const nodes = tree.getNodes(elements)
 
     // add/get nodes to db - devices and dataitems
     for (let node of nodes) {
-      node.node_id = await db.add(node) // write db
+      node.node_id = await db.add(node) // write to db and save resulting node_id
     }
 
     // get indexes - nodeByPath, nodeById, elementById
     //. why do we need those 3 indexes?
     this.indexes = tree.getIndexes(nodes, elements)
 
-    // assign device_id and dataitem_id to dataitem elements
-    //. why?
+    // assign device_id and dataitem_id to dataitem elements.
+    // used to write values to history table.
     elements.forEach(element => {
       if (element.node_type === 'DataItem') {
         element.device_id = this.indexes.nodeByPath[element.device].node_id

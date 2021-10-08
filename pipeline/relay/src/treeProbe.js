@@ -35,6 +35,8 @@ const ignoreAttributes = libapp.getSet(
   'id,name,type,subType,compositionId,category,discrete,_key,tag,parents,units,nativeUnits,device'
 )
 
+//
+
 // get flat list of elements from given json by recursing through probe structure.
 // just gets Device and DataItem elements for now.
 // eg json = { MTConnectDevices: { Header, Devices: { Agent, Device }}}
