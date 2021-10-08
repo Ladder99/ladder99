@@ -343,16 +343,11 @@ function makeUniquePaths(elements) {
   // attributes to try for uniquification, in order of preference
   const attributesToTry = 'compositionId,statistic,name'.split(',')
 
-  //. get index on elements by id
-  // const elementByCompositionId = {}
+  // get index on elements by id
   const elementById = {}
-  Object.keys(elements).forEach(key => {
-    // if (elements[key].compositionId) {
-    //   elementByCompositionId[elements[key].compositionId] = elements[key]
-    // }
-    elementById[elements[key].id] = elements[key]
-  })
-  console.log(elementById)
+  Object.keys(elements).forEach(
+    key => (elementById[elements[key].id] = elements[key])
+  )
 
   // iterate over list of collisions
   // fullpath is device/path/to/type
@@ -367,24 +362,20 @@ function makeUniquePaths(elements) {
       if (nitemsWithAttribute >= n - 1) {
         //. do as switch with fallthroughs
         if (attribute === 'compositionId') {
-          //. if items have compositionId find the composition elements referenced
-          // and use their type eg 'motor'
-          //. how get the composition element? need an index on id
-          //. make one above
+          // if items have compositionId find the composition elements referenced
+          // and use those types eg 'motor'.
           for (const el of collision) {
             if (el[attribute]) {
               const compositionId = el[attribute]
-              console.log(compositionId)
-              // const composition = elementByCompositionId[compositionId]
               const composition = elementById[compositionId]
-              console.log(373, composition)
               const compositionType = composition.type.toLowerCase() // eg 'motor'
               el.path += '-' + compositionType
             }
           }
           //
-          //. if still not unique, add name in brackets also eg '[high]'.
-          // what if no name though, just an id? use name || id ?
+          //. if paths still not unique, add name in brackets also eg '[high]'.
+          //. use name || id, in case no name?
+          break
         } else if (attribute === 'statistic') {
           for (const el of collision) {
             // check if has attribute (one of the array might not)
