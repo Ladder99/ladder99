@@ -282,6 +282,7 @@ export function getNodes(elements) {
   let nodes = []
 
   // handle path collisions by adding more type or name info as needed.
+  //. might need indexes first?
   makeUniquePaths(elements)
 
   for (const element of elements) {
@@ -312,15 +313,59 @@ export function getNodes(elements) {
   return nodes
 }
 
-//. make element paths unique by adding more type or name info as needed.
+// make element paths unique by adding more type or name info as needed.
+//. eg elements = [{path:'temp'},{path:'temp'},{path:'temp'}]
+// returns [{}]
 function makeUniquePaths(elements) {
   const d = {}
+  const collisions = {}
   for (const element of elements) {
     const fullpath = element.device + '/' + element.path
+    // console.log(fullpath)
     if (d[fullpath]) {
-      //. collision - mark these elements as needing uniquification
+      // collision - add these elements to list as needing uniquification
+      if (collisions[fullpath]) {
+        collisions[fullpath].push(element)
+      } else {
+        collisions[fullpath] = [d[fullpath], element]
+      }
     } else {
       d[fullpath] = element
+    }
+  }
+  console.log('collisions', collisions)
+
+  // attributes to try for uniquification, in order
+  const attributesToTry = 'compositionId,statistic,name'.split(',')
+
+  // iterate over list of collisions
+  // fullpath is device/path/to/type
+  for (const fullpath of Object.keys(collisions)) {
+    // each collision is an array of elements with same fullpath (device and path)
+    const collision = collisions[fullpath]
+    const n = collision.length
+    // iterate over attributes to try and see if n-1 elements have one
+    for (const attribute of attributesToTry) {
+      const nitemsWithAttribute = collision.filter(el => !!el[attribute]).length
+      //. check if at least n-1 items have attribute - if so use that for unique path
+      if (nitemsWithAttribute >= n - 1) {
+        //. do as switch with fallthroughs
+        if (attribute === 'compositionId') {
+          //. if items have compositionId find the composition elements referenced
+          // and use their type eg 'motor'
+          //. if still not unique, add name in brackets eg '[high]'
+        } else if (attribute === 'statistic') {
+          for (const el of collision) {
+            // check if has attribute (one of the array might not)
+            if (el[attribute]) {
+              el.path += '-statistic=' + el[attribute].toLowerCase()
+              console.log(el.path)
+            }
+          }
+        } else if (attribute === 'name') {
+          //. use name as last resort - makes dashboard harder
+        }
+      }
     }
   }
 }

@@ -10,6 +10,11 @@
       </Description>
       <DataItems>
         <DataItem id="d1-avail" category="EVENT" type="AVAILABILITY" />
+        <DataItem category="SAMPLE" id="kl1-cycle" name="cycle_time" type="PROCESS_TIMER" subType="PROCESS" />
+        <DataItem category="SAMPLE" id="kl1-cycleavg" name="cycle_time_avg" type="PROCESS_TIMER" subType="PROCESS" statistic="AVERAGE" />
+        <DataItem category="SAMPLE" id="kl1-pcrem_calc" name="calc" type="PART_COUNT" subType="REMAINING" />
+        <DataItem category="SAMPLE" id="kl1-pcrem_plc" name="plc" type="PART_COUNT" subType="REMAINING" />
+        <DataItem category="SAMPLE" id="kl1-pcrem_pr" name="printer" type="PART_COUNT" subType="REMAINING" />
       </DataItems>
     </Device>
 

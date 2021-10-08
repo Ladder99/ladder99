@@ -35,15 +35,15 @@ console.log('elements', elements)
 
 // get nodes (devices, unique propdefs)
 const nodes = treeProbe.getNodes(elements) //.slice(0, 3)
-console.log('nodes', nodes)
+// console.log('nodes', nodes)
 
-// simulate db add/get - assign node_id to each node
-nodes.forEach((node, i) => (node.node_id = i + 1))
+// // simulate db add/get - assign node_id to each node
+// nodes.forEach((node, i) => (node.node_id = i + 1))
 
-const indexes = treeProbe.getIndexes(nodes, elements)
-treeProbe.updateElements(indexes, elements)
+// const indexes = treeProbe.getIndexes(nodes, elements)
+// treeProbe.updateElements(indexes, elements)
 
-console.log('indexes', indexes)
+// console.log('indexes', indexes)
 
 //------------------------------------------------------------------------
 
