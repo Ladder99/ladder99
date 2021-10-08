@@ -32,6 +32,7 @@ outputs:
   - key: state
     value: <state>
 
+  # total output
   - key: uc
     value: <uc>
 
