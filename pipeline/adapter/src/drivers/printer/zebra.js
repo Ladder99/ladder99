@@ -46,7 +46,7 @@ export class AdapterDriver {
           //. how handle multiple messages - eg some warnings, some faults?
           //. for now, just handle one condition value at a time
           if (ret.errors.length > 0) {
-            setCache('cond', 'ERROR')
+            setCache('cond', 'FAULT')
             setCache('msg', ret.msgs)
             setCache('state', 'INTERRUPTED') // execution state - see also HS handler below
           } else if (ret.warnings.length > 0) {
