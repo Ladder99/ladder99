@@ -68,7 +68,7 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 CREATE INDEX IF NOT EXISTS history_node_id ON history (node_id);
 
 -- add compression/retention schedules
-SELECT add_compression_policy('history', INTERVAL '1d', if_not_exists => TRUE);
+-- SELECT add_compression_policy('history', INTERVAL '1d', if_not_exists => TRUE);
 -- SELECT add_retention_policy('history', INTERVAL '1 year', if_not_exists => TRUE);
 
 
