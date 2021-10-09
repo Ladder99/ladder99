@@ -60,7 +60,6 @@ CREATE INDEX IF NOT EXISTS edges_to_id ON edges (to_id);
 -- stores data values
 CREATE TABLE IF NOT EXISTS history (
   node_id integer REFERENCES nodes,
-  -- property_id integer REFERENCES nodes,
   dataitem_id integer REFERENCES nodes,
   time timestamptz NOT NULL,
   value jsonb -- can store numbers, strings, arrays, objects...
@@ -68,7 +67,10 @@ CREATE TABLE IF NOT EXISTS history (
 SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 CREATE INDEX IF NOT EXISTS history_node_id ON history (node_id);
 
---. set compression schedule etc
+-- add compression/retention schedules
+SELECT add_compression_policy('history', INTERVAL '1d', if_not_exists => TRUE);
+-- SELECT add_retention_policy('history', INTERVAL '1 year', if_not_exists => TRUE);
+
 
 ---------------------------------------------------------------------
 -- bins
