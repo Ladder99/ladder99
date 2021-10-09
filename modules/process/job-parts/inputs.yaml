@@ -166,7 +166,7 @@ handlers:
           const koff = keyvalues[<kits_off>] || {};
           console.log('koff', koff)
           koff.end = new Date();
-          koff.delta = koff.end - koff.start;
+          koff.delta = (koff.end - koff.start) * 0.001;
           return koff.delta;
         }
 
@@ -205,6 +205,7 @@ handlers:
           <kits_off>;
           const kv = Object.entries(keyvalues);
           const dataitems = kv
+            .filter(([key, value]) => value.delta !== null)
             .slice(kv.length - 5)
             .map(([key, value]) => `${key}=${value.delta}`)
             .join(' ');
