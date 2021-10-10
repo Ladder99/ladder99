@@ -40,6 +40,8 @@ export class AdapterDriver {
       '~HQES': str => {
         if (str) {
           const ret = parsers.parseHQES(str)
+          // A valid value for a data item in the category CONDITION can be one
+          // of Normal, Warning, or Fault.
           //. set multiple conditions? eg a warning AND an error? mtc allows that.
           //. how handle in relay and db and viz?
           //. pass array of values here? let cache handle it?
