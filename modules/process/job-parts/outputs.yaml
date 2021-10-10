@@ -32,7 +32,8 @@ outputs:
 
   - key: func
     # kits_on represents number of pieces started for a job
-    #. iron this out
+    #. iron this out - use job_current instead of has_current_job?
+    #  latter seems like it would only be true if
     value: |
       <has_current_job> && <job_complete> ? 'TEARDOWN' :
       <has_current_job> && !<kits_on> ? 'SETUP' : 
