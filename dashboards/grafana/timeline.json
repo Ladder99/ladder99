@@ -16,7 +16,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 5,
+  "id": 10,
   "links": [
     {
       "asDropdown": false,
@@ -126,7 +126,7 @@
         },
         {
           "$$hashKey": "object:813",
-          "color": "rgb(77, 77, 77)",
+          "color": "rgb(33, 99, 24)",
           "text": "NORMAL"
         },
         {
@@ -257,7 +257,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Kitting Line 1\"\nFROM history_text\nWHERE \ndevice='Kitting Line (1)' and\npath='controller/system-condition' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Kitting Line 1\"\nFROM history_text\nWHERE \ndevice='kl1 (kl1)' and\npath='controller/system-condition' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "kl1",
           "select": [
             [
@@ -347,7 +347,7 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
@@ -367,5 +367,5 @@
   "timezone": "",
   "title": "Timeline",
   "uid": "timeline",
-  "version": 13
+  "version": 3
 }
