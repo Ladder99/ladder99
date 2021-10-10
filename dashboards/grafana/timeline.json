@@ -203,7 +203,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"ZT410\"\nFROM history_text\nWHERE \ndevice='ZT410 (18J161604846)' and\nproperty='system-condition' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"ZT410\"\nFROM history_text\nWHERE \ndevice='ZT410 (18J161604846)' and\npath='controller/system-condition' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "a1",
           "select": [
             [
@@ -230,7 +230,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"ZE500-4 LH\"\nFROM history_text\nWHERE \ndevice='ZE500-4 LH (JJL107184.161270113.23630-02.YF.JABI)' and\nproperty='system-condition' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"ZE500-4 LH\"\nFROM history_text\nWHERE \ndevice='ZE500-4 LH (JJL107184.161270113.23630-02.YF.JABI)' and\npath='controller/system-condition' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "a2",
           "select": [
             [
@@ -257,7 +257,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Kitting Line 1\"\nFROM history_text\nWHERE \ndevice='Kitting Line (1)' and\nproperty='system-condition' and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as \"Kitting Line 1\"\nFROM history_text\nWHERE \ndevice='Kitting Line (1)' and\npath='controller/system-condition' and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "kl1",
           "select": [
             [
@@ -347,7 +347,7 @@
     "list": []
   },
   "time": {
-    "from": "now-3m",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -365,7 +365,7 @@
     ]
   },
   "timezone": "",
-  "title": "Overview",
-  "uid": "overview",
-  "version": 10
+  "title": "Timeline",
+  "uid": "timeline",
+  "version": 13
 }
