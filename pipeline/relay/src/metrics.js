@@ -304,7 +304,7 @@ export function getSql(accumulatorBins) {
         }
         sql += `VALUES ('${time}', '${key}'::jsonb, ${acc.time_available}) `
         // sql += `WHERE time=${time} AND dimensions=${key};\n`
-        sql += `ON CONFLICT (dimensions) DO `
+        sql += `ON CONFLICT (time, dimensions) DO `
         sql += `UPDATE SET time_available = EXCLUDED.time_available + bins.time_available;`
       }
     }
