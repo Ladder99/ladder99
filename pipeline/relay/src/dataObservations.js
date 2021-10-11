@@ -100,20 +100,22 @@ export class Observations extends Data {
   // do calculations on values and write to db bins table
   // called from agentReader.js
   // db is database object
-  // indexes is dict of indexes referring to probe dataitems
-  // currentDimensionValues is dict with current dimension values, eg { operator: 'Alice' }
+  // indexes is dict of indexes referring to probe dataitems (needed?)
+  // currentDimensionValues is dict with current dimension values,
+  //   eg { hour: 15, availability: 'AVAILABLE', operator: 'Alice', ... }
   // startTimes is dict with start times for each bin, eg { availability: 18574734.321 }
+  //   this needs to carry over from 'current' endpoint to 'sample',
+  //   so need to pass it in here.
   async calculate(db, indexes, currentDimensionValues, startTimes) {
     //
     // convert iso timestamps to seconds since 1970-01-01
     this.observations.forEach(observation => {
-      // observation.timestampDateObj = new Date(observation.timestamp)
       const date = new Date(observation.timestamp)
-      observation.timestampSecs = date.getTime() * 0.001
+      observation.timestampSecs = date.getTime() * 0.001 // seconds
       observation.hour = date.getHours() // 0-23
       observation.minute = date.getMinutes() // 0-59
       observation.dayOfYear = getDayOfYear(date) // 1-366
-      //. etc - like this eventually
+      //. etc - or like this eventually
       // observation.slices = {
       //   hour: date.getHours(), // 0-23
       //   minute: date.getMinutes(), // 0-59
@@ -121,14 +123,15 @@ export class Observations extends Data {
     })
 
     // accumulated bins for this calculation run - will add to db at end.
-    // this is a dict of dicts - keyed on dimensions (glommed together), then bin name.
-    //. eg
+    // this is a dict of dicts - keyed on dimensions (glommed together),
+    // then bin name.
+    // eg { '{"dayOfYear":284,"hour":2,"minute":29}': { timeActive: 32 } }
     const accumulatorBins = {}
 
     // bins for the current set of dimension values.
     // added to accumulator and cleared on each change of a dimension value.
     // keyed on bin name.
-    //. eg
+    // eg { timeActive: 8.1 } // seconds
     const currentBins = {}
 
     // could have multiple observations of the same dataitem -
