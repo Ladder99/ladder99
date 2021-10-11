@@ -33,11 +33,7 @@ const valueDefs = {
 
 //
 
-export function updateMetrics(
-  currentDimensionValues,
-  startTimes,
-  observations
-) {
+export function getMetrics(currentDimensionValues, startTimes, observations) {
   // get hour, minute, etc for each observation
   assignTimesToObservations(observations)
 
@@ -198,6 +194,7 @@ export function handleObservation(
       // start 'timer' for this observation
       // add guard in case agent is defective and sends these out every time, instead of just at start
       if (!startTimes[dataname]) {
+        console.log(`start timer for`, dataname)
         startTimes[dataname] = timestampSecs
       }
     } else {
@@ -247,9 +244,12 @@ function dimensionValueChanged(
       acc[binKey] += currentBins[binKey]
     }
     // clear the bin
+    console.log(`clear current bin`, binKey)
     delete currentBins[binKey]
   }
   console.log('accbins[dimkey]', acc)
+
   // update current dimension value
+  console.log(`update current dim value`, dataname, value)
   currentDimensionValues[dataname] = value
 }

@@ -4,7 +4,7 @@
 
 import { Data } from './data.js'
 import * as treeObservations from './treeObservations.js'
-import { updateMetrics, splitDimensionKey } from './metrics.js'
+import { getMetrics, splitDimensionKey } from './metrics.js'
 
 export class Observations extends Data {
   constructor(type) {
@@ -71,24 +71,30 @@ export class Observations extends Data {
   // indexes is dict of indexes referring to probe dataitems (needed?)
   // currentDimensionValues is dict with current dimension values,
   //   eg { hour: 15, availability: 'AVAILABLE', operator: 'Alice', ... }
-  // startTimes is dict with start times for each bin, eg { availability: 18574734.321 }
-  //   this needs to carry over from 'current' endpoint to 'sample',
+  //   needs to carry over from 'current' endpoint to 'sample',
   //   so need to pass it in here.
+  // startTimes is dict with start times for each bin, eg { availability: 18574734.321 }
+  //   ditto re passing this in here.
   // see metrics.js
   async calculate(db, currentDimensionValues, startTimes) {
+    //
     // get accumulator bins for given observations
-    const accumulatorBins = updateMetrics(
+    const accumulatorBins = getMetrics(
       currentDimensionValues,
       startTimes,
       this.observations
     )
+
     //. dump accumulator bins to db
     console.log(`dump accumulator bins to db`)
+
     //. later write to cache, which will write to db
     // cache.set(cacheKey, { value: bins[key] }) // sec
+
     //. just print for now
     // eg { '{"operator":"Alice"}': { timeActive: 1 } }
     console.log('accumulatorBins', accumulatorBins)
+
     //. write to db
     const keys = Object.keys(accumulatorBins)
     for (let key of keys) {
@@ -96,6 +102,7 @@ export class Observations extends Data {
       const acc = accumulatorBins[key] // eg { timeActive: 1 }
       console.log('add_to', dims, 'vals', acc)
     }
+
     // const sql = ``
     // db.write(sql)
     console.log()
