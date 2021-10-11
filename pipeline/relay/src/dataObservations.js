@@ -42,6 +42,10 @@ export class Observations extends Data {
     // get flat list of observations from xml tree
     // observations is [{ tag, dataItemId, name, timestamp, value }, ...]
     this.observations = treeObservations.getElements(this.json)
+
+    // sort observations by timestamp asc, for correct state machine transitions.
+    // because sequence nums could be out of order, depending on network.
+    this.observations.sort((a, b) => a.timestampSecs - b.timestampSecs)
   }
 
   // write values to db
@@ -50,13 +54,10 @@ export class Observations extends Data {
     // see https://stackoverflow.com/a/63167970/243392
     const records = []
     for (let obs of this.observations) {
-      //. call these elements not nodes
-      // const node = indexes.objById[obs.dataItemId]
-      const node = indexes.elementById[obs.dataItemId]
-      if (node) {
+      const element = indexes.elementById[obs.dataItemId]
+      if (element) {
         //. these had been tacked onto the element objects during index creation
-        // const { device_id, property_id } = node
-        const { device_id, dataitem_id } = node
+        const { device_id, dataitem_id } = element
         // obs.value is always string, due to the way the xml is stored, like <value>10</value>
         //. better to use dataitem category to convert to number?
         //  ie SAMPLES are numeric, EVENTS are strings
@@ -84,7 +85,8 @@ export class Observations extends Data {
     // this.from = nextSequence
   }
 
-  // do calculations on values and write to db - bins table
+  // do calculations on values and write to db bins table
+  // called from agentReader.js
   // db is database object
   // indexes is dict of indexes referring to probe dataitems
   // currentDimensionValues is dict with current dimension values, eg { operator: 'Alice' }
@@ -105,31 +107,29 @@ export class Observations extends Data {
       // }
     })
 
-    // sort observations by timestamp asc, for correct state machine transitions.
-    // because sequence nums could be out of order, depending on network.
-    this.observations.sort((a, b) => a.timestampSecs - b.timestampSecs)
-
     // accumulated bins for this calculation run - will add to db at end.
     // this is a dict of dicts - keyed on dimensions (glommed together), then bin name.
+    //. eg
     const accumulatorBins = {}
 
     // bins for the current set of dimension values.
     // added to accumulator and cleared on each change of a dimension value.
     // keyed on bin name.
+    //. eg
     const currentBins = {}
 
     // could have multiple observations of the same dataitem -
     // so need to run each observation through the state machine in order.
     for (let observation of this.observations) {
-      if (!observation.name) continue // skip observations without data names
+      if (!observation.name) continue // skip observations without data names (ie agent.xml dataitems should have name attribute)
 
-      //. for now, name includes machineId/ - remove it to get dataname, eg 'availability'
+      // name might include machineId/ - remove it to get dataname, eg 'availability'
       const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
 
       // value is eg 'Alice' for operator, 'ACTIVE' for execution, etc
       const { timestampSecs, dayOfYear, hour, value } = observation
 
-      // dayOfYear is another dimension we need to track
+      // dayOfYear (0-365) is a dimension we need to track
       if (dayOfYear !== currentDimensionValues.dayOfYear) {
         dimensionValueChanged(
           accumulatorBins,
@@ -140,7 +140,7 @@ export class Observations extends Data {
         )
       }
 
-      // hour is another dimension we need to track
+      // hour (0-23) is a dimension we need to track
       if (hour !== currentDimensionValues.hour) {
         dimensionValueChanged(
           accumulatorBins,
@@ -171,6 +171,7 @@ export class Observations extends Data {
       } else if (valueDefs[dataname]) {
         const valueDef = valueDefs[dataname] // eg { bin: 'timeActive', when: 'ACTIVE' }
         const bin = valueDef.bin // eg 'timeActive'
+
         // handle edge transition - start or stop timetracking for the value.
         // eg valueDef.when could be 'AVAILABLE' or 'ACTIVE' etc.
         if (value === valueDef.when) {
@@ -204,13 +205,14 @@ export class Observations extends Data {
     // previousTime = currentTime
 
     //. dump accumulator bins to db
-    //. write to cache, which will write to db
+    //. later write to cache, which will write to db
     // cache.set(cacheKey, { value: bins[key] }) // sec
     //. just print for now
     // eg { '{"operator":"Alice"}': { timeActive: 1 } }
     console.log('accumulatorBins', accumulatorBins)
 
     //. write to db
+    console.log(`will write to db ---`)
     const keys = Object.keys(accumulatorBins)
     for (let key of keys) {
       const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
