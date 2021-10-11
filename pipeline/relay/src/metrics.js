@@ -19,15 +19,17 @@ const dimensionDefs = {
 // dataitems that we want to track the state of.
 // will track time the dataitem spends in the 'when' state.
 // keyed on dataitem / observation name.
+// the bin name should match the column in the bins table,
+// as set in the migrations/*.sql files.
 const valueDefs = {
-  //. calendarTime will be implicit?
+  //. time_calendar will be implicit?
   availability: {
-    bin: 'availableTime',
+    bin: 'time_available',
     when: 'AVAILABLE',
   },
   // execution: {
   execution_state: {
-    bin: 'activeTime',
+    bin: 'time_active',
     when: 'ACTIVE',
   },
 }
@@ -42,13 +44,13 @@ export function getMetrics(currentDimensionValues, startTimes, observations) {
   // accumulated bins for this calculation run - will return at end.
   // this is a dict of dicts - keyed on dimensions (glommed together as json),
   // then bin name.
-  // eg { '{"dayOfYear":284,"hour":2,"minute":29}': { activeTime: 32 } }
+  // eg { '{"dayOfYear":284,"hour":2,"minute":29}': { time_active: 32 } }
   const accumulatorBins = {}
 
   // bins for the current set of dimension values.
   // added to accumulator and cleared on each change of a dimension value.
   // keyed on bin name.
-  // will be like { activeTime: 8.1 } // seconds
+  // will be like { time_active: 8.1 } // seconds
   const currentBins = {}
 
   // run each observation through handler in order
@@ -145,8 +147,8 @@ export function handleObservation(
   // update start time or current bin.
   if (valueDefs[dataname]) {
     console.log(`got an observation for`, dataname)
-    const valueDef = valueDefs[dataname] // eg { bin: 'activeTime', when: 'ACTIVE' }
-    const bin = valueDef.bin // eg 'activeTime'
+    const valueDef = valueDefs[dataname] // eg { bin: 'time_active', when: 'ACTIVE' }
+    const bin = valueDef.bin // eg 'time_active'
 
     // handle edge transition - start or stop timetracking for the value.
     // eg valueDef.when could be 'AVAILABLE' or 'ACTIVE' etc.
@@ -245,8 +247,8 @@ function dimensionValueChanged(
   }
   // dump current bins to accumulator bins, then clear them.
   // do this so can dump all accumulator bins to db in one go, at end.
-  const acc = accumulatorBins[dimensionKey] // eg { activeTime: 19.3 } // secs
-  // iterate over bin keys, eg ['activeTime', ...]
+  const acc = accumulatorBins[dimensionKey] // eg { time_active: 19.3 } // secs
+  // iterate over bin keys, eg ['time_active', ...]
   for (let binKey of Object.keys(currentBins)) {
     console.log('binkey, currentBins[binkey]', binKey, currentBins[binKey])
     if (acc[binKey] === undefined) {
@@ -267,17 +269,24 @@ function dimensionValueChanged(
 
 export function getSql(accumulatorBins) {
   const keys = Object.keys(accumulatorBins)
-  let sql = 'SET '
+  let sql = ''
   for (let key of keys) {
+    const time = 'pokpok'
     // split key into dimensions+values
     const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
     // get bin for this key
-    const acc = accumulatorBins[key] // eg { timeActive: 1 }
+    const acc = accumulatorBins[key] // eg { time_active: 1 }
     console.log('add_to', dims, 'vals', acc)
-    for (let valueKey of Object.keys(acc)) {
-      const delta = acc[valueKey]
-      console.log('add_to', valueKey, delta)
-      sql += `${valueKey}=${delta} `
+    const valueKeys = Object.keys(acc)
+    console.log('valueKeys', valueKeys)
+    if (valueKeys.length > 0) {
+      sql += `UPDATE bins SET `
+      for (let valueKey of valueKeys) {
+        const delta = acc[valueKey]
+        console.log('add_to', valueKey, delta)
+        sql += `${valueKey}=${delta} `
+      }
+      sql += `WHERE time=${time} AND dimensions=${key};\n`
     }
   }
   return sql

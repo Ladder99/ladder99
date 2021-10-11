@@ -82,6 +82,7 @@ CREATE TABLE IF NOT EXISTS bins (
   -- vals jsonb, -- incl timeActive, timeAvailable, partsGood, partsBad, etc
   time_active float,
   time_available float,
+  time_calendar float,
   PRIMARY KEY (time, dimensions)
 );
 
