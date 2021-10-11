@@ -140,13 +140,15 @@ function assignTimesToObservations(observations) {
   })
 }
 
-function handleObservation(
+// exported for testing
+export function handleObservation(
   observation,
   currentDimensionValues,
   accumulatorBins,
   currentBins,
   startTimes
 ) {
+  console.log('handleObservation - startTimes', startTimes)
   // name might include machineId/ - remove it to get dataname, eg 'availability'
   const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
 
