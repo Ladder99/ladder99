@@ -21,24 +21,28 @@ const dimensionDefs = {
 // keyed on dataitem / observation name.
 const valueDefs = {
   availability: {
-    bin: 'timeAvailable',
+    bin: 'availableTime',
     when: 'AVAILABLE',
   },
   // execution: {
   execution_state: {
-    bin: 'timeActive',
+    bin: 'activeTime',
     when: 'ACTIVE',
   },
 }
 
+//?
+// let previousTime = null
+
 //
 
+// get accumulatorBins for the given observations and starting points.
 export function getMetrics(currentDimensionValues, startTimes, observations) {
   // get hour, minute, etc for each observation
   assignTimesToObservations(observations)
 
-  // accumulated bins for this calculation run - will add to db at end.
-  // this is a dict of dicts - keyed on dimensions (glommed together),
+  // accumulated bins for this calculation run - will return at end.
+  // this is a dict of dicts - keyed on dimensions (glommed together as json),
   // then bin name.
   // eg { '{"dayOfYear":284,"hour":2,"minute":29}': { timeActive: 32 } }
   const accumulatorBins = {}
@@ -68,11 +72,12 @@ export function getMetrics(currentDimensionValues, startTimes, observations) {
   console.log('currentBins', currentBins)
   console.log()
 
+  //. update calendartime
   // const currentTime = new Date().getTime()
-  // accumulatorBins.timeCalendar = (currentTime - previousTime) * 0.001 // sec
+  // accumulatorBins.calendarTime = (currentTime - previousTime) * 0.001 // sec
   // previousTime = currentTime
 
-  // return accumulator bins
+  // return bins - will convert to sql and write to db
   return accumulatorBins
 }
 
@@ -181,10 +186,11 @@ export function handleObservation(
         value
       )
     }
-    //
-    // otherwise, if observation is something we need to track the lifespan of,
-    // update start time or current bin.
-  } else if (valueDefs[dataname]) {
+  }
+
+  // if observation is something we need to track the lifespan of,
+  // update start time or current bin.
+  if (valueDefs[dataname]) {
     const valueDef = valueDefs[dataname] // eg { bin: 'timeActive', when: 'ACTIVE' }
     const bin = valueDef.bin // eg 'timeActive'
 

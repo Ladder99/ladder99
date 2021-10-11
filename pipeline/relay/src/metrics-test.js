@@ -20,6 +20,8 @@ const observations = [
   },
 ]
 
+//. will want availableTime to be 20sec
+
 const currentDimensionValues = {}
 const startTimes = {}
 
@@ -28,9 +30,7 @@ const accumulatorBins = getMetrics(
   startTimes,
   observations
 )
+
 console.log()
 console.log('DONE', 'accumulator bins')
 console.log(accumulatorBins)
-
-//. want
-// { }
