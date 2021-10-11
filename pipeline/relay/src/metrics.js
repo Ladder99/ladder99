@@ -52,6 +52,7 @@ export function getMetrics(currentDimensionValues, startTimes, observations) {
   const currentBins = {}
 
   // run each observation through handler in order
+  //. get currentBins, accumulatorBins? call it getBins?
   console.log('iterate over observations, handle each in order')
   for (let observation of observations) {
     if (!observation.name) continue // skip observations without data names (ie agent.xml dataitems should have name attribute)
@@ -66,9 +67,12 @@ export function getMetrics(currentDimensionValues, startTimes, observations) {
   }
 
   console.log('currentDimensionValues', currentDimensionValues)
+  console.log('accumulatorBins', accumulatorBins)
   console.log('currentBins', currentBins)
   console.log('startTimes', startTimes)
   console.log()
+
+  //. dump current bins into currentDimensionValues?
 
   //. update calendartime
   // const currentTime = new Date().getTime()
@@ -137,6 +141,37 @@ export function handleObservation(
 
   console.log(`handle observation`, observation)
 
+  // if observation is something we're tracking the state of,
+  // update start time or current bin.
+  if (valueDefs[dataname]) {
+    console.log(`got an observation for`, dataname)
+    const valueDef = valueDefs[dataname] // eg { bin: 'activeTime', when: 'ACTIVE' }
+    const bin = valueDef.bin // eg 'activeTime'
+
+    // handle edge transition - start or stop timetracking for the value.
+    // eg valueDef.when could be 'AVAILABLE' or 'ACTIVE' etc.
+    if (value === valueDef.when) {
+      // start 'timer' for this observation
+      // add guard in case agent is defective and sends these out every time, instead of just at start
+      if (!startTimes[dataname]) {
+        console.log(`start timer for`, dataname)
+        startTimes[dataname] = timestampSecs
+      }
+    } else {
+      // otherwise, observation is turning 'off' - dump the time to the current bin
+      if (startTimes[dataname]) {
+        const delta = timestampSecs - startTimes[dataname] // sec
+        console.log('turning off:', dataname, 'delta:', delta)
+        if (currentBins[bin] === undefined) {
+          currentBins[bin] = delta
+        } else {
+          currentBins[bin] += delta
+        }
+        startTimes[dataname] = null
+      }
+    }
+  }
+
   // dayOfYear (1-366) is a dimension we need to track
   if (dayOfYear !== currentDimensionValues.dayOfYear) {
     dimensionValueChanged(
@@ -170,7 +205,8 @@ export function handleObservation(
     )
   }
 
-  // check if this dataitem is a dimension we need to track, eg dataname='operator'
+  // check if this dataitem is a dimension we're tracking,
+  // eg dataname = 'operator'.
   if (dimensionDefs[dataname]) {
     // if value of a dimension changes, dump current bins to accumulator bins
     // and update current value.
@@ -185,35 +221,7 @@ export function handleObservation(
     }
   }
 
-  // if observation is something we need to track the lifespan of,
-  // update start time or current bin.
-  if (valueDefs[dataname]) {
-    const valueDef = valueDefs[dataname] // eg { bin: 'activeTime', when: 'ACTIVE' }
-    const bin = valueDef.bin // eg 'activeTime'
-
-    // handle edge transition - start or stop timetracking for the value.
-    // eg valueDef.when could be 'AVAILABLE' or 'ACTIVE' etc.
-    if (value === valueDef.when) {
-      // start 'timer' for this observation
-      // add guard in case agent is defective and sends these out every time, instead of just at start
-      if (!startTimes[dataname]) {
-        console.log(`start timer for`, dataname)
-        startTimes[dataname] = timestampSecs
-      }
-    } else {
-      // otherwise, observation is turning 'off' - dump the time to the current bin
-      if (startTimes[dataname]) {
-        const delta = timestampSecs - startTimes[dataname] // sec
-        console.log('turning off:', dataname, 'delta:', delta)
-        if (currentBins[bin] === undefined) {
-          currentBins[bin] = delta
-        } else {
-          currentBins[bin] += delta
-        }
-        startTimes[dataname] = null
-      }
-    }
-  }
+  dimensionValueChanged(accumulatorBins, currentBins, currentDimensionValues)
 }
 
 // a dimension value changed - dump current bins into accumulator bins,

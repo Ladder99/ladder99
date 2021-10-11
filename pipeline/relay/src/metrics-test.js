@@ -3,11 +3,11 @@
 import { getMetrics } from './metrics.js'
 
 const observations = [
-  // {
-  //   name: 'availability',
-  //   timestamp: '2021-10-11T00:00:00Z',
-  //   value: 'UNAVAILABLE',
-  // },
+  {
+    name: 'availability',
+    timestamp: '2021-10-11T00:00:00Z',
+    value: 'UNAVAILABLE',
+  },
   {
     timestamp: '2021-10-11T00:00:10Z',
     name: 'availability',
@@ -18,6 +18,11 @@ const observations = [
     name: 'availability',
     value: 'UNAVAILABLE',
   },
+  // {
+  //   timestamp: '2021-10-11T00:00:50Z',
+  //   name: 'availability',
+  //   value: 'AVAILABLE',
+  // },
 ]
 
 //. will want availableTime to be 20sec
