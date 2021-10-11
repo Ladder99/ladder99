@@ -11,7 +11,8 @@ import * as treeObservations from './treeObservations.js'
 // if any one of these changes, start putting the time/count values in other bins.
 // keyed on dataitem/observation name.
 const dimensionDefs = {
-  hour: {}, //. okay? what if some need higher resolution? eg minute? save for future
+  // hour: {}, //. okay? what if some need higher resolution? eg minute? save for future
+  minute: {}, //.
   // operator: {},
   // machine: {},
   // component: {},
@@ -108,6 +109,7 @@ export class Observations extends Data {
       const date = new Date(observation.timestamp)
       observation.timestampSecs = date.getTime() * 0.001
       observation.hour = date.getHours() // 0-23
+      observation.minute = date.getMinutes() // 0-59
       observation.dayOfYear = getDayOfYear(date) // 1-366
       //. etc - like this eventually
       // observation.slices = {
@@ -136,9 +138,10 @@ export class Observations extends Data {
       const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
 
       // value is eg 'Alice' for operator, 'ACTIVE' for execution, etc
-      const { timestampSecs, dayOfYear, hour, value } = observation
+      // const { timestampSecs, dayOfYear, hour, value } = observation
+      const { timestampSecs, dayOfYear, hour, minute, value } = observation
 
-      // dayOfYear (0-365) is a dimension we need to track
+      // dayOfYear (1-366) is a dimension we need to track
       if (dayOfYear !== currentDimensionValues.dayOfYear) {
         dimensionValueChanged(
           accumulatorBins,
@@ -157,6 +160,17 @@ export class Observations extends Data {
           currentDimensionValues,
           'hour',
           hour
+        )
+      }
+
+      // minute (0-59) is a dimension we need to track
+      if (minute !== currentDimensionValues.minute) {
+        dimensionValueChanged(
+          accumulatorBins,
+          currentBins,
+          currentDimensionValues,
+          'minute',
+          minute
         )
       }
 
