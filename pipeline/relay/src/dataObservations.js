@@ -228,19 +228,18 @@ export class Observations extends Data {
     // previousTime = currentTime
 
     //. dump accumulator bins to db
+    console.log(`dump accumulator bins to db`)
     //. later write to cache, which will write to db
     // cache.set(cacheKey, { value: bins[key] }) // sec
     //. just print for now
     // eg { '{"operator":"Alice"}': { timeActive: 1 } }
     console.log('accumulatorBins', accumulatorBins)
-
     //. write to db
-    console.log(`will write to db ---`)
     const keys = Object.keys(accumulatorBins)
     for (let key of keys) {
       const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
       const acc = accumulatorBins[key] // eg { timeActive: 1 }
-      console.log('add to', dims, 'vals', acc)
+      console.log('add_to', dims, 'vals', acc)
     }
     // const sql = ``
     // db.write(sql)
@@ -339,7 +338,7 @@ function dimensionValueChanged(
   console.log('dimensionValueChanged', dataname, value)
   // const dimensionDef = dimensionDefs[dataname]
   //
-  // get key for this row, like 'hour=8,operator=Alice'
+  // get key for this row, like 'hour=8,operator=Alice', or a json string
   const dimensionKey = getDimensionKey(currentDimensionValues)
   console.log('dimensionKey', dimensionKey)
   // start new dict if needed
