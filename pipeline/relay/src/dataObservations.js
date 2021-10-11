@@ -85,7 +85,6 @@ export class Observations extends Data {
       this.observations
     )
 
-    //. dump accumulator bins to db
     console.log(`dump accumulator bins to db`)
 
     //. later write to cache, which will write to db
@@ -95,16 +94,30 @@ export class Observations extends Data {
     // eg { '{"operator":"Alice"}': { timeActive: 1 } }
     console.log('accumulatorBins', accumulatorBins)
 
-    //. write to db
-    const keys = Object.keys(accumulatorBins)
-    for (let key of keys) {
-      const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
-      const acc = accumulatorBins[key] // eg { timeActive: 1 }
-      console.log('add_to', dims, 'vals', acc)
-    }
+    const sql = getSql(accumulatorBins)
+    console.log('sql', sql)
 
-    // const sql = ``
+    //. write to db
     // db.write(sql)
+
     console.log()
   }
+}
+
+function getSql(accumulatorBins) {
+  const keys = Object.keys(accumulatorBins)
+  let sql = ''
+  for (let key of keys) {
+    // split key into dimensions+values
+    const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
+    // get bin for this key
+    const acc = accumulatorBins[key] // eg { timeActive: 1 }
+    console.log('add_to', dims, 'vals', acc)
+    // sql += `dims, acc`
+    for (let valueKey of Object.keys(acc)) {
+      const delta = acc[valueKey]
+      console.log('add_to', valueKey, delta)
+    }
+  }
+  return sql
 }

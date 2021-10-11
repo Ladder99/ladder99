@@ -31,3 +31,6 @@ const accumulatorBins = getMetrics(
 console.log()
 console.log('DONE', 'accumulator bins')
 console.log(accumulatorBins)
+
+//. want
+// { }
