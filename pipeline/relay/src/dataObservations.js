@@ -74,8 +74,8 @@ export class Observations extends Data {
   // startTimes is dict with start times for each bin, eg { availability: 18574734.321 }
   //   this needs to carry over from 'current' endpoint to 'sample',
   //   so need to pass it in here.
-  async calculate(db, indexes, currentDimensionValues, startTimes) {
-    //
-    updateMetrics(db, this.observations, currentDimensionValues, startTimes)
+  // see metrics.js
+  async calculate(db, currentDimensionValues, startTimes) {
+    updateMetrics(db, currentDimensionValues, startTimes, this.observations)
   }
 }

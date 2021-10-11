@@ -56,7 +56,7 @@ export class AgentReader {
         await current.write(this.db, probe.indexes)
         await current.calculate(
           this.db,
-          probe.indexes,
+          // probe.indexes,
           this.currentDimensionValues,
           this.startTimes
         )
@@ -70,7 +70,7 @@ export class AgentReader {
           await sample.write(this.db, probe.indexes)
           await sample.calculate(
             this.db,
-            probe.indexes,
+            // probe.indexes,
             this.currentDimensionValues,
             this.startTimes
           )
