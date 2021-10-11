@@ -108,10 +108,14 @@ export class Observations extends Data {
   //   so need to pass it in here.
   async calculate(db, indexes, currentDimensionValues, startTimes) {
     //
-    // convert iso timestamps to seconds since 1970-01-01
+    // assignTimesToObservations()
     this.observations.forEach(observation => {
       const date = new Date(observation.timestamp)
+
+      // convert iso timestamps to seconds since 1970-01-01
       observation.timestampSecs = date.getTime() * 0.001 // seconds
+
+      // get current dimension values for each observation
       observation.hour = date.getHours() // 0-23
       observation.minute = date.getMinutes() // 0-59
       observation.dayOfYear = getDayOfYear(date) // 1-366
@@ -131,8 +135,48 @@ export class Observations extends Data {
     // bins for the current set of dimension values.
     // added to accumulator and cleared on each change of a dimension value.
     // keyed on bin name.
-    // eg { timeActive: 8.1 } // seconds
+    // will be like { timeActive: 8.1 } // seconds
     const currentBins = {}
+
+    // for (let observation of this.observations) {
+    //   if (!observation.name) continue // skip observations without data names (ie agent.xml dataitems should have name attribute)
+
+    //   // name might include machineId/ - remove it to get dataname, eg 'availability'
+    //   const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
+
+    //   // value is eg 'Alice' for operator, 'ACTIVE' for execution, etc
+    //   // const { timestampSecs, dayOfYear, hour, value } = observation
+    //   const { timestampSecs, dayOfYear, hour, minute, value } = observation
+
+    //   // if observation is something we need to track the lifespan of,
+    //   // update start time or current bin.
+    //   if (valueDefs[dataname]) {
+    //     const valueDef = valueDefs[dataname] // eg { bin: 'timeActive', when: 'ACTIVE' }
+    //     const bin = valueDef.bin // eg 'timeActive'
+
+    //     // handle edge transition - start or stop timetracking for the value.
+    //     // eg valueDef.when could be 'AVAILABLE' or 'ACTIVE' etc.
+    //     if (value === valueDef.when) {
+    //       // start 'timer' for this observation
+    //       // add guard in case agent is defective and sends these out every time, instead of just at start
+    //       if (!startTimes[dataname]) {
+    //         startTimes[dataname] = timestampSecs
+    //       }
+    //     } else {
+    //       // otherwise, observation is turning 'off' - dump the time to the current bin
+    //       if (startTimes[dataname]) {
+    //         const delta = timestampSecs - startTimes[dataname] // sec
+    //         console.log('turning off:', dataname, 'delta:', delta)
+    //         if (currentBins[bin] === undefined) {
+    //           currentBins[bin] = delta
+    //         } else {
+    //           currentBins[bin] += delta
+    //         }
+    //         startTimes[dataname] = null
+    //       }
+    //     }
+    //   }
+    // }
 
     // could have multiple observations of the same dataitem -
     // so need to run each observation through the state machine in order.
@@ -264,7 +308,7 @@ function dimensionValueChanged(
   console.log('dimensionValueChanged', dataname, value)
   // const dimensionDef = dimensionDefs[dataname]
   //
-  // get key for this row, like 'hour=8,operator=Alice', or a json string
+  // get key for this row, eg '{dayOfYear:298, hour:8, minute:23}'
   const dimensionKey = getDimensionKey(currentDimensionValues)
   console.log('dimensionKey', dimensionKey)
   // start new dict if needed
@@ -273,14 +317,17 @@ function dimensionValueChanged(
   }
   // dump current bins to accumulator bins, then clear them.
   // do this so can dump all accumulator bins to db in one go, at end.
-  const acc = accumulatorBins[dimensionKey]
-  for (let bin of Object.keys(currentBins)) {
-    if (acc[bin] === undefined) {
-      acc[bin] = currentBins[bin]
+  const acc = accumulatorBins[dimensionKey] // eg { timeActive: 19.3 } // secs
+  // iterate over bin keys, eg ['timeActive', ...]
+  for (let binKey of Object.keys(currentBins)) {
+    console.log('binkey, currentBins[binkey]', binKey, currentBins[binKey])
+    if (acc[binKey] === undefined) {
+      acc[binKey] = currentBins[binKey]
     } else {
-      acc[bin] += currentBins[bin]
+      acc[binKey] += currentBins[binKey]
     }
-    delete currentBins[bin]
+    // clear the bin
+    delete currentBins[binKey]
   }
   console.log('accbins[dimkey]', acc)
   // update current dimension value
