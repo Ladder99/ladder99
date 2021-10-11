@@ -1,6 +1,7 @@
+// test metric calcs
+
 import { updateMetrics, handleObservation } from './metrics.js'
 
-const db = null
 const observations = [
   {
     name: 'availability',
@@ -18,19 +19,9 @@ const observations = [
     value: 'UNAVAILABLE',
   },
 ]
-const currentDimensionValues = {}
-const startTimes = { availability: 0 }
-const accumulatorBins = {}
-const currentBins = {}
 
-// for (let obs of observations) {
-//   handleObservation(
-//     obs,
-//     currentDimensionValues,
-//     accumulatorBins,
-//     currentBins,
-//     startTimes
-//   )
-// }
+const db = null
+const currentDimensionValues = {}
+const startTimes = {}
 
 updateMetrics(db, currentDimensionValues, startTimes, observations)
