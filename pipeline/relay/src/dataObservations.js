@@ -4,7 +4,7 @@
 
 import { Data } from './data.js'
 import * as treeObservations from './treeObservations.js'
-import { updateMetrics } from './metrics.js'
+import { updateMetrics, splitDimensionKey } from './metrics.js'
 
 export class Observations extends Data {
   constructor(type) {
@@ -76,6 +76,28 @@ export class Observations extends Data {
   //   so need to pass it in here.
   // see metrics.js
   async calculate(db, currentDimensionValues, startTimes) {
-    updateMetrics(db, currentDimensionValues, startTimes, this.observations)
+    // get accumulator bins for given observations
+    const accumulatorBins = updateMetrics(
+      currentDimensionValues,
+      startTimes,
+      this.observations
+    )
+    //. dump accumulator bins to db
+    console.log(`dump accumulator bins to db`)
+    //. later write to cache, which will write to db
+    // cache.set(cacheKey, { value: bins[key] }) // sec
+    //. just print for now
+    // eg { '{"operator":"Alice"}': { timeActive: 1 } }
+    console.log('accumulatorBins', accumulatorBins)
+    //. write to db
+    const keys = Object.keys(accumulatorBins)
+    for (let key of keys) {
+      const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
+      const acc = accumulatorBins[key] // eg { timeActive: 1 }
+      console.log('add_to', dims, 'vals', acc)
+    }
+    // const sql = ``
+    // db.write(sql)
+    console.log()
   }
 }

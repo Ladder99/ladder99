@@ -1,6 +1,6 @@
 // test metric calcs
 
-import { updateMetrics, handleObservation } from './metrics.js'
+import { updateMetrics } from './metrics.js'
 
 const observations = [
   {
@@ -24,4 +24,9 @@ const db = null
 const currentDimensionValues = {}
 const startTimes = {}
 
-updateMetrics(db, currentDimensionValues, startTimes, observations)
+const accumulatorBins = updateMetrics(
+  currentDimensionValues,
+  startTimes,
+  observations
+)
+console.log(accumulatorBins)

@@ -34,7 +34,6 @@ const valueDefs = {
 //
 
 export function updateMetrics(
-  db,
   currentDimensionValues,
   startTimes,
   observations
@@ -55,6 +54,7 @@ export function updateMetrics(
   const currentBins = {}
 
   // run each observation through handler in order
+  console.log('iterate over observations, handle each in order')
   for (let observation of observations) {
     if (!observation.name) continue // skip observations without data names (ie agent.xml dataitems should have name attribute)
     handleObservation(
@@ -64,49 +64,28 @@ export function updateMetrics(
       currentBins,
       startTimes
     )
+    console.log()
   }
 
   console.log('currentDimensionValues', currentDimensionValues)
   console.log('startTimes', startTimes)
   console.log('currentBins', currentBins)
+  console.log()
 
   // const currentTime = new Date().getTime()
   // accumulatorBins.timeCalendar = (currentTime - previousTime) * 0.001 // sec
   // previousTime = currentTime
 
-  //. dump accumulator bins to db
-  console.log(`dump accumulator bins to db`)
-  //. later write to cache, which will write to db
-  // cache.set(cacheKey, { value: bins[key] }) // sec
-  //. just print for now
-  // eg { '{"operator":"Alice"}': { timeActive: 1 } }
-  console.log('accumulatorBins', accumulatorBins)
-  //. write to db
-  const keys = Object.keys(accumulatorBins)
-  for (let key of keys) {
-    const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
-    const acc = accumulatorBins[key] // eg { timeActive: 1 }
-    console.log('add_to', dims, 'vals', acc)
-  }
-  // const sql = ``
-  // db.write(sql)
-  console.log()
+  // return accumulator bins
+  return accumulatorBins
 }
 
 //
 
 function getDimensionKey(currentDimensionValues) {
-  // const dimensionKey = Object.entries(currentDimensionValues)
-  //   .map(([key, value]) => `${key}=${value}`)
-  //   .join(',')
-  // return dimensionKey
   return JSON.stringify(currentDimensionValues)
 }
-
-function splitDimensionKey(dimensionKey) {
-  // const parts = dimensionKey.split(',')
-  // const pairs = parts.map(part => part.split('='))
-  // return pairs
+export function splitDimensionKey(dimensionKey) {
   return JSON.parse(dimensionKey)
 }
 
@@ -132,7 +111,7 @@ function assignTimesToObservations(observations) {
     observation.hour = date.getHours() // 0-23
     observation.minute = date.getMinutes() // 0-59
     observation.dayOfYear = getDayOfYear(date) // 1-366
-    //. etc - or like this eventually
+    //. etc - or like this?
     // observation.slices = {
     //   hour: date.getHours(), // 0-23
     //   minute: date.getMinutes(), // 0-59
@@ -140,7 +119,9 @@ function assignTimesToObservations(observations) {
   })
 }
 
-// exported for testing
+// handle one observation.
+// check for changes to dimensions and state changes we want to track.
+// exported for testing.
 export function handleObservation(
   observation,
   currentDimensionValues,
@@ -148,13 +129,14 @@ export function handleObservation(
   currentBins,
   startTimes
 ) {
-  console.log('handleObservation - startTimes', startTimes)
   // name might include machineId/ - remove it to get dataname, eg 'availability'
   const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
 
   // value is eg 'Alice' for operator, 'ACTIVE' for execution, etc
   // const { timestampSecs, dayOfYear, hour, value } = observation
   const { timestampSecs, dayOfYear, hour, minute, value } = observation
+
+  console.log(`handle observation`, dataname, value)
 
   // dayOfYear (1-366) is a dimension we need to track
   if (dayOfYear !== currentDimensionValues.dayOfYear) {
