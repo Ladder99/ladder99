@@ -4,7 +4,7 @@
 
 import { Data } from './data.js'
 import * as treeObservations from './treeObservations.js'
-import { getMetrics, splitDimensionKey } from './metrics.js'
+import { getMetrics, getSql } from './metrics.js'
 
 export class Observations extends Data {
   constructor(type) {
@@ -102,22 +102,4 @@ export class Observations extends Data {
 
     console.log()
   }
-}
-
-function getSql(accumulatorBins) {
-  const keys = Object.keys(accumulatorBins)
-  let sql = ''
-  for (let key of keys) {
-    // split key into dimensions+values
-    const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
-    // get bin for this key
-    const acc = accumulatorBins[key] // eg { timeActive: 1 }
-    console.log('add_to', dims, 'vals', acc)
-    // sql += `dims, acc`
-    for (let valueKey of Object.keys(acc)) {
-      const delta = acc[valueKey]
-      console.log('add_to', valueKey, delta)
-    }
-  }
-  return sql
 }

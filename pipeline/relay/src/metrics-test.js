@@ -1,6 +1,6 @@
 // test metric calcs
 
-import { getMetrics } from './metrics.js'
+import { getMetrics, getSql } from './metrics.js'
 
 const observations = [
   {
@@ -39,3 +39,6 @@ const accumulatorBins = getMetrics(
 console.log()
 console.log('DONE', 'accumulator bins')
 console.log(accumulatorBins)
+
+const sql = getSql(accumulatorBins)
+console.log(sql)

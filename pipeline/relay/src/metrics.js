@@ -264,3 +264,21 @@ function dimensionValueChanged(
   console.log(`update current dim value`, dataname, value)
   currentDimensionValues[dataname] = value
 }
+
+export function getSql(accumulatorBins) {
+  const keys = Object.keys(accumulatorBins)
+  let sql = 'SET '
+  for (let key of keys) {
+    // split key into dimensions+values
+    const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
+    // get bin for this key
+    const acc = accumulatorBins[key] // eg { timeActive: 1 }
+    console.log('add_to', dims, 'vals', acc)
+    for (let valueKey of Object.keys(acc)) {
+      const delta = acc[valueKey]
+      console.log('add_to', valueKey, delta)
+      sql += `${valueKey}=${delta} `
+    }
+  }
+  return sql
+}
