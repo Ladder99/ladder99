@@ -55,7 +55,7 @@ export function getMetrics(currentDimensionValues, startTimes, observations) {
 
   // run each observation through handler in order
   //. get currentBins, accumulatorBins? call it getBins?
-  console.log('iterate over observations, handle each in order')
+  // console.log('iterate over observations, handle each in order')
   for (let observation of observations) {
     if (!observation.name) continue // skip observations without data names (ie agent.xml dataitems should have name attribute)
     handleObservation(
@@ -65,14 +65,14 @@ export function getMetrics(currentDimensionValues, startTimes, observations) {
       currentBins,
       startTimes
     )
-    console.log()
+    // console.log()
   }
 
-  console.log('currentDimensionValues', currentDimensionValues)
-  console.log('accumulatorBins', accumulatorBins)
-  console.log('currentBins', currentBins)
-  console.log('startTimes', startTimes)
-  console.log()
+  // console.log('currentDimensionValues', currentDimensionValues)
+  // console.log('accumulatorBins', accumulatorBins)
+  // console.log('currentBins', currentBins)
+  // console.log('startTimes', startTimes)
+  // console.log()
 
   //. dump current bins into currentDimensionValues?
 
@@ -105,6 +105,8 @@ function getDayOfYear(date) {
   return day
 }
 
+function foo(pok) {}
+
 function assignTimesToObservations(observations) {
   observations.forEach(observation => {
     const date = new Date(observation.timestamp)
@@ -113,9 +115,10 @@ function assignTimesToObservations(observations) {
     observation.timestampSecs = date.getTime() * 0.001 // seconds
 
     // get current dimension values for each observation
+    observation.year = date.getFullYear() // eg 2021
+    observation.dayOfYear = getDayOfYear(date) // 1-366
     observation.hour = date.getHours() // 0-23
     observation.minute = date.getMinutes() // 0-59
-    observation.dayOfYear = getDayOfYear(date) // 1-366
     //. etc - or like this?
     // observation.slices = {
     //   hour: date.getHours(), // 0-23
@@ -139,14 +142,14 @@ export function handleObservation(
 
   // value is eg 'Alice' for operator, 'ACTIVE' for execution, etc
   // const { timestampSecs, dayOfYear, hour, value } = observation
-  const { timestampSecs, dayOfYear, hour, minute, value } = observation
+  const { timestampSecs, year, dayOfYear, hour, minute, value } = observation
 
-  console.log(`handle observation`, observation)
+  // console.log(`handle observation`, observation)
 
   // if observation is something we're tracking the state of,
   // update start time or current bin.
   if (valueDefs[dataname]) {
-    console.log(`got an observation for`, dataname)
+    // console.log(`got an observation for`, dataname)
     const valueDef = valueDefs[dataname] // eg { bin: 'time_active', when: 'ACTIVE' }
     const bin = valueDef.bin // eg 'time_active'
 
@@ -156,14 +159,14 @@ export function handleObservation(
       // start 'timer' for this observation
       // add guard in case agent is defective and sends these out every time, instead of just at start
       if (!startTimes[dataname]) {
-        console.log(`start timer for`, dataname)
+        // console.log(`start timer for`, dataname)
         startTimes[dataname] = timestampSecs
       }
     } else {
       // otherwise, observation is turning 'off' - dump the time to the current bin
       if (startTimes[dataname]) {
         const delta = timestampSecs - startTimes[dataname] // sec
-        console.log('turning off:', dataname, 'delta:', delta)
+        // console.log('turning off:', dataname, 'delta:', delta)
         if (currentBins[bin] === undefined) {
           currentBins[bin] = delta
         } else {
@@ -174,6 +177,16 @@ export function handleObservation(
     }
   }
 
+  // year is a dimension we need to track
+  if (year !== currentDimensionValues.year) {
+    dimensionValueChanged(
+      accumulatorBins,
+      currentBins,
+      currentDimensionValues,
+      'year',
+      year
+    )
+  }
   // dayOfYear (1-366) is a dimension we need to track
   if (dayOfYear !== currentDimensionValues.dayOfYear) {
     dimensionValueChanged(
@@ -235,12 +248,12 @@ function dimensionValueChanged(
   dataname,
   value
 ) {
-  console.log('dimensionValueChanged', dataname, value, currentBins)
+  // console.log('dimensionValueChanged', dataname, value, currentBins)
   // const dimensionDef = dimensionDefs[dataname]
   //
   // get key for this row, eg '{dayOfYear:298, hour:8, minute:23}'
   const dimensionKey = getDimensionKey(currentDimensionValues)
-  console.log('dimensionKey', dimensionKey)
+  // console.log('dimensionKey', dimensionKey)
   // start new dict if needed
   if (accumulatorBins[dimensionKey] === undefined) {
     accumulatorBins[dimensionKey] = {}
@@ -250,20 +263,20 @@ function dimensionValueChanged(
   const acc = accumulatorBins[dimensionKey] // eg { time_active: 19.3 } // secs
   // iterate over bin keys, eg ['time_active', ...]
   for (let binKey of Object.keys(currentBins)) {
-    console.log('binkey, currentBins[binkey]', binKey, currentBins[binKey])
+    // console.log('binkey, currentBins[binkey]', binKey, currentBins[binKey])
     if (acc[binKey] === undefined) {
       acc[binKey] = currentBins[binKey]
     } else {
       acc[binKey] += currentBins[binKey]
     }
     // clear the bin
-    console.log(`clear current bin`, binKey)
+    // console.log(`clear current bin`, binKey)
     delete currentBins[binKey]
   }
-  console.log('accbins[dimkey]', acc)
+  // console.log('accbins[dimkey]', acc)
 
   // update current dimension value
-  console.log(`update current dim value`, dataname, value)
+  // console.log(`update current dim value`, dataname, value)
   currentDimensionValues[dataname] = value
 }
 
@@ -271,23 +284,45 @@ export function getSql(accumulatorBins) {
   const keys = Object.keys(accumulatorBins)
   let sql = ''
   for (let key of keys) {
-    const time = 'pokpok'
     // split key into dimensions+values
     const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
-    // get bin for this key
-    const acc = accumulatorBins[key] // eg { time_active: 1 }
-    console.log('add_to', dims, 'vals', acc)
-    const valueKeys = Object.keys(acc)
-    console.log('valueKeys', valueKeys)
-    if (valueKeys.length > 0) {
-      sql += `UPDATE bins SET `
-      for (let valueKey of valueKeys) {
-        const delta = acc[valueKey]
-        console.log('add_to', valueKey, delta)
-        sql += `${valueKey}=${delta} `
+
+    const seconds1970 = getHourInSeconds(dims)
+    if (seconds1970) {
+      // console.log(seconds1970)
+      const time = new Date(seconds1970 * 1000).toISOString()
+      // get bin for this key
+      const acc = accumulatorBins[key] // eg { time_active: 1 }
+      const valueKeys = Object.keys(acc)
+      if (valueKeys.length > 0) {
+        // sql += `UPDATE bins SET `
+        sql += `INSERT INTO bins (time, dimensions, time_available) `
+        for (let valueKey of valueKeys) {
+          const delta = acc[valueKey]
+          // console.log('add_to', valueKey, delta)
+          // sql += `${valueKey}=${delta} `
+        }
+        sql += `VALUES ('${time}', '${key}'::jsonb, ${acc.time_available}) `
+        // sql += `WHERE time=${time} AND dimensions=${key};\n`
+        sql += `ON CONFLICT (dimensions) DO `
+        sql += `UPDATE SET time_available = EXCLUDED.time_available + bins.time_available;`
       }
-      sql += `WHERE time=${time} AND dimensions=${key};\n`
     }
   }
   return sql
+}
+
+const secondsPerYear = 365.25 * 24 * 60 * 60
+const secondsPerDay = 24 * 60 * 60
+const secondsPerHour = 60 * 60
+
+function getHourInSeconds(dims) {
+  // console.log(dims)
+  const seconds =
+    (dims.year - 1970) * secondsPerYear +
+    (dims.dayOfYear - 1) * secondsPerDay +
+    dims.hour * secondsPerHour
+  // const d = new Date(dims.year, dims.month, dims.date, dims.hours, dims.minutes)
+  // const e = new Date()
+  return seconds
 }

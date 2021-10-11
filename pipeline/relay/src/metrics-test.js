@@ -36,9 +36,9 @@ const accumulatorBins = getMetrics(
   observations
 )
 
-console.log()
-console.log('DONE', 'accumulator bins')
-console.log(accumulatorBins)
+// console.log()
+// console.log('DONE', 'accumulator bins')
+// console.log(accumulatorBins)
 
 const sql = getSql(accumulatorBins)
 console.log(sql)
