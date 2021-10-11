@@ -85,20 +85,21 @@ export class Observations extends Data {
       this.observations
     )
 
-    console.log(`dump accumulator bins to db`)
+    // console.log(`dump accumulator bins to db`)
 
     //. later write to cache, which will write to db
     // cache.set(cacheKey, { value: bins[key] }) // sec
 
     //. just print for now
     // eg { '{"operator":"Alice"}': { timeActive: 1 } }
-    console.log('accumulatorBins', accumulatorBins)
+    // console.log('accumulatorBins', accumulatorBins)
 
     const sql = getSql(accumulatorBins)
-    console.log('sql', sql)
-
-    //. write to db
-    // db.write(sql)
+    if (sql) {
+      console.log(sql)
+      // write to db
+      await db.query(sql)
+    }
 
     console.log()
   }

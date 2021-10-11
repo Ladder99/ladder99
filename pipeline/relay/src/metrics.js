@@ -294,7 +294,7 @@ export function getSql(accumulatorBins) {
       // get bin for this key
       const acc = accumulatorBins[key] // eg { time_active: 1 }
       const valueKeys = Object.keys(acc)
-      if (valueKeys.length > 0) {
+      if (valueKeys.length > 0 && acc.time_available) {
         // sql += `UPDATE bins SET `
         sql += `INSERT INTO bins (time, dimensions, time_available) `
         for (let valueKey of valueKeys) {
