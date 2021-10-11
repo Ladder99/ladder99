@@ -5,28 +5,37 @@
 import { Data } from './data.js'
 import * as treeObservations from './treeObservations.js'
 
-//. move these into yaml
-// dimensionDefs - keyed on dataitem/observation name
-// if any one of these changes, start putting the time/count values in other bins
+//. move these into yaml, and have per client
+
+// dimensionDefs
+// if any one of these changes, start putting the time/count values in other bins.
+// keyed on dataitem/observation name.
 const dimensionDefs = {
-  hour: {}, //. okay? what if some need higher resolution? eg minute?
-  operator: {},
-  machine: {},
-  component: {},
-  job: {},
-  operation: {},
+  hour: {}, //. okay? what if some need higher resolution? eg minute? save for future
+  // operator: {},
+  // machine: {},
+  // component: {},
+  // job: {},
+  // operation: {},
 }
-// valueDefs - keyed on dataitem/observation name
+
+// valueDefs
+// dataitems that we want to track the state of.
+// will track time the dataitem spends in the 'when' state.
+// keyed on dataitem / observation name.
 const valueDefs = {
   availability: {
     bin: 'timeAvailable',
     when: 'AVAILABLE',
   },
-  execution: {
+  // execution: {
+  execution_state: {
     bin: 'timeActive',
     when: 'ACTIVE',
   },
 }
+
+//
 
 export class Observations extends Data {
   constructor(type) {
