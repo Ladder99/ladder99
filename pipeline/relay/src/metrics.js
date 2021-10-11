@@ -281,29 +281,30 @@ function dimensionValueChanged(
 }
 
 export function getSql(accumulatorBins) {
+  console.log('getsql', accumulatorBins)
   const keys = Object.keys(accumulatorBins)
   let sql = ''
   for (let key of keys) {
+    const acc = accumulatorBins[key] // eg { time_active: 1 }
+    if (Object.keys(acc).length === 0) continue
+
     // split key into dimensions+values
     const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
+    console.log(dims)
 
     const seconds1970 = getHourInSeconds(dims)
+    console.log(seconds1970)
     if (seconds1970) {
       // console.log(seconds1970)
       const time = new Date(seconds1970 * 1000).toISOString()
       // get bin for this key
-      const acc = accumulatorBins[key] // eg { time_active: 1 }
       const valueKeys = Object.keys(acc)
       if (valueKeys.length > 0 && acc.time_available) {
-        // sql += `UPDATE bins SET `
         sql += `INSERT INTO bins (time, dimensions, time_available) `
         for (let valueKey of valueKeys) {
           const delta = acc[valueKey]
-          // console.log('add_to', valueKey, delta)
-          // sql += `${valueKey}=${delta} `
         }
         sql += `VALUES ('${time}', '${key}'::jsonb, ${acc.time_available}) `
-        // sql += `WHERE time=${time} AND dimensions=${key};\n`
         sql += `ON CONFLICT (time, dimensions) DO `
         sql += `UPDATE SET time_available = EXCLUDED.time_available + bins.time_available;`
       }
@@ -315,13 +316,15 @@ export function getSql(accumulatorBins) {
 const secondsPerYear = 365.25 * 24 * 60 * 60
 const secondsPerDay = 24 * 60 * 60
 const secondsPerHour = 60 * 60
+const secondsPerMinute = 60
 
 function getHourInSeconds(dims) {
   // console.log(dims)
   const seconds =
     (dims.year - 1970) * secondsPerYear +
     (dims.dayOfYear - 1) * secondsPerDay +
-    dims.hour * secondsPerHour
+    dims.hour * secondsPerHour +
+    dims.minute * secondsPerMinute
   // const d = new Date(dims.year, dims.month, dims.date, dims.hours, dims.minutes)
   // const e = new Date()
   return seconds
