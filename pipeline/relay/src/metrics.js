@@ -346,10 +346,11 @@ export function getSql(accumulatorBins) {
           sql += `INSERT INTO bins_raw (device_id, time, dimensions, time_available) `
           for (let valueKey of valueKeys) {
             const delta = acc[valueKey]
+            // if (delta > 0) { } //. add value as string - if none, don't do the sql
           }
           sql += `VALUES (${device_id}, '${time}', '${key}'::jsonb, ${acc.time_available}) `
           sql += `ON CONFLICT (device_id, time, dimensions) DO `
-          sql += `UPDATE SET time_available = EXCLUDED.time_available + bins.time_available;`
+          sql += `UPDATE SET time_available = EXCLUDED.time_available + bins_raw.time_available;`
         }
       }
     }
