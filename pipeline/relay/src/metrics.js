@@ -104,7 +104,7 @@ function getDayOfYear(date) {
   return day
 }
 
-function foo(pok) {}
+// function foo(pok) {}
 
 function assignTimesToObservations(observations) {
   observations.forEach(observation => {
@@ -299,7 +299,7 @@ export function getSql(accumulatorBins) {
       // get bin for this key
       const valueKeys = Object.keys(acc)
       if (valueKeys.length > 0 && acc.time_available) {
-        sql += `INSERT INTO bins (time, dimensions, time_available) `
+        sql += `INSERT INTO bins (device_id, time, dimensions, time_available) `
         for (let valueKey of valueKeys) {
           const delta = acc[valueKey]
         }

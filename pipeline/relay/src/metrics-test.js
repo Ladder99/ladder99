@@ -29,9 +29,9 @@ const currentDimensionValues = {}
 const startTimes = {}
 
 const accumulatorBins = getMetrics(
+  observations,
   currentDimensionValues,
-  startTimes,
-  observations
+  startTimes
 )
 
 // console.log()
