@@ -41,6 +41,18 @@ export function getMetrics(currentDimensionValues, startTimes, observations) {
   // get hour, minute, etc for each observation
   assignTimesToObservations(observations)
 
+  // get bins
+  const accumulatorBins = getAccumulatorBins(
+    observations,
+    currentDimensionValues,
+    startTimes
+  )
+
+  // return accumulator bins - will convert to sql and write to db
+  return accumulatorBins
+}
+
+function getAccumulatorBins(observations, currentDimensionValues, startTimes) {
   // accumulated bins for this calculation run - will return at end.
   // this is a dict of dicts - keyed on dimensions (glommed together as json),
   // then bin name.
@@ -81,7 +93,6 @@ export function getMetrics(currentDimensionValues, startTimes, observations) {
   // accumulatorBins.calendarTime = (currentTime - previousTime) * 0.001 // sec
   // previousTime = currentTime
 
-  // return bins - will convert to sql and write to db
   return accumulatorBins
 }
 

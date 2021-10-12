@@ -27,6 +27,7 @@ export class Probe extends Data {
   async write(db) {
     // add/get nodes to db - devices and dataitems
     //. maybe should just get nodes here from elements with simple filter?
+    // ie filter from all elements to just dataitems? uhh
     for (let node of this.nodes) {
       node.node_id = await db.add(node) // write to db and save resulting node_id
     }
