@@ -35,13 +35,14 @@ export class Probe extends Data {
     // get indexes - nodeByPath, nodeById, elementById
     //. why do we need those 3 indexes?
     //. nodeByPath - used for
-    //. nodeById -
+    //. nodeById - gives node_id for a given node id, eg 'pr1-avail' -> 8 (right?)
     //. elementById -
     this.indexes = tree.getIndexes(this.nodes, this.elements)
 
     // assign device_id and dataitem_id to dataitem elements.
-    // will need these to write values from current/sample endpoints to history table.
-    tree.updateElements(this.indexes, this.elements)
+    // will need these to write values from current/sample endpoints
+    // to history and bins tables.
+    tree.assignNodeIds(this.elements, this.indexes)
 
     console.log('indexes', this.indexes)
   }

@@ -37,27 +37,9 @@ const valueDefs = {
 //
 
 // get accumulatorBins for the given observations and starting points.
-export function getMetrics(currentDimensionValues, startTimes, observations) {
+function getMetrics(observations, currentDimensionValues, startTimes) {
   // get hour, minute, etc for each observation
   assignTimesToObservations(observations)
-
-  // get bins
-  const accumulatorBins = getAccumulatorBins(
-    observations,
-    currentDimensionValues,
-    startTimes
-  )
-
-  // return accumulator bins - will convert to sql and write to db
-  return accumulatorBins
-}
-
-function getAccumulatorBins(observations, currentDimensionValues, startTimes) {
-  // accumulated bins for this calculation run - will return at end.
-  // this is a dict of dicts - keyed on dimensions (glommed together as json),
-  // then bin name.
-  // eg { '{"dayOfYear":284,"hour":2,"minute":29}': { time_active: 32 } }
-  const accumulatorBins = {}
 
   // bins for the current set of dimension values.
   // added to accumulator and cleared on each change of a dimension value.
@@ -65,19 +47,26 @@ function getAccumulatorBins(observations, currentDimensionValues, startTimes) {
   // will be like { time_active: 8.1 } // seconds
   const currentBins = {}
 
+  // accumulated bins for this calculation run - will return at end.
+  // this is a dict of dicts - keyed on dimensions (glommed together as json),
+  // then bin name.
+  // eg { '{"dayOfYear":284,"hour":2,"minute":29}': { time_active: 32 } }
+  const accumulatorBins = {}
+
   // run each observation through handler in order
-  //. get currentBins, accumulatorBins? call it getBins?
-  // console.log('iterate over observations, handle each in order')
   for (let observation of observations) {
-    if (!observation.name) continue // skip observations without data names (ie agent.xml dataitems should have name attribute)
-    handleObservation(
-      observation,
-      currentDimensionValues,
-      accumulatorBins,
-      currentBins,
-      startTimes
-    )
-    // console.log()
+    // only do observations with data names.
+    // ie agent.xml dataitems should have name attribute.
+    // this excludes the agent dataitems.
+    if (observation.name) {
+      handleObservation(
+        observation,
+        currentDimensionValues,
+        accumulatorBins,
+        currentBins,
+        startTimes
+      )
+    }
   }
 
   // console.log('currentDimensionValues', currentDimensionValues)
@@ -86,13 +75,12 @@ function getAccumulatorBins(observations, currentDimensionValues, startTimes) {
   // console.log('startTimes', startTimes)
   // console.log()
 
-  //. dump current bins into currentDimensionValues?
-
   //. update calendartime
   // const currentTime = new Date().getTime()
   // accumulatorBins.calendarTime = (currentTime - previousTime) * 0.001 // sec
   // previousTime = currentTime
 
+  // return bins - will convert to sql and write to db
   return accumulatorBins
 }
 

@@ -41,7 +41,8 @@ console.log('nodes', nodes)
 nodes.forEach((node, i) => (node.node_id = i + 1))
 
 const indexes = treeProbe.getIndexes(nodes, elements)
-treeProbe.updateElements(indexes, elements)
+
+treeProbe.assignNodeIds(elements, indexes)
 
 console.log('indexes', indexes)
 

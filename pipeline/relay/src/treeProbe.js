@@ -410,9 +410,12 @@ function getUniqueByPath(nodes) {
 }
 
 // get indexes for given nodes and elements: nodeById, nodeByPath, elementById.
-// eg nodes = [{id:'foo', path:'bar'}, ...], elements = [{id:'foo'}, ...]
-// returns { nodeById: {foo:...}, nodeByPath: {bar:...}, elementById: {foo:...} }
-//. why do we need these 3 indexes?
+// eg for
+//   nodes = [{ id: 'foo', path: 'bar' }, ...]
+//   elements = [{ id: 'foo' }, ...]
+// returns
+//   { nodeById: { foo:... }, nodeByPath: { bar:... }, elementById: { foo:... } }
+//. explain why we need each index
 export function getIndexes(nodes, elements) {
   // initialize indexes
   const indexes = {
@@ -438,8 +441,9 @@ export function getIndexes(nodes, elements) {
 }
 
 // assign device_id and dataitem_id to dataitem elements.
-// will use these to write values to history table.
-export function updateElements(indexes, elements) {
+// will use these to write values to history and bins tables.
+//. call this assignNodeIds(elements, indexes)
+export function assignNodeIds(elements, indexes) {
   elements.forEach(element => {
     if (element.node_type === 'DataItem') {
       element.device_id = indexes.nodeByPath[element.device].node_id
