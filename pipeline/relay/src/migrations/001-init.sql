@@ -76,34 +76,47 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 -- bins
 ---------------------------------------------------------------------
 -- store data for metrics
-CREATE TABLE IF NOT EXISTS bins (
+CREATE TABLE IF NOT EXISTS bins_raw (
   device_id integer REFERENCES nodes, -- node_id of a device
   time timestamptz NOT NULL, -- rounded down by minute, for now
   dimensions jsonb, -- incl hour, shift, plant, machine, etc
+  --. do this so don't need to keep editing table for diff metrics
+  -- values jsonb, -- incl timeActive, timeAvailable, partsGood, partsBad, etc
   time_active float,
   time_available float,
   time_calendar float,
-  --. do this so don't need to keep editing table for diff metrics
-  -- values jsonb, -- incl timeActive, timeAvailable, partsGood, partsBad, etc
   PRIMARY KEY (device_id, time, dimensions)
 );
 
 -- make hypertable and add compression/retention schedules
-SELECT create_hypertable('bins', 'time', if_not_exists => TRUE);
--- SELECT add_compression_policy('bins', INTERVAL '1d', if_not_exists => TRUE);
--- SELECT add_retention_policy('bins', INTERVAL '1 year', if_not_exists => TRUE);
+SELECT create_hypertable('bins_raw', 'time', if_not_exists => TRUE);
+-- SELECT add_compression_policy('bins_raw', INTERVAL '1d', if_not_exists => TRUE);
+-- SELECT add_retention_policy('bins_raw', INTERVAL '1 year', if_not_exists => TRUE);
 
 ---------------------------------------------------------------------
 -- VIEWS
 ---------------------------------------------------------------------
 -- delete the views in case the structure has changed
 -- (will eventually have to use migrations for this)
--- DROP VIEW IF EXISTS property_defs;
 DROP VIEW IF EXISTS dataitems;
 DROP VIEW IF EXISTS devices;
 DROP VIEW IF EXISTS history_text;
 DROP VIEW IF EXISTS history_float;
 DROP VIEW IF EXISTS history_all;
+DROP VIEW IF EXISTS bins;
+
+---------------------------------------------------------------------
+-- bins
+---------------------------------------------------------------------
+CREATE OR REPLACE VIEW bins AS
+SELECT 
+  devices.props->>'name_uuid' AS device,
+  bins_raw.time,
+  bins_raw.dimensions,
+  -- bins_raw.values, --. do this
+  bins_raw.time_available
+FROM bins_raw
+JOIN nodes AS devices ON bins_raw.device_id=devices.node_id;
 
 ---------------------------------------------------------------------
 -- history_all

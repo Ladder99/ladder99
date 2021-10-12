@@ -4,6 +4,7 @@
 // if any one of these changes, start putting the time/count values in other bins.
 // keyed on dataitem/observation name.
 //. move these into yaml, and have per client
+//. might want these to be per device or device type also
 const dimensionDefs = {
   minute: {}, //. do minute for testing, then switch to hour
   // hour: {},
@@ -21,6 +22,7 @@ const dimensionDefs = {
 // the bin name should match the column in the bins table,
 // as set in the migrations/*.sql files. (though will move to a values jsonb field)
 //. move these into yaml, and have per client
+//. might want these to be per device or device type also
 const valueDefs = {
   //. calendar: { bin: 'time_calendar' } is implicit? make explicit?
   availability: {
@@ -45,8 +47,8 @@ export function getMetrics(observations, currentDimensionValues, startTimes) {
   // added to accumulator and cleared on each change of a dimension value.
   // keyed on device_id, then bin name.
   // will be like {3: { time_active: 8.1 }, ...} // 8.1 seconds
-  // const currentBins = {}
-  const currentDeviceBins = {}
+  // const currentDeviceBins = {}
+  const currentBins = {}
 
   // accumulated bins for this calculation run - will return at end.
   // this is a dict of dicts - keyed on dimensions (glommed together as json),
@@ -60,12 +62,27 @@ export function getMetrics(observations, currentDimensionValues, startTimes) {
     // ie agent.xml dataitems should have name attribute.
     // this excludes the agent dataitems.
     if (observation.name) {
+      const { device_id } = observation
+      if (currentDimensionValues[device_id] === undefined) {
+        currentDimensionValues[device_id] = {}
+      }
+      if (currentBins[device_id] === undefined) {
+        currentBins[device_id] = {}
+      }
+      if (accumulatorBins[device_id] === undefined) {
+        accumulatorBins[device_id] = {}
+      }
+      const deviceDimensionValues = currentDimensionValues[device_id]
+      const deviceCurrentBins = currentBins[device_id]
+      const deviceAccumulatorBins = accumulatorBins[device_id]
       handleObservation(
         observation,
-        currentDimensionValues,
-        accumulatorBins,
+        // currentDimensionValues,
+        // accumulatorBins,
         // currentBins,
-        currentDeviceBins,
+        deviceDimensionValues,
+        deviceAccumulatorBins,
+        deviceCurrentBins,
         startTimes
       )
     }
@@ -106,8 +123,6 @@ function getDayOfYear(date) {
   return day
 }
 
-// function foo(pok) {}
-
 function assignTimesToObservations(observations) {
   observations.forEach(observation => {
     const date = new Date(observation.timestamp)
@@ -135,7 +150,7 @@ export function handleObservation(
   observation,
   currentDimensionValues,
   accumulatorBins,
-  currentDeviceBins,
+  currentBins,
   startTimes
 ) {
   // name might include deviceId/ - remove it to get dataname, eg 'availability'
@@ -145,7 +160,7 @@ export function handleObservation(
   const { device_id, timestampSecs, year, dayOfYear, hour, minute, value } =
     observation
 
-  //. or make startTimes a dict of dicts, like currentDeviceBins
+  //. or make startTimes a dict of dicts, like currentBins
   const deviceDataName = device_id + dataname
 
   // if observation is something we're tracking the state of,
@@ -169,14 +184,14 @@ export function handleObservation(
       if (startTimes[deviceDataName]) {
         const delta = timestampSecs - startTimes[deviceDataName] // sec
         // init device bin
-        if (currentDeviceBins[device_id] === undefined) {
-          currentDeviceBins[device_id] = {}
+        if (currentBins[device_id] === undefined) {
+          currentBins[device_id] = {}
         }
         // assign delta or add it to bin
-        if (currentDeviceBins[device_id][bin] === undefined) {
-          currentDeviceBins[device_id][bin] = delta
+        if (currentBins[device_id][bin] === undefined) {
+          currentBins[device_id][bin] = delta
         } else {
-          currentDeviceBins[device_id][bin] += delta
+          currentBins[device_id][bin] += delta
         }
         // reset start time
         startTimes[deviceDataName] = null
@@ -189,7 +204,7 @@ export function handleObservation(
     dimensionValueChanged(
       device_id,
       accumulatorBins,
-      currentDeviceBins,
+      currentBins,
       currentDimensionValues,
       'year',
       year
@@ -200,7 +215,7 @@ export function handleObservation(
     dimensionValueChanged(
       device_id,
       accumulatorBins,
-      currentDeviceBins,
+      currentBins,
       currentDimensionValues,
       'dayOfYear',
       dayOfYear
@@ -212,7 +227,7 @@ export function handleObservation(
     dimensionValueChanged(
       device_id,
       accumulatorBins,
-      currentDeviceBins,
+      currentBins,
       currentDimensionValues,
       'hour',
       hour
@@ -224,7 +239,7 @@ export function handleObservation(
     dimensionValueChanged(
       device_id,
       accumulatorBins,
-      currentDeviceBins,
+      currentBins,
       currentDimensionValues,
       'minute',
       minute
@@ -240,7 +255,7 @@ export function handleObservation(
       dimensionValueChanged(
         device_id,
         accumulatorBins,
-        currentDeviceBins,
+        currentBins,
         currentDimensionValues,
         dataname,
         value
@@ -252,7 +267,7 @@ export function handleObservation(
   dimensionValueChanged(
     device_id,
     accumulatorBins,
-    currentDeviceBins,
+    currentBins,
     currentDimensionValues
     //. undefined, undefined
   )
@@ -263,7 +278,7 @@ export function handleObservation(
 function dimensionValueChanged(
   device_id,
   accumulatorBins,
-  currentDeviceBins,
+  currentBins,
   currentDimensionValues,
   dataname,
   value
@@ -281,14 +296,14 @@ function dimensionValueChanged(
   const acc = accumulatorBins[dimensionKey] // eg { time_active: 19.3 } // secs
 
   // iterate over bin keys, eg ['time_active', ...]
-  for (let binKey of Object.keys(currentDeviceBins)) {
+  for (let binKey of Object.keys(currentBins)) {
     if (acc[binKey] === undefined) {
-      acc[binKey] = currentDeviceBins[binKey]
+      acc[binKey] = currentBins[binKey]
     } else {
-      acc[binKey] += currentDeviceBins[binKey]
+      acc[binKey] += currentBins[binKey]
     }
     // clear the bin
-    delete currentDeviceBins[binKey]
+    delete currentBins[binKey]
   }
 
   // update current dimension value
