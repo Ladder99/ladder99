@@ -7,7 +7,7 @@
 
 import net from 'net' // node lib for tcp
 // import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
-import * as common from './common.js'
+import * as lib from './lib.js'
 import { Cache } from './cache.js'
 import { getMacros, compileExpressions } from './helpers.js'
 
@@ -65,18 +65,18 @@ async function main() {
         // get input handlers
         const pathInputs = `${modulesFolder}/${module}/inputs.yaml`
         console.log(`Reading ${pathInputs}...`)
-        const inputs = common.importYaml(pathInputs) || {}
+        const inputs = lib.importYaml(pathInputs) || {}
 
         // get output handlers
         // output yamls should all follow the same format, unlike input yamls.
         const pathOutputs = `${modulesFolder}/${module}/outputs.yaml`
         console.log(`Reading ${pathOutputs}...`)
-        const outputTemplates = (common.importYaml(pathOutputs) || {}).outputs
+        const outputTemplates = (lib.importYaml(pathOutputs) || {}).outputs
 
         // get types, if any
         const pathTypes = `${modulesFolder}/${module}/types.yaml`
         console.log(`Reading ${pathTypes}...`)
-        const types = (common.importYaml(pathTypes) || {}).types
+        const types = (lib.importYaml(pathTypes) || {}).types
 
         if (outputTemplates) {
           // compile value js strings from outputs.yaml.
@@ -272,7 +272,7 @@ function getValueFn(deviceId, code = '', types = {}) {
 function readSetupYaml() {
   const yamlfile = `${setupFolder}/setup.yaml`
   console.log(`Reading ${yamlfile}...`)
-  const yamltree = common.importYaml(yamlfile)
+  const yamltree = lib.importYaml(yamlfile)
   const setup = yamltree
   if (!setup) {
     console.log(`No ${yamlfile} available - please add one.`)

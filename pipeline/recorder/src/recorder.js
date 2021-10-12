@@ -4,7 +4,7 @@
 import fs from 'fs' // node lib for filesys
 // @ts-ignore
 import { Command } from 'commander/esm.mjs' // see https://github.com/tj/commander.js
-import * as common from './common.js'
+import * as lib from './lib.js'
 
 // parse command line arguments
 const program = new Command()
@@ -26,7 +26,7 @@ console.log(`------------------------------------------------------------`)
 
 const setupFile = `${setupFolder}/setup.yaml`
 console.log(`Reading ${setupFile}...`)
-const setup = common.importYaml(setupFile)
+const setup = lib.importYaml(setupFile)
 if (!setup) {
   console.log(`No ${setupFile} available - please add one.`)
   process.exit(1)

@@ -1,0 +1,60 @@
+// library of fns
+// IMPORTANT: keep this in synch by copying between services when changed -
+//   adapter, recorder, relay
+// simpler than making a library somewhere, for now
+
+import fs from 'fs' // node lib for filesystem
+import libyaml from 'js-yaml' // see https://github.com/nodeca/js-yaml
+// import crypto from 'crypto' // node lib for random ids
+
+// import a yaml file and parse to js struct.
+// returns the js struct or null if file not avail.
+/** @returns {object} */
+export function importYaml(path) {
+  try {
+    const yaml = fs.readFileSync(path, 'utf8')
+    const yamlTree = libyaml.load(yaml)
+    return yamlTree
+  } catch (error) {
+    console.log(error.message)
+  }
+  return null
+}
+
+// sleep ms milliseconds
+export function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+// check if value is an object
+// a missing piece of javascript syntax
+export function isObject(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value)
+}
+
+// print a complete object tree (console.log only does to depth 2)
+export function print(...obj) {
+  console.dir(...obj, { depth: null })
+}
+
+// do shallow equality comparison of two objects
+// https://stackoverflow.com/questions/22266826/how-can-i-do-a-shallow-comparison-of-the-properties-of-two-objects-with-javascri
+export function shallowCompare(obj1, obj2) {
+  return (
+    Object.keys(obj1).length === Object.keys(obj2).length &&
+    Object.keys(obj1).every(
+      key => obj2.hasOwnProperty(key) && obj1[key] === obj2[key]
+    )
+  )
+}
+
+// convert a string list of items to a set
+// eg 'pok,oij,lkm' -> set{'pok','oij','lkm'}
+export function getSet(str) {
+  return new Set(str.split(','))
+}
+
+// get camelCase of a string, eg convert 'DataItem' to 'dataItem'
+export function getCamelCase(str) {
+  return str[0].toLowerCase() + str.slice(1)
+}
