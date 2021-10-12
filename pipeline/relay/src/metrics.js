@@ -343,7 +343,7 @@ export function getSql(accumulatorBins) {
         const time = new Date(seconds1970 * 1000).toISOString()
         // get bin for this key
         if (acc.time_available) {
-          sql += `INSERT INTO bins (device_id, time, dimensions, time_available) `
+          sql += `INSERT INTO bins_raw (device_id, time, dimensions, time_available) `
           for (let valueKey of valueKeys) {
             const delta = acc[valueKey]
           }
