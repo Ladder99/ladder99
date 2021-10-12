@@ -183,15 +183,20 @@ export function handleObservation(
       // dump the time to the device's current bin.
       if (startTimes[deviceDataName]) {
         const delta = timestampSecs - startTimes[deviceDataName] // sec
-        // init device bin
-        if (currentBins[device_id] === undefined) {
-          currentBins[device_id] = {}
-        }
+        // // init device bin
+        // if (currentBins[device_id] === undefined) {
+        //   currentBins[device_id] = {}
+        // }
         // assign delta or add it to bin
-        if (currentBins[device_id][bin] === undefined) {
-          currentBins[device_id][bin] = delta
+        // if (currentBins[device_id][bin] === undefined) {
+        //   currentBins[device_id][bin] = delta
+        // } else {
+        //   currentBins[device_id][bin] += delta
+        // }
+        if (currentBins[bin] === undefined) {
+          currentBins[bin] = delta
         } else {
-          currentBins[device_id][bin] += delta
+          currentBins[bin] += delta
         }
         // reset start time
         startTimes[deviceDataName] = null
@@ -316,12 +321,16 @@ export function getSql(accumulatorBins) {
   const device_ids = Object.keys(accumulatorBins)
   for (let device_id of device_ids) {
     const bins = accumulatorBins[device_id]
+    console.log('bins', bins)
     // const keys = Object.keys(accumulatorBins)
     const keys = Object.keys(bins)
     for (let key of keys) {
       // const acc = accumulatorBins[key] // eg { time_active: 1 }
-      const acc = accumulatorBins[device_id][key] // eg { time_active: 1 }
-      if (Object.keys(acc).length === 0) continue //.
+      const acc = bins[key] // eg { time_active: 1 }
+      const valueKeys = Object.keys(acc)
+      if (valueKeys.length === 0) continue //.
+
+      console.log(key, acc)
 
       // split key into dimensions+values
       const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
@@ -333,14 +342,13 @@ export function getSql(accumulatorBins) {
         // console.log(seconds1970)
         const time = new Date(seconds1970 * 1000).toISOString()
         // get bin for this key
-        const valueKeys = Object.keys(acc)
-        if (valueKeys.length > 0 && acc.time_available) {
+        if (acc.time_available) {
           sql += `INSERT INTO bins (device_id, time, dimensions, time_available) `
           for (let valueKey of valueKeys) {
             const delta = acc[valueKey]
           }
-          sql += `VALUES ('${device_id}, ${time}', '${key}'::jsonb, ${acc.time_available}) `
-          sql += `ON CONFLICT (time, dimensions) DO `
+          sql += `VALUES (${device_id}, '${time}', '${key}'::jsonb, ${acc.time_available}) `
+          sql += `ON CONFLICT (device_id, time, dimensions) DO `
           sql += `UPDATE SET time_available = EXCLUDED.time_available + bins.time_available;`
         }
       }
