@@ -6,18 +6,21 @@ import { getMetrics, getSql } from './metrics.js'
 // time_available should be 20sec.
 const observations = [
   {
+    device_id: 1,
     id: 'kl1-avail',
     name: 'availability',
     timestamp: '2021-10-11T00:00:00Z',
     value: 'UNAVAILABLE',
   },
   {
+    device_id: 1,
     id: 'kl1-avail',
     name: 'availability',
     timestamp: '2021-10-11T00:00:10Z',
     value: 'AVAILABLE',
   },
   {
+    device_id: 1,
     id: 'kl1-avail',
     name: 'availability',
     timestamp: '2021-10-11T00:00:30Z',

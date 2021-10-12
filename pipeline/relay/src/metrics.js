@@ -187,6 +187,7 @@ export function handleObservation(
   // year is a dimension we need to track
   if (year !== currentDimensionValues.year) {
     dimensionValueChanged(
+      device_id,
       accumulatorBins,
       currentDeviceBins,
       currentDimensionValues,
@@ -197,6 +198,7 @@ export function handleObservation(
   // dayOfYear (1-366) is a dimension we need to track
   if (dayOfYear !== currentDimensionValues.dayOfYear) {
     dimensionValueChanged(
+      device_id,
       accumulatorBins,
       currentDeviceBins,
       currentDimensionValues,
@@ -208,6 +210,7 @@ export function handleObservation(
   // hour (0-23) is a dimension we need to track
   if (hour !== currentDimensionValues.hour) {
     dimensionValueChanged(
+      device_id,
       accumulatorBins,
       currentDeviceBins,
       currentDimensionValues,
@@ -219,6 +222,7 @@ export function handleObservation(
   // minute (0-59) is a dimension we need to track
   if (minute !== currentDimensionValues.minute) {
     dimensionValueChanged(
+      device_id,
       accumulatorBins,
       currentDeviceBins,
       currentDimensionValues,
@@ -234,6 +238,7 @@ export function handleObservation(
     // and update current value.
     if (value !== currentDimensionValues[dataname]) {
       dimensionValueChanged(
+        device_id,
         accumulatorBins,
         currentDeviceBins,
         currentDimensionValues,
@@ -245,23 +250,24 @@ export function handleObservation(
 
   //. get rid of this?
   dimensionValueChanged(
+    device_id,
     accumulatorBins,
     currentDeviceBins,
     currentDimensionValues
+    //. undefined, undefined
   )
 }
 
 // a dimension value changed - dump current bins into accumulator bins,
 // and update current dimension value.
 function dimensionValueChanged(
+  device_id,
   accumulatorBins,
   currentDeviceBins,
   currentDimensionValues,
   dataname,
   value
 ) {
-  // const device_id = Object.keys(currentDeviceBins)
-
   // get key for this row, eg '{dayOfYear:298, hour:8, minute:23}'
   const dimensionKey = getDimensionKey(currentDimensionValues)
 
@@ -291,31 +297,37 @@ function dimensionValueChanged(
 
 export function getSql(accumulatorBins) {
   console.log('getsql', accumulatorBins)
-  const keys = Object.keys(accumulatorBins)
   let sql = ''
-  for (let key of keys) {
-    const acc = accumulatorBins[key] // eg { time_active: 1 }
-    if (Object.keys(acc).length === 0) continue
+  const device_ids = Object.keys(accumulatorBins)
+  for (let device_id of device_ids) {
+    const bins = accumulatorBins[device_id]
+    // const keys = Object.keys(accumulatorBins)
+    const keys = Object.keys(bins)
+    for (let key of keys) {
+      // const acc = accumulatorBins[key] // eg { time_active: 1 }
+      const acc = accumulatorBins[device_id][key] // eg { time_active: 1 }
+      if (Object.keys(acc).length === 0) continue //.
 
-    // split key into dimensions+values
-    const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
-    console.log(dims)
+      // split key into dimensions+values
+      const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
+      console.log(dims)
 
-    const seconds1970 = getHourInSeconds(dims)
-    console.log(seconds1970)
-    if (seconds1970) {
-      // console.log(seconds1970)
-      const time = new Date(seconds1970 * 1000).toISOString()
-      // get bin for this key
-      const valueKeys = Object.keys(acc)
-      if (valueKeys.length > 0 && acc.time_available) {
-        sql += `INSERT INTO bins (device_id, time, dimensions, time_available) `
-        for (let valueKey of valueKeys) {
-          const delta = acc[valueKey]
+      const seconds1970 = getHourInSeconds(dims)
+      console.log(seconds1970)
+      if (seconds1970) {
+        // console.log(seconds1970)
+        const time = new Date(seconds1970 * 1000).toISOString()
+        // get bin for this key
+        const valueKeys = Object.keys(acc)
+        if (valueKeys.length > 0 && acc.time_available) {
+          sql += `INSERT INTO bins (device_id, time, dimensions, time_available) `
+          for (let valueKey of valueKeys) {
+            const delta = acc[valueKey]
+          }
+          sql += `VALUES ('${device_id}, ${time}', '${key}'::jsonb, ${acc.time_available}) `
+          sql += `ON CONFLICT (time, dimensions) DO `
+          sql += `UPDATE SET time_available = EXCLUDED.time_available + bins.time_available;`
         }
-        sql += `VALUES ('${device_id}, ${time}', '${key}'::jsonb, ${acc.time_available}) `
-        sql += `ON CONFLICT (time, dimensions) DO `
-        sql += `UPDATE SET time_available = EXCLUDED.time_available + bins.time_available;`
       }
     }
   }
@@ -327,6 +339,7 @@ const secondsPerDay = 24 * 60 * 60
 const secondsPerHour = 60 * 60
 const secondsPerMinute = 60
 
+//. do tdd and get this working exactly
 function getHourInSeconds(dims) {
   // console.log(dims)
   const seconds =
