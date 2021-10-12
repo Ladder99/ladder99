@@ -64,10 +64,10 @@ CREATE TABLE IF NOT EXISTS history (
   time timestamptz NOT NULL,
   value jsonb -- can store numbers, strings, arrays, objects...
 );
-SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 CREATE INDEX IF NOT EXISTS history_node_id ON history (node_id);
 
--- add compression/retention schedules
+-- make hypertable and add compression/retention schedules
+SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 -- SELECT add_compression_policy('history', INTERVAL '1d', if_not_exists => TRUE);
 -- SELECT add_retention_policy('history', INTERVAL '1 year', if_not_exists => TRUE);
 
@@ -77,16 +77,21 @@ CREATE INDEX IF NOT EXISTS history_node_id ON history (node_id);
 ---------------------------------------------------------------------
 -- store data for metrics
 CREATE TABLE IF NOT EXISTS bins (
-  device_id integer REFERENCES nodes,
+  device_id integer REFERENCES nodes, -- node_id of a device
   time timestamptz NOT NULL, -- rounded down by minute, for now
   dimensions jsonb, -- incl hour, shift, plant, machine, etc
-  -- vals jsonb, -- incl timeActive, timeAvailable, partsGood, partsBad, etc
   time_active float,
   time_available float,
   time_calendar float,
+  --. do this so don't need to keep editing table for diff metrics
+  -- values jsonb, -- incl timeActive, timeAvailable, partsGood, partsBad, etc
   PRIMARY KEY (device_id, time, dimensions)
 );
+
+-- make hypertable and add compression/retention schedules
 SELECT create_hypertable('bins', 'time', if_not_exists => TRUE);
+-- SELECT add_compression_policy('bins', INTERVAL '1d', if_not_exists => TRUE);
+-- SELECT add_retention_policy('bins', INTERVAL '1 year', if_not_exists => TRUE);
 
 ---------------------------------------------------------------------
 -- VIEWS
@@ -105,24 +110,20 @@ DROP VIEW IF EXISTS history_all;
 ---------------------------------------------------------------------
 CREATE OR REPLACE VIEW history_all AS
 SELECT 
-  -- devices.props->>'uuid' AS device,
   devices.props->>'name_uuid' AS device,
-  -- properties.props->>'path' AS property,
   dataitems.props->>'path' AS path,
   history.time,
   history.value -- value is a jsonb object - need to cast it as in below views
 FROM history
 JOIN nodes AS devices ON history.node_id=devices.node_id
--- JOIN nodes AS properties ON history.property_id=properties.node_id;
 JOIN nodes AS dataitems ON history.dataitem_id=dataitems.node_id;
 
 ---------------------------------------------------------------------
 -- history_float
 ---------------------------------------------------------------------
 -- note: float is an alias for 'double precision' or float8
---. how handle UNDEFINED? should translate to null eh?
+--. how handle UNDEFINED? should translate to null in relay eh?
 CREATE OR REPLACE VIEW history_float AS
--- SELECT device, property, time, value::float
 SELECT device, path, time, value::float
 FROM history_all
 WHERE jsonb_typeof(value) = 'number';
@@ -133,7 +134,6 @@ WHERE jsonb_typeof(value) = 'number';
 -- note: #>>'{}' extracts the top-level json string without enclosing double quotes
 -- see https://dba.stackexchange.com/questions/207984/unquoting-json-strings-print-json-strings-without-quotes
 CREATE OR REPLACE VIEW history_text AS
--- SELECT device, property, time, value#>>'{}' as value
 SELECT device, path, time, value#>>'{}' as value
 FROM history_all
 WHERE jsonb_typeof(value) = 'string';
@@ -156,10 +156,8 @@ WHERE
   nodes.props->>'node_type'='Device';
 
 ---------------------------------------------------------------------
--- -- property_defs
 -- dataitems
 ---------------------------------------------------------------------
--- CREATE OR REPLACE VIEW property_defs AS
 CREATE OR REPLACE VIEW dataitems AS
 SELECT
   nodes.node_id,
@@ -173,5 +171,4 @@ SELECT
 FROM 
   nodes
 WHERE
-  -- nodes.props->>'node_type'='PropertyDef';
   nodes.props->>'node_type'='DataItem';
