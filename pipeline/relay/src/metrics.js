@@ -6,8 +6,8 @@
 // if any one of these changes, start putting the time/count values in other bins.
 // keyed on dataitem/observation name.
 const dimensionDefs = {
-  // hour: {}, //. okay? what if some need higher resolution? eg minute? save for future
   minute: {}, //. do minute for testing, then switch to hour
+  // hour: {},
   // operator: {},
   // machine: {},
   // component: {},
@@ -22,7 +22,7 @@ const dimensionDefs = {
 // the bin name should match the column in the bins table,
 // as set in the migrations/*.sql files.
 const valueDefs = {
-  //. time_calendar will be implicit?
+  //. calendar: { bin: 'time_calendar' } is implicit? make explicit?
   availability: {
     bin: 'time_available',
     when: 'AVAILABLE',

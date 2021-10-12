@@ -29,34 +29,7 @@ export class Observations extends Data {
 
   // write values to db
   async write(db, indexes) {
-    // build up an array of history records to write
-    // see https://stackoverflow.com/a/63167970/243392
-    const records = []
-    for (let obs of this.observations) {
-      const element = indexes.elementById[obs.dataItemId]
-      if (element) {
-        //. these had been tacked onto the element objects during index creation
-        const { device_id, dataitem_id } = element
-        // obs.value is always string, due to the way the xml is stored, like <value>10</value>
-        //. better to use dataitem category to convert to number?
-        //  ie SAMPLES are numeric, EVENTS are strings
-        // but not always
-        //. keep in mind that conditions can have >1 value also
-        const value = Number(obs.value) || JSON.stringify(obs.value)
-        const record = {
-          node_id: device_id,
-          dataitem_id,
-          time: obs.timestamp,
-          value,
-        }
-        records.push(record)
-      } else {
-        // console.log(`Warning: objById index missing dataItem ${obs.dataItemId}`)
-        console.log(
-          `Warning: elementById index missing dataItem ${obs.dataItemId}`
-        )
-      }
-    }
+    const records = getRecords(this.observations, indexes)
 
     // write all records to db
     return await db.addHistory(records)
@@ -95,4 +68,35 @@ export class Observations extends Data {
 
     console.log()
   }
+}
+
+// build up an array of history records to write
+// see https://stackoverflow.com/a/63167970/243392
+function getRecords(observations, indexes) {
+  const records = []
+  for (let obs of observations) {
+    const element = indexes.elementById[obs.dataItemId]
+    if (element) {
+      // note: these had been tacked onto the element objects during index creation
+      const { device_id, dataitem_id } = element
+      // obs.value is always string, due to the way the xml is stored, like <value>10</value>
+      //. better to use dataitem category to convert to number?
+      //  ie SAMPLES are numeric, EVENTS are strings
+      //. convert UNAVAILABLEs to null?
+      //. keep in mind that conditions can have >1 value also
+      const value = Number(obs.value) || JSON.stringify(obs.value)
+      const record = {
+        node_id: device_id,
+        dataitem_id,
+        time: obs.timestamp,
+        value,
+      }
+      records.push(record)
+    } else {
+      console.log(
+        `Warning: elementById index missing dataItem ${obs.dataItemId}`
+      )
+    }
+  }
+  return records
 }

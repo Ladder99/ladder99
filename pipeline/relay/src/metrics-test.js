@@ -2,30 +2,28 @@
 
 import { getMetrics, getSql } from './metrics.js'
 
+// simulated observations from 'sample' endpoint.
+// time_available should be 20sec.
 const observations = [
   {
+    id: 'kl1-avail',
     name: 'availability',
     timestamp: '2021-10-11T00:00:00Z',
     value: 'UNAVAILABLE',
   },
   {
-    timestamp: '2021-10-11T00:00:10Z',
+    id: 'kl1-avail',
     name: 'availability',
+    timestamp: '2021-10-11T00:00:10Z',
     value: 'AVAILABLE',
   },
   {
-    timestamp: '2021-10-11T00:00:30Z',
+    id: 'kl1-avail',
     name: 'availability',
+    timestamp: '2021-10-11T00:00:30Z',
     value: 'UNAVAILABLE',
   },
-  // {
-  //   timestamp: '2021-10-11T00:00:50Z',
-  //   name: 'availability',
-  //   value: 'AVAILABLE',
-  // },
 ]
-
-//. will want availableTime to be 20sec
 
 const currentDimensionValues = {}
 const startTimes = {}

@@ -12,19 +12,17 @@ export class Data {
   }
 
   // read xml from endpoint, convert to json, store in .json,
-  // and parse out .header, .instanceId, .sequence info from it.
-  // subclass is responsible for parsing the .json and converting it to
+  // and parse out .errors, .header, .instanceId, .sequence info from it.
+  // note: subclass is responsible for parsing the .json and converting it to
   // dataitem elements etc.
   async read(endpoint, from, count) {
     console.log(`Read ${endpoint.baseUrl}, ${from}, ${count}`)
     this.json = await endpoint.fetchJson(this.type, from, count)
-    this.parseHeader()
-  }
 
-  // get errors, header, and instanceId from json
-  parseHeader() {
+    // parse .json
     console.log(`Parse header...`)
 
+    // get .errors
     //. handle errors as needed
     // eg <Errors><Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error></Errors>
     // if (codes.includes('OUT_OF_RANGE')) {
@@ -40,16 +38,16 @@ export class Data {
       throw new Error(JSON.stringify(this.errors))
     }
 
-    // get header for probe, current, or sample xmls
+    // get .header for probe, current, or sample xmls
     this.header = this.json.MTConnectDevices
       ? this.json.MTConnectDevices.Header._attributes
       : this.json.MTConnectStreams.Header._attributes
     // console.log('header', this.header)
 
-    // get instanceId
+    // get .instanceId
     this.instanceId = this.header.instanceId
 
-    // get sequence info for current/sample endpoints
+    // get .sequence info for current/sample endpoints
     if (this.json.MTConnectStreams) {
       this.sequence = {
         first: this.header.firstSequence,
