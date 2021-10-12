@@ -54,9 +54,9 @@ export class Observations extends Data {
   async calculate(db, currentDimensionValues, startTimes) {
     // get accumulator bins for given observations
     const accumulatorBins = getMetrics(
+      this.observations,
       currentDimensionValues,
-      startTimes,
-      this.observations
+      startTimes
     )
 
     // get sql update/insert statement and write to db
