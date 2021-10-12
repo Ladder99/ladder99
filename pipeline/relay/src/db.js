@@ -5,7 +5,7 @@ import fs from 'fs' // node lib
 import pg from 'pg' // postgres driver https://github.com/brianc/node-postgres
 const { Pool } = pg // note: import { Client } from 'pg' gives error, so must do this
 import pgFormat from 'pg-format' // see https://github.com/datalanche/node-pg-format
-import * as libapp from './libapp.js'
+import * as lib from './lib.js'
 
 export class Db {
   constructor() {
@@ -33,7 +33,7 @@ export class Db {
       } catch (error) {
         console.log(`Error ${error.code} - will sleep before retrying...`)
         console.log(error)
-        await libapp.sleep(4000)
+        await lib.sleep(4000)
       }
     } while (!client)
     this.client = client

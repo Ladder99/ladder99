@@ -1,21 +1,21 @@
 // companion functions for dataProbe.js
 //. move there
 
-import * as libapp from './libapp.js'
+import * as lib from './lib.js'
 
 // these are the only elements we want to pick out of the probe xml.
 //. add Description elements - will add to Device obj
 //. add Composition elements - will need for uniquification
-// const appendTags = libapp.getSet('Device,DataItem')
-const appendTags = libapp.getSet('Device,DataItem,Composition')
-// const appendTags = libapp.getSet('Device,DataItem,Description,Composition')
+// const appendTags = lib.getSet('Device,DataItem')
+const appendTags = lib.getSet('Device,DataItem,Composition')
+// const appendTags = lib.getSet('Device,DataItem,Description,Composition')
 
 // don't recurse down these elements - not interested in them or their children
-const skipTags = libapp.getSet('Agent')
+const skipTags = lib.getSet('Agent')
 
 // ignore these element types for path parts - they don't add much info to the path,
 // as they're just containers.
-const ignoreTags = libapp.getSet(
+const ignoreTags = lib.getSet(
   'Adapters,AssetCounts,Components,Compositions,Configurations,DataItems,Devices,Filters,Specifications'
 )
 
@@ -23,7 +23,7 @@ const ignoreTags = libapp.getSet(
 //. in future, do two passes to determine if need to uniquify them with nums or names
 //. follow opcua-mtconnect convention of names in brackets eg 'tank[high]'
 //. or use aliases table to refer by number or name or id to a dataitem
-const plainTags = libapp.getSet(
+const plainTags = lib.getSet(
   'Axes,Controller,EndEffector,Feeder,PartOccurrence,Path,Personnel,ProcessOccurrence,Resources,Systems'
 )
 
@@ -31,7 +31,7 @@ const plainTags = libapp.getSet(
 // in a path step, are accounted for explicitly, or are redundant.
 // any other attributes would be included, eg '-statistic=average'
 //. maybe do other way around - list of attributes to include?
-const ignoreAttributes = libapp.getSet(
+const ignoreAttributes = lib.getSet(
   'id,name,type,subType,compositionId,category,discrete,_key,tag,parents,units,nativeUnits,device'
 )
 
@@ -118,7 +118,7 @@ const elementHandlers = {
 //. handle parents differently - do in separate pass?
 function recurse(el, objs, tag = '', parents = []) {
   // handle object with keyvalue pairs
-  if (libapp.isObject(el)) {
+  if (lib.isObject(el)) {
     // make object, which translates the json element to something usable.
     // tag is eg 'DataItem'
     // parents is list of ancestors - will be deleted before return.
@@ -187,7 +187,7 @@ function getPathStep(obj) {
   //. will want to do two passes though - first to see how many Paths there are,
   // then to assign numbers to the steps, eg path, path2, path3...,
   // or names in brackets [path]
-  if (plainTags.has(obj.tag)) return libapp.getCamelCase(obj.tag) // eg 'processOccurrence'
+  if (plainTags.has(obj.tag)) return lib.getCamelCase(obj.tag) // eg 'processOccurrence'
   let step = ''
   switch (obj.tag) {
     case 'Device':

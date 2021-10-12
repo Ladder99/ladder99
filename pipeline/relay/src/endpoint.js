@@ -4,7 +4,7 @@
 import fs from 'fs' // node filesystem lib
 import fetch from 'node-fetch' // https://github.com/node-fetch/node-fetch
 import convert from 'xml-js' // convert xml to json https://github.com/nashwaan/xml-js
-import * as libapp from './libapp.js'
+import * as lib from './lib.js'
 
 export class Endpoint {
   constructor(baseUrl) {
@@ -54,7 +54,7 @@ export class Endpoint {
       }
       if (!json) {
         console.log(`No data available - will wait and try again...`)
-        await libapp.sleep(4000)
+        await lib.sleep(4000)
       }
     } while (!json)
     return json

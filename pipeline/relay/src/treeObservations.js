@@ -1,18 +1,16 @@
-//. move these fns to dataObservations.js
-
-import * as libapp from './libapp.js'
+import * as lib from './lib.js'
 
 //.
-// const appendTags2 = libapp.getSet('Angle')
+// const appendTags2 = lib.getSet('Angle')
 
 //.
-const skipTags2 = libapp.getSet('')
+const skipTags2 = lib.getSet('')
 
 // get flat list of elements from given json tree
 // eg [{
 //   tag: 'Availability',
-//   dataItemId: 'm1/avail',
-//   name: 'm1/availability',
+//   dataItemId: 'm1-avail',
+//   name: 'availability',
 //   sequence: '30',
 //   timestamp: '2021-09-14T17:53:21.414Z',
 //   value: 'AVAILABLE'
@@ -39,7 +37,7 @@ const elementHandlers = {
 // element can be an object, an array, or an atomic value
 function recurse(element, elements, tag = '', parents = []) {
   // handle object with keyvalue pairs
-  if (libapp.isObject(element)) {
+  if (lib.isObject(element)) {
     // start object, which is a translation of the json element to something usable.
     // tag is eg 'DataItem', parents is list of ancestors - will be deleted before return.
     let obj = { tag, parents }

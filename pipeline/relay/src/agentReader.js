@@ -4,7 +4,7 @@
 
 import { Probe } from './dataProbe.js'
 import { Observations } from './dataObservations.js'
-import * as libapp from './libapp.js'
+import * as lib from './lib.js'
 
 export class AgentReader {
   // db is a Db instance
@@ -75,7 +75,7 @@ export class AgentReader {
             this.startTimes
           )
           this.from = sample.sequence.next //. ?
-          await libapp.sleep(this.interval)
+          await lib.sleep(this.interval)
         } while (true)
       } while (true)
     } while (true)
