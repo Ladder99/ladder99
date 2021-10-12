@@ -37,7 +37,7 @@ const valueDefs = {
 //
 
 // get accumulatorBins for the given observations and starting points.
-function getMetrics(observations, currentDimensionValues, startTimes) {
+export function getMetrics(observations, currentDimensionValues, startTimes) {
   // get hour, minute, etc for each observation
   assignTimesToObservations(observations)
 

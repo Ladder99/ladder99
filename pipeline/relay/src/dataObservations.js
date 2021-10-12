@@ -29,7 +29,8 @@ export class Observations extends Data {
 
   // write values to db
   async write(db, indexes) {
-    const records = getRecords(this.observations, indexes)
+    // get history records to write to db
+    const records = getHistoryRecords(this.observations, indexes)
 
     // write all records to db
     return await db.addHistory(records)
@@ -72,12 +73,13 @@ export class Observations extends Data {
 
 // build up an array of history records to write
 // see https://stackoverflow.com/a/63167970/243392
-function getRecords(observations, indexes) {
+function getHistoryRecords(observations, indexes) {
   const records = []
   for (let obs of observations) {
     const element = indexes.elementById[obs.dataItemId]
     if (element) {
-      // note: these had been tacked onto the element objects during index creation
+      // note: these had been tacked onto the element objects during index creation.
+      // they're not in the observation objects themselves. //. or are they?
       const { device_id, dataitem_id } = element
       // obs.value is always string, due to the way the xml is stored, like <value>10</value>
       //. better to use dataitem category to convert to number?

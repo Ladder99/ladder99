@@ -32,11 +32,11 @@ export class Probe extends Data {
       node.node_id = await db.add(node) // write to db and save resulting node_id
     }
 
-    // get indexes - nodeByPath, nodeById, elementById
-    //. why do we need those 3 indexes?
-    //. nodeByPath - used for
-    //. nodeById - gives node_id for a given node id, eg 'pr1-avail' -> 8 (right?)
-    //. elementById -
+    // get indexes - nodeByNodeId, nodeByPath, elementById
+    //. why do we need those 3 indexes? explain
+    //. nodeByNodeId - gives node object for a given node_id, eg 3 -> {}
+    //. nodeByPath - gives node object for given path, eg __
+    //. elementById - gives element object for given dataitem id, eg 'pr1-avail' -> {}
     this.indexes = tree.getIndexes(this.nodes, this.elements)
 
     // assign device_id and dataitem_id to dataitem elements.

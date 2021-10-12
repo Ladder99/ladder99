@@ -409,35 +409,33 @@ function getUniqueByPath(nodes) {
   return Object.values(d)
 }
 
-// get indexes for given nodes and elements: nodeById, nodeByPath, elementById.
+// get indexes for given nodes and elements: nodeByNodeId, nodeByPath, elementById.
 // eg for
-//   nodes = [{ id: 'foo', path: 'bar' }, ...]
+//   nodes = [{ node_id: 3, id: 'foo', path: 'bar' }, ...]
 //   elements = [{ id: 'foo' }, ...]
 // returns
-//   { nodeById: { foo:... }, nodeByPath: { bar:... }, elementById: { foo:... } }
+//   { nodeByNodeId: { 3:... }, nodeByPath: { bar:... }, elementById: { foo:... } }
 //. explain why we need each index
 export function getIndexes(nodes, elements) {
-  // initialize indexes
-  const indexes = {
-    nodeById: {},
-    nodeByPath: {},
-    elementById: {},
-  }
+  // init indexes
+  const nodeByNodeId = {}
+  const nodeByPath = {}
+  const elementById = {}
 
   // add nodes
   for (let node of nodes) {
-    indexes.nodeById[node.node_id] = node
-    indexes.nodeByPath[node.path] = node
+    nodeByNodeId[node.node_id] = node
+    nodeByPath[node.path] = node
   }
 
   // add elements
   elements.forEach(element => {
     if (element.node_type !== 'Device') {
-      indexes.elementById[element.id] = element
+      elementById[element.id] = element
     }
   })
 
-  return indexes
+  return { nodeByNodeId, nodeByPath, elementById }
 }
 
 // assign device_id and dataitem_id to dataitem elements.
