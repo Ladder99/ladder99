@@ -77,14 +77,16 @@ CREATE INDEX IF NOT EXISTS history_node_id ON history (node_id);
 ---------------------------------------------------------------------
 -- store data for metrics
 CREATE TABLE IF NOT EXISTS bins (
-  time timestamptz NOT NULL, -- rounded down by hour, for now
+  device_id integer REFERENCES nodes,
+  time timestamptz NOT NULL, -- rounded down by minute, for now
   dimensions jsonb, -- incl hour, shift, plant, machine, etc
   -- vals jsonb, -- incl timeActive, timeAvailable, partsGood, partsBad, etc
   time_active float,
   time_available float,
   time_calendar float,
-  PRIMARY KEY (time, dimensions)
+  PRIMARY KEY (device_id, time, dimensions)
 );
+SELECT create_hypertable('bins', 'time', if_not_exists => TRUE);
 
 ---------------------------------------------------------------------
 -- VIEWS

@@ -304,7 +304,7 @@ export function getSql(accumulatorBins) {
         for (let valueKey of valueKeys) {
           const delta = acc[valueKey]
         }
-        sql += `VALUES ('${time}', '${key}'::jsonb, ${acc.time_available}) `
+        sql += `VALUES ('${device_id}, ${time}', '${key}'::jsonb, ${acc.time_available}) `
         sql += `ON CONFLICT (time, dimensions) DO `
         sql += `UPDATE SET time_available = EXCLUDED.time_available + bins.time_available;`
       }

@@ -9,14 +9,13 @@ import { getMetrics, getSql } from './metrics.js'
 export class Observations extends Data {
   constructor(type) {
     super()
-    this.type = type // used by read method
-    // this.bins = {} // bins for calculate method
+    this.type = type // used by read method - will be 'current' or 'sample'
     // this.previousTime = null
   }
 
+  // read dataitem values from current/sample endpoints as .json,
+  // convert .json tree to .observations (flat list of elements).
   async read() {
-    //. see old/dataObs.js for old code starting to handle errors and gaps etc -
-    // for dynamic start/count adjustment
     await super.read(...arguments) // see base class in data.js
 
     // get flat list of observations from xml tree
@@ -77,7 +76,6 @@ export class Observations extends Data {
   //   ditto re passing this in here.
   // see metrics.js
   async calculate(db, currentDimensionValues, startTimes) {
-    //
     // get accumulator bins for given observations
     const accumulatorBins = getMetrics(
       currentDimensionValues,
@@ -85,21 +83,15 @@ export class Observations extends Data {
       this.observations
     )
 
-    // console.log(`dump accumulator bins to db`)
-
-    //. later write to cache, which will write to db
-    // cache.set(cacheKey, { value: bins[key] }) // sec
-
-    //. just print for now
-    // eg { '{"operator":"Alice"}': { timeActive: 1 } }
-    // console.log('accumulatorBins', accumulatorBins)
-
+    // get sql update/insert statement and write to db
     const sql = getSql(accumulatorBins)
     if (sql) {
       console.log(sql)
-      // write to db
       await db.query(sql)
     }
+
+    //. later write to cache, which will write to db
+    // cache.set(cacheKey, { value: bins[key] }) // sec
 
     console.log()
   }
