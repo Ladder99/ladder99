@@ -3,7 +3,7 @@
 import fs from 'fs' // node lib for filesystem
 import mqttlib from 'mqtt' // see https://github.com/mqttjs/MQTT.js
 import parse from 'csv-parse/lib/sync.js' // see https://github.com/adaltas/node-csv-parse
-import * as common from '../common.js'
+import * as lib from '../lib.js'
 
 export class RecorderPlugin {
   init({ deviceId, mode, host, port, folder, csvfiles, loop, topic }) {
@@ -83,12 +83,12 @@ export class RecorderPlugin {
             //. mosquitto closes with "disconnected due to protocol error" when send qos
             // mqtt.publish(topic, payload, { qos, retain })
             mqtt.publish(topic, message, { retain })
-            await common.sleep(time_delta * 1000) // pause between messages
+            await lib.sleep(time_delta * 1000) // pause between messages
           }
           console.log()
-          await common.sleep(1000) // pause between csv files
+          await lib.sleep(1000) // pause between csv files
         }
-        await common.sleep(1000) // pause between loops
+        await lib.sleep(1000) // pause between loops
       } while (loop)
     }
 
@@ -148,7 +148,7 @@ export class RecorderPlugin {
       }
 
       do {
-        await common.sleep(2000)
+        await lib.sleep(2000)
       } while (true)
     }
   }

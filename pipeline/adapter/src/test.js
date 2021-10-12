@@ -2,7 +2,7 @@
 
 import { Cache } from './cache.js'
 import { AdapterDriver } from './drivers/autoclave/cpc.js'
-import * as common from './common.js'
+import * as lib from './lib.js'
 
 console.log(Cache)
 console.log(AdapterDriver)
@@ -25,12 +25,12 @@ async function main() {
 
   const pathInputs = `../../models/${model}/inputs.yaml`
   console.log(`Reading ${pathInputs}...`)
-  const inputs = common.importYaml(pathInputs) || {}
+  const inputs = lib.importYaml(pathInputs) || {}
   console.log(inputs)
 
   const pathOutputs = `../../models/${model}/outputs.yaml`
   console.log(`Reading ${pathOutputs}...`)
-  const outputTemplates = (common.importYaml(pathOutputs) || {}).outputs
+  const outputTemplates = (lib.importYaml(pathOutputs) || {}).outputs
   console.log(outputTemplates)
 }
 

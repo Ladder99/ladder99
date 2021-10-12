@@ -6,7 +6,7 @@
 import fs from 'fs' // node lib for filesystem
 import http from 'http' // node lib
 import parse from 'csv-parse/lib/sync.js' // see https://github.com/adaltas/node-csv-parse
-import * as common from '../common.js'
+import * as lib from '../lib.js'
 
 export class RecorderPlugin {
   async init({ deviceId, mode, host, port, loop, folder, csvfiles }) {
@@ -51,12 +51,12 @@ export class RecorderPlugin {
             for (let key of Object.keys(payload)) {
               cache[key] = payload[key]
             }
-            await common.sleep(time_delta * 1000) // pause between messages
+            await lib.sleep(time_delta * 1000) // pause between messages
           }
           console.log()
-          await common.sleep(1000) // pause between csv files
+          await lib.sleep(1000) // pause between csv files
         }
-        await common.sleep(1000) // pause between loops
+        await lib.sleep(1000) // pause between loops
       } while (loop)
     }
   }

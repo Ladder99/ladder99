@@ -1,7 +1,7 @@
 // graph
 // generic timegraph class - nodes, edges, history
 
-import * as libapp from './libapp.js'
+import * as lib from './lib.js'
 
 export class Graph {
   constructor() {
@@ -89,11 +89,11 @@ class Nodes {
 
   get(spec) {
     if (spec) {
-      if (libapp.isObject(spec)) {
+      if (lib.isObject(spec)) {
         //. find node equal to spec
         //. need index, but on what? hash the props object?
         for (const node of this.nodes) {
-          if (libapp.shallowCompare(spec.props, node.props)) {
+          if (lib.shallowCompare(spec.props, node.props)) {
             return node
           }
         }

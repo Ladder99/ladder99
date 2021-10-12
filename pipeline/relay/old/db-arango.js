@@ -3,7 +3,7 @@
 
 // import fs from 'fs' // node lib - filesystem
 import { Database } from 'arangojs' // https://github.com/arangodb/arangojs
-import * as libapp from './libapp.js'
+import * as lib from './lib.js'
 
 // arangodb
 const arangoHost = process.env.ARANGO_HOST || 'localhost'
@@ -37,7 +37,7 @@ export class Db {
       } catch (error) {
         console.log(`Error ${error.code} - will sleep before retrying...`)
         console.log(error)
-        await libapp.sleep(4000)
+        await lib.sleep(4000)
       }
     } while (!system)
     this.system = system

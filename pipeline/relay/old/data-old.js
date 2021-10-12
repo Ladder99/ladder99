@@ -63,7 +63,7 @@
 // recurse down a tree of nodes, calling callback on each one.
 // callbacks take an array of nodes and array of edges.
 function traverse(node, callbacks, parent = null) {
-  if (libapp.isObject(node)) {
+  if (lib.isObject(node)) {
     const entries = Object.entries(node)
     entries.forEach(([key, obj]) => {
       const callback = callbacks[key] || callbacks.Other

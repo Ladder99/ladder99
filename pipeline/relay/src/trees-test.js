@@ -6,7 +6,7 @@ import fs from 'fs' // node lib - filesystem
 import convert from 'xml-js' // https://github.com/nashwaan/xml-js
 import * as treeProbe from './treeProbe.js'
 import * as treeObservations from './treeObservations.js'
-import * as common from './common.js'
+import * as lib from './lib.js'
 
 console.log()
 console.log('test.js')
@@ -95,5 +95,5 @@ function getJson(path) {
   return json
 }
 
-// const yaml = common.importYaml('./src/canonical.yaml')
+// const yaml = lib.importYaml('./src/canonical.yaml')
 // console.log(yaml)
