@@ -324,30 +324,15 @@ export function getSql(accumulatorBins) {
         for (let valueKey of valueKeys) {
           const delta = acc[valueKey]
           if (delta > 0) {
-            // vals[valueKey] = delta
-            // updates.push(
-            //   `vals->>'${valueKey}' = EXCLUDED.vals->>'${valueKey}' + (bins_raw.vals->>'${valueKey}' | 0)`
-            // )
             sql += `
 INSERT INTO bins_raw (device_id, time, dimensions, vals)
   VALUES (${device_id}, '${time}', '${key}'::jsonb, '{"${valueKey}":${delta}}'::jsonb)
 ON CONFLICT (device_id, time, dimensions) DO
   UPDATE SET
-    vals = bins_raw.vals || jsonb_build_object('${valueKey}', (((bins_raw.vals->>'${valueKey}')::real | 0.0::real) + ${delta})); 
+    vals = bins_raw.vals || jsonb_build_object('${valueKey}', (coalesce((bins_raw.vals->>'${valueKey}')::real, 0.0::real) + ${delta})); 
   `
-            // UPDATE SET
-            //   vals = jsonb_set(bins_raw.vals, array['${valueKey}'], bins_raw.vals->>'${valueKey}' + ${delta});
-            // -- UPDATE SET vals = vals || '{"${valueKey}": vals->>'${valueKey}' + ${delta}}::jsonb;
           }
         }
-        //         if (updates.length > 0) {
-        //           const valsStr = JSON.stringify(vals)
-        //           sql += `
-        // INSERT INTO bins_raw (device_id, time, dimensions, vals)
-        //   VALUES (${device_id}, '${time}', '${key}'::jsonb, '${valsStr}'::jsonb)
-        // ON CONFLICT (device_id, time, dimensions) DO
-        //   jsonb_set(vals, '{}', jsonb '{"time_available":222}');`
-        //         }
       }
     }
   }
