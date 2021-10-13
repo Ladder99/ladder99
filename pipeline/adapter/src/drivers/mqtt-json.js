@@ -140,8 +140,8 @@ export class AdapterDriver {
           } else {
             // ie process = 'iterate_message_contents'
 
-            console.log('payload', payload)
-            console.log('maps', handler.maps)
+            // console.log('payload', payload)
+            // console.log('maps', handler.maps)
 
             // get set of keys for eqns we need to execute based on the payload
             // eg set{'has_current_job', 'job_meta', ...}
@@ -152,16 +152,16 @@ export class AdapterDriver {
             let depth = 0
 
             do {
-              console.log('depth', depth)
-              console.log('eqnkeys', equationKeys)
+              // console.log('depth', depth)
+              // console.log('eqnkeys', equationKeys)
               const equationKeys2 = new Set()
               // evaluate each eqn once, and put the results in the cache.
               for (let equationKey of equationKeys) {
                 // const expression = handler.augmentedExpressions[equationKey]
                 const expression = handler.augmentedExpressions[equationKey]
-                console.log('expression.fn', expression.fn.toString())
+                // console.log('expression.fn', expression.fn.toString())
                 const value = expression.fn(cache, $, keyvalues) // run the expression fn
-                console.log('expression.fn() -->', value)
+                // console.log('expression.fn() -->', value)
                 if (value !== undefined) {
                   const cacheId = deviceId + '-' + equationKey // eg 'pa1-fault_count'
                   cache.set(cacheId, value) // save to the cache - may send shdr to tcp
