@@ -1,4 +1,4 @@
-// see dataObservations - bring over here
+//
 
 // dimensionDefs
 // if any one of these changes, start putting the time/count values in other bins.
@@ -46,14 +46,13 @@ export function getMetrics(observations, currentDimensionValues, startTimes) {
   // bins for the current set of dimension values, for each device.
   // added to accumulator and cleared on each change of a dimension value.
   // keyed on device_id, then bin name.
-  // will be like {3: { time_active: 8.1 }, ...} // 8.1 seconds
-  // const currentDeviceBins = {}
+  // will be like {3: { time_active: 8.1 }, ...} // device 3, 8.1 seconds
   const currentBins = {}
 
   // accumulated bins for this calculation run - will return at end.
-  // this is a dict of dicts - keyed on dimensions (glommed together as json),
-  // then bin name.
-  // eg { '{"dayOfYear":284,"hour":2,"minute":29}': { time_active: 32 } }
+  // this is a dict of dicts of dicts - keyed on device_id, then dimensions
+  // (glommed together as json), then bin name.
+  // eg {3: { '{"dayOfYear":284,"hour":2}': { time_active: 32 } } }
   const accumulatorBins = {}
 
   // run each observation through handler in order
@@ -77,9 +76,6 @@ export function getMetrics(observations, currentDimensionValues, startTimes) {
       const deviceAccumulatorBins = accumulatorBins[device_id]
       handleObservation(
         observation,
-        // currentDimensionValues,
-        // accumulatorBins,
-        // currentBins,
         deviceDimensionValues,
         deviceAccumulatorBins,
         deviceCurrentBins,
@@ -145,6 +141,7 @@ function assignTimesToObservations(observations) {
 
 // handle one observation.
 // check for changes to dimensions and state changes we want to track.
+// modifies currentDimensionValues, etc in place.
 // exported for testing.
 export function handleObservation(
   observation,
@@ -183,16 +180,6 @@ export function handleObservation(
       // dump the time to the device's current bin.
       if (startTimes[deviceDataName]) {
         const delta = timestampSecs - startTimes[deviceDataName] // sec
-        // // init device bin
-        // if (currentBins[device_id] === undefined) {
-        //   currentBins[device_id] = {}
-        // }
-        // assign delta or add it to bin
-        // if (currentBins[device_id][bin] === undefined) {
-        //   currentBins[device_id][bin] = delta
-        // } else {
-        //   currentBins[device_id][bin] += delta
-        // }
         if (currentBins[bin] === undefined) {
           currentBins[bin] = delta
         } else {
@@ -207,7 +194,6 @@ export function handleObservation(
   // year is a dimension we need to track
   if (year !== currentDimensionValues.year) {
     dimensionValueChanged(
-      device_id,
       accumulatorBins,
       currentBins,
       currentDimensionValues,
@@ -218,7 +204,6 @@ export function handleObservation(
   // dayOfYear (1-366) is a dimension we need to track
   if (dayOfYear !== currentDimensionValues.dayOfYear) {
     dimensionValueChanged(
-      device_id,
       accumulatorBins,
       currentBins,
       currentDimensionValues,
@@ -230,7 +215,6 @@ export function handleObservation(
   // hour (0-23) is a dimension we need to track
   if (hour !== currentDimensionValues.hour) {
     dimensionValueChanged(
-      device_id,
       accumulatorBins,
       currentBins,
       currentDimensionValues,
@@ -242,7 +226,6 @@ export function handleObservation(
   // minute (0-59) is a dimension we need to track
   if (minute !== currentDimensionValues.minute) {
     dimensionValueChanged(
-      device_id,
       accumulatorBins,
       currentBins,
       currentDimensionValues,
@@ -258,7 +241,6 @@ export function handleObservation(
     // and update current value.
     if (value !== currentDimensionValues[dataname]) {
       dimensionValueChanged(
-        device_id,
         accumulatorBins,
         currentBins,
         currentDimensionValues,
@@ -268,9 +250,8 @@ export function handleObservation(
     }
   }
 
-  //. get rid of this?
+  //.. get rid of this
   dimensionValueChanged(
-    device_id,
     accumulatorBins,
     currentBins,
     currentDimensionValues
@@ -281,7 +262,6 @@ export function handleObservation(
 // a dimension value changed - dump current bins into accumulator bins,
 // and update current dimension value.
 function dimensionValueChanged(
-  device_id,
   accumulatorBins,
   currentBins,
   currentDimensionValues,
@@ -320,10 +300,8 @@ export function getSql(accumulatorBins) {
   const device_ids = Object.keys(accumulatorBins)
   for (let device_id of device_ids) {
     const bins = accumulatorBins[device_id]
-    // const keys = Object.keys(accumulatorBins)
     const keys = Object.keys(bins)
     for (let key of keys) {
-      // const acc = accumulatorBins[key] // eg { time_active: 1 }
       const acc = bins[key] // eg { time_active: 1 }
       const valueKeys = Object.keys(acc)
       if (valueKeys.length === 0) continue //.
@@ -335,15 +313,31 @@ export function getSql(accumulatorBins) {
       if (seconds1970) {
         const time = new Date(seconds1970 * 1000).toISOString()
         // get bin for this key
-        if (acc.time_available) {
-          sql += `INSERT INTO bins_raw (device_id, time, dimensions, time_available) `
-          for (let valueKey of valueKeys) {
-            const delta = acc[valueKey]
-            // if (delta > 0) { } //. add value as string - if none, don't do the sql
+        // if (acc.time_available) {
+        // sql += `INSERT INTO bins_raw (device_id, time, dimensions, time_available) `
+        // sql += `VALUES (${device_id}, '${time}', '${key}'::jsonb, ${acc.time_available}) `
+        // sql += `ON CONFLICT (device_id, time, dimensions) DO `
+        // sql += `UPDATE SET time_available = EXCLUDED.time_available + bins_raw.time_available;`
+        // }
+        const values = {}
+        const updates = []
+        for (let valueKey of valueKeys) {
+          const delta = acc[valueKey]
+          if (delta > 0) {
+            values[valueKey] = delta
+            updates.push(
+              // `time_available = EXCLUDED.time_available + bins_raw.time_available`
+              `${valueKey} = EXCLUDED.${valueKey} + bins_raw.${valueKey}`
+            )
           }
-          sql += `VALUES (${device_id}, '${time}', '${key}'::jsonb, ${acc.time_available}) `
-          sql += `ON CONFLICT (device_id, time, dimensions) DO `
-          sql += `UPDATE SET time_available = EXCLUDED.time_available + bins_raw.time_available;`
+        }
+        if (updates.length > 0) {
+          const valuesStr = JSON.stringify(values)
+          sql += `
+INSERT INTO bins_raw (device_id, time, dimensions, values)
+  VALUES (${device_id}, '${time}', '${key}'::jsonb, '${valuesStr}'::jsonb)
+ON CONFLICT (device_id, time, dimensions) DO
+  UPDATE SET ${updates.join(', ')};`
         }
       }
     }

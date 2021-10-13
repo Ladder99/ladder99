@@ -2,10 +2,8 @@
 
 import { getMetrics, getSql, getHourInSeconds } from './metrics.js'
 
-const dims = { year: 2021, dayOfYear: 1, hour: 0, minute: 0 }
-console.log(new Date(getHourInSeconds(dims) * 1000))
-
-// quit
+// const dims = { year: 2021, dayOfYear: 1, hour: 0, minute: 0 }
+// console.log(new Date(getHourInSeconds(dims) * 1000))
 
 // simulated observations from 'sample' endpoint.
 // time_available should be 20sec.
