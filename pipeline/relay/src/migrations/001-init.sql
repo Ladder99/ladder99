@@ -76,18 +76,16 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 -- bins
 ---------------------------------------------------------------------
 
-DROP VIEW IF EXISTS bins; DROP TABLE IF EXISTS bins_raw; --................
-
 -- store data for metrics
 CREATE TABLE IF NOT EXISTS bins_raw (
   device_id integer REFERENCES nodes, -- node_id of a device
   time timestamptz NOT NULL, -- rounded down by minute, for now
   dimensions jsonb, -- incl hour, shift, plant, machine, etc
-  -- do this so don't need to keep editing table for diff metrics
-  values jsonb, -- incl timeActive, timeAvailable, partsGood, partsBad, etc
-  time_active float,
-  time_available float,
-  time_calendar float,
+  -- 'values' is a reserved word in sql
+  vals jsonb, -- incl timeActive, timeAvailable, partsGood, partsBad, etc
+  -- time_active float,
+  -- time_available float,
+  -- time_calendar float,
   PRIMARY KEY (device_id, time, dimensions)
 );
 
@@ -116,7 +114,7 @@ SELECT
   devices.props->>'name_uuid' AS device,
   bins_raw.time,
   bins_raw.dimensions,
-  bins_raw.values,
+  bins_raw.vals,
   bins_raw.time_available
 FROM bins_raw
 JOIN nodes AS devices ON bins_raw.device_id=devices.node_id;

@@ -319,23 +319,23 @@ export function getSql(accumulatorBins) {
         // sql += `ON CONFLICT (device_id, time, dimensions) DO `
         // sql += `UPDATE SET time_available = EXCLUDED.time_available + bins_raw.time_available;`
         // }
-        const values = {}
+        const vals = {}
         const updates = []
         for (let valueKey of valueKeys) {
           const delta = acc[valueKey]
           if (delta > 0) {
-            values[valueKey] = delta
+            vals[valueKey] = delta
             updates.push(
               // `time_available = EXCLUDED.time_available + bins_raw.time_available`
-              `${valueKey} = EXCLUDED.${valueKey} + bins_raw.${valueKey}`
+              `vals->>'${valueKey}' = EXCLUDED.vals->>'${valueKey}' + (bins_raw.vals->>'${valueKey}' | 0)`
             )
           }
         }
         if (updates.length > 0) {
-          const valuesStr = JSON.stringify(values)
+          const valsStr = JSON.stringify(vals)
           sql += `
-INSERT INTO bins_raw (device_id, time, dimensions, values)
-  VALUES (${device_id}, '${time}', '${key}'::jsonb, '${valuesStr}'::jsonb)
+INSERT INTO bins_raw (device_id, time, dimensions, vals)
+  VALUES (${device_id}, '${time}', '${key}'::jsonb, '${valsStr}'::jsonb)
 ON CONFLICT (device_id, time, dimensions) DO
   UPDATE SET ${updates.join(', ')};`
         }
