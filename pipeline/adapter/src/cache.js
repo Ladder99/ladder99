@@ -29,7 +29,7 @@ export class Cache {
   addOutputs(outputs, socket) {
     console.log(`cache.addOutputs - add ${outputs.length} outputs`)
     for (const output of outputs) {
-      console.log(output.key, output.dependsOn)
+      // console.log(output.key, output.dependsOn)
       output.socket = socket // attach tcp socket to each output also
       // add dependsOn eg ['ac1-power_fault', 'ac1-power_warning']
       for (const key of output.dependsOn) {
