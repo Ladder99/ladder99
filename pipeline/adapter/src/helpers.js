@@ -31,7 +31,7 @@ export const getMacros = (prefix, accessor) => ({
 //   refs: { addr: Set(1) { '%Z61.0' }, cache: Set(1) { 'pr1-bar' } }
 // }
 export function compile(code, macros) {
-  console.log(`compile`, code)
+  // console.log(`compile`, code)
   // let js = code.slice(1) // ditch '='
   let js = code
   let refs = {}
@@ -53,12 +53,12 @@ export function compile(code, macros) {
     }
   }
   js = '(cache, $, keyvalues) => ' + js //. needs to be assoc with all macros somehow
-  console.log({ js, refs })
+  // console.log({ js, refs })
   return { js, refs }
 }
 
 export function compileExpressions(expressions, macros) {
-  console.log(`compileExpressions`)
+  // console.log(`compileExpressions`)
   const augmentedExpressions = {}
   const maps = {}
   for (let [key, expression] of Object.entries(expressions)) {
@@ -69,7 +69,7 @@ export function compileExpressions(expressions, macros) {
     addToMaps(maps, key, refs)
     // }
   }
-  console.log({ maps })
+  // console.log({ maps })
   return { augmentedExpressions, maps }
 }
 

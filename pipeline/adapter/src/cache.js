@@ -58,7 +58,7 @@ export class Cache {
       // send shdr to agent via tcp socket if value changed
       if (value !== output.lastValue) {
         const shdr = getShdr(this, output, value)
-        console.log('shdr', shdr)
+        // console.log('shdr', shdr)
         console.log(`shdr changed - sending to tcp - ${shdr.slice(0, 60)}...`)
         output.socket.write(shdr + '\n')
         output.lastValue = value
