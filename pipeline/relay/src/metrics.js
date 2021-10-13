@@ -316,12 +316,10 @@ function dimensionValueChanged(
 }
 
 export function getSql(accumulatorBins) {
-  console.log('getsql', accumulatorBins)
   let sql = ''
   const device_ids = Object.keys(accumulatorBins)
   for (let device_id of device_ids) {
     const bins = accumulatorBins[device_id]
-    console.log('bins', bins)
     // const keys = Object.keys(accumulatorBins)
     const keys = Object.keys(bins)
     for (let key of keys) {
@@ -330,16 +328,11 @@ export function getSql(accumulatorBins) {
       const valueKeys = Object.keys(acc)
       if (valueKeys.length === 0) continue //.
 
-      console.log(key, acc)
-
       // split key into dimensions+values
       const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
-      console.log(dims)
 
       const seconds1970 = getHourInSeconds(dims)
-      console.log(seconds1970)
       if (seconds1970) {
-        // console.log(seconds1970)
         const time = new Date(seconds1970 * 1000).toISOString()
         // get bin for this key
         if (acc.time_available) {
@@ -367,7 +360,7 @@ const secondsPerMinute = 60
 export function getHourInSeconds(dims) {
   // console.log(dims)
   const base = new Date(dims.year, 0, 1).getTime() * 0.001
-  console.log(base)
+  // console.log(base)
   const seconds =
     // (dims.year - 1970) * secondsPerYear +
     base +
