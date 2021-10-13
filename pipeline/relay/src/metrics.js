@@ -358,16 +358,19 @@ export function getSql(accumulatorBins) {
   return sql
 }
 
-const secondsPerYear = 365.25 * 24 * 60 * 60
+// const secondsPerYear = 365.25 * 24 * 60 * 60
 const secondsPerDay = 24 * 60 * 60
 const secondsPerHour = 60 * 60
 const secondsPerMinute = 60
 
 //. do tdd and get this working exactly
-function getHourInSeconds(dims) {
+export function getHourInSeconds(dims) {
   // console.log(dims)
+  const base = new Date(dims.year, 0, 1).getTime() * 0.001
+  console.log(base)
   const seconds =
-    (dims.year - 1970) * secondsPerYear +
+    // (dims.year - 1970) * secondsPerYear +
+    base +
     (dims.dayOfYear - 1) * secondsPerDay +
     dims.hour * secondsPerHour +
     dims.minute * secondsPerMinute
