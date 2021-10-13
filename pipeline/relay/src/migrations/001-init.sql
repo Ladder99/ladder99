@@ -76,7 +76,7 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 -- bins
 ---------------------------------------------------------------------
 
-DROP VIEW IF EXISTS bins; DROP TABLE bins_raw; --................
+DROP VIEW IF EXISTS bins; DROP TABLE IF EXISTS bins_raw; --................
 
 -- store data for metrics
 CREATE TABLE IF NOT EXISTS bins_raw (
