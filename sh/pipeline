@@ -37,9 +37,7 @@ services=${*:-"agent"} # eg 'agent play'
 
 # file paths
 pipeline="setups/pipeline.yaml"
-# overrides="setups/$setup/pipeline-overrides.yaml"
 overrides="$setup/pipeline-overrides.yaml"
-# envfile="setups/.env"
 envfile="$setup/.env"
 
 # add main docker compose file for pipeline
@@ -51,7 +49,6 @@ if [ -e $overrides ]; then
 fi
 
 # add .env file if there
-# . should be per setup folder
 if [ -e $envfile ]; then
     args="$args --env-file $envfile"
 else
