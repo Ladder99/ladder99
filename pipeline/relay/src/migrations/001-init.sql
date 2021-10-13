@@ -114,8 +114,8 @@ SELECT
   devices.props->>'name_uuid' AS device,
   bins_raw.time,
   bins_raw.dimensions,
-  bins_raw.vals,
-  bins_raw.time_available
+  bins_raw.vals
+  -- bins_raw.time_available
 FROM bins_raw
 JOIN nodes AS devices ON bins_raw.device_id=devices.node_id;
 
