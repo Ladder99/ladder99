@@ -324,44 +324,47 @@ export function getSql(accumulatorBins) {
         for (let valueKey of valueKeys) {
           const delta = acc[valueKey]
           if (delta > 0) {
-            vals[valueKey] = delta
-            updates.push(
-              // `time_available = EXCLUDED.time_available + bins_raw.time_available`
-              `vals->>'${valueKey}' = EXCLUDED.vals->>'${valueKey}' + (bins_raw.vals->>'${valueKey}' | 0)`
-            )
+            // vals[valueKey] = delta
+            // updates.push(
+            //   `vals->>'${valueKey}' = EXCLUDED.vals->>'${valueKey}' + (bins_raw.vals->>'${valueKey}' | 0)`
+            // )
+            sql += `
+INSERT INTO bins_raw (device_id, time, dimensions, vals)
+  VALUES (${device_id}, '${time}', '${key}'::jsonb, '{"${valueKey}":${delta}}'::jsonb)
+ON CONFLICT (device_id, time, dimensions) DO
+  UPDATE SET
+    vals = bins_raw.vals || jsonb_build_object('${valueKey}', (((bins_raw.vals->>'${valueKey}')::real | 0.0::real) + ${delta})); 
+  `
+            // UPDATE SET
+            //   vals = jsonb_set(bins_raw.vals, array['${valueKey}'], bins_raw.vals->>'${valueKey}' + ${delta});
+            // -- UPDATE SET vals = vals || '{"${valueKey}": vals->>'${valueKey}' + ${delta}}::jsonb;
           }
         }
-        if (updates.length > 0) {
-          const valsStr = JSON.stringify(vals)
-          sql += `
-INSERT INTO bins_raw (device_id, time, dimensions, vals)
-  VALUES (${device_id}, '${time}', '${key}'::jsonb, '${valsStr}'::jsonb)
-ON CONFLICT (device_id, time, dimensions) DO
-  UPDATE SET ${updates.join(', ')};`
-        }
+        //         if (updates.length > 0) {
+        //           const valsStr = JSON.stringify(vals)
+        //           sql += `
+        // INSERT INTO bins_raw (device_id, time, dimensions, vals)
+        //   VALUES (${device_id}, '${time}', '${key}'::jsonb, '${valsStr}'::jsonb)
+        // ON CONFLICT (device_id, time, dimensions) DO
+        //   jsonb_set(vals, '{}', jsonb '{"time_available":222}');`
+        //         }
       }
     }
   }
   return sql
 }
+// UPDATE SET ${updates.join(', ')};`
 
-// const secondsPerYear = 365.25 * 24 * 60 * 60
 const secondsPerDay = 24 * 60 * 60
 const secondsPerHour = 60 * 60
 const secondsPerMinute = 60
 
-//. do tdd and get this working exactly
 export function getHourInSeconds(dims) {
-  // console.log(dims)
   const base = new Date(dims.year, 0, 1).getTime() * 0.001
-  // console.log(base)
   const seconds =
-    // (dims.year - 1970) * secondsPerYear +
     base +
     (dims.dayOfYear - 1) * secondsPerDay +
     dims.hour * secondsPerHour +
     dims.minute * secondsPerMinute
-  // const d = new Date(dims.year, dims.month, dims.date, dims.hours, dims.minutes)
-  // const e = new Date()
   return seconds
 }
