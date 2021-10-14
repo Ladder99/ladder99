@@ -6,7 +6,7 @@
 sudo apt-get update
 sudo apt-get install docker.io
 
-sudo apt-get install python-pip3
+sudo apt-get install python3-pip
 
 pip3 install docker-compose
 # get
@@ -14,7 +14,6 @@ pip3 install docker-compose
 # Consider adding this directory to PATH or, if you prefer to suppress this warning, use --no-warn-script-location.
 
 echo 'PATH=$PATH:/home/pi/.local/bin' >> ~/.bashrc
-source ~/.bashrc
-#ok?
+export PATH=$PATH:/home/pi/.local/bin
 
 echo 'Done!'
