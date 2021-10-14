@@ -43,7 +43,7 @@ handlers:
   l99/ccs/evt/status:
     # make '$' the message payload dictionary and add faultKeys for quick
     # lookups of faults - payload.faults is a dictionary of faults.
-    initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
+    initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults || {});'
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
