@@ -314,22 +314,22 @@ export function getSql(accumulatorBins) {
         const time = new Date(seconds1970 * 1000).toISOString()
         // get bin for this key
         // if (acc.time_available) {
-        // sql += `INSERT INTO bins_raw (device_id, time, dimensions, time_available) `
+        // sql += `INSERT INTO bins (device_id, time, dimensions, time_available) `
         // sql += `VALUES (${device_id}, '${time}', '${key}'::jsonb, ${acc.time_available}) `
         // sql += `ON CONFLICT (device_id, time, dimensions) DO `
-        // sql += `UPDATE SET time_available = EXCLUDED.time_available + bins_raw.time_available;`
+        // sql += `UPDATE SET time_available = EXCLUDED.time_available + bins.time_available;`
         // }
-        const vals = {}
-        const updates = []
+        // const values = {}
+        // const updates = []
         for (let valueKey of valueKeys) {
           const delta = acc[valueKey]
           if (delta > 0) {
             sql += `
-INSERT INTO bins_raw (device_id, time, dimensions, vals)
+INSERT INTO bins (device_id, time, dimensions, values)
   VALUES (${device_id}, '${time}', '${key}'::jsonb, '{"${valueKey}":${delta}}'::jsonb)
 ON CONFLICT (device_id, time, dimensions) DO
   UPDATE SET
-    vals = bins_raw.vals || jsonb_build_object('${valueKey}', (coalesce((bins_raw.vals->>'${valueKey}')::real, 0.0::real) + ${delta})); 
+    values = bins.values || jsonb_build_object('${valueKey}', (coalesce((bins.values->>'${valueKey}')::real, 0.0::real) + ${delta})); 
   `
           }
         }
