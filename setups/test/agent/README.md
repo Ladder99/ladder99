@@ -6,4 +6,4 @@ It uses the styles defined in pipeline/agent/styles.
 
 To run the agent with this configuration,
 
-    sh/start test/agent agent adapter mosquitto play
+    sh/start setups/test/agent agent adapter mosquitto play
