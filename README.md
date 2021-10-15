@@ -18,6 +18,17 @@ Ladder99 is developed by MRIIOT, your agile digital transformation partners.
 
 ![screenshot](https://docs.ladder99.com/wiki/agent-html_1200.jpg)
 
+## Folders
+
+- dashboards - generic dashboard definitions, usable by any client
+- design - documents, diagrams
+- modules - dataitem definitions - input/output yamls, recordings for playback
+- pipeline - source code for different sections of the pipeline - adapter, agent, compiler, etc.
+- setups - example setups to demonstrate different modules
+- sh - shell scripts
+
+Adapter plugins are defined in pipeline/adapter/src/plugins.
+
 ## Links
 
 For the Ladder99 documentation, see https://docs.ladder99.com.
