@@ -28,17 +28,6 @@ export class AgentReader {
     this.startTimes = {} // eg { availability: '2021-09-17T05:27:00Z' }
   }
 
-  // // init agent reader
-  // async init() {
-  //   //. read probe info incl device info, instanceId
-  //   //. read dataitems.yaml to translate shdr id to canonical id?
-  //   //. or do that with a path-to-canonicalId translator?
-  //   const probe = new Probe()
-  //   await probe.read(this.endpoint)
-  //   await probe.write(this.db)
-  //   this.instanceId = probe.instanceId
-  // }
-
   // start fetching and processing data
   async start() {
     // probe - get agent data structures and write to db
@@ -56,7 +45,6 @@ export class AgentReader {
         await current.write(this.db, probe.indexes)
         await current.calculate(
           this.db,
-          // probe.indexes,
           this.currentDimensionValues,
           this.startTimes
         )
@@ -70,7 +58,6 @@ export class AgentReader {
           await sample.write(this.db, probe.indexes)
           await sample.calculate(
             this.db,
-            // probe.indexes,
             this.currentDimensionValues,
             this.startTimes
           )

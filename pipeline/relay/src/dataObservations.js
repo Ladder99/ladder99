@@ -4,7 +4,7 @@
 
 import { Data } from './data.js'
 import * as treeObservations from './treeObservations.js'
-import { getMetrics, getSql } from './metrics.js'
+import * as metrics from './metrics.js'
 
 export class Observations extends Data {
   constructor(type) {
@@ -53,14 +53,14 @@ export class Observations extends Data {
   // see metrics.js
   async calculate(db, currentDimensionValues, startTimes) {
     // get accumulator bins for given observations
-    const accumulatorBins = getMetrics(
+    const accumulatorBins = metrics.getMetrics(
       this.observations,
       currentDimensionValues,
       startTimes
     )
 
     // get sql update/insert statement and write to db
-    const sql = getSql(accumulatorBins)
+    const sql = metrics.getSql(accumulatorBins)
     if (sql) {
       console.log(sql)
       await db.query(sql)
