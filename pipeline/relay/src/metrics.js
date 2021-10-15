@@ -282,34 +282,43 @@ function dimensionValueChanged(
 // get sql statements to write given accumulator bin data to db.
 // accumulatorBins is like { device_id: bins }
 //   with bins like { dimensions: acc }
-//   with dimensions like "{operator:'Alice'}"
-//   and acc like { time_active: 1, time_available: 2 }}
+//   dimensions are like "{operator:'Alice'}"
+//   with acc like { time_active: 1, time_available: 2 }}
 export function getSql(accumulatorBins) {
   let sql = ''
+  // iterate over device+bins
   // device_id is a db node_id, eg 3
-  // bins is like { dimensions: acc }
+  // bins is a dict like { dimensions: acc }, eg
+  //   {"{operator:'Alice'}":{time_active:1}, "{operator:'Bob'}":{time_active:2}}
   for (let [device_id, bins] of Object.entries(accumulatorBins)) {
-    // key is eg "{operator:'Alice'}"
-    // acc is eg { time_active: 1, time_available: 2 }
-    for (let [key, acc] of Object.entries(bins)) {
-      const valueKeys = Object.keys(acc) // eg ['time_active', 'time_available']
+    // iterate over dimensions+accumulators
+    // dimensions is eg '{"operator":"Alice", ...}'
+    // accumulators is eg { time_active: 1, time_available: 2, ... }
+    for (let [dimensions, accumulators] of Object.entries(bins)) {
+      const valueKeys = Object.keys(accumulators) // eg ['time_active', 'time_available']
       if (valueKeys.length === 0) continue // skip if no data
-      // split key into dimensions+values
-      // key is just a JSON string glomming the dimensions+values together
-      const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
+      // split dimensions into dimensions+values
+      // dimensions is just a JSON string glomming the dimensions+values together
+      const dims = splitDimensionKey(dimensions) // eg { operator: 'Alice' }
       // get time dimension rounded to hour, in seconds
       const seconds1970 = getHourInSeconds(dims)
       if (seconds1970) {
         const time = new Date(seconds1970 * 1000).toISOString()
+        // write values one at a time into db.
+        // would be better to do all with one stmt, but it's already complex enough.
         for (let valueKey of valueKeys) {
-          const delta = acc[valueKey]
+          const delta = accumulators[valueKey]
           if (delta > 0) {
             sql += `
 INSERT INTO bins (device_id, time, dimensions, values)
-  VALUES (${device_id}, '${time}', '${key}'::jsonb, '{"${valueKey}":${delta}}'::jsonb)
+  VALUES (${device_id}, '${time}', 
+    '${dimensions}'::jsonb,
+    '{"${valueKey}":${delta}}'::jsonb)
 ON CONFLICT (device_id, time, dimensions) DO
   UPDATE SET
-    values = bins.values || jsonb_build_object('${valueKey}', (coalesce((bins.values->>'${valueKey}')::real, 0.0::real) + ${delta})); 
+    values = bins.values ||
+      jsonb_build_object('${valueKey}', 
+        (coalesce((bins.values->>'${valueKey}')::real, 0.0::real) + ${delta}));
   `
           }
         }
