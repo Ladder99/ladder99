@@ -18,7 +18,8 @@ const dimensionDefs = {
 
 // valueDefs
 // dataitems that we want to track the state of.
-// will track time the dataitem spends in the 'when' state.
+// will track time the dataitem spends in the 'when' state,
+// and add it to the given 'bin'.
 // keyed on dataitem / observation name, ie NOT the dataitem id.
 // so in the agent.xml, DO NOT include the deviceId in the names,
 // just have a plain descriptor.
@@ -26,18 +27,19 @@ const dimensionDefs = {
 //. might want these to be per device or device type also
 const valueDefs = {
   availability: {
-    bin: 'time_available',
     when: 'AVAILABLE',
+    bin: 'time_available',
   },
   execution_state: {
-    bin: 'time_active',
     when: 'ACTIVE',
+    bin: 'time_active',
   },
 }
 
 //
 
 // get accumulatorBins for the given observations and starting points.
+//
 // observations is a list of observation objects with dataitem_id and value, etc.
 // currentDimensionValues is a dict with the current values of the dimensions,
 //   as defined in dimensionDefs, above.
@@ -63,9 +65,10 @@ export function getMetrics(observations, currentDimensionValues, startTimes) {
   for (let observation of observations) {
     // only do observations with data names.
     // ie agent.xml dataitems should have name attribute.
-    // this excludes the agent dataitems.
+    // note: this excludes the agent dataitems, which we don't care about (now).
     if (observation.name) {
       const { device_id } = observation
+      // init dicts
       if (currentDimensionValues[device_id] === undefined) {
         currentDimensionValues[device_id] = {}
       }
@@ -75,9 +78,11 @@ export function getMetrics(observations, currentDimensionValues, startTimes) {
       if (accumulatorBins[device_id] === undefined) {
         accumulatorBins[device_id] = {}
       }
+      // narrow dicts down to this observation's device
       const deviceDimensionValues = currentDimensionValues[device_id]
       const deviceCurrentBins = currentBins[device_id]
       const deviceAccumulatorBins = accumulatorBins[device_id]
+      // handle the observation by dumping time deltas to accumulator bins.
       handleObservation(
         observation,
         deviceDimensionValues,
@@ -88,12 +93,6 @@ export function getMetrics(observations, currentDimensionValues, startTimes) {
     }
   }
 
-  // console.log('currentDimensionValues', currentDimensionValues)
-  // console.log('currentDeviceBins', currentDeviceBins)
-  // console.log('accumulatorBins', accumulatorBins)
-  // console.log('startTimes', startTimes)
-  // console.log()
-
   //. update calendartime
   // const currentTime = new Date().getTime()
   // accumulatorBins.calendarTime = (currentTime - previousTime) * 0.001 // sec
@@ -101,26 +100,6 @@ export function getMetrics(observations, currentDimensionValues, startTimes) {
 
   // return bins - will convert to sql and write to db
   return accumulatorBins
-}
-
-//
-
-function getDimensionKey(currentDimensionValues) {
-  return JSON.stringify(currentDimensionValues)
-}
-export function splitDimensionKey(dimensionKey) {
-  return JSON.parse(dimensionKey)
-}
-
-function getDayOfYear(date) {
-  const start = new Date(date.getFullYear(), 0, 0)
-  const diff =
-    date.getTime() -
-    start.getTime() +
-    (start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000
-  const oneDay = 60 * 60 * 24 * 1000
-  const day = Math.floor(diff / oneDay)
-  return day
 }
 
 // split observation time into year, dayofyear, hour, minute
@@ -345,9 +324,29 @@ ON CONFLICT (device_id, time, dimensions) DO
 }
 // UPDATE SET ${updates.join(', ')};`
 
+// helper fns
+
+function getDimensionKey(currentDimensionValues) {
+  return JSON.stringify(currentDimensionValues)
+}
+export function splitDimensionKey(dimensionKey) {
+  return JSON.parse(dimensionKey)
+}
+
 const secondsPerDay = 24 * 60 * 60
 const secondsPerHour = 60 * 60
 const secondsPerMinute = 60
+const daysPerMillisecond = 1 / (secondsPerDay * 1000)
+
+function getDayOfYear(date) {
+  const start = new Date(date.getFullYear(), 0, 0)
+  const diff =
+    date.getTime() -
+    start.getTime() +
+    (start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000
+  const day = Math.floor(diff * daysPerMillisecond)
+  return day
+}
 
 export function getHourInSeconds(dims) {
   const base = new Date(dims.year, 0, 1).getTime() * 0.001
