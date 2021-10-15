@@ -113,8 +113,8 @@ SELECT
   -- coalesce returns the first non-null value (works like an OR operator),
   -- and nullif returns the first value, unless it equals 0.0, when it returns null -
   -- then the whole expression is null. avoids div by zero error.
-  coalesce((vals->>'time_active')::real,0) / 
-    nullif((vals->>'time_available')::real,0.0) as uptime
+  coalesce((values->>'time_active')::real,0) / 
+    nullif((values->>'time_available')::real,0.0) as uptime
 FROM bins
 JOIN nodes AS devices ON bins.device_id=devices.node_id;
 
