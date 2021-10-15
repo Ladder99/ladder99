@@ -163,11 +163,11 @@ export function handleObservation(
       // otherwise, observation is turning 'off' -
       // dump the time to the device's current bin.
       if (startTimes[deviceDataName]) {
-        const delta = timestampSecs - startTimes[deviceDataName] // sec
+        const timeDelta = timestampSecs - startTimes[deviceDataName] // sec
         if (currentBins[bin] === undefined) {
-          currentBins[bin] = delta
+          currentBins[bin] = timeDelta
         } else {
-          currentBins[bin] += delta
+          currentBins[bin] += timeDelta
         }
         // reset start time
         startTimes[deviceDataName] = null
@@ -281,46 +281,47 @@ function dimensionValueChanged(
 
 // get sql statements to write given accumulator bin data to db.
 // accumulatorBins is like { device_id: bins }
-//   with bins like { dimensions: acc }
+//   with bins like { dimensions: accumulators }
 //   dimensions are like "{operator:'Alice'}"
-//   with acc like { time_active: 1, time_available: 2 }}
+//   with accumulators like { time_active: 1, time_available: 2 }}
 export function getSql(accumulatorBins) {
   let sql = ''
   // iterate over device+bins
   // device_id is a db node_id, eg 3
-  // bins is a dict like { dimensions: acc }, eg
-  //   {"{operator:'Alice'}":{time_active:1}, "{operator:'Bob'}":{time_active:2}}
+  // bins is a dict like { dimensions: accumulators }
   for (let [device_id, bins] of Object.entries(accumulatorBins)) {
     // iterate over dimensions+accumulators
-    // dimensions is eg '{"operator":"Alice", ...}'
-    // accumulators is eg { time_active: 1, time_available: 2, ... }
+    // dimensions is eg '{"operator":"Alice", ...}' - ie gloms dimensions+values together
+    // accumulators is eg { time_active: 1, time_available: 2, ... },
+    //   ie all the accumulator slots and their time values in seconds.
     for (let [dimensions, accumulators] of Object.entries(bins)) {
-      const valueKeys = Object.keys(accumulators) // eg ['time_active', 'time_available']
-      if (valueKeys.length === 0) continue // skip if no data
-      // split dimensions into dimensions+values
-      // dimensions is just a JSON string glomming the dimensions+values together
-      const dims = splitDimensionKey(dimensions) // eg { operator: 'Alice' }
-      // get time dimension rounded to hour, in seconds
-      const seconds1970 = getHourInSeconds(dims)
-      if (seconds1970) {
-        const time = new Date(seconds1970 * 1000).toISOString()
-        // write values one at a time into db.
-        // would be better to do all with one stmt, but it's already complex enough.
-        for (let valueKey of valueKeys) {
-          const delta = accumulators[valueKey]
-          if (delta > 0) {
-            sql += `
+      const accumulatorSlots = Object.keys(accumulators) // eg ['time_active', 'time_available']
+      if (accumulatorSlots.length === 0) continue // skip if no data
+      // split dimensions into dimensions+values and get associated time.
+      const dims = splitDimensionKey(dimensions) // eg to {operator: 'Alice'}
+      const seconds1970 = getHourInSeconds(dims) // rounded to hour, in seconds
+      if (!seconds1970) continue // skip if got NaN or something
+      const timestring = new Date(seconds1970 * 1000).toISOString() // eg '2021-10-15T11:00:00Z"
+      // add values one at a time to existing db records.
+      // would be better to do all with one stmt somehow,
+      // but it's already complex enough.
+      for (let accumulatorSlot of accumulatorSlots) {
+        const timeDelta = accumulators[accumulatorSlot]
+        if (timeDelta > 0) {
+          // this is an upsert command pattern in postgres -
+          // tries to add a new record - if key is already there,
+          // updates existing record by adding timeDelta to the value.
+          sql += `
 INSERT INTO bins (device_id, time, dimensions, values)
-  VALUES (${device_id}, '${time}', 
+  VALUES (${device_id}, '${timestring}', 
     '${dimensions}'::jsonb,
-    '{"${valueKey}":${delta}}'::jsonb)
+    '{"${accumulatorSlot}":${timeDelta}}'::jsonb)
 ON CONFLICT (device_id, time, dimensions) DO
   UPDATE SET
     values = bins.values ||
-      jsonb_build_object('${valueKey}', 
-        (coalesce((bins.values->>'${valueKey}')::real, 0.0::real) + ${delta}));
+      jsonb_build_object('${accumulatorSlot}', 
+        (coalesce((bins.values->>'${accumulatorSlot}')::real, 0.0::real) + ${timeDelta}));
   `
-          }
         }
       }
     }
