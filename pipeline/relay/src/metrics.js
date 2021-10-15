@@ -1,13 +1,14 @@
-//
+// binning algorithms to calculate metrics
 
 // dimensionDefs
 // if any one of these changes, start putting the time/count values in other bins.
 // keyed on dataitem/observation name.
 //. move these into yaml, and have per client
-//. might want these to be per device or device type also
+//. might want these to be per device or device type also?
 const dimensionDefs = {
-  minute: {}, //. do minute for testing, then switch to hour
+  minute: {}, //. do minute for testing, then switch to hour? but want to write every minute
   // hour: {},
+  // add these as needed, to be able to slice reports later
   // operator: {},
   // machine: {},
   // component: {},
@@ -18,18 +19,16 @@ const dimensionDefs = {
 // valueDefs
 // dataitems that we want to track the state of.
 // will track time the dataitem spends in the 'when' state.
-// keyed on dataitem / observation name.
-// the bin name should match the column in the bins table,
-// as set in the migrations/*.sql files. (though will move to a values jsonb field)
+// keyed on dataitem / observation name, ie NOT the dataitem id.
+// so in the agent.xml, DO NOT include the deviceId in the names,
+// just have a plain descriptor.
 //. move these into yaml, and have per client
 //. might want these to be per device or device type also
 const valueDefs = {
-  //. calendar: { bin: 'time_calendar' } is implicit? make explicit?
   availability: {
     bin: 'time_available',
     when: 'AVAILABLE',
   },
-  // execution: {
   execution_state: {
     bin: 'time_active',
     when: 'ACTIVE',
@@ -39,6 +38,11 @@ const valueDefs = {
 //
 
 // get accumulatorBins for the given observations and starting points.
+// observations is a list of observation objects with dataitem_id and value, etc.
+// currentDimensionValues is a dict with the current values of the dimensions,
+//   as defined in dimensionDefs, above.
+// startTimes measures the time a dataitem is in a particular state.
+//   it's a dictionary keyed on the valueDefs keys, defined above.
 export function getMetrics(observations, currentDimensionValues, startTimes) {
   // get hour, minute, etc for each observation
   assignTimesToObservations(observations)
@@ -119,6 +123,7 @@ function getDayOfYear(date) {
   return day
 }
 
+// split observation time into year, dayofyear, hour, minute
 function assignTimesToObservations(observations) {
   observations.forEach(observation => {
     const date = new Date(observation.timestamp)
@@ -132,7 +137,7 @@ function assignTimesToObservations(observations) {
     observation.hour = date.getHours() // 0-23
     observation.minute = date.getMinutes() // 0-59
     //. etc - or like this?
-    // observation.slices = {
+    // observation.timeSlices = {
     //   hour: date.getHours(), // 0-23
     //   minute: date.getMinutes(), // 0-59
     // }
