@@ -279,32 +279,28 @@ function dimensionValueChanged(
   currentDimensionValues[dataname] = value
 }
 
+// get sql statements to write given accumulator bin data to db.
+// accumulatorBins is like { device_id: bins }
+//   with bins like { dimensions: acc }
+//   with dimensions like "{operator:'Alice'}"
+//   and acc like { time_active: 1, time_available: 2 }}
 export function getSql(accumulatorBins) {
   let sql = ''
-  const device_ids = Object.keys(accumulatorBins)
-  for (let device_id of device_ids) {
-    const bins = accumulatorBins[device_id]
-    const keys = Object.keys(bins)
-    for (let key of keys) {
-      const acc = bins[key] // eg { time_active: 1 }
-      const valueKeys = Object.keys(acc)
-      if (valueKeys.length === 0) continue //.
-
+  // device_id is a db node_id, eg 3
+  // bins is like { dimensions: acc }
+  for (let [device_id, bins] of Object.entries(accumulatorBins)) {
+    // key is eg "{operator:'Alice'}"
+    // acc is eg { time_active: 1, time_available: 2 }
+    for (let [key, acc] of Object.entries(bins)) {
+      const valueKeys = Object.keys(acc) // eg ['time_active', 'time_available']
+      if (valueKeys.length === 0) continue // skip if no data
       // split key into dimensions+values
+      // key is just a JSON string glomming the dimensions+values together
       const dims = splitDimensionKey(key) // eg { operator: 'Alice' }
-
+      // get time dimension rounded to hour, in seconds
       const seconds1970 = getHourInSeconds(dims)
       if (seconds1970) {
         const time = new Date(seconds1970 * 1000).toISOString()
-        // get bin for this key
-        // if (acc.time_available) {
-        // sql += `INSERT INTO bins (device_id, time, dimensions, time_available) `
-        // sql += `VALUES (${device_id}, '${time}', '${key}'::jsonb, ${acc.time_available}) `
-        // sql += `ON CONFLICT (device_id, time, dimensions) DO `
-        // sql += `UPDATE SET time_available = EXCLUDED.time_available + bins.time_available;`
-        // }
-        // const values = {}
-        // const updates = []
         for (let valueKey of valueKeys) {
           const delta = acc[valueKey]
           if (delta > 0) {
@@ -322,7 +318,6 @@ ON CONFLICT (device_id, time, dimensions) DO
   }
   return sql
 }
-// UPDATE SET ${updates.join(', ')};`
 
 // helper fns
 
@@ -335,9 +330,11 @@ export function splitDimensionKey(dimensionKey) {
 
 const secondsPerDay = 24 * 60 * 60
 const secondsPerHour = 60 * 60
-const secondsPerMinute = 60
+// const secondsPerMinute = 60
 const daysPerMillisecond = 1 / (secondsPerDay * 1000)
 
+// get day of year, 1-366
+// from stackoverflow
 function getDayOfYear(date) {
   const start = new Date(date.getFullYear(), 0, 0)
   const diff =
@@ -348,12 +345,19 @@ function getDayOfYear(date) {
   return day
 }
 
+// get hour given year, dayOfYear, hour, and minute - in seconds since 1970
+// export function getHourInSeconds(dims) {
+//   const base = new Date(dims.year, 0, 1).getTime() * 0.001
+//   const seconds =
+//     base +
+//     (dims.dayOfYear - 1) * secondsPerDay +
+//     dims.hour * secondsPerHour +
+//     dims.minute * secondsPerMinute
+//   return seconds
+// }
 export function getHourInSeconds(dims) {
   const base = new Date(dims.year, 0, 1).getTime() * 0.001
   const seconds =
-    base +
-    (dims.dayOfYear - 1) * secondsPerDay +
-    dims.hour * secondsPerHour +
-    dims.minute * secondsPerMinute
+    base + (dims.dayOfYear - 1) * secondsPerDay + dims.hour * secondsPerHour
   return seconds
 }
