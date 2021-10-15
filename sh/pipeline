@@ -79,3 +79,18 @@ else
 fi
 echo $cmd
 bash -c "export SETUP=$setup && $cmd"
+
+# will end up with a command like
+# export SETUP=../client-nis/setup \
+#   docker-compose \
+#   --file setups/pipeline.yaml \
+#   --file ../client-nis/setup/pipeline-overrides.yaml \
+#   --env-file ../client-nis/setup/.env \
+#   --profile dashboard \
+#   pull && \
+#   docker-compose \
+#   --file setups/pipeline.yaml \
+#   --file ../client-nis/setup/pipeline-overrides.yaml \
+#   --env-file ../client-nis/setup/.env \
+#   --profile dashboard \
+#   up --build
