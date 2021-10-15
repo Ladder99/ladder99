@@ -77,22 +77,17 @@ SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 ---------------------------------------------------------------------
 
 -- store data for metrics
-CREATE TABLE IF NOT EXISTS bins_raw (
+CREATE TABLE IF NOT EXISTS bins (
   device_id integer REFERENCES nodes, -- node_id of a device
   time timestamptz NOT NULL, -- rounded down by minute, for now
   dimensions jsonb, -- incl hour, shift, plant, machine, etc
-  -- 'values' is a reserved word in sql
-  vals jsonb, -- incl timeActive, timeAvailable, partsGood, partsBad, etc
-  -- time_active float,
-  -- time_available float,
-  -- time_calendar float,
+  values jsonb, -- incl timeActive, timeAvailable, partsGood, partsBad, etc
   PRIMARY KEY (device_id, time, dimensions)
 );
-
 -- make hypertable and add compression/retention schedules
-SELECT create_hypertable('bins_raw', 'time', if_not_exists => TRUE);
--- SELECT add_compression_policy('bins_raw', INTERVAL '1d', if_not_exists => TRUE);
--- SELECT add_retention_policy('bins_raw', INTERVAL '1 year', if_not_exists => TRUE);
+SELECT create_hypertable('bins', 'time', if_not_exists => TRUE);
+-- SELECT add_compression_policy('bins', INTERVAL '1d', if_not_exists => TRUE);
+-- SELECT add_retention_policy('bins', INTERVAL '1 year', if_not_exists => TRUE);
 
 ---------------------------------------------------------------------
 -- VIEWS
@@ -104,20 +99,24 @@ DROP VIEW IF EXISTS devices;
 DROP VIEW IF EXISTS history_text;
 DROP VIEW IF EXISTS history_float;
 DROP VIEW IF EXISTS history_all;
-DROP VIEW IF EXISTS bins;
+DROP VIEW IF EXISTS metrics;
 
 ---------------------------------------------------------------------
 -- bins
 ---------------------------------------------------------------------
-CREATE OR REPLACE VIEW bins AS
+CREATE OR REPLACE VIEW metrics AS
 SELECT 
   devices.props->>'name_uuid' AS device,
-  bins_raw.time,
-  bins_raw.dimensions,
-  bins_raw.vals
-  -- bins_raw.time_available
-FROM bins_raw
-JOIN nodes AS devices ON bins_raw.device_id=devices.node_id;
+  bins.time as "time",
+  bins.dimensions as dimensions,
+  bins.values as "values", -- a jsonb object
+  -- coalesce returns the first non-null value (works like an OR operator),
+  -- and nullif returns the first value, unless it equals 0.0, when it returns null -
+  -- then the whole expression is null. avoids div by zero error.
+  coalesce((vals->>'time_active')::real,0) / 
+    nullif((vals->>'time_available')::real,0.0) as uptime
+FROM bins
+JOIN nodes AS devices ON bins.device_id=devices.node_id;
 
 ---------------------------------------------------------------------
 -- history_all
@@ -127,7 +126,7 @@ SELECT
   devices.props->>'name_uuid' AS device,
   dataitems.props->>'path' AS path,
   history.time,
-  history.value -- value is a jsonb object - need to cast it as in below views
+  history.value -- a jsonb object - need to cast it as in below views
 FROM history
 JOIN nodes AS devices ON history.node_id=devices.node_id
 JOIN nodes AS dataitems ON history.dataitem_id=dataitems.node_id;
