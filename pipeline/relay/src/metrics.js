@@ -149,7 +149,7 @@ export function handleObservation(
     observation
 
   //. or make timers a dict of dicts, like currentBins
-  const timerKey = device_id + dataname
+  const timerKey = device_id + '-' + dataname
 
   // if observation is something we're tracking the state of,
   // update start time or current bin.

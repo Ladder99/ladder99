@@ -1,5 +1,5 @@
 // get time deltas for one observation.
-// check for changes to dimensions and state changes we want to track.
+// check for changes to dimensions AND state changes we want to track.
 // returns deltas for caller to apply to bins.
 // exported for testing.
 export function getDeltas(
@@ -24,6 +24,8 @@ export function getDeltas(
   // eg '3-availability'
   //. or make timers a dict of dicts, like currentBins
   const timerKey = device_id + '-' + dataname
+
+  // track changes to STATES
 
   // if observation is something we're tracking the state of,
   // update start time or current bin.
@@ -61,6 +63,8 @@ export function getDeltas(
       }
     }
   }
+
+  // track changes to DIMENSIONS
 
   // year is a dimension we need to track
   if (year !== dimensions.year) {
@@ -102,6 +106,8 @@ export function getDeltas(
 
   return deltas
 }
+
+// ---------------------------------------------------------------------
 
 // a dimension value changed - dump current bins into accumulator bins,
 // and update current dimension value.

@@ -71,18 +71,36 @@ import * as metrics2 from './metrics2.js'
 metrics.assignTimesToObservations(observations)
 // console.log(observations)
 
-const valueDefs = []
-const dimensionDefs = []
+const valueDefs = {
+  availability: {
+    when: 'AVAILABLE',
+    bin: 'time_available',
+  },
+}
+const dimensionDefs = {
+  minute: {},
+}
 
-const deltas = metrics2.getDeltas(
-  observations[0],
-  dimensions,
-  accumulatorBins,
-  currentBins,
-  timers,
-  valueDefs,
-  dimensionDefs
-)
+for (let observation of observations) {
+  const deltas = metrics2.getDeltas(
+    observation,
+    dimensions,
+    accumulatorBins,
+    currentBins,
+    timers,
+    valueDefs,
+    dimensionDefs
+  )
+  // console.log(timers)
+  console.log(deltas)
+  for (let bin of Object.keys(deltas)) {
+    const delta = deltas[bin]
+    if (currentBins[bin] === undefined) {
+      currentBins[bin] = delta
+    } else {
+      currentBins[bin] += delta
+    }
+  }
+}
 console.log()
-console.log(timers)
-console.log(deltas)
+console.log(currentBins)
