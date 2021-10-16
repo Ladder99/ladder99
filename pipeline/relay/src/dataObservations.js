@@ -41,26 +41,26 @@ export class Observations extends Data {
     // this.from = nextSequence
   }
 
-  // do calculations on values and write to db bins table
+  // do calculations on values and write to db bins table.
   // called from agentReader.js
   // db is database object
-  // currentDimensions is dict with current dimension values,
+  // dimensions is dict with current dimension values,
   //   eg { hour: 15, availability: 'AVAILABLE', operator: 'Alice', ... }
   //   needs to carry over from 'current' endpoint to 'sample',
   //   so need to pass it in here.
-  // startTimes is dict with start times for each bin, eg { availability: 18574734.321 }
+  // timers is dict with start times for each bin, eg { availability: 18574734.321 }
   //   ditto re passing this in here.
   // see metrics.js
-  async calculate(db, currentDimensions, startTimes) {
+  async calculate(db, dimensions, timers) {
     // get accumulator bins for given observations
-    const accumulatorBins = metrics.getAccumulatorBins(
+    const accumulators = metrics.getAccumulatorBins(
       this.observations,
-      currentDimensions,
-      startTimes
+      dimensions,
+      timers
     )
 
     // get sql update/insert statement and write to db
-    const sql = metrics.getSql(accumulatorBins)
+    const sql = metrics.getSql(accumulators)
     if (sql) {
       console.log(sql)
       await db.query(sql)

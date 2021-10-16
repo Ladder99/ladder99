@@ -1,10 +1,11 @@
 // test metric calcs
 
 // import * as metrics from './metrics.js'
-import * as metrics from './metrics2.js'
+// import * as metrics from './metrics2.js'
+import * as metrics from './metrics3.js'
 
 // const dims = { year: 2021, dayOfYear: 1, hour: 0, minute: 0 }
-// console.log(new Date(getHourInSeconds(dims) * 1000))
+// console.log(new Date(metrics.getHourInSeconds(dims) * 1000))
 
 // simulated observations from 'sample' endpoint.
 // time_available should be 20+10=30 secs
@@ -47,19 +48,15 @@ const observations = [
 ]
 
 const dimensions = {}
-const currentBins = {}
+const bins = {}
 const timers = {}
 
 {
-  const accumulatorBins = metrics.getAccumulatorBins(
-    observations,
-    dimensions,
-    timers
-  )
+  const accumulators = metrics.getAccumulators(observations, dimensions, timers)
   console.log()
   console.log('DONE', 'accumulator bins')
-  console.log(accumulatorBins)
-  // const sql = metrics.getSql(accumulatorBins)
+  console.log(accumulators)
+  // const sql = metrics.getSql(accumulators)
   // console.log('sql', sql)
 }
 
@@ -75,8 +72,8 @@ const timers = {}
 //   //   metrics.handleObservation(
 //   //     observation,
 //   //     dimensions,
-//   //     accumulatorBins,
-//   //     currentBins,
+//   //     accumulators,
+//   //     bins,
 //   //     timers,
 //   //     valueDefs,
 //   //     dimensionDefs,
@@ -85,8 +82,8 @@ const timers = {}
 
 //   // console.log()
 
-//   const dimensionDeltas = metrics.getDimensionDeltas(currentBins, dimensions)
+//   const dimensionDeltas = metrics.getDimensionDeltas(bins, dimensions)
 //   console.log(dimensionDeltas)
 
-//   // metrics.clearCurrentBins(currentBins)
+//   // metrics.clearCurrentBins(bins)
 // }
