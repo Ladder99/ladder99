@@ -44,18 +44,18 @@ export class Observations extends Data {
   // do calculations on values and write to db bins table
   // called from agentReader.js
   // db is database object
-  // currentDimensionValues is dict with current dimension values,
+  // currentDimensions is dict with current dimension values,
   //   eg { hour: 15, availability: 'AVAILABLE', operator: 'Alice', ... }
   //   needs to carry over from 'current' endpoint to 'sample',
   //   so need to pass it in here.
   // startTimes is dict with start times for each bin, eg { availability: 18574734.321 }
   //   ditto re passing this in here.
   // see metrics.js
-  async calculate(db, currentDimensionValues, startTimes) {
+  async calculate(db, currentDimensions, startTimes) {
     // get accumulator bins for given observations
     const accumulatorBins = metrics.getAccumulatorBins(
       this.observations,
-      currentDimensionValues,
+      currentDimensions,
       startTimes
     )
 
