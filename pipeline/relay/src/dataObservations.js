@@ -27,7 +27,7 @@ export class Observations extends Data {
     this.observations.sort((a, b) => a.timestampSecs - b.timestampSecs)
   }
 
-  // write values to db
+  // write values from this.observations to db
   async write(db, indexes) {
     // assign device_id and dataitem_id's to observations
     assignNodeIds(this.observations, indexes)
