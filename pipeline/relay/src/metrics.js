@@ -41,11 +41,11 @@ const valueDefs = {
 
 // get accumulatorBins for the given observations and starting points.
 // observations is a list of observation objects with { dataitem_id, value, ... }
-// currentDimensionValues is a dict with the current values of the dimensions,
+// currentDimensions is a dict with the current values of the dimensions,
 //   as defined in dimensionDefs, above.
 // startTimes measures the time a dataitem is in a particular state.
 //   it's a dictionary keyed on the valueDefs keys, defined above.
-export function getMetrics(observations, currentDimensionValues, startTimes) {
+export function getMetrics(observations, currentDimensions, startTimes) {
   // get hour, minute, etc for each observation
   assignTimesToObservations(observations)
 
@@ -69,8 +69,8 @@ export function getMetrics(observations, currentDimensionValues, startTimes) {
     if (observation.name) {
       const { device_id } = observation
       // init dicts
-      if (currentDimensionValues[device_id] === undefined) {
-        currentDimensionValues[device_id] = {}
+      if (currentDimensions[device_id] === undefined) {
+        currentDimensions[device_id] = {}
       }
       if (currentBins[device_id] === undefined) {
         currentBins[device_id] = {}
@@ -79,7 +79,7 @@ export function getMetrics(observations, currentDimensionValues, startTimes) {
         accumulatorBins[device_id] = {}
       }
       // narrow dicts down to this observation's device
-      const deviceDimensionValues = currentDimensionValues[device_id]
+      const deviceDimensionValues = currentDimensions[device_id]
       const deviceCurrentBins = currentBins[device_id]
       const deviceAccumulatorBins = accumulatorBins[device_id]
       // handle the observation by dumping time deltas to accumulator bins.
@@ -120,11 +120,11 @@ function assignTimesToObservations(observations) {
 
 // handle one observation.
 // check for changes to dimensions and state changes we want to track.
-// modifies currentDimensionValues, etc in place.
+// modifies currentDimensions, etc in place.
 // exported for testing.
 export function handleObservation(
   observation,
-  currentDimensionValues,
+  currentDimensions,
   accumulatorBins,
   currentBins,
   startTimes
@@ -171,43 +171,43 @@ export function handleObservation(
   }
 
   // year is a dimension we need to track
-  if (year !== currentDimensionValues.year) {
+  if (year !== currentDimensions.year) {
     dimensionValueChanged(
       accumulatorBins,
       currentBins,
-      currentDimensionValues,
+      currentDimensions,
       'year',
       year
     )
   }
   // dayOfYear (1-366) is a dimension we need to track
-  if (dayOfYear !== currentDimensionValues.dayOfYear) {
+  if (dayOfYear !== currentDimensions.dayOfYear) {
     dimensionValueChanged(
       accumulatorBins,
       currentBins,
-      currentDimensionValues,
+      currentDimensions,
       'dayOfYear',
       dayOfYear
     )
   }
 
   // hour (0-23) is a dimension we need to track
-  if (hour !== currentDimensionValues.hour) {
+  if (hour !== currentDimensions.hour) {
     dimensionValueChanged(
       accumulatorBins,
       currentBins,
-      currentDimensionValues,
+      currentDimensions,
       'hour',
       hour
     )
   }
 
   // minute (0-59) is a dimension we need to track
-  if (minute !== currentDimensionValues.minute) {
+  if (minute !== currentDimensions.minute) {
     dimensionValueChanged(
       accumulatorBins,
       currentBins,
-      currentDimensionValues,
+      currentDimensions,
       'minute',
       minute
     )
@@ -218,11 +218,11 @@ export function handleObservation(
   if (dimensionDefs[dataname]) {
     // if value changed, dump current bins to accumulator bins,
     // and update current value.
-    if (value !== currentDimensionValues[dataname]) {
+    if (value !== currentDimensions[dataname]) {
       dimensionValueChanged(
         accumulatorBins,
         currentBins,
-        currentDimensionValues,
+        currentDimensions,
         dataname,
         value
       )
@@ -233,7 +233,7 @@ export function handleObservation(
   dimensionValueChanged(
     accumulatorBins,
     currentBins,
-    currentDimensionValues
+    currentDimensions
     //. undefined, undefined
   )
 }
@@ -243,12 +243,12 @@ export function handleObservation(
 function dimensionValueChanged(
   accumulatorBins,
   currentBins,
-  currentDimensionValues,
+  currentDimensions,
   dataname,
   value
 ) {
   // get key for this row, eg '{dayOfYear:298, hour:8, minute:23}'
-  const dimensionKey = getDimensionKey(currentDimensionValues)
+  const dimensionKey = getDimensionKey(currentDimensions)
 
   // start new dict if needed
   if (accumulatorBins[dimensionKey] === undefined) {
@@ -271,7 +271,7 @@ function dimensionValueChanged(
   }
 
   // update current dimension value
-  currentDimensionValues[dataname] = value
+  currentDimensions[dataname] = value
 }
 
 // get sql statements to write given accumulator bin data to db.
@@ -326,8 +326,8 @@ ON CONFLICT (device_id, time, dimensions) DO
 
 // helper fns
 
-function getDimensionKey(currentDimensionValues) {
-  return JSON.stringify(currentDimensionValues)
+function getDimensionKey(currentDimensions) {
+  return JSON.stringify(currentDimensions)
 }
 export function splitDimensionKey(dimensionKey) {
   return JSON.parse(dimensionKey)

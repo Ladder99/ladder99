@@ -31,14 +31,10 @@ const observations = [
   },
 ]
 
-const currentDimensionValues = {}
+const currentDimensions = {}
 const startTimes = {}
 
-const accumulatorBins = getMetrics(
-  observations,
-  currentDimensionValues,
-  startTimes
-)
+const accumulatorBins = getMetrics(observations, currentDimensions, startTimes)
 
 console.log()
 console.log('DONE', 'accumulator bins')
