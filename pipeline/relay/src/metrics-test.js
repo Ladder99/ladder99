@@ -148,11 +148,11 @@ const observations = [
 ;(async function foo() {
   const bins = new metrics.Bins(dimensionDefs, valueDefs)
   console.log(bins)
-  bins.start()
+  bins.startTimer() // start timer which dumps bins to db every minute
 
   while (true) {
     console.log('tick')
-    bins.handleObservations(observations)
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    bins.handleObservations(observations) // update bins
+    await new Promise(resolve => setTimeout(resolve, 2000)) // pause
   }
 })()
