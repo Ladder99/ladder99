@@ -1,9 +1,30 @@
 // refactoring fns from metrics.js
 
+export function handleObservation(
+  observation,
+  dimensions,
+  accumulatorBins,
+  currentBins,
+  timers,
+  valueDefs
+) {
+  const valueDeltas = getValueDeltas(observation, timers, valueDefs)
+  // apply deltas to currentBins
+  for (let bin of Object.keys(valueDeltas)) {
+    const delta = valueDeltas[bin]
+    if (currentBins[bin] === undefined) {
+      currentBins[bin] = delta
+    } else {
+      currentBins[bin] += delta
+    }
+  }
+}
+
 // track changes to observation values and return time deltas.
 // caller should then apply deltas to current bins.
 // timers dictionary is modified in place to track start times for value changes.
 // exported for testing.
+//. was first part of handleObservation
 export function getValueDeltas(observation, timers, valueDefs) {
   const deltas = {}
 
