@@ -3,6 +3,7 @@
 // binning algorithms to calculate metrics
 
 //. make this file a class so can have dim and value defs per class
+//. instantiate one for each device?
 
 // dimensionDefs
 // if any one of these dimensions changes,
@@ -12,7 +13,9 @@
 //. might want these to be per device or device type also?
 const dimensionDefs = {
   //. use hour1970, or minute1970?
-  day1970: {},
+  // day1970: {},
+  year: {},
+  dayOfYear: {},
   hour: {},
   minute: {}, //. do minute for testing, then switch to hour? but want to write every minute
   // add these as needed, to be able to slice reports later
@@ -61,6 +64,7 @@ export function getAccumulatorsByDevice(
 ) {
   // add hour, minute, dimensionKey, etc to each observation
   amendObservations(observations)
+  console.log(observations)
 
   // bins for the current set of dimension values, for each device.
   // added to accumulator and cleared on each change of a dimension value.

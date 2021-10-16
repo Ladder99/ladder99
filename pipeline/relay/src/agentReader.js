@@ -61,6 +61,10 @@ export class AgentReader {
             this.dimensionsByDevice,
             this.timersByDevice
           ) // update bins
+          // const sql = sample.getSql(
+          //   this.dimensionsByDevice,
+          //   this.timersByDevice
+          // )
           this.from = sample.sequence.next //. ?
           await lib.sleep(this.interval)
         } while (true)

@@ -47,23 +47,23 @@ const observations = [
   },
 ]
 
-const dimensions = {}
+const dimensionsByDevice = {}
 const bins = {}
-const timers = {}
+const timersByDevice = {}
 
 // {
 // metrics.amendObservations(observations)
 // }
 
 {
-  const accumulators = metrics.getAccumulatorsByDevice(
+  const accumulatorsByDevice = metrics.getAccumulatorsByDevice(
     observations,
-    dimensions,
-    timers
+    dimensionsByDevice,
+    timersByDevice
   )
   console.log()
-  console.log('DONE', 'accumulator bins')
-  console.log(accumulators)
+  console.log('DONE', 'accumulator bins by device_id')
+  console.log(accumulatorsByDevice)
   // const sql = metrics.getSql(accumulators)
   // console.log('sql', sql)
 }

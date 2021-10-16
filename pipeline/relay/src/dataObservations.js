@@ -53,7 +53,8 @@ export class Observations extends Data {
   // see metrics.js
   async calculate(db, dimensionsByDevice, timersByDevice) {
     // get accumulator bins for given observations
-    const accumulatorsByDevice = metrics.getAccumulatorsByDevice(
+    const accumulatorsByDevice = metrics.getAccumulatorBins(
+      //. const accumulatorsByDevice = metrics.getAccumulatorsByDevice(
       this.observations,
       dimensionsByDevice,
       timersByDevice
