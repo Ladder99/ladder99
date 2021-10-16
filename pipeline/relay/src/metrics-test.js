@@ -66,15 +66,23 @@ console.log(accumulatorBins)
 
 // test getDeltas
 
+import * as metrics2 from './metrics2.js'
+
 metrics.assignTimesToObservations(observations)
 // console.log(observations)
 
-const deltas = metrics.getDeltas(
+const valueDefs = []
+const dimensionDefs = []
+
+const deltas = metrics2.getDeltas(
   observations[0],
   dimensions,
   accumulatorBins,
   currentBins,
-  timers
+  timers,
+  valueDefs,
+  dimensionDefs
 )
 console.log()
+console.log(timers)
 console.log(deltas)
