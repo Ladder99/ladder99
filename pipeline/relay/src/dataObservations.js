@@ -51,16 +51,16 @@ export class Observations extends Data {
   // timers is dict with start times for each bin, eg { availability: 18574734.321 }
   //   ditto re passing this in here.
   // see metrics.js
-  async calculate(db, dimensions, timers) {
+  async calculate(db, dimensionsByDevice, timersByDevice) {
     // get accumulator bins for given observations
-    const accumulators = metrics.getAccumulatorBins(
+    const accumulatorsByDevice = metrics.getAccumulatorsByDevice(
       this.observations,
-      dimensions,
-      timers
+      dimensionsByDevice,
+      timersByDevice
     )
 
     // get sql update/insert statement and write to db
-    const sql = metrics.getSql(accumulators)
+    const sql = metrics.getSql(accumulatorsByDevice)
     if (sql) {
       console.log(sql)
       await db.query(sql)

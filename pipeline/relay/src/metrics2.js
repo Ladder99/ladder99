@@ -11,8 +11,10 @@
 //. move these into yaml, and have per client
 //. might want these to be per device or device type also?
 const dimensionDefs = {
+  //. use hour1970, or minute1970?
+  day1970: {},
+  hour: {},
   minute: {}, //. do minute for testing, then switch to hour? but want to write every minute
-  // hour: {},
   // add these as needed, to be able to slice reports later
   // operator: {},
   // machine: {},
@@ -55,10 +57,10 @@ const valueDefs = {
 export function getAccumulatorsByDevice(
   observations,
   dimensionsByDevice,
-  timers
+  timersByDevice
 ) {
-  // add hour, minute, etc to each observation
-  assignTimesToObservations(observations)
+  // add hour, minute, dimensionKey, etc to each observation
+  amendObservations(observations)
 
   // bins for the current set of dimension values, for each device.
   // added to accumulator and cleared on each change of a dimension value.
@@ -79,8 +81,7 @@ export function getAccumulatorsByDevice(
     // note: this excludes the agent dataitems, which we don't care about (now).
     if (observation.name) {
       const { device_id } = observation
-      // // assign dimension key to observation
-      // observation.dimensionKey = device_id + '-' + observation.name
+
       // init dicts
       if (dimensionsByDevice[device_id] === undefined) {
         dimensionsByDevice[device_id] = {}
@@ -91,14 +92,16 @@ export function getAccumulatorsByDevice(
       if (accumulatorsByDevice[device_id] === undefined) {
         accumulatorsByDevice[device_id] = {}
       }
+
       // narrow dicts down to this observation's device
       const dimensions = dimensionsByDevice[device_id]
       const currentBins = currentBinsByDevice[device_id]
       const accumulators = accumulatorsByDevice[device_id]
+
       // get
       const valueDeltas = getValueDeltas(
         observation,
-        timers
+        timersByDevice
         // deviceDimensions,
         // deviceAccumulators,
         // deviceBins,
@@ -122,7 +125,7 @@ export function getAccumulatorsByDevice(
 
 // split observation time into year, dayofyear, hour, minute.
 // exported for testing.
-export function assignTimesToObservations(observations) {
+export function amendObservations(observations) {
   observations.forEach(observation => {
     const date = new Date(observation.timestamp)
 
@@ -132,149 +135,16 @@ export function assignTimesToObservations(observations) {
     // get current dimension values for each observation
     observation.year = date.getFullYear() // eg 2021
     observation.dayOfYear = getDayOfYear(date) // 1-366
+    //. observation.day1970 = getDay1970(date) // days since 1970-01-01
     observation.hour = date.getHours() // 0-23
     observation.minute = date.getMinutes() // 0-59
+
+    // // assign dimension key to observation
+    // observation.binName = device_id + '-' + observation.name
+
+    observation.dimensionKey = getDimensionKey(observation)
   })
 }
-
-// // handle one observation.
-// // check for changes to dimensions and state changes we want to track.
-// // modifies dimensions and bins in place.
-// // exported for testing.
-// export function handleObservation(
-//   observation,
-//   dimensions,
-//   accumulators,
-//   currentBins,
-//   timers
-// ) {
-//   // name might include deviceId/ - remove it to get dataname, eg 'availability'
-//   const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
-
-//   // value is eg 'Alice' for operator, 'ACTIVE' for execution, etc
-//   const { device_id, timestampSecs, year, dayOfYear, hour, minute, value } =
-//     observation
-
-//   //. or make timers a dict of dicts, like currentBins
-//   const timerKey = device_id + '-' + dataname
-
-//   // if observation is something we're tracking the state of,
-//   // update start time or current bin.
-//   if (valueDefs[dataname]) {
-//     const valueDef = valueDefs[dataname] // eg { bin: 'time_active', when: 'ACTIVE' }
-//     const bin = valueDef.bin // eg 'time_active'
-
-//     // handle edge transition - start or stop timetracking for the value.
-//     // eg valueDef.when could be 'AVAILABLE' or 'ACTIVE' etc.
-//     if (value === valueDef.when) {
-//       // start 'timer' for this observation
-//       // add guard in case agent is defective and sends these out every time,
-//       // instead of just at start.
-//       if (!timers[timerKey]) {
-//         timers[timerKey] = timestampSecs
-//       }
-//     } else {
-//       // otherwise, observation is turning 'off' -
-//       // dump the time to the device's current bin.
-//       if (timers[timerKey]) {
-//         const timeDelta = timestampSecs - timers[timerKey] // sec
-//         if (currentBins[bin] === undefined) {
-//           currentBins[bin] = timeDelta
-//         } else {
-//           currentBins[bin] += timeDelta
-//         }
-//         // reset start time
-//         timers[timerKey] = null
-//       }
-//     }
-//   }
-
-//   // year is a dimension we need to track
-//   if (year !== dimensions.year) {
-//     dimensionChanged(accumulators, currentBins, dimensions, 'year', year)
-//   }
-
-//   // dayOfYear (1-366) is a dimension we need to track
-//   if (dayOfYear !== dimensions.dayOfYear) {
-//     dimensionChanged(
-//       accumulators,
-//       currentBins,
-//       dimensions,
-//       'dayOfYear',
-//       dayOfYear
-//     )
-//   }
-
-//   // hour (0-23) is a dimension we need to track
-//   if (hour !== dimensions.hour) {
-//     dimensionChanged(accumulators, currentBins, dimensions, 'hour', hour)
-//   }
-
-//   // minute (0-59) is a dimension we need to track
-//   if (minute !== dimensions.minute) {
-//     dimensionChanged(accumulators, currentBins, dimensions, 'minute', minute)
-//   }
-
-//   // check if this dataitem is a dimension we're tracking,
-//   // eg dataname = 'operator'.
-//   if (dimensionDefs[dataname]) {
-//     // if value changed, dump current bins to accumulator bins,
-//     // and update current value.
-//     if (value !== dimensions[dataname]) {
-//       dimensionChanged(
-//         accumulators,
-//         currentBins,
-//         dimensions,
-//         dataname,
-//         value
-//       )
-//     }
-//   }
-
-//   //.. how get rid of this?
-//   dimensionChanged(
-//     accumulators,
-//     currentBins,
-//     dimensions
-//     //. undefined, undefined
-//   )
-// }
-
-// // a dimension value changed - dump current bins into accumulator bins,
-// // and update current dimension value.
-// function dimensionChanged(
-//   accumulators,
-//   currentBins,
-//   dimensions,
-//   dataname,
-//   value
-// ) {
-//   // get key for this row, eg '{"dayOfYear":298, "hour":8, "minute":23}'
-//   const dimensionKey = getDimensionKey(dimensions)
-
-//   // start new dict if needed
-//   if (accumulators[dimensionKey] === undefined) {
-//     accumulators[dimensionKey] = {}
-//   }
-
-//   // dump current bins to accumulator bins, then clear them.
-//   // do this so can dump all accumulator bins to db in one go, at end.
-//   const acc = accumulators[dimensionKey] // eg { time_active: 19.3 } // secs
-
-//   // iterate over bin keys, eg ['time_active', ...]
-//   for (let binKey of Object.keys(currentBins)) {
-//     if (acc[binKey] === undefined) {
-//       acc[binKey] = currentBins[binKey]
-//     } else {
-//       acc[binKey] += currentBins[binKey]
-//     }
-//     // clear the bin
-//     delete currentBins[binKey]
-//   }
-
-//   // update current dimension value
-//   dimensions[dataname] = value
-// }
 
 // get sql statements to write given accumulator bin data to db.
 // accumulators is like { device_id: bins }
@@ -332,7 +202,19 @@ ON CONFLICT (device_id, time, dimensions) DO
 
 // helper fns
 
-function getDimensionKey(dimensions) {
+// function getDimensionKey(dimensions) {
+//   return JSON.stringify(dimensions)
+// }
+// get dimension key for an observation,
+// eg '{"hour1970":1234567,"operator":"Alice"}'
+function getDimensionKey(observation) {
+  //. use hour1970
+  // const { year, dayOfYear, hour, minute } = observation
+  // const dimensions = { year, dayOfYear, hour, minute }
+  const dimensions = {}
+  for (let dimension of Object.keys(dimensionDefs)) {
+    dimensions[dimension] = observation[dimension]
+  }
   return JSON.stringify(dimensions)
 }
 export function splitDimensionKey(dimensionKey) {
@@ -372,6 +254,8 @@ export function getHourInSeconds(dims) {
     base + (dims.dayOfYear - 1) * secondsPerDay + dims.hour * secondsPerHour
   return seconds
 }
+
+//. getHour1970 - hours since 1970-01-01
 
 //////////////////////////////////////////////////////////////
 
@@ -478,6 +362,14 @@ export function applyDimensionDeltas(
   // value might be eg 'Alice' for operator, 'ACTIVE' for execution, etc
   // const { device_id, timestampSecs, year, dayOfYear, hour, minute, value } =
   const { year, dayOfYear, hour, minute, value } = observation
+  // const { day1970, hour, minute, value } = observation //?
+
+  //. instead of comparing each value below, make a dimensionKey
+  // and compare it
+  // const currentDimensionKey = JSON.stringify()
+  // then, if anything changed, call getDimensionDeltas,
+  // updateaccbins, clearcurrentbins, and clear all dimensions
+  // if (currentDimensionKey !== previousDimensionKey) {}
 
   // year is a dimension we need to track
   if (year !== dimensions.year) {

@@ -51,6 +51,10 @@ const dimensions = {}
 const bins = {}
 const timers = {}
 
+// {
+// metrics.amendObservations(observations)
+// }
+
 {
   const accumulators = metrics.getAccumulatorsByDevice(
     observations,
