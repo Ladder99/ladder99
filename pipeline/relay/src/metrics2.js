@@ -6,10 +6,13 @@ export function handleObservation(
   accumulatorBins,
   currentBins,
   timers,
-  valueDefs
+  valueDefs,
+  dimensionDefs
 ) {
+  // get time deltas for observation value changes
   const valueDeltas = getValueDeltas(observation, timers, valueDefs)
-  // apply deltas to currentBins
+
+  // apply time deltas to currentBins
   for (let bin of Object.keys(valueDeltas)) {
     const delta = valueDeltas[bin]
     if (currentBins[bin] === undefined) {
@@ -18,6 +21,20 @@ export function handleObservation(
       currentBins[bin] += delta
     }
   }
+
+  //.
+  // get time deltas for dimension changes
+  const dimensionDeltas = applyDimensionDeltas(
+    observation,
+    dimensions,
+    accumulatorBins,
+    currentBins,
+    dimensionDefs
+  )
+  console.log(dimensionDeltas)
+
+  //. apply time deltas to accumulator bins, clear currentBins
+  //. if time=minutechange then dump accum bins to db, clear them ?
 }
 
 // track changes to observation values and return time deltas.
@@ -74,15 +91,13 @@ export function getValueDeltas(observation, timers, valueDefs) {
 //
 
 // track changes to dimension values
-export function getDimensionDeltas(
+export function applyDimensionDeltas(
   observation,
   dimensions,
   accumulatorBins,
   currentBins,
   dimensionDefs
 ) {
-  const deltas = {}
-
   // name might include deviceId/ - remove it to get dataname, eg 'availability'
   const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
 
@@ -92,30 +107,34 @@ export function getDimensionDeltas(
 
   // year is a dimension we need to track
   if (year !== dimensions.year) {
-    const foo = getDeltas(currentBins, dimensions, 'year', year)
-    applyFoo(accumulatorBins, foo)
+    const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
+    applyDimensionDeltas(accumulatorBins, dimensionDeltas)
     clearCurrentBins(currentBins)
+    updateDimensions(dimensions, 'year', year)
   }
 
   // dayOfYear (1-366) is a dimension we need to track
   if (dayOfYear !== dimensions.dayOfYear) {
-    const foo = getDeltas(currentBins, dimensions, 'dayOfYear', dayOfYear)
-    applyFoo(accumulatorBins, foo)
+    const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
+    applyDimensionDeltas(accumulatorBins, dimensionDeltas)
     clearCurrentBins(currentBins)
+    updateDimensions(dimensions, 'dayOfYear', dayOfYear)
   }
 
   // hour (0-23) is a dimension we need to track
   if (hour !== dimensions.hour) {
-    const foo = getDeltas(currentBins, dimensions, 'hour', hour)
-    applyFoo(accumulatorBins, foo)
+    const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
+    applyDimensionDeltas(accumulatorBins, dimensionDeltas)
     clearCurrentBins(currentBins)
+    updateDimensions(dimensions, 'hour', hour)
   }
 
   // minute (0-59) is a dimension we need to track
   if (minute !== dimensions.minute) {
-    const foo = getDeltas(currentBins, dimensions, 'minute', minute)
-    applyFoo(accumulatorBins, foo)
+    const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
+    applyDimensionDeltas(accumulatorBins, dimensionDeltas)
     clearCurrentBins(currentBins)
+    updateDimensions(dimensions, 'minute', minute)
   }
 
   // check if this dataitem is a dimension we're tracking,
@@ -124,27 +143,18 @@ export function getDimensionDeltas(
     // if value changed, dump current bins to accumulator bins,
     // and update current value.
     if (value !== dimensions[dataname]) {
-      const foo = getDeltas(currentBins, dimensions, dataname, value)
-      applyFoo(accumulatorBins, foo)
+      const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
+      applyDimensionDeltas(accumulatorBins, dimensionDeltas)
       clearCurrentBins(currentBins)
+      updateDimensions(dimensions, dataname, value)
     }
   }
 
   //.. how get rid of this?
-  const foo = getDeltas(
-    // accumulatorBins,
-    currentBins,
-    dimensions
-    //. undefined, undefined
-  )
-  console.log(foo)
-  applyFoo(accumulatorBins, foo)
+  const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
+  applyDimensionDeltas(accumulatorBins, dimensionDeltas)
   clearCurrentBins(currentBins)
-
-  return deltas
 }
-
-export function applyFoo(accumulatorBins, foo) {}
 
 // iterate over bin keys, eg ['time_active', ...], and clear bins
 export function clearCurrentBins(currentBins) {
@@ -153,8 +163,6 @@ export function clearCurrentBins(currentBins) {
   }
 }
 
-// ---------------------------------------------------------------------
-
 // update current dimension value
 function updateDimensions(dimensions, dataname, value) {
   dimensions[dataname] = value
@@ -162,10 +170,10 @@ function updateDimensions(dimensions, dataname, value) {
 
 // get deltas when a dimension value changes.
 // return dict of accumulator and dimvalues to change.
-//// dump current bins into accumulator bins,
-//// and update current dimension value.
-export function getDeltas(currentBins, dimensions, dataname, value) {
-  let foo = {}
+// caller should dump current bins into accumulator bins,
+// and update current dimension value.
+export function getDimensionDeltas(currentBins, dimensions) {
+  let deltas = {}
 
   // get key for this row, eg '{"dayOfYear":298, "hour":8, "minute":23}'
   // const dimensionKey = getDimensionKey(dimensions)
@@ -175,14 +183,14 @@ export function getDeltas(currentBins, dimensions, dataname, value) {
   // if (accumulatorBins[dimensionKey] === undefined) {
   //   accumulatorBins[dimensionKey] = {}
   // }
-  if (foo[dimensionKey] === undefined) {
-    foo[dimensionKey] = {}
+  if (deltas[dimensionKey] === undefined) {
+    deltas[dimensionKey] = {}
   }
 
   // dump current bins to accumulator bins, then clear them.
   // do this so can dump all accumulator bins to db in one go, at end.
   // const accumulator = accumulatorBins[dimensionKey] // eg { time_active: 19.3 } // secs
-  const accumulator = foo[dimensionKey] // eg { time_active: 19.3 } // secs
+  const accumulator = deltas[dimensionKey] // eg { time_active: 19.3 } // secs
 
   // iterate over bin keys, eg ['time_active', ...]
   for (let binKey of Object.keys(currentBins)) {
@@ -191,12 +199,7 @@ export function getDeltas(currentBins, dimensions, dataname, value) {
     } else {
       accumulator[binKey] += currentBins[binKey]
     }
-    // // clear the bin
-    // delete currentBins[binKey]
   }
 
-  // // update current dimension value
-  // dimensions[dataname] = value
-
-  return foo
+  return deltas
 }

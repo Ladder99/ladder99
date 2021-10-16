@@ -81,48 +81,21 @@ const dimensionDefs = {
   minute: {},
 }
 
-for (let observation of observations) {
-  metrics2.handleObservation(
-    observation,
-    dimensions,
-    accumulatorBins,
-    currentBins,
-    timers,
-    valueDefs
-  )
+// for (let observation of observations) {
+//   metrics2.handleObservation(
+//     observation,
+//     dimensions,
+//     accumulatorBins,
+//     currentBins,
+//     timers,
+//     valueDefs,
+//     dimensionDefs,
+//   )
+// }
 
-  // // get time deltas for value changes
-  // const valueDeltas = metrics2.getValueDeltas(observation, timers, valueDefs)
-  // console.log(valueDeltas)
+// console.log()
 
-  // // apply deltas to currentBins
-  // for (let bin of Object.keys(valueDeltas)) {
-  //   const delta = valueDeltas[bin]
-  //   if (currentBins[bin] === undefined) {
-  //     currentBins[bin] = delta
-  //   } else {
-  //     currentBins[bin] += delta
-  //   }
-  // }
+const dimensionDeltas = metrics2.getDimensionDeltas(currentBins, dimensions)
+console.log(dimensionDeltas)
 
-  // // get time deltas for dimension changes
-  // const dimensionDeltas = metrics2.getDimensionDeltas(
-  //   observation,
-  //   dimensions,
-  //   accumulatorBins,
-  //   currentBins,
-  //   dimensionDefs
-  // )
-  // console.log(dimensionDeltas)
-
-  //. apply time deltas to accumulator bins, clear currentBins
-  //. if time=minutechange then dump accum bins to db, clear them ?
-}
-// console.log(currentBins)
-
-//
-
-console.log()
-
-const foo = metrics2.getDeltas(currentBins, dimensions, 'minute', 0)
-console.log(foo)
+metrics2.clearCurrentBins(currentBins)
