@@ -1,8 +1,8 @@
 // test metric calcs
 
 // import * as metrics from './metrics.js'
-import * as metrics from './metrics2.js'
-// import * as metrics from './metrics3.js'
+// import * as metrics from './metrics2.js'
+import * as metrics from './metrics3.js'
 
 // const dims = { year: 2021, dayOfYear: 1, hour: 0, minute: 0 }
 // console.log(new Date(metrics.getHourInSeconds(dims) * 1000))
@@ -46,12 +46,11 @@ const observations = [
     value: 'UNAVAILABLE',
   },
 ]
+// const currentBins = {}
+// const dimensionsByDevice = {}
+// const timersByDevice = {}
 
-const currentBins = {}
-const dimensionsByDevice = {}
-const timersByDevice = {}
-
-metrics.amendObservations(observations)
+// metrics.amendObservations(observations)
 
 // {
 //   const accumulatorsByDevice = metrics.getAccumulatorsByDevice(
@@ -104,10 +103,18 @@ metrics.amendObservations(observations)
 //   console.log(dd)
 // }
 
-{
-  const dimensionKey = metrics.getDimensionKey(observations[0])
-  console.log(dimensionKey)
-}
+// {
+//   const dimensionKey = metrics.getDimensionKey(observations[0])
+//   console.log(dimensionKey)
+// }
 
-{
-}
+;(async function foo() {
+  const bins = new metrics.Bins()
+  console.log(bins)
+  bins.start()
+
+  while (true) {
+    console.log('tick')
+    await new Promise(resolve => setTimeout(resolve, 2000))
+  }
+})()

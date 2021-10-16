@@ -11,6 +11,7 @@ console.log(`---------------------------------------------------`)
 // get envars - typically set in pipeline.yaml and pipeline-overrides.yaml files
 const params = {
   // AGENT_URLS can be a single url, a comma-delim list of urls, or a txt filename with urls.
+  // these are the agents we'll be reading from.
   // currently set in pipeline-overrides.yaml, but
   //. eventually will read from setup.xml
   agentEndpoints: process.env.AGENT_ENDPOINTS || 'http://localhost:5000',
