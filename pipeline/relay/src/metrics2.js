@@ -12,12 +12,8 @@
 //. move these into yaml, and have per client
 //. might want these to be per device or device type also?
 const dimensionDefs = {
-  //. use day1970, hour1970, or minute1970?
-  // year: {},
-  // dayOfYear: {},
-  // hour: {},
-  // minute: {}, //. do minute for testing, then switch to hour? but want to write every minute
   hour1970: {},
+  // minute: {}, //. do minute for testing, then switch to hour? write every minute
   // add these as needed, to be able to slice reports later
   // operator: {},
   // machine: {},
@@ -82,39 +78,41 @@ export function getAccumulatorsByDevice(
     // only do observations with data names.
     // ie agent.xml dataitems should have name attribute.
     // note: this excludes the agent dataitems, which we don't care about (now).
-    if (observation.name) {
-      const { device_id } = observation
+    if (!observation.name) continue
 
-      // init dicts
-      if (dimensionsByDevice[device_id] === undefined) {
-        dimensionsByDevice[device_id] = {}
-      }
-      if (currentBinsByDevice[device_id] === undefined) {
-        currentBinsByDevice[device_id] = {}
-      }
-      if (accumulatorsByDevice[device_id] === undefined) {
-        accumulatorsByDevice[device_id] = {}
-      }
+    const { device_id } = observation
 
-      // narrow dicts down to this observation's device
-      const dimensions = dimensionsByDevice[device_id]
-      const currentBins = currentBinsByDevice[device_id]
-      const accumulators = accumulatorsByDevice[device_id]
-
-      // get
-      const valueDeltas = getValueDeltas(
-        observation,
-        timersByDevice
-        // deviceDimensions,
-        // deviceAccumulators,
-        // deviceBins,
-        // timers
-      )
-      console.log(valueDeltas)
-
-      const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
-      console.log(dimensionDeltas)
+    // init dicts
+    if (dimensionsByDevice[device_id] === undefined) {
+      dimensionsByDevice[device_id] = {}
     }
+    if (currentBinsByDevice[device_id] === undefined) {
+      currentBinsByDevice[device_id] = {}
+    }
+    if (accumulatorsByDevice[device_id] === undefined) {
+      accumulatorsByDevice[device_id] = {}
+    }
+
+    // narrow dicts down to this observation's device
+    const dimensions = dimensionsByDevice[device_id]
+    const currentBins = currentBinsByDevice[device_id]
+    const accumulators = accumulatorsByDevice[device_id]
+
+    //. when any dimension changes, dump current bins to accumulator bins,
+    // and
+    const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
+    console.log(dimensionDeltas)
+
+    // get
+    const valueDeltas = getValueDeltas(
+      observation,
+      timersByDevice
+      // deviceDimensions,
+      // deviceAccumulators,
+      // deviceBins,
+      // timers
+    )
+    console.log(valueDeltas)
   }
 
   //. update calendartime
@@ -129,25 +127,24 @@ export function getAccumulatorsByDevice(
 // split observation time into year, dayofyear, hour, minute.
 // exported for testing.
 export function amendObservations(observations) {
-  observations.forEach(observation => {
-    if (observation.name) {
-      const date = new Date(observation.timestamp)
+  for (let observation of observations) {
+    if (!observation.name) continue
+    const date = new Date(observation.timestamp)
 
-      // convert iso timestamps to seconds since 1970-01-01
-      observation.timestampSecs = date.getTime() * 0.001 // seconds
+    // convert iso timestamps to seconds since 1970-01-01
+    observation.timestampSecs = date.getTime() * 0.001 // seconds
 
-      // get current dimension values for each observation
-      // observation.year = date.getFullYear() // eg 2021
-      // observation.dayOfYear = getDayOfYear(date) // 1-366
-      observation.hour1970 = getHour1970(date) // hours since 1970-01-01
-      // observation.minute = date.getMinutes() // 0-59
+    // get current dimension values for each observation
+    // observation.year = date.getFullYear() // eg 2021
+    // observation.dayOfYear = getDayOfYear(date) // 1-366
+    observation.hour1970 = getHour1970(date) // hours since 1970-01-01
+    // observation.minute = date.getMinutes() // 0-59
 
-      // // assign dimension key to observation
-      // observation.binName = device_id + '-' + observation.name
+    // // assign dimension key to observation
+    // observation.binName = device_id + '-' + observation.name
 
-      observation.dimensionKey = getDimensionKey(observation)
-    }
-  })
+    observation.dimensionKey = getDimensionKey(observation)
+  }
 }
 
 // get sql statements to write given accumulator bin data to db.
@@ -211,7 +208,7 @@ ON CONFLICT (device_id, time, dimensions) DO
 // }
 // get dimension key for an observation,
 // eg '{"hour1970":1234567,"operator":"Alice"}'
-function getDimensionKey(observation) {
+export function getDimensionKey(observation) {
   const dimensions = {}
   for (let dimension of Object.keys(dimensionDefs)) {
     dimensions[dimension] = observation[dimension]
@@ -262,42 +259,6 @@ export function getHour1970(dims) {
 }
 
 //////////////////////////////////////////////////////////////
-
-export function handleObservation(
-  observation,
-  dimensions,
-  accumulators,
-  currentBins,
-  timers
-  // valueDefs,
-  // dimensionDefs
-) {
-  // get time deltas for observation value changes
-  const valueDeltas = getValueDeltas(observation, timers)
-
-  // apply time deltas to currentBins
-  for (let bin of Object.keys(valueDeltas)) {
-    const delta = valueDeltas[bin]
-    if (currentBins[bin] === undefined) {
-      currentBins[bin] = delta
-    } else {
-      currentBins[bin] += delta
-    }
-  }
-
-  // get time deltas for dimension changes
-  //. apply time deltas to accumulator bins, clear currentBins
-  const dimensionDeltas = applyDimensionDeltas(
-    observation,
-    dimensions,
-    accumulators,
-    currentBins,
-    dimensionDefs
-  )
-  console.log(dimensionDeltas)
-
-  //. if time=minutechange then dump accum bins to db, clear them ?
-}
 
 // track changes to observation values and return time deltas.
 // caller should then apply deltas to current bins.

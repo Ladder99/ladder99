@@ -47,28 +47,26 @@ const observations = [
   },
 ]
 
+const currentBins = {}
 const dimensionsByDevice = {}
-const bins = {}
 const timersByDevice = {}
 
-// {
-// metrics.amendObservations(observations)
-// }
+metrics.amendObservations(observations)
 
-{
-  const accumulatorsByDevice = metrics.getAccumulatorsByDevice(
-    observations,
-    dimensionsByDevice,
-    timersByDevice
-  )
-  console.log()
-  console.log('DONE')
-  console.log(observations[0])
-  console.log('accumulator bins by device_id')
-  console.log(accumulatorsByDevice)
-  // const sql = metrics.getSql(accumulators)
-  // console.log('sql', sql)
-}
+// {
+//   const accumulatorsByDevice = metrics.getAccumulatorsByDevice(
+//     observations,
+//     dimensionsByDevice,
+//     timersByDevice
+//   )
+//   console.log()
+//   console.log('DONE')
+//   console.log(observations[0])
+//   console.log('accumulator bins by device_id')
+//   console.log(accumulatorsByDevice)
+//   // const sql = metrics.getSql(accumulators)
+//   // console.log('sql', sql)
+// }
 
 //
 
@@ -97,3 +95,19 @@ const timersByDevice = {}
 
 //   // metrics.clearCurrentBins(bins)
 // }
+
+// {
+//   const observation = observations[0]
+//   const dimensions = dimensionsByDevice[observation.device_id] || {}
+//   console.log(dimensions)
+//   const dd = metrics.getDimensionDeltas(currentBins, dimensions)
+//   console.log(dd)
+// }
+
+{
+  const dimensionKey = metrics.getDimensionKey(observations[0])
+  console.log(dimensionKey)
+}
+
+{
+}

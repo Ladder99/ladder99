@@ -8,7 +8,7 @@ import * as lib from './lib.js'
 
 export class AgentReader {
   // db is a Db instance
-  // endpoint is an Endpoint instance
+  // endpoint is an Endpoint instance to poll agent
   // params includes { fetchInterval, fetchCount }
   // called by relay.js
   constructor({ db, endpoint, params }) {
