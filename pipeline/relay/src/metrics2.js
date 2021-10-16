@@ -22,8 +22,8 @@ export function handleObservation(
     }
   }
 
-  //.
   // get time deltas for dimension changes
+  //. apply time deltas to accumulator bins, clear currentBins
   const dimensionDeltas = applyDimensionDeltas(
     observation,
     dimensions,
@@ -33,7 +33,6 @@ export function handleObservation(
   )
   console.log(dimensionDeltas)
 
-  //. apply time deltas to accumulator bins, clear currentBins
   //. if time=minutechange then dump accum bins to db, clear them ?
 }
 
@@ -108,7 +107,7 @@ export function applyDimensionDeltas(
   // year is a dimension we need to track
   if (year !== dimensions.year) {
     const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
-    applyDimensionDeltas(accumulatorBins, dimensionDeltas)
+    updateAccumulatorBins(accumulatorBins, dimensionDeltas)
     clearCurrentBins(currentBins)
     updateDimensions(dimensions, 'year', year)
   }
@@ -116,7 +115,7 @@ export function applyDimensionDeltas(
   // dayOfYear (1-366) is a dimension we need to track
   if (dayOfYear !== dimensions.dayOfYear) {
     const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
-    applyDimensionDeltas(accumulatorBins, dimensionDeltas)
+    updateAccumulatorBins(accumulatorBins, dimensionDeltas)
     clearCurrentBins(currentBins)
     updateDimensions(dimensions, 'dayOfYear', dayOfYear)
   }
@@ -124,7 +123,7 @@ export function applyDimensionDeltas(
   // hour (0-23) is a dimension we need to track
   if (hour !== dimensions.hour) {
     const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
-    applyDimensionDeltas(accumulatorBins, dimensionDeltas)
+    updateAccumulatorBins(accumulatorBins, dimensionDeltas)
     clearCurrentBins(currentBins)
     updateDimensions(dimensions, 'hour', hour)
   }
@@ -132,7 +131,7 @@ export function applyDimensionDeltas(
   // minute (0-59) is a dimension we need to track
   if (minute !== dimensions.minute) {
     const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
-    applyDimensionDeltas(accumulatorBins, dimensionDeltas)
+    updateAccumulatorBins(accumulatorBins, dimensionDeltas)
     clearCurrentBins(currentBins)
     updateDimensions(dimensions, 'minute', minute)
   }
@@ -144,7 +143,7 @@ export function applyDimensionDeltas(
     // and update current value.
     if (value !== dimensions[dataname]) {
       const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
-      applyDimensionDeltas(accumulatorBins, dimensionDeltas)
+      updateAccumulatorBins(accumulatorBins, dimensionDeltas)
       clearCurrentBins(currentBins)
       updateDimensions(dimensions, dataname, value)
     }
@@ -152,7 +151,7 @@ export function applyDimensionDeltas(
 
   //.. how get rid of this?
   const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
-  applyDimensionDeltas(accumulatorBins, dimensionDeltas)
+  updateAccumulatorBins(accumulatorBins, dimensionDeltas)
   clearCurrentBins(currentBins)
 }
 
@@ -166,6 +165,29 @@ export function clearCurrentBins(currentBins) {
 // update current dimension value
 function updateDimensions(dimensions, dataname, value) {
   dimensions[dataname] = value
+}
+
+// apply dimension deltas to accumulator bins
+function updateAccumulatorBins(accumulatorBins, dimensionDeltas) {
+  // get key for this row, eg '{"dayOfYear":298, "hour":8, "minute":23}'
+  // const dimensionKey = getDimensionKey(dimensions)
+  // // start new dict if needed
+  // if (accumulatorBins[dimensionKey] === undefined) {
+  //   accumulatorBins[dimensionKey] = {}
+  // }
+  // // dump current bins to accumulator bins, then clear them.
+  // // do this so can dump all accumulator bins to db in one go, at end.
+  // const acc = accumulatorBins[dimensionKey] // eg { time_active: 19.3 } // secs
+  // // iterate over bin keys, eg ['time_active', ...]
+  // for (let binKey of Object.keys(currentBins)) {
+  //   if (acc[binKey] === undefined) {
+  //     acc[binKey] = currentBins[binKey]
+  //   } else {
+  //     acc[binKey] += currentBins[binKey]
+  //   }
+  //   // clear the bin
+  //   delete currentBins[binKey]
+  // }
 }
 
 // get deltas when a dimension value changes.

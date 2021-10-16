@@ -5,6 +5,16 @@ import * as metrics from './metrics.js'
 // const dims = { year: 2021, dayOfYear: 1, hour: 0, minute: 0 }
 // console.log(new Date(getHourInSeconds(dims) * 1000))
 
+const valueDefs = {
+  availability: {
+    when: 'AVAILABLE',
+    bin: 'time_available',
+  },
+}
+const dimensionDefs = {
+  minute: {},
+}
+
 // simulated observations from 'sample' endpoint.
 // time_available should be 20sec.
 const observations = [
@@ -49,18 +59,18 @@ const dimensions = {}
 const currentBins = {}
 const timers = {}
 
-const accumulatorBins = metrics.getAccumulatorBins(
-  observations,
-  dimensions,
-  timers
-)
-
-console.log()
-console.log('DONE', 'accumulator bins')
-console.log(accumulatorBins)
-
-// const sql = metrics.getSql(accumulatorBins)
-// console.log(sql)
+{
+  // const accumulatorBins = metrics.getAccumulatorBins(
+  //   observations,
+  //   dimensions,
+  //   timers
+  // )
+  // console.log()
+  // console.log('DONE', 'accumulator bins')
+  // console.log(accumulatorBins)
+  // const sql = metrics.getSql(accumulatorBins)
+  // console.log(sql)
+}
 
 //
 
@@ -68,34 +78,26 @@ console.log(accumulatorBins)
 
 import * as metrics2 from './metrics2.js'
 
-metrics.assignTimesToObservations(observations)
-// console.log(observations)
+{
+  metrics.assignTimesToObservations(observations)
+  // console.log(observations)
 
-const valueDefs = {
-  availability: {
-    when: 'AVAILABLE',
-    bin: 'time_available',
-  },
+  // for (let observation of observations) {
+  //   metrics2.handleObservation(
+  //     observation,
+  //     dimensions,
+  //     accumulatorBins,
+  //     currentBins,
+  //     timers,
+  //     valueDefs,
+  //     dimensionDefs,
+  //   )
+  // }
+
+  // console.log()
+
+  const dimensionDeltas = metrics2.getDimensionDeltas(currentBins, dimensions)
+  console.log(dimensionDeltas)
+
+  // metrics2.clearCurrentBins(currentBins)
 }
-const dimensionDefs = {
-  minute: {},
-}
-
-// for (let observation of observations) {
-//   metrics2.handleObservation(
-//     observation,
-//     dimensions,
-//     accumulatorBins,
-//     currentBins,
-//     timers,
-//     valueDefs,
-//     dimensionDefs,
-//   )
-// }
-
-// console.log()
-
-const dimensionDeltas = metrics2.getDimensionDeltas(currentBins, dimensions)
-console.log(dimensionDeltas)
-
-metrics2.clearCurrentBins(currentBins)
