@@ -81,37 +81,49 @@ const dimensionDefs = {
   minute: {},
 }
 
-// for (let observation of observations) {
-//   const deltas = metrics2.getDeltas(
-//     observation,
-//     dimensions,
-//     accumulatorBins,
-//     currentBins,
-//     timers,
-//     valueDefs,
-//     dimensionDefs
-//   )
-//   // console.log(timers)
-//   console.log(deltas)
-//   for (let bin of Object.keys(deltas)) {
-//     const delta = deltas[bin]
-//     if (currentBins[bin] === undefined) {
-//       currentBins[bin] = delta
-//     } else {
-//       currentBins[bin] += delta
-//     }
-//   }
-// }
-// console.log()
-// console.log(currentBins)
+for (let observation of observations) {
+  const deltas = metrics2.getDeltas(
+    observation,
+    // dimensions,
+    // accumulatorBins,
+    // currentBins,
+    timers,
+    valueDefs
+    // dimensionDefs
+  )
+  // console.log(timers)
+  console.log(deltas)
+
+  // for (let bin of Object.keys(deltas)) {
+  //   const delta = deltas[bin]
+  //   if (currentBins[bin] === undefined) {
+  //     currentBins[bin] = delta
+  //   } else {
+  //     currentBins[bin] += delta
+  //   }
+  // }
+
+  // const pok = metrics2.getPok(
+  //   observation,
+  //   dimensions,
+  //   accumulatorBins,
+  //   currentBins,
+  //   timers,
+  //   valueDefs,
+  //   dimensionDefs
+  // )
+  // console.log(pok)
+}
+console.log()
+console.log(currentBins)
 
 //
 
-const foo = metrics2.getFoo(
-  accumulatorBins,
-  currentBins,
-  dimensions,
-  'minute',
-  0
-)
-console.log(foo)
+// const foo = metrics2.getFoo(
+//   accumulatorBins,
+//   currentBins,
+//   dimensions,
+//   'minute',
+//   0
+// )
+// console.log(foo)

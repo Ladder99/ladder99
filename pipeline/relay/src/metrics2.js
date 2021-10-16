@@ -1,17 +1,16 @@
 // refactoring fns from metrics.js
 
-// get time deltas for one observation.
-// check for changes to dimensions AND state changes we want to track.
-// returns deltas for caller to apply to bins.
+// get time deltas when a state value changes.
+// caller should apply deltas to bins.
 // exported for testing.
 export function getDeltas(
   observation,
-  dimensions,
-  accumulatorBins,
-  currentBins,
+  // dimensions,
+  // accumulatorBins,
+  // currentBins,
   timers,
-  valueDefs,
-  dimensionDefs
+  valueDefs
+  // dimensionDefs
 ) {
   const deltas = {}
 
@@ -46,7 +45,7 @@ export function getDeltas(
       }
     } else {
       // otherwise, observation is turning 'off' - add time delta to dict.
-      // caller will add them to currentBins.
+      //. caller will add them to currentBins.
       if (timers[timerKey]) {
         const timeDelta = timestampSecs - timers[timerKey] // sec
         if (deltas[bin] === undefined) {
@@ -59,8 +58,27 @@ export function getDeltas(
       }
     }
   }
+  return deltas
+}
 
-  // track changes to DIMENSIONS
+// track changes to DIMENSIONS
+export function getPok(
+  observation,
+  dimensions,
+  accumulatorBins,
+  currentBins,
+  timers,
+  valueDefs,
+  dimensionDefs
+) {
+  const pok = {}
+
+  // name might include deviceId/ - remove it to get dataname, eg 'availability'
+  const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
+
+  // value might be eg 'Alice' for operator, 'ACTIVE' for execution, etc
+  const { device_id, timestampSecs, year, dayOfYear, hour, minute, value } =
+    observation
 
   // year is a dimension we need to track
   if (year !== dimensions.year) {
@@ -118,12 +136,12 @@ export function getDeltas(
     //. undefined, undefined
   )
 
-  return deltas
+  return pok
 }
 
 // ---------------------------------------------------------------------
 
-// a dimension value changed
+// get deltas when a dimension value changes.
 // dump current bins into accumulator bins,
 // and update current dimension value.
 // return dict of accumulator and dimvalues to change.
