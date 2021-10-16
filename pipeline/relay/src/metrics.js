@@ -236,7 +236,7 @@ export function handleObservation(
     }
   }
 
-  //.. get rid of this
+  //.. how get rid of this?
   dimensionValueChanged(
     accumulatorBins,
     currentBins,
@@ -299,20 +299,24 @@ export function getSql(accumulatorBins) {
     for (let [dimensions, accumulators] of Object.entries(bins)) {
       const accumulatorSlots = Object.keys(accumulators) // eg ['time_active', 'time_available']
       if (accumulatorSlots.length === 0) continue // skip if no data
+
       // split dimensions into dimensions+values and get associated time.
       const dims = splitDimensionKey(dimensions) // eg to {operator: 'Alice'}
       const seconds1970 = getHourInSeconds(dims) // rounded to hour, in seconds
       if (!seconds1970) continue // skip if got NaN or something
       const timestring = new Date(seconds1970 * 1000).toISOString() // eg '2021-10-15T11:00:00Z"
-      // add values one at a time to existing db records.
-      // would be better to do all with one stmt somehow,
-      // but it's already complex enough.
+
+      // iterate over accumulator slots, eg 'time_active', 'time_available'.
       for (let accumulatorSlot of accumulatorSlots) {
+        // get total time accumulated for the slot
         const timeDelta = accumulators[accumulatorSlot]
         if (timeDelta > 0) {
+          // add values one at a time to existing db records.
+          // would be better to do all with one stmt somehow,
+          // but it's already complex enough.
           // this is an upsert command pattern in postgres -
-          // tries to add a new record - if key is already there,
-          // updates existing record by adding timeDelta to the value.
+          // try to add a new record - if key is already there,
+          // update existing record by adding timeDelta to the value.
           sql += `
 INSERT INTO bins (device_id, time, dimensions, values)
   VALUES (${device_id}, '${timestring}', 
