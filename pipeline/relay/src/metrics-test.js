@@ -6,18 +6,8 @@ import * as metrics from './metrics2.js'
 // const dims = { year: 2021, dayOfYear: 1, hour: 0, minute: 0 }
 // console.log(new Date(getHourInSeconds(dims) * 1000))
 
-// const valueDefs = {
-//   availability: {
-//     when: 'AVAILABLE',
-//     bin: 'time_available',
-//   },
-// }
-// const dimensionDefs = {
-//   minute: {},
-// }
-
 // simulated observations from 'sample' endpoint.
-// time_available should be 20sec.
+// time_available should be 20+10=30 secs
 const observations = [
   {
     device_id: 1,
@@ -69,8 +59,8 @@ const timers = {}
   console.log()
   console.log('DONE', 'accumulator bins')
   console.log(accumulatorBins)
-  const sql = metrics.getSql(accumulatorBins)
-  console.log(sql)
+  // const sql = metrics.getSql(accumulatorBins)
+  // console.log('sql', sql)
 }
 
 //

@@ -2,6 +2,8 @@
 
 // binning algorithms to calculate metrics
 
+//. make this file a class so can have dim and value defs per class
+
 // dimensionDefs
 // if any one of these dimensions changes,
 // start putting the time / count values in other bins.
@@ -41,7 +43,7 @@ const valueDefs = {
 
 //
 
-// get accumulatorBins for the given observations and starting points.
+// get accumulators for the given observations and starting points.
 // observations is a list of observation objects with { dataitem_id, value, ... }
 // dimensions is a dict with the current values of the dimensions,
 //   as defined in dimensionDefs, above.
@@ -51,7 +53,7 @@ const valueDefs = {
 //   (glommed together as json), then bin name.
 //   eg {3: { '{"dayOfYear":284,"hour":2}': { time_active: 32 } } }
 export function getAccumulatorBins(observations, dimensions, timers) {
-  // get hour, minute, etc for each observation
+  // add hour, minute, etc to each observation
   assignTimesToObservations(observations)
 
   // bins for the current set of dimension values, for each device.
@@ -64,7 +66,7 @@ export function getAccumulatorBins(observations, dimensions, timers) {
   // this is a dict of dicts of dicts - keyed on device_id, then dimensions
   // (glommed together as json), then bin name.
   // eg {3: { '{"dayOfYear":284,"hour":2}': { time_active: 32 } } }
-  const accumulatorBins = {}
+  const accumulators = {}
 
   // run each observation through handler in order
   for (let observation of observations) {
@@ -80,41 +82,46 @@ export function getAccumulatorBins(observations, dimensions, timers) {
       if (currentBins[device_id] === undefined) {
         currentBins[device_id] = {}
       }
-      if (accumulatorBins[device_id] === undefined) {
-        accumulatorBins[device_id] = {}
+      if (accumulators[device_id] === undefined) {
+        accumulators[device_id] = {}
       }
       // narrow dicts down to this observation's device
-      const deviceDimensionValues = dimensions[device_id]
-      const deviceCurrentBins = currentBins[device_id]
-      const deviceAccumulatorBins = accumulatorBins[device_id]
-      // handle the observation by dumping time deltas to accumulator bins.
-      handleObservation(
-        observation,
-        deviceDimensionValues,
-        deviceAccumulatorBins,
-        deviceCurrentBins,
-        timers
-        // valueDefs,
-        // dimensionDefs
-      )
-      //.
-      // const deltas = getDeltas(
+      const deviceDimensions = dimensions[device_id]
+      const deviceBins = currentBins[device_id]
+      const deviceAccumulators = accumulators[device_id]
+      // // handle the observation by dumping time deltas to accumulator bins.
+      // handleObservation(
       //   observation,
-      //   deviceDimensionValues,
-      //   deviceAccumulatorBins,
-      //   deviceCurrentBins,
+      //   deviceDimensions,
+      //   deviceAccumulators,
+      //   deviceBins,
       //   timers
+      //   // valueDefs,
+      //   // dimensionDefs
       // )
+      //.
+      const valueDeltas = getValueDeltas(
+        observation,
+        timers
+        // deviceDimensions,
+        // deviceAccumulators,
+        // deviceBins,
+        // timers
+      )
+      console.log(valueDeltas)
+
+      const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
+      console.log(dimensionDeltas)
     }
   }
 
   //. update calendartime
   // const currentTime = new Date().getTime()
-  // accumulatorBins.calendarTime = (currentTime - previousTime) * 0.001 // sec
+  // accumulators.calendarTime = (currentTime - previousTime) * 0.001 // sec
   // previousTime = currentTime
 
   // return bins - will convert to sql and write to db
-  return accumulatorBins
+  return accumulators
 }
 
 // split observation time into year, dayofyear, hour, minute.
@@ -141,7 +148,7 @@ export function assignTimesToObservations(observations) {
 // export function handleObservation(
 //   observation,
 //   dimensions,
-//   accumulatorBins,
+//   accumulators,
 //   currentBins,
 //   timers
 // ) {
@@ -188,13 +195,13 @@ export function assignTimesToObservations(observations) {
 
 //   // year is a dimension we need to track
 //   if (year !== dimensions.year) {
-//     dimensionChanged(accumulatorBins, currentBins, dimensions, 'year', year)
+//     dimensionChanged(accumulators, currentBins, dimensions, 'year', year)
 //   }
 
 //   // dayOfYear (1-366) is a dimension we need to track
 //   if (dayOfYear !== dimensions.dayOfYear) {
 //     dimensionChanged(
-//       accumulatorBins,
+//       accumulators,
 //       currentBins,
 //       dimensions,
 //       'dayOfYear',
@@ -204,12 +211,12 @@ export function assignTimesToObservations(observations) {
 
 //   // hour (0-23) is a dimension we need to track
 //   if (hour !== dimensions.hour) {
-//     dimensionChanged(accumulatorBins, currentBins, dimensions, 'hour', hour)
+//     dimensionChanged(accumulators, currentBins, dimensions, 'hour', hour)
 //   }
 
 //   // minute (0-59) is a dimension we need to track
 //   if (minute !== dimensions.minute) {
-//     dimensionChanged(accumulatorBins, currentBins, dimensions, 'minute', minute)
+//     dimensionChanged(accumulators, currentBins, dimensions, 'minute', minute)
 //   }
 
 //   // check if this dataitem is a dimension we're tracking,
@@ -219,7 +226,7 @@ export function assignTimesToObservations(observations) {
 //     // and update current value.
 //     if (value !== dimensions[dataname]) {
 //       dimensionChanged(
-//         accumulatorBins,
+//         accumulators,
 //         currentBins,
 //         dimensions,
 //         dataname,
@@ -230,7 +237,7 @@ export function assignTimesToObservations(observations) {
 
 //   //.. how get rid of this?
 //   dimensionChanged(
-//     accumulatorBins,
+//     accumulators,
 //     currentBins,
 //     dimensions
 //     //. undefined, undefined
@@ -240,7 +247,7 @@ export function assignTimesToObservations(observations) {
 // // a dimension value changed - dump current bins into accumulator bins,
 // // and update current dimension value.
 // function dimensionChanged(
-//   accumulatorBins,
+//   accumulators,
 //   currentBins,
 //   dimensions,
 //   dataname,
@@ -250,13 +257,13 @@ export function assignTimesToObservations(observations) {
 //   const dimensionKey = getDimensionKey(dimensions)
 
 //   // start new dict if needed
-//   if (accumulatorBins[dimensionKey] === undefined) {
-//     accumulatorBins[dimensionKey] = {}
+//   if (accumulators[dimensionKey] === undefined) {
+//     accumulators[dimensionKey] = {}
 //   }
 
 //   // dump current bins to accumulator bins, then clear them.
 //   // do this so can dump all accumulator bins to db in one go, at end.
-//   const acc = accumulatorBins[dimensionKey] // eg { time_active: 19.3 } // secs
+//   const acc = accumulators[dimensionKey] // eg { time_active: 19.3 } // secs
 
 //   // iterate over bin keys, eg ['time_active', ...]
 //   for (let binKey of Object.keys(currentBins)) {
@@ -274,16 +281,16 @@ export function assignTimesToObservations(observations) {
 // }
 
 // get sql statements to write given accumulator bin data to db.
-// accumulatorBins is like { device_id: bins }
+// accumulators is like { device_id: bins }
 //   with bins like { dimensions: accumulators }
 //   dimensions are like "{operator:'Alice'}"
 //   with accumulators like { time_active: 1, time_available: 2 }}
-export function getSql(accumulatorBins) {
+export function getSql(accumulators) {
   let sql = ''
   // iterate over device+bins
   // device_id is a db node_id, eg 3
   // bins is a dict like { dimensions: accumulators }
-  for (let [device_id, bins] of Object.entries(accumulatorBins)) {
+  for (let [device_id, bins] of Object.entries(accumulators)) {
     // iterate over dimensions+accumulators
     // dimensions is eg '{"operator":"Alice", ...}' - ie gloms dimensions+values together
     // accumulators is eg { time_active: 1, time_available: 2, ... },
@@ -375,14 +382,14 @@ export function getHourInSeconds(dims) {
 export function handleObservation(
   observation,
   dimensions,
-  accumulatorBins,
+  accumulators,
   currentBins,
   timers
   // valueDefs,
   // dimensionDefs
 ) {
   // get time deltas for observation value changes
-  const valueDeltas = getValueDeltas(observation, timers, valueDefs)
+  const valueDeltas = getValueDeltas(observation, timers)
 
   // apply time deltas to currentBins
   for (let bin of Object.keys(valueDeltas)) {
@@ -399,7 +406,7 @@ export function handleObservation(
   const dimensionDeltas = applyDimensionDeltas(
     observation,
     dimensions,
-    accumulatorBins,
+    accumulators,
     currentBins,
     dimensionDefs
   )
@@ -413,7 +420,7 @@ export function handleObservation(
 // timers dictionary is modified in place to track start times for value changes.
 // exported for testing.
 //. was first part of handleObservation
-export function getValueDeltas(observation, timers, valueDefs) {
+export function getValueDeltas(observation, timers) {
   const deltas = {}
 
   //. add these to an amendObservations fn?
@@ -465,7 +472,7 @@ export function getValueDeltas(observation, timers, valueDefs) {
 export function applyDimensionDeltas(
   observation,
   dimensions,
-  accumulatorBins,
+  accumulators,
   currentBins,
   dimensionDefs
 ) {
@@ -479,7 +486,7 @@ export function applyDimensionDeltas(
   // year is a dimension we need to track
   if (year !== dimensions.year) {
     const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
-    updateAccumulatorBins(accumulatorBins, dimensionDeltas)
+    updateAccumulatorBins(accumulators, dimensionDeltas)
     clearCurrentBins(currentBins)
     updateDimensions(dimensions, 'year', year)
   }
@@ -487,7 +494,7 @@ export function applyDimensionDeltas(
   // dayOfYear (1-366) is a dimension we need to track
   if (dayOfYear !== dimensions.dayOfYear) {
     const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
-    updateAccumulatorBins(accumulatorBins, dimensionDeltas)
+    updateAccumulatorBins(accumulators, dimensionDeltas)
     clearCurrentBins(currentBins)
     updateDimensions(dimensions, 'dayOfYear', dayOfYear)
   }
@@ -495,7 +502,7 @@ export function applyDimensionDeltas(
   // hour (0-23) is a dimension we need to track
   if (hour !== dimensions.hour) {
     const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
-    updateAccumulatorBins(accumulatorBins, dimensionDeltas)
+    updateAccumulatorBins(accumulators, dimensionDeltas)
     clearCurrentBins(currentBins)
     updateDimensions(dimensions, 'hour', hour)
   }
@@ -503,7 +510,7 @@ export function applyDimensionDeltas(
   // minute (0-59) is a dimension we need to track
   if (minute !== dimensions.minute) {
     const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
-    updateAccumulatorBins(accumulatorBins, dimensionDeltas)
+    updateAccumulatorBins(accumulators, dimensionDeltas)
     clearCurrentBins(currentBins)
     updateDimensions(dimensions, 'minute', minute)
   }
@@ -515,7 +522,7 @@ export function applyDimensionDeltas(
     // and update current value.
     if (value !== dimensions[dataname]) {
       const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
-      updateAccumulatorBins(accumulatorBins, dimensionDeltas)
+      updateAccumulatorBins(accumulators, dimensionDeltas)
       clearCurrentBins(currentBins)
       updateDimensions(dimensions, dataname, value)
     }
@@ -523,7 +530,7 @@ export function applyDimensionDeltas(
 
   //.. how get rid of this?
   const dimensionDeltas = getDimensionDeltas(currentBins, dimensions)
-  updateAccumulatorBins(accumulatorBins, dimensionDeltas)
+  updateAccumulatorBins(accumulators, dimensionDeltas)
   clearCurrentBins(currentBins)
 }
 
@@ -540,16 +547,16 @@ function updateDimensions(dimensions, dataname, value) {
 }
 
 // apply dimension deltas to accumulator bins
-function updateAccumulatorBins(accumulatorBins, dimensionDeltas) {
+function updateAccumulatorBins(accumulators, dimensionDeltas) {
   // get key for this row, eg '{"dayOfYear":298, "hour":8, "minute":23}'
   // const dimensionKey = getDimensionKey(dimensions)
   // // start new dict if needed
-  // if (accumulatorBins[dimensionKey] === undefined) {
-  //   accumulatorBins[dimensionKey] = {}
+  // if (accumulators[dimensionKey] === undefined) {
+  //   accumulators[dimensionKey] = {}
   // }
   // // dump current bins to accumulator bins, then clear them.
   // // do this so can dump all accumulator bins to db in one go, at end.
-  // const acc = accumulatorBins[dimensionKey] // eg { time_active: 19.3 } // secs
+  // const acc = accumulators[dimensionKey] // eg { time_active: 19.3 } // secs
   // // iterate over bin keys, eg ['time_active', ...]
   // for (let binKey of Object.keys(currentBins)) {
   //   if (acc[binKey] === undefined) {
@@ -574,8 +581,8 @@ export function getDimensionDeltas(currentBins, dimensions) {
   const dimensionKey = JSON.stringify(dimensions)
 
   // start new dict if needed
-  // if (accumulatorBins[dimensionKey] === undefined) {
-  //   accumulatorBins[dimensionKey] = {}
+  // if (accumulators[dimensionKey] === undefined) {
+  //   accumulators[dimensionKey] = {}
   // }
   if (deltas[dimensionKey] === undefined) {
     deltas[dimensionKey] = {}
@@ -583,7 +590,7 @@ export function getDimensionDeltas(currentBins, dimensions) {
 
   // dump current bins to accumulator bins, then clear them.
   // do this so can dump all accumulator bins to db in one go, at end.
-  // const accumulator = accumulatorBins[dimensionKey] // eg { time_active: 19.3 } // secs
+  // const accumulator = accumulators[dimensionKey] // eg { time_active: 19.3 } // secs
   const accumulator = deltas[dimensionKey] // eg { time_active: 19.3 } // secs
 
   // iterate over bin keys, eg ['time_active', ...]
