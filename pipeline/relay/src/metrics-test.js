@@ -4,6 +4,43 @@
 // import * as metrics from './metrics2.js'
 import * as metrics from './metrics3.js'
 
+// dimensionDefs
+// if any one of these dimensions changes,
+// start putting the time / count values in other bins.
+// keyed on dataitem name, eg 'operator'.
+//. move these into yaml, and have per client
+//. might want these to be per device or device type also?
+const dimensionDefs = {
+  hour1970: {},
+  // minute: {}, //. do minute for testing, then switch to hour? write every minute
+  // add these as needed, to be able to slice reports later
+  // operator: {},
+  // machine: {},
+  // component: {},
+  // job: {},
+  // operation: {},
+}
+
+// valueDefs
+// dataitems that we want to track the state of.
+// will track time the dataitem spends in the 'when' state,
+// and add it to the given 'bin'.
+// keyed on dataitem / observation name, ie NOT the dataitem id.
+// so in the agent.xml, DO NOT include the deviceId in the names,
+// just have a plain descriptor.
+//. move these into yaml, and have per client
+//. might want these to be per device or device type also
+const valueDefs = {
+  availability: {
+    when: 'AVAILABLE',
+    bin: 'time_available',
+  },
+  execution_state: {
+    when: 'ACTIVE',
+    bin: 'time_active',
+  },
+}
+
 // const dims = { year: 2021, dayOfYear: 1, hour: 0, minute: 0 }
 // console.log(new Date(metrics.getHourInSeconds(dims) * 1000))
 
@@ -109,12 +146,13 @@ const observations = [
 // }
 
 ;(async function foo() {
-  const bins = new metrics.Bins()
+  const bins = new metrics.Bins(dimensionDefs, valueDefs)
   console.log(bins)
   bins.start()
 
   while (true) {
     console.log('tick')
+    bins.handleObservations(observations)
     await new Promise(resolve => setTimeout(resolve, 2000))
   }
 })()
