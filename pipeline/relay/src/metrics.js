@@ -1,8 +1,9 @@
 // binning algorithms to calculate metrics
 
 // dimensionDefs
-// if any one of these changes, start putting the time/count values in other bins.
-// keyed on dataitem/observation name.
+// if any one of these dimensions changes,
+// start putting the time / count values in other bins.
+// keyed on dataitem name, eg 'operator'.
 //. move these into yaml, and have per client
 //. might want these to be per device or device type also?
 const dimensionDefs = {
@@ -39,8 +40,7 @@ const valueDefs = {
 //
 
 // get accumulatorBins for the given observations and starting points.
-//
-// observations is a list of observation objects with dataitem_id and value, etc.
+// observations is a list of observation objects with { dataitem_id, value, ... }
 // currentDimensionValues is a dict with the current values of the dimensions,
 //   as defined in dimensionDefs, above.
 // startTimes measures the time a dataitem is in a particular state.
@@ -115,11 +115,6 @@ function assignTimesToObservations(observations) {
     observation.dayOfYear = getDayOfYear(date) // 1-366
     observation.hour = date.getHours() // 0-23
     observation.minute = date.getMinutes() // 0-59
-    //. etc - or like this?
-    // observation.timeSlices = {
-    //   hour: date.getHours(), // 0-23
-    //   minute: date.getMinutes(), // 0-59
-    // }
   })
 }
 
