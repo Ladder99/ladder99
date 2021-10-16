@@ -1,3 +1,5 @@
+// refactoring fns from metrics.js
+
 // get time deltas for one observation.
 // check for changes to dimensions AND state changes we want to track.
 // returns deltas for caller to apply to bins.
@@ -28,7 +30,7 @@ export function getDeltas(
   // track changes to STATES
 
   // if observation is something we're tracking the state of,
-  // update start time or current bin.
+  // update start time or deltas dict.
   if (valueDefs[dataname]) {
     const valueDef = valueDefs[dataname] // eg { bin: 'time_active', when: 'ACTIVE' }
     const bin = valueDef.bin // eg 'time_active'
@@ -43,16 +45,10 @@ export function getDeltas(
         timers[timerKey] = timestampSecs
       }
     } else {
-      // otherwise, observation is turning 'off' -
-      // dump the time to the device's current bin.
+      // otherwise, observation is turning 'off' - add time delta to dict.
+      // caller will add them to currentBins.
       if (timers[timerKey]) {
         const timeDelta = timestampSecs - timers[timerKey] // sec
-        // if (currentBins[bin] === undefined) {
-        //   currentBins[bin] = timeDelta
-        // } else {
-        //   currentBins[bin] += timeDelta
-        // }
-        //.
         if (deltas[bin] === undefined) {
           deltas[bin] = timeDelta
         } else {
@@ -68,22 +64,34 @@ export function getDeltas(
 
   // year is a dimension we need to track
   if (year !== dimensions.year) {
-    getFoo(accumulatorBins, currentBins, dimensions, 'year', year)
+    const foo = getFoo(accumulatorBins, currentBins, dimensions, 'year', year)
   }
 
   // dayOfYear (1-366) is a dimension we need to track
   if (dayOfYear !== dimensions.dayOfYear) {
-    getFoo(accumulatorBins, currentBins, dimensions, 'dayOfYear', dayOfYear)
+    const foo = getFoo(
+      accumulatorBins,
+      currentBins,
+      dimensions,
+      'dayOfYear',
+      dayOfYear
+    )
   }
 
   // hour (0-23) is a dimension we need to track
   if (hour !== dimensions.hour) {
-    getFoo(accumulatorBins, currentBins, dimensions, 'hour', hour)
+    const foo = getFoo(accumulatorBins, currentBins, dimensions, 'hour', hour)
   }
 
   // minute (0-59) is a dimension we need to track
   if (minute !== dimensions.minute) {
-    getFoo(accumulatorBins, currentBins, dimensions, 'minute', minute)
+    const foo = getFoo(
+      accumulatorBins,
+      currentBins,
+      dimensions,
+      'minute',
+      minute
+    )
   }
 
   // check if this dataitem is a dimension we're tracking,
@@ -92,12 +100,18 @@ export function getDeltas(
     // if value changed, dump current bins to accumulator bins,
     // and update current value.
     if (value !== dimensions[dataname]) {
-      getFoo(accumulatorBins, currentBins, dimensions, dataname, value)
+      const foo = getFoo(
+        accumulatorBins,
+        currentBins,
+        dimensions,
+        dataname,
+        value
+      )
     }
   }
 
   //.. how get rid of this?
-  getFoo(
+  const foo = getFoo(
     accumulatorBins,
     currentBins,
     dimensions
@@ -109,8 +123,10 @@ export function getDeltas(
 
 // ---------------------------------------------------------------------
 
-// a dimension value changed - dump current bins into accumulator bins,
+// a dimension value changed
+// dump current bins into accumulator bins,
 // and update current dimension value.
+// return dict of accumulator and dimvalues to change.
 export function getFoo(
   accumulatorBins,
   currentBins,
@@ -118,6 +134,8 @@ export function getFoo(
   dataname,
   value
 ) {
+  let foo = {}
+
   // get key for this row, eg '{"dayOfYear":298, "hour":8, "minute":23}'
   // const dimensionKey = getDimensionKey(dimensions)
   const dimensionKey = JSON.stringify(dimensions)
@@ -144,4 +162,6 @@ export function getFoo(
 
   // update current dimension value
   dimensions[dataname] = value
+
+  return foo
 }
