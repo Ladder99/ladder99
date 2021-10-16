@@ -1,6 +1,6 @@
 // test metric calcs
 
-import { getAccumulatorBins, getSql, getHourInSeconds } from './metrics.js'
+import * as metrics from './metrics.js'
 
 // const dims = { year: 2021, dayOfYear: 1, hour: 0, minute: 0 }
 // console.log(new Date(getHourInSeconds(dims) * 1000))
@@ -45,18 +45,36 @@ const observations = [
   },
 ]
 
-const currentDimensions = {}
-const startTimes = {}
+const dimensions = {}
+const currentBins = {}
+const timers = {}
 
-const accumulatorBins = getAccumulatorBins(
+const accumulatorBins = metrics.getAccumulatorBins(
   observations,
-  currentDimensions,
-  startTimes
+  dimensions,
+  timers
 )
 
 console.log()
 console.log('DONE', 'accumulator bins')
 console.log(accumulatorBins)
 
-const sql = getSql(accumulatorBins)
-console.log(sql)
+// const sql = metrics.getSql(accumulatorBins)
+// console.log(sql)
+
+//
+
+// test getDeltas
+
+metrics.assignTimesToObservations(observations)
+// console.log(observations)
+
+const deltas = metrics.getDeltas(
+  observations[0],
+  dimensions,
+  accumulatorBins,
+  currentBins,
+  timers
+)
+console.log()
+console.log(deltas)

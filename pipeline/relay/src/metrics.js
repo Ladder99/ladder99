@@ -41,18 +41,14 @@ const valueDefs = {
 
 // get accumulatorBins for the given observations and starting points.
 // observations is a list of observation objects with { dataitem_id, value, ... }
-// currentDimensions is a dict with the current values of the dimensions,
+// dimensions is a dict with the current values of the dimensions,
 //   as defined in dimensionDefs, above.
-// startTimes measures the time a dataitem is in a particular state.
+// timers measures the time a dataitem is in a particular state.
 //   it's a dictionary keyed on the valueDefs keys, defined above.
 // returns a dict of dicts keyed on device_id, then dimensions
 //   (glommed together as json), then bin name.
 //   eg {3: { '{"dayOfYear":284,"hour":2}': { time_active: 32 } } }
-export function getAccumulatorBins(
-  observations,
-  currentDimensions,
-  startTimes
-) {
+export function getAccumulatorBins(observations, dimensions, timers) {
   // get hour, minute, etc for each observation
   assignTimesToObservations(observations)
 
@@ -76,8 +72,8 @@ export function getAccumulatorBins(
     if (observation.name) {
       const { device_id } = observation
       // init dicts
-      if (currentDimensions[device_id] === undefined) {
-        currentDimensions[device_id] = {}
+      if (dimensions[device_id] === undefined) {
+        dimensions[device_id] = {}
       }
       if (currentBins[device_id] === undefined) {
         currentBins[device_id] = {}
@@ -86,7 +82,7 @@ export function getAccumulatorBins(
         accumulatorBins[device_id] = {}
       }
       // narrow dicts down to this observation's device
-      const deviceDimensionValues = currentDimensions[device_id]
+      const deviceDimensionValues = dimensions[device_id]
       const deviceCurrentBins = currentBins[device_id]
       const deviceAccumulatorBins = accumulatorBins[device_id]
       // handle the observation by dumping time deltas to accumulator bins.
@@ -95,7 +91,7 @@ export function getAccumulatorBins(
         deviceDimensionValues,
         deviceAccumulatorBins,
         deviceCurrentBins,
-        startTimes
+        timers
       )
     }
   }
@@ -109,8 +105,9 @@ export function getAccumulatorBins(
   return accumulatorBins
 }
 
-// split observation time into year, dayofyear, hour, minute
-function assignTimesToObservations(observations) {
+// split observation time into year, dayofyear, hour, minute.
+// exported for testing.
+export function assignTimesToObservations(observations) {
   observations.forEach(observation => {
     const date = new Date(observation.timestamp)
 
@@ -125,26 +122,30 @@ function assignTimesToObservations(observations) {
   })
 }
 
-// handle one observation.
+// get time deltas for one observation.
 // check for changes to dimensions and state changes we want to track.
-// modifies currentDimensions, etc in place.
+// returns deltas for caller to apply to bins.
 // exported for testing.
-export function handleObservation(
+export function getDeltas(
   observation,
-  currentDimensions,
+  dimensions,
   accumulatorBins,
   currentBins,
-  startTimes
+  timers
 ) {
+  const deltas = {}
+
   // name might include deviceId/ - remove it to get dataname, eg 'availability'
   const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
 
-  // value is eg 'Alice' for operator, 'ACTIVE' for execution, etc
+  // value might be eg 'Alice' for operator, 'ACTIVE' for execution, etc
   const { device_id, timestampSecs, year, dayOfYear, hour, minute, value } =
     observation
 
-  //. or make startTimes a dict of dicts, like currentBins
-  const deviceDataName = device_id + dataname
+  // get a unique key for timers
+  // eg '3-availability'
+  //. or make timers a dict of dicts, like currentBins
+  const timerKey = device_id + '-' + dataname
 
   // if observation is something we're tracking the state of,
   // update start time or current bin.
@@ -158,66 +159,49 @@ export function handleObservation(
       // start 'timer' for this observation
       // add guard in case agent is defective and sends these out every time,
       // instead of just at start.
-      if (!startTimes[deviceDataName]) {
-        startTimes[deviceDataName] = timestampSecs
+      if (!timers[timerKey]) {
+        timers[timerKey] = timestampSecs
       }
     } else {
       // otherwise, observation is turning 'off' -
       // dump the time to the device's current bin.
-      if (startTimes[deviceDataName]) {
-        const timeDelta = timestampSecs - startTimes[deviceDataName] // sec
+      if (timers[timerKey]) {
+        const timeDelta = timestampSecs - timers[timerKey] // sec
         if (currentBins[bin] === undefined) {
           currentBins[bin] = timeDelta
         } else {
           currentBins[bin] += timeDelta
         }
         // reset start time
-        startTimes[deviceDataName] = null
+        timers[timerKey] = null
       }
     }
   }
 
   // year is a dimension we need to track
-  if (year !== currentDimensions.year) {
-    dimensionValueChanged(
-      accumulatorBins,
-      currentBins,
-      currentDimensions,
-      'year',
-      year
-    )
+  if (year !== dimensions.year) {
+    dimensionChanged(accumulatorBins, currentBins, dimensions, 'year', year)
   }
+
   // dayOfYear (1-366) is a dimension we need to track
-  if (dayOfYear !== currentDimensions.dayOfYear) {
-    dimensionValueChanged(
+  if (dayOfYear !== dimensions.dayOfYear) {
+    dimensionChanged(
       accumulatorBins,
       currentBins,
-      currentDimensions,
+      dimensions,
       'dayOfYear',
       dayOfYear
     )
   }
 
   // hour (0-23) is a dimension we need to track
-  if (hour !== currentDimensions.hour) {
-    dimensionValueChanged(
-      accumulatorBins,
-      currentBins,
-      currentDimensions,
-      'hour',
-      hour
-    )
+  if (hour !== dimensions.hour) {
+    dimensionChanged(accumulatorBins, currentBins, dimensions, 'hour', hour)
   }
 
   // minute (0-59) is a dimension we need to track
-  if (minute !== currentDimensions.minute) {
-    dimensionValueChanged(
-      accumulatorBins,
-      currentBins,
-      currentDimensions,
-      'minute',
-      minute
-    )
+  if (minute !== dimensions.minute) {
+    dimensionChanged(accumulatorBins, currentBins, dimensions, 'minute', minute)
   }
 
   // check if this dataitem is a dimension we're tracking,
@@ -225,11 +209,11 @@ export function handleObservation(
   if (dimensionDefs[dataname]) {
     // if value changed, dump current bins to accumulator bins,
     // and update current value.
-    if (value !== currentDimensions[dataname]) {
-      dimensionValueChanged(
+    if (value !== dimensions[dataname]) {
+      dimensionChanged(
         accumulatorBins,
         currentBins,
-        currentDimensions,
+        dimensions,
         dataname,
         value
       )
@@ -237,25 +221,130 @@ export function handleObservation(
   }
 
   //.. how get rid of this?
-  dimensionValueChanged(
+  dimensionChanged(
     accumulatorBins,
     currentBins,
-    currentDimensions
+    dimensions
+    //. undefined, undefined
+  )
+
+  return deltas
+}
+
+// handle one observation.
+// check for changes to dimensions and state changes we want to track.
+// modifies dimensions and bins in place.
+// exported for testing.
+export function handleObservation(
+  observation,
+  dimensions,
+  accumulatorBins,
+  currentBins,
+  timers
+) {
+  // name might include deviceId/ - remove it to get dataname, eg 'availability'
+  const dataname = observation.name.slice(observation.name.indexOf('/') + 1)
+
+  // value is eg 'Alice' for operator, 'ACTIVE' for execution, etc
+  const { device_id, timestampSecs, year, dayOfYear, hour, minute, value } =
+    observation
+
+  //. or make timers a dict of dicts, like currentBins
+  const timerKey = device_id + dataname
+
+  // if observation is something we're tracking the state of,
+  // update start time or current bin.
+  if (valueDefs[dataname]) {
+    const valueDef = valueDefs[dataname] // eg { bin: 'time_active', when: 'ACTIVE' }
+    const bin = valueDef.bin // eg 'time_active'
+
+    // handle edge transition - start or stop timetracking for the value.
+    // eg valueDef.when could be 'AVAILABLE' or 'ACTIVE' etc.
+    if (value === valueDef.when) {
+      // start 'timer' for this observation
+      // add guard in case agent is defective and sends these out every time,
+      // instead of just at start.
+      if (!timers[timerKey]) {
+        timers[timerKey] = timestampSecs
+      }
+    } else {
+      // otherwise, observation is turning 'off' -
+      // dump the time to the device's current bin.
+      if (timers[timerKey]) {
+        const timeDelta = timestampSecs - timers[timerKey] // sec
+        if (currentBins[bin] === undefined) {
+          currentBins[bin] = timeDelta
+        } else {
+          currentBins[bin] += timeDelta
+        }
+        // reset start time
+        timers[timerKey] = null
+      }
+    }
+  }
+
+  // year is a dimension we need to track
+  if (year !== dimensions.year) {
+    dimensionChanged(accumulatorBins, currentBins, dimensions, 'year', year)
+  }
+
+  // dayOfYear (1-366) is a dimension we need to track
+  if (dayOfYear !== dimensions.dayOfYear) {
+    dimensionChanged(
+      accumulatorBins,
+      currentBins,
+      dimensions,
+      'dayOfYear',
+      dayOfYear
+    )
+  }
+
+  // hour (0-23) is a dimension we need to track
+  if (hour !== dimensions.hour) {
+    dimensionChanged(accumulatorBins, currentBins, dimensions, 'hour', hour)
+  }
+
+  // minute (0-59) is a dimension we need to track
+  if (minute !== dimensions.minute) {
+    dimensionChanged(accumulatorBins, currentBins, dimensions, 'minute', minute)
+  }
+
+  // check if this dataitem is a dimension we're tracking,
+  // eg dataname = 'operator'.
+  if (dimensionDefs[dataname]) {
+    // if value changed, dump current bins to accumulator bins,
+    // and update current value.
+    if (value !== dimensions[dataname]) {
+      dimensionChanged(
+        accumulatorBins,
+        currentBins,
+        dimensions,
+        dataname,
+        value
+      )
+    }
+  }
+
+  //.. how get rid of this?
+  dimensionChanged(
+    accumulatorBins,
+    currentBins,
+    dimensions
     //. undefined, undefined
   )
 }
 
 // a dimension value changed - dump current bins into accumulator bins,
 // and update current dimension value.
-function dimensionValueChanged(
+function dimensionChanged(
   accumulatorBins,
   currentBins,
-  currentDimensions,
+  dimensions,
   dataname,
   value
 ) {
-  // get key for this row, eg '{dayOfYear:298, hour:8, minute:23}'
-  const dimensionKey = getDimensionKey(currentDimensions)
+  // get key for this row, eg '{"dayOfYear":298, "hour":8, "minute":23}'
+  const dimensionKey = getDimensionKey(dimensions)
 
   // start new dict if needed
   if (accumulatorBins[dimensionKey] === undefined) {
@@ -278,7 +367,7 @@ function dimensionValueChanged(
   }
 
   // update current dimension value
-  currentDimensions[dataname] = value
+  dimensions[dataname] = value
 }
 
 // get sql statements to write given accumulator bin data to db.
@@ -337,8 +426,8 @@ ON CONFLICT (device_id, time, dimensions) DO
 
 // helper fns
 
-function getDimensionKey(currentDimensions) {
-  return JSON.stringify(currentDimensions)
+function getDimensionKey(dimensions) {
+  return JSON.stringify(dimensions)
 }
 export function splitDimensionKey(dimensionKey) {
   return JSON.parse(dimensionKey)
