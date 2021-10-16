@@ -43,11 +43,11 @@ export class AgentReader {
         await current.read(this.endpoint) // get observations and this.sequence numbers
         if (instanceIdChanged(current, probe)) break probe
         await current.write(this.db, probe.indexes) // write this.observations to db
-        await current.calculate(
+        await current.updateBins(
           this.db,
           this.dimensionsByDevice,
           this.timersByDevice
-        ) // update bins
+        )
         this.from = current.sequence.next
 
         // sample - get sequence of dataitem values, write to db
@@ -56,11 +56,11 @@ export class AgentReader {
           await sample.read(this.endpoint, this.from, this.count) // get observations
           if (instanceIdChanged(sample, probe)) break probe
           await sample.write(this.db, probe.indexes) // write this.observations to db
-          await sample.calculate(
+          await sample.updateBins(
             this.db,
             this.dimensionsByDevice,
             this.timersByDevice
-          ) // update bins
+          )
           // const sql = sample.getSql(
           //   this.dimensionsByDevice,
           //   this.timersByDevice

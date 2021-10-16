@@ -62,7 +62,9 @@ const timersByDevice = {}
     timersByDevice
   )
   console.log()
-  console.log('DONE', 'accumulator bins by device_id')
+  console.log('DONE')
+  console.log(observations[0])
+  console.log('accumulator bins by device_id')
   console.log(accumulatorsByDevice)
   // const sql = metrics.getSql(accumulators)
   // console.log('sql', sql)

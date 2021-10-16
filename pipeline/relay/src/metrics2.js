@@ -12,12 +12,12 @@
 //. move these into yaml, and have per client
 //. might want these to be per device or device type also?
 const dimensionDefs = {
-  //. use hour1970, or minute1970?
-  // day1970: {},
-  year: {},
-  dayOfYear: {},
-  hour: {},
-  minute: {}, //. do minute for testing, then switch to hour? but want to write every minute
+  //. use day1970, hour1970, or minute1970?
+  // year: {},
+  // dayOfYear: {},
+  // hour: {},
+  // minute: {}, //. do minute for testing, then switch to hour? but want to write every minute
+  hour1970: {},
   // add these as needed, to be able to slice reports later
   // operator: {},
   // machine: {},
@@ -62,9 +62,8 @@ export function getAccumulatorsByDevice(
   dimensionsByDevice,
   timersByDevice
 ) {
-  // add hour, minute, dimensionKey, etc to each observation
+  // add hour1970, dimensionKey, etc to each observation
   amendObservations(observations)
-  console.log(observations)
 
   // bins for the current set of dimension values, for each device.
   // added to accumulator and cleared on each change of a dimension value.
@@ -75,7 +74,7 @@ export function getAccumulatorsByDevice(
   // accumulated bins for this calculation run - will return at end.
   // this is a dict of dicts of dicts - keyed on device_id, then dimensions
   // (glommed together as json), then bin name.
-  // eg {3: { '{"dayOfYear":284,"hour":2}': { time_active: 32 } } }
+  // eg {3: { '{"hour1970":1234567}': { time_active: 32 } } }
   const accumulatorsByDevice = {}
 
   // run each observation through handler in order
@@ -131,22 +130,23 @@ export function getAccumulatorsByDevice(
 // exported for testing.
 export function amendObservations(observations) {
   observations.forEach(observation => {
-    const date = new Date(observation.timestamp)
+    if (observation.name) {
+      const date = new Date(observation.timestamp)
 
-    // convert iso timestamps to seconds since 1970-01-01
-    observation.timestampSecs = date.getTime() * 0.001 // seconds
+      // convert iso timestamps to seconds since 1970-01-01
+      observation.timestampSecs = date.getTime() * 0.001 // seconds
 
-    // get current dimension values for each observation
-    observation.year = date.getFullYear() // eg 2021
-    observation.dayOfYear = getDayOfYear(date) // 1-366
-    //. observation.day1970 = getDay1970(date) // days since 1970-01-01
-    observation.hour = date.getHours() // 0-23
-    observation.minute = date.getMinutes() // 0-59
+      // get current dimension values for each observation
+      // observation.year = date.getFullYear() // eg 2021
+      // observation.dayOfYear = getDayOfYear(date) // 1-366
+      observation.hour1970 = getHour1970(date) // hours since 1970-01-01
+      // observation.minute = date.getMinutes() // 0-59
 
-    // // assign dimension key to observation
-    // observation.binName = device_id + '-' + observation.name
+      // // assign dimension key to observation
+      // observation.binName = device_id + '-' + observation.name
 
-    observation.dimensionKey = getDimensionKey(observation)
+      observation.dimensionKey = getDimensionKey(observation)
+    }
   })
 }
 
@@ -212,9 +212,6 @@ ON CONFLICT (device_id, time, dimensions) DO
 // get dimension key for an observation,
 // eg '{"hour1970":1234567,"operator":"Alice"}'
 function getDimensionKey(observation) {
-  //. use hour1970
-  // const { year, dayOfYear, hour, minute } = observation
-  // const dimensions = { year, dayOfYear, hour, minute }
   const dimensions = {}
   for (let dimension of Object.keys(dimensionDefs)) {
     dimensions[dimension] = observation[dimension]
@@ -259,7 +256,10 @@ export function getHourInSeconds(dims) {
   return seconds
 }
 
-//. getHour1970 - hours since 1970-01-01
+// get hours since 1970-01-01
+export function getHour1970(dims) {
+  return 1234567 //.
+}
 
 //////////////////////////////////////////////////////////////
 

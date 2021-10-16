@@ -51,7 +51,7 @@ export class Observations extends Data {
   // timers is dict with start times for each bin, eg { availability: 18574734.321 }
   //   ditto re passing this in here.
   // see metrics.js
-  async calculate(db, dimensionsByDevice, timersByDevice) {
+  async updateBins(db, dimensionsByDevice, timersByDevice) {
     // get accumulator bins for given observations
     const accumulatorsByDevice = metrics.getAccumulatorBins(
       //. const accumulatorsByDevice = metrics.getAccumulatorsByDevice(
