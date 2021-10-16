@@ -45,7 +45,9 @@ const valueDefs = {
 //   as defined in dimensionDefs, above.
 // startTimes measures the time a dataitem is in a particular state.
 //   it's a dictionary keyed on the valueDefs keys, defined above.
-// returns a dict of dicts
+// returns a dict of dicts keyed on device_id, then dimensions
+//   (glommed together as json), then bin name.
+//   eg {3: { '{"dayOfYear":284,"hour":2}': { time_active: 32 } } }
 export function getAccumulatorBins(
   observations,
   currentDimensions,
