@@ -1,8 +1,8 @@
 // test metric calcs
 
 // import * as metrics from './metrics.js'
-// import * as metrics from './metrics2.js'
-import * as metrics from './metrics3.js'
+import * as metrics from './metrics2.js'
+// import * as metrics from './metrics3.js'
 
 // const dims = { year: 2021, dayOfYear: 1, hour: 0, minute: 0 }
 // console.log(new Date(metrics.getHourInSeconds(dims) * 1000))
@@ -52,7 +52,11 @@ const bins = {}
 const timers = {}
 
 {
-  const accumulators = metrics.getAccumulators(observations, dimensions, timers)
+  const accumulators = metrics.getAccumulatorsByDevice(
+    observations,
+    dimensions,
+    timers
+  )
   console.log()
   console.log('DONE', 'accumulator bins')
   console.log(accumulators)

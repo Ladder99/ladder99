@@ -45,14 +45,18 @@ const valueDefs = {
 
 // get accumulators for the given observations and starting points.
 // observations is a list of observation objects with { dataitem_id, value, ... }
-// dimensions is a dict with the current values of the dimensions,
-//   as defined in dimensionDefs, above.
-// timers measures the time a dataitem is in a particular state.
-//   it's a dictionary keyed on the valueDefs keys, defined above.
+// dimensionsByDevice is a dict with the current values of the dimensions,
+//   as defined in dimensionDefs, above, keyed on device_id.
+// timersByDevice measures the time a dataitem is in a particular state.
+//   it's a dictionary keyed on device_id, then the valueDefs keys, defined above.
 // returns a dict of dicts keyed on device_id, then dimensions
 //   (glommed together as json), then bin name.
 //   eg {3: { '{"dayOfYear":284,"hour":2}': { time_active: 32 } } }
-export function getAccumulatorBins(observations, dimensions, timers) {
+export function getAccumulatorsByDevice(
+  observations,
+  dimensionsByDevice,
+  timers
+) {
   // add hour, minute, etc to each observation
   assignTimesToObservations(observations)
 
@@ -60,13 +64,13 @@ export function getAccumulatorBins(observations, dimensions, timers) {
   // added to accumulator and cleared on each change of a dimension value.
   // keyed on device_id, then bin name.
   // will be like {3: { time_active: 8.1 }, ...} // device 3, 8.1 seconds
-  const currentBins = {}
+  const currentBinsByDevice = {}
 
   // accumulated bins for this calculation run - will return at end.
   // this is a dict of dicts of dicts - keyed on device_id, then dimensions
   // (glommed together as json), then bin name.
   // eg {3: { '{"dayOfYear":284,"hour":2}': { time_active: 32 } } }
-  const accumulators = {}
+  const accumulatorsByDevice = {}
 
   // run each observation through handler in order
   for (let observation of observations) {
@@ -75,31 +79,23 @@ export function getAccumulatorBins(observations, dimensions, timers) {
     // note: this excludes the agent dataitems, which we don't care about (now).
     if (observation.name) {
       const { device_id } = observation
+      // // assign dimension key to observation
+      // observation.dimensionKey = device_id + '-' + observation.name
       // init dicts
-      if (dimensions[device_id] === undefined) {
-        dimensions[device_id] = {}
+      if (dimensionsByDevice[device_id] === undefined) {
+        dimensionsByDevice[device_id] = {}
       }
-      if (currentBins[device_id] === undefined) {
-        currentBins[device_id] = {}
+      if (currentBinsByDevice[device_id] === undefined) {
+        currentBinsByDevice[device_id] = {}
       }
-      if (accumulators[device_id] === undefined) {
-        accumulators[device_id] = {}
+      if (accumulatorsByDevice[device_id] === undefined) {
+        accumulatorsByDevice[device_id] = {}
       }
       // narrow dicts down to this observation's device
-      const deviceDimensions = dimensions[device_id]
-      const deviceBins = currentBins[device_id]
-      const deviceAccumulators = accumulators[device_id]
-      // // handle the observation by dumping time deltas to accumulator bins.
-      // handleObservation(
-      //   observation,
-      //   deviceDimensions,
-      //   deviceAccumulators,
-      //   deviceBins,
-      //   timers
-      //   // valueDefs,
-      //   // dimensionDefs
-      // )
-      //.
+      const dimensions = dimensionsByDevice[device_id]
+      const currentBins = currentBinsByDevice[device_id]
+      const accumulators = accumulatorsByDevice[device_id]
+      // get
       const valueDeltas = getValueDeltas(
         observation,
         timers
@@ -121,7 +117,7 @@ export function getAccumulatorBins(observations, dimensions, timers) {
   // previousTime = currentTime
 
   // return bins - will convert to sql and write to db
-  return accumulators
+  return accumulatorsByDevice
 }
 
 // split observation time into year, dayofyear, hour, minute.
