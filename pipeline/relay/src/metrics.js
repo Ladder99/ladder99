@@ -45,7 +45,12 @@ const valueDefs = {
 //   as defined in dimensionDefs, above.
 // startTimes measures the time a dataitem is in a particular state.
 //   it's a dictionary keyed on the valueDefs keys, defined above.
-export function getMetrics(observations, currentDimensions, startTimes) {
+// returns a dict of dicts
+export function getAccumulatorBins(
+  observations,
+  currentDimensions,
+  startTimes
+) {
   // get hour, minute, etc for each observation
   assignTimesToObservations(observations)
 

@@ -53,7 +53,7 @@ export class Observations extends Data {
   // see metrics.js
   async calculate(db, currentDimensionValues, startTimes) {
     // get accumulator bins for given observations
-    const accumulatorBins = metrics.getMetrics(
+    const accumulatorBins = metrics.getAccumulatorBins(
       this.observations,
       currentDimensionValues,
       startTimes

@@ -1,6 +1,6 @@
 // test metric calcs
 
-import { getMetrics, getSql, getHourInSeconds } from './metrics.js'
+import { getAccumulatorBins, getSql, getHourInSeconds } from './metrics.js'
 
 // const dims = { year: 2021, dayOfYear: 1, hour: 0, minute: 0 }
 // console.log(new Date(getHourInSeconds(dims) * 1000))
@@ -29,12 +29,30 @@ const observations = [
     timestamp: '2021-10-11T00:00:30Z',
     value: 'UNAVAILABLE',
   },
+  {
+    device_id: 1,
+    id: 'kl1-avail',
+    name: 'availability',
+    timestamp: '2021-10-11T00:01:30Z',
+    value: 'AVAILABLE',
+  },
+  {
+    device_id: 1,
+    id: 'kl1-avail',
+    name: 'availability',
+    timestamp: '2021-10-11T00:01:40Z',
+    value: 'UNAVAILABLE',
+  },
 ]
 
 const currentDimensions = {}
 const startTimes = {}
 
-const accumulatorBins = getMetrics(observations, currentDimensions, startTimes)
+const accumulatorBins = getAccumulatorBins(
+  observations,
+  currentDimensions,
+  startTimes
+)
 
 console.log()
 console.log('DONE', 'accumulator bins')
