@@ -32,44 +32,46 @@ export class Bins {
 
     for (let observation of observations) {
       const valueDef = this.valueDefs[observation.name]
-
-      //. or make timers a dict of dicts, like currentBins
       const timerKey = observation.device_id + '-' + observation.name
+      const binKey = 'po'
 
-      // check if this is a value we're tracking
+      // check if this is a value we're tracking, eg availability, execution_state
       if (valueDef) {
-        this.handleValue(observation, valueDef, timerKey)
+        this.handleValue(observation, valueDef, timerKey, binKey)
         //
       } else {
-        // else check if it's a dimension we're tracking - eg hours1970, operator
+        // check if it's a dimension we're tracking - eg hours1970, operator
         const dimensionDef = this.dimensionDefs[observation.name]
-        this.handleDimension(observation, dimensionDef)
+        if (dimensionDef) {
+          this.handleDimension(observation, dimensionDef)
+        }
       }
     }
     console.log(this.bins)
   }
 
-  handleValue(observation, valueDef, timerKey) {
-    // if yes, check if its value changed to/from the 'on' state, eg 'ACTIVE', 'AVAILABLE'
+  // if value changed to 'on' state, eg 'ACTIVE', 'AVAILABLE',
+  // start a clock to track time in that state.
+  // otherwise add the time delta to a bin, clear the clock.
+  handleValue(observation, valueDef, timerKey, binKey) {
     if (observation.value === valueDef.when) {
       if (this.startTimes[timerKey] === undefined) {
         this.startTimes[timerKey] = observation.seconds1970
       }
     } else {
-      if (this.bins[observation.name]) {
-        this.bins[observation.name] =
-          getSeconds1970(observation.date) - this.startTimes[timerKey]
+      const delta = observation.seconds1970 - this.startTimes[timerKey]
+      if (this.bins[binKey] === undefined) {
+        this.bins[binKey] = delta // create new bin with delta
       } else {
+        this.bins[binKey] += delta // add delta to existing bin
       }
+      delete this.startTimes[timerKey]
     }
   }
 
+  //. dump current bins to the accumulator bins, reset all startTimes?
   handleDimension(observation, dimensionDef) {
-    if (dimensionDef) {
-      // check that dimension key has changed -
-      //. if so, dump the current bins to the accumulator bins, stop the clocks ?
-      const { dimensionKey } = observation
-    }
+    const { dimensionKey } = observation
   }
 
   handleTimer() {
