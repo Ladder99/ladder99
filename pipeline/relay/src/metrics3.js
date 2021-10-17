@@ -38,31 +38,38 @@ export class Bins {
 
       // check if this is a value we're tracking
       if (valueDef) {
-        // if yes, check if its value changed to/from the 'on' state, eg 'ACTIVE', 'AVAILABLE'
-        const startTime = this.startTimes[timerKey]
-        if (observation.value === valueDef.when) {
-          if (this.startTimes[timerKey] === undefined) {
-            this.startTimes[timerKey] = observation.seconds1970
-          }
-        } else {
-          if (this.bins[observation.name]) {
-            this.bins[observation.name] =
-              getSeconds1970(observation.date) - this.startTimes[timerKey]
-          } else {
-          }
-        }
+        this.handleValue(observation, valueDef, timerKey)
         //
       } else {
         // else check if it's a dimension we're tracking - eg hours1970, operator
         const dimensionDef = this.dimensionDefs[observation.name]
-        if (dimensionDef) {
-          // check that dimension key has changed -
-          //. if so, dump the current bins to the accumulator bins, stop the clocks ?
-          const { dimensionKey } = observation
-        }
+        this.handleDimension(observation, dimensionDef)
       }
     }
     console.log(this.bins)
+  }
+
+  handleValue(observation, valueDef, timerKey) {
+    // if yes, check if its value changed to/from the 'on' state, eg 'ACTIVE', 'AVAILABLE'
+    if (observation.value === valueDef.when) {
+      if (this.startTimes[timerKey] === undefined) {
+        this.startTimes[timerKey] = observation.seconds1970
+      }
+    } else {
+      if (this.bins[observation.name]) {
+        this.bins[observation.name] =
+          getSeconds1970(observation.date) - this.startTimes[timerKey]
+      } else {
+      }
+    }
+  }
+
+  handleDimension(observation, dimensionDef) {
+    if (dimensionDef) {
+      // check that dimension key has changed -
+      //. if so, dump the current bins to the accumulator bins, stop the clocks ?
+      const { dimensionKey } = observation
+    }
   }
 
   handleTimer() {
