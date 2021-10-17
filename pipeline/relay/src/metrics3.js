@@ -19,7 +19,7 @@ export class Tracker {
   // start the timer that dumps bins to the db
   startTimer(timeout = 60 * 1000) {
     console.log('startTimer', timeout)
-    this.timer = setInterval(this.handleTimer, timeout)
+    this.timer = setInterval(this.handleTimer.bind(this), timeout)
   }
 
   // handle a list of observations
@@ -47,7 +47,6 @@ export class Tracker {
         }
       }
     }
-    console.log(this.bins)
   }
 
   // if value changed to 'on' state, eg 'ACTIVE', 'AVAILABLE',
@@ -59,13 +58,15 @@ export class Tracker {
         this.startTimes[key] = observation.seconds1970
       }
     } else {
-      const delta = observation.seconds1970 - this.startTimes[key]
-      if (this.bins[key] === undefined) {
-        this.bins[key] = delta // create new bin with delta
-      } else {
-        this.bins[key] += delta // add delta to existing bin
+      if (this.startTimes[key] !== undefined) {
+        const delta = observation.seconds1970 - this.startTimes[key]
+        if (this.bins[key] === undefined) {
+          this.bins[key] = delta // create new bin with delta
+        } else {
+          this.bins[key] += delta // add delta to existing bin
+        }
+        delete this.startTimes[key]
       }
-      delete this.startTimes[key]
     }
   }
 
@@ -94,9 +95,9 @@ export class Tracker {
       const date = new Date(observation.timestamp)
 
       // convert iso timestamps to seconds since 1970-01-01
-      //. where used?
-      observation.timestampSecs = date.getTime() * 0.001 // seconds
+      observation.seconds1970 = date.getTime() * secondsPerMillisecond
 
+      // round down to hour
       observation.hours1970 = getHours1970(date) // hours since 1970-01-01
 
       // assign dimension key to observation

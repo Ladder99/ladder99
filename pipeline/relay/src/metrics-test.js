@@ -68,20 +68,20 @@ const observations = [
     timestamp: '2021-10-11T00:00:30Z',
     value: 'UNAVAILABLE',
   },
-  {
-    device_id: 1,
-    id: 'kl1-avail',
-    name: 'availability',
-    timestamp: '2021-10-11T00:01:30Z',
-    value: 'AVAILABLE',
-  },
-  {
-    device_id: 1,
-    id: 'kl1-avail',
-    name: 'availability',
-    timestamp: '2021-10-11T00:01:40Z',
-    value: 'UNAVAILABLE',
-  },
+  // {
+  //   device_id: 1,
+  //   id: 'kl1-avail',
+  //   name: 'availability',
+  //   timestamp: '2021-10-11T00:01:30Z',
+  //   value: 'AVAILABLE',
+  // },
+  // {
+  //   device_id: 1,
+  //   id: 'kl1-avail',
+  //   name: 'availability',
+  //   timestamp: '2021-10-11T00:01:40Z',
+  //   value: 'UNAVAILABLE',
+  // },
 ]
 // const currentBins = {}
 // const dimensionsByDevice = {}
