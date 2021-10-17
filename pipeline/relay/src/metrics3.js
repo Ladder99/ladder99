@@ -1,11 +1,12 @@
-//
+// track changes to dimensions and values as observations come in,
+// dump changes to database once a minute.
 
 // dump bins to db once a minute
 const timeout = 60 * 1000
 
 //
 
-export class Bins {
+export class Tracker {
   constructor(dimensionDefs, valueDefs) {
     this.dimensionDefs = dimensionDefs
     this.valueDefs = valueDefs
@@ -16,8 +17,8 @@ export class Bins {
   }
 
   // start the timer that dumps bins to the db
-  startTimer() {
-    console.log('startTimer')
+  startTimer(timeout = 60 * 1000) {
+    console.log('startTimer', timeout)
     this.timer = setInterval(this.handleTimer, timeout)
   }
 
@@ -31,13 +32,12 @@ export class Bins {
     this.amendObservations()
 
     for (let observation of observations) {
-      const valueDef = this.valueDefs[observation.name]
-      const timerKey = observation.device_id + '-' + observation.name
-      const binKey = 'po'
+      const key = observation.device_id + '-' + observation.name
 
       // check if this is a value we're tracking, eg availability, execution_state
+      const valueDef = this.valueDefs[observation.name]
       if (valueDef) {
-        this.handleValue(observation, valueDef, timerKey, binKey)
+        this.handleValue(observation, valueDef, key)
         //
       } else {
         // check if it's a dimension we're tracking - eg hours1970, operator
@@ -53,35 +53,36 @@ export class Bins {
   // if value changed to 'on' state, eg 'ACTIVE', 'AVAILABLE',
   // start a clock to track time in that state.
   // otherwise add the time delta to a bin, clear the clock.
-  handleValue(observation, valueDef, timerKey, binKey) {
+  handleValue(observation, valueDef, key) {
     if (observation.value === valueDef.when) {
-      if (this.startTimes[timerKey] === undefined) {
-        this.startTimes[timerKey] = observation.seconds1970
+      if (this.startTimes[key] === undefined) {
+        this.startTimes[key] = observation.seconds1970
       }
     } else {
-      const delta = observation.seconds1970 - this.startTimes[timerKey]
-      if (this.bins[binKey] === undefined) {
-        this.bins[binKey] = delta // create new bin with delta
+      const delta = observation.seconds1970 - this.startTimes[key]
+      if (this.bins[key] === undefined) {
+        this.bins[key] = delta // create new bin with delta
       } else {
-        this.bins[binKey] += delta // add delta to existing bin
+        this.bins[key] += delta // add delta to existing bin
       }
-      delete this.startTimes[timerKey]
+      delete this.startTimes[key]
     }
   }
 
-  //. dump current bins to the accumulator bins, reset all startTimes?
+  // dimension value changed
+  //. dump all bins to db, reset all startTimes?
   handleDimension(observation, dimensionDef) {
     const { dimensionKey } = observation
   }
 
   handleTimer() {
     console.log('handleTimer - dump any bin adjustments to db')
-    //. including time_calendar
+    //. do time_calendar also
     //. dump bins to db
-    console.log(this.bins)
+    console.log('bins', this.bins)
     // const sql = this.getSql()
     // this.db.write(sql)
-    //. clear bins
+    // clear bins
     this.bins = {}
   }
 

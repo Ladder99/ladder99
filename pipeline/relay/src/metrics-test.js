@@ -145,14 +145,14 @@ const observations = [
 //   console.log(dimensionKey)
 // }
 
-;(async function foo() {
-  const bins = new metrics.Bins(dimensionDefs, valueDefs)
-  console.log(bins)
-  bins.startTimer() // start timer which dumps bins to db every minute
+const trackers = {}
 
+;(async function () {
+  const tracker = new metrics.Tracker(dimensionDefs, valueDefs)
+  console.log(tracker)
+  tracker.startTimer(2000) // start timer which dumps bins to db every interval
   while (true) {
-    console.log('tick')
-    bins.handleObservations(observations) // update bins
-    await new Promise(resolve => setTimeout(resolve, 2000)) // pause
+    tracker.handleObservations(observations) // update bins
+    await new Promise(resolve => setTimeout(resolve, 1000)) // pause
   }
 })()
