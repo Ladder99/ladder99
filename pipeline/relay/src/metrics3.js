@@ -80,12 +80,16 @@ export class Tracker {
   writeToDb() {
     console.log('writeToDb')
     console.log(this.bins.data)
-    // get sql for updates and clear bins
-    const sql = this.bins.getSql()
-    this.bins.clear()
-    // write to db
-    console.log(sql)
-    // this.db.write(sql) //.
+    const device_ids = Object.keys(this.bins.data)
+    for (let device_id of device_ids) {
+      // get sql for updates
+      const sql = this.bins.getSql(device_id)
+      // write to db
+      console.log(sql)
+      // clear bins
+      this.bins.clearDeviceData(device_id)
+      // this.db.write(sql) //.
+    }
   }
 
   // add info to observations, incl time as hours1970.
@@ -182,8 +186,9 @@ export class Bins {
     this.dimensionKeys = {} // per device_id
   }
   getDimensionKey(device_id) {
-    return JSON.stringify(this.dimensionKeys[device_id])
+    return JSON.stringify(this.dimensionKeys[device_id] || {})
   }
+  // add an observation amount to a slot
   addObservation(observation, delta) {
     // note: already looked up slot in amendObservations
     const { device_id, slot } = observation
@@ -223,7 +228,7 @@ export class Bins {
     }
   }
   // clear data for one device
-  clear(device_id) {
+  clearDeviceData(device_id) {
     delete this.data[device_id]
   }
   setDimensionValue(device_id, key, value) {
@@ -240,7 +245,7 @@ export class Bins {
   //   dimensions are like "{operator:'Alice'}"
   //   with accumulators like { time_active: 1, time_available: 2 }}
   // getSql(accumulatorBins) {
-  getSql() {
+  getSql(device_id) {
     let sql = ''
     //     //
     //     // iterate over device+bins

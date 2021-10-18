@@ -149,27 +149,27 @@ const observations = [
 //   console.log(dimensionKey)
 // }
 
-{
-  const bins = new metrics.Bins()
-  bins.setDimensionValue(1, 'operator', 'alice')
-  console.log(bins)
-  bins.addObservation({ device_id: 1, slot: 'time_available' }, 10)
-  bins.setDimensionValue(1, 'operator', 'bob')
-  bins.addObservation({ device_id: 1, slot: 'time_available' }, 20)
-  bins.addObservation({ device_id: 1, slot: 'time_available' }, 30)
-  bins.setDimensionValue(2, 'operator', 'kramer')
-  bins.addObservation({ device_id: 2, slot: 'time_available' }, 20)
-  console.log(bins.data)
-}
+// {
+//   const bins = new metrics.Bins()
+//   bins.setDimensionValue(1, 'operator', 'alice')
+//   console.log(bins)
+//   bins.addObservation({ device_id: 1, slot: 'time_available' }, 10)
+//   bins.setDimensionValue(1, 'operator', 'bob')
+//   bins.addObservation({ device_id: 1, slot: 'time_available' }, 20)
+//   bins.addObservation({ device_id: 1, slot: 'time_available' }, 30)
+//   bins.setDimensionValue(2, 'operator', 'kramer')
+//   bins.addObservation({ device_id: 2, slot: 'time_available' }, 20)
+//   console.log(bins.data)
+// }
 
 // process.exit(1)
 
-// ;(async function () {
-//   const tracker = new metrics.Tracker(null, dimensionDefs, valueDefs)
-//   console.log(tracker)
-//   tracker.startTimer(2000) // start timer which dumps bins to db every interval
-//   while (true) {
-//     tracker.trackObservations(observations) // update bins
-//     await new Promise(resolve => setTimeout(resolve, 1000)) // pause
-//   }
-// })()
+;(async function () {
+  const tracker = new metrics.Tracker(null, dimensionDefs, valueDefs)
+  console.log(tracker)
+  tracker.startTimer(2000) // start timer which dumps bins to db every interval
+  while (true) {
+    tracker.trackObservations(observations) // update bins
+    await new Promise(resolve => setTimeout(resolve, 1000)) // pause
+  }
+})()
