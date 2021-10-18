@@ -53,6 +53,13 @@ const valueDefs = {
 const observations = [
   {
     device_id: 1,
+    id: 'kl1-oper',
+    name: 'operator',
+    timestamp: '2021-10-10T23:00:00Z',
+    value: 'alice',
+  },
+  {
+    device_id: 1,
     id: 'kl1-avail',
     name: 'availability',
     timestamp: '2021-10-11T00:00:00Z',

@@ -69,8 +69,14 @@ export class Tracker {
 
   // a dimension value changed - dump all bins to accumulators, reset all clocks
   //?
+  //. so would dump accums to db, not bins?
   trackDimensionChange(observation, dimensionDef) {
-    this.bins.setDimensionValue(observation.name, observation.value)
+    // console.log('tdc', observation)
+    this.bins.setDimensionValue(
+      observation.device_id,
+      observation.name,
+      observation.value
+    )
     this.clock.clear(observation)
     this.clock.start(observation)
   }
@@ -185,9 +191,6 @@ export class Bins {
     this.data = {}
     this.dimensionKeys = {} // per device_id
   }
-  getDimensionKey(device_id) {
-    return JSON.stringify(this.dimensionKeys[device_id] || {})
-  }
   // add an observation amount to a slot
   addObservation(observation, delta) {
     // note: already looked up slot in amendObservations
@@ -230,6 +233,9 @@ export class Bins {
   // clear data for one device
   clearDeviceData(device_id) {
     delete this.data[device_id]
+  }
+  getDimensionKey(device_id) {
+    return JSON.stringify(this.dimensionKeys[device_id] || {})
   }
   setDimensionValue(device_id, key, value) {
     const keyvalues = this.dimensionKeys[device_id]
