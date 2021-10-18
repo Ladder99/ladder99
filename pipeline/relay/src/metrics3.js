@@ -15,21 +15,21 @@ const defaultDbInterval = 60 * millisecondsPerSecond
 //
 
 export class Tracker {
-  // dimensionDefs is
-  // valueDefs is
+  //. dimensionDefs is {}
+  //. valueDefs is {}
   constructor(dimensionDefs, valueDefs) {
     this.dimensionDefs = dimensionDefs
     this.valueDefs = valueDefs
-    this.timer = null
-    this.bins = {}
-    this.startTimes = {}
+    this.dbTimer = null
+    this.bins = new Bins()
+    this.clock = new Clock()
     this.observations = null
   }
 
   // start the timer that dumps bins to the db
   startTimer(dbInterval = defaultDbInterval) {
     console.log('startTimer')
-    this.timer = setInterval(this.writeToDb.bind(this), dbInterval)
+    this.dbTimer = setInterval(this.writeToDb.bind(this), dbInterval)
   }
 
   // update bins given a list of observations.
@@ -57,36 +57,22 @@ export class Tracker {
     }
   }
 
-  // if value changed to 'on' state, eg 'ACTIVE', 'AVAILABLE',
-  // start a clock to track time in that state.
-  // otherwise add the time delta to a bin, clear the clock.
+  // value we're tracking changed
   trackValueChange(observation, valueDef) {
-    const { key } = observation
+    // if value changed to 'on' state, eg 'ACTIVE', 'AVAILABLE',
+    // start a clock to track time in that state.
     if (observation.value === valueDef.when) {
-      // value changed to 'on' state - start clock
-      // add guard in case agent sends same value again
-      if (this.startTimes[key] === undefined) {
-        this.startTimes[key] = observation.seconds1970
-      }
-      // clock.start(observation)
+      this.clock.start(observation)
     } else {
-      // get time delta and add to bin
-      // const seconds = clock.stop(observation) // will clear clock also
-      // if (seconds > 0) { this.bins.add(observation, seconds) }
-      if (this.startTimes[key] !== undefined) {
-        const seconds = observation.seconds1970 - this.startTimes[key]
-        if (this.bins[key] === undefined) {
-          this.bins[key] = seconds // create new bin with seconds
-        } else {
-          this.bins[key] += seconds // add seconds to existing bin
-        }
-        // clear the clock
-        delete this.startTimes[key]
+      // otherwise add the time delta to a bin, clear the clock.
+      const seconds = this.clock.stop(observation) // will clear clock also
+      if (seconds > 0) {
+        this.bins.add(observation, seconds)
       }
     }
   }
 
-  // dimension value changed
+  // dimension we're tracking changed
   //. dump all bins to db, reset all startTimes?
   trackDimensionChange(observation, dimensionDef) {
     const { dimensionKey } = observation
@@ -101,7 +87,7 @@ export class Tracker {
     console.log(sql)
     // this.db.write(sql) //.
     // clear bins
-    this.bins = {}
+    this.bins.clear()
   }
 
   // get sql statements to write given accumulator bin data to db.
@@ -248,5 +234,46 @@ function getSeconds1970(date) {
 }
 
 class Clock {
-  constructor() {}
+  constructor(tracker) {
+    // this.tracker = tracker
+    this.startTimes = {}
+  }
+
+  // start clock for the given observation
+  start(observation) {
+    const { key } = observation
+    // add guard in case agent sends same value again
+    if (this.startTimes[key] === undefined) {
+      this.startTimes[key] = observation.seconds1970
+    }
+  }
+
+  // stop clock for given observation, return time delta in seconds
+  stop(observation) {
+    const { key } = observation
+    let seconds
+    if (this.startTimes[key] !== undefined) {
+      seconds = observation.seconds1970 - this.startTimes[key]
+      // clear the clock
+      delete this.startTimes[key]
+    }
+    return seconds
+  }
+}
+
+class Bins {
+  constructor() {
+    this.bins = {}
+  }
+  add(observation, seconds) {
+    const { key } = observation
+    if (this.bins[key] === undefined) {
+      this.bins[key] = seconds // create new bin with seconds
+    } else {
+      this.bins[key] += seconds // add seconds to existing bin
+    }
+  }
+  clear() {
+    this.bins = {}
+  }
 }
