@@ -12,9 +12,8 @@ import * as metrics from './metrics3.js'
 //. might want these to be per device or device type also?
 const dimensionDefs = {
   hour1970: {},
-  // minute: {}, //. do minute for testing, then switch to hour? write every minute
   // add these as needed, to be able to slice reports later
-  // operator: {},
+  operator: {},
   // machine: {},
   // component: {},
   // job: {},
@@ -24,7 +23,7 @@ const dimensionDefs = {
 // valueDefs
 // dataitems that we want to track the state of.
 // will track time the dataitem spends in the 'when' state,
-// and add it to the given 'bin'.
+// and add it to the given 'slot'.
 // keyed on dataitem / observation name, ie NOT the dataitem id.
 // so in the agent.xml, DO NOT include the deviceId in the names,
 // just have a plain descriptor.
@@ -33,11 +32,11 @@ const dimensionDefs = {
 const valueDefs = {
   availability: {
     when: 'AVAILABLE',
-    bin: 'time_available',
+    slot: 'time_available',
   },
   execution_state: {
     when: 'ACTIVE',
-    bin: 'time_active',
+    slot: 'time_active',
   },
 }
 
@@ -150,8 +149,16 @@ const observations = [
 //   console.log(dimensionKey)
 // }
 
-const trackers = {}
+{
+  const bins = new metrics.Bins()
+  bins.set(1, 'alice', 'time_available', 10)
+  bins.set(1, 'bob', 'time_available', 20)
+  console.log(bins.bins)
+}
 
+process.exit(1)
+
+// const trackers = {}
 ;(async function () {
   const tracker = new metrics.Tracker(null, dimensionDefs, valueDefs)
   console.log(tracker)

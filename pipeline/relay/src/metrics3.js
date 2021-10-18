@@ -94,7 +94,12 @@ export class Tracker {
     for (let observation of this.observations) {
       if (!observation.name) continue // skip uninteresting ones
 
-      // observation.key = observation.device_id + '-' + observation.name
+      const valueDef = this.valueDefs[observation.name]
+      // const dimensionDef = this.dimensionDefs[observation.name]
+
+      if (!valueDef) continue // skip obs if not tracking its value
+
+      observation.slot = valueDef.slot // eg 'time_available'
 
       const date = new Date(observation.timestamp)
 
@@ -172,16 +177,47 @@ class Clock {
 
 // bins
 
-class Bins {
+export class Bins {
   constructor() {
     this.bins = {}
+    // this.dimensionKey = '' //. this will need to be per device, so a dict of them
+    this.dimensionKeys = {}
   }
   add(observation, seconds) {
-    const { key } = observation
-    if (this.bins[key] === undefined) {
-      this.bins[key] = seconds // create new bin with seconds
+    // const { key } = observation
+    // const { device_id, name } = observation
+    //. already looked up bin/slot given the observation name
+    const { device_id, slot } = observation
+    const dimensionKey = this.dimensionKeys[device_id]
+    const existing = this.get(device_id, dimensionKey, slot)
+    if (existing === undefined) {
+      // create new bin with seconds
+      this.set(device_id, dimensionKey, slot, seconds)
     } else {
-      this.bins[key] += seconds // add seconds to existing bin
+      // add seconds to existing bin
+      this.set(device_id, dimensionKey, slot, existing + seconds)
+    }
+  }
+  get(key1, key2, key3) {
+    const value1 = this.bins[key1]
+    if (value1 !== undefined) {
+      const value2 = value1[key2]
+      if (value2 !== undefined) {
+        return value2[key3]
+      }
+    }
+  }
+  set(key1, key2, key3, value) {
+    const value1 = this.bins[key1]
+    if (value1 !== undefined) {
+      const value2 = value1[key2]
+      if (value2 !== undefined) {
+        value2[key3] = value
+      } else {
+        value1[key2] = { [key3]: value }
+      }
+    } else {
+      this.bins[key1] = { [key2]: { [key3]: value } }
     }
   }
   clear() {
