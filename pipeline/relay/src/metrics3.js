@@ -180,13 +180,10 @@ class Clock {
 export class Bins {
   constructor() {
     this.bins = {}
-    // this.dimensionKey = '' //. this will need to be per device, so a dict of them
-    this.dimensionKeys = {}
+    this.dimensionKeys = {} // per device_id
   }
   add(observation, seconds) {
-    // const { key } = observation
-    // const { device_id, name } = observation
-    //. already looked up bin/slot given the observation name
+    // note: already looked up slot in amendObservations
     const { device_id, slot } = observation
     const dimensionKey = this.dimensionKeys[device_id]
     const existing = this.get(device_id, dimensionKey, slot)
@@ -198,6 +195,9 @@ export class Bins {
       this.set(device_id, dimensionKey, slot, existing + seconds)
     }
   }
+  // neither object or Map let you use an object/array as key where
+  // you can retrieve a value with another object/array constructed similarly -
+  // it must be the exact same object/array. so do this...
   get(key1, key2, key3) {
     const value1 = this.bins[key1]
     if (value1 !== undefined) {
@@ -221,6 +221,7 @@ export class Bins {
     }
   }
   clear() {
+    //. clear for one device, eh?
     this.bins = {}
   }
   // get sql statements to write given accumulator bin data to db.
