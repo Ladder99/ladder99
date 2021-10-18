@@ -30,10 +30,10 @@ export class Tracker {
     this.timer = setInterval(this.writeToDb.bind(this), writeToDbTimeout)
   }
 
-  // handle a list of observations
-  // should be sorted by time
-  handleObservations(observations) {
-    console.log('handleObservations')
+  // update bins given a list of observations.
+  // observations should be sorted by time.
+  updateBins(observations) {
+    console.log('updateBins')
     this.observations = observations
 
     // add hours1970, dimensionKey, etc to each observation
@@ -45,13 +45,13 @@ export class Tracker {
       // check if this is a value we're tracking, eg availability, execution_state
       const valueDef = this.valueDefs[observation.name]
       if (valueDef) {
-        this.handleValue(observation, valueDef, key)
+        this.trackValue(observation, valueDef, key)
         //
       } else {
         // check if it's a dimension we're tracking - eg hours1970, operator
         const dimensionDef = this.dimensionDefs[observation.name]
         if (dimensionDef) {
-          this.handleDimension(observation, dimensionDef)
+          this.trackDimension(observation, dimensionDef)
         }
       }
     }
@@ -60,7 +60,7 @@ export class Tracker {
   // if value changed to 'on' state, eg 'ACTIVE', 'AVAILABLE',
   // start a clock to track time in that state.
   // otherwise add the time delta to a bin, clear the clock.
-  handleValue(observation, valueDef, key) {
+  trackValue(observation, valueDef, key) {
     if (observation.value === valueDef.when) {
       if (this.startTimes[key] === undefined) {
         this.startTimes[key] = observation.seconds1970
@@ -80,7 +80,7 @@ export class Tracker {
 
   // dimension value changed
   //. dump all bins to db, reset all startTimes?
-  handleDimension(observation, dimensionDef) {
+  trackDimension(observation, dimensionDef) {
     const { dimensionKey } = observation
   }
 
@@ -101,57 +101,58 @@ export class Tracker {
   //   with bins like { dimensions: accumulators }
   //   dimensions are like "{operator:'Alice'}"
   //   with accumulators like { time_active: 1, time_available: 2 }}
-  getSql(accumulatorBins) {
+  // getSql(accumulatorBins) {
+  getSql() {
     let sql = ''
-    //
-    // iterate over device+bins
-    // device_id is a db node_id, eg 3
-    // bins is a dict like { dimensions: accumulators }
-    for (let [device_id, bins] of Object.entries(accumulatorBins)) {
-      //
-      // iterate over dimensions+accumulators
-      // dimensions is eg '{"operator":"Alice", ...}' - ie gloms dimensions+values together
-      // accumulators is eg { time_active: 1, time_available: 2, ... },
-      //   ie all the accumulator slots and their time values in seconds.
-      for (let [dimensions, accumulators] of Object.entries(bins)) {
-        //
-        const accumulatorSlots = Object.keys(accumulators) // eg ['time_active', 'time_available']
-        if (accumulatorSlots.length === 0) continue // skip if no data
+    //     //
+    //     // iterate over device+bins
+    //     // device_id is a db node_id, eg 3
+    //     // bins is a dict like { dimensions: accumulators }
+    //     for (let [device_id, bins] of Object.entries(accumulatorBins)) {
+    //       //
+    //       // iterate over dimensions+accumulators
+    //       // dimensions is eg '{"operator":"Alice", ...}' - ie gloms dimensions+values together
+    //       // accumulators is eg { time_active: 1, time_available: 2, ... },
+    //       //   ie all the accumulator slots and their time values in seconds.
+    //       for (let [dimensions, accumulators] of Object.entries(bins)) {
+    //         //
+    //         const accumulatorSlots = Object.keys(accumulators) // eg ['time_active', 'time_available']
+    //         if (accumulatorSlots.length === 0) continue // skip if no data
 
-        // split dimensions into dimensions+values and get associated time.
-        const dims = splitDimensionKey(dimensions) // eg to {operator: 'Alice'}
-        const seconds1970 = getHourInSeconds(dims) // rounded to hour, in seconds
-        if (!seconds1970) continue // skip if got NaN or something
-        const timestring = new Date(
-          seconds1970 * millisecondsPerSecond
-        ).toISOString() // eg '2021-10-15T11:00:00Z"
+    //         // split dimensions into dimensions+values and get associated time.
+    //         const dims = splitDimensionKey(dimensions) // eg to {operator: 'Alice'}
+    //         const seconds1970 = getHourInSeconds(dims) // rounded to hour, in seconds
+    //         if (!seconds1970) continue // skip if got NaN or something
+    //         const timestring = new Date(
+    //           seconds1970 * millisecondsPerSecond
+    //         ).toISOString() // eg '2021-10-15T11:00:00Z"
 
-        // iterate over accumulator slots, eg 'time_active', 'time_available'.
-        for (let accumulatorSlot of accumulatorSlots) {
-          // get total time accumulated for the slot
-          const timeDelta = accumulators[accumulatorSlot]
-          if (timeDelta > 0) {
-            // add values one at a time to existing db records.
-            // would be better to do all with one stmt somehow,
-            // but it's already complex enough.
-            // this is an upsert command pattern in postgres -
-            // try to add a new record - if key is already there,
-            // update existing record by adding timeDelta to the value.
-            sql += `
-INSERT INTO bins (device_id, time, dimensions, values)
-  VALUES (${device_id}, '${timestring}', 
-    '${dimensions}'::jsonb,
-    '{"${accumulatorSlot}":${timeDelta}}'::jsonb)
-ON CONFLICT (device_id, time, dimensions) DO
-  UPDATE SET
-    values = bins.values ||
-      jsonb_build_object('${accumulatorSlot}', 
-        (coalesce((bins.values->>'${accumulatorSlot}')::real, 0.0::real) + ${timeDelta}));
-  `
-          }
-        }
-      }
-    }
+    //         // iterate over accumulator slots, eg 'time_active', 'time_available'.
+    //         for (let accumulatorSlot of accumulatorSlots) {
+    //           // get total time accumulated for the slot
+    //           const timeDelta = accumulators[accumulatorSlot]
+    //           if (timeDelta > 0) {
+    //             // add values one at a time to existing db records.
+    //             // would be better to do all with one stmt somehow,
+    //             // but it's already complex enough.
+    //             // this is an upsert command pattern in postgres -
+    //             // try to add a new record - if key is already there,
+    //             // update existing record by adding timeDelta to the value.
+    //             sql += `
+    // INSERT INTO bins (device_id, time, dimensions, values)
+    //   VALUES (${device_id}, '${timestring}',
+    //     '${dimensions}'::jsonb,
+    //     '{"${accumulatorSlot}":${timeDelta}}'::jsonb)
+    // ON CONFLICT (device_id, time, dimensions) DO
+    //   UPDATE SET
+    //     values = bins.values ||
+    //       jsonb_build_object('${accumulatorSlot}',
+    //         (coalesce((bins.values->>'${accumulatorSlot}')::real, 0.0::real) + ${timeDelta}));
+    //   `
+    //           }
+    //         }
+    //       }
+    //     }
     return sql
   }
 
@@ -204,22 +205,22 @@ function getDayOfYear(date) {
   return day
 }
 
-// get hour given year, dayOfYear, hour, and minute - in seconds since 1970
+// // get hour given year, dayOfYear, hour, and minute - in seconds since 1970
+// // export function getHourInSeconds(dims) {
+// //   const base = new Date(dims.year, 0, 1).getTime() * 0.001
+// //   const seconds =
+// //     base +
+// //     (dims.dayOfYear - 1) * secondsPerDay +
+// //     dims.hour * secondsPerHour +
+// //     dims.minute * secondsPerMinute
+// //   return seconds
+// // }
 // export function getHourInSeconds(dims) {
 //   const base = new Date(dims.year, 0, 1).getTime() * 0.001
 //   const seconds =
-//     base +
-//     (dims.dayOfYear - 1) * secondsPerDay +
-//     dims.hour * secondsPerHour +
-//     dims.minute * secondsPerMinute
+//     base + (dims.dayOfYear - 1) * secondsPerDay + dims.hour * secondsPerHour
 //   return seconds
 // }
-export function getHourInSeconds(dims) {
-  const base = new Date(dims.year, 0, 1).getTime() * 0.001
-  const seconds =
-    base + (dims.dayOfYear - 1) * secondsPerDay + dims.hour * secondsPerHour
-  return seconds
-}
 
 // get hours since 1970-01-01
 export function getHours1970(date) {
