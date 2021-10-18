@@ -40,12 +40,10 @@ export class Tracker {
     this.amendObservations()
 
     for (let observation of observations) {
-      const key = observation.device_id + '-' + observation.name
-
       // check if this is a value we're tracking, eg availability, execution_state
       const valueDef = this.valueDefs[observation.name]
       if (valueDef) {
-        this.trackValue(observation, valueDef, key)
+        this.trackValue(observation, valueDef)
         //
       } else {
         // check if it's a dimension we're tracking - eg hours1970, operator
@@ -60,7 +58,8 @@ export class Tracker {
   // if value changed to 'on' state, eg 'ACTIVE', 'AVAILABLE',
   // start a clock to track time in that state.
   // otherwise add the time delta to a bin, clear the clock.
-  trackValue(observation, valueDef, key) {
+  trackValue(observation, valueDef) {
+    const { key } = observation
     if (observation.value === valueDef.when) {
       if (this.startTimes[key] === undefined) {
         this.startTimes[key] = observation.seconds1970
@@ -87,11 +86,11 @@ export class Tracker {
   writeToDb() {
     console.log('writeToDb - dump any bin adjustments to db')
     //. do time_calendar also
-    //. dump bins to db
+    // dump bins to db
     console.log('bins', this.bins)
     const sql = this.getSql()
     console.log(sql)
-    // this.db.write(sql)
+    // this.db.write(sql) //.
     // clear bins
     this.bins = {}
   }
@@ -160,6 +159,8 @@ export class Tracker {
   amendObservations() {
     for (let observation of this.observations) {
       if (!observation.name) continue // skip uninteresting ones
+
+      observation.key = observation.device_id + '-' + observation.name
 
       const date = new Date(observation.timestamp)
 
