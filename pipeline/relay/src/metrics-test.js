@@ -157,7 +157,7 @@ const trackers = {}
   console.log(tracker)
   tracker.startTimer(2000) // start timer which dumps bins to db every interval
   while (true) {
-    tracker.updateBins(observations) // update bins
+    tracker.trackObservations(observations) // update bins
     await new Promise(resolve => setTimeout(resolve, 1000)) // pause
   }
 })()

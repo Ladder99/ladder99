@@ -10,11 +10,13 @@ const daysPerMillisecond = 1 / (secondsPerDay * 1000)
 const hoursPerSecond = 1 / 3600
 
 // dump bins to db once a minute
-const writeToDbTimeout = 60 * millisecondsPerSecond
+const defaultDbInterval = 60 * millisecondsPerSecond
 
 //
 
 export class Tracker {
+  // dimensionDefs is
+  // valueDefs is
   constructor(dimensionDefs, valueDefs) {
     this.dimensionDefs = dimensionDefs
     this.valueDefs = valueDefs
@@ -25,15 +27,15 @@ export class Tracker {
   }
 
   // start the timer that dumps bins to the db
-  startTimer(writeToDbTimeout = 60 * 1000) {
-    console.log('startTimer', writeToDbTimeout)
-    this.timer = setInterval(this.writeToDb.bind(this), writeToDbTimeout)
+  startTimer(dbInterval = defaultDbInterval) {
+    console.log('startTimer')
+    this.timer = setInterval(this.writeToDb.bind(this), dbInterval)
   }
 
   // update bins given a list of observations.
   // observations should be sorted by time.
-  updateBins(observations) {
-    console.log('updateBins')
+  trackObservations(observations) {
+    console.log('trackObservations')
     this.observations = observations
 
     // add hours1970, dimensionKey, etc to each observation
@@ -43,13 +45,13 @@ export class Tracker {
       // check if this is a value we're tracking, eg availability, execution_state
       const valueDef = this.valueDefs[observation.name]
       if (valueDef) {
-        this.trackValue(observation, valueDef)
+        this.trackValueChange(observation, valueDef)
         //
       } else {
         // check if it's a dimension we're tracking - eg hours1970, operator
         const dimensionDef = this.dimensionDefs[observation.name]
         if (dimensionDef) {
-          this.trackDimension(observation, dimensionDef)
+          this.trackDimensionChange(observation, dimensionDef)
         }
       }
     }
@@ -58,20 +60,27 @@ export class Tracker {
   // if value changed to 'on' state, eg 'ACTIVE', 'AVAILABLE',
   // start a clock to track time in that state.
   // otherwise add the time delta to a bin, clear the clock.
-  trackValue(observation, valueDef) {
+  trackValueChange(observation, valueDef) {
     const { key } = observation
     if (observation.value === valueDef.when) {
+      // value changed to 'on' state - start clock
+      // add guard in case agent sends same value again
       if (this.startTimes[key] === undefined) {
         this.startTimes[key] = observation.seconds1970
       }
+      // clock.start(observation)
     } else {
+      // get time delta and add to bin
+      // const seconds = clock.stop(observation) // will clear clock also
+      // if (seconds > 0) { this.bins.add(observation, seconds) }
       if (this.startTimes[key] !== undefined) {
-        const delta = observation.seconds1970 - this.startTimes[key]
+        const seconds = observation.seconds1970 - this.startTimes[key]
         if (this.bins[key] === undefined) {
-          this.bins[key] = delta // create new bin with delta
+          this.bins[key] = seconds // create new bin with seconds
         } else {
-          this.bins[key] += delta // add delta to existing bin
+          this.bins[key] += seconds // add seconds to existing bin
         }
+        // clear the clock
         delete this.startTimes[key]
       }
     }
@@ -79,7 +88,7 @@ export class Tracker {
 
   // dimension value changed
   //. dump all bins to db, reset all startTimes?
-  trackDimension(observation, dimensionDef) {
+  trackDimensionChange(observation, dimensionDef) {
     const { dimensionKey } = observation
   }
 
@@ -236,4 +245,8 @@ export function getHours1970(date) {
 
 function getSeconds1970(date) {
   return date.getTime() * secondsPerMillisecond // seconds
+}
+
+class Clock {
+  constructor() {}
 }
