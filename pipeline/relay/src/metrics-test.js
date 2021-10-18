@@ -153,7 +153,7 @@ const observations = [
 const trackers = {}
 
 ;(async function () {
-  const tracker = new metrics.Tracker(dimensionDefs, valueDefs)
+  const tracker = new metrics.Tracker(null, dimensionDefs, valueDefs)
   console.log(tracker)
   tracker.startTimer(2000) // start timer which dumps bins to db every interval
   while (true) {

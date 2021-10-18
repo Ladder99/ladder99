@@ -1,28 +1,24 @@
 // track changes to dimensions and values as observations come in,
 // dump changes to database once a minute.
 
-// constants
-const secondsPerDay = 24 * 60 * 60
-const secondsPerHour = 60 * 60
-const millisecondsPerSecond = 1000
-const secondsPerMillisecond = 0.001
-const daysPerMillisecond = 1 / (secondsPerDay * 1000)
-const hoursPerSecond = 1 / 3600
+import * as time from './time.js'
 
 // dump bins to db once a minute
-const defaultDbInterval = 60 * millisecondsPerSecond
+const defaultDbInterval = 60 * 1000 // in msec
 
 //
 
 export class Tracker {
+  // db is a Db object
   //. dimensionDefs is {}
   //. valueDefs is {}
-  constructor(dimensionDefs, valueDefs) {
+  constructor(db, dimensionDefs, valueDefs) {
+    this.db = db
     this.dimensionDefs = dimensionDefs
     this.valueDefs = valueDefs
-    this.dbTimer = null
     this.bins = new Bins()
     this.clock = new Clock()
+    this.dbTimer = null
     this.observations = null
   }
 
@@ -57,7 +53,7 @@ export class Tracker {
     }
   }
 
-  // value we're tracking changed
+  // value changed - update clock, add to bins as needed
   trackValueChange(observation, valueDef) {
     // if value changed to 'on' state, eg 'ACTIVE', 'AVAILABLE',
     // start a clock to track time in that state.
@@ -65,31 +61,128 @@ export class Tracker {
       this.clock.start(observation)
     } else {
       // otherwise add the time delta to a bin, clear the clock.
-      const seconds = this.clock.stop(observation) // will clear clock also
+      const seconds = this.clock.stop(observation)
       if (seconds > 0) {
         this.bins.add(observation, seconds)
       }
+      this.clock.clear(observation)
     }
   }
 
-  // dimension we're tracking changed
-  //. dump all bins to db, reset all startTimes?
+  // dimension changed - dump all bins to accumulators, reset all clocks
+  //?
   trackDimensionChange(observation, dimensionDef) {
     const { dimensionKey } = observation
+    this.bins.setDimensionKey(dimensionKey)
+    this.clock.clear(observation)
+    this.clock.start(observation)
   }
 
+  // write all bin deltas to the database
+  //. include time_calendar also
   writeToDb() {
-    console.log('writeToDb - dump any bin adjustments to db')
-    //. do time_calendar also
-    // dump bins to db
-    console.log('bins', this.bins)
-    const sql = this.getSql()
+    console.log('writeToDb')
+    console.log(this.bins)
+    // get sql for updates and clear bins
+    const sql = this.bins.getSql()
+    this.bins.clear()
+    // write to db
     console.log(sql)
     // this.db.write(sql) //.
-    // clear bins
-    this.bins.clear()
   }
 
+  // add info to observations, incl time as hours1970.
+  amendObservations() {
+    for (let observation of this.observations) {
+      if (!observation.name) continue // skip uninteresting ones
+
+      observation.key = observation.device_id + '-' + observation.name
+
+      const date = new Date(observation.timestamp)
+
+      // convert iso timestamps to seconds since 1970-01-01
+      observation.seconds1970 = date.getTime() * 0.001 // in seconds
+
+      // round down to hour
+      observation.hours1970 = time.getHours1970(date) // hours since 1970-01-01
+
+      // assign dimension key to observation
+      observation.dimensionKey = getDimensionKey(
+        observation,
+        this.dimensionDefs
+      )
+    }
+  }
+}
+
+//
+
+// get dimension key for an observation,
+// eg '{"hour1970":1234567,"operator":"Alice"}'
+//. what if dimensionKey is incomplete?
+export function getDimensionKey(observation, dimensionDefs) {
+  const dimensions = {}
+  for (let dimension of Object.keys(dimensionDefs)) {
+    dimensions[dimension] = observation[dimension]
+  }
+  return JSON.stringify(dimensions)
+}
+
+export function splitDimensionKey(dimensionKey) {
+  return JSON.parse(dimensionKey)
+}
+
+//
+
+class Clock {
+  constructor(tracker) {
+    // this.tracker = tracker
+    this.startTimes = {}
+  }
+
+  // start clock for the given observation
+  start(observation) {
+    const { key } = observation
+    // add guard in case agent sends same value again
+    if (this.startTimes[key] === undefined) {
+      this.startTimes[key] = observation.seconds1970
+    }
+  }
+
+  // stop clock for given observation, return time delta in seconds
+  stop(observation) {
+    const { key } = observation
+    let seconds
+    if (this.startTimes[key] !== undefined) {
+      seconds = observation.seconds1970 - this.startTimes[key]
+      // clear the clock
+      delete this.startTimes[key]
+    }
+    return seconds
+  }
+
+  clear(observation) {
+    delete this.startTimes[observation.key]
+  }
+}
+
+//
+
+class Bins {
+  constructor() {
+    this.bins = {}
+  }
+  add(observation, seconds) {
+    const { key } = observation
+    if (this.bins[key] === undefined) {
+      this.bins[key] = seconds // create new bin with seconds
+    } else {
+      this.bins[key] += seconds // add seconds to existing bin
+    }
+  }
+  clear() {
+    this.bins = {}
+  }
   // get sql statements to write given accumulator bin data to db.
   // accumulatorBins is like { device_id: bins }
   //   with bins like { dimensions: accumulators }
@@ -148,132 +241,5 @@ export class Tracker {
     //       }
     //     }
     return sql
-  }
-
-  // add info to observations, incl time as hours1970.
-  amendObservations() {
-    for (let observation of this.observations) {
-      if (!observation.name) continue // skip uninteresting ones
-
-      observation.key = observation.device_id + '-' + observation.name
-
-      const date = new Date(observation.timestamp)
-
-      // convert iso timestamps to seconds since 1970-01-01
-      observation.seconds1970 = date.getTime() * secondsPerMillisecond
-
-      // round down to hour
-      observation.hours1970 = getHours1970(date) // hours since 1970-01-01
-
-      // assign dimension key to observation
-      observation.dimensionKey = getDimensionKey(
-        observation,
-        this.dimensionDefs
-      )
-    }
-  }
-}
-
-//
-
-// get dimension key for an observation,
-// eg '{"hour1970":1234567,"operator":"Alice"}'
-export function getDimensionKey(observation, dimensionDefs) {
-  const dimensions = {}
-  for (let dimension of Object.keys(dimensionDefs)) {
-    dimensions[dimension] = observation[dimension]
-  }
-  return JSON.stringify(dimensions)
-}
-export function splitDimensionKey(dimensionKey) {
-  return JSON.parse(dimensionKey)
-}
-
-// get day of year, 1-366
-// from stackoverflow
-function getDayOfYear(date) {
-  const start = new Date(date.getFullYear(), 0, 0)
-  const diff =
-    date.getTime() -
-    start.getTime() +
-    (start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000
-  const day = Math.floor(diff * daysPerMillisecond)
-  return day
-}
-
-// // get hour given year, dayOfYear, hour, and minute - in seconds since 1970
-// // export function getHourInSeconds(dims) {
-// //   const base = new Date(dims.year, 0, 1).getTime() * 0.001
-// //   const seconds =
-// //     base +
-// //     (dims.dayOfYear - 1) * secondsPerDay +
-// //     dims.hour * secondsPerHour +
-// //     dims.minute * secondsPerMinute
-// //   return seconds
-// // }
-// export function getHourInSeconds(dims) {
-//   const base = new Date(dims.year, 0, 1).getTime() * 0.001
-//   const seconds =
-//     base + (dims.dayOfYear - 1) * secondsPerDay + dims.hour * secondsPerHour
-//   return seconds
-// }
-
-// get hours since 1970-01-01
-export function getHours1970(date) {
-  const date2 = new Date(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate(),
-    date.getHours()
-  )
-  return date2.getTime() * secondsPerMillisecond * hoursPerSecond
-}
-
-function getSeconds1970(date) {
-  return date.getTime() * secondsPerMillisecond // seconds
-}
-
-class Clock {
-  constructor(tracker) {
-    // this.tracker = tracker
-    this.startTimes = {}
-  }
-
-  // start clock for the given observation
-  start(observation) {
-    const { key } = observation
-    // add guard in case agent sends same value again
-    if (this.startTimes[key] === undefined) {
-      this.startTimes[key] = observation.seconds1970
-    }
-  }
-
-  // stop clock for given observation, return time delta in seconds
-  stop(observation) {
-    const { key } = observation
-    let seconds
-    if (this.startTimes[key] !== undefined) {
-      seconds = observation.seconds1970 - this.startTimes[key]
-      // clear the clock
-      delete this.startTimes[key]
-    }
-    return seconds
-  }
-}
-
-class Bins {
-  constructor() {
-    this.bins = {}
-  }
-  add(observation, seconds) {
-    const { key } = observation
-    if (this.bins[key] === undefined) {
-      this.bins[key] = seconds // create new bin with seconds
-    } else {
-      this.bins[key] += seconds // add seconds to existing bin
-    }
-  }
-  clear() {
-    this.bins = {}
   }
 }
