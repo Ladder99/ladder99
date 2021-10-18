@@ -67,10 +67,10 @@ export class Tracker {
     }
   }
 
-  // dimension changed - dump all bins to accumulators, reset all clocks
+  // a dimension value changed - dump all bins to accumulators, reset all clocks
   //?
   trackDimensionChange(observation, dimensionDef) {
-    const { dimensionKey } = observation
+    // const { dimensionKey } = observation
     // this.bins.setDimensionKey(dimensionKey)
     this.clock.clear(observation)
     this.clock.start(observation)
@@ -80,7 +80,7 @@ export class Tracker {
   //. include time_calendar also
   writeToDb() {
     console.log('writeToDb')
-    console.log(this.bins)
+    console.log(this.bins.bins)
     // get sql for updates and clear bins
     const sql = this.bins.getSql()
     this.bins.clear()
@@ -141,7 +141,7 @@ class Vector {
   constructor() {}
 }
 
-// clock
+//
 
 class Clock {
   constructor(tracker) {
@@ -175,7 +175,7 @@ class Clock {
   }
 }
 
-// bins
+//
 
 export class Bins {
   constructor() {
