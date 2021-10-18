@@ -120,9 +120,13 @@ handlers:
       # hence the msg lookup function def above.
       job_meta: msg('%Z61.0')
 
+      # NEW-PROCESS: data from skid zpl
+      #   skid_meta: msg('%Z61.17')
+
       #. how specify printer assoc with this line?
       # need to specify pr1, pr2, pr3, pr4 etc
       # setup.yaml could specify? or part of the xml model?
+      # could also name printers as kl1-skid-printer and kl1-kit-printer
       # piece_count_at_print_apply: |
       #   (<job_meta> || {}).carton_quantity - cache.get('pr1-labels_remaining')
 
@@ -137,8 +141,10 @@ handlers:
       #. will this fire if get 50 twice in a row? check code - should ignore duplicates
       kits_on: msg('%Z61.5')
 
-      # count of kits that have crossed eye2 on conveyer
+      # count of kits that have crossed eye2 on conveyor
       kits_off: msg('%Z61.6')
+      # NEW-PROCESS - count of kits passed eye-3
+      #   kits_off: msg('%Z61.18')
 
       # pieces remaining
       pcrem_calc: <carton_quantity> - <kits_off>
@@ -212,6 +218,9 @@ handlers:
           return ':MANUAL ' + dataitems;
         }
 
+      # NEW-PROCESS - number of pieces reworked through oven based on eye-2
+      #   pieces_reworked: msg('%Z61.7')
+
       pieces_in_assembly: <kits_on> - <kits_off> # kits on assy line
       pieces_completed: <kits_off> # kits finished
       pieces_began: <kits_on> # kits work began
@@ -219,9 +228,13 @@ handlers:
       # current job done flag, pieces remaining reached zero
       #. need explicit true here, so undefined -> false (undefined would leave this as true)
       job_complete: msg('%Z61.3') === true
+      # NEW-PROCESS - need to look at eye-3 countdown to zero status (t/f)
+      #   job_complete: msg('%Z61.22')
 
       # kit assembly part number, can be empty string
       job_current: (<job_meta> || {}).kit_number
+
+      job_part_name: (<job_meta> || {}).kit_name
 
       # compare cache to incoming data
       # this is truthy when get new job_meta values, undefined otherwise
@@ -242,6 +255,9 @@ handlers:
       # use "%Z61.10", "JOB.CURRENT.SALESORDER" to reference correct one?
       # purchord: ($['%Z61.x'] || {}).purchase_order_number
       # purchord: (msg('%Z61.13') || {}).purchase_order
+      # NEW-PROCESS - get purchase order info from skid zpl
+      #   if skid data is not available then 61.17 will be empty json object {}
+      #   purchord: (<skid_meta> || {}).purchase_order
 
       # --------------------------------------------------------
       # part occurrences
@@ -252,7 +268,7 @@ handlers:
 
       # aka dc
       # this returns undefined when no job_meta avail, which is a no-op, so leaves value as is.
-      date_code: (<job_meta> || {}).assembled_date
+      date_code: (<job_meta> || {}).assembly_date
 
   # ----------------------------------------------------------------------------
   # handle read messages
