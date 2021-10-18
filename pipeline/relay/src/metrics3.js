@@ -61,7 +61,7 @@ export class Tracker {
       // otherwise add the time delta to a bin, clear the clock.
       const seconds = this.clock.stop(observation)
       if (seconds > 0) {
-        this.bins.add(observation, seconds)
+        this.bins.addObservation(observation, seconds)
       }
       this.clock.clear(observation)
     }
@@ -70,8 +70,7 @@ export class Tracker {
   // a dimension value changed - dump all bins to accumulators, reset all clocks
   //?
   trackDimensionChange(observation, dimensionDef) {
-    // const { dimensionKey } = observation
-    // this.bins.setDimensionKey(dimensionKey)
+    this.bins.setDimensionValue(observation.name, observation.value)
     this.clock.clear(observation)
     this.clock.start(observation)
   }
@@ -80,7 +79,7 @@ export class Tracker {
   //. include time_calendar also
   writeToDb() {
     console.log('writeToDb')
-    console.log(this.bins.bins)
+    console.log(this.bins.data)
     // get sql for updates and clear bins
     const sql = this.bins.getSql()
     this.bins.clear()
@@ -179,27 +178,30 @@ class Clock {
 
 export class Bins {
   constructor() {
-    this.bins = {}
+    this.data = {}
     this.dimensionKeys = {} // per device_id
   }
-  add(observation, seconds) {
+  getDimensionKey(device_id) {
+    return JSON.stringify(this.dimensionKeys[device_id])
+  }
+  addObservation(observation, delta) {
     // note: already looked up slot in amendObservations
     const { device_id, slot } = observation
-    const dimensionKey = this.dimensionKeys[device_id]
-    const existing = this.get(device_id, dimensionKey, slot)
-    if (existing === undefined) {
-      // create new bin with seconds
-      this.set(device_id, dimensionKey, slot, seconds)
+    const dimensionKey = this.getDimensionKey(device_id)
+    const existingValue = this._getSlot(device_id, dimensionKey, slot)
+    if (existingValue === undefined) {
+      // create new bin with delta
+      this._setSlot(device_id, dimensionKey, slot, delta)
     } else {
-      // add seconds to existing bin
-      this.set(device_id, dimensionKey, slot, existing + seconds)
+      // add delta to existing bin
+      this._setSlot(device_id, dimensionKey, slot, existingValue + delta)
     }
   }
   // neither object or Map let you use an object/array as key where
   // you can retrieve a value with another object/array constructed similarly -
   // it must be the exact same object/array. so do this...
-  get(key1, key2, key3) {
-    const value1 = this.bins[key1]
+  _getSlot(key1, key2, key3) {
+    const value1 = this.data[key1]
     if (value1 !== undefined) {
       const value2 = value1[key2]
       if (value2 !== undefined) {
@@ -207,8 +209,8 @@ export class Bins {
       }
     }
   }
-  set(key1, key2, key3, value) {
-    const value1 = this.bins[key1]
+  _setSlot(key1, key2, key3, value) {
+    const value1 = this.data[key1]
     if (value1 !== undefined) {
       const value2 = value1[key2]
       if (value2 !== undefined) {
@@ -217,12 +219,20 @@ export class Bins {
         value1[key2] = { [key3]: value }
       }
     } else {
-      this.bins[key1] = { [key2]: { [key3]: value } }
+      this.data[key1] = { [key2]: { [key3]: value } }
     }
   }
-  clear() {
-    //. clear for one device, eh?
-    this.bins = {}
+  // clear data for one device
+  clear(device_id) {
+    delete this.data[device_id]
+  }
+  setDimensionValue(device_id, key, value) {
+    const keyvalues = this.dimensionKeys[device_id]
+    if (keyvalues !== undefined) {
+      keyvalues[key] = value
+    } else {
+      this.dimensionKeys[device_id] = { [key]: value }
+    }
   }
   // get sql statements to write given accumulator bin data to db.
   // accumulatorBins is like { device_id: bins }
