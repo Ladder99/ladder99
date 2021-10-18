@@ -154,6 +154,10 @@ const observations = [
   bins.set(1, 'alice', 'time_available', 10)
   bins.set(1, 'bob', 'time_available', 20)
   console.log(bins.bins)
+  bins.dimensionKeys[1] = 'alice'
+  const observation = { device_id: 1, slot: 'time_available' }
+  bins.add(observation, 30)
+  console.log(bins.bins)
 }
 
 process.exit(1)
