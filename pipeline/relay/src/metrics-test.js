@@ -44,6 +44,11 @@ const valueDefs = {
 // const dims = { year: 2021, dayOfYear: 1, hour: 0, minute: 0 }
 // console.log(new Date(metrics.getHourInSeconds(dims) * 1000))
 
+{
+  const date = new Date()
+  console.log(metrics.getHours1970(date))
+}
+
 // simulated observations from 'sample' endpoint.
 // time_available should be 20+10=30 secs
 const observations = [

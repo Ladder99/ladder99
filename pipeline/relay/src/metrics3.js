@@ -7,6 +7,7 @@ const secondsPerHour = 60 * 60
 const millisecondsPerSecond = 1000
 const secondsPerMillisecond = 0.001
 const daysPerMillisecond = 1 / (secondsPerDay * 1000)
+const hoursPerSecond = 1 / 3600
 
 // dump bins to db once a minute
 const writeToDbTimeout = 60 * millisecondsPerSecond
@@ -222,11 +223,13 @@ export function getHourInSeconds(dims) {
 
 // get hours since 1970-01-01
 export function getHours1970(date) {
-  return 1234567 //.
-  // const year = date.getYear()
-  // const base = new Date(year, 0, 1).getTime() * 0.001
-  // const seconds =
-  //   base + (dims.dayOfYear - 1) * secondsPerDay + dims.hour * secondsPerHour
+  const date2 = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    date.getHours()
+  )
+  return date2.getTime() * secondsPerMillisecond * hoursPerSecond
 }
 
 function getSeconds1970(date) {
