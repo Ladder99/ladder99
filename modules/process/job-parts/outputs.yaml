@@ -111,9 +111,9 @@ outputs:
       <has_current_job> ? 'READY' :
       'UNAVAILABLE'
 
-  #. ?
-  # - key: pgm
-  #   value: <status_program>
+  # same as path pgm
+  - key: pgm
+    value: <status_program>
 
   - key: cycle
     value: <cycle_time>
@@ -135,20 +135,43 @@ outputs:
   # part occurrence
   # ------------------------------------------------------------------
 
-  - key: pctarg
-    value: <carton_quantity>
+  #. ?
+  - key: pid
+    value: <part_uuid>
 
-  - key: pcrem_pr
-    value: <pcrem_pr>
+  - key: poid-ref
+    value: <process_uuid>
 
-  - key: pcrem_calc
-    value: <pcrem_calc>
+  - key: pkuuid
+    value: <part_uuid>
 
-  - key: pcrem_plc
-    value: <pcrem_plc>
+  - key: pknum
+    value: <job_current>
+
+  - key: pkname
+    value: <job_part_name>
+
+  - key: dc
+    value: <date_code>
 
   - key: pcall
     value: <pcall>
 
-  - key: dc
-    value: <date_code>
+  - key: pctarg
+    value: <carton_quantity>
+
+  - key: pccomp
+    value: <pcall>
+
+  - key: pcrem_calc
+    value: <pcrem_calc>
+
+  #- key: pcrem_plc
+  #  value: <pcrem_plc>
+
+  #- key: pcrem_pr
+  #  value: <pcrem_pr>
+
+
+
+
