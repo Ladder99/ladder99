@@ -6,23 +6,22 @@ import * as time from './time.js'
 // dump bins to db once a minute
 const defaultDbInterval = 60 * 1000 // in msec
 
-//
-
 export class Tracker {
   // db is a Db object
-  //. dimensionDefs is {}
-  //. valueDefs is {}
+  // dimensionDefs is set of dimensions to track, eg operator
+  // valueDefs is set of values to track, including their 'on' state, eg availability
   constructor(db, dimensionDefs, valueDefs) {
     this.db = db
     this.dimensionDefs = dimensionDefs
     this.valueDefs = valueDefs
+    this.vector = new Vector()
     this.bins = new Bins()
     this.clock = new Clock()
     this.dbTimer = null
     this.observations = null
   }
 
-  // start the timer that dumps bins to the db
+  // start the timer that dumps bins to the db every minute
   startTimer(dbInterval = defaultDbInterval) {
     console.log('startTimer')
     this.dbTimer = setInterval(this.writeToDb.bind(this), dbInterval)
@@ -38,16 +37,15 @@ export class Tracker {
     this.amendObservations()
 
     for (let observation of observations) {
-      // check if this is a value we're tracking, eg availability, execution_state
-      const valueDef = this.valueDefs[observation.name]
-      if (valueDef) {
-        this.trackValueChange(observation, valueDef)
-        //
+      // check if it's a dimension we're tracking - eg hours1970, operator
+      const dimensionDef = this.dimensionDefs[observation.name]
+      if (dimensionDef) {
+        this.trackDimensionChange(observation, dimensionDef)
       } else {
-        // check if it's a dimension we're tracking - eg hours1970, operator
-        const dimensionDef = this.dimensionDefs[observation.name]
-        if (dimensionDef) {
-          this.trackDimensionChange(observation, dimensionDef)
+        // check if this is a value we're tracking, eg availability, execution_state
+        const valueDef = this.valueDefs[observation.name]
+        if (valueDef) {
+          this.trackValueChange(observation, valueDef)
         }
       }
     }
@@ -73,7 +71,7 @@ export class Tracker {
   //?
   trackDimensionChange(observation, dimensionDef) {
     const { dimensionKey } = observation
-    this.bins.setDimensionKey(dimensionKey)
+    // this.bins.setDimensionKey(dimensionKey)
     this.clock.clear(observation)
     this.clock.start(observation)
   }
@@ -96,7 +94,7 @@ export class Tracker {
     for (let observation of this.observations) {
       if (!observation.name) continue // skip uninteresting ones
 
-      observation.key = observation.device_id + '-' + observation.name
+      // observation.key = observation.device_id + '-' + observation.name
 
       const date = new Date(observation.timestamp)
 
@@ -106,33 +104,39 @@ export class Tracker {
       // round down to hour
       observation.hours1970 = time.getHours1970(date) // hours since 1970-01-01
 
-      // assign dimension key to observation
-      observation.dimensionKey = getDimensionKey(
-        observation,
-        this.dimensionDefs
-      )
+      // // assign dimension key to observation
+      // observation.dimensionKey = getDimensionKey(
+      //   observation,
+      //   this.dimensionDefs
+      // )
     }
   }
 }
 
 //
 
-// get dimension key for an observation,
-// eg '{"hour1970":1234567,"operator":"Alice"}'
-//. what if dimensionKey is incomplete?
-export function getDimensionKey(observation, dimensionDefs) {
-  const dimensions = {}
-  for (let dimension of Object.keys(dimensionDefs)) {
-    dimensions[dimension] = observation[dimension]
-  }
-  return JSON.stringify(dimensions)
+// // get dimension key for an observation,
+// // eg '{"hour1970":1234567,"operator":"Alice"}'
+// //. what if dimensionKey is incomplete?
+// export function getDimensionKey(observation, dimensionDefs) {
+//   const dimensions = {}
+//   for (let dimension of Object.keys(dimensionDefs)) {
+//     dimensions[dimension] = observation[dimension]
+//   }
+//   return JSON.stringify(dimensions)
+// }
+
+// export function splitDimensionKey(dimensionKey) {
+//   return JSON.parse(dimensionKey)
+// }
+
+// a vector is a set of dimension values
+//. it's not valid until all values are set, eh?
+class Vector {
+  constructor() {}
 }
 
-export function splitDimensionKey(dimensionKey) {
-  return JSON.parse(dimensionKey)
-}
-
-//
+// clock
 
 class Clock {
   constructor(tracker) {
@@ -166,7 +170,7 @@ class Clock {
   }
 }
 
-//
+// bins
 
 class Bins {
   constructor() {
