@@ -56,31 +56,31 @@ export class Tracker {
     }
   }
 
-  // a dimension value changed - dump all bins to accumulators, reset all clocks?
-  //. so dump accums to db, not bins? mebbe
+  // a dimension value changed - update dimensionkey and reset all clocks
   trackDimensionChange(observation, dimensionDef) {
+    console.log('track dimension change')
     // update the bins dimensionkey
     this.bins.setDimensionValue(
       observation.device_id,
       observation.name,
       observation.value
     )
-
-    //. restart all device clocks ?
+    // restart all device clocks
     this.clock.restartAll(observation)
   }
 
   // value changed - update clock, add to bins as needed
   trackValueChange(observation, valueDef) {
+    console.log('track value change')
     // if value changed to 'on' state, eg 'ACTIVE', 'AVAILABLE',
     // start a clock to track time in that state.
     if (observation.value === valueDef.when) {
       this.clock.start(observation)
     } else {
       // otherwise add the time delta to a bin, clear the clock.
-      const seconds = this.clock.stop(observation)
-      if (seconds > 0) {
-        this.bins.addObservation(observation, seconds)
+      const delta = this.clock.stop(observation)
+      if (delta > 0) {
+        this.bins.addObservation(observation, delta)
       }
       this.clock.clear(observation)
     }
@@ -91,9 +91,10 @@ export class Tracker {
   writeToDb() {
     console.log('writeToDb')
     console.log('bins.data', this.bins.data)
+    console.log('bins.dimensionKeys', this.bins.dimensionKeys)
     let sql = ''
+
     const device_ids = Object.keys(this.bins.data)
-    // const device_ids = this.bins.getDeviceIds()
     for (let device_id of device_ids) {
       // update calendar time
       const observation = { device_id, slot: 'time_calendar' }

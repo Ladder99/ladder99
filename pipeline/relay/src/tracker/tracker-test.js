@@ -11,7 +11,7 @@ import * as tracker from './tracker.js'
 const dimensionDefs = {
   hour1970: {},
   // add these as needed, to be able to slice reports later
-  // operator: {},
+  operator: {},
   // machine: {},
   // component: {},
   // job: {},
@@ -70,20 +70,20 @@ const observations = [
     timestamp: '2021-10-11T00:00:10Z',
     value: 'AVAILABLE',
   },
-  {
-    device_id: 1,
-    id: 'kl1-oper',
-    name: 'operator',
-    timestamp: '2021-10-11T00:00:20Z',
-    value: 'bob',
-  },
-  {
-    device_id: 1,
-    id: 'kl1-avail',
-    name: 'availability',
-    timestamp: '2021-10-11T00:00:30Z',
-    value: 'UNAVAILABLE',
-  },
+  // {
+  //   device_id: 1,
+  //   id: 'kl1-oper',
+  //   name: 'operator',
+  //   timestamp: '2021-10-11T00:00:20Z',
+  //   value: 'bob',
+  // },
+  // {
+  //   device_id: 1,
+  //   id: 'kl1-avail',
+  //   name: 'availability',
+  //   timestamp: '2021-10-11T00:00:30Z',
+  //   value: 'UNAVAILABLE',
+  // },
   // {
   //   device_id: 1,
   //   id: 'kl1-avail',
@@ -179,7 +179,7 @@ const observations = [
 ;(async function () {
   const track = new tracker.Tracker(null, dimensionDefs, valueDefs)
   console.log(track)
-  track.startTimer(3) // start timer which dumps bins to db every interval secs
+  track.startTimer(2) // start timer which dumps bins to db every interval secs
   while (true) {
     track.trackObservations(observations) // update bins
     await new Promise(resolve => setTimeout(resolve, 1000)) // pause

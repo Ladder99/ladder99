@@ -1,8 +1,9 @@
 export class Bins {
   constructor() {
-    this.data = {}
+    this.data = {} // per device_id, then dimensionKey, then slot
     this.dimensionKeys = {} // per device_id
   }
+
   // add an observation amount to a slot
   addObservation(observation, delta) {
     // note: already looked up slot in amendObservations
@@ -17,9 +18,11 @@ export class Bins {
       this._setSlot(device_id, dimensionKey, slot, existingValue + delta)
     }
   }
+
   // neither object or Map let you use an object/array as key where
   // you can retrieve a value with another object/array constructed similarly -
   // it must be the exact same object/array. so do this...
+
   _getSlot(key1, key2, key3) {
     const value1 = this.data[key1]
     if (value1 !== undefined) {
@@ -29,6 +32,7 @@ export class Bins {
       }
     }
   }
+
   _setSlot(key1, key2, key3, value) {
     const value1 = this.data[key1]
     if (value1 !== undefined) {

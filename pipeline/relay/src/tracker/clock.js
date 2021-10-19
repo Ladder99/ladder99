@@ -1,6 +1,6 @@
 export class Clock {
   constructor() {
-    this.startTimes = {} // per device_id and name
+    this.startTimes = {} // per device_id, then name
   }
 
   // start clock for the given observation
@@ -39,11 +39,10 @@ export class Clock {
 
   restartAll(observation) {
     const { device_id, seconds1970 } = observation
-    if (this.startTimes[device_id] !== undefined) {
-      for (let clocks of this.startTimes[device_id]) {
-        for (let name of Object.keys(clocks)) {
-          clocks[name] = seconds1970
-        }
+    const clocks = this.startTimes[device_id]
+    if (clocks !== undefined) {
+      for (let name of Object.keys(clocks)) {
+        clocks[name] = seconds1970
       }
     }
   }
