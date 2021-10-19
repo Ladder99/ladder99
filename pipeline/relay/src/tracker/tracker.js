@@ -14,7 +14,6 @@ export class Tracker {
     this.db = db
     this.dimensionDefs = dimensionDefs
     this.valueDefs = valueDefs
-    this.vector = new Vector()
     this.bins = new Bins()
     this.clock = new Clock()
     this.dbTimer = null
