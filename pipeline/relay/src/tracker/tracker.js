@@ -93,11 +93,13 @@ export class Tracker {
 
       // get sql for updates
       const sql = this.bins.getSql(device_id)
+      console.log(sql) //.
+
       // write to db
-      console.log(sql)
+      // this.db.write(sql) //.
+
       // clear bins
       this.bins.clearDeviceData(device_id)
-      // this.db.write(sql) //.
     }
   }
 
@@ -237,9 +239,7 @@ export class Bins {
   clearDeviceData(device_id) {
     delete this.data[device_id]
   }
-  getDimensionKey(device_id) {
-    return JSON.stringify(this.dimensionKeys[device_id] || {})
-  }
+  // set one axis of the dimension key for a particular device
   setDimensionValue(device_id, key, value) {
     const keyvalues = this.dimensionKeys[device_id]
     if (keyvalues !== undefined) {
@@ -248,10 +248,14 @@ export class Bins {
       this.dimensionKeys[device_id] = { [key]: value }
     }
   }
+  // get the dimension key for a device, eg '{"operator":"alice"}'
+  getDimensionKey(device_id) {
+    return JSON.stringify(this.dimensionKeys[device_id] || {})
+  }
   // get sql statements to write given accumulator bin data to db.
-  // accumulatorBins is like { device_id: bins }
+  // this.data is like { device_id: bins }
   //   with bins like { dimensions: accumulators }
-  //   dimensions are like "{operator:'Alice'}"
+  //   dimensions are like '{"operator":"Alice"}'
   //   with accumulators like { time_active: 1, time_available: 2 }}
   // getSql(accumulatorBins) {
   getSql(device_id) {
