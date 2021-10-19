@@ -2,6 +2,7 @@
 // dump changes to database once a minute.
 
 import * as time from './time.js'
+import * as clock from './clock.js'
 
 // dump bins to db once a minute
 const defaultDbInterval = 60 // in sec
@@ -15,7 +16,7 @@ export class Tracker {
     this.dimensionDefs = dimensionDefs
     this.valueDefs = valueDefs
     this.bins = new Bins()
-    this.clock = new Clock()
+    this.clock = new clock.Clock()
     this.dbTimer = null
     this.observations = null
   }
@@ -124,38 +125,6 @@ export class Tracker {
 }
 
 //
-
-class Clock {
-  constructor(tracker) {
-    // this.tracker = tracker
-    this.startTimes = {}
-  }
-
-  // start clock for the given observation
-  start(observation) {
-    const { key } = observation
-    // add guard in case agent sends same value again
-    if (this.startTimes[key] === undefined) {
-      this.startTimes[key] = observation.seconds1970
-    }
-  }
-
-  // stop clock for given observation, return time delta in seconds
-  stop(observation) {
-    const { key } = observation
-    let seconds
-    if (this.startTimes[key] !== undefined) {
-      seconds = observation.seconds1970 - this.startTimes[key]
-      // clear the clock
-      delete this.startTimes[key]
-    }
-    return seconds
-  }
-
-  clear(observation) {
-    delete this.startTimes[observation.key]
-  }
-}
 
 //
 
