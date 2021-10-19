@@ -37,7 +37,14 @@ export class Clock {
     }
   }
 
-  clearAll() {
-    // this.startTimes
+  restartAll(observation) {
+    const { device_id, seconds1970 } = observation
+    if (this.startTimes[device_id] !== undefined) {
+      for (let clocks of this.startTimes[device_id]) {
+        for (let name of Object.keys(clocks)) {
+          clocks[name] = seconds1970
+        }
+      }
+    }
   }
 }

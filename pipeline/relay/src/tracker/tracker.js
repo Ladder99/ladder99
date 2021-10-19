@@ -66,12 +66,8 @@ export class Tracker {
       observation.value
     )
 
-    //. dump bins to accum
-    // this.accumulators.add(this.bins.getAll(observation.device_id))
-
-    //. clear and restart all device clocks ?
-    // this.clock.clearAll()
-    // this.clock.startAll()
+    //. restart all device clocks ?
+    this.clock.restartAll(observation)
   }
 
   // value changed - update clock, add to bins as needed
