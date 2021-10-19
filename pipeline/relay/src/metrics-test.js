@@ -13,7 +13,7 @@ import * as metrics from './metrics3.js'
 const dimensionDefs = {
   hour1970: {},
   // add these as needed, to be able to slice reports later
-  operator: {},
+  // operator: {},
   // machine: {},
   // component: {},
   // job: {},
@@ -71,6 +71,13 @@ const observations = [
     name: 'availability',
     timestamp: '2021-10-11T00:00:10Z',
     value: 'AVAILABLE',
+  },
+  {
+    device_id: 1,
+    id: 'kl1-oper',
+    name: 'operator',
+    timestamp: '2021-10-11T00:00:20Z',
+    value: 'bob',
   },
   {
     device_id: 1,
@@ -174,7 +181,7 @@ const observations = [
 ;(async function () {
   const tracker = new metrics.Tracker(null, dimensionDefs, valueDefs)
   console.log(tracker)
-  tracker.startTimer(2000) // start timer which dumps bins to db every interval
+  tracker.startTimer(3) // start timer which dumps bins to db every interval secs
   while (true) {
     tracker.trackObservations(observations) // update bins
     await new Promise(resolve => setTimeout(resolve, 1000)) // pause

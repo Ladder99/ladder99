@@ -4,7 +4,7 @@
 import * as time from './time.js'
 
 // dump bins to db once a minute
-const defaultDbInterval = 60 * 1000 // in msec
+const defaultDbInterval = 60 // in sec
 
 export class Tracker {
   // db is a Db object
@@ -24,7 +24,8 @@ export class Tracker {
   // start the timer that dumps bins to the db every minute
   startTimer(dbInterval = defaultDbInterval) {
     console.log('startTimer')
-    this.dbTimer = setInterval(this.writeToDb.bind(this), dbInterval)
+    this.dbTimer = setInterval(this.writeToDb.bind(this), dbInterval * 1000)
+    this.dbInterval = dbInterval // save for later
   }
 
   // update bins given a list of observations.
@@ -88,6 +89,10 @@ export class Tracker {
     console.log(this.bins.data)
     const device_ids = Object.keys(this.bins.data)
     for (let device_id of device_ids) {
+      //. update calendar time
+      const observation = { device_id, slot: 'time_calendar' }
+      this.bins.addObservation(observation, this.dbInterval)
+
       // get sql for updates
       const sql = this.bins.getSql(device_id)
       // write to db
@@ -253,6 +258,7 @@ export class Bins {
   // getSql(accumulatorBins) {
   getSql(device_id) {
     let sql = ''
+    sql += JSON.stringify(this.data[device_id])
     //     //
     //     // iterate over device+bins
     //     // device_id is a db node_id, eg 3
