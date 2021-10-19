@@ -87,7 +87,7 @@ export class Tracker {
     console.log(this.bins.data)
     const device_ids = Object.keys(this.bins.data)
     for (let device_id of device_ids) {
-      //. update calendar time
+      // update calendar time
       const observation = { device_id, slot: 'time_calendar' }
       this.bins.addObservation(observation, this.dbInterval)
 
@@ -235,10 +235,12 @@ export class Bins {
       this.data[key1] = { [key2]: { [key3]: value } }
     }
   }
+
   // clear data for one device
   clearDeviceData(device_id) {
     delete this.data[device_id]
   }
+
   // set one axis of the dimension key for a particular device
   setDimensionValue(device_id, key, value) {
     const keyvalues = this.dimensionKeys[device_id]
@@ -252,7 +254,8 @@ export class Bins {
   getDimensionKey(device_id) {
     return JSON.stringify(this.dimensionKeys[device_id] || {})
   }
-  // get sql statements to write given accumulator bin data to db.
+
+  // get sql statements to write given device_id data to db.
   // this.data is like { device_id: bins }
   //   with bins like { dimensions: accumulators }
   //   dimensions are like '{"operator":"Alice"}'
@@ -261,55 +264,54 @@ export class Bins {
   getSql(device_id) {
     let sql = ''
     sql += JSON.stringify(this.data[device_id])
-    //     //
-    //     // iterate over device+bins
-    //     // device_id is a db node_id, eg 3
-    //     // bins is a dict like { dimensions: accumulators }
-    //     for (let [device_id, bins] of Object.entries(accumulatorBins)) {
-    //       //
-    //       // iterate over dimensions+accumulators
-    //       // dimensions is eg '{"operator":"Alice", ...}' - ie gloms dimensions+values together
-    //       // accumulators is eg { time_active: 1, time_available: 2, ... },
-    //       //   ie all the accumulator slots and their time values in seconds.
-    //       for (let [dimensions, accumulators] of Object.entries(bins)) {
-    //         //
-    //         const accumulatorSlots = Object.keys(accumulators) // eg ['time_active', 'time_available']
-    //         if (accumulatorSlots.length === 0) continue // skip if no data
+    //
+    // bins is a dict like { dimensions: accumulators }
+    // for (let [device_id, bins] of Object.entries(accumulatorBins)) {
+    const bins = this.data[device_id]
+    //
+    // iterate over dimensions+accumulators
+    // dimensions is eg '{"operator":"Alice", ...}' - ie gloms dimensions+values together
+    // accumulators is eg { time_active: 1, time_available: 2, ... },
+    //   ie all the accumulator slots and their time values in seconds.
+    for (let [dimensions, accumulators] of Object.entries(bins)) {
+      //
+      const accumulatorSlots = Object.keys(accumulators) // eg ['time_active', 'time_available']
+      if (accumulatorSlots.length === 0) continue // skip if no data
 
-    //         // split dimensions into dimensions+values and get associated time.
-    //         const dims = splitDimensionKey(dimensions) // eg to {operator: 'Alice'}
-    //         const seconds1970 = getHourInSeconds(dims) // rounded to hour, in seconds
-    //         if (!seconds1970) continue // skip if got NaN or something
-    //         const timestring = new Date(
-    //           seconds1970 * millisecondsPerSecond
-    //         ).toISOString() // eg '2021-10-15T11:00:00Z"
+      // split dimensions into dimensions+values and get associated time.
+      // const dims = splitDimensionKey(dimensions) // eg to {operator: 'Alice'}
+      const dims = JSON.parse(dimensions) // eg to {operator: 'Alice'}
+      // const seconds1970 = getHourInSeconds(dims) // rounded to hour, in seconds
+      // if (!seconds1970) continue // skip if got NaN or something
+      const seconds1970 = 12345678 //..
+      const timestring = new Date(seconds1970 * 1000).toISOString() // eg '2021-10-15T11:00:00Z"
 
-    //         // iterate over accumulator slots, eg 'time_active', 'time_available'.
-    //         for (let accumulatorSlot of accumulatorSlots) {
-    //           // get total time accumulated for the slot
-    //           const timeDelta = accumulators[accumulatorSlot]
-    //           if (timeDelta > 0) {
-    //             // add values one at a time to existing db records.
-    //             // would be better to do all with one stmt somehow,
-    //             // but it's already complex enough.
-    //             // this is an upsert command pattern in postgres -
-    //             // try to add a new record - if key is already there,
-    //             // update existing record by adding timeDelta to the value.
-    //             sql += `
-    // INSERT INTO bins (device_id, time, dimensions, values)
-    //   VALUES (${device_id}, '${timestring}',
-    //     '${dimensions}'::jsonb,
-    //     '{"${accumulatorSlot}":${timeDelta}}'::jsonb)
-    // ON CONFLICT (device_id, time, dimensions) DO
-    //   UPDATE SET
-    //     values = bins.values ||
-    //       jsonb_build_object('${accumulatorSlot}',
-    //         (coalesce((bins.values->>'${accumulatorSlot}')::real, 0.0::real) + ${timeDelta}));
-    //   `
-    //           }
-    //         }
-    //       }
-    //     }
+      // iterate over accumulator slots, eg 'time_active', 'time_available'.
+      for (let accumulatorSlot of accumulatorSlots) {
+        // get total time accumulated for the slot
+        const timeDelta = accumulators[accumulatorSlot]
+        if (timeDelta > 0) {
+          // add values one at a time to existing db records.
+          // would be better to do all with one stmt somehow,
+          // but it's already complex enough.
+          // this is an upsert command pattern in postgres -
+          // try to add a new record - if key is already there,
+          // update existing record by adding timeDelta to the value.
+          sql += `
+    INSERT INTO bins (device_id, time, dimensions, values)
+      VALUES (${device_id}, '${timestring}',
+        '${dimensions}'::jsonb,
+        '{"${accumulatorSlot}":${timeDelta}}'::jsonb)
+    ON CONFLICT (device_id, time, dimensions) DO
+      UPDATE SET
+        values = bins.values ||
+          jsonb_build_object('${accumulatorSlot}',
+            (coalesce((bins.values->>'${accumulatorSlot}')::real, 0.0::real) + ${timeDelta}));
+      `
+        }
+      }
+    }
+    // }
     return sql
   }
 }

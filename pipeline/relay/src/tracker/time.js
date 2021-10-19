@@ -31,22 +31,22 @@ export function getHours1970(date) {
 //   return day
 // }
 
-// // get hour given year, dayOfYear, hour, and minute - in seconds since 1970
-// // export function getHourInSeconds(dims) {
-// //   const base = new Date(dims.year, 0, 1).getTime() * 0.001
-// //   const seconds =
-// //     base +
-// //     (dims.dayOfYear - 1) * secondsPerDay +
-// //     dims.hour * secondsPerHour +
-// //     dims.minute * secondsPerMinute
-// //   return seconds
-// // }
+// get hour given year, dayOfYear, hour, and minute - in seconds since 1970
 // export function getHourInSeconds(dims) {
 //   const base = new Date(dims.year, 0, 1).getTime() * 0.001
 //   const seconds =
-//     base + (dims.dayOfYear - 1) * secondsPerDay + dims.hour * secondsPerHour
+//     base +
+//     (dims.dayOfYear - 1) * secondsPerDay +
+//     dims.hour * secondsPerHour +
+//     dims.minute * secondsPerMinute
 //   return seconds
 // }
+export function getHourInSeconds(dims) {
+  const base = new Date(dims.year, 0, 1).getTime() * 0.001
+  const seconds =
+    base + (dims.dayOfYear - 1) * secondsPerDay + dims.hour * secondsPerHour
+  return seconds
+}
 
 // function getSeconds1970(date) {
 //   return date.getTime() * secondsPerMillisecond // seconds
