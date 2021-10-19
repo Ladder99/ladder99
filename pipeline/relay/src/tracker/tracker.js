@@ -38,12 +38,15 @@ export class Tracker {
     // add hours1970, dimensionKey, etc to each observation
     this.amendObservations()
 
+    // check for dimension or value changes
     for (let observation of observations) {
+      //
       // check if it's a dimension we're tracking - eg hours1970, operator
       const dimensionDef = this.dimensionDefs[observation.name]
       if (dimensionDef) {
         this.trackDimensionChange(observation, dimensionDef)
       } else {
+        //
         // check if this is a value we're tracking, eg availability, execution_state
         const valueDef = this.valueDefs[observation.name]
         if (valueDef) {
@@ -51,6 +54,24 @@ export class Tracker {
         }
       }
     }
+  }
+
+  // a dimension value changed - dump all bins to accumulators, reset all clocks?
+  //. so dump accums to db, not bins? mebbe
+  trackDimensionChange(observation, dimensionDef) {
+    // update the bins dimensionkey
+    this.bins.setDimensionValue(
+      observation.device_id,
+      observation.name,
+      observation.value
+    )
+
+    //. dump bins to accum
+    // this.accumulators.add(this.bins.getAll(observation.device_id))
+
+    //. clear and restart all device clocks ?
+    // this.clock.clearAll()
+    // this.clock.startAll()
   }
 
   // value changed - update clock, add to bins as needed
@@ -69,27 +90,14 @@ export class Tracker {
     }
   }
 
-  // a dimension value changed - dump all bins to accumulators, reset all clocks?
-  //. so dump accums to db, not bins? mebbe eventually
-  trackDimensionChange(observation, dimensionDef) {
-    this.bins.setDimensionValue(
-      observation.device_id,
-      observation.name,
-      observation.value
-    )
-    this.clock.clear(observation)
-    this.clock.start(observation)
-  }
-
   // write all bin deltas to the database
   //. include time_calendar also
   writeToDb() {
     console.log('writeToDb')
     console.log('bins.data', this.bins.data)
+    let sql = ''
     const device_ids = Object.keys(this.bins.data)
     // const device_ids = this.bins.getDeviceIds()
-    let sql = ''
-
     for (let device_id of device_ids) {
       // update calendar time
       const observation = { device_id, slot: 'time_calendar' }
