@@ -71,15 +71,12 @@ export class Bins {
   //   with bins like { dimensions: accumulators }
   //   dimensions are like '{"operator":"Alice"}'
   //   with accumulators like { time_active: 1, time_available: 2 }}
-  // getSql(accumulatorBins) {
   getSql(device_id) {
     let sql = ''
-    // sql += JSON.stringify(this.data[device_id])
-    //
+
     // bins is a dict like { dimensions: accumulators }
-    // for (let [device_id, bins] of Object.entries(accumulatorBins)) {
     const bins = this.data[device_id]
-    //
+
     // iterate over dimensions+accumulators
     // dimensions is eg '{"operator":"Alice", ...}' - ie gloms dimensions+values together
     // accumulators is eg { time_active: 1, time_available: 2, ... },
@@ -95,6 +92,7 @@ export class Bins {
       // const seconds1970 = getHourInSeconds(dims) // rounded to hour, in seconds
       // if (!seconds1970) continue // skip if got NaN or something
       const seconds1970 = 12345678 //..
+      // const seconds1970 = time.getHourInSeconds()
       const timestring = new Date(seconds1970 * 1000).toISOString() // eg '2021-10-15T11:00:00Z"
 
       // iterate over accumulator slots, eg 'time_active', 'time_available'.

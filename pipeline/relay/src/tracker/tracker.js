@@ -41,6 +41,14 @@ export class Tracker {
     // check for dimension or value changes
     for (let observation of observations) {
       //
+
+      //. set dimensionkey hours1970 here?
+      this.bins.setDimensionValue(
+        observation.device_id,
+        'hours1970',
+        observation.hours1970
+      )
+
       // check if it's a dimension we're tracking - eg hours1970, operator
       const dimensionDef = this.dimensionDefs[observation.name]
       if (dimensionDef) {
@@ -89,6 +97,8 @@ export class Tracker {
     console.log('writeToDb')
     console.log('bins.data', this.bins.data)
     console.log('bins.dimensionKeys', this.bins.dimensionKeys)
+    // const date = new Date()
+    // const hours1970 = time.getHours1970(date)
     let sql = ''
 
     const device_ids = Object.keys(this.bins.data)
@@ -102,6 +112,9 @@ export class Tracker {
 
       // clear bins
       this.bins.clearDeviceData(device_id)
+
+      // // set hours1970
+      // this.bins.setDimensionValue(device_id, 'hours1970', hours1970)
     }
     // write to db
     // this.db.write(sql) //.
