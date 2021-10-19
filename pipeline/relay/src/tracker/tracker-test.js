@@ -1,8 +1,6 @@
 // test metric calcs
 
-// import * as metrics from './metrics.js'
-// import * as metrics from './metrics2.js'
-import * as metrics from './metrics3.js'
+import * as tracker from './tracker.js'
 
 // dimensionDefs
 // if any one of these dimensions changes,
@@ -41,11 +39,11 @@ const valueDefs = {
 }
 
 // const dims = { year: 2021, dayOfYear: 1, hour: 0, minute: 0 }
-// console.log(new Date(metrics.getHourInSeconds(dims) * 1000))
+// console.log(new Date(tracker.getHourInSeconds(dims) * 1000))
 
 // {
 //   const date = new Date()
-//   console.log(metrics.getHours1970(date))
+//   console.log(tracker.getHours1970(date))
 // }
 
 // simulated observations from 'sample' endpoint.
@@ -105,10 +103,10 @@ const observations = [
 // const dimensionsByDevice = {}
 // const timersByDevice = {}
 
-// metrics.amendObservations(observations)
+// tracker.amendObservations(observations)
 
 // {
-//   const accumulatorsByDevice = metrics.getAccumulatorsByDevice(
+//   const accumulatorsByDevice = tracker.getAccumulatorsByDevice(
 //     observations,
 //     dimensionsByDevice,
 //     timersByDevice
@@ -118,7 +116,7 @@ const observations = [
 //   console.log(observations[0])
 //   console.log('accumulator bins by device_id')
 //   console.log(accumulatorsByDevice)
-//   // const sql = metrics.getSql(accumulators)
+//   // const sql = tracker.getSql(accumulators)
 //   // console.log('sql', sql)
 // }
 
@@ -127,11 +125,11 @@ const observations = [
 // test getDeltas
 
 // {
-//   metrics.assignTimesToObservations(observations)
+//   tracker.assignTimesToObservations(observations)
 //   // console.log(observations)
 
 //   // for (let observation of observations) {
-//   //   metrics.handleObservation(
+//   //   tracker.handleObservation(
 //   //     observation,
 //   //     dimensions,
 //   //     accumulators,
@@ -144,27 +142,27 @@ const observations = [
 
 //   // console.log()
 
-//   const dimensionDeltas = metrics.getDimensionDeltas(bins, dimensions)
+//   const dimensionDeltas = tracker.getDimensionDeltas(bins, dimensions)
 //   console.log(dimensionDeltas)
 
-//   // metrics.clearCurrentBins(bins)
+//   // tracker.clearCurrentBins(bins)
 // }
 
 // {
 //   const observation = observations[0]
 //   const dimensions = dimensionsByDevice[observation.device_id] || {}
 //   console.log(dimensions)
-//   const dd = metrics.getDimensionDeltas(currentBins, dimensions)
+//   const dd = tracker.getDimensionDeltas(currentBins, dimensions)
 //   console.log(dd)
 // }
 
 // {
-//   const dimensionKey = metrics.getDimensionKey(observations[0])
+//   const dimensionKey = tracker.getDimensionKey(observations[0])
 //   console.log(dimensionKey)
 // }
 
 // {
-//   const bins = new metrics.Bins()
+//   const bins = new tracker.Bins()
 //   bins.setDimensionValue(1, 'operator', 'alice')
 //   console.log(bins)
 //   bins.addObservation({ device_id: 1, slot: 'time_available' }, 10)
@@ -179,11 +177,11 @@ const observations = [
 // process.exit(1)
 
 ;(async function () {
-  const tracker = new metrics.Tracker(null, dimensionDefs, valueDefs)
-  console.log(tracker)
-  tracker.startTimer(3) // start timer which dumps bins to db every interval secs
+  const track = new tracker.Tracker(null, dimensionDefs, valueDefs)
+  console.log(track)
+  track.startTimer(3) // start timer which dumps bins to db every interval secs
   while (true) {
-    tracker.trackObservations(observations) // update bins
+    track.trackObservations(observations) // update bins
     await new Promise(resolve => setTimeout(resolve, 1000)) // pause
   }
 })()

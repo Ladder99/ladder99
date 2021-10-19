@@ -68,11 +68,9 @@ export class Tracker {
     }
   }
 
-  // a dimension value changed - dump all bins to accumulators, reset all clocks
-  //?
-  //. so would dump accums to db, not bins?
+  // a dimension value changed - dump all bins to accumulators, reset all clocks?
+  //. so dump accums to db, not bins? mebbe eventually
   trackDimensionChange(observation, dimensionDef) {
-    // console.log('tdc', observation)
     this.bins.setDimensionValue(
       observation.device_id,
       observation.name,
