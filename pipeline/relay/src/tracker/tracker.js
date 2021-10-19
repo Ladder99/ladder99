@@ -92,7 +92,6 @@ export class Tracker {
   }
 
   // write all bin deltas to the database
-  //. include time_calendar also
   writeToDb() {
     console.log('writeToDb')
     console.log('bins.data', this.bins.data)

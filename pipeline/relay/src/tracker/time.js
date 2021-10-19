@@ -3,9 +3,7 @@
 // constants
 const secondsPerDay = 24 * 60 * 60
 const secondsPerHour = 60 * 60
-const millisecondsPerSecond = 1000
 const secondsPerMillisecond = 0.001
-const daysPerMillisecond = 1 / (secondsPerDay * 1000)
 const hoursPerSecond = 1 / 3600
 
 // get hours since 1970-01-01

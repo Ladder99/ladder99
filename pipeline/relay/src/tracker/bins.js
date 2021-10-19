@@ -87,12 +87,9 @@ export class Bins {
       if (accumulatorSlots.length === 0) continue // skip if no data
 
       // split dimensions into dimensions+values and get associated time.
-      // const dims = splitDimensionKey(dimensions) // eg to {operator: 'Alice'}
       const dims = JSON.parse(dimensions) // eg to {operator: 'Alice'}
-      // const seconds1970 = getHourInSeconds(dims) // rounded to hour, in seconds
-      // if (!seconds1970) continue // skip if got NaN or something
-      const seconds1970 = 12345678 //..
-      // const seconds1970 = time.getHourInSeconds()
+      const { hours1970 } = dims
+      const seconds1970 = hours1970 * 3600
       const timestring = new Date(seconds1970 * 1000).toISOString() // eg '2021-10-15T11:00:00Z"
 
       // iterate over accumulator slots, eg 'time_active', 'time_available'.

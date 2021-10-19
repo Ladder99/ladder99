@@ -1,6 +1,7 @@
 // test metric calcs
 
 import * as tracker from './tracker.js'
+import * as time from './time.js'
 
 // dimensionDefs
 // if any one of these dimensions changes,
@@ -9,7 +10,7 @@ import * as tracker from './tracker.js'
 //. move these into yaml, and have per client
 //. might want these to be per device or device type also?
 const dimensionDefs = {
-  hour1970: {},
+  hours1970: {},
   // add these as needed, to be able to slice reports later
   operator: {},
   // machine: {},
@@ -43,7 +44,10 @@ const valueDefs = {
 
 // {
 //   const date = new Date()
-//   console.log(tracker.getHours1970(date))
+//   const hours1970 = time.getHours1970(date)
+//   const seconds1970 = hours1970 * 60 * 60
+//   const date2 = new Date(seconds1970 * 1000)
+//   console.log(date, hours1970, seconds1970, date2)
 // }
 
 // simulated observations from 'sample' endpoint.
