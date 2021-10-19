@@ -86,21 +86,22 @@ export class Tracker {
     console.log('writeToDb')
     console.log(this.bins.data)
     const device_ids = Object.keys(this.bins.data)
+    let sql = ''
+
     for (let device_id of device_ids) {
       // update calendar time
       const observation = { device_id, slot: 'time_calendar' }
       this.bins.addObservation(observation, this.dbInterval)
 
       // get sql for updates
-      const sql = this.bins.getSql(device_id)
-      console.log(sql) //.
-
-      // write to db
-      // this.db.write(sql) //.
+      sql += this.bins.getSql(device_id)
 
       // clear bins
       this.bins.clearDeviceData(device_id)
     }
+    // write to db
+    // this.db.write(sql) //.
+    console.log(sql) //.
   }
 
   // add info to observations, incl time as hours1970.
