@@ -84,8 +84,9 @@ export class Tracker {
   //. include time_calendar also
   writeToDb() {
     console.log('writeToDb')
-    console.log(this.bins.data)
+    console.log('bins.data', this.bins.data)
     const device_ids = Object.keys(this.bins.data)
+    // const device_ids = this.bins.getDeviceIds()
     let sql = ''
 
     for (let device_id of device_ids) {
@@ -117,43 +118,10 @@ export class Tracker {
       observation.slot = valueDef.slot // eg 'time_available'
 
       const date = new Date(observation.timestamp)
-
-      // convert iso timestamps to seconds since 1970-01-01
-      observation.seconds1970 = date.getTime() * 0.001 // in seconds
-
-      // round down to hour
+      observation.seconds1970 = date.getTime() * 0.001 // seconds since 1970-01-01
       observation.hours1970 = time.getHours1970(date) // hours since 1970-01-01
-
-      // // assign dimension key to observation
-      // observation.dimensionKey = getDimensionKey(
-      //   observation,
-      //   this.dimensionDefs
-      // )
     }
   }
-}
-
-//
-
-// // get dimension key for an observation,
-// // eg '{"hour1970":1234567,"operator":"Alice"}'
-// //. what if dimensionKey is incomplete?
-// export function getDimensionKey(observation, dimensionDefs) {
-//   const dimensions = {}
-//   for (let dimension of Object.keys(dimensionDefs)) {
-//     dimensions[dimension] = observation[dimension]
-//   }
-//   return JSON.stringify(dimensions)
-// }
-
-// export function splitDimensionKey(dimensionKey) {
-//   return JSON.parse(dimensionKey)
-// }
-
-// a vector is a set of dimension values
-//. it's not valid until all values are set, eh?
-class Vector {
-  constructor() {}
 }
 
 //
@@ -264,7 +232,7 @@ export class Bins {
   // getSql(accumulatorBins) {
   getSql(device_id) {
     let sql = ''
-    sql += JSON.stringify(this.data[device_id])
+    // sql += JSON.stringify(this.data[device_id])
     //
     // bins is a dict like { dimensions: accumulators }
     // for (let [device_id, bins] of Object.entries(accumulatorBins)) {
@@ -312,7 +280,6 @@ export class Bins {
         }
       }
     }
-    // }
     return sql
   }
 }
