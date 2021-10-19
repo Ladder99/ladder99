@@ -35,7 +35,7 @@ export class Tracker {
     console.log('trackObservations')
     this.observations = observations
 
-    // add hours1970, dimensionKey, etc to each observation
+    // add hours1970 etc to each observation
     this.amendObservations()
 
     // check for dimension or value changes
@@ -60,11 +60,8 @@ export class Tracker {
   trackDimensionChange(observation, dimensionDef) {
     console.log('track dimension change')
     // update the bins dimensionkey
-    this.bins.setDimensionValue(
-      observation.device_id,
-      observation.name,
-      observation.value
-    )
+    const { device_id, name, value } = observation
+    this.bins.setDimensionValue(device_id, name, value)
     // restart all device clocks
     this.clock.restartAll(observation)
   }
@@ -116,13 +113,9 @@ export class Tracker {
     for (let observation of this.observations) {
       if (!observation.name) continue // skip uninteresting ones
 
-      const valueDef = this.valueDefs[observation.name]
+      const valueDef = this.valueDefs[observation.name] //. will be type-subtype etc?
       // const dimensionDef = this.dimensionDefs[observation.name]
-
-      if (!valueDef) continue // skip obs if not tracking its value
-
-      observation.slot = valueDef.slot // eg 'time_available'
-
+      observation.slot = valueDef && valueDef.slot // eg 'time_available'
       const date = new Date(observation.timestamp)
       observation.seconds1970 = date.getTime() * 0.001 // seconds since 1970-01-01
       observation.hours1970 = time.getHours1970(date) // hours since 1970-01-01
