@@ -62,16 +62,14 @@ export class AgentReader {
     //. these will be dynamic - optimize on the fly
     this.interval = params.fetchInterval
     this.count = params.fetchCount
-
-    // for metric calcs
-    // this.dimensionsByDevice = {} // eg { [device_id]: { hour: 8, operator:'Alice' } }
-    // this.timersByDevice = {} // eg { [device_id]: { availability: '2021-09-17T05:27:00Z' } }
-    this.tracker = new tracker.Tracker(db, dimensionDefs, valueDefs)
-    this.tracker.startTimer(60) // start timer which dumps bins to db every interval secs
   }
 
   // start fetching and processing data
   async start() {
+    // for metric calcs
+    this.tracker = new tracker.Tracker(this.db, dimensionDefs, valueDefs)
+    this.tracker.startTimer(60) // start timer which dumps bins to db every interval secs
+
     // probe - get agent data structures and write to db
     probe: do {
       const probe = new Probe()

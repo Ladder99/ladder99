@@ -40,8 +40,6 @@ export class Tracker {
 
     // check for dimension or value changes
     for (let observation of observations) {
-      //
-
       // set dimensionkey hours1970 here
       //. ok?
       this.bins.setDimensionValue(
@@ -77,14 +75,16 @@ export class Tracker {
 
   // value changed - update clock, add to bins as needed
   trackValueChange(observation, valueDef) {
-    // console.log('track value change')
+    console.log('track value change', observation)
     // if value changed to 'on' state, eg 'ACTIVE', 'AVAILABLE',
     // start a clock to track time in that state.
     if (observation.value === valueDef.when) {
+      console.log('start tracking value', observation.name)
       this.clock.start(observation)
     } else {
       // otherwise add the time delta to a bin, clear the clock.
       const delta = this.clock.stop(observation)
+      console.log('stop tracking value', observation.name, delta)
       if (delta > 0) {
         this.bins.addObservation(observation, delta)
       }
