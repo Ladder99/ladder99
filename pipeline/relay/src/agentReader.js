@@ -4,9 +4,49 @@
 
 import { Probe } from './dataProbe.js'
 import { Observations } from './dataObservations.js'
+import * as tracker from './tracker/tracker.js'
 import * as lib from './lib.js'
 
+// dimensionDefs
+// if any one of these dimensions changes,
+// start putting the time / count values in other bins.
+// keyed on dataitem name, eg 'operator'.
+//. move these into yaml, and have per client
+//. might want these to be per device or device type also?
+const dimensionDefs = {
+  hours1970: {},
+  // add these as needed, to be able to slice reports later
+  operator: {},
+  // machine: {},
+  // component: {},
+  // job: {},
+  // operation: {},
+}
+
+// valueDefs
+// dataitems that we want to track the state of.
+// will track time the dataitem spends in the 'when' state,
+// and add it to the given 'slot'.
+// keyed on dataitem / observation name, ie NOT the dataitem id.
+// so in the agent.xml, DO NOT include the deviceId in the names,
+// just have a plain descriptor.
+//. move these into yaml, and have per client
+//. might want these to be per device or device type also
+const valueDefs = {
+  availability: {
+    when: 'AVAILABLE',
+    slot: 'time_available',
+  },
+  execution_state: {
+    when: 'ACTIVE',
+    slot: 'time_active',
+  },
+}
+
+//
+
 export class AgentReader {
+  //
   // db is a Db instance
   // endpoint is an Endpoint instance to poll agent
   // params includes { fetchInterval, fetchCount }
@@ -24,8 +64,10 @@ export class AgentReader {
     this.count = params.fetchCount
 
     // for metric calcs
-    this.dimensionsByDevice = {} // eg { [device_id]: { hour: 8, operator:'Alice' } }
-    this.timersByDevice = {} // eg { [device_id]: { availability: '2021-09-17T05:27:00Z' } }
+    // this.dimensionsByDevice = {} // eg { [device_id]: { hour: 8, operator:'Alice' } }
+    // this.timersByDevice = {} // eg { [device_id]: { availability: '2021-09-17T05:27:00Z' } }
+    this.tracker = new tracker.Tracker(db, dimensionDefs, valueDefs)
+    this.tracker.startTimer(60) // start timer which dumps bins to db every interval secs
   }
 
   // start fetching and processing data
@@ -43,11 +85,12 @@ export class AgentReader {
         await current.read(this.endpoint) // get observations and this.sequence numbers
         if (instanceIdChanged(current, probe)) break probe
         await current.write(this.db, probe.indexes) // write this.observations to db
-        await current.updateBins(
-          this.db,
-          this.dimensionsByDevice,
-          this.timersByDevice
-        )
+        // await current.updateBins(
+        //   this.db,
+        //   this.dimensionsByDevice,
+        //   this.timersByDevice
+        // )
+        this.tracker.trackObservations(current.observations) // update bins - timer will write to db
         this.from = current.sequence.next
 
         // sample - get sequence of dataitem values, write to db
@@ -56,11 +99,12 @@ export class AgentReader {
           await sample.read(this.endpoint, this.from, this.count) // get observations
           if (instanceIdChanged(sample, probe)) break probe
           await sample.write(this.db, probe.indexes) // write this.observations to db
-          await sample.updateBins(
-            this.db,
-            this.dimensionsByDevice,
-            this.timersByDevice
-          )
+          // await sample.updateBins(
+          //   this.db,
+          //   this.dimensionsByDevice,
+          //   this.timersByDevice
+          // )
+          this.tracker.trackObservations(sample.observations) // update bins - timer will write to db
           // const sql = sample.getSql(
           //   this.dimensionsByDevice,
           //   this.timersByDevice

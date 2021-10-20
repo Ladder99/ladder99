@@ -111,10 +111,10 @@ export class Tracker {
       // clear bins
       this.bins.clearDeviceData(device_id)
     }
-    console.log(sql) //.
+    console.log(sql)
 
     // write to db
-    this.db.write(sql) //.
+    this.db.write(sql)
   }
 
   // add info to observations, incl time as hours1970.
@@ -124,6 +124,7 @@ export class Tracker {
 
       const valueDef = this.valueDefs[observation.name] //. will be type-subtype etc?
       observation.slot = valueDef && valueDef.slot // eg 'time_available'
+
       const date = new Date(observation.timestamp)
       observation.hours1970 = time.getHours1970(date) // hours since 1970-01-01
       // observation.seconds1970 = date.getTime() * 0.001 // seconds since 1970-01-01
