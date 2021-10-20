@@ -44,6 +44,6 @@ export class Probe extends Data {
     // to history and bins tables.
     tree.assignNodeIds(this.elements, this.indexes)
 
-    console.log('indexes', this.indexes)
+    // console.log('indexes', this.indexes)
   }
 }
