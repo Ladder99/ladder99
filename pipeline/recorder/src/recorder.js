@@ -55,6 +55,7 @@ async function main() {
       try {
         const pluginPath = `${pluginsFolder}/${recorderDriver || driver}.js`
         console.log(`Importing plugin from ${pluginPath}...`)
+        //. add try/catch with nicer message
         const { RecorderPlugin } = await import(pluginPath)
 
         // get list of recorded csv files for the source module.
