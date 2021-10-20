@@ -24,7 +24,7 @@ export class Tracker {
 
   // start the timer that dumps bins to the db every minute
   startTimer(dbInterval = defaultDbInterval) {
-    console.log('startTimer')
+    // console.log('startTimer')
     this.dbTimer = setInterval(this.writeToDb.bind(this), dbInterval * 1000)
     this.dbInterval = dbInterval // save for later
   }
@@ -32,7 +32,7 @@ export class Tracker {
   // update bins given a list of observations.
   // observations should be sorted by time.
   trackObservations(observations) {
-    console.log('trackObservations')
+    // console.log('trackObservations')
     this.observations = observations
 
     // add hours1970 etc to each observation
@@ -42,7 +42,8 @@ export class Tracker {
     for (let observation of observations) {
       //
 
-      //. set dimensionkey hours1970 here?
+      // set dimensionkey hours1970 here
+      //. ok?
       this.bins.setDimensionValue(
         observation.device_id,
         'hours1970',
@@ -55,7 +56,7 @@ export class Tracker {
         this.trackDimensionChange(observation, dimensionDef)
       } else {
         //
-        // check if this is a value we're tracking, eg availability, execution_state
+        // else check if it's a value we're tracking, eg availability, execution_state
         const valueDef = this.valueDefs[observation.name]
         if (valueDef) {
           this.trackValueChange(observation, valueDef)
@@ -66,17 +67,17 @@ export class Tracker {
 
   // a dimension value changed - update dimensionkey and reset all clocks
   trackDimensionChange(observation, dimensionDef) {
-    console.log('track dimension change')
+    // console.log('track dimension change')
     // update the bins dimensionkey
     const { device_id, name, value } = observation
     this.bins.setDimensionValue(device_id, name, value)
-    // restart all device clocks
+    // restart all clocks for this device
     this.clock.restartAll(observation)
   }
 
   // value changed - update clock, add to bins as needed
   trackValueChange(observation, valueDef) {
-    console.log('track value change')
+    // console.log('track value change')
     // if value changed to 'on' state, eg 'ACTIVE', 'AVAILABLE',
     // start a clock to track time in that state.
     if (observation.value === valueDef.when) {
@@ -96,8 +97,6 @@ export class Tracker {
     console.log('writeToDb')
     console.log('bins.data', this.bins.data)
     console.log('bins.dimensionKeys', this.bins.dimensionKeys)
-    // const date = new Date()
-    // const hours1970 = time.getHours1970(date)
     let sql = ''
 
     const device_ids = Object.keys(this.bins.data)
@@ -111,13 +110,11 @@ export class Tracker {
 
       // clear bins
       this.bins.clearDeviceData(device_id)
-
-      // // set hours1970
-      // this.bins.setDimensionValue(device_id, 'hours1970', hours1970)
     }
-    // write to db
-    // this.db.write(sql) //.
     console.log(sql) //.
+
+    // write to db
+    this.db.write(sql) //.
   }
 
   // add info to observations, incl time as hours1970.
@@ -126,11 +123,11 @@ export class Tracker {
       if (!observation.name) continue // skip uninteresting ones
 
       const valueDef = this.valueDefs[observation.name] //. will be type-subtype etc?
-      // const dimensionDef = this.dimensionDefs[observation.name]
       observation.slot = valueDef && valueDef.slot // eg 'time_available'
       const date = new Date(observation.timestamp)
-      observation.seconds1970 = date.getTime() * 0.001 // seconds since 1970-01-01
       observation.hours1970 = time.getHours1970(date) // hours since 1970-01-01
+      // observation.seconds1970 = date.getTime() * 0.001 // seconds since 1970-01-01
+      observation.seconds1970 = observation.hours1970 * 3600 // seconds since 1970-01-01
     }
   }
 }
