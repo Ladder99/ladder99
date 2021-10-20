@@ -127,8 +127,8 @@ export class Tracker {
 
       const date = new Date(observation.timestamp)
       observation.hours1970 = time.getHours1970(date) // hours since 1970-01-01
-      // observation.seconds1970 = date.getTime() * 0.001 // seconds since 1970-01-01
-      observation.seconds1970 = observation.hours1970 * 3600 // seconds since 1970-01-01
+      // observation.seconds1970 = observation.hours1970 * 3600 // seconds since 1970-01-01
+      observation.seconds1970 = date.getTime() * 0.001 // seconds since 1970-01-01
     }
   }
 }
