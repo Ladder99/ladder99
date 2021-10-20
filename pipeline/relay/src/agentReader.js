@@ -69,6 +69,7 @@ export class AgentReader {
     // for metric calcs
     this.tracker = new tracker.Tracker(this.db, dimensionDefs, valueDefs)
     // this.tracker.startTimer(60) // start timer which dumps bins to db every interval secs
+    //. for testing
     this.tracker.startTimer(5) // start timer which dumps bins to db every interval secs
 
     // probe - get agent data structures and write to db

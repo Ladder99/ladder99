@@ -29,6 +29,7 @@ export class Probe extends Data {
     //. maybe should just get nodes here from elements with simple filter?
     // ie filter from all elements to just dataitems? uhh
     for (let node of this.nodes) {
+      //. this is upsert - call it so
       node.node_id = await db.add(node) // write to db and save resulting node_id
     }
 

@@ -93,16 +93,22 @@ export class Db {
       // @ts-ignore
       const { node_id } = res.rows[0]
       return node_id
-    } catch (e) {
+    } catch (error) {
       // eg error: duplicate key value violates unique constraint "nodes_path"
       // detail: "Key ((props ->> 'path'::text))=(Device(e05363af-95d1-4354-b749-8fbb09d3499e)) already exists.",
-      console.log(e)
-      const sql = `SELECT node_id FROM nodes WHERE props->>'path' = $1::text;`
-      console.log(sql, node.path)
-      const res = await this.query(sql, [node.path])
-      // @ts-ignore
-      const { node_id } = res.rows[0]
-      return node_id
+      // console.log(error)
+      if (error.code === '23505') {
+        console.log(`property already there - looking up:  ${node.path}`)
+        const sql = `SELECT node_id FROM nodes WHERE props->>'path' = $1::text;`
+        console.log(sql, node.path)
+        const res = await this.query(sql, [node.path])
+        // @ts-ignore
+        const { node_id } = res.rows[0]
+        console.log('got', node_id)
+        return node_id
+      } else {
+        console.log(error)
+      }
     }
   }
 
