@@ -147,6 +147,8 @@ const regex2 = /.*TOTAL NONRESETTABLE:[ ]*(\d+).*/
 
 export function parseHQOD(str) {
   const match = str.match(regex2)
-  const value = match[1]
-  return value
+  if (match) {
+    const value = match[1]
+    return value
+  }
 }
