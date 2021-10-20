@@ -95,8 +95,8 @@ export class Tracker {
   // write all bin deltas to the database
   writeToDb() {
     console.log('writeToDb')
-    console.log('bins.data', this.bins.data)
-    console.log('bins.dimensionKeys', this.bins.dimensionKeys)
+    // console.log('bins.data', this.bins.data)
+    // console.log('bins.dimensionKeys', this.bins.dimensionKeys)
     let sql = ''
 
     const device_ids = Object.keys(this.bins.data)
@@ -111,10 +111,11 @@ export class Tracker {
       // clear bins
       this.bins.clearDeviceData(device_id)
     }
-    console.log(sql)
-
     // write to db
-    this.db.query(sql)
+    if (sql !== '') {
+      console.log(sql)
+      this.db.query(sql)
+    }
   }
 
   // add info to observations, incl time as hours1970.
