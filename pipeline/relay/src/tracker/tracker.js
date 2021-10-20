@@ -75,16 +75,16 @@ export class Tracker {
 
   // value changed - update clock, add to bins as needed
   trackValueChange(observation, valueDef) {
-    console.log('track value change', observation)
+    // console.log('track value change', observation)
     // if value changed to 'on' state, eg 'ACTIVE', 'AVAILABLE',
     // start a clock to track time in that state.
     if (observation.value === valueDef.when) {
-      console.log('start tracking value', observation.name)
+      // console.log('start tracking value', observation.name)
       this.clock.start(observation)
     } else {
       // otherwise add the time delta to a bin, clear the clock.
       const delta = this.clock.stop(observation)
-      console.log('stop tracking value', observation.name, delta)
+      // console.log('stop tracking value', observation.name, delta)
       if (delta > 0) {
         this.bins.addObservation(observation, delta)
       }
@@ -127,7 +127,6 @@ export class Tracker {
 
       const date = new Date(observation.timestamp)
       observation.hours1970 = time.getHours1970(date) // hours since 1970-01-01
-      // observation.seconds1970 = observation.hours1970 * 3600 // seconds since 1970-01-01
       observation.seconds1970 = date.getTime() * 0.001 // seconds since 1970-01-01
     }
   }
