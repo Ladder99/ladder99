@@ -114,7 +114,7 @@ export class Tracker {
     console.log(sql)
 
     // write to db
-    this.db.write(sql)
+    this.db.query(sql)
   }
 
   // add info to observations, incl time as hours1970.
