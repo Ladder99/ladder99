@@ -47,7 +47,9 @@ export class Endpoint {
         json = JSON.parse(convert.xml2json(xml, { compact: true }))
       } catch (error) {
         if (error.code === 'ENOTFOUND') {
-          console.log(`Agent not found at ${url}...`)
+          console.log(`Error - Agent not found at ${url}...`)
+        } else if (error.code === 'ECONNREFUSED') {
+          console.log(`Error - Connection refused at ${url}...`)
         } else {
           throw error
         }
