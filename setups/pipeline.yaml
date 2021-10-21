@@ -228,7 +228,7 @@ services:
     # see https://stackoverflow.com/a/67158212/243392
     # and https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
     extra_hosts:
-      - host.docker.internal:host-gateway
+      - 'host.docker.internal:host-gateway'
     networks:
       - ladder99
     # volumes:
