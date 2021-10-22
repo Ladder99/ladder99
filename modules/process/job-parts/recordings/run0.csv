@@ -4,18 +4,17 @@ l99/ccs/evt/query,"[{""address"": ""%M56.5"", ""default"": 0.5}]",0,0,1,1
 l99/ccs/evt/status,"{""connection"": ""online"", ""powered"": ""on"", ""program"": ""pg1000"", ""step"":""step1"", ""faults"": {""1"":{""description"": ""interesting error""}}, ""utc_time"":123456, ""cpu_time"":234567, ""state"":100, ""build_no"": ""a123""}",0,1,0,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.0"", ""value"": {""carton_quantity"":1, ""kit_number"": ""W11113362"", ""kit_name"": ""Interior Kit Assy"", ""sales_order_number"": ""a12345"", ""assembled_date"":345678}}]",0,0,0,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.5"", ""value"": 1}]",0,0,0,1
-l99/ccs/evt/read,"[{""address"": ""%Z61.6"", ""value"": 1}]",0,0,0,1
-l99/ccs/evt/read,"[{""address"": ""%Z61.3"", ""value"": true}]",0,0,0,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.18"", ""value"": 1}]",0,0,0,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.22"", ""value"": true}]",0,0,0,1
 l99/ccs/evt/status,"{""connection"": ""online"", ""powered"": ""on"", ""program"": ""pg1000"", ""step"":""step2"", ""faults"": {}, ""utc_time"":123457, ""cpu_time"":234568, ""state"":400, ""build_no"": ""a123""}",0,1,0,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.0"", ""value"": {""carton_quantity"":2, ""kit_number"": ""W22223362"", ""kit_name"": ""Exterior Kit Assy"", ""sales_order_number"": ""b12345"", ""assembled_date"":456789}}]",0,0,0,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.5"", ""value"": 1}]",0,0,0,0.5
 l99/ccs/evt/read,"[{""address"": ""%Z61.5"", ""value"": 2}]",0,0,0,0.5
-l99/ccs/evt/read,"[{""address"": ""%Z61.6"", ""value"": 1}]",0,0,0,0.5
-l99/ccs/evt/read,"[{""address"": ""%Z61.6"", ""value"": 2}]",0,0,0,0.5
-l99/ccs/evt/read,"[{""address"": ""%Z61.3"", ""value"": true}]",0,0,0,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.18"", ""value"": 1}]",0,0,0,0.5
+l99/ccs/evt/read,"[{""address"": ""%Z61.18"", ""value"": 2}]",0,0,0,0.5
+l99/ccs/evt/read,"[{""address"": ""%Z61.22"", ""value"": true}]",0,0,0,1
 l99/ccs/evt/status,"{""connection"": ""offline""}",0,1,0,1
 l99/ccs/evt/status,"{""connection"": ""online""}",0,1,0,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.17"", ""value"": {""purchase_order"":""purchorder1""}}]",0,0,0,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.18"", ""value"": 18}]",0,0,0,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.7"", ""value"": 7}]",0,0,0,1
-l99/ccs/evt/read,"[{""address"": ""%Z61.22"", ""value"": true}]",0,0,0,1
