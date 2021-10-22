@@ -45,7 +45,9 @@ outputs:
   # ------------------------------------------------------------------
 
   - key: exec
-    value: types.EXECUTION[<status_state>]
+    # value: types.EXECUTION[<status_state>]
+    value: |
+      <status_connection>==='online' ? types.EXECUTION[<status_state>] : 'PROGRAM_STOPPED'
 
   - key: wait
     value: types.WAIT_STATE[<status_state>]
