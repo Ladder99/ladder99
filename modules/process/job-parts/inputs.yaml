@@ -249,7 +249,7 @@ handlers:
       job_start: '<job_changed> ? new Date().toISOString() : undefined'
 
       # update sales order if available
-      salesord: (<job_meta> || {}).sales_order_number
+      salesord: (<job_meta> || {}).sales_order
 
       #. data coming from skid label, ChrisE needs to define address
       #. is this the salesqueue.dictionary? so multiple purchase orders?
