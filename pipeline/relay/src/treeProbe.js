@@ -196,7 +196,8 @@ function getPathStep(obj) {
       // BUT for the mazak machines, uuid is not actually unique across the installation -
       // they seem to be using it for model number. so name helps uniquify this.
       // step = `Device(${obj.name}, ${obj.uuid})`
-      step = `Device[${obj.name}, ${obj.uuid}]` //. try this
+      // step = `Device[${obj.name}, ${obj.uuid}]` //. try this
+      step = `Device[${obj.name || obj.uuid}]` //. how about this?
       break
 
     case 'DataItem':
@@ -288,12 +289,11 @@ export function getNodes(elements) {
   // handle path collisions by adding more type or name info as needed.
   //. might need indexes first?
   makeUniquePaths(elements)
-  // console.log(287, 'elements', elements)
 
   for (const element of elements) {
     const node = { ...element } // copy element
     if (node.node_type === 'Device') {
-      node.name_uuid = `${node.name} (${node.uuid})`
+      // node.name_uuid = `${node.name} (${node.uuid})`
     } else if (node.node_type === 'DataItem') {
       // remove any unneeded attributes
       delete node.id
