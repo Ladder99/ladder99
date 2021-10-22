@@ -76,7 +76,9 @@ outputs:
   - key: msg
     type: MESSAGE
     #. escape any pipes in value
-    value: "Object.values(<status_faults>).map(fault => fault.description).join(', ')"
+    # value: "Object.values(<status_faults>).map(fault => fault.description).join(', ')"
+    value: |
+      Object.values(<status_faults>).map(fault => fault.description).join(', ') || 'UNAVAILABLE'
     nativeCode: NativeCode #. ?
 
   # ------------------------------------------------------------------
