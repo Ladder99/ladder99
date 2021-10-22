@@ -121,7 +121,7 @@ handlers:
       job_meta: msg('%Z61.0')
 
       # NEW-PROCESS: data from skid zpl
-      #   skid_meta: msg('%Z61.17')
+      skid_meta: msg('%Z61.17')
 
       #. how specify printer assoc with this line?
       # need to specify pr1, pr2, pr3, pr4 etc
@@ -143,8 +143,9 @@ handlers:
 
       # count of kits that have crossed eye2 on conveyor
       kits_off: msg('%Z61.6')
+
       # NEW-PROCESS - count of kits passed eye-3
-      #   kits_off: msg('%Z61.18')
+      kits_off: msg('%Z61.18')
 
       # pieces remaining
       pcrem_calc: <carton_quantity> - <kits_off>
@@ -194,10 +195,9 @@ handlers:
 
       # estimate time of completion
       # convert jobstart time to milliseconds, add cycletimeavg * npartsremaining, convert to iso string
-      # target: '(<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <cycle_time_avg> * <pcrem_calc>).toISOString() : undefined'
       target: '(<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <time_remaining>).toISOString() : undefined'
 
-      # get lastest cycle times to show in dataset
+      # get lastest cycle times to show in dataset, for debugging
       # note: the reference to <kits_off> causes this to be recalculated when that changes.
       # note: need :MANUAL in dataset string, otherwise agent holds onto all keyvalue pairs.
       # from cppagent readme:
@@ -219,17 +219,17 @@ handlers:
         }
 
       # NEW-PROCESS - number of pieces reworked through oven based on eye-2
-      #   pieces_reworked: msg('%Z61.7')
+      pieces_reworked: msg('%Z61.7')
 
       pieces_in_assembly: <kits_on> - <kits_off> # kits on assy line
       pieces_completed: <kits_off> # kits finished
       pieces_began: <kits_on> # kits work began
 
       # current job done flag, pieces remaining reached zero
-      #. need explicit true here, so undefined -> false (undefined would leave this as true)
-      job_complete: msg('%Z61.3') === true
+      # need explicit true here, so undefined -> false (undefined would leave this as true)
+      # job_complete: msg('%Z61.3') === true
       # NEW-PROCESS - need to look at eye-3 countdown to zero status (t/f)
-      #   job_complete: msg('%Z61.22')
+      job_complete: msg('%Z61.22')
 
       # kit assembly part number, can be empty string
       job_current: (<job_meta> || {}).kit_number
@@ -250,14 +250,14 @@ handlers:
       # update sales order if available
       salesord: (<job_meta> || {}).sales_order_number
 
-      # #. data coming from skid label, ChrisE needs to define address
+      #. data coming from skid label, ChrisE needs to define address
       #. is this the salesqueue.dictionary? so multiple purchase orders?
       # use "%Z61.10", "JOB.CURRENT.SALESORDER" to reference correct one?
       # purchord: ($['%Z61.x'] || {}).purchase_order_number
       # purchord: (msg('%Z61.13') || {}).purchase_order
       # NEW-PROCESS - get purchase order info from skid zpl
       #   if skid data is not available then 61.17 will be empty json object {}
-      #   purchord: (<skid_meta> || {}).purchase_order
+      purchord: (<skid_meta> || {}).purchase_order
 
       # --------------------------------------------------------
       # part occurrences
@@ -282,6 +282,5 @@ handlers:
     # how to process inputs
     #. explain
     process: iterate_message_contents
-    # reuse the query input list here with *, as the key-part pairs are the same
-    # inputs: *queryExpressions
+    # reuse the query expression list here with *, as the key-part pairs are the same
     expressions: *queryExpressions
