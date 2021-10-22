@@ -12,7 +12,8 @@
 // import { formatISO9075 } from 'date-fns'
 import dayjs from 'dayjs'
 
-const includeTimestamp = true
+// const includeTimestamp = true
+const includeTimestamp = false // save some time/space by not including in shdr
 
 export class Cache {
   constructor() {

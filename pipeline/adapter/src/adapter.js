@@ -257,7 +257,6 @@ function getValueFn(deviceId, code = '', types = {}) {
   // get AFTER transforms, because user could specify a cache get manually.
   // eg dependsOn = ['ac1-power_fault', 'ac1-power_warning']
   const dependsOn = []
-  // const regexp2 = /cache\.get\('(.*?)'\).value/gm
   const regexp2 = /cache\.get\('(.*?)'\)/gm
   let match
   while ((match = regexp2.exec(code)) !== null) {
