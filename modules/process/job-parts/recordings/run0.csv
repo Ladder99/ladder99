@@ -14,3 +14,8 @@ l99/ccs/evt/read,"[{""address"": ""%Z61.6"", ""value"": 1}]",0,0,0,0.5
 l99/ccs/evt/read,"[{""address"": ""%Z61.6"", ""value"": 2}]",0,0,0,0.5
 l99/ccs/evt/read,"[{""address"": ""%Z61.3"", ""value"": true}]",0,0,0,1
 l99/ccs/evt/status,"{""connection"": ""offline""}",0,1,0,1
+l99/ccs/evt/status,"{""connection"": ""online""}",0,1,0,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.17"", ""value"": {""purchase_order"":""purchorder1""}}]",0,0,0,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.18"", ""value"": 18}]",0,0,0,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.7"", ""value"": 7}]",0,0,0,1
+l99/ccs/evt/read,"[{""address"": ""%Z61.22"", ""value"": true}]",0,0,0,1
