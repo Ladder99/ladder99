@@ -88,8 +88,9 @@ services:
         condition: on-failure
     networks:
       - ladder99
-    extra_hosts:
-      - 'host.docker.internal:host-gateway'
+    # nohelp on ubuntu
+    # extra_hosts:
+    #   - 'host.docker.internal:host-gateway'
     logging:
       options:
         max-size: '1m'
