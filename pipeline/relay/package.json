@@ -16,7 +16,7 @@
     "node-fetch": "^3.0.0",
     "pg": "^8.7.1",
     "pg-format": "^1.0.4",
-    "pg-hstore": "^2.3.3",
+    "pg-hstore": "^2.3.4",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
