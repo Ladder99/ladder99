@@ -17,7 +17,7 @@
     "node-fetch": "^3.0.0",
     "node-hid": "^2.1.1",
     "node-opcua-client": "^2.50.0",
-    "nodemon": "^2.0.12",
+    "nodemon": "^2.0.14",
     "systeminformation": "^5.9.8",
     "usb": "^1.7.1",
     "uuid": "^8.3.2",
