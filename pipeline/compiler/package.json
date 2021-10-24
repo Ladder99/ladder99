@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "js-yaml": "^4.0.0",
-    "nodemon": "^2.0.12",
+    "nodemon": "^2.0.14",
     "xml-js": "^1.6.11"
   }
 }
