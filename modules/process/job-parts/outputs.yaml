@@ -81,8 +81,10 @@ outputs:
     type: MESSAGE
     #. escape any pipes in value
     # value: "Object.values(<status_faults>).map(fault => fault.description).join(', ')"
+    # value: |
+    #   Object.values(<status_faults>).map(fault => fault.description).join(', ') || 'UNAVAILABLE'
     value: |
-      Object.values(<status_faults>).map(fault => fault.description).join(', ') || 'UNAVAILABLE'
+      <status_connection>==='online' ? Object.values(<status_faults> || {}).map(fault => fault.description).join(', ') || 'OKAY' : 'UNAVAILABLE'
     nativeCode: NativeCode #. ?
 
   # ------------------------------------------------------------------
