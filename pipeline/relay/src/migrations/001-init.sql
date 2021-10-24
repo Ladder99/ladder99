@@ -106,7 +106,8 @@ DROP VIEW IF EXISTS metrics;
 ---------------------------------------------------------------------
 CREATE OR REPLACE VIEW metrics AS
 SELECT 
-  devices.props->>'name_uuid' AS device,
+  -- devices.props->>'name_uuid' AS device,
+  devices.props->>'name' AS device,
   bins.time as "time",
   bins.dimensions as dimensions,
   bins.values as "values", -- a jsonb object
@@ -123,7 +124,8 @@ JOIN nodes AS devices ON bins.device_id=devices.node_id;
 ---------------------------------------------------------------------
 CREATE OR REPLACE VIEW history_all AS
 SELECT 
-  devices.props->>'name_uuid' AS device,
+  -- devices.props->>'name_uuid' AS device,
+  devices.props->>'name' AS device,
   dataitems.props->>'path' AS path,
   history.time,
   history.value -- a jsonb object - need to cast it as in below views
@@ -159,7 +161,7 @@ SELECT
   nodes.node_id,
   -- needed name to make a unique string when viewing multiple agents 
   -- on the same device with the mazak endpoints.
-  concat(nodes.props->>'name', ' (', nodes.props->>'uuid', ')') as name_uuid,
+  -- concat(nodes.props->>'name', ' (', nodes.props->>'uuid', ')') as name_uuid,
   nodes.props->>'name' as name,
   nodes.props->>'uuid' as uuid, 
   nodes.props->>'path' as path

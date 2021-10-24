@@ -45,7 +45,10 @@ outputs:
   # ------------------------------------------------------------------
 
   - key: exec
-    value: types.EXECUTION[<status_state>]
+    # value: types.EXECUTION[<status_state>]
+    # <status_connection>==='online' ? types.EXECUTION[<status_state>] : 'PROGRAM_STOPPED'
+    value: |
+      <status_connection>==='online' ? types.EXECUTION[<status_state>] : 'UNAVAILABLE'
 
   - key: wait
     value: types.WAIT_STATE[<status_state>]
@@ -70,13 +73,18 @@ outputs:
 
   - key: cond
     category: CONDITION
+    # <status_has_hard_faults> ? 'FAULT' : <status_has_soft_faults> ? 'WARNING' : 'NORMAL'
     value: |
-      <status_has_hard_faults> ? 'FAULT' : <status_has_soft_faults> ? 'WARNING' : 'NORMAL'
+      <status_connection>==='online' ? (<status_has_hard_faults> ? 'FAULT' : (<status_has_soft_faults> ? 'WARNING' : 'NORMAL')) : 'UNAVAILABLE'
 
   - key: msg
     type: MESSAGE
     #. escape any pipes in value
-    value: "Object.values(<status_faults>).map(fault => fault.description).join(', ')"
+    # value: "Object.values(<status_faults>).map(fault => fault.description).join(', ')"
+    # value: |
+    #   Object.values(<status_faults>).map(fault => fault.description).join(', ') || 'UNAVAILABLE'
+    value: |
+      <status_connection>==='online' ? Object.values(<status_faults> || {}).map(fault => fault.description).join(', ') || 'OKAY' : 'UNAVAILABLE'
     nativeCode: NativeCode #. ?
 
   # ------------------------------------------------------------------
@@ -171,7 +179,3 @@ outputs:
 
   #- key: pcrem_pr
   #  value: <pcrem_pr>
-
-
-
-

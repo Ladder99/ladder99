@@ -49,7 +49,7 @@ services:
   # grafana - show real-time data from the database, handle notifications
   grafana:
     container_name: grafana
-    image: grafana/grafana:7.5.5
+    image: grafana/grafana:8.2.2
     profiles:
       - all
       - dashboard
@@ -88,6 +88,9 @@ services:
         condition: on-failure
     networks:
       - ladder99
+    # nohelp on ubuntu
+    # extra_hosts:
+    #   - 'host.docker.internal:host-gateway'
     logging:
       options:
         max-size: '1m'
@@ -109,20 +112,20 @@ services:
       options:
         max-size: '1m'
 
-  # # pgadmin - admin console for postgres database
-  # pgadmin:
-  #   container_name: pgadmin
-  #   image: biarms/pgadmin4:latest
-  #   profiles:
-  #     - all
-  #     - pgadmin
-  #   ports:
-  #     - '5050:5050/tcp'
-  #   networks:
-  #     - ladder99
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure
+  # pgadmin - admin console for postgres database
+  pgadmin:
+    container_name: pgadmin
+    image: biarms/pgadmin4:latest
+    profiles:
+      - all
+      - pgadmin
+    ports:
+      - '5050:5050/tcp'
+    networks:
+      - ladder99
+    deploy:
+      restart_policy:
+        condition: on-failure
 
   # play - playback device recordings
   play:
@@ -227,8 +230,8 @@ services:
     #. but not on friendlywrt - host-gateway doesn't exist, or need docker>=20.10
     # see https://stackoverflow.com/a/67158212/243392
     # and https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
-    # extra_hosts:
-    #   - host.docker.internal:host-gateway
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
     networks:
       - ladder99
     # volumes:

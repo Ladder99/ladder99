@@ -13,13 +13,13 @@
   "license": "Apache2.0",
   "dependencies": {
     "js-yaml": "^4.1.0",
-    "node-fetch": "^2.6.1",
-    "pg": "^8.5.1",
+    "node-fetch": "^3.0.0",
+    "pg": "^8.7.1",
     "pg-format": "^1.0.4",
-    "pg-hstore": "^2.3.3",
+    "pg-hstore": "^2.3.4",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.14"
   }
 }

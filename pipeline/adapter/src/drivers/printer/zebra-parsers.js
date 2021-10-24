@@ -48,28 +48,33 @@ const regex =
 
 export function parseHQES(str) {
   const match = str.match(regex)
-  const values = match.slice(1) // eg [ '1', '00000000', '00010004', '0', '00000000', '00000000' ]
-  const hexes = values.map(value => parseInt(value, 16))
+  if (match) {
+    const values = match.slice(1) // eg [ '1', '00000000', '00010004', '0', '00000000', '00000000' ]
+    const hexes = values.map(value => parseInt(value, 16))
 
-  // const binaries = hexes.map(hex => hex.toString(2).split(''))
-  // const flags = binaries.map(binary => binary.map(digit => digit === '1'))
-  // const errorPresent = values[0] === '1'
-  // const warningPresent = values[3] === '1'
+    // const binaries = hexes.map(hex => hex.toString(2).split(''))
+    // const flags = binaries.map(binary => binary.map(digit => digit === '1'))
+    // const errorPresent = values[0] === '1'
+    // const warningPresent = values[3] === '1'
 
-  const errorFlags = hexes[2]
-  const foundValues = errors.keys.filter(errorValue => errorFlags & errorValue)
-  const foundErrors = foundValues.map(foundValue => errors.dict[foundValue])
+    const errorFlags = hexes[2]
+    const foundValues = errors.keys.filter(
+      errorValue => errorFlags & errorValue
+    )
+    const foundErrors = foundValues.map(foundValue => errors.dict[foundValue])
 
-  const warningFlags = hexes[5]
-  const foundWarningKeys = warnings.keys.filter(value => warningFlags & value)
-  const foundWarnings = foundWarningKeys.map(value => warnings.dict[value])
+    const warningFlags = hexes[5]
+    const foundWarningKeys = warnings.keys.filter(value => warningFlags & value)
+    const foundWarnings = foundWarningKeys.map(value => warnings.dict[value])
 
-  const msgs = [
-    ...foundErrors.map(error => `ERROR: ${error}`),
-    ...foundWarnings.map(warning => `WARNING: ${warning}`),
-  ].join(', ')
+    const msgs = [
+      ...foundErrors.map(error => `ERROR: ${error}`),
+      ...foundWarnings.map(warning => `WARNING: ${warning}`),
+    ].join(', ')
 
-  return { errors: foundErrors, warnings: foundWarnings, msgs }
+    return { errors: foundErrors, warnings: foundWarnings, msgs }
+  }
+  return { errors: [], warnings: [], msgs: '' }
 }
 
 // HS - p212

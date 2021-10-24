@@ -10,16 +10,16 @@
     "test": "nodemon src/test.js"
   },
   "dependencies": {
-    "date-fns": "^2.23.0",
-    "dayjs": "^1.10.6",
+    "date-fns": "^2.25.0",
+    "dayjs": "^1.10.7",
     "js-yaml": "^4.0.0",
     "mqtt": "^4.2.6",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.0.0",
     "node-hid": "^2.1.1",
-    "node-opcua-client": "^2.36.0",
-    "nodemon": "^2.0.12",
-    "systeminformation": "^5.8.0",
-    "usb": "^1.7.1",
+    "node-opcua-client": "^2.50.0",
+    "nodemon": "^2.0.14",
+    "systeminformation": "^5.9.8",
+    "usb": "^1.8.0",
     "uuid": "^8.3.2",
     "xml-js": "^1.6.11"
   }

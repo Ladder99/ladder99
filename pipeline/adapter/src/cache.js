@@ -12,7 +12,8 @@
 // import { formatISO9075 } from 'date-fns'
 import dayjs from 'dayjs'
 
-const includeTimestamp = true
+// const includeTimestamp = true
+const includeTimestamp = false // save some time/space by not including in shdr
 
 export class Cache {
   constructor() {
@@ -60,8 +61,12 @@ export class Cache {
         const shdr = getShdr(this, output, value)
         // console.log('shdr', shdr)
         console.log(`shdr changed - sending to tcp - ${shdr.slice(0, 60)}...`)
-        output.socket.write(shdr + '\n')
-        output.lastValue = value
+        try {
+          output.socket.write(shdr + '\n')
+          output.lastValue = value
+        } catch (error) {
+          console.log(error)
+        }
       }
     }
   }
@@ -90,7 +95,7 @@ function getShdr(cache, output, value) {
   // const timestamp = dayjs().format()
   // const timestamp = lightFormat(new Date(), "yyyy-MM-dd'T'HH:mm:ss") //. get from item
   // const timestamp = formatISO9075(new Date()) // datetime but uses zulu time
-  const head = includeTimestamp ? timestamp + '|' : '' // timestamp is optional for cppagent
+  const head = includeTimestamp ? timestamp + '|' : '|' // timestamp is optional for cppagent
   const { key, category, type, subType, representation, nativeCode } = output
   let shdr = ''
   // handle different shdr types and representations
