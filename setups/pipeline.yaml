@@ -49,8 +49,6 @@ services:
   # grafana - show real-time data from the database, handle notifications
   grafana:
     container_name: grafana
-    # image: grafana/grafana:7.5.5
-    # image: grafana/grafana:8.0.6
     image: grafana/grafana:8.2.2
     profiles:
       - all
@@ -114,20 +112,20 @@ services:
       options:
         max-size: '1m'
 
-  # # pgadmin - admin console for postgres database
-  # pgadmin:
-  #   container_name: pgadmin
-  #   image: biarms/pgadmin4:latest
-  #   profiles:
-  #     - all
-  #     - pgadmin
-  #   ports:
-  #     - '5050:5050/tcp'
-  #   networks:
-  #     - ladder99
-  #   deploy:
-  #     restart_policy:
-  #       condition: on-failure
+  # pgadmin - admin console for postgres database
+  pgadmin:
+    container_name: pgadmin
+    image: biarms/pgadmin4:latest
+    profiles:
+      - all
+      - pgadmin
+    ports:
+      - '5050:5050/tcp'
+    networks:
+      - ladder99
+    deploy:
+      restart_policy:
+        condition: on-failure
 
   # play - playback device recordings
   play:
