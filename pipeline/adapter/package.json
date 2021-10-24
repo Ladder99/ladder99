@@ -11,10 +11,10 @@
   },
   "dependencies": {
     "date-fns": "^2.23.0",
-    "dayjs": "^1.10.6",
+    "dayjs": "^1.10.7",
     "js-yaml": "^4.0.0",
     "mqtt": "^4.2.6",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.0.0",
     "node-hid": "^2.1.1",
     "node-opcua-client": "^2.36.0",
     "nodemon": "^2.0.12",
