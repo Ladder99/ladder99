@@ -8,15 +8,22 @@
         "hide": true,
         "iconColor": "rgba(0, 211, 255, 1)",
         "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
         "type": "dashboard"
       }
     ]
   },
   "description": "",
   "editable": true,
+  "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 1,
+  "id": 16,
   "links": [
     {
       "asDropdown": false,
@@ -31,6 +38,7 @@
       "url": ""
     }
   ],
+  "liveNow": false,
   "panels": [
     {
       "aliasColors": {},
@@ -38,10 +46,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -68,7 +72,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.5.5",
+      "pluginVersion": "8.2.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -83,7 +87,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as total\nFROM history_float\nWHERE\n  property='memory-total' and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as total\nFROM history_float\nWHERE\n  path='memory-total' and\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "B",
           "select": [
             [
@@ -109,7 +113,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as free\nFROM history_float\nWHERE\n  property='memory-free' and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as free\nFROM history_float\nWHERE\n  path='memory-free' and\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -136,7 +140,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as used\nFROM history_float\nWHERE\n  property='memory-used' and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as used\nFROM history_float\nWHERE\n  path='memory-used' and\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "C",
           "select": [
             [
@@ -207,10 +211,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -237,7 +237,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.5.5",
+      "pluginVersion": "8.2.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -252,7 +252,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as total\nFROM history_float\nWHERE\n  property='cpu-total' and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as total\nFROM history_float\nWHERE\n  path='cpu-total' and\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "B",
           "select": [
             [
@@ -278,7 +278,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as system\nFROM history_float\nWHERE\n  property='cpu-system' and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as system\nFROM history_float\nWHERE\n  path='cpu-system' and\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -305,7 +305,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as user\nFROM history_float\nWHERE\n  property='cpu-user' and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as user\nFROM history_float\nWHERE\n  path='cpu-user' and\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "C",
           "select": [
             [
@@ -376,10 +376,6 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
-      "fieldConfig": {
-        "defaults": {},
-        "overrides": []
-      },
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -406,7 +402,7 @@
         "alertThreshold": true
       },
       "percentage": false,
-      "pluginVersion": "7.5.5",
+      "pluginVersion": "8.2.2",
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
@@ -420,7 +416,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as temp\nFROM history_float\nWHERE\n  property='temperature' and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as temp\nFROM history_float\nWHERE\n  path='temperature' and\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -487,7 +483,7 @@
     }
   ],
   "refresh": "10s",
-  "schemaVersion": 27,
+  "schemaVersion": 31,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -514,5 +510,5 @@
   "timezone": "",
   "title": "Microcontroller",
   "uid": "micro",
-  "version": 7
+  "version": 2
 }
