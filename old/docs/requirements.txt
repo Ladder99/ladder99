@@ -1,5 +1,0 @@
-sphinx-autobuild
-sphinx_rtd_theme
-sphinx-tabs
-myst-parser
-linkify-it-py
