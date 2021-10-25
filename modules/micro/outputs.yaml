@@ -7,17 +7,17 @@
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo')
 
 outputs:
-  - key: availability
+  - key: avail
     category: EVENT
     type: AVAILABILITY
     value: <availability>
 
-  - key: condition
+  - key: cond
     category: CONDITION
     type: SYSTEM
     value: <condition>
 
-  - key: temperature
+  - key: temp
     category: EVENT
     type: TEMPERATURE
     value: <temperature>
@@ -29,19 +29,19 @@ outputs:
   #   representation: DATA_SET
   #   value: <memory>
 
-  - key: memory-total
+  - key: memtot
     category: SAMPLE
     type: x:MEMORY
     subType: x:TOTAL
     value: <memory-total>
 
-  - key: memory-free
+  - key: memfree
     category: SAMPLE
     type: x:MEMORY
     subType: x:FREE
     value: <memory-free>
 
-  - key: memory-used
+  - key: memused
     category: SAMPLE
     type: x:MEMORY
     subType: x:USED
@@ -54,19 +54,19 @@ outputs:
   #   representation: DATA_SET
   #   value: <cpu>
 
-  - key: cpu-total
+  - key: cputot
     category: SAMPLE
     type: x:CPU
     subType: x:TOTAL
     value: <cpu-total>
 
-  - key: cpu-user
+  - key: cpuuser
     category: SAMPLE
     type: x:CPU
     subType: x:USER
     value: <cpu-user>
 
-  - key: cpu-system
+  - key: cpusys
     category: SAMPLE
     type: x:CPU
     subType: x:SYSTEM

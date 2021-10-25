@@ -66,9 +66,13 @@ export class AdapterDriver {
     function setUnavailable() {
       setValue('availability', 'UNAVAILABLE')
       setValue('condition', 'UNAVAILABLE')
-      setValue('memory', 'UNAVAILABLE')
       setValue('temperature', 'UNAVAILABLE')
-      setValue('cpu', 'UNAVAILABLE')
+      setValue('memory-total', 'UNAVAILABLE')
+      setValue('memory-free', 'UNAVAILABLE')
+      setValue('memory-used', 'UNAVAILABLE')
+      setValue('cpu-total', 'UNAVAILABLE')
+      setValue('cpu-user', 'UNAVAILABLE')
+      setValue('cpu-system', 'UNAVAILABLE')
       setValue('os', 'UNAVAILABLE')
     }
 
