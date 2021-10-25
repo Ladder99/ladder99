@@ -166,7 +166,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Memory (bytes)",
+      "title": "Memory",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -183,7 +183,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:203",
-          "format": "short",
+          "format": "decbytes",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -331,7 +331,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "CPU (%)",
+      "title": "CPU",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -348,7 +348,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:203",
-          "format": "short",
+          "format": "percent",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -442,7 +442,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Temperature (C)",
+      "title": "Temperature",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -459,7 +459,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:203",
-          "format": "short",
+          "format": "celsius",
           "label": null,
           "logBase": 1,
           "max": null,
@@ -490,7 +490,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
@@ -510,5 +510,5 @@
   "timezone": "",
   "title": "Microcontroller",
   "uid": "micro",
-  "version": 3
+  "version": 4
 }
