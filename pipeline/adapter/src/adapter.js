@@ -150,6 +150,14 @@ async function main() {
         })
       }
 
+      // handle errors
+      // try/catch around socket.write doesn't cut it - still crashes
+      // with This socket has been ended by the other party -
+      // see if this works.
+      socket.on('error', function (error) {
+        console.log(error)
+      })
+
       // handle incoming data - get PING from agent, return PONG
       socket.on('data', pingPong)
 
