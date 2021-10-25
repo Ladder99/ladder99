@@ -36,7 +36,6 @@ export class AdapterDriver {
 
     const commandHandlers = {
       // host query status - errors and warnings - see guide p205
-
       '~HQES': str => {
         if (str) {
           const ret = parsers.parseHQES(str)
