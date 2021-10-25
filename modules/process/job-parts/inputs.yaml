@@ -182,10 +182,8 @@ handlers:
       cycle_time_avg: |
         {
           <kits_off>;
-          const objs = Object.values(keyvalues);
-          const avg = objs
-            .filter(obj=>obj.delta>0)
-            .reduce((a,b)=>a+b.delta,0) / objs.length;
+          const objs = Object.values(keyvalues).filter(obj=>obj.delta>0);
+          const avg = objs.reduce((a,b)=>a+b.delta,0) / objs.length;
           return avg;
         }
 
@@ -213,12 +211,12 @@ handlers:
           const kv = Object.entries(keyvalues);
           const dataitems = kv
             .filter(([key, value]) => value.delta !== null)
-            .slice(kv.length - 5)
             .map(([key, value]) => `${key}=${value.delta}`)
             .join(' ');
           return ':MANUAL ' + dataitems;
         }
-
+      # .slice(kv.length - 5) // goes after filter
+      #
       # NEW-PROCESS - number of pieces reworked through oven based on eye-2
       pieces_reworked: msg('%Z61.7')
 
