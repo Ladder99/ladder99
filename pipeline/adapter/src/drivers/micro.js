@@ -4,7 +4,7 @@
 
 import si from 'systeminformation' // see https://github.com/sebhildebrandt/systeminformation
 
-const pollInterval = 2000 // msec //. get from setup
+const pollInterval = 5000 // msec //. get from setup
 
 export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {

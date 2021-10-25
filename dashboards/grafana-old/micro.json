@@ -84,6 +84,33 @@
         {
           "format": "time_series",
           "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as total\nFROM history_float\nWHERE\n  path='memory-total' and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
           "metricColumn": "none",
           "rawQuery": true,
           "rawSql": "SELECT time, value as free\nFROM history_float\nWHERE\n  path='memory-free' and\n  $__timeFilter(\"time\")\nORDER BY time",
@@ -227,6 +254,59 @@
           "rawQuery": true,
           "rawSql": "SELECT time, value as total\nFROM history_float\nWHERE\n  path='cpu-total' and\n  $__timeFilter(\"time\")\nORDER BY time",
           "refId": "B",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as system\nFROM history_float\nWHERE\n  path='cpu-system' and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as user\nFROM history_float\nWHERE\n  path='cpu-user' and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "refId": "C",
           "select": [
             [
               {
@@ -430,5 +510,5 @@
   "timezone": "",
   "title": "Microcontroller",
   "uid": "micro",
-  "version": 6
+  "version": 4
 }
