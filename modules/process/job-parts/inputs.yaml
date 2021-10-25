@@ -170,7 +170,6 @@ handlers:
       cycle_time: |
         {
           const koff = keyvalues[<kits_off>] || {};
-          console.log('koff', koff)
           koff.end = new Date();
           koff.delta = (koff.end - koff.start) * 0.001;
           return koff.delta;
