@@ -23,13 +23,13 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 16,
+  "id": 2,
   "links": [
     {
       "asDropdown": false,
       "icon": "external link",
-      "includeVars": false,
-      "keepTime": false,
+      "includeVars": true,
+      "keepTime": true,
       "tags": [],
       "targetBlank": false,
       "title": "uhhh",
@@ -490,7 +490,7 @@
     "list": []
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -510,5 +510,5 @@
   "timezone": "",
   "title": "Microcontroller",
   "uid": "micro",
-  "version": 2
+  "version": 3
 }
