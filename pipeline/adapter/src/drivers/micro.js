@@ -1,5 +1,6 @@
 // microcontroller driver
 // fetches data from microcontroller/pc etc
+// see modules/micro folder.
 
 import si from 'systeminformation' // see https://github.com/sebhildebrandt/systeminformation
 
