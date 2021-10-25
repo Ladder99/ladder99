@@ -208,15 +208,16 @@ handlers:
       cycle_times: |
         {
           <kits_off>;
-          const kv = Object.entries(keyvalues);
+          const kv = Object.entries(keyvalues).filter(([key,value])=>value.delta>0);
           const dataitems = kv
-            .filter(([key, value]) => value.delta !== null)
+            .slice(kv.length - 10)
             .map(([key, value]) => `${key}=${value.delta}`)
             .join(' ');
           return ':MANUAL ' + dataitems;
         }
-      # .slice(kv.length - 5) // goes after filter
+      # .filter(([key, value]) => value.delta !== null)
       #
+
       # NEW-PROCESS - number of pieces reworked through oven based on eye-2
       pieces_reworked: msg('%Z61.7')
 
