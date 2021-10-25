@@ -1,5 +1,5 @@
 topic,message,qos,retain,time_now,time_delta
-l99/ccs/evt/status,"{""connection"": ""online"", ""powered"": ""on"", ""program"": ""pg1000"", ""step"":""step1"", ""faults"": {""1"":{""description"": ""interesting error""}}, ""utc_time"":123456, ""cpu_time"":234567, ""state"":100, ""build_no"": ""a123""}",0,1,0,1
+l99/ccs/evt/status,"{""connection"": ""online"", ""powered"": ""on"", ""program"": ""pg1000"", ""step"":""step1"", ""faults"": {}, ""utc_time"":123456, ""cpu_time"":234567, ""state"":400, ""build_no"": ""a123""}",0,1,0,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.17"", ""value"": {""purchase_order"":""purchorder2""}}]",0,0,0,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.0"", ""value"": {""carton_quantity"":10, ""kit_number"": ""KITNUM2"", ""kit_name"": ""Test kit 2"", ""sales_order_number"": ""SALESORDER2"", ""assembled_date"":""2021-10-25""}}]",0,0,0,1
 l99/ccs/evt/read,"[{""address"": ""%Z61.5"", ""value"": 1}]",0,0,0,0.5
