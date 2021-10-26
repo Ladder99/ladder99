@@ -440,7 +440,6 @@ export function getIndexes(nodes, elements) {
 
 // assign device_id and dataitem_id to dataitem elements.
 // will use these to write values to history and bins tables.
-//. call this assignNodeIds(elements, indexes)
 export function assignNodeIds(elements, indexes) {
   elements.forEach(element => {
     if (element.node_type === 'DataItem') {

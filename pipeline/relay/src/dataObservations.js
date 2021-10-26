@@ -39,37 +39,6 @@ export class Observations extends Data {
 
     // this.from = nextSequence
   }
-
-  // // do calculations on values and write to db bins table.
-  // // called from agentReader.js
-  // // db is database object
-  // // dimensions is dict with current dimension values,
-  // //   eg { hour: 15, availability: 'AVAILABLE', operator: 'Alice', ... }
-  // //   needs to carry over from 'current' endpoint to 'sample',
-  // //   so need to pass it in here.
-  // // timers is dict with start times for each bin, eg { availability: 18574734.321 }
-  // //   ditto re passing this in here.
-  // // see metrics.js
-  // async updateBins(db, dimensionsByDevice, timersByDevice) {
-  //   // get accumulator bins for given observations
-  //   const accumulatorsByDevice = metrics.getAccumulatorBins(
-  //     //. const accumulatorsByDevice = metrics.getAccumulatorsByDevice(
-  //     this.observations,
-  //     dimensionsByDevice,
-  //     timersByDevice
-  //   )
-
-  //   // get sql update/insert statement and write to db
-  //   const sql = metrics.getSql(accumulatorsByDevice)
-  //   if (sql) {
-  //     console.log(sql)
-  //     await db.query(sql)
-  //   }
-  //   //. later will write to cache, which will write to db
-  //   // cache.set(cacheKey, { value: bins[key] })
-
-  //   console.log()
-  // }
 }
 
 // assign device node_id and dataitem node_id to observation objects

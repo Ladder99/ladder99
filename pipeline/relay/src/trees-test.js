@@ -1,6 +1,8 @@
 // run:
 // cd pipeline/relay
 // npm test
+// or
+// node src/trees-test.js
 
 import fs from 'fs' // node lib - filesystem
 import convert from 'xml-js' // https://github.com/nashwaan/xml-js
@@ -30,12 +32,13 @@ const json = getJson(`${folder}/probe.xml`)
 // console.log(json.MTConnectDevices.Devices.Device.DataItems.DataItem[0])
 
 // get elements (devices, all dataitems)
+// these include devices as props like device:'Device[camera2]'
 const elements = treeProbe.getElements(json) //.slice(0, 3)
-console.log('elements', elements)
+// console.log('elements', elements)
 
-// get nodes (devices, unique propdefs)
+// get nodes (devices and unique propdefs)
 const nodes = treeProbe.getNodes(elements) //.slice(0, 3)
-console.log('nodes', nodes)
+// console.log('nodes', nodes)
 
 // simulate db add/get - assign node_id to each node
 nodes.forEach((node, i) => (node.node_id = i + 1))
@@ -44,25 +47,27 @@ const indexes = treeProbe.getIndexes(nodes, elements)
 
 treeProbe.assignNodeIds(elements, indexes)
 
-console.log('indexes', indexes)
+// console.log('indexes', indexes)
+
+//
 
 //------------------------------------------------------------------------
 
-// // load and parse current xml
-// const json2 = getJson(`${folder}/current.xml`)
+// load and parse current xml
+const json2 = getJson(`${folder}/current.xml`)
 
-// const observations = treeObservations.getElements(json2)
-// // console.log(observations)
+const observations = treeObservations.getElements(json2)
+// console.log(observations)
 
-// for (let obs of observations) {
-//   const node = indexes.objById[obs.dataItemId]
-//   if (node) {
-//     const { device_id, property_id } = node
-//     console.log(
-//       `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}, value ${obs.value}`
-//     )
-//   }
-// }
+for (let obs of observations) {
+  const node = indexes.objById[obs.dataItemId]
+  if (node) {
+    const { device_id, property_id } = node
+    console.log(
+      `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}, value ${obs.value}`
+    )
+  }
+}
 
 //------------------------------------------------------------------------
 
