@@ -4,13 +4,11 @@
 
 import { Data } from './data.js'
 import * as treeObservations from './treeObservations.js'
-// import * as metrics from './metrics.js'
 
 export class Observations extends Data {
   constructor(type) {
     super()
     this.type = type // used by read method - will be 'current' or 'sample'
-    // this.previousTime = null
   }
 
   // read dataitem values from current/sample endpoints as .json,
@@ -29,6 +27,7 @@ export class Observations extends Data {
 
   // write values from this.observations to db
   async write(db, indexes) {
+    //
     // assign device_id and dataitem_id's to observations
     assignNodeIds(this.observations, indexes)
 

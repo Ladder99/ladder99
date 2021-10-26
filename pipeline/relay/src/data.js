@@ -17,6 +17,7 @@ export class Data {
   // dataitem elements etc.
   async read(endpoint, from, count) {
     console.log(`Read ${endpoint.baseUrl}, ${from}, ${count}`)
+
     this.json = await endpoint.fetchJson(this.type, from, count)
 
     // parse .json
