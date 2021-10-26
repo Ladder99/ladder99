@@ -1,6 +1,6 @@
 // parsers for printer responses
 
-// HQES
+// ~HQES
 
 // note: these keys get converted to decimal strings
 const errorDict = {
@@ -77,7 +77,7 @@ export function parseHQES(str) {
   return { errors: [], warnings: [], msgs: '' }
 }
 
-// HS - p212
+// ~HS - p212
 
 export function parseHS(str) {
   const values = str
@@ -111,7 +111,7 @@ export function parseHS(str) {
   return ret
 }
 
-// HD
+// ~HD
 
 // eg
 // Head Temp = 30 C
