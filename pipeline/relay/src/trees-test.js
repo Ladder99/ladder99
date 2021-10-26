@@ -46,6 +46,27 @@ nodes.forEach((node, i) => (node.node_id = i + 1))
 const indexes = treeProbe.getIndexes(nodes, elements)
 
 treeProbe.assignNodeIds(elements, indexes)
+// console.log('elements', elements)
+// {
+//   node_type: 'DataItem',
+//   path: 'availability',
+//   id: 'd1-avail',
+//   category: 'EVENT',
+//   type: 'AVAILABILITY',
+//   device: 'Device[camera1]',
+//   device_id: 1,
+//   dataitem_id: 2
+// },
+// {
+//   node_type: 'DataItem',
+//   path: 'availability',
+//   id: 'd2-avail',
+//   category: 'EVENT',
+//   type: 'AVAILABILITY',
+//   device: 'Device[camera2]',
+//   device_id: 8,
+//   dataitem_id: 2
+// },
 
 // console.log('indexes', indexes)
 
@@ -57,17 +78,21 @@ treeProbe.assignNodeIds(elements, indexes)
 const json2 = getJson(`${folder}/current.xml`)
 
 const observations = treeObservations.getElements(json2)
-// console.log(observations)
+console.log('observations', observations)
 
-for (let obs of observations) {
-  const node = indexes.objById[obs.dataItemId]
-  if (node) {
-    const { device_id, property_id } = node
-    console.log(
-      `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}, value ${obs.value}`
-    )
-  }
-}
+// // assign device_id and dataitem_id's to observations
+// treeObservations.assignNodeIds(observations, indexes)
+// console.log('observations', observations)
+
+// for (let obs of observations) {
+//   const node = indexes.objById[obs.dataItemId]
+//   if (node) {
+//     const { device_id, property_id } = node
+//     console.log(
+//       `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}, value ${obs.value}`
+//     )
+//   }
+// }
 
 //------------------------------------------------------------------------
 

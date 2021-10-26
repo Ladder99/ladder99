@@ -29,31 +29,17 @@ export class Observations extends Data {
   async write(db, indexes) {
     //
     // assign device_id and dataitem_id's to observations
-    assignNodeIds(this.observations, indexes)
+    treeObservations.assignNodeIds(this.observations, indexes)
+    // observations is now [{ device_id, dataitem_id, tag, dataItemId, name, timestamp, value }, ...]
 
     // get history records to write to db
+    //. records is
     const records = getHistoryRecords(this.observations)
 
     // write all records to db
     return await db.addHistory(records)
 
     // this.from = nextSequence
-  }
-}
-
-// assign device node_id and dataitem node_id to observation objects
-function assignNodeIds(observations, indexes) {
-  for (let obs of observations) {
-    const element = indexes.elementById[obs.dataItemId]
-    if (element) {
-      // note: these had been tacked onto the element objects during index creation.
-      obs.device_id = element.device_id
-      obs.dataitem_id = element.dataitem_id
-    } else {
-      console.log(
-        `Warning: elementById index missing dataItem ${obs.dataItemId}`
-      )
-    }
   }
 }
 

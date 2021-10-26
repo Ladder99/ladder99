@@ -2,14 +2,14 @@
 
 import * as lib from './lib.js'
 
-//.
+//. explain
 // const appendTags2 = lib.getSet('Angle')
 
-//.
+//. explain
 const skipTags2 = lib.getSet('')
 
 // get flat list of elements from given json tree
-// eg [{
+// returns eg [{
 //   tag: 'Availability',
 //   dataItemId: 'm1-avail',
 //   name: 'availability',
@@ -23,7 +23,7 @@ export function getElements(json) {
   return elements
 }
 
-//. copypasted from treeProbe.js - fix
+//. copypasted from treeProbe.js - cleanup
 const ignore = () => {}
 const elementHandlers = {
   // handle attributes, eg { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
@@ -38,8 +38,10 @@ const elementHandlers = {
 //. handle parents differently - do in separate pass?
 // element can be an object, an array, or an atomic value
 function recurse(element, elements, tag = '', parents = []) {
+  //
   // handle object with keyvalue pairs
   if (lib.isObject(element)) {
+    //
     // start object, which is a translation of the json element to something usable.
     // tag is eg 'DataItem', parents is list of ancestors - will be deleted before return.
     let obj = { tag, parents }
@@ -82,5 +84,21 @@ function recurse(element, elements, tag = '', parents = []) {
   } else {
     // ignore atomic values
     // console.log('>>what is this?', { element })
+  }
+}
+
+// assign device node_id and dataitem node_id to observation objects
+export function assignNodeIds(observations, indexes) {
+  for (let obs of observations) {
+    const element = indexes.elementById[obs.dataItemId]
+    if (element) {
+      // note: these had been tacked onto the element objects during index creation.
+      obs.device_id = element.device_id
+      obs.dataitem_id = element.dataitem_id
+    } else {
+      console.log(
+        `Warning: elementById index missing dataItem ${obs.dataItemId}`
+      )
+    }
   }
 }
