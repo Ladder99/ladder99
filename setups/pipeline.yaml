@@ -20,6 +20,7 @@ services:
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml etc
       - ../modules:/data/modules # has module yamls
+    restart: always
     networks:
       - ladder99
     logging:
@@ -40,6 +41,7 @@ services:
       - ../$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
     ports:
       - 5000:5000
+    restart: always
     networks:
       - ladder99
     logging:
@@ -78,9 +80,7 @@ services:
       - ../dashboards/grafana:/etc/dashboards
     # as of v7.3, the Grafana Docker image runs with the root group (id 0) instead
     # of the grafana group (id 472), for better compatibility with OpenShift.
-    deploy:
-      restart_policy:
-        condition: on-failure
+    restart: always
     networks:
       - ladder99
     logging:
@@ -98,6 +98,7 @@ services:
       - 1883:1883
     volumes:
       - ../$SETUP/volumes/mosquitto:/mosquitto # has config/mosquitto.conf
+    restart: always
     networks:
       - ladder99
     logging:
@@ -113,6 +114,7 @@ services:
       - pgadmin
     ports:
       - '5050:5050/tcp'
+    restart: always
     networks:
       - ladder99
     deploy:
@@ -131,6 +133,7 @@ services:
     volumes:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
       - ../modules:/data/modules # has module-specific recordings folder
+    restart: always
     networks:
       - ladder99
     logging:
@@ -169,15 +172,14 @@ services:
       - postgres
     # init: true
     #. don't use PGPASSWORD - see https://stackoverflow.com/a/6405162/243392
+    # https://www.postgresql.org/docs/9.1/libpq-pgpass.html
     environment:
       POSTGRES_DB: $PGDATABASE
       POSTGRES_USERNAME: $PGUSER
       POSTGRES_PASSWORD: $PGPASSWORD
     volumes:
       - ../$SETUP/volumes/postgres/data:/var/lib/postgresql/data
-    deploy:
-      restart_policy:
-        condition: on-failure
+    restart: always
     networks:
       - ladder99
     logging:
@@ -194,6 +196,7 @@ services:
     volumes:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
       - ../modules:/data/modules # has module-specific recordings folder
+    restart: always
     networks:
       - ladder99
     logging:
@@ -225,6 +228,7 @@ services:
     # and https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
     extra_hosts:
       - 'host.docker.internal:host-gateway'
+    restart: always
     networks:
       - ladder99
     # volumes:
