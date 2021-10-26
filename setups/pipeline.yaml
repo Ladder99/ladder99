@@ -63,9 +63,9 @@ services:
       PGDATABASE:
       PGUSER:
       PGPASSWORD:
-      INFLUXDB_DB:
-      INFLUXDB_USER:
-      INFLUXDB_PASSWORD:
+      # INFLUXDB_DB:
+      # INFLUXDB_USER:
+      # INFLUXDB_PASSWORD:
       # grafana will download and install these automatically
       # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
       GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel
@@ -82,7 +82,9 @@ services:
     # does blank here mean root?
     # user: '$UID:$GID'
     #.. don't use root here
-    user: root
+    # as of v7.3, the Grafana Docker image runs with the root group (id 0) instead
+    # of the grafana group (id 472), for better compatibility with OpenShift.
+    # user: root
     deploy:
       restart_policy:
         condition: on-failure
