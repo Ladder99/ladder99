@@ -58,6 +58,7 @@ services:
       - $GRAFANA_PORT:3000/tcp
     environment:
       # need these for provisioning datasources
+      #. don't use PGPASSWORD - how use .pgpass file with grafana tho?
       PGHOST:
       PGPORT:
       PGDATABASE:
@@ -75,24 +76,13 @@ services:
       - ../$SETUP/volumes/grafana/etc:/etc/grafana
       - ../$SETUP/volumes/grafana/var:/var/lib/grafana
       - ../dashboards/grafana:/etc/dashboards
-    # user: grafana
-    #. get warning that these are blank, though echo $UID works - why?
-    # but even if blank, now grafana is able to write to /var/lib/grafana.
-    # gives permission error without this.
-    # does blank here mean root?
-    # user: '$UID:$GID'
-    #.. don't use root here
     # as of v7.3, the Grafana Docker image runs with the root group (id 0) instead
     # of the grafana group (id 472), for better compatibility with OpenShift.
-    # user: root
     deploy:
       restart_policy:
         condition: on-failure
     networks:
       - ladder99
-    # nohelp on ubuntu
-    # extra_hosts:
-    #   - 'host.docker.internal:host-gateway'
     logging:
       options:
         max-size: '10m'
@@ -178,6 +168,7 @@ services:
       - dashboard
       - postgres
     # init: true
+    #. don't use PGPASSWORD - see https://stackoverflow.com/a/6405162/243392
     environment:
       POSTGRES_DB: $PGDATABASE
       POSTGRES_USERNAME: $PGUSER
