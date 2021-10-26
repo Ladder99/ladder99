@@ -4,6 +4,7 @@ import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
 import * as parsers from './zebra-parsers.js'
 
 const pollInterval = 5000 // ms
+const messagePauseTime = 500 // ms
 
 export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
@@ -164,7 +165,7 @@ export class AdapterDriver {
         //. do try/catch - handle disconnection, reconnection
         client.write(command + '\r\n')
         //. give printer some time to respond?
-        await new Promise(resolve => setTimeout(resolve, 500))
+        await new Promise(resolve => setTimeout(resolve, messagePauseTime))
       }
     }
 
