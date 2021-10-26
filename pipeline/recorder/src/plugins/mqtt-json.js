@@ -70,6 +70,8 @@ export class RecorderPlugin {
 
           console.log(`Reading and publishing ${csvpath}...`)
           let csv = await fs.readFileSync(csvpath).toString()
+
+          // replace all ${deviceId} occurrences with deviceId
           // @ts-ignore
           // csv = csv.replaceAll('${deviceId}', deviceId) // needs node15
           const regexp = new RegExp('\\${deviceId}', 'g')
