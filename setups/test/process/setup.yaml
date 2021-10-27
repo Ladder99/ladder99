@@ -7,8 +7,8 @@ devices:
 
     # specify sources for dataitem values
     sources:
-      - module: process/job-part # defines inputs/outputs.yaml
-        driver: process/job-part # adapter plugin - manages protocol and payload
+      - module: process/job-parts # defines inputs/outputs.yaml
+        driver: mqtt-json # adapter plugin - manages protocol and payload
         host: mosquitto
         port: 1883
         # protocol: tcp
