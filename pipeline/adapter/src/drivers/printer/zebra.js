@@ -169,14 +169,19 @@ export class AdapterDriver {
       setCache('avail', 'AVAILABLE') // printer is alive
       setCache('emp', 'ON') // printer is on
       // response starts with STX, has CR LF between each line, ends with ETX
-      const str = data.toString() // eg 'PRINTER STATUS ERRORS: 1 00000000 00000005 WARNINGS: 1 00000000 00000002' // zpl returns
-      console.log(`Zebra driver received response:\n`, str)
-      //. make sure that we're handling the right command
+      const response = data.toString() // eg 'PRINTER STATUS ERRORS: 1 00000000 00000005 WARNINGS: 1 00000000 00000002' // zpl returns
+      console.log(`Zebra driver received response:\n`, response)
+      //. make sure that we're handling the right command somehow
       // eg set another var for current cmd being processed?
       if (handler) {
-        handler(str)
+        // use try catch block to catch any errors due to wrong cmd being handled,
+        // eg if printer is slow to respond to a command.
+        try {
+          handler(response)
+        } catch (error) {
+          setAllUnavailable()
+        }
       }
-      //. make sure all are in consistent state here? or in poll fn?
     })
 
     client.on('error', error => {
