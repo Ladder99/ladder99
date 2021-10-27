@@ -248,19 +248,14 @@ handlers:
       process_uuid: '<job_changed> ? uuid() : undefined'
       job_start: '<job_changed> ? new Date().toISOString() : undefined'
 
-      # update sales order if available
+      # update sales order if available - reset when job complete
       # salesord: (<job_meta> || {}).sales_order
       # salesord: z61.22===true ? 'UNAVAILABLE' : existing code
       salesord: |
         <job_complete> ? 'UNAVAILABLE' : (<job_meta> || {}).sales_order
 
-      #. data coming from skid label, ChrisE needs to define address
-      #. is this the salesqueue.dictionary? so multiple purchase orders?
-      # use "%Z61.10", "JOB.CURRENT.SALESORDER" to reference correct one?
-      # purchord: ($['%Z61.x'] || {}).purchase_order_number
-      # purchord: (msg('%Z61.13') || {}).purchase_order
-      # NEW-PROCESS - get purchase order info from skid zpl
-      #   if skid data is not available then 61.17 will be empty json object {}
+      # NEW-PROCESS - get purchase order info from skid zpl.
+      # if skid data is not available then 61.17 will be empty json object {}.
       purchord: (<skid_meta> || {}).purchase_order
 
       # --------------------------------------------------------
