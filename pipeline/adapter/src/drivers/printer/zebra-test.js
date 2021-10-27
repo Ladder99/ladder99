@@ -5,6 +5,9 @@
 
 import * as parsers from './zebra-parsers.js'
 
+let errors = []
+let warnings = []
+
 // ~HS
 
 console.log('~HS')
@@ -12,17 +15,23 @@ const s2 = `\x02030,1,1,1225,000,0,0,0,000,0,0,0\x03\r\n\x02001,0,0,1,1,2,6,0,00
 console.log(s2)
 const ret2 = parsers.parseHS(s2)
 console.log(ret2)
+errors.push(...ret2.errors)
+warnings.push(...ret2.warnings)
 console.log()
 
 // // ~HQES
 
-// console.log('~HQES')
-// const s1 =
-//   '\x02\r\n\r\nPRINTER STATUS            \r\n   ERRORS:          1 00000000 00010004  \r\n   WARNINGS:        1 00000000 00000100   \r\n\x03'
-// console.log(s1)
-// const ret1 = parsers.parseHQES(s1)
-// console.log(ret1)
-// console.log()
+console.log('~HQES')
+const s1 =
+  '\x02\r\n\r\nPRINTER STATUS            \r\n   ERRORS:          1 00000000 00010004  \r\n   WARNINGS:        1 00000000 00000100   \r\n\x03'
+console.log(s1)
+const ret1 = parsers.parseHQES(s1)
+console.log(ret1)
+errors.push(...ret1.errors)
+warnings.push(...ret1.warnings)
+console.log(errors)
+console.log(warnings)
+console.log()
 
 // // ~HD
 

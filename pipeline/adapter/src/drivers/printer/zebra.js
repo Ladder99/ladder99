@@ -63,7 +63,7 @@ export class AdapterDriver {
           //   active - if labelsRemaining > 0
           //   ready - otherwise
           setCache('state', ret.labelsRemaining > 0 ? 'ACTIVE' : 'READY')
-          //. handle errors and warnings
+          // handle errors and warnings
           if (ret.errors) errors.push(...ret.errors)
           if (ret.warnings) warnings.push(...ret.warnings)
         } else {
@@ -93,7 +93,7 @@ export class AdapterDriver {
           //   setCache('cond', 'NORMAL')
           //   // setCache('msg')
           // }
-          //. handle errors and warnings
+          // handle errors and warnings
           if (ret.errors) errors.push(...ret.errors)
           if (ret.warnings) warnings.push(...ret.warnings)
         } else {
