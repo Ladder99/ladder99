@@ -158,10 +158,12 @@ handlers:
       # don't care about the cache key here, just want to run the code
       #. instead, could have keyvalues.cycle_times = {}, then use
       # keyvalues.cycle_times[<kits_on>] etc? would garbage collector work ok?
-      reset_key_values: '<job_meta> ? Object.keys(keyvalues).forEach(key => delete keyvalues[key]) : undefined'
+      reset_key_values: |
+        <job_meta> ? Object.keys(keyvalues).forEach(key => delete keyvalues[key]) : undefined
 
       # don't care about the cache key here, just want to assign something to keyvalue store
-      start_cycle_timer: keyvalues[<kits_on>] = { start:new Date(), end:null, delta:null}
+      start_cycle_timer: |
+        keyvalues[<kits_on>] = { start:new Date(), end:null, delta:null}
 
       # get cycle time when kits_off count changes (seconds)
       # note: the expression is prefixed with '(cache, $, keyvalues) =>',
@@ -247,7 +249,10 @@ handlers:
       job_start: '<job_changed> ? new Date().toISOString() : undefined'
 
       # update sales order if available
-      salesord: (<job_meta> || {}).sales_order
+      # salesord: (<job_meta> || {}).sales_order
+      # salesord: z61.22===true ? 'UNAVAILABLE' : existing code
+      salesord: |
+        <job_complete> ? 'UNAVAILABLE' : (<job_meta> || {}).sales_order
 
       #. data coming from skid label, ChrisE needs to define address
       #. is this the salesqueue.dictionary? so multiple purchase orders?
