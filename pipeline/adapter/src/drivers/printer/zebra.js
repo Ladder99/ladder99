@@ -174,12 +174,6 @@ export class AdapterDriver {
       }
     }
 
-    // set a cache key to the given value, which will trigger shdr output
-    function setCache(key, value = 'UNAVAILABLE') {
-      // cache.set(`${deviceId}-${key}`, { value })
-      cache.set(`${deviceId}-${key}`, value)
-    }
-
     // set all cache keys to UNAVAILABLE
     function setAllUnavailable() {
       // call all the cmd handlers with no param
@@ -187,6 +181,11 @@ export class AdapterDriver {
       handlers.forEach(handler => handler())
       setCache('avail')
       setCache('emp')
+    }
+
+    // set a cache key to the given value, which will trigger shdr output
+    function setCache(key, value = 'UNAVAILABLE') {
+      cache.set(`${deviceId}-${key}`, value)
     }
   }
 }
