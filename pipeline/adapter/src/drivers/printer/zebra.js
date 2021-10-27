@@ -1,5 +1,18 @@
 // zebra printer driver
 
+// this code handles these values -
+// setCache triggers shdr output if value changed
+// setCache('avail', 'AVAILABLE') // or UNAVAILABLE
+// setCache('emp', 'ON') // or OFF
+// setCache('state', 'ACTIVE') // or READY or WAIT
+// setCache('cond', 'WARNING') // or NORMAL or ERROR
+// setCache('msg', 'Some message')
+// setCache('dark', 30) // -30 to +30 or sthing
+// setCache('ht', 40) // head temp
+// setCache('fr', 10) // feedrate - print speed
+// setCache('tl', 100) // total length - odometer
+// setCache('uc', 3) // unload count = total lifetime label count
+
 import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
 import * as parsers from './zebra-parsers.js'
 import * as lib from '../../lib.js'
@@ -15,25 +28,10 @@ export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
     console.log(`Initialize Zebra driver...`)
 
-    // set cache values, which trigger shdr output
-    // setCache('avail', 'AVAILABLE') // or UNAVAILABLE
-    // setCache('emp', 'ON') // or OFF
-    // setCache('state', 'ACTIVE') // or READY or WAIT
-    // setCache('cond', 'WARNING') // or NORMAL or ERROR
-    // setCache('msg', 'Some message')
-    // setCache('dark', 30) // -30 to +30 or sthing
-    // setCache('ht', 40) // head temp
-    // setCache('fr', 10) // feedrate - print speed
-    // setCache('tl', 100) // total length - odometer
-
-    // TODO
-    // setCache('uc', 3) // unload count = total lifetime label count
-
     let client // tcp connection
     let handler // current message handler
-    // let msgs // error and warning messages, eg 'ERROR: Paper Out, WARNING: Ribbon Low'
-    let errors // list of error messages, eg ['Paper Out']
-    let warnings // list of warning messages
+    let errors // list of error message strings, eg ['Paper Out']
+    let warnings // list of warning message strings, eg ['Ribbon Low']
 
     // note: net.connect() doesn't seem to time out - just waits there,
     // so try catch loop probably unneeded.
@@ -63,7 +61,6 @@ export class AdapterDriver {
           // get paper out flag, pause flag, buffer full flag, under/over temp flags,
           // head up flag, ribbon out flag, label waiting flag, labels remaining
           const ret = parsers.parseHS(response)
-          // @ts-ignore
           setCache('labels_remaining', ret.labelsRemaining)
           // execution state:
           // execution MUST be READY, ACTIVE, INTERRUPTED, WAIT, FEED_HOLD,
@@ -71,18 +68,28 @@ export class AdapterDriver {
           //   interrupted - if any error condition
           //   active - if labelsRemaining > 0
           //   ready - otherwise
-          // note: poll() fn will overwrite this with interrupted if any errors found
-          setCache('state', ret.labelsRemaining > 0 ? 'ACTIVE' : 'READY')
+          // note: poll() fn will overwrite this with INTERRUPTED if any additional
+          // errors found with ~HQES handler.
+          const state =
+            errors.length > 0
+              ? 'INTERRUPTED'
+              : ret.labelsRemaining > 0
+              ? 'ACTIVE'
+              : 'READY'
+          setCache('state', state)
           // handle errors and warnings
           if (ret.errors) errors.push(...ret.errors)
           if (ret.warnings) warnings.push(...ret.warnings)
+          // write message string if any
+          handleMessages()
         } else {
-          setCache('labels_remaining')
           setCache('state')
+          setCache('labels_remaining')
         }
       },
 
-      // host query status - errors and warnings - see guide p205
+      // host query status - errors and warnings - see guide p205.
+      // not all printers handle this, or return all 0's (no errors/warnings).
       '~HQES': response => {
         if (response) {
           const ret = parsers.parseHQES(response)
@@ -96,6 +103,12 @@ export class AdapterDriver {
           // handle errors and warnings
           if (ret.errors) errors.push(...ret.errors)
           if (ret.warnings) warnings.push(...ret.warnings)
+          // write message string if any
+          handleMessages()
+          // make sure state is consistent
+          if (errors.length > 0) {
+            setCache('state', 'INTERRUPTED')
+          }
         }
       },
 
@@ -183,20 +196,25 @@ export class AdapterDriver {
         await new Promise(resolve => setTimeout(resolve, messagePauseTime))
 
         //. make sure all is in consistent state here
-        // get errors and warnings as one string
-        const errorMsgs = errors.map(error => `ERROR: ${error}`)
-        const warningMsgs = warnings.map(warning => `WARNING: ${warning}`)
-        const msgs = [...errorMsgs, ...warningMsgs].join(', ') || 'UNAVAILABLE'
-        setCache('msg', msgs)
-        // set condition and state
-        if (errors.length > 0) {
-          setCache('cond', 'FAULT')
-          setCache('state', 'INTERRUPTED') // execution state - see also HS handler
-        } else if (warnings.length > 0) {
-          setCache('cond', 'WARNING')
-        } else {
-          setCache('cond', 'NORMAL')
-        }
+        handleMessages()
+      }
+    }
+
+    // handle errors and warnings -> msg, cond, state
+    function handleMessages() {
+      // get errors and warnings as one string
+      const errorMsgs = errors.map(error => `ERROR: ${error}`)
+      const warningMsgs = warnings.map(warning => `WARNING: ${warning}`)
+      const msgs = [...errorMsgs, ...warningMsgs].join(', ') || 'UNAVAILABLE'
+      setCache('msg', msgs)
+      // set condition and state
+      if (errors.length > 0) {
+        setCache('cond', 'FAULT')
+        setCache('state', 'INTERRUPTED') // execution state - see also HS handler
+      } else if (warnings.length > 0) {
+        setCache('cond', 'WARNING')
+      } else {
+        setCache('cond', 'NORMAL')
       }
     }
 
