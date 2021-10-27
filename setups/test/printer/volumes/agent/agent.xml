@@ -6,7 +6,7 @@
 
     <Device id="pr1" name="printer1" uuid="a123" sampleInterval="10">
       <DataItems>
-        <DataItem id="pr1-availability" category="EVENT" type="AVAILABILITY" />
+        <DataItem id="pr1-avail" name="availability" category="EVENT" type="AVAILABILITY" />
       </DataItems>
     </Device>
 

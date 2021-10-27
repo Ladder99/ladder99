@@ -27,7 +27,7 @@ export class AdapterDriver {
 
     let client // tcp connection
     let handler // current message handler
-    while (client === null) {
+    while (client === undefined) {
       try {
         console.log(`Zebra driver connecting to`, { host, port }, '...')
         client = net.connect(port, host)
@@ -130,14 +130,14 @@ export class AdapterDriver {
     client.on('connect', () => {
       console.log(`Zebra driver connected...`)
       setCache('avail', 'AVAILABLE') // printer is alive
-      setCache('emp', 'ON') // printer is on ?
+      setCache('emp', 'ON') // printer is on
       setInterval(poll, pollInterval)
     })
 
     // receive data from device, write to cache, output shdr to agent
     client.on('data', data => {
       setCache('avail', 'AVAILABLE') // printer is alive
-      setCache('emp', 'ON') // printer is on ?
+      setCache('emp', 'ON') // printer is on
       // response starts with STX, has CR LF between each line, ends with ETX
       const str = data.toString() // eg 'PRINTER STATUS ERRORS: 1 00000000 00000005 WARNINGS: 1 00000000 00000002' // zpl returns
       console.log(`Zebra driver received response:\n`, str)
