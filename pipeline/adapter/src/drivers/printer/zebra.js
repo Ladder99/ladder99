@@ -19,6 +19,7 @@ import * as lib from '../../lib.js'
 
 // want this low as possible - see below comment
 const pollInterval = 3000 // ms
+
 // each command needs some time to wait for printer to respond
 // and currently we have 4 commands, so this times that is total time to
 // loop through all commands. keep it under the pollInterval.
@@ -63,6 +64,10 @@ export class AdapterDriver {
           const ret = parsers.parseHS(response)
           setCache('labels_remaining', ret.labelsRemaining)
 
+          // handle errors and warnings
+          if (ret.errors) errors.push(...ret.errors)
+          if (ret.warnings) warnings.push(...ret.warnings)
+
           // execution state MUST be READY, ACTIVE, INTERRUPTED, WAIT,
           // FEED_HOLD, STOPPED, OPTIONAL_STOP, PROGRAM_STOPPED,
           // or PROGRAM_COMPLETED.
@@ -70,10 +75,6 @@ export class AdapterDriver {
           //   INTERRUPTED - if any error condition
           //   ACTIVE - if labelsRemaining > 0
           //   READY - otherwise
-
-          // handle errors and warnings
-          if (ret.errors) errors.push(...ret.errors)
-          if (ret.warnings) warnings.push(...ret.warnings)
 
           // note: poll() fn will overwrite this with INTERRUPTED if any additional
           // errors found with ~HQES handler.
@@ -204,9 +205,6 @@ export class AdapterDriver {
         client.write(command + '\r\n')
         // give printer a little time to respond
         await new Promise(resolve => setTimeout(resolve, messagePauseTime))
-
-        //. make sure all is in consistent state here
-        handleMessages()
       }
     }
 
@@ -217,6 +215,7 @@ export class AdapterDriver {
       const warningMsgs = warnings.map(warning => `WARNING: ${warning}`)
       const msgs = [...errorMsgs, ...warningMsgs].join(', ') || 'UNAVAILABLE'
       setCache('msg', msgs)
+
       // set condition and state
       if (errors.length > 0) {
         setCache('cond', 'FAULT')
