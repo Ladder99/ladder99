@@ -62,12 +62,19 @@ export class AdapterDriver {
           // head up flag, ribbon out flag, label waiting flag, labels remaining
           const ret = parsers.parseHS(response)
           setCache('labels_remaining', ret.labelsRemaining)
-          // execution state:
-          // execution MUST be READY, ACTIVE, INTERRUPTED, WAIT, FEED_HOLD,
-          // STOPPED, OPTIONAL_STOP, PROGRAM_STOPPED, or PROGRAM_COMPLETED.
-          //   interrupted - if any error condition
-          //   active - if labelsRemaining > 0
-          //   ready - otherwise
+
+          // execution state MUST be READY, ACTIVE, INTERRUPTED, WAIT,
+          // FEED_HOLD, STOPPED, OPTIONAL_STOP, PROGRAM_STOPPED,
+          // or PROGRAM_COMPLETED.
+          // we'll use
+          //   INTERRUPTED - if any error condition
+          //   ACTIVE - if labelsRemaining > 0
+          //   READY - otherwise
+
+          // handle errors and warnings
+          if (ret.errors) errors.push(...ret.errors)
+          if (ret.warnings) warnings.push(...ret.warnings)
+
           // note: poll() fn will overwrite this with INTERRUPTED if any additional
           // errors found with ~HQES handler.
           const state =
@@ -77,9 +84,7 @@ export class AdapterDriver {
               ? 'ACTIVE'
               : 'READY'
           setCache('state', state)
-          // handle errors and warnings
-          if (ret.errors) errors.push(...ret.errors)
-          if (ret.warnings) warnings.push(...ret.warnings)
+
           // write message string if any
           handleMessages()
         } else {
@@ -100,11 +105,14 @@ export class AdapterDriver {
           //. pass array of values here? let cache handle it?
           //. how handle multiple messages - eg some warnings, some faults?
           //. for now, just handle one condition value at a time
+
           // handle errors and warnings
           if (ret.errors) errors.push(...ret.errors)
           if (ret.warnings) warnings.push(...ret.warnings)
+
           // write message string if any
           handleMessages()
+
           // make sure state is consistent
           if (errors.length > 0) {
             setCache('state', 'INTERRUPTED')
@@ -112,7 +120,8 @@ export class AdapterDriver {
         }
       },
 
-      // head diagnostic - get head temp, darkness adjust (?) - p199
+      // head diagnostic - get head temp, darkness adjust (?) - p199.
+      // note: this clears the cache values if response is null/undefined.
       '~HD': response => {
         const ret = response ? parsers.parseHD(response) : {}
         setCache('ht', ret['Head Temp']) // Celsius
@@ -120,7 +129,8 @@ export class AdapterDriver {
         setCache('fr', ret['Print Speed']) // feed rate - inches/sec
       },
 
-      // host query odometer - nonresettable and user resettable 1 and 2
+      // host query odometer - nonresettable and user resettable 1 and 2.
+      // note: this clears the cache values if response is null/undefined.
       '~HQOD': response => {
         const length = response ? parsers.parseHQOD(response) : undefined
         setCache('tl', length) // total length, inches
