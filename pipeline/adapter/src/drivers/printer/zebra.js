@@ -31,6 +31,8 @@ export class AdapterDriver {
     let errors // list of error messages, eg ['Paper Out']
     let warnings // list of warning messages
 
+    // note: net.connect() doesn't seem to time out - just waits there,
+    // so try catch loop probably unneeded.
     while (client === undefined) {
       try {
         console.log(`Zebra driver connecting to`, { host, port }, '...')
@@ -62,6 +64,7 @@ export class AdapterDriver {
           //   interrupted - if any error condition
           //   active - if labelsRemaining > 0
           //   ready - otherwise
+          // see also poll() fn
           setCache('state', ret.labelsRemaining > 0 ? 'ACTIVE' : 'READY')
           // handle errors and warnings
           if (ret.errors) errors.push(...ret.errors)
@@ -171,8 +174,7 @@ export class AdapterDriver {
 
     // 'poll' device using tcp client.write
     async function poll() {
-      //. clear msg bag
-      // msgs = []
+      // clear lists
       errors = []
       warnings = []
       // iterate over cmds, set handler temporarily
@@ -183,13 +185,15 @@ export class AdapterDriver {
         console.log(`Zebra driver writing ${command}...`)
         //. do try/catch - handle disconnection, reconnection
         client.write(command + '\r\n')
-        //. give printer some time to respond?
+        //. give printer some time to respond
         await new Promise(resolve => setTimeout(resolve, messagePauseTime))
       }
+      // get errors and warnings as one string
       const errorMsgs = errors.map(error => `ERROR: ${error}`)
       const warningMsgs = warnings.map(warning => `WARNING: ${warning}`)
       const msgs = [...errorMsgs, ...warningMsgs].join(', ') || 'UNAVAILABLE'
       setCache('msg', msgs)
+      // set condition and state
       if (errors.length > 0) {
         setCache('cond', 'FAULT')
         setCache('state', 'INTERRUPTED') // execution state - see also HS handler
