@@ -27,6 +27,8 @@ export class AdapterDriver {
 
     let client // tcp connection
     let handler // current message handler
+    let msgs // error and warning messages
+
     while (client === undefined) {
       try {
         console.log(`Zebra driver connecting to`, { host, port }, '...')
@@ -41,6 +43,29 @@ export class AdapterDriver {
     }
 
     const commandHandlers = {
+      // host status - p212
+      // note: When a ~HS command is sent, the printer will not send a response
+      // to the host if the printer is in one of these conditions:
+      // MEDIA OUT, RIBBON OUT, HEAD OPEN, REWINDER FULL, HEAD OVER-TEMPERATURE
+      '~HS': str => {
+        if (str) {
+          // get paper out flag, pause flag, buffer full flag, under/over temp flags,
+          // head up flag, ribbon out flag, label waiting flag, labels remaining
+          const ret = parsers.parseHS(str)
+          // @ts-ignore
+          setCache('labels_remaining', ret.labelsRemaining)
+          // execution state:
+          //   interrupted - if any error condition (set above in HQES handler)
+          //   active - if Number(labelsRemaining) > 0
+          //   ready - otherwise
+          // execution MUST be READY, ACTIVE, INTERRUPTED, WAIT, FEED_HOLD,
+          // STOPPED, OPTIONAL_STOP, PROGRAM_STOPPED, or PROGRAM_COMPLETED.
+          setCache('state', ret.labelsRemaining > 0 ? 'ACTIVE' : 'READY')
+        } else {
+          setCache('state')
+        }
+      },
+
       // host query status - errors and warnings - see guide p205
       '~HQES': str => {
         if (str) {
@@ -67,29 +92,6 @@ export class AdapterDriver {
           // set to unavailable
           setCache('cond')
           setCache('msg')
-        }
-      },
-
-      // host status - p212
-      // note: When a ~HS command is sent, the printer will not send a response
-      // to the host if the printer is in one of these conditions:
-      // MEDIA OUT, RIBBON OUT, HEAD OPEN, REWINDER FULL, HEAD OVER-TEMPERATURE
-      '~HS': str => {
-        if (str) {
-          // get paper out flag, pause flag, buffer full flag, under/over temp flags,
-          // head up flag, ribbon out flag, label waiting flag, labels remaining
-          const ret = parsers.parseHS(str)
-          // @ts-ignore
-          setCache('labels_remaining', ret.labelsRemaining)
-          // execution state:
-          // -interrupted - if any error condition (set above in HQES handler)
-          // -active - if Number(labelsRemaining) > 0
-          // -ready - otherwise
-          // execution MUST be READY, ACTIVE, INTERRUPTED, WAIT, FEED_HOLD,
-          // STOPPED, OPTIONAL_STOP, PROGRAM_STOPPED, or PROGRAM_COMPLETED.
-          setCache('state', ret.labelsRemaining > 0 ? 'ACTIVE' : 'READY')
-        } else {
-          setCache('state')
         }
       },
 
@@ -161,11 +163,13 @@ export class AdapterDriver {
 
     // 'poll' device using tcp client.write
     async function poll() {
+      //. clear msg bag
+      msgs = []
       // iterate over cmds, set handler temporarily
       const commands = Object.keys(commandHandlers)
       for (let command of commands) {
         //. this is assuming that printer will respond to cmds in order - ehhhh
-        handler = commandHandlers[command]
+        handler = commandHandlers[command] // will be called by client.on('data'), above
         console.log(`Zebra driver writing ${command}...`)
         //. do try/catch - handle disconnection, reconnection
         client.write(command + '\r\n')

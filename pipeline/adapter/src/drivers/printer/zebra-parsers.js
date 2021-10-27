@@ -24,7 +24,7 @@ const errorDict = {
   0x80000: 'Black Mark not Found',
 }
 const errorKeys = Object.keys(errorDict).map(errorKey => parseInt(errorKey))
-const errors = { dict: errorDict, keys: errorKeys }
+const errorIndex = { dict: errorDict, keys: errorKeys }
 
 const warningDict = {
   0x1: 'Need to Calibrate Media',
@@ -41,38 +41,33 @@ const warningDict = {
   0x800: 'Sensor 8 (at bin)',
 }
 const warningKeys = Object.keys(warningDict).map(key => parseInt(key))
-const warnings = { dict: warningDict, keys: warningKeys }
+const warningIndex = { dict: warningDict, keys: warningKeys }
 
 const regex =
   /.*PRINTER STATUS.*\r\n.*ERRORS.*(\d) (\d+) (\d+).*\r\n.*WARNINGS.*(\d) (\d+) (\d+).*/
 
+//. cleanup/refactor
 export function parseHQES(str) {
   const match = str.match(regex)
   if (match) {
-    const values = match.slice(1) // eg [ '1', '00000000', '00010004', '0', '00000000', '00000000' ]
-    const hexes = values.map(value => parseInt(value, 16))
+    const hexes = match.slice(1) // eg [ '1', '00000000', '00010004', '0', '00000000', '00000000' ]
+    const values = hexes.map(hex => parseInt(hex, 16)) // eg [1, 0, 812708, 0, 0, 0]
 
-    // const binaries = hexes.map(hex => hex.toString(2).split(''))
-    // const flags = binaries.map(binary => binary.map(digit => digit === '1'))
-    // const errorPresent = values[0] === '1'
-    // const warningPresent = values[3] === '1'
+    // const errorPresent = digits[0] === '1'
+    const errorValues = values[2] // eg 256
+    const errorKeys = errorIndex.keys.filter(key => errorValues & key)
+    const errors = errorKeys.map(key => errorIndex.dict[key])
 
-    const errorFlags = hexes[2]
-    const foundValues = errors.keys.filter(
-      errorValue => errorFlags & errorValue
-    )
-    const foundErrors = foundValues.map(foundValue => errors.dict[foundValue])
+    // const warningPresent = digits[3] === '1'
+    const warningValues = values[5] // eg 7
+    const warningKeys = warningIndex.keys.filter(key => warningValues & key)
+    const warnings = warningKeys.map(key => warningIndex.dict[key])
 
-    const warningFlags = hexes[5]
-    const foundWarningKeys = warnings.keys.filter(value => warningFlags & value)
-    const foundWarnings = foundWarningKeys.map(value => warnings.dict[value])
+    const errorMsgs = errors.map(error => `ERROR: ${error}`)
+    const warningMsgs = warnings.map(warning => `WARNING: ${warning}`)
+    const msgs = [...errorMsgs, ...warningMsgs].join(', ')
 
-    const msgs = [
-      ...foundErrors.map(error => `ERROR: ${error}`),
-      ...foundWarnings.map(warning => `WARNING: ${warning}`),
-    ].join(', ')
-
-    return { errors: foundErrors, warnings: foundWarnings, msgs }
+    return { errors, warnings, msgs }
   }
   return { errors: [], warnings: [], msgs: '' }
 }
