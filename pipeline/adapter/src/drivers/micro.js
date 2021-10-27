@@ -32,30 +32,15 @@ export class AdapterDriver {
         // write values to cache
         setValue('availability', 'AVAILABLE')
         setValue('condition', 'NORMAL')
-
-        setValue('temperature', data.cpuTemperature.main)
-        setValue('memory-total', data.mem.total)
-        setValue('memory-free', data.mem.free)
-        setValue('memory-used', data.mem.used)
-        setValue('cpu-total', data.currentLoad.currentLoad)
-        setValue('cpu-user', data.currentLoad.currentLoadUser)
-        setValue('cpu-system', data.currentLoad.currentLoadSystem)
-
+        setValue('temperature', rounded(data.cpuTemperature.main, 1))
+        setValue('memory-total', rounded(data.mem.total))
+        setValue('memory-free', rounded(data.mem.free))
+        setValue('memory-used', rounded(data.mem.used))
+        setValue('cpu-total', rounded(data.currentLoad.currentLoad, 1))
+        setValue('cpu-user', rounded(data.currentLoad.currentLoadUser, 1))
+        setValue('cpu-system', rounded(data.currentLoad.currentLoadSystem, 1))
         setValue('os', getDataSet(data.osInfo))
-
-        // setValue('memory', getDataSet(data.mem))
-        // setValue('cpu', getDataSet(data.currentLoad))
-        // inputs.inputs.forEach(input => {
-        //   const value =
-        //     input.representation === 'dataset'
-        //       ? getDataSet(data[input.item])
-        //       : data[input.item].main
-        //   setValue(input.name, value)
-        //   //. add each subitem individually also - experimental
-        //   input.subitems.split(', ').forEach(subitem => {
-        //     setValue(input.name + '-' + subitem, data[input.item][subitem])
-        //   })
-        // })
+        //
       } catch (e) {
         setUnavailable()
         console.error(e)
@@ -77,8 +62,6 @@ export class AdapterDriver {
     }
 
     function setValue(name, value) {
-      // cache.set(`${deviceId}/${name}`, { value })
-      // cache.set(`${deviceName}/${name}`, { value })
       cache.set(`${deviceId}-${name}`, value)
     }
   }
@@ -97,4 +80,11 @@ function getDataSet(obj) {
     })
     .join(' ')
   return str
+}
+
+function rounded(value, decimals = 0) {
+  if (value !== null && value !== undefined) {
+    return Number(value).toFixed(decimals)
+  }
+  return null
 }
