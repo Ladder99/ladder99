@@ -1,36 +1,37 @@
 // parsers for printer responses
 
 // ~HS - p212
-
+// response looks like:
+//   030,1,1,1225,000,0,0,0,000,0,0,0
+//  001,0,0,1,1,2,6,0,00000000,1,000
+//  1234,0
 export function parseHS(str) {
   const values = str
+    // remove \x02 and \x03 characters
     .split('')
     .filter(c => c !== '\x02' && c !== '\x03')
     .join('')
+    // split to lines and trim
     .split('\n')
     .map(line => line.trim())
+    // join the lines together
     .join(',')
+    // split all values apart
     .split(',')
-  const paperOut = values[1] === '1'
-  const pause = values[2] === '1'
-  const bufferFull = values[5] === '1'
-  const corruptRam = values[9] === '1'
-  const underTemperature = values[10] === '1'
-  const overTemperature = values[11] === '1'
-  const headUp = values[14] === '1'
-  const ribbonOut = values[15] === '1'
-  const labelsRemaining = parseInt(values[20])
-  const ret = {
-    paperOut,
-    pause,
-    bufferFull,
-    corruptRam,
-    underTemperature,
-    overTemperature,
-    headUp,
-    ribbonOut,
-    labelsRemaining,
-  }
+    // convert to integers
+    .map(s => parseInt(s))
+  const errors = []
+  const warnings = []
+  if (values[1]) errors.push('Paper Out')
+  if (values[2]) errors.push('Pause')
+  if (values[5]) errors.push('Buffer Full')
+  if (values[9]) errors.push('Corrupt RAM')
+  if (values[10]) errors.push('Under Temperature')
+  if (values[11]) errors.push('Over Temperature')
+  if (values[14]) errors.push('Head Up')
+  if (values[15]) errors.push('Ribbon Out')
+  const labelsRemaining = values[20]
+  const ret = { errors, warnings, labelsRemaining }
   return ret
 }
 
@@ -100,13 +101,9 @@ export function parseHQES(str) {
     const warningKeys = warningIndex.keys.filter(key => warningValues & key)
     const warnings = warningKeys.map(key => warningIndex.dict[key])
 
-    const errorMsgs = errors.map(error => `ERROR: ${error}`)
-    const warningMsgs = warnings.map(warning => `WARNING: ${warning}`)
-    const msgs = [...errorMsgs, ...warningMsgs].join(', ')
-
-    return { errors, warnings, msgs }
+    return { errors, warnings }
   }
-  return { errors: [], warnings: [], msgs: '' }
+  return { errors: [], warnings: [] }
 }
 
 // ~HD

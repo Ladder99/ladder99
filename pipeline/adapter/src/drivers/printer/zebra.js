@@ -27,7 +27,9 @@ export class AdapterDriver {
 
     let client // tcp connection
     let handler // current message handler
-    let msgs // error and warning messages
+    // let msgs // error and warning messages, eg 'ERROR: Paper Out, WARNING: Ribbon Low'
+    let errors // list of error messages, eg ['Paper Out']
+    let warnings // list of warning messages
 
     while (client === undefined) {
       try {
@@ -55,12 +57,15 @@ export class AdapterDriver {
           // @ts-ignore
           setCache('labels_remaining', ret.labelsRemaining)
           // execution state:
-          //   interrupted - if any error condition (set above in HQES handler)
-          //   active - if Number(labelsRemaining) > 0
-          //   ready - otherwise
           // execution MUST be READY, ACTIVE, INTERRUPTED, WAIT, FEED_HOLD,
           // STOPPED, OPTIONAL_STOP, PROGRAM_STOPPED, or PROGRAM_COMPLETED.
+          //   interrupted - if any error condition
+          //   active - if labelsRemaining > 0
+          //   ready - otherwise
           setCache('state', ret.labelsRemaining > 0 ? 'ACTIVE' : 'READY')
+          //. handle errors and warnings
+          if (ret.errors) errors.push(...ret.errors)
+          if (ret.warnings) warnings.push(...ret.warnings)
         } else {
           setCache('state')
         }
@@ -77,21 +82,24 @@ export class AdapterDriver {
           //. pass array of values here? let cache handle it?
           //. how handle multiple messages - eg some warnings, some faults?
           //. for now, just handle one condition value at a time
-          if (ret.errors.length > 0) {
-            setCache('cond', 'FAULT')
-            setCache('msg', ret.msgs)
-            setCache('state', 'INTERRUPTED') // execution state - see also HS handler below
-          } else if (ret.warnings.length > 0) {
-            setCache('cond', 'WARNING')
-            setCache('msg', ret.msgs)
-          } else {
-            setCache('cond', 'NORMAL')
-            setCache('msg')
-          }
+          // if (ret.errors.length > 0) {
+          //   setCache('cond', 'FAULT')
+          //   // setCache('msg', ret.msgs)
+          //   setCache('state', 'INTERRUPTED') // execution state - see also HS handler below
+          // } else if (ret.warnings.length > 0) {
+          //   setCache('cond', 'WARNING')
+          //   // setCache('msg', ret.msgs)
+          // } else {
+          //   setCache('cond', 'NORMAL')
+          //   // setCache('msg')
+          // }
+          //. handle errors and warnings
+          if (ret.errors) errors.push(...ret.errors)
+          if (ret.warnings) warnings.push(...ret.warnings)
         } else {
           // set to unavailable
           setCache('cond')
-          setCache('msg')
+          // setCache('msg')
         }
       },
 
@@ -164,7 +172,9 @@ export class AdapterDriver {
     // 'poll' device using tcp client.write
     async function poll() {
       //. clear msg bag
-      msgs = []
+      // msgs = []
+      errors = []
+      warnings = []
       // iterate over cmds, set handler temporarily
       const commands = Object.keys(commandHandlers)
       for (let command of commands) {
@@ -175,6 +185,18 @@ export class AdapterDriver {
         client.write(command + '\r\n')
         //. give printer some time to respond?
         await new Promise(resolve => setTimeout(resolve, messagePauseTime))
+      }
+      const errorMsgs = errors.map(error => `ERROR: ${error}`)
+      const warningMsgs = warnings.map(warning => `WARNING: ${warning}`)
+      const msgs = [...errorMsgs, ...warningMsgs].join(', ') || 'UNAVAILABLE'
+      setCache('msg', msgs)
+      if (errors.length > 0) {
+        setCache('cond', 'FAULT')
+        setCache('state', 'INTERRUPTED') // execution state - see also HS handler
+      } else if (warnings.length > 0) {
+        setCache('cond', 'WARNING')
+      } else {
+        setCache('cond', 'NORMAL')
       }
     }
 
