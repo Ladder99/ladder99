@@ -55,7 +55,8 @@ if [ -e $envfile ]; then
 else
     echo No .env file found - copying from default...
     cp setups/.env-default $envfile
-    echo PLEASE EDIT $envfile!
+    echo PLEASE EDIT $envfile, e.g.
+    echo nano $envfile
     exit 1
 fi
 

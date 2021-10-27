@@ -2,6 +2,7 @@
 
 import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
 import * as parsers from './zebra-parsers.js'
+import * as lib from '../../lib.js'
 
 const pollInterval = 5000 // ms
 const messagePauseTime = 500 // ms
@@ -24,15 +25,19 @@ export class AdapterDriver {
     // TODO
     // setCache('uc', 3) // unload count = total lifetime label count
 
-    let client
-    let handler
-    try {
-      console.log(`Zebra driver connecting to`, { host, port }, '...')
-      client = net.connect(port, host)
-    } catch (err) {
-      console.log(err)
-      setAllUnavailable()
-      //. keep trying
+    let client // tcp connection
+    let handler // current message handler
+    while (client === null) {
+      try {
+        console.log(`Zebra driver connecting to`, { host, port }, '...')
+        client = net.connect(port, host)
+      } catch (err) {
+        console.log(err)
+        setAllUnavailable()
+        // keep trying
+        console.log(`Sleeping - will try to connect again...`)
+        lib.sleep(1000)
+      }
     }
 
     const commandHandlers = {
@@ -151,7 +156,7 @@ export class AdapterDriver {
     client.on('end', () => {
       console.log('Zebra driver disconnected from server...')
       setAllUnavailable()
-      //. try to reconnect
+      //. try to reconnect - how?
     })
 
     // 'poll' device using tcp client.write
