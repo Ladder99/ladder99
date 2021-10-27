@@ -202,7 +202,16 @@ handlers:
       # convert jobstart time to milliseconds, add cycletimeavg * npartsremaining, convert to iso string
       # (<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <time_remaining> * 1000).toISOString() : undefined
       target: |
-        <time_remaining> ? new Date(new Date(<job_start>).getTime() + <time_remaining> * 1000).toISOString() : undefined
+        (<job_start>!=='UNAVAILABLE' && <time_remaining>) ? new Date(new Date(<job_start>).getTime() + <time_remaining> * 1000).toISOString() : undefined
+      # target: |
+      #   {
+      #     const jobStart = <job_start>;
+      #     const timeRemaining = <time_remaining>;
+      #     if (jobStart && jobStart !== 'UNAVAILABLE' && timeRemaining >= 0) {
+      #       return new Date(new Date(jobStart).getTime() + timeRemaining * 1000).toISOString();
+      #     }
+      #     return undefined;
+      #   }
 
       # get lastest cycle times to show in dataset, for debugging (seconds)
       # note: the reference to <kits_off> causes this to be recalculated when that changes.
@@ -241,7 +250,8 @@ handlers:
       # compare cache to incoming data
       # this is truthy when get new job_meta values, undefined otherwise
       #. does this go to false? need explicit comparison to get true/false?
-      job_changed: <job_meta>
+      # job_changed: <job_meta>
+      job_changed: <job_meta> !== undefined
 
       # assign new uuid's and time on job change
       # returning undefined will leave value the same
