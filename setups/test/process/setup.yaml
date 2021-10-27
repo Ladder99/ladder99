@@ -1,0 +1,25 @@
+# setup for process test
+
+devices:
+  - id: kl1
+    name: kitline1 # this must match name in agent.cfg and agent.xml
+    # module: printer/zebra # not used yet
+
+    # specify sources for dataitem values
+    sources:
+      - module: process/job-part # defines inputs/outputs.yaml
+        driver: process/job-part # adapter plugin - manages protocol and payload
+        host: mosquitto
+        port: 1883
+        # protocol: tcp
+        # host: 10.20.30.101
+        # port: 9999
+        # host: printersim
+        # host: 192.168.200.192 # NIS
+        # port: 9100
+
+    #. this should be server, not destinations - for agent to connect to
+    destinations: # where to post output - just uses first output for now
+      - protocol: shdr
+        host: adapter
+        port: 7878

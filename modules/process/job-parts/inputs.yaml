@@ -123,6 +123,13 @@ handlers:
       # NEW-PROCESS: data from skid zpl
       skid_meta: msg('%Z61.17')
 
+      # current job done flag, pieces remaining reached zero
+      # need explicit true here, so undefined -> false (undefined would leave this as true)
+      # job_complete: msg('%Z61.3') === true
+      # NEW-PROCESS - need to look at eye-3 countdown to zero status (t/f)
+      # job_complete: msg('%Z61.22')
+      job_complete: msg('%Z61.22') === true
+
       #. how specify printer assoc with this line?
       # need to specify pr1, pr2, pr3, pr4 etc
       # setup.yaml could specify? or part of the xml model?
@@ -226,12 +233,6 @@ handlers:
       pieces_completed: <kits_off> # kits finished
       pieces_began: <kits_on> # kits work began
 
-      # current job done flag, pieces remaining reached zero
-      # need explicit true here, so undefined -> false (undefined would leave this as true)
-      # job_complete: msg('%Z61.3') === true
-      # NEW-PROCESS - need to look at eye-3 countdown to zero status (t/f)
-      job_complete: msg('%Z61.22')
-
       # kit assembly part number, can be empty string
       job_current: (<job_meta> || {}).kit_number
 
@@ -244,9 +245,16 @@ handlers:
 
       # assign new uuid's and time on job change
       # returning undefined will leave value the same
-      part_uuid: '<job_changed> ? uuid() : undefined'
-      process_uuid: '<job_changed> ? uuid() : undefined'
-      job_start: '<job_changed> ? new Date().toISOString() : undefined'
+      # reset when job complete
+      # part_uuid: '<job_changed> ? uuid() : undefined'
+      # process_uuid: '<job_changed> ? uuid() : undefined'
+      # job_start: '<job_changed> ? new Date().toISOString() : undefined'
+      part_uuid: |
+        <job_complete> ? 'UNAVAILABLE' : <job_changed> ? uuid() : undefined
+      process_uuid: |
+        <job_complete> ? 'UNAVAILABLE' : <job_changed> ? uuid() : undefined
+      job_start: |
+        <job_complete> ? 'UNAVAILABLE' : <job_changed> ? new Date().toISOString() : undefined
 
       # update sales order if available - reset when job complete
       # salesord: (<job_meta> || {}).sales_order

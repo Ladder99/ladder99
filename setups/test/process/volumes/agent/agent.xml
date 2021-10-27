@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- handmade version for testing -->
+<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.7" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.7 http://www.mtconnect.org/schemas/MTConnectDevices_1.7.xsd">
+  <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.7.0.3" />
+  <Devices>
+
+    <!-- sample interval is milliseconds -->
+    <Device id="kl1" name="kitline1" uuid="a123" sampleInterval="1000">
+      <DataItems>
+        <DataItem category="EVENT" id="kl1-avail" name="availability" type="AVAILABILITY" />
+      </DataItems>
+    </Device>
+
+  </Devices>
+</MTConnectDevices>
