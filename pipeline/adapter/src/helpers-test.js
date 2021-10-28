@@ -1,4 +1,7 @@
 // test helper fns
+// run:
+//   cd pipeline/adapter
+//   node src/helpers-test.js
 
 import { getMacros, compileExpressions, getEquationKeys } from './helpers.js'
 

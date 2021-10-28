@@ -92,28 +92,10 @@ async function main() {
           cache.addOutputs(outputs, socket)
         }
 
-        //. transform input values to input value fns here if needed?
-        // ie value:=<on>+<off> would be translated to a fn with those cache lookups.
-        // vs value:'%M56.1' which would use the lookup fn
-        // or stick .valueFn onto the input object, which call with cache.
-        // might want to provide types in the closure also, when call eval.
         if (inputs.handlers) {
           // iterate over handlers
           const handlers = Object.values(inputs.handlers)
           for (let handler of handlers) {
-            // // iterate over keys and parts
-            // const keys = Object.keys(handler.inputs || {})
-            // for (let key of keys) {
-            //   const part = handler.inputs[key]
-            //   console.log('key,part', key, part)
-            //   // replace part with { code, valueFn } if starts with '='
-            //   if (typeof part === 'string' && part.startsWith('=')) {
-            //     const code = part.slice(1) // eg '<foo> + 1'
-            //     const { value, dependsOn } = getValueFn(deviceId, code, types)
-            //     handler.inputs[key] = { code, value }
-            //   }
-            // }
-
             // get macros (regexs to extract references from code)
             const prefix = deviceId + '-'
             const macros = getMacros(prefix, handler.accessor)

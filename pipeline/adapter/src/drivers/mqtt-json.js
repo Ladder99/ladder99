@@ -144,7 +144,7 @@ export class AdapterDriver {
             // get set of keys for eqns we need to execute based on the payload
             // eg set{'has_current_job', 'job_meta', ...}
             //. call this dependencies = getDependencies ... ?
-            // or is this references = getReferences ?
+            //  or references = getReferences ?
             let equationKeys = getEquationKeys(payload, handler.maps)
 
             let depth = 0

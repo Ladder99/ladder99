@@ -11,12 +11,6 @@ devices:
         driver: mqtt-json # adapter plugin - manages protocol and payload
         host: mosquitto
         port: 1883
-        # protocol: tcp
-        # host: 10.20.30.101
-        # port: 9999
-        # host: printersim
-        # host: 192.168.200.192 # NIS
-        # port: 9100
 
     #. this should be server, not destinations - for agent to connect to
     destinations: # where to post output - just uses first output for now
