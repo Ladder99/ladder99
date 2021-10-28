@@ -32,11 +32,15 @@ const prefix = deviceId + '-'
 const payloads = [
   [{ address: '%Z61.0', value: { carton_quantity: 5 } }], // job meta
   [{ address: '%Z61.22', value: true }], // job complete
+  [{ address: '%Z61.22', value: true }], // job complete - duplicate, shouldn't trigger any exprs
+  [{ address: '%Z61.0', value: { carton_quantity: 1 } }], // job meta
+  [{ address: '%Z61.22', value: true }], // job complete
 ]
 
 let last$ = {}
 
 for (let payload of payloads) {
+  console.log('payload', payload)
   //
   // initialize $ dictionary
   // ie from initialize: 'payload.forEach(item => $[item.address] = item)'
@@ -58,7 +62,7 @@ for (let payload of payloads) {
   // get set of keys for eqns we need to execute
   // const equationKeys = helpers.getEquationKeys(payload, handler.maps)
   const equationKeys = helpers.getEquationKeys1b(payload, last$, handler.maps)
-  // console.log('equationKeys', equationKeys)
+  console.log('equationKeys', equationKeys)
 
   let keyvalues = {}
 
@@ -78,4 +82,5 @@ for (let payload of payloads) {
   last$ = { ...$ }
 
   console.log('cache', cache)
+  console.log()
 }
