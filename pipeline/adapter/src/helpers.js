@@ -1,6 +1,7 @@
 // helper fns for different drivers
 
 import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
+import * as lib from './lib.js'
 
 let keyvalues = {}
 
@@ -94,17 +95,60 @@ export function addToMaps(maps, key, refs) {
 }
 
 // get equation keys
-// iterate over message array,
-// lookup what fns are associated with each address,
+// iterate over message array, lookup what fns are associated
+// with each address, return set of fn keys.
 export function getEquationKeys(payload, maps) {
   const equationKeys = new Set()
   for (const item of payload) {
     const { address } = item
     const set = maps.addr[address]
-    if (set) {
-      for (let key of set) {
-        equationKeys.add(key)
-      }
+    // if (set) {
+    //   for (let key of set) {
+    //     equationKeys.add(key)
+    //   }
+    // }
+    lib.mergeIntoSet(equationKeys, set)
+  }
+  return equationKeys
+}
+
+// get equation keys1b
+// iterate over message array, lookup what fns are associated
+// with each address, return set of fn keys.
+//. check for values in payload that changed from previous $
+// ie iterate over $ values, if any of those changed, add to the set
+export function getEquationKeys1b(payload, last$, maps) {
+  const equationKeys = new Set()
+  const payloadAddresses = new Set()
+  for (const item of payload) {
+    const { address } = item // get address eg '%Z61.0'
+    const lastValue = last$[address] && last$[address].value // get previous value, if any
+    // only include eqnkey in the set if value has changed
+    // note: if the value is an object, this will always evaluate to true, as would `!=`
+    if (item.value !== lastValue) {
+      const set = maps.addr[address] // get set of eqn keys triggered by that address, eg 'has_current_job', 'job_meta'
+      // add all those eqn keys to the set (no set merge operation avail)
+      // if (set) {
+      //   for (let eqnkey of set) {
+      //     equationKeys.add(eqnkey)
+      //   }
+      // }
+      lib.mergeIntoSet(equationKeys, set)
+    }
+    payloadAddresses.add(address)
+  }
+  // check for values in last$ that might have disappeared -
+  // still want to trigger those expressions
+  for (const address of Object.keys(last$)) {
+    if (!payloadAddresses.has(address)) {
+      const set = maps.addr[address] // get set of eqn keys triggered by that address, eg 'has_current_job', 'job_meta'
+      // add all those eqn keys to the set (no set merge operation avail)
+      // if (set) {
+      //   for (let eqnkey of set) {
+      //     equationKeys.add(eqnkey)
+      //   }
+      // }
+      lib.mergeIntoSet(equationKeys, set)
     }
   }
   return equationKeys
@@ -118,11 +162,12 @@ export function getEquationKeys2(eqnkeys, maps) {
   const equationKeys = new Set()
   for (const eqnkey of eqnkeys) {
     const set = maps.cache[eqnkey]
-    if (set) {
-      for (let key of set) {
-        equationKeys.add(key)
-      }
-    }
+    // if (set) {
+    //   for (let key of set) {
+    //     equationKeys.add(key)
+    //   }
+    // }
+    lib.mergeIntoSet(equationKeys, set)
   }
   return equationKeys
 }

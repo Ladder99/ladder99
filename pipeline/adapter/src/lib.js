@@ -58,3 +58,11 @@ export function getSet(str) {
 export function getCamelCase(str) {
   return str[0].toLowerCase() + str.slice(1)
 }
+
+export function mergeIntoSet(setBase, setExtra) {
+  if (setExtra) {
+    for (let key of setExtra) {
+      setBase.add(key)
+    }
+  }
+}

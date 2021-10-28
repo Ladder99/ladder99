@@ -3,7 +3,8 @@
 //   cd pipeline/adapter
 //   node src/helpers-test.js
 
-import { getMacros, compileExpressions, getEquationKeys } from './helpers.js'
+// import { getMacros, compileExpressions, getEquationKeys } from './helpers.js'
+import * as helpers from './helpers.js'
 
 // ~inputs.yaml
 const inputs = {
@@ -33,10 +34,10 @@ const payloads = [
   [{ address: '%Z61.22', value: true }], // job complete
 ]
 
-for (let payload of payloads) {
-  // //. amend payload?
-  // payload.push({ address: '%Z61.0', value: undefined })
+let last$ = {}
 
+for (let payload of payloads) {
+  //
   // initialize $ dictionary
   // ie from initialize: 'payload.forEach(item => $[item.address] = item)'
   const $ = {}
@@ -44,8 +45,8 @@ for (let payload of payloads) {
 
   // compile inputs yaml
   const handler = inputs.handlers['l99/ccs/foo']
-  const macros = getMacros(prefix, handler.accessor)
-  const { augmentedExpressions, maps } = compileExpressions(
+  const macros = helpers.getMacros(prefix, handler.accessor)
+  const { augmentedExpressions, maps } = helpers.compileExpressions(
     handler.expressions,
     macros
   )
@@ -55,7 +56,8 @@ for (let payload of payloads) {
   handler.maps = maps
 
   // get set of keys for eqns we need to execute
-  const equationKeys = getEquationKeys(payload, handler.maps)
+  // const equationKeys = helpers.getEquationKeys(payload, handler.maps)
+  const equationKeys = helpers.getEquationKeys1b(payload, last$, handler.maps)
   // console.log('equationKeys', equationKeys)
 
   let keyvalues = {}
@@ -73,6 +75,7 @@ for (let payload of payloads) {
       // equationKeys2.add(cacheId)
     }
   }
+  last$ = { ...$ }
 
   console.log('cache', cache)
 }
