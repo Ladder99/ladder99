@@ -94,7 +94,7 @@ export class AdapterDriver {
       for (let [topic, handler] of Object.entries(inputs.handlers)) {
         topic = replaceDeviceId(topic)
 
-        // eg msgTopic => 'l99/pa1/evt/query'
+        // eg msgTopic => 'l99/ccs/evt/query'
         if (topic === msgTopic) {
           // unsubscribe from topics as needed
           for (const entry of handler.unsubscribe || []) {
@@ -110,12 +110,13 @@ export class AdapterDriver {
           console.log(`MQTT initialize handler`)
           let $ = {} // a variable representing payload data - must be let not const
           eval(handler.initialize)
-          // console.log($)
 
           if (handler.process === 'iterate_inputs') {
+            //
             // define lookup function
             // eg lookup: '($, js) => eval(js)'
-            //. do this before-hand somewhere and store as handler.lookupFn
+            //. do this before-hand somewhere and store as handler.lookupFn,
+            // to save eval time
             console.log(`MQTT define lookup`, handler.lookup.toString())
             const lookup = eval(handler.lookup)
 
@@ -140,9 +141,6 @@ export class AdapterDriver {
           } else {
             // ie process = 'iterate_message_contents'
 
-            // console.log('payload', payload)
-            // console.log('maps', handler.maps)
-
             // get set of keys for eqns we need to execute based on the payload
             // eg set{'has_current_job', 'job_meta', ...}
             //. call this dependencies = getDependencies ... ?
@@ -152,16 +150,11 @@ export class AdapterDriver {
             let depth = 0
 
             do {
-              // console.log('depth', depth)
-              // console.log('eqnkeys', equationKeys)
               const equationKeys2 = new Set()
               // evaluate each eqn once, and put the results in the cache.
               for (let equationKey of equationKeys) {
-                // const expression = handler.augmentedExpressions[equationKey]
                 const expression = handler.augmentedExpressions[equationKey]
-                // console.log('expression.fn', expression.fn.toString())
                 const value = expression.fn(cache, $, keyvalues) // run the expression fn
-                // console.log('expression.fn() -->', value)
                 if (value !== undefined) {
                   const cacheId = deviceId + '-' + equationKey // eg 'pa1-fault_count'
                   cache.set(cacheId, value) // save to the cache - may send shdr to tcp
@@ -170,11 +163,8 @@ export class AdapterDriver {
               }
               equationKeys = getEquationKeys2(equationKeys2, handler.maps)
               depth += 1
-            } while (equationKeys.size > 0 && depth < 5)
+            } while (equationKeys.size > 0 && depth < 6) // prevent endless loops
           }
-
-          // console.log('cache', cache._map) // print contents of cache
-          // console.log('keyvalues', keyvalues)
 
           // subscribe to any topics
           for (const entry of handler.subscribe || []) {
