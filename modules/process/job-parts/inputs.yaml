@@ -81,7 +81,7 @@ handlers:
     initialize: 'payload.forEach(item => $[item.address] = item)'
 
     # accessor to use to get value from message item
-    # eg `msg('%M56.1') becomes '(cache, $) => ($['%M56.1'] || {}).default'
+    # eg msg('%M56.1') becomes '(cache, $) => ($['%M56.1'] || {}).default'
     accessor: default
 
     # algorithm to process inputs
@@ -116,8 +116,8 @@ handlers:
       # this will assign its value to job_meta,
       # otherwise value will be undefined, and cache.set will ignore it,
       # leaving any existing value there in the cache.
-      # we need to pull out .default OR .value, depending on which handler this is
-      # hence the msg lookup function def above.
+      # we need to pull out .default OR .value, depending on which handler this is,
+      # hence the accessor definition above.
       job_meta: msg('%Z61.0')
 
       # NEW-PROCESS: data from skid zpl
