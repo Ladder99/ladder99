@@ -31,14 +31,23 @@ outputs:
     value: types.AVAILABILITY[<status_connection>]
 
   - key: func
-    # kits_on represents number of pieces started for a job
+    # functional mode
+    # has_current_job: "=!!$['%Z61.0']" # converts object to true, undefined to false
+    # job_complete: =msg('%Z61.22') === true
+    # kits_on: msg('%Z61.5')
+    # kits_on represents number of pieces started for a job.
     #. iron this out - use job_current instead of has_current_job?
-    #  latter seems like it would only be true if
+    # has_current_job is true if message includes z61.0, false otherwise
+    # value: |
+    #   <has_current_job> && <job_complete> ? 'TEARDOWN' :
+    #   <has_current_job> && !<kits_on> ? 'SETUP' :
+    #   <has_current_job> && <kits_on> > 0 ? 'PRODUCTION' :
+    #   'UNAVAILABLE'
+    #. is this ok?
     value: |
-      <has_current_job> && <job_complete> ? 'TEARDOWN' :
-      <has_current_job> && !<kits_on> ? 'SETUP' : 
-      <has_current_job> && <kits_on> > 0 ? 'PRODUCTION' :
-      'UNAVAILABLE'
+      <job_complete> ? 'TEARDOWN' :
+      <kits_on> > 0 ? 'PRODUCTION' :
+      'SETUP'
 
   # ------------------------------------------------------------------
   # controller

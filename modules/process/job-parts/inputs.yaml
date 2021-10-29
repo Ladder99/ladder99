@@ -110,6 +110,8 @@ handlers:
       # has_current_job: "!!$['%Z61.0']" # converts object to true, undefined to false
       # note: the = means always evaluate this expression, to set the flag value
       has_current_job: "=!!$['%Z61.0']" # converts object to true, undefined to false
+      #. equivalent?
+      # has_current_job: =msg('%Z61.0') === true
 
       # get job meta data from kit label
       # this writes a value to the cache at eg key 'kl1-job_meta'.
@@ -289,7 +291,10 @@ handlers:
 
       # NEW-PROCESS - get purchase order info from skid zpl.
       # if skid data is not available then 61.17 will be empty json object {}.
-      purchord: (<skid_meta> || {}).purchase_order
+      # purchord: (<skid_meta> || {}).purchase_order
+      # we only get this event if skid_meta data comes in, either {} or a filled object.
+      # so if it's {}, this will return UNAVAILABLE, else the purchase order num.
+      purchord: <skid_meta>.purchase_order || 'UNAVAILABLE'
 
       # --------------------------------------------------------
       # part occurrences
@@ -299,8 +304,8 @@ handlers:
       pcall: <kits_off>
 
       # aka dc
-      # this returns undefined when no job_meta avail, which is a no-op, so leaves value as is.
-      date_code: (<job_meta> || {}).assembly_date
+      # date_code: (<job_meta> || {}).assembly_date
+      date_code: <job_meta>.assembly_date || 'UNAVAILABLE'
 
   # ----------------------------------------------------------------------------
   # handle read messages

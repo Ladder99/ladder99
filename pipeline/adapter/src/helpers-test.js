@@ -56,7 +56,7 @@ for (let payload of payloads) {
   handler.augmentedExpressions = augmentedExpressions
   handler.maps = maps
 
-  // get set of exprs to always run
+  // get set of '=' exprs to always run
   handler.alwaysRun = new Set()
   for (let key of Object.keys(augmentedExpressions)) {
     const expr = augmentedExpressions[key]
