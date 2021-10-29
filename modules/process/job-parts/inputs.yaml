@@ -197,7 +197,6 @@ handlers:
       # note: the expression is prefixed with '(cache, $, keyvalues) =>',
       # so need to return the final value.
       # otherwise, the block would evaluate to its last expression, as in lisp.
-      # //koff.delta = (koff.end - koff.start) * 0.001;
       cycle_time: |
         {
           const koff = keyvalues[<kits_off>] || {};
