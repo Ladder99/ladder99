@@ -150,11 +150,11 @@
           "colorMode": "gray",
           "fill": true,
           "fillColor": "rgba(234, 112, 112, 0.12)",
-          "from": "22:00",
+          "from": "13:00",
           "line": false,
           "lineColor": "rgba(237, 46, 24, 0.60)",
           "op": "time",
-          "to": "13:00"
+          "to": "22:00"
         }
       ],
       "timeShift": null,
@@ -203,6 +203,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
+      "decimals": 1,
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -280,11 +281,11 @@
           "colorMode": "gray",
           "fill": true,
           "fillColor": "rgba(234, 112, 112, 0.12)",
-          "from": "22:00",
+          "from": "13:00",
           "line": false,
           "lineColor": "rgba(237, 46, 24, 0.60)",
           "op": "time",
-          "to": "13:00"
+          "to": "22:00"
         }
       ],
       "timeShift": null,
@@ -305,6 +306,7 @@
       "yaxes": [
         {
           "$$hashKey": "object:203",
+          "decimals": null,
           "format": "percent",
           "label": null,
           "logBase": 1,
@@ -333,6 +335,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
+      "decimals": 1,
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -409,11 +412,11 @@
           "colorMode": "gray",
           "fill": true,
           "fillColor": "rgba(234, 112, 112, 0.12)",
-          "from": "22:00",
+          "from": "13:00",
           "line": false,
           "lineColor": "rgba(237, 46, 24, 0.60)",
           "op": "time",
-          "to": "13:00"
+          "to": "22:00"
         }
       ],
       "timeShift": null,
@@ -466,7 +469,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
@@ -486,5 +489,5 @@
   "timezone": "",
   "title": "Microcontroller",
   "uid": "micro",
-  "version": 4
+  "version": 11
 }
