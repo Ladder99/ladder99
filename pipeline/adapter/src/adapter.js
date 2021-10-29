@@ -92,25 +92,32 @@ async function main() {
           cache.addOutputs(outputs, socket)
         }
 
-        if (inputs.handlers) {
-          // iterate over handlers
-          const handlers = Object.values(inputs.handlers)
-          for (let handler of handlers) {
-            // get macros (regexs to extract references from code)
-            const prefix = deviceId + '-'
-            const macros = getMacros(prefix, handler.accessor)
+        // iterate over handlers
+        const handlers = Object.values(inputs.handlers || [])
+        for (let handler of handlers) {
+          // get macros (regexs to extract references from code)
+          const prefix = deviceId + '-'
+          const macros = getMacros(prefix, handler.accessor)
 
-            // parse input handler code, get dependency graph, compile fns
-            // eg maps could be { addr: { '%Z61.0': Set(1) { 'has_current_job' } }, ...}
-            // use like
-            //   const keys = [...maps.addr['%Z61.0']] // = ['has_current_job', 'foo_bar']
-            // so can know what formulas need to be evaluated for some given addr
-            const { augmentedExpressions, maps } = compileExpressions(
-              handler.expressions,
-              macros
-            )
-            handler.augmentedExpressions = augmentedExpressions
-            handler.maps = maps
+          // parse input handler code, get dependency graph, compile fns
+          // eg maps could be { addr: { '%Z61.0': Set(1) { 'has_current_job' } }, ...}
+          // use like
+          //   const keys = [...maps.addr['%Z61.0']] // = ['has_current_job', 'foo_bar']
+          // so can know what formulas need to be evaluated for some given addr
+          const { augmentedExpressions, maps } = compileExpressions(
+            handler.expressions,
+            macros
+          )
+          handler.augmentedExpressions = augmentedExpressions
+          handler.maps = maps
+
+          // get set of exprs to always run
+          handler.alwaysRun = new Set()
+          for (let key of Object.keys(augmentedExpressions)) {
+            const expr = augmentedExpressions[key]
+            if (expr.always) {
+              handler.alwaysRun.add(key)
+            }
           }
         }
 

@@ -5,6 +5,7 @@
 
 // import { getMacros, compileExpressions, getEquationKeys } from './helpers.js'
 import * as helpers from './helpers.js'
+import * as lib from './lib.js'
 
 // ~inputs.yaml
 const inputs = {
@@ -12,7 +13,7 @@ const inputs = {
     'l99/ccs/foo': {
       accessor: 'value',
       expressions: {
-        has_current_job: "!!$['%Z61.0']",
+        has_current_job: "=!!$['%Z61.0']",
         job_meta: "msg('%Z61.0')",
         carton_quantity: '(<job_meta> || {}).carton_quantity',
         job_complete: "msg('%Z61.22') === true",
@@ -60,8 +61,11 @@ for (let payload of payloads) {
   handler.maps = maps
 
   // get set of keys for eqns we need to execute
-  // const equationKeys = helpers.getEquationKeys(payload, handler.maps)
-  const equationKeys = helpers.getEquationKeys1b(payload, last$, handler.maps)
+  const equationKeys = helpers.getEquationKeys(payload, handler.maps)
+  // const equationKeys = helpers.getEquationKeys1b(payload, last$, handler.maps)
+  // make sure all '=' expressions will be evaluated
+  lib.mergeIntoSet(equationKeys, handler.alwaysRun)
+
   console.log('equationKeys', equationKeys)
 
   let keyvalues = {}

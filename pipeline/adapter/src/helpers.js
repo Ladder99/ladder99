@@ -7,7 +7,7 @@ let keyvalues = {}
 
 // define macros to be used by input/output yamls
 // prefix is deviceId- eg 'pr1-'
-// accessor is default or value
+// accessor is 'default' or 'value'
 export const getMacros = (prefix, accessor) => ({
   // replace all occurrences of msg('foo') with ($['foo'] || {}).default or .value
   addr: {
@@ -23,25 +23,30 @@ export const getMacros = (prefix, accessor) => ({
   },
 })
 
-// compile code and find all references to message contents or cache.
-// returns transformed code and refs.
+// compile code using macros and find all references to message contents
+// or cache.
+// returns transformed code, refs, and always execute flag.
+// refs is { addr, cache }, with addr being a set of plc addresses referenced
+// in the code, and cache the set of cache values referenced.
+// the always flag is true if first char of code is '=', false otherwise.
+// called by compileExpressions, below.
 // eg
 //   compile(`=msg('foo') + <bar>`, macros)
 // returns {
 //   js: "(cache, $) => ($['foo'] || {}).default + cache.get('pr1-bar')",
-//   refs: { addr: Set(1) { '%Z61.0' }, cache: Set(1) { 'pr1-bar' } }
+//   refs: { addr: set{ 'foo' }, cache: set{ 'pr1-bar' } },
+//   always: true,
 // }
 export function compile(code, macros) {
-  // console.log(`compile`, code)
-  // let js = code.slice(1) // ditch '='
-  let js = code
+  const always = code.startsWith('=')
+  let js = always ? code.slice(1) : code // ditch '=' if there
   let refs = {}
   for (let macroName of Object.keys(macros)) {
     const macro = macros[macroName]
     macro.key = macroName
 
     // note: .*? is a non-greedy match, so doesn't eat other occurrences also.
-    // note: replaceAll needs node15 - use /g flag for regexp here
+    // note: replaceAll needs node15, so must use /g flag for regexp here.
     js = js.replace(macro.syntax, macro.transform)
 
     // get list of message addrs or cache keys the code references.
@@ -53,38 +58,43 @@ export function compile(code, macros) {
       refs[macroName].add(key)
     }
   }
-  js = '(cache, $, keyvalues) => ' + js //. needs to be assoc with all macros somehow
-  // console.log({ js, refs })
-  return { js, refs }
+  js = '(cache, $, keyvalues) => ' + js //. needs to be assoc with all macros somehow [?]
+  // return { js, refs }
+  return { js, refs, always }
 }
 
+// compile dict of expressions and return augmented expressions and maps.
+//. explain more
+// called by adapter when parsing inputs.yaml.
 export function compileExpressions(expressions, macros) {
-  // console.log(`compileExpressions`)
   const augmentedExpressions = {}
   const maps = {}
   for (let [key, expression] of Object.entries(expressions)) {
-    // if (typeof expression === 'string' && expression.startsWith('=')) {
-    const { js, refs } = compile(expression, macros)
-    const fn = eval(js) // define the fn
-    augmentedExpressions[key] = { expression, js, fn, refs }
+    const { js, refs, always } = compile(expression, macros)
+    const fn = eval(js) // evaluate the code to define the fn
+    augmentedExpressions[key] = { expression, js, fn, refs, always }
     addToMaps(maps, key, refs)
-    // }
   }
-  // console.log({ maps })
   return { augmentedExpressions, maps }
 }
 
-// maps is eg {}
-// refs is eg { addr: Set(0) {}, cache: Set(1) { 'pr1-job_meta' } }
-// maps is eg { addr: {foo: Set(1) { '%Z61.0' }}, cache: {bar: Set(1) { 'pr1-job_meta' }} }
+// build up maps dicts, one for each macro type.
+// eg will add to maps = { addr, cache }
+//. explain more
+// eg if maps is { addr: {foo: set{'%Z61.0'}}} ?
+// key is eg 'bar' ?
+// refs is eg { addr: set{}, cache: set{'pr1-job_meta'}}
+// then maps becomes { addr: {foo: set{'%Z61.0'}}, cache: {bar: set{'pr1-job_meta'}}}
 export function addToMaps(maps, key, refs) {
-  // macroKey is addr or cache
+  // macroKey is 'addr' or 'cache'
   for (let macroKey of Object.keys(refs)) {
-    const refset = refs[macroKey] // eg set{'%Z61.0'}
+    const refset = refs[macroKey] // eg 'addr' -> set{'%Z61.0'}
     for (let ref of refset) {
+      // initialize dict
       if (!maps[macroKey]) {
         maps[macroKey] = {}
       }
+      // add key to new or existing set
       if (maps[macroKey][ref]) {
         maps[macroKey][ref].add(key)
       } else {
@@ -102,11 +112,6 @@ export function getEquationKeys(payload, maps) {
   for (const item of payload) {
     const { address } = item
     const set = maps.addr[address]
-    // if (set) {
-    //   for (let key of set) {
-    //     equationKeys.add(key)
-    //   }
-    // }
     lib.mergeIntoSet(equationKeys, set)
   }
   return equationKeys
@@ -128,11 +133,6 @@ export function getEquationKeys1b(payload, last$, maps) {
     if (item.value !== lastValue) {
       const set = maps.addr[address] // get set of eqn keys triggered by that address, eg 'has_current_job', 'job_meta'
       // add all those eqn keys to the set (no set merge operation avail)
-      // if (set) {
-      //   for (let eqnkey of set) {
-      //     equationKeys.add(eqnkey)
-      //   }
-      // }
       lib.mergeIntoSet(equationKeys, set)
     }
     payloadAddresses.add(address)
@@ -143,11 +143,6 @@ export function getEquationKeys1b(payload, last$, maps) {
     if (!payloadAddresses.has(address)) {
       const set = maps.addr[address] // get set of eqn keys triggered by that address, eg 'has_current_job', 'job_meta'
       // add all those eqn keys to the set (no set merge operation avail)
-      // if (set) {
-      //   for (let eqnkey of set) {
-      //     equationKeys.add(eqnkey)
-      //   }
-      // }
       lib.mergeIntoSet(equationKeys, set)
     }
   }
@@ -157,16 +152,11 @@ export function getEquationKeys1b(payload, last$, maps) {
 // get equation keys ii
 // iterate over eqnkeys,
 // lookup what other eqns are associated with each eqnkey
-//. merge with above fn
+//. merge with getEquationKeys
 export function getEquationKeys2(eqnkeys, maps) {
   const equationKeys = new Set()
   for (const eqnkey of eqnkeys) {
     const set = maps.cache[eqnkey]
-    // if (set) {
-    //   for (let key of set) {
-    //     equationKeys.add(key)
-    //   }
-    // }
     lib.mergeIntoSet(equationKeys, set)
   }
   return equationKeys

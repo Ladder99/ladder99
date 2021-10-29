@@ -5,15 +5,15 @@
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
+import * as lib from '../lib.js'
 
-// let cycleStart
 //... move this into class
-//.. and make it a const - call it sthing else - data?
-//. pass it into expression fns as this.data
+//. and make it a const - call it sthing else - data?
+//. pass it into expression fns as this.data?
 // then expressions could refer to it by eg `data.foo.bar = 3
 // see https://stackoverflow.com/questions/15189857/what-is-the-most-efficient-way-to-empty-a-plain-object-in-javascript
 // so `keyvalues={}` would create a new object and leave the original object as is,
-// ie not garbage collected.
+// ie not garbage collected?
 let keyvalues = {} // keyvalue store for yaml code to use - use 'let' so yaml code can reset it
 
 export class AdapterDriver {
@@ -25,16 +25,6 @@ export class AdapterDriver {
   init({ deviceId, deviceName, host, port, cache, inputs, types, advice }) {
     console.log('Initializing mqtt-json driver for', { deviceId })
     const url = `mqtt://${host}:${port}`
-
-    // //. parse input handler code, get dependency graph, compile fns
-    // // eg maps could be { addr: { '%Z61.0': Set(1) { 'has_current_job' } }, ...}
-    // // use like
-    // //   const addr = '%Z61.0'
-    // //   const keys = [...maps.addr[addr]] // = ['has_current_job']
-    // // so can know what formulas need to be evaluated for some given addr
-    // const prefix = deviceId + '-'
-    // const macros = getMacros(prefix, 'default')
-    // const { augmentedExpressions, maps } = compileExpressions(inputs, macros)
 
     // connect to mqtt broker/server
     console.log(`MQTT connecting to broker on ${url}...`)
@@ -82,10 +72,9 @@ export class AdapterDriver {
       console.log(`Got message on topic ${msgTopic}: ${message.slice(0, 99)}`)
       // console.log(`Got message on topic ${msgTopic}: ${message}`)
 
-      const receivedTime = new Date()
+      // const receivedTime = new Date()
 
       // unpack the mqtt json payload, assuming it's a JSON string.
-      // sets payload as variable - used by handler.initialize
       const payload = JSON.parse(message)
 
       // iterate over message handlers - array of [topic, handler]
@@ -107,7 +96,7 @@ export class AdapterDriver {
           // eg can assign payload values to a dictionary $ here for fast lookups.
           // eg initialize: 'payload.forEach(item => $[item.address] = item)'
           // eg initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
-          console.log(`MQTT initialize handler`)
+          console.log(`MQTT run initialize handler`)
           let $ = {} // a variable representing payload data - must be let not const
           eval(handler.initialize)
 
@@ -116,12 +105,12 @@ export class AdapterDriver {
             // define lookup function
             // eg lookup: '($, js) => eval(js)'
             //. do this before-hand somewhere and store as handler.lookupFn,
-            // to save eval time
+            // to save eval time.
             console.log(`MQTT define lookup`, handler.lookup.toString())
             const lookup = eval(handler.lookup)
 
             // iterate over expressions - an array of [key, expression],
-            // eg[['fault_count', '%M55.2'], ...]
+            // eg [['fault_count', '%M55.2'], ...].
             // evaluate each expression and add value to cache.
             //. this could be like the other process - use msg('foo'), calculations,
             // then would be reactive instead of evaluating each expression, and unifies code.
@@ -130,9 +119,8 @@ export class AdapterDriver {
             for (const [key, expression] of pairs) {
               // use the lookup function to get value from payload, if there
               const value = lookup($, expression)
-              //. why do we have a guard here for undefined?
-              // what if need to reset a cache value?
-              // you'd have to pass value 'UNAVAILABLE' explicitly?
+              // note guard for undefined value -
+              // if need to reset a cache value, must pass value 'UNAVAILABLE' explicitly.
               if (value !== undefined) {
                 const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
                 cache.set(cacheId, value) // save to the cache - may send shdr to agent
@@ -143,9 +131,11 @@ export class AdapterDriver {
 
             // get set of keys for eqns we need to execute based on the payload
             // eg set{'has_current_job', 'job_meta', ...}
-            //. call this dependencies = getDependencies ... ?
-            //  or references = getReferences ?
+            //. call this dependencies = getDependencies, or references = getReferences?
             let equationKeys = getEquationKeys(payload, handler.maps)
+
+            // make sure all '=' expressions will be evaluated
+            lib.mergeIntoSet(equationKeys, handler.alwaysRun)
 
             let depth = 0
 
