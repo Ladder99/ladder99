@@ -146,7 +146,14 @@ handlers:
       # get value for pctarg/pctarget
       # <foo> is a cache lookup, eg cache.get('kl1-foo')
       # if job_meta is undefined, this expression is undefined, and the cache won't be updated.
-      carton_quantity: (<job_meta> || {}).carton_quantity
+      # carton_quantity: (<job_meta> || {}).carton_quantity
+      # carton_quantity: <job_meta>.carton_quantity
+      # if job_meta is {}, this will evaluate to 'UNAVAILABLE'
+      # carton_quantity: <job_meta>.carton_quantity || 'UNAVAILABLE'
+      # carton_quantity: |
+      #   <has_current_job> ? 0 : <job_complete> ? 'UNAVAILABLE' : msg('%Z61.5')
+      carton_quantity: |
+        <job_complete> ? 'UNAVAILABLE' : <job_meta>.carton_quantity
 
       # count of kits that have crossed eye1 on conveyer
       # note: if this address is NOT in the current message, the value is undefined,
@@ -162,8 +169,10 @@ handlers:
       # count of kits that have crossed eye2 on conveyor
       # kits_off: msg('%Z61.6')
       # NEW-PROCESS - count of kits passed eye-3
-      kits_off: msg('%Z61.18')
       # kits_off: msg('%Z61.18') || 0
+      # kits_off: msg('%Z61.18')
+      kits_off: |
+        <has_current_job> ? 0 : <job_complete> ? 'UNAVAILABLE' : msg('%Z61.18')
 
       # pieces remaining
       pcrem_calc: <carton_quantity> - <kits_off>
