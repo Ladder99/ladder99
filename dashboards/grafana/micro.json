@@ -179,7 +179,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -309,7 +309,7 @@
           "label": null,
           "logBase": 1,
           "max": null,
-          "min": null,
+          "min": "0",
           "show": true
         },
         {
@@ -434,11 +434,12 @@
       "yaxes": [
         {
           "$$hashKey": "object:203",
+          "decimals": null,
           "format": "celsius",
-          "label": null,
+          "label": "",
           "logBase": 1,
-          "max": null,
-          "min": null,
+          "max": "80",
+          "min": "25",
           "show": true
         },
         {
@@ -465,7 +466,7 @@
     "list": []
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -485,5 +486,5 @@
   "timezone": "",
   "title": "Microcontroller",
   "uid": "micro",
-  "version": 3
+  "version": 4
 }
