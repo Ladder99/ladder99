@@ -107,7 +107,9 @@ handlers:
       # this looks up %Z61.0 in the $ dictionary, which indexes the message addresses
       # this value is true or false, so both will be written to the cache.
       # note: !! is javascript syntax to convert any value from truthy to true/false.
-      has_current_job: "!!$['%Z61.0']" # converts object to true, undefined to false
+      # has_current_job: "!!$['%Z61.0']" # converts object to true, undefined to false
+      # note: the = means always evaluate this expression, to set the flag value
+      has_current_job: "=!!$['%Z61.0']" # converts object to true, undefined to false
 
       # get job meta data from kit label
       # this writes a value to the cache at eg key 'kl1-job_meta'.
@@ -128,7 +130,9 @@ handlers:
       # job_complete: msg('%Z61.3') === true
       # NEW-PROCESS - need to look at eye-3 countdown to zero status (t/f)
       # job_complete: msg('%Z61.22')
-      job_complete: msg('%Z61.22') === true
+      # job_complete: msg('%Z61.22') === true
+      # note: '=' means always evaluate this code
+      job_complete: =msg('%Z61.22') === true
 
       #. how specify printer assoc with this line?
       # need to specify pr1, pr2, pr3, pr4 etc
@@ -163,8 +167,8 @@ handlers:
 
       # calculate cycle time for kit to go from eye1 to eye2
 
-      # clear the keyvalues dict with cycle times
-      # don't care about the cache key here, just want to run the code
+      # clear the keyvalues dict with cycle times when job_meta changes.
+      # note: don't care about the cache key here, just want to run the code.
       #. instead, could have keyvalues.cycle_times = {}, then use
       # keyvalues.cycle_times[<kits_on>] etc? would garbage collector work ok?
       reset_key_values: |
@@ -174,7 +178,7 @@ handlers:
       start_cycle_timer: |
         keyvalues[<kits_on>] = { start:new Date(), end:null, delta:null}
 
-      # get cycle time when kits_off count changes (seconds)
+      # get cycle time when kits_off count changes (seconds).
       # note: the expression is prefixed with '(cache, $, keyvalues) =>',
       # so need to return the final value.
       # otherwise, the block would evaluate to its last expression, as in lisp.
@@ -204,6 +208,7 @@ handlers:
       # estimate time of completion (iso datetime)
       # convert jobstart time to milliseconds, add cycletimeavg * npartsremaining, convert to iso string
       # (<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <time_remaining> * 1000).toISOString() : undefined
+      #.. finish this
       target: |
         (<job_start>!=='UNAVAILABLE' && <time_remaining>) ? new Date(new Date(<job_start>).getTime() + <time_remaining> * 1000).toISOString() : undefined
       # target: |
@@ -250,11 +255,11 @@ handlers:
 
       job_part_name: (<job_meta> || {}).kit_name
 
-      # compare cache to incoming data
-      # this is truthy when get new job_meta values, undefined otherwise
-      #. does this go to false? need explicit comparison to get true/false?
-      # job_changed: <job_meta>
-      job_changed: <job_meta> !== undefined
+      # # compare cache to incoming data
+      # # this is truthy when get new job_meta values, undefined otherwise
+      # #. does this go to false? need explicit comparison to get true/false?
+      # # job_changed: <job_meta>
+      # job_changed: <job_meta> !== undefined
 
       # assign new uuid's and time on job change
       # returning undefined will leave value the same
@@ -262,12 +267,19 @@ handlers:
       # part_uuid: '<job_changed> ? uuid() : undefined'
       # process_uuid: '<job_changed> ? uuid() : undefined'
       # job_start: '<job_changed> ? new Date().toISOString() : undefined'
+      #. should use <has_current_job>, not <job_changed>, right?
+      # part_uuid: |
+      #   <job_complete> ? 'UNAVAILABLE' : <job_changed> ? uuid() : undefined
+      # process_uuid: |
+      #   <job_complete> ? 'UNAVAILABLE' : <job_changed> ? uuid() : undefined
+      # job_start: |
+      #   <job_complete> ? 'UNAVAILABLE' : <job_changed> ? new Date().toISOString() : undefined
       part_uuid: |
-        <job_complete> ? 'UNAVAILABLE' : <job_changed> ? uuid() : undefined
+        <job_complete> ? 'UNAVAILABLE' : <has_current_job> ? uuid() : undefined
       process_uuid: |
-        <job_complete> ? 'UNAVAILABLE' : <job_changed> ? uuid() : undefined
+        <job_complete> ? 'UNAVAILABLE' : <has_current_job> ? uuid() : undefined
       job_start: |
-        <job_complete> ? 'UNAVAILABLE' : <job_changed> ? new Date().toISOString() : undefined
+        <job_complete> ? 'UNAVAILABLE' : <has_current_job> ? new Date().toISOString() : undefined
 
       # update sales order if available - reset when job complete
       # salesord: (<job_meta> || {}).sales_order

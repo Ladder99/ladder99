@@ -84,6 +84,7 @@ for (let payload of payloads) {
       const cacheId = deviceId + '-' + equationKey // eg 'pa1-fault_count'
       // cache.set(cacheId, value) // save to the cache - may send shdr to tcp
       if (value !== undefined) {
+        console.log('cache.set', equationKey, value)
         cache[equationKey] = value
       }
       // equationKeys2.add(cacheId)
