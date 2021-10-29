@@ -46,6 +46,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": null,
+      "decimals": 2,
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -58,12 +59,12 @@
       "id": 20,
       "legend": {
         "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "current": true,
+        "max": true,
+        "min": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -76,7 +77,13 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:1049",
+          "alias": "used",
+          "color": "#5794F2"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -137,7 +144,19 @@
       ],
       "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
+      "timeRegions": [
+        {
+          "$$hashKey": "object:765",
+          "colorMode": "gray",
+          "fill": true,
+          "fillColor": "rgba(234, 112, 112, 0.12)",
+          "from": "22:00",
+          "line": false,
+          "lineColor": "rgba(237, 46, 24, 0.60)",
+          "op": "time",
+          "to": "13:00"
+        }
+      ],
       "timeShift": null,
       "title": "Memory",
       "tooltip": {
@@ -196,12 +215,12 @@
       "id": 21,
       "legend": {
         "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "current": true,
+        "max": true,
+        "min": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -214,7 +233,13 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:1110",
+          "alias": "total",
+          "color": "#5794F2"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -249,7 +274,19 @@
       ],
       "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
+      "timeRegions": [
+        {
+          "$$hashKey": "object:1145",
+          "colorMode": "gray",
+          "fill": true,
+          "fillColor": "rgba(234, 112, 112, 0.12)",
+          "from": "22:00",
+          "line": false,
+          "lineColor": "rgba(237, 46, 24, 0.60)",
+          "op": "time",
+          "to": "13:00"
+        }
+      ],
       "timeShift": null,
       "title": "CPU",
       "tooltip": {
@@ -308,12 +345,12 @@
       "id": 22,
       "legend": {
         "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "current": true,
+        "max": true,
+        "min": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -326,7 +363,13 @@
       "pointradius": 2,
       "points": false,
       "renderer": "flot",
-      "seriesOverrides": [],
+      "seriesOverrides": [
+        {
+          "$$hashKey": "object:1267",
+          "alias": "temp",
+          "color": "#5794F2"
+        }
+      ],
       "spaceLength": 10,
       "stack": false,
       "steppedLine": false,
@@ -360,7 +403,19 @@
       ],
       "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
+      "timeRegions": [
+        {
+          "$$hashKey": "object:1239",
+          "colorMode": "gray",
+          "fill": true,
+          "fillColor": "rgba(234, 112, 112, 0.12)",
+          "from": "22:00",
+          "line": false,
+          "lineColor": "rgba(237, 46, 24, 0.60)",
+          "op": "time",
+          "to": "13:00"
+        }
+      ],
       "timeShift": null,
       "title": "Temperature",
       "tooltip": {
@@ -402,7 +457,7 @@
       }
     }
   ],
-  "refresh": "10s",
+  "refresh": "5s",
   "schemaVersion": 31,
   "style": "dark",
   "tags": [],
@@ -410,7 +465,7 @@
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {
@@ -430,5 +485,5 @@
   "timezone": "",
   "title": "Microcontroller",
   "uid": "micro",
-  "version": 6
+  "version": 3
 }
