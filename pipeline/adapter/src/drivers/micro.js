@@ -33,9 +33,9 @@ export class AdapterDriver {
         setValue('availability', 'AVAILABLE')
         setValue('condition', 'NORMAL')
         setValue('temperature', rounded(data.cpuTemperature.main, 1))
-        setValue('memory-total', rounded(data.mem.total))
-        setValue('memory-free', rounded(data.mem.free))
-        setValue('memory-used', rounded(data.mem.used))
+        setValue('memory-total', rounded(data.mem.total, -6))
+        setValue('memory-free', rounded(data.mem.free, -6))
+        setValue('memory-used', rounded(data.mem.used, -6))
         setValue('cpu-total', rounded(data.currentLoad.currentLoad, 1))
         setValue('cpu-user', rounded(data.currentLoad.currentLoadUser, 1))
         setValue('cpu-system', rounded(data.currentLoad.currentLoadSystem, 1))
@@ -84,6 +84,11 @@ function getDataSet(obj) {
 
 function rounded(value, decimals = 0) {
   if (value !== null && value !== undefined) {
+    if (decimals < 0) {
+      return Number(
+        Math.round(value * Math.pow(10, decimals)) * Math.pow(10, -decimals)
+      ).toFixed(0)
+    }
     return Number(value).toFixed(decimals)
   }
   return null
