@@ -182,37 +182,46 @@ handlers:
 
       # calculate cycle time for kit to go from eye1 to eye2
 
-      # clear the keyvalues dict with cycle times when job_meta changes.
+      # clear the keyvalues dict with cycle times when job is complete.
       # note: don't care about the cache key here, just want to run the code.
       #. instead, could have keyvalues.cycle_times = {}, then use
       # keyvalues.cycle_times[<kits_on>] etc? would garbage collector work ok?
+      # <job_meta> ? Object.keys(keyvalues).forEach(key => delete keyvalues[key]) : undefined
       reset_key_values: |
-        <job_meta> ? Object.keys(keyvalues).forEach(key => delete keyvalues[key]) : undefined
+        <job_complete> ? Object.keys(keyvalues).forEach(key => delete keyvalues[key]) : undefined
 
       # don't care about the cache key here, just want to assign something to keyvalue store
+      # keyvalues[<kits_on>] = { start:new Date(), end:null, delta:null}
       start_cycle_timer: |
-        keyvalues[<kits_on>] = { start:new Date(), end:null, delta:null}
+        keyvalues[<kits_off>] = { start:new Date(), end:null, delta:null}
 
-      # get cycle time when kits_off count changes (seconds).
+      # get current cycle time when kits_off count changes (seconds),
+      # and save it to the keyvalues store.
       # note: the expression is prefixed with '(cache, $, keyvalues) =>',
       # so need to return the final value.
       # otherwise, the block would evaluate to its last expression, as in lisp.
       cycle_time: |
         {
-          const koff = keyvalues[<kits_off>] || {};
-          koff.end = new Date();
-          koff.delta = Number((koff.end - koff.start) * 0.001).toFixed(1);
-          return koff.delta;
+          const kitsOff = <kits_off>;
+          if (kitsOff > 0) {
+            const obj = keyvalues[kitsOff-1] || {};
+            obj.end = new Date();
+            obj.delta = Number(Number((obj.end - obj.start) * 0.001).toFixed(1));
+            return obj.delta;
+          }
+          return 'UNAVAILABLE'
         }
 
-      # calculate average cycle time for current job (seconds)
+      # calculate average cycle time for current job (seconds).
       # the reference to <kits_off> forces a recalc when that changes.
       # note: dividing by objs.length gives NaN if it's zero, falls through to UNAVAILABLE.
       cycle_time_avg: |
         {
           <kits_off>;
-          const objs = Object.values(keyvalues).filter(obj=>obj.delta>0);
-          const avg = Number(objs.reduce((a,b)=>a+b.delta,0) / objs.length).toFixed(1);
+          const limit = 100; // limit to last n cycle times, for more accuracy and speed
+          const values = Object.values(keyvalues);
+          const objs = values.slice(values.length - limit).filter(obj=>obj.delta>0);
+          const avg = Number(Number(objs.reduce((a,b)=>a+b.delta,0) / objs.length).toFixed(1));
           return avg || 'UNAVAILABLE';
         }
 
@@ -255,7 +264,7 @@ handlers:
           <kits_off>;
           const kv = Object.entries(keyvalues).filter(([key,value])=>value.delta>0);
           const dataitems = kv
-            .slice(kv.length - 10)
+            //.slice(kv.length - 10)
             .map(([key, value]) => `${key}=${value.delta}`)
             .join(' ');
           return ':MANUAL ' + dataitems;
