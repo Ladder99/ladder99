@@ -175,7 +175,7 @@ handlers:
         <has_current_job> ? 0 : <job_complete> ? 'UNAVAILABLE' : msg('%Z61.18')
 
       # pieces remaining
-      pcrem_calc: <carton_quantity> - <kits_off>
+      pcrem_calc: (<carton_quantity> - <kits_off>) || 'UNAVAILABLE'
 
       # used in outputs yaml
       first_eye_broken: (<kits_on> > 0)
@@ -190,10 +190,10 @@ handlers:
       reset_key_values: |
         <job_complete> ? Object.keys(keyvalues).forEach(key => delete keyvalues[key]) : undefined
 
-      # don't care about the cache key here, just want to assign something to keyvalue store
-      # keyvalues[<kits_on>] = { start:new Date(), end:null, delta:null}
+      # don't care about the cache key here, just want to assign
+      # something to keyvalue store.
       start_cycle_timer: |
-        keyvalues[<kits_off>] = { start:new Date(), end:null, delta:null}
+        <kits_off> > 0 ? (keyvalues[<kits_off>] = { start:new Date(), end:null, delta:null}) : null
 
       # get current cycle time when kits_off count changes (seconds),
       # and save it to the keyvalues store.
@@ -255,18 +255,16 @@ handlers:
           <kits_off>;
           const kv = Object.entries(keyvalues).filter(([key,value])=>value.delta>0);
           const dataitems = kv
-            //.slice(kv.length - 10)
+            .slice(kv.length - 10)
             .map(([key, value]) => `${key}=${value.delta}`)
             .join(' ');
           return ':MANUAL ' + dataitems;
         }
-      # .filter(([key, value]) => value.delta !== null)
-      #
 
       # NEW-PROCESS - number of pieces reworked through oven based on eye-2
       pieces_reworked: msg('%Z61.7')
 
-      pieces_in_assembly: <kits_on> - <kits_off> # kits on assy line
+      pieces_in_assembly: (<kits_on> - <kits_off>) || 'UNAVAILABLE' # kits on assy line
       pieces_completed: <kits_off> # kits finished
       pieces_began: <kits_on> # kits work began
 
