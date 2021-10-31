@@ -31,30 +31,24 @@ outputs:
     value: types.AVAILABILITY[<status_connection>]
 
   # functional mode
+  # note:
+  # has_current_job: "=!!$['%Z61.0']" # converts object to true, undefined to false
+  # job_complete: =msg('%Z61.22') === true
+  # kits_on: msg('%Z61.5') # number of pieces started for a job
   - key: func
-    # note:
-    # has_current_job: "=!!$['%Z61.0']" # converts object to true, undefined to false
-    # job_complete: =msg('%Z61.22') === true
-    # kits_on: msg('%Z61.5')
-    # kits_on represents number of pieces started for a job.
-    #. iron this out - use job_current instead of has_current_job?
-    # value: |
-    #   <has_current_job> && <job_complete> ? 'TEARDOWN' :
-    #   <has_current_job> && !<kits_on> ? 'SETUP' :
-    #   <has_current_job> && <kits_on> > 0 ? 'PRODUCTION' :
-    #   'UNAVAILABLE'
-    #. test this
-    # <job_complete> ? 'TEARDOWN' : (<kits_on> > 0) ? 'PRODUCTION' : 'SETUP'
     value: |
-      <job_complete> ? 'TEARDOWN' : (<kits_on> > 0) ? 'PRODUCTION' : 'SETUP'
+      <status_connection>==='online' ? <job_complete> ? 'TEARDOWN' : (<kits_on> > 0) ? 'PRODUCTION' : 'SETUP' : 'UNAVAILABLE'
+
+  - key: cond
+    category: CONDITION
+    value: |
+      <status_connection>==='online' ? <status_has_hard_faults> ? 'FAULT' : <status_has_soft_faults> ? 'WARNING' : 'NORMAL' : 'UNAVAILABLE'
 
   # ------------------------------------------------------------------
   # controller
   # ------------------------------------------------------------------
 
   - key: exec
-    # value: types.EXECUTION[<status_state>]
-    # <status_connection>==='online' ? types.EXECUTION[<status_state>] : 'PROGRAM_STOPPED'
     value: |
       <status_connection>==='online' ? types.EXECUTION[<status_state>] : 'UNAVAILABLE'
 
@@ -78,12 +72,6 @@ outputs:
 
   - key: fw
     value: <status_build_no>
-
-  - key: cond
-    category: CONDITION
-    # <status_has_hard_faults> ? 'FAULT' : <status_has_soft_faults> ? 'WARNING' : 'NORMAL'
-    value: |
-      <status_connection>==='online' ? (<status_has_hard_faults> ? 'FAULT' : (<status_has_soft_faults> ? 'WARNING' : 'NORMAL')) : 'UNAVAILABLE'
 
   - key: msg
     type: MESSAGE

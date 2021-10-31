@@ -272,25 +272,12 @@ handlers:
 
       job_part_name: (<job_meta> || {}).kit_name
 
-      # # compare cache to incoming data
-      # # this is truthy when get new job_meta values, undefined otherwise
-      # #. does this go to false? need explicit comparison to get true/false?
-      # # job_changed: <job_meta>
-      # job_changed: <job_meta> !== undefined
-
       # assign new uuid's and time on job change
       # returning undefined will leave value the same
       # reset when job complete
       # part_uuid: '<job_changed> ? uuid() : undefined'
       # process_uuid: '<job_changed> ? uuid() : undefined'
       # job_start: '<job_changed> ? new Date().toISOString() : undefined'
-      #. should use <has_current_job>, not <job_changed>, right?
-      # part_uuid: |
-      #   <job_complete> ? 'UNAVAILABLE' : <job_changed> ? uuid() : undefined
-      # process_uuid: |
-      #   <job_complete> ? 'UNAVAILABLE' : <job_changed> ? uuid() : undefined
-      # job_start: |
-      #   <job_complete> ? 'UNAVAILABLE' : <job_changed> ? new Date().toISOString() : undefined
       part_uuid: |
         <job_complete> ? 'UNAVAILABLE' : <has_current_job> ? uuid() : undefined
       process_uuid: |
