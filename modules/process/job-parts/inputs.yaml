@@ -108,10 +108,8 @@ handlers:
       # this value is true or false, so both will be written to the cache.
       # note: !! is javascript syntax to convert any value from truthy to true/false.
       # has_current_job: "!!$['%Z61.0']" # converts object to true, undefined to false
-      # note: the = means always evaluate this expression, to set the flag value
+      # note: the = means always evaluate this expression, even when z61.0 not included in msg
       has_current_job: "=!!$['%Z61.0']" # converts object to true, undefined to false
-      #. equivalent?
-      # has_current_job: =msg('%Z61.0') === true
 
       # get job meta data from kit label
       # this writes a value to the cache at eg key 'kl1-job_meta'.
@@ -133,7 +131,7 @@ handlers:
       # NEW-PROCESS - need to look at eye-3 countdown to zero status (t/f)
       # job_complete: msg('%Z61.22')
       # job_complete: msg('%Z61.22') === true
-      # note: '=' means always evaluate this code
+      # note: '=' means always evaluate this code, even when z61.22 not included in msg
       job_complete: =msg('%Z61.22') === true
 
       #. how specify printer assoc with this line?
@@ -234,9 +232,6 @@ handlers:
 
       # estimate time of completion (iso datetime)
       # convert jobstart time to milliseconds, add cycletimeavg * npartsremaining, convert to iso string
-      # (<cycle_time_avg> && <pcrem_calc>) ? new Date(new Date(<job_start>).getTime() + <time_remaining> * 1000).toISOString() : undefined
-      #.. finish this
-      # (<job_start>!=='UNAVAILABLE' && <time_remaining>) ? new Date(new Date(<job_start>).getTime() + <time_remaining> * 1000).toISOString() : undefined
       target: |
         {
           const d = new Date(<job_start>);

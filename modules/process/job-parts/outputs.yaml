@@ -44,6 +44,7 @@ outputs:
     #   <has_current_job> && <kits_on> > 0 ? 'PRODUCTION' :
     #   'UNAVAILABLE'
     #. test this
+    # <job_complete> ? 'TEARDOWN' : (<kits_on> > 0) ? 'PRODUCTION' : 'SETUP'
     value: |
       <job_complete> ? 'TEARDOWN' : (<kits_on> > 0) ? 'PRODUCTION' : 'SETUP'
 
