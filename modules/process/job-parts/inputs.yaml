@@ -203,8 +203,8 @@ handlers:
       cycle_time: |
         {
           const kitsOff = <kits_off>;
-          if (kitsOff > 0) {
-            const obj = keyvalues[kitsOff-1] || {};
+          const obj = keyvalues[kitsOff-1];
+          if (obj) {
             obj.end = new Date();
             obj.delta = Number(Number((obj.end - obj.start) * 0.001).toFixed(2));
             return obj.delta;
@@ -226,7 +226,11 @@ handlers:
         }
 
       # estimate time remaining (seconds)
-      time_remaining: (<cycle_time_avg> * <pcrem_calc>) || 'UNAVAILABLE'
+      time_remaining: |
+        {
+          const time = <cycle_time_avg> * <pcrem_calc>;
+          return time >= 0  ? Number(time).toFixed(1) : 'UNAVAILABLE';
+        }
 
       # estimate time of completion (iso datetime)
       # convert jobstart time to milliseconds, add cycletimeavg * npartsremaining, convert to iso string
