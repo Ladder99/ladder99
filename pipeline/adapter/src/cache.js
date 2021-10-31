@@ -114,13 +114,16 @@ function getShdr(cache, output, value) {
   } else if (category === 'CONDITION') {
     //. pick these values out of the value, which should be an object
     //. also, can have >1 value for a condition - how handle?
-    const level = value // eg 'WARNING' -> element 'Warning'
-    const nativeCode = 'nativeCode'
-    const nativeSeverity = 'nativeSeverity'
-    const qualifier = 'qualifier'
-    // const message = value + ' (msg here)'
-    const message = value
-    shdr = `${head}${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
+    if (!value || value === 'UNAVAILABLE') {
+      shdr = `${head}${key}|${value}`
+    } else {
+      const level = value // eg 'WARNING' -> element 'Warning'
+      const nativeCode = 'nativeCode'
+      const nativeSeverity = 'nativeSeverity'
+      const qualifier = 'qualifier'
+      const message = value
+      shdr = `${head}${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
+    }
   } else {
     console.warn(`warning: unknown category '${category}'`)
   }
