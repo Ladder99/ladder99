@@ -115,7 +115,7 @@ function getShdr(cache, output, value) {
     //. pick these values out of the value, which should be an object
     //. also, can have >1 value for a condition - how handle?
     if (!value || value === 'UNAVAILABLE') {
-      shdr = `${head}${key}|${value}`
+      shdr = `${head}${key}|${value}||||${value}`
     } else {
       const level = value // eg 'WARNING' -> element 'Warning'
       const nativeCode = 'nativeCode'
