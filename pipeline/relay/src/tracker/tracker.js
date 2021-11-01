@@ -22,17 +22,17 @@ export class Tracker {
     this.observations = null
   }
 
-  // start the timer that dumps bins to the db every minute
+  // start the timer which dumps bins to the db every minute.
+  // the caller is responsible for calling writeObservationsToBins,
+  // which will dump observations to the bins.
   startTimer(dbInterval = defaultDbInterval) {
-    // console.log('startTimer')
-    this.dbTimer = setInterval(this.writeToDb.bind(this), dbInterval * 1000)
+    this.dbTimer = setInterval(this.writeBinsToDb.bind(this), dbInterval * 1000)
     this.dbInterval = dbInterval // save for later
   }
 
   // update bins given a list of observations.
-  // observations should be sorted by time.
-  trackObservations(observations) {
-    // console.log('trackObservations')
+  // observations should be sorted by time!
+  writeObservationsToBins(observations) {
     this.observations = observations
 
     // add hours1970 etc to each observation
@@ -61,7 +61,7 @@ export class Tracker {
         }
       }
     }
-  }
+  } // end of writeObservationsToBins
 
   // a dimension value changed - update dimensionkey and reset all clocks
   trackDimensionChange(observation, dimensionDef) {
@@ -92,15 +92,18 @@ export class Tracker {
     }
   }
 
-  // write all bin deltas to the database
-  writeToDb() {
-    console.log('writeToDb')
-    // console.log('bins.data', this.bins.data)
+  // write all bin deltas to the database.
+  //. want this to dump to db every hour, even if no deltas - how?
+  writeBinsToDb() {
+    console.log('writeBinsToDb')
+    console.log('bins.data', this.bins.data)
     // console.log('bins.dimensionKeys', this.bins.dimensionKeys)
+
     let sql = ''
 
     const device_ids = Object.keys(this.bins.data)
     for (let device_id of device_ids) {
+      //
       // update calendar time
       const observation = { device_id, slot: 'time_calendar' }
       this.bins.addObservation(observation, this.dbInterval)

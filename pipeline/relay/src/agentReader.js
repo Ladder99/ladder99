@@ -85,7 +85,7 @@ export class AgentReader {
         await current.read(this.endpoint) // get observations and this.sequence numbers
         if (instanceIdChanged(current, probe)) break probe
         await current.write(this.db, probe.indexes) // write this.observations to db
-        this.tracker.trackObservations(current.observations) // update bins - timer will write to db
+        this.tracker.writeObservationsToBins(current.observations) // update bins - timer will write to db
         this.from = current.sequence.next
 
         // sample - get sequence of dataitem values, write to db
@@ -94,7 +94,7 @@ export class AgentReader {
           await sample.read(this.endpoint, this.from, this.count) // get observations
           if (instanceIdChanged(sample, probe)) break probe
           await sample.write(this.db, probe.indexes) // write this.observations to db
-          this.tracker.trackObservations(sample.observations) // update bins - timer will write to db
+          this.tracker.writeObservationsToBins(sample.observations) // update bins - timer will write to db
           this.from = sample.sequence.next //. ?
           await lib.sleep(this.interval)
         } while (true)

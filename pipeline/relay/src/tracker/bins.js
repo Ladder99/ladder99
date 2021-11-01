@@ -5,6 +5,7 @@ export class Bins {
   }
 
   // add an observation amount to a slot
+  //. eg?
   addObservation(observation, delta) {
     // note: already looked up slot in amendObservations
     const { device_id, slot } = observation
@@ -23,6 +24,7 @@ export class Bins {
   // you can retrieve a value with another object/array constructed similarly -
   // it must be the exact same object/array. so do this...
 
+  //. eg?
   _getSlot(key1, key2, key3) {
     const value1 = this.data[key1]
     if (value1 !== undefined) {
@@ -33,6 +35,7 @@ export class Bins {
     }
   }
 
+  //. eg?
   _setSlot(key1, key2, key3, value) {
     const value1 = this.data[key1]
     if (value1 !== undefined) {
@@ -53,6 +56,7 @@ export class Bins {
   }
 
   // set one axis of the dimension key for a particular device
+  //. eg?
   setDimensionValue(device_id, key, value) {
     const keyvalues = this.dimensionKeys[device_id]
     if (keyvalues !== undefined) {

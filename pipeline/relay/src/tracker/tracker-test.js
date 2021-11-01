@@ -1,7 +1,7 @@
 // test metric calcs
 // run:
-// cd pipeline/relay/src/tracker
-// node tracker-test.js
+//   cd pipeline/relay/src/tracker
+//   node tracker-test.js
 
 import * as tracker from './tracker.js'
 import * as time from './time.js'
@@ -188,7 +188,7 @@ const observations = [
   console.log(track)
   track.startTimer(2) // start timer which dumps bins to db every interval secs
   while (true) {
-    track.trackObservations(observations) // update bins
+    // track.writeObservationsToBins(observations) // update bins
     await new Promise(resolve => setTimeout(resolve, 1000)) // pause
   }
 })()
