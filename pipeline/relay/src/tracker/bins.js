@@ -55,7 +55,7 @@ export class Bins {
     delete this.data[device_id]
   }
 
-  // set one axis of the dimension key for a particular device
+  // set one axis of the current dimension key for a particular device
   //. eg?
   setDimensionValue(device_id, key, value) {
     const keyvalues = this.dimensionKeys[device_id]
@@ -65,7 +65,7 @@ export class Bins {
       this.dimensionKeys[device_id] = { [key]: value }
     }
   }
-  // get the dimension key for a device, eg '{"operator":"alice"}'
+  // get the current dimension key for a device, eg '{"operator":"alice"}'
   getDimensionKey(device_id) {
     return JSON.stringify(this.dimensionKeys[device_id] || {})
   }

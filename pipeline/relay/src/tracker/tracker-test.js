@@ -186,7 +186,7 @@ const observations = [
 ;(async function () {
   const track = new tracker.Tracker(null, dimensionDefs, valueDefs)
   console.log(track)
-  track.startTimer(2) // start timer which dumps bins to db every interval secs
+  track.startTimer(2) // start timer which writes bins to db every interval secs
   while (true) {
     // track.writeObservationsToBins(observations) // update bins
     await new Promise(resolve => setTimeout(resolve, 1000)) // pause

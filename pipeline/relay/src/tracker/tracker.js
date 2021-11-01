@@ -1,5 +1,5 @@
-// track changes to dimensions and values as observations come in,
-// dump changes to database once a minute.
+// Track changes to dimensions and values as observations come in,
+// write them to bins. Timer writes bins to database once a minute.
 
 import * as time from './time.js'
 import * as clock from './clock.js'
@@ -10,8 +10,8 @@ const defaultDbInterval = 60 // in sec
 
 export class Tracker {
   // db is a Db object
-  // dimensionDefs is set of dimensions to track, eg operator
-  // valueDefs is set of values to track, including their 'on' state, eg availability
+  // dimensionDefs has dimensions to track, eg hours1970, operator.
+  // valueDefs has values to track, including their 'on' state, eg availability.
   constructor(db, dimensionDefs, valueDefs) {
     this.db = db
     this.dimensionDefs = dimensionDefs
@@ -51,12 +51,14 @@ export class Tracker {
       // check if it's a dimension we're tracking - eg hours1970, operator
       const dimensionDef = this.dimensionDefs[observation.name]
       if (dimensionDef) {
+        // if we're tracking this dimension, update key and reset clocks
         this.trackDimensionChange(observation, dimensionDef)
       } else {
         //
         // else check if it's a value we're tracking, eg availability, execution_state
         const valueDef = this.valueDefs[observation.name]
         if (valueDef) {
+          // if we're tracking this value, update clock and add to bin
           this.trackValueChange(observation, valueDef)
         }
       }
@@ -75,16 +77,13 @@ export class Tracker {
 
   // value changed - update clock, add to bins as needed
   trackValueChange(observation, valueDef) {
-    // console.log('track value change', observation)
     // if value changed to 'on' state, eg 'ACTIVE', 'AVAILABLE',
     // start a clock to track time in that state.
     if (observation.value === valueDef.when) {
-      // console.log('start tracking value', observation.name)
       this.clock.start(observation)
     } else {
       // otherwise add the time delta to a bin, clear the clock.
       const delta = this.clock.stop(observation)
-      // console.log('stop tracking value', observation.name, delta)
       if (delta > 0) {
         this.bins.addObservation(observation, delta)
       }
@@ -93,7 +92,7 @@ export class Tracker {
   }
 
   // write all bin deltas to the database.
-  //. want this to dump to db every hour, even if no deltas - how?
+  //. want this to write to db every hour, even if no deltas - how?
   writeBinsToDb() {
     console.log('writeBinsToDb')
     console.log('bins.data', this.bins.data)
