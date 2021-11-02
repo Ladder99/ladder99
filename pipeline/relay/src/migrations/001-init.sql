@@ -201,8 +201,13 @@ WHERE
 -- like a regular query but also gets the last value before the start time,
 -- and assigns it to that start time.
 -- use from grafana like
---   select time, value as "Availability" 
---   from get_timeline('Line1', 'availability', $__from, $__to);
+--   SELECT time, value AS "Availability" 
+--   FROM get_timeline(
+--     'Line1', 
+--     'availability', 
+--     $__from, 
+--     $__to
+--   );
 CREATE OR REPLACE FUNCTION get_timeline (
   IN devicename text, -- the device name, eg 'Line1'
   IN pathname text, -- the history view path, eg 'availability'
