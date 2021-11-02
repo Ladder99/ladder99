@@ -196,10 +196,10 @@ WHERE
 ---------------------------------------------------------------------
 -- get_timeline
 ---------------------------------------------------------------------
-
 -- get data for a timeline view (eg the 'discrete' plugin for grafana).
 -- like a regular query but also gets the last value before the start time,
 -- and assigns it to that start time.
+-- returns time, value, with value being text, coerced from top-level jsonb value.
 -- use from grafana like
 --   SELECT time, value AS "Availability" 
 --   FROM get_timeline(
@@ -214,7 +214,7 @@ CREATE OR REPLACE FUNCTION get_timeline (
   IN from_ms bigint, -- start time in milliseconds since 1970-01-01
   IN to_ms bigint -- end time in milliseconds since 1970-01-01
 )
-RETURNS TABLE ("time" timestamp, value text)
+RETURNS TABLE ("time" timestamp, value text) -- ANSI standard SQL
 LANGUAGE sql
 AS
 $BODY$
@@ -227,8 +227,8 @@ WITH
   to_time AS (VALUES (to_timestamp(cast(to_ms/1000 as bigint))::timestamp))
 -- do a straightforward query for time and value for the 
 -- given device, path, and timestamp
-SELECT time, value 
-FROM history_text
+SELECT time, value->>0 AS value -- note: ->>0 extracts the top-level jsonb value
+FROM history_all
 WHERE
   device = devicename and
   path = pathname and
@@ -236,7 +236,7 @@ WHERE
   time <= (TABLE to_time)
 -- now tack on the time and value for the left edge	with a UNION query
 UNION
-SELECT time, value 
+SELECT time, value->>0 AS value -- note: ->>0 extracts the top-level jsonb value
 FROM
   -- need this subquery so can order the results by time descending,
   -- so can get the last value before the left edge.
@@ -244,14 +244,13 @@ FROM
   SELECT
     (TABLE from_time) as time,
     value
-  FROM history_text
+  FROM history_all
   WHERE
     device = devicename and
     path = pathname and
     time <= (TABLE from_time)
-  ORDER BY history_text.time DESC
+  ORDER BY history_all.time DESC
   LIMIT 1 -- just want the last value
   ) AS subquery1 -- subquery name is required but not used
 ORDER BY time -- sort the combined query results
 $BODY$;
-
