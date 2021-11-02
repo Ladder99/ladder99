@@ -187,3 +187,66 @@ FROM
   nodes
 WHERE
   nodes.props->>'node_type'='DataItem';
+
+
+---------------------------------------------------------------------
+-- FUNCTIONS
+---------------------------------------------------------------------
+
+---------------------------------------------------------------------
+-- get_timeline
+---------------------------------------------------------------------
+
+-- get data for a timeline view (eg the 'discrete' plugin for grafana).
+-- like a regular query but also gets the last value before the start time,
+-- and assigns it to that start time.
+-- use from grafana like
+--   select time, value as "Availability" 
+--   from get_timeline('Line1', 'availability', $__from, $__to);
+CREATE OR REPLACE FUNCTION get_timeline (
+  IN devicename text, -- the device name, eg 'Line1'
+  IN pathname text, -- the history view path, eg 'availability'
+  IN from_ms bigint, -- start time in milliseconds since 1970-01-01
+  IN to_ms bigint -- end time in milliseconds since 1970-01-01
+)
+RETURNS TABLE ("time" timestamp, value text)
+LANGUAGE sql
+AS
+$BODY$
+-- this union query gets the regular data for the graph,
+-- then tacks on the value for the left edge.
+-- first define some SQL variables
+-- referenced below with eg '(TABLE from_time)'
+WITH
+  from_time AS (VALUES (to_timestamp(cast(from_ms/1000 as bigint))::timestamp)),
+  to_time AS (VALUES (to_timestamp(cast(to_ms/1000 as bigint))::timestamp))
+-- do a straightforward query for time and value for the 
+-- given device, path, and timestamp
+SELECT time, value 
+FROM history_text
+WHERE
+  device = devicename and
+  path = pathname and
+  time >= (TABLE from_time) and
+  time <= (TABLE to_time)
+-- now tack on the time and value for the left edge	with a UNION query
+UNION
+SELECT time, value 
+FROM
+  -- need this subquery so can order the results by time descending,
+  -- so can get the last value before the left edge.
+  (
+  SELECT
+    (TABLE from_time) as time,
+    value
+  FROM history_text
+  WHERE
+    device = devicename and
+    path = pathname and
+    time <= (TABLE from_time)
+  ORDER BY history_text.time DESC
+  LIMIT 1 -- just want the last value
+  ) AS subquery1 -- subquery name is required but not used
+ORDER BY time -- sort the combined query results
+$BODY$;
+
