@@ -203,7 +203,7 @@ WHERE
 -- use from grafana like
 --   SELECT time, value AS "Availability" 
 --   FROM get_timeline(
---     'Line1', 
+--     'Line$line', 
 --     'availability', 
 --     $__from, 
 --     $__to
