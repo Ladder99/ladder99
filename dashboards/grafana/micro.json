@@ -30,9 +30,9 @@
       "icon": "external link",
       "includeVars": true,
       "keepTime": true,
-      "tags": [],
+      "tags": ["client"],
       "targetBlank": false,
-      "title": "uhhh",
+      "title": "new links",
       "tooltip": "",
       "type": "dashboards",
       "url": ""
@@ -464,12 +464,12 @@
   "refresh": "5s",
   "schemaVersion": 31,
   "style": "dark",
-  "tags": [],
+  "tags": ["client"],
   "templating": {
     "list": []
   },
   "time": {
-    "from": "now-5m",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {
@@ -489,5 +489,5 @@
   "timezone": "",
   "title": "Microcontroller",
   "uid": "micro",
-  "version": 11
+  "version": 18
 }
