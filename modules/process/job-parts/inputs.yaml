@@ -302,7 +302,7 @@ handlers:
       # part occurrences
       # --------------------------------------------------------
 
-      # partcount total done
+      # partcount total done (per job, right?)
       pcall: <kits_off>
 
       # aka dc
