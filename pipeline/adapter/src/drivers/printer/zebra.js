@@ -222,7 +222,7 @@ export class AdapterDriver {
       // get errors and warnings as one string
       const errorMsgs = [...errors].map(error => `ERROR: ${error}`)
       const warningMsgs = [...warnings].map(warning => `WARNING: ${warning}`)
-      const msgs = [...errorMsgs, ...warningMsgs].join(', ') || 'UNAVAILABLE'
+      const msgs = [...errorMsgs, ...warningMsgs].join(', ') || 'OKAY'
       setCache('msg', msgs)
 
       // set condition and state
