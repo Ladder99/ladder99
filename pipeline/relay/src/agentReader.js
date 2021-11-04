@@ -43,7 +43,8 @@ const valueDefs = {
   // },
   functional_mode: {
     when: 'PRODUCTION',
-    slot: 'time_production',
+    // slot: 'time_production',
+    slot: 'time_active', //. this is kinda klugy - reuse the time_active definition because the metrics view is setup to use that to calculate uptime
   },
 }
 
