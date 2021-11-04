@@ -27,7 +27,7 @@ const dimensionDefs = {
 // dataitems that we want to track the state of.
 // will track time the dataitem spends in the 'when' state,
 // and add it to the given 'slot'.
-// keyed on dataitem / observation name, ie NOT the dataitem id.
+// keyed on dataitem / observation NAME, NOT the dataitem id.
 // so in the agent.xml, DO NOT include the deviceId in the names,
 // just have a plain descriptor.
 //. move these into yaml, and have per client
@@ -37,9 +37,13 @@ const valueDefs = {
     when: 'AVAILABLE',
     slot: 'time_available',
   },
-  execution_state: {
-    when: 'ACTIVE',
-    slot: 'time_active',
+  // execution_state: {
+  //   when: 'ACTIVE',
+  //   slot: 'time_active',
+  // },
+  functional_mode: {
+    when: 'PRODUCTION',
+    slot: 'time_production',
   },
 }
 
