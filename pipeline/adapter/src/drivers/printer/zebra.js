@@ -31,8 +31,8 @@ export class AdapterDriver {
 
     let client // tcp connection
     let handler // current message handler
-    let errors // list of error message strings, eg ['Paper Out']
-    let warnings // list of warning message strings, eg ['Ribbon Low']
+    let errors // set of error message strings, eg set{'Paper Out'}
+    let warnings // set of warning message strings, eg set{'Ribbon Low'}
 
     // note: net.connect() doesn't seem to time out - just waits there,
     // so try catch loop probably unneeded.
@@ -65,8 +65,10 @@ export class AdapterDriver {
           setCache('labels_remaining', ret.labelsRemaining)
 
           // handle errors and warnings
-          if (ret.errors) errors.push(...ret.errors)
-          if (ret.warnings) warnings.push(...ret.warnings)
+          // if (ret.errors) errors.push(...ret.errors)
+          // if (ret.warnings) warnings.push(...ret.warnings)
+          ret.errors.forEach(error => errors.add(error))
+          ret.warnings.forEach(warning => warnings.add(warning))
 
           // execution state MUST be READY, ACTIVE, INTERRUPTED, WAIT,
           // FEED_HOLD, STOPPED, OPTIONAL_STOP, PROGRAM_STOPPED,
@@ -108,8 +110,10 @@ export class AdapterDriver {
           //. for now, just handle one condition value at a time
 
           // handle errors and warnings
-          if (ret.errors) errors.push(...ret.errors)
-          if (ret.warnings) warnings.push(...ret.warnings)
+          // if (ret.errors) errors.push(...ret.errors)
+          // if (ret.warnings) warnings.push(...ret.warnings)
+          ret.errors.forEach(error => errors.add(error))
+          ret.warnings.forEach(warning => warnings.add(warning))
 
           // write message string if any
           handleMessages()
@@ -216,8 +220,8 @@ export class AdapterDriver {
     // handle errors and warnings -> msg, cond, state
     function handleMessages() {
       // get errors and warnings as one string
-      const errorMsgs = errors.map(error => `ERROR: ${error}`)
-      const warningMsgs = warnings.map(warning => `WARNING: ${warning}`)
+      const errorMsgs = [...errors].map(error => `ERROR: ${error}`)
+      const warningMsgs = [...warnings].map(warning => `WARNING: ${warning}`)
       const msgs = [...errorMsgs, ...warningMsgs].join(', ') || 'UNAVAILABLE'
       setCache('msg', msgs)
 
