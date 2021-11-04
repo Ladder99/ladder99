@@ -240,6 +240,7 @@ export class AdapterDriver {
     function setAllUnavailable() {
       setCache('avail')
       setCache('emp') // power
+      setCache('msg')
       // call all the cmd handlers with no param -
       // each should clear the dataitems it handles
       const handlers = Object.values(commandHandlers)
