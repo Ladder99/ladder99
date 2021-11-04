@@ -29,7 +29,7 @@
       "asDropdown": false,
       "icon": "external link",
       "includeVars": true,
-      "keepTime": true,
+      "keepTime": false,
       "tags": ["client"],
       "targetBlank": false,
       "title": "new links",
@@ -489,5 +489,5 @@
   "timezone": "",
   "title": "Microcontroller",
   "uid": "micro",
-  "version": 18
+  "version": 20
 }
