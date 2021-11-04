@@ -216,9 +216,10 @@ handlers:
       cycle_time_avg: |
         {
           <kits_off>;
-          const limit = 100; // limit to last n cycle times, for more accuracy and speed
+          // const limit = 100; // limit to last n cycle times, for more accuracy and speed
           const values = Object.values(keyvalues);
-          const objs = values.slice(values.length - limit).filter(obj=>obj.delta>0);
+          // const objs = values.slice(values.length - limit).filter(obj=>obj.delta>0);
+          const objs = values.filter(obj=>obj.delta>0);
           const avg = Number(Number(objs.reduce((a,b)=>a+b.delta,0) / objs.length).toFixed(2));
           return avg || 'UNAVAILABLE';
         }
