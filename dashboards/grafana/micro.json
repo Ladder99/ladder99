@@ -459,6 +459,67 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "collapsed": true,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "id": 24,
+      "panels": [
+        {
+          "datasource": null,
+          "description": "",
+          "gridPos": {
+            "h": 6,
+            "w": 24,
+            "x": 0,
+            "y": 8
+          },
+          "id": 26,
+          "options": {
+            "content": "## Microcontroller\n\nThe microcontroller consolidates data from factory devices, \nstores it in a database, and provides it to the dashboard here.\n\nThese charts show the status of the microcontroller itself - \nmemory free and used, CPU usage, and temperature. \n\nTemperature is typically around 40 degrees Celsius - the max is around 80. \n",
+            "mode": "markdown"
+          },
+          "pluginVersion": "8.2.2",
+          "targets": [
+            {
+              "format": "time_series",
+              "group": [],
+              "metricColumn": "none",
+              "rawQuery": false,
+              "rawSql": "SELECT 1",
+              "refId": "A",
+              "select": [
+                [
+                  {
+                    "params": ["value"],
+                    "type": "column"
+                  }
+                ]
+              ],
+              "table": "history_float",
+              "timeColumn": "\"time\"",
+              "timeColumnType": "timestamp",
+              "where": [
+                {
+                  "name": "$__timeFilter",
+                  "params": [],
+                  "type": "macro"
+                }
+              ]
+            }
+          ],
+          "title": "Help",
+          "type": "text"
+        }
+      ],
+      "title": "Help",
+      "type": "row"
     }
   ],
   "refresh": "5s",
@@ -489,5 +550,5 @@
   "timezone": "",
   "title": "Microcontroller",
   "uid": "micro",
-  "version": 20
+  "version": 8
 }
