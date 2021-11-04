@@ -106,7 +106,6 @@ DROP VIEW IF EXISTS metrics;
 ---------------------------------------------------------------------
 CREATE OR REPLACE VIEW metrics AS
 SELECT 
-  -- devices.props->>'name_uuid' AS device,
   devices.props->>'name' AS device,
   bins.time as "time",
   bins.dimensions as dimensions,
