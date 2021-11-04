@@ -30,6 +30,10 @@ export class Tracker {
     this.dbInterval = dbInterval // save for later
   }
 
+  setDevices(devices) {
+    this.devices = devices
+  }
+
   // update bins given a list of observations.
   // observations should be sorted by time!
   writeObservationsToBins(observations) {
@@ -98,6 +102,8 @@ export class Tracker {
     console.log('bins.data', this.bins.data)
     // console.log('bins.dimensionKeys', this.bins.dimensionKeys)
 
+    this.carryOverBins()
+
     let sql = ''
 
     const device_ids = Object.keys(this.bins.data)
@@ -119,6 +125,9 @@ export class Tracker {
       this.db.query(sql)
     }
   }
+
+  // carry over bins on the hour
+  carryOverBins() {}
 
   // add info to observations, incl time as hours1970.
   amendObservations() {

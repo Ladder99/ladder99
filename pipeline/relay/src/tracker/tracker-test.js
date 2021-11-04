@@ -53,6 +53,8 @@ const valueDefs = {
 //   console.log(date, hours1970, seconds1970, date2)
 // }
 
+const devices = [{ node_type: 'Device', node_id: 10, name: 'Pokpok' }]
+
 // simulated observations from 'sample' endpoint.
 // time_available should be 20+10=30 secs
 const observations = [
@@ -186,7 +188,8 @@ const observations = [
 ;(async function () {
   const track = new tracker.Tracker(null, dimensionDefs, valueDefs)
   console.log(track)
-  track.startTimer(2) // start timer which writes bins to db every interval secs
+  track.startTimer(1) // start timer which writes bins to db every interval secs
+  track.setDevices(devices)
   while (true) {
     // track.writeObservationsToBins(observations) // update bins
     await new Promise(resolve => setTimeout(resolve, 1000)) // pause
