@@ -36,9 +36,13 @@ const valueDefs = {
     when: 'AVAILABLE',
     slot: 'time_available',
   },
-  execution_state: {
-    when: 'ACTIVE',
-    slot: 'time_active',
+  // execution_state: {
+  //   when: 'ACTIVE',
+  //   slot: 'time_active',
+  // },
+  functional_mode: {
+    when: 'PRODUCTION',
+    slot: 'time_active', //. kludgey to re-use this
   },
 }
 
