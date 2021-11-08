@@ -81,16 +81,25 @@ $BODY$;
 
 -- DROP FUNCTION IF EXISTS get_jobs(TEXT, date);
 
+
+--. develop in dbeaver, copy to migrate.sql - DO NOT EDIT THERE!
+
+--DROP FUNCTION IF EXISTS get_jobs(date, TEXT);
+DROP FUNCTION IF EXISTS get_jobs(TEXT, bigint, bigint);
+
 CREATE OR REPLACE FUNCTION get_jobs (
-  IN p_devicename text, -- the device name, eg 'Line1'
-  IN p_day date
+  -- IN p_day date,
+  IN p_device TEXT, -- the device name, eg 'Line1'
+  IN p_from bigint,
+  IN p_to bigint
 )
 RETURNS TABLE ("line" TEXT, "order" TEXT, "item" TEXT, "count" TEXT, "duration" interval, "rework" TEXT)
 AS
 $BODY$
 DECLARE
   path_order constant TEXT = 'controller/processOccurrence/process_aggregate_id-order_number[sales_order]';
-  path_item constant TEXT = 'controller/partOccurrence/part_kind_id-part_number';
+  --path_item constant TEXT = 'controller/partOccurrence/part_kind_id-part_number';
+  path_item constant TEXT = 'controller/partOccurrence/part_kind_id-part_name';
   path_count constant TEXT = 'controller/partOccurrence/part_count-complete';
   --  path_rework constant TEXT = 'controller/partOccurrence/part_count-complete'; --...
   path_all constant TEXT[] = ARRAY[path_order, path_item, path_count];
@@ -106,27 +115,30 @@ DECLARE
   _dimchange boolean;
   _start_time timestamp;
   _duration INTERVAL;
-  _from bigint := EXTRACT(epoch FROM p_day) * 1000;
-  _to bigint := EXTRACT(epoch FROM p_day + INTERVAL '1 day') * 1000;
+  -- _from bigint := EXTRACT(epoch FROM p_day) * 1000;
+  -- _to bigint := EXTRACT(epoch FROM p_day + INTERVAL '1 day') * 1000;
 BEGIN
-  -- RAISE NOTICE '------';
-  -- RAISE NOTICE 'Collecting data...';
+  RAISE NOTICE '------';
+  RAISE NOTICE 'Collecting data...';
 
   FOR _rec IN (
     SELECT "time", "path", "value" 
     FROM (
       SELECT "time", 'order' AS "path", "value"
-      FROM get_timeline(p_devicename, path_order, _from, _to, FALSE)
+      FROM get_timeline(p_device, path_order, p_from, p_to, FALSE)
       UNION
       SELECT "time", 'item' AS "path", "value"
-      FROM get_timeline(p_devicename, path_item, _from, _to, FALSE)
+      FROM get_timeline(p_device, path_item, p_from, p_to, FALSE)
       UNION
       SELECT "time", 'count' AS "path", "value"
-      FROM get_timeline(p_devicename, path_count, _from, _to, FALSE)
-    ) AS foo
+      FROM get_timeline(p_device, path_count, p_from, p_to, FALSE)
+    ) AS subquery1 -- name required but not used
     ORDER BY "time"
   )
   LOOP
+
+    --RAISE NOTICE '_rec %', _rec;
+
     -- update dimensions
     _dimchange := FALSE;
     IF _rec.path = 'order' THEN
@@ -140,7 +152,7 @@ BEGIN
     
     -- update values
     ELSEIF _rec.path = 'count' THEN
-      --. track these in plain variables instead for speed?
+      --. track these in plain variables instead for speed
       _values := _values || ('{"count":"' || _rec.value || '"}')::jsonb;
       _duration := _rec.time - _start_time;
       _values := _values || ('{"duration":"' || _duration::text || '"}')::jsonb;    
@@ -150,6 +162,8 @@ BEGIN
   
     _key := REPLACE(_dimensions::TEXT, '"', ''''); -- convert " to ' so can use as a json key
     _row := ('{"' || _key || '":' || _values::TEXT || '}')::jsonb;  
+
+    --RAISE NOTICE '_row %', _row;
 
     -- if dimension changed, start a 'timer' for this job
     IF (_dimchange) THEN
@@ -163,12 +177,14 @@ BEGIN
   
   END LOOP;
 
-  -- RAISE NOTICE 'Building output...';
+--  RAISE NOTICE '_tbl %', _tbl;
+
+  RAISE NOTICE 'Building output...';
   
   FOR _key, _value IN 
     SELECT * FROM jsonb_each(_tbl)
   LOOP 
-    -- RAISE NOTICE '% %', _key, _value;
+--    RAISE NOTICE '% %', _key, _value;
   
     -- loop over dimensions for this row, update our output table cells
     FOR _key2, _value2 IN
@@ -182,9 +198,10 @@ BEGIN
     END LOOP;
   
     -- assign values to output table row
-    "line" := p_devicename;
+    "line" := p_device;
     "count" := _value->>'count';
-    "duration" := _value->>'duration';
+    -- extract (epoch from duration)/60.0
+    "duration" := EXTRACT(epoch FROM _value->>'duration') / 60.0; -- minutes
   
     -- add row to the returned table of the function
     RETURN NEXT; 
@@ -195,4 +212,11 @@ $BODY$
 LANGUAGE plpgsql;
 
 
--- SELECT * FROM get_jobs('Line1', '2021-11-05');
+--. turn this off before committing
+--SELECT * FROM get_jobs('2021-11-05', 'Line1');
+-- WITH
+--   p_day AS (VALUES ('2021-11-05'::date))
+-- SELECT * FROM get_jobs('Line1',
+--   (EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint,
+--   (EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint
+-- );
