@@ -85,10 +85,9 @@ $BODY$;
 --. develop in dbeaver, copy to migrate.sql - DO NOT EDIT THERE!
 
 --DROP FUNCTION IF EXISTS get_jobs(date, TEXT);
-DROP FUNCTION IF EXISTS get_jobs(TEXT, bigint, bigint);
+-- DROP FUNCTION IF EXISTS get_jobs(TEXT, bigint, bigint);
 
 CREATE OR REPLACE FUNCTION get_jobs (
-  -- IN p_day date,
   IN p_device TEXT, -- the device name, eg 'Line1'
   IN p_from bigint,
   IN p_to bigint
