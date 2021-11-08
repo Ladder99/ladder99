@@ -213,10 +213,10 @@ LANGUAGE plpgsql;
 
 
 --. turn this off before committing
-SELECT * FROM get_jobs('2021-11-05', 'Line1');
- WITH
-   p_day AS (VALUES ('2021-11-05'::date))
- SELECT * FROM get_jobs('Line1',
-   (EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint,
-   (EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint
- );
+--SELECT * FROM get_jobs('2021-11-05', 'Line1');
+-- WITH
+--   p_day AS (VALUES ('2021-11-05'::date))
+-- SELECT * FROM get_jobs('Line1',
+--   (EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint,
+--   (EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint
+-- );
