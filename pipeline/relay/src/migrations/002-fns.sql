@@ -200,8 +200,9 @@ BEGIN
     -- assign values to output table row
     "line" := p_device;
     "count" := _value->>'count';
+    "duration" := _value->>'duration';
     -- extract (epoch from duration)/60.0
-    "duration" := EXTRACT(epoch FROM _value->>'duration') / 60.0; -- minutes
+    --"duration" := EXTRACT(epoch FROM round((_value->>'duration')::numeric, 1)::interval) / 60.0; -- minutes
   
     -- add row to the returned table of the function
     RETURN NEXT; 
@@ -213,10 +214,10 @@ LANGUAGE plpgsql;
 
 
 --. turn this off before committing
---SELECT * FROM get_jobs('2021-11-05', 'Line1');
--- WITH
---   p_day AS (VALUES ('2021-11-05'::date))
--- SELECT * FROM get_jobs('Line1',
---   (EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint,
---   (EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint
--- );
+SELECT * FROM get_jobs('2021-11-05', 'Line1');
+ WITH
+   p_day AS (VALUES ('2021-11-05'::date))
+ SELECT * FROM get_jobs('Line1',
+   (EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint,
+   (EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint
+ );
