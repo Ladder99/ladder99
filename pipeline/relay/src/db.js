@@ -70,10 +70,16 @@ export class Db {
   //. handle versions - use meta table
   //. move src/migrations elsewhere eventually
   async migrate() {
-    const path = `src/migrations/001-init.sql`
-    const sql = String(fs.readFileSync(path))
     console.log(`Migrating database structures...`)
-    await this.client.query(sql)
+    // const path = `src/migrations/001-init.sql`
+    // const sql = String(fs.readFileSync(path))
+    // await this.client.query(sql)
+    await this.client.query(
+      String(fs.readFileSync(`src/migrations/001-init.sql`))
+    )
+    await this.client.query(
+      String(fs.readFileSync(`src/migrations/002-fns.sql`))
+    )
   }
 
   async query(sql, options) {
