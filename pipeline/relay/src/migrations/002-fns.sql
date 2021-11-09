@@ -13,7 +13,7 @@
 --   SELECT time, value AS "Availability" 
 --   FROM get_timeline('Line$line', 'availability', $__from, $__to);
 
--- DROP FUNCTION IF EXISTS get_timeline;
+-- DROP FUNCTION IF EXISTS get_timeline(text, text, bigint, bigint);
 
 CREATE OR REPLACE FUNCTION get_timeline (
   IN devicename text, -- the device name, eg 'Line1'
@@ -79,12 +79,7 @@ $BODY$;
 -- get_jobs
 ---------------------------------------------------------------------
 
--- DROP FUNCTION IF EXISTS get_jobs(TEXT, date);
-
-
---. develop in dbeaver, copy to migrate.sql - DO NOT EDIT THERE!
-
---DROP FUNCTION IF EXISTS get_jobs(date, TEXT);
+-- DROP FUNCTION IF EXISTS get_jobs(date, TEXT);
 -- DROP FUNCTION IF EXISTS get_jobs(TEXT, bigint, bigint);
 
 CREATE OR REPLACE FUNCTION get_jobs (
