@@ -210,8 +210,13 @@ export class AdapterDriver {
         //. this is assuming that printer will respond to cmds in order... uhh
         handler = commandHandlers[command] // will be called by client.on('data'), above
         console.log(`Zebra driver writing ${command}...`)
-        //. do try/catch - handle disconnection, reconnection
-        client.write(command + '\r\n')
+        //. handle disconnection, reconnection? or just keep calling client.write?
+        try {
+          client.write(command + '\r\n')
+        } catch (error) {
+          console.log('Zebra - caught exception on client.write call')
+          console.log(error)
+        }
         // give printer a little time to respond
         await new Promise(resolve => setTimeout(resolve, messagePauseTime))
       }
