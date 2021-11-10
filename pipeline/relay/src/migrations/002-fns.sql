@@ -13,6 +13,7 @@
 --   SELECT time, value AS "Availability" 
 --   FROM get_timeline('Line$line', 'availability', $__from, $__to);
 
+-- do this if change parameters OR return signature
 -- DROP FUNCTION IF EXISTS get_timeline(text, text, bigint, bigint);
 
 CREATE OR REPLACE FUNCTION get_timeline (
@@ -78,8 +79,17 @@ $BODY$;
 ---------------------------------------------------------------------
 -- get_jobs
 ---------------------------------------------------------------------
+-- get information about sales orders and jobs for a given time range.
+-- use from grafana like
+-- SELECT
+--   "order" as "Sales Order",
+--   "item" as "Item",
+--   "count" as "Count",
+--   extract (epoch from "duration")/60.0 as "Duration (mins)",
+--   "rework" as "Rework"
+-- FROM get_jobs('Line' || ${line_all}, $__from, $__to);
 
--- DROP FUNCTION IF EXISTS get_jobs(date, TEXT);
+-- do this if change parameters OR return signature
 -- DROP FUNCTION IF EXISTS get_jobs(TEXT, bigint, bigint);
 
 CREATE OR REPLACE FUNCTION get_jobs (
