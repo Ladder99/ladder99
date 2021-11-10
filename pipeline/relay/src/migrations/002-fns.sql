@@ -89,20 +89,23 @@ $BODY$;
 --   "rework" as "Rework"
 -- FROM get_jobs('Line' || ${line_all}, $__from, $__to);
 
+-- note: if need to debug, can print like this -
+-- RAISE NOTICE '_tbl %', _tbl;
+
+
 -- do this if change parameters OR return signature
 -- DROP FUNCTION IF EXISTS get_jobs(TEXT, bigint, bigint);
 
 CREATE OR REPLACE FUNCTION get_jobs (
   IN p_device TEXT, -- the device name, eg 'Line1'
-  IN p_from bigint,
-  IN p_to bigint
+  IN p_from bigint, -- start time in milliseconds since 1970-01-01
+  IN p_to bigint -- stop time in milliseconds since 1970-01-01
 )
 RETURNS TABLE ("line" TEXT, "order" TEXT, "item" TEXT, "count" TEXT, "duration" interval, "rework" TEXT)
 AS
 $BODY$
 DECLARE
   path_order constant TEXT = 'controller/processOccurrence/process_aggregate_id-order_number[sales_order]';
-  --path_item constant TEXT = 'controller/partOccurrence/part_kind_id-part_number';
   path_item constant TEXT = 'controller/partOccurrence/part_kind_id-part_name';
   path_count constant TEXT = 'controller/partOccurrence/part_count-complete';
   --  path_rework constant TEXT = 'controller/partOccurrence/part_count-complete'; --...
@@ -119,12 +122,15 @@ DECLARE
   _dimchange boolean;
   _start_time timestamp;
   _duration INTERVAL;
-  -- _from bigint := EXTRACT(epoch FROM p_day) * 1000;
-  -- _to bigint := EXTRACT(epoch FROM p_day + INTERVAL '1 day') * 1000;
 BEGIN
   RAISE NOTICE '------';
   RAISE NOTICE 'Collecting data...';
 
+  -- get timeline data for all the dataitems we're interested in,
+  -- then merge/union them and sort by time. 
+  -- this way we get a stream of events that we can process in order.
+  -- we pass FALSE so we get the actual timestamp for the first value,
+  -- instead of the 'left' edge (p_from).
   FOR _rec IN (
     SELECT "time", "path", "value" 
     FROM (
@@ -138,12 +144,12 @@ BEGIN
       FROM get_timeline(p_device, path_count, p_from, p_to, FALSE)
     ) AS subquery1 -- name required but not used
     ORDER BY "time"
-  )
+  )  
+
+  -- loop over the events - each with _rec.time, _rec.path, _rec.value
   LOOP
 
-    --RAISE NOTICE '_rec %', _rec;
-
-    -- update dimensions
+    -- check for dimension changes - merge any into _dimensions jsonb dict
     _dimchange := FALSE;
     IF _rec.path = 'order' THEN
       _dimensions := _dimensions || ('{"order":"' || _rec.value || '"}')::jsonb;
@@ -154,43 +160,38 @@ BEGIN
       _values := '{}'::jsonb;
       _dimchange := TRUE;
     
-    -- update values
+    -- check for value changes - merge any into _values jsonb dict
     ELSEIF _rec.path = 'count' THEN
-      --. track these in plain variables instead for speed
       _values := _values || ('{"count":"' || _rec.value || '"}')::jsonb;
-      _duration := _rec.time - _start_time;
+      _duration := _rec.time - _start_time; -- keep duration up-to-date
       _values := _values || ('{"duration":"' || _duration::text || '"}')::jsonb;    
+      --. track those in plain variables instead for speed?
+      --  but then would need to write to _values dict on dimension change?
       -- _count := _rec.value;
       -- _duration := _rec.time - _start_time; 
     END IF;
-  
-    _key := REPLACE(_dimensions::TEXT, '"', ''''); -- convert " to ' so can use as a json key
-    _row := ('{"' || _key || '":' || _values::TEXT || '}')::jsonb;  
-
-    --RAISE NOTICE '_row %', _row;
 
     -- if dimension changed, start a 'timer' for this job
     IF (_dimchange) THEN
       _start_time := _rec.time;
     END IF;
 
-    -- merge row into our intermediate table
+    -- store dimensions and values to an intermediate 'table', _tbl.
+    _key := REPLACE(_dimensions::TEXT, '"', ''''); -- convert " to ' so can use as a json key
+    _row := ('{"' || _key || '":' || _values::TEXT || '}')::jsonb;  
     IF ((NOT _row IS NULL) AND (NOT _values = '{}'::jsonb)) THEN 
       _tbl := _tbl || _row;
     END IF;
   
   END LOOP;
 
---  RAISE NOTICE '_tbl %', _tbl;
-
   RAISE NOTICE 'Building output...';
-  
+
+  -- loop over records in our intermediate table, _tbl
   FOR _key, _value IN 
     SELECT * FROM jsonb_each(_tbl)
   LOOP 
---    RAISE NOTICE '% %', _key, _value;
-  
-    -- loop over dimensions for this row, update our output table cells
+    -- loop over dimensions for this row, update our output table dimension cells
     FOR _key2, _value2 IN
       SELECT * FROM jsonb_each_text(REPLACE(_key, '''', '"')::jsonb)
     LOOP
@@ -201,14 +202,12 @@ BEGIN
       END IF;
     END LOOP;
   
-    -- assign values to output table row
-    "line" := p_device;
+    -- now assign values to output table row
+    "line" := p_device; -- eg 'Line1'
     "count" := _value->>'count';
     "duration" := _value->>'duration';
-    -- extract (epoch from duration)/60.0
-    --"duration" := EXTRACT(epoch FROM round((_value->>'duration')::numeric, 1)::interval) / 60.0; -- minutes
   
-    -- add row to the returned table of the function
+    -- add the cell values to a row for the returned table
     RETURN NEXT; 
   
   END LOOP;
