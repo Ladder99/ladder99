@@ -1,5 +1,3 @@
-# Models
+# Modules
 
-Models and their dataItems are defined here, and used by the Ladder99 Adapter.
-
-This is a work in progress.
+Modules and their dataitems are defined here and used by the Ladder99 Adapter drivers.
