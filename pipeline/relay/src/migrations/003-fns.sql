@@ -6,24 +6,24 @@
 -- RAISE NOTICE '_tbl %', _tbl;
 
 -- do this if change parameters OR return signature
---DROP FUNCTION IF EXISTS get_uptime(TEXT, bigint, bigint);
+--DROP FUNCTION IF EXISTS get_uptime(text, bigint, bigint);
 
 CREATE OR REPLACE FUNCTION get_uptime (
   IN p_device TEXT, -- the device name, eg 'Line1'
   IN p_from bigint, -- start time in milliseconds since 1970-01-01
   IN p_to bigint -- stop time in milliseconds since 1970-01-01
 )
-RETURNS TABLE ("timezzz" timestamp, "uptime" float)
+RETURNS TABLE ("timestamp" timestamp, "uptime" float)
 AS
 $BODY$
 DECLARE
   path_availability constant TEXT := 'availability';
   path_functional_mode constant TEXT := 'functional_mode';
 --. make generic jsonb dict
---  trackers jsonb := [
---    '{"time_available":{"path":"availability","values":["AVAILABLE"]}',
---    '{"time_active":{"path":"functional_mode","values":["PRODUCTION"]}'
---  ];
+--  trackers jsonb := ('{' ||
+--    '"time_available":{"path":"availability","values":["AVAILABLE"]},',
+--    '"time_active":{"path":"functional_mode","values":["PRODUCTION"]}'
+--  || '}')::jsonb;
   _rec record;
   _time_block_size constant int := 3600; -- size of time blocks
   _time_block int; -- current record's time block, since 1970-01-01
@@ -38,6 +38,8 @@ DECLARE
 --  _dimchange boolean;
 --  _start_time timestamp;
 --  _duration INTERVAL;
+  _delta INTERVAL;
+  _time_available INTERVAL := 0;
 BEGIN
   RAISE NOTICE '---------';
   RAISE NOTICE 'Collecting data...';
@@ -47,7 +49,7 @@ BEGIN
   -- this way we get a stream of events that we can process in order.
   -- we pass FALSE so we get the actual timestamp for the first value,
   -- instead of the 'left' edge (p_from).
---. build up a union query string from array of search terms, execute it here
+  --.. build up a union query string from array of search terms, execute it here
   FOR _rec IN (
     SELECT "time", "path", "value" 
     FROM (
@@ -74,7 +76,7 @@ BEGIN
       --  setting their values to one full timeblocksize.
       --. for timeblock = last_time_block to time_block - 1
     
-      _dimensions := _dimensions || ('{"time_block":"' || _time_block || '"}')::jsonb;
+--      _dimensions := _dimensions || ('{"time_block":"' || _time_block || '"}')::jsonb;
       --_values := '{}'::jsonb;
       --_dimchange := TRUE;
     END IF;
@@ -82,12 +84,15 @@ BEGIN
     -- check for value changes - merge any into _values jsonb dict
     --. make these generic - loop over jsonb dicts etc
     IF _rec.path = 'availability' THEN
-      IF _rec.value = 'AVAILABLE' THEN --. or other values
-        _start_time_available := _rec.time; -- start clock
-      ELSE
-        _delta := _rec.time - _start_time_available;
+      IF _rec.value = 'AVAILABLE' THEN --. (or other values) -- state changed to ON
+        --_start_time_available := _rec.time; -- start clock
+        _start_times[1] := _rec.time;
+      ELSE -- state changed to OFF
+        --_delta := _rec.time - _start_time_available;
+        _delta := _rec.time - _start_times[1];
         _time_available := _time_available + _delta;
-        _start_time_available := NULL;
+        -- _start_time_available := NULL;
+        --_start_times[1] := _rec.time;
       END IF;
       --_values := _values || ('{"availability":"' || _rec.value || '"}')::jsonb;
       -- _time_available := _rec.time - _start_time; -- keep duration up-to-date
@@ -95,14 +100,14 @@ BEGIN
       --. need to write to _values dict on dimension change?
       -- _count := _rec.value;
       -- _duration := _rec.time - _start_time; 
-    ELSEIF _rec.path = 'functional_mode' THEN
-      IF _rec.value = 'PRODUCTION' THEN
-        _start_time_active := _rec.time; -- start clock
-      ELSE
-        _delta := _rec.time - _start_time_active;
-        _time_active := _time_active + _delta;
-        _start_time_active := NULL;
-      END IF;
+--    ELSEIF _rec.path = 'functional_mode' THEN
+--      IF _rec.value = 'PRODUCTION' THEN
+--        _start_time_active := _rec.time; -- start clock
+--      ELSE
+--        _delta := _rec.time - _start_time_active;
+--        _time_active := _time_active + _delta;
+--        _start_time_active := NULL;
+--      END IF;
     END IF;
 
 --    -- if dimension changed, start a 'timer' for this job
