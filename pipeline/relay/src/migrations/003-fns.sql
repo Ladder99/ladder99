@@ -19,18 +19,18 @@ $BODY$
 DECLARE
   path_availability constant TEXT := 'availability';
   path_functional_mode constant TEXT := 'functional_mode';
---. make generic jsonb dict
---  trackers jsonb := ('{' ||
---    '"time_available":{"path":"availability","values":["AVAILABLE"]},',
---    '"time_active":{"path":"functional_mode","values":["PRODUCTION"]}'
---  || '}')::jsonb;
+  -- make generic jsonb dict
+  trackers jsonb := jsonb_build_object(
+    'time_available', '{"path":"availability","values":["AVAILABLE"]}'::jsonb,
+    'time_active', '{"path":"functional_mode","values":["PRODUCTION"]}'::jsonb
+  );
   _rec record;
   _time_block_size constant int := 3600; -- size of time blocks
   _time_block int; -- current record's time block, since 1970-01-01
   _last_time_block int := 0; -- previous record's time block
   _start_times timestamp[]; -- array of start times
---  _key TEXT;
---  _value json;
+  _key TEXT;
+  _value jsonb;
 --  _dimensions jsonb := '{}';
 --  _values jsonb := '{}';
 --  _tbl jsonb := '{}'; -- an intermediate table, keyed on a dimension blob, values a json obj  
@@ -40,9 +40,21 @@ DECLARE
 --  _duration INTERVAL;
   _delta INTERVAL;
   _time_available INTERVAL := 0;
+  _foo jsonb;
 BEGIN
   RAISE NOTICE '---------';
   RAISE NOTICE 'Collecting data...';
+
+--  FOREACH _foo IN ARRAY trackers
+--  LOOP
+--    RAISE NOTICE '%', _foo;
+--  END LOOP;
+
+  FOR _key, _value IN
+    SELECT * FROM jsonb_each(trackers)
+  LOOP
+    RAISE NOTICE '%, %', _key, _value;
+  END LOOP;
 
   -- get timeline data for all the dataitems we're interested in,
   -- then merge/union them and sort by time. 
