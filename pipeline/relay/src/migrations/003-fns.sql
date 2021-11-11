@@ -19,13 +19,13 @@ $BODY$
 DECLARE
   path_availability constant TEXT := 'availability';
   path_functional_mode constant TEXT := 'functional_mode';
-  -- make generic jsonb dict
+  -- dataitems to track --. pass in from grafana?
   trackers jsonb := jsonb_build_object(
-    'time_available', '{"path":"availability","values":["AVAILABLE"]}'::jsonb,
-    'time_active', '{"path":"functional_mode","values":["PRODUCTION"]}'::jsonb
+    'time_available', '{"path":"availability","when":["AVAILABLE"]}'::jsonb,
+    'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
   );
   _rec record;
-  _time_block_size constant int := 3600; -- size of time blocks
+  _time_block_size constant int := 3600; -- size of time blocks --. pass in hint from grafana
   _time_block int; -- current record's time block, since 1970-01-01
   _last_time_block int := 0; -- previous record's time block
   _start_times timestamp[]; -- array of start times
@@ -40,21 +40,33 @@ DECLARE
 --  _duration INTERVAL;
   _delta INTERVAL;
   _time_available INTERVAL := 0;
-  _foo jsonb;
+  _sql TEXT := '';
+  _sql_inner TEXT := '';
+  _union TEXT := '';
 BEGIN
   RAISE NOTICE '---------';
   RAISE NOTICE 'Collecting data...';
-
---  FOREACH _foo IN ARRAY trackers
---  LOOP
---    RAISE NOTICE '%', _foo;
---  END LOOP;
 
   FOR _key, _value IN
     SELECT * FROM jsonb_each(trackers)
   LOOP
     RAISE NOTICE '%, %', _key, _value;
+    _sql_inner := _sql_inner || _union || '
+  SELECT "time", ''functional_mode'' AS "path", "value"
+  FROM get_timeline(p_device, path_functional_mode, p_from, p_to, FALSE)
+';
+    _union := '
+UNION
+';
   END LOOP;
+
+  _sql := '
+SELECT "time", "path", "value"
+FROM (' || _sql_inner || ') AS subquery1
+ORDER BY "time";
+';
+
+  RAISE NOTICE '%', _sql;
 
   -- get timeline data for all the dataitems we're interested in,
   -- then merge/union them and sort by time. 
