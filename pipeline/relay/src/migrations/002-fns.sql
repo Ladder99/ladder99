@@ -149,7 +149,8 @@ BEGIN
   -- loop over the events - each with _rec.time, _rec.path, _rec.value
   LOOP
 
-    -- check for dimension changes - merge any into _dimensions jsonb dict
+    -- check for dimension changes - merge any into _dimensions jsonb dict,
+    -- and clear the _values dict.
     _dimchange := FALSE;
     IF _rec.path = 'order' THEN
       _dimensions := _dimensions || ('{"order":"' || _rec.value || '"}')::jsonb;
@@ -164,7 +165,7 @@ BEGIN
     ELSEIF _rec.path = 'count' THEN
       _values := _values || ('{"count":"' || _rec.value || '"}')::jsonb;
       _duration := _rec.time - _start_time; -- keep duration up-to-date
-      _values := _values || ('{"duration":"' || _duration::text || '"}')::jsonb;    
+      _values := _values || ('{"duration":"' || _duration::text || '"}')::jsonb;
       --. track those in plain variables instead for speed?
       --  but then would need to write to _values dict on dimension change?
       -- _count := _rec.value;
@@ -176,7 +177,7 @@ BEGIN
       _start_time := _rec.time;
     END IF;
 
-    -- store dimensions and values to an intermediate 'table', _tbl.
+    -- store dimensions (as json string) and values to an intermediate 'table', _tbl.
     _key := REPLACE(_dimensions::TEXT, '"', ''''); -- convert " to ' so can use as a json key
     _row := ('{"' || _key || '":' || _values::TEXT || '}')::jsonb;  
     IF ((NOT _row IS NULL) AND (NOT _values = '{}'::jsonb)) THEN 
@@ -187,7 +188,7 @@ BEGIN
 
   RAISE NOTICE 'Building output...';
 
-  -- loop over records in our intermediate table, _tbl
+  -- loop over records in our intermediate table
   FOR _key, _value IN 
     SELECT * FROM jsonb_each(_tbl)
   LOOP 
@@ -224,3 +225,5 @@ LANGUAGE plpgsql;
 --   (EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint,
 --   (EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint
 -- );
+
+
