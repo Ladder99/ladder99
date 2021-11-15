@@ -153,7 +153,7 @@ services:
       - all
       - portainer
     ports:
-      - '9001:9000' #.... changed from 9000:9000 - make envar
+      - '9000:9000'
     volumes:
       # - /etc/localtime:/etc/localtime:ro
       # - /etc/timezone:/etc/timezone:ro
