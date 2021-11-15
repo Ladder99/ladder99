@@ -115,6 +115,7 @@ services:
     image: biarms/pgadmin4:latest
     profiles:
       - all
+      - dashboard
       - pgadmin
     ports:
       - '5050:5050/tcp'
