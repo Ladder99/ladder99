@@ -123,7 +123,6 @@ JOIN nodes AS devices ON bins.device_id=devices.node_id;
 ---------------------------------------------------------------------
 CREATE OR REPLACE VIEW history_all AS
 SELECT 
-  -- devices.props->>'name_uuid' AS device,
   devices.props->>'name' AS device,
   dataitems.props->>'path' AS path,
   history.time,
