@@ -6,7 +6,7 @@
 -- RAISE NOTICE '_tbl %', _tbl;
 
 -- do this if change parameters OR return signature
---DROP FUNCTION IF EXISTS get_uptime(text, bigint, bigint);
+-- DROP FUNCTION IF EXISTS get_uptime(text, bigint, bigint);
 
 CREATE OR REPLACE FUNCTION get_uptime (
   IN p_device TEXT, -- the device name, eg 'Line1'
@@ -180,8 +180,12 @@ LANGUAGE plpgsql;
 
 
 --....... turn this off before committing
-WITH p_day AS (VALUES ('2021-11-05'::date))
-SELECT * FROM get_uptime('Line1',
-  (EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint,
-  (EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint
-);
+WITH
+  p_day AS (VALUES ('2021-11-05'::date)),
+  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
+  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint))
+SELECT * FROM get_uptime('Line1', (TABLE p_from), (TABLE p_to));
+
+
+
+
