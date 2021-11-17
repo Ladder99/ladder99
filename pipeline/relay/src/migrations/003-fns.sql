@@ -17,20 +17,26 @@ RETURNS TABLE ("timestamp" timestamp, "uptime" float)
 AS
 $BODY$
 DECLARE
-  path_availability constant TEXT := 'availability';
-  path_functional_mode constant TEXT := 'functional_mode';
+  --path_availability constant TEXT := 'availability';
+  --path_functional_mode constant TEXT := 'functional_mode';
   -- dataitems to track --. pass in from grafana?
   trackers jsonb := jsonb_build_object(
     'time_available', '{"path":"availability","when":["AVAILABLE"]}'::jsonb,
     'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
   );
   _rec record;
-  _time_block_size constant int := 3600; -- size of time blocks --. pass in hint from grafana
+  _time_block_size constant int := 3600; -- size of time blocks (secs) --. pass in from grafana
   _time_block int; -- current record's time block, since 1970-01-01
   _last_time_block int := 0; -- previous record's time block
   _start_times timestamp[]; -- array of start times
   _key TEXT;
   _value jsonb;
+  _path TEXT;
+--  _recs TEXT; -- error at or near _recs, below
+  _recs record;
+--  _recs ARRAY[timestamp, TEXT, TEXT];
+--  _recs record[]; -- pseudo-type not allowed
+--  _recs get_timeline%rowtype; -- relation get_timeline does not exist
 --  _dimensions jsonb := '{}';
 --  _values jsonb := '{}';
 --  _tbl jsonb := '{}'; -- an intermediate table, keyed on a dimension blob, values a json obj  
@@ -43,30 +49,37 @@ DECLARE
   _sql TEXT := '';
   _sql_inner TEXT := '';
   _union TEXT := '';
+
 BEGIN
   RAISE NOTICE '---------';
   RAISE NOTICE 'Collecting data...';
 
+  -- build sql statement
   FOR _key, _value IN
     SELECT * FROM jsonb_each(trackers)
   LOOP
     RAISE NOTICE '%, %', _key, _value;
-    _sql_inner := _sql_inner || _union || '
-  SELECT "time", ''functional_mode'' AS "path", "value"
-  FROM get_timeline(p_device, path_functional_mode, p_from, p_to, FALSE)
-';
+    _path := (_value->>'path')::TEXT;
+    _sql_inner := _sql_inner || _union || 
+    format('
+SELECT "time", %L as "path", "value"
+FROM get_timeline(%L, %L, %s, %s, false)', 
+_path, p_device, _path, p_from, p_to);
     _union := '
-UNION
-';
+UNION';
   END LOOP;
 
-  _sql := '
+  _sql := format('
 SELECT "time", "path", "value"
-FROM (' || _sql_inner || ') AS subquery1
+FROM (%s
+) AS subquery1
 ORDER BY "time";
-';
+', _sql_inner);
 
   RAISE NOTICE '%', _sql;
+
+  EXECUTE _sql INTO _recs;
+  RAISE NOTICE '%', _recs;
 
   -- get timeline data for all the dataitems we're interested in,
   -- then merge/union them and sort by time. 
@@ -74,17 +87,20 @@ ORDER BY "time";
   -- we pass FALSE so we get the actual timestamp for the first value,
   -- instead of the 'left' edge (p_from).
   --.. build up a union query string from array of search terms, execute it here
-  FOR _rec IN (
-    SELECT "time", "path", "value" 
-    FROM (
-      SELECT "time", 'availability' AS "path", "value"
-      FROM get_timeline(p_device, path_availability, p_from, p_to, FALSE)
-      UNION
-      SELECT "time", 'functional_mode' AS "path", "value"
-      FROM get_timeline(p_device, path_functional_mode, p_from, p_to, FALSE)
-    ) AS subquery1 -- name required but not used
-    ORDER BY "time"
-  )  
+--  FOR _rec IN (
+--    SELECT "time", "path", "value" 
+--    FROM (
+--      SELECT "time", 'availability' AS "path", "value"
+--      FROM get_timeline(p_device, path_availability, p_from, p_to, FALSE)
+--      UNION
+--      SELECT "time", 'functional_mode' AS "path", "value"
+--      FROM get_timeline(p_device, path_functional_mode, p_from, p_to, FALSE)
+--    ) AS subquery1 -- name required but not used
+--    ORDER BY "time"
+--  )
+
+
+  FOR _rec IN SELECT * FROM _sql
 
   -- loop over the events - each with _rec.time, _rec.path, _rec.value
   LOOP
@@ -180,12 +196,94 @@ LANGUAGE plpgsql;
 
 
 --....... turn this off before committing
+--WITH
+--  p_day AS (VALUES ('2021-11-05'::date)),
+--  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
+--  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint))
+--SELECT * FROM get_uptime('Line1', (TABLE p_from), (TABLE p_to));
+
+
+
+
+CREATE OR REPLACE FUNCTION get_foo (
+  IN p_device TEXT, -- the device name, eg 'Line1'
+  IN p_from bigint, -- start time in milliseconds since 1970-01-01
+  IN p_to bigint -- stop time in milliseconds since 1970-01-01
+)
+RETURNS TABLE ("time" timestamp, "path" TEXT, "value" text)
+AS
+$BODY$
+DECLARE
+  --path_availability constant TEXT := 'availability';
+  --path_functional_mode constant TEXT := 'functional_mode';
+  -- dataitems to track --. pass in from grafana?
+  trackers jsonb := jsonb_build_object(
+    'time_available', '{"path":"availability","when":["AVAILABLE"]}'::jsonb,
+    'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
+  );
+  _rec record;
+  _time_block_size constant int := 3600; -- size of time blocks (secs) --. pass in from grafana
+  _time_block int; -- current record's time block, since 1970-01-01
+  _last_time_block int := 0; -- previous record's time block
+  _start_times timestamp[]; -- array of start times
+  _key TEXT;
+  _value jsonb;
+  _path TEXT;
+--  _recs TEXT; -- error at or near _recs, below
+--  _recs record;
+--  _recs ARRAY[timestamp, TEXT, TEXT];
+--  _recs record[]; -- pseudo-type not allowed
+--  _recs get_timeline%rowtype; -- relation get_timeline does not exist
+--  _dimensions jsonb := '{}';
+--  _values jsonb := '{}';
+--  _tbl jsonb := '{}'; -- an intermediate table, keyed on a dimension blob, values a json obj  
+--  _row jsonb;
+--  _dimchange boolean;
+--  _start_time timestamp;
+--  _duration INTERVAL;
+  _delta INTERVAL;
+  _time_available INTERVAL := 0;
+  _sql TEXT := '';
+  _sql_inner TEXT := '';
+  _union TEXT := '';
+
+BEGIN
+  RAISE NOTICE '---------';
+  RAISE NOTICE 'Collecting data...';
+
+  -- build sql statement
+  FOR _key, _value IN
+    SELECT * FROM jsonb_each(trackers)
+  LOOP
+    RAISE NOTICE '%, %', _key, _value;
+    _path := (_value->>'path')::TEXT;
+    _sql_inner := _sql_inner || _union || 
+    format('
+SELECT "time", %L as "path", "value"
+FROM get_timeline(%L, %L, %s, %s, false)', 
+_path, p_device, _path, p_from, p_to);
+    _union := '
+UNION';
+  END LOOP;
+
+  _sql := format('
+SELECT "time", "path", "value"
+FROM (%s
+) AS subquery1
+ORDER BY "time";
+', _sql_inner);
+
+  RAISE NOTICE '%', _sql;
+
+  RETURN query EXECUTE _sql;
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
 WITH
   p_day AS (VALUES ('2021-11-05'::date)),
   p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
   p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint))
-SELECT * FROM get_uptime('Line1', (TABLE p_from), (TABLE p_to));
-
-
-
+SELECT * FROM get_foo('Line1', (TABLE p_from), (TABLE p_to));
 
