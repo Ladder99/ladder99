@@ -1,5 +1,8 @@
+---------------------------------------------------------------------
+-- get_events
+---------------------------------------------------------------------
 
--- get table of events with sql like
+-- get table of events by generating sql like
 -- SELECT "time", "path", "value"
 -- FROM (
 -- SELECT "time", 'functional_mode' as "path", "value"
@@ -54,7 +57,7 @@ UNION';
   _sql := format('
 SELECT "time", "path", "value"
 FROM (%s
-) AS subquery1
+) AS subquery1 -- name not used but required
 ORDER BY "time";
 ', _sql_inner);
 
@@ -73,8 +76,6 @@ LANGUAGE plpgsql;
 --SELECT * FROM get_events'Line1', (TABLE p_from), (TABLE p_to));
 
 
-
-
 ---------------------------------------------------------------------
 -- get_uptime
 ---------------------------------------------------------------------
@@ -82,12 +83,15 @@ LANGUAGE plpgsql;
 -- do this if change parameters OR return signature
 -- DROP FUNCTION IF EXISTS get_uptime(text, bigint, bigint);
 
+--. call this get_metrics, make generic
+--. then make a get_uptime query that passes in the jsonb struct with events to watch
+
 CREATE OR REPLACE FUNCTION get_uptime (
   IN p_device TEXT, -- the device name, eg 'Line1'
   IN p_from bigint, -- start time in milliseconds since 1970-01-01
   IN p_to bigint -- stop time in milliseconds since 1970-01-01
 )
-RETURNS TABLE ("timestamp" timestamp, "uptime" float)
+RETURNS TABLE ("time" timestamp, "uptime" float)
 AS
 $BODY$
 DECLARE
@@ -106,10 +110,10 @@ DECLARE
   _value jsonb;
   _path TEXT;
 --  _recs record;
---  _dimensions jsonb := '{}';
---  _values jsonb := '{}';
---  _tbl jsonb := '{}'; -- an intermediate table, keyed on a dimension blob, values a json obj  
---  _row jsonb;
+  _dimensions jsonb := '{}';
+  _values jsonb := '{}';
+  _tbl jsonb := '{}'; -- an intermediate table, keyed on a dimension blob, values a json obj  
+  _row jsonb;
 --  _dimchange boolean;
 --  _start_time timestamp;
 --  _duration INTERVAL;
@@ -134,12 +138,15 @@ BEGIN
 
     -- check for dimension changes
     --_dimchange := FALSE;
+  
+    -- if time block has changed, update the dimensions where we'll be putting the time amounts.
+    --  
     IF NOT _time_block = _last_time_block THEN
       --. loop over timeblocks, carrying forward values for each intermediate timeblock,
       --  setting their values to one full timeblocksize.
       --. for timeblock = last_time_block to time_block - 1 loop
     
---      _dimensions := _dimensions || ('{"time_block":"' || _time_block || '"}')::jsonb;
+      _dimensions := _dimensions || jsonb_build_object('time_block', _time_block);
       --_values := '{}'::jsonb;
       --_dimchange := TRUE;
     END IF;
@@ -182,51 +189,61 @@ BEGIN
 --      _start_time := _rec.time;
 --    END IF;
 --
---    -- store dimensions (as json string) and values to an intermediate 'table'.
---    _key := REPLACE(_dimensions::TEXT, '"', ''''); -- convert " to ' so can use as a json key
---    _row := ('{"' || _key || '":' || _values::TEXT || '}')::jsonb;  
---    IF ((NOT _row IS NULL) AND (NOT _values = '{}'::jsonb)) THEN 
---      _tbl := _tbl || _row;
---    END IF;
+
+    -- store dimensions (as json string) and dataitems to an intermediate 'table'.
+    _key := REPLACE(_dimensions::TEXT, '"', '^^'); -- convert " to ^^ so can use as a json key
+    -- _row := ('{"' || _key || '":' || _values::TEXT || '}')::jsonb;
+    _row := jsonb_build_object(_key, _values);
+    RAISE NOTICE '%', _row;
+    IF ((NOT _row IS NULL) AND (NOT _values = '{}'::jsonb)) THEN 
+      _tbl := _tbl || _row;
+    END IF;
   
   END LOOP;
 
 --  RAISE NOTICE 'Building output...';
---
---  -- loop over records in our intermediate table
---  FOR _key, _value IN 
---    SELECT * FROM jsonb_each(_tbl)
---  LOOP 
---    -- loop over dimensions for this row, update our output table dimension cells
---    FOR _key2, _value2 IN
---      SELECT * FROM jsonb_each_text(REPLACE(_key, '''', '"')::jsonb)
---    LOOP
---      IF _key2 = 'order' THEN 
---        "order" := _value2;
---      ELSEIF _key2 = 'item' THEN
---        "item" := _value2;
---      END IF;
---    END LOOP;
---  
---    -- now assign values to output table row
---    "line" := p_device; -- eg 'Line1'
---    "count" := _value->>'count';
---    "duration" := _value->>'duration';
---  
---    -- add the cell values to a row for the returned table
---    RETURN NEXT; 
---  
---  END LOOP;
+  DECLARE
+    _key TEXT;
+    _value jsonb;
+    _key2 TEXT;
+    _value2 TEXT;
+  BEGIN
+    
+    RAISE NOTICE '%', _tbl;
+  
+    -- loop over records in our intermediate table
+    FOR _key, _value IN 
+      SELECT * FROM jsonb_each(_tbl)
+    LOOP 
+      -- loop over dimensions for this row, update our output table dimension cells
+      FOR _key2, _value2 IN
+        SELECT * FROM jsonb_each_text(REPLACE(_key, '^^', '"')::jsonb)
+      LOOP
+        IF _key2 = 'time_block' THEN
+          "time" := time_block * time_block_size;
+        END IF;
+      END LOOP;
+    
+      -- now assign values to output table row
+  --    "line" := p_device; -- eg 'Line1'
+  --    "count" := _value->>'count';
+  --    "duration" := _value->>'duration';
+    
+      -- add the cell values to a row for the returned table
+      RETURN NEXT; 
+    
+    END LOOP;
+  END;
 END;
 $BODY$
 LANGUAGE plpgsql;
 
 
---....... turn this off before committing
+--.... turn this off before committing .....................
 WITH
-  p_day AS (VALUES ('2021-11-05'::date)),
+  p_day AS (VALUES ('2021-11-04'::date)),
   p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
-  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint))
+  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '5.05 hr') * 1000)::bigint))
 SELECT * FROM get_uptime('Line1', (TABLE p_from), (TABLE p_to));
 
 
