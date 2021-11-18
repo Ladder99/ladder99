@@ -1,4 +1,14 @@
 
+-- get table of events with sql like
+-- SELECT "time", "path", "value"
+-- FROM (
+-- SELECT "time", 'functional_mode' as "path", "value"
+-- FROM get_timeline('Line1', 'functional_mode', 1636070400000, 1636156800000, false)
+-- UNION
+-- SELECT "time", 'availability' as "path", "value"
+-- FROM get_timeline('Line1', 'availability', 1636070400000, 1636156800000, false)
+-- ) AS subquery1
+-- ORDER BY "time";
 CREATE OR REPLACE FUNCTION get_events (
   IN p_device TEXT, -- the device name, eg 'Line1'
   IN p_from bigint, -- start time in milliseconds since 1970-01-01
@@ -14,22 +24,16 @@ DECLARE
     'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
   );
   _rec record;
---  _time_block_size constant int := 3600; -- size of time blocks (secs) --. pass in from grafana
---  _time_block int; -- current record's time block, since 1970-01-01
---  _last_time_block int := 0; -- previous record's time block
---  _start_times timestamp[]; -- array of start times
   _key TEXT;
   _value jsonb;
   _path TEXT;
---  _delta INTERVAL;
---  _time_available INTERVAL := 0;
   _sql TEXT := '';
   _sql_inner TEXT := '';
   _union TEXT := '';
 
 BEGIN
   RAISE NOTICE '---------';
-  RAISE NOTICE 'Collecting data...';
+  RAISE NOTICE 'Building events query...';
 
   -- build sql statement
   FOR _key, _value IN
@@ -55,7 +59,7 @@ ORDER BY "time";
 ', _sql_inner);
 
   RAISE NOTICE '%', _sql;
-
+  RAISE NOTICE 'Collecting events...';
   RETURN query EXECUTE _sql;
 END;
 $BODY$
@@ -75,8 +79,6 @@ LANGUAGE plpgsql;
 -- get_uptime
 ---------------------------------------------------------------------
 
--- RAISE NOTICE '_tbl %', _tbl;
-
 -- do this if change parameters OR return signature
 -- DROP FUNCTION IF EXISTS get_uptime(text, bigint, bigint);
 
@@ -89,26 +91,21 @@ RETURNS TABLE ("timestamp" timestamp, "uptime" float)
 AS
 $BODY$
 DECLARE
-  --path_availability constant TEXT := 'availability';
-  --path_functional_mode constant TEXT := 'functional_mode';
-  -- dataitems to track --. pass in from grafana?
+  -- dataitems to track --. pass in from caller
 --  trackers jsonb := jsonb_build_object(
 --    'time_available', '{"path":"availability","when":["AVAILABLE"]}'::jsonb,
 --    'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
 --  );
   _rec record;
-  _time_block_size constant int := 3600; -- size of time blocks (secs) --. pass in from grafana
+  _time_block_size constant int := 3600; -- size of time blocks (secs) --. pass in estimate
   _time_block int; -- current record's time block, since 1970-01-01
   _last_time_block int := 0; -- previous record's time block
-  _start_times timestamp[]; -- array of start times
+  --_start_times timestamp[]; -- array of start times --. make a dict eh?
+  _start_times jsonb := '{}'; -- dict of starttimes
   _key TEXT;
   _value jsonb;
   _path TEXT;
---  _recs TEXT; -- error at or near _recs, below
-  _recs record;
---  _recs ARRAY[timestamp, TEXT, TEXT];
---  _recs record[]; -- pseudo-type not allowed
---  _recs get_timeline%rowtype; -- relation get_timeline does not exist
+--  _recs record;
 --  _dimensions jsonb := '{}';
 --  _values jsonb := '{}';
 --  _tbl jsonb := '{}'; -- an intermediate table, keyed on a dimension blob, values a json obj  
@@ -118,6 +115,7 @@ DECLARE
 --  _duration INTERVAL;
   _delta INTERVAL;
   _time_available INTERVAL := 0;
+  _time_production INTERVAL := 0;
 --  _sql TEXT := '';
 --  _sql_inner TEXT := '';
 --  _union TEXT := '';
@@ -125,23 +123,21 @@ DECLARE
 BEGIN
   RAISE NOTICE '---------';
 
-  -- get table of events with time, path, value
+  -- get table of events and loop over
+  -- each with _rec.time, _rec.path, _rec.value
   FOR _rec IN SELECT * FROM get_events(p_device, p_from, p_to)
-
-  -- loop over the events - each with _rec.time, _rec.path, _rec.value
   LOOP
-    RAISE NOTICE '%', _rec;
     -- get time blocks since 1970-01-01 (hours, 15mins, days, etc)
-    _time_block := EXTRACT(EPOCH FROM _rec.time) / _time_block_size;
+    _time_block := EXTRACT(EPOCH FROM _rec.time) / _time_block_size; -- converts to int
 
-    RAISE NOTICE '%, %', _rec, _time_block;
+    RAISE NOTICE '%, %', _time_block, _rec;
 
     -- check for dimension changes
     --_dimchange := FALSE;
     IF NOT _time_block = _last_time_block THEN
       --. loop over timeblocks, carrying forward values for each intermediate timeblock,
       --  setting their values to one full timeblocksize.
-      --. for timeblock = last_time_block to time_block - 1
+      --. for timeblock = last_time_block to time_block - 1 loop
     
 --      _dimensions := _dimensions || ('{"time_block":"' || _time_block || '"}')::jsonb;
       --_values := '{}'::jsonb;
@@ -151,15 +147,12 @@ BEGIN
     -- check for value changes - merge any into _values jsonb dict
     --. make these generic - loop over jsonb dicts etc
     IF _rec.path = 'availability' THEN
-      IF _rec.value = 'AVAILABLE' THEN --. (or other values) -- state changed to ON
-        --_start_time_available := _rec.time; -- start clock
-        _start_times[1] := _rec.time;
+      IF _rec.value IN ('AVAILABLE') THEN -- state changed to ON
+        _start_times := _start_times || jsonb_build_object('available', _rec.time);
       ELSE -- state changed to OFF
-        --_delta := _rec.time - _start_time_available;
-        _delta := _rec.time - _start_times[1];
+        _delta := _rec.time - (_start_times->>'available')::timestamp;
         _time_available := _time_available + _delta;
         -- _start_time_available := NULL;
-        --_start_times[1] := _rec.time;
       END IF;
       --_values := _values || ('{"availability":"' || _rec.value || '"}')::jsonb;
       -- _time_available := _rec.time - _start_time; -- keep duration up-to-date
@@ -167,14 +160,21 @@ BEGIN
       --. need to write to _values dict on dimension change?
       -- _count := _rec.value;
       -- _duration := _rec.time - _start_time; 
---    ELSEIF _rec.path = 'functional_mode' THEN
---      IF _rec.value = 'PRODUCTION' THEN
---        _start_time_active := _rec.time; -- start clock
---      ELSE
---        _delta := _rec.time - _start_time_active;
---        _time_active := _time_active + _delta;
---        _start_time_active := NULL;
---      END IF;
+    ELSEIF _rec.path = 'functional_mode' THEN
+      IF _rec.value IN ('PRODUCTION') THEN
+        _start_times := _start_times || jsonb_build_object('production', _rec.time);
+        RAISE NOTICE '%', _start_times;
+      ELSE
+        -- _start_time_active := NULL;
+        _delta := _rec.time - (_start_times->>'production')::timestamp;
+        RAISE NOTICE '%', _delta;
+        -- _delta will be NULL the first time through
+        -- _time_production := _time_production + COALESCE(_delta, 0); -- error
+        IF _delta IS NOT NULL THEN
+          _time_production := _time_production + _delta;
+        END IF;
+        RAISE NOTICE '_time_production %', _time_production; 
+      END IF;
     END IF;
 
 --    -- if dimension changed, start a 'timer' for this job
