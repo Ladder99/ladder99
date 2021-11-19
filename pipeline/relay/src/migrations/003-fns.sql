@@ -150,6 +150,8 @@ DECLARE
   _dataitem TEXT; --.
   _def jsonb; --.
   _newtime INTERVAL; --.
+  _name TEXT;
+  _on_states TEXT[];
 BEGIN
   RAISE NOTICE '---------';
 
@@ -157,6 +159,7 @@ BEGIN
   FOR _event IN SELECT * FROM get_events(p_trackers, p_device, p_from, p_to)
   LOOP
     -- get time blocks since 1970-01-01 (hours, 15mins, days, etc)
+    -- EPOCH is seconds since 1970-01-01
     _time_block := EXTRACT(EPOCH FROM _event.time) / _time_block_size; -- converts to int
 
     RAISE NOTICE '%, %', _time_block, _event;
@@ -174,51 +177,29 @@ BEGIN
       _dimchanged := TRUE;
       _last_time_block := _time_block;
     END IF;
---  
---    -- check for dataitem changes - merge any into _dataitems jsonb dict
---      --_values := _values || ('{"availability":"' || _event.value || '"}')::jsonb;
---      -- _time_available := _rec.time - _start_time; -- keep duration up-to-date
---      -- _values := _values || ('{"duration":"' || _duration::text || '"}')::jsonb;
---      --. need to write to _values dict on dimension change?
---      -- _count := _event.value;
---      -- _duration := _event.time - _start_time; 
---    ELSEIF _event.path = 'functional_mode' THEN
---      IF _event.value IN ('PRODUCTION') THEN
---        _start_times := _start_times || jsonb_build_object('production', _event.time);
---        RAISE NOTICE '%', _start_times;
---      ELSE
---        -- _start_time_active := NULL;
---        _delta := _event.time - (_start_times->>'production')::timestamp;
---        RAISE NOTICE '%', _delta;
---        -- _delta will be NULL the first time through
---        -- _time_production := _time_production + COALESCE(_delta, 0); -- error
---        IF _delta IS NOT NULL THEN
---          _time_production := _time_production + _delta;
---        END IF;
---        RAISE NOTICE '_time_production %', _time_production; 
---      END IF;
---    END IF;
---  
-    -- check for dataitem changes - merge any into _bins jsonb dict
-    _def := (p_trackers->>_event.path); -- path is eg 'availability', 'functional_mode'
+
+    -- check for dataitem changes - merge any into _time_bins jsonb dict
+    _def := (p_trackers->(_event.path)); -- get tracker def - path is eg 'availability', 'functional_mode'
     IF _def IS NOT NULL THEN
-      RAISE NOTICE '%', _def->>'when';
-      IF _event.value = ANY(jsonb_arr2text_arr(_def->'when')) THEN -- state changed to ON
-        -- start 'timer' for this dataitem
-        _start_times := _start_times || jsonb_build_object(_def->>'name', _event.time);
+      _name := _def->>'name'; -- eg 'available', 'active'
+      _on_states := jsonb_arr2text_arr(_def->'when'); -- eg ['AVAILABLE']
+      IF _event.value = ANY(_on_states) THEN -- state changed to ON
+        _start_times := _start_times || jsonb_build_object(_name, _event.time); -- start 'timer'
+        RAISE NOTICE '%', _start_times;
       ELSE -- state changed to OFF
         -- add clock time to time bin for this dataitem
-        _delta := (_event.time - ((_start_times->>(_def->>'name'))::timestamp))::INTERVAL; -- interval
+        _delta := _event.time - (_start_times->>_name)::timestamp;
         IF _delta IS NOT NULL THEN
-          _newtime := COALESCE((_time_bins->(_def->>'name'))->>0, '0')::INTERVAL + _delta; --. fix
-          _time_bins := _time_bins || jsonb_build_object(_def->>'name', _newtime);
+          _newtime := COALESCE((_time_bins->_name)->>0, '0')::INTERVAL + _delta;
+--          RAISE NOTICE '%', _newtime;
+          _time_bins := _time_bins || jsonb_build_object(_name, _newtime);
+          RAISE NOTICE '%', _time_bins;
         END IF;
       END IF;
     END IF;
 
     -- if dimension changed (ie time), start 'timers' for each tracked dataitem
     IF _dimchanged THEN
---      FOR _dataitem, _def IN SELECT * FROM jsonb_each(p_trackers) LOOP
       FOR _path, _def IN SELECT * FROM jsonb_each(p_trackers) LOOP
         _start_times := jsonb_build_object(_def->>'name', _event.time);
       END LOOP;
@@ -226,9 +207,9 @@ BEGIN
 
     -- store dimensions (as json string) and dataitems to an intermediate 'table'.
     -- this overwrites existing rows as bins fill up.
-    _row := jsonb_build_object(_dimensions::TEXT, _dataitems);
+    _row := jsonb_build_object(_dimensions::TEXT, _time_bins);
     RAISE NOTICE '%', _row;
-    IF ((_row IS NOT NULL) AND (NOT _dataitems = '{}'::jsonb)) THEN 
+    IF ((_row IS NOT NULL) AND (NOT _time_bins = '{}'::jsonb)) THEN 
       _tbl := _tbl || _row;
     END IF;
   
@@ -249,10 +230,10 @@ BEGIN
     LOOP 
 
       -- first, loop over dimensions for this row and update our output table dimension cells (ie time)
-      FOR _dimension, _dimension_value IN SELECT * FROM jsonb_each_text(_dimensions::jsonb)
+      FOR _dimension, _dimension_value IN SELECT * FROM jsonb_each(_dimensions::jsonb)
       LOOP
         IF _dimension = 'time_block' THEN
-          "time" := _dimension_value * time_block_size; --. cast?
+          "time" := to_timestamp(_dimension_value::int * _time_block_size); -- convert seconds to timestamp
         END IF;
       END LOOP;
 
