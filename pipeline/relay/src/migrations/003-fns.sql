@@ -4,11 +4,10 @@
 -- get a table of events
 --
 -- specify dataitems to watch with p_trackers parameter, eg
---  jsonb_build_object(
---   'time_available', '{"path":"availability","when":["AVAILABLE"]}'::jsonb,
---   'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
---  )
---
+--  p_trackers AS (values (jsonb_build_object(
+--    'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
+--    'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
+--  ))),
 -- builds a sql query like so -
 --  SELECT "time", "path", "value"
 --  FROM (
@@ -54,11 +53,12 @@ BEGIN
   FOR _key, _value IN
     SELECT * FROM jsonb_each(p_trackers)
   LOOP
-    _path := (_value->>'path')::TEXT;
+--    _path := (_value->>'path')::TEXT;
     _sql_inner := _sql_inner || _union || format('
 SELECT "time", %L as "path", "value"
 FROM get_timeline(%L, %L, %s, %s, false)', 
-_path, p_device, _path, p_from, p_to);
+--_path, p_device, _path, p_from, p_to);
+_key, p_device, _key, p_from, p_to);
     _union := '
 UNION';
   END LOOP;
@@ -81,15 +81,28 @@ LANGUAGE plpgsql;
 -- test get_events
 
 --WITH
+----  p_trackers AS (values (jsonb_build_object(
+----    'time_available', '{"path":"availability","when":["AVAILABLE"]}'::jsonb,
+----    'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
+----  ))),
 --  p_trackers AS (values (jsonb_build_object(
---    'time_available', '{"path":"availability","when":["AVAILABLE"]}'::jsonb,
---    'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
+--    'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
+--    'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
 --  ))),
 --  p_day AS (VALUES ('2021-11-05'::date)),
 --  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
 --  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint))
 --SELECT * FROM get_events((TABLE p_trackers), 'Line1', (TABLE p_from), (TABLE p_to));
 
+
+
+-- see https://dba.stackexchange.com/questions/54283/how-to-turn-json-array-into-postgres-array/54289
+CREATE OR REPLACE FUNCTION json_arr2text_arr(_js json)
+  RETURNS text[] LANGUAGE sql IMMUTABLE PARALLEL SAFE AS
+  'SELECT ARRAY(SELECT json_array_elements_text(_js))';
+CREATE OR REPLACE FUNCTION jsonb_arr2text_arr(_js jsonb)
+  RETURNS text[] LANGUAGE sql IMMUTABLE PARALLEL SAFE AS
+  'SELECT ARRAY(SELECT jsonb_array_elements_text(_js))';
 
 
 ---------------------------------------------------------------------
@@ -108,7 +121,7 @@ LANGUAGE plpgsql;
 -- DROP FUNCTION IF EXISTS get_metrics(jsonb, text, bigint, bigint);
 
 CREATE OR REPLACE FUNCTION get_metrics (
-  IN p_trackers jsonb, -- dataitems to track - see get_events for desc
+  IN p_trackers jsonb, -- dataitems to track
   IN p_device TEXT, -- the device name, eg 'Line1'
   IN p_from bigint, -- start time in milliseconds since 1970-01-01
   IN p_to bigint -- stop time in milliseconds since 1970-01-01
@@ -136,7 +149,7 @@ DECLARE
   _time_bins jsonb := '{}'; --.
   _dataitem TEXT; --.
   _def jsonb; --.
-  _newtime timestamp; --.
+  _newtime INTERVAL; --.
 BEGIN
   RAISE NOTICE '---------';
 
@@ -189,23 +202,25 @@ BEGIN
     -- check for dataitem changes - merge any into _bins jsonb dict
     _def := (p_trackers->>_event.path); -- path is eg 'availability', 'functional_mode'
     IF _def IS NOT NULL THEN
-      IF _event.value = ANY(_def.when) THEN -- state changed to ON
+      RAISE NOTICE '%', _def->>'when';
+      IF _event.value = ANY(jsonb_arr2text_arr(_def->'when')) THEN -- state changed to ON
         -- start 'timer' for this dataitem
-        _start_times := _start_times || jsonb_build_object(_def.name, _event.time);
+        _start_times := _start_times || jsonb_build_object(_def->>'name', _event.time);
       ELSE -- state changed to OFF
         -- add clock time to time bin for this dataitem
-        _delta := _event.time - (_start_times->>_def.name)::timestamp;
+        _delta := (_event.time - ((_start_times->>(_def->>'name'))::timestamp))::INTERVAL; -- interval
         IF _delta IS NOT NULL THEN
-          _newtime := _time_bins->>_def.name + _delta;
-          _time_bins := _time_bins || jsonb_build_object(_def.name, _newtime);
+          _newtime := COALESCE((_time_bins->(_def->>'name'))->>0, '0')::INTERVAL + _delta; --. fix
+          _time_bins := _time_bins || jsonb_build_object(_def->>'name', _newtime);
         END IF;
       END IF;
     END IF;
 
     -- if dimension changed (ie time), start 'timers' for each tracked dataitem
     IF _dimchanged THEN
-      FOR _dataitem, _def IN SELECT * FROM jsonb_each(p_trackers) LOOP
-        _start_times := jsonb_build_object(_dataitem, _event.time);
+--      FOR _dataitem, _def IN SELECT * FROM jsonb_each(p_trackers) LOOP
+      FOR _path, _def IN SELECT * FROM jsonb_each(p_trackers) LOOP
+        _start_times := jsonb_build_object(_def->>'name', _event.time);
       END LOOP;
     END IF;
 
@@ -261,11 +276,13 @@ LANGUAGE plpgsql;
 --.... turn this off before committing .....................
 
 WITH
-  --.. could we have 'availability': '{"name":"available", "when":["AVAILABLE"]}' ?
-  -- then could pick out def based on path
+--  p_trackers AS (values (jsonb_build_object(
+--    'time_available', '{"path":"availability","when":["AVAILABLE"]}'::jsonb,
+--    'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
+--  ))),
   p_trackers AS (values (jsonb_build_object(
-    'time_available', '{"path":"availability","when":["AVAILABLE"]}'::jsonb,
-    'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
+    'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
+    'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
   ))),
   p_day AS (VALUES ('2021-11-04'::date)),
   p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
