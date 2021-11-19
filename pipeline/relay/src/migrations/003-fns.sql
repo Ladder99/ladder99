@@ -198,11 +198,11 @@ BEGIN
 --
 
     -- store dimensions (as json string) and dataitems to an intermediate 'table'.
-    _key := REPLACE(_dimensions::TEXT, '"', '^^'); -- convert " to ^^ so can use as a json key
+    -- _key := REPLACE(_dimensions::TEXT, '"', '^^'); -- convert " to ^^ so can use as a json key
     -- _row := ('{"' || _key || '":' || _values::TEXT || '}')::jsonb;
-    _row := jsonb_build_object(_key, _values);
+    _row := jsonb_build_object(_dimensions::TEXT, _values);
     RAISE NOTICE '%', _row;
-    IF ((NOT _row IS NULL) AND (NOT _values = '{}'::jsonb)) THEN 
+    IF ((_row IS NOT NULL) AND (NOT _values = '{}'::jsonb)) THEN 
       _tbl := _tbl || _row;
     END IF;
   
@@ -224,7 +224,8 @@ BEGIN
     LOOP 
       -- loop over dimensions for this row, update our output table dimension cells
       FOR _key2, _value2 IN
-        SELECT * FROM jsonb_each_text(REPLACE(_key, '^^', '"')::jsonb)
+        -- SELECT * FROM jsonb_each_text(REPLACE(_key, '^^', '"')::jsonb)
+        SELECT * FROM jsonb_each_text(_key2::jsonb)
       LOOP
         IF _key2 = 'time_block' THEN
           "time" := time_block * time_block_size;
