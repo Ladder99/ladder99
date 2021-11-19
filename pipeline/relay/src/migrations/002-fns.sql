@@ -81,17 +81,13 @@ $BODY$;
 ---------------------------------------------------------------------
 -- get information about sales orders and jobs for a given time range.
 -- use from grafana like
--- SELECT
+--  SELECT
 --   "order" as "Sales Order",
 --   "item" as "Item",
 --   "count" as "Count",
---   extract (epoch from "duration")/60.0 as "Duration (mins)",
+--   extract (epoch from "duration")/60.0 as "Duration (mins)", --.  improve this
 --   "rework" as "Rework"
--- FROM get_jobs('Line' || ${line_all}, $__from, $__to);
-
--- note: if need to debug, can print like this -
--- RAISE NOTICE '_tbl %', _tbl;
-
+--  FROM get_jobs('Line' || ${line_all}, $__from, $__to);
 
 -- do this if change parameters OR return signature
 -- DROP FUNCTION IF EXISTS get_jobs(TEXT, bigint, bigint);
@@ -112,7 +108,7 @@ DECLARE
   path_all constant TEXT[] = ARRAY[path_order, path_item, path_count];
   _rec record;
   _key TEXT;
-  _value json;
+  _value jsonb;
   _key2 TEXT;
   _value2 TEXT;
   _dimensions jsonb := '{}';
@@ -153,20 +149,20 @@ BEGIN
     -- and clear the _values dict.
     _dimchange := FALSE;
     IF _rec.path = 'order' THEN
-      _dimensions := _dimensions || ('{"order":"' || _rec.value || '"}')::jsonb;
+      _dimensions := _dimensions || jsonb_build_object('order', _rec.value);
       _values := '{}'::jsonb;
       _dimchange := TRUE;
     ELSEIF _rec.path = 'item' THEN
-      _dimensions := _dimensions || ('{"item":"' || _rec.value || '"}')::jsonb;  
+      _dimensions := _dimensions || jsonb_build_object('item', _rec.value);
       _values := '{}'::jsonb;
       _dimchange := TRUE;
     
     -- check for value changes - merge any into _values jsonb dict
     ELSEIF _rec.path = 'count' THEN
-      _values := _values || ('{"count":"' || _rec.value || '"}')::jsonb;
+      _values := _values || jsonb_build_object('count', _rec.value);
       _duration := _rec.time - _start_time; -- keep duration up-to-date
-      _values := _values || ('{"duration":"' || _duration::text || '"}')::jsonb;
-      --. track those in plain variables instead for speed?
+      _values := _values || jsonb_build_object('duration', _duration);
+      --. track those in plain variables instead for more speed?
       --  but then would need to write to _values dict on dimension change?
       -- _count := _rec.value;
       -- _duration := _rec.time - _start_time; 
@@ -178,9 +174,7 @@ BEGIN
     END IF;
 
     -- store dimensions (as json string) and values to an intermediate 'table', _tbl.
-    -- _key := REPLACE(_dimensions::TEXT, '"', ''''); -- convert " to ' so can use as a json key
-    _key := REPLACE(_dimensions::TEXT, '"', '^^'); -- convert " to ^^ so can use as a json key
-    _row := ('{"' || _key || '":' || _values::TEXT || '}')::jsonb;  
+    _row := jsonb_build_object(_dimensions::TEXT, _values);
     IF ((NOT _row IS NULL) AND (NOT _values = '{}'::jsonb)) THEN 
       _tbl := _tbl || _row;
     END IF;
@@ -195,8 +189,7 @@ BEGIN
   LOOP 
     -- loop over dimensions for this row, update our output table dimension cells
     FOR _key2, _value2 IN
-      -- SELECT * FROM jsonb_each_text(REPLACE(_key, '''', '"')::jsonb)
-      SELECT * FROM jsonb_each_text(REPLACE(_key, '^^', '"')::jsonb)
+      SELECT * FROM jsonb_each_text(_key::jsonb)
     LOOP
       IF _key2 = 'order' THEN 
         "order" := _value2;
@@ -218,9 +211,9 @@ END;
 $BODY$
 LANGUAGE plpgsql;
 
-
+-- test get_jobs fn
 --. turn this off before committing
---SELECT * FROM get_jobs('2021-11-05', 'Line1');
+
 -- WITH
 --   p_day AS (VALUES ('2021-11-05'::date))
 -- SELECT * FROM get_jobs('Line1',
