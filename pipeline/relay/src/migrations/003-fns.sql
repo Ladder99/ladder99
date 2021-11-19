@@ -38,9 +38,8 @@ RETURNS TABLE ("time" timestamp, "path" TEXT, "value" TEXT)
 AS
 $BODY$
 DECLARE
-  _key TEXT;
-  _value jsonb;
-  _path TEXT;
+  _path TEXT; -- tracker dataitem path, eg 'availability', 'functional_mode'
+  _tracker jsonb; -- tracker object - not used
   _sql TEXT := '';
   _sql_inner TEXT := '';
   _union TEXT := '';
@@ -49,20 +48,20 @@ BEGIN
   RAISE NOTICE '---------';
   RAISE NOTICE 'Building events query...';
 
-  -- build sql statement
-  FOR _key, _value IN
-    SELECT * FROM jsonb_each(p_trackers)
+  -- build sql statement - iterate over dataitems to track.
+  -- note: don't actually use _tracker.
+  FOR _path, _tracker IN SELECT * FROM jsonb_each(p_trackers)
   LOOP
---    _path := (_value->>'path')::TEXT;
+    -- inner sql calls get_timeline for each dataitem, adds UNION as needed
     _sql_inner := _sql_inner || _union || format('
 SELECT "time", %L as "path", "value"
 FROM get_timeline(%L, %L, %s, %s, false)', 
---_path, p_device, _path, p_from, p_to);
-_key, p_device, _key, p_from, p_to);
+_path, p_device, _path, p_from, p_to);
     _union := '
 UNION';
   END LOOP;
 
+  -- build final sql
   _sql := format('
 SELECT "time", "path", "value"
 FROM (%s
@@ -130,11 +129,11 @@ RETURNS TABLE ("time" timestamp, "values" jsonb)
 AS
 $BODY$
 DECLARE
-  _event record; --.
+  _event record; -- a record from the get_events fn with time, path, value
   _time_block_size constant int := 3600; -- size of time blocks (secs) --. pass in estimate
   _time_block int; -- current record's time block, since 1970-01-01
   _last_time_block int := 0; -- previous record's time block
-  _start_times jsonb := '{}'; -- dict of starttimes, keyed on dataitem
+  _start_times jsonb := '{}'; -- dict of starttimes, keyed on name, values are timestamps 
   _key TEXT; --. rename
   _value jsonb; --. rename
   _path TEXT; --.
