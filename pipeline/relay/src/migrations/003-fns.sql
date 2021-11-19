@@ -52,7 +52,7 @@ BEGIN
   -- note: don't actually use _tracker.
   FOR _path, _tracker IN SELECT * FROM jsonb_each(p_trackers)
   LOOP
-    -- inner sql calls get_timeline for each dataitem, adds UNION as needed
+    -- inner sql calls get_timeline for each dataitem, adds UNIONS as needed
     _sql_inner := _sql_inner || _union || format('
 SELECT "time", %L as "path", "value"
 FROM get_timeline(%L, %L, %s, %s, false)', 
@@ -71,6 +71,8 @@ ORDER BY "time";
 
   RAISE NOTICE '%', _sql;
   RAISE NOTICE 'Collecting events...';
+
+  -- execute the sql and return results as a table
   RETURN query EXECUTE _sql;
 END;
 $BODY$
@@ -80,10 +82,6 @@ LANGUAGE plpgsql;
 -- test get_events
 
 --WITH
-----  p_trackers AS (values (jsonb_build_object(
-----    'time_available', '{"path":"availability","when":["AVAILABLE"]}'::jsonb,
-----    'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
-----  ))),
 --  p_trackers AS (values (jsonb_build_object(
 --    'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
 --    'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
@@ -95,6 +93,8 @@ LANGUAGE plpgsql;
 
 
 
+-- define some json array to text array functions - lacking from postgres as of v9?
+-- still not in there in v13?
 -- see https://dba.stackexchange.com/questions/54283/how-to-turn-json-array-into-postgres-array/54289
 CREATE OR REPLACE FUNCTION json_arr2text_arr(_js json)
   RETURNS text[] LANGUAGE sql IMMUTABLE PARALLEL SAFE AS
@@ -111,10 +111,10 @@ CREATE OR REPLACE FUNCTION jsonb_arr2text_arr(_js jsonb)
 -- returns table of times rounded to bucket sizes,
 -- with jsonb object containing value bins.
 -- eg
---  jsonb_build_object(
---   'time_available', '{"path":"availability","when":["AVAILABLE"]}'::jsonb,
---   'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
---  )
+--  p_trackers AS (values (jsonb_build_object(
+--    'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
+--    'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
+--  ))),
 
 -- do this if change parameters OR return signature:
 -- DROP FUNCTION IF EXISTS get_metrics(jsonb, text, bigint, bigint);
@@ -129,22 +129,20 @@ RETURNS TABLE ("time" timestamp, "values" jsonb)
 AS
 $BODY$
 DECLARE
-  _event record; -- a record from the get_events fn with time, path, value
   _time_block_size constant int := 3600; -- size of time blocks (secs) --. pass in estimate
+  _event record; -- a record from the get_events fn with time, path, value
   _time_block int; -- current record's time block, since 1970-01-01
   _last_time_block int := 0; -- previous record's time block
-  _start_times jsonb := '{}'; -- dict of starttimes, keyed on name, values are timestamps 
+  _start_times jsonb := '{}'; -- dict of starttimes - keyed on tracker name, values are timestamps 
   _key TEXT; --. rename
   _value jsonb; --. rename
   _path TEXT; --.
   _dimensions jsonb := '{}'; --.
   _dataitems jsonb := '{}'; --.
-  _tbl jsonb := '{}'; -- an intermediate table, keyed on a dimension blob, values a json obj  
-  _row jsonb; --. rename
-  _dimchanged boolean; --.
-  _delta INTERVAL; --.
---  _time_available INTERVAL := 0; --. del
---  _time_production INTERVAL := 0; --. del
+  _rows jsonb := '{}'; -- an intermediate key-value table - keyed on dimension (as json string), values a jsonb obj with accumulated times 
+  _row jsonb; -- a row in above table
+  _dimchanged boolean; -- flag set if a dimension we're tracking has changed
+  _delta INTERVAL; -- time interval 
   _time_bins jsonb := '{}'; --.
   _dataitem TEXT; --.
   _def jsonb; --.
@@ -184,15 +182,12 @@ BEGIN
       _on_states := jsonb_arr2text_arr(_def->'when'); -- eg ['AVAILABLE']
       IF _event.value = ANY(_on_states) THEN -- state changed to ON
         _start_times := _start_times || jsonb_build_object(_name, _event.time); -- start 'timer'
-        RAISE NOTICE '%', _start_times;
       ELSE -- state changed to OFF
         -- add clock time to time bin for this dataitem
         _delta := _event.time - (_start_times->>_name)::timestamp;
         IF _delta IS NOT NULL THEN
           _newtime := COALESCE((_time_bins->_name)->>0, '0')::INTERVAL + _delta;
---          RAISE NOTICE '%', _newtime;
           _time_bins := _time_bins || jsonb_build_object(_name, _newtime);
-          RAISE NOTICE '%', _time_bins;
         END IF;
       END IF;
     END IF;
@@ -207,14 +202,13 @@ BEGIN
     -- store dimensions (as json string) and dataitems to an intermediate 'table'.
     -- this overwrites existing rows as bins fill up.
     _row := jsonb_build_object(_dimensions::TEXT, _time_bins);
-    RAISE NOTICE '%', _row;
     IF ((_row IS NOT NULL) AND (NOT _time_bins = '{}'::jsonb)) THEN 
-      _tbl := _tbl || _row;
+      _rows := _rows || _row;
     END IF;
   
   END LOOP;
 
-  RAISE NOTICE '%', _tbl;
+  RAISE NOTICE '%', _rows;
   RAISE NOTICE 'Building output...';
 
   DECLARE
@@ -224,8 +218,10 @@ BEGIN
     _dimension_value TEXT; --.
   BEGIN    
   
-    -- loop over records in our intermediate table
-    FOR _dimensions, _bins IN SELECT * FROM jsonb_each(_tbl)
+    -- loop over records in our intermediate table, _rows.
+    -- _dimensions is a json string containing any dimensions we're tracking, ie timeblock.
+    -- _bins is an object with accumulated times for different dataitems we're tracking.
+    FOR _dimensions, _bins IN SELECT * FROM jsonb_each(_rows)
     LOOP 
 
       -- first, loop over dimensions for this row and update our output table dimension cells (ie time)
@@ -237,12 +233,11 @@ BEGIN
       END LOOP;
 
       -- now assign values to output table row.
-      -- we already have the jsonb object we need, so just return that.
-      "values" := _bins;
-    
+      -- but we already have the jsonb object we need, so just return that.
+      "values" := _bins;    
 --    "line" := p_device; -- eg 'Line1' --. will we need this also?
 
-      -- add the cell values to a row for the returned table
+      -- add the row to the returned table
       RETURN NEXT; 
     
     END LOOP;
