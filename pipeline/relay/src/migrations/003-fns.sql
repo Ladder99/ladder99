@@ -212,10 +212,12 @@ BEGIN
   RAISE NOTICE 'Building output...';
 
   DECLARE
-    _dimensions TEXT; --.
-    _bins jsonb; --.
-    _dimension TEXT; --.
-    _dimension_value TEXT; --.
+    -- see below for explanations
+    _dimensions TEXT;
+    _bins jsonb;
+    _dimension TEXT;
+    _dimension_value TEXT;
+    _interval INTERVAL;
   BEGIN    
   
     -- loop over records in our intermediate table, _rows.
@@ -225,6 +227,8 @@ BEGIN
     LOOP 
 
       -- first, loop over dimensions for this row and update our output table dimension cells (ie time)
+      -- _dimension is eg 'time_block'
+      -- _dimension_value is eg 454440
       FOR _dimension, _dimension_value IN SELECT * FROM jsonb_each(_dimensions::jsonb)
       LOOP
         IF _dimension = 'time_block' THEN
@@ -234,9 +238,18 @@ BEGIN
 
       -- now assign values to output table row.
       -- but we already have the jsonb object we need, so just return that.
-      "values" := _bins;    
+--      "values" := _bins; -- eg {"active": "00:09:05.3"}
 --    "line" := p_device; -- eg 'Line1' --. will we need this also?
-
+      
+      --. but might want to return seconds instead of a sql interval
+      "values" := '{}';
+      FOR _name, _interval IN SELECT * FROM jsonb_each(_bins)
+      LOOP
+        RAISE NOTICE '% %', _name, _interval;
+        "values" := "values" || jsonb_build_object(_name, date_part('second', _interval));
+      END LOOP;
+      RAISE NOTICE '%', "values";
+      
       -- add the row to the returned table
       RETURN NEXT; 
     
@@ -250,19 +263,15 @@ LANGUAGE plpgsql;
 -- test fn
 --.... turn this off before committing .....................
 
-WITH
+--WITH
 --  p_trackers AS (values (jsonb_build_object(
---    'time_available', '{"path":"availability","when":["AVAILABLE"]}'::jsonb,
---    'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
+--    'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
+--    'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
 --  ))),
-  p_trackers AS (values (jsonb_build_object(
-    'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
-    'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
-  ))),
-  p_day AS (VALUES ('2021-11-04'::date)),
-  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
-  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '5.05 hr') * 1000)::bigint))
-SELECT * FROM get_metrics((TABLE p_trackers), 'Line1', (TABLE p_from), (TABLE p_to));
+--  p_day AS (VALUES ('2021-11-04'::date)),
+--  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
+--  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '5.05 hr') * 1000)::bigint))
+--SELECT * FROM get_metrics((TABLE p_trackers), 'Line1', (TABLE p_from), (TABLE p_to));
 
 
 
@@ -273,33 +282,39 @@ SELECT * FROM get_metrics((TABLE p_trackers), 'Line1', (TABLE p_from), (TABLE p_
 -- do this if change parameters OR return signature
 -- DROP FUNCTION IF EXISTS get_uptime(text, bigint, bigint);
 
---CREATE OR REPLACE FUNCTION get_uptime (
---  IN p_device TEXT, -- the device name, eg 'Line1'
---  IN p_from bigint, -- start time in milliseconds since 1970-01-01
---  IN p_to bigint -- stop time in milliseconds since 1970-01-01
---)
---RETURNS TABLE ("time" timestamp, "uptime" float)
---AS
---$BODY$
---DECLARE
---  _trackers jsonb := jsonb_build_object(
---   'time_available', '{"path":"availability","when":["AVAILABLE"]}'::jsonb,
---   'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
---  );
---  _rec record;
---  _time_block_size constant int := 3600; -- size of time blocks (secs) --. pass in estimate
---  _time_block int; -- current record's time block, since 1970-01-01
---BEGIN  
---END; 
---$BODY$
---LANGUAGE plpgsql;
+CREATE OR REPLACE FUNCTION get_uptime (
+  IN p_device TEXT, -- the device name, eg 'Line1'
+  IN p_from bigint, -- start time in milliseconds since 1970-01-01
+  IN p_to bigint -- stop time in milliseconds since 1970-01-01
+)
+RETURNS TABLE ("time" timestamp, "uptime" float)
+AS
+$BODY$
+DECLARE
+  _time_block_size constant int := 3600; -- size of time blocks (secs) --. pass in estimate
+  _trackers jsonb := jsonb_build_object(
+    'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
+    'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
+  );
+BEGIN
+  RETURN query 
+    SELECT 
+      get_metrics."time",
+--      1.0::float AS "uptime"
+--      EXTRACT (seconds FROM ("values"->>'active')::float) / EXTRACT (seconds FROM ("values"->>'available')::float) AS "uptime"
+      ("values"->'active')::float / ("values"->'available')::float AS "uptime"
+    FROM get_metrics(_trackers, p_device, p_from, p_to)
+    WHERE "values"->'active' IS NOT NULL AND "values"->'available' IS NOT NULL;
+END; 
+$BODY$
+LANGUAGE plpgsql;
 
 
 --.... turn this off before committing .....................
---WITH
---  p_day AS (VALUES ('2021-11-04'::date)),
---  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
---  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '5.05 hr') * 1000)::bigint))
---SELECT * FROM get_uptime('Line1', (TABLE p_from), (TABLE p_to));
+WITH
+  p_day AS (VALUES ('2021-11-04'::date)),
+  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
+  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '5.05 hr') * 1000)::bigint))
+SELECT * FROM get_uptime('Line1', (TABLE p_from), (TABLE p_to));
 
   
