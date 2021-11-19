@@ -55,13 +55,10 @@ BEGIN
     SELECT * FROM jsonb_each(p_trackers)
   LOOP
     _path := (_value->>'path')::TEXT;
-
-    _sql_inner := _sql_inner || _union || 
-    format('
+    _sql_inner := _sql_inner || _union || format('
 SELECT "time", %L as "path", "value"
 FROM get_timeline(%L, %L, %s, %s, false)', 
 _path, p_device, _path, p_from, p_to);
-
     _union := '
 UNION';
   END LOOP;
@@ -81,7 +78,7 @@ $BODY$
 LANGUAGE plpgsql;
 
 
--- test query
+-- test get_events
 
 --WITH
 --  p_trackers AS (values (jsonb_build_object(
@@ -98,15 +95,13 @@ LANGUAGE plpgsql;
 ---------------------------------------------------------------------
 -- get_metrics
 ---------------------------------------------------------------------
+-- get bin values for different dataitem states
 
 -- do this if change parameters OR return signature
--- DROP FUNCTION IF EXISTS get_metrics(text, bigint, bigint);
-
---. call this get_metrics, make generic
---. then make a get_uptime query that passes in the jsonb struct with events to watch
+-- DROP FUNCTION IF EXISTS get_metrics(jsonb, text, bigint, bigint);
 
 CREATE OR REPLACE FUNCTION get_metrics (
-  IN p_trackers jsonb, -- dataitems to track
+  IN p_trackers jsonb, -- dataitems to track - see get_events
   IN p_device TEXT, -- the device name, eg 'Line1'
   IN p_from bigint, -- start time in milliseconds since 1970-01-01
   IN p_to bigint -- stop time in milliseconds since 1970-01-01
@@ -127,10 +122,11 @@ DECLARE
   _values jsonb := '{}';
   _tbl jsonb := '{}'; -- an intermediate table, keyed on a dimension blob, values a json obj  
   _row jsonb;
---  _dimchange boolean;
+  _dimchange boolean;
   _delta INTERVAL;
   _time_available INTERVAL := 0;
   _time_production INTERVAL := 0;
+  _time_bins jsonb := '{}';
 BEGIN
   RAISE NOTICE '---------';
 
@@ -147,7 +143,7 @@ BEGIN
     --_dimchange := FALSE;
   
     -- if time block has changed, update the dimensions where we'll be putting the time amounts.
-    --  
+    --
     IF NOT _time_block = _last_time_block THEN
       --. loop over timeblocks, carrying forward values for each intermediate timeblock,
       --  setting their values to one full timeblocksize.
