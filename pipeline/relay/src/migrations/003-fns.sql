@@ -95,13 +95,16 @@ LANGUAGE plpgsql;
 ---------------------------------------------------------------------
 -- get_metrics
 ---------------------------------------------------------------------
--- get bin values for different dataitem states
+-- get bin values for different dataitem states.
+-- returns table of times rounded to bucket sizes,
+-- with jsonb object containing value bins.
+--. eg
 
--- do this if change parameters OR return signature
+-- do this if change parameters OR return signature:
 -- DROP FUNCTION IF EXISTS get_metrics(jsonb, text, bigint, bigint);
 
 CREATE OR REPLACE FUNCTION get_metrics (
-  IN p_trackers jsonb, -- dataitems to track - see get_events
+  IN p_trackers jsonb, -- dataitems to track - see get_events for desc
   IN p_device TEXT, -- the device name, eg 'Line1'
   IN p_from bigint, -- start time in milliseconds since 1970-01-01
   IN p_to bigint -- stop time in milliseconds since 1970-01-01
@@ -110,40 +113,37 @@ RETURNS TABLE ("time" timestamp, "values" jsonb)
 AS
 $BODY$
 DECLARE
-  _rec record;
+  _event record; --.
   _time_block_size constant int := 3600; -- size of time blocks (secs) --. pass in estimate
   _time_block int; -- current record's time block, since 1970-01-01
   _last_time_block int := 0; -- previous record's time block
-  _start_times jsonb := '{}'; -- dict of starttimes
-  _key TEXT;
-  _value jsonb;
-  _path TEXT;
-  _dimensions jsonb := '{}';
-  _values jsonb := '{}';
+  _start_times jsonb := '{}'; -- dict of starttimes, keyed on dataitem
+  _key TEXT; --. rename
+  _value jsonb; --. rename
+  _path TEXT; --.
+  _dimensions jsonb := '{}'; --.
+  _dataitems jsonb := '{}'; --.
   _tbl jsonb := '{}'; -- an intermediate table, keyed on a dimension blob, values a json obj  
-  _row jsonb;
-  _dimchange boolean;
-  _delta INTERVAL;
-  _time_available INTERVAL := 0;
-  _time_production INTERVAL := 0;
-  _time_bins jsonb := '{}';
+  _row jsonb; --. rename
+  _dimchanged boolean; --.
+  _delta INTERVAL; --.
+  _time_available INTERVAL := 0; --. del
+  _time_production INTERVAL := 0; --. del
+  _time_bins jsonb := '{}'; --.
 BEGIN
   RAISE NOTICE '---------';
 
-  -- get table of events and loop over
-  -- each with _rec.time, _rec.path, _rec.value
-  FOR _rec IN SELECT * FROM get_events(p_trackers, p_device, p_from, p_to)
+  -- get table of events and loop over, each with time, path, value.
+  FOR _event IN SELECT * FROM get_events(p_trackers, p_device, p_from, p_to)
   LOOP
     -- get time blocks since 1970-01-01 (hours, 15mins, days, etc)
-    _time_block := EXTRACT(EPOCH FROM _rec.time) / _time_block_size; -- converts to int
+    _time_block := EXTRACT(EPOCH FROM _event.time) / _time_block_size; -- converts to int
 
-    RAISE NOTICE '%, %', _time_block, _rec;
+    RAISE NOTICE '%, %', _time_block, _event;
 
     -- check for dimension changes
-    --_dimchange := FALSE;
-  
     -- if time block has changed, update the dimensions where we'll be putting the time amounts.
-    --
+    _dimchanged := FALSE;  
     IF NOT _time_block = _last_time_block THEN
       --. loop over timeblocks, carrying forward values for each intermediate timeblock,
       --  setting their values to one full timeblocksize.
@@ -151,36 +151,36 @@ BEGIN
     
       _dimensions := _dimensions || jsonb_build_object('time_block', _time_block);
       --_values := '{}'::jsonb;
-      --_dimchange := TRUE;
+      _dimchanged := TRUE;
       _last_time_block := _time_block;
     END IF;
   
-    -- check for value changes - merge any into _values jsonb dict
+    -- check for dataitem changes - merge any into _dataitems jsonb dict
     --. make these generic - loop over jsonb dicts etc
-    IF _rec.path = 'availability' THEN
-      IF _rec.value IN ('AVAILABLE') THEN -- state changed to ON
+    IF _event.path = 'availability' THEN
+      IF _event.value IN ('AVAILABLE') THEN -- state changed to ON
         -- start timer for availability
-        _start_times := _start_times || jsonb_build_object('available', _rec.time);
+        _start_times := _start_times || jsonb_build_object('available', _event.time);
       ELSE -- state changed to OFF
         -- add time difference to clock for this time block
-        _delta := _rec.time - (_start_times->>'available')::timestamp;
+        _delta := _event.time - (_start_times->>'available')::timestamp;
         _time_available := _time_available + _delta;
 --        _bins := _bins || jsonb_build_object('available', _time_available);
         -- _start_time_available := NULL;
       END IF;
-      --_values := _values || ('{"availability":"' || _rec.value || '"}')::jsonb;
+      --_values := _values || ('{"availability":"' || _event.value || '"}')::jsonb;
       -- _time_available := _rec.time - _start_time; -- keep duration up-to-date
       -- _values := _values || ('{"duration":"' || _duration::text || '"}')::jsonb;
       --. need to write to _values dict on dimension change?
-      -- _count := _rec.value;
-      -- _duration := _rec.time - _start_time; 
-    ELSEIF _rec.path = 'functional_mode' THEN
-      IF _rec.value IN ('PRODUCTION') THEN
-        _start_times := _start_times || jsonb_build_object('production', _rec.time);
+      -- _count := _event.value;
+      -- _duration := _event.time - _start_time; 
+    ELSEIF _event.path = 'functional_mode' THEN
+      IF _event.value IN ('PRODUCTION') THEN
+        _start_times := _start_times || jsonb_build_object('production', _event.time);
         RAISE NOTICE '%', _start_times;
       ELSE
         -- _start_time_active := NULL;
-        _delta := _rec.time - (_start_times->>'production')::timestamp;
+        _delta := _event.time - (_start_times->>'production')::timestamp;
         RAISE NOTICE '%', _delta;
         -- _delta will be NULL the first time through
         -- _time_production := _time_production + COALESCE(_delta, 0); -- error
@@ -191,18 +191,16 @@ BEGIN
       END IF;
     END IF;
 
---    -- if dimension changed, start a 'timer' for this job
---    IF (_dimchange) THEN
---      _start_time := _rec.time;
+    -- if dimension changed, start 'timers' for each tracked dataitem
+--    IF _dimchanged THEN
+--      _start_time := _event.time;
 --    END IF;
---
+
 
     -- store dimensions (as json string) and dataitems to an intermediate 'table'.
-    -- _key := REPLACE(_dimensions::TEXT, '"', '^^'); -- convert " to ^^ so can use as a json key
-    -- _row := ('{"' || _key || '":' || _values::TEXT || '}')::jsonb;
-    _row := jsonb_build_object(_dimensions::TEXT, _values);
+    _row := jsonb_build_object(_dimensions::TEXT, _dataitems);
     RAISE NOTICE '%', _row;
-    IF ((_row IS NOT NULL) AND (NOT _values = '{}'::jsonb)) THEN 
+    IF ((_row IS NOT NULL) AND (NOT _dataitems = '{}'::jsonb)) THEN 
       _tbl := _tbl || _row;
     END IF;
   
@@ -212,32 +210,31 @@ BEGIN
   RAISE NOTICE 'Building output...';
 
   DECLARE
-    _key TEXT;
-    _value jsonb;
-    _key2 TEXT;
-    _value2 TEXT;
+    --. rename these
+    _dimensions TEXT;
+    _bins jsonb;
+    _dimension TEXT;
+    _dimension_value TEXT;
   BEGIN    
   
     -- loop over records in our intermediate table
-    FOR _key, _value IN 
-      SELECT * FROM jsonb_each(_tbl)
+    FOR _dimensions, _bins IN SELECT * FROM jsonb_each(_tbl)
     LOOP 
-      -- loop over dimensions for this row, update our output table dimension cells
-      FOR _key2, _value2 IN
-        -- SELECT * FROM jsonb_each_text(REPLACE(_key, '^^', '"')::jsonb)
-        SELECT * FROM jsonb_each_text(_key2::jsonb)
+
+      -- first, loop over dimensions for this row and update our output table dimension cells (ie time)
+      FOR _dimension, _dimension_value IN SELECT * FROM jsonb_each_text(_dimensions::jsonb)
       LOOP
-        IF _key2 = 'time_block' THEN
-          "time" := time_block * time_block_size;
+        IF _dimension = 'time_block' THEN
+          "time" := _dimension_value * time_block_size; --. cast?
         END IF;
       END LOOP;
+
+      -- now assign values to output table row.
+      -- we already have the jsonb object we need, so just return that.
+      "values" := _bins;
     
-      -- now assign values to output table row
-      --. put them in a jsonb object, since we don't know them in advance
-  --    "line" := p_device; -- eg 'Line1'
-  --    "count" := _value->>'count';
-  --    "duration" := _value->>'duration';
-    
+--    "line" := p_device; -- eg 'Line1' --. will we need this also?
+
       -- add the cell values to a row for the returned table
       RETURN NEXT; 
     
