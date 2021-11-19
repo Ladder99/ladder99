@@ -98,7 +98,11 @@ LANGUAGE plpgsql;
 -- get bin values for different dataitem states.
 -- returns table of times rounded to bucket sizes,
 -- with jsonb object containing value bins.
---. eg
+-- eg
+--  jsonb_build_object(
+--   'time_available', '{"path":"availability","when":["AVAILABLE"]}'::jsonb,
+--   'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
+--  )
 
 -- do this if change parameters OR return signature:
 -- DROP FUNCTION IF EXISTS get_metrics(jsonb, text, bigint, bigint);
@@ -127,9 +131,12 @@ DECLARE
   _row jsonb; --. rename
   _dimchanged boolean; --.
   _delta INTERVAL; --.
-  _time_available INTERVAL := 0; --. del
-  _time_production INTERVAL := 0; --. del
+--  _time_available INTERVAL := 0; --. del
+--  _time_production INTERVAL := 0; --. del
   _time_bins jsonb := '{}'; --.
+  _dataitem TEXT; --.
+  _def jsonb; --.
+  _newtime timestamp; --.
 BEGIN
   RAISE NOTICE '---------';
 
@@ -154,50 +161,56 @@ BEGIN
       _dimchanged := TRUE;
       _last_time_block := _time_block;
     END IF;
-  
-    -- check for dataitem changes - merge any into _dataitems jsonb dict
-    --. make these generic - loop over jsonb dicts etc
-    IF _event.path = 'availability' THEN
-      IF _event.value IN ('AVAILABLE') THEN -- state changed to ON
-        -- start timer for availability
-        _start_times := _start_times || jsonb_build_object('available', _event.time);
+--  
+--    -- check for dataitem changes - merge any into _dataitems jsonb dict
+--      --_values := _values || ('{"availability":"' || _event.value || '"}')::jsonb;
+--      -- _time_available := _rec.time - _start_time; -- keep duration up-to-date
+--      -- _values := _values || ('{"duration":"' || _duration::text || '"}')::jsonb;
+--      --. need to write to _values dict on dimension change?
+--      -- _count := _event.value;
+--      -- _duration := _event.time - _start_time; 
+--    ELSEIF _event.path = 'functional_mode' THEN
+--      IF _event.value IN ('PRODUCTION') THEN
+--        _start_times := _start_times || jsonb_build_object('production', _event.time);
+--        RAISE NOTICE '%', _start_times;
+--      ELSE
+--        -- _start_time_active := NULL;
+--        _delta := _event.time - (_start_times->>'production')::timestamp;
+--        RAISE NOTICE '%', _delta;
+--        -- _delta will be NULL the first time through
+--        -- _time_production := _time_production + COALESCE(_delta, 0); -- error
+--        IF _delta IS NOT NULL THEN
+--          _time_production := _time_production + _delta;
+--        END IF;
+--        RAISE NOTICE '_time_production %', _time_production; 
+--      END IF;
+--    END IF;
+--  
+    -- check for dataitem changes - merge any into _bins jsonb dict
+    _def := (p_trackers->>_event.path); -- path is eg 'availability', 'functional_mode'
+    IF _def IS NOT NULL THEN
+      IF _event.value = ANY(_def.when) THEN -- state changed to ON
+        -- start 'timer' for this dataitem
+        _start_times := _start_times || jsonb_build_object(_def.name, _event.time);
       ELSE -- state changed to OFF
-        -- add time difference to clock for this time block
-        _delta := _event.time - (_start_times->>'available')::timestamp;
-        _time_available := _time_available + _delta;
---        _bins := _bins || jsonb_build_object('available', _time_available);
-        -- _start_time_available := NULL;
-      END IF;
-      --_values := _values || ('{"availability":"' || _event.value || '"}')::jsonb;
-      -- _time_available := _rec.time - _start_time; -- keep duration up-to-date
-      -- _values := _values || ('{"duration":"' || _duration::text || '"}')::jsonb;
-      --. need to write to _values dict on dimension change?
-      -- _count := _event.value;
-      -- _duration := _event.time - _start_time; 
-    ELSEIF _event.path = 'functional_mode' THEN
-      IF _event.value IN ('PRODUCTION') THEN
-        _start_times := _start_times || jsonb_build_object('production', _event.time);
-        RAISE NOTICE '%', _start_times;
-      ELSE
-        -- _start_time_active := NULL;
-        _delta := _event.time - (_start_times->>'production')::timestamp;
-        RAISE NOTICE '%', _delta;
-        -- _delta will be NULL the first time through
-        -- _time_production := _time_production + COALESCE(_delta, 0); -- error
+        -- add clock time to time bin for this dataitem
+        _delta := _event.time - (_start_times->>_def.name)::timestamp;
         IF _delta IS NOT NULL THEN
-          _time_production := _time_production + _delta;
+          _newtime := _time_bins->>_def.name + _delta;
+          _time_bins := _time_bins || jsonb_build_object(_def.name, _newtime);
         END IF;
-        RAISE NOTICE '_time_production %', _time_production; 
       END IF;
     END IF;
 
-    -- if dimension changed, start 'timers' for each tracked dataitem
---    IF _dimchanged THEN
---      _start_time := _event.time;
---    END IF;
-
+    -- if dimension changed (ie time), start 'timers' for each tracked dataitem
+    IF _dimchanged THEN
+      FOR _dataitem, _def IN SELECT * FROM jsonb_each(p_trackers) LOOP
+        _start_times := jsonb_build_object(_dataitem, _event.time);
+      END LOOP;
+    END IF;
 
     -- store dimensions (as json string) and dataitems to an intermediate 'table'.
+    -- this overwrites existing rows as bins fill up.
     _row := jsonb_build_object(_dimensions::TEXT, _dataitems);
     RAISE NOTICE '%', _row;
     IF ((_row IS NOT NULL) AND (NOT _dataitems = '{}'::jsonb)) THEN 
@@ -210,11 +223,10 @@ BEGIN
   RAISE NOTICE 'Building output...';
 
   DECLARE
-    --. rename these
-    _dimensions TEXT;
-    _bins jsonb;
-    _dimension TEXT;
-    _dimension_value TEXT;
+    _dimensions TEXT; --.
+    _bins jsonb; --.
+    _dimension TEXT; --.
+    _dimension_value TEXT; --.
   BEGIN    
   
     -- loop over records in our intermediate table
@@ -249,6 +261,8 @@ LANGUAGE plpgsql;
 --.... turn this off before committing .....................
 
 WITH
+  --.. could we have 'availability': '{"name":"available", "when":["AVAILABLE"]}' ?
+  -- then could pick out def based on path
   p_trackers AS (values (jsonb_build_object(
     'time_available', '{"path":"availability","when":["AVAILABLE"]}'::jsonb,
     'time_active', '{"path":"functional_mode","when":["PRODUCTION"]}'::jsonb
