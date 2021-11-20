@@ -40,6 +40,8 @@ CREATE TABLE IF NOT EXISTS nodes (
 -- see https://stackoverflow.com/questions/17807030/how-to-create-index-on-json-field-in-postgres
 CREATE INDEX IF NOT EXISTS nodes_type ON nodes ((props->>'type'));
 CREATE UNIQUE INDEX IF NOT EXISTS nodes_path ON nodes ((props->>'path'));
+-- devices.props->>'name' AS device,
+-- dataitems.props->>'path' AS path,
 
 ---------------------------------------------------------------------
 -- edges
@@ -65,8 +67,10 @@ CREATE TABLE IF NOT EXISTS history (
   value jsonb -- can store numbers, strings, arrays, objects...
 );
 CREATE INDEX IF NOT EXISTS history_node_id ON history (node_id);
+-- CREATE INDEX IF NOT EXISTS history_dataitem_id ON history (dataitem_id);
 
--- make hypertable and add compression/retention schedules
+-- make hypertable and add compression/retention schedules.
+-- this adds an index, history_time_idx, on the time column.
 SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 -- SELECT add_compression_policy('history', INTERVAL '1d', if_not_exists => TRUE);
 -- SELECT add_retention_policy('history', INTERVAL '1 year', if_not_exists => TRUE);
