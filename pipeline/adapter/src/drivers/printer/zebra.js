@@ -183,7 +183,10 @@ export class AdapterDriver {
         try {
           handler(response)
         } catch (error) {
-          setAllUnavailable()
+          // bug - this was causing cycling avail/unavail every 500ms - bad
+          //. work out a better timeout handling response for commands -
+          // ie wait before sending next command
+          // setAllUnavailable()
         }
       }
     })
