@@ -104,6 +104,68 @@ CREATE OR REPLACE FUNCTION jsonb_arr2text_arr(_js jsonb)
   'SELECT ARRAY(SELECT jsonb_array_elements_text(_js))';
 
 
+
+---------------------------------------------------------------------
+-- get_augmented_events
+---------------------------------------------------------------------
+
+-- get a table of events, including artificial events at each time bucket boundary.
+--
+-- do this if change parameters OR return signature
+-- DROP FUNCTION IF EXISTS get_augmented_events(text, bigint, bigint);
+
+CREATE OR REPLACE FUNCTION get_augmented_events (
+  IN p_trackers jsonb, -- jsonb objects with dataitems to track
+  IN p_device TEXT, -- the device name, eg 'Line1'
+  IN p_from bigint, -- start time in milliseconds since 1970-01-01
+  IN p_to bigint -- stop time in milliseconds since 1970-01-01
+)
+RETURNS TABLE ("time" timestamp, "path" TEXT, "value" TEXT)
+AS
+$BODY$
+DECLARE
+--  _path TEXT; -- tracker dataitem path, eg 'availability', 'functional_mode'
+--  _tracker jsonb; -- tracker object - not used
+--  _sql TEXT := '';
+--  _sql_inner TEXT := '';
+--  _union TEXT := '';
+--  _event
+--  e_time timestamp;
+--  e_path TEXT;
+--  e_value TEXT;
+BEGIN
+  RAISE NOTICE '---------';
+
+  FOR "time", "path", "value" IN 
+    SELECT * FROM get_events(p_trackers, p_device, p_from, p_to) 
+  LOOP
+    RAISE NOTICE '%', "time";
+    get_augmented_events."time" := "time";
+    get_augmented_events."path" := "path";
+    get_augmented_events."value" := "value";
+    RETURN NEXT;
+  END LOOP;
+
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
+-- test get_augmented_events
+WITH
+  p_trackers AS (values (jsonb_build_object(
+    'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
+    'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
+  ))),
+  p_day AS (VALUES ('2021-11-05'::date)),
+  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
+  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint))
+SELECT * FROM get_augmented_events((TABLE p_trackers), 'Line1', (TABLE p_from), (TABLE p_to));
+
+
+
+
+
 ---------------------------------------------------------------------
 -- get_metrics
 ---------------------------------------------------------------------
@@ -130,6 +192,12 @@ AS
 $BODY$
 DECLARE
   _time_block_size constant int := 3600; -- size of time blocks (secs) --. pass in estimate
+--  TYPE event_type IS RECORD (
+--    "time" timestamp,
+--    "path" TEXT,
+--    "value" TEXT
+--  );
+--  _events event_type;
   _event record; -- a record from the get_events fn with time, path, value
   _time_block int; -- current record's time block, since 1970-01-01
   _last_time_block int := 0; -- previous record's time block
@@ -153,7 +221,10 @@ BEGIN
   RAISE NOTICE '---------';
 
   -- get table of events and loop over, each with time, path, value.
-  FOR _event IN SELECT * FROM get_events(p_trackers, p_device, p_from, p_to)
+--  FOR _event IN SELECT * FROM get_events(p_trackers, p_device, p_from, p_to)
+--  _events := SELECT * FROM get_events(p_trackers, p_device, p_from, p_to);
+--  FOR _event IN _events
+  FOR _event IN SELECT * FROM get_augmented_events(p_trackers, p_device, p_from, p_to)
   LOOP
     -- get time blocks since 1970-01-01 (hours, 15mins, days, etc)
     -- EPOCH is seconds since 1970-01-01
@@ -311,10 +382,9 @@ LANGUAGE plpgsql;
 
 
 --.... turn this off before committing .....................
-WITH
-  p_day AS (VALUES ('2021-11-04'::date)),
-  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
-  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '5.05 hr') * 1000)::bigint))
-SELECT * FROM get_uptime('Line1', (TABLE p_from), (TABLE p_to));
+--WITH
+--  p_day AS (VALUES ('2021-11-04'::date)),
+--  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
+--  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '5.05 hr') * 1000)::bigint))
+--SELECT * FROM get_uptime('Line1', (TABLE p_from), (TABLE p_to));
 
-  
