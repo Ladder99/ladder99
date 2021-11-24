@@ -136,16 +136,19 @@ DECLARE
 BEGIN
   RAISE NOTICE '---------';
 
-  FOR "time", "path", "value" IN 
+  FOR "time", "path", "value" IN
     SELECT * FROM get_events(p_trackers, p_device, p_from, p_to) 
+      UNION VALUES (to_timestamp(p_to / 1000), '_stop_', 'STOP')
+      ORDER BY "time"
   LOOP
-    RAISE NOTICE '%', "time";
+    -- for each intervening timebucket, AND an artificial end-time,
+    -- loop over timebuckets and carry forward the previous values.
     get_augmented_events."time" := "time";
     get_augmented_events."path" := "path";
     get_augmented_events."value" := "value";
     RETURN NEXT;
   END LOOP;
-
+  RAISE NOTICE 'lkmlkm';
 END;
 $BODY$
 LANGUAGE plpgsql;
