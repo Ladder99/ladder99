@@ -112,8 +112,11 @@ CREATE OR REPLACE FUNCTION timestamp2timeblock(_timestamp timestamp, _interval i
   'SELECT EXTRACT(EPOCH FROM _timestamp) / _interval;';
 CREATE OR REPLACE FUNCTION timeblock2timestamp(_timeblock int, _interval int)
   RETURNS timestamp LANGUAGE sql IMMUTABLE PARALLEL SAFE AS
-  'SELECT to_timestamp(_timeblock * _interval)';
-
+  'SELECT to_timestamp(_timeblock * _interval)::timestamptz at time zone ''UTC''';
+-- test above fns
+--SELECT timestamp2timeblock('now', 3600); -- eg 454943
+--SELECT timestamp2timeblock('epoch', 3600); -- 0
+--SELECT timeblock2timestamp(0, 3600); -- '1970-01-01 00:00:00.000'
 
 
 ---------------------------------------------------------------------
@@ -123,7 +126,7 @@ CREATE OR REPLACE FUNCTION timeblock2timestamp(_timeblock int, _interval int)
 -- get a table of events, including artificial events at each time bucket boundary.
 --
 -- do this if change parameters OR return signature
--- DROP FUNCTION IF EXISTS get_augmented_events(text, bigint, bigint);
+-- DROP FUNCTION IF EXISTS get_augmented_events(jsonb, text, bigint, bigint);
 
 CREATE OR REPLACE FUNCTION get_augmented_events (
   IN p_trackers jsonb, -- jsonb objects with dataitems to track
@@ -135,13 +138,6 @@ RETURNS TABLE ("time" timestamp, "path" TEXT, "value" TEXT)
 AS
 $BODY$
 DECLARE
---  _sql TEXT := '';
---  _sql_inner TEXT := '';
---  _union TEXT := '';
---  _event
---  e_time timestamp;
---  e_path TEXT;
---  e_value TEXT;
   _timeblock_size int := 3600; --. pass in
   _timeblock int;
   _last_timeblock int := 999999999;
@@ -158,22 +154,25 @@ BEGIN
       UNION VALUES (to_timestamp(p_to / 1000), '_stop_', 'STOP') -- add artificial end event 
       ORDER BY "time"
   LOOP
-    -- for each intervening timebucket, AND an artificial end-time,
-    -- loop over timebuckets and carry forward the previous values.
+    -- for each intervening timebucket, AND the artificial end event,
+    -- loop over timeblocks and carry forward the previous values.
     _timeblock := timestamp2timeblock("time", _timeblock_size);
     FOR _i IN _last_timeblock .. (_timeblock - 1) LOOP
       _timestamp := timeblock2timestamp(_i, _timeblock_size);
       FOR _path, _tracker IN SELECT * FROM jsonb_each(p_trackers) LOOP
+        -- emit artificial event record
         get_augmented_events."time" := _timestamp;
         get_augmented_events."path" := _path;
         get_augmented_events."value" := _last_values->>_path;
         RETURN NEXT;
       END LOOP;
     END LOOP;
+    -- emit existing event record
     get_augmented_events."time" := "time";
     get_augmented_events."path" := "path";
     get_augmented_events."value" := "value";
     RETURN NEXT;
+    -- update last values
     _last_values := _last_values || jsonb_build_object("path", "value");
     _last_timeblock := _timeblock;
   END LOOP;
