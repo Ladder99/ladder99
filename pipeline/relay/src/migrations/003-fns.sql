@@ -138,6 +138,9 @@ RETURNS TABLE ("time" timestamp, "path" TEXT, "value" TEXT)
 AS
 $BODY$
 DECLARE
+  _etime timestamp;
+  _epath TEXT;
+  _evalue TEXT;
   _timeblock_size int := 3600; --. pass in
   _timeblock int;
   _last_timeblock int := 999999999;
@@ -146,38 +149,49 @@ DECLARE
   _timestamp timestamp;
   _path TEXT; -- tracker dataitem path, eg 'availability', 'functional_mode'
   _tracker jsonb; -- tracker object - not used
+  _from_timestamp timestamp := to_timestamp(p_from / 1000);
+  _to_timestamp timestamp := to_timestamp(p_to / 1000);
 BEGIN
   RAISE NOTICE '---------';
 
   FOR "time", "path", "value" IN
     SELECT * FROM get_events(p_trackers, p_device, p_from, p_to) 
-      UNION VALUES (to_timestamp(p_to / 1000), '_stop_', 'STOP') -- add artificial end event 
+      UNION VALUES (_from_timestamp, '_start_', 'START') -- add artificial start event 
+      UNION VALUES (_to_timestamp, '_stop_', 'STOP') -- add artificial end event 
       ORDER BY "time"
   LOOP
-    -- for each intervening timebucket, AND the artificial end event,
+    -- save these for later
+    _etime := "time";
+    _epath := "path";
+    _evalue := "value";
+    -- for each intervening timeblocks,
     -- loop over timeblocks and carry forward the previous values.
     _timeblock := timestamp2timeblock("time", _timeblock_size);
-    FOR _i IN _last_timeblock .. (_timeblock - 1) LOOP
-      _timestamp := timeblock2timestamp(_i, _timeblock_size);
-      FOR _path, _tracker IN SELECT * FROM jsonb_each(p_trackers) LOOP
-        -- emit artificial event record
-        get_augmented_events."time" := _timestamp;
-        get_augmented_events."path" := _path;
-        get_augmented_events."value" := _last_values->>_path;
-        RETURN NEXT;
-      END LOOP;
-    END LOOP;
-    -- emit existing event record
-    get_augmented_events."time" := "time";
-    get_augmented_events."path" := "path";
-    get_augmented_events."value" := "value";
-    RETURN NEXT;
+    IF "time" >= _from_timestamp THEN
+      IF NOT _timeblock = _last_timeblock THEN
+--        FOR _i IN _last_timeblock .. (_timeblock - 1) LOOP
+        FOR _i IN (_last_timeblock + 1) .. _timeblock LOOP
+          _timestamp := timeblock2timestamp(_i, _timeblock_size);
+          FOR _path, _tracker IN SELECT * FROM jsonb_each(p_trackers) LOOP
+            -- emit artificial event record
+            get_augmented_events."time" := _timestamp;
+            get_augmented_events."path" := _path;
+            get_augmented_events."value" := _last_values->>_path;
+            RETURN NEXT;
+          END LOOP;
+        END LOOP;
+      END IF;
+      -- emit existing event record
+      get_augmented_events."time" := _etime;
+      get_augmented_events."path" := _epath;
+      get_augmented_events."value" := _evalue;
+      RETURN NEXT;
+    END IF;
     -- update last values
     _last_values := _last_values || jsonb_build_object("path", "value");
     _last_timeblock := _timeblock;
   END LOOP;
   RAISE NOTICE 'done';
-  RAISE NOTICE '%', _last_values;
 END;
 $BODY$
 LANGUAGE plpgsql;
