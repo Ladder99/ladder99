@@ -105,6 +105,17 @@ CREATE OR REPLACE FUNCTION jsonb_arr2text_arr(_js jsonb)
 
 
 
+-- convert timestamp to/from timeblock (intervals since 1970-01-01).
+-- EPOCH gives seconds since 1970-01-01.
+CREATE OR REPLACE FUNCTION timestamp2timeblock(_timestamp timestamp, _interval int)
+  RETURNS int LANGUAGE sql IMMUTABLE PARALLEL SAFE AS
+  'SELECT EXTRACT(EPOCH FROM _timestamp) / _interval;';
+CREATE OR REPLACE FUNCTION timeblock2timestamp(_timeblock int, _interval int)
+  RETURNS timestamp LANGUAGE sql IMMUTABLE PARALLEL SAFE AS
+  'SELECT to_timestamp(_timeblock * _interval)';
+
+
+
 ---------------------------------------------------------------------
 -- get_augmented_events
 ---------------------------------------------------------------------
@@ -124,8 +135,6 @@ RETURNS TABLE ("time" timestamp, "path" TEXT, "value" TEXT)
 AS
 $BODY$
 DECLARE
---  _path TEXT; -- tracker dataitem path, eg 'availability', 'functional_mode'
---  _tracker jsonb; -- tracker object - not used
 --  _sql TEXT := '';
 --  _sql_inner TEXT := '';
 --  _union TEXT := '';
@@ -133,22 +142,43 @@ DECLARE
 --  e_time timestamp;
 --  e_path TEXT;
 --  e_value TEXT;
+  _timeblock_size int := 3600; --. pass in
+  _timeblock int;
+  _last_timeblock int := 999999999;
+  _i int; -- timeblock iterator
+  _last_values jsonb := '{}';
+  _timestamp timestamp;
+  _path TEXT; -- tracker dataitem path, eg 'availability', 'functional_mode'
+  _tracker jsonb; -- tracker object - not used
 BEGIN
   RAISE NOTICE '---------';
 
   FOR "time", "path", "value" IN
     SELECT * FROM get_events(p_trackers, p_device, p_from, p_to) 
-      UNION VALUES (to_timestamp(p_to / 1000), '_stop_', 'STOP')
+      UNION VALUES (to_timestamp(p_to / 1000), '_stop_', 'STOP') -- add artificial end event 
       ORDER BY "time"
   LOOP
     -- for each intervening timebucket, AND an artificial end-time,
     -- loop over timebuckets and carry forward the previous values.
+    _timeblock := timestamp2timeblock("time", _timeblock_size);
+    FOR _i IN _last_timeblock .. (_timeblock - 1) LOOP
+      _timestamp := timeblock2timestamp(_i, _timeblock_size);
+      FOR _path, _tracker IN SELECT * FROM jsonb_each(p_trackers) LOOP
+        get_augmented_events."time" := _timestamp;
+        get_augmented_events."path" := _path;
+        get_augmented_events."value" := _last_values->>_path;
+        RETURN NEXT;
+      END LOOP;
+    END LOOP;
     get_augmented_events."time" := "time";
     get_augmented_events."path" := "path";
     get_augmented_events."value" := "value";
     RETURN NEXT;
+    _last_values := _last_values || jsonb_build_object("path", "value");
+    _last_timeblock := _timeblock;
   END LOOP;
-  RAISE NOTICE 'lkmlkm';
+  RAISE NOTICE 'done';
+  RAISE NOTICE '%', _last_values;
 END;
 $BODY$
 LANGUAGE plpgsql;
@@ -195,12 +225,6 @@ AS
 $BODY$
 DECLARE
   _time_block_size constant int := 3600; -- size of time blocks (secs) --. pass in estimate
---  TYPE event_type IS RECORD (
---    "time" timestamp,
---    "path" TEXT,
---    "value" TEXT
---  );
---  _events event_type;
   _event record; -- a record from the get_events fn with time, path, value
   _time_block int; -- current record's time block, since 1970-01-01
   _last_time_block int := 0; -- previous record's time block
