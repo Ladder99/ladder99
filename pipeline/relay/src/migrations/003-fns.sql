@@ -117,8 +117,8 @@ CREATE OR REPLACE FUNCTION timeblock2timestamp(_timeblock int, _interval int)
 -- test above fns
 --SELECT timestamp2timeblock('now', 3600); -- eg 454943
 --SELECT timestamp2timeblock('epoch', 3600); -- 0
-SELECT timestamp2timeblock('2021-11-05 07:29:02.927', 3600);
-SELECT timestamp2timeblock('2021-11-05 07:30:02.927', 3600);
+--SELECT timestamp2timeblock('2021-11-05 07:29:02.927', 3600);
+--SELECT timestamp2timeblock('2021-11-05 07:30:02.927', 3600);
 --SELECT timeblock2timestamp(0, 3600); -- '1970-01-01 00:00:00.000'
 
 
