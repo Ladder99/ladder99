@@ -107,15 +107,18 @@ CREATE OR REPLACE FUNCTION jsonb_arr2text_arr(_js jsonb)
 
 -- convert timestamp to/from timeblock (intervals since 1970-01-01).
 -- EPOCH gives seconds since 1970-01-01.
+-- note: '/' here gives the integer floor of the division.
 CREATE OR REPLACE FUNCTION timestamp2timeblock(_timestamp timestamp, _interval int)
   RETURNS int LANGUAGE sql IMMUTABLE PARALLEL SAFE AS
-  'SELECT EXTRACT(EPOCH FROM _timestamp) / _interval;';
+  'SELECT trunc(EXTRACT(EPOCH FROM _timestamp) / _interval);';
 CREATE OR REPLACE FUNCTION timeblock2timestamp(_timeblock int, _interval int)
   RETURNS timestamp LANGUAGE sql IMMUTABLE PARALLEL SAFE AS
   'SELECT to_timestamp(_timeblock * _interval)::timestamptz at time zone ''UTC''';
 -- test above fns
 --SELECT timestamp2timeblock('now', 3600); -- eg 454943
 --SELECT timestamp2timeblock('epoch', 3600); -- 0
+SELECT timestamp2timeblock('2021-11-05 07:29:02.927', 3600);
+SELECT timestamp2timeblock('2021-11-05 07:30:02.927', 3600);
 --SELECT timeblock2timestamp(0, 3600); -- '1970-01-01 00:00:00.000'
 
 
@@ -166,10 +169,10 @@ BEGIN
     _evalue := "value";
     -- for each intervening timeblocks,
     -- loop over timeblocks and carry forward the previous values.
-    _timeblock := timestamp2timeblock("time", _timeblock_size);
-    IF "time" >= _from_timestamp THEN
+    _timeblock := timestamp2timeblock(_etime, _timeblock_size);
+    RAISE NOTICE '% % % %', _etime, _epath, _evalue, _timeblock;
+    IF _etime >= _from_timestamp THEN
       IF NOT _timeblock = _last_timeblock THEN
---        FOR _i IN _last_timeblock .. (_timeblock - 1) LOOP
         FOR _i IN (_last_timeblock + 1) .. _timeblock LOOP
           _timestamp := timeblock2timestamp(_i, _timeblock_size);
           FOR _path, _tracker IN SELECT * FROM jsonb_each(p_trackers) LOOP
@@ -188,7 +191,7 @@ BEGIN
       RETURN NEXT;
     END IF;
     -- update last values
-    _last_values := _last_values || jsonb_build_object("path", "value");
+    _last_values := _last_values || jsonb_build_object(_epath, _evalue);
     _last_timeblock := _timeblock;
   END LOOP;
   RAISE NOTICE 'done';
