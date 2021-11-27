@@ -108,6 +108,7 @@ CREATE OR REPLACE FUNCTION jsonb_arr2text_arr(_js jsonb)
 -- convert timestamp to/from timeblock (intervals since 1970-01-01).
 -- EPOCH gives seconds since 1970-01-01.
 -- note: '/' here gives the integer floor of the division.
+-- need trunc otherwise timeblock gets rounded up when time >= 30 mins.
 CREATE OR REPLACE FUNCTION timestamp2timeblock(_timestamp timestamp, _interval int)
   RETURNS int LANGUAGE sql IMMUTABLE PARALLEL SAFE AS
   'SELECT trunc(EXTRACT(EPOCH FROM _timestamp) / _interval);';
@@ -120,6 +121,17 @@ CREATE OR REPLACE FUNCTION timeblock2timestamp(_timeblock int, _interval int)
 --SELECT timestamp2timeblock('2021-11-05 07:29:02.927', 3600);
 --SELECT timestamp2timeblock('2021-11-05 07:30:02.927', 3600);
 --SELECT timeblock2timestamp(0, 3600); -- '1970-01-01 00:00:00.000'
+
+
+-- convert to/from timestamp and milliseconds since 1970-01-01
+--DROP FUNCTION timestamp2ms;
+--DROP FUNCTION ms2timestamp;
+CREATE OR REPLACE FUNCTION timestamp2ms(p_timestamp timestamp)
+  RETURNS bigint LANGUAGE sql IMMUTABLE PARALLEL SAFE AS
+  'SELECT EXTRACT(EPOCH FROM p_timestamp) * 1000;';
+CREATE OR REPLACE FUNCTION ms2timestamp(p_ms bigint)
+  RETURNS timestamp LANGUAGE SQL IMMUTABLE PARALLEL SAFE AS 
+  'SELECT to_timestamp(p_ms / 1000)::timestamptz at time zone ''UTC''';
 
 
 ---------------------------------------------------------------------
@@ -149,11 +161,12 @@ DECLARE
   _last_timeblock int := 999999999;
   _i int; -- timeblock iterator
   _last_values jsonb := '{}';
+--  _last_time timestamp := NULL;
   _timestamp timestamp;
   _path TEXT; -- tracker dataitem path, eg 'availability', 'functional_mode'
   _tracker jsonb; -- tracker object - not used
-  _from_timestamp timestamp := to_timestamp(p_from / 1000);
-  _to_timestamp timestamp := to_timestamp(p_to / 1000);
+  _from_timestamp timestamp := ms2timestamp(p_from);
+  _to_timestamp timestamp := ms2timestamp(p_to);
 BEGIN
   RAISE NOTICE '---------';
 
@@ -175,6 +188,8 @@ BEGIN
       IF NOT _timeblock = _last_timeblock THEN
         FOR _i IN (_last_timeblock + 1) .. _timeblock LOOP
           _timestamp := timeblock2timestamp(_i, _timeblock_size);
+          RAISE NOTICE '% %', _timestamp, _from_timestamp;
+          CONTINUE WHEN _timestamp < _from_timestamp;
           FOR _path, _tracker IN SELECT * FROM jsonb_each(p_trackers) LOOP
             -- emit artificial event record
             get_augmented_events."time" := _timestamp;
@@ -193,6 +208,8 @@ BEGIN
     -- update last values
     _last_values := _last_values || jsonb_build_object(_epath, _evalue);
     _last_timeblock := _timeblock;
+--    _last_time := _etime;
+--    RAISE NOTICE '%', _last_time;
   END LOOP;
   RAISE NOTICE 'done';
 END;
@@ -207,8 +224,10 @@ WITH
     'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
   ))),
   p_day AS (VALUES ('2021-11-05'::date)),
-  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
-  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint))
+--  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
+--  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint))
+  p_from AS (VALUES (timestamp2ms((TABLE p_day)))),
+  p_to AS (VALUES (timestamp2ms((TABLE p_day) + INTERVAL '1 day')))
 SELECT * FROM get_augmented_events((TABLE p_trackers), 'Line1', (TABLE p_from), (TABLE p_to));
 
 
@@ -382,9 +401,12 @@ LANGUAGE plpgsql;
 --    'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
 --    'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
 --  ))),
---  p_day AS (VALUES ('2021-11-04'::date)),
+----  p_day AS (VALUES ('2021-11-04'::date)),
+----  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
+----  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '5.05 hr') * 1000)::bigint))
+--  p_day AS (VALUES ('2021-11-05'::date)),
 --  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
---  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '5.05 hr') * 1000)::bigint))
+--  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint))
 --SELECT * FROM get_metrics((TABLE p_trackers), 'Line1', (TABLE p_from), (TABLE p_to));
 
 
