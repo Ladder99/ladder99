@@ -218,17 +218,17 @@ LANGUAGE plpgsql;
 
 
 -- test get_augmented_events
-WITH
-  p_trackers AS (values (jsonb_build_object(
-    'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
-    'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
-  ))),
-  p_day AS (VALUES ('2021-11-05'::date)),
---  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
---  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint))
-  p_from AS (VALUES (timestamp2ms((TABLE p_day)))),
-  p_to AS (VALUES (timestamp2ms((TABLE p_day) + INTERVAL '1 day')))
-SELECT * FROM get_augmented_events((TABLE p_trackers), 'Line1', (TABLE p_from), (TABLE p_to));
+--WITH
+--  p_trackers AS (values (jsonb_build_object(
+--    'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
+--    'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
+--  ))),
+--  p_day AS (VALUES ('2021-11-05'::date)),
+----  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
+----  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint))
+--  p_from AS (VALUES (timestamp2ms((TABLE p_day)))),
+--  p_to AS (VALUES (timestamp2ms((TABLE p_day) + INTERVAL '1 day')))
+--SELECT * FROM get_augmented_events((TABLE p_trackers), 'Line1', (TABLE p_from), (TABLE p_to));
 
 
 
@@ -283,14 +283,11 @@ BEGIN
   RAISE NOTICE '---------';
 
   -- get table of events and loop over, each with time, path, value.
---  FOR _event IN SELECT * FROM get_events(p_trackers, p_device, p_from, p_to)
---  _events := SELECT * FROM get_events(p_trackers, p_device, p_from, p_to);
---  FOR _event IN _events
+  -- augmented events includes artificial events for start of each time block.
   FOR _event IN SELECT * FROM get_augmented_events(p_trackers, p_device, p_from, p_to)
   LOOP
     -- get time blocks since 1970-01-01 (hours, 15mins, days, etc)
-    -- EPOCH is seconds since 1970-01-01
-    _time_block := EXTRACT(EPOCH FROM _event.time) / _time_block_size; -- converts to int
+    _time_block := timestamp2timeblock(_event.time, _time_block_size);
 
     RAISE NOTICE '%, %', _time_block, _event;
 
@@ -298,12 +295,8 @@ BEGIN
     -- if time block has changed, update the dimensions where we'll be putting the time amounts.
     _dimchanged := FALSE;  
     IF NOT _time_block = _last_time_block THEN
-      --. loop over timeblocks, carrying forward values for each intermediate timeblock,
-      --  setting their values to one full timeblocksize.
-      --. for timeblock = last_time_block to time_block - 1 loop
-    
       _dimensions := _dimensions || jsonb_build_object('time_block', _time_block);
-      --_values := '{}'::jsonb;
+      --_values := '{}'::jsonb; --. ?
       _dimchanged := TRUE;
       _last_time_block := _time_block;
     END IF;
@@ -328,6 +321,13 @@ BEGIN
     -- if dimension changed (ie time), start 'timers' for each tracked dataitem
     IF _dimchanged THEN
       FOR _path, _def IN SELECT * FROM jsonb_each(p_trackers) LOOP
+        _name := _def->>'name'; -- eg 'available', 'active'
+        -- add clock time to time bin for this dataitem
+        _delta := _event.time - (_start_times->>_name)::timestamp;
+        IF _delta IS NOT NULL THEN
+          _newtime := COALESCE((_time_bins->_name)->>0, '0')::INTERVAL + _delta;
+          _time_bins := _time_bins || jsonb_build_object(_name, _newtime);
+        END IF;
         _start_times := jsonb_build_object(_def->>'name', _event.time);
       END LOOP;
     END IF;
@@ -365,7 +365,8 @@ BEGIN
       FOR _dimension, _dimension_value IN SELECT * FROM jsonb_each(_dimensions::jsonb)
       LOOP
         IF _dimension = 'time_block' THEN
-          "time" := to_timestamp(_dimension_value::int * _time_block_size); -- convert seconds to timestamp
+--          "time" := to_timestamp(_dimension_value::int * _time_block_size); -- convert seconds to timestamp
+          "time" := timeblock2timestamp(_dimension_value::int, _time_block_size);
         END IF;
       END LOOP;
 
@@ -396,18 +397,16 @@ LANGUAGE plpgsql;
 -- test fn
 --.... turn this off before committing .....................
 
---WITH
---  p_trackers AS (values (jsonb_build_object(
---    'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
---    'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
---  ))),
-----  p_day AS (VALUES ('2021-11-04'::date)),
-----  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
-----  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '5.05 hr') * 1000)::bigint))
---  p_day AS (VALUES ('2021-11-05'::date)),
---  p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint)),
---  p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) + INTERVAL '1 day') * 1000)::bigint))
---SELECT * FROM get_metrics((TABLE p_trackers), 'Line1', (TABLE p_from), (TABLE p_to));
+WITH
+  p_trackers AS (values (jsonb_build_object(
+    'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
+    'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
+  ))),
+  -- or 2021-11-04 for 5.05h
+  p_day AS (VALUES ('2021-11-05'::date)),
+  p_from AS (VALUES (timestamp2ms((TABLE p_day)))),
+  p_to AS (VALUES (timestamp2ms((TABLE p_day) + INTERVAL '1 day')))
+SELECT * FROM get_metrics((TABLE p_trackers), 'Line1', (TABLE p_from), (TABLE p_to));
 
 
 
