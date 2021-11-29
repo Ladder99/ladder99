@@ -270,7 +270,7 @@ DECLARE
   _newtime INTERVAL; --.
   _name TEXT;
   _on_state_values TEXT[];
-  _currently_on jsonb; -- dict of booleans keyed on name we're tracking - is state ON?
+  _currently_on jsonb := '{}'; -- dict of booleans keyed on name we're tracking - is state ON?
   _is_dataitem_already_on BOOLEAN; -- is the current dataitem already in an ON state?
   _is_event_state_on BOOLEAN; -- is the current event in an ON state?
 BEGIN
@@ -306,7 +306,8 @@ BEGIN
 
       -- if this dataitem is already in an ON state, 
       -- add time delta to time bin for this dataitem.
-      _is_dataitem_already_on := (_currently_on->>_name);
+      _is_dataitem_already_on := (_currently_on->_name);
+      raise notice 'is data item on? % %', _name, _is_dataitem_already_on;
       IF _is_dataitem_already_on THEN
         _time_delta := _event.time - (_start_times->>_name)::timestamp;
         IF _time_delta IS NOT NULL THEN
@@ -317,10 +318,12 @@ BEGIN
 
       -- is the current event an ON state?
       _is_event_state_on := (_event.value = ANY(_on_state_values));
+      RAISE NOTICE 'event state on? %', _is_event_state_on;
       IF _is_event_state_on THEN -- yes, so start timer
-        RAISE NOTICE 'start timer at %', _event.time;
+        RAISE NOTICE 'start timer for % at %', _name, _event.time;
         _start_times := _start_times || jsonb_build_object(_name, _event.time);
       ELSE -- no, so stop timer
+        RAISE NOTICE 'stop timer for %', _name;
         _start_times := _start_times || jsonb_build_object(_name, NULL);
       END IF;
 
@@ -339,12 +342,12 @@ BEGIN
           _newtime := COALESCE((_time_bins->_name)->>0, '0')::INTERVAL + _time_delta;
           _time_bins := _time_bins || jsonb_build_object(_name, _newtime);
         END IF;
-        _start_times := jsonb_build_object(_tracker->>'name', _event.time);
+        _start_times := jsonb_build_object(_name, _event.time);
       END LOOP;
     END IF;
 
-    -- store dimensions (as json string) and dataitems to an intermediate 'table'.
-    -- this overwrites existing rows as bins fill up.
+    -- store dimensions and dataitems to an intermediate 'table'.
+    -- this overwrites the existing _row object as bins fill up.
     -- note: _rows is a dict keyed on _dimensions formatted as a JSON string.
     _row := jsonb_build_object(_dimensions::TEXT, _time_bins);
     IF ((_row IS NOT NULL) AND (NOT _time_bins = '{}'::jsonb)) THEN 
