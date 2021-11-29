@@ -305,7 +305,7 @@ BEGIN
       _on_state_values := jsonb_arr2text_arr(_tracker->'when'); -- eg ['AVAILABLE']
 
       -- if this dataitem is already in an ON state, 
-      -- add clock time to time bin for this dataitem.
+      -- add time delta to time bin for this dataitem.
       _is_dataitem_already_on := (_currently_on->>_name);
       IF _is_dataitem_already_on THEN
         _time_delta := _event.time - (_start_times->>_name)::timestamp;
@@ -315,9 +315,10 @@ BEGIN
         END IF;
       END IF;
 
-      -- is the event in an ON state?
+      -- is the current event an ON state?
       _is_event_state_on := (_event.value = ANY(_on_state_values));
       IF _is_event_state_on THEN -- yes, so start timer
+        RAISE NOTICE 'start timer at %', _event.time;
         _start_times := _start_times || jsonb_build_object(_name, _event.time);
       ELSE -- no, so stop timer
         _start_times := _start_times || jsonb_build_object(_name, NULL);
@@ -344,6 +345,7 @@ BEGIN
 
     -- store dimensions (as json string) and dataitems to an intermediate 'table'.
     -- this overwrites existing rows as bins fill up.
+    -- note: _rows is a dict keyed on _dimensions formatted as a JSON string.
     _row := jsonb_build_object(_dimensions::TEXT, _time_bins);
     IF ((_row IS NOT NULL) AND (NOT _time_bins = '{}'::jsonb)) THEN 
       _rows := _rows || _row;
@@ -351,6 +353,7 @@ BEGIN
   
   END LOOP;
 
+  RAISE NOTICE '------------ _rows -----------';
   RAISE NOTICE '%', _rows;
   RAISE NOTICE 'Building output...';
 
