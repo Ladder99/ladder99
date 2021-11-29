@@ -310,8 +310,10 @@ BEGIN
       raise notice 'is data item on? % %', _name, _is_dataitem_already_on;
       IF _is_dataitem_already_on THEN
         _time_delta := _event.time - (_start_times->>_name)::timestamp;
+        RAISE NOTICE 'time delta %', _time_delta;
         IF _time_delta IS NOT NULL THEN
           _newtime := COALESCE((_time_bins->_name)->>0, '0')::INTERVAL + _time_delta;
+          RAISE NOTICE 'newtime %', _newtime;
           _time_bins := _time_bins || jsonb_build_object(_name, _newtime);
         END IF;
       END IF;
@@ -334,23 +336,30 @@ BEGIN
 
     -- if dimension changed (ie time), start 'timers' for each tracked dataitem
     IF _dimchanged THEN
+      RAISE NOTICE 'dimchanged';
       FOR _path, _tracker IN SELECT * FROM jsonb_each(p_trackers) LOOP
         _name := _tracker->>'name'; -- eg 'available', 'active'
         -- add clock time to time bin for this dataitem
         _time_delta := _event.time - (_start_times->>_name)::timestamp;
+        RAISE NOTICE 'time delta % %', _name, _time_delta;
         IF _time_delta IS NOT NULL THEN
           _newtime := COALESCE((_time_bins->_name)->>0, '0')::INTERVAL + _time_delta;
+          RAISE NOTICE 'new time %', _newtime;
           _time_bins := _time_bins || jsonb_build_object(_name, _newtime);
+        ELSE
+          _time_bins := _time_bins || jsonb_build_object(_name, NULL);
         END IF;
         _start_times := jsonb_build_object(_name, _event.time);
       END LOOP;
+--      _time_bins := '{}';
     END IF;
 
     -- store dimensions and dataitems to an intermediate 'table'.
     -- this overwrites the existing _row object as bins fill up.
     -- note: _rows is a dict keyed on _dimensions formatted as a JSON string.
     _row := jsonb_build_object(_dimensions::TEXT, _time_bins);
-    IF ((_row IS NOT NULL) AND (NOT _time_bins = '{}'::jsonb)) THEN 
+--    IF ((_row IS NOT NULL) AND (NOT _time_bins = '{}'::jsonb)) THEN 
+    IF _row IS NOT NULL THEN 
       _rows := _rows || _row;
     END IF;
   
@@ -380,8 +389,11 @@ BEGIN
       -- _dimension_value is eg 454440
       FOR _dimension, _dimension_value IN SELECT * FROM jsonb_each(_dimensions::jsonb)
       LOOP
-        IF _dimension = 'timeblock' THEN
---          "time" := to_timestamp(_dimension_value::int * _timeblock_size); -- convert seconds to timestamp
+        RAISE NOTICE 'dimension, value % %', _dimension, _dimension_value;
+        RAISE NOTICE '%', pg_typeof(_dimension_value);
+--        IF _dimension = 'timeblock' THEN
+        IF _dimension = 'timeblock' AND pg_typeof(_dimension_value) = to_regtype('integer') THEN
+          RAISE NOTICE 'here';
           "time" := timeblock2timestamp(_dimension_value::int, _timeblock_size);
         END IF;
       END LOOP;
@@ -396,7 +408,9 @@ BEGIN
       FOR _name, _interval IN SELECT * FROM jsonb_each(_bins)
       LOOP
         RAISE NOTICE '% %', _name, _interval;
-        "values" := "values" || jsonb_build_object(_name, date_part('second', _interval));
+--        IF NOT _interval = '' THEN
+          "values" := "values" || jsonb_build_object(_name, date_part('second', _interval));
+--        END IF;
       END LOOP;
       RAISE NOTICE '%', "values";
       
