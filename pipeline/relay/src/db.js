@@ -71,15 +71,24 @@ export class Db {
   //. move src/migrations elsewhere eventually
   async migrate() {
     console.log(`Migrating database structures...`)
-    // const path = `src/migrations/001-init.sql`
-    // const sql = String(fs.readFileSync(path))
-    // await this.client.query(sql)
-    await this.client.query(
-      String(fs.readFileSync(`src/migrations/001-init.sql`))
-    )
-    await this.client.query(
-      String(fs.readFileSync(`src/migrations/002-fns.sql`))
-    )
+    // await this.client.query(
+    //   String(fs.readFileSync(`src/migrations/001-init.sql`))
+    // )
+    // await this.client.query(
+    //   String(fs.readFileSync(`src/migrations/002-fns.sql`))
+    // )
+    await this.readFile(`src/migrations/001-extensions.sql`)
+    await this.readFile(`src/migrations/002-tables.sql`)
+    await this.readFile(`src/migrations/003-views.sql`)
+    await this.readFile(`src/migrations/004-functions.sql`)
+    await this.readFile(`src/migrations/005-get_timeline.sql`)
+    await this.readFile(`src/migrations/006-get_jobs.sql`)
+    //. and more
+  }
+
+  async readFile(filename) {
+    console.log(`Loading ${filename}...`)
+    return await this.client.query(String(fs.readFileSync(filename)))
   }
 
   async query(sql, options) {
