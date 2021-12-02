@@ -20,11 +20,19 @@ The recordings are files like `modules/<module>/recordings/<datetime>.csv`, with
 
 time_now and time_delta are in seconds
 
+To stop recording,
+
+    docker stop record
+
 ## Playback
 
 To play back some device data, eg
 
     sh/start -d ../client-nis/setup play
+
+To stop playback,
+
+    docker stop play
 
 ## License
 
