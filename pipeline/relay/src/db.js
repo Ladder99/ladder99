@@ -71,12 +71,6 @@ export class Db {
   //. move src/migrations elsewhere eventually
   async migrate() {
     console.log(`Migrating database structures...`)
-    // await this.client.query(
-    //   String(fs.readFileSync(`src/migrations/001-init.sql`))
-    // )
-    // await this.client.query(
-    //   String(fs.readFileSync(`src/migrations/002-fns.sql`))
-    // )
     await this.readFile(`src/migrations/001-extensions.sql`)
     await this.readFile(`src/migrations/002-tables.sql`)
     await this.readFile(`src/migrations/003-views.sql`)
