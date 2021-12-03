@@ -100,6 +100,7 @@ export class AdapterDriver {
           let $ = {} // a variable representing payload data - must be let not const
           eval(handler.initialize)
 
+          //. call this iterate_expressions
           if (handler.process === 'iterate_inputs') {
             //
             // define lookup function
@@ -131,7 +132,8 @@ export class AdapterDriver {
 
             // get set of keys for eqns we need to execute based on the payload
             // eg set{'has_current_job', 'job_meta', ...}
-            //. call this dependencies = getDependencies, or references = getReferences?
+            //. call this dependencies = getDependencies?
+            //  or references = getReferences ?
             let equationKeys = getEquationKeys(payload, handler.maps)
 
             // make sure all '=' expressions will be evaluated
