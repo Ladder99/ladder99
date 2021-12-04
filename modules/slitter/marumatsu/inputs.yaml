@@ -23,13 +23,14 @@ connect:
   # subscribe to these topics
   # can use ${deviceId} in topic names
   subscribe:
-    - topic: marumatsu
-    - topic: l99/B01000/evt/ident
-    - topic: l99/B01000/evt/agent
-    - topic: l99/B01000/evt/gateway
-    - topic: l99/B01000/evt/vibration
-    - topic: l99/B01000/evt/current
+    # - topic: marumatsu
     - topic: l99/B01000/evt/io
+    # - topic: l99/B01000/evt/ident
+    # - topic: l99/B01000/evt/agent
+    # - topic: l99/B01000/evt/gateway
+    # - topic: l99/B01000/evt/vibration
+    # - topic: l99/B01000/evt/current
+
   # # publish an empty message to receive the query response
   # publish:
   #   - topic: l99/B01000/cmd/query
@@ -41,22 +42,41 @@ connect:
 
 # define message topic handlers
 handlers:
+  # # ----------------------------------------------------------------------------
+  # # handle marumatsu messages
+  # # ----------------------------------------------------------------------------
+  # marumatsu:
+  #   # make '$' the payload value - 'birth', 'sleep', or 'death'
+  #   initialize: '$ = payload'
+  #   # define lookup function, which returns a value given some js code.
+  #   lookup: '($, js) => eval(js)'
+  #   # define algorithm to process inputs
+  #   #. explain
+  #   process: iterate_message_contents
+  #   # define key-js pairs
+  #   # 'key' is mapped to a cache id, eg 'connection' => 's-connection'.
+  #   # 'js' is some javascript calculation code to determine its value.
+  #   expressions:
+  #     connection: $
+
   # ----------------------------------------------------------------------------
-  # handle marumatsu messages
+  # handle io messages
   # ----------------------------------------------------------------------------
-  marumatsu:
-    # make '$' the payload value - 'birth', 'sleep', or 'death'
-    initialize: '$ = payload;'
+  l99/B01000/evt/io:
+    # make '$' the message payload dictionary and add faultKeys for quick
+    # lookups of faults - payload.faults is a dictionary of faults.
+    initialize: '$ = payload'
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
     #. explain
-    process: iterate_message_contents
+    #. call it iterate-expressions
+    process: iterate-inputs
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
-      status_connection: $.connection
+      part_count: $.a5
 
   # # ----------------------------------------------------------------------------
   # # handle status messages

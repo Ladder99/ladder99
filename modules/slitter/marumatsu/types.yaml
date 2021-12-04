@@ -1,16 +1,15 @@
-# # cache types
+# cache types
 
-# # these types can be used in output expressions
+# these types can be used in output expressions
 
-# types:
-#   ACTUATOR_STATE:
-#     0: INACTIVE
-#     1: ACTIVE
+types:
+  #   ACTUATOR_STATE:
+  #     0: INACTIVE
+  #     1: ACTIVE
 
-#   AVAILABILITY:
-#     online: AVAILABLE
-#     offline: UNAVAILABLE
-
+  AVAILABILITY:
+    online: AVAILABLE
+    offline: UNAVAILABLE
 #   POWER:
 #     online: ON
 #     offline: OFF

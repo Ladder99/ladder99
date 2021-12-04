@@ -30,6 +30,10 @@ outputs:
   - key: avail
     value: types.AVAILABILITY[<status_connection>]
 
+  # partcount_all
+  - key: pcall
+    value: <part_count>
+
   # # functional mode
   # # note:
   # # has_current_job: "=!!$['%Z61.0']" # converts object to true, undefined to false
