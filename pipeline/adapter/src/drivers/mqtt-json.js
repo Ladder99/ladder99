@@ -46,7 +46,7 @@ export class AdapterDriver {
       }
 
       // publish to any topics defined
-      for (const entry of inputs.connect.publish) {
+      for (const entry of inputs.connect.publish || []) {
         const topic = replaceDeviceId(entry.topic)
         console.log(`MQTT publishing to ${topic}`)
         mqtt.publish(topic, entry.message)
