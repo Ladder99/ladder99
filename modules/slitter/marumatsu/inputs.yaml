@@ -79,6 +79,25 @@ handlers:
       part_count: $.a5
 
   # # ----------------------------------------------------------------------------
+  # # handle facemate messages
+  # # ----------------------------------------------------------------------------
+  # l99/facemate/user-faces:
+  #   # make '$' the message payload dictionary and add faultKeys for quick
+  #   # lookups of faults - payload.faults is a dictionary of faults.
+  #   initialize: '$ = payload'
+  #   # define lookup function, which returns a value given some js code.
+  #   lookup: '($, js) => eval(js)'
+  #   # define algorithm to process inputs
+  #   #. explain
+  #   #. call it iterate-expressions
+  #   process: iterate_inputs
+  #   # define key-js pairs
+  #   # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
+  #   # 'js' is some javascript calculation code to determine its value.
+  #   expressions:
+  #     shift_start: $.a5
+
+  # # ----------------------------------------------------------------------------
   # # handle status messages
   # # ----------------------------------------------------------------------------
   # l99/B01000/evt/status:
