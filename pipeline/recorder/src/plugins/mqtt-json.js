@@ -81,7 +81,7 @@ export class RecorderPlugin {
 
           for (const row of rows) {
             const { topic, message, qos, retain, time_delta } = row
-            // console.log(`Publishing topic ${topic}: ${message.slice(0, 40)}`)
+            console.log(`Publishing topic ${topic}: ${message.slice(0, 40)}`)
             //. mosquitto closes with "disconnected due to protocol error" when send qos
             // mqtt.publish(topic, payload, { qos, retain })
             mqtt.publish(topic, message, { retain })
