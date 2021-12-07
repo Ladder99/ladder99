@@ -68,9 +68,9 @@ $BODY$;
 --.... turn off before committing
 
 -- WITH
--- --  p_day AS (VALUES ('2021-12-06 03:42:58.931'::date)),
---   p_day AS (VALUES (now())),
---   p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) - INTERVAL '1 min') * 1000)::bigint)),
+--   p_day AS (VALUES ('2021-12-06 03:42:58.931'::date)),
+-- --  p_day AS (VALUES (now())),
+--   p_from AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day) - INTERVAL '1 day') * 1000)::bigint)),
 --   p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint))
 -- SELECT time, rate
 -- FROM get_rate(
@@ -80,4 +80,5 @@ $BODY$;
 --   (table p_to)
 -- )
 -- ORDER BY time DESC
+-- LIMIT 100
 -- ;
