@@ -2,7 +2,15 @@
 -- get_events
 ---------------------------------------------------------------------
 
--- get a table of events
+-- get a table of events, e.g.
+
+--  time, path, value
+--  <time>, availability, AVAILABLE
+--  <time>, functional_mode, PRODUCTION
+--  <time>, availability, UNAVAILABLE
+
+-- see also get_augmented_events, which inserts artificial events
+-- at time boundaries.
 
 -- specify dataitems to watch with p_trackers parameter, eg
 --  p_trackers AS (values (jsonb_build_object(
@@ -20,12 +28,6 @@
 --   FROM get_timeline('Line1', 'availability', 1636070400000, 1636156800000, false)
 --  ) AS subquery1
 --  ORDER BY "time";
-
--- and returns a table like
---  time, path, value
---  <time>, availability, AVAILABLE
---  <time>, functional_mode, PRODUCTION
---  <time>, availability, UNAVAILABLE
 
 -- do this if change parameters OR return signature
 -- DROP FUNCTION IF EXISTS get_events(text, bigint, bigint);

@@ -2,7 +2,14 @@
 -- get_augmented_events
 ---------------------------------------------------------------------
 
--- get a table of events, including artificial events at each time bucket boundary.
+-- get a table of events, including artificial events at each time bucket boundary, e.g.
+
+--  time, path, value
+--  <time>, availability, AVAILABLE
+--  <time>, functional_mode, PRODUCTION
+--  <time>, availability, AVAILABLE   -- an artificial event carried over from previous value
+--  <time>, functional_mode, PRODUCTION  -- ditto
+--  <time>, availability, UNAVAILABLE
 
 -- do this if change parameters OR return signature
 -- DROP FUNCTION IF EXISTS get_augmented_events(jsonb, text, bigint, bigint);

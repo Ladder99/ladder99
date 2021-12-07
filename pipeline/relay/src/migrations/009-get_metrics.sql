@@ -3,9 +3,11 @@
 -- get_metrics
 ---------------------------------------------------------------------
 -- get bin values for different dataitem states.
+
 -- returns table of time, values - with times rounded to timeblock sizes,
--- and jsonb object containing value bins.
---. eg
+-- and jsonb object containing value bins, e.g. 
+-- time, values
+--. 
 
 -- do this if change parameters OR return signature:
 -- DROP FUNCTION IF EXISTS get_metrics(jsonb, text, bigint, bigint);
