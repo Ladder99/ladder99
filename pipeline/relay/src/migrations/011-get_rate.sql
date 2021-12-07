@@ -2,10 +2,18 @@
 -- get_rate
 ---------------------------------------------------------------------
 
---.
+-- get rate of change in a value, in count/second.
+
+-- returns data like eg
+--  time, rate
+--  <time>, null
+--  <time>, 2.0
+--  <time>, 0.1
+
+-- can multiply rate by 60 to get count/minute, or 3600 for count/hour.
 
 -- use from grafana like
---   SELECT time, rate AS "Production Rate"
+--   SELECT time, rate * 60 AS "Production Rate (count/minute)"
 --   FROM get_rate('Slitter', 'part_count', $__from, $__to);
 
 -- do this if change parameters OR return signature

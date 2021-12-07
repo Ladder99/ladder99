@@ -9,6 +9,9 @@
 -- time, values
 --. 
 
+--. might be able to do this with regular or postgres sql, or timescaledb fns -
+--  investigate.
+
 -- do this if change parameters OR return signature:
 -- DROP FUNCTION IF EXISTS get_metrics(jsonb, text, bigint, bigint);
 

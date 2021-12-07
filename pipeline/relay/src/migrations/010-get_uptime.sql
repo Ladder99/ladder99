@@ -2,6 +2,16 @@
 -- get_uptime
 ---------------------------------------------------------------------
 
+-- get uptime metric
+
+-- this is a wrapper around get_metrics fn - provides list of dataitems to track,
+-- and calculates uptime for each bin, e.g.
+
+--  time, uptime
+--  <time>, 0
+--  <time>, 1.0
+--  <time>, 0.5
+
 -- do this if change parameters OR return signature
 -- DROP FUNCTION IF EXISTS get_uptime(text, bigint, bigint);
 
