@@ -17,7 +17,6 @@ returns table ("time" timestamptz, "uptime" float)
 as
 $body$
 declare
-  -- _timeblock_size int := 3600;
   _timeblock_size text := '1 hour'; --. or '1 day' if interval > 1 day
   _start timestamp := ms2timestamp(p_start);
   _stop timestamp := ms2timestamp(p_stop);
@@ -31,13 +30,13 @@ begin
       where 
         device = p_device
         and path = p_path
-        and history_float.time >= _from_timestamp
-        and history_float.time <= _to_timestamp
+        and history_float.time >= _start
+        and history_float.time <= _stop
       group by small_bin
     )
     select
       -- note: don't need gapfill here as the small timebucket includes all hour buckets.
-      time_bucket('1 hr', small_bin) as time, -- ie big_bin
+      time_bucket(_timeblock_size, small_bin) as time, -- ie big_bin
       (sum(value) / 60.0)::float as uptime --. assumes 60mins avail! fix
     from cte 
     group by time
