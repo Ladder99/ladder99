@@ -17,10 +17,14 @@ returns table ("time" timestamptz, "uptime" float)
 as
 $body$
 declare
-  _timeblock_size text := '1 hour'; --. or '1 day' if interval > 1 day
-  _start timestamp := ms2timestamp(p_start);
-  _stop timestamp := ms2timestamp(p_stop);
+  -- _timeblock_size text := '1 hour'; --. or '1 day' if interval > 1 day
+  _timeblock_size interval;
+  _range interval;
+  _start timestamptz := ms2timestamptz(p_start);
+  _stop timestamptz := ms2timestamptz(p_stop);
 begin
+  _timeblock_size := case when (_range > interval '1 day') then interval '1 day' else interval '1 hour' end;
+  raise notice 'start type %', pg_typeof(_start);
   return query
     with cte as (
       select
@@ -35,22 +39,23 @@ begin
       group by small_bin
     )
     select
-      -- note: don't need gapfill here as the small timebucket includes all hour buckets.
-      time_bucket(_timeblock_size, small_bin) as time, -- ie big_bin
+      -- note: don't need to use time_bucket_gapfill here as the small
+      -- timebucket above includes all hour buckets.
+      time_bucket(_timeblock_size, small_bin) as time, -- aka big_bin
       (sum(value) / 60.0)::float as uptime --. assumes 60mins avail! fix
     from cte 
     group by time
     order by time;
-end; 
+end;
 $body$
 language plpgsql;
 
 
 -- test fn
 
---select * from get_uptime2(
+-- select * from get_uptime2(
 --  'Slitter',
 --  'controller/partOccurrence/part_count-all',
---  timestamp2ms('2021-12-06'),
---  timestamp2ms('2021-12-07')
---)
+--  timestamptz2ms('2021-12-06'),
+--  timestamptz2ms('2021-12-07')
+-- )
