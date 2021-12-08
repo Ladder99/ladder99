@@ -46,15 +46,19 @@ WITH
       LAG(value, 1) OVER (ORDER BY time) AS value0
     FROM history_float
     WHERE
-      device = p_device and
-      path = p_path and
-      time >= (TABLE _from_time) and
-      time <= (TABLE _to_time)
+      device = p_device
+      and path = p_path
+      and time >= (TABLE _from_time)
+      and time <= (TABLE _to_time)
   ), 
   cte2 AS (
     SELECT 
       time,
-      (value1 - value0) / (time1 - time0) AS rate0
+      case when time0 = time1 then
+        0.0::float
+      else
+        (value1 - value0) / (time1 - time0)
+      end AS rate0
     FROM cte1
   )
 SELECT 
