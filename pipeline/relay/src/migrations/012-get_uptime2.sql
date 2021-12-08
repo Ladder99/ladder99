@@ -19,9 +19,9 @@ $body$
 declare
   -- _timeblock_size text := '1 hour'; --. or '1 day' if interval > 1 day
   _timeblock_size interval;
-  _range interval;
   _start timestamptz := ms2timestamptz(p_start);
   _stop timestamptz := ms2timestamptz(p_stop);
+  _range interval := _stop - _start;
 begin
   _timeblock_size := case when (_range > interval '1 day') then interval '1 day' else interval '1 hour' end;
   raise notice 'start type %', pg_typeof(_start);
