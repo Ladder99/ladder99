@@ -62,3 +62,15 @@ CREATE OR REPLACE FUNCTION ms2timestamp(p_ms bigint)
   RETURNS timestamp LANGUAGE SQL IMMUTABLE PARALLEL SAFE AS 
   'SELECT to_timestamp(p_ms / 1000)::timestamptz at time zone ''UTC''';
 
+
+CREATE OR REPLACE FUNCTION timestamptz2ms(p_timestamp timestamptz)
+  RETURNS bigint LANGUAGE sql IMMUTABLE PARALLEL SAFE AS
+  'SELECT EXTRACT(EPOCH FROM p_timestamp) * 1000;';
+
+CREATE OR REPLACE FUNCTION ms2timestamptz(p_ms bigint)
+  RETURNS timestamptz LANGUAGE SQL IMMUTABLE PARALLEL SAFE AS 
+  'SELECT to_timestamp(p_ms / 1000)::timestamptz';
+
+-- select timestamptz2ms(now()); -- 1130pm
+-- select ms2timestamptz(1638941547739); -- 1130pm
+
