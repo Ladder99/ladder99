@@ -23,7 +23,8 @@ declare
   _stop timestamptz := ms2timestamptz(p_stop);
   _range interval := _stop - _start;
 begin
-  _timeblock_size := case when (_range > interval '1 day') then interval '1 day' else interval '1 hour' end;
+  -- _timeblock_size := case when (_range > interval '1 day') then interval '1 day' else interval '1 hour' end;
+  _timeblock_size := interval '1 hour';
   raise notice 'start type %', pg_typeof(_start);
   return query
     with cte as (
@@ -53,9 +54,11 @@ language plpgsql;
 
 -- test fn
 
--- select * from get_uptime2(
+--select * from get_uptime2(
 --  'Slitter',
 --  'controller/partOccurrence/part_count-all',
---  timestamptz2ms('2021-12-06'),
---  timestamptz2ms('2021-12-07')
--- )
+----  timestamptz2ms('2021-12-06'),
+----  timestamptz2ms('2021-12-07')
+--  timestamptz2ms(date_trunc('day', now())),
+--  timestamptz2ms(now())
+--)
