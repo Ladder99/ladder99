@@ -1,0 +1,53 @@
+#!/bin/sh
+
+# run ladder99 pipeline with docker compose.
+
+usage="
+Usage: ./start [OPTIONS] SERVICES
+
+Run the Ladder99 pipeline with a list of services to include.
+
+OPTIONS
+  -c, --console       run the services attached to the console for logging
+  -s, --setup SETUP   run the specified setup, instead of the default '../client'
+
+SERVICES      space-delim list of profiles/services to start
+
+  dashboard   client-specific profile - typically includes adapter, agent, 
+              postgres, grafana, etc
+  portainer   docker management portal, usually avail at port 9000
+  pgadmin     postgres management ui, usually avail at port 5050
+  adapter     
+  agent       
+
+Examples
+
+    ./start dashboard
+    ./start --setup setups/test/micro agent
+    ./start --console play
+
+Stopping
+  use `./stop` to stop all profiles/services
+  use `docker stop SERVICE` or portainer to stop individual services
+"
+
+if [ $# -eq 0 ]; then
+    echo "$usage"
+    exit 1
+fi
+
+cmd=start
+if [ $1 = "-d" ]; then
+    shift
+    cmd=startd
+fi
+
+# get arguments
+setup=$1 # eg 'setups/test/micro'
+shift
+services=$* # eg 'agent play'
+
+# get command and call it
+cmd="sh/pipeline $cmd $setup $services"
+echo $cmd
+bash -c "$cmd"
