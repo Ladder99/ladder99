@@ -65,4 +65,4 @@ services=$* # eg 'agent play'
 # build command and call it
 cmd="sh/pipeline $mode $setup $services"
 echo $cmd
-# bash -c "$cmd"
+bash -c "$cmd"
