@@ -1,1 +1,0 @@
-# Marumatsu corrugated slitter

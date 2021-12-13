@@ -8,7 +8,7 @@
 -- DROP FUNCTION IF EXISTS get_uptime2(text, text, bigint, bigint);
 
 create or replace function get_uptime2 (
-  in p_device text, -- the device name, eg 'Slitter'
+  in p_device text, -- the device name, eg 'Cutter'
   in p_path text, -- path to monitor, eg 'controller/partOccurrence/part_count-all'
   in p_start bigint, -- start time in milliseconds since 1970-01-01
   in p_stop bigint -- stop time in milliseconds since 1970-01-01
@@ -55,7 +55,7 @@ language plpgsql;
 -- test fn
 
 --select * from get_uptime2(
---  'Slitter',
+--  'Cutter',
 --  'controller/partOccurrence/part_count-all',
 ----  timestamptz2ms('2021-12-06'),
 ----  timestamptz2ms('2021-12-07')

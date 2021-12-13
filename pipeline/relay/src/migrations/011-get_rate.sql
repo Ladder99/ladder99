@@ -14,7 +14,7 @@
 
 -- use from grafana like
 --   SELECT time, rate * 60 AS "Production Rate (count/minute)"
---   FROM get_rate('Slitter', 'part_count', $__from, $__to);
+--   FROM get_rate('Cutter', 'part_count', $__from, $__to);
 
 -- do this if change parameters OR return signature
 -- DROP FUNCTION IF EXISTS get_rate(text, text, bigint, bigint);
@@ -78,7 +78,7 @@ $BODY$;
 --   p_to AS (VALUES ((EXTRACT(epoch FROM (TABLE p_day)) * 1000)::bigint))
 -- SELECT time, rate
 -- FROM get_rate(
---   'Slitter', 
+--   'Cutter', 
 --   'controller/partOccurrence/part_count-all', 
 --   (table p_from), 
 --   (table p_to)
