@@ -3,9 +3,9 @@
 # run ladder99 pipeline with docker compose.
 
 usage="
-Usage: sh/stop SETUP SERVICES
+Usage: ./stop [OPTIONS]
 
-Stop Ladder99 setup service(s)
+Stop Ladder99 pipeline
 
 SETUP     setup folder, eg setups/test/micro
 SERVICES  space-delim list of services to stop, eg agent, all
