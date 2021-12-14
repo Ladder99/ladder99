@@ -19,7 +19,7 @@ export class RecorderPlugin {
     // get shutdown handler
     function getShutdown(signal) {
       return err => {
-        console.log()
+        // console.log()
         console.log(`Signal ${signal} received - shutting down...`)
         if (err) console.error(err.stack || err)
         if (fd) fs.closeSync(fd)
@@ -54,7 +54,7 @@ export class RecorderPlugin {
 
     function handleEvent(msg, error) {
       console.log(msg)
-      if (error) console.log(error)
+      if (error) console.log('error', error)
     }
 
     //------------------------------------------------------------------------

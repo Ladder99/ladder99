@@ -95,7 +95,7 @@ async function main() {
           topic,
         })
       } catch (error) {
-        console.log(error)
+        console.log('error', error)
       }
     }
   }
