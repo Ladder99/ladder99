@@ -1,33 +1,40 @@
 
--- returns true if given time is within a set of time windows
+-- returns true if given time is within a set of windows
+
+--drop function is_time_within_windows(timestamptz, jsonb);
+
 create or replace function is_time_within_windows(
   in p_time timestamptz, 
-  in p_time_windows jsonb
+  in p_windows jsonb
 )
 returns boolean
 as
 $body$
 declare
   _window jsonb;
-  base timestamptz;
-  foo timestamptz;
-  bar timestamptz;
+  _base timestamptz;
+  _start timestamptz;
+  _stop timestamptz;
 begin
   -- iterate over time windows, check if time falls within bounds -
   -- if not, return false
 --  foo := '2021-12-13 04:00';
 --  bar := '2021-12-13 06:00';
 --  base := date_trunc('day', p_time);
-  
-  for _window in select * from jsonb_array_elements(p_time_windows)
+
+  -- iterate over windows in time windows array
+  for _window in select * from jsonb_array_elements(p_windows)
   loop
-    base := date_trunc(_window->>'timeframe', p_time); -- eg 'day' gives midnight
+    -- get base time for this window - eg 
+    -- timeframe of 'day' gives midnight
+    -- timeframe of 'week' gives sunday midnight etc.
+    _base := date_trunc(_window->>'timeframe', p_time); -- eg 'day' gives midnight
   --  foo := pok + interval '4h';
   --  bar := pok + interval '16h';
-    foo := base + (_window->>'start')::interval;
-    bar := base + (_window->>'stop')::interval;
-    raise notice '% % %', foo, bar, p_time;
-    if not (p_time between foo and bar) then
+    _start := _base + (_window->>'start')::interval;
+    _stop := _base + (_window->>'stop')::interval;
+    raise notice '% % %', _start, _stop, p_time;
+    if not (p_time between _start and _stop) then
       return false;
     end if;
   end loop;
