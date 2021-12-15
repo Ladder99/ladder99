@@ -1,3 +1,6 @@
+---------------------------------------------------------------------
+-- is_time_within_windows
+---------------------------------------------------------------------
 
 -- returns true if given time is within a set of time windows.
 
@@ -62,8 +65,7 @@ create or replace function get_utilization (
   in p_path text, -- path to monitor, eg 'controller/partOccurrence/part_count-all'
   in p_start bigint, -- start time in milliseconds since 1970-01-01
   in p_stop bigint, -- stop time in milliseconds since 1970-01-01
-  --. and pass in some jsonb with time windows
-  in p_time_windows jsonb = '{}'
+  in p_time_windows jsonb = '{}' -- see is_time_within_windows fn
 )
 returns table ("time" timestamptz, "utilization" float)
 as
