@@ -41,7 +41,7 @@ create or replace function get_utilization (
   in p_start bigint, -- start time in milliseconds since 1970-01-01
   in p_stop bigint, -- stop time in milliseconds since 1970-01-01
   --. and pass in some jsonb with time windows
-  in p_time_windows jsonb := '{}'
+  in p_time_windows jsonb = '{}'
 )
 returns table ("time" timestamptz, "uptime" float)
 as
@@ -93,8 +93,8 @@ language plpgsql;
 select * from get_utilization(
  'Cutter',
  'controller/partOccurrence/part_count-all',
---  timestamptz2ms('2021-12-06'),
---  timestamptz2ms('2021-12-07')
- timestamptz2ms(date_trunc('day', now())), -- midnight
- timestamptz2ms(now()) -- now
+  timestamptz2ms('2021-12-13'),
+  timestamptz2ms('2021-12-14')
+-- timestamptz2ms(date_trunc('day', now())), -- midnight
+-- timestamptz2ms(now()) -- now
 )
