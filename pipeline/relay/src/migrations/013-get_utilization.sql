@@ -3,8 +3,8 @@
 
 -- p_windows is a jsonb array of { timeframe, start, stop }, eg 
 --   [
---     { timeframe: 'day', start: '4h', stop: '16h' }, 
---     { timeframe: 'week', start: '1d', stop: '5d' }
+--     { timeframe: 'day', start: '4h', stop: '16h' }, -- 4a-4p
+--     { timeframe: 'week', start: '0d', stop: '4d' } -- mon-fri
 --   ]
 
 -- drop function is_time_within_windows(timestamptz, jsonb);
@@ -22,25 +22,19 @@ declare
   _start timestamptz;
   _stop timestamptz;
 begin
-  -- iterate over time windows, check if time falls within bounds -
-  -- if not, return false
---  foo := '2021-12-13 04:00';
---  bar := '2021-12-13 06:00';
-
-  -- iterate over windows in time windows array
+  -- iterate over time windows
   for _window in select * from jsonb_array_elements(p_windows)
   loop
     -- get base time for this window -
-    -- eg timeframe of 'day' gives midnight,
-    -- timeframe of 'week' gives sunday midnight, etc.
+    -- eg timeframe of 'day' gives midnight of p_time's day,
+    -- timeframe of 'week' gives monday midnight, etc.
     _base := date_trunc(_window->>'timeframe', p_time);
 
     -- get start and stop times for this window - eg 4am-4pm of p_time's day 
     _start := _base + (_window->>'start')::interval; -- eg _base + interval '4h'
     _stop := _base + (_window->>'stop')::interval;
-  
-    -- raise notice '% % %', _start, _stop, p_time;
-    
+
+    -- if p_time doesn't fall within bounds, return false
     if not (p_time between _start and _stop) then
       return false;
     end if;
@@ -51,8 +45,6 @@ begin
 end;
 $body$
 language plpgsql;
-
-
 
 
 
@@ -126,7 +118,7 @@ select * from get_utilization(
   timestamptz2ms('2021-12-13'),
   timestamptz2ms('2021-12-14'),
   '[
-    {"timeframe": "day", "start": "4h", "stop":"6h"},
-    {"timeframe": "week", "start": "0d", "stop":"4d"}
+    {"timeframe": "day", "start": "4h", "stop": "6h"},
+    {"timeframe": "week", "start": "0d", "stop": "4d"}
   ]'::jsonb
 )
