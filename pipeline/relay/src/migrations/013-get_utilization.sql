@@ -77,6 +77,7 @@ declare
   --. choose _binsize based on _range size
   -- _binsize := case when (_range > interval '1 day') then interval '1 day' else interval '1 hour' end;
   _binsize interval := interval '1 hour';
+  _factor float := 1.0 / 60.0; --. assumes 60mins avail per bin
 begin
   return query
     -- this cte query gives 1 for each minute where there's a partcount event,
@@ -96,7 +97,7 @@ begin
     )
     select
       time_bucket_gapfill(_binsize, small_bin, _start, _stop) as time,
-      (sum(value) / 60.0)::float as utilization --. assumes 60mins avail! fix
+      (sum(value) * _factor)::float as utilization
     from cte
     where is_time_within_windows(small_bin, p_time_windows)
     group by time
@@ -112,8 +113,8 @@ select time, utilization from get_utilization(
  'Cutter',
  'controller/partOccurrence/part_count-all',
   timestamptz2ms('2021-12-13'),
---  timestamptz2ms('2021-12-14'),
-  timestamptz2ms(now()),
+  timestamptz2ms('2021-12-15'),
+--  timestamptz2ms(now()),
   '[
     {"timeframe": "day", "start": "4h", "stop": "16h"},
     {"timeframe": "week", "start": "0d", "stop": "4d"} 
