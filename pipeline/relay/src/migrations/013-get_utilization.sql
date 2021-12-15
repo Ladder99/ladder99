@@ -80,7 +80,7 @@ declare
 begin
   return query
     -- this cte query gives 1 for each minute where there's a partcount event,
-    -- else 0. so it uses any increase in partcount to tell if the machine was 
+    -- else 0. so it uses any change in partcount to tell if the machine was 
     -- on during each minute.
     with cte as (
       select
@@ -94,12 +94,8 @@ begin
         and history_float.time <= _stop
       group by small_bin
     )
-    --. only want to include the small timebins that are within the time windows.
-    -- how do that?
     select
-      -- note: don't need to use time_bucket_gapfill here as the small
-      -- timebucket above includes all hour buckets.
-      time_bucket(_binsize, small_bin) as time,
+      time_bucket_gapfill(_binsize, small_bin, _start, _stop) as time,
       (sum(value) / 60.0)::float as utilization --. assumes 60mins avail! fix
     from cte
     where is_time_within_windows(small_bin, p_time_windows)
