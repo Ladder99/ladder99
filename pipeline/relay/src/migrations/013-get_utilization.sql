@@ -8,9 +8,9 @@ returns boolean
 as
 $body$
 declare
+  base timestamptz;
   foo timestamptz;
   bar timestamptz;
-  pok timestamptz;
 begin
   -- return case when max(p_value)>0 then 1 else 0 end;
   -- return case
@@ -25,14 +25,14 @@ begin
   --  if not, return false
 --  foo := '2021-12-13 04:00';
 --  bar := '2021-12-13 06:00';
-  pok := date_trunc('day', p_time);
+--  base := date_trunc('day', p_time);
+  base := date_trunc(p_time_windows->>'timeframe', p_time);
 --  foo := pok + interval '4h';
 --  bar := pok + interval '16h';
-  foo := pok + (p_time_windows->>'start')::interval;
-  bar := pok + (p_time_windows->>'stop')::interval;
+  foo := base + (p_time_windows->>'start')::interval;
+  bar := base + (p_time_windows->>'stop')::interval;
   raise notice '% % %', foo, bar, p_time;
   if not (p_time between foo and bar) then
-  --if not (p_time >= foo and p_time <= bar) then
     return false;
   end if;
   -- passed all tests, so return true
@@ -116,5 +116,5 @@ select * from get_utilization(
   timestamptz2ms('2021-12-14'),
 -- timestamptz2ms(date_trunc('day', now())), -- midnight
 -- timestamptz2ms(now()), -- now
-  '{"start": "4h", "stop":"6h"}'::jsonb
+  '{"timeframe": "day", "start": "4h", "stop":"6h"}'::jsonb
 )
