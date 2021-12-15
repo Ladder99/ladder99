@@ -26,8 +26,10 @@ begin
 --  foo := '2021-12-13 04:00';
 --  bar := '2021-12-13 06:00';
   pok := date_trunc('day', p_time);
-  foo := pok + interval '4h';
-  bar := pok + interval '16h';
+--  foo := pok + interval '4h';
+--  bar := pok + interval '16h';
+  foo := pok + (p_time_windows->>'start')::interval;
+  bar := pok + (p_time_windows->>'stop')::interval;
   raise notice '% % %', foo, bar, p_time;
   if not (p_time between foo and bar) then
   --if not (p_time >= foo and p_time <= bar) then
@@ -50,7 +52,7 @@ language plpgsql;
 -- get percent of time a device is active vs available
 
 -- do this if change parameters OR return signature
--- DROP FUNCTION IF EXISTS get_utilization(text, text, bigint, bigint);
+-- drop function if exists get_utilization(text, text, bigint, bigint, jsonb);
 
 create or replace function get_utilization (
   in p_device text, -- the device name, eg 'Cutter'
@@ -60,7 +62,7 @@ create or replace function get_utilization (
   --. and pass in some jsonb with time windows
   in p_time_windows jsonb = '{}'
 )
-returns table ("time" timestamptz, "uptime" float)
+returns table ("time" timestamptz, "utilization" float)
 as
 $body$
 declare
@@ -114,5 +116,5 @@ select * from get_utilization(
   timestamptz2ms('2021-12-14'),
 -- timestamptz2ms(date_trunc('day', now())), -- midnight
 -- timestamptz2ms(now()), -- now
-  '[{"start": "4h", "stop":"16h"}]'
+  '{"start": "4h", "stop":"6h"}'::jsonb
 )
