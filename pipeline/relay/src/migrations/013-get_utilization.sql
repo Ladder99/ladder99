@@ -7,8 +7,10 @@ create or replace function is_time_within_windows(
 returns boolean
 as
 $body$
+declare
+  foo timestamptz;
+  bar timestamptz;
 begin
-  return true;
   -- return case when max(p_value)>0 then 1 else 0 end;
   -- return case
   --   when <inwindow(time)> -- how do?
@@ -18,6 +20,17 @@ begin
   --     end
   --   else 0
   -- end;
+  --. iterate over time windows, check if time falls within bounds
+  --  if not, return false
+  foo := '2021-12-13 04:00';
+  bar := '2021-12-13 06:00';
+  raise notice '% % %', foo, bar, p_time;
+  if not (p_time between foo and bar) then
+  --if not (p_time >= foo and p_time <= bar) then
+    return false;
+  end if;
+  -- passed all tests, so return true
+  return true;
 end;
 $body$
 language plpgsql;
@@ -78,9 +91,9 @@ begin
       -- note: don't need to use time_bucket_gapfill here as the small
       -- timebucket above includes all hour buckets.
       time_bucket(_timeblock_size, small_bin) as time, -- aka big_bin
-      (sum(value) / 60.0)::float as uptime --. assumes 60mins avail! fix
+      (sum(value) / 60.0)::float as utilization --. assumes 60mins avail! fix
     from cte
-    where is_time_within_windows(time, p_time_windows)
+    where is_time_within_windows(small_bin, p_time_windows)
     group by time
     order by time;
 end;
@@ -94,7 +107,8 @@ select * from get_utilization(
  'Cutter',
  'controller/partOccurrence/part_count-all',
   timestamptz2ms('2021-12-13'),
-  timestamptz2ms('2021-12-14')
+  timestamptz2ms('2021-12-14'),
 -- timestamptz2ms(date_trunc('day', now())), -- midnight
--- timestamptz2ms(now()) -- now
+-- timestamptz2ms(now()), -- now
+  '[{"start": "4h", "stop":"16h"}]'
 )
