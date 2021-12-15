@@ -31,7 +31,7 @@ begin
     -- get base time for this window -
     -- eg timeframe of 'day' gives midnight of p_time's day,
     -- timeframe of 'week' gives monday midnight, etc.
-    --_base := date_trunc(_window->>'timeframe', p_time at time zone 'America/Chicago');
+    -- _base := date_trunc(_window->>'timeframe', p_time at time zone 'America/Chicago');
     -- _base := date_trunc(_window->>'timeframe', p_time) at time zone 'America/Chicago';
     _base := date_trunc(_window->>'timeframe', p_time);
 
@@ -98,7 +98,7 @@ begin
       group by small_bin
     )
     select
-      time_bucket_gapfill(_binsize, small_bin, _start, _stop) as time,
+      time_bucket_gapfill(_binsize, small_bin::timestamp, _start, _stop) as time,
       (sum(value) * _factor)::float as utilization
     from cte
     where is_time_within_windows(small_bin, p_time_windows)
@@ -110,18 +110,18 @@ language plpgsql;
 
 
 -- test fn
-
-set timezone to 'America/Chicago';
---set timezone to 'UTC';
-select time, utilization from get_utilization(
- 'Cutter',
- 'controller/partOccurrence/part_count-all',
-  timestamptz2ms('2021-12-13 0:00:00'),
-  timestamptz2ms('2021-12-13 17:12:00'),
+--
+--set timezone to 'America/Chicago';
+----set timezone to 'UTC';
+--select time, utilization from get_utilization(
+-- 'Cutter',
+-- 'controller/partOccurrence/part_count-all',
+--  timestamptz2ms('2021-12-13 0:00:00'),
+----  timestamptz2ms('2021-12-13 17:12:00'),
 --  timestamptz2ms('2021-12-15 05:43:00'),
---  timestamptz2ms(now()),
-  '[
-    {"timeframe": "day", "start": "4h", "stop": "16h"},
-    {"timeframe": "week", "start": "0d", "stop": "4d"} 
-  ]'::jsonb
-)
+----  timestamptz2ms(now()),
+--  '[
+--    {"timeframe": "day", "start": "4h", "stop": "16h"},
+--    {"timeframe": "week", "start": "0d", "stop": "4d"} 
+--  ]'::jsonb
+--)
