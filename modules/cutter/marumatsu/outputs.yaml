@@ -27,7 +27,7 @@ outputs:
   # device
   # ------------------------------------------------------------------
 
-  - key: avail
+  - key: ctl-avail
     value: types.AVAILABILITY[<connection>]
 
   # partcount_all
