@@ -8,33 +8,30 @@ returns boolean
 as
 $body$
 declare
+  _window jsonb;
   base timestamptz;
   foo timestamptz;
   bar timestamptz;
 begin
-  -- return case when max(p_value)>0 then 1 else 0 end;
-  -- return case
-  --   when <inwindow(time)> -- how do?
-  --     case 
-  --       when max(value) > 0 then 1
-  --       else 0
-  --     end
-  --   else 0
-  -- end;
-  --. iterate over time windows, check if time falls within bounds
-  --  if not, return false
+  -- iterate over time windows, check if time falls within bounds -
+  -- if not, return false
 --  foo := '2021-12-13 04:00';
 --  bar := '2021-12-13 06:00';
 --  base := date_trunc('day', p_time);
-  base := date_trunc(p_time_windows->>'timeframe', p_time);
---  foo := pok + interval '4h';
---  bar := pok + interval '16h';
-  foo := base + (p_time_windows->>'start')::interval;
-  bar := base + (p_time_windows->>'stop')::interval;
-  raise notice '% % %', foo, bar, p_time;
-  if not (p_time between foo and bar) then
-    return false;
-  end if;
+  
+  for _window in select * from jsonb_array_elements(p_time_windows)
+  loop
+    base := date_trunc(_window->>'timeframe', p_time); -- eg 'day' gives midnight
+  --  foo := pok + interval '4h';
+  --  bar := pok + interval '16h';
+    foo := base + (_window->>'start')::interval;
+    bar := base + (_window->>'stop')::interval;
+    raise notice '% % %', foo, bar, p_time;
+    if not (p_time between foo and bar) then
+      return false;
+    end if;
+  end loop;
+
   -- passed all tests, so return true
   return true;
 end;
@@ -116,5 +113,5 @@ select * from get_utilization(
   timestamptz2ms('2021-12-14'),
 -- timestamptz2ms(date_trunc('day', now())), -- midnight
 -- timestamptz2ms(now()), -- now
-  '{"timeframe": "day", "start": "4h", "stop":"6h"}'::jsonb
+  '[{"timeframe": "day", "start": "4h", "stop":"6h"}]'::jsonb
 )
