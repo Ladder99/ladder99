@@ -65,7 +65,7 @@ create or replace function get_utilization (
   in p_path text, -- path to monitor, eg 'controller/partOccurrence/part_count-all'
   in p_start bigint, -- start time in milliseconds since 1970-01-01
   in p_stop bigint, -- stop time in milliseconds since 1970-01-01
-  in p_time_windows jsonb = '{}' -- see is_time_within_windows fn
+  in p_time_windows jsonb = '[]' -- see is_time_within_windows fn
 )
 returns table ("time" timestamptz, "utilization" float)
 as
@@ -74,11 +74,9 @@ declare
   _start timestamptz := ms2timestamptz(p_start);
   _stop timestamptz := ms2timestamptz(p_stop);
   _range interval := _stop - _start;
-  --. rename to _binsize
   --. choose _binsize based on _range size
-  -- _timeblock_size text := '1 hour'; --. or '1 day' if interval > 1 day
-  -- _timeblock_size := case when (_range > interval '1 day') then interval '1 day' else interval '1 hour' end;
-  _timeblock_size interval := interval '1 hour';
+  -- _binsize := case when (_range > interval '1 day') then interval '1 day' else interval '1 hour' end;
+  _binsize interval := interval '1 hour';
 begin
   return query
     -- this cte query gives 1 for each minute where there's a partcount event,
@@ -101,7 +99,7 @@ begin
     select
       -- note: don't need to use time_bucket_gapfill here as the small
       -- timebucket above includes all hour buckets.
-      time_bucket(_timeblock_size, small_bin) as time, -- aka big_bin
+      time_bucket(_binsize, small_bin) as time,
       (sum(value) / 60.0)::float as utilization --. assumes 60mins avail! fix
     from cte
     where is_time_within_windows(small_bin, p_time_windows)
@@ -114,13 +112,14 @@ language plpgsql;
 
 -- test fn
 
-select * from get_utilization(
+select time, utilization from get_utilization(
  'Cutter',
  'controller/partOccurrence/part_count-all',
   timestamptz2ms('2021-12-13'),
-  timestamptz2ms('2021-12-14'),
+--  timestamptz2ms('2021-12-14'),
+  timestamptz2ms(now()),
   '[
-    {"timeframe": "day", "start": "4h", "stop": "6h"},
+    {"timeframe": "day", "start": "4h", "stop": "16h"},
     {"timeframe": "week", "start": "0d", "stop": "4d"} 
   ]'::jsonb
 )
