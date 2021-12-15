@@ -32,9 +32,9 @@ begin
 
     -- get start and stop times for this window - eg 4am-4pm of p_time's day 
     _start := _base + (_window->>'start')::interval; -- eg _base + interval '4h'
-    _stop := _base + (_window->>'stop')::interval;
+    _stop := least(now(), _base + (_window->>'stop')::interval); -- use now if not to the stop time
 
-    -- if p_time doesn't fall within bounds, return false
+    -- if time not within bounds, return false
     if not (p_time between _start and _stop) then
       return false;
     end if;
@@ -119,6 +119,6 @@ select * from get_utilization(
   timestamptz2ms('2021-12-14'),
   '[
     {"timeframe": "day", "start": "4h", "stop": "6h"},
-    {"timeframe": "week", "start": "0d", "stop": "4d"}
+    {"timeframe": "week", "start": "0d", "stop": "4d"} 
   ]'::jsonb
 )
