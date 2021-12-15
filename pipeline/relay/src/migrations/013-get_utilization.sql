@@ -1,7 +1,13 @@
 
--- returns true if given time is within a set of windows
+-- returns true if given time is within a set of time windows.
 
---drop function is_time_within_windows(timestamptz, jsonb);
+-- p_windows is a jsonb array of { timeframe, start, stop }, eg 
+--   [
+--     { timeframe: 'day', start: '4h', stop: '16h' }, 
+--     { timeframe: 'week', start: '1d', stop: '5d' }
+--   ]
+
+-- drop function is_time_within_windows(timestamptz, jsonb);
 
 create or replace function is_time_within_windows(
   in p_time timestamptz, 
@@ -20,20 +26,21 @@ begin
   -- if not, return false
 --  foo := '2021-12-13 04:00';
 --  bar := '2021-12-13 06:00';
---  base := date_trunc('day', p_time);
 
   -- iterate over windows in time windows array
   for _window in select * from jsonb_array_elements(p_windows)
   loop
-    -- get base time for this window - eg 
-    -- timeframe of 'day' gives midnight
-    -- timeframe of 'week' gives sunday midnight etc.
-    _base := date_trunc(_window->>'timeframe', p_time); -- eg 'day' gives midnight
-  --  foo := pok + interval '4h';
-  --  bar := pok + interval '16h';
-    _start := _base + (_window->>'start')::interval;
+    -- get base time for this window -
+    -- eg timeframe of 'day' gives midnight,
+    -- timeframe of 'week' gives sunday midnight, etc.
+    _base := date_trunc(_window->>'timeframe', p_time);
+
+    -- get start and stop times for this window - eg 4am-4pm of p_time's day 
+    _start := _base + (_window->>'start')::interval; -- eg _base + interval '4h'
     _stop := _base + (_window->>'stop')::interval;
-    raise notice '% % %', _start, _stop, p_time;
+  
+    -- raise notice '% % %', _start, _stop, p_time;
+    
     if not (p_time between _start and _stop) then
       return false;
     end if;
@@ -118,7 +125,8 @@ select * from get_utilization(
  'controller/partOccurrence/part_count-all',
   timestamptz2ms('2021-12-13'),
   timestamptz2ms('2021-12-14'),
--- timestamptz2ms(date_trunc('day', now())), -- midnight
--- timestamptz2ms(now()), -- now
-  '[{"timeframe": "day", "start": "4h", "stop":"6h"}]'::jsonb
+  '[
+    {"timeframe": "day", "start": "4h", "stop":"6h"},
+    {"timeframe": "week", "start": "0d", "stop":"4d"}
+  ]'::jsonb
 )
