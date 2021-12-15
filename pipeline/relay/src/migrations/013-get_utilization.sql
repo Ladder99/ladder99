@@ -10,6 +10,7 @@ $body$
 declare
   foo timestamptz;
   bar timestamptz;
+  pok timestamptz;
 begin
   -- return case when max(p_value)>0 then 1 else 0 end;
   -- return case
@@ -22,8 +23,11 @@ begin
   -- end;
   --. iterate over time windows, check if time falls within bounds
   --  if not, return false
-  foo := '2021-12-13 04:00';
-  bar := '2021-12-13 06:00';
+--  foo := '2021-12-13 04:00';
+--  bar := '2021-12-13 06:00';
+  pok := date_trunc('day', p_time);
+  foo := pok + interval '4h';
+  bar := pok + interval '16h';
   raise notice '% % %', foo, bar, p_time;
   if not (p_time between foo and bar) then
   --if not (p_time >= foo and p_time <= bar) then
