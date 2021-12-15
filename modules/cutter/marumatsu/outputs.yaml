@@ -28,7 +28,7 @@ outputs:
   # ------------------------------------------------------------------
 
   - key: avail
-    value: types.AVAILABILITY[<status_connection>]
+    value: types.AVAILABILITY[<connection>]
 
   # partcount_all
   - key: pcall

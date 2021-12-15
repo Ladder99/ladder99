@@ -74,8 +74,15 @@ export class AdapterDriver {
 
       // const receivedTime = new Date()
 
-      // unpack the mqtt json payload, assuming it's a JSON string.
-      const payload = JSON.parse(message)
+      // unpack the mqtt json payload, assuming it's a JSON string -
+      // if not, just pass as string to handler.
+      let payload
+      try {
+        payload = JSON.parse(message)
+      } catch (error) {
+        console.log(error)
+        payload = message
+      }
 
       // iterate over message handlers - array of [topic, handler]
       // eg [['l99/ccs/evt/query', { unsubscribe, initialize, definitions, inputs, ... }], ...]
@@ -127,9 +134,7 @@ export class AdapterDriver {
                 cache.set(cacheId, value) // save to the cache - may send shdr to agent
               }
             }
-          } else {
-            // ie process = 'iterate_message_contents'
-
+          } else if (handler.process === 'iterate_message_contents') {
             // get set of keys for eqns we need to execute based on the payload
             // eg set{'has_current_job', 'job_meta', ...}
             //. call this dependencies = getDependencies?
@@ -156,6 +161,20 @@ export class AdapterDriver {
               equationKeys = getEquationKeys2(equationKeys2, handler.maps)
               depth += 1
             } while (equationKeys.size > 0 && depth < 6) // prevent endless loops
+          } else {
+            // ie handler.process = 'text_message'
+
+            let equationKeys = new Set(['connection'])
+
+            for (let equationKey of equationKeys) {
+              const expression = handler.augmentedExpressions[equationKey]
+              const value = expression.fn(cache, $, keyvalues) // run the expression fn
+              if (value !== undefined) {
+                const cacheId = deviceId + '-' + equationKey // eg 'pa1-fault_count'
+                cache.set(cacheId, value) // save to the cache - may send shdr to tcp
+                // equationKeys2.add(cacheId)
+              }
+            }
           }
 
           // subscribe to any topics

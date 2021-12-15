@@ -8,8 +8,9 @@ types:
   #     1: ACTIVE
 
   AVAILABILITY:
-    online: AVAILABLE
-    offline: UNAVAILABLE
+    birth: AVAILABLE
+    death: UNAVAILABLE
+    sleep: UNAVAILABLE
 #   POWER:
 #     online: ON
 #     offline: OFF
