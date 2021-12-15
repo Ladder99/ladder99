@@ -75,9 +75,11 @@ declare
   _stop timestamptz := ms2timestamptz(p_stop);
   _range interval := _stop - _start;
   --. choose _binsize based on _range size
-  -- _binsize := case when (_range > interval '1 day') then interval '1 day' else interval '1 hour' end;
-  _binsize interval := interval '1 hour';
-  _factor float := 1.0 / 60.0; --. assumes 60mins avail per bin
+  _binsize interval := case when (_range > interval '1 day') then interval '1 day' else interval '1 hour' end;
+  -- _binsize interval := interval '1 hour';
+  -- _factor float := 1.0 / 60.0; --. assumes 60mins avail per bin
+  _binminutes float := extract(epoch from _binsize) / 60.0; -- epoch is seconds - divide by 60 to get minutes
+  _factor float := 1.0 / _binminutes;
 begin
   return query
     -- this cte query gives 1 for each minute where there's a partcount event,
@@ -109,11 +111,13 @@ language plpgsql;
 
 -- test fn
 
+--set timezone to 'America/Chicago';
+--set timezone to 'UTC';
 select time, utilization from get_utilization(
  'Cutter',
  'controller/partOccurrence/part_count-all',
   timestamptz2ms('2021-12-13'),
-  timestamptz2ms('2021-12-15'),
+  timestamptz2ms('2021-12-15 05:43:00'),
 --  timestamptz2ms(now()),
   '[
     {"timeframe": "day", "start": "4h", "stop": "16h"},
