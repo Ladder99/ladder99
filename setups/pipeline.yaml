@@ -122,9 +122,9 @@ services:
       - ../$SETUP/volumes/mosquitto/conf:/mosquitto/conf # has mosquitto.conf
       - ../$SETUP/volumes/mosquitto/data:/mosquitto/data
       - ../$SETUP/volumes/mosquitto/log:/mosquitto/log
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
+    # environment:
+    #   - PUID=${PUID}
+    #   - PGID=${PGID}
     restart: always
     networks:
       - ladder99
