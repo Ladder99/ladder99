@@ -119,7 +119,7 @@ services:
       - 1883:1883
     volumes:
       # - ../$SETUP/volumes/mosquitto:/mosquitto # has config/mosquitto.conf
-      - ../$SETUP/volumes/mosquitto/conf:/mosquitto/conf # has mosquitto.conf
+      - ../$SETUP/volumes/mosquitto/config:/mosquitto/config # has mosquitto.conf
       - ../$SETUP/volumes/mosquitto/data:/mosquitto/data
       - ../$SETUP/volumes/mosquitto/log:/mosquitto/log
     # environment:
