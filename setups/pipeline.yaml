@@ -16,7 +16,6 @@ services:
     # privileged: true
     profiles:
       - all
-      - adapter
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml etc
       - ../modules:/data/modules # has module yamls
@@ -33,7 +32,6 @@ services:
     profiles:
       - all
       - html
-      - agent
     image: ladder99/agent:latest
     working_dir: /data/agent
     command: agent debug agent.cfg
@@ -73,7 +71,6 @@ services:
     profiles:
       - all
       - dashboard
-      - grafana
     ports:
       - $GRAFANA_PORT:3000/tcp
     environment:
@@ -108,13 +105,27 @@ services:
       options:
         max-size: '20m'
 
+  # hue - a sql database manager
+  hue:
+    container_name: hue
+    image: gethue/hue:latest
+    profiles:
+      - all
+    ports:
+      - 8888:8888
+    restart: always
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '20m'
+
   # mosquitto - get mqtt data from devices and publish to mtconnect adapter
   mosquitto:
     container_name: mosquitto
     image: eclipse-mosquitto
     profiles:
       - all
-      - mosquitto
     ports:
       - 1883:1883
     volumes:
@@ -139,7 +150,6 @@ services:
     profiles:
       - all
       - dashboard
-      - pgadmin
     ports:
       - '5050:5050/tcp'
     restart: always
@@ -152,8 +162,6 @@ services:
   # play - playback device recordings
   play:
     container_name: play
-    profiles:
-      - play
     build: ../pipeline/recorder
     command: recorder --mode play
     ports:
@@ -174,7 +182,6 @@ services:
     image: portainer/portainer-ce
     profiles:
       - all
-      - portainer
     ports:
       - '9000:9000'
     volumes:
@@ -197,7 +204,6 @@ services:
     profiles:
       - all
       - dashboard
-      - postgres
     # init: true
     #. don't use PGPASSWORD - see https://stackoverflow.com/a/6405162/243392
     # https://www.postgresql.org/docs/9.1/libpq-pgpass.html
@@ -217,8 +223,6 @@ services:
   # record - record device messages for future playback
   record:
     container_name: record
-    profiles:
-      - record
     build: ../pipeline/recorder
     command: recorder --mode record
     volumes:
@@ -238,7 +242,6 @@ services:
     profiles:
       - all
       - dashboard
-      - relay
     init: true
     environment:
       # override these as needed in pipeline-overrides.yaml
