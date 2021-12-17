@@ -16,6 +16,7 @@ services:
     # privileged: true
     profiles:
       - all
+      - adapter
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml etc
       - ../modules:/data/modules # has module yamls
@@ -31,6 +32,7 @@ services:
     container_name: agent
     profiles:
       - all
+      - agent
       - html
     image: ladder99/agent:latest
     working_dir: /data/agent
@@ -51,6 +53,7 @@ services:
     container_name: dozzle
     profiles:
       - all
+      - dozzle
     image: amir20/dozzle:latest
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -70,6 +73,7 @@ services:
     image: grafana/grafana:8.2.2
     profiles:
       - all
+      - grafana
       - dashboard
     ports:
       - $GRAFANA_PORT:3000/tcp
@@ -111,6 +115,7 @@ services:
     image: gethue/hue:latest
     profiles:
       - all
+      - hue
     ports:
       - 8888:8888
     restart: always
@@ -126,6 +131,7 @@ services:
     image: eclipse-mosquitto
     profiles:
       - all
+      - mosquitto
     ports:
       - 1883:1883
     volumes:
@@ -149,6 +155,7 @@ services:
     image: biarms/pgadmin4:latest
     profiles:
       - all
+      - pgadmin
       - dashboard
     ports:
       - '5050:5050/tcp'
@@ -163,6 +170,9 @@ services:
   play:
     container_name: play
     build: ../pipeline/recorder
+    profiles:
+      - all
+      - play
     command: recorder --mode play
     ports:
       - 8080:8080
@@ -182,6 +192,7 @@ services:
     image: portainer/portainer-ce
     profiles:
       - all
+      - portainer
     ports:
       - '9000:9000'
     volumes:
@@ -203,6 +214,7 @@ services:
       - $PGPORT:5432/tcp
     profiles:
       - all
+      - postgres
       - dashboard
     # init: true
     #. don't use PGPASSWORD - see https://stackoverflow.com/a/6405162/243392
@@ -224,6 +236,9 @@ services:
   record:
     container_name: record
     build: ../pipeline/recorder
+    profiles:
+      - all
+      - record
     command: recorder --mode record
     volumes:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
@@ -241,6 +256,7 @@ services:
     build: ../pipeline/relay
     profiles:
       - all
+      - relay
       - dashboard
     init: true
     environment:
