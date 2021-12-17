@@ -3,36 +3,32 @@
 # run ladder99 pipeline with docker compose.
 
 usage="
-Usage: ./start [OPTIONS] SERVICES
+Usage: ./start [OPTIONS] CLIENT SERVICES
 
-Run the Ladder99 pipeline with a list of services to include.
+Run the Ladder99 pipeline with a list of services/profiles to include.
 
 OPTIONS
-  -c, --console       run the services attached to the console for logging
-  -s, --setup SETUP   run the specified setup, instead of the default '../client'
+  -c, --console   run the services attached to the console for logging
+
+CLIENT        name of client folder - prepended with '../client-',
+              unless starts with './'
 
 SERVICES      space-delim list of profiles/services to start
   dashboard   client-specific profile - typically includes adapter, agent, 
               postgres, grafana, etc
-
   adapter     ladder99 adapter - converts machine language to shdr
   agent       mtconnect agent - converts shdr to xml and html (port 5000)
+  dozzle      docker log file browser
   grafana     ladder99 dashboard - displays database data (port 80)
   pgadmin     manages postgres database (port 5050)
   portainer   manages docker containers (port 9000)
   postgres    ladder99 database with timescaledb extension (port 5432)
 
 Examples
-    ./start dashboard
-    ./start --setup ../client-oxbox dashboard
-    ./start --setup setups/test/micro agent
-    ./start --console play
+    ./start myclient dashboard
+    ./start ./setups/test/micro agent grafana
+    ./start --console myclient play
 "
-#   play        play back machine data
-#   record      record machine data
-# Stopping
-#   use './stop' to stop all profiles/services
-#   use 'docker stop SERVICE' or portainer to stop individual services
 
 # show help
 if [ $# -eq 0 ]; then
@@ -42,7 +38,6 @@ fi
 
 # default values
 mode=startd # detached mode
-setup=../client
 
 # get arguments
 # while $1 starts with '-'
@@ -52,14 +47,23 @@ do
         shift
         mode=start # console mode
     fi
-    if [ $1 = "-s" ] || [ $1 = "--setup" ]; then
-        shift
-        setup=$1 # eg '../client-oxbox' or 'setups/test/micro'
-        shift
-    fi
+    # if [ $1 = "-s" ] || [ $1 = "--setup" ]; then
+    #     shift
+    #     setup=$1 # eg '../client-oxbox' or 'setups/test/micro'
+    #     shift
+    # fi
 done
 
-# get services
+# get setup folder
+# if starts with '.' treat as a setup folder, else a client name
+if [[ $1 = \.* ]]; then
+    setup=$1
+else
+    setup=../client-$1
+fi
+shift
+
+# get services/profiles
 services=$* # eg 'agent play'
 
 # build command and call it
