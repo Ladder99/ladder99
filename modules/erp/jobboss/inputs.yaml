@@ -1,0 +1,6 @@
+# inputs
+# define values to be read by jobboss driver and how to write to cache
+
+# this yaml format is specific to the jobboss adapter driver.
+inputs:
+  #. currently just hardcoded in jobboss driver
