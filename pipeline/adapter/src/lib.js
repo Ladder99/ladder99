@@ -1,6 +1,7 @@
 // library of fns
-// IMPORTANT: keep this in synch by copying between services when changed -
+// IMPORTANT: keep this in synch by copying between services when changed:
 //   adapter, recorder, relay
+// also include lib-test.js
 // simpler than making a library somewhere, for now
 
 import fs from 'fs' // node lib for filesystem
@@ -19,6 +20,23 @@ export function importYaml(path) {
     console.log(error.message)
   }
   return null
+}
+
+// recurse over values, replacing eg $FOO with process.env['FOO']
+export function replaceEnvars(setup) {
+  for (let key of Object.keys(setup)) {
+    const value = setup[key]
+    if (typeof value === 'string' && value[0] === '$') {
+      const envarName = value.slice(1)
+      //. replace $word with process.env[word] and eval it
+      //. or have explicit OR syntax, or check for ||
+      const envarValue = process.env[envarName]
+      // console.log(`replacing ${value} with ${envarValue}`)
+      setup[key] = envarValue
+    } else if (typeof value === 'object') {
+      replaceEnvars(value)
+    }
+  }
 }
 
 // sleep ms milliseconds
@@ -59,6 +77,8 @@ export function getCamelCase(str) {
   return str[0].toLowerCase() + str.slice(1)
 }
 
+// merge one set into another set
+// modifies setBase in place
 export function mergeIntoSet(setBase, setExtra) {
   if (setExtra) {
     for (let key of setExtra) {
