@@ -28,6 +28,7 @@ console.log(`----------------------------------------------------------------`)
 async function main() {
   // read /data/setup/setup.yaml file
   const setup = readSetupYaml()
+  console.log('setup', setup)
 
   // define cache shared across all devices and sources
   const cache = new Cache()
@@ -54,7 +55,7 @@ async function main() {
       // iterate over sources, load driver for that source, call init on it.
       for (const source of device.sources) {
         console.log(`Source`, source)
-        const { module, driver, protocol, host, port } = source
+        const { module, driver, protocol, host, port, connection } = source
 
         // import driver plugin
         const pathDriver = `${driversFolder}/${driver}.js` // eg './drivers/mqtt-json.js'
@@ -136,6 +137,7 @@ async function main() {
           inputs,
           socket,
           types,
+          connection,
         })
       }
 
@@ -274,5 +276,6 @@ function readSetupYaml() {
     console.log(`No ${yamlfile} available - please add one.`)
     process.exit(1)
   }
+  lib.replaceEnvars(setup)
   return setup
 }
