@@ -30,7 +30,7 @@ export class AdapterDriver {
 
     const config = {
       server: connection.server,
-      user: connection.username,
+      user: connection.user,
       password: connection.password,
       database: connection.database,
       // options: {
