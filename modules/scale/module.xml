@@ -1,0 +1,7 @@
+<!-- ids are postfixed with $deviceNum, names are prefixed with $deviceId. -->
+<Module>
+  <DataItems>
+    <DataItem id="avail" name="availability" category="EVENT" type="AVAILABILITY" />
+    <DataItem id="mass" name="mass" category="SAMPLE" type="MASS" units="KILOGRAM" />
+  </DataItems>
+</Module>

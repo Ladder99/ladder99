@@ -1,8 +1,7 @@
-<Model>
+<Module>
   <DataItem id="ct" name="c_temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" statistic="AVERAGE" />
   <DataItem id="ca" name="c_acceleration" category="SAMPLE" type="ACCELERATION" units="MILLIMETERS/SECOND^2" statistic="MAXIMUM" />
-</Model>
-
+</Module>
 <!-- just embed the dataitems where used -->
 
 <!-- 
