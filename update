@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# update ladder99 and client code
+
+usage="
+Usage: ./update CLIENT
+
+Update Ladder99 pipeline and client code
+
+CLIENT        name of client folder - prepended with '../client-',
+              unless starts with './'
+"
+
+# show help
+if [ $# -eq 0 ]; then
+    echo "$usage"
+    exit 1
+fi
+
+# get setup folder
+# if starts with '.' treat as a setup folder, else a client name
+if [[ $1 = \.* ]]; then
+    setup=$1
+else
+    setup=../client-$1
+fi
+
+# build command and call it
+cmd="git pull && (cd $setup && git pull)"
+echo $cmd
+bash -c "$cmd"
