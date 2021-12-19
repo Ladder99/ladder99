@@ -1,6 +1,6 @@
 // jobboss driver
 
-import mssql from 'mssql' // ms sql server driver
+import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/node-mssql
 // import * as lib from '../../lib.js'
 
 export class AdapterDriver {
@@ -16,32 +16,47 @@ export class AdapterDriver {
       password: connection.password,
     }
 
+    // const sql = `select 42, 'hello'`
+    const sql = `
+select top 10 opt.*
+from job_operation op
+join job_operation_time opt on op.job_operation = opt.job_operation
+where work_center = 'marumatsu'
+and opt.work_date between '2021-11-18' and '2021-11-19'
+`
+
     console.log(`JobBoss - connecting to database...`, connection.server)
-
-    mssql.connect(config, err => {
-      console.log('JobBoss - connected')
+    let pool
+    try {
+      pool = await mssql.connect(config)
+      console.log(`JobBoss - connected`)
       setAvailable()
-      // poll for current job info
+      await poll()
       setInterval(poll, 5000)
-    })
-
-    const sql = `select 42, 'hello'`
-    //     const sql = `
-    // select top 10 opt.*
-    // from job_operation op
-    // join job_operation_time opt on op.job_operation = opt.job_operation
-    // where work_center = 'marumatsu'
-    // and opt.work_date between '2021-11-18' and '2021-11-19'
-    // `
+    } catch (error) {
+      console.log(error)
+    }
 
     async function poll() {
       console.log(`JobBoss - polling for job info...`)
-      const request = new mssql.Request()
-      request.query(sql, (err, recordset) => {
-        console.log(`JobBoss results`, recordset)
+      try {
+        const result = await pool
+          .request()
+          // .input('input_parameter', mssql.Int, 33)
+          // .query('select * from mytable where id = @input_parameter')
+          .query(sql)
+        console.log(`JobBoss result -`)
+        console.dir(result)
         cache.set(`${deviceId}-job`, '42')
-      })
+      } catch (error) {
+        console.log(error)
+      }
     }
+
+    //. method doesn't exist, but is in the readme
+    // mssql.on('error', err => {
+    //   // ... error handler
+    // })
 
     function setAvailable() {
       cache.set(`${deviceId}-availability`, 'AVAILABLE')
