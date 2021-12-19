@@ -14,12 +14,12 @@
     "dayjs": "^1.10.7",
     "js-yaml": "^4.0.0",
     "mqtt": "^4.2.6",
+    "mssql": "^7.3.0",
     "node-fetch": "^3.0.0",
     "node-hid": "^2.1.1",
     "node-opcua-client": "^2.50.0",
     "nodemon": "^2.0.14",
     "systeminformation": "^5.9.8",
-    "tedious": "^14.0.0",
     "usb": "^1.8.0",
     "uuid": "^8.3.2",
     "xml-js": "^1.6.11"

@@ -1,7 +1,8 @@
 // jobboss driver
 
-import tedious from 'tedious' // mssql driver https://github.com/tediousjs/tedious
-import * as lib from '../../lib.js'
+// import tedious from 'tedious' // mssql driver https://github.com/tediousjs/tedious
+import mssql from 'mssql'
+// import * as lib from '../../lib.js'
 
 export class AdapterDriver {
   async init({ deviceId, protocol, cache, inputs, socket, connection }) {
@@ -9,45 +10,67 @@ export class AdapterDriver {
 
     setUnavailable()
 
+    // const config = {
+    //   server: connection.server,
+    //   authentication: {
+    //     type: 'default',
+    //     options: {
+    //       userName: connection.username,
+    //       password: connection.password,
+    //     },
+    //   },
+    //   options: {
+    //     encrypt: false,
+    //     database: connection.database,
+    //     // cryptoCredentialsDetails: {
+    //     //   minVersion: 'TLSv1',
+    //     // },
+    //   },
+    // }
+
     const config = {
       server: connection.server,
-      authentication: {
-        type: 'default',
-        options: {
-          userName: connection.username,
-          password: connection.password,
-        },
-      },
-      options: {
-        encrypt: false,
-        database: connection.database,
-        // cryptoCredentialsDetails: {
-        //   minVersion: 'TLSv1',
-        // },
-      },
+      user: connection.username,
+      password: connection.password,
+      database: connection.database,
+      // options: {
+      //   encrypt: false,
+      //   database: connection.database,
+      // },
     }
 
-    const Connection = tedious.Connection
+    // const Connection = tedious.Connection
     console.log(`JobBoss - connecting to database...`, connection.server)
-    const db = new Connection(config)
-    db.on('connect', error => {
+    // const db = new Connection(config)
+    // db.on('connect', error => {
+    //   console.log('JobBoss - connected')
+    //   setAvailable()
+    //   //. poll for current job info
+    //   setInterval(poll, 5000)
+    // })
+    // db.on('error', error => {
+    //   console.log(error)
+    //   setUnavailable()
+    // })
+    // db.on('end', () => {
+    //   console.log(`JobBoss - disconnected from database`)
+    //   setUnavailable()
+    // })
+    // db.connect()
+
+    mssql.connect(config, err => {
       console.log('JobBoss - connected')
       setAvailable()
       //. poll for current job info
       setInterval(poll, 5000)
     })
-    db.on('error', error => {
-      console.log(error)
-      setUnavailable()
-    })
-    db.on('end', () => {
-      console.log(`JobBoss - disconnected from database`)
-      setUnavailable()
-    })
-    db.connect()
 
     async function poll() {
       console.log(`JobBoss - polling for job info...`)
+      const request = new mssql.Request()
+      request.query("select 42, 'hello world'", (err, recordset) => {
+        console.log(recordset)
+      })
     }
 
     function setAvailable() {
