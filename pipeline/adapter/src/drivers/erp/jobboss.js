@@ -61,15 +61,24 @@ export class AdapterDriver {
     mssql.connect(config, err => {
       console.log('JobBoss - connected')
       setAvailable()
-      //. poll for current job info
+      // poll for current job info
       setInterval(poll, 5000)
     })
+
+    // const sql = `select 42, 'hello world'`
+    const sql = `
+select top 10 opt.*
+from job_operation op
+join job_operation_time opt on op.job_operation = opt.job_operation
+where work_center = 'marumatsu'
+and opt.work_date between '2021-11-18' and '2021-11-19'
+`
 
     async function poll() {
       console.log(`JobBoss - polling for job info...`)
       const request = new mssql.Request()
-      request.query("select 42, 'hello world'", (err, recordset) => {
-        console.log(recordset)
+      request.query(sql, (err, recordset) => {
+        console.log(`JobBoss results`, recordset)
         cache.set(`${deviceId}-job`, '42')
       })
     }
