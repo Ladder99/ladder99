@@ -14,6 +14,9 @@ export class AdapterDriver {
       database: connection.database,
       user: connection.user,
       password: connection.password,
+      options: {
+        encrypt: false,
+      },
     }
 
     // const sql = `select 42, 'hello'`
@@ -28,7 +31,7 @@ and opt.work_date between '2021-11-18' and '2021-11-19'
     console.log(`JobBoss - connecting to database...`, connection.server)
     let pool
     try {
-      pool = await mssql.connect(config)
+      pool = await mssql.connect(config) //. error -
       console.log(`JobBoss - connected`)
       setAvailable()
       await poll()
