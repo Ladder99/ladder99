@@ -16,7 +16,7 @@ const dataModeOunces = 11
 
 export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
-    console.log(`Initialize Dymo M10 driver...`)
+    console.log(`Dymo - initialize Dymo M10 driver...`)
 
     // const devices = usb.getDeviceList()
     // console.log('USB devices attached:', devices.length)
@@ -69,7 +69,7 @@ export class AdapterDriver {
       try {
         const device = new HID.HID(vendorId, productId)
 
-        console.log('Starting to read data from scale')
+        console.log('Dymo - starting to read data from scale')
         reading = true
 
         device.on('data', function (data) {

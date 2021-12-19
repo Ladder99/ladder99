@@ -33,6 +33,8 @@ export class AdapterDriver {
     db.on('connect', error => {
       console.log('JobBoss - connected')
       setAvailable()
+      //. poll for current job info
+      setInterval(poll, 5000)
     })
     db.on('error', error => {
       console.log(error)
@@ -44,10 +46,8 @@ export class AdapterDriver {
     })
     db.connect()
 
-    //. make loop to poll for current job info
-    while (true) {
+    async function poll() {
       console.log(`JobBoss - polling for job info...`)
-      await lib.sleep(5000)
     }
 
     function setAvailable() {
