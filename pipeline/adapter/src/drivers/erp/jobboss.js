@@ -18,10 +18,11 @@ export class AdapterDriver {
         },
       },
       options: {
+        encrypt: false,
         database: connection.database,
-        cryptoCredentialsDetails: {
-          minVersion: 'TLSv1',
-        },
+        // cryptoCredentialsDetails: {
+        //   minVersion: 'TLSv1',
+        // },
       },
     }
 
@@ -36,7 +37,7 @@ export class AdapterDriver {
       console.log(error)
     })
     db.on('end', () => {
-      console.log(`Jobboss - disconnected from database`)
+      console.log(`JobBoss - disconnected from database`)
       setUnavailable()
     })
     db.connect()
