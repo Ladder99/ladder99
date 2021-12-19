@@ -19,6 +19,9 @@ export class AdapterDriver {
       },
       options: {
         database: connection.database,
+        cryptoCredentialsDetails: {
+          minVersion: 'TLSv1',
+        },
       },
     }
 
