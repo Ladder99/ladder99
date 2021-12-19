@@ -27,7 +27,7 @@ export class AdapterDriver {
 
         // read the specs data
         const data = await si.get(specs)
-        console.log(data)
+        // console.log(data) // too much info
 
         // write values to cache
         setValue('availability', 'AVAILABLE')
