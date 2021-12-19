@@ -70,6 +70,7 @@ export class AdapterDriver {
       const request = new mssql.Request()
       request.query("select 42, 'hello world'", (err, recordset) => {
         console.log(recordset)
+        cache.set(`${deviceId}-job`, '42')
       })
     }
 
@@ -79,6 +80,7 @@ export class AdapterDriver {
 
     function setUnavailable() {
       cache.set(`${deviceId}-availability`, 'UNAVAILABLE')
+      cache.set(`${deviceId}-job`, 'UNAVAILABLE')
     }
   }
 }

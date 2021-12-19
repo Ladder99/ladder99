@@ -1,3 +1,6 @@
 outputs:
   - key: avail
     value: <availability>
+
+  - key: job
+    value: <job>
