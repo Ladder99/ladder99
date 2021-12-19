@@ -1,6 +1,6 @@
 // jobboss driver
 
-import tedious from 'tedious'
+import tedious from 'tedious' // mssql driver https://github.com/tediousjs/tedious
 
 export class AdapterDriver {
   // init({ deviceId, protocol, host, port, cache, inputs, socket }) {
@@ -26,6 +26,8 @@ export class AdapterDriver {
     const Connection = tedious.Connection
     console.log(`Connecting to JobBoss database...`)
     console.log(config.server)
+    console.log(config.options)
+    console.log(process.env['JOBBOSS_DATABASE'])
     const db = new Connection(config)
     db.on('connect', error => {
       console.log('Connected')
