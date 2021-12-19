@@ -1,0 +1,3 @@
+outputs:
+  - key: avail
+    value: <availability>

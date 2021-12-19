@@ -28,7 +28,6 @@ console.log(`----------------------------------------------------------------`)
 async function main() {
   // read /data/setup/setup.yaml file
   const setup = readSetupYaml()
-  console.log('setup', setup)
 
   // define cache shared across all devices and sources
   const cache = new Cache()
@@ -36,7 +35,7 @@ async function main() {
   // iterate over device definitions from setup.yaml file
   const { devices } = setup
   for (const device of devices) {
-    console.log(`Device`, device)
+    // console.log(`Device`, device) // don't print - might have passwords
     const deviceId = device.id
     const deviceName = device.name
 
@@ -54,7 +53,7 @@ async function main() {
       // each device can have multiple sources.
       // iterate over sources, load driver for that source, call init on it.
       for (const source of device.sources) {
-        console.log(`Source`, source)
+        // console.log(`Source`, source) // don't print - might have password etc
         const { module, driver, protocol, host, port, connection } = source
 
         // import driver plugin

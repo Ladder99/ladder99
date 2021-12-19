@@ -10,7 +10,7 @@ export class AdapterDriver {
     setUnavailable()
 
     const config = {
-      server: connection.host,
+      server: connection.server,
       authentication: {
         type: 'default',
         options: {
@@ -25,7 +25,7 @@ export class AdapterDriver {
 
     const Connection = tedious.Connection
     console.log(`Connecting to JobBoss database...`)
-    console.log(config)
+    // console.log(config)
     const db = new Connection(config)
     db.on('connect', error => {
       console.log('Connected')
