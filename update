@@ -25,7 +25,12 @@ else
     setup=../client-$1
 fi
 
-# build command and call it
-cmd="git pull && (cd $setup && git pull)"
+# build commands and call them
+
+cmd="git pull"
+echo $cmd
+bash -c "$cmd"
+
+cmd="(cd $setup && git pull)"
 echo $cmd
 bash -c "$cmd"
