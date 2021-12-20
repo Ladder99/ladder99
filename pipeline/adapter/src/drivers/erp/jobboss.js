@@ -19,14 +19,14 @@ export class AdapterDriver {
       },
     }
 
-    // const sql = `select 42, 'hello'`
-    const sql = `
-select top 10 opt.*
-from job_operation op
-join job_operation_time opt on op.job_operation = opt.job_operation
-where work_center = 'marumatsu'
-and opt.work_date between '2021-11-18' and '2021-11-19'
-`
+    const sql = `select 42, 'hello'`
+    //     const sql = `
+    // select top 10 opt.*
+    // from job_operation op
+    // join job_operation_time opt on op.job_operation = opt.job_operation
+    // where work_center = 'marumatsu'
+    // and opt.work_date between '2021-11-18' and '2021-11-19'
+    // `
 
     console.log(`JobBoss - connecting to database...`, connection.server)
     let pool
