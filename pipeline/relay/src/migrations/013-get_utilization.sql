@@ -58,6 +58,17 @@ language plpgsql;
 ---------------------------------------------------------------------
 
 -- get percent of time a device is active vs available
+-- call it like so - 
+-- set timezone to 'America/Chicago';
+-- select time, utilization from get_utilization(
+--   'Cutter',
+--   'controller/partOccurrence/part_count-all',
+--   $__from, $__to,
+--   '[
+--     {"timeframe": "day", "start": "4h", "stop": "16h"},
+--     {"timeframe": "week", "start": "0d", "stop": "5d"} 
+--   ]'::jsonb
+-- )
 
 -- do this if change parameters OR return signature
 -- drop function if exists get_utilization(text, text, bigint, bigint, jsonb);
