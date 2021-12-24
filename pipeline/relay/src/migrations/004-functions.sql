@@ -26,10 +26,10 @@ CREATE OR REPLACE FUNCTION jsonb_arr2text_arr(_js jsonb)
 --------------------------------------------------------------------
 
 -- convert timestamp to/from timeblock (arbitrary intervals since 1970-01-01).
-
+-- eg timestamp2timeblock('now', 3600) gives number of hours since 1970-01-01.
 -- note: EPOCH gives seconds since 1970-01-01.
 -- note: '/' here gives the integer floor of the division.
--- need trunc otherwise timeblock gets rounded up when time >= 30 mins.
+-- need trunc otherwise timeblock gets rounded UP when time >= 30 mins.
 
 CREATE OR REPLACE FUNCTION timestamp2timeblock(_timestamp timestamp, _interval int)
   RETURNS int LANGUAGE sql IMMUTABLE PARALLEL SAFE AS
@@ -40,10 +40,11 @@ CREATE OR REPLACE FUNCTION timeblock2timestamp(_timeblock int, _interval int)
   'SELECT to_timestamp(_timeblock * _interval)::timestamptz at time zone ''UTC''';
 
 -- test above fns
---SELECT timestamp2timeblock('now', 3600); -- eg 454943
---SELECT timestamp2timeblock('epoch', 3600); -- 0
---SELECT timestamp2timeblock('2021-11-05 07:29:02.927', 3600);
---SELECT timestamp2timeblock('2021-11-05 07:30:02.927', 3600);
+
+--SELECT timestamp2timeblock('now', 3600); -- hours since 1970, eg 454943
+--SELECT timestamp2timeblock('2021-11-05 07:29:02.927', 3600); -- 454471
+--SELECT timestamp2timeblock('2021-11-05 07:30:02.927', 3600); -- 454471
+
 --SELECT timeblock2timestamp(0, 3600); -- '1970-01-01 00:00:00.000'
 
 
