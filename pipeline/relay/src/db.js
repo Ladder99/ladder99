@@ -79,7 +79,7 @@ export class Db {
     await this.readFile(`src/migrations/006-get_jobs.sql`)
     await this.readFile(`src/migrations/007-get_rate.sql`)
     await this.readFile(`src/migrations/008-get_utilization.sql`)
-    //. and more
+    await this.readFile(`src/migrations/009-metrics.sql`)
   }
 
   async readFile(filename) {
