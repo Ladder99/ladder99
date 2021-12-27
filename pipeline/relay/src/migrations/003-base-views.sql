@@ -8,30 +8,6 @@ DROP VIEW IF EXISTS devices;
 DROP VIEW IF EXISTS history_text;
 DROP VIEW IF EXISTS history_float;
 DROP VIEW IF EXISTS history_all;
-DROP VIEW IF EXISTS metrics;
-
-
----------------------------------------------------------------------
--- metrics
----------------------------------------------------------------------
--- a view on the bins table - adds name, calculates uptime
-
---. will ditch this in favor of fns
-
-CREATE OR REPLACE VIEW metrics AS
-SELECT 
-  devices.props->>'name' AS device,
-  bins.time as "time",
-  bins.dimensions as dimensions,
-  bins.values as "values", -- a jsonb object
-  -- coalesce returns the first non-null value (works like an OR operator),
-  -- and nullif returns the first value, unless it equals 0.0, when it returns null -
-  -- then the whole expression is null. avoids div by zero error.
-  coalesce((values->>'time_active')::real,0) / 
-    nullif((values->>'time_available')::real,0.0) as uptime
-FROM bins
-JOIN nodes AS devices ON bins.device_id=devices.node_id;
-
 
 ---------------------------------------------------------------------
 -- history_all

@@ -7,8 +7,6 @@
 -- and assigns it to that start time.
 -- returns time, value, with value being text, coerced from top-level jsonb value.
 
---. might be able to replace the UNION with a LAG fn CTE, as with get_rate.sql
-
 -- use from grafana like
 --   SELECT time, value AS "Availability" 
 --   FROM get_timeline('Line$line', 'availability', $__from, $__to);
