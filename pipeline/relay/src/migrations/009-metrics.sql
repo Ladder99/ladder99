@@ -4,19 +4,18 @@
 ---------------------------------------------------------------------
 -- store data for metrics
 
---. update this
-
--- CREATE TABLE IF NOT EXISTS bins (
---   device_id integer REFERENCES nodes, -- node_id of a device
---   time timestamptz NOT NULL, -- rounded down by minute, for now
---   dimensions jsonb, -- incl hour, shift, plant, machine, etc
---   values jsonb, -- incl timeActive, timeAvailable, partsGood, partsBad, etc
---   PRIMARY KEY (device_id, time, dimensions)
--- );
--- -- make hypertable and add compression/retention schedules
--- SELECT create_hypertable('bins', 'time', if_not_exists => TRUE);
--- -- SELECT add_compression_policy('bins', INTERVAL '1d', if_not_exists => TRUE);
--- -- SELECT add_retention_policy('bins', INTERVAL '1 year', if_not_exists => TRUE);
+create table if not exists bins (
+  device_id integer references nodes, -- node_id of a device
+  resolution interval, -- 1min, 1hr, 1day, 1week, 1month, 1quarter, 1year
+  time timestamptz, -- rounded down to previous minute, hour, day, etc
+  active interval, -- number of minutes device was active during time resolution
+  available interval, -- number of minutes device was available during time resolution
+  primary key (device_id, resolution, time)
+);
+-- make hypertable and add compression/retention schedules
+-- select create_hypertable('bins', 'time', if_not_exists => true);
+-- select add_compression_policy('bins', interval '1d', if_not_exists => true);
+-- select add_retention_policy('bins', interval '1 year', if_not_exists => true);
 
 
 ---------------------------------------------------------------------
@@ -46,19 +45,17 @@
 
 drop function update_metrics;
 
-create or replace function update_metrics (job_id int, config jsonb)
-returns boolean
+create or replace procedure update_metrics (job_id int, config jsonb)
 as
 $$
 begin
   raise notice 'hello, world';
-  return true;
 end;
 $$
 language plpgsql;
 
 
---select update_metrics();
+call update_metrics(null, null);
 
 
 select add_job('update_metrics', '5s');
