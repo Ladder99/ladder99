@@ -78,7 +78,6 @@ export class Db {
     await this.readFile(`src/migrations/005-get_timeline.sql`)
     await this.readFile(`src/migrations/006-get_jobs.sql`)
     await this.readFile(`src/migrations/011-get_rate.sql`)
-    await this.readFile(`src/migrations/012-get_uptime2.sql`)
     await this.readFile(`src/migrations/013-get_utilization.sql`)
     //. and more
   }
