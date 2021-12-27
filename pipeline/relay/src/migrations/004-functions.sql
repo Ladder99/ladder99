@@ -44,6 +44,8 @@ CREATE OR REPLACE FUNCTION timeblock2timestamp(_timeblock int, _interval int)
 --SELECT timestamp2timeblock('now', 3600); -- hours since 1970, eg 454943
 --SELECT timestamp2timeblock('2021-11-05 07:29:02.927', 3600); -- 454471
 --SELECT timestamp2timeblock('2021-11-05 07:30:02.927', 3600); -- 454471
+--SELECT timestamp2timeblock('2021-11-05 07:29:02.927', 60*60*24); -- 18936 days since 1970-01-01
+--SELECT timestamp2timeblock('1970-01-01', 60*60*24); -- 0 days since 1970-01-01
 
 --SELECT timeblock2timestamp(0, 3600); -- '1970-01-01 00:00:00.000'
 
