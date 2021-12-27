@@ -201,15 +201,13 @@ LANGUAGE plpgsql;
 -- test fn
 --.... turn this off before committing .....................
 
-WITH
-  p_trackers AS (values (jsonb_build_object(
-    'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
-    'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
-  ))),
-  -- or 2021-11-04 for 5.05h
-  p_day AS (VALUES ('2021-11-05'::date)),
-  p_from AS (VALUES (timestamp2ms((TABLE p_day)))),
-  p_to AS (VALUES (timestamp2ms((TABLE p_day) + INTERVAL '1 day')))
-SELECT * FROM get_metrics((TABLE p_trackers), 'Line1', (TABLE p_from), (TABLE p_to));
-
-
+-- WITH
+--   p_trackers AS (values (jsonb_build_object(
+--     'availability', '{"name":"available","when":["AVAILABLE"]}'::jsonb,
+--     'functional_mode', '{"name":"active","when":["PRODUCTION"]}'::jsonb
+--   ))),
+--   -- or 2021-11-04 for 5.05h
+--   p_day AS (VALUES ('2021-11-05'::date)),
+--   p_from AS (VALUES (timestamp2ms((TABLE p_day)))),
+--   p_to AS (VALUES (timestamp2ms((TABLE p_day) + INTERVAL '1 day')))
+-- SELECT * FROM get_metrics((TABLE p_trackers), 'Line1', (TABLE p_from), (TABLE p_to));
