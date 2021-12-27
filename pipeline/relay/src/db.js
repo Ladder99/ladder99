@@ -72,9 +72,9 @@ export class Db {
   async migrate() {
     console.log(`Migrating database structures...`)
     await this.readFile(`src/migrations/001-extensions.sql`)
-    await this.readFile(`src/migrations/002-tables.sql`)
-    await this.readFile(`src/migrations/003-views.sql`)
-    await this.readFile(`src/migrations/004-functions.sql`)
+    await this.readFile(`src/migrations/002-base-tables.sql`)
+    await this.readFile(`src/migrations/003-base-views.sql`)
+    await this.readFile(`src/migrations/004-base-functions.sql`)
     await this.readFile(`src/migrations/005-get_timeline.sql`)
     await this.readFile(`src/migrations/006-get_jobs.sql`)
     await this.readFile(`src/migrations/011-get_rate.sql`)
