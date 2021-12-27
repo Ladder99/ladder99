@@ -3,6 +3,7 @@
 ---------------------------------------------------------------------
 
 -- get information about sales orders and jobs for a given time range.
+-- uses get_timeline fn.
 
 -- use from grafana like
 --  SELECT

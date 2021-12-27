@@ -1,3 +1,8 @@
+-- this approach works if timewindows fall on hour boundaries,
+-- like 4a-4p, and fixed schedule like mon-fri.
+-- was a stepping stone to new approach.
+
+
 ---------------------------------------------------------------------
 -- is_time_within_windows
 ---------------------------------------------------------------------
