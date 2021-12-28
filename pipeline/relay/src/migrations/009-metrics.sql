@@ -4,8 +4,6 @@
 ---------------------------------------------------------------------
 -- store data for metrics
 
---drop table bins;
-
 create table if not exists bins (
   device_id integer references nodes, -- node_id of a device
   resolution interval, -- 1min, 1hr, 1day, 1week, 1month, 1quarter, 1year
@@ -51,6 +49,7 @@ join nodes as devices on bins.device_id = devices.node_id;
 ---------------------------------------------------------------------
 -- update_metrics procedure
 ---------------------------------------------------------------------
+-- will call increment_bin for different bin resolutions, as needed
 
 drop function update_metrics;
 
@@ -77,6 +76,7 @@ call update_metrics(null, null);
 ---------------------------------------------------------------------
 -- increment_bin procedure
 ---------------------------------------------------------------------
+-- increment a value in the bins table by 1
 
 create or replace procedure increment_bin(job_id int, config jsonb)
 language plpgsql
@@ -85,11 +85,12 @@ declare
 --  _device_id int := config->>'device_id';
   _device_id int := 11;
   _resolution interval := '1 minute';
-  _time timestamptz := now(); --. round down to nearest min, hr, day, week, etc?
+--  _time timestamptz := now(); --. round down to nearest min, hr, day, week, etc?
+  _time timestamptz := '2021-12-27 09:00:00';
   _field text := quote_ident('available');
   _sql text;
 begin
-  --. do upsert
+  -- do upsert with increment
   execute format(
     'insert into bins (device_id, resolution, time, %s) 
       values ($1, $2, $3, $4)
@@ -101,4 +102,5 @@ end
 $body$;
 
 
+call increment_bin(null, null);
 
