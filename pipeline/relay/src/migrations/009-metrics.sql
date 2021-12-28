@@ -53,14 +53,16 @@ join nodes as devices on bins.device_id = devices.node_id;
 
 drop function update_metrics;
 
-create or replace procedure update_metrics(job_id int, config jsonb)
+create or replace procedure update_metrics(p_job_id int, p_config jsonb)
+language plpgsql;
 as
-$$
+$body$
+declare
+--  v_time timestamptz := now(); --. round down to nearest min, hr, day, week, etc?
 begin
   raise notice 'hello, world';
 end;
-$$
-language plpgsql;
+$body$;
 
 
 call update_metrics(null, null);
@@ -76,31 +78,31 @@ call update_metrics(null, null);
 ---------------------------------------------------------------------
 -- increment_bin procedure
 ---------------------------------------------------------------------
--- increment a value in the bins table by 1
+-- increment a value in the bins table
 
-create or replace procedure increment_bin(job_id int, config jsonb)
+create or replace procedure increment_bin(
+  in p_device_id int,
+  in p_resolution interval,
+  in p_time timestamptz,
+  in p_field text,
+  in p_delta int = 1
+)
 language plpgsql
 as $body$
 declare
---  _device_id int := config->>'device_id';
-  _device_id int := 11;
-  _resolution interval := '1 minute';
---  _time timestamptz := now(); --. round down to nearest min, hr, day, week, etc?
-  _time timestamptz := '2021-12-27 09:00:00';
-  _field text := quote_ident('available');
-  _sql text;
+  v_field text := quote_ident(p_field);
 begin
   -- do upsert with increment
   execute format(
     'insert into bins (device_id, resolution, time, %s) 
       values ($1, $2, $3, $4)
     on conflict (device_id, resolution, time) do 
-      update set %s = bins.%s + 1;',
-    _field, _field, _field
-  ) using _device_id, _resolution, _time, 1;
+      update set %s = bins.%s + $5;',
+    v_field, v_field, v_field
+  ) using p_device_id, p_resolution, p_time, p_delta, p_delta;
 end
 $body$;
 
 
-call increment_bin(null, null);
+call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'available');
 
