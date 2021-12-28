@@ -63,6 +63,7 @@ as
 $body$
 declare
   v_device_id int;
+  -- v_time timestamptz := config->>'time' OR now();
 --  v_time timestamptz := now(); --. round down to nearest min, hr, day, week, etc?
   v_is_time_in_schedule boolean;
   v_are_enough_people_logged_in boolean;
@@ -72,7 +73,7 @@ begin
   v_is_time_in_schedule := true;
   -- are_enough_people_logged_in := lookup latest value of a dataitem set by facebook login info.
   -- loop over relevant devices, as passed through config.
-  foreach v_device_id in config->>'device_ids' loop
+  for v_device_id in select * from jsonb_array_elements(config->'device_ids') loop
     if v_is_time_in_schedule or v_are_enough_people_logged_in then
       -- was_machine_active := if any part_count events within previous time interval.
       v_was_machine_active := true;
@@ -86,7 +87,7 @@ end;
 $body$;
 
 -- https://docs.timescale.com/api/latest/informational-views/job_stats
---call update_metrics(null, null);
+call update_metrics(null, null);
 select add_job('update_metrics', '5s', config => '{"device_ids":[11],"interval":"5 secs"}');
 select job_id, total_runs, total_failures, total_successes from timescaledb_information.job_stats;
 --select delete_job(1009);
