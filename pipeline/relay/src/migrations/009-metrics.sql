@@ -1,6 +1,6 @@
 
 ---------------------------------------------------------------------
--- bins
+-- bins table
 ---------------------------------------------------------------------
 -- store data for metrics
 
@@ -22,9 +22,10 @@ create table if not exists bins (
 
 
 ---------------------------------------------------------------------
--- metrics
+-- metrics view
 ---------------------------------------------------------------------
 -- a view on the bins table - adds name, calculates uptime
+--. make a materialized view for more speed?
 
 drop view if exists metrics;
 
@@ -48,7 +49,7 @@ join nodes as devices on bins.device_id = devices.node_id;
 
 
 ---------------------------------------------------------------------
--- update_metrics
+-- update_metrics procedure
 ---------------------------------------------------------------------
 
 drop function update_metrics;
@@ -71,6 +72,33 @@ call update_metrics(null, null);
 
 
 -- https://docs.timescale.com/api/latest/informational-views/job_stats
+
+
+---------------------------------------------------------------------
+-- increment_bin procedure
+---------------------------------------------------------------------
+
+create or replace procedure increment_bin(job_id int, config jsonb)
+language plpgsql
+as $body$
+declare
+--  _device_id int := config->>'device_id';
+  _device_id int := 11;
+  _resolution interval := '1 minute';
+  _time timestamptz := now(); --. round down to nearest min, hr, day, week, etc?
+  _field text := quote_ident('available');
+  _sql text;
+begin
+  --. do upsert
+  execute format(
+    'insert into bins (device_id, resolution, time, %s) 
+      values ($1, $2, $3, $4)
+    on conflict (device_id, resolution, time) do 
+      update set %s = bins.%s + 1;',
+    _field, _field, _field
+  ) using _device_id, _resolution, _time, 1;
+end
+$body$;
 
 
 
