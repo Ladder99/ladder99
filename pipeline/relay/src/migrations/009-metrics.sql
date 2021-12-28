@@ -90,9 +90,9 @@ create or replace procedure increment_bin(
 language plpgsql
 as $body$
 declare
-  v_field text := quote_ident(p_field);
+  v_field text := quote_ident(p_field); -- eg 'active', 'available'
 begin
-  -- do upsert with increment
+  -- upsert/increment the given field by delta
   execute format(
     'insert into bins (device_id, resolution, time, %s) 
       values ($1, $2, $3, $4)
