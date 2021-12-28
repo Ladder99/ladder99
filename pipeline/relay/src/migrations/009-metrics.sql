@@ -61,23 +61,35 @@ create or replace procedure update_metrics(job_id int, config jsonb)
 language plpgsql
 as
 $body$
---declare
+declare
+  v_device_id int;
 --  v_time timestamptz := now(); --. round down to nearest min, hr, day, week, etc?
+  v_is_time_in_schedule boolean;
+  v_are_enough_people_logged_in boolean;
+  v_was_machine_active boolean;
 begin
-  -- if machine was active in interval,
-  call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'active');
-  -- endif
-  -- if within schedule window,
-  call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'available');
-  -- endif
+  -- is_time_in_schedule := if schedule passed in config, check if time is within the time windows.
+  v_is_time_in_schedule := true;
+  -- are_enough_people_logged_in := lookup latest value of a dataitem set by facebook login info.
+  -- loop over relevant devices, as passed through config.
+  foreach v_device_id in config->>'device_ids' loop
+    if v_is_time_in_schedule or v_are_enough_people_logged_in then
+      -- was_machine_active := if any part_count events within previous time interval.
+      v_was_machine_active := true;
+      if v_was_machine_active then
+        call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'active');
+      end if;
+      call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'available');
+    end if;
+  end loop;
 end;
 $body$;
 
 -- https://docs.timescale.com/api/latest/informational-views/job_stats
 --call update_metrics(null, null);
-select add_job('update_metrics', '5s', config => '{"interval":"5 secs"}');
+select add_job('update_metrics', '5s', config => '{"device_ids":[11],"interval":"5 secs"}');
 select job_id, total_runs, total_failures, total_successes from timescaledb_information.job_stats;
---select delete_job();
+--select delete_job(1009);
 
 
 ---------------------------------------------------------------------
