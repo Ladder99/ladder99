@@ -1,4 +1,7 @@
 
+-- tables, views, and functions to support metrics like utilization
+
+
 ---------------------------------------------------------------------
 -- bins table
 ---------------------------------------------------------------------
@@ -34,7 +37,7 @@ select
   bins.time,
   bins.active,
   bins.available,
-  -- coalesce returns the first non-null value (works like an or operator),
+  -- note: coalesce returns the first non-null value (works like an or operator),
   -- and nullif returns the first value, unless it equals 0.0, when it returns null -
   -- then the whole expression is null. avoids div by zero error.
   coalesce(bins.active::real,0) / nullif(bins.available::real,0.0) as utilization
@@ -47,32 +50,34 @@ join nodes as devices on bins.device_id = devices.node_id;
 
 
 ---------------------------------------------------------------------
--- update_metrics procedure
+-- update_metrics procedure / job
 ---------------------------------------------------------------------
--- will call increment_bin for different bin resolutions, as needed
+-- this will be called every minute by timescaledb's job scheduler.
+-- it calls increment_bin for the different fields and bin resolutions.
 
-drop function update_metrics;
+drop procedure update_metrics;
 
-create or replace procedure update_metrics(p_job_id int, p_config jsonb)
-language plpgsql;
+create or replace procedure update_metrics(job_id int, config jsonb)
+language plpgsql
 as
 $body$
-declare
+--declare
 --  v_time timestamptz := now(); --. round down to nearest min, hr, day, week, etc?
 begin
-  raise notice 'hello, world';
+  -- if machine was active in interval,
+  call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'active');
+  -- endif
+  -- if within schedule window,
+  call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'available');
+  -- endif
 end;
 $body$;
 
-
-call update_metrics(null, null);
-
-
-
---select add_job('update_metrics', '5s');
-
-
 -- https://docs.timescale.com/api/latest/informational-views/job_stats
+--call update_metrics(null, null);
+select add_job('update_metrics', '5s', config => '{"interval":"5 secs"}');
+select job_id, total_runs, total_failures, total_successes from timescaledb_information.job_stats;
+--select delete_job();
 
 
 ---------------------------------------------------------------------
@@ -97,7 +102,7 @@ begin
     'insert into bins (device_id, resolution, time, %s) 
       values ($1, $2, $3, $4)
     on conflict (device_id, resolution, time) do 
-      update set %s = bins.%s + $5;',
+      update set %s = coalesce(bins.%s, 0) + $5;',
     v_field, v_field, v_field
   ) using p_device_id, p_resolution, p_time, p_delta, p_delta;
 end
