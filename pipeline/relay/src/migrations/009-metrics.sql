@@ -49,6 +49,35 @@ join nodes as devices on bins.device_id = devices.node_id;
 
 
 
+
+create or replace function get_active(
+  p_device text,
+  p_path text,
+  p_start timestamptz,
+  p_stop timestamptz
+)
+returns boolean
+language sql
+as
+$body$
+select count(value) > 0 as active
+  from history_all
+  where 
+    device = p_device 
+    and path = p_path
+    and time between p_start and p_stop
+  limit 1;
+$body$;
+
+
+select get_active(
+  'Cutter', 
+  'controller/partOccurrence/part_count-all', 
+  '2021-12-13 03:04:00', 
+  '2021-12-13 03:05:00'
+);
+
+
 ---------------------------------------------------------------------
 -- update_metrics procedure / job
 ---------------------------------------------------------------------
@@ -63,6 +92,8 @@ as
 $body$
 declare
   v_device_id int;
+  v_device text;
+  v_path text;
   v_interval interval := coalesce(config->>'interval', '1 minute'); -- ie default is 1 minute
   v_stop timestamptz := date_trunc('minute', now()); -- round down to top of current minute
   v_start timestamptz := v_stop - interval '1 minute'; -- start at previous minute
@@ -77,9 +108,12 @@ begin
   -- are_enough_people_logged_in := lookup latest value of a dataitem set by facebook login info.
   -- loop over relevant devices, as passed through config.
   for v_device_id in select * from jsonb_array_elements(config->'device_ids') loop
+    v_device := 'Cutter';
+    v_path := 'controller/partOccurrence/part_count-all';
     if v_is_time_in_schedule or v_are_enough_people_logged_in then
       -- was_machine_active := if any part_count events within previous time interval.
-      v_was_machine_active := true;
+      -- v_was_machine_active := true;
+      v_was_machine_active := get_active(v_device, v_path, v_start, v_stop);
       if v_was_machine_active then
         call increment_bin(11, '1 minute', v_stop, 'active');
       end if;
