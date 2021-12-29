@@ -63,6 +63,9 @@ as
 $body$
 declare
   v_device_id int;
+  v_interval interval := config->'interval';
+  v_stop timestamptz := date_trunc('minute', now());
+  v_start timestamptz := v_stop + interval '1 minute';
   -- v_time timestamptz := config->>'time' OR now();
 --  v_time timestamptz := now(); --. round down to nearest min, hr, day, week, etc?
   v_is_time_in_schedule boolean;
@@ -78,27 +81,28 @@ begin
       -- was_machine_active := if any part_count events within previous time interval.
       v_was_machine_active := true;
       if v_was_machine_active then
-        call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'active');
+        call increment_bin(11, '1 minute', v_stop, 'active');
       end if;
-      call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'available');
+      call increment_bin(11, '1 minute', v_stop, 'available');
     end if;
   end loop;
 end;
 $body$;
 
--- https://docs.timescale.com/api/latest/informational-views/job_stats
-call update_metrics(null, null);
---select add_job('update_metrics', '5s', config => '{"device_ids":[11],"interval":"5 secs"}');
+
+call update_metrics(null, '{"interval":"1 min"}');
 
 -- add a scheduled job
 select add_job(
   'update_metrics', -- function/procedure to call 
-  '5s', -- interval
-  config => '{"device_ids":[11], "interval":"5 secs"}', -- config json
+  '1 min', -- interval
+  config => '{"device_ids":[11], "interval":"1 min"}', -- config json
   initial_start => date_trunc('minute', now()) + interval '1 minute' -- start at top of next minute
 );
 
+-- https://docs.timescale.com/api/latest/informational-views/job_stats
 select job_id, total_runs, total_failures, total_successes from timescaledb_information.job_stats;
+
 --select delete_job(1010);
 
 
