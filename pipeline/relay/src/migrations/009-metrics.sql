@@ -88,9 +88,18 @@ $body$;
 
 -- https://docs.timescale.com/api/latest/informational-views/job_stats
 call update_metrics(null, null);
-select add_job('update_metrics', '5s', config => '{"device_ids":[11],"interval":"5 secs"}');
+--select add_job('update_metrics', '5s', config => '{"device_ids":[11],"interval":"5 secs"}');
+
+-- add a scheduled job
+select add_job(
+  'update_metrics', -- function/procedure to call 
+  '5s', -- interval
+  config => '{"device_ids":[11], "interval":"5 secs"}', -- config json
+  initial_start => date_trunc('minute', now()) + interval '1 minute' -- start at top of next minute
+);
+
 select job_id, total_runs, total_failures, total_successes from timescaledb_information.job_stats;
---select delete_job(1009);
+--select delete_job(1010);
 
 
 ---------------------------------------------------------------------
