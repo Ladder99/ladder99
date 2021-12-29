@@ -83,6 +83,38 @@ select get_active(
 
 
 ---------------------------------------------------------------------
+-- increment_bin procedure
+---------------------------------------------------------------------
+-- increment a value in the bins table
+
+create or replace procedure increment_bin(
+  in p_device_id int,
+  in p_resolution interval,
+  in p_time timestamptz,
+  in p_field text,
+  in p_delta int = 1
+)
+language plpgsql
+as $body$
+declare
+  v_field text := quote_ident(p_field); -- eg 'active', 'available'
+begin
+  -- upsert/increment the given field by delta
+  execute format(
+    'insert into bins (device_id, resolution, time, %s) 
+      values ($1, $2, $3, $4)
+    on conflict (device_id, resolution, time) do 
+      update set %s = coalesce(bins.%s, 0) + $5;',
+    v_field, v_field, v_field
+  ) using p_device_id, p_resolution, p_time, p_delta, p_delta;
+end
+$body$;
+
+
+call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'available');
+
+
+---------------------------------------------------------------------
 -- update_metrics procedure / job
 ---------------------------------------------------------------------
 -- this will be called every minute by timescaledb's job scheduler.
@@ -143,35 +175,4 @@ select job_id, total_runs, total_failures, total_successes from timescaledb_info
 
 --select delete_job(1010);
 
-
----------------------------------------------------------------------
--- increment_bin procedure
----------------------------------------------------------------------
--- increment a value in the bins table
-
-create or replace procedure increment_bin(
-  in p_device_id int,
-  in p_resolution interval,
-  in p_time timestamptz,
-  in p_field text,
-  in p_delta int = 1
-)
-language plpgsql
-as $body$
-declare
-  v_field text := quote_ident(p_field); -- eg 'active', 'available'
-begin
-  -- upsert/increment the given field by delta
-  execute format(
-    'insert into bins (device_id, resolution, time, %s) 
-      values ($1, $2, $3, $4)
-    on conflict (device_id, resolution, time) do 
-      update set %s = coalesce(bins.%s, 0) + $5;',
-    v_field, v_field, v_field
-  ) using p_device_id, p_resolution, p_time, p_delta, p_delta;
-end
-$body$;
-
-
-call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'available');
 
