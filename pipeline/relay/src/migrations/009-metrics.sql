@@ -49,6 +49,10 @@ join nodes as devices on bins.device_id = devices.node_id;
 
 
 
+---------------------------------------------------------------------
+-- get_active fn
+---------------------------------------------------------------------
+-- check for events on given device and path in a time range
 
 create or replace function get_active(
   p_device text,
@@ -60,7 +64,7 @@ returns boolean
 language sql
 as
 $body$
-select count(value) > 0 as active
+  select count(value) > 0 as active
   from history_all
   where 
     device = p_device 
@@ -97,8 +101,8 @@ declare
   v_interval interval := coalesce(config->>'interval', '1 minute'); -- ie default is 1 minute
   v_stop timestamptz := date_trunc('minute', now()); -- round down to top of current minute
   v_start timestamptz := v_stop - interval '1 minute'; -- start at previous minute
-  -- v_time timestamptz := config->>'time' OR now();
---  v_time timestamptz := now(); --. round down to nearest min, hr, day, week, etc?
+  -- v_time timestamptz := coalesce(config->>'time' OR now());
+  -- v_time timestamptz := now(); --. round down to nearest min, hr, day, week, etc?
   v_is_time_in_schedule boolean;
   v_are_enough_people_logged_in boolean;
   v_was_machine_active boolean;
@@ -115,9 +119,9 @@ begin
       -- v_was_machine_active := true;
       v_was_machine_active := get_active(v_device, v_path, v_start, v_stop);
       if v_was_machine_active then
-        call increment_bin(11, '1 minute', v_stop, 'active');
+        call increment_bin(v_device_id, '1 minute', v_stop, 'active');
       end if;
-      call increment_bin(11, '1 minute', v_stop, 'available');
+      call increment_bin(v_device_id, '1 minute', v_stop, 'available');
     end if;
   end loop;
 end;
