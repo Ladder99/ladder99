@@ -63,9 +63,9 @@ as
 $body$
 declare
   v_device_id int;
-  v_interval interval := config->'interval';
-  v_stop timestamptz := date_trunc('minute', now());
-  v_start timestamptz := v_stop + interval '1 minute';
+  v_interval interval := coalesce(config->>'interval', '1 minute'); -- ie default is 1 minute
+  v_stop timestamptz := date_trunc('minute', now()); -- round down to top of current minute
+  v_start timestamptz := v_stop - interval '1 minute'; -- start at previous minute
   -- v_time timestamptz := config->>'time' OR now();
 --  v_time timestamptz := now(); --. round down to nearest min, hr, day, week, etc?
   v_is_time_in_schedule boolean;
