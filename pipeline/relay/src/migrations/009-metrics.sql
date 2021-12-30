@@ -127,20 +127,14 @@ call increment_bins(11, '2021-12-30 05:00:00', 'available');
 
 
 ---------------------------------------------------------------------
--- is_time_in_schedule
+-- is_time_scheduled
 ---------------------------------------------------------------------
 
--- returns true if given time is within a schedule.
+-- returns true if given time is in the work/holiday schedule.
 
--- p_schedule is a jsonb array of { timeframe, start, stop }, eg 
---   [
---     { timeframe: 'day', start: '4h', stop: '16h' }, -- 4a-4p
---     { timeframe: 'week', start: '0d', stop: '4d' } -- mon-fri
---   ]
+-- p_schedule is a jsonb object, eg 
 
--- drop function is_time_within_windows(timestamptz, jsonb);
-
-create or replace function is_time_in_schedule(
+create or replace function is_time_scheduled(
   in p_time timestamptz, 
   in p_schedule jsonb
 )
@@ -149,25 +143,26 @@ language plpgsql
 as
 $body$
 declare
-  v_window jsonb;
+  v_work_window jsonb;
   v_base timestamptz;
   v_start timestamptz;
   v_stop timestamptz;
-  v_dow int;
+  v_day_of_week int;
+  v_holiday date;
+  v_date date;
 begin
   
-  v_dow := extract(dow from p_time);
-  raise notice '%', v_dow;
+  v_day_of_week := extract(dow from p_time);
+  raise notice '%', v_day_of_week;
 
   -- iterate over work windows
-  for v_window in select * from jsonb_array_elements(p_schedule->'work') loop
-    raise notice '%', v_window;
-
-    if v_dow = (v_window->'day')::int then
+  for v_work_window in select * from jsonb_array_elements(p_schedule->'work') loop
+    raise notice '%', v_work_window;
+    if v_day_of_week = (v_work_window->'day')::int then
       raise notice 'hi';
     end if;
+  end loop;
 
---  
 --    -- get base time for this window -
 --    -- eg timeframe of 'day' gives midnight of p_time's day,
 --    -- timeframe of 'week' gives monday midnight, etc.
@@ -183,6 +178,17 @@ begin
 --    if not (p_time between _start and _stop) then
 --      return false;
 --    end if;
+
+  -- get time as a pure date, eg '2021-12-25'
+  v_date := p_time::date;
+
+  -- iterate over holidays
+  for v_holiday in select * from jsonb_array_elements(p_schedule->'holidays') loop
+    raise notice '%', v_holiday;
+    if v_date = v_holiday then
+      raise notice 'holiday!';
+      return false;
+    end if;
   end loop;
 
   -- passed all tests, so return true
@@ -191,13 +197,15 @@ end;
 $body$;
 
 
-select is_time_in_schedule(
-  now(), 
+select is_time_scheduled(
+  --now(),
+  '2021-12-25 03:00:00', 
   '{
     "work": [
       {"day":4, "start":5, "stop":15.5}
     ],
     "holidays": [
+      "2021-12-25"
     ]
   }'
 );
