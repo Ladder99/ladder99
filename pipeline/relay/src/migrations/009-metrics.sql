@@ -219,14 +219,15 @@ declare
   -- _binsize interval := case when (_range > interval '1 day') then interval '1 day' else interval '1 hour' end;
   -- _binminutes float := extract(epoch from _binsize) / 60.0; -- epoch is seconds - divide by 60 to get minutes
   -- _factor float := 1.0 / _binminutes; -- use this instead of dividing by binminutes below, for speed
-  _binsize interval := '1 minute';
+  --_binsize interval := '1 minute';
+  _binsize interval := case when (_range > interval '1 hour') then '1 hour' else '1 minute' end;
 begin
   return query
     select metrics.time, metrics.utilization
     from metrics
     where 
       metrics.time between _start and _stop
-      and interval = _binsize
+      and resolution = _binsize
     order by time
   ;
 end;
@@ -239,6 +240,7 @@ select time, utilization from get_utilization_from_metrics_view(
   'Cutter',
   'controller/partOccurrence/part_count-all',
   timestamptz2ms('2021-12-29 18:00:00'),
+--  timestamptz2ms('2021-12-29 19:00:00')
   timestamptz2ms('2021-12-29 20:00:00')
 );
 
