@@ -86,13 +86,13 @@ $body$;
 
 
 ---------------------------------------------------------------------
--- increment_bin procedure
+-- increment_bins procedure
 ---------------------------------------------------------------------
--- increment a value in the bins table
+-- increment values in the bins table
 
-create or replace procedure increment_bin(
+create or replace procedure increment_bins(
   in p_device_id int,
-  in p_resolution interval,
+--  in p_resolution interval,
   in p_time timestamptz,
   in p_field text,
   in p_delta int = 1
@@ -100,22 +100,29 @@ create or replace procedure increment_bin(
 language plpgsql
 as $body$
 declare
+  v_resolutions text[] := '{minute, hour, day, week, month, year}';
+  v_resolution text;
+  v_time timestamptz;
   v_field text := quote_ident(p_field); -- eg 'active', 'available'
 begin
-  -- upsert/increment the given field by delta
-  execute format(
-    'insert into bins (device_id, resolution, time, %s) 
-      values ($1, $2, $3, $4)
-    on conflict (device_id, resolution, time) do 
-      update set %s = coalesce(bins.%s, 0) + $5;',
-    v_field, v_field, v_field
-  ) using p_device_id, p_resolution, p_time, p_delta, p_delta;
+  foreach v_resolution in array v_resolutions loop
+    v_time := date_trunc(v_resolution, p_time); -- round down to start of current min, hour, day, etc
+    -- upsert/increment the given field by delta
+    execute format(
+      'insert into bins (device_id, resolution, time, %s) 
+        values ($1, $2, $3, $4)
+      on conflict (device_id, resolution, time) do 
+        update set %s = coalesce(bins.%s, 0) + $5;',
+      v_field, v_field, v_field
+    ) using p_device_id, ('1 '||v_resolution)::interval, v_time, p_delta, p_delta;
+  end loop;
 end
 $body$;
 
 
 -- test
 --call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'available');
+call increment_bins(11, '2021-12-30 04:00:00', 'available');
 
 
 ---------------------------------------------------------------------
@@ -221,6 +228,7 @@ declare
   -- _factor float := 1.0 / _binminutes; -- use this instead of dividing by binminutes below, for speed
   --_binsize interval := '1 minute';
   _binsize interval := case 
+    when (_range > interval '1 week') then '1 week'
     when (_range > interval '1 day') then '1 day'
     when (_range > interval '1 hour') then '1 hour'
     else '1 minute' 
