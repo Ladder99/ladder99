@@ -52,7 +52,9 @@ join nodes as devices on bins.device_id = devices.node_id;
 ---------------------------------------------------------------------
 -- get_active fn
 ---------------------------------------------------------------------
--- check for events on given device and path in a time range
+-- check for events on given device and path in a time range.
+-- returns true if any events.
+--. what about unavailable events - ignore those?
 
 create or replace function get_active(
   p_device text,
@@ -74,12 +76,13 @@ $body$
 $body$;
 
 
-select get_active(
-  'Cutter', 
-  'controller/partOccurrence/part_count-all', 
-  '2021-12-13 03:04:00', 
-  '2021-12-13 03:05:00'
-);
+-- test
+--select get_active(
+--  'Cutter', 
+--  'controller/partOccurrence/part_count-all', 
+--  '2021-12-13 03:04:00', 
+--  '2021-12-13 03:05:00'
+--);
 
 
 ---------------------------------------------------------------------
@@ -111,7 +114,8 @@ end
 $body$;
 
 
-call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'available');
+-- test
+--call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'available');
 
 
 ---------------------------------------------------------------------
@@ -120,7 +124,7 @@ call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'available');
 -- this will be called every minute by timescaledb's job scheduler.
 -- it calls increment_bin for the different fields and bin resolutions.
 
-drop procedure update_metrics;
+--drop procedure update_metrics;
 
 create or replace procedure update_metrics(job_id int, config jsonb)
 language plpgsql
@@ -160,7 +164,13 @@ end;
 $body$;
 
 
+-- test
+
 call update_metrics(null, '{"interval":"1 min"}');
+
+-- User-defined actions allow you to run functions and procedures implemented 
+-- in a language of your choice on a schedule within TimescaleDB.
+-- https://docs.timescale.com/timescaledb/latest/overview/core-concepts/user-defined-actions
 
 -- add a scheduled job
 select add_job(
@@ -173,6 +183,6 @@ select add_job(
 -- https://docs.timescale.com/api/latest/informational-views/job_stats
 select job_id, total_runs, total_failures, total_successes from timescaledb_information.job_stats;
 
---select delete_job(1010);
+--select delete_job(1011);
 
 
