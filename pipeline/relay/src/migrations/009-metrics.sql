@@ -92,7 +92,6 @@ $body$;
 
 create or replace procedure increment_bins(
   in p_device_id int,
---  in p_resolution interval,
   in p_time timestamptz,
   in p_field text,
   in p_delta int = 1
@@ -100,7 +99,7 @@ create or replace procedure increment_bins(
 language plpgsql
 as $body$
 declare
-  v_resolutions text[] := '{minute, hour, day, week, month, year}';
+  v_resolutions text[] := '{minute,hour,day,week,month,year}';
   v_resolution text;
   v_time timestamptz;
   v_field text := quote_ident(p_field); -- eg 'active', 'available'
@@ -108,6 +107,7 @@ begin
   foreach v_resolution in array v_resolutions loop
     v_time := date_trunc(v_resolution, p_time); -- round down to start of current min, hour, day, etc
     -- upsert/increment the given field by delta
+    --. use $ not % for all params?
     execute format(
       'insert into bins (device_id, resolution, time, %s) 
         values ($1, $2, $3, $4)
@@ -121,8 +121,7 @@ $body$;
 
 
 -- test
---call increment_bin(11, '1 minute', '2021-12-27 09:00:00', 'available');
-call increment_bins(11, '2021-12-30 04:00:00', 'available');
+call increment_bins(11, '2021-12-30 05:00:00', 'available');
 
 
 ---------------------------------------------------------------------
@@ -162,9 +161,9 @@ begin
       -- v_was_machine_active := true;
       v_was_machine_active := get_active(v_device, v_path, v_start, v_stop);
       if v_was_machine_active then
-        call increment_bin(v_device_id, '1 minute', v_stop, 'active');
+        call increment_bins(v_device_id, v_stop, 'active');
       end if;
-      call increment_bin(v_device_id, '1 minute', v_stop, 'available');
+      call increment_bins(v_device_id, v_stop, 'available');
     end if;
   end loop;
 end;
@@ -173,7 +172,7 @@ $body$;
 
 -- test
 
-call update_metrics(null, '{"interval":"1 min"}');
+call update_metrics(null, null);
 
 -- User-defined actions allow you to run functions and procedures implemented 
 -- in a language of your choice on a schedule within TimescaleDB.
@@ -184,7 +183,8 @@ call update_metrics(null, '{"interval":"1 min"}');
 select add_job(
   'update_metrics', -- function/procedure to call 
   '1 min', -- interval
-  config => '{"device_ids":[11], "interval":"1 min"}', -- config json
+  --. pass in path also
+  config => '{"device_ids":[11], "interval":"1 min"}', -- config json --. pass devicenamesarray
   initial_start => date_trunc('minute', now()) + interval '1 minute' -- start at top of next minute
 );
 
