@@ -99,7 +99,7 @@ create or replace procedure increment_bins(
 language plpgsql
 as $body$
 declare
-  v_resolutions text[] := '{minute,hour,day,week,month,year}';
+  v_resolutions text[] := '{minute,hour,day,week,month,year}'; -- array literal
   v_resolution text;
   v_time timestamptz;
   v_field text := quote_ident(p_field); -- eg 'active', 'available'
@@ -124,6 +124,77 @@ $body$;
 call increment_bins(11, '2021-12-30 05:00:00', 'available');
 
 
+
+
+---------------------------------------------------------------------
+-- is_time_in_schedule
+---------------------------------------------------------------------
+
+-- returns true if given time is within a schedule.
+
+-- p_schedule is a jsonb array of { timeframe, start, stop }, eg 
+--   [
+--     { timeframe: 'day', start: '4h', stop: '16h' }, -- 4a-4p
+--     { timeframe: 'week', start: '0d', stop: '4d' } -- mon-fri
+--   ]
+
+-- drop function is_time_within_windows(timestamptz, jsonb);
+
+create or replace function is_time_in_schedule(
+  in p_time timestamptz, 
+  in p_schedule jsonb
+)
+returns boolean
+language plpgsql
+as
+$body$
+declare
+  v_window jsonb;
+  v_base timestamptz;
+  v_start timestamptz;
+  v_stop timestamptz;
+begin
+--  
+--  -- iterate over work windows
+--  for v_window in select * from jsonb_array_elements(p_schedule->'work')
+--  loop
+--    -- get base time for this window -
+--    -- eg timeframe of 'day' gives midnight of p_time's day,
+--    -- timeframe of 'week' gives monday midnight, etc.
+--    -- _base := date_trunc(_window->>'timeframe', p_time at time zone 'America/Chicago');
+--    -- _base := date_trunc(_window->>'timeframe', p_time) at time zone 'America/Chicago';
+--    _base := date_trunc(_window->>'timeframe', p_time);
+--
+--    -- get start and stop times for this window - eg 4am-4pm of p_time's day 
+--    _start := _base + (_window->>'start')::interval; -- eg _base + interval '4h'
+--    _stop := least(now(), _base + (_window->>'stop')::interval); -- use now if not to the stop time
+--
+--    -- if time not within bounds, return false
+--    if not (p_time between _start and _stop) then
+--      return false;
+--    end if;
+--  end loop;
+
+  -- passed all tests, so return true
+  return true;
+end;
+$body$;
+
+
+select is_time_in_schedule(
+  now(), 
+  '{
+    "work": [
+      {"day":"1", "start":5, "stop":15.5}
+    ],
+    "holidays": [
+    ]
+  }'
+);
+
+
+
+
 ---------------------------------------------------------------------
 -- update_metrics procedure / job
 ---------------------------------------------------------------------
@@ -140,25 +211,25 @@ declare
   v_device_id int;
   v_device text;
   v_path text;
+  v_schedule jsonb := config->>'schedule'; -- null if not included
+  v_time timestamptz := coalesce(config->>'time', now()); -- ie default to now()
   v_interval interval := coalesce(config->>'interval', '1 minute'); -- ie default is 1 minute
-  v_stop timestamptz := date_trunc('minute', now()); -- round down to top of current minute
-  v_start timestamptz := v_stop - interval '1 minute'; -- start at previous minute
-  -- v_time timestamptz := coalesce(config->>'time' OR now());
-  -- v_time timestamptz := now(); --. round down to nearest min, hr, day, week, etc?
+  v_stop timestamptz := date_trunc('minute', v_time); -- round down to top of current minute --. or hour etc
+  v_start timestamptz := v_stop - interval '1 minute'; -- start at previous minute --. or hour etc
   v_is_time_in_schedule boolean;
   v_are_enough_people_logged_in boolean;
   v_was_machine_active boolean;
 begin
   -- is_time_in_schedule := if schedule passed in config, check if time is within the time windows.
-  v_is_time_in_schedule := true;
+  --v_is_time_in_schedule := true;
+  v_is_time_in_schedule := is_time_in_schedule(v_time, v_schedule);
   -- are_enough_people_logged_in := lookup latest value of a dataitem set by facebook login info.
   -- loop over relevant devices, as passed through config.
   for v_device_id in select * from jsonb_array_elements(config->'device_ids') loop
     v_device := 'Cutter'; --. need both id and name - what do? i guess lookup name and keep id in a jsonb?
     v_path := 'controller/partOccurrence/part_count-all'; --. pass this in
     if v_is_time_in_schedule or v_are_enough_people_logged_in then
-      -- was_machine_active := if any part_count events within previous time interval.
-      -- v_was_machine_active := true;
+      -- check if any part_count events were within the previous time interval (eg minute).
       v_was_machine_active := get_active(v_device, v_path, v_start, v_stop);
       if v_was_machine_active then
         call increment_bins(v_device_id, v_stop, 'active');
