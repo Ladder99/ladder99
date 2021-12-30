@@ -143,66 +143,75 @@ language plpgsql
 as
 $body$
 declare
+  v_date date;
+  v_holiday date;
   v_work_window jsonb;
+  v_day_of_week int;
   v_base timestamptz;
   v_start timestamptz;
   v_stop timestamptz;
-  v_day_of_week int;
-  v_holiday date;
-  v_date date;
 begin
+
+  -- first, check if day is a holiday
   
-  v_day_of_week := extract(dow from p_time);
-  raise notice '%', v_day_of_week;
-
-  -- iterate over work windows
-  for v_work_window in select * from jsonb_array_elements(p_schedule->'work') loop
-    raise notice '%', v_work_window;
-    if v_day_of_week = (v_work_window->'day')::int then
-      raise notice 'hi';
-    end if;
-  end loop;
-
---    -- get base time for this window -
---    -- eg timeframe of 'day' gives midnight of p_time's day,
---    -- timeframe of 'week' gives monday midnight, etc.
---    -- _base := date_trunc(_window->>'timeframe', p_time at time zone 'America/Chicago');
---    -- _base := date_trunc(_window->>'timeframe', p_time) at time zone 'America/Chicago';
---    _base := date_trunc(_window->>'timeframe', p_time);
---
---    -- get start and stop times for this window - eg 4am-4pm of p_time's day 
---    _start := _base + (_window->>'start')::interval; -- eg _base + interval '4h'
---    _stop := least(now(), _base + (_window->>'stop')::interval); -- use now if not to the stop time
---
---    -- if time not within bounds, return false
---    if not (p_time between _start and _stop) then
---      return false;
---    end if;
-
   -- get time as a pure date, eg '2021-12-25'
   v_date := p_time::date;
 
   -- iterate over holidays
   for v_holiday in select * from jsonb_array_elements(p_schedule->'holidays') loop
-    raise notice '%', v_holiday;
+    raise notice 'holiday %', v_holiday;
     if v_date = v_holiday then
-      raise notice 'holiday!';
-      return false;
+      raise notice 'it''s a holiday!';
+      return false; -- return false if on a holiday
     end if;
   end loop;
 
-  -- passed all tests, so return true
-  return true;
+  -- now, check if time is within any scheduled work hours
+
+  v_day_of_week := extract(dow from p_time); -- 1-7, with 1=monday
+  v_base := date_trunc('day', p_time); -- midnight of day
+
+  -- iterate over work windows
+  for v_work_window in select * from jsonb_array_elements(p_schedule->'work_windows') loop
+    raise notice 'work window %', v_work_window;
+  
+    -- check for matching day of week
+    if v_day_of_week = (v_work_window->'day')::int then
+
+      -- get start and stop times for this window - eg 5am-330pm of p_time's day 
+      v_start := v_base + (v_work_window->>'start')::interval; -- eg v_base + interval '4h'
+      v_stop  := v_base + (v_work_window->>'stop')::interval;
+
+      raise notice 'checking times % to %', v_start, v_stop;
+    
+      -- if time within bounds, return true
+      if (p_time between v_start and v_stop) then
+        raise notice 'in bounds!';
+        return true;
+      end if;
+  
+    end if;
+  end loop;
+
+  -- not within a work window, so return false
+  return false;
 end;
 $body$;
 
 
+--. set a global variable/constant for schedule to be used later also?
+--. how run tests here? raise notice of t/f?
+
 select is_time_scheduled(
-  --now(),
-  '2021-12-25 03:00:00', 
+  '2021-12-18 12:30:00',
   '{
-    "work": [
-      {"day":4, "start":5, "stop":15.5}
+    "work_windows": [
+      {"day":1, "start":"5:00", "stop":"15:30"},
+      {"day":2, "start":"5:00", "stop":"15:30"},
+      {"day":3, "start":"5:00", "stop":"15:30"},
+      {"day":4, "start":"5:00", "stop":"15:30"},
+      {"day":5, "start":"5:00", "stop":"13:30"},
+      {"day":6, "start":"5:00", "stop":"13:00"}
     ],
     "holidays": [
       "2021-12-25"
