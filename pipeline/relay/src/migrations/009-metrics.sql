@@ -40,7 +40,7 @@ select
   -- note: coalesce returns the first non-null value (works like an or operator),
   -- and nullif returns the first value, unless it equals 0.0, when it returns null -
   -- then the whole expression is null. avoids div by zero error.
-  coalesce(bins.active::real,0) / nullif(bins.available::real,0.0) as utilization
+  coalesce(bins.active::float,0) / nullif(bins.available::float,0.0) as utilization
 --  bins.values as "values", -- a jsonb object
 --  coalesce((values->>'time_active')::real,0) / 
 --    nullif((values->>'time_available')::real,0.0) as utilization
@@ -185,4 +185,56 @@ select job_id, total_runs, total_failures, total_successes from timescaledb_info
 
 --select delete_job(1011);
 
+
+
+
+---------------------------------------------------------------------
+-- get_utilization_from_metrics_view fn
+---------------------------------------------------------------------
+-- get percent of time a device is active vs available
+-- call it from grafana like so - 
+-- set timezone to 'America/Chicago';
+-- select time, utilization from get_utilization_from_metrics_view(
+--   'Cutter',
+--   'controller/partOccurrence/part_count-all',
+--   $__from, $__to
+-- )
+
+create or replace function get_utilization_from_metrics_view (
+  in p_device text, -- the device name, eg 'Cutter'
+  in p_path text, -- path to monitor, eg 'controller/partOccurrence/part_count-all'
+  in p_start bigint, -- start time in milliseconds since 1970-01-01
+  in p_stop bigint -- stop time in milliseconds since 1970-01-01
+)
+returns table ("time" timestamptz, "utilization" float)
+language plpgsql
+as
+$body$
+declare
+  _start timestamptz := ms2timestamptz(p_start);
+  _stop timestamptz := ms2timestamptz(p_stop);
+  _range interval := _stop - _start;
+  -- choose _binsize based on _range size
+  _binsize interval := case when (_range > interval '1 day') then interval '1 day' else interval '1 hour' end;
+  _binminutes float := extract(epoch from _binsize) / 60.0; -- epoch is seconds - divide by 60 to get minutes
+  _factor float := 1.0 / _binminutes; -- use this instead of dividing by binminutes below, for speed
+begin
+  return query
+    select metrics.time, metrics.utilization
+    from metrics
+    where metrics.time between _start and _stop
+    order by time
+  ;
+end;
+$body$;
+
+
+
+--set timezone to 'America/Chicago';
+select time, utilization from get_utilization_from_metrics_view(
+  'Cutter',
+  'controller/partOccurrence/part_count-all',
+  timestamptz2ms('2021-12-29 18:00:00'),
+  timestamptz2ms('2021-12-29 20:00:00')
+);
 
