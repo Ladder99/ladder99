@@ -153,11 +153,21 @@ declare
   v_base timestamptz;
   v_start timestamptz;
   v_stop timestamptz;
+  v_dow int;
 begin
+  
+  v_dow := extract(dow from p_time);
+  raise notice '%', v_dow;
+
+  -- iterate over work windows
+  for v_window in select * from jsonb_array_elements(p_schedule->'work') loop
+    raise notice '%', v_window;
+
+    if v_dow = (v_window->'day')::int then
+      raise notice 'hi';
+    end if;
+
 --  
---  -- iterate over work windows
---  for v_window in select * from jsonb_array_elements(p_schedule->'work')
---  loop
 --    -- get base time for this window -
 --    -- eg timeframe of 'day' gives midnight of p_time's day,
 --    -- timeframe of 'week' gives monday midnight, etc.
@@ -173,7 +183,7 @@ begin
 --    if not (p_time between _start and _stop) then
 --      return false;
 --    end if;
---  end loop;
+  end loop;
 
   -- passed all tests, so return true
   return true;
@@ -185,7 +195,7 @@ select is_time_in_schedule(
   now(), 
   '{
     "work": [
-      {"day":"1", "start":5, "stop":15.5}
+      {"day":4, "start":5, "stop":15.5}
     ],
     "holidays": [
     ]
