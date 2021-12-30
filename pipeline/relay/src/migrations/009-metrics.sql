@@ -171,6 +171,7 @@ call update_metrics(null, '{"interval":"1 min"}');
 -- User-defined actions allow you to run functions and procedures implemented 
 -- in a language of your choice on a schedule within TimescaleDB.
 -- https://docs.timescale.com/timescaledb/latest/overview/core-concepts/user-defined-actions
+-- https://docs.timescale.com/api/latest/actions/add_job
 
 -- add a scheduled job
 select add_job(
@@ -215,14 +216,17 @@ declare
   _stop timestamptz := ms2timestamptz(p_stop);
   _range interval := _stop - _start;
   -- choose _binsize based on _range size
-  _binsize interval := case when (_range > interval '1 day') then interval '1 day' else interval '1 hour' end;
-  _binminutes float := extract(epoch from _binsize) / 60.0; -- epoch is seconds - divide by 60 to get minutes
-  _factor float := 1.0 / _binminutes; -- use this instead of dividing by binminutes below, for speed
+  -- _binsize interval := case when (_range > interval '1 day') then interval '1 day' else interval '1 hour' end;
+  -- _binminutes float := extract(epoch from _binsize) / 60.0; -- epoch is seconds - divide by 60 to get minutes
+  -- _factor float := 1.0 / _binminutes; -- use this instead of dividing by binminutes below, for speed
+  _binsize interval := '1 minute';
 begin
   return query
     select metrics.time, metrics.utilization
     from metrics
-    where metrics.time between _start and _stop
+    where 
+      metrics.time between _start and _stop
+      and interval = _binsize
     order by time
   ;
 end;
