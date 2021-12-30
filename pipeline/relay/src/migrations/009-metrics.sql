@@ -148,8 +148,8 @@ begin
   -- are_enough_people_logged_in := lookup latest value of a dataitem set by facebook login info.
   -- loop over relevant devices, as passed through config.
   for v_device_id in select * from jsonb_array_elements(config->'device_ids') loop
-    v_device := 'Cutter';
-    v_path := 'controller/partOccurrence/part_count-all';
+    v_device := 'Cutter'; --. need both id and name - what do? i guess lookup name and keep id in a jsonb?
+    v_path := 'controller/partOccurrence/part_count-all'; --. pass this in
     if v_is_time_in_schedule or v_are_enough_people_logged_in then
       -- was_machine_active := if any part_count events within previous time interval.
       -- v_was_machine_active := true;
@@ -220,7 +220,11 @@ declare
   -- _binminutes float := extract(epoch from _binsize) / 60.0; -- epoch is seconds - divide by 60 to get minutes
   -- _factor float := 1.0 / _binminutes; -- use this instead of dividing by binminutes below, for speed
   --_binsize interval := '1 minute';
-  _binsize interval := case when (_range > interval '1 hour') then '1 hour' else '1 minute' end;
+  _binsize interval := case 
+    when (_range > interval '1 day') then '1 day'
+    when (_range > interval '1 hour') then '1 hour'
+    else '1 minute' 
+  end;
 begin
   return query
     select metrics.time, metrics.utilization
@@ -240,7 +244,7 @@ select time, utilization from get_utilization_from_metrics_view(
   'Cutter',
   'controller/partOccurrence/part_count-all',
   timestamptz2ms('2021-12-29 18:00:00'),
---  timestamptz2ms('2021-12-29 19:00:00')
-  timestamptz2ms('2021-12-29 20:00:00')
+  timestamptz2ms('2021-12-29 19:00:00')
+--  timestamptz2ms('2021-12-29 20:00:00')
 );
 
