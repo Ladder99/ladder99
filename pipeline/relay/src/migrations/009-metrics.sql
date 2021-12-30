@@ -220,6 +220,23 @@ select is_time_scheduled(
 );
 
 
+--insert into meta (name, value) values ('schedule1', 
+--  '{
+--    "work_windows": [
+--      {"day":1, "start":"5:00", "stop":"15:30"},
+--      {"day":2, "start":"5:00", "stop":"15:30"},
+--      {"day":3, "start":"5:00", "stop":"15:30"},
+--      {"day":4, "start":"5:00", "stop":"15:30"},
+--      {"day":5, "start":"5:00", "stop":"13:30"},
+--      {"day":6, "start":"5:00", "stop":"13:00"}
+--    ],
+--    "holidays": [
+--      "2021-12-25"
+--    ]
+--  }'
+--);
+
+
 
 
 ---------------------------------------------------------------------
@@ -353,4 +370,22 @@ select time, utilization from get_utilization_from_metrics_view(
   timestamptz2ms('2021-12-29 19:00:00')
 --  timestamptz2ms('2021-12-29 20:00:00')
 );
+
+
+
+--. iterate over time range and call update_metrics
+-- use this for schedule -
+--  '{
+--    "work_windows": [
+--      {"day":1, "start":"5:00", "stop":"15:30"},
+--      {"day":2, "start":"5:00", "stop":"15:30"},
+--      {"day":3, "start":"5:00", "stop":"15:30"},
+--      {"day":4, "start":"5:00", "stop":"15:30"},
+--      {"day":5, "start":"5:00", "stop":"13:30"},
+--      {"day":6, "start":"5:00", "stop":"13:00"}
+--    ],
+--    "holidays": [
+--      "2021-12-25"
+--    ]
+--  }'
 
