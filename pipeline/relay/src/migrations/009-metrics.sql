@@ -373,19 +373,54 @@ from get_utilization_from_metrics_view(
 
 
 
---. iterate over time range and call update_metrics
--- use this for schedule -
---  '{
---    "work_windows": [
---      {"day":1, "start":"5:00", "stop":"15:30"},
---      {"day":2, "start":"5:00", "stop":"15:30"},
---      {"day":3, "start":"5:00", "stop":"15:30"},
---      {"day":4, "start":"5:00", "stop":"15:30"},
---      {"day":5, "start":"5:00", "stop":"13:30"},
---      {"day":6, "start":"5:00", "stop":"13:00"}
---    ],
---    "holidays": [
---      "2021-12-25"
---    ]
---  }'
+
+---------------------------------------------------------------------
+-- populate_bins fn
+---------------------------------------------------------------------
+-- populate the bins table for a time range
+
+--drop procedure populate_bins;
+
+create or replace procedure populate_bins(
+  in p_device text, -- the device name, eg 'Cutter'
+  in p_path text, -- dataitem path, eg 'controller/partOccurrence/part_count-all'
+  in p_schedule jsonb,
+  in p_start timestamptz,
+  in p_stop timestamptz
+)
+language plpgsql
+as
+$body$
+declare
+  v_time timestamptz;
+begin
+  --. iterate over time range and call update_metrics
+  for v_time in select generate_series(p_start::date, p_stop, '1 day') loop
+    raise notice '%', v_time;
+--    update_metrics();
+  end loop;
+end
+$body$;
+
+
+call populate_bins(
+  'Cutter', 
+  'controller/partOccurrence/part_count-all',
+  '{
+    "work_windows": [
+      {"day":1, "start":"5:00", "stop":"15:30"},
+      {"day":2, "start":"5:00", "stop":"15:30"},
+      {"day":3, "start":"5:00", "stop":"15:30"},
+      {"day":4, "start":"5:00", "stop":"15:30"},
+      {"day":5, "start":"5:00", "stop":"13:30"},
+      {"day":6, "start":"5:00", "stop":"13:00"}
+    ],
+    "holidays": [
+      "2021-12-25"
+    ]
+  }',
+  '2021-11-01', 
+  now()
+);
+
 
