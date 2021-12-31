@@ -66,6 +66,29 @@ services:
       options:
         max-size: '20m'
 
+  ftpd:
+    container_name: ftpd
+    profiles:
+      - all
+      - ftpd
+    image: crazymax/pure-ftpd
+    restart: always
+    networks:
+      - ladder99
+    ports:
+      - '21:2100'
+      - '30000-30009:30000-30009'
+    volumes:
+      - ../$SETUP/volumes/ftpd/data:/home/ftp:rw
+      - ../$SETUP/volumes/ftpd/passwd:/data:rw
+    environment:
+      - 'PASSIVE_IP=10.1.38.128'
+    logging:
+      driver: 'json-file'
+      options:
+        max-file: '5'
+        max-size: '1m'
+
   # grafana - show real-time data from the database, handle notifications
   grafana:
     container_name: grafana
@@ -148,6 +171,29 @@ services:
     logging:
       options:
         max-size: '20m'
+
+  nodered:
+    container_name: nodered
+    profiles:
+      - all
+      - nodered
+    image: nodered/node-red:latest
+    restart: always
+    networks:
+      - ladder99
+    ports:
+      - '1880:1880'
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      # note: have to `sudo chown pi:pi volumes/nodered/data` for nodered to work
+      - ../$SETUP/volumes/nodered/data:/data:rw
+      - ../$SETUP/volumes/ftpd/data:/volumes/ftpd-data:rw
+    logging:
+      driver: 'json-file'
+      options:
+        max-file: '5'
+        max-size: '1m'
 
   # pgadmin - admin console for postgres database
   pgadmin:
