@@ -314,18 +314,18 @@ select job_id, total_runs, total_failures, total_successes from timescaledb_info
 ---------------------------------------------------------------------
 -- get_utilization_from_metrics_view fn
 ---------------------------------------------------------------------
--- get percent of time a device is active vs available
--- call it from grafana like so - 
--- set timezone to 'America/Chicago';
--- select time, utilization from get_utilization_from_metrics_view(
---   'Cutter',
---   'controller/partOccurrence/part_count-all',
---   $__from, $__to
--- )
+-- get percent of time a device is active vs available.
+-- chooses a resolution (hour, day, etc) based on time range.
 
-create or replace function get_utilization_from_metrics_view (
+-- call it from grafana like so - 
+--   set timezone to 'America/Chicago';
+--   select time, utilization 
+--   from get_utilization_from_metrics_view('Cutter', $__from, $__to)
+
+--drop function get_utilization_from_metrics_view;
+
+create or replace function get_utilization_from_metrics_view(
   in p_device text, -- the device name, eg 'Cutter'
-  in p_path text, -- path to monitor, eg 'controller/partOccurrence/part_count-all'
   in p_start bigint, -- start time in milliseconds since 1970-01-01
   in p_stop bigint -- stop time in milliseconds since 1970-01-01
 )
@@ -334,38 +334,38 @@ language plpgsql
 as
 $body$
 declare
-  _start timestamptz := ms2timestamptz(p_start);
-  _stop timestamptz := ms2timestamptz(p_stop);
-  _range interval := _stop - _start;
-  -- choose _binsize based on _range size
-  -- _binsize interval := case when (_range > interval '1 day') then interval '1 day' else interval '1 hour' end;
-  -- _binminutes float := extract(epoch from _binsize) / 60.0; -- epoch is seconds - divide by 60 to get minutes
-  -- _factor float := 1.0 / _binminutes; -- use this instead of dividing by binminutes below, for speed
-  --_binsize interval := '1 minute';
-  _binsize interval := case 
-    when (_range > interval '1 week') then '1 week'
-    when (_range > interval '1 day') then '1 day'
-    when (_range > interval '1 hour') then '1 hour'
+  v_start timestamptz := ms2timestamptz(p_start);
+  v_stop timestamptz := ms2timestamptz(p_stop);
+  v_range interval := v_stop - v_start;
+  -- choose v_binsize based on v_range size
+  v_binsize interval := case 
+    when (v_range > interval '1 week') then '1 week'
+    when (v_range > interval '1 day') then '1 day'
+    when (v_range > interval '1 hour') then '1 hour'
     else '1 minute' 
   end;
 begin
   return query
-    select metrics.time, metrics.utilization
-    from metrics
+    select 
+      metrics.time, metrics.utilization
+    from 
+      metrics
     where 
-      metrics.time between _start and _stop
-      and resolution = _binsize
-    order by time
-  ;
+      metrics.device = p_device
+      and metrics.time between v_start and v_stop
+      and resolution = v_binsize
+    order by 
+      time
+    ;
 end;
 $body$;
 
 
 
 --set timezone to 'America/Chicago';
-select time, utilization from get_utilization_from_metrics_view(
+select time, utilization 
+from get_utilization_from_metrics_view(
   'Cutter',
-  'controller/partOccurrence/part_count-all',
   timestamptz2ms('2021-12-29 18:00:00'),
   timestamptz2ms('2021-12-29 19:00:00')
 --  timestamptz2ms('2021-12-29 20:00:00')
