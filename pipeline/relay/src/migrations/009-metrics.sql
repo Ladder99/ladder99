@@ -254,7 +254,7 @@ $body$
 declare
   v_device_id int;
   v_device text;
-  v_path text;
+  v_path text := config->>'path'; -- eg 'controller/partOccurrence/part_count-all'
   v_schedule jsonb := config->>'schedule'; -- null if not included
   v_time timestamptz := coalesce(config->>'time', now()); -- ie default to now()
   v_interval interval := coalesce(config->>'interval', '1 minute'); -- ie default is 1 minute
@@ -271,7 +271,7 @@ begin
   -- loop over relevant devices, as passed through config.
   for v_device_id in select * from jsonb_array_elements(config->'device_ids') loop
     v_device := 'Cutter'; --. need both id and name - what do? i guess lookup name and keep id in a jsonb?
-    v_path := 'controller/partOccurrence/part_count-all'; --. pass this in
+    -- v_path := 'controller/partOccurrence/part_count-all'; --. pass this in
     if v_is_time_in_schedule or v_are_enough_people_logged_in then
       -- check if any part_count events were within the previous time interval (eg minute).
       v_was_machine_active := get_active(v_device, v_path, v_start, v_stop);
@@ -287,7 +287,7 @@ $body$;
 
 -- test
 
-call update_metrics(null, null);
+--call update_metrics(null, null);
 
 -- User-defined actions allow you to run functions and procedures implemented 
 -- in a language of your choice on a schedule within TimescaleDB.
@@ -298,15 +298,19 @@ call update_metrics(null, null);
 select add_job(
   'update_metrics', -- function/procedure to call 
   '1 min', -- interval
-  --. pass in path also
-  config => '{"device_ids":[11], "interval":"1 min"}', -- config json --. pass devicenamesarray
+  --. pass in device names not ids
+  config => '{
+    "device_ids": [11],
+    "path": "controller/partOccurrence/part_count-all", 
+    "interval": "1 min"
+  }',
   initial_start => date_trunc('minute', now()) + interval '1 minute' -- start at top of next minute
 );
 
 -- https://docs.timescale.com/api/latest/informational-views/job_stats
 select job_id, total_runs, total_failures, total_successes from timescaledb_information.job_stats;
 
---select delete_job(1011);
+--select delete_job(1012);
 
 
 
