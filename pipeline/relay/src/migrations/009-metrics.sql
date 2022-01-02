@@ -256,7 +256,7 @@ declare
   v_device text;
   v_path text := config->>'path'; -- eg 'controller/partOccurrence/part_count-all'
   v_schedule jsonb := config->>'schedule'; -- null if not included
-  v_time timestamptz := coalesce(config->>'time', now()); -- ie default to now()
+  v_time timestamptz := coalesce((config->>'time')::timestamptz, now()); -- ie default to now()
   v_interval interval := coalesce(config->>'interval', '1 minute'); -- ie default is 1 minute
   v_stop timestamptz := date_trunc('minute', v_time); -- round down to top of current minute --. or hour etc
   v_start timestamptz := v_stop - interval '1 minute'; -- start at previous minute --. or hour etc
@@ -287,7 +287,7 @@ $body$;
 
 -- test
 
---call update_metrics(null, null);
+call update_metrics(null, null);
 
 -- User-defined actions allow you to run functions and procedures implemented 
 -- in a language of your choice on a schedule within TimescaleDB.
@@ -310,7 +310,7 @@ select add_job(
 -- https://docs.timescale.com/api/latest/informational-views/job_stats
 select job_id, total_runs, total_failures, total_successes from timescaledb_information.job_stats;
 
---select delete_job(1012);
+--select delete_job(1013);
 
 
 
