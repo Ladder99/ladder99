@@ -261,33 +261,30 @@ declare
   v_stop timestamptz := date_trunc('minute', v_time); -- round down to top of current minute --. or hour etc
   v_start timestamptz := v_stop - interval '1 minute'; -- start at previous minute --. or hour etc
   v_is_time_in_schedule boolean;
-  v_are_enough_people_logged_in boolean;
   v_was_machine_active boolean;
 begin
   -- check if time is within the time windows.
   v_is_time_in_schedule := is_time_in_schedule(v_time, v_schedule);
-  -- are_enough_people_logged_in := lookup latest value of a dataitem set by facebook login info.
-  -- loop over relevant devices, as passed through config.
-  -- note: jsonb_array_elements returns values with double quotes around them, so use _text.
-  for v_device in select * from jsonb_array_elements_text(config->'devices') loop
-    -- get device_id from devices view
-    execute 'select node_id from devices where name = $1' into v_device_id using v_device;
-    if v_is_time_in_schedule or v_are_enough_people_logged_in then
+  if v_is_time_in_schedule then
+    -- loop over relevant devices, as passed through config.
+    -- note: jsonb_array_elements returns values with double quotes around them, so use _text.
+    for v_device in select * from jsonb_array_elements_text(config->'devices') loop
+      -- get device_id from devices view - this is a simple lookup
+      execute 'select node_id from devices where name = $1' into v_device_id using v_device;
       -- check if any part_count events were within the previous time interval (eg minute).
       v_was_machine_active := get_active(v_device, v_path, v_start, v_stop);
       if v_was_machine_active then
         call increment_bins(v_device_id, v_stop, 'active');
       end if;
       call increment_bins(v_device_id, v_stop, 'available');
-    end if;
-  end loop;
+    end loop;
+  end if;
 end;
 $body$;
 
 
 -- test
 
---call update_metrics(null, null);
 call update_metrics(null,
   config => '{
     "devices": ["Cutter"],
@@ -305,8 +302,6 @@ call update_metrics(null,
 select add_job(
   'update_metrics', -- function/procedure to call 
   '1 min', -- interval
-  --. pass in device names not ids
---    "device_ids": [11],
   config => '{
     "devices": ["Cutter"],
     "path": "controller/partOccurrence/part_count-all", 
@@ -319,7 +314,6 @@ select add_job(
 select job_id, total_runs, total_failures, total_successes from timescaledb_information.job_stats;
 
 --select delete_job(1015);
-
 
 
 
