@@ -264,14 +264,15 @@ declare
   v_are_enough_people_logged_in boolean;
   v_was_machine_active boolean;
 begin
-  -- is_time_in_schedule := if schedule passed in config, check if time is within the time windows.
-  --v_is_time_in_schedule := true;
+  -- check if time is within the time windows.
   v_is_time_in_schedule := is_time_in_schedule(v_time, v_schedule);
   -- are_enough_people_logged_in := lookup latest value of a dataitem set by facebook login info.
   -- loop over relevant devices, as passed through config.
-  for v_device_id in select * from jsonb_array_elements(config->'device_ids') loop
-    v_device := 'Cutter'; --. need both id and name - what do? i guess lookup name and keep id in a jsonb?
-    -- v_path := 'controller/partOccurrence/part_count-all'; --. pass this in
+  for v_device in select * from jsonb_array_elements_text(config->'devices') loop
+  --for v_device in config->>'devices' loop
+    --v_device_id := lookup(v_device);
+    execute 'select node_id from devices where name = $1' into v_device_id using v_device;
+    raise notice 'device % %', v_device, v_device_id;
     if v_is_time_in_schedule or v_are_enough_people_logged_in then
       -- check if any part_count events were within the previous time interval (eg minute).
       v_was_machine_active := get_active(v_device, v_path, v_start, v_stop);
@@ -287,7 +288,14 @@ $body$;
 
 -- test
 
-call update_metrics(null, null);
+--call update_metrics(null, null);
+call update_metrics(null,
+  config => '{
+    "devices": ["Cutter"],
+    "path": "controller/partOccurrence/part_count-all", 
+    "interval": "1 min"
+  }'
+);
 
 -- User-defined actions allow you to run functions and procedures implemented 
 -- in a language of your choice on a schedule within TimescaleDB.
@@ -299,8 +307,9 @@ select add_job(
   'update_metrics', -- function/procedure to call 
   '1 min', -- interval
   --. pass in device names not ids
+--    "device_ids": [11],
   config => '{
-    "device_ids": [11],
+    "devices": ["Cutter"],
     "path": "controller/partOccurrence/part_count-all", 
     "interval": "1 min"
   }',
@@ -310,7 +319,7 @@ select add_job(
 -- https://docs.timescale.com/api/latest/informational-views/job_stats
 select job_id, total_runs, total_failures, total_successes from timescaledb_information.job_stats;
 
---select delete_job(1013);
+--select delete_job(1015);
 
 
 
