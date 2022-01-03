@@ -268,11 +268,10 @@ begin
   v_is_time_in_schedule := is_time_in_schedule(v_time, v_schedule);
   -- are_enough_people_logged_in := lookup latest value of a dataitem set by facebook login info.
   -- loop over relevant devices, as passed through config.
+  -- note: jsonb_array_elements returns values with double quotes around them, so use _text.
   for v_device in select * from jsonb_array_elements_text(config->'devices') loop
-  --for v_device in config->>'devices' loop
-    --v_device_id := lookup(v_device);
+    -- get device_id from devices view
     execute 'select node_id from devices where name = $1' into v_device_id using v_device;
-    raise notice 'device % %', v_device, v_device_id;
     if v_is_time_in_schedule or v_are_enough_people_logged_in then
       -- check if any part_count events were within the previous time interval (eg minute).
       v_was_machine_active := get_active(v_device, v_path, v_start, v_stop);
