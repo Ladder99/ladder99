@@ -73,7 +73,7 @@ export class AgentReader {
   async start() {
     // for metric calcs
     this.tracker = new tracker.Tracker(this.db, dimensionDefs, valueDefs)
-    this.tracker.startTimer(60) // start timer which dumps bins to db every interval secs
+    // this.tracker.startTimer(60) // start timer which dumps bins to db every interval secs
 
     // probe - get agent data structures and write to db
     probe: do {
@@ -81,9 +81,9 @@ export class AgentReader {
       await probe.read(this.endpoint) // read xml into probe.json, probe.elements, probe.nodes
       await probe.write(this.db) // write/sync dataitems to db, get probe.indexes
       this.instanceId = probe.instanceId
-      this.tracker.setDevices(
-        probe.nodes.filter(node => node.node_type === 'Device')
-      )
+      // this.tracker.setDevices(
+      //   probe.nodes.filter(node => node.node_type === 'Device')
+      // )
 
       // current - get last known values of all dataitems and write to db
       current: do {
@@ -91,7 +91,7 @@ export class AgentReader {
         await current.read(this.endpoint) // get observations and this.sequence numbers
         if (instanceIdChanged(current, probe)) break probe
         await current.write(this.db, probe.indexes) // write this.observations to db
-        this.tracker.writeObservationsToBins(current.observations) // update bins - timer will write to db
+        // this.tracker.writeObservationsToBins(current.observations) // update bins - timer will write to db
         this.from = current.sequence.next
 
         // sample - get sequence of dataitem values, write to db
@@ -100,7 +100,7 @@ export class AgentReader {
           await sample.read(this.endpoint, this.from, this.count) // get observations
           if (instanceIdChanged(sample, probe)) break probe
           await sample.write(this.db, probe.indexes) // write this.observations to db
-          this.tracker.writeObservationsToBins(sample.observations) // update bins - timer will write to db
+          // this.tracker.writeObservationsToBins(sample.observations) // update bins - timer will write to db
           this.from = sample.sequence.next //. ?
           await lib.sleep(this.interval)
         } while (true)

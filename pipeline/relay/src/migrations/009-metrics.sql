@@ -304,21 +304,21 @@ $body$;
 -- add a scheduled job
 --... don't do this if job is already running - need guard
 
-select add_job(
-  'update_metrics', -- function/procedure to call 
-  '1 min', -- interval
-  config => '{
-    "devices": ["Cutter"],
-    "path": "controller/partOccurrence/part_count-all", 
-    "interval": "1 min"
-  }',
-  initial_start => date_trunc('minute', now()) + interval '1 minute' -- start at top of next minute
-);
+-- select add_job(
+--   'update_metrics', -- function/procedure to call 
+--   '1 min', -- interval
+--   config => '{
+--     "devices": ["Cutter"],
+--     "path": "controller/partOccurrence/part_count-all", 
+--     "interval": "1 min"
+--   }',
+--   initial_start => date_trunc('minute', now()) + interval '1 minute' -- start at top of next minute
+-- );
 
--- https://docs.timescale.com/api/latest/informational-views/job_stats
-select job_id, total_runs, total_failures, total_successes from timescaledb_information.job_stats;
+-- -- https://docs.timescale.com/api/latest/informational-views/job_stats
+-- select job_id, total_runs, total_failures, total_successes from timescaledb_information.job_stats;
 
---select delete_job(1015);
+-- --select delete_job(1015);
 
 
 
@@ -373,14 +373,14 @@ $body$;
 
 
 
---set timezone to 'America/Chicago';
-select time, utilization 
-from get_utilization_from_metrics_view(
-  'Cutter',
-  timestamptz2ms('2021-12-29 18:00:00'),
-  timestamptz2ms('2021-12-29 19:00:00')
---  timestamptz2ms('2021-12-29 20:00:00')
-);
+-- --set timezone to 'America/Chicago';
+-- select time, utilization 
+-- from get_utilization_from_metrics_view(
+--   'Cutter',
+--   timestamptz2ms('2021-12-29 18:00:00'),
+--   timestamptz2ms('2021-12-29 19:00:00')
+-- --  timestamptz2ms('2021-12-29 20:00:00')
+-- );
 
 
 
@@ -414,24 +414,24 @@ end
 $body$;
 
 
-call populate_bins(
-  'Cutter', 
-  'controller/partOccurrence/part_count-all',
-  '{
-    "work_windows": [
-      {"day":1, "start":"5:00", "stop":"15:30"},
-      {"day":2, "start":"5:00", "stop":"15:30"},
-      {"day":3, "start":"5:00", "stop":"15:30"},
-      {"day":4, "start":"5:00", "stop":"15:30"},
-      {"day":5, "start":"5:00", "stop":"13:30"},
-      {"day":6, "start":"5:00", "stop":"13:00"}
-    ],
-    "holidays": [
-      "2021-12-25"
-    ]
-  }',
-  '2021-11-01', 
-  now()
-);
+-- call populate_bins(
+--   'Cutter', 
+--   'controller/partOccurrence/part_count-all',
+--   '{
+--     "work_windows": [
+--       {"day":1, "start":"5:00", "stop":"15:30"},
+--       {"day":2, "start":"5:00", "stop":"15:30"},
+--       {"day":3, "start":"5:00", "stop":"15:30"},
+--       {"day":4, "start":"5:00", "stop":"15:30"},
+--       {"day":5, "start":"5:00", "stop":"13:30"},
+--       {"day":6, "start":"5:00", "stop":"13:00"}
+--     ],
+--     "holidays": [
+--       "2021-12-25"
+--     ]
+--   }',
+--   '2021-11-01', 
+--   now()
+-- );
 
 

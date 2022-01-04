@@ -69,6 +69,8 @@ CREATE INDEX IF NOT EXISTS history_dataitem_id ON history (dataitem_id);
 
 -- make hypertable and add compression/retention schedules.
 -- this adds an index, history_time_idx, on the time column.
+-- and by default, clusters the data into week intervals. 
+--. should adjust that for data volume expected, ideally.
 SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
 -- SELECT add_compression_policy('history', INTERVAL '1d', if_not_exists => TRUE);
 -- SELECT add_retention_policy('history', INTERVAL '1 year', if_not_exists => TRUE);
