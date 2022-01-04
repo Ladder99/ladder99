@@ -10,22 +10,18 @@
 create table if not exists bins (
   device_id integer references nodes, -- node_id of a device
   resolution interval, -- 1min, 1hr, 1day, 1week, 1month, 1quarter, 1year
-  time timestamptz, -- rounded down to previous minute, hour, day, etc
+  time timestamptz, -- rounded down to start of current minute, hour, day, etc
   active int, -- number of minutes device was active during time resolution
   available int, -- number of minutes device was available during time resolution
-  primary key (device_id, resolution, time)
+  primary key (device_id, resolution, time) -- need this so can find right record quickly for updating
 );
---. what's advantage of hypertable here?
--- make hypertable and add compression/retention schedules
--- select create_hypertable('bins', 'time', if_not_exists => true);
--- select add_compression_policy('bins', interval '1d', if_not_exists => true);
--- select add_retention_policy('bins', interval '1 year', if_not_exists => true);
 
 
 ---------------------------------------------------------------------
 -- metrics view
 ---------------------------------------------------------------------
 -- a view on the bins table - adds name, calculates uptime
+
 --. make a materialized view for more speed?
 
 drop view if exists metrics;
@@ -41,12 +37,8 @@ select
   -- and nullif returns the first value, unless it equals 0.0, when it returns null -
   -- then the whole expression is null. avoids div by zero error.
   coalesce(bins.active::float,0) / nullif(bins.available::float,0.0) as utilization
---  bins.values as "values", -- a jsonb object
---  coalesce((values->>'time_active')::real,0) / 
---    nullif((values->>'time_available')::real,0.0) as utilization
 from bins
 join nodes as devices on bins.device_id = devices.node_id;
-
 
 
 ---------------------------------------------------------------------
@@ -57,8 +49,8 @@ join nodes as devices on bins.device_id = devices.node_id;
 --. what about unavailable events - ignore those?
 
 create or replace function get_active(
-  p_device text,
-  p_path text,
+  p_device text, -- device name
+  p_path text, -- dataitem path to check for activity
   p_start timestamptz,
   p_stop timestamptz
 )
@@ -66,8 +58,10 @@ returns boolean
 language sql
 as
 $body$
-  select count(value) > 0 as active
-  from history_all
+  select 
+    count(value) > 0 as active
+  from 
+    history_all
   where 
     device = p_device 
     and path = p_path
@@ -91,9 +85,9 @@ $body$;
 -- increment values in the bins table
 
 create or replace procedure increment_bins(
-  in p_device_id int,
-  in p_time timestamptz,
-  in p_field text,
+  in p_device_id int, -- device node_id to update
+  in p_time timestamptz, -- time to increment - will add for ALL resolutions
+  in p_field text, -- bins field to update
   in p_delta int = 1
 )
 language plpgsql
@@ -121,18 +115,29 @@ $body$;
 
 
 -- test
-call increment_bins(11, '2021-12-30 05:00:00', 'available');
-
+--call increment_bins(11, '2021-12-30 05:00:00', 'available');
 
 
 
 ---------------------------------------------------------------------
--- is_time_scheduled
+-- is_time_scheduled fn
 ---------------------------------------------------------------------
-
 -- returns true if given time is in the work/holiday schedule.
 
--- p_schedule is a jsonb object, eg 
+-- p_schedule is a jsonb object with day 1 = monday - eg 
+-- '{
+--   "work_windows": [
+--     {"day":1, "start":"5:00", "stop":"15:30"},
+--     {"day":2, "start":"5:00", "stop":"15:30"},
+--     {"day":3, "start":"5:00", "stop":"15:30"},
+--     {"day":4, "start":"5:00", "stop":"15:30"},
+--     {"day":5, "start":"5:00", "stop":"13:30"},
+--     {"day":6, "start":"5:00", "stop":"13:00"}
+--   ],
+--   "holidays": [
+--     "2021-12-25"
+--   ]
+-- }'
 
 create or replace function is_time_scheduled(
   in p_time timestamptz, 
@@ -151,7 +156,6 @@ declare
   v_start timestamptz;
   v_stop timestamptz;
 begin
-
   -- first, check if day is a holiday
   
   -- get time as a pure date, eg '2021-12-25'
@@ -161,7 +165,7 @@ begin
   for v_holiday in select * from jsonb_array_elements(p_schedule->'holidays') loop
     raise notice 'holiday %', v_holiday;
     if v_date = v_holiday then
-      raise notice 'it''s a holiday!';
+      -- raise notice 'it''s a holiday!';
       return false; -- return false if on a holiday
     end if;
   end loop;
@@ -173,7 +177,7 @@ begin
 
   -- iterate over work windows
   for v_work_window in select * from jsonb_array_elements(p_schedule->'work_windows') loop
-    raise notice 'work window %', v_work_window;
+    -- raise notice 'work window %', v_work_window;
   
     -- check for matching day of week
     if v_day_of_week = (v_work_window->'day')::int then
@@ -182,11 +186,11 @@ begin
       v_start := v_base + (v_work_window->>'start')::interval; -- eg v_base + interval '4h'
       v_stop  := v_base + (v_work_window->>'stop')::interval;
 
-      raise notice 'checking times % to %', v_start, v_stop;
+      -- raise notice 'checking times % to %', v_start, v_stop;
     
       -- if time within bounds, return true
       if (p_time between v_start and v_stop) then
-        raise notice 'in bounds!';
+        -- raise notice 'in bounds!';
         return true;
       end if;
   
@@ -200,7 +204,7 @@ $body$;
 
 
 --. set a global variable/constant for schedule to be used later also?
---. how run tests here? raise notice of t/f?
+--. how run tests here? raise notice of pass/fail or t/f?
 
 select is_time_scheduled(
   '2021-12-18 12:30:00',
@@ -235,7 +239,6 @@ select is_time_scheduled(
 --    ]
 --  }'
 --);
-
 
 
 
@@ -285,13 +288,13 @@ $body$;
 
 -- test
 
-call update_metrics(null,
-  config => '{
-    "devices": ["Cutter"],
-    "path": "controller/partOccurrence/part_count-all", 
-    "interval": "1 min"
-  }'
-);
+-- call update_metrics(null,
+--   config => '{
+--     "devices": ["Cutter"],
+--     "path": "controller/partOccurrence/part_count-all", 
+--     "interval": "1 min"
+--   }'
+-- );
 
 -- User-defined actions allow you to run functions and procedures implemented 
 -- in a language of your choice on a schedule within TimescaleDB.
@@ -299,6 +302,8 @@ call update_metrics(null,
 -- https://docs.timescale.com/api/latest/actions/add_job
 
 -- add a scheduled job
+--... don't do this if job is already running - need guard
+
 select add_job(
   'update_metrics', -- function/procedure to call 
   '1 min', -- interval
