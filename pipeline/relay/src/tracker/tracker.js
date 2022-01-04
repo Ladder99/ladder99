@@ -83,6 +83,7 @@ export class Tracker {
   trackValueChange(observation, valueDef) {
     // if value changed to 'on' state, eg 'ACTIVE', 'AVAILABLE',
     // start a clock to track time in that state.
+    //. need to track time spent in EACH state, not just when on/off.
     if (observation.value === valueDef.when) {
       this.clock.start(observation)
     } else {
@@ -122,7 +123,7 @@ export class Tracker {
     // write to db
     if (sql !== '') {
       console.log(sql)
-      this.db.query(sql)
+      // this.db.query(sql) //...
     }
   }
 
