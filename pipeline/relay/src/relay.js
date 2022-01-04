@@ -21,7 +21,7 @@ const params = {
   retryTime: 4000, // ms between connection retries etc
 }
 
-class Application {
+class Relay {
   async start(params) {
     // get database, do migrations
     const db = new Db()
@@ -45,5 +45,5 @@ class Application {
   }
 }
 
-const application = new Application()
-application.start(params)
+const relay = new Relay()
+relay.start(params)
