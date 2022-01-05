@@ -24,15 +24,8 @@ console.log(`Recorder`)
 console.log(`Plays/records device messages`)
 console.log(`------------------------------------------------------------`)
 
-const setupFile = `${setupFolder}/setup.yaml`
-console.log(`Reading ${setupFile}...`)
-const setup = lib.importYaml(setupFile)
-if (!setup) {
-  console.log(`No ${setupFile} available - please add one.`)
-  process.exit(1)
-}
-
 async function main() {
+  const setup = lib.readSetup(setupFolder)
   // iterate over devices in setup.yaml
   const { devices } = setup
   for (let device of devices) {

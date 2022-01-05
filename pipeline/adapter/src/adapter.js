@@ -27,7 +27,7 @@ console.log(`----------------------------------------------------------------`)
 
 async function main() {
   // read /data/setup/setup.yaml file
-  const setup = readSetupYaml()
+  const setup = lib.readSetup(setupFolder)
 
   // define cache shared across all devices and sources
   const cache = new Cache()
@@ -263,18 +263,4 @@ function getValueFn(deviceId, code = '', types = {}) {
   }
   //. sort/uniquify dependsOn array
   return { value, dependsOn }
-}
-
-// load setup, eg from setups/ccs-pa/setup.yaml
-function readSetupYaml() {
-  const yamlfile = `${setupFolder}/setup.yaml`
-  console.log(`Reading ${yamlfile}...`)
-  const yamltree = lib.importYaml(yamlfile)
-  const setup = yamltree
-  if (!setup) {
-    console.log(`No ${yamlfile} available - please add one.`)
-    process.exit(1)
-  }
-  lib.replaceEnvars(setup)
-  return setup
 }

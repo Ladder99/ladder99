@@ -8,6 +8,20 @@ import fs from 'fs' // node lib for filesystem
 import libyaml from 'js-yaml' // see https://github.com/nodeca/js-yaml
 // import crypto from 'crypto' // node lib for random ids
 
+// load setup, eg from ../client-oxbox/setup.yaml
+export function readSetup(setupFolder) {
+  const yamlfile = `${setupFolder}/setup.yaml`
+  console.log(`Reading ${yamlfile}...`)
+  const yamltree = importYaml(yamlfile)
+  const setup = yamltree
+  if (!setup) {
+    console.log(`No ${yamlfile} available - please add one.`)
+    process.exit(1)
+  }
+  replaceEnvars(setup)
+  return setup
+}
+
 // import a yaml file and parse to js struct.
 // returns the js struct or null if file not avail.
 /** @returns {object} */
