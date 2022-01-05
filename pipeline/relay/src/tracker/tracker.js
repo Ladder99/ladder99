@@ -1,13 +1,13 @@
+// Track events every n seconds and increment bins as needed.
+
+const path = 'controller/partOccurrence/part_count-all'
+
 export class Tracker {
   // db is a Db object
-  // dimensionDefs has dimensions to track, eg hours1970, operator.
-  // valueDefs has values to track, including their 'on' state, eg availability.
-  constructor(db, dimensionDefs, valueDefs) {
+  constructor(db) {
     this.db = db
-    this.dimensionDefs = dimensionDefs
-    this.valueDefs = valueDefs
     this.dbTimer = null
-    this.observations = null
+    this.devices = []
   }
 
   setDevices(devices) {
@@ -15,39 +15,34 @@ export class Tracker {
     this.devices = devices
   }
 
-  // start the timer which dumps bins to the db by calling updateBins
-  // every time interval.
-  // // the caller is responsible for calling writeObservationsToBins,
-  // // which will dump observations to the bins.
-  //. wait, we need one to fire every minute to check for
-  // relevant events, eg partcount -> device was active during that minute.
-  //. also for getting state timing info - need to add dummy records every minute or whatev.
+  // start the timer which calls updateBins every n seconds -
+  // it will increment bins as needed.
+  // eg partcount event indicates device was active during that minute.
   startTimer(dbInterval) {
     console.log('startTimer')
-    // this.dbTimer = setInterval(this.writeBinsToDb.bind(this), dbInterval * 1000)
     this.dbTimer = setInterval(this.updateBins.bind(this), dbInterval * 1000)
     this.dbInterval = dbInterval // save for later
   }
 
   // check if time is within a scheduled work period
-  isTimeScheduled(datetime) {
-    // const sql = `select is_time_scheduled('${device}', '${path}', '${start.toISOString()}', '${stop.toISOString()}');`
+  async isTimeScheduled(datetime) {
+    // const sql = `select is_time_scheduled('${deviceName}', '${path}', '${start.toISOString()}', '${stop.toISOString()}');`
     // console.log(sql)
     // const result = await this.db.query(sql)
     // const scheduled = result.rows[0].is_time_scheduled // t/f
-    // return scheduled
-    return true
+    const scheduled = true
+    return scheduled
   }
 
   // update bins
   async updateBins() {
-    const path = 'controller/partOccurrence/part_count-all'
     console.log('updateBins', new Date())
-    // check if now is within scheduled time
     const now = new Date()
-    if (this.isTimeScheduled(now)) {
-      // if so, iterate over devices
-      for (let device of this.devices) {
+    // iterate over devices
+    for (let device of this.devices) {
+      // check if now is within scheduled time
+      const scheduled = await this.isTimeScheduled(now)
+      if (scheduled) {
         console.log('device', device)
         const device_id = device.node_id // eg 1
         const deviceName = device.name // eg 'Cutter'
@@ -70,6 +65,8 @@ export class Tracker {
     }
   }
 
+  // check if a device was 'active' (ie has events on the given path),
+  // between two times. returns true/false
   async getActive(deviceName, path, start, stop) {
     const sql = `select get_active('${deviceName}', '${path}', '${start.toISOString()}', '${stop.toISOString()}');`
     console.log(sql)
@@ -78,5 +75,13 @@ export class Tracker {
     return deviceWasActive
   }
 
-  async incrementBins(device_id, time, field) {}
+  // increment values in the bins table.
+  // will round the given time down to nearest min, hour, day, week etc,
+  // and increment the given field for each.
+  //. move plpgsql code into here - easier to maintain
+  async incrementBins(device_id, time, field) {
+    const sql = `select increment_bins(${device_id}, '${time}', '${field}');`
+    console.log(sql)
+    await this.db.query(sql)
+  }
 }

@@ -7,46 +7,46 @@ import { Observations } from './dataObservations.js'
 import * as tracker from './tracker/tracker.js'
 import * as lib from './lib.js'
 
-// dimensionDefs
-// if any one of these dimensions changes,
-// start putting the time / count values in other bins.
-// keyed on dataitem name, eg 'operator'.
-//. move these into yaml, and have per client
-//. might want these to be per device or device type also?
-const dimensionDefs = {
-  hours1970: {},
-  // add these as needed, to be able to slice reports later
-  operator: {},
-  // machine: {},
-  // component: {},
-  // job: {},
-  // operation: {},
-}
+// // dimensionDefs
+// // if any one of these dimensions changes,
+// // start putting the time / count values in other bins.
+// // keyed on dataitem name, eg 'operator'.
+// //. move these into yaml, and have per client
+// //. might want these to be per device or device type also?
+// const dimensionDefs = {
+//   hours1970: {},
+//   // add these as needed, to be able to slice reports later
+//   operator: {},
+//   // machine: {},
+//   // component: {},
+//   // job: {},
+//   // operation: {},
+// }
 
-// valueDefs
-// dataitems that we want to track the state of.
-// will track time the dataitem spends in the 'when' state,
-// and add it to the given 'slot'.
-// keyed on dataitem / observation NAME, NOT the dataitem id.
-// so in the agent.xml, DO NOT include the deviceId in the names,
-// just have a plain descriptor.
-//. move these into yaml, and have per client
-//. might want these to be per device or device type also
-const valueDefs = {
-  availability: {
-    when: 'AVAILABLE',
-    slot: 'time_available',
-  },
-  // execution_state: {
-  //   when: 'ACTIVE',
-  //   slot: 'time_active',
-  // },
-  functional_mode: {
-    when: 'PRODUCTION',
-    // slot: 'time_production',
-    slot: 'time_active', //. this is kinda klugy - reuse the time_active definition because the metrics view is setup to use that to calculate uptime
-  },
-}
+// // valueDefs
+// // dataitems that we want to track the state of.
+// // will track time the dataitem spends in the 'when' state,
+// // and add it to the given 'slot'.
+// // keyed on dataitem / observation NAME, NOT the dataitem id.
+// // so in the agent.xml, DO NOT include the deviceId in the names,
+// // just have a plain descriptor.
+// //. move these into yaml, and have per client
+// //. might want these to be per device or device type also
+// const valueDefs = {
+//   availability: {
+//     when: 'AVAILABLE',
+//     slot: 'time_available',
+//   },
+//   // execution_state: {
+//   //   when: 'ACTIVE',
+//   //   slot: 'time_active',
+//   // },
+//   functional_mode: {
+//     when: 'PRODUCTION',
+//     // slot: 'time_production',
+//     slot: 'time_active', //. this is kinda klugy - reuse the time_active definition because the metrics view is setup to use that to calculate uptime
+//   },
+// }
 
 //
 
@@ -72,7 +72,7 @@ export class AgentReader {
   // start fetching and processing data
   async start() {
     // for metric calcs
-    this.tracker = new tracker.Tracker(this.db, dimensionDefs, valueDefs)
+    this.tracker = new tracker.Tracker(this.db) //, dimensionDefs, valueDefs)
     // this.tracker.startTimer(60) // start timer which dumps bins to db every interval secs
     this.tracker.startTimer(5) //.. start timer which dumps bins to db every interval secs
 
