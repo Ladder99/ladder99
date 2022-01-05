@@ -25,6 +25,8 @@ export class Tracker {
   // start the timer which dumps bins to the db every minute.
   // the caller is responsible for calling writeObservationsToBins,
   // which will dump observations to the bins.
+  //. wait, we also need one to fire every minute to check for
+  // relevant events, eg partcount -> device was active during that minute.
   startTimer(dbInterval = defaultDbInterval) {
     this.dbTimer = setInterval(this.writeBinsToDb.bind(this), dbInterval * 1000)
     this.dbInterval = dbInterval // save for later
