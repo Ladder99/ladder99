@@ -10,42 +10,66 @@ export class Tracker {
     this.observations = null
   }
 
-  // start the timer which dumps bins to the db every minute.
-  // the caller is responsible for calling writeObservationsToBins,
-  // which will dump observations to the bins.
-  //. wait, we also need one to fire every minute to check for
+  setDevices(devices) {
+    console.log('setDevices', devices)
+    this.devices = devices
+  }
+
+  // start the timer which dumps bins to the db by calling updateBins
+  // every time interval.
+  // // the caller is responsible for calling writeObservationsToBins,
+  // // which will dump observations to the bins.
+  //. wait, we need one to fire every minute to check for
   // relevant events, eg partcount -> device was active during that minute.
+  //. also for getting state timing info - need to add dummy records every minute or whatev.
   startTimer(dbInterval) {
     console.log('startTimer')
     // this.dbTimer = setInterval(this.writeBinsToDb.bind(this), dbInterval * 1000)
-    this.dbTimer = setInterval(this.updateMetrics.bind(this), dbInterval * 1000)
+    this.dbTimer = setInterval(this.updateBins.bind(this), dbInterval * 1000)
     this.dbInterval = dbInterval // save for later
   }
 
-  isTimeScheduled() {
+  // check if time is within a scheduled work period
+  isTimeScheduled(datetime) {
+    // const sql = `select is_time_scheduled('${device}', '${path}', '${start.toISOString()}', '${stop.toISOString()}');`
+    // console.log(sql)
+    // const result = await this.db.query(sql)
+    // const scheduled = result.rows[0].is_time_scheduled // t/f
+    // return scheduled
     return true
   }
 
-  updateMetrics() {
-    console.log('updateMetrics', new Date())
-    //. check if now is within scheduled time
-    if (this.isTimeScheduled()) {
-      // if so,
-      //. check for events in previous n secs
-      const device = 'Cutter'
-      const path = 'controller/partOccurrence/part_count-all'
-      // const start = '2021-12-13 03:04:00'
-      // const stop = '2021-12-13 03:05:00'
-      const stop = new Date()
-      const start = new Date(stop.getTime() - this.dbInterval * 1000)
-      const sql = `select get_active('${device}', '${path}', '${start.toISOString()}', '${stop.toISOString()}');`
-      console.log(sql)
-      //. check return value
-      // if (ret.value > 0) {
-      //. increment active bin
-      // }
-      //. increment available bin
+  // update bins
+  async updateBins() {
+    const path = 'controller/partOccurrence/part_count-all'
+    console.log('updateBins', new Date())
+    // check if now is within scheduled time
+    const now = new Date()
+    if (this.isTimeScheduled(now)) {
+      // if so, iterate over devices
+      for (let device of this.devices) {
+        console.log('device', device)
+        const device_id = device.node_id // eg 1
+        // check for events in previous n secs
+        const deviceName = device.name // eg 'Cutter'
+        const stop = now
+        const start = new Date(stop.getTime() - this.dbInterval * 1000)
+        const sql = `select get_active('${deviceName}', '${path}', '${start.toISOString()}', '${stop.toISOString()}');`
+        console.log(sql)
+        const result = await this.db.query(sql)
+        // console.log(result)
+        const deviceWasActive = result.rows[0].get_active // t/f
+        if (deviceWasActive) {
+          //. increment active bins
+          this.incrementBins(device_id, now, 'active')
+        }
+        //. increment available bins
+        this.incrementBins(device_id, now, 'available')
+      }
     }
-    //. increment calendar bin
+    //. increment calendar bins
+    // this.incrementBins(device_id, now, 'active')
   }
+
+  incrementBins(device_id, time, field) {}
 }
