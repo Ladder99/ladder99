@@ -1,5 +1,7 @@
 // Track events every n seconds and increment bins as needed.
 
+//. pass in through constructor, with devices and metrics to track.
+//. which should come from a client yaml file. metrics.yaml?
 const path = 'controller/partOccurrence/part_count-all'
 
 export class Tracker {
@@ -80,7 +82,7 @@ export class Tracker {
   // and increment the given field for each.
   //. move plpgsql code into here - easier to maintain
   async incrementBins(device_id, time, field) {
-    const sql = `select increment_bins(${device_id}, '${time}', '${field}');`
+    const sql = `call increment_bins(${device_id}, '${time}', '${field}');`
     console.log(sql)
     await this.db.query(sql)
   }
