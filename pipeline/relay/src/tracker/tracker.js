@@ -50,26 +50,33 @@ export class Tracker {
       for (let device of this.devices) {
         console.log('device', device)
         const device_id = device.node_id // eg 1
-        // check for events in previous n secs
         const deviceName = device.name // eg 'Cutter'
+        // check for events in previous n secs
         const stop = now
         const start = new Date(stop.getTime() - this.dbInterval * 1000)
-        const sql = `select get_active('${deviceName}', '${path}', '${start.toISOString()}', '${stop.toISOString()}');`
-        console.log(sql)
-        const result = await this.db.query(sql)
-        // console.log(result)
-        const deviceWasActive = result.rows[0].get_active // t/f
+        const deviceWasActive = await this.getActive(
+          deviceName,
+          path,
+          start,
+          stop
+        )
         if (deviceWasActive) {
-          //. increment active bins
-          this.incrementBins(device_id, now, 'active')
+          await this.incrementBins(device_id, now, 'active')
         }
-        //. increment available bins
-        this.incrementBins(device_id, now, 'available')
+        await this.incrementBins(device_id, now, 'available')
       }
+      //. increment calendar bins - for each device?
+      // await this.incrementBins(device_id, now, 'calendar')
     }
-    //. increment calendar bins
-    // this.incrementBins(device_id, now, 'active')
   }
 
-  incrementBins(device_id, time, field) {}
+  async getActive(deviceName, path, start, stop) {
+    const sql = `select get_active('${deviceName}', '${path}', '${start.toISOString()}', '${stop.toISOString()}');`
+    console.log(sql)
+    const result = await this.db.query(sql)
+    const deviceWasActive = result.rows[0].get_active // t/f
+    return deviceWasActive
+  }
+
+  async incrementBins(device_id, time, field) {}
 }
