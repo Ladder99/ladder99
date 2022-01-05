@@ -16,13 +16,36 @@ export class Tracker {
   //. wait, we also need one to fire every minute to check for
   // relevant events, eg partcount -> device was active during that minute.
   startTimer(dbInterval) {
+    console.log('startTimer')
     // this.dbTimer = setInterval(this.writeBinsToDb.bind(this), dbInterval * 1000)
-    // this.dbInterval = dbInterval // save for later
-    console.log('hi')
-    this.dbTimer = setInterval(this.foo.bind(this), dbInterval * 1000)
+    this.dbTimer = setInterval(this.updateMetrics.bind(this), dbInterval * 1000)
+    this.dbInterval = dbInterval // save for later
   }
 
-  foo() {
-    console.log('foo', new Date())
+  isTimeScheduled() {
+    return true
+  }
+
+  updateMetrics() {
+    console.log('updateMetrics', new Date())
+    //. check if now is within scheduled time
+    if (this.isTimeScheduled()) {
+      // if so,
+      //. check for events in previous n secs
+      const device = 'Cutter'
+      const path = 'controller/partOccurrence/part_count-all'
+      // const start = '2021-12-13 03:04:00'
+      // const stop = '2021-12-13 03:05:00'
+      const stop = new Date()
+      const start = new Date(stop.getTime() - this.dbInterval * 1000)
+      const sql = `select get_active('${device}', '${path}', '${start.toISOString()}', '${stop.toISOString()}');`
+      console.log(sql)
+      //. check return value
+      // if (ret.value > 0) {
+      //. increment active bin
+      // }
+      //. increment available bin
+    }
+    //. increment calendar bin
   }
 }
