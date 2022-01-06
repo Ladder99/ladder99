@@ -20,6 +20,11 @@ export class Tracker {
   setDevices(devices) {
     console.log('setDevices', devices)
     this.devices = devices
+    this.deviceIds = {}
+    for (let device of devices) {
+      this.deviceIds[device.name] = device.node_id
+    }
+    console.log('deviceIds', this.deviceIds)
   }
 
   // start the timer which calls updateBins every n seconds -

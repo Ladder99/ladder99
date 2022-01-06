@@ -43,9 +43,9 @@ export class AgentReader {
       await probe.read(this.endpoint) // read xml into probe.json, probe.elements, probe.nodes
       await probe.write(this.db) // write/sync dataitems to db, get probe.indexes
       this.instanceId = probe.instanceId
-      // this.tracker.setDevices(
-      //   probe.nodes.filter(node => node.node_type === 'Device')
-      // )
+      this.tracker.setDevices(
+        probe.nodes.filter(node => node.node_type === 'Device')
+      )
 
       // current - get last known values of all dataitems and write to db
       current: do {
