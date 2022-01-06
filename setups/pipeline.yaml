@@ -220,8 +220,8 @@ services:
       - all
       - play
     command: recorder --mode play
-    ports:
-      - 8080:8080
+    # ports:
+    #   - 8080:8080
     volumes:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
       - ../modules:/data/modules # has module-specific recordings folder
