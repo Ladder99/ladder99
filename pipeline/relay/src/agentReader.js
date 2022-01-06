@@ -4,7 +4,7 @@
 
 import { Probe } from './dataProbe.js'
 import { Observations } from './dataObservations.js'
-import * as tracker from './tracker/tracker.js'
+import * as tracker from './tracker.js'
 import * as lib from './lib.js'
 
 export class AgentReader {
