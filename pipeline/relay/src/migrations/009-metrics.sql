@@ -375,16 +375,31 @@ declare
   end;
 begin
   return query
+--    select 
+--      metrics.time, metrics.utilization
+--    from 
+--      metrics
+--    where 
+--      metrics.device = p_device
+--      and resolution = v_binsize
+--      and metrics.time between v_start and v_stop
+--    order by 
+--      time
+--    ;
     select 
-      metrics.time, metrics.utilization
+      time_bucket_gapfill(v_binsize, metrics.time, v_start, v_stop) as bin, 
+      coalesce(avg(metrics.utilization),0) as utilization
     from 
       metrics
     where 
       metrics.device = p_device
       and resolution = v_binsize
       and metrics.time between v_start and v_stop
+    group by
+      bin,
+      metrics.utilization
     order by 
-      time
+      bin
     ;
 end;
 $body$;
@@ -392,13 +407,13 @@ $body$;
 
 
 -- --set timezone to 'America/Chicago';
--- select time, utilization 
--- from get_utilization_from_metrics_view(
---   'Cutter',
---   timestamptz2ms('2021-12-29 18:00:00'),
---   timestamptz2ms('2021-12-29 19:00:00')
--- --  timestamptz2ms('2021-12-29 20:00:00')
--- );
+ select time, utilization 
+ from get_utilization_from_metrics_view(
+   'Cutter',
+   timestamptz2ms('2021-12-29 18:00:00'),
+   timestamptz2ms('2021-12-29 19:00:00')
+ --  timestamptz2ms('2021-12-29 20:00:00')
+ );
 
 
 
