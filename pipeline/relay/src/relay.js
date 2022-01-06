@@ -4,6 +4,7 @@
 import { Db } from './db.js'
 import { AgentReader } from './agentReader.js'
 import { Endpoint } from './endpoint.js'
+import * as lib from './lib.js'
 
 console.log(`Ladder99 Relay`)
 console.log(`---------------------------------------------------`)
@@ -13,7 +14,7 @@ const params = {
   // AGENT_URLS can be a single url, a comma-delim list of urls, or a txt filename with urls.
   // these are the agents we'll be reading from.
   // currently set in pipeline-overrides.yaml, but
-  //. eventually will read from setup.xml
+  //. eventually will read from setup.xml or setup.yaml - could be per device and/or defaults
   agentEndpoints: process.env.AGENT_ENDPOINTS || 'http://localhost:5000',
   //. these will need to be dynamic - adjusted on the fly
   fetchInterval: Number(process.env.FETCH_INTERVAL || 2000), // how often to fetch sample data, msec
@@ -21,11 +22,17 @@ const params = {
   retryTime: 4000, // ms between connection retries etc
 }
 
+// defined in pipeline.yaml with docker volume mappings
+const setupFolder = '/data/setup' // incls setup.yaml etc
+
 class Relay {
   async start(params) {
     // get database, do migrations
     const db = new Db()
     await db.start()
+
+    // read client's setup.yaml
+    const setup = lib.readSetup(setupFolder)
 
     // get endpoints
     const endpoints = Endpoint.getEndpoints(params.agentEndpoints)
@@ -33,7 +40,7 @@ class Relay {
 
     // create an agent reader instance for each endpoint
     const agentReaders = endpoints.map(
-      endpoint => new AgentReader({ db, endpoint, params })
+      endpoint => new AgentReader({ db, endpoint, params, setup })
     )
 
     // run agent readers

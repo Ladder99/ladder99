@@ -12,11 +12,13 @@ export class AgentReader {
   // db is a Db instance
   // endpoint is an Endpoint instance to poll agent
   // params includes { fetchInterval, fetchCount }
+  // setup is client's setup.yaml
   // called by relay.js
-  constructor({ db, endpoint, params }) {
+  constructor({ db, endpoint, params, setup }) {
     this.db = db
     this.endpoint = endpoint
     this.params = params
+    this.setup = setup
 
     this.instanceId = null
 
@@ -29,7 +31,7 @@ export class AgentReader {
   // start fetching and processing data
   async start() {
     // make tracker for metric calcs
-    this.tracker = new tracker.Tracker(this.db)
+    this.tracker = new tracker.Tracker(this.db, this.setup)
     // start timer which dumps bins to db every interval secs
     //.. use 5s for testing, 60s for production
     // this.tracker.startTimer(60)
@@ -41,9 +43,9 @@ export class AgentReader {
       await probe.read(this.endpoint) // read xml into probe.json, probe.elements, probe.nodes
       await probe.write(this.db) // write/sync dataitems to db, get probe.indexes
       this.instanceId = probe.instanceId
-      this.tracker.setDevices(
-        probe.nodes.filter(node => node.node_type === 'Device')
-      )
+      // this.tracker.setDevices(
+      //   probe.nodes.filter(node => node.node_type === 'Device')
+      // )
 
       // current - get last known values of all dataitems and write to db
       current: do {

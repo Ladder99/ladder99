@@ -1,13 +1,18 @@
 // Track events every n seconds and increment bins as needed.
 
+//. move this up a level
+
+//. what if had one tracker per device?
+
 //. pass in through constructor, with devices and metrics to track.
 //. which should come from a client yaml file. metrics.yaml?
 const path = 'controller/partOccurrence/part_count-all'
 
 export class Tracker {
-  // db is a Db object
-  constructor(db) {
+  // db is a Db object, setup is the client setup.yaml contents
+  constructor(db, setup) {
     this.db = db
+    this.setup = setup
     this.dbTimer = null
     this.devices = []
   }
@@ -19,7 +24,7 @@ export class Tracker {
 
   // start the timer which calls updateBins every n seconds -
   // it will increment bins as needed.
-  // eg partcount event indicates device was active during that minute.
+  // eg a partcount event indicates device was active during that minute.
   startTimer(dbInterval) {
     console.log('startTimer')
     this.dbTimer = setInterval(this.updateBins.bind(this), dbInterval * 1000)
@@ -28,6 +33,7 @@ export class Tracker {
 
   // check if time is within a scheduled work period
   async isTimeScheduled(datetime) {
+    //. todo
     // const sql = `select is_time_scheduled('${deviceName}', '${path}', '${start.toISOString()}', '${stop.toISOString()}');`
     // console.log(sql)
     // const result = await this.db.query(sql)
@@ -36,7 +42,7 @@ export class Tracker {
     return scheduled
   }
 
-  // update bins
+  // update bins - called by timer
   async updateBins() {
     console.log('updateBins', new Date())
     const now = new Date()
