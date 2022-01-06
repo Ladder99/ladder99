@@ -324,8 +324,9 @@ services:
     restart: always
     networks:
       - ladder99
-    # volumes:
-    #   - ../pipeline/relay:/home/node/app # has source code
+    volumes:
+      - ../$SETUP:/data/setup # has setup.yaml etc
+      # - ../pipeline/relay:/home/node/app # has source code
     logging:
       options:
         max-size: '20m'

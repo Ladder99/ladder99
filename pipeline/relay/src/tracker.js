@@ -52,29 +52,33 @@ export class Tracker {
     console.log('updateBins', new Date())
     const now = new Date()
     // iterate over devices
-    for (let device of this.devices) {
-      // check if now is within scheduled time
-      const scheduled = await this.isTimeScheduled(now)
-      if (scheduled) {
-        console.log('device', device)
-        const device_id = device.node_id // eg 1
-        const deviceName = device.name // eg 'Cutter'
-        // check for events in previous n secs
-        const stop = now
-        const start = new Date(stop.getTime() - this.dbInterval * 1000)
-        const deviceWasActive = await this.getActive(
-          deviceName,
-          path,
-          start,
-          stop
-        )
-        if (deviceWasActive) {
-          await this.incrementBins(device_id, now, 'active')
+    // for (let device of this.devices) {
+    for (let device of this.setup.devices) {
+      if (device.metrics) {
+        // check if now is within scheduled time
+        const scheduled = await this.isTimeScheduled(now)
+        if (scheduled) {
+          console.log('device', device)
+          // const device_id = device.node_id // eg 1
+          const deviceName = device.name // eg 'Cutter'
+          const device_id = this.deviceIds[deviceName]
+          // check for events in previous n secs
+          const stop = now
+          const start = new Date(stop.getTime() - this.dbInterval * 1000)
+          const deviceWasActive = await this.getActive(
+            deviceName,
+            path,
+            start,
+            stop
+          )
+          if (deviceWasActive) {
+            await this.incrementBins(device_id, now, 'active')
+          }
+          await this.incrementBins(device_id, now, 'available')
         }
-        await this.incrementBins(device_id, now, 'available')
+        //. increment calendar bins - for each device?
+        // await this.incrementBins(device_id, now, 'calendar')
       }
-      //. increment calendar bins - for each device?
-      // await this.incrementBins(device_id, now, 'calendar')
     }
   }
 
@@ -93,7 +97,7 @@ export class Tracker {
   // and increment the given field for each.
   //. move plpgsql code into here - easier to maintain
   async incrementBins(device_id, time, field) {
-    const sql = `call increment_bins(${device_id}, '${time}', '${field}');`
+    const sql = `call increment_bins(${device_id}, '${time.toISOString()}', '${field}');`
     console.log(sql)
     await this.db.query(sql)
   }
