@@ -140,8 +140,9 @@ $body$;
 -- }'
 
 create or replace function is_time_scheduled(
-  in p_time timestamptz, 
-  in p_schedule jsonb
+  in p_time timestamptz
+--  , 
+--  in p_schedule jsonb
 )
 returns boolean
 language plpgsql
@@ -155,14 +156,28 @@ declare
   v_base timestamptz;
   v_start timestamptz;
   v_stop timestamptz;
+  v_schedule jsonb := '{
+    "work_windows": [
+      {"day":1, "start":"5:00", "stop":"15:30"},
+      {"day":2, "start":"5:00", "stop":"15:30"},
+      {"day":3, "start":"5:00", "stop":"15:30"},
+      {"day":4, "start":"5:00", "stop":"15:30"},
+      {"day":5, "start":"5:00", "stop":"13:30"},
+      {"day":6, "start":"5:00", "stop":"13:00"}
+    ],
+    "holidays": [
+      "2021-12-25"
+    ]
+  }';
 begin
+  
   -- first, check if day is a holiday
   
   -- get time as a pure date, eg '2021-12-25'
   v_date := p_time::date;
 
   -- iterate over holidays
-  for v_holiday in select * from jsonb_array_elements(p_schedule->'holidays') loop
+  for v_holiday in select * from jsonb_array_elements(v_schedule->'holidays') loop
     raise notice 'holiday %', v_holiday;
     if v_date = v_holiday then
       -- raise notice 'it''s a holiday!';
@@ -176,7 +191,7 @@ begin
   v_base := date_trunc('day', p_time); -- midnight of day
 
   -- iterate over work windows
-  for v_work_window in select * from jsonb_array_elements(p_schedule->'work_windows') loop
+  for v_work_window in select * from jsonb_array_elements(v_schedule->'work_windows') loop
     -- raise notice 'work window %', v_work_window;
   
     -- check for matching day of week
@@ -207,20 +222,21 @@ $body$;
 --. how run tests here? raise notice of pass/fail or t/f?
 
 select is_time_scheduled(
-  '2021-12-18 12:30:00',
-  '{
-    "work_windows": [
-      {"day":1, "start":"5:00", "stop":"15:30"},
-      {"day":2, "start":"5:00", "stop":"15:30"},
-      {"day":3, "start":"5:00", "stop":"15:30"},
-      {"day":4, "start":"5:00", "stop":"15:30"},
-      {"day":5, "start":"5:00", "stop":"13:30"},
-      {"day":6, "start":"5:00", "stop":"13:00"}
-    ],
-    "holidays": [
-      "2021-12-25"
-    ]
-  }'
+  '2021-12-18 12:30:00'
+--,
+--  '{
+--    "work_windows": [
+--      {"day":1, "start":"5:00", "stop":"15:30"},
+--      {"day":2, "start":"5:00", "stop":"15:30"},
+--      {"day":3, "start":"5:00", "stop":"15:30"},
+--      {"day":4, "start":"5:00", "stop":"15:30"},
+--      {"day":5, "start":"5:00", "stop":"13:30"},
+--      {"day":6, "start":"5:00", "stop":"13:00"}
+--    ],
+--    "holidays": [
+--      "2021-12-25"
+--    ]
+--  }'
 );
 
 
@@ -258,7 +274,7 @@ declare
   v_device_id int;
   v_device text;
   v_path text := config->>'path'; -- eg 'controller/partOccurrence/part_count-all'
-  v_schedule jsonb := config->>'schedule'; -- null if not included
+  -- v_schedule jsonb := config->>'schedule'; -- null if not included
   v_time timestamptz := coalesce((config->>'time')::timestamptz, now()); -- ie default to now()
   v_interval interval := coalesce(config->>'interval', '1 minute'); -- ie default is 1 minute
   v_stop timestamptz := date_trunc('minute', v_time); -- round down to top of current minute --. or hour etc
@@ -267,7 +283,8 @@ declare
   v_was_machine_active boolean;
 begin
   -- check if time is within the time windows.
-  v_is_time_in_schedule := is_time_in_schedule(v_time, v_schedule);
+  -- v_is_time_in_schedule := is_time_in_schedule(v_time, v_schedule);
+  v_is_time_in_schedule := is_time_in_schedule(v_time);
   if v_is_time_in_schedule then
     -- loop over relevant devices, as passed through config.
     -- note: jsonb_array_elements returns values with double quotes around them, so use _text.
