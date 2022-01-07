@@ -12,6 +12,11 @@ export class AdapterDriver {
 
     setUnavailable()
 
+    //.. will need to know all the relevant devices to lookup and set times for
+    // eg c1, c2, c3...
+    cache.set(`c-processes/start_time-start`, '2022-01-07 05:00:00')
+    cache.set(`c-processes/start_time-complete`, '2022-01-07 03:30:00')
+
     const config = {
       server: connection.server,
       database: connection.database,
