@@ -3,6 +3,8 @@
 import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/node-mssql
 // import * as lib from '../../lib.js'
 
+const pollInterval = 5000 // ms
+
 export class AdapterDriver {
   async init({ deviceId, protocol, cache, inputs, socket, connection }) {
     console.log(`JobBoss - initialize driver...`)
@@ -20,7 +22,7 @@ export class AdapterDriver {
     }
 
     const sql = `select 42, 'hello'`
-    //     const sql = `
+    // const sql = `
     // select top 10 opt.*
     // from job_operation op
     // join job_operation_time opt on op.job_operation = opt.job_operation
@@ -31,11 +33,11 @@ export class AdapterDriver {
     console.log(`JobBoss - connecting to database...`, connection.server)
     let pool
     try {
-      pool = await mssql.connect(config) //. error - login fail why
+      pool = await mssql.connect(config) //. error - login fail why - wrong pw?
       console.log(`JobBoss - connected`)
       setAvailable()
-      await poll()
-      setInterval(poll, 5000)
+      await poll() // do initial poll immediately
+      setInterval(poll, pollInterval) // poll every n seconds
     } catch (error) {
       console.log(error)
     }
