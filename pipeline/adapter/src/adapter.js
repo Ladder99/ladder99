@@ -129,6 +129,9 @@ async function main() {
           deviceId,
           deviceName,
           driver,
+          //. pass whole drivers array here also, in case driver needs to know other devices?
+          // eg for jobboss - needs to know what workcenters/devices to look for.
+          //. will consolidate some of this stuff into a connection object
           protocol,
           host,
           port,
