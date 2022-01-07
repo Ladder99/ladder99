@@ -6,6 +6,7 @@ import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/n
 const pollInterval = 5000 // ms
 
 export class AdapterDriver {
+  //. get devices array from setup yaml also?
   async init({ deviceId, protocol, cache, inputs, socket, connection }) {
     console.log(`JobBoss - initialize driver...`)
 
