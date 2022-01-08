@@ -77,6 +77,7 @@ RUN cd ~ \
 # WORKDIR /apps/cbeaver
 
 RUN echo set workdir
+RUN ls /home
 WORKDIR /home/ubuntu/cloudbeaver/deploy/cloudbeaver
 
 # expose port
