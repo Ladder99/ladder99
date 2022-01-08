@@ -50,6 +50,8 @@ RUN rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g lerna
 
+RUN apt install -y git-all
+
 # get latest source and build app
 RUN cd ~ \ 
   && git clone https://github.com/dbeaver/cloudbeaver.git \
