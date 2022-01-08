@@ -50,7 +50,10 @@ RUN rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g lerna
 
-# RUN apt install -y git
+# install git
+# need software-properties-common for add-apt-repository
+RUN apt install -y software-properties-common
+# add git apt
 RUN add-apt-repository ppa:git-core/ppa
 RUN apt update -y
 RUN apt install -y git
