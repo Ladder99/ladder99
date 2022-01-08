@@ -4,6 +4,9 @@
 
 # multi-stage dockerfile - build app, then bring only essentials into new os
 
+# ARG tag=21.3.0
+# ARG branch=cb_release_21_3_0
+
 #----------------------------------------------------------------------------
 # build app
 #----------------------------------------------------------------------------
@@ -54,8 +57,9 @@ RUN apt-get install -y aptitude \
 RUN cd ~ \ 
   && git clone https://github.com/dbeaver/cloudbeaver.git \
   && cd cloudbeaver/deploy \
-  && git checkout cb_release_21_3_0 \
   && ./build.sh
+
+# && git checkout cb_release_21_3_0 \
 
 #----------------------------------------------------------------------------
 # install app
