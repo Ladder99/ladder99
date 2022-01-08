@@ -1,9 +1,5 @@
 # docker compose file for the complete ladder99 pipeline.
-# can override these settings in setup-specific pipeline-overrides.yaml files.
-
-#. move this into the pipeline folder, adjust shell cmds and start/stop
-#. rename to compose.yaml
-#. rename pipeline-overrides.yaml to compose-overrides.yaml
+# can override these settings in setup-specific compose-overrides.yaml files.
 
 # see ./start for how to run
 
@@ -14,7 +10,8 @@ services:
   adapter:
     container_name: adapter
     # image: ladder99/adapter:latest # use this if build docker image and push to hub
-    build: ../pipeline/adapter # see Dockerfile in this folder
+    # build: ../pipeline/adapter # see Dockerfile in this folder
+    build: ./adapter # see Dockerfile in this folder
     # set this to give permission to access hardware (e.g. dymo scale in usb port).
     #. security hole - leave off for now, until need dymo driver.
     # privileged: true
@@ -34,11 +31,11 @@ services:
   # agent - take in shdr and output xml/json/html
   agent:
     container_name: agent
+    image: ladder99/agent:latest
     profiles:
       - all
       - agent
       - html
-    image: ladder99/agent:latest
     working_dir: /data/agent
     command: agent debug agent.cfg
     volumes:
@@ -55,13 +52,11 @@ services:
   # cloudbeaver - database web ui
   cloudbeaver:
     container_name: cloudbeaver
+    # image: cloudbeaver/cloudbeaver:latest
+    build: ./cloudbeaver
     profiles:
       - all
       - cloudbeaver
-    # image: cloudbeaver/cloudbeaver:latest
-    # working_dir: /data/agent
-    # command: agent debug agent.cfg
-    build: ../pipeline/cloudbeaver
     volumes:
       # - ../$SETUP/volumes/cloudbeaver/workspace:/apps/cloudbeaver/workspace
       - ../$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
@@ -94,29 +89,29 @@ services:
       options:
         max-size: '20m'
 
-  # ftpd - ftp daemon
-  ftpd:
-    container_name: ftpd
-    image: crazymax/pure-ftpd
-    profiles:
-      - all
-      - ftpd
-    restart: always
-    networks:
-      - ladder99
-    ports:
-      - '21:2100'
-      - '30000-30009:30000-30009'
-    volumes:
-      - ../$SETUP/volumes/ftpd/data:/home/ftp:rw
-      - ../$SETUP/volumes/ftpd/passwd:/data:rw
-    environment:
-      - 'PASSIVE_IP=10.1.38.128'
-    logging:
-      driver: 'json-file'
-      options:
-        max-file: '5'
-        max-size: '1m'
+  # # ftpd - ftp daemon
+  # ftpd:
+  #   container_name: ftpd
+  #   image: crazymax/pure-ftpd
+  #   profiles:
+  #     - all
+  #     - ftpd
+  #   restart: always
+  #   networks:
+  #     - ladder99
+  #   ports:
+  #     - '21:2100'
+  #     - '30000-30009:30000-30009'
+  #   volumes:
+  #     - ../$SETUP/volumes/ftpd/data:/home/ftp:rw
+  #     - ../$SETUP/volumes/ftpd/passwd:/data:rw
+  #   environment:
+  #     - 'PASSIVE_IP=10.1.38.128'
+  #   logging:
+  #     driver: 'json-file'
+  #     options:
+  #       max-file: '5'
+  #       max-size: '1m'
 
   # grafana - show real-time data from the database, handle notifications
   grafana:
@@ -137,11 +132,11 @@ services:
       PGDATABASE: null
       PGUSER: null
       PGPASSWORD: null
-        # INFLUXDB_DB:
-        # INFLUXDB_USER:
-        # INFLUXDB_PASSWORD:
-        # grafana will download and install these automatically
-        # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
+      # INFLUXDB_DB:
+      # INFLUXDB_USER:
+      # INFLUXDB_PASSWORD:
+      # grafana will download and install these automatically
+      # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
       GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel
     volumes:
       # note: grafana.ini is located in /etc/grafana by default -
@@ -187,7 +182,6 @@ services:
     ports:
       - 1883:1883
     volumes:
-      # - ../$SETUP/volumes/mosquitto:/mosquitto # has config/mosquitto.conf
       - ../$SETUP/volumes/mosquitto/config:/mosquitto/config # has mosquitto.conf
       - ../$SETUP/volumes/mosquitto/data:/mosquitto/data
       - ../$SETUP/volumes/mosquitto/log:/mosquitto/log
@@ -201,7 +195,7 @@ services:
       options:
         max-size: '20m'
 
-  # # nocodb - an airtable clone - plug into a database
+  # # nocodb - an airtable clone - plug in a database
   # nocodb:
   #   container_name: nocodb
   #   image: nocodb/nocodb:latest
@@ -262,7 +256,7 @@ services:
   # play - playback device recordings
   play:
     container_name: play
-    build: ../pipeline/recorder
+    build: ./recorder
     profiles:
       - all
       - play
@@ -328,7 +322,7 @@ services:
   # record - record device messages for future playback
   record:
     container_name: record
-    build: ../pipeline/recorder
+    build: ./recorder
     profiles:
       - all
       - record
@@ -346,7 +340,7 @@ services:
   # relay - fetch data from agent and send to db
   relay:
     container_name: relay
-    build: ../pipeline/relay
+    build: ./relay
     profiles:
       - all
       - relay
@@ -373,7 +367,6 @@ services:
       - ladder99
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml etc
-      # - ../pipeline/relay:/home/node/app # has source code
     logging:
       options:
         max-size: '20m'
