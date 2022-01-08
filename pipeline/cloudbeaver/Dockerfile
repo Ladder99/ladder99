@@ -52,9 +52,11 @@ RUN npm install -g lerna
 
 # install git
 # need software-properties-common for add-apt-repository
-RUN apt install -y software-properties-common
+# RUN apt install -y software-properties-common
+RUN apt-get install -y software-properties-common
+
 # add git apt
-RUN add-apt-repository ppa:git-core/ppa
+RUN add-apt-repository -y ppa:git-core/ppa
 RUN apt update -y
 RUN apt install -y git
 
