@@ -21,8 +21,6 @@ RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && curl -sL https://deb.nodesource.com/setup_14.x | bash -
 
 # add dependencies
-# this follows recommended docker practices -
-# see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#run
 RUN apt install -y \
   openjdk-11-jdk \
   maven \
@@ -44,23 +42,24 @@ RUN apt install -y nodejs
 # ERROR: Service 'cloudbeaver' failed to build : Build failed
 
 # so try aptitude to resolve dependencies
-RUN apt-get install -y aptitude && aptitude install -y npm
+# see https://stackoverflow.com/questions/26571326/how-do-i-resolve-the-following-packages-have-unmet-dependencies
+RUN apt-get install -y aptitude \
+  && aptitude install -y npm
 
-RUN rm -rf /var/lib/apt/lists/*
-
+# install lerna
 RUN npm install -g lerna
 
-# # install git
-# # need software-properties-common for add-apt-repository
-# # RUN apt install -y software-properties-common
-# RUN apt-get update && apt-get install -y software-properties-common
+# install git
+RUN apt-get update \
+  && apt-get install -y git
 
-# # add git apt
-# RUN add-apt-repository -y ppa:git-core/ppa
-# RUN apt update -y
-# RUN apt install -y git
+# this follows recommended docker practices -
+# see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#run
+RUN rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y git
+# install make
+RUN apt-get update \
+  && apt-get install -y build-essential
 
 # get latest source and build app
 RUN cd ~ \ 
