@@ -34,6 +34,13 @@ outputs:
   - key: pcall
     value: <part_count>
 
+  # shift start and stop times
+  - key: start
+    value: <start>
+
+  - key: complete
+    value: <complete>
+
   # # functional mode
   # # note:
   # # has_current_job: "=!!$['%Z61.0']" # converts object to true, undefined to false

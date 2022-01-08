@@ -10,23 +10,27 @@
 
 // import { lightFormat } from 'date-fns'
 // import { formatISO9075 } from 'date-fns'
-import dayjs from 'dayjs'
+// import dayjs from 'dayjs'
 
+// can save some time/space by not including time in shdr
 // const includeTimestamp = true
-const includeTimestamp = false // save some time/space by not including in shdr
+const includeTimestamp = false
 
 export class Cache {
   constructor() {
     this._map = new Map() // key-item pairs //. why not just {} ?
-    this._mapKeyToOutputs = {} // list of outputs assoc with each key
+    this._mapKeyToOutputs = {} // list of outputs assoc with each key, //. eg ?
   }
 
   // addOutputs
   // each cache key can have multiple output calculations associated with it.
   // this builds a map from a key to a list of outputs.
-  // each output goes to the same socket.
-  // output is [{ key, category, type, representation, socket, dependsOn, value }, ...]
+  // each output goes to the same tcp socket.
+  // called from adapter.js for each device source.
+  // outputs is [{ key, category, type, representation, socket, dependsOn, value }, ...]
   // eg [{ key: 'ac1-power_condition', value: (fn), dependsOn: ['ac1-power_fault', 'ac1-power_warning'] }, ...]
+  // so this builds a map from those dependsOn values to the output object.
+  // eg { 'ac1-power_fault': [{ key:'ac1-power_condition', value: (fn), ...}], ... }
   addOutputs(outputs, socket) {
     console.log(`cache.addOutputs - add ${outputs.length} outputs`)
     for (const output of outputs) {

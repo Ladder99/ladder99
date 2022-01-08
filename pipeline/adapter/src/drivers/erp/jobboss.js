@@ -1,21 +1,37 @@
 // jobboss driver
 
 import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/node-mssql
-// import * as lib from '../../lib.js'
+import * as lib from '../../lib.js'
 
 const pollInterval = 5000 // ms
 
 export class AdapterDriver {
-  //. get devices array from setup yaml also?
-  async init({ deviceId, protocol, cache, inputs, socket, connection }) {
+  async init({
+    deviceId,
+    protocol,
+    cache,
+    inputs,
+    socket,
+    connection,
+    devices, // from setup.yaml
+  }) {
     console.log(`JobBoss - initialize driver...`)
 
     setUnavailable()
 
+    console.log(`JobBoss - waiting a while...`)
+    await lib.sleep(6000)
+
     //.. will need to know all the relevant devices to lookup and set times for
     // eg c1, c2, c3...
-    cache.set(`c-processes/start_time-start`, '2022-01-07 05:00:00')
-    cache.set(`c-processes/start_time-complete`, '2022-01-07 03:30:00')
+    //. cache doesn't allow using arbitrary device ids here?
+    // ie these got called but didn't send shdr
+    // these will use the deviceId prefix assoc with this driver, ie 'j-'
+    //. so need to be able to pass that as an optional param here?
+    //. so will loop over the devices from setup.yaml,
+    // look up times in db, and set their value here.
+    cache.set(`c-start`, '2022-01-07 05:00:00')
+    cache.set(`c-complete`, '2022-01-07 03:30:00')
 
     const config = {
       server: connection.server,

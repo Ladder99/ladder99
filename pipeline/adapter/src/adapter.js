@@ -53,7 +53,7 @@ async function main() {
       // each device can have multiple sources.
       // iterate over sources, load driver for that source, call init on it.
       for (const source of device.sources) {
-        // console.log(`Source`, source) // don't print - might have password etc
+        // console.log(`source`, source) // don't print - might have password etc
         const { module, driver, protocol, host, port, connection } = source
 
         // import driver plugin
@@ -63,6 +63,7 @@ async function main() {
         const plugin = new AdapterDriver()
 
         // get input handlers
+        // these are interpreted by the driver
         const pathInputs = `${modulesFolder}/${module}/inputs.yaml`
         console.log(`Reading ${pathInputs}...`)
         const inputs = lib.importYaml(pathInputs) || {}
@@ -131,6 +132,7 @@ async function main() {
           driver,
           //. pass whole drivers array here also, in case driver needs to know other devices?
           // eg for jobboss - needs to know what workcenters/devices to look for.
+          devices,
           //. will consolidate some of this stuff into a connection object
           protocol,
           host,
@@ -154,6 +156,8 @@ async function main() {
       // handle incoming data - get PING from agent, return PONG
       socket.on('data', pingPong)
 
+      // handle ping/pong messages to/from agent,
+      // so agent knows we're alive.
       function pingPong(buffer) {
         const str = buffer.toString().trim()
         if (str === '* PING') {
@@ -214,7 +218,11 @@ function getOutputs({ templates, types, deviceId }) {
       // this is key in sense of shdr key
       //. assume each starts with deviceId? some might end with a number instead
       //. call this id, as it's such in the agent.xml
-      key: `${deviceId}-${template.key}`,
+      //. need to handle arbitrary deviceIds also, eg for jobboss to cutter connections?
+      //. eg could each output template have an optional deviceId to use here,
+      // in place of the default?
+      // key: `${deviceId}-${template.key}`,
+      key: `${template.deviceId || deviceId}-${template.key}`,
       value, //. getValue or valueFn
       dependsOn,
       //. currently these need to be defined in the outputs.yaml file,
