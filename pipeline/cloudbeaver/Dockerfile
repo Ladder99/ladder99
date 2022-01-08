@@ -11,16 +11,19 @@
 # base image - ubuntu has linux/arm/v7, linux/amd64, etc
 FROM ubuntu:21.04 as build
 
-# add node and yarn repos
-RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add - \
-  && echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list \
-  && curl -sL https://deb.nodesource.com/setup_14.x | sudo -E bash -
+# update os and get curl
+RUN apt update && apt install -y curl
 
-# update os and add dependencies
+# add node and yarn repos
 # note: dockerfiles run as root by default, so don't need sudo
+RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+  && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+  && curl -sL https://deb.nodesource.com/setup_14.x | bash -
+
+# add dependencies
 # this follows recommended docker practices -
 # see https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#run
-RUN apt update && apt install -y \
+RUN apt install -y \
   openjdk-11-jdk \
   maven \
   yarn \
