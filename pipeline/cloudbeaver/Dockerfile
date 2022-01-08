@@ -68,23 +68,15 @@ RUN cd ~ \
 # install app
 #----------------------------------------------------------------------------
 
-# start with base os
-FROM ubuntu:21.04
+# # start with base os
+# FROM ubuntu:21.04
 
-# # change to a new non-root user for better security.
-# # this also adds the user to a group with the same name.
-# # --create-home creates a home folder, ie /home/<username>
-# RUN useradd --create-home agent
-# USER agent
+# # copy app from previous layer - 100+mb
+# COPY --from=build ~/cloudbeaver/deploy/cloudbeaver /apps/cbeaver
 
-# # copy agent app and simulator files from previous layers
-# COPY --chown=agent:agent --from=compile /usr/local/bin/agent /usr/local/bin
-# COPY --chown=agent:agent --from=compile /etc/mtconnect /etc/mtconnect
+# WORKDIR /apps/cbeaver
 
-# install app from previous layer - copies 100+mb
-COPY --from=build ~/cloudbeaver/deploy/cloudbeaver /apps/cbeaver
-
-WORKDIR /apps/cbeaver
+WORKDIR /home/ubuntu/cloudbeaver/deploy/cloudbeaver
 
 # expose port
 EXPOSE 8978
