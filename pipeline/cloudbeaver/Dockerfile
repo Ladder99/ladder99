@@ -72,7 +72,7 @@ RUN cd ~ \
 FROM ubuntu:21.04
 
 # copy app from previous layer - 100+mb
-COPY --from=build ~/cloudbeaver/deploy/cloudbeaver /apps/cbeaver
+COPY --from=build ~/cloudbeaver/deploy/cloudbeaver/ /apps/cbeaver
 
 WORKDIR /apps/cbeaver
 
