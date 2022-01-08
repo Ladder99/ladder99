@@ -2,6 +2,8 @@
 # can override these settings in setup-specific pipeline-overrides.yaml files.
 
 #. move this into the pipeline folder, adjust shell cmds and start/stop
+#. rename to compose.yaml
+#. rename pipeline-overrides.yaml to compose-overrides.yaml
 
 # see ./start for how to run
 

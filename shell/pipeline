@@ -9,17 +9,17 @@ Usage: sh/pipeline COMMAND SETUP SERVICES
 Run the Ladder99 pipeline with optional list of services to include.
 
 COMMAND   start (run in console), startd (run detached), stop (stop all)
-SETUP     setup folder, eg setups/test/vmc (default)
-SERVICES  space-delim list of services to start, eg agent (default), all
+SETUP     setup folder, eg setups/vmc (default)
+SERVICES  space-delim list of services to start, eg 'agent dozzle'
 
 Examples
 
     sh/pipeline start
-    sh/pipeline start setups/test/print-apply agent
-    sh/pipeline start setups/test/print-apply dashboard
-    sh/pipeline start setups/test/print-apply dashboard play
+    sh/pipeline start setups/print-apply agent
+    sh/pipeline start setups/print-apply dashboard
+    sh/pipeline start setups/print-apply dashboard play
 
-Note: services are referenced by their 'profile' attribute in pipeline.yaml.
+Note: services are referenced by their 'profile' attribute in compose.yaml.
 Note: use 'docker kill SERVICE' to stop an individual service.
 "
 
@@ -30,14 +30,15 @@ fi
 
 # get arguments
 cmd=$1 # eg 'start', 'startd', 'stop'
-setup=${2:-"setups/test/vmc"}
+setup=$2 # eg 'setups/vmc'
 shift
 shift
-services=${*:-"agent"} # eg 'agent play'
+services=$* # eg 'agent play'
 
 # file paths
-pipeline="setups/pipeline.yaml"
-overrides="$setup/pipeline-overrides.yaml"
+# pipeline="setups/pipeline.yaml"
+pipeline="pipeline/compose.yaml"
+overrides="$setup/compose-overrides.yaml"
 envfile="$setup/.env"
 # baseEnvfile="setups/.env"
 
@@ -83,16 +84,16 @@ echo $cmd
 bash -c "export SETUP=$setup && $cmd"
 
 # will end up with a command like
-# export SETUP=../client-nis/setup \
+# export SETUP=../client-nis \
 #   docker-compose \
-#   --file setups/pipeline.yaml \
-#   --file ../client-nis/setup/pipeline-overrides.yaml \
-#   --env-file ../client-nis/setup/.env \
+#   --file pipeline/compose.yaml \
+#   --file ../client-nis/compose-overrides.yaml \
+#   --env-file ../client-nis/.env \
 #   --profile dashboard \
 #   pull && \
 #   docker-compose \
-#   --file setups/pipeline.yaml \
-#   --file ../client-nis/setup/pipeline-overrides.yaml \
-#   --env-file ../client-nis/setup/.env \
+#   --file pipeline/compose.yaml \
+#   --file ../client-nis/compose-overrides.yaml \
+#   --env-file ../client-nis/.env \
 #   --profile dashboard \
 #   up --build

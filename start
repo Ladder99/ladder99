@@ -18,6 +18,7 @@ SERVICES      space-delim list of profiles/services to start
               postgres, grafana, etc
   adapter     ladder99 adapter - converts machine language to shdr
   agent       mtconnect agent - converts shdr to xml and html (port 5000)
+  cloudbeaver database web viewer (port 8978)
   dozzle      docker log file browser
   grafana     ladder99 dashboard - displays database data (port 80)
   pgadmin     manages postgres database (port 5050)
@@ -26,8 +27,8 @@ SERVICES      space-delim list of profiles/services to start
 
 Examples
     ./start myclient dashboard
-    ./start ./setups/test/micro agent grafana
-    ./start --console myclient play
+    ./start ./setups/micro agent grafana
+    ./start --console myclient play dozzle
 "
 
 # show help

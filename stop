@@ -7,7 +7,7 @@ Usage: ./stop CLIENT
 
 Stop all Ladder99 services for the given client/setup
 
-CLIENT     setup client or folder, eg 'myclient' or './setups/test/micro'
+CLIENT     setup client or folder, eg 'myclient' or './setups/micro'
 
 Use 'docker stop SERVICE' to stop an individual service.
 "
