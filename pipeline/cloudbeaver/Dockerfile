@@ -68,23 +68,23 @@ RUN cd ~ \
 # install app
 #----------------------------------------------------------------------------
 
-# # start with base os
-# FROM ubuntu:21.04
+# start with base os
+FROM ubuntu:21.04
 
-# # copy app from previous layer - 100+mb
-# COPY --from=build ~/cloudbeaver/deploy/cloudbeaver /apps/cbeaver
+# copy app from previous layer - 100+mb
+COPY --from=build ~/cloudbeaver/deploy/cloudbeaver /apps/cbeaver
 
-# WORKDIR /apps/cbeaver
+WORKDIR /apps/cbeaver
 
-RUN echo set workdir
-RUN ls $HOME
-WORKDIR $HOME/cloudbeaver/deploy/cloudbeaver
+# # RUN echo set workdir
+# # RUN ls $HOME
+# WORKDIR $HOME/cloudbeaver/deploy/cloudbeaver
 
 # expose port
-RUN echo expose port
+# RUN echo expose port
 EXPOSE 8978
 
 # default command - can override with docker run or docker-compose command
-RUN echo run server
-RUN cat ./run-server.sh
+# RUN echo run server
+# RUN cat ./run-server.sh
 CMD ./run-server.sh
