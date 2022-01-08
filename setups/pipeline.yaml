@@ -1,7 +1,9 @@
 # docker compose file for the complete ladder99 pipeline.
 # can override these settings in setup-specific pipeline-overrides.yaml files.
 
-# see sh/start for how to run
+#. move this into the pipeline folder, adjust shell cmds and start/stop
+
+# see ./start for how to run
 
 version: '3.8'
 
@@ -41,6 +43,28 @@ services:
       - ../$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
     ports:
       - 5000:5000
+    restart: always
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '20m'
+
+  # cloudbeaver - database web ui
+  cloudbeaver:
+    container_name: cloudbeaver
+    profiles:
+      - all
+      - cloudbeaver
+    # image: cloudbeaver/cloudbeaver:latest
+    # working_dir: /data/agent
+    # command: agent debug agent.cfg
+    build: ../pipeline/cloudbeaver
+    volumes:
+      - ../$SETUP/volumes/cloudbeaver/workspace:/apps/cloudbeaver/workspace
+      pok
+    ports:
+      - 8978:8978
     restart: always
     networks:
       - ladder99
