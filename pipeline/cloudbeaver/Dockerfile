@@ -11,23 +11,24 @@
 # base image - ubuntu has linux/arm/v7, linux/amd64, etc
 FROM ubuntu:21.04 as build
 
-# update os and get curl
-RUN apt update && apt install -y curl gnupg
-
-# add node and yarn repos
 # note: dockerfiles run as root by default, so don't need sudo
-RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+
+# update os
+# install curl and gpg
+# add yarn and node repos
+# install jdk maven yarn node 
+# update again
+# install git and make
+RUN apt update \
+  && apt install -y curl gnupg \
+  && curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-  && curl -sL https://deb.nodesource.com/setup_14.x | bash -
+  && curl -sL https://deb.nodesource.com/setup_14.x | bash - \
+  && apt install -y openjdk-11-jdk maven yarn nodejs \
+  && apt-get update \
+  && apt-get install -y git build-essential
 
-# add dependencies
-RUN apt install -y \
-  openjdk-11-jdk \
-  maven \
-  yarn \
-  nodejs
-
-# install npm
+# install npm and lerna
 # RUN apt install -y npm  # bombs with 
 # --------
 # Some packages could not be installed. This may mean that you have
@@ -42,29 +43,19 @@ RUN apt install -y \
 # The command '/bin/sh -c apt install -y npm' returned a non-zero code: 100
 # ERROR: Service 'cloudbeaver' failed to build : Build failed
 # --------
-# so try aptitude to resolve dependencies
+# so use aptitude to resolve dependencies
 # see https://stackoverflow.com/questions/26571326/how-do-i-resolve-the-following-packages-have-unmet-dependencies
 RUN apt-get install -y aptitude \
-  && aptitude install -y npm
+  && aptitude install -y npm \
+  && npm install -g lerna
 
-# install lerna
-RUN npm install -g lerna
-
-# install git
-RUN apt-get update \
-  && apt-get install -y git
-
-# install make
-RUN apt-get update \
-  && apt-get install -y build-essential
-
-# get latest cloudbeaver source and build app
+# get latest cloudbeaver source, checkout relevant branch, and build app
+# note: ~ will be /root
 RUN cd ~ \ 
   && git clone https://github.com/dbeaver/cloudbeaver.git \
   && cd cloudbeaver/deploy \
+  && git checkout cb_release_21_3_0 \
   && ./build.sh
-
-# RUN ls -lR ~/cloudbeaver/deploy 
 
 #----------------------------------------------------------------------------
 # install app
@@ -78,15 +69,8 @@ COPY --from=build /root/cloudbeaver/deploy/cloudbeaver /root/cloudbeaver
 
 WORKDIR /root/cloudbeaver
 
-# # RUN echo set workdir
-# # RUN ls $HOME
-# WORKDIR $HOME/cloudbeaver/deploy/cloudbeaver
-
 # expose port
-# RUN echo expose port
 EXPOSE 8978
 
 # default command - can override with docker run or docker-compose command
-# RUN echo run server
-# RUN cat ./run-server.sh
 CMD ./run-server.sh
