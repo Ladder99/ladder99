@@ -50,6 +50,9 @@ RUN rm -rf /var/lib/apt/lists/*
 
 RUN npm install -g lerna
 
+# RUN apt install -y git
+RUN add-apt-repository ppa:git-core/ppa
+RUN apt update -y
 RUN apt install -y git
 
 # get latest source and build app
