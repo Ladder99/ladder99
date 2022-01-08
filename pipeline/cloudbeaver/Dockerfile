@@ -44,7 +44,7 @@ RUN apt install -y nodejs
 # ERROR: Service 'cloudbeaver' failed to build : Build failed
 
 # so try aptitude to resolve dependencies
-RUN apt-get install aptitude && aptitude install -y npm
+RUN apt-get install -y aptitude && aptitude install -y npm
 
 RUN rm -rf /var/lib/apt/lists/*
 
