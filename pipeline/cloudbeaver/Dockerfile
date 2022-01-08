@@ -26,12 +26,14 @@ RUN curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
 RUN apt install -y \
   openjdk-11-jdk \
   maven \
-  yarn \
-  && rm -rf /var/lib/apt/lists/* \
-  && npm install -g lerna
+  yarn
 
-# nodejs \
-# npm \
+RUN apt install -y nodejs
+RUN apt install -y npm
+
+RUN rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g lerna
 
 # get latest source and build app
 RUN cd ~ \ 
