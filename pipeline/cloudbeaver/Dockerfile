@@ -12,7 +12,7 @@
 FROM ubuntu:21.04 as build
 
 # update os and get curl
-RUN apt update && apt install -y curl
+RUN apt update && apt install -y curl gnupg
 
 # add node and yarn repos
 # note: dockerfiles run as root by default, so don't need sudo
