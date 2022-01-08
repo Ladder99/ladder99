@@ -29,7 +29,22 @@ RUN apt install -y \
   yarn
 
 RUN apt install -y nodejs
-RUN apt install -y npm
+
+# RUN apt install -y npm  # bombs with 
+# Some packages could not be installed. This may mean that you have
+# requested an impossible situation or if you are using the unstable
+# distribution that some required packages have not yet been created
+# or been moved out of Incoming.
+# The following information may help to resolve the situation:
+# The following packages have unmet dependencies:
+#  libnode72 : Conflicts: nodejs-legacy
+#  nodejs : Conflicts: npm
+# E: Unable to correct problems, you have held broken packages.
+# The command '/bin/sh -c apt install -y npm' returned a non-zero code: 100
+# ERROR: Service 'cloudbeaver' failed to build : Build failed
+
+# so try aptitude to resolve dependencies
+RUN apt-get install aptitude && aptitude install -y npm
 
 RUN rm -rf /var/lib/apt/lists/*
 
