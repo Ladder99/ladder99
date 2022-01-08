@@ -27,10 +27,11 @@ RUN apt install -y \
   openjdk-11-jdk \
   maven \
   yarn \
-  nodejs \
-  npm \
   && rm -rf /var/lib/apt/lists/* \
   && npm install -g lerna
+
+# nodejs \
+# npm \
 
 # get latest source and build app
 RUN cd ~ \ 
