@@ -76,10 +76,14 @@ RUN cd ~ \
 
 # WORKDIR /apps/cbeaver
 
+RUN echo set workdir
 WORKDIR /home/ubuntu/cloudbeaver/deploy/cloudbeaver
 
 # expose port
+RUN echo expose port
 EXPOSE 8978
 
 # default command - can override with docker run or docker-compose command
+RUN echo run server
+RUN cat ./run-server.sh
 CMD ./run-server.sh
