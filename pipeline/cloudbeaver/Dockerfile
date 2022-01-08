@@ -64,7 +64,7 @@ RUN cd ~ \
   && cd cloudbeaver/deploy \
   && ./build.sh
 
-RUN ls -lR ~/cloudbeaver/deploy 
+# RUN ls -lR ~/cloudbeaver/deploy 
 
 #----------------------------------------------------------------------------
 # install app
@@ -74,7 +74,7 @@ RUN ls -lR ~/cloudbeaver/deploy
 FROM ubuntu:21.04
 
 # copy app from previous layer - 100+mb
-COPY --from=build ~/cloudbeaver/deploy/ /apps/
+COPY --from=build /root/cloudbeaver/deploy/cloudbeaver /apps/cloudbeaver
 
 WORKDIR /apps/cloudbeaver
 
