@@ -23,17 +23,14 @@ FROM ubuntu:21.04 as build
 # update again
 # install git and make
 # download and install jdk11
-# was apt install -y openjdk-11-jdk
 RUN apt update \
   && apt install -y curl gnupg \
   && curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
   && curl -sL https://deb.nodesource.com/setup_14.x | bash - \
-  && apt install -y maven yarn nodejs \
+  && apt install -y openjdk-11-jdk=11.0.7+10-3ubuntu1 maven yarn nodejs \
   && apt-get update \
-  && apt-get install -y git build-essential \
-  && curl http://launchpadlibrarian.net/475028627/openjdk-11-jdk_11.0.7+10-3ubuntu1_arm64.deb --output jdk11.deb \
-  && dpkg -i jdk11.deb
+  && apt-get install -y git build-essential
 
 # install npm and lerna
 # RUN apt install -y npm  # bombs with 
