@@ -2,8 +2,9 @@
 # Adapted from https://cloudbeaver.io/docs/Build-and-deploy/
 # and https://github.com/dbeaver/cloudbeaver/wiki/Build-and-deploy
 
-# # multi-stage dockerfile - build app, then bring only essentials into new os
+# note: dockerfiles run as root by default, so don't need sudo anywhere
 
+#. use these for git checkout below -
 # ARG tag=21.3.0
 # ARG branch=cb_release_21_3_0
 
@@ -11,22 +12,18 @@
 # build app
 #----------------------------------------------------------------------------
 
-# base image - ubuntu has linux/arm/v7, linux/amd64, etc
-# FROM ubuntu:21.04 as build
-
+# base image - has arm64
 # https://hub.docker.com/r/adoptopenjdk/openjdk11/tags
+# note: we need 11.0.10 because from 11.0.11 on they disabled tls 1.0 and 1.1,
+# which is what the jobboss db server uses. the current version is 11.0.13.
 # FROM adoptopenjdk/openjdk11:jdk-11.0.12_7-ubuntu-slim
 FROM adoptopenjdk/openjdk11:jdk-11.0.10_9-ubuntu-slim
-
-# note: dockerfiles run as root by default, so don't need sudo
 
 # update os
 # install curl and gpg
 # add yarn and node repos
 # install openjdk maven yarn node 
-# update again
-# install git and make
-# && apt install -y openjdk-11-jdk=11.0.7+10-3ubuntu1 maven yarn nodejs \
+# install git make
 RUN apt update \
   && apt install -y curl gnupg \
   && curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
@@ -36,11 +33,8 @@ RUN apt update \
   && apt-get update \
   && apt-get install -y git build-essential
 
-# RUN apt update \
-#   && apt-get install -y git maven yarn nodejs
-
 # install npm and lerna
-# RUN apt install -y npm  # bombs with 
+# RUN apt install -y npm  # bombs with this...
 # --------
 # Some packages could not be installed. This may mean that you have
 # requested an impossible situation or if you are using the unstable
@@ -62,31 +56,25 @@ RUN apt-get install -y aptitude \
 
 # get latest cloudbeaver source, checkout relevant branch, and build app
 # note: ~ will be /root
+#. add this so can tie to a specific cloudbase version -
+# && git checkout cb_release_21_3_0 \
 RUN cd ~ \ 
   && git clone https://github.com/dbeaver/cloudbeaver.git \
   && cd cloudbeaver/deploy \
   && ./build.sh
 
-# && git checkout cb_release_21_3_0 \
-
 #----------------------------------------------------------------------------
 # install app
 #----------------------------------------------------------------------------
 
-# # start with base os
-# FROM ubuntu:21.04
-
 # # copy app from previous layer - 100+mb
 # COPY --from=build /root/cloudbeaver/deploy/cloudbeaver /root/cloudbeaver
 
-# WORKDIR /root/cloudbeaver
+#. copy to and use /opt/cloudbeaver, like their dockerfile does -
+# https://github.com/dbeaver/cloudbeaver/blob/devel/deploy/docker/Dockerfile
 
-WORKDIR /root/cloudbeaver/deploy/cloudbeaver
-
-# expose port
 EXPOSE 8978
 
-# default command - can override with docker run or docker-compose command
-# CMD ./run-server.sh
+WORKDIR /root/cloudbeaver/deploy/cloudbeaver
 
 ENTRYPOINT ["./run-server.sh"]
