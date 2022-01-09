@@ -15,7 +15,8 @@
 # FROM ubuntu:21.04 as build
 
 # https://hub.docker.com/r/adoptopenjdk/openjdk11/tags
-FROM adoptopenjdk/openjdk11:jdk-11.0.12_7-ubuntu-slim
+# FROM adoptopenjdk/openjdk11:jdk-11.0.12_7-ubuntu-slim
+FROM adoptopenjdk/openjdk11:jdk-11.0.10_7-ubuntu-slim
 
 # note: dockerfiles run as root by default, so don't need sudo
 
