@@ -65,13 +65,15 @@ RUN cd ~ \
 # install app
 #----------------------------------------------------------------------------
 
-# start with base os
-FROM ubuntu:21.04
+# # start with base os
+# FROM ubuntu:21.04
 
-# copy app from previous layer - 100+mb
-COPY --from=build /root/cloudbeaver/deploy/cloudbeaver /root/cloudbeaver
+# # copy app from previous layer - 100+mb
+# COPY --from=build /root/cloudbeaver/deploy/cloudbeaver /root/cloudbeaver
 
-WORKDIR /root/cloudbeaver
+# WORKDIR /root/cloudbeaver
+
+WORKDIR /root/cloudbeaver/deploy/cloudbeaver
 
 # expose port
 EXPOSE 8978
