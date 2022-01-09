@@ -34,6 +34,9 @@ FROM adoptopenjdk/openjdk11:jdk-11.0.12_7-ubuntu-slim
 #   && apt-get update \
 #   && apt-get install -y git build-essential
 
+RUN apt update \
+  && apt-get install -y git
+
 # # install npm and lerna
 # # RUN apt install -y npm  # bombs with 
 # # --------
