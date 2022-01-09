@@ -59,13 +59,13 @@ language plpgsql;
 
 
 ---------------------------------------------------------------------
--- get_utilization
+-- get_availability
 ---------------------------------------------------------------------
 
 -- get percent of time a device is active vs available
 -- call it like so - 
 -- set timezone to 'America/Chicago';
--- select time, utilization from get_utilization(
+-- select time, availability from get_availability(
 --   'Cutter',
 --   'controller/partOccurrence/part_count-all',
 --   $__from, $__to,
@@ -76,16 +76,16 @@ language plpgsql;
 -- )
 
 -- do this if change parameters OR return signature
--- drop function if exists get_utilization(text, text, bigint, bigint, jsonb);
+-- drop function if exists get_availability(text, text, bigint, bigint, jsonb);
 
-create or replace function get_utilization (
+create or replace function get_availability (
   in p_device text, -- the device name, eg 'Cutter'
   in p_path text, -- path to monitor, eg 'controller/partOccurrence/part_count-all'
   in p_start bigint, -- start time in milliseconds since 1970-01-01
   in p_stop bigint, -- stop time in milliseconds since 1970-01-01
   in p_time_windows jsonb = '[]' -- see is_time_within_windows fn
 )
-returns table ("time" timestamptz, "utilization" float)
+returns table ("time" timestamptz, "availability" float)
 as
 $body$
 declare
@@ -115,7 +115,7 @@ begin
     )
     select
       time_bucket_gapfill(_binsize, small_bin::timestamp, _start, _stop) as time,
-      (sum(value) * _factor)::float as utilization
+      (sum(value) * _factor)::float as availability
     from cte
     where is_time_within_windows(small_bin, p_time_windows)
     group by time
@@ -129,7 +129,7 @@ language plpgsql;
 --
 --set timezone to 'America/Chicago';
 ----set timezone to 'UTC';
---select time, utilization from get_utilization(
+--select time, availability from get_availability(
 -- 'Cutter',
 -- 'controller/partOccurrence/part_count-all',
 --  timestamptz2ms('2021-12-13 0:00:00'),

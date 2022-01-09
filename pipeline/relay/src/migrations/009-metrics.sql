@@ -1,5 +1,5 @@
 
--- tables, views, and functions to support metrics like utilization
+-- tables, views, and functions to support metrics like availability
 
 
 ---------------------------------------------------------------------
@@ -36,7 +36,7 @@ select
   -- note: coalesce returns the first non-null value (works like an or operator),
   -- and nullif returns the first value, unless it equals 0.0, when it returns null -
   -- then the whole expression is null. avoids div by zero error.
-  coalesce(bins.active::float,0) / nullif(bins.available::float,0.0) as utilization
+  coalesce(bins.active::float,0) / nullif(bins.available::float,0.0) as availability
 from bins
 join nodes as devices on bins.device_id = devices.node_id;
 
@@ -340,24 +340,24 @@ $body$;
 
 
 ---------------------------------------------------------------------
--- get_utilization_from_metrics_view fn
+-- get_availability_from_metrics_view fn
 ---------------------------------------------------------------------
 -- get percent of time a device is active vs available.
 -- chooses a resolution (hour, day, etc) based on time range.
 
 -- call it from grafana like so - 
 --   set timezone to 'America/Chicago';
---   select time, utilization 
---   from get_utilization_from_metrics_view('Cutter', $__from, $__to)
+--   select time, availability
+--   from get_availability_from_metrics_view('Cutter', $__from, $__to)
 
---drop function get_utilization_from_metrics_view;
+--drop function get_availability_from_metrics_view;
 
-create or replace function get_utilization_from_metrics_view(
+create or replace function get_availability_from_metrics_view(
   in p_device text, -- the device name, eg 'Cutter'
   in p_start bigint, -- start time in milliseconds since 1970-01-01
   in p_stop bigint -- stop time in milliseconds since 1970-01-01
 )
-returns table ("time" timestamptz, "utilization" float)
+returns table ("time" timestamptz, "availability" float)
 language plpgsql
 as
 $body$
@@ -376,7 +376,7 @@ declare
 begin
   return query
 --    select 
---      metrics.time, metrics.utilization
+--      metrics.time, metrics.availability
 --    from 
 --      metrics
 --    where 
@@ -388,7 +388,7 @@ begin
 --    ;
     select 
       time_bucket_gapfill(v_binsize, metrics.time, v_start, v_stop) as bin, 
-      coalesce(avg(metrics.utilization),0) as utilization
+      coalesce(avg(metrics.availability),0) as availability
     from 
       metrics
     where 
@@ -397,7 +397,7 @@ begin
       and metrics.time between v_start and v_stop
     group by
       bin,
-      metrics.utilization
+      metrics.availability
     order by 
       bin
     ;
@@ -405,10 +405,11 @@ end;
 $body$;
 
 
+-- test
 
 -- --set timezone to 'America/Chicago';
- select time, utilization 
- from get_utilization_from_metrics_view(
+ select time, availability
+ from get_availability_from_metrics_view(
    'Cutter',
    timestamptz2ms('2021-12-29 18:00:00'),
    timestamptz2ms('2021-12-29 19:00:00')
