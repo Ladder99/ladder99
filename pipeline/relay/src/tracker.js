@@ -34,8 +34,14 @@ export class Tracker {
     this.dbInterval = dbInterval // save for later
   }
 
+  async getSchedule(device) {
+    //. query db for start and stop dataitems for given device
+    //. device object should have the .jobBossName for the device, eg 'MARUMATSU'
+    return { start: '', stop: '' }
+  }
+
   // check if time is within a scheduled work period
-  async isTimeScheduled(datetime) {
+  async isTimeScheduled(datetime, schedule) {
     //. todo
     // const sql = `select is_time_scheduled('${deviceName}', '${path}', '${start.toISOString()}', '${stop.toISOString()}');`
     // console.log(sql)
@@ -52,9 +58,12 @@ export class Tracker {
     // iterate over devices
     // for (let device of this.devices) {
     for (let device of this.setup.devices) {
+      // we only want to track devices with a metrics object
       if (device.metrics) {
+        // get schedule for this device
+        const schedule = await this.getSchedule(device)
         // check if now is within scheduled time
-        const scheduled = await this.isTimeScheduled(now)
+        const scheduled = await this.isTimeScheduled(now, schedule)
         if (scheduled) {
           console.log('device', device)
           const deviceName = device.name // eg 'Cutter'
