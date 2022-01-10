@@ -127,11 +127,18 @@ services:
     environment:
       # need these for provisioning datasources
       #. don't use PGPASSWORD - how use .pgpass file with grafana tho?
+      # note: null is a docker convention for passing values in through 
+      # environment variables.
       PGHOST: null
       PGPORT: null
       PGDATABASE: null
       PGUSER: null
       PGPASSWORD: null
+      JOBBOSS_HOST: null
+      JOBBOSS_PORT: null
+      JOBBOSS_DATABASE: null
+      JOBBOSS_USER: null
+      JOBBOSS_PASSWORD: null
       # INFLUXDB_DB:
       # INFLUXDB_USER:
       # INFLUXDB_PASSWORD:
