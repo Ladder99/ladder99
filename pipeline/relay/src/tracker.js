@@ -1,8 +1,6 @@
 // Track events every n seconds and increment bins as needed.
 
-//. move this up a level
-
-//. what if had one tracker per device?
+//. what if had one tracker per device? might need that.
 
 //. pass in through constructor, with devices and metrics to track.
 //. which should come from a client yaml file. metrics.yaml?
@@ -59,9 +57,8 @@ export class Tracker {
         const scheduled = await this.isTimeScheduled(now)
         if (scheduled) {
           console.log('device', device)
-          // const device_id = device.node_id // eg 1
           const deviceName = device.name // eg 'Cutter'
-          const device_id = this.deviceIds[deviceName]
+          const device_id = this.deviceIds[deviceName] // eg 1
           // check for events in previous n secs
           const stop = now
           const start = new Date(stop.getTime() - this.dbInterval * 1000)

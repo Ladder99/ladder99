@@ -19,6 +19,8 @@ export class AdapterDriver {
 
     setUnavailable()
 
+    // need to wait a bit to make sure the cutter cache items are setup before
+    // writing to them. they're setup via the cutter/marumatsu module.
     console.log(`JobBoss - waiting a while...`)
     await lib.sleep(6000)
 

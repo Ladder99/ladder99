@@ -34,8 +34,8 @@ export class AgentReader {
     this.tracker = new tracker.Tracker(this.db, this.setup)
     // start timer which dumps bins to db every interval secs
     //.. use 5s for testing, 60s for production
-    // this.tracker.startTimer(60)
-    this.tracker.startTimer(5)
+    this.tracker.startTimer(60)
+    // this.tracker.startTimer(5)
 
     // probe - get agent data structures and write to db
     probe: do {
