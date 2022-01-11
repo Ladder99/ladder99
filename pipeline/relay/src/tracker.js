@@ -41,16 +41,11 @@ export class Tracker {
   // just need the regular device name as defined in setup and
   // used in postgres, eg 'Marumatsu'.
   async getSchedule(device) {
-    const start = await this.db.getLatestValue(
-      'history_text',
-      device,
-      'processes/process_time-start'
-    )
-    const stop = await this.db.getLatestValue(
-      'history_text',
-      device,
-      'processes/process_time-stop'
-    )
+    const table = 'history_text'
+    const startpath = 'processes/process_time-start'
+    const stoppath = 'processes/process_time-stop'
+    const start = await this.db.getLatestValue(table, device, startpath)
+    const stop = await this.db.getLatestValue(table, device, stoppath)
     const schedule = { start, stop }
     console.log('schedule', schedule)
     return schedule
@@ -94,20 +89,16 @@ export class Tracker {
 
   // check if a device was 'active' (ie has events on the given path),
   // between two times. returns true/false
-  //. move sql into here
-  // select
-  //   count(value) > 0 as active
-  // from
-  //   history_all
-  // where
-  //   device = p_device
-  //   and path = p_path
-  //   and time between p_start and p_stop
-  // limit 1;
   async getActive(device, path, start, stop) {
-    const sql = `select get_active('${
-      device.name
-    }', '${path}', '${start.toISOString()}', '${stop.toISOString()}');`
+    const sql = `
+select count(value) > 0 as active
+from history_all
+where
+  device = '${device.name}'
+  and path = '${path}'
+  and time between '${start.toISOString()}' and '${stop.toISOString()}'
+limit 1;
+`
     console.log(sql)
     const result = await this.db.query(sql)
     const deviceWasActive = result.rows[0].get_active // t/f

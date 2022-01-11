@@ -159,12 +159,12 @@ export class Db {
   // get latest value of a device's property path
   async getLatestValue(table, device, path) {
     const sql = `
-      select value
-      from ${table}
-      where device='${device.name}' and path='${path}'
-      order by time desc
-      limit 1;
-    `
+select value
+from ${table}
+where device='${device.name}' and path='${path}'
+order by time desc
+limit 1;
+`
     console.log(sql)
     const result = await this.query(sql)
     const value = result.rows[0]['value']
