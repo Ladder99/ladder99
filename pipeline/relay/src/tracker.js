@@ -55,6 +55,7 @@ export class Tracker {
   async updateBins() {
     console.log('updateBins', new Date())
     const now = new Date()
+    console.log('now', now)
     // iterate over devices
     for (let device of this.setup.devices) {
       // we only want to track devices with a metrics object
@@ -100,7 +101,7 @@ export class Tracker {
     `
     console.log(sql)
     const result = await this.db.query(sql)
-    const deviceWasActive = result.rows[0].get_active // t/f
+    const deviceWasActive = result.rows[0].active // t/f
     return deviceWasActive
   }
 
