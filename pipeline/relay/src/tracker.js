@@ -36,7 +36,7 @@ export class Tracker {
 
   async getSchedule(device) {
     //. query db for start and stop dataitems for given device
-    //. device object should have the .jobBossName for the device, eg 'MARUMATSU'
+    //. just use the regular device name, eg 'Marumatsu'
     return { start: '', stop: '' }
   }
 
