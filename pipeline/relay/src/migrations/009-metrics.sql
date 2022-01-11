@@ -396,8 +396,9 @@ begin
       and resolution = v_binsize
       and metrics.time between v_start and v_stop
     group by
-      bin,
-      metrics.availability
+      bin
+      -- ,
+      -- metrics.availability
     order by 
       bin
     ;
