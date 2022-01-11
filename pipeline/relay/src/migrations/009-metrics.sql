@@ -1,6 +1,4 @@
-
 -- tables, views, and functions to support metrics like availability
-
 
 ---------------------------------------------------------------------
 -- bins table
@@ -41,33 +39,33 @@ from bins
 join nodes as devices on bins.device_id = devices.node_id;
 
 
----------------------------------------------------------------------
--- get_active fn
----------------------------------------------------------------------
--- check for events on given device and path in a time range.
--- returns true if any events.
---. what about unavailable events - ignore those?
+-- ---------------------------------------------------------------------
+-- -- get_active fn
+-- ---------------------------------------------------------------------
+-- -- check for events on given device and path in a time range.
+-- -- returns true if any events.
+-- --. what about unavailable events - ignore those?
 
-create or replace function get_active(
-  p_device text, -- device name
-  p_path text, -- dataitem path to check for activity
-  p_start timestamptz,
-  p_stop timestamptz
-)
-returns boolean
-language sql
-as
-$body$
-  select 
-    count(value) > 0 as active
-  from 
-    history_all
-  where 
-    device = p_device 
-    and path = p_path
-    and time between p_start and p_stop
-  limit 1;
-$body$;
+-- create or replace function get_active(
+--   p_device text, -- device name
+--   p_path text, -- dataitem path to check for activity
+--   p_start timestamptz,
+--   p_stop timestamptz
+-- )
+-- returns boolean
+-- language sql
+-- as
+-- $body$
+--   select 
+--     count(value) > 0 as active
+--   from 
+--     history_all
+--   where 
+--     device = p_device 
+--     and path = p_path
+--     and time between p_start and p_stop
+--   limit 1;
+-- $body$;
 
 
 -- test
@@ -79,39 +77,39 @@ $body$;
 --);
 
 
----------------------------------------------------------------------
--- increment_bins procedure
----------------------------------------------------------------------
--- increment values in the bins table
+-- ---------------------------------------------------------------------
+-- -- increment_bins procedure
+-- ---------------------------------------------------------------------
+-- -- increment values in the bins table
 
-create or replace procedure increment_bins(
-  in p_device_id int, -- device node_id to update
-  in p_time timestamptz, -- time to increment - will add for ALL resolutions
-  in p_field text, -- bins field to update
-  in p_delta int = 1
-)
-language plpgsql
-as $body$
-declare
-  v_resolutions text[] := '{minute,hour,day,week,month,year}'; -- array literal
-  v_resolution text;
-  v_time timestamptz;
-  v_field text := quote_ident(p_field); -- eg 'active', 'available'
-begin
-  foreach v_resolution in array v_resolutions loop
-    v_time := date_trunc(v_resolution, p_time); -- round down to start of current min, hour, day, etc
-    -- upsert/increment the given field by delta
-    --. use $ not % for all params?
-    execute format(
-      'insert into bins (device_id, resolution, time, %s) 
-        values ($1, $2, $3, $4)
-      on conflict (device_id, resolution, time) do 
-        update set %s = coalesce(bins.%s, 0) + $5;',
-      v_field, v_field, v_field
-    ) using p_device_id, ('1 '||v_resolution)::interval, v_time, p_delta, p_delta;
-  end loop;
-end
-$body$;
+-- create or replace procedure increment_bins(
+--   in p_device_id int, -- device node_id to update
+--   in p_time timestamptz, -- time to increment - will add for ALL resolutions
+--   in p_field text, -- bins field to update
+--   in p_delta int = 1
+-- )
+-- language plpgsql
+-- as $body$
+-- declare
+--   v_resolutions text[] := '{minute,hour,day,week,month,year}'; -- array literal
+--   v_resolution text;
+--   v_time timestamptz;
+--   v_field text := quote_ident(p_field); -- eg 'active', 'available'
+-- begin
+--   foreach v_resolution in array v_resolutions loop
+--     v_time := date_trunc(v_resolution, p_time); -- round down to start of current min, hour, day, etc
+--     -- upsert/increment the given field by delta
+--     --. use $ not % for all params?
+--     execute format(
+--       'insert into bins (device_id, resolution, time, %s) 
+--         values ($1, $2, $3, $4)
+--       on conflict (device_id, resolution, time) do 
+--         update set %s = coalesce(bins.%s, 0) + $5;',
+--       v_field, v_field, v_field
+--     ) using p_device_id, ('1 '||v_resolution)::interval, v_time, p_delta, p_delta;
+--   end loop;
+-- end
+-- $body$;
 
 
 -- test
@@ -119,125 +117,125 @@ $body$;
 
 
 
----------------------------------------------------------------------
--- is_time_scheduled fn
----------------------------------------------------------------------
--- returns true if given time is in the work/holiday schedule.
+-- ---------------------------------------------------------------------
+-- -- is_time_scheduled fn
+-- ---------------------------------------------------------------------
+-- -- returns true if given time is in the work/holiday schedule.
 
--- p_schedule is a jsonb object with day 1 = monday - eg 
--- '{
---   "work_windows": [
---     {"day":1, "start":"5:00", "stop":"15:30"},
---     {"day":2, "start":"5:00", "stop":"15:30"},
---     {"day":3, "start":"5:00", "stop":"15:30"},
---     {"day":4, "start":"5:00", "stop":"15:30"},
---     {"day":5, "start":"5:00", "stop":"13:30"},
---     {"day":6, "start":"5:00", "stop":"13:00"}
---   ],
---   "holidays": [
---     "2021-12-25"
---   ]
--- }'
+-- -- p_schedule is a jsonb object with day 1 = monday - eg 
+-- -- '{
+-- --   "work_windows": [
+-- --     {"day":1, "start":"5:00", "stop":"15:30"},
+-- --     {"day":2, "start":"5:00", "stop":"15:30"},
+-- --     {"day":3, "start":"5:00", "stop":"15:30"},
+-- --     {"day":4, "start":"5:00", "stop":"15:30"},
+-- --     {"day":5, "start":"5:00", "stop":"13:30"},
+-- --     {"day":6, "start":"5:00", "stop":"13:00"}
+-- --   ],
+-- --   "holidays": [
+-- --     "2021-12-25"
+-- --   ]
+-- -- }'
 
-create or replace function is_time_scheduled(
-  in p_time timestamptz
---  , 
---  in p_schedule jsonb
-)
-returns boolean
-language plpgsql
-as
-$body$
-declare
-  v_date date;
-  v_holiday date;
-  v_work_window jsonb;
-  v_day_of_week int;
-  v_base timestamptz;
-  v_start timestamptz;
-  v_stop timestamptz;
-  v_schedule jsonb := '{
-    "work_windows": [
-      {"day":1, "start":"5:00", "stop":"15:30"},
-      {"day":2, "start":"5:00", "stop":"15:30"},
-      {"day":3, "start":"5:00", "stop":"15:30"},
-      {"day":4, "start":"5:00", "stop":"15:30"},
-      {"day":5, "start":"5:00", "stop":"13:30"},
-      {"day":6, "start":"5:00", "stop":"13:00"}
-    ],
-    "holidays": [
-      "2021-12-25"
-    ]
-  }';
-begin
+-- create or replace function is_time_scheduled(
+--   in p_time timestamptz
+-- --  , 
+-- --  in p_schedule jsonb
+-- )
+-- returns boolean
+-- language plpgsql
+-- as
+-- $body$
+-- declare
+--   v_date date;
+--   v_holiday date;
+--   v_work_window jsonb;
+--   v_day_of_week int;
+--   v_base timestamptz;
+--   v_start timestamptz;
+--   v_stop timestamptz;
+--   v_schedule jsonb := '{
+--     "work_windows": [
+--       {"day":1, "start":"5:00", "stop":"15:30"},
+--       {"day":2, "start":"5:00", "stop":"15:30"},
+--       {"day":3, "start":"5:00", "stop":"15:30"},
+--       {"day":4, "start":"5:00", "stop":"15:30"},
+--       {"day":5, "start":"5:00", "stop":"13:30"},
+--       {"day":6, "start":"5:00", "stop":"13:00"}
+--     ],
+--     "holidays": [
+--       "2021-12-25"
+--     ]
+--   }';
+-- begin
   
-  -- first, check if day is a holiday
+--   -- first, check if day is a holiday
   
-  -- get time as a pure date, eg '2021-12-25'
-  v_date := p_time::date;
+--   -- get time as a pure date, eg '2021-12-25'
+--   v_date := p_time::date;
 
-  -- iterate over holidays
-  for v_holiday in select * from jsonb_array_elements(v_schedule->'holidays') loop
-    raise notice 'holiday %', v_holiday;
-    if v_date = v_holiday then
-      -- raise notice 'it''s a holiday!';
-      return false; -- return false if on a holiday
-    end if;
-  end loop;
+--   -- iterate over holidays
+--   for v_holiday in select * from jsonb_array_elements(v_schedule->'holidays') loop
+--     raise notice 'holiday %', v_holiday;
+--     if v_date = v_holiday then
+--       -- raise notice 'it''s a holiday!';
+--       return false; -- return false if on a holiday
+--     end if;
+--   end loop;
 
-  -- now, check if time is within any scheduled work hours
+--   -- now, check if time is within any scheduled work hours
 
-  v_day_of_week := extract(dow from p_time); -- 1-7, with 1=monday
-  v_base := date_trunc('day', p_time); -- midnight of day
+--   v_day_of_week := extract(dow from p_time); -- 1-7, with 1=monday
+--   v_base := date_trunc('day', p_time); -- midnight of day
 
-  -- iterate over work windows
-  for v_work_window in select * from jsonb_array_elements(v_schedule->'work_windows') loop
-    -- raise notice 'work window %', v_work_window;
+--   -- iterate over work windows
+--   for v_work_window in select * from jsonb_array_elements(v_schedule->'work_windows') loop
+--     -- raise notice 'work window %', v_work_window;
   
-    -- check for matching day of week
-    if v_day_of_week = (v_work_window->'day')::int then
+--     -- check for matching day of week
+--     if v_day_of_week = (v_work_window->'day')::int then
 
-      -- get start and stop times for this window - eg 5am-330pm of p_time's day 
-      v_start := v_base + (v_work_window->>'start')::interval; -- eg v_base + interval '4h'
-      v_stop  := v_base + (v_work_window->>'stop')::interval;
+--       -- get start and stop times for this window - eg 5am-330pm of p_time's day 
+--       v_start := v_base + (v_work_window->>'start')::interval; -- eg v_base + interval '4h'
+--       v_stop  := v_base + (v_work_window->>'stop')::interval;
 
-      -- raise notice 'checking times % to %', v_start, v_stop;
+--       -- raise notice 'checking times % to %', v_start, v_stop;
     
-      -- if time within bounds, return true
-      if (p_time between v_start and v_stop) then
-        -- raise notice 'in bounds!';
-        return true;
-      end if;
+--       -- if time within bounds, return true
+--       if (p_time between v_start and v_stop) then
+--         -- raise notice 'in bounds!';
+--         return true;
+--       end if;
   
-    end if;
-  end loop;
+--     end if;
+--   end loop;
 
-  -- not within a work window, so return false
-  return false;
-end;
-$body$;
+--   -- not within a work window, so return false
+--   return false;
+-- end;
+-- $body$;
 
 
 --. set a global variable/constant for schedule to be used later also?
 --. how run tests here? raise notice of pass/fail or t/f?
 
-select is_time_scheduled(
-  '2021-12-18 12:30:00'
---,
---  '{
---    "work_windows": [
---      {"day":1, "start":"5:00", "stop":"15:30"},
---      {"day":2, "start":"5:00", "stop":"15:30"},
---      {"day":3, "start":"5:00", "stop":"15:30"},
---      {"day":4, "start":"5:00", "stop":"15:30"},
---      {"day":5, "start":"5:00", "stop":"13:30"},
---      {"day":6, "start":"5:00", "stop":"13:00"}
---    ],
---    "holidays": [
---      "2021-12-25"
---    ]
---  }'
-);
+-- select is_time_scheduled(
+--   '2021-12-18 12:30:00'
+-- --,
+-- --  '{
+-- --    "work_windows": [
+-- --      {"day":1, "start":"5:00", "stop":"15:30"},
+-- --      {"day":2, "start":"5:00", "stop":"15:30"},
+-- --      {"day":3, "start":"5:00", "stop":"15:30"},
+-- --      {"day":4, "start":"5:00", "stop":"15:30"},
+-- --      {"day":5, "start":"5:00", "stop":"13:30"},
+-- --      {"day":6, "start":"5:00", "stop":"13:00"}
+-- --    ],
+-- --    "holidays": [
+-- --      "2021-12-25"
+-- --    ]
+-- --  }'
+-- );
 
 
 --insert into meta (name, value) values ('schedule1', 
@@ -257,85 +255,84 @@ select is_time_scheduled(
 --);
 
 
+-- ---------------------------------------------------------------------
+-- -- update_metrics procedure / job
+-- ---------------------------------------------------------------------
+-- -- this will be called every minute by timescaledb's job scheduler.
+-- -- it calls increment_bin for the different fields and bin resolutions.
 
----------------------------------------------------------------------
--- update_metrics procedure / job
----------------------------------------------------------------------
--- this will be called every minute by timescaledb's job scheduler.
--- it calls increment_bin for the different fields and bin resolutions.
+-- --drop procedure update_metrics;
 
---drop procedure update_metrics;
-
-create or replace procedure update_metrics(job_id int, config jsonb)
-language plpgsql
-as
-$body$
-declare
-  v_device_id int;
-  v_device text;
-  v_path text := config->>'path'; -- eg 'controller/partOccurrence/part_count-all'
-  -- v_schedule jsonb := config->>'schedule'; -- null if not included
-  v_time timestamptz := coalesce((config->>'time')::timestamptz, now()); -- ie default to now()
-  v_interval interval := coalesce(config->>'interval', '1 minute'); -- ie default is 1 minute
-  v_stop timestamptz := date_trunc('minute', v_time); -- round down to top of current minute --. or hour etc
-  v_start timestamptz := v_stop - interval '1 minute'; -- start at previous minute --. or hour etc
-  v_is_time_in_schedule boolean;
-  v_was_machine_active boolean;
-begin
-  -- check if time is within the time windows.
-  -- v_is_time_in_schedule := is_time_in_schedule(v_time, v_schedule);
-  v_is_time_in_schedule := is_time_in_schedule(v_time);
-  if v_is_time_in_schedule then
-    -- loop over relevant devices, as passed through config.
-    -- note: jsonb_array_elements returns values with double quotes around them, so use _text.
-    for v_device in select * from jsonb_array_elements_text(config->'devices') loop
-      -- get device_id from devices view - this is a simple lookup
-      execute 'select node_id from devices where name = $1' into v_device_id using v_device;
-      -- check if any part_count events were within the previous time interval (eg minute).
-      v_was_machine_active := get_active(v_device, v_path, v_start, v_stop);
-      if v_was_machine_active then
-        call increment_bins(v_device_id, v_stop, 'active');
-      end if;
-      call increment_bins(v_device_id, v_stop, 'available');
-    end loop;
-  end if;
-end;
-$body$;
+-- create or replace procedure update_metrics(job_id int, config jsonb)
+-- language plpgsql
+-- as
+-- $body$
+-- declare
+--   v_device_id int;
+--   v_device text;
+--   v_path text := config->>'path'; -- eg 'controller/partOccurrence/part_count-all'
+--   -- v_schedule jsonb := config->>'schedule'; -- null if not included
+--   v_time timestamptz := coalesce((config->>'time')::timestamptz, now()); -- ie default to now()
+--   v_interval interval := coalesce(config->>'interval', '1 minute'); -- ie default is 1 minute
+--   v_stop timestamptz := date_trunc('minute', v_time); -- round down to top of current minute --. or hour etc
+--   v_start timestamptz := v_stop - interval '1 minute'; -- start at previous minute --. or hour etc
+--   v_is_time_in_schedule boolean;
+--   v_was_machine_active boolean;
+-- begin
+--   -- check if time is within the time windows.
+--   -- v_is_time_in_schedule := is_time_in_schedule(v_time, v_schedule);
+--   v_is_time_in_schedule := is_time_in_schedule(v_time);
+--   if v_is_time_in_schedule then
+--     -- loop over relevant devices, as passed through config.
+--     -- note: jsonb_array_elements returns values with double quotes around them, so use _text.
+--     for v_device in select * from jsonb_array_elements_text(config->'devices') loop
+--       -- get device_id from devices view - this is a simple lookup
+--       execute 'select node_id from devices where name = $1' into v_device_id using v_device;
+--       -- check if any part_count events were within the previous time interval (eg minute).
+--       v_was_machine_active := get_active(v_device, v_path, v_start, v_stop);
+--       if v_was_machine_active then
+--         call increment_bins(v_device_id, v_stop, 'active');
+--       end if;
+--       call increment_bins(v_device_id, v_stop, 'available');
+--     end loop;
+--   end if;
+-- end;
+-- $body$;
 
 
--- test
+-- -- test
 
--- call update_metrics(null,
---   config => '{
---     "devices": ["Cutter"],
---     "path": "controller/partOccurrence/part_count-all", 
---     "interval": "1 min"
---   }'
--- );
+-- -- call update_metrics(null,
+-- --   config => '{
+-- --     "devices": ["Cutter"],
+-- --     "path": "controller/partOccurrence/part_count-all", 
+-- --     "interval": "1 min"
+-- --   }'
+-- -- );
 
--- User-defined actions allow you to run functions and procedures implemented 
--- in a language of your choice on a schedule within TimescaleDB.
--- https://docs.timescale.com/timescaledb/latest/overview/core-concepts/user-defined-actions
--- https://docs.timescale.com/api/latest/actions/add_job
+-- -- User-defined actions allow you to run functions and procedures implemented 
+-- -- in a language of your choice on a schedule within TimescaleDB.
+-- -- https://docs.timescale.com/timescaledb/latest/overview/core-concepts/user-defined-actions
+-- -- https://docs.timescale.com/api/latest/actions/add_job
 
--- add a scheduled job
---... don't do this if job is already running - need guard
+-- -- add a scheduled job
+-- --... don't do this if job is already running - need guard
 
--- select add_job(
---   'update_metrics', -- function/procedure to call 
---   '1 min', -- interval
---   config => '{
---     "devices": ["Cutter"],
---     "path": "controller/partOccurrence/part_count-all", 
---     "interval": "1 min"
---   }',
---   initial_start => date_trunc('minute', now()) + interval '1 minute' -- start at top of next minute
--- );
+-- -- select add_job(
+-- --   'update_metrics', -- function/procedure to call 
+-- --   '1 min', -- interval
+-- --   config => '{
+-- --     "devices": ["Cutter"],
+-- --     "path": "controller/partOccurrence/part_count-all", 
+-- --     "interval": "1 min"
+-- --   }',
+-- --   initial_start => date_trunc('minute', now()) + interval '1 minute' -- start at top of next minute
+-- -- );
 
--- -- https://docs.timescale.com/api/latest/informational-views/job_stats
--- select job_id, total_runs, total_failures, total_successes from timescaledb_information.job_stats;
+-- -- -- https://docs.timescale.com/api/latest/informational-views/job_stats
+-- -- select job_id, total_runs, total_failures, total_successes from timescaledb_information.job_stats;
 
--- --select delete_job(1015);
+-- -- --select delete_job(1015);
 
 
 
@@ -344,6 +341,8 @@ $body$;
 ---------------------------------------------------------------------
 -- get percent of time a device is active vs available.
 -- chooses a resolution (hour, day, etc) based on time range.
+
+--. call this get_availability - replace other version
 
 -- call it from grafana like so - 
 --   set timezone to 'America/Chicago';
