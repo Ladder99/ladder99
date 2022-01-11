@@ -5,6 +5,8 @@
 //. pass in through constructor, with devices and metrics to track.
 //. which should come from a client yaml file. metrics.yaml?
 const path = 'controller/partOccurrence/part_count-all'
+const startpath = 'processes/process_time-start'
+const stoppath = 'processes/process_time-complete'
 
 export class Tracker {
   // db is a Db object, setup is the client setup.yaml contents
@@ -42,8 +44,6 @@ export class Tracker {
   // used in postgres, eg 'Marumatsu'.
   async getSchedule(device) {
     const table = 'history_text'
-    const startpath = 'processes/process_time-start'
-    const stoppath = 'processes/process_time-stop'
     const start = await this.db.getLatestValue(table, device, startpath)
     const stop = await this.db.getLatestValue(table, device, stoppath)
     const schedule = { start, stop }

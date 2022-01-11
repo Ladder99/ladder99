@@ -167,7 +167,8 @@ export class Db {
     `
     console.log(sql)
     const result = await this.query(sql)
-    const value = result.rows[0]['value']
+    // console.log(result)
+    const value = result.rowCount > 0 && result.rows[0]['value']
     return value
   }
 
