@@ -65,8 +65,7 @@ export class Tracker {
         const scheduled = now >= schedule.start && now <= schedule.stop
         if (scheduled) {
           console.log('device', device)
-          const deviceName = device.name // eg 'Marumatsu'
-          const device_id = this.deviceIds[deviceName] // eg 1
+          const device_id = this.deviceIds[device.name] // eg 'Marumatsu' -> 1
           // check for events in previous n secs
           const stop = now
           const start = new Date(stop.getTime() - this.dbInterval * 1000)
@@ -91,14 +90,14 @@ export class Tracker {
   // between two times. returns true/false
   async getActive(device, path, start, stop) {
     const sql = `
-select count(value) > 0 as active
-from history_all
-where
-  device = '${device.name}'
-  and path = '${path}'
-  and time between '${start.toISOString()}' and '${stop.toISOString()}'
-limit 1;
-`
+    select count(value) > 0 as active
+    from history_all
+    where
+      device = '${device.name}'
+      and path = '${path}'
+      and time between '${start.toISOString()}' and '${stop.toISOString()}'
+    limit 1;
+    `
     console.log(sql)
     const result = await this.db.query(sql)
     const deviceWasActive = result.rows[0].get_active // t/f
@@ -106,30 +105,35 @@ limit 1;
   }
 
   // increment values in the bins table.
-  // will round the given time down to nearest min, hour, day, week etc,
-  // and increment the given field for each.
-  //. move plpgsql code into here - easier to maintain
-  //   declare
-  //   v_resolutions text[] := '{minute,hour,day,week,month,year}'; -- array literal
-  //   v_resolution text;
-  //   v_time timestamptz;
-  //   v_field text := quote_ident(p_field); -- eg 'active', 'available'
-  // begin
-  //   foreach v_resolution in array v_resolutions loop
+  // rounds the given time down to nearest min, hour, day, week etc,
+  // and increments the given field for each.
+  // field is eg 'active', 'available'.
+  // const sql = `call increment_bins(${device_id}, '${time.toISOString()}', '${field}');`
   //     v_time := date_trunc(v_resolution, p_time); -- round down to start of current min, hour, day, etc
-  //     -- upsert/increment the given field by delta
-  //     --. use $ not % for all params?
-  //     execute format(
   //       'insert into bins (device_id, resolution, time, %s)
   //         values ($1, $2, $3, $4)
   //       on conflict (device_id, resolution, time) do
   //         update set %s = coalesce(bins.%s, 0) + $5;',
   //       v_field, v_field, v_field
   //     ) using p_device_id, ('1 '||v_resolution)::interval, v_time, p_delta, p_delta;
-  //   end loop;
-  async incrementBins(device_id, time, field) {
-    const sql = `call increment_bins(${device_id}, '${time.toISOString()}', '${field}');`
-    console.log(sql)
-    await this.db.query(sql)
+  async incrementBins(device_id, time, field, delta = 1) {
+    const timeISO = time.toISOString()
+    const resolutions = 'minute,hour,day,week,month,year'.split(',')
+    for (let resolution of resolutions) {
+      // upsert/increment the given field by delta
+      const sql = `
+      insert into bins (device_id, resolution, time, ${field})
+        values (
+          ${device_id}, 
+          ('1 '||'${resolution}')::interval, 
+          date_trunc('${resolution}', '${timeISO}'), 
+          ${delta}
+        )
+      on conflict (device_id, resolution, time) do
+        update set ${field} = coalesce(bins.${field}, 0) + ${delta};
+      `
+      console.log(sql)
+      await this.db.query(sql)
+    }
   }
 }
