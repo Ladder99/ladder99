@@ -53,7 +53,7 @@ export class Tracker {
 
   // update bins - called by timer
   async updateBins() {
-    console.log('updateBins', new Date())
+    console.log('updateBins')
     const now = new Date()
     console.log('now', now)
     // iterate over devices
@@ -63,13 +63,15 @@ export class Tracker {
         // get schedule for this device
         const schedule = await this.getSchedule(device)
         // check if now is within scheduled time
-        const scheduled = now >= schedule.start && now <= schedule.stop
+        // const scheduled = now >= schedule.start && now <= schedule.stop
+        const scheduled =
+          now >= new Date(schedule.start) && now <= new Date(schedule.stop)
         if (scheduled) {
           console.log('device', device)
           const device_id = this.deviceIds[device.name] // eg 'Marumatsu' -> 1
           // check for events in previous n secs
+          const start = new Date(now.getTime() - this.dbInterval * 1000)
           const stop = now
-          const start = new Date(stop.getTime() - this.dbInterval * 1000)
           const deviceWasActive = await this.getActive(
             device,
             path,
@@ -127,7 +129,7 @@ export class Tracker {
         values (
           ${device_id}, 
           ('1 '||'${resolution}')::interval, 
-          date_trunc('${resolution}', '${timeISO}'), 
+          date_trunc('${resolution}', '${timeISO}'::timestamptz), 
           ${delta}
         )
       on conflict (device_id, resolution, time) do
