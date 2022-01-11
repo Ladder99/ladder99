@@ -34,10 +34,22 @@ export class Tracker {
     this.dbInterval = dbInterval // save for later
   }
 
+  //. query db for start and stop dataitems for given device
+  //. just use the regular device name, eg 'Marumatsu'
   async getSchedule(device) {
-    //. query db for start and stop dataitems for given device
-    //. just use the regular device name, eg 'Marumatsu'
-    return { start: '', stop: '' }
+    const start = await this.db.getLatestValue(
+      'history_text',
+      device,
+      'processes/process_time-start'
+    )
+    const stop = await this.db.getLatestValue(
+      'history_text',
+      device,
+      'processes/process_time-stop'
+    )
+    const schedule = { start, stop }
+    console.log('schedule', schedule)
+    return schedule
   }
 
   // check if time is within a scheduled work period
@@ -72,7 +84,7 @@ export class Tracker {
           const stop = now
           const start = new Date(stop.getTime() - this.dbInterval * 1000)
           const deviceWasActive = await this.getActive(
-            deviceName,
+            device,
             path,
             start,
             stop
@@ -90,8 +102,10 @@ export class Tracker {
 
   // check if a device was 'active' (ie has events on the given path),
   // between two times. returns true/false
-  async getActive(deviceName, path, start, stop) {
-    const sql = `select get_active('${deviceName}', '${path}', '${start.toISOString()}', '${stop.toISOString()}');`
+  async getActive(device, path, start, stop) {
+    const sql = `select get_active('${
+      device.name
+    }', '${path}', '${start.toISOString()}', '${stop.toISOString()}');`
     console.log(sql)
     const result = await this.db.query(sql)
     const deviceWasActive = result.rows[0].get_active // t/f
