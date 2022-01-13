@@ -39,7 +39,7 @@ export class Tracker {
     this.dbInterval = dbInterval // save for later
   }
 
-  // query db for start and stop dataitems for given device.
+  // query db for start and stop datetime dataitems for given device.
   // just need the regular device name as defined in setup and
   // used in postgres, eg 'Marumatsu'.
   async getSchedule(device) {
@@ -60,7 +60,7 @@ export class Tracker {
     for (let device of this.setup.devices) {
       // we only want to track devices with a metrics object
       if (device.metrics) {
-        // get schedule for this device
+        // get schedule for this device, eg { start: '2022-01-13 05:00:00', stop: ... }
         const schedule = await this.getSchedule(device)
         // check if now is within scheduled time
         // const scheduled = now >= schedule.start && now <= schedule.stop
@@ -87,6 +87,11 @@ export class Tracker {
         // await this.incrementBins(device_id, now, 'calendar')
       }
     }
+  }
+
+  // backfill the active and available field bins
+  async backfill() {
+    //
   }
 
   // check if a device was 'active' (ie has events on the given path),
