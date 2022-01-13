@@ -1,9 +1,15 @@
 #!/bin/bash
 
 FILE=$1
+PASSWORD=$2
 SERVICE=postgres
 USER=postgres
 DATABASE=postgres
 
 echo Restoring $FILE into $SERVICE, database $DATABASE...
+
+# import sql - drops the db and recreates it blank first
 cat $FILE | docker exec -i $SERVICE psql -U $USER $DATABASE
+
+# set the db password
+docker exec -i $SERVICE psql -U $USER -d $DATABASE -c "ALTER USER $USER WITH PASSWORD '$PASSWORD';"

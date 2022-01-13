@@ -5,4 +5,6 @@ USER=postgres
 FILE=backup_`date +%Y-%m-%d"_"%H_%M_%S`.sql
 
 echo Backing up database $SERVICE to $FILE...
+
+# eg docker exec -t postgres pg_dumpall -c -U postgres > db.sql
 docker exec -t $SERVICE pg_dumpall -c -U $USER > $FILE && echo Done.

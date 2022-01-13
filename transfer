@@ -5,4 +5,6 @@ HOST=$2
 USER=$3
 
 echo Transferring $FILE to $HOST...
+
+# eg scp db.sql pi@10.0.0.0:db.sql
 scp $FILE $USER@$HOST:$FILE
