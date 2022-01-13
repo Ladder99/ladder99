@@ -6,4 +6,4 @@ USER=$3
 
 echo Transferring $FILE to $HOST...
 # scp $FILE $USER@$HOST:/home/$USER
-scp $FILE $USER@$HOST
+scp $FILE $USER@$HOST:$FILE
