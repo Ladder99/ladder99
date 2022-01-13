@@ -25,63 +25,73 @@ export class AdapterDriver {
     cache,
     inputs,
     socket,
-    connection,
+    connection, // { server, port, database, user, password } - set in setup.yaml
     devices, // from setup.yaml
   }) {
     console.log(`JobBoss - initialize driver...`)
 
-    const config = {
-      server: connection.server,
-      port: connection.port,
-      database: connection.database,
-      user: connection.user,
-      password: connection.password,
-      options: {
-        encrypt: false,
-      },
-    }
-
     // need to wait a bit to make sure the cutter cache items are setup before
     // writing to them. they're setup via the cutter/marumatsu module.
-    console.log(`JobBoss - waiting a big...`)
+    console.log(`JobBoss - waiting a bit...`)
     await lib.sleep(6000)
 
     console.log(`JobBoss - connecting to database...`, connection.server)
     let pool
     try {
-      pool = await mssql.connect(config)
+      pool = await mssql.connect(connection)
       console.log(`JobBoss - connected`)
       setAvailable()
       await backfill() // do backfill first
-      await poll() // do initial poll
-      setInterval(poll, pollInterval) // poll every n seconds
+      // await poll() // do initial poll
+      // setInterval(poll, pollInterval) // poll every n seconds
     } catch (error) {
       console.log(error)
     }
 
     async function backfill() {
-      //. need to know all the relevant devices to lookup and set times for
-      // eg c1, c2, c3...
-      // so will loop over the devices from setup.yaml,
-      // look up times in db, and set their value here.
-      // cache.set(`c-start`, '2022-01-11 03:00:00')
-      // cache.set(`c-complete`, '2022-01-11 15:30:00')
+      console.log(`JobBoss backfilling any missed dates...`)
+      const today = new Date() //.
+      //. loop over devices from setup.yaml,
+      // look up times in db, and set their value.
       for (let device of devices) {
         if (device.jobbossId) {
-          const times = await getTimes(device)
+          const lastDay = await getLastDay(device)
+          for (let day = lastDay; day < today; day++) {
+            const times = await getTimes(device, day)
+            // cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
+            // cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
+            cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
+            cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
+          }
         }
       }
+    }
+
+    // get start/stop times for given device and day
+    //. default to today
+    async function getTimes(device, day) {
+      const start = 0
+      const stop = 0
+      const times = { start, stop }
+      return times
+    }
+
+    async function getLastDay(device) {
+      return new Date()
     }
 
     async function poll() {
       console.log(`JobBoss - polling for job info...`)
       const sql = `select 42, 'hello'`
       // const sql = `
-      // select top 10 opt.*
-      // from job_operation op
-      // join job_operation_time opt on op.job_operation = opt.job_operation
-      // where work_center = 'marumatsu'
-      // and opt.work_date between '2021-11-18' and '2021-11-19'
+      // select top 10
+      //   opt.*
+      // from
+      //   job_operation op
+      //   join job_operation_time opt on op.job_operation = opt.job_operation
+      // where
+      //   work_center = 'marumatsu'
+      //   and opt.work_date between '2021-11-18' and '2021-11-19'
       // `
       try {
         const result = await pool
