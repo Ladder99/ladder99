@@ -3,7 +3,9 @@
 import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/node-mssql
 import * as lib from '../../lib.js'
 
-const pollInterval = 5000 // ms
+const initialDelay = 6000 // ms
+const pollJobInterval = 5000 // ms
+const pollScheduleInterval = 5 * 60 * 1000 // 5 mins in ms
 
 //. hardcode schedule for now
 const schedule = {
@@ -33,7 +35,7 @@ export class AdapterDriver {
     // need to wait a bit to make sure the cutter cache items are setup before
     // writing to them. they're setup via the cutter/marumatsu module.
     console.log(`JobBoss - waiting a bit...`)
-    await lib.sleep(6000)
+    await lib.sleep(initialDelay)
 
     console.log(`JobBoss - connecting to database...`, connection.server)
     let pool
@@ -41,23 +43,26 @@ export class AdapterDriver {
       pool = await mssql.connect(connection)
       console.log(`JobBoss - connected`)
       setAvailable()
-      await backfill() // do backfill first
-      // await poll() // do initial poll
-      // setInterval(poll, pollInterval) // poll every n seconds
+      await backfillSchedule()
+      // await pollJob() // do initial job poll
+      // setInterval(pollJob, pollJobInterval)
+      setInterval(pollSchedule, pollScheduleInterval)
     } catch (error) {
       console.log(error)
     }
 
-    async function backfill() {
+    async function backfillSchedule() {
       console.log(`JobBoss backfilling any missed dates...`)
       const today = new Date() //.
-      //. loop over devices from setup.yaml,
-      // look up times in db, and set their value.
+      // loop over devices from setup.yaml
       for (let device of devices) {
+        // just want those with a jobboss id (workcenter uuid)
         if (device.jobbossId) {
+          // get last day scheduled for this device
           const lastDay = await getLastDay(device)
+          // lookup missing days and set values
           for (let day = lastDay; day < today; day++) {
-            const times = await getTimes(device, day)
+            const times = await getTimes(device, day) // { start, stop }
             // cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
             // cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
             cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
@@ -67,8 +72,10 @@ export class AdapterDriver {
       }
     }
 
+    async function pollSchedule() {}
+
     // get start/stop times for given device and day
-    //. default to today
+    //. default day to today
     async function getTimes(device, day) {
       const start = 0
       const stop = 0
@@ -80,7 +87,7 @@ export class AdapterDriver {
       return new Date()
     }
 
-    async function poll() {
+    async function pollJob() {
       console.log(`JobBoss - polling for job info...`)
       const sql = `select 42, 'hello'`
       // const sql = `
@@ -99,8 +106,7 @@ export class AdapterDriver {
           // .input('input_parameter', mssql.Int, 33)
           // .query('select * from mytable where id = @input_parameter')
           .query(sql)
-        console.log(`JobBoss result -`)
-        console.dir(result)
+        console.log(`JobBoss result`, result)
         cache.set(`${deviceId}-job`, '42')
       } catch (error) {
         console.log(error)
