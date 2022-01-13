@@ -2,5 +2,7 @@
 
 SERVICE=postgres
 USER=postgres
+FILE=backup_`date +%Y-%m-%d"_"%H_%M_%S`.sql
 
-docker exec -t $SERVICE pg_dumpall -c -U $USER > dump_`date +%Y-%m-%d"_"%H_%M_%S`.sql
+echo Backing up database $SERVICE to $FILE...
+docker exec -t $SERVICE pg_dumpall -c -U $USER > $FILE && echo Done.
