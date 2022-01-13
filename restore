@@ -1,0 +1,9 @@
+#!/bin/bash
+
+FILE=$1
+SERVICE=postgres
+USER=postgres
+DATABASE=postgres
+
+echo Restoring $FILE into $SERVICE, database $DATABASE...
+cat $FILE | docker exec -i $SERVICE psql -U $USER $DATABASE
