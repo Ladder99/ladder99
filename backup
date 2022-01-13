@@ -1,6 +1,6 @@
 #!/bin/bash
 
-$SERVICE=postgres
-$USER=postgres
+SERVICE=postgres
+USER=postgres
 
 docker exec -t $SERVICE pg_dumpall -c -U $USER > dump_`date +%Y-%m-%d"_"%H_%M_%S`.sql
