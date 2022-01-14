@@ -7,7 +7,7 @@ const initialDelay = 6000 // ms
 const pollJobInterval = 5000 // ms
 const pollScheduleInterval = 5 * 60 * 1000 // 5 mins in ms
 
-//. hardcode schedule for now
+//. hardcoded schedule for now
 const schedule = {
   workdays: [
     { day: 1, start: '5:00', stop: '15:30' }, // mon
@@ -46,14 +46,39 @@ export class AdapterDriver {
       await backfillSchedule()
       // await pollJob() // do initial job poll
       // setInterval(pollJob, pollJobInterval)
-      setInterval(pollSchedule, pollScheduleInterval)
+      // setInterval(pollSchedule, pollScheduleInterval)
     } catch (error) {
       console.log(error)
     }
 
+    // function getToday() {
+    //   const now = new Date()
+    //   const today = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+    //   return today
+    // }
+
+    // function getDay(datetime = new Date()) {
+    //   const day = new Date(
+    //     datetime.getTime() - datetime.getTimezoneOffset() * 60000
+    //   )
+    //     .toISOString()
+    //     .split('T')[0]
+    //   return day
+    // }
+
+    //. uhhh not good - still says time is Z
+    function getToday() {
+      const now = new Date()
+      const day = Math.floor(
+        (now.getTime() - now.getTimezoneOffset() * 60000) / 8.64e7
+      )
+      return day
+    }
+
     async function backfillSchedule() {
       console.log(`JobBoss backfilling any missed dates...`)
-      const today = new Date() //.
+      const today = getToday()
+      console.log(today)
       // loop over devices from setup.yaml
       for (let device of devices) {
         // just want those with a jobboss id (workcenter uuid)
@@ -72,7 +97,7 @@ export class AdapterDriver {
       }
     }
 
-    async function pollSchedule() {}
+    // async function pollSchedule() {}
 
     // get start/stop times for given device and day
     //. default day to today
@@ -83,35 +108,37 @@ export class AdapterDriver {
       return times
     }
 
+    //. get last day written to our pg db
+    // how do we get that?
     async function getLastDay(device) {
-      return new Date()
+      // return new Date()
     }
 
-    async function pollJob() {
-      console.log(`JobBoss - polling for job info...`)
-      const sql = `select 42, 'hello'`
-      // const sql = `
-      // select top 10
-      //   opt.*
-      // from
-      //   job_operation op
-      //   join job_operation_time opt on op.job_operation = opt.job_operation
-      // where
-      //   work_center = 'marumatsu'
-      //   and opt.work_date between '2021-11-18' and '2021-11-19'
-      // `
-      try {
-        const result = await pool
-          .request()
-          // .input('input_parameter', mssql.Int, 33)
-          // .query('select * from mytable where id = @input_parameter')
-          .query(sql)
-        console.log(`JobBoss result`, result)
-        cache.set(`${deviceId}-job`, '42')
-      } catch (error) {
-        console.log(error)
-      }
-    }
+    // async function pollJob() {
+    //   console.log(`JobBoss - polling for job info...`)
+    //   const sql = `select 42, 'hello'`
+    //   // const sql = `
+    //   // select top 10
+    //   //   opt.*
+    //   // from
+    //   //   job_operation op
+    //   //   join job_operation_time opt on op.job_operation = opt.job_operation
+    //   // where
+    //   //   work_center = 'marumatsu'
+    //   //   and opt.work_date between '2021-11-18' and '2021-11-19'
+    //   // `
+    //   try {
+    //     const result = await pool
+    //       .request()
+    //       // .input('input_parameter', mssql.Int, 33)
+    //       // .query('select * from mytable where id = @input_parameter')
+    //       .query(sql)
+    //     console.log(`JobBoss result`, result)
+    //     cache.set(`${deviceId}-job`, '42')
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // }
 
     //. method doesn't exist, but is in the readme
     // mssql.on('error', err => {
