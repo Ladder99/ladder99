@@ -96,6 +96,7 @@ export class Tracker {
 
   // check if a device was 'active' (ie has events on the given path),
   // between two times. returns true/false
+  //. problem - we want the connection to be ONE way to db? ie write only?
   async getActive(device, path, start, stop) {
     const sql = `
     select count(value) > 0 as active
