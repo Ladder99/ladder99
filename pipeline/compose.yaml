@@ -134,6 +134,7 @@ services:
       PGDATABASE: null
       PGUSER: null
       PGPASSWORD: null
+      #. move these into compose-overrides.yaml
       JOBBOSS_HOST: null
       JOBBOSS_PORT: null
       JOBBOSS_DATABASE: null
@@ -180,6 +181,7 @@ services:
   #       max-size: '20m'
 
   # meter - calculate metrics
+  # note: set PGHOST, PGPORT, etc before running
   meter:
     container_name: meter
     build: ./meter
@@ -189,7 +191,7 @@ services:
     # command: recorder --mode record
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml
-      # - ../modules:/data/modules # has module-specific recordings folder
+      # - ../modules:/data/modules # has module-specific folders
     restart: always
     networks:
       - ladder99
@@ -331,6 +333,7 @@ services:
     # init: true
     #. don't use PGPASSWORD - see https://stackoverflow.com/a/6405162/243392
     # https://www.postgresql.org/docs/9.1/libpq-pgpass.html
+    #. are these actually even used? PGDATABASE etc are, but the left side?
     environment:
       POSTGRES_DB: $PGDATABASE
       POSTGRES_USERNAME: $PGUSER
