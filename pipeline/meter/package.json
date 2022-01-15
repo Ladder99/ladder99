@@ -1,0 +1,10 @@
+{
+  "name": "ladder99-meter",
+  "version": "0.1.0",
+  "description": "Ladder99 Meter - calculates metrics",
+  "type": "module",
+  "target": "es2021",
+  "author": "Brian Burns <bburns.km@gmail.com>",
+  "license": "Apache2.0",
+  "dependencies": {}
+}
