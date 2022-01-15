@@ -43,7 +43,7 @@ export class AdapterDriver {
       pool = await mssql.connect(connection)
       console.log(`JobBoss - connected`)
       setAvailable()
-      await backfillSchedule()
+      // await backfillSchedule()
       // await pollJob() // do initial job poll
       // setInterval(pollJob, pollJobInterval)
       // setInterval(pollSchedule, pollScheduleInterval)
@@ -66,53 +66,53 @@ export class AdapterDriver {
     //   return day
     // }
 
-    //. uhhh not good - still says time is Z
-    function getToday() {
-      const now = new Date()
-      const day = Math.floor(
-        (now.getTime() - now.getTimezoneOffset() * 60000) / 8.64e7
-      )
-      return day
-    }
+    // //. uhhh not good - still says time is Z
+    // function getToday() {
+    //   const now = new Date()
+    //   const day = Math.floor(
+    //     (now.getTime() - now.getTimezoneOffset() * 60000) / 8.64e7
+    //   )
+    //   return day
+    // }
 
-    async function backfillSchedule() {
-      console.log(`JobBoss backfilling any missed dates...`)
-      const today = getToday()
-      console.log(today)
-      // loop over devices from setup.yaml
-      for (let device of devices) {
-        // just want those with a jobboss id (workcenter uuid)
-        if (device.jobbossId) {
-          // get last day scheduled for this device
-          const lastDay = await getLastDay(device)
-          // lookup missing days and set values
-          for (let day = lastDay; day < today; day++) {
-            const times = await getTimes(device, day) // { start, stop }
-            // cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
-            // cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
-            cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
-            cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
-          }
-        }
-      }
-    }
+    // async function backfillSchedule() {
+    //   console.log(`JobBoss backfilling any missed dates...`)
+    //   const today = getToday()
+    //   console.log(today)
+    //   // loop over devices from setup.yaml
+    //   for (let device of devices) {
+    //     // just want those with a jobboss id (workcenter uuid)
+    //     if (device.jobbossId) {
+    //       // get last day scheduled for this device
+    //       const lastDay = await getLastDay(device)
+    //       // lookup missing days and set values
+    //       for (let day = lastDay; day < today; day++) {
+    //         const times = await getTimes(device, day) // { start, stop }
+    //         // cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
+    //         // cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
+    //         cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
+    //         cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
+    //       }
+    //     }
+    //   }
+    // }
 
     // async function pollSchedule() {}
 
-    // get start/stop times for given device and day
-    //. default day to today
-    async function getTimes(device, day) {
-      const start = 0
-      const stop = 0
-      const times = { start, stop }
-      return times
-    }
+    // // get start/stop times for given device and day
+    // //. default day to today
+    // async function getTimes(device, day) {
+    //   const start = 0
+    //   const stop = 0
+    //   const times = { start, stop }
+    //   return times
+    // }
 
-    //. get last day written to our pg db
-    // how do we get that?
-    async function getLastDay(device) {
-      // return new Date()
-    }
+    // //. get last day written to our pg db
+    // // how do we get that?
+    // async function getLastDay(device) {
+    //   // return new Date()
+    // }
 
     // async function pollJob() {
     //   console.log(`JobBoss - polling for job info...`)
