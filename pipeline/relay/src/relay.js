@@ -22,9 +22,6 @@ const params = {
   retryTime: 4000, // ms between connection retries etc
 }
 
-// defined in pipeline.yaml with docker volume mappings
-const setupFolder = '/data/setup' // incls setup.yaml etc
-
 class Relay {
   async start(params) {
     // get database, do migrations
@@ -32,7 +29,7 @@ class Relay {
     await db.start()
 
     // read client's setup.yaml
-    const setup = lib.readSetup(setupFolder)
+    const setup = lib.readSetup()
 
     // get endpoints
     const endpoints = Endpoint.getEndpoints(params.agentEndpoints)

@@ -16,8 +16,7 @@ const defaultServer = { protocol: 'shdr', host: 'adapter', port: 7878 }
 
 // file system inputs
 const driversFolder = './drivers' // eg mqtt-json - must start with '.'
-// these folders are defined in pipeline.yaml with docker volume mappings
-const setupFolder = '/data/setup' // incls setup.yaml etc
+// this folder is defined in pipeline.yaml with docker volume mappings
 const modulesFolder = `/data/modules` // incls print-apply/module.xml etc
 
 console.log(`Ladder99 Adapter`)
@@ -27,7 +26,7 @@ console.log(`----------------------------------------------------------------`)
 
 async function main() {
   // read /data/setup/setup.yaml file
-  const setup = lib.readSetup(setupFolder)
+  const setup = lib.readSetup()
 
   // define cache shared across all devices and sources
   const cache = new Cache()

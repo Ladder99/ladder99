@@ -15,9 +15,8 @@ const { mode = 'play' } = options
 
 // file system inputs
 const pluginsFolder = './plugins'
-// these folders are defined in pipeline.yaml with docker volume mappings
-const setupFolder = '/data/setup' // incls setup.yaml etc
-const modulesFolder = '/data/modules' // incls ccs/print-apply/recordings, etc
+// defined in pipeline.yaml with docker volume mappings
+const modulesFolder = '/data/modules' // incls print-apply/recordings, etc
 
 console.log()
 console.log(`Recorder`)
@@ -25,7 +24,7 @@ console.log(`Plays/records device messages`)
 console.log(`------------------------------------------------------------`)
 
 async function main() {
-  const setup = lib.readSetup(setupFolder)
+  const setup = lib.readSetup()
   // iterate over devices in setup.yaml
   const { devices } = setup
   for (let device of devices) {
