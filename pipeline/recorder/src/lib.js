@@ -1,6 +1,6 @@
 // library of fns
 // IMPORTANT: keep this in synch by copying between services when changed:
-//   adapter, recorder, relay
+//   adapter, meter, recorder, relay
 // also include lib-test.js
 // simpler than making a library somewhere, for now
 
@@ -8,8 +8,10 @@ import fs from 'fs' // node lib for filesystem
 import libyaml from 'js-yaml' // see https://github.com/nodeca/js-yaml
 // import crypto from 'crypto' // node lib for random ids
 
-// load setup, eg from ../client-oxbox/setup.yaml
-export function readSetup(setupFolder) {
+// load setup yaml, eg from ../client-oxbox/setup.yaml
+export function readSetup() {
+  // defined in pipeline.yaml with docker volume mappings
+  const setupFolder = '/data/setup' // incls setup.yaml etc
   const yamlfile = `${setupFolder}/setup.yaml`
   console.log(`Reading ${yamlfile}...`)
   const yamltree = importYaml(yamlfile)
