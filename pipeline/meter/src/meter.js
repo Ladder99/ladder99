@@ -17,6 +17,12 @@ async function start() {
 
   //. iterate over devices, check what metrics they want,
   //  load those metric plugins, start them up
+  for (let device of setup.devices) {
+    const { metrics } = device
+    for (let metric of metrics) {
+      console.log(metric)
+    }
+  }
 }
 
 start()
