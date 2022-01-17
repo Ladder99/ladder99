@@ -13,8 +13,14 @@ export class Metric {
     this.device = device
     this.metric = metric
 
-    console.log(`Meter - get device node_id`)
-    this.device.node_id = await this.getDeviceId()
+    // repeat until device has been added to db
+    let device_id
+    while (!device_id) {
+      console.log(`Meter - get device node_id`)
+      device_id = await this.getDeviceId()
+      await new Promise(resolve => setTimeout(resolve, 4000)) // wait 4 secs
+    }
+    this.device.node_id = device_id
     console.log(this.device)
 
     console.log(`Meter - update bins`)
@@ -23,7 +29,7 @@ export class Metric {
     // start the timer which calls updateBins every n seconds -
     // it will increment bins as needed.
     // eg a partcount event indicates device was active during that minute.
-    console.log(`Meter - start timer`)
+    console.log(`Meter - start updateBins timer`)
     this.interval = metric.interval || 60 // seconds
     this.timer = setInterval(this.updateBins.bind(this), this.interval * 1000) // ms
   }
@@ -37,7 +43,7 @@ export class Metric {
 
   // update bins - called by timer
   async updateBins() {
-    console.log('Metric - updateBins')
+    console.log('Metric - update bins')
     const now = new Date()
     console.log('now', now)
 
