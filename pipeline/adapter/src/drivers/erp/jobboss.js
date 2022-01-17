@@ -4,8 +4,8 @@ import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/n
 import * as lib from '../../lib.js'
 
 const initialDelay = 6000 // ms
-const pollJobInterval = 5000 // ms
-const pollScheduleInterval = 5 * 60 * 1000 // 5 mins in ms
+const jobPollInterval = 5000 // ms
+const schedulePollInterval = 1 * 60 * 1000 // 1 mins in ms
 
 //. hardcoded schedule for now
 const schedule = {
@@ -34,6 +34,7 @@ export class AdapterDriver {
 
     // need to wait a bit to make sure the cutter cache items are setup before
     // writing to them. they're setup via the cutter/marumatsu module.
+    //. better - check they are there in a loop with delay...
     console.log(`JobBoss - waiting a bit...`)
     await lib.sleep(initialDelay)
 
@@ -45,11 +46,15 @@ export class AdapterDriver {
       setAvailable()
       // await backfillSchedule()
       // await pollJob() // do initial job poll
-      // setInterval(pollJob, pollJobInterval)
-      // setInterval(pollSchedule, pollScheduleInterval)
+      // setInterval(pollJob, jobPollInterval) // start job poll
+      // setInterval(pollSchedule, schedulePollInterval) // start schedule poll
     } catch (error) {
       console.log(error)
     }
+
+    //. turn this off after get db working
+    await pollJob() // do initial job poll
+    setInterval(pollJob, jobPollInterval) // start job poll
 
     // function getToday() {
     //   const now = new Date()
@@ -97,7 +102,18 @@ export class AdapterDriver {
     //   }
     // }
 
-    // async function pollSchedule() {}
+    // async function pollSchedule() {
+    // // const sql = `
+    // // select top 1
+    // //   opt.*
+    // // from
+    // //   job_operation op
+    // //   join job_operation_time opt on op.job_operation = opt.job_operation
+    // // where
+    // //   work_center = 'marumatsu'
+    // //   and opt.work_date between '2021-11-18' and '2021-11-19'
+    // // `
+    // }
 
     // // get start/stop times for given device and day
     // //. default day to today
@@ -114,31 +130,23 @@ export class AdapterDriver {
     //   // return new Date()
     // }
 
-    // async function pollJob() {
-    //   console.log(`JobBoss - polling for job info...`)
-    //   const sql = `select 42, 'hello'`
-    //   // const sql = `
-    //   // select top 10
-    //   //   opt.*
-    //   // from
-    //   //   job_operation op
-    //   //   join job_operation_time opt on op.job_operation = opt.job_operation
-    //   // where
-    //   //   work_center = 'marumatsu'
-    //   //   and opt.work_date between '2021-11-18' and '2021-11-19'
-    //   // `
-    //   try {
-    //     const result = await pool
-    //       .request()
-    //       // .input('input_parameter', mssql.Int, 33)
-    //       // .query('select * from mytable where id = @input_parameter')
-    //       .query(sql)
-    //     console.log(`JobBoss result`, result)
-    //     cache.set(`${deviceId}-job`, '42')
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // }
+    async function pollJob() {
+      console.log(`JobBoss - polling for job info...`)
+      cache.set(`${deviceId}-job`, Math.floor(Math.random() * 1000))
+
+      // const sql = `select 42, 'hello'`
+      // try {
+      //   const result = await pool
+      //     .request()
+      //     // .input('input_parameter', mssql.Int, 33)
+      //     // .query('select * from mytable where id = @input_parameter')
+      //     .query(sql)
+      //   console.log(`JobBoss result`, result)
+      //   cache.set(`${deviceId}-job`, '42')
+      // } catch (error) {
+      //   console.log(error)
+      // }
+    }
 
     //. method doesn't exist, but is in the readme
     // mssql.on('error', err => {
