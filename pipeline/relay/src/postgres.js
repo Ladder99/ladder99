@@ -1,8 +1,7 @@
 // postgres class
 // wraps postgres/timescaledb/timegraph db
 
-// important: keep in synch with meter and relay services -
-// ie copy/paste any changes to each.
+// IMPORTANT: keep code in synch with these services - meter, relay
 
 // note: needs PGHOST, PGPORT, PGDATABASE, PGUSER, PGPASSWORD
 // environment variables set for connection
