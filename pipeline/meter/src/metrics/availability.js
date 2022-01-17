@@ -13,13 +13,17 @@ export class Metric {
     this.device = device
     this.metric = metric
 
+    console.log(`Meter - get device node_id`)
     this.device.node_id = await this.getDeviceId()
     console.log(this.device)
+
+    console.log(`Meter - update bins`)
+    await this.updateBins()
 
     // start the timer which calls updateBins every n seconds -
     // it will increment bins as needed.
     // eg a partcount event indicates device was active during that minute.
-    console.log('Meter - start timer')
+    console.log(`Meter - start timer`)
     this.interval = metric.interval || 60 // seconds
     this.timer = setInterval(this.updateBins.bind(this), this.interval * 1000) // ms
   }
@@ -44,6 +48,7 @@ export class Metric {
     // check if we're within scheduled time
     const scheduled = now >= schedule.start && now <= schedule.stop
     if (scheduled) {
+      console.log(`Meter - in scheduled time window - check if active`)
       // if so, check for events in previous n secs
       const start = new Date(now.getTime() - this.interval * 1000)
       const stop = now
@@ -54,6 +59,8 @@ export class Metric {
       }
       // always increment the available bin
       await this.incrementBins(now, 'available')
+    } else {
+      console.log(`Meter - not in scheduled time window`)
     }
   }
 
