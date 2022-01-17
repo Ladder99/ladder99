@@ -2,6 +2,7 @@
 // capture data from ladder99 agent(s) and write to database
 
 import { Db } from './db.js'
+import { migrate } from './migrations/migrate.js'
 import { AgentReader } from './agentReader.js'
 import { Endpoint } from './endpoint.js'
 import * as lib from './lib.js'
@@ -29,7 +30,8 @@ class Relay {
     await db.start()
 
     // do migrations
-    await db.migrate()
+    // await db.migrate()
+    await migrate(db)
 
     // read client's setup.yaml
     const setup = lib.readSetup()

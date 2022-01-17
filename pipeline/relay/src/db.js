@@ -6,8 +6,9 @@
 // note: needs PGHOST, PGPORT, PGDATABASE, PGUSER, PGPASSWORD
 // environment variables set for connection
 
-import fs from 'fs' // node lib
-// import { Postgres } from './postgres.js'
+// run
+//   npm install pg pg-format
+
 import pg from 'pg' // postgres driver https://github.com/brianc/node-postgres
 const { Pool } = pg // note: import { Pool } from 'pg' gives error, so must do this
 import pgFormat from 'pg-format' // see https://github.com/datalanche/node-pg-format
@@ -15,35 +16,12 @@ import pgFormat from 'pg-format' // see https://github.com/datalanche/node-pg-fo
 
 export class Db {
   constructor() {
-    // this.postgres = new Postgres()
     this.client = null
   }
 
   async start() {
-    // await this.postgres.start()
-    // await this.migrate()
     await this.connect()
     this.init()
-  }
-
-  //. handle versions - use meta table
-  //. move src/migrations elsewhere eventually
-  async migrate() {
-    console.log(`Migrating database structures...`)
-    await this.readFile(`src/migrations/001-extensions.sql`)
-    await this.readFile(`src/migrations/002-base-tables.sql`)
-    await this.readFile(`src/migrations/003-base-views.sql`)
-    await this.readFile(`src/migrations/004-base-functions.sql`)
-    await this.readFile(`src/migrations/005-get_timeline.sql`)
-    await this.readFile(`src/migrations/006-get_jobs.sql`)
-    await this.readFile(`src/migrations/007-get_rate.sql`)
-    await this.readFile(`src/migrations/008-get_availability.sql`)
-    await this.readFile(`src/migrations/009-metrics.sql`)
-  }
-
-  async readFile(filename) {
-    console.log(`Loading ${filename}...`)
-    return await this.query(String(fs.readFileSync(filename)))
   }
 
   async connect() {
@@ -100,11 +78,6 @@ export class Db {
     //. add try catch block - ignore error? or just print it?
     return await this.client.query(sql, options)
   }
-
-  // async query(sql, options) {
-  //   //. add try catch block - ignore error? or just print it?
-  //   return await this.postgres.query(sql, options)
-  // }
 
   // add a node to nodes table - if already there, return node_id of existing record.
   // uses node.path to determine uniqueness and look up record.
