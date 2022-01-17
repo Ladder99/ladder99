@@ -36,13 +36,15 @@ export class Metric {
     // check if we're within scheduled time
     const scheduled = now >= schedule.start && now <= schedule.stop
     if (scheduled) {
-      // check for events in previous n secs
+      // if so, check for events in previous n secs
       const start = new Date(now.getTime() - this.interval * 1000)
       const stop = now
       const deviceWasActive = await this.getActive(start, stop)
+      // if device was active, increment the active bin
       if (deviceWasActive) {
         await this.incrementBins(now, 'active')
       }
+      // always increment the available bin
       await this.incrementBins(now, 'available')
     }
   }
@@ -54,19 +56,18 @@ export class Metric {
     const { startPath, stopPath } = this.metric
     const start = await this.postgres.getLatestValue(table, name, startPath)
     const stop = await this.postgres.getLatestValue(table, name, stopPath)
-    // const schedule = { start, stop }
     const schedule = { start: new Date(start), stop: new Date(stop) }
     console.log('schedule', schedule)
     return schedule
   }
 
-  // backfill the active and available field bins
-  async backfill() {
-    //
-  }
+  // // backfill the active and available field bins
+  // async backfill() {
+  //   //
+  // }
 
-  // check if device was 'active' (ie has events on the given path),
-  // between two times. returns true/false
+  // check if device was 'active' (ie has events on the active path), between two times.
+  // returns true/false
   async getActive(start, stop) {
     const sql = `
     select count(value) > 0 as active
@@ -95,7 +96,7 @@ export class Metric {
   //         update set %s = coalesce(bins.%s, 0) + $5;',
   //       v_field, v_field, v_field
   //     ) using p_device_id, ('1 '||v_resolution)::interval, v_time, p_delta, p_delta;
-  async incrementBins(device_id, time, field, delta = 1) {
+  async incrementBins(time, field, delta = 1) {
     const timeISO = time.toISOString()
     const resolutions = 'minute,hour,day,week,month,year'.split(',')
     for (let resolution of resolutions) {
@@ -103,7 +104,7 @@ export class Metric {
       const sql = `
       insert into bins (device_id, resolution, time, ${field})
         values (
-          ${device_id}, 
+          ${this.device.node_id}, 
           ('1 '||'${resolution}')::interval, 
           date_trunc('${resolution}', '${timeISO}'::timestamptz), 
           ${delta}
