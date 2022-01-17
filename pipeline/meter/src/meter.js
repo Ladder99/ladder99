@@ -24,9 +24,16 @@ async function start() {
       const { metrics } = device
       for (let metric of metrics) {
         console.log(metric)
-        if (metric.name === 'availability') {
-          //. poll db for active and available times
-        }
+        const { name } = metric
+
+        // import metric plugin
+        const pathMetric = `${metricsFolder}/${name}.js` // eg './metrics/availability.js'
+        console.log(`Importing metric code: ${pathMetric}...`)
+        const { Metric } = await import(pathMetric)
+        const plugin = new Metric()
+
+        // start it
+        plugin.start({ metric, postgres })
       }
     }
   }
