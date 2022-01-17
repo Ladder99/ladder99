@@ -10,15 +10,15 @@ console.log(`---------------------------------------------------`)
 const metricsFolder = './metrics'
 
 async function start() {
-  // get database
+  // get database connection
   const postgres = new Postgres()
   await postgres.start()
 
   // read client's setup.yaml
   const setup = lib.readSetup()
 
-  //. iterate over devices, check what metrics they want, if any,
-  //  load those metric plugins, start them up - let them poll db as needed.
+  // iterate over devices, check what metrics they want, if any,
+  // load those metric plugins, start them up - let them poll db as needed etc.
   for (let device of setup.devices) {
     if (device.metrics) {
       const { metrics } = device
@@ -28,12 +28,12 @@ async function start() {
 
         // import metric plugin
         const pathMetric = `${metricsFolder}/${name}.js` // eg './metrics/availability.js'
-        console.log(`Importing metric code: ${pathMetric}...`)
+        console.log(`Meter - importing ${pathMetric}...`)
         const { Metric } = await import(pathMetric)
         const plugin = new Metric()
 
         // start it
-        plugin.start({ metric, postgres })
+        plugin.start({ device, metric, postgres })
       }
     }
   }
