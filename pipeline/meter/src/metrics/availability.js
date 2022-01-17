@@ -75,6 +75,9 @@ export class Metric {
     const table = 'history_text'
     const device = this.device
     const { startPath, stopPath } = this.metric
+    // note: these can return 'UNAVAILABLE', in which case,
+    // schedule.start etc will be 'Invalid Date'.
+    // any comparison with those will yield false.
     const start = await this.db.getLatestValue(table, device, startPath)
     const stop = await this.db.getLatestValue(table, device, stopPath)
     const schedule = { start: new Date(start), stop: new Date(stop) }
