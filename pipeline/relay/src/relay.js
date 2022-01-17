@@ -24,9 +24,12 @@ const params = {
 
 class Relay {
   async start(params) {
-    // get database, do migrations
+    // get database connection
     const db = new Db()
     await db.start()
+
+    // do migrations
+    await db.migrate()
 
     // read client's setup.yaml
     const setup = lib.readSetup()
