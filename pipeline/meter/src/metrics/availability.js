@@ -13,7 +13,8 @@ export class Metric {
     this.metric = metric
     this.postgres = postgres
 
-    // this.device.node_id = await getDeviceId(postgres, device)
+    this.device.node_id = await this.getDeviceId()
+    console.log(this.device)
 
     // start the timer which calls updateBins every n seconds -
     // it will increment bins as needed.
@@ -21,6 +22,13 @@ export class Metric {
     console.log('Meter - start timer')
     this.interval = metric.interval || 60 // seconds
     this.timer = setInterval(this.updateBins.bind(this), this.interval * 1000) // ms
+  }
+
+  async getDeviceId() {
+    const sql = `select node_id from devices where name='${this.device.name}'`
+    console.log(sql)
+    const result = await this.postgres.query(sql)
+    return result.rows[0].node_id
   }
 
   // update bins - called by timer
@@ -117,10 +125,3 @@ export class Metric {
     }
   }
 }
-
-// async function getDeviceId(postgres, device) {
-//   const sql = `select node_id from devices where name='${device.name}'`
-//   const result = await postgres.query(sql)
-//   const deviceId = result.rows[0].node_id
-//   return deviceId
-// }

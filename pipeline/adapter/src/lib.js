@@ -2,6 +2,7 @@
 // IMPORTANT: keep this in synch by copying between services when changed:
 //   adapter, meter, recorder, relay
 // also include lib-test.js
+// be sure to `npm install js-yaml`
 // simpler than making a library somewhere, for now
 
 import fs from 'fs' // node lib for filesystem

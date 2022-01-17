@@ -1,9 +1,6 @@
 // Track events every n seconds and increment bins as needed.
 
-//. what if had one tracker per device? might need that.
-
 //. pass in through constructor, with devices and metrics to track.
-//. which should come from a client yaml file. metrics.yaml?
 const path = 'controller/partOccurrence/part_count-all'
 const startpath = 'processes/process_time-start'
 const stoppath = 'processes/process_time-complete'
