@@ -69,7 +69,7 @@ export class AdapterDriver {
     // message - array of bytes (assumed to be a json string)
     function onMessage(msgTopic, message) {
       message = message.toString()
-      console.log(`Got message on topic ${msgTopic}: ${message.slice(0, 99)}`)
+      console.log(`MQTT got message ${msgTopic}: ${message.slice(0, 140)}`)
       // console.log(`Got message on topic ${msgTopic}: ${message}`)
 
       // const receivedTime = new Date()
