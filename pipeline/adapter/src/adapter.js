@@ -128,6 +128,8 @@ async function main() {
         plugin.init({
           deviceId,
           deviceName,
+          //. why not just pass the whole device object? incl connection object etc
+          device,
           driver,
           //. pass whole drivers array here also, in case driver needs to know other devices?
           // eg for jobboss - needs to know what workcenters/devices to look for.

@@ -23,6 +23,7 @@ const schedule = {
 export class AdapterDriver {
   async init({
     deviceId,
+    device,
     protocol,
     cache,
     inputs,
@@ -44,17 +45,17 @@ export class AdapterDriver {
       pool = await mssql.connect(connection)
       console.log(`JobBoss - connected`)
       setAvailable()
+
       // await backfillSchedule()
-      // await pollJob() // do initial job poll
-      // setInterval(pollJob, jobPollInterval) // start job poll
       // setInterval(pollSchedule, schedulePollInterval) // start schedule poll
+      await pollJob() // do initial job poll
+      setInterval(pollJob, jobPollInterval) // start job poll
     } catch (error) {
       console.log(error)
+      //. turn this off after get db working?
+      await pollJob() // do initial job poll
+      setInterval(pollJob, jobPollInterval) // start job poll
     }
-
-    //. turn this off after get db working
-    await pollJob() // do initial job poll
-    setInterval(pollJob, jobPollInterval) // start job poll
 
     // function getToday() {
     //   const now = new Date()
@@ -132,20 +133,33 @@ export class AdapterDriver {
 
     async function pollJob() {
       console.log(`JobBoss - polling for job info...`)
-      cache.set(`${deviceId}-job`, Math.floor(Math.random() * 1000))
+      // cache.set(`${deviceId}-job`, Math.floor(Math.random() * 1000))
 
       // const sql = `select 42, 'hello'`
-      // try {
-      //   const result = await pool
-      //     .request()
-      //     // .input('input_parameter', mssql.Int, 33)
-      //     // .query('select * from mytable where id = @input_parameter')
-      //     .query(sql)
-      //   console.log(`JobBoss result`, result)
-      //   cache.set(`${deviceId}-job`, '42')
-      // } catch (error) {
-      //   console.log(error)
-      // }
+      const sql = `
+      select top 1
+        job
+      from
+        job_operation
+      where
+        -- work_center = 'MARUMATSU'
+        -- workcenter_oid = '8EE4B90E-7224-4A71-BE5E-C6A713AECF59'
+        workcenter_oid = '${device.jobbossId}'
+      order by
+        actual_start desc
+      `
+      try {
+        const result = await pool.request().query(sql)
+        //. use this form --
+        // const result = await pool.request()
+        //   .input('input_parameter', mssql.Int, 33)
+        //   .query('select * from mytable where id = @input_parameter')
+        console.log(`JobBoss result`, result)
+        //. parse result object
+        // cache.set(`${deviceId}-job`, '42')
+      } catch (error) {
+        console.log(error)
+      }
     }
 
     //. method doesn't exist, but is in the readme
