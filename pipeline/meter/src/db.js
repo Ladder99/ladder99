@@ -7,9 +7,9 @@
 // environment variables set for connection
 
 import fs from 'fs' // node lib
-// import { Postgres } from './postgres.js'
 import pg from 'pg' // postgres driver https://github.com/brianc/node-postgres
 const { Pool } = pg // note: import { Pool } from 'pg' gives error, so must do this
+// import { Postgres } from './postgres.js'
 import pgFormat from 'pg-format' // see https://github.com/datalanche/node-pg-format
 // import * as lib from './lib.js'
 

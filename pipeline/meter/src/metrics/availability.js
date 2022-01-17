@@ -2,16 +2,16 @@ export class Metric {
   constructor() {
     this.device = null
     this.metric = null
-    this.postgres = null
+    this.db = null
     this.interval = null
     this.timer = null
   }
 
-  async start({ device, metric, postgres }) {
+  async start({ db, device, metric }) {
     console.log(`Meter - initialize availability metric...`)
+    this.db = db
     this.device = device
     this.metric = metric
-    this.postgres = postgres
 
     this.device.node_id = await this.getDeviceId()
     console.log(this.device)
@@ -27,7 +27,7 @@ export class Metric {
   async getDeviceId() {
     const sql = `select node_id from devices where name='${this.device.name}'`
     console.log(sql)
-    const result = await this.postgres.query(sql)
+    const result = await this.db.query(sql)
     return result.rows[0].node_id
   }
 
@@ -57,13 +57,13 @@ export class Metric {
     }
   }
 
-  // query postgres for start and stop datetime dataitems
+  // query db for start and stop datetime dataitems
   async getSchedule() {
     const table = 'history_text'
-    const { name } = this.device
+    const device = this.device
     const { startPath, stopPath } = this.metric
-    const start = await this.postgres.getLatestValue(table, name, startPath)
-    const stop = await this.postgres.getLatestValue(table, name, stopPath)
+    const start = await this.db.getLatestValue(table, device, startPath)
+    const stop = await this.db.getLatestValue(table, device, stopPath)
     const schedule = { start: new Date(start), stop: new Date(stop) }
     console.log('schedule', schedule)
     return schedule
@@ -87,7 +87,7 @@ export class Metric {
     limit 1;
     `
     console.log(sql)
-    const result = await this.postgres.query(sql)
+    const result = await this.db.query(sql)
     const deviceWasActive = result.rows[0].active // t/f
     return deviceWasActive
   }
@@ -121,7 +121,7 @@ export class Metric {
         update set ${field} = coalesce(bins.${field}, 0) + ${delta};
       `
       console.log(sql)
-      await this.postgres.query(sql)
+      await this.db.query(sql)
     }
   }
 }

@@ -1,7 +1,8 @@
 // ladder99 meter
 // read data from database, calculate metrics, and write to db
 
-import { Postgres } from './postgres.js'
+// import { Postgres } from './postgres.js'
+import { Db } from './db.js'
 import * as lib from './lib.js'
 
 console.log(`Ladder99 Meter`)
@@ -11,8 +12,10 @@ const metricsFolder = './metrics'
 
 async function start() {
   // get database connection
-  const postgres = new Postgres()
-  await postgres.start()
+  // const postgres = new Postgres()
+  // await postgres.start()
+  const db = new Db()
+  await db.start()
 
   // read client's setup.yaml
   const setup = lib.readSetup()
@@ -33,7 +36,7 @@ async function start() {
         const plugin = new Metric()
 
         // start it
-        plugin.start({ device, metric, postgres })
+        plugin.start({ db, device, metric })
       }
     }
   }

@@ -1,6 +1,8 @@
 // postgres class
 // wraps postgres/timescaledb/timegraph db
 
+//. obsolete - moved back into db.js
+
 // IMPORTANT: keep code in synch with these services - meter, relay
 
 // note: needs PGHOST, PGPORT, PGDATABASE, PGUSER, PGPASSWORD
