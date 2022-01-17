@@ -189,6 +189,13 @@ services:
       - all
       - meter
     # command: recorder --mode record
+    environment:
+      # null means pass-through from environment
+      PGHOST: null
+      PGPORT: null
+      PGDATABASE: null
+      PGUSER: null
+      PGPASSWORD: null
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml
       # - ../modules:/data/modules # has module-specific folders
@@ -375,19 +382,20 @@ services:
       - dashboard
     init: true
     environment:
-      # override these as needed in pipeline-overrides.yaml
+      # override these as needed in client's compose-overrides.yaml
       AGENT_ENDPOINTS: http://agent:5000
       FETCH_INTERVAL: 2000
       FETCH_COUNT: 800
+      # null means pass-through from environment
       PGHOST: null
       PGPORT: null
       PGDATABASE: null
       PGUSER: null
       PGPASSWORD: null
-        # this fixes a problem on ubuntu - works on mac okay also
-        #. but not on friendlywrt - host-gateway doesn't exist, or need docker>=20.10
-        # see https://stackoverflow.com/a/67158212/243392
-        # and https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
+    # this fixes a problem on ubuntu - works on mac okay also
+    #. but not on friendlywrt - host-gateway doesn't exist, or need docker>=20.10
+    # see https://stackoverflow.com/a/67158212/243392
+    # and https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
     extra_hosts:
       - 'host.docker.internal:host-gateway'
     restart: always
