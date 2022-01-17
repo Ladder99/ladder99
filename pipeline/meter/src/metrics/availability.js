@@ -43,7 +43,7 @@ export class Metric {
 
   // update bins - called by timer
   async updateBins() {
-    console.log('Metric - update bins')
+    console.log('Meter - update bins')
     const now = new Date()
     console.log('now', now)
 

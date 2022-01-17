@@ -4,7 +4,7 @@
 
 import { Probe } from './dataProbe.js'
 import { Observations } from './dataObservations.js'
-import * as tracker from './tracker.js'
+// import * as tracker from './tracker.js'
 import * as lib from './lib.js'
 
 export class AgentReader {
@@ -30,12 +30,12 @@ export class AgentReader {
 
   // start fetching and processing data
   async start() {
-    // make tracker for metric calcs
-    this.tracker = new tracker.Tracker(this.db, this.setup)
-    // start timer which dumps bins to db every interval secs
-    //.. use 5s for testing, 60s for production
-    this.tracker.startTimer(60)
-    // this.tracker.startTimer(5)
+    // // make tracker for metric calcs
+    // this.tracker = new tracker.Tracker(this.db, this.setup)
+    // // start timer which dumps bins to db every interval secs
+    // //.. use 5s for testing, 60s for production
+    // this.tracker.startTimer(60)
+    // // this.tracker.startTimer(5)
 
     // probe - get agent data structures and write to db
     probe: do {
@@ -43,9 +43,9 @@ export class AgentReader {
       await probe.read(this.endpoint) // read xml into probe.json, probe.elements, probe.nodes
       await probe.write(this.db) // write/sync dataitems to db, get probe.indexes
       this.instanceId = probe.instanceId
-      this.tracker.setDevices(
-        probe.nodes.filter(node => node.node_type === 'Device')
-      )
+      // this.tracker.setDevices(
+      //   probe.nodes.filter(node => node.node_type === 'Device')
+      // )
 
       // current - get last known values of all dataitems and write to db
       current: do {
