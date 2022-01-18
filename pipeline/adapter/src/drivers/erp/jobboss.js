@@ -1,6 +1,6 @@
 // jobboss driver
 
-// for jobboss table structure see
+// for jobboss table structure see jobboss.jpg in this directory, or
 // https://docs.google.com/spreadsheets/d/13RzXxUNby6-jIO4JUjKVCNG7ALc__HDkBhcnNfyK5-s/edit?usp=sharing
 
 import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/node-mssql
