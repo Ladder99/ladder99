@@ -155,29 +155,33 @@ select top 10 * from Shift_Override;
 -- sql4
 
 -- get override start/stop times
-select top 1
-  wc.Department, 
+select top 10
+  --wc.Department, 
   wc.Work_Center, 
   s.Shift_Name, 
   cast(wso.date as date) OverrideDate, 
-  cast(sd.Start_Time as time) start, cast(sd.End_Time as time) stop, 
+  cast(sd.Start_Time as time) start, 
+  cast(sd.End_Time as time) stop, 
   wso.Is_Work_Day OverrideIsWorkDay 
   --wso.Hours OverrideHours, 
   --wc.Setup_Labor_Rate, wc.Run_Labor_Rate,
   --wss.Machines, wss.Operators, wss.Operators_Per_Machine,
   --wso.Last_Updated wsoLastUpdated, wss.Last_Updated wssLastUpdated,
   --wss.Shift_ID wssShiftID, wso.Shift_ID wsoShiftID, s.[Shift] sShiftID
-from [Production].[dbo].[WCShift_Standard] wss
+from
+  [Production].[dbo].[WCShift_Standard] wss
   inner join [Production].[dbo].[WCShift_Override] wso on wss.WorkCenter_OID = wso.WorkCenter_OID
   inner join [Production].dbo.Work_Center wc on wss.WorkCenter_OID = wc.ObjectID
   inner join Production.dbo.[Shift] s on s.[Shift] = wss.Shift_ID
   inner join production.dbo.Shift_Day sd on s.Shift = sd.Shift
-  inner join production.dbo.Shift_Override so on wso.Shift_ID = so.ObjectID
+  --inner join production.dbo.Shift_Override so on wso.Shift_ID = so.ObjectID
 where 1=1
   and s.Shift_Name = 'FIRST'
   --and wc.ObjectID = '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' -- marumatsu
   and wc.Work_Center = 'Marumatsu'
   --and cast(wso.date as date) = '2022-01-01' -- holiday
   and cast(wso.date as date) = '2022-01-15' -- work saturday
-order by 
-  wso.Last_Updated desc;
+  --and sd.[Sequence] = (@@datefirst - 1 + datepart(weekday, wso.date)) % 7
+  and sd.[Sequence] = 5
+--order by 
+--  wso.Last_Updated desc;
