@@ -76,25 +76,74 @@ export class AdapterDriver {
   }
 
   async pollSchedule() {
-    const schedule = await this.getSchedule()
+    for (let device of this.devices) {
+      if (device.jobbossId) {
+        const schedule = await this.getSchedule(device)
+        console.log(schedule)
+      }
+    }
   }
 
   // get workcenter schedule for given day and shift.
+
   // lookup workcenter and date in wc shift override table
+  // if no record then lookup workcenter in WCShift_Standard
+  //   get shift_id, look that up with sequencenum in shift_day table for start/end
   // if isworkday=1 then lookup hours in shift_day table -
   //   get shift_id, lookup in shift_day table with dayofweek for sequencenum
   //   get start/end times from record
   // if isworkday=0 then not a workday - might have 2 records, one for each shift
   //   for now just say it's a holiday - no start/end times
-  // if no record then lookup workcenter in WCShift_Standard
-  //   get shift_id, look that up with sequencenum in shift_day table for start/end
-  async getSchedule(date, shift = 'FIRST') {
-    const sql = `
+  async getSchedule(device, date, shift = 'FIRST') {
+    const workcenter = device.jobbossId
+    const sequence = 1 //. get from date
+
+    // const sql1 = `
+    // select Shift_ID, Is_Work_Day
+    // from WCShift_Override
+    // where WorkCenter_OID=@workcenter and cast(Date as date)=@date
+    // `
+    // const result1 = await this.pool
+    //   .request()
+    //   .input('workcenter', mssql.VarChar, workcenter)
+    //   .input('date', mssql.Date, date)
+    // or
+
+    // lookup workcenter and date in wc shift override table
+    const result1 = await this.pool.query`
+    select Shift_ID, Is_Work_Day 
+    from WCShift_Override
+    where WorkCenter_OID=${workcenter} and cast(Date as date)=${date}
     `
-    // const result = await this.pool.query`select * from mytable where id = ${value}`
-    // console.dir(result)
-    const start = 0
-    const stop = 0
+    console.log(result1)
+
+    let start
+    let stop
+
+    if (result1.recordset.length === 0) {
+      // if no record then lookup workcenter in WCShift_Standard
+      //   get shift_id, look that up with sequencenum in shift_day table for start/end
+      const result2 = await this.pool.query`
+      select cast(Start_Time as time) start, cast(End_Time as time) stop
+      from WCShift_Standard wss
+        join Shift_Day sd on wss.Shift_ID=sd.Shift
+      where WorkCenter_OID=${workcenter} and Sequence=${sequence}
+      `
+      if (result2.recordset.length > 0) {
+        start = result2.recordset[0].start
+        stop = result2.recordset[0].stop
+      }
+    } else if (result1.recordset[0].Is_Work_Day === 1) {
+      // if isworkday=1 then lookup hours in shift_day table -
+      //   get shift_id, lookup in shift_day table with dayofweek for sequencenum
+      //   get start/end times from record
+    } else {
+      // if isworkday=0 then not a workday - might have 2 records, one for each shift
+      //   for now just say it's a holiday - no start/end times
+    }
+
+    // const start = 0
+    // const stop = 0
     return { start, stop }
   }
 
@@ -162,6 +211,9 @@ export class AdapterDriver {
   // async pollJob() {
   //   console.log(`JobBoss - polling for job info...`)
   //   // cache.set(`${deviceId}-job`, Math.floor(Math.random() * 1000))
+
+  // for (let device of this.devices) {
+  //   if (device.jobbossId) {
 
   //   // const sql = `select 42, 'hello'`
   //   const sql = `
