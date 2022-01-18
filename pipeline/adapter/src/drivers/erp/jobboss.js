@@ -1,5 +1,8 @@
 // jobboss driver
 
+// for jobboss table structure see
+// https://docs.google.com/spreadsheets/d/13RzXxUNby6-jIO4JUjKVCNG7ALc__HDkBhcnNfyK5-s/edit?usp=sharing
+
 import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/node-mssql
 import * as lib from '../../lib.js'
 
@@ -76,27 +79,24 @@ export class AdapterDriver {
   }
 
   async pollSchedule() {
+    // const date = getDateFromDateTime(new Date())
+    const datetime = new Date() // now
     for (let device of this.devices) {
       if (device.jobbossId) {
-        const schedule = await this.getSchedule(device)
+        const schedule = await this.getSchedule(device, datetime)
         console.log(schedule)
       }
     }
   }
 
-  // get workcenter schedule for given day and shift.
+  // get workcenter schedule for given device and datetime.
+  // returns as { start, stop } times, both strings like '05:00:00', or nulls.
+  async getSchedule(device, datetime) {
+    console.log(`JobBoss - getSchedule`, device.name, datetime)
 
-  // lookup workcenter and date in wc shift override table
-  // if no record then lookup workcenter in WCShift_Standard
-  //   get shift_id, look that up with sequencenum in shift_day table for start/end
-  // if isworkday=1 then lookup hours in shift_day table -
-  //   get shift_id, lookup in shift_day table with dayofweek for sequencenum
-  //   get start/end times from record
-  // if isworkday=0 then not a workday - might have 2 records, one for each shift
-  //   for now just say it's a holiday - no start/end times
-  async getSchedule(device, date, shift = 'FIRST') {
-    const workcenter = device.jobbossId
-    const sequence = 1 //. get from date
+    const workcenter = device.jobbossId // eg '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' for Marumatsu
+    const date = getDateFromDateTime(datetime) // eg '2022-01-18'
+    const sequence = datetime.getDay() // day of week with 0=sunday, 1=monday
 
     // const sql1 = `
     // select Shift_ID, Is_Work_Day
@@ -117,18 +117,20 @@ export class AdapterDriver {
     `
     console.log(result1)
 
-    let start
-    let stop
+    let start = null
+    let stop = null
 
     if (result1.recordset.length === 0) {
       // if no record then lookup workcenter in WCShift_Standard
       //   get shift_id, look that up with sequencenum in shift_day table for start/end
+      // (or do a join query)
       const result2 = await this.pool.query`
       select cast(Start_Time as time) start, cast(End_Time as time) stop
       from WCShift_Standard wss
         join Shift_Day sd on wss.Shift_ID=sd.Shift
       where WorkCenter_OID=${workcenter} and Sequence=${sequence}
       `
+      console.log(result2)
       if (result2.recordset.length > 0) {
         start = result2.recordset[0].start
         stop = result2.recordset[0].stop
@@ -137,48 +139,26 @@ export class AdapterDriver {
       // if isworkday=1 then lookup hours in shift_day table -
       //   get shift_id, lookup in shift_day table with dayofweek for sequencenum
       //   get start/end times from record
+      const result3 = await this.pool.query`
+      select cast(Start_Time as time) start, cast(End_Time as time) stop
+      from WCShift_Override wso
+        join Shift_Day sd on wso.Shift_ID = sd.Shift
+      where WorkCenter_OID=${workcenter} and Date=${date} and Sequence=${sequence}
+      `
+      console.log(result3)
+      if (result3.recordset.length > 0) {
+        start = result3.recordset[0].start
+        stop = result3.recordset[0].stop
+      }
     } else {
       // if isworkday=0 then not a workday - might have 2 records, one for each shift
-      //   for now just say it's a holiday - no start/end times
+      //   for now just say the whole day is a holiday - no start/end times
+      //. does that mean don't write anything?
+      console.log(``)
     }
 
-    // const start = 0
-    // const stop = 0
     return { start, stop }
   }
-
-  // // get start/stop times for given device and day
-  // //. default day to today
-  // async getTimes(device, day) {
-  //   const start = 0
-  //   const stop = 0
-  //   const times = { start, stop }
-  //   return times
-  // }
-
-  // getToday() {
-  //   const now = new Date()
-  //   const today = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
-  //   return today
-  // }
-
-  // getDay(datetime = new Date()) {
-  //   const day = new Date(
-  //     datetime.getTime() - datetime.getTimezoneOffset() * 60000
-  //   )
-  //     .toISOString()
-  //     .split('T')[0]
-  //   return day
-  // }
-
-  // //. uhhh not good - still says time is Z
-  // getToday() {
-  //   const now = new Date()
-  //   const day = Math.floor(
-  //     (now.getTime() - now.getTimezoneOffset() * 60000) / 8.64e7
-  //   )
-  //   return day
-  // }
 
   // async backfillSchedule() {
   //   console.log(`JobBoss backfilling any missed dates...`)
@@ -255,4 +235,14 @@ export class AdapterDriver {
   //   cache.set(`${deviceId}-availability`, 'UNAVAILABLE')
   //   cache.set(`${deviceId}-job`, 'UNAVAILABLE')
   // }
+}
+
+// get a date string from a datetime value,
+// eg 2022-01-18T14:24:00 -> '2022-01-18'
+// accounts for timezone offset
+function getDateFromDateTime(dt = new Date()) {
+  const date = new Date(dt.getTime() - dt.getTimezoneOffset() * 60000)
+    .toISOString()
+    .split('T')[0]
+  return date
 }
