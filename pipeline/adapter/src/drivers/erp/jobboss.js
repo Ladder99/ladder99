@@ -55,7 +55,11 @@ export class AdapterDriver {
     while (!this.pool) {
       try {
         console.log(`JobBoss - connecting to database...`, connection.server)
-        this.pool = await mssql.connect(connection)
+        // this.pool = await mssql.connect(connection)
+        this.pool = await mssql.connect({
+          ...connection,
+          port: Number(connection.port),
+        })
         console.log(`JobBoss - connected`)
         // this.setAvailable()
 
