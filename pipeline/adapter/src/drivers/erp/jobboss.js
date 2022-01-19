@@ -10,22 +10,11 @@ const initialDelay = 6000 // ms
 const jobPollInterval = 5000 // ms
 const schedulePollInterval = 1 * 60 * 1000 // ms
 
-// //. hardcoded schedule for now
-// const schedule = {
-//   workdays: [
-//     { day: 1, start: '5:00', stop: '15:30' }, // mon
-//     { day: 2, start: '5:00', stop: '15:30' }, // tue
-//     { day: 3, start: '5:00', stop: '15:30' }, // wed
-//     { day: 4, start: '5:00', stop: '15:30' }, // thu
-//     { day: 5, start: '5:00', stop: '13:30' }, // fri
-//     { day: 6, start: '5:00', stop: '13:00' }, // sat
-//   ],
-//   holidays: ['2021-12-25', '2021-12-31', '2021-01-01', '2021-01-03'],
-// }
-
 export class AdapterDriver {
   constructor() {
     this.pool = null
+    this.devices = null
+    this.cache = null
   }
 
   // note - device here is the jobboss object from setup yaml -
@@ -44,6 +33,7 @@ export class AdapterDriver {
     console.log(`JobBoss - initialize driver...`)
 
     this.devices = devices
+    this.cache = cache
 
     // need to wait a bit to make sure the cutter cache items are setup before
     // writing to them. they're setup via the cutter/marumatsu module.
@@ -58,7 +48,7 @@ export class AdapterDriver {
         // this.pool = await mssql.connect(connection)
         this.pool = await mssql.connect({
           ...connection,
-          port: Number(connection.port),
+          port: Number(connection.port), // mssql driver insists on a number here
         })
         console.log(`JobBoss - connected`)
         // this.setAvailable()
@@ -82,13 +72,30 @@ export class AdapterDriver {
     }
   }
 
+  // poll the jobboss schedule information for current day,
+  // and write to the cache
   async pollSchedule() {
-    // const date = getDateFromDateTime(new Date())
     const datetime = new Date() // now
     for (let device of this.devices) {
       if (device.jobbossId) {
         const schedule = await this.getSchedule(device, datetime)
         console.log(schedule)
+        //. assign schedule times to current day
+        const start = new Date(datetime)
+        start.setHours(
+          schedule.start.getHours(),
+          schedule.start.getMinutes(),
+          schedule.start.getSeconds()
+        )
+        const complete = new Date(datetime)
+        complete.setHours(
+          schedule.stop.getHours(),
+          schedule.stop.getMinutes(),
+          schedule.stop.getSeconds()
+        )
+        //. write start/stop times to cache for this device
+        this.cache.set(`${device.id}-start`, start)
+        this.cache.set(`${device.id}-complete`, complete)
       }
     }
   }
@@ -101,17 +108,6 @@ export class AdapterDriver {
     const workcenter = device.jobbossId // eg '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' for Marumatsu
     const date = getDateFromDateTime(datetime) // eg '2022-01-18'
     const sequence = datetime.getDay() // day of week with 0=sunday, 1=monday
-
-    // const sql1 = `
-    // select Shift_ID, Is_Work_Day
-    // from WCShift_Override
-    // where WorkCenter_OID=@workcenter and cast(Date as date)=@date
-    // `
-    // const result1 = await this.pool
-    //   .request()
-    //   .input('workcenter', mssql.VarChar, workcenter)
-    //   .input('date', mssql.Date, date)
-    // or
 
     // lookup workcenter and date in wc shift override table
     const result1 = await this.pool.query`
