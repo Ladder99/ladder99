@@ -153,11 +153,13 @@ export class AdapterDriver {
       start.setFullYear(datetime.getFullYear())
       start.setMonth(datetime.getMonth())
       start.setDate(datetime.getDate())
+      start = start.toISOString()
     }
     if (stop) {
       stop.setFullYear(datetime.getFullYear())
       stop.setMonth(datetime.getMonth())
       stop.setDate(datetime.getDate())
+      stop = stop.toISOString()
     }
     return { start, stop }
   }
