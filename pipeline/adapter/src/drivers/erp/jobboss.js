@@ -94,8 +94,8 @@ export class AdapterDriver {
           schedule.stop.getSeconds()
         )
         //. write start/stop times to cache for this device
-        this.cache.set(`${device.id}-start`, start)
-        this.cache.set(`${device.id}-complete`, complete)
+        this.cache.set(`${device.id}-start`, start.toISOString())
+        this.cache.set(`${device.id}-complete`, complete.toISOString())
       }
     }
   }
