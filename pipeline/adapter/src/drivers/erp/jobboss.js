@@ -164,7 +164,7 @@ export class AdapterDriver {
     }
 
     // these all use local time, not Z time
-    if (typeof start === 'object') {
+    if (start && typeof start === 'object') {
       start = new Date(
         date + 'T' + start.toISOString().split('T')[1].replace('Z', '')
       )
@@ -173,7 +173,7 @@ export class AdapterDriver {
       start.setDate(datetime.getDate())
       start = start.toISOString()
     }
-    if (typeof stop === 'object') {
+    if (stop && typeof stop === 'object') {
       stop = new Date(
         date + 'T' + stop.toISOString().split('T')[1].replace('Z', '')
       )
