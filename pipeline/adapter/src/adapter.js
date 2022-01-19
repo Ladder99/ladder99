@@ -32,7 +32,7 @@ async function main() {
   const cache = new Cache()
 
   // iterate over device definitions from setup.yaml file
-  const { devices } = setup
+  const { client, devices } = setup
   for (const device of devices) {
     // console.log(`Device`, device) // don't print - might have passwords
     const deviceId = device.id
@@ -126,6 +126,7 @@ async function main() {
         // as that is where the dependsOn values are set, and this needs those.
         console.log(`Initializing driver for ${driver}...`)
         plugin.init({
+          client,
           deviceId,
           deviceName,
           //. why not just pass the whole device object? incl connection object etc

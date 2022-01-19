@@ -12,15 +12,17 @@ const schedulePollInterval = 1 * 60 * 1000 // ms
 
 export class AdapterDriver {
   constructor() {
-    this.pool = null
+    this.client = null
     this.devices = null
     this.cache = null
+    this.pool = null
   }
 
   // note - device here is the jobboss object from setup yaml -
   // this code will iterate over all devices in setup yaml to find ones with
   // jobbossId values and check their schedules and jobnums.
   async init({
+    client,
     deviceId,
     device,
     protocol,
@@ -32,6 +34,7 @@ export class AdapterDriver {
   }) {
     console.log(`JobBoss - initialize driver...`)
 
+    this.client = client
     this.devices = devices
     this.cache = cache
 
@@ -75,7 +78,11 @@ export class AdapterDriver {
   // poll the jobboss schedule information for current day,
   // and write to the cache
   async pollSchedule() {
-    const datetime = new Date() // now
+    // const datetime = new Date() // now
+    const datetime = new Date(
+      new Date().getTime() +
+        (this.client.timezoneOffsetHrs || 0) * 60 * 60 * 1000
+    ) // since the server is set to GMT time, need to trick it to thinking it's 6 hrs earlier
     for (let device of this.devices) {
       if (device.jobbossId) {
         const schedule = await this.getSchedule(device, datetime) // get { start, stop }
@@ -249,9 +256,9 @@ export class AdapterDriver {
 
 // get a date string from a datetime value,
 // eg 2022-01-18T14:24:00 -> '2022-01-18'
-// accounts for timezone offset
-function getDateFromDateTime(dt = new Date()) {
-  const date = new Date(dt.getTime() - dt.getTimezoneOffset() * 60000)
+// accounts for timezone offset, which is in minutes
+function getDateFromDateTime(dt) {
+  const date = new Date(dt.getTime() - dt.getTimezoneOffset() * 60 * 1000)
     .toISOString()
     .split('T')[0]
   return date
