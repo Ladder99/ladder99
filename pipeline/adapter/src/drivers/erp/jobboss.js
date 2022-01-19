@@ -79,7 +79,7 @@ export class AdapterDriver {
     for (let device of this.devices) {
       if (device.jobbossId) {
         const schedule = await this.getSchedule(device, datetime) // get { start, stop }
-        console.log(schedule)
+        console.log('JobBoss schedule', schedule)
         // write start/stop times to cache for this device
         this.cache.set(`${device.id}-start`, schedule.start)
         this.cache.set(`${device.id}-complete`, schedule.stop)
@@ -149,13 +149,19 @@ export class AdapterDriver {
     }
 
     // these all use local time, not Z time
-    if (start) {
+    if (typeof start === 'object') {
+      start = new Date(
+        date + 'T' + start.toISOString().split('T')[1].replace('Z', '')
+      )
       start.setFullYear(datetime.getFullYear())
       start.setMonth(datetime.getMonth())
       start.setDate(datetime.getDate())
       start = start.toISOString()
     }
-    if (stop) {
+    if (typeof stop === 'object') {
+      stop = new Date(
+        date + 'T' + stop.toISOString().split('T')[1].replace('Z', '')
+      )
       stop.setFullYear(datetime.getFullYear())
       stop.setMonth(datetime.getMonth())
       stop.setDate(datetime.getDate())
