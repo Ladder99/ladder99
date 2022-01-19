@@ -32,7 +32,8 @@ async function main() {
   const cache = new Cache()
 
   // iterate over device definitions from setup.yaml file
-  const { client, devices } = setup
+  const client = setup.client || {}
+  const { devices } = setup
   for (const device of devices) {
     // console.log(`Device`, device) // don't print - might have passwords
     const deviceId = device.id

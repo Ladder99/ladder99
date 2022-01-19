@@ -79,10 +79,11 @@ export class AdapterDriver {
   // and write to the cache
   async pollSchedule() {
     // const datetime = new Date() // now
+    // since the server is set to GMT time, need to 'trick' it to thinking it's 6 hrs earlier
     const datetime = new Date(
       new Date().getTime() +
         (this.client.timezoneOffsetHrs || 0) * 60 * 60 * 1000
-    ) // since the server is set to GMT time, need to trick it to thinking it's 6 hrs earlier
+    )
     for (let device of this.devices) {
       if (device.jobbossId) {
         const schedule = await this.getSchedule(device, datetime) // get { start, stop }
