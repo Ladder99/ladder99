@@ -78,24 +78,11 @@ export class AdapterDriver {
     const datetime = new Date() // now
     for (let device of this.devices) {
       if (device.jobbossId) {
-        const schedule = await this.getSchedule(device, datetime)
+        const schedule = await this.getSchedule(device, datetime) // get { start, stop }
         console.log(schedule)
-        //. assign schedule times to current day
-        const start = new Date(datetime)
-        start.setHours(
-          schedule.start.getHours(),
-          schedule.start.getMinutes(),
-          schedule.start.getSeconds()
-        )
-        const complete = new Date(datetime)
-        complete.setHours(
-          schedule.stop.getHours(),
-          schedule.stop.getMinutes(),
-          schedule.stop.getSeconds()
-        )
-        //. write start/stop times to cache for this device
-        this.cache.set(`${device.id}-start`, start.toISOString())
-        this.cache.set(`${device.id}-complete`, complete.toISOString())
+        // write start/stop times to cache for this device
+        this.cache.set(`${device.id}-start`, schedule.start)
+        this.cache.set(`${device.id}-complete`, schedule.stop)
       }
     }
   }
@@ -103,11 +90,11 @@ export class AdapterDriver {
   // get workcenter schedule for given device and datetime.
   // returns as { start, stop } times, both strings like '05:00:00', or nulls.
   async getSchedule(device, datetime) {
-    console.log(`JobBoss - getSchedule`, device.name, datetime)
+    console.log(`JobBoss - getSchedule for`, device.name, datetime)
 
     const workcenter = device.jobbossId // eg '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' for Marumatsu
-    const date = getDateFromDateTime(datetime) // eg '2022-01-18'
-    const sequence = datetime.getDay() // day of week with 0=sunday, 1=monday
+    const sequence = datetime.getDay() // day of week with 0=sunday, 1=monday. this works even if Z time is next day.
+    const date = getDateFromDateTime(datetime) // eg '2022-01-18' - works even if Z time is next day.
 
     // lookup workcenter and date in wc shift override table
     const result1 = await this.pool.query`
@@ -121,6 +108,7 @@ export class AdapterDriver {
     let stop = null
 
     if (result1.recordset.length === 0) {
+      console.log(`JobBoss - no override record, so get standard schedule...`)
       // if no record then lookup workcenter in WCShift_Standard
       //   get shift_id, look that up with sequencenum in shift_day table for start/end
       // (or do a join query)
@@ -132,10 +120,11 @@ export class AdapterDriver {
       `
       console.log(result2)
       if (result2.recordset.length > 0) {
-        start = result2.recordset[0].start
-        stop = result2.recordset[0].stop
+        start = result2.recordset[0].start // eg 1970-01-01T05:00:00Z - note the Z
+        stop = result2.recordset[0].stop // eg 1970-01-01T13:30:00Z
       }
     } else if (result1.recordset[0].Is_Work_Day === 1) {
+      console.log(`JobBoss - work day override - get schedule...`)
       // if isworkday=1 then lookup hours in shift_day table -
       //   get shift_id, lookup in shift_day table with dayofweek for sequencenum
       //   get start/end times from record
@@ -153,10 +142,23 @@ export class AdapterDriver {
     } else {
       // if isworkday=0 then not a workday - might have 2 records, one for each shift
       //   for now just say the whole day is a holiday - no start/end times
-      //. does that mean don't write anything?
-      console.log(``)
+      //. does that mean don't write anything? or unavail? or holiday?
+      console.log(`JobBoss - day is holiday (isworkday=0)...`)
+      start = 'HOLIDAY'
+      stop = 'HOLIDAY'
     }
 
+    // these all use local time, not Z time
+    if (start) {
+      start.setFullYear(datetime.getFullYear())
+      start.setMonth(datetime.getMonth())
+      start.setDate(datetime.getDate())
+    }
+    if (stop) {
+      stop.setFullYear(datetime.getFullYear())
+      stop.setMonth(datetime.getMonth())
+      stop.setDate(datetime.getDate())
+    }
     return { start, stop }
   }
 
