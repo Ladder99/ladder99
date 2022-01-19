@@ -138,9 +138,9 @@ export class AdapterDriver {
         start = result2.recordset[0].start // eg 1970-01-01T05:00:00Z - note the Z
         stop = result2.recordset[0].stop // eg 1970-01-01T13:30:00Z
       }
-    } else if (result1.recordset[0].Is_Work_Day === 1) {
+    } else if (result1.recordset[0].Is_Work_Day) {
       console.log(`JobBoss - work day override - get schedule...`)
-      // if isworkday=1 then lookup hours in shift_day table -
+      // if isworkday then lookup hours in shift_day table -
       //   get shift_id, lookup in shift_day table with dayofweek for sequencenum
       //   get start/end times from record
       const result3 = await this.pool.query`
