@@ -1,3 +1,8 @@
+// read/write values for device availability calculations
+
+const metricInterval = 60 // seconds
+const resolutions = 'minute,hour,day,week,month,year'.split(',')
+
 export class Metric {
   constructor() {
     this.device = null
@@ -14,30 +19,30 @@ export class Metric {
     this.metric = metric
 
     // repeat until device has been added to db
-    let device_id
-    while (!device_id) {
-      console.log(`Meter - get device node_id`)
-      device_id = await this.getDeviceId()
-      await new Promise(resolve => setTimeout(resolve, 4000)) // wait 4 secs
-    }
-    this.device.node_id = device_id
+    console.log(`Meter - get device node_id...`)
+    this.device.node_id = await this.getDeviceId()
     console.log(this.device)
 
-    console.log(`Meter - update bins`)
+    console.log(`Meter - update bins...`)
     await this.updateBins()
 
     // start the timer which calls updateBins every n seconds -
     // it will increment bins as needed.
     // eg a partcount event indicates device was active during that minute.
-    console.log(`Meter - start updateBins timer`)
-    this.interval = metric.interval || 60 // seconds
+    console.log(`Meter - start updateBins timer...`)
+    this.interval = metric.interval || metricInterval
     this.timer = setInterval(this.updateBins.bind(this), this.interval * 1000) // ms
   }
 
   async getDeviceId() {
-    const sql = `select node_id from devices where name='${this.device.name}'`
-    console.log(sql)
-    const result = await this.db.query(sql)
+    let result
+    while (true) {
+      const sql = `select node_id from devices where name='${this.device.name}'`
+      console.log(sql)
+      result = await this.db.query(sql)
+      if (result.rows.length > 0) break
+      await new Promise(resolve => setTimeout(resolve, 4000)) // wait 4 secs
+    }
     return result.rows[0].node_id
   }
 
@@ -54,7 +59,7 @@ export class Metric {
     // check if we're within scheduled time
     const scheduled = now >= schedule.start && now <= schedule.stop
     if (scheduled) {
-      console.log(`Meter - in scheduled time window - check if active`)
+      console.log(`Meter - in scheduled time window - check if active...`)
       // if so, check for events in previous n secs
       const start = new Date(now.getTime() - this.interval * 1000)
       const stop = now
@@ -122,7 +127,6 @@ export class Metric {
   //     ) using p_device_id, ('1 '||v_resolution)::interval, v_time, p_delta, p_delta;
   async incrementBins(time, field, delta = 1) {
     const timeISO = time.toISOString()
-    const resolutions = 'minute,hour,day,week,month,year'.split(',')
     for (let resolution of resolutions) {
       // upsert/increment the given field by delta
       const sql = `
