@@ -53,7 +53,7 @@ export class Metric {
     console.log('now', now)
 
     // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ... }
-    //. do this every 5mins or so
+    //. do this every 5mins or so on separate timer
     const schedule = await this.getSchedule()
 
     // check if we're within scheduled time
@@ -66,9 +66,11 @@ export class Metric {
       const deviceWasActive = await this.getActive(start, stop)
       // if device was active, increment the active bin
       if (deviceWasActive) {
+        console.log(`Meter - device was active, increment active bin`)
         await this.incrementBins(now, 'active')
       }
       // always increment the available bin
+      console.log(`Meter - always increment the available bin`)
       await this.incrementBins(now, 'available')
     } else {
       console.log(`Meter - not in scheduled time window`)
@@ -80,7 +82,7 @@ export class Metric {
     const table = 'history_text'
     const device = this.device
     const { startPath, stopPath } = this.metric
-    // note: these can return 'UNAVAILABLE', in which case,
+    // note: these can return 'UNAVAILABLE' or 'HOLIDAY', in which case,
     // schedule.start etc will be 'Invalid Date'.
     // any comparison with those will yield false.
     const start = await this.db.getLatestValue(table, device, startPath)
