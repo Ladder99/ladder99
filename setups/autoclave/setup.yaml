@@ -7,12 +7,13 @@
 devices:
   - id: ac1
     name: autoclave1 # this must match name in agent.cfg and agent.xml
-    model: autoclave/asc
+    # module: autoclave/asc #. not used?
+
     # specify sources for dataitem values
     #. eg could have multiple thermometers for a machine, or doors?
     #. be careful with multiple sources - don't want to clobber dataitems.
     sources:
-      - model: autoclave/asc
+      - module: autoclave/asc
         driver: autoclave/cpc # type of adapter plugin - manages protocol and payload
         protocol: tcp
         host: 10.20.30.101
