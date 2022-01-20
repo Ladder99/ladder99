@@ -3,7 +3,9 @@
 
 # see ./start for how to run
 
-version: '3.8'
+# version must be a string
+# version: '3.8' # doesn't work with docker-compose package on ubuntu 20.04
+version: '3'
 
 services:
   # adapter - convert machine data to shdr and send to agent
