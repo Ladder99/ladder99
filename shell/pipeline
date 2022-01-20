@@ -20,7 +20,7 @@ Examples
     sh/pipeline start setups/print-apply dashboard play
 
 Note: services are referenced by their 'profile' attribute in compose.yaml.
-Note: use 'docker kill SERVICE' to stop an individual service.
+Note: use 'docker stop SERVICE' to stop an individual service.
 "
 
 if [ $# -eq 0 ]; then
@@ -36,7 +36,6 @@ shift
 services=$* # eg 'agent play'
 
 # file paths
-# pipeline="setups/pipeline.yaml"
 pipeline="pipeline/compose.yaml"
 overrides="$setup/compose-overrides.yaml"
 envfile="$setup/.env"
