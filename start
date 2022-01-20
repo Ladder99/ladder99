@@ -60,8 +60,8 @@ done
 # if [[ $1 = \.* ]]; then
 # if [[ $1 == ./* ]]; then
 # if [[ "$1" == "."* ]]; then
-# if [[ $1 =~ ^\. ]]; then    # works on zsh not bash?
-shopt -s extglob
+# if [[ $1 =~ ^\. ]]; then    # works on zsh not encab?
+# shopt -s extglob  # not avail on encab?
 if [[ $1 = \.* ]]; then
     setup=$1
 else
