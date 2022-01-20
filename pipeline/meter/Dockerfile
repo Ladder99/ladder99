@@ -20,4 +20,4 @@ COPY ./src ./src
 ENTRYPOINT ["node", "/data/app/src/meter.js"]
 
 # default command when run container
-# CMD ["node", "/data/app/src/recorder.js"]
+# CMD ["node", "/data/app/src/meter.js"]

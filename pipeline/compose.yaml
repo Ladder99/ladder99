@@ -92,30 +92,6 @@ services:
       options:
         max-size: '20m'
 
-  # # ftpd - ftp daemon
-  # ftpd:
-  #   container_name: ftpd
-  #   image: crazymax/pure-ftpd
-  #   profiles:
-  #     - all
-  #     - ftpd
-  #   restart: always
-  #   networks:
-  #     - ladder99
-  #   ports:
-  #     - '21:2100'
-  #     - '30000-30009:30000-30009'
-  #   volumes:
-  #     - ../$SETUP/volumes/ftpd/data:/home/ftp:rw
-  #     - ../$SETUP/volumes/ftpd/passwd:/data:rw
-  #   environment:
-  #     - 'PASSIVE_IP=10.1.38.128'
-  #   logging:
-  #     driver: 'json-file'
-  #     options:
-  #       max-file: '5'
-  #       max-size: '1m'
-
   # grafana - show real-time data from the database, handle notifications
   grafana:
     container_name: grafana
@@ -167,22 +143,6 @@ services:
       options:
         max-size: '20m'
 
-  # # hue - a sql database manager
-  # hue:
-  #   container_name: hue
-  #   image: gethue/hue:latest
-  #   profiles:
-  #     - all
-  #     - hue
-  #   ports:
-  #     - 8888:8888
-  #   restart: always
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '20m'
-
   # meter - calculate metrics
   # note: set PGHOST, PGPORT, etc before running
   meter:
@@ -231,23 +191,6 @@ services:
     logging:
       options:
         max-size: '20m'
-
-  # # nocodb - an airtable clone - plug in a database
-  # nocodb:
-  #   container_name: nocodb
-  #   image: nocodb/nocodb:latest
-  #   profiles:
-  #     - all
-  #     - nocodb
-  #   restart: always
-  #   networks:
-  #     - ladder99
-  #   ports:
-  #     - "8081:8080"
-  #   volumes:
-  #     - ../$SETUP/volumes/nocodb:/usr/app/data:rw
-  #   environment:
-  #     NC_DB_JSON_FILE: "/usr/app/data/nc.json"
 
   # nodered - a visual programming environment
   nodered:
