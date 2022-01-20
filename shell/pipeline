@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # run ladder99 pipeline with docker compose.
 # if docker compose not available, use sh/docker/run and sh/docker/stop.
