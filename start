@@ -59,7 +59,8 @@ done
 # if starts with '.' treat as a setup folder, else a client name
 # if [[ $1 = \.* ]]; then
 # if [[ $1 == ./* ]]; then
-if [[ "$1" == "."* ]]; then
+# if [[ "$1" == "."* ]]; then
+if [[ $1 =~ ^\. ]]; then
     setup=$1
 else
     setup=../client-$1
