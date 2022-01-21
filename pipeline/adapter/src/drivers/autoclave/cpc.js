@@ -21,7 +21,7 @@ export class AdapterDriver {
     console.log(`Initialize CPC driver...`)
 
     // get ids and query string
-    const ids = inputs.inputs.map(input => `${deviceId}/${input.key}`) // eg ['ac1/operator_name', 'ac1/recipe_description', ...]
+    const ids = inputs.inputs.map(input => `${deviceId}-${input.key}`) // eg ['ac1/operator_name', 'ac1/recipe_description', ...]
     const paths = inputs.inputs.map(input => input.path).join(',')
     const types = inputs.inputs.map(input => input.type) // eg [undefined, undefined, boolean, ...]
     const query = `PathListGet:ReadValues:${paths}` // eg 'PathListGet:ReadValues:.Autoclave.Alarms.ControlPower\Condition,...'
