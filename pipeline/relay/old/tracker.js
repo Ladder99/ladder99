@@ -1,5 +1,7 @@
 // Track events every n seconds and increment bins as needed.
 
+//. this got replaced by the Meter service - see pipeline/meter
+
 //. pass in through constructor, with devices and metrics to track.
 const path = 'controller/partOccurrence/part_count-all'
 const startpath = 'processes/process_time-start'
@@ -96,13 +98,13 @@ export class Tracker {
   //. problem - we want the connection to be ONE way to db? ie write only?
   async getActive(device, path, start, stop) {
     const sql = `
-    select count(value) > 0 as active
-    from history_all
-    where
-      device = '${device.name}'
-      and path = '${path}'
-      and time between '${start.toISOString()}' and '${stop.toISOString()}'
-    limit 1;
+      select count(value) > 0 as active
+      from history_all
+      where
+        device = '${device.name}'
+        and path = '${path}'
+        and time between '${start.toISOString()}' and '${stop.toISOString()}'
+      limit 1;
     `
     console.log(sql)
     const result = await this.db.query(sql)
