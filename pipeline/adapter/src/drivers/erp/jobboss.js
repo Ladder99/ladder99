@@ -86,13 +86,13 @@ export class AdapterDriver {
     )
     for (let device of this.devices) {
       if (device.jobbossId) {
-        //. test getschedule fn
-        for (let day = 1; day <= 19; day++) {
-          const datetime = new Date()
-          datetime.setDate(day)
-          const schedule = await this.getSchedule(device, datetime) // get { start, stop }
-          console.log('JobBoss schedule', schedule)
-        }
+        // //. test getschedule fn for set of days
+        // for (let day = 1; day <= 19; day++) {
+        //   const datetime = new Date()
+        //   datetime.setDate(day)
+        //   const schedule = await this.getSchedule(device, datetime) // get { start, stop }
+        //   console.log('JobBoss schedule', schedule)
+        // }
         const schedule = await this.getSchedule(device, datetime) // get { start, stop }
         console.log('JobBoss schedule', schedule)
         // write start/stop times to cache for this device
