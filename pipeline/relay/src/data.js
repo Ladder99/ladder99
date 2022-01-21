@@ -1,6 +1,8 @@
 // data
 // wraps agent data returned from probe, current, and sample endpoints
 
+// Data stores a json object of data - probe or observations.
+// extended by dataProbe and dataObservations.
 export class Data {
   type = null // will be probe|current|sample
 

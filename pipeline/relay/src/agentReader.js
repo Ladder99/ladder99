@@ -33,8 +33,8 @@ export class AgentReader {
     // make feedback object to track data and feedback to devices as needed.
     // used to track jobnum change to reset marumatsu counter.
     //. this will be replaced by MTConnect Interfaces.
-    this.feedback = new Feedback(this.db, this.setup)
-    this.feedback.start(5) // polling seconds
+    this.feedback = new Feedback(this.setup)
+    this.feedback.start() // get mqtt connection etc
 
     // probe - get agent data structures and write to db
     probe: do {
@@ -49,6 +49,7 @@ export class AgentReader {
         await current.read(this.endpoint) // get observations and this.sequence numbers
         if (instanceIdChanged(current, probe)) break probe
         await current.write(this.db, probe.indexes) // write this.observations to db
+        await this.feedback.check(current) // check for changes, write feedback to devices
         this.from = current.sequence.next
 
         // sample - get sequence of dataitem values, write to db
@@ -57,6 +58,7 @@ export class AgentReader {
           await sample.read(this.endpoint, this.from, this.count) // get observations
           if (instanceIdChanged(sample, probe)) break probe
           await sample.write(this.db, probe.indexes) // write this.observations to db
+          await this.feedback.check(probe) // check for changes, write feedback to devices
           this.from = sample.sequence.next //. ?
           await lib.sleep(this.interval)
         } while (true)

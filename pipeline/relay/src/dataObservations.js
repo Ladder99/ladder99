@@ -1,14 +1,16 @@
 // Observations
-// read current and sample endpoints and write data to db
-// called from agentReader
+// read current and sample endpoints and write data to db.
+// called from agentReader.
 
 import { Data } from './data.js'
 import * as treeObservations from './treeObservations.js'
 
+// Observations - stores an array of observations - current or sample
 export class Observations extends Data {
   constructor(type) {
     super()
     this.type = type // used by read method - will be 'current' or 'sample'
+    this.observations = null // array of dataitems
   }
 
   // read dataitem values from current/sample endpoints as .json,
@@ -18,6 +20,14 @@ export class Observations extends Data {
 
     // get flat list of observations from xml tree
     // observations is [{ tag, dataItemId, name, timestamp, value }, ...]
+    // eg [{
+    //   tag: 'Availability',
+    //   dataItemId: 'm1-avail',
+    //   name: 'availability',
+    //   sequence: '30',
+    //   timestamp: '2021-09-14T17:53:21.414Z',
+    //   value: 'AVAILABLE'
+    // }, ...]
     this.observations = treeObservations.getElements(this.json)
 
     // sort observations by timestamp asc, for correct state machine transitions.
