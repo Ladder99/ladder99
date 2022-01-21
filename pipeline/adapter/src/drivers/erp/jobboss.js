@@ -217,7 +217,7 @@ export class AdapterDriver {
     console.log(`JobBoss - polling for job info...`)
 
     //. test - works
-    // cache.set(`${deviceId}-job`, Math.floor(Math.random() * 1000))
+    // this.cache.set(`${deviceId}-job`, Math.floor(Math.random() * 1000))
 
     // iterate over all devices, check if has a jobboss ID //. call it workcenterId?
     for (let device of this.devices) {

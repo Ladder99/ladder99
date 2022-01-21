@@ -37,9 +37,12 @@ outputs:
   # shift start and stop times
   - key: start
     value: <start>
-
   - key: complete
     value: <complete>
+
+  # current job number
+  - key: job
+    value <job>
 
   # # functional mode
   # # note:
