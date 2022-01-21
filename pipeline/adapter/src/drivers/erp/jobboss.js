@@ -62,11 +62,11 @@ export class AdapterDriver {
         await this.pollSchedule() // do initial poll
         setInterval(this.pollSchedule.bind(this), schedulePollInterval) // start poll timer
 
-        // // get job info
-        // // will check jobnum for each device in devices
-        // // await this.backfillJob()
-        // await this.pollJob() // do initial poll
-        // setInterval(this.pollJob.bind(this), jobPollInterval) // start poll timer
+        // get job info
+        // will check jobnum for each device in devices
+        // await this.backfillJob()
+        await this.pollJob() // do initial poll
+        setInterval(this.pollJob.bind(this), jobPollInterval) // start poll timer
       } catch (error) {
         console.log(error)
         console.log(`JobBoss - no db - waiting a bit to try again...`)
@@ -113,9 +113,9 @@ export class AdapterDriver {
 
     // lookup workcenter and date in wc shift override table
     const result1 = await this.pool.query`
-    select Shift_ID, Is_Work_Day 
-    from WCShift_Override
-    where WorkCenter_OID=${workcenter} and cast(Date as date)=${date}
+      select Shift_ID, Is_Work_Day 
+      from WCShift_Override
+      where WorkCenter_OID=${workcenter} and cast(Date as date)=${date}
     `
     console.log(result1)
 
@@ -128,10 +128,10 @@ export class AdapterDriver {
       //   get shift_id, look that up with sequencenum in shift_day table for start/end
       // (or do a join query)
       const result2 = await this.pool.query`
-      select cast(Start_Time as time) start, cast(End_Time as time) stop
-      from WCShift_Standard wss
-        join Shift_Day sd on wss.Shift_ID=sd.Shift
-      where WorkCenter_OID=${workcenter} and Sequence=${sequence}
+        select cast(Start_Time as time) start, cast(End_Time as time) stop
+        from WCShift_Standard wss
+          join Shift_Day sd on wss.Shift_ID=sd.Shift
+        where WorkCenter_OID=${workcenter} and Sequence=${sequence}
       `
       console.log(result2)
       if (result2.recordset.length > 0) {
@@ -144,10 +144,10 @@ export class AdapterDriver {
       //   get shift_id, lookup in shift_day table with dayofweek for sequencenum
       //   get start/end times from record
       const result3 = await this.pool.query`
-      select cast(Start_Time as time) start, cast(End_Time as time) stop
-      from WCShift_Override wso
-        join Shift_Day sd on wso.Shift_ID = sd.Shift
-      where WorkCenter_OID=${workcenter} and Date=${date} and Sequence=${sequence}
+        select cast(Start_Time as time) start, cast(End_Time as time) stop
+        from WCShift_Override wso
+          join Shift_Day sd on wso.Shift_ID = sd.Shift
+        where WorkCenter_OID=${workcenter} and Date=${date} and Sequence=${sequence}
       `
       console.log(result3)
       if (result3.recordset.length > 0) {
@@ -213,39 +213,33 @@ export class AdapterDriver {
   //   // return new Date()
   // }
 
-  // async pollJob() {
-  //   console.log(`JobBoss - polling for job info...`)
-  //   // cache.set(`${deviceId}-job`, Math.floor(Math.random() * 1000))
+  async pollJob() {
+    console.log(`JobBoss - polling for job info...`)
 
-  // for (let device of this.devices) {
-  //   if (device.jobbossId) {
+    //. test - works
+    // cache.set(`${deviceId}-job`, Math.floor(Math.random() * 1000))
 
-  //   // const sql = `select 42, 'hello'`
-  //   const sql = `
-  //   select top 1
-  //     job
-  //   from
-  //     job_operation
-  //   where
-  //     -- work_center = 'MARUMATSU'
-  //     -- workcenter_oid = '8EE4B90E-7224-4A71-BE5E-C6A713AECF59'
-  //     workcenter_oid = '${device.jobbossId}'
-  //   order by
-  //     actual_start desc
-  //   `
-  //   try {
-  //     const result = await pool.request().query(sql)
-  //     //. use this form --
-  //     // const result = await pool.request()
-  //     //   .input('input_parameter', mssql.Int, 33)
-  //     //   .query('select * from mytable where id = @input_parameter')
-  //     console.log(`JobBoss result`, result)
-  //     //. parse result object
-  //     // cache.set(`${deviceId}-job`, '42')
-  //   } catch (error) {
-  //     console.log(error)
-  //   }
-  // }
+    // iterate over all devices, check if has a jobboss ID //. call it workcenterId?
+    for (let device of this.devices) {
+      if (device.jobbossId) {
+        // get the most recently started job for this workcenter/device
+        const result = await this.pool.query`
+          select top 1
+            job
+          from
+            job_operation
+          where
+            -- work_center = 'MARUMATSU'
+            workcenter_oid = '${device.jobbossId}'
+          order by
+            actual_start desc
+        `
+        console.log(`JobBoss result`, result)
+        const job = result.recordset.length > 0 && result.recordset[0].job
+        this.cache.set(`${device.id}-job`, job)
+      }
+    }
+  }
 
   //. method doesn't exist, but is in the readme
   // mssql.on('error', err => {
