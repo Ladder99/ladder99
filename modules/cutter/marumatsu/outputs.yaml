@@ -42,7 +42,7 @@ outputs:
 
   # current job number
   - key: job
-    value <job>
+    value: <job>
 
   # # functional mode
   # # note:
