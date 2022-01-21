@@ -5,12 +5,13 @@
 import { Probe } from './dataProbe.js'
 import { Observations } from './dataObservations.js'
 // import * as tracker from './tracker.js'
+import { Feedback } from './feedback.js'
 import * as lib from './lib.js'
 
 export class AgentReader {
   //
-  // db is a Db instance
-  // endpoint is an Endpoint instance to poll agent
+  // db is a Db instance - db.js
+  // endpoint is an Endpoint instance - endpoint.js - to poll agent
   // params includes { fetchInterval, fetchCount }
   // setup is client's setup.yaml
   // called by relay.js
@@ -36,6 +37,12 @@ export class AgentReader {
     // //.. use 5s for testing, 60s for production
     // this.tracker.startTimer(60)
     // // this.tracker.startTimer(5)
+
+    // make feedback object to track data and feedback to devices as needed.
+    // used to track jobnum change to reset marumatsu counter.
+    //. this will be replaced by MTConnect Interfaces.
+    this.feedback = new Feedback(this.db)
+    this.feedback.start(5) // polling seconds
 
     // probe - get agent data structures and write to db
     probe: do {

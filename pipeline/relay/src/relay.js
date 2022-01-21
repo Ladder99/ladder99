@@ -30,7 +30,6 @@ class Relay {
     await db.start()
 
     // do migrations
-    // await db.migrate()
     await migrate(db)
 
     // read client's setup.yaml
