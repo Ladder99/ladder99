@@ -50,9 +50,10 @@ export class Metric {
   async updateBins() {
     console.log('Meter - update bins')
     const now = new Date()
-    console.log('now', now)
+    console.log('Meter - now', now)
 
     // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ... }
+    console.log(`Meter - get schedule...`)
     //. do this every 5mins or so on separate timer
     const schedule = await this.getSchedule()
 
