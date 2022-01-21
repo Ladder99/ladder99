@@ -4,7 +4,7 @@
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
-// reset topic and message
+// reset topic and message payload for mqtt
 const topic = 'l99/B01000/evt/io'
 const value = {
   unitid: 199,
@@ -28,25 +28,24 @@ export class Feedback {
 
     const that = this
 
-    // iterate over devices and find marumatsu
+    // find marumatsu device
     for (let device of this.setup.devices) {
       if (device.name === 'Cutter' || device.name === 'Marumatsu') {
-        const source = device.sources[0] // only one source for it
-
-        //. get mqtt connection to the device
+        const source = device.sources[0] // only one source for it, mqtt
 
         //. use source.connection.host etc
         const url = `mqtt://${source.host}:${source.port}`
+
         // connect to mqtt broker/server
         console.log(`Feedback - connecting to broker on ${url}...`)
         const mqtt = libmqtt.connect(url)
 
         // handle connection
         mqtt.on('connect', function onConnect() {
-          console.log(`Feedback connected to broker on ${url}`)
+          console.log(`Feedback - connected to broker on ${url}`)
 
           // save connection
-          this.mqtt = mqtt
+          that.mqtt = mqtt
 
           // poll the device and setup a timer to repeat it
           that.poll()
