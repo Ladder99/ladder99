@@ -1,29 +1,66 @@
 // provide feedback to devices
 
-//. will be replaced by MTConnect Interfaces
+//. this will all be replaced by MTConnect Interfaces
+
+import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
+
+// reset topic and message
+const topic = 'l99/B01000/evt/io'
+const value = {
+  unitid: 199,
+  fc: 6,
+  address: 142,
+  quantity: 1,
+  value: 5392,
+}
+const payload = { a5: value }
 
 export class Feedback {
   constructor(db, setup) {
     this.db = db
     this.setup = setup
     this.timer = null
-    this.devices = []
+    this.mqtt = null
   }
 
   start(interval) {
-    console.log('Relay Feedback - start')
-    this.poll()
-    // this.timer = setInterval(this.poll.bind(this), interval * 1000)
-    // this.interval = interval // save for later
+    console.log('Feedback - start')
+
+    const that = this
+
+    // iterate over devices and find marumatsu
+    for (let device of this.setup.devices) {
+      if (device.name === 'Cutter' || device.name === 'Marumatsu') {
+        const source = device.sources[0] // only one source for it
+
+        //. get mqtt connection to the device
+
+        //. use source.connection.host etc
+        const url = `mqtt://${source.host}:${source.port}`
+        // connect to mqtt broker/server
+        console.log(`Feedback - connecting to broker on ${url}...`)
+        const mqtt = libmqtt.connect(url)
+
+        // handle connection
+        mqtt.on('connect', function onConnect() {
+          console.log(`Feedback connected to broker on ${url}`)
+
+          // save connection
+          this.mqtt = mqtt
+
+          // poll the device and setup a timer to repeat it
+          that.poll()
+          that.timer = setInterval(that.poll.bind(that), interval * 1000)
+        })
+      }
+    }
   }
 
   async poll() {
-    // iterate over devices
-    for (let device of this.setup.devices) {
-      // we only want to track devices marked for feedback
-      if (device.feedback) {
-        //. need direct tcp connection to the device - how do that?
-      }
+    const jobChanged = false
+    if (jobChanged) {
+      console.log(`Feedback - publishing to ${topic}...`)
+      this.mqtt.publish(topic, payload)
     }
   }
 
