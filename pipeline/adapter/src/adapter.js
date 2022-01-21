@@ -33,7 +33,7 @@ async function main() {
 
   // iterate over device definitions from setup.yaml file
   const client = setup.client || {}
-  const { devices } = setup
+  const devices = setup.devices || []
   for (const device of devices) {
     // console.log(`Device`, device) // don't print - might have passwords
     const deviceId = device.id
