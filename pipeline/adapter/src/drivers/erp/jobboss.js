@@ -230,7 +230,8 @@ export class AdapterDriver {
             job_operation
           where
             -- work_center = 'MARUMATSU'
-            workcenter_oid = '${device.jobbossId}'
+            -- workcenter_oid = '${device.jobbossId}'
+            workcenter_oid = cast('${device.jobbossId}' as uniqueidentifier)
           order by
             actual_start desc
         `
