@@ -7,8 +7,8 @@ import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/n
 import * as lib from '../../lib.js'
 
 const initialDelay = 6000 // ms
-const jobPollInterval = 5000 // ms
-const schedulePollInterval = 1 * 60 * 1000 // ms
+const jobPollInterval = 5000 // ms - ie poll for job num every 5 secs
+const schedulePollInterval = 1 * 60 * 1000 // ms - ie poll for schedule change every 1 minute
 
 export class AdapterDriver {
   constructor() {
