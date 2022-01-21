@@ -35,7 +35,7 @@ export class AdapterDriver {
     client.on('connect', () => {
       console.log(`CPC driver connected...`)
       poll()
-      // setInterval(poll, 2000) //. do this
+      setInterval(poll, 2000) //. do this
     })
 
     // receive data from device, write to cache, output shdr to agent
