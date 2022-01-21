@@ -16,7 +16,8 @@ devices:
       - module: autoclave/asc # defines inputs/outputs - see modules/autoclave/asc
         driver: autoclave/cpc # adapter driver code - see pipeline/adapter/src/drivers/autoclave - manages protocol and payload
         protocol: tcp
-        host: 10.20.30.101
+        # host: 10.20.30.101
+        host: 10.1.10.211
         port: 9999
 
     #. this should be server, not destinations - for agent to connect to
