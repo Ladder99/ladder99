@@ -3,8 +3,9 @@
 //. will be replaced by MTConnect Interfaces
 
 export class Feedback {
-  constructor(db) {
+  constructor(db, setup) {
     this.db = db
+    this.setup = setup
     this.timer = null
     this.devices = []
   }
@@ -16,7 +17,15 @@ export class Feedback {
     // this.interval = interval // save for later
   }
 
-  poll() {}
+  async poll() {
+    // iterate over devices
+    for (let device of this.setup.devices) {
+      // we only want to track devices marked for feedback
+      if (device.feedback) {
+        //. need direct tcp connection to the device - how do that?
+      }
+    }
+  }
 
   // check if a device was 'active' (ie has events on the given path),
   // between two times. returns true/false

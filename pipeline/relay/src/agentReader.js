@@ -34,7 +34,7 @@ export class AgentReader {
     // make feedback object to track data and feedback to devices as needed.
     // used to track jobnum change to reset marumatsu counter.
     //. this will be replaced by MTConnect Interfaces.
-    this.feedback = new Feedback(this.db)
+    this.feedback = new Feedback(this.db, this.setup)
     this.feedback.start(5) // polling seconds
 
     // probe - get agent data structures and write to db
