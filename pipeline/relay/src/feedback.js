@@ -51,6 +51,7 @@ export class Feedback {
   // data is a Data object from dataObservations.js
   // called by agentReader.js
   async check(data) {
+    console.log(`Feedback - check observations...`)
     const observations = data.observations || []
     // find relevant devices
     for (let device of this.setup.devices || []) {
@@ -64,8 +65,16 @@ export class Feedback {
             // check for changed observation
             for (let observation of observations) {
               if (observation.dataItemId === feedback.monitor) {
-                if (observation.value !== source.lastValue) {
-                  console.log(`Feedback - publishing to ${feedback.topic}...`)
+                if (
+                  source.lastValue &&
+                  observation.value !== source.lastValue
+                ) {
+                  console.log(
+                    `Feedback - ${observation.dataItemId} changed from ${source.lastValue} to ${observation.value}...`
+                  )
+                  console.log(
+                    `Feedback - publishing to ${feedback.topic}: ${feedback.payload}...`
+                  )
                   source.mqtt.publish(feedback.topic, feedback.payload)
                   source.lastValue = observation.value
                 }
