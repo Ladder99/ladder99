@@ -75,7 +75,8 @@ export class Feedback {
                   console.log(
                     `Feedback - publishing to ${feedback.topic}: ${feedback.payload}...`
                   )
-                  source.mqtt.publish(feedback.topic, feedback.payload)
+                  //... turn this on once all looks okay
+                  // source.mqtt.publish(feedback.topic, feedback.payload)
                   source.lastValue = observation.value
                 }
               }
