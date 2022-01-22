@@ -208,6 +208,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       # note: have to `sudo chown pi:pi volumes/nodered/data` for nodered to work
+      #. better way?
       - ../$SETUP/volumes/nodered/data:/data:rw
       # - ../$SETUP/volumes/ftpd/data:/volumes/ftpd-data:rw
     logging:
