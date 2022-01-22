@@ -3,7 +3,7 @@
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
-import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
+// import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../lib.js'
 
@@ -76,6 +76,7 @@ export class AdapterDriver {
 
       // unpack the mqtt json payload, assuming it's a JSON string -
       // if not, just pass as string to handler.
+      //. this prints a big error message if try fails - do better
       let payload
       try {
         payload = JSON.parse(message)
