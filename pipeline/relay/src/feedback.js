@@ -66,7 +66,7 @@ export class Feedback {
               if (observation.dataItemId === feedback.monitor) {
                 if (observation.value !== source.lastValue) {
                   console.log(`Feedback - publishing to ${feedback.topic}...`)
-                  this.mqtt.publish(feedback.topic, feedback.payload)
+                  source.mqtt.publish(feedback.topic, feedback.payload)
                   source.lastValue = observation.value
                 }
               }
