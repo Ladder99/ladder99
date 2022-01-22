@@ -63,6 +63,7 @@ export class Feedback {
           //. hardcode as mqtt for now
           if (source.mqtt) {
             // check for changed observation
+            console.log(`Feedback - looking for changes in ${feedback.monitor}`)
             for (let observation of observations) {
               if (observation.dataItemId === feedback.monitor) {
                 if (
