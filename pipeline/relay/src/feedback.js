@@ -48,7 +48,10 @@ export class Feedback {
   //   timestamp: '2021-09-14T17:53:21.414Z',
   //   value: 'AVAILABLE'
   // }, ...]
-  async check(observations) {
+  // data is a Data object from dataObservations.js
+  // called by agentReader.js
+  async check(data) {
+    const observations = data.observations || []
     // find relevant devices
     for (let device of this.setup.devices || []) {
       // find relevant sources
