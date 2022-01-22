@@ -93,6 +93,8 @@ export class AdapterDriver {
 
         // eg msgTopic => 'l99/ccs/evt/query'
         if (topic === msgTopic) {
+          console.log(`MQTT handle topic ${topic}`)
+
           // unsubscribe from topics as needed
           for (const entry of handler.unsubscribe || []) {
             const topic = replaceDeviceId(entry.topic)
@@ -110,12 +112,13 @@ export class AdapterDriver {
 
           //. call this iterate_expressions
           if (handler.process === 'iterate_inputs') {
+            console.log(`MQTT handle iterate_inputs`)
             //
             // define lookup function
             // eg lookup: '($, js) => eval(js)'
             //. do this before-hand somewhere and store as handler.lookupFn,
             // to save eval time.
-            console.log(`MQTT define lookup`, handler.lookup.toString())
+            console.log(`MQTT define lookup fn`, handler.lookup.toString())
             const lookup = eval(handler.lookup)
 
             // iterate over expressions - an array of [key, expression],
@@ -127,6 +130,7 @@ export class AdapterDriver {
             const pairs = Object.entries(handler.expressions || {})
             for (const [key, expression] of pairs) {
               // use the lookup function to get value from payload, if there
+              console.log(`MQTT lookup ${expression} for ${key}`)
               const value = lookup($, expression)
               // note guard for undefined value -
               // if need to reset a cache value, must pass value 'UNAVAILABLE' explicitly.
