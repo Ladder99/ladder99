@@ -1,8 +1,10 @@
+// check schedule info from jobboss db
+
 const pollInterval = 1 * 60 * 1000 // ms - ie poll for schedule change every 1 minute
+const cookiePath = '/data/adapter/jobboss/schedule.json'
 
 export class Schedule {
-  // start polling
-  // will check jobboss schedule info for each device in devices
+  // will check jobboss for schedule for each device in devices
   async start({ cache, pool, devices, client }) {
     this.cache = cache
     this.pool = pool
