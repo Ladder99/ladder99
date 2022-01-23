@@ -5,6 +5,7 @@
 // when adapter.js is run, it expects config in /data/setup and /data/models.
 // /data/setup includes setup.yaml, which includes a list of devices to setup.
 
+import fs from 'fs' // node lib for file operations
 import net from 'net' // node lib for tcp
 // import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 import * as lib from './lib.js'
@@ -57,10 +58,7 @@ async function main() {
         const { module, driver, protocol, host, port, connection } = source
 
         // import driver plugin
-        const pathDriver = `${driversFolder}/${driver}.js` // eg './drivers/mqtt-json.js'
-        console.log(`Importing driver code: ${pathDriver}...`)
-        const { AdapterDriver } = await import(pathDriver)
-        const plugin = new AdapterDriver()
+        const plugin = await getPlugin(driversFolder, driver)
 
         // get input handlers
         // these are interpreted by the driver
@@ -277,4 +275,16 @@ function getValueFn(deviceId, code = '', types = {}) {
   }
   //. sort/uniquify dependsOn array
   return { value, dependsOn }
+}
+
+// load the plugin specified by the drivers folder and driver name.
+// the driver can be at eg ./drivers/foo.js or ./drivers/foo/index.js.
+async function getPlugin(driversFolder, driver) {
+  const path1 = `${driversFolder}/${driver}.js`
+  const path2 = `${driversFolder}/${driver}/index.js`
+  const path = fs.existsSync(path1) ? path1 : path2
+  console.log(`Importing driver code: ${path}...`)
+  const { AdapterDriver } = await import(path) // load the code
+  const plugin = new AdapterDriver() // instantiate the driver
+  return plugin
 }

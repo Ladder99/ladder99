@@ -4,7 +4,7 @@
 // https://docs.google.com/spreadsheets/d/13RzXxUNby6-jIO4JUjKVCNG7ALc__HDkBhcnNfyK5-s/edit?usp=sharing
 
 import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/node-mssql
-import * as lib from '../../lib.js'
+import * as lib from '../../../lib.js'
 
 const initialDelay = 6000 // ms
 const jobPollInterval = 5000 // ms - ie poll for job num every 5 secs
@@ -96,6 +96,8 @@ export class AdapterDriver {
         const schedule = await this.getSchedule(device, datetime) // get { start, stop }
         console.log('JobBoss schedule', schedule)
         // write start/stop times to cache for this device
+        // eg start is a STRING like '2022-01-23T05:00:00' with NO Z!
+        // that way, it will be interpreted by new Date(start) as a local time.
         this.cache.set(`${device.id}-start`, schedule.start)
         this.cache.set(`${device.id}-complete`, schedule.stop)
       }
@@ -103,19 +105,21 @@ export class AdapterDriver {
   }
 
   // get workcenter schedule for given device and datetime.
-  // returns as { start, stop } times, both strings like '05:00:00', or nulls.
+  // returns as { start, stop } times, which can be strings like
+  // '2022-01-23 05:00:00' (with no Z! it's local time), or null
+  // (eg Sunday), or 'HOLIDAY'.
   async getSchedule(device, datetime) {
     console.log(`JobBoss - getSchedule for`, device.name, datetime)
 
     const workcenter = device.jobbossId // eg '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' for Marumatsu
     const sequence = datetime.getDay() // day of week with 0=sunday, 1=monday. this works even if Z time is next day.
-    const date = getDateFromDateTime(datetime) // eg '2022-01-18' - works even if Z time is next day.
+    const dateString = getLocalDateFromDateTime(datetime) // eg '2022-01-18' - works even if Z time is next day.
 
     // lookup workcenter and date in wc shift override table
     const result1 = await this.pool.query`
       select Shift_ID, Is_Work_Day 
       from WCShift_Override
-      where WorkCenter_OID=${workcenter} and cast(Date as date)=${date}
+      where WorkCenter_OID=${workcenter} and cast(Date as date)=${dateString}
     `
     console.log(result1)
 
@@ -123,6 +127,7 @@ export class AdapterDriver {
     let stop = null
 
     if (result1.recordset.length === 0) {
+      //
       console.log(`JobBoss - no override record, so get standard schedule...`)
       // if no record then lookup workcenter in WCShift_Standard
       //   get shift_id, look that up with sequencenum in shift_day table for start/end
@@ -139,6 +144,7 @@ export class AdapterDriver {
         stop = result2.recordset[0].stop // eg 1970-01-01T13:30:00Z
       }
     } else if (result1.recordset[0].Is_Work_Day) {
+      //
       console.log(`JobBoss - work day override - get schedule...`)
       // if isworkday then lookup hours in shift_day table -
       //   get shift_id, lookup in shift_day table with dayofweek for sequencenum
@@ -147,14 +153,16 @@ export class AdapterDriver {
         select cast(Start_Time as time) start, cast(End_Time as time) stop
         from WCShift_Override wso
           join Shift_Day sd on wso.Shift_ID = sd.Shift
-        where WorkCenter_OID=${workcenter} and Date=${date} and Sequence=${sequence}
+        where WorkCenter_OID=${workcenter} 
+          and Date=${dateString} and Sequence=${sequence}
       `
       console.log(result3)
       if (result3.recordset.length > 0) {
-        start = result3.recordset[0].start
+        start = result3.recordset[0].start // eg 1970-01-01T05:00:00Z - note the Z
         stop = result3.recordset[0].stop
       }
     } else {
+      //
       // if isworkday=0 then not a workday - might have 2 records, one for each shift
       //   for now just say the whole day is a holiday - no start/end times
       //. does that mean don't write anything? or unavail? or holiday?
@@ -165,22 +173,24 @@ export class AdapterDriver {
 
     // these all use local time, not Z time
     if (start && typeof start === 'object') {
-      start = new Date(
-        date + 'T' + start.toISOString().split('T')[1].replace('Z', '')
-      )
-      start.setFullYear(datetime.getFullYear())
-      start.setMonth(datetime.getMonth())
-      start.setDate(datetime.getDate())
-      start = start.toISOString()
+      // start = new Date(
+      //   date + 'T' + start.toISOString().split('T')[1].replace('Z', '')
+      // )
+      // start.setFullYear(datetime.getFullYear())
+      // start.setMonth(datetime.getMonth())
+      // start.setDate(datetime.getDate())
+      // start = start.toISOString().replace('Z', '')
+      start = getTimeAsLocalDateTimeString(start, datetime, dateString)
     }
     if (stop && typeof stop === 'object') {
-      stop = new Date(
-        date + 'T' + stop.toISOString().split('T')[1].replace('Z', '')
-      )
-      stop.setFullYear(datetime.getFullYear())
-      stop.setMonth(datetime.getMonth())
-      stop.setDate(datetime.getDate())
-      stop = stop.toISOString()
+      // stop = new Date(
+      //   dateString + 'T' + stop.toISOString().split('T')[1].replace('Z', '')
+      // )
+      // stop.setFullYear(datetime.getFullYear())
+      // stop.setMonth(datetime.getMonth())
+      // stop.setDate(datetime.getDate())
+      // stop = stop.toISOString().replace('Z', '')
+      stop = getTimeAsLocalDateTimeString(stop, datetime, dateString)
     }
     return { start, stop }
   }
@@ -262,9 +272,26 @@ export class AdapterDriver {
 // get a date string from a datetime value,
 // eg 2022-01-18T14:24:00 -> '2022-01-18'
 // accounts for timezone offset, which is in minutes
-function getDateFromDateTime(dt) {
+function getLocalDateFromDateTime(dt) {
   const date = new Date(dt.getTime() - dt.getTimezoneOffset() * 60 * 1000)
     .toISOString()
     .split('T')[0]
   return date
+}
+
+// given a time like 1970-01-01T05:00:00Z from jobboss,
+// and a datetime like 2022-01-23T12:13:09Z,
+// return a string like '2022-01-23T05:00:00' with NO Z!
+// ie assign the date of the datetime value to the time value.
+function getTimeAsLocalDateTimeString(time, datetime, dateString) {
+  // const date = getLocalDateFromDateTime(datetime)
+  const local = new Date(
+    dateString + 'T' + time.toISOString().split('T')[1].replace('Z', '')
+  )
+  //. why do we need this?
+  local.setFullYear(datetime.getFullYear())
+  local.setMonth(datetime.getMonth())
+  local.setDate(datetime.getDate())
+  const s = local.toISOString().replace('Z', '')
+  return s
 }
