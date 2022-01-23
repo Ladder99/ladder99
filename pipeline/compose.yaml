@@ -24,6 +24,7 @@ services:
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml etc
       - ../modules:/data/modules # has module yamls
+      - ../$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
     restart: always
     networks:
       - ladder99
