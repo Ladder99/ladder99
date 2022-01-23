@@ -18,6 +18,7 @@ async function start() {
   // read client's setup.yaml
   console.log(`Meter - reading client setup yaml...`)
   const setup = lib.readSetup()
+  const client = setup.client || {}
 
   // iterate over devices, check what metrics they want, if any,
   // load those metric plugins, start them up - let them poll db as needed etc.
@@ -34,7 +35,7 @@ async function start() {
 
       // start it
       console.log(`Meter - starting ${device.name} ${metric.name}...`)
-      plugin.start({ db, device, metric })
+      plugin.start({ client, db, device, metric })
     }
   }
 }
