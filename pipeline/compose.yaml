@@ -195,7 +195,8 @@ services:
   # nodered - a visual programming environment
   nodered:
     container_name: nodered
-    image: nodered/node-red:latest
+    # image: nodered/node-red:latest
+    image: nodered/node-red:2.1.6
     profiles:
       - all
       - nodered
@@ -207,7 +208,9 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-      # note: have to `sudo chown pi:pi volumes/nodered/data` for nodered to work
+      # note: have to `sudo chown pi:pi volumes/nodered/data` manually
+      # for nodered to work. if don't, nodered will keep resetting and sending
+      # messages over and over, flooding the mqtt adapter.
       #. better way?
       - ../$SETUP/volumes/nodered/data:/data:rw
       # - ../$SETUP/volumes/ftpd/data:/volumes/ftpd-data:rw
