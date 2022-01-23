@@ -1,5 +1,7 @@
 // check schedule info from jobboss db
 
+import fs from 'fs' // node lib for filesys
+
 const pollInterval = 1 * 60 * 1000 // ms - ie poll for schedule change every 1 minute
 const cookiePath = '/data/adapter/jobboss/schedule.json'
 
@@ -11,16 +13,48 @@ export class Schedule {
     this.devices = devices
     this.client = client
 
-    // await this.backfillSchedule()
+    await this.backfill() // backfill from last written value to today
     await this.poll() // do initial poll
     setInterval(this.poll.bind(this), pollInterval) // start poll timer
+  }
+
+  async backfill() {
+    console.log(`JobBoss backfilling any missed dates...`)
+    // const today = getToday()
+    // console.log(today)
+    // read cookie file, if any
+    //. need trycatch? or die with error msg?
+    let s = String(fs.readFileSync(cookiePath))
+    console.log(s)
+    let json = JSON.parse(s)
+    console.log(json)
+    // loop over devices from setup.yaml
+    for (let device of this.devices) {
+      // just want those with a jobboss id (workcenter uuid)
+      if (device.jobbossId) {
+        // // get last day scheduled for this device
+        // const lastDay = await getLastDay(device)
+        //. get from cookie file
+        console.log(device.name)
+        const foo = json[device.name]
+        console.log(foo)
+        console.log(foo.lastRead)
+
+        // // lookup missing days and set values
+        // for (let day = lastDay; day < today; day++) {
+        //   const times = await getTimes(device, day) // { start, stop }
+        //   this.cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
+        //   this.cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
+        // }
+      }
+    }
   }
 
   // poll the jobboss schedule information for current day,
   // and write to the cache
   async poll() {
     // const datetime = new Date() // now
-    // since the server is set to GMT time, need to 'trick' it to thinking it's 6 hrs earlier
+    // since the server is set to Z/GMT time, need to 'trick' it to thinking it's 6 hrs earlier
     const datetime = new Date(
       new Date().getTime() +
         (this.client.timezoneOffsetHrs || 0) * 60 * 60 * 1000
@@ -112,57 +146,16 @@ export class Schedule {
       stop = 'HOLIDAY'
     }
 
-    // these all use local time, not Z time
+    // get start and stop as local datetime strings, eg '2022-01-23 05:00:00'
+    // with NO Z!
     if (start && typeof start === 'object') {
-      // start = new Date(
-      //   date + 'T' + start.toISOString().split('T')[1].replace('Z', '')
-      // )
-      // start.setFullYear(datetime.getFullYear())
-      // start.setMonth(datetime.getMonth())
-      // start.setDate(datetime.getDate())
-      // start = start.toISOString().replace('Z', '')
       start = getTimeAsLocalDateTimeString(start, datetime, dateString)
     }
     if (stop && typeof stop === 'object') {
-      // stop = new Date(
-      //   dateString + 'T' + stop.toISOString().split('T')[1].replace('Z', '')
-      // )
-      // stop.setFullYear(datetime.getFullYear())
-      // stop.setMonth(datetime.getMonth())
-      // stop.setDate(datetime.getDate())
-      // stop = stop.toISOString().replace('Z', '')
       stop = getTimeAsLocalDateTimeString(stop, datetime, dateString)
     }
     return { start, stop }
   }
-
-  // async backfillSchedule() {
-  //   console.log(`JobBoss backfilling any missed dates...`)
-  //   const today = getToday()
-  //   console.log(today)
-  //   // loop over devices from setup.yaml
-  //   for (let device of devices) {
-  //     // just want those with a jobboss id (workcenter uuid)
-  //     if (device.jobbossId) {
-  //       // get last day scheduled for this device
-  //       const lastDay = await getLastDay(device)
-  //       // lookup missing days and set values
-  //       for (let day = lastDay; day < today; day++) {
-  //         const times = await getTimes(device, day) // { start, stop }
-  //         // cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
-  //         // cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
-  //         cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
-  //         cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
-  //       }
-  //     }
-  //   }
-  // }
-
-  // //. get last day written to our pg db
-  // // how do we get that?
-  // async getLastDay(device) {
-  //   // return new Date()
-  // }
 }
 
 // get a date string from a datetime value,
@@ -179,8 +172,8 @@ function getLocalDateFromDateTime(dt) {
 // and a datetime like 2022-01-23T12:13:09Z,
 // return a string like '2022-01-23T05:00:00' with NO Z!
 // ie assign the date of the datetime value to the time value.
+//. better way?
 function getTimeAsLocalDateTimeString(time, datetime, dateString) {
-  // const date = getLocalDateFromDateTime(datetime)
   const local = new Date(
     dateString + 'T' + time.toISOString().split('T')[1].replace('Z', '')
   )

@@ -1,5 +1,7 @@
 // check jobnum from jobboss db
 
+// import fs from 'fs' // node lib for filesys
+
 const pollInterval = 5000 // ms - ie poll for job num every 5 secs
 
 const cookiePath = '/data/adapter/jobboss/jobs.json'
@@ -11,18 +13,29 @@ export class Jobs {
     this.pool = pool
     this.devices = devices
 
-    await this.backfill()
+    // await this.backfill()
     await this.poll() // do initial poll
     setInterval(this.poll.bind(this), pollInterval) // start poll timer
   }
 
-  async backfill() {
-    console.log(`JobBoss - backfill job info...`)
-    // how do we know how much to backfill?
-    //. need a little cookie to store where we left off, if anywhere,
-    // can set it manually to some start date, eg 2021-11-01
-    //. read the cookie
-  }
+  // backfilling jobnum from adapter won't work, as we'd lose the starttimes
+  // unless....
+  // could do so with cache.set(dataitem, value, __datetime__)?
+  // ie specify the datetime in the shdr, which normally is just the current datetime.
+  // that info is included by the agent current/sample values, eg
+  // <Job dataItemId="j-job" name="job" sequence="19" timestamp="2022-01-20T08:31:22.222968Z">UNAVAILABLE</Job>
+  // so relay could pick that up and write the jobnum with the appropriate timestamp.
+
+  // so try that, though do last of the backfill operations as less important
+
+  // async backfill() {
+  //   console.log(`JobBoss - backfill job info...`)
+  //   // how do we know how much to backfill?
+  //   // need a little cookie to store where we left off, if anywhere,
+  //   // can set it manually to some start date, eg 2021-11-01
+  //   const json = fs.readFileSync(cookiePath)
+  //   console.log(json)
+  // }
 
   async poll() {
     console.log(`JobBoss - polling for job info...`)
