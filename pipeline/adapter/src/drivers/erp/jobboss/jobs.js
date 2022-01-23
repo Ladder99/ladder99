@@ -1,19 +1,29 @@
+// check jobnum from jobboss db
+
 const pollInterval = 5000 // ms - ie poll for job num every 5 secs
 
+const cookiePath = '/data/adapter/jobboss/jobs.json'
+
 export class Jobs {
-  // start polling
   // will check jobnum for each device in devices
   async start({ cache, pool, devices }) {
     this.cache = cache
     this.pool = pool
     this.devices = devices
 
-    // await this.backfillJob()
+    await this.backfill()
     await this.poll() // do initial poll
     setInterval(this.poll.bind(this), pollInterval) // start poll timer
   }
 
-  // poll for job info
+  async backfill() {
+    console.log(`JobBoss - backfill job info...`)
+    // how do we know how much to backfill?
+    //. need a little cookie to store where we left off, if anywhere,
+    // can set it manually to some start date, eg 2021-11-01
+    //. read the cookie
+  }
+
   async poll() {
     console.log(`JobBoss - polling for job info...`)
 
