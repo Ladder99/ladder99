@@ -4,7 +4,6 @@
 // https://docs.google.com/spreadsheets/d/13RzXxUNby6-jIO4JUjKVCNG7ALc__HDkBhcnNfyK5-s/edit?usp=sharing
 
 import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/node-mssql
-// import * as lib from '../../../lib.js'
 import { Jobs } from './jobs.js'
 import { Schedule } from './schedule.js'
 
@@ -12,13 +11,6 @@ const initialDelay = 6000 // ms
 const waitForDb = 4000 // ms
 
 export class AdapterDriver {
-  // constructor() {
-  //   this.client = null
-  //   this.devices = null
-  //   this.cache = null
-  //   // this.pool = null
-  // }
-
   // note - device here is the jobboss object from setup yaml -
   // this code will iterate over all devices in setup yaml to find ones with
   // jobbossId values and check their schedules and jobnums.
@@ -35,10 +27,6 @@ export class AdapterDriver {
   }) {
     console.log(`JobBoss - initialize driver...`)
 
-    // this.client = client
-    // this.devices = devices
-    // this.cache = cache
-
     // need to wait a bit to make sure the cutter cache items are setup before
     // writing to them. they're setup via the cutter/marumatsu module.
     //. better - check they are there in a loop with delay...
@@ -47,16 +35,22 @@ export class AdapterDriver {
     // await lib.sleep(initialDelay)
     await new Promise(resolve => setTimeout(resolve, initialDelay))
 
+    connection = {
+      ...connection,
+      port: Number(connection.port), // mssql driver insists on a number here
+    }
+
     let pool
     while (!pool) {
       try {
         console.log(`JobBoss - connecting to database...`, connection.server)
-        // this.pool = await mssql.connect(connection)
-        pool = await mssql.connect({
-          ...connection,
-          port: Number(connection.port), // mssql driver insists on a number here
-        })
+        this.pool = await mssql.connect(connection)
+        // pool = await mssql.connect({
+        //   ...connection,
+        //   port: Number(connection.port), // mssql driver insists on a number here
+        // })
         console.log(`JobBoss - connected`)
+
         // this.setAvailable()
 
         // start the polls
