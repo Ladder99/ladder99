@@ -13,42 +13,45 @@ export class Schedule {
     this.devices = devices
     this.client = client
 
-    await this.backfill() // backfill from last written value to today
+    // await this.backfill() // backfill from last written value to today
     await this.poll() // do initial poll
     setInterval(this.poll.bind(this), pollInterval) // start poll timer
   }
 
-  async backfill() {
-    console.log(`JobBoss backfilling any missed dates...`)
-    // const today = getToday()
-    // console.log(today)
-    // read cookie file, if any
-    //. need trycatch? or die with error msg?
-    let s = String(fs.readFileSync(cookiePath))
-    console.log(s)
-    let json = JSON.parse(s)
-    console.log(json)
-    // loop over devices from setup.yaml
-    for (let device of this.devices) {
-      // just want those with a jobboss id (workcenter uuid)
-      if (device.jobbossId) {
-        // // get last day scheduled for this device
-        // const lastDay = await getLastDay(device)
-        //. get from cookie file
-        console.log(device.name)
-        const foo = json[device.name]
-        console.log(foo)
-        console.log(foo.lastRead)
+  // async backfill() {
+  //   console.log(`JobBoss backfilling any missed dates...`)
+  //   const dt = new Date()
 
-        // // lookup missing days and set values
-        // for (let day = lastDay; day < today; day++) {
-        //   const times = await getTimes(device, day) // { start, stop }
-        //   this.cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
-        //   this.cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
-        // }
-      }
-    }
-  }
+  //   // const today = getToday()
+  //   // console.log(today)
+  //   // read cookie file, if any
+  //   //. need trycatch? or die with error msg? ie should we enforce its existence?
+  //   // or if no file, don't backfill?
+  //   let s = String(fs.readFileSync(cookiePath))
+  //   console.log(s)
+  //   let json = JSON.parse(s)
+  //   console.log(json)
+  //   // loop over devices from setup.yaml
+  //   for (let device of this.devices) {
+  //     // just want those with a jobboss id (workcenter uuid)
+  //     if (device.jobbossId) {
+  //       // // get last day scheduled for this device
+  //       // const lastDay = await getLastDay(device)
+  //       //. get from cookie file
+  //       console.log(device.name)
+  //       const foo = json[device.name]
+  //       console.log(foo)
+  //       console.log(foo.lastRead)
+
+  //       // // lookup missing days and set values
+  //       // for (let day = lastDay; day < today; day++) {
+  //       //   const schedule = await this.getSchedule(device, datetime) // get { start, stop }
+  //       //   this.cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
+  //       //   this.cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
+  //       // }
+  //     }
+  //   }
+  // }
 
   // poll the jobboss schedule information for current day,
   // and write to the cache
@@ -61,13 +64,6 @@ export class Schedule {
     )
     for (let device of this.devices) {
       if (device.jobbossId) {
-        // //. test getschedule fn for set of days
-        // for (let day = 1; day <= 19; day++) {
-        //   const datetime = new Date()
-        //   datetime.setDate(day)
-        //   const schedule = await this.getSchedule(device, datetime) // get { start, stop }
-        //   console.log('JobBoss schedule', schedule)
-        // }
         const schedule = await this.getSchedule(device, datetime) // get { start, stop }
         console.log('JobBoss schedule', schedule)
         // write start/stop times to cache for this device
