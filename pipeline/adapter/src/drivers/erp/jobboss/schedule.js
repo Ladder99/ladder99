@@ -8,6 +8,7 @@ const cookiePath = '/data/adapter/jobboss/schedule.json'
 export class Schedule {
   // will check jobboss for schedule for each device in devices
   async start({ cache, pool, devices, client }) {
+    console.log(`Jobboss schedule - start`)
     this.cache = cache
     this.pool = pool
     this.devices = devices
@@ -56,6 +57,7 @@ export class Schedule {
   // poll the jobboss schedule information for current day,
   // and write to the cache
   async poll() {
+    console.log(`Jobboss schedule poll`)
     // since the server is set to Z/GMT time, need to 'trick' it to thinking it's 6 hrs earlier
     const datetime = new Date(
       new Date().getTime() +

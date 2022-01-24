@@ -19,22 +19,23 @@ export class Metric {
     this.device = device
     this.metric = metric
 
-    // repeat until device has been added to db
     console.log(`Meter - get device node_id...`)
-    this.device.node_id = await this.getDeviceId()
+    this.device.node_id = await this.getDeviceId() // repeats until device is there
     console.log(this.device)
 
-    console.log(`Meter - update bins...`)
-    await this.updateBins()
+    // get polling interval - either from metric in setup yaml or default value
+    this.interval = metric.interval || metricInterval // seconds
 
-    // start the timer which calls updateBins every n seconds -
+    // check the db, then start the timer that checks it every n seconds -
     // it will increment bins as needed.
-    // eg a partcount event indicates device was active during that minute.
+    console.log(`Meter - update bins...`)
+    await this.updateBins() // update bins
     console.log(`Meter - start updateBins timer...`)
-    this.interval = metric.interval || metricInterval
-    this.timer = setInterval(this.updateBins.bind(this), this.interval * 1000) // ms
+    this.timer = setInterval(this.updateBins.bind(this), this.interval * 1000) // poll db
   }
 
+  // get device node_id associated with a device name.
+  // waits until it's there, in case this is run during setup.
   async getDeviceId() {
     let result
     while (true) {
@@ -61,7 +62,7 @@ export class Metric {
     // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ... }
     console.log(`Meter - get schedule...`)
 
-    //. do this every 5mins or so on separate timer
+    //. do this every 5mins or so on separate timer, save to this ?
     const schedule = await this.getSchedule()
 
     // check if we're within scheduled time
