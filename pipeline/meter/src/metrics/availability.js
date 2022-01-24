@@ -60,6 +60,7 @@ export class Metric {
 
     // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ... }
     console.log(`Meter - get schedule...`)
+
     //. do this every 5mins or so on separate timer
     const schedule = await this.getSchedule()
 
@@ -67,7 +68,7 @@ export class Metric {
     const scheduled = now >= schedule.start && now <= schedule.stop
     if (scheduled) {
       console.log(`Meter - in scheduled time window - check if active...`)
-      // if so, check for events in previous n secs
+      // if so, check for events in previous n secs, eg 60
       const start = new Date(now.getTime() - this.interval * 1000)
       const stop = now
       const deviceWasActive = await this.getActive(start, stop)
@@ -84,18 +85,28 @@ export class Metric {
     }
   }
 
-  // query db for start and stop datetime dataitems
+  // query db for start and stop datetime dataitems.
+  // converts the timestrings to local time for the client.
+  //. will want to pass an optional datetime for the date to search for.
   async getSchedule() {
     const table = 'history_text'
     const device = this.device
+    const client = this.client
     const { startPath, stopPath } = this.metric
     // note: these can return 'UNAVAILABLE' or 'HOLIDAY', in which case,
     // schedule.start etc will be 'Invalid Date'.
     // any comparison with those will yield false.
     const start = await this.db.getLatestValue(table, device, startPath)
     const stop = await this.db.getLatestValue(table, device, stopPath)
-    //. shift these by client timezoneOffsetHrs? need them for comparisons so...
-    const schedule = { start: new Date(start), stop: new Date(stop) }
+    // shift these by client timezoneOffsetHrs, as need them for comparisons
+    const schedule = {
+      start: new Date(
+        new Date(start).getTime() + client.timezoneOffsetHrs * 60 * 60 * 1000
+      ),
+      stop: new Date(
+        new Date(stop).getTime() + client.timezoneOffsetHrs * 60 * 60 * 1000
+      ),
+    }
     console.log('schedule', schedule)
     return schedule
   }
