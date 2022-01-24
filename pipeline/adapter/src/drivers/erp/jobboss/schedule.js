@@ -157,9 +157,8 @@ export class Schedule {
 // eg 2022-01-18T14:24:00 -> '2022-01-18'
 // accounts for timezone offset, which is in minutes
 function getLocalDateFromDateTime(dt) {
-  const date = new Date(dt.getTime() - dt.getTimezoneOffset() * 60 * 1000)
-    .toISOString()
-    .split('T')[0]
+  const tz = dt.getTimezoneOffset() * 60 * 1000
+  const date = new Date(dt.getTime() - tz).toISOString().split('T')[0]
   return date
 }
 
@@ -168,10 +167,10 @@ function getLocalDateFromDateTime(dt) {
 // return a string like '2022-01-23T05:00:00' with NO Z!
 // ie assign the date of the datetime value to the time value.
 function getTimeAsLocalDateTimeString(time, datetime, dateString) {
-  const local = new Date(
-    dateString + 'T' + time.toISOString().split('T')[1].replace('Z', '')
-  )
+  const timeString = time.toISOString().split('T')[1].replace('Z', '') // eg '05:00:00'
+  const local = new Date(dateString + 'T' + timeString) //. eg
   // now set the date portion to the given datetime's date
+  //. didn't we already do this above?
   local.setFullYear(datetime.getFullYear())
   local.setMonth(datetime.getMonth())
   local.setDate(datetime.getDate())
