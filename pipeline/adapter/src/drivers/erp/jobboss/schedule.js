@@ -56,7 +56,6 @@ export class Schedule {
   // poll the jobboss schedule information for current day,
   // and write to the cache
   async poll() {
-    // const datetime = new Date() // now
     // since the server is set to Z/GMT time, need to 'trick' it to thinking it's 6 hrs earlier
     const datetime = new Date(
       new Date().getTime() +
@@ -66,7 +65,7 @@ export class Schedule {
       if (device.jobbossId) {
         const schedule = await this.getSchedule(device, datetime) // get { start, stop }
         console.log('JobBoss schedule', schedule)
-        // write start/stop times to cache for this device
+        // write start/stop times to cache for this device -
         // eg start is a STRING like '2022-01-23T05:00:00' with NO Z!
         // that way, it will be interpreted by new Date(start) as a local time.
         this.cache.set(`${device.id}-start`, schedule.start)
@@ -168,15 +167,14 @@ function getLocalDateFromDateTime(dt) {
 // and a datetime like 2022-01-23T12:13:09Z,
 // return a string like '2022-01-23T05:00:00' with NO Z!
 // ie assign the date of the datetime value to the time value.
-//. better way?
 function getTimeAsLocalDateTimeString(time, datetime, dateString) {
   const local = new Date(
     dateString + 'T' + time.toISOString().split('T')[1].replace('Z', '')
   )
-  //. why do we need this?
+  // now set the date portion to the given datetime's date
   local.setFullYear(datetime.getFullYear())
   local.setMonth(datetime.getMonth())
   local.setDate(datetime.getDate())
-  const s = local.toISOString().replace('Z', '')
+  const s = local.toISOString().replace('Z', '') // ditch the Z so it's local time
   return s
 }
