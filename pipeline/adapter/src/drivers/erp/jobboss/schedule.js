@@ -3,7 +3,7 @@
 import fs from 'fs' // node lib for filesys
 
 const pollInterval = 1 * 60 * 1000 // ms - ie poll for schedule change every 1 minute
-const cookiePath = '/data/adapter/jobboss/schedule.json'
+const cookiePath = '/data/adapter/cookies/jobboss/schedule.json'
 
 export class Schedule {
   // will check jobboss for schedule for each device in devices

@@ -4,7 +4,7 @@
 
 const pollInterval = 5000 // ms - ie poll for job num every 5 secs
 
-const cookiePath = '/data/adapter/jobboss/jobs.json'
+const cookiePath = '/data/adapter/cookies/jobboss/jobs.json'
 
 export class Jobs {
   // will check jobnum for each device in devices
