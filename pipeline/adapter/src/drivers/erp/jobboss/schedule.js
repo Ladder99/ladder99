@@ -13,45 +13,45 @@ export class Schedule {
     this.devices = devices
     this.client = client
 
-    // await this.backfill() // backfill from last written value to today
+    await this.backfill() // backfill from last written value to today
     await this.poll() // do initial poll
     setInterval(this.poll.bind(this), pollInterval) // start poll timer
   }
 
-  // async backfill() {
-  //   console.log(`JobBoss backfilling any missed dates...`)
-  //   const dt = new Date()
+  async backfill() {
+    console.log(`JobBoss backfilling any missed dates...`)
+    const dt = new Date()
 
-  //   // const today = getToday()
-  //   // console.log(today)
-  //   // read cookie file, if any
-  //   //. need trycatch? or die with error msg? ie should we enforce its existence?
-  //   // or if no file, don't backfill?
-  //   let s = String(fs.readFileSync(cookiePath))
-  //   console.log(s)
-  //   let json = JSON.parse(s)
-  //   console.log(json)
-  //   // loop over devices from setup.yaml
-  //   for (let device of this.devices) {
-  //     // just want those with a jobboss id (workcenter uuid)
-  //     if (device.jobbossId) {
-  //       // // get last day scheduled for this device
-  //       // const lastDay = await getLastDay(device)
-  //       //. get from cookie file
-  //       console.log(device.name)
-  //       const foo = json[device.name]
-  //       console.log(foo)
-  //       console.log(foo.lastRead)
+    // const today = getToday()
+    // console.log(today)
+    // read cookie file, if any
+    //. need trycatch? or die with error msg? ie should we enforce its existence?
+    // or if no file, don't backfill?
+    let s = String(fs.readFileSync(cookiePath))
+    console.log('pokpok', s)
+    let json = JSON.parse(s)
+    console.log('pokpok', json)
+    // loop over devices from setup.yaml
+    for (let device of this.devices) {
+      // just want those with a jobboss id (workcenter uuid)
+      if (device.jobbossId) {
+        // // get last day scheduled for this device
+        // const lastDay = await getLastDay(device)
+        //. get from cookie file
+        console.log('pokpok', device.name)
+        const foo = json[device.name]
+        console.log('pokpok', foo)
+        console.log('pokpok', foo.lastRead)
 
-  //       // // lookup missing days and set values
-  //       // for (let day = lastDay; day < today; day++) {
-  //       //   const schedule = await this.getSchedule(device, datetime) // get { start, stop }
-  //       //   this.cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
-  //       //   this.cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
-  //       // }
-  //     }
-  //   }
-  // }
+        // // lookup missing days and set values
+        // for (let day = lastDay; day < today; day++) {
+        //   const schedule = await this.getSchedule(device, datetime) // get { start, stop }
+        //   this.cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
+        //   this.cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
+        // }
+      }
+    }
+  }
 
   // poll the jobboss schedule information for current day,
   // and write to the cache
