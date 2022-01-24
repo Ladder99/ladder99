@@ -32,7 +32,6 @@ export class AdapterDriver {
     //. better - check they are there in a loop with delay...
     //  ieg check cache.get('c-start') etc for existence?
     console.log(`JobBoss - waiting a bit...`)
-    // await lib.sleep(initialDelay)
     await new Promise(resolve => setTimeout(resolve, initialDelay))
 
     connection = {
@@ -44,7 +43,7 @@ export class AdapterDriver {
     while (!pool) {
       try {
         console.log(`JobBoss - connecting to database...`, connection.server)
-        this.pool = await mssql.connect(connection)
+        pool = await mssql.connect(connection)
         // pool = await mssql.connect({
         //   ...connection,
         //   port: Number(connection.port), // mssql driver insists on a number here
