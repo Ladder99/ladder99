@@ -5,7 +5,7 @@
 // when adapter.js is run, it expects config in /data/setup and /data/models.
 // /data/setup includes setup.yaml, which includes a list of devices to setup.
 
-import fs from 'fs' // node lib for file operations
+// import fs from 'fs' // node lib for file operations
 import net from 'net' // node lib for tcp
 // import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 import * as lib from './lib.js'
@@ -282,9 +282,17 @@ function getValueFn(deviceId, code = '', types = {}) {
 async function getPlugin(driversFolder, driver) {
   const path1 = `${driversFolder}/${driver}.js`
   const path2 = `${driversFolder}/${driver}/index.js`
-  const path = fs.existsSync(path1) ? path1 : path2
-  console.log(`Importing driver code: ${path}...`)
-  const { AdapterDriver } = await import(path) // load the code
+  let code
+  try {
+    console.log(`Importing driver code: ${path1}...`)
+    code = await import(path1) // load the code
+  } catch {
+    console.log(`Importing driver code: ${path2}...`)
+    code = await import(path2) // load the code
+  }
+  const { AdapterDriver } = code
   const plugin = new AdapterDriver() // instantiate the driver
   return plugin
+  // const path = fs.existsSync(path1) ? path1 : path2 // this didn't work
+  // console.log(`Importing driver code: ${path}...`)
 }
