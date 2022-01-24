@@ -50,12 +50,12 @@ export class Metric {
   // update bins - called by timer
   async updateBins() {
     console.log('Meter - update bins')
-    // const now = new Date()
+    const now = new Date()
     // shift now into server timezone (GMT) so can do comparisons properly
-    const now = new Date(
-      new Date().getTime() +
-        (this.client.timezoneOffsetHrs || 0) * 60 * 60 * 1000
-    )
+    // const now = new Date(
+    //   new Date().getTime() +
+    //     (this.client.timezoneOffsetHrs || 0) * 60 * 60 * 1000
+    // )
     console.log('Meter - now', now)
 
     // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ... }
