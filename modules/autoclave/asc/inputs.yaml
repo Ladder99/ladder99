@@ -24,8 +24,9 @@ inputs:
   - key: vessel_air_temp
     path: .Autoclave.Inputs.AIRTC\Value
 
-  # - key: message
-  #   path: .Server\ScreenAudit
+  - key: message
+    path: .Server\ScreenAudit
+    type: message
 
   # note: batching allows req-resp protocols to limit the number of
   # data items per request.

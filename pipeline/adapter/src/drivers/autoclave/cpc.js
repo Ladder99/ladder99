@@ -14,6 +14,7 @@ import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
 const typeFns = {
   undefined: value => value,
   boolean: value => value === 'True',
+  message: value => value.split('\n')[0], // just keep first line of msg
 }
 
 export class AdapterDriver {
