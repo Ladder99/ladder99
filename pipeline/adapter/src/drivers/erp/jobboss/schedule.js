@@ -5,7 +5,9 @@ import fs from 'fs' // node lib for filesys
 const minutes = 60 * 1000 // 60 ms
 const hours = 60 * minutes
 const days = 24 * hours
+
 const pollInterval = 10 * minutes // ie poll for schedule change every n minutes
+const backfillDefaultStart = 60 * days // ie look this far back for first backfill date, by default
 const cookiePath = '/data/adapter/cookies/jobboss/schedule.json'
 
 export class Schedule {
@@ -25,14 +27,14 @@ export class Schedule {
   async backfill() {
     console.log(`JobBoss - backfilling any missed dates...`)
     const now = new Date()
-    const start = now.getTime() - 60 * days
+    const defaultStart = new Date(now.getTime() - backfillDefaultStart)
 
     // read cookie file, if any
-    let json = {}
+    let cookie = {}
     try {
       console.log(`JobBoss - read cookie file...`)
       const s = String(fs.readFileSync(cookiePath))
-      let json = JSON.parse(s)
+      let cookie = JSON.parse(s)
     } catch (e) {
       console.log(`JobBoss - missing or malformed cookie file...`)
       console.log(e)
@@ -43,14 +45,24 @@ export class Schedule {
       // just want those with a jobboss id (workcenter uuid)
       if (device.jobbossId) {
         // get from cookie file
-        const { lastRead } = json[device.name] || {} // eg '2022-01-11' ?
+        const { lastRead } = cookie[device.name] || {} // eg '2022-01-11' ?
+        const start = new Date(lastRead) || defaultStart
 
-        // // lookup missing days and set values
-        // for (let day = lastDay; day < today; day++) {
-        //   const schedule = await this.getSchedule(device, datetime) // get { start, stop }
-        //   this.cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
-        //   this.cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
-        // }
+        const ndays = (now.getTime() - start.getTime()) / days
+
+        // lookup missing days and set values
+        for (let day = 0; day < ndays; day++) {
+          const datetime = new Date(start.getTime() + day)
+          const schedule = await this.getSchedule(device, datetime) // get { start, stop }
+          // this.cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
+          // this.cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
+          this.cache.set(`${device.id}-start`, schedule.start)
+          this.cache.set(`${device.id}-complete`, schedule.complete)
+        }
+
+        // update cookie file
+        cookie[device.name] = { lastRead: now.toISOString() }
+        fs.writeFileSync(cookiePath, JSON.stringify(cookie))
       }
     }
   }
