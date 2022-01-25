@@ -29,9 +29,9 @@ export class Schedule {
     //. need trycatch? or die with error msg? ie should we enforce its existence?
     // or if no file, don't backfill?
     let s = String(fs.readFileSync(cookiePath))
-    console.log('pokpok', s)
+    // console.log('pokpok', s)
     let json = JSON.parse(s)
-    console.log('pokpok', json)
+    // console.log('pokpok', json)
     // loop over devices from setup.yaml
     for (let device of this.devices) {
       // just want those with a jobboss id (workcenter uuid)
@@ -39,10 +39,11 @@ export class Schedule {
         // // get last day scheduled for this device
         // const lastDay = await getLastDay(device)
         //. get from cookie file
-        console.log('pokpok', device.name)
+        // console.log('pokpok', device.name)
         const foo = json[device.name]
-        console.log('pokpok', foo)
-        console.log('pokpok', foo.lastRead)
+        // console.log('pokpok', foo)
+        // console.log('pokpok', foo.lastRead)
+        const { lastRead } = foo
 
         // // lookup missing days and set values
         // for (let day = lastDay; day < today; day++) {
