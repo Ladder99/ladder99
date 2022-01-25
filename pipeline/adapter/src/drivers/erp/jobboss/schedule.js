@@ -26,44 +26,53 @@ export class Schedule {
 
   async backfill() {
     console.log(`JobBoss - backfilling any missed dates...`)
+
     const now = new Date()
-    const defaultStart = new Date(now.getTime() - backfillDefaultStart)
+    const defaultStart = new Date(now.getTime() - backfillDefaultStart) // eg 60d ago
 
     // read cookie file, if any
     let cookie = {}
     try {
       console.log(`JobBoss - read cookie file...`)
       const s = String(fs.readFileSync(cookiePath))
-      let cookie = JSON.parse(s)
+      cookie = JSON.parse(s)
     } catch (e) {
       console.log(`JobBoss - missing or malformed cookie file...`)
       console.log(e)
     }
+    console.log(`JobBoss cookie - `, cookie)
 
     // loop over devices from setup.yaml
     for (let device of this.devices) {
+      //
       // just want those with a jobboss id (workcenter uuid)
       if (device.jobbossId) {
-        // get from cookie file
-        const { lastRead } = cookie[device.name] || {} // eg '2022-01-11' ?
-        const start = new Date(lastRead) || defaultStart
+        //
+        // get last date from cookie file
+        const { lastRead } = cookie[device.name] || {} // eg '2022-01-11T01:21:00'
 
-        const ndays = (now.getTime() - start.getTime()) / days
+        // get start date and ndays ago
+        const start = new Date(lastRead) || defaultStart
+        const ndays = Math.floor((now.getTime() - start.getTime()) / days)
+        console.log(`JobBoss - start and ndays`, start, ndays)
 
         // lookup missing days and set values
         for (let day = 0; day < ndays; day++) {
           const datetime = new Date(start.getTime() + day)
           const schedule = await this.getSchedule(device, datetime) // get { start, stop }
-          // this.cache.set(`${device.id}-start`, '2022-01-11 03:00:00')
-          // this.cache.set(`${device.id}-complete`, '2022-01-11 15:30:00')
-          this.cache.set(`${device.id}-start`, schedule.start)
-          this.cache.set(`${device.id}-complete`, schedule.complete)
+          const date = schedule.start //. uhh, want date of the start time?
+          //. amend cache.set to take a datetime, use for shdr start
+          this.cache.set(`${device.id}-start`, schedule.start, date)
+          this.cache.set(`${device.id}-complete`, schedule.complete, date)
         }
 
-        // update cookie file
+        // update cookie
         cookie[device.name] = { lastRead: now.toISOString() }
-        fs.writeFileSync(cookiePath, JSON.stringify(cookie))
       }
+
+      // update cookie file
+      console.log(`JobBoss - update cookie file`, cookie)
+      fs.writeFileSync(cookiePath, JSON.stringify(cookie))
     }
   }
 
