@@ -64,8 +64,12 @@ export class Schedule {
           // timestring (3rd param) is optional for cache.set -
           // need it here so xml will get the value for relay to pick up,
           // so meter can filter to a record it needs.
-          this.cache.set(`${device.id}-start`, schedule.start, schedule.start)
-          this.cache.set(`${device.id}-complete`, schedule.stop, schedule.stop)
+          // bug: schedule.start/stop can be null or HOLIDAY etc - invalid timestamps!
+          // this.cache.set(`${device.id}-start`, schedule.start, schedule.start)
+          // this.cache.set(`${device.id}-complete`, schedule.stop, schedule.stop)
+          const datetimeStr = datetime.toISOString()
+          this.cache.set(`${device.id}-start`, schedule.start, datetimeStr)
+          this.cache.set(`${device.id}-complete`, schedule.stop, datetimeStr)
         }
 
         // update cookie
