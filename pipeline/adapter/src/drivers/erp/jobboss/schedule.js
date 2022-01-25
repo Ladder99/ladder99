@@ -45,14 +45,14 @@ export class Schedule {
     // loop over devices from setup.yaml
     for (let device of this.devices) {
       //
-      // just want those with a jobboss id (workcenter uuid)
+      // just want those with a jobboss id (ie workcenter object uuid)
       if (device.jobbossId) {
         //
         // get last date from cookie file
         const { lastRead } = cookie[device.name] || {} // eg '2022-01-11T01:21:00'
 
         // get start date and ndays ago
-        const start = new Date(lastRead) || defaultStart
+        const start = lastRead ? new Date(lastRead) : defaultStart
         const ndays = Math.floor((now.getTime() - start.getTime()) / days)
         console.log(`JobBoss - start and ndays`, start, ndays)
 
@@ -60,11 +60,16 @@ export class Schedule {
         for (let day = 0; day < ndays; day++) {
           const datetime = new Date(start.getTime() + day)
           const schedule = await this.getSchedule(device, datetime) // get { start, stop }
-          console.log(`JobBoss day, schedule`, day, schedule)
-          const date = schedule.start //. uhh, want date of the start time?
-          //. amend cache.set to take a datetime, use for shdr start
-          this.cache.set(`${device.id}-start`, schedule.start, date)
-          this.cache.set(`${device.id}-complete`, schedule.complete, date)
+          console.log(`JobBoss - day, datetime, sched`, day, datetime, schedule)
+          // timestring (3rd param) is optional for cache.set -
+          // need it here so xml will get the value for relay to pick up,
+          // so meter can filter to a record it needs.
+          this.cache.set(`${device.id}-start`, schedule.start, schedule.start)
+          this.cache.set(
+            `${device.id}-complete`,
+            schedule.complete,
+            schedule.complete
+          )
         }
 
         // update cookie

@@ -49,7 +49,7 @@ export class Cache {
 
   // set a key-value pair in the cache.
   // eg set('ac1-power_warning', true)
-  set(key, value) {
+  set(key, value, timestamp = null) {
     console.log('cache.set', key, String(value).slice(0, 99))
     // update the cache value
     this._map.set(key, value)
@@ -62,8 +62,8 @@ export class Cache {
       const value = getValue(this, output)
       // send shdr to agent via tcp socket if value changed
       if (value !== output.lastValue) {
-        const shdr = getShdr(this, output, value)
-        // console.log('shdr', shdr)
+        // const shdr = getShdr(this, output, value, timestamp)
+        const shdr = getShdr(output, value, timestamp) // timestamp can be null
         console.log(`shdr changed - sending to tcp - ${shdr.slice(0, 60)}...`)
         try {
           output.socket.write(shdr + '\n')
@@ -93,13 +93,8 @@ function getValue(cache, output) {
 // calculate SHDR using the given output object.
 // cache is the Cache object.
 // output has { key, category, type, representation, value, shdr, ... }.
-//. eg ____
-function getShdr(cache, output, value) {
-  const timestamp = new Date().toISOString() //. get from item
-  // const timestamp = dayjs().format()
-  // const timestamp = lightFormat(new Date(), "yyyy-MM-dd'T'HH:mm:ss") //. get from item
-  // const timestamp = formatISO9075(new Date()) // datetime but uses zulu time
-  const head = includeTimestamp ? timestamp + '|' : '|' // timestamp is optional for cppagent
+function getShdr(output, value, timestamp) {
+  const head = timestamp ? timestamp.toISOString() : '' // timestamp is optional for cppagent
   const { key, category, type, subType, representation, nativeCode } = output
   let shdr = ''
   // handle different shdr types and representations
@@ -110,23 +105,22 @@ function getShdr(cache, output, value) {
       // native_code, which needs to be included:
       // 2014-09-29T23:59:33.460470Z|message|CHG_INSRT|Change Inserts
       // From https://github.com/mtconnect/cppagent#adapter-agent-protocol-version-17 -
-      shdr = `${head}${key}|${nativeCode}|${value}`
+      shdr = `${head}|${key}|${nativeCode}|${value}`
     } else {
-      //. shouldn't this be dataitemId, not key?
-      shdr = `${head}${key}|${value}`
+      shdr = `${head}|${key}|${value}`
     }
   } else if (category === 'CONDITION') {
     //. pick these values out of the value, which should be an object
     //. also, can have >1 value for a condition - how handle?
     if (!value || value === 'UNAVAILABLE') {
-      shdr = `${head}${key}|${value}||||${value}`
+      shdr = `${head}|${key}|${value}||||${value}`
     } else {
       const level = value // eg 'WARNING' -> element 'Warning'
       const nativeCode = 'nativeCode'
       const nativeSeverity = 'nativeSeverity'
       const qualifier = 'qualifier'
       const message = value
-      shdr = `${head}${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
+      shdr = `${head}|${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
     }
   } else {
     console.warn(`warning: unknown category '${category}'`)
