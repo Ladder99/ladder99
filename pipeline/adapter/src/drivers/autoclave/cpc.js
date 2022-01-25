@@ -14,7 +14,7 @@ import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
 const typeFns = {
   undefined: value => value,
   boolean: value => value === 'True',
-  message: value => value.split('\r')[0], // just keep first line of msg
+  message: value => value.split('\t')[0], // just keep first line of msg
 }
 
 export class AdapterDriver {
@@ -38,7 +38,7 @@ export class AdapterDriver {
       console.log(`CPC driver connected...`)
       cache.set(`${deviceId}-avail`, 'AVAILABLE')
       poll()
-      setInterval(poll, 2000) //. do this
+      setInterval(poll, 2000)
     })
 
     // receive data from device, write to cache, output shdr to agent
