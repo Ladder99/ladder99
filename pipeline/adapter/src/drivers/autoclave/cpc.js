@@ -14,7 +14,7 @@ import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
 const typeFns = {
   undefined: value => value,
   boolean: value => value === 'True',
-  message: value => value.split('\t')[0], // just keep first line of msg
+  message: value => value.split('\r\n')[0], // just keep first line of msg
 }
 
 export class AdapterDriver {
@@ -44,7 +44,7 @@ export class AdapterDriver {
     // receive data from device, write to cache, output shdr to agent
     client.on('data', data => {
       const str = data.toString() // eg 'PathListGet:ReadValues:=,True,Joshau Schneider,254.280816,,0'
-      console.log(`CPC driver received ${str}...`)
+      console.log(`CPC driver received ${str.slice(0, 255)}...`)
       const [_, valuesStr] = str.split(':=')
       const values = valuesStr.split(',') // eg ['', 'True', 'Joshau Schneider', ...]
       // write values to cache, which will output shdr to agent
