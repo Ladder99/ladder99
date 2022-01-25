@@ -60,6 +60,7 @@ export class Schedule {
         for (let day = 0; day < ndays; day++) {
           const datetime = new Date(start.getTime() + day)
           const schedule = await this.getSchedule(device, datetime) // get { start, stop }
+          console.log(`JobBoss day, schedule`, day, schedule)
           const date = schedule.start //. uhh, want date of the start time?
           //. amend cache.set to take a datetime, use for shdr start
           this.cache.set(`${device.id}-start`, schedule.start, date)
