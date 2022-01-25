@@ -2,11 +2,14 @@
 
 import fs from 'fs' // node lib for filesys
 
-const pollInterval = 1 * 60 * 1000 // ms - ie poll for schedule change every 1 minute
+const minutes = 60 * 1000 // 60 ms
+const hours = 60 * minutes
+const days = 24 * hours
+const pollInterval = 10 * minutes // ie poll for schedule change every n minutes
 const cookiePath = '/data/adapter/cookies/jobboss/schedule.json'
 
 export class Schedule {
-  // will check jobboss for schedule for each device in devices
+  // check jobboss for schedule for each device in devices
   async start({ cache, pool, devices, client }) {
     console.log(`Jobboss schedule - start`)
     this.cache = cache
@@ -20,30 +23,27 @@ export class Schedule {
   }
 
   async backfill() {
-    console.log(`JobBoss backfilling any missed dates...`)
-    const dt = new Date()
+    console.log(`JobBoss - backfilling any missed dates...`)
+    const now = new Date()
+    const start = now.getTime() - 60 * days
 
-    // const today = getToday()
-    // console.log(today)
     // read cookie file, if any
-    //. need trycatch? or die with error msg? ie should we enforce its existence?
-    // or if no file, don't backfill?
-    let s = String(fs.readFileSync(cookiePath))
-    // console.log('pokpok', s)
-    let json = JSON.parse(s)
-    // console.log('pokpok', json)
+    let json = {}
+    try {
+      console.log(`JobBoss - read cookie file...`)
+      const s = String(fs.readFileSync(cookiePath))
+      let json = JSON.parse(s)
+    } catch (e) {
+      console.log(`JobBoss - missing or malformed cookie file...`)
+      console.log(e)
+    }
+
     // loop over devices from setup.yaml
     for (let device of this.devices) {
       // just want those with a jobboss id (workcenter uuid)
       if (device.jobbossId) {
-        // // get last day scheduled for this device
-        // const lastDay = await getLastDay(device)
-        //. get from cookie file
-        // console.log('pokpok', device.name)
-        const foo = json[device.name]
-        // console.log('pokpok', foo)
-        // console.log('pokpok', foo.lastRead)
-        const { lastRead } = foo
+        // get from cookie file
+        const { lastRead } = json[device.name] || {} // eg '2022-01-11' ?
 
         // // lookup missing days and set values
         // for (let day = lastDay; day < today; day++) {
