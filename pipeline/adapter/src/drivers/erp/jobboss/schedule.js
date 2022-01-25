@@ -65,11 +65,7 @@ export class Schedule {
           // need it here so xml will get the value for relay to pick up,
           // so meter can filter to a record it needs.
           this.cache.set(`${device.id}-start`, schedule.start, schedule.start)
-          this.cache.set(
-            `${device.id}-complete`,
-            schedule.complete,
-            schedule.complete
-          )
+          this.cache.set(`${device.id}-complete`, schedule.stop, schedule.stop)
         }
 
         // update cookie
