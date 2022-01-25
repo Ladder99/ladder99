@@ -49,7 +49,8 @@ export class Cache {
 
   // set a key-value pair in the cache.
   // eg set('ac1-power_warning', true)
-  set(key, value, timestamp = null) {
+  // timestamp is an optional STRING that is used in the SHDR
+  set(key, value, timestamp = '') {
     console.log('cache.set', key, String(value).slice(0, 99))
     // update the cache value
     this._map.set(key, value)
@@ -63,7 +64,7 @@ export class Cache {
       // send shdr to agent via tcp socket if value changed
       if (value !== output.lastValue) {
         // const shdr = getShdr(this, output, value, timestamp)
-        const shdr = getShdr(output, value, timestamp) // timestamp can be null
+        const shdr = getShdr(output, value, timestamp) // timestamp can be ''
         console.log(`shdr changed - sending to tcp - ${shdr.slice(0, 60)}...`)
         try {
           output.socket.write(shdr + '\n')
