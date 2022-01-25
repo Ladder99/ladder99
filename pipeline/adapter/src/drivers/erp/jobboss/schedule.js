@@ -58,7 +58,7 @@ export class Schedule {
 
         // lookup missing days and set values
         for (let day = 0; day < ndays; day++) {
-          const datetime = new Date(start.getTime() + day)
+          const datetime = new Date(start.getTime() + day * days)
           const schedule = await this.getSchedule(device, datetime) // get { start, stop }
           console.log(`JobBoss - day, datetime, sched`, day, datetime, schedule)
           // timestring (3rd param) is optional for cache.set -
