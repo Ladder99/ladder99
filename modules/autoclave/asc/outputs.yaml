@@ -17,7 +17,7 @@ outputs:
     value: <avail>
 
   - key: message
-    category: EVENT
+    category: MESSAGE
     value: <message>
 
   - key: operator_name
