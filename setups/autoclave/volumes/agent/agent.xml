@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- handmade version for testing -->
-<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.7"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="urn:mtconnect.org:MTConnectDevices:1.7" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.7 http://www.mtconnect.org/schemas/MTConnectDevices_1.7.xsd">
-  <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.7.0.3"/>
+<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.7" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.7 http://www.mtconnect.org/schemas/MTConnectDevices_1.7.xsd">
+  <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.7.0.3" />
   <Devices>
 
     <Device id="ac1" name="autoclave1" uuid="a123" sampleInterval="10">
@@ -11,9 +9,10 @@
         ASC autoclave
       </Description>
       <DataItems>
-        <DataItem id="ac1-operator_name" category="EVENT" type="USER" subType="OPERATOR"/>
-        <DataItem id="ac1-recipe_description" category="EVENT" type="PROCESS_KIND_ID" subType="PROCESS_NAME"/>
-        <DataItem id="ac1-vessel_air_temp" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT"/>
+        <DataItem id="ac1-avail" category="EVENT" type="AVAILABILITY" />
+        <DataItem id="ac1-operator_name" category="EVENT" type="USER" subType="OPERATOR" />
+        <DataItem id="ac1-recipe_description" category="EVENT" type="PROCESS_KIND_ID" subType="PROCESS_NAME" />
+        <DataItem id="ac1-vessel_air_temp" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT" />
       </DataItems>
 
       <Systems>

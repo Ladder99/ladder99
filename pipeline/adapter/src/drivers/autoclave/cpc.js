@@ -19,9 +19,10 @@ const typeFns = {
 export class AdapterDriver {
   init({ deviceId, protocol, host, port, cache, inputs, socket }) {
     console.log(`Initialize CPC driver...`)
+    cache.set(`${deviceId}-avail`, 'UNAVAILABLE')
 
     // get ids and query string
-    const ids = inputs.inputs.map(input => `${deviceId}-${input.key}`) // eg ['ac1/operator_name', 'ac1/recipe_description', ...]
+    const ids = inputs.inputs.map(input => `${deviceId}-${input.key}`) // eg ['ac1-operator_name', 'ac1-recipe_description', ...]
     const paths = inputs.inputs.map(input => input.path).join(',')
     const types = inputs.inputs.map(input => input.type) // eg [undefined, undefined, boolean, ...]
     const query = `PathListGet:ReadValues:${paths}` // eg 'PathListGet:ReadValues:.Autoclave.Alarms.ControlPower\Condition,...'
@@ -34,6 +35,7 @@ export class AdapterDriver {
     // connected to device - poll it for data by writing a command
     client.on('connect', () => {
       console.log(`CPC driver connected...`)
+      cache.set(`${deviceId}-avail`, 'AVAILABLE')
       poll()
       setInterval(poll, 2000) //. do this
     })
