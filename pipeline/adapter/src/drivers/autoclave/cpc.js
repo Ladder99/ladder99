@@ -45,15 +45,20 @@ export class AdapterDriver {
     client.on('data', data => {
       const str = data.toString() // eg 'PathListGet:ReadValues:=,True,Joshau Schneider,254.280816,,0'
       console.log(`CPC driver received ${str.slice(0, 255)}...`)
-      const [_, valuesStr] = str.split(':=')
-      const values = valuesStr.split(',') // eg ['', 'True', 'Joshau Schneider', ...]
-      // write values to cache, which will output shdr to agent
-      ids.forEach((id, i) => {
-        const type = types[i] // eg 'boolean'
-        const typeFn = typeFns[type] // eg value => value==='True'
-        const value = typeFn(values[i]) // eg true
-        cache.set(id, value) // set cache value, which triggers shdr output
-      })
+      const valuesStr = str.split(':=')[1]
+      // note: for the list of messages, it sends one after the other - after the
+      // first one it doesn't include the :=, so this will return null.
+      // so can ignore those, since we just want the first line.
+      if (valuesStr) {
+        const values = valuesStr.split(',') // eg ['', 'True', 'Joshau Schneider', ...]
+        // write values to cache, which will output shdr to agent
+        ids.forEach((id, i) => {
+          const type = types[i] // eg 'boolean'
+          const typeFn = typeFns[type] // eg value => value==='True'
+          const value = typeFn(values[i]) // eg true
+          cache.set(id, value) // set cache value, which triggers shdr output
+        })
+      }
     })
 
     client.on('error', error => {
