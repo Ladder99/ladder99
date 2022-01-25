@@ -16,6 +16,10 @@ outputs:
     category: EVENT
     value: <avail>
 
+  - key: message
+    category: EVENT
+    value: <message>
+
   - key: operator_name
     category: EVENT
     type: USER

@@ -51,7 +51,6 @@ export class AdapterDriver {
         const type = types[i] // eg 'boolean'
         const typeFn = typeFns[type] // eg value => value==='True'
         const value = typeFn(values[i]) // eg true
-        // cache.set(id, { value }) // set cache value, which triggers shdr output
         cache.set(id, value) // set cache value, which triggers shdr output
       })
     })

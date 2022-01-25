@@ -18,10 +18,15 @@ inputs:
     path: .Autoclave.Scripts.MotorHours.CoolPumpAOn\Value
 
   - key: recipe_description
-    path: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
+    # path: .Autoclave.RecipeProcessor.Recipe.RecipeData\Description
+    path: .Autoclave.RecipeProcessor\RecipeName
 
   - key: vessel_air_temp
     path: .Autoclave.Inputs.AIRTC\Value
+
+  # will this response format be different?
+  - key: message
+    path: .Server\ScreenAudit
 
   # note: batching allows req-resp protocols to limit the number of
   # data items per request.

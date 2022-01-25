@@ -13,6 +13,7 @@
         <DataItem id="ac1-operator_name" category="EVENT" type="USER" subType="OPERATOR" />
         <DataItem id="ac1-recipe_description" category="EVENT" type="PROCESS_KIND_ID" subType="PROCESS_NAME" />
         <DataItem id="ac1-vessel_air_temp" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" nativeUnits="FAHRENHEIT" />
+        <DataItem id="ac1-message" category="MESSAGE" type="MESSAGE" />
       </DataItems>
 
       <Systems>
