@@ -93,8 +93,8 @@ function getValue(cache, output) {
 // calculate SHDR using the given output object.
 // cache is the Cache object.
 // output has { key, category, type, representation, value, shdr, ... }.
-function getShdr(output, value, timestamp) {
-  const head = timestamp ? timestamp.toISOString() : '' // timestamp is optional for cppagent
+// timestamp is an optional STRING that goes at the front of the shdr.
+function getShdr(output, value, timestamp = '') {
   const { key, category, type, subType, representation, nativeCode } = output
   let shdr = ''
   // handle different shdr types and representations
@@ -105,22 +105,22 @@ function getShdr(output, value, timestamp) {
       // native_code, which needs to be included:
       // 2014-09-29T23:59:33.460470Z|message|CHG_INSRT|Change Inserts
       // From https://github.com/mtconnect/cppagent#adapter-agent-protocol-version-17 -
-      shdr = `${head}|${key}|${nativeCode}|${value}`
+      shdr = `${timestamp}|${key}|${nativeCode}|${value}`
     } else {
-      shdr = `${head}|${key}|${value}`
+      shdr = `${timestamp}|${key}|${value}`
     }
   } else if (category === 'CONDITION') {
     //. pick these values out of the value, which should be an object
     //. also, can have >1 value for a condition - how handle?
     if (!value || value === 'UNAVAILABLE') {
-      shdr = `${head}|${key}|${value}||||${value}`
+      shdr = `${timestamp}|${key}|${value}||||${value}`
     } else {
       const level = value // eg 'WARNING' -> element 'Warning'
       const nativeCode = 'nativeCode'
       const nativeSeverity = 'nativeSeverity'
       const qualifier = 'qualifier'
       const message = value
-      shdr = `${head}|${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
+      shdr = `${timestamp}|${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
     }
   } else {
     console.warn(`warning: unknown category '${category}'`)
