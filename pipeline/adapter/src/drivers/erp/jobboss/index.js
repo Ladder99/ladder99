@@ -1,5 +1,9 @@
 // jobboss driver
 
+// reads data from jobboss mssql database.
+// currently schedule and jobnum info per workcenter/device.
+// writes to cache, which writes shdr to agent.
+
 // for jobboss table structure see tables.jpg in this directory, or
 // https://docs.google.com/spreadsheets/d/13RzXxUNby6-jIO4JUjKVCNG7ALc__HDkBhcnNfyK5-s/edit?usp=sharing
 
@@ -17,15 +21,12 @@ export class AdapterDriver {
   async init({
     client,
     deviceId,
-    device,
-    protocol,
     cache,
-    inputs,
-    socket,
     connection, // { server, port, database, user, password } - set in setup.yaml
     devices, // from setup.yaml
   }) {
     console.log(`JobBoss - initialize driver...`)
+    setUnavailable()
 
     // need to wait a bit to make sure the cutter cache items are setup before
     // writing to them. they're setup via the cutter/marumatsu module.
@@ -34,19 +35,17 @@ export class AdapterDriver {
     console.log(`JobBoss - waiting a bit...`)
     await new Promise(resolve => setTimeout(resolve, initialDelay))
 
-    connection = {
-      ...connection,
-      port: Number(connection.port), // mssql driver insists on a number here
-    }
+    // mssql driver insists on a number for the port
+    connection = { ...connection, port: Number(connection.port) }
 
     let pool
     while (!pool) {
       try {
         console.log(`JobBoss - connecting to database...`, connection.server)
         pool = await mssql.connect(connection)
-        console.log(`JobBoss - connected`)
 
-        // this.setAvailable()
+        console.log(`JobBoss - connected`)
+        setAvailable()
 
         // start the polls
         const jobs = new Jobs()
@@ -58,22 +57,20 @@ export class AdapterDriver {
       } catch (error) {
         console.log(error)
         console.log(`JobBoss - no db - waiting a bit to try again...`)
+        setUnavailable()
         await new Promise(resolve => setTimeout(resolve, waitForDb))
       }
     }
+
+    //. method doesn't exist, but is in the readme
+    // mssql.on('error', err => { })
+
+    function setAvailable() {
+      cache.set(`${deviceId}-availability`, 'AVAILABLE')
+    }
+
+    function setUnavailable() {
+      cache.set(`${deviceId}-availability`, 'UNAVAILABLE')
+    }
   }
-
-  //. method doesn't exist, but is in the readme
-  // mssql.on('error', err => {
-  //   // ... error handler
-  // })
-
-  //  setAvailable() {
-  //   cache.set(`${deviceId}-availability`, 'AVAILABLE')
-  // }
-
-  //  setUnavailable() {
-  //   cache.set(`${deviceId}-availability`, 'UNAVAILABLE')
-  //   cache.set(`${deviceId}-job`, 'UNAVAILABLE')
-  // }
 }
