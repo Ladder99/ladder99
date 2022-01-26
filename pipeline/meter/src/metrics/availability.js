@@ -104,7 +104,7 @@ export class Metric {
       const path = startStopTimes[minute]
       if (path === this.metric.startPath) {
         state = 1
-      } else {
+      } else if (path === this.metric.stopPath) {
         state = 0
       }
       if (state) {
@@ -211,30 +211,22 @@ export class Metric {
   // rounds the given time down to nearest min, hour, day, week etc,
   // and increments the given field for each.
   // field is eg 'active', 'available'.
-  // const sql = `call increment_bins(${device_id}, '${time.toISOString()}', '${field}');`
-  //     v_time := date_trunc(v_resolution, p_time); -- round down to start of current min, hour, day, etc
-  //       'insert into bins (device_id, resolution, time, %s)
-  //         values ($1, $2, $3, $4)
-  //       on conflict (device_id, resolution, time) do
-  //         update set %s = coalesce(bins.%s, 0) + $5;',
-  //       v_field, v_field, v_field
-  //     ) using p_device_id, ('1 '||v_resolution)::interval, v_time, p_delta, p_delta;
   async incrementBins(time, field, delta = 1) {
     const timeISO = time.toISOString()
     for (let resolution of resolutions) {
       // upsert/increment the given field by delta
       const sql = `
-      insert into bins (device_id, resolution, time, ${field})
-        values (
-          ${this.device.node_id}, 
-          ('1 '||'${resolution}')::interval, 
-          date_trunc('${resolution}', '${timeISO}'::timestamptz), 
-          ${delta}
-        )
-      on conflict (device_id, resolution, time) do
-        update set ${field} = coalesce(bins.${field}, 0) + ${delta};
+        insert into bins (device_id, resolution, time, ${field})
+          values (
+            ${this.device.node_id}, 
+            ('1 '||'${resolution}')::interval, 
+            date_trunc('${resolution}', '${timeISO}'::timestamptz), 
+            ${delta}
+          )
+        on conflict (device_id, resolution, time) do
+          update set ${field} = coalesce(bins.${field}, 0) + ${delta};
       `
-      console.log(sql)
+      // console.log(sql)
       await this.db.query(sql)
     }
   }
