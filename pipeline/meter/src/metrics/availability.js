@@ -100,15 +100,16 @@ export class Metric {
     console.log(`start, now`, startMinute, nowMinute)
     let state = null
     for (let minute = startMinute; minute < nowMinute; minute++) {
-      const foo = startStopTimes[minute]
-      if (foo === this.metric.startPath) {
+      const time = new Date(minute * minutes)
+      const path = startStopTimes[minute]
+      if (path === this.metric.startPath) {
         state = 1
       } else {
         state = 0
       }
-      // if (state) {
-      //   await this.poll()
-      // }
+      if (state) {
+        await this.updateBins(time, this.interval)
+      }
     }
     console.log(`Backfill done`)
   }
@@ -133,22 +134,27 @@ export class Metric {
     // check if we're within scheduled time
     const scheduled = now >= schedule.start && now <= schedule.stop
     if (scheduled) {
-      console.log(`Meter - in scheduled time window - check if active...`)
-      // if so, check for events in previous n secs, eg 60
-      const start = new Date(now.getTime() - this.interval)
-      const stop = now
-      const deviceWasActive = await this.getActive(start, stop)
-      // if device was active, increment the active bin
-      if (deviceWasActive) {
-        console.log(`Meter - device was active, increment active bin`)
-        await this.incrementBins(now, 'active')
-      }
-      // always increment the available bin
-      console.log(`Meter - always increment the available bin`)
-      await this.incrementBins(now, 'available')
+      console.log(`Meter - in scheduled time window - updatebins...`)
+      await this.updateBins(now, this.interval)
     } else {
       console.log(`Meter - not in scheduled time window`)
     }
+  }
+
+  async updateBins(now, interval) {
+    // check for events in previous n secs, eg 60
+    console.log(`Meter - check if device was active`)
+    const start = new Date(now.getTime() - interval)
+    const stop = now
+    const deviceWasActive = await this.getActive(start, stop)
+    // if device was active, increment the active bin
+    if (deviceWasActive) {
+      console.log(`Meter - device was active, increment active bin`)
+      await this.incrementBins(now, 'active')
+    }
+    // always increment the available bin
+    console.log(`Meter - always increment the available bin`)
+    await this.incrementBins(now, 'available')
   }
 
   // query db for start and stop datetime dataitems.
@@ -186,6 +192,7 @@ export class Metric {
   // check if device was 'active' (ie has events on the active path), between two times.
   // returns true/false
   async getActive(start, stop) {
+    console.log(`Meter - check if device was active between`, start, stop)
     const sql = `
       select count(value) > 0 as active
       from history_all
@@ -195,7 +202,6 @@ export class Metric {
         and time between '${start.toISOString()}' and '${stop.toISOString()}'
       limit 1;
     `
-    console.log(sql)
     const result = await this.db.query(sql)
     const deviceWasActive = result.rows[0].active // t/f
     return deviceWasActive
