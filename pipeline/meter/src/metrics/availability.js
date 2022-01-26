@@ -65,19 +65,12 @@ export class Metric {
       where device_id=${this.device.node_id} order by time desc limit 1;
     `
     const result = await this.db.query(sql)
-    let lastRead = null
-    if (result.rows.length > 0) {
-      lastRead = result.rows[0].time
-    }
+    const lastRead = result.rows.length > 0 && result.rows[0].time
     console.log(`lastRead`, lastRead)
     const startBackfill = lastRead ? new Date(lastRead) : defaultStart
-    // const nminutes = Math.floor(
-    //   (now.getTime() - startBackfill.getTime()) / minutes
-    // )
-    // console.log(`Meter - startBackfill and nminutes`, startBackfill, nminutes)
     console.log(`startBackfill`, startBackfill)
 
-    //. get list of start/stop times since then, in order
+    // get list of start/stop times since then, in order
     const sql2 = `
       select time, path, value
       from history_all
@@ -94,7 +87,6 @@ export class Metric {
       const time = new Date(row.value).getTime()
       if (!isNaN(time)) {
         const minute = Math.floor(time / minutes)
-        // console.log(minute, row.path)
         startStopTimes[minute] = row.path
       }
     }
@@ -106,10 +98,19 @@ export class Metric {
     const startMinute = Math.floor(startBackfill.getTime() / minutes)
     const nowMinute = Math.floor(now.getTime() / minutes)
     console.log(`start, now`, startMinute, nowMinute)
+    let state = null
     for (let minute = startMinute; minute < nowMinute; minute++) {
       const foo = startStopTimes[minute]
-      // console.log(foo)
+      if (foo === this.metric.startPath) {
+        state = 1
+      } else {
+        state = 0
+      }
+      if (state) {
+        await this.poll()
+      }
     }
+    console.log(`Backfill done`)
   }
 
   // poll db and update bins - called by timer
