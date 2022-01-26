@@ -23,6 +23,9 @@ export class Metric {
     this.device.node_id = await this.getDeviceId() // repeats until device is there
     console.log(this.device)
 
+    //. poll for schedule info, save to this - set up timer for every 10mins?
+    // pollSchedule? vs pollMetrics or poll?
+
     // get polling interval - either from metric in setup yaml or default value
     this.interval = (metric.interval || metricInterval) * 1000 // ms
 
@@ -47,6 +50,9 @@ export class Metric {
 
   async backfill() {
     console.log(`Meter - backfilling any missed dates...`)
+    //. find most recent record in bins - that's our starting point
+    //. loop from there to now, interval 1 min, check for active and available
+    //. write to bins table those values
   }
 
   // poll db and update bins - called by timer
