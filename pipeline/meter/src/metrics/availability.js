@@ -88,8 +88,11 @@ export class Metric {
     // loop over start/stop times, add to a dict
     const startStopTimes = {}
     for (let row of result.rows) {
-      const minute = new Date(row.value).getTime() / minutes
-      startStopTimes[minute] = row.path
+      const time = new Date(row.value).getTime()
+      if (!isNaN(time)) {
+        const minute = Math.floor(time / minutes)
+        startStopTimes[minute] = row.path
+      }
     }
     console.log(startStopTimes)
 
