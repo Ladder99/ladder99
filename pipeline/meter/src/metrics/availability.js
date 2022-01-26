@@ -106,9 +106,9 @@ export class Metric {
       } else {
         state = 0
       }
-      if (state) {
-        await this.poll()
-      }
+      // if (state) {
+      //   await this.poll()
+      // }
     }
     console.log(`Backfill done`)
   }
