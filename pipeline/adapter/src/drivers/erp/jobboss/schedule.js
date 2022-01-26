@@ -11,6 +11,7 @@ const backfillDefaultStart = 60 * days // ie look this far back for first backfi
 const cookiePath = '/data/adapter/cookies/jobboss/schedule.json'
 
 export class Schedule {
+  //
   // check jobboss for schedule for each device in devices
   async start({ cache, pool, devices, client }) {
     console.log(`Jobboss schedule - start`)
@@ -36,11 +37,11 @@ export class Schedule {
       console.log(`JobBoss - read cookie file...`)
       const s = String(fs.readFileSync(cookiePath))
       cookie = JSON.parse(s)
+      console.log(`JobBoss - cookie`, cookie)
     } catch (e) {
-      console.log(`JobBoss - missing or malformed cookie file...`)
-      console.log(e)
+      console.log(`JobBoss - missing cookie file - using default start offset`)
+      // console.log(e)
     }
-    console.log(`JobBoss cookie - `, cookie)
 
     // loop over devices from setup.yaml
     for (let device of this.devices) {

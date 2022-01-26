@@ -1,7 +1,7 @@
 // read/write values for device availability calculations
 
 const metricInterval = 60 // seconds
-const resolutions = 'minute,hour,day,week,month,year'.split(',')
+const resolutions = 'minute,hour,day,week,month,year'.split(',') //. 5min? 15min?
 
 export class Metric {
   constructor() {
@@ -24,14 +24,11 @@ export class Metric {
     console.log(this.device)
 
     // get polling interval - either from metric in setup yaml or default value
-    this.interval = metric.interval || metricInterval // seconds
+    this.interval = (metric.interval || metricInterval) * 1000 // ms
 
-    // check the db, then start the timer that checks it every n seconds -
-    // it will increment bins as needed.
-    console.log(`Meter - update bins...`)
-    await this.updateBins() // update bins
-    console.log(`Meter - start updateBins timer...`)
-    this.timer = setInterval(this.updateBins.bind(this), this.interval * 1000) // poll db
+    await this.backfill() // backfill missing values
+    await this.poll() // do first poll
+    this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
 
   // get device node_id associated with a device name.
@@ -48,9 +45,13 @@ export class Metric {
     return result.rows[0].node_id
   }
 
-  // update bins - called by timer
-  async updateBins() {
-    console.log('Meter - update bins')
+  async backfill() {
+    console.log(`Meter - backfilling any missed dates...`)
+  }
+
+  // poll db and update bins - called by timer
+  async poll() {
+    console.log('Meter - poll db and update bins')
     const now = new Date()
     // shift now into server timezone (GMT) so can do comparisons properly
     // const now = new Date(
@@ -62,7 +63,7 @@ export class Metric {
     // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ... }
     console.log(`Meter - get schedule...`)
 
-    //. do this every 5mins or so on separate timer, save to this ?
+    //. do this every 10mins or so on separate timer, save to this
     const schedule = await this.getSchedule()
 
     // check if we're within scheduled time
@@ -70,7 +71,7 @@ export class Metric {
     if (scheduled) {
       console.log(`Meter - in scheduled time window - check if active...`)
       // if so, check for events in previous n secs, eg 60
-      const start = new Date(now.getTime() - this.interval * 1000)
+      const start = new Date(now.getTime() - this.interval)
       const stop = now
       const deviceWasActive = await this.getActive(start, stop)
       // if device was active, increment the active bin
@@ -97,6 +98,7 @@ export class Metric {
     // note: these can return 'UNAVAILABLE' or 'HOLIDAY', in which case,
     // schedule.start etc will be 'Invalid Date'.
     // any comparison with those will yield false.
+    //.. search for a given date, not latest value
     const start = await this.db.getLatestValue(table, device, startPath)
     const stop = await this.db.getLatestValue(table, device, stopPath)
     // shift these by client timezoneOffsetHrs, as need them for comparisons
