@@ -58,7 +58,7 @@ export class Metric {
     const now = new Date()
     const defaultStart = new Date(now.getTime() - backfillDefaultStart) // eg 60d ago
 
-    //. find most recent record in bins - that's our starting point
+    //. get starting point by finding most recent record in bins
     const sql = `
       select time 
       from bins 
@@ -69,22 +69,40 @@ export class Metric {
     if (result.rows.length > 0) {
       lastRead = result.rows[0].time
     }
+    console.log(lastRead)
     const start = lastRead ? new Date(lastRead) : defaultStart
-    const ndays = Math.floor((now.getTime() - start.getTime()) / days)
-    console.log(`Meter - start and ndays`, start, ndays)
+    const nminutes = Math.floor((now.getTime() - start.getTime()) / minutes)
+    console.log(`Meter - start and nminutes`, start, nminutes)
 
     //. get list of start/stop times since then, in order
     const sql2 = `
-      select time, value
+      select time, path, value
       from history_all
       where
         device = '${this.device.name}'
         and path in ('${this.metric.startPath}', '${this.metric.stopPath}')
         and time >= '${start.toISOString()}';
     `
+    const result2 = await this.db.query(sql2)
 
-    //. loop from there to now, interval 1 min, check for active and available
+    // loop over start/stop times, add to a dict
+    const startStopTimes = {}
+    for (let row of result.rows) {
+      const minute = new Date(row.value).getTime() / minutes
+      startStopTimes[minute] = row.path
+    }
+    console.log(startStopTimes)
+
+    //. loop from startstart to now, interval 1 min
+    //  check for active and available
     //. write to bins table those values
+    // for (let minute = 0; minute < nminutes; minute++) {
+    const startMinute = Math.floor(start.getTime() / minutes)
+    const nowMinute = Math.floor(now.getTime() / minutes)
+    for (let minute = startMinute; minute < nowMinute; minute++) {
+      const foo = startStopTimes[minute]
+      console.log(foo)
+    }
   }
 
   // poll db and update bins - called by timer
