@@ -40,7 +40,6 @@ export class Schedule {
       console.log(`JobBoss - cookie`, cookie)
     } catch (e) {
       console.log(`JobBoss - missing cookie file - using default start offset`)
-      // console.log(e)
     }
 
     // loop over devices from setup.yaml

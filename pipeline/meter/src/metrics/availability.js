@@ -1,6 +1,11 @@
 // read/write values for device availability calculations
 
-const metricInterval = 60 // seconds
+const minutes = 60 * 1000 // 60 ms
+const hours = 60 * minutes
+const days = 24 * hours
+
+const backfillDefaultStart = 60 * days // ie look this far back for first backfill date, by default
+const metricIntervalDefault = 60 // seconds
 const resolutions = 'minute,hour,day,week,month,year'.split(',') //. 5min? 15min?
 
 export class Metric {
@@ -27,7 +32,7 @@ export class Metric {
     // pollSchedule? vs pollMetrics or poll?
 
     // get polling interval - either from metric in setup yaml or default value
-    this.interval = (metric.interval || metricInterval) * 1000 // ms
+    this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
 
     await this.backfill() // backfill missing values
     await this.poll() // do first poll
@@ -40,7 +45,6 @@ export class Metric {
     let result
     while (true) {
       const sql = `select node_id from devices where name='${this.device.name}'`
-      console.log(sql)
       result = await this.db.query(sql)
       if (result.rows.length > 0) break
       await new Promise(resolve => setTimeout(resolve, 4000)) // wait 4 secs
@@ -50,7 +54,35 @@ export class Metric {
 
   async backfill() {
     console.log(`Meter - backfilling any missed dates...`)
+
+    const now = new Date()
+    const defaultStart = new Date(now.getTime() - backfillDefaultStart) // eg 60d ago
+
     //. find most recent record in bins - that's our starting point
+    const sql = `
+      select time 
+      from bins 
+      where device_id=${this.device.node_id} order by time desc limit 1;
+    `
+    const result = await this.db.query(sql)
+    let lastRead = null
+    if (result.rows.length > 0) {
+      lastRead = result.rows[0].time
+    }
+    const start = lastRead ? new Date(lastRead) : defaultStart
+    const ndays = Math.floor((now.getTime() - start.getTime()) / days)
+    console.log(`Meter - start and ndays`, start, ndays)
+
+    //. get list of start/stop times since then, in order
+    const sql2 = `
+      select time, value
+      from history_all
+      where
+        device = '${this.device.name}'
+        and path in ('${this.metric.startPath}', '${this.metric.stopPath}')
+        and time >= '${start.toISOString()}';
+    `
+
     //. loop from there to now, interval 1 min, check for active and available
     //. write to bins table those values
   }
@@ -129,13 +161,13 @@ export class Metric {
   // returns true/false
   async getActive(start, stop) {
     const sql = `
-    select count(value) > 0 as active
-    from history_all
-    where
-      device = '${this.device.name}'
-      and path = '${this.metric.activePath}'
-      and time between '${start.toISOString()}' and '${stop.toISOString()}'
-    limit 1;
+      select count(value) > 0 as active
+      from history_all
+      where
+        device = '${this.device.name}'
+        and path = '${this.metric.activePath}'
+        and time between '${start.toISOString()}' and '${stop.toISOString()}'
+      limit 1;
     `
     console.log(sql)
     const result = await this.db.query(sql)
