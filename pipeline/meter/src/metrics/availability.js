@@ -90,7 +90,7 @@ export class Metric {
 
     // loop over start/stop times, add to a dict
     const startStopTimes = {}
-    for (let row of result.rows) {
+    for (let row of result2.rows) {
       const time = new Date(row.value).getTime()
       if (!isNaN(time)) {
         const minute = Math.floor(time / minutes)
