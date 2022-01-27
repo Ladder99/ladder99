@@ -366,11 +366,12 @@ declare
   v_range interval := v_stop - v_start;
   -- choose v_binsize based on v_range size
   v_binsize interval := case 
-    when (v_range > interval '2 months') then '1 month'
+    -- note: interval of month or greater is not supported by postgres!
+    -- when (v_range > interval '2 months') then '1 month'
     when (v_range > interval '2 weeks') then '1 week'
     when (v_range > interval '2 days') then '1 day'
     when (v_range > interval '2 hours') then '1 hour'
-    else '1 minute' --. 5 mins
+    else '1 minute' --. handle 5 min interval?
   end;
 begin
   return query
