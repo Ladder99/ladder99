@@ -24,12 +24,14 @@ export class Metric {
     this.device = device
     this.metric = metric
 
+    this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
+
     console.log(`Meter - get device node_id...`)
     this.device.node_id = await this.getDeviceId() // repeats until device is there
     console.log(this.device)
 
     //. poll for schedule info, save to this - set up timer for every 10mins?
-    // pollSchedule? vs pollMetrics or poll?
+    // pollSchedule vs pollMetrics?
 
     // get polling interval - either from metric in setup yaml or default value
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
@@ -58,11 +60,13 @@ export class Metric {
     const now = new Date()
     const defaultStart = new Date(now.getTime() - backfillDefaultStart) // eg 60d ago
 
-    //. get starting point by finding most recent record in bins
+    // get starting point by finding most recent record in bins
     const sql = `
       select time 
       from bins 
-      where device_id=${this.device.node_id} order by time desc limit 1;
+      where device_id=${this.device.node_id} 
+      order by time desc 
+      limit 1;
     `
     const result = await this.db.query(sql)
     const lastRead = result.rows.length > 0 && result.rows[0].time
@@ -77,14 +81,18 @@ export class Metric {
       where
         device = '${this.device.name}'
         and path in ('${this.metric.startPath}', '${this.metric.stopPath}')
-        and time >= '${startBackfill.toISOString()}';
+        and time >= '${startBackfill.toISOString()}'
+      order by time asc;
     `
     const result2 = await this.db.query(sql2)
 
     // loop over start/stop times, add to a dict
+    // row.value is sthing like '2022-01-27T05:00:00' with NO Z -
+    // ie it's 'local' time, which can only be interpreted correctly by
+    // knowing the client's timezone. so need to subtract that offset (or add?)
     const startStopTimes = {}
     for (let row of result2.rows) {
-      const time = new Date(row.value).getTime()
+      const time = new Date(row.value).getTime() - this.timezoneOffset
       if (!isNaN(time)) {
         const minute = Math.floor(time / minutes)
         startStopTimes[minute] = row.path
@@ -92,15 +100,14 @@ export class Metric {
     }
     console.log('dict', startStopTimes)
 
-    //. loop from startstart to now, interval 1 min
-    //  check for active and available
-    //. write to bins table those values
+    // loop from startstart to now, interval 1 min
+    // check for active and available
+    // write to bins table those values
     const startMinute = Math.floor(startBackfill.getTime() / minutes)
     const nowMinute = Math.floor(now.getTime() / minutes)
     console.log(`start, now`, startMinute, nowMinute)
     let state = null
     for (let minute = startMinute; minute < nowMinute; minute++) {
-      const time = new Date(minute * minutes)
       const path = startStopTimes[minute]
       if (path === this.metric.startPath) {
         state = 1
@@ -108,6 +115,7 @@ export class Metric {
         state = 0
       }
       if (state) {
+        const time = new Date(minute * minutes)
         await this.updateBins(time, this.interval)
       }
     }
@@ -183,11 +191,6 @@ export class Metric {
     console.log('schedule', schedule)
     return schedule
   }
-
-  // // backfill the active and available field bins
-  // async backfill() {
-  //   //
-  // }
 
   // check if device was 'active' (ie has events on the active path), between two times.
   // returns true/false

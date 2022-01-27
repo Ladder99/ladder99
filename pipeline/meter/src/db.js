@@ -152,7 +152,7 @@ export class Db {
     order by time desc
     limit 1;
     `
-    console.log(sql)
+    // console.log(sql)
     const result = await this.query(sql)
     // console.log(result)
     const value = result.rowCount > 0 && result.rows[0]['value']
