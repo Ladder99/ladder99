@@ -89,10 +89,11 @@ export class Metric {
     // loop over start/stop times, add to a dict
     // row.value is sthing like '2022-01-27T05:00:00' with NO Z -
     // ie it's 'local' time, which can only be interpreted correctly by
-    // knowing the client's timezone. so need to subtract that offset (or add?)
+    // knowing the client's timezone. so need to subtract that offset
     const startStopTimes = {}
     for (let row of result2.rows) {
-      const time = new Date(row.value).getTime() - this.timezoneOffset
+      const localTime = row.value
+      const time = new Date(localTime).getTime() - this.timezoneOffset
       if (!isNaN(time)) {
         const minute = Math.floor(time / minutes)
         startStopTimes[minute] = row.path
