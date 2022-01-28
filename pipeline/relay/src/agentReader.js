@@ -34,7 +34,7 @@ export class AgentReader {
     // used to track jobnum change to reset marumatsu counter.
     //. this will be replaced by MTConnect Interfaces.
     this.feedback = new Feedback(this.setup)
-    this.feedback.start() // get mqtt connection etc
+    this.feedback.start() // get mqtt connection, start check timer
 
     // probe - get agent data structures and write to db
     probe: do {

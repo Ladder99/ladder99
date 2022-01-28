@@ -1,6 +1,8 @@
 // provide feedback to devices
 
-//. this will all be replaced by MTConnect Interfaces
+// currently used for watching changes to jobboss job number,
+// sending a part count reset to a marumatsu cutter via mqtt.
+// this will all be replaced by MTConnect Interfaces eventually.
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
@@ -23,8 +25,8 @@ export class Feedback {
       for (let source of device.sources || []) {
         if (source.feedback) {
           // connect to mqtt broker/server
-          //. hardcode as mqtt for now
-          const url = `mqtt://${source.host}:${source.port}` //. source.connection.host etc
+          //. hardcoded as mqtt for now
+          const url = `mqtt://${source.host}:${source.port}` //. will use source.connection.host etc
           console.log(`Feedback - connecting to mqtt broker on ${url}...`)
           const mqtt = libmqtt.connect(url)
 
@@ -49,7 +51,8 @@ export class Feedback {
   //   value: 'AVAILABLE'
   // }, ...]
   // data is a Data object from dataObservations.js
-  // called by agentReader.js
+
+  // note: this is called by agentReader.js whenever new observations come in.
   async check(data) {
     console.log(`Feedback - check observations...`)
     const observations = data.observations || []
@@ -76,8 +79,11 @@ export class Feedback {
                   console.log(
                     `Feedback - publishing to ${feedback.topic}: ${feedback.payload}...`
                   )
-                  //... turn this on once all looks okay
-                  // source.mqtt.publish(feedback.topic, feedback.payload)
+
+                  // publish mqtt message
+                  source.mqtt.publish(feedback.topic, feedback.payload)
+
+                  // save observation value (eg jobnum)
                   source.lastValue = observation.value
                 }
               }
