@@ -349,12 +349,14 @@ join nodes as devices on bins.device_id = devices.node_id;
 --   select time, availability
 --   from get_availability_from_metrics_view('Cutter', $__from, $__to)
 
---drop function get_availability_from_metrics_view;
+drop function get_availability_from_metrics_view(text, bigint, bigint);
 
 create or replace function get_availability_from_metrics_view(
   in p_device text, -- the device name, eg 'Cutter'
   in p_start bigint, -- start time in milliseconds since 1970-01-01
-  in p_stop bigint -- stop time in milliseconds since 1970-01-01
+  -- in p_stop bigint -- stop time in milliseconds since 1970-01-01
+  in p_stop bigint, -- stop time in milliseconds since 1970-01-01
+  in p_binsize text = null
 )
 returns table ("time" timestamptz, "availability" float)
 language plpgsql
@@ -366,6 +368,7 @@ declare
   v_range interval := v_stop - v_start;
   -- choose v_binsize based on v_range size
   v_binsize interval := case 
+    when (p_binsize) then p_binsize
     -- note: interval of month or greater is not supported by postgres!
     -- when (v_range > interval '2 months') then '1 month'
     when (v_range > interval '2 weeks') then '1 week'
