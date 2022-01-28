@@ -375,31 +375,35 @@ declare
   end;
 begin
   return query
---    select 
---      metrics.time, metrics.availability
---    from 
---      metrics
---    where 
---      metrics.device = p_device
---      and resolution = v_binsize
---      and metrics.time between v_start and v_stop
---    order by 
---      time
---    ;
-    select 
-      time_bucket_gapfill(v_binsize, metrics.time, v_start, v_stop) as bin, 
-      coalesce(avg(metrics.availability),0) as availability
-    from 
-      metrics
-    where 
-      metrics.device = p_device
-      and resolution = v_binsize
-      and metrics.time between v_start and v_stop
-    group by
-      bin
-    order by 
-      bin
-    ;
+
+  --. maybe this is all we need - the query below this one does gapfilling
+   select 
+     metrics.time, metrics.availability
+   from 
+     metrics
+   where 
+     metrics.device = p_device
+     and resolution = v_binsize
+     and metrics.time between v_start and v_stop
+   order by 
+     time
+   ;
+
+    -- select 
+    --   time_bucket_gapfill(v_binsize, metrics.time, v_start, v_stop) as bin, 
+    --   -- coalesce(avg(metrics.availability),0) as availability -- converts nulls to 0
+    --   avg(metrics.availability) as availability -- can be null
+    -- from 
+    --   metrics
+    -- where 
+    --   metrics.device = p_device
+    --   and resolution = v_binsize
+    --   and metrics.time between v_start and v_stop
+    -- group by
+    --   bin
+    -- order by 
+    --   bin
+    -- ;
 end;
 $body$;
 
