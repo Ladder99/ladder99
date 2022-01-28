@@ -368,7 +368,7 @@ declare
   v_range interval := v_stop - v_start;
   -- choose v_binsize based on v_range size
   v_binsize interval := case 
-    when (p_binsize) then p_binsize
+    when (p_binsize is not null) then '1 '||p_binsize
     -- note: interval of month or greater is not supported by postgres!
     -- when (v_range > interval '2 months') then '1 month'
     when (v_range > interval '2 weeks') then '1 week'
@@ -409,7 +409,6 @@ begin
     -- ;
 end;
 $body$;
-
 
 -- test
 
