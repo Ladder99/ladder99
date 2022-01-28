@@ -349,7 +349,7 @@ join nodes as devices on bins.device_id = devices.node_id;
 --   select time, availability
 --   from get_availability_from_metrics_view('Cutter', $__from, $__to)
 
-drop function get_availability_from_metrics_view(text, bigint, bigint);
+--drop function get_availability_from_metrics_view(text, bigint, bigint);
 
 create or replace function get_availability_from_metrics_view(
   in p_device text, -- the device name, eg 'Cutter'
