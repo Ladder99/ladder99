@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# run ladder99 pipeline with docker compose.
+# run ladder99 pipeline services with docker compose.
 # if docker compose not available, use sh/docker/run and sh/docker/stop.
 
 usage="
-Usage: sh/pipeline COMMAND SETUP SERVICES
+Usage: shell/pipeline COMMAND SETUP SERVICES
 
 Run the Ladder99 pipeline with optional list of services to include.
 
@@ -14,10 +14,10 @@ SERVICES  space-delim list of services to start, eg 'agent dozzle'
 
 Examples
 
-    sh/pipeline start
-    sh/pipeline start setups/print-apply agent
-    sh/pipeline start setups/print-apply dashboard
-    sh/pipeline start setups/print-apply dashboard play
+    shell/pipeline start
+    shell/pipeline start setups/print-apply agent
+    shell/pipeline start setups/print-apply dashboard
+    shell/pipeline start setups/print-apply dashboard play
 
 Note: services are referenced by their 'profile' attribute in compose.yaml.
 Note: use 'docker stop SERVICE' to stop an individual service.
@@ -36,7 +36,7 @@ shift
 services=$* # eg 'agent play'
 
 # file paths
-pipeline="pipeline/compose.yaml"
+pipeline="services/compose.yaml"
 overrides="$setup/compose-overrides.yaml"
 envfile="$setup/.env"
 # baseEnvfile="setups/.env"
@@ -85,13 +85,13 @@ bash -c "export SETUP=$setup && $cmd"
 # will end up with a command like
 # export SETUP=../client-nis \
 #   docker-compose \
-#   --file pipeline/compose.yaml \
+#   --file services/compose.yaml \
 #   --file ../client-nis/compose-overrides.yaml \
 #   --env-file ../client-nis/.env \
 #   --profile dashboard \
 #   pull && \
 #   docker-compose \
-#   --file pipeline/compose.yaml \
+#   --file services/compose.yaml \
 #   --file ../client-nis/compose-overrides.yaml \
 #   --env-file ../client-nis/.env \
 #   --profile dashboard \
