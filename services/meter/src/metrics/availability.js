@@ -199,7 +199,11 @@ export class Metric {
     console.log(`Meter - check if device was active between`, start, stop)
     const sql = `
       select count(value) > 0 as active
-      from history_all
+      -- just look at _float, not _all - _all includes "0"'s, which don't get plotted
+      -- on the partcount graph, but can affect the availability score - so it
+      -- looks like the availability has some spurious value. 
+      -- from history_all
+      from history_float
       where
         device = '${this.device.name}'
         and path = '${this.metric.activePath}'
