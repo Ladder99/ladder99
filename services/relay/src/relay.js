@@ -10,11 +10,11 @@ import * as lib from './lib.js'
 console.log(`Ladder99 Relay`)
 console.log(`---------------------------------------------------`)
 
-// get envars - typically set in pipeline.yaml and pipeline-overrides.yaml files
+// get envars - typically set in compose.yaml and compose-overrides.yaml files
 const params = {
   // AGENT_URLS can be a single url, a comma-delim list of urls, or a txt filename with urls.
   // these are the agents we'll be reading from.
-  // currently set in pipeline-overrides.yaml, but
+  // currently set in compose-overrides.yaml, but
   //. eventually will read from setup.xml or setup.yaml - could be per device and/or defaults
   agentEndpoints: process.env.AGENT_ENDPOINTS || 'http://localhost:5000',
   //. these will need to be dynamic - adjusted on the fly

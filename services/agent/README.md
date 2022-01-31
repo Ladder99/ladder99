@@ -2,7 +2,7 @@
 
 Docker image for the MTConnect Agent with custom stylesheets.
 
-See pipeline/mtconnect-agent in this repo for the base MTConnect Agent image.
+See services/mtconnect-agent in this repo for the base MTConnect Agent image.
 
 moving to the mtconnect cppagent repo
 

@@ -1,7 +1,7 @@
 # setup for cpc autoclaves
 
 #. will compile this with sh/compile
-#. will compile to agent.cfg, agent.xml, pipeline-overrides.yaml, topology.dot?
+#. will compile to agent.cfg, agent.xml, compose-overrides.yaml, topology.dot?
 #. include in sh/start steps? ie always compile this file (or if changed)
 
 devices:
@@ -14,7 +14,7 @@ devices:
     #. be careful with multiple sources - don't want to clobber dataitems.
     sources:
       - module: autoclave/asc # defines inputs/outputs - see modules/autoclave/asc
-        driver: autoclave/cpc # adapter driver code - see pipeline/adapter/src/drivers/autoclave - manages protocol and payload
+        driver: autoclave/cpc # adapter driver code - see services/adapter/src/drivers/autoclave - manages protocol and payload
         protocol: tcp
         # host: 10.20.30.101
         host: 10.1.10.211

@@ -1,6 +1,6 @@
 # relay dockerfile
 # based on https://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
-# keep in synch with pipeline/adapter/Dockerfile
+# keep in synch with services/adapter/Dockerfile
 
 # FROM node:15  # huge 350mb compressed images
 # FROM node:15-alpine  # smallest, but harder to work with

@@ -20,7 +20,7 @@
 # note: category is used to determine shdr representation.
 # only need to specify category if CONDITION.
 # only need to specify type if is MESSAGE.
-# see end of pipeline/adapter/src/cache.js for details.
+# see end of services/adapter/src/cache.js for details.
 
 outputs:
   # ------------------------------------------------------------------

@@ -44,8 +44,8 @@ jobs:
       - name: Build image and push to DockerHub
         uses: docker/build-push-action@v2
         with:
-          context: pipeline/${{ env.service }}
-          file: pipeline/${{ env.service }}/Dockerfile
+          context: services/${{ env.service }}
+          file: services/${{ env.service }}/Dockerfile
           platforms: ${{ env.platforms }}
 
           # docker hub user/repo:tag

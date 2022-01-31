@@ -13,7 +13,7 @@ services:
   adapter:
     container_name: adapter
     # image: ladder99/adapter:latest # use this if build docker image and push to hub
-    # build: ../pipeline/adapter # see Dockerfile in this folder
+    # build: ../services/adapter # see Dockerfile in this folder
     build: ./adapter # see Dockerfile in this folder
     # set this to give permission to access hardware (e.g. dymo scale in usb port).
     #. security hole - leave off for now, until need dymo driver.

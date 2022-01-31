@@ -2,9 +2,9 @@
 
 # compile a setup's config/setup.yaml to agent.xml etc
 
-SETUP=$1  # setup folder, eg 'setups/test/print-apply'
+SETUP=$1  # setup folder, eg 'setups/print-apply'
 
-node pipeline/compiler/src/compile-xml.js \
+node services/compiler/src/compile-xml.js \
   $SETUP/setup.yaml \
   $SETUP/volumes/agent/agent.xml
 
@@ -15,7 +15,7 @@ node pipeline/compiler/src/compile-xml.js \
 
 # # compile agent.xml from model setup.yaml
 # compile-xml SETUP='setups/demo':
-#     node pipeline/compiler/src/compile-xml.js \
+#     node services/compiler/src/compile-xml.js \
 #     {{SETUP}}/setup.yaml \
 #     {{SETUP}}/volumes/agent/agent.xml
 

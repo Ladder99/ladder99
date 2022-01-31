@@ -7,7 +7,7 @@
 # define cache inputs - mqtt topics, how to parse them and put them into cache.
 # see outputs.yaml for cache output as shdr.
 
-# this file is parsed by the adapter driver pipeline/adapter/src/drivers/mqtt-json.js.
+# this file is parsed by the adapter driver services/adapter/src/drivers/mqtt-json.js.
 
 # define handlers
 handlers:

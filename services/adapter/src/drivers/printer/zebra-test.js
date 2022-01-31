@@ -1,6 +1,6 @@
 // test the zebra response parsers
 // run with
-//   cd pipeline/adapter/src/drivers/printer
+//   cd services/adapter/src/drivers/printer
 //   node zebra-test.js
 
 import * as parsers from './zebra-parsers.js'

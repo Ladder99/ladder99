@@ -1,5 +1,5 @@
 # inputs
-# this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
+# this file is parsed by the adapter driver services/adapter/src/drivers/cpc.js.
 
 #. call this cache.yaml? cache-inputs.yaml? driver.yaml?
 

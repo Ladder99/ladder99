@@ -4,4 +4,4 @@ A setup defines the devices in a network, their module definitions, and configur
 
 The directories here are examples used to develop the different modules.
 
-The pipeline service defaults are set in pipeline/compose.yaml - each setup should have a setup.yaml file and any pipeline setting overrides in compose-overrides.yaml.
+The pipeline service defaults are set in `services/compose.yaml` - each setup should have a setup.yaml file and any pipeline setting overrides in compose-overrides.yaml.

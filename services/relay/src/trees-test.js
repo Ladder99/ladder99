@@ -1,5 +1,5 @@
 // run:
-// cd pipeline/relay
+// cd services/relay
 // npm test
 // or
 // node src/trees-test.js

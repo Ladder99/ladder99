@@ -3,7 +3,7 @@
 # these outputs define the shdr strings that are calculated from the cache
 # and sent to the agent.
 
-# this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
+# this file is parsed by the adapter driver services/adapter/src/drivers/cpc.js.
 
 # left side is shdr key (will have $deviceNum appended).
 # right side is javascript, evaluated by the cache in calculating the shdr output.

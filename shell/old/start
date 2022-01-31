@@ -16,7 +16,7 @@ Examples
     sh/start setups/test/micro all
     sh/start setups/test/print-apply all play
 
-Note: services are referenced by their 'profile' attribute in pipeline.yaml.
+Note: services are referenced by their 'profile' attribute in compose.yaml.
 Note: use sh/stop to stop a service.
 "
 # use 'docker kill SERVICE' to stop an individual service.

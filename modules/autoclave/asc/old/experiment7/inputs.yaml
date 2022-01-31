@@ -1,6 +1,6 @@
 # cache inputs
 
-# this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
+# this file is parsed by the adapter driver services/adapter/src/drivers/cpc.js.
 
 # cache key on left, source path on right
 inputs:

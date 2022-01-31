@@ -11,7 +11,7 @@ import libyaml from 'js-yaml' // see https://github.com/nodeca/js-yaml
 
 // load setup yaml, eg from ../client-oxbox/setup.yaml
 export function readSetup() {
-  // defined in pipeline.yaml with docker volume mappings
+  // defined in compose.yaml with docker volume mappings
   const setupFolder = '/data/setup' // incls setup.yaml etc
   const yamlfile = `${setupFolder}/setup.yaml`
   console.log(`Reading ${yamlfile}...`)

@@ -1,6 +1,6 @@
 // test metric calcs
 // run:
-//   cd pipeline/relay/src/tracker
+//   cd services/relay/src/tracker
 //   node tracker-test.js
 
 import * as tracker from './tracker.js'

@@ -1,6 +1,6 @@
 // test helper fns
 // usage:
-//   cd pipeline/adapter
+//   cd services/adapter
 //   node src/helpers-test.js
 
 import * as helpers from './helpers.js'

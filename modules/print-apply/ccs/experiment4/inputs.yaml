@@ -10,7 +10,7 @@
 # mqtt broker sends data to adapter.
 # adapter parses messages, writes values to cache, which outputs shdr.
 
-# this file is parsed by the adapter driver pipeline/adapter/src/drivers/mqtt-json.js.
+# this file is parsed by the adapter driver services/adapter/src/drivers/mqtt-json.js.
 
 # define handlers
 handlers:

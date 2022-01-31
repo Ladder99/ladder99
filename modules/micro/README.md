@@ -2,4 +2,4 @@
 
 eg for server, NanoPi, Raspberry Pi, ...
 
-See pipeline/adapter/src/drivers/micro.js
+See services/adapter/src/drivers/micro.js

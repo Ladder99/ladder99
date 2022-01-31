@@ -1,7 +1,7 @@
 # data
 # defines device inputs, cache keys, output shdr keys, and any calculations
 
-# this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
+# this file is parsed by the adapter driver services/adapter/src/drivers/cpc.js.
 
 # each dataitem can include the following:
 #   input - a device-dependent descriptor for the input source.

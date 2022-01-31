@@ -1,5 +1,5 @@
 # cache
-# this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
+# this file is parsed by the adapter driver services/adapter/src/drivers/cpc.js.
 
 # these outputs are placed in the model.yaml tree and define the
 # shdr strings that are calculated from the cache and sent to the agent.

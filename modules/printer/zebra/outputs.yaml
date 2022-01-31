@@ -3,7 +3,7 @@
 # these outputs are placed in the module.xml tree and define the
 # shdr strings that are calculated from the cache and sent to the agent.
 
-# see pipeline/adapter/src/drivers/printer/zebra.js for cache inputs.
+# see services/adapter/src/drivers/printer/zebra.js for cache inputs.
 
 # the item's id in the xml and the shdr key is `${deviceId}-${key}`
 # the shdr value is defined with the item value code.
@@ -14,7 +14,7 @@
 # category is used to determine shdr representation.
 # default category is EVENT or SAMPLE - specify for others.
 # specify type if is MESSAGE.
-# see end of pipeline/adapter/src/cache.js for details.
+# see end of services/adapter/src/cache.js for details.
 
 outputs:
   - key: avail

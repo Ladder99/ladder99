@@ -1,8 +1,8 @@
 # setup for microcontroller
 
 # compile this with sh/compile
-#. will compile to agent.cfg, agent.xml, pipeline-overrides.yaml, topology.dot?
-#. include that in sh/pipeline steps? ie always compile this file (or if changed)
+#. will compile to agent.cfg, agent.xml, compose-overrides.yaml, topology.dot?
+#. include that in ./start steps? ie always compile this file (or if changed)
 
 devices:
   - id: m1

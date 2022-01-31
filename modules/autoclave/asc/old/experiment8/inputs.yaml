@@ -1,6 +1,6 @@
 # inputs
 
-# this file is parsed by the adapter driver pipeline/adapter/src/drivers/cpc.js.
+# this file is parsed by the adapter driver services/adapter/src/drivers/cpc.js.
 
 # the device driver polls each input using the source field.
 # results are written to the cache, which outputs shdr to the agent as needed.

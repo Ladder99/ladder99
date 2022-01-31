@@ -37,7 +37,7 @@ name: build-agent
 
 # define variables - used below
 env:
-  # note: service names correspond to folders in the pipeline folder
+  # note: service names correspond to folders in the services folder
   # service: mtconnect-agent
   service: agent
   version: 1.7.0.3-0.1.2
@@ -73,8 +73,8 @@ jobs:
       - name: Build image and push to DockerHub
         uses: docker/build-push-action@v2
         with:
-          context: pipeline/${{ env.service }}
-          file: pipeline/${{ env.service }}/Dockerfile
+          context: services/${{ env.service }}
+          file: services/${{ env.service }}/Dockerfile
           platforms: ${{ env.platforms }}
 
           # docker hub user/repo:tag

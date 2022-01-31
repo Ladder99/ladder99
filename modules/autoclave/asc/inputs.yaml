@@ -1,6 +1,6 @@
 # inputs
 
-# this file is parsed by the adapter driver pipeline/adapter/src/drivers/autoclave/cpc.js.
+# this file is parsed by the adapter driver services/adapter/src/drivers/autoclave/cpc.js.
 
 inputs:
   - key: control_power_warning

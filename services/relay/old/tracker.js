@@ -1,6 +1,6 @@
 // Track events every n seconds and increment bins as needed.
 
-//. this got replaced by the Meter service - see pipeline/meter
+//. this got replaced by the Meter service - see services/meter
 
 //. pass in through constructor, with devices and metrics to track.
 const path = 'controller/partOccurrence/part_count-all'

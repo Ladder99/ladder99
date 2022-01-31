@@ -6,7 +6,7 @@
 # compilation to devices.xml is done with sh/compile.
 
 # borrowing bits from system-insights vmc, mazak, and agie cnc xmls:
-# vmc https://github.com/Ladder99/ladder99/blob/main/pipeline/relay/examples/vmc/probe.xml
+# vmc https://github.com/Ladder99/ladder99/blob/main/services/relay/examples/vmc/probe.xml
 # mazak http://mtconnect.mazakcorp.com:5717/  https://smstestbed.nist.gov/vds/
 # agie https://smstestbed.nist.gov/vds/
 

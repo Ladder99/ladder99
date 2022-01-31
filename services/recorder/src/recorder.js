@@ -15,7 +15,7 @@ const { mode = 'play' } = options
 
 // file system inputs
 const pluginsFolder = './plugins'
-// defined in pipeline.yaml with docker volume mappings
+// defined in compose.yaml with docker volume mappings
 const modulesFolder = '/data/modules' // incls print-apply/recordings, etc
 
 console.log()

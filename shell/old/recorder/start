@@ -15,7 +15,7 @@ HOST_FOLDER=$1
 shift
 
 # build docker image for recorder
-docker build --tag recorder pipeline/recorder
+docker build --tag recorder services/recorder
 
 # run the docker image as a container
 # -it is for interactive terminal

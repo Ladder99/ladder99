@@ -1,20 +1,20 @@
 #!/bin/sh
 
 # run pipeline with docker run.
-# use when docker-compose is not available, as used in sh/pipeline.
+# use when docker-compose is not available, as used in shell/pipeline.
 # runs mosquitto, adapter, agent, recorder, and portainer services.
 # usage:
-#   sh/docker/run [SETUP [NETWORK]]
+#   shell/docker/run [SETUP [NETWORK]]
 # examples:
-#   sh/docker/run
-#   sh/docker/run setups/test/print-apply ladder99
+#   shell/docker/run
+#   shell/docker/run setups/print-apply ladder99
 
-# SETUP=${1:-"setups/test/print-apply"}
+# SETUP=${1:-"setups/print-apply"}
 # NETWORK=${2:-"host"}
 # shift
 # shift
 # SERVICES=${*:-"portainer mosquitto adapter agent recorder"}
-SETUP=setups/test/print-apply
+SETUP=setups/print-apply
 NETWORK=host
 SERVICES=portainer mosquitto adapter agent
 MODULE=print-apply
@@ -40,7 +40,7 @@ do
   fi
 
   if [ $service = "adapter" ]; then
-    #docker build --tag ladder99/adapter:latest pipeline/adapter
+    #docker build --tag ladder99/adapter:latest services/adapter
     $RUN --name adapter --network $NETWORK \
       -v $(pwd)/$SETUP:/data/setup \
       -v $(pwd)/modules:/data/modules \
@@ -57,7 +57,7 @@ do
   fi
 
   if [ $service = "recorder" ]; then
-    docker build --tag ladder99/recorder:latest pipeline/recorder
+    docker build --tag ladder99/recorder:latest services/recorder
     $RUN --name recorder --network $NETWORK \
       -v $(pwd)/modules:/data/modules \
       ladder99/recorder:latest \
