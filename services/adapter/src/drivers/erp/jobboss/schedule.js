@@ -145,7 +145,7 @@ export class Schedule {
           join Shift_Day sd on wss.Shift_ID=sd.Shift
         where WorkCenter_OID=${workcenter} and Sequence=${sequence}
       `
-      console.log(result2)
+      // console.log(result2)
       if (result2.recordset.length > 0) {
         start = result2.recordset[0].start // eg 1970-01-01T05:00:00Z - note the Z
         stop = result2.recordset[0].stop // eg 1970-01-01T13:30:00Z
