@@ -354,9 +354,8 @@ join nodes as devices on bins.device_id = devices.node_id;
 create or replace function get_availability_from_metrics_view(
   in p_device text, -- the device name, eg 'Cutter'
   in p_start bigint, -- start time in milliseconds since 1970-01-01
-  -- in p_stop bigint -- stop time in milliseconds since 1970-01-01
   in p_stop bigint, -- stop time in milliseconds since 1970-01-01
-  in p_binsize text = null
+  in p_binsize text = null -- override calculated bin size, eg 'day'
 )
 returns table ("time" timestamptz, "availability" float)
 language plpgsql
