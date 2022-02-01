@@ -51,7 +51,7 @@ export class Cache {
   // eg set('ac1-power_warning', true)
   // options is { timestamp, quiet }
   // timestamp is an optional STRING that is used in the SHDR
-  set(key, value, options) {
+  set(key, value, options = {}) {
     if (!options.quiet)
       console.log('cache.set', key, String(value).slice(0, 99))
     // update the cache value
