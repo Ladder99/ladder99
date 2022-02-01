@@ -50,8 +50,10 @@ export class Cache {
   // set a key-value pair in the cache.
   // eg set('ac1-power_warning', true)
   // timestamp is an optional STRING that is used in the SHDR
-  set(key, value, timestamp = '') {
-    console.log('cache.set', key, String(value).slice(0, 99))
+  //. pass timestamp in an options object, so can extend this,
+  // eg with a quiet flag
+  set(key, value, { timestamp = '', quiet = false }) {
+    if (!quiet) console.log('cache.set', key, String(value).slice(0, 99))
     // update the cache value
     this._map.set(key, value)
     // get list of outputs associated with this key
@@ -65,7 +67,8 @@ export class Cache {
       if (value !== output.lastValue) {
         // const shdr = getShdr(this, output, value, timestamp)
         const shdr = getShdr(output, value, timestamp) // timestamp can be ''
-        console.log(`shdr changed - sending to tcp - ${shdr.slice(0, 60)}...`)
+        if (!quiet)
+          console.log(`shdr changed - sending to tcp - ${shdr.slice(0, 60)}...`)
         try {
           output.socket.write(shdr + '\n')
           output.lastValue = value

@@ -71,8 +71,12 @@ export class Schedule {
           // this.cache.set(`${device.id}-start`, schedule.start, schedule.start)
           // this.cache.set(`${device.id}-complete`, schedule.stop, schedule.stop)
           const datetimeStr = datetime.toISOString()
-          this.cache.set(`${device.id}-start`, schedule.start, datetimeStr)
-          this.cache.set(`${device.id}-complete`, schedule.stop, datetimeStr)
+          this.cache.set(`${device.id}-start`, schedule.start, {
+            timestamp: datetimeStr,
+          })
+          this.cache.set(`${device.id}-complete`, schedule.stop, {
+            timestamp: datetimeStr,
+          })
         }
 
         // update cookie

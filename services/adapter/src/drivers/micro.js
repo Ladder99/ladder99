@@ -62,7 +62,8 @@ export class AdapterDriver {
     }
 
     function setValue(name, value) {
-      cache.set(`${deviceId}-${name}`, value)
+      // cache.set(`${deviceId}-${name}`, value)
+      cache.set(`${deviceId}-${name}`, value, { quiet: true })
     }
   }
 }
