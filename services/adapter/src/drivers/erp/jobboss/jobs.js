@@ -4,7 +4,7 @@
 
 const pollInterval = 5000 // ms - ie poll for job num every 5 secs
 
-const cookiePath = '/data/adapter/cookies/jobboss/jobs.json'
+// const cookiePath = '/data/adapter/cookies/jobboss/jobs.json'
 
 export class Jobs {
   // will check jobnum for each device in devices
@@ -58,9 +58,9 @@ export class Jobs {
           order by
             actual_start desc
         `
-        console.log(sql)
+        // console.log(sql)
         const result = await this.pool.query(sql)
-        console.log(`JobBoss result`, result)
+        // console.log(`JobBoss result`, result)
         const job = result.recordset.length > 0 && result.recordset[0].job
         this.cache.set(`${device.id}-job`, job)
       }

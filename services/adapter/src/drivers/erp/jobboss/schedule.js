@@ -39,7 +39,10 @@ export class Schedule {
       cookie = JSON.parse(s)
       console.log(`JobBoss - cookie`, cookie)
     } catch (e) {
-      console.log(`JobBoss - missing cookie file - using default start offset`)
+      console.log(
+        `JobBoss - missing cookie file - using default start date`,
+        defaultStart
+      )
     }
 
     // loop over devices from setup.yaml
@@ -121,7 +124,7 @@ export class Schedule {
       from WCShift_Override
       where WorkCenter_OID=${workcenter} and cast(Date as date)=${dateString}
     `
-    console.log(result1)
+    // console.log(result1)
 
     let start = null
     let stop = null
