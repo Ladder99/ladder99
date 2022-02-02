@@ -5,8 +5,8 @@
 
 # version must be a string
 # note: '3' here means '3.0'
-# version: '3.8' # doesn't work with docker-compose package on ubuntu 20.04
-version: '3.7' # allows init keyword
+# version: '3.7' # allows init keyword
+version: '3.8' # doesn't work with docker-compose package on ubuntu 20.04
 
 services:
   # adapter - convert machine data to shdr and send to agent
