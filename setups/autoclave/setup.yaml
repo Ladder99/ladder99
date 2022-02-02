@@ -9,7 +9,7 @@ devices:
   # autoclave
   # --------------------------------------------------------------------
   - id: ac1 #. where used? constraints? why short?
-    name: autoclave1 # this must match name in agent.cfg and agent.xml
+    name: Autoclave1 # this must match name in agent.cfg and agent.xml
 
     # specify sources for dataitem values
     #. eg could have multiple thermometers for a machine, or doors?

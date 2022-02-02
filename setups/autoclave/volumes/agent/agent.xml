@@ -5,6 +5,7 @@
   <Devices>
 
     <!-- Micro -->
+    <!-- device name must match that in agent.cfg and setup.yaml -->
     <Device id="m" name="Micro" uuid="m" sampleInterval="5">
       <DataItems>
         <DataItem id="m-avail" name="availability" category="EVENT" type="AVAILABILITY" />
@@ -20,7 +21,8 @@
     </Device>
 
     <!-- Autoclave -->
-    <Device id="ac1" name="autoclave1" uuid="a123" sampleInterval="10">
+    <!-- device name must match that in agent.cfg and setup.yaml -->
+    <Device id="ac1" name="Autoclave1" uuid="a123" sampleInterval="10">
       <Description manufacturer="ASC" model="autoclave" serialNumber="001">
         ASC autoclave
       </Description>
