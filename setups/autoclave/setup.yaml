@@ -1,13 +1,15 @@
 # setup for cpc autoclaves
 
-#. will compile this with sh/compile
+#. will compile this with shell/compile
 #. will compile to agent.cfg, agent.xml, compose-overrides.yaml, topology.dot?
-#. include in sh/start steps? ie always compile this file (or if changed)
+#. include in ./start steps? ie always compile this file (or if changed)
 
 devices:
-  - id: ac1
+  # --------------------------------------------------------------------
+  # autoclave
+  # --------------------------------------------------------------------
+  - id: ac1 #. where used? constraints? why short?
     name: autoclave1 # this must match name in agent.cfg and agent.xml
-    # module: autoclave/asc #. not used yet
 
     # specify sources for dataitem values
     #. eg could have multiple thermometers for a machine, or doors?
@@ -20,8 +22,7 @@ devices:
         host: 10.1.10.211
         port: 9999
 
-    #. this should be server, not destinations - for agent to connect to
     destinations: # where to post output - just uses first output for now
       - protocol: shdr
         host: adapter
-        port: 7878
+        port: 7878 # must match agent.cfg value
