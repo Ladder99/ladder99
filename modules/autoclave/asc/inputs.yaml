@@ -3,6 +3,7 @@
 # this file is parsed by the adapter driver services/adapter/src/drivers/autoclave/cpc.js.
 
 inputs:
+  #. explain key, path, type
   - key: control_power_warning
     path: .Autoclave.Alarms.ControlPower\Condition
     type: boolean

@@ -3,54 +3,56 @@
 # these outputs are placed in the module.xml tree and define the
 # shdr strings that are calculated from the cache and sent to the agent.
 
-# the item's key (eg 'connection') together with the deviceId (eg 'pa1')
-# form its id in the xml (eg 'pa1-connection').
+# the item's key (eg 'avail') together with the deviceId (eg 'ac1')
+# form its id in the xml (eg 'ac1-avail').
 # the shdr key is the same as the id.
 # the shdr value is defined with the item value code.
 
 # value is javascript, evaluated by the cache in calculating the shdr output.
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo')
 
+# each output corresponds with a dataitem defined in agent.xml
 outputs:
+  #. explain key, category, type, value
   - key: avail
-    category: EVENT
+    # category: EVENT # default category is EVENT, so don't need to specify
     value: <avail>
 
   - key: message
-    category: EVENT
-    type: MESSAGE
+    # category: EVENT
+    type: MESSAGE # uses different shdr structure
     value: <message>
 
   - key: operator_name
     category: EVENT
-    type: USER
-    subType: OPERATOR
+    # type: USER
+    # subType: OPERATOR
     value: <operator_name>
 
   - key: recipe_description
-    category: EVENT
-    type: PROCESS_KIND_ID
-    subType: PROCESS_NAME
+    # category: EVENT
+    # type: PROCESS_KIND_ID
+    # subType: PROCESS_NAME
     value: <recipe_description>
 
   - key: vessel_air_temp
     category: SAMPLE
-    type: TEMPERATURE
-    nativeUnits: FAHRENHEIT
-    units: CELSIUS
+    # type: TEMPERATURE
+    # nativeUnits: FAHRENHEIT
+    # units: CELSIUS
     value: <vessel_air_temp>
 
   - key: control_power_condition
     category: CONDITION
-    type: VOLTAGE_DC
+    # type: VOLTAGE_DC
     value: "<control_power_fault> ? 'FAULT' : <control_power_warning> ? 'WARNING' : 'NORMAL'"
 
   - key: cool_pump_a_hours
     category: SAMPLE
-    type: EQUIPMENT_TIMER
-    subType: OPERATING
-    units: SECOND
-    nativeUnits: HOUR
+    # type: EQUIPMENT_TIMER
+    # subType: OPERATING
+    # units: SECOND
+    # nativeUnits: HOUR
     # cool_pump_a_hours is in hours, not sure what the correct scale there is , part 2 , 7.2.2.7
     # nativeScale: ???
     value: <cool_pump_a_hours>
