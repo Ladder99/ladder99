@@ -16,7 +16,7 @@ MTConnect standardizes factory device data flow and vocabulary - it was started 
 
 Ladder99 is developed by MRIIOT, your agile digital transformation partners.
 
-![screenshot](https://docs.ladder99.com/wiki/agent-html_1200.jpg)
+![screenshot](design/screenshots/agent-html_1200.jpg)
 
 ## Folders
 
@@ -27,7 +27,7 @@ Ladder99 is developed by MRIIOT, your agile digital transformation partners.
 - setups - example setups to demonstrate different modules
 - shell - shell scripts
 
-Adapter plugins are defined in services/adapter/src/plugins.
+Adapter plugins are defined in services/adapter/src/drivers.
 
 ## Links
 
