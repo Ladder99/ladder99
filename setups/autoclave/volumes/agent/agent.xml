@@ -4,6 +4,22 @@
   <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.7.0.3" />
   <Devices>
 
+    <!-- Micro -->
+    <Device id="m" name="Micro" uuid="m" sampleInterval="5">
+      <DataItems>
+        <DataItem id="m-avail" name="availability" category="EVENT" type="AVAILABILITY" />
+        <DataItem id="m-cond" name="condition" category="CONDITION" type="SYSTEM" />
+        <DataItem id="m-temp" name="temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" />
+        <!-- <DataItem id="m-memtot" name="memory-total" category="SAMPLE" type="x:MEMORY" subType="x:TOTAL" units="x:BYTES" /> -->
+        <!-- . use memavail instead, put in nis also -->
+        <DataItem id="m-memfree" name="memory-free" category="SAMPLE" type="x:MEMORY" subType="x:FREE" units="x:BYTES" />
+        <DataItem id="m-memused" name="memory-used" category="SAMPLE" type="x:MEMORY" subType="x:USED" units="x:BYTES" />
+        <DataItem id="m-cputot" name="cpu-total" category="SAMPLE" type="x:CPU" subType="x:TOTAL" units="x:PERCENTAGE" />
+        <DataItem id="m-os" name="os" category="EVENT" type="VARIABLE" subType="x:OS" representation="DATA_SET" />
+      </DataItems>
+    </Device>
+
+    <!-- Autoclave -->
     <Device id="ac1" name="autoclave1" uuid="a123" sampleInterval="10">
       <Description manufacturer="ASC" model="autoclave" serialNumber="001">
         ASC autoclave
