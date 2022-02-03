@@ -1,5 +1,6 @@
+------------------------------------------------------------------
 -- sample queries
-
+------------------------------------------------------------------
 
 -- get latest jobnums for a workcenter
 select top 10
@@ -15,12 +16,44 @@ order by
   actual_start desc
 
 
+-- check if workcenter has a schedule override for a certain date.
+-- returns Shift_ID of the override shift, and Is_Work_Day=0 or 1,
+-- or no record if no override.
+select
+  Shift_ID, 
+  Is_Work_Day 
+from
+  WCShift_Override
+where 
+  WorkCenter_OID='8EE4B90E-7224-4A71-BE5E-C6A713AECF59' -- marumatsu
+  and cast(Date as date)='2022-02-03';
+
+-- if no record then lookup workcenter in WCShift_Standard.
+-- get shift_id, look that up with sequencenum in shift_day table for start/end
+-- (or do a join query)
+select cast(Start_Time as time) start, cast(End_Time as time) stop
+from WCShift_Standard wss
+  join Shift_Day sd on wss.Shift_ID=sd.Shift
+where WorkCenter_OID='8EE4B90E-7224-4A71-BE5E-C6A713AECF59' -- marumatsu
+  and Sequence=1 -- day of week, 1=mon
 
 
+-- if override and isworkday then lookup hours in shift_day table -
+--   get shift_id, lookup in shift_day table with dayofweek for sequencenum
+--   get start/end times from record
+select cast(Start_Time as time) start, cast(End_Time as time) stop
+from WCShift_Override wso
+  join Shift_Day sd on wso.Shift_ID = sd.Shift
+where WorkCenter_OID='8EE4B90E-7224-4A71-BE5E-C6A713AECF59' -- marumatsu
+  and Date='2022-01-22' and Sequence=6
 
 
+------------------------------------------------------------------
+-- experiments
+------------------------------------------------------------------
 
--- sql1
+-- get sequence for a date, with 1=monday
+-- and sd.[Sequence] = (@@datefirst - 1 + datepart(weekday, getdate()) ) % 7
 
 -- get day of week of a datetime
 -- sunday will always be zero
@@ -29,6 +62,29 @@ select (@@datefirst - 1 + datepart(weekday, getdate()) ) % 7;
 
 -- get time from a datetime
 select cast(getdate() as time);
+
+
+select @@datefirst; -- 7 ie sunday
+select (@@datefirst - 1 + datepart(weekday, '2022-01-13')) % 7 -- 4=thu, with sun=0 
+
+select convert(varchar, '2022-01-13', 1); -- '2022-01-13'
+
+select datepart(weekday, '2022-01-13'); -- 5=thurs, so sun=1 - subtract 1
+
+--select datefirst;
+
+select top 10 * from shift_day;
+
+select top 50 objectid, Shift_ID, hours, WorkCenter_OID from WCShift_Standard;
+
+select top 20 work_center, type, note_text, parent_id from work_center;
+
+select top 10 * from Shift_Override;
+
+
+------------------------------------------------------------------
+-- old
+------------------------------------------------------------------
 
 -- get default schedule for a shift and datetime (getdate() here), eg 
 --   shift, day, start, stop
@@ -49,9 +105,6 @@ where
 order by
   s.Shift_Name, sd.Sequence;
 
-
-----------------------------------------
--- sql2
 
 -- get override schedule
 -- this query gives override dates - holidays, saturdays, etc.
@@ -77,13 +130,6 @@ where
   --and wc.Work_Center = 'MARUMATSU'
 order by
   wso.Last_Updated desc;
-
-
-
-
---------------------------------------
-
--- sql3
 
 
 -- wc schedule
@@ -123,7 +169,6 @@ order by
   s.Shift_Name, sd.Sequence 
 ;
 
-
 -- This should return a result of 0 records for today if there are no 
 -- overrides for today. If a record is returned then there is an override 
 -- for the day and we need to use that. 
@@ -152,28 +197,6 @@ order by
   wso.date desc
 ;
 
-
-select @@datefirst; -- 7 ie sunday
-select (@@datefirst - 1 + datepart(weekday, '2022-01-13')) % 7 -- 4=thu, with sun=0 
-
-select convert(varchar, '2022-01-13', 1); -- '2022-01-13'
-
-select datepart(weekday, '2022-01-13'); -- 5=thurs, so sun=1 - subtract 1
-
---select datefirst;
-
-select top 10 * from shift_day;
-
-select top 50 objectid, Shift_ID, hours, WorkCenter_OID from WCShift_Standard;
-
-select top 20 work_center, type, note_text, parent_id from work_center;
-
-select top 10 * from Shift_Override;
-
-
------------------------
-
--- sql4
 
 -- get override start/stop times
 select top 10
@@ -206,3 +229,4 @@ where 1=1
   and sd.[Sequence] = 5
 --order by 
 --  wso.Last_Updated desc;
+
