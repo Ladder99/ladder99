@@ -128,11 +128,8 @@ export class Schedule {
       from WCShift_Override
       where WorkCenter_OID=${workcenter} and cast(Date as date)=${dateString}
     `
-    // console.log(result1)
-
     let start = null
     let stop = null
-
     if (result1.recordset.length === 0) {
       //
       console.log(`JobBoss - no override record, so get standard schedule...`)

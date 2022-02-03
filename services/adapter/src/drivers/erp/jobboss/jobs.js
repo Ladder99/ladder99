@@ -48,6 +48,7 @@ export class Jobs {
       if (device.jobbossId) {
         // get the most recently started job for this workcenter/device.
         // can also use where work_center='MARUMATSU', but not guaranteed unique.
+        //. check status for completion? (S=started, C=complete?)
         const sql = `
           select top 1
             job
@@ -58,9 +59,7 @@ export class Jobs {
           order by
             actual_start desc
         `
-        // console.log(sql)
         const result = await this.pool.query(sql)
-        // console.log(`JobBoss result`, result)
         const job = result.recordset.length > 0 && result.recordset[0].job
         this.cache.set(`${device.id}-job`, job)
       }

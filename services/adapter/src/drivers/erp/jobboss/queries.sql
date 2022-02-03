@@ -1,4 +1,23 @@
--- sample query playground
+-- sample queries
+
+
+-- get latest jobnums for a workcenter
+select top 10
+  actual_start as time,
+  job,
+  status, -- S started, C completed?
+  *
+from
+  job_operation
+where
+  workcenter_oid = '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' -- marumatsu
+order by
+  actual_start desc
+
+
+
+
+
 
 
 -- sql1
