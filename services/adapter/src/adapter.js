@@ -20,6 +20,7 @@ const driversFolder = './drivers' // eg mqtt-json - must start with '.'
 // this folder is defined in compose.yaml with docker volume mappings
 const modulesFolder = `/data/modules` // incls print-apply/module.xml etc
 
+console.log()
 console.log(`Ladder99 Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
 console.log(`posts to TCP.`)

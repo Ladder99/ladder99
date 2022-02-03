@@ -7,6 +7,7 @@ import { AgentReader } from './agentReader.js'
 import { Endpoint } from './endpoint.js'
 import * as lib from './lib.js'
 
+console.log()
 console.log(`Ladder99 Relay`)
 console.log(`---------------------------------------------------`)
 

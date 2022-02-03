@@ -4,6 +4,7 @@
 import { Db } from './db.js'
 import * as lib from './lib.js'
 
+console.log()
 console.log(`Ladder99 Meter`)
 console.log(`---------------------------------------------------`)
 
