@@ -35,6 +35,7 @@ services:
   # agent - take in shdr and output xml/json/html
   agent:
     container_name: agent
+    #. use mtconnect/agent once they publish it to docker hub
     image: ladder99/agent:latest
     profiles:
       - all
