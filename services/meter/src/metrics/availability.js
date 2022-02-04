@@ -219,6 +219,7 @@ export class Metric {
   // rounds the given time down to nearest min, hour, day, week etc,
   // and increments the given field for each.
   // field is eg 'active', 'available'.
+  //. what timezone is time in? what about timeISO?
   async incrementBins(time, field, delta = 1) {
     const timeISO = time.toISOString()
     for (let resolution of resolutions) {
@@ -226,9 +227,9 @@ export class Metric {
       const sql = `
         insert into bins (device_id, resolution, time, ${field})
           values (
-            ${this.device.node_id}, 
-            ('1 '||'${resolution}')::interval, 
-            date_trunc('${resolution}', '${timeISO}'::timestamptz), 
+            ${this.device.node_id},
+            ('1 '||'${resolution}')::interval,
+            date_trunc('${resolution}', '${timeISO}'::timestamptz),
             ${delta}
           )
         on conflict (device_id, resolution, time) do
