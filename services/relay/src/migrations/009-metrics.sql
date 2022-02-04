@@ -367,7 +367,7 @@ declare
   v_range interval := v_stop - v_start;
   -- choose v_binsize based on v_range size
   v_binsize interval := case 
-    when (p_binsize is not null) then '1 '||p_binsize
+    when (p_binsize is not null) then '1 '||p_binsize -- eg '1 day'
     -- note: interval of month or greater is not supported by postgres!
     -- when (v_range > interval '2 months') then '1 month'
     when (v_range > interval '2 weeks') then '1 week'
@@ -378,19 +378,19 @@ declare
 begin
   return query
 
-  --. maybe this is all we need - the query below this one does gapfilling
-   select 
-     metrics.time, metrics.availability
-   from 
-     metrics
-   where 
-     metrics.device = p_device
-     and resolution = v_binsize
-     and metrics.time between v_start and v_stop
-   order by 
-     time
-   ;
+    select 
+      metrics.time, metrics.availability
+    from 
+      metrics
+    where 
+      metrics.device = p_device -- eg 'Cutter'
+      and resolution = v_binsize -- eg '1 day'
+      and metrics.time between v_start and v_stop
+    order by 
+      time
+    ;
 
+    -- -- this query does gapfilling - 
     -- select 
     --   time_bucket_gapfill(v_binsize, metrics.time, v_start, v_stop) as bin, 
     --   -- coalesce(avg(metrics.availability),0) as availability -- converts nulls to 0
@@ -411,14 +411,14 @@ $body$;
 
 -- test
 
--- --set timezone to 'America/Chicago';
- select time, availability
- from get_availability_from_metrics_view(
-   'Cutter',
-   timestamptz2ms('2021-12-29 18:00:00'),
-   timestamptz2ms('2021-12-29 19:00:00')
- --  timestamptz2ms('2021-12-29 20:00:00')
- );
+-- -- --set timezone to 'America/Chicago';
+--  select time, availability
+--  from get_availability_from_metrics_view(
+--    'Cutter',
+--    timestamptz2ms('2021-12-29 18:00:00'),
+--    timestamptz2ms('2021-12-29 19:00:00')
+--  --  timestamptz2ms('2021-12-29 20:00:00')
+--  );
 
 
 
@@ -428,28 +428,28 @@ $body$;
 ---------------------------------------------------------------------
 -- populate the bins table for a time range
 
---drop procedure populate_bins;
+-- --drop procedure populate_bins;
 
-create or replace procedure populate_bins(
-  in p_device text, -- the device name, eg 'Cutter'
-  in p_path text, -- dataitem path, eg 'controller/partOccurrence/part_count-all'
-  in p_schedule jsonb,
-  in p_start timestamptz,
-  in p_stop timestamptz
-)
-language plpgsql
-as
-$body$
-declare
-  v_time timestamptz;
-begin
-  --. iterate over time range and call update_metrics
-  for v_time in select generate_series(p_start::date, p_stop, '1 day') loop
-    raise notice '%', v_time;
---    update_metrics();
-  end loop;
-end
-$body$;
+-- create or replace procedure populate_bins(
+--   in p_device text, -- the device name, eg 'Cutter'
+--   in p_path text, -- dataitem path, eg 'controller/partOccurrence/part_count-all'
+--   in p_schedule jsonb,
+--   in p_start timestamptz,
+--   in p_stop timestamptz
+-- )
+-- language plpgsql
+-- as
+-- $body$
+-- declare
+--   v_time timestamptz;
+-- begin
+--   --. iterate over time range and call update_metrics
+--   for v_time in select generate_series(p_start::date, p_stop, '1 day') loop
+--     raise notice '%', v_time;
+-- --    update_metrics();
+--   end loop;
+-- end
+-- $body$;
 
 
 -- call populate_bins(
