@@ -18,7 +18,6 @@ const driversFolder = './drivers' // eg mqtt-json - must start with '.'
 
 // these folders may be defined in compose.yaml with docker volume mappings
 const setupFolder = process.env.L99_SETUP_FOLDER || `/data/setup`
-// const modulesFolder = `/data/modules` // incls print-apply/module.xml etc
 const modulesFolder = process.env.L99_MODULES_FOLDER || `/data/modules` // incls print-apply/module.xml etc
 
 console.log()
@@ -150,10 +149,11 @@ async function main() {
 
       // handle errors
       // try/catch around socket.write doesn't cut it - still crashes
-      // with This socket has been ended by the other party -
+      // with "This socket has been ended by the other party" -
       // see if this works.
       socket.on('error', function (error) {
         console.log(error)
+        //. now try to reconnect
       })
 
       // handle incoming data - get PING from agent, return PONG
@@ -174,11 +174,13 @@ async function main() {
     })
 
     // start tcp server for Agent to listen to, eg at adapter:7878
-    //. rename to server(s)
+    //. rename to server(s)?
     const { destinations } = device
+
     //. just handle one server/destination for now
     const server = destinations ? destinations[0] : defaultServer
     console.log(`Listen for Agent on TCP socket at`, server, `...`)
+
     // try {
     tcp.listen(server.port, server.host, () => {
       console.log(`Listening...`)
