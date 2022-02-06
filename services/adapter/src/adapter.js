@@ -5,9 +5,7 @@
 // when adapter.js is run, it expects config in /data/setup and /data/models.
 // /data/setup includes setup.yaml, which includes a list of devices to setup.
 
-// import fs from 'fs' // node lib for file operations
 import net from 'net' // node lib for tcp
-// import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 import * as lib from './lib.js'
 import { Cache } from './cache.js'
 import { getMacros, compileExpressions } from './helpers.js'
@@ -17,8 +15,11 @@ const defaultServer = { protocol: 'shdr', host: 'adapter', port: 7878 }
 
 // file system inputs
 const driversFolder = './drivers' // eg mqtt-json - must start with '.'
-// this folder is defined in compose.yaml with docker volume mappings
-const modulesFolder = `/data/modules` // incls print-apply/module.xml etc
+
+// these folders may be defined in compose.yaml with docker volume mappings
+const setupFolder = process.env.L99_SETUP_FOLDER || `/data/modules`
+// const modulesFolder = `/data/modules` // incls print-apply/module.xml etc
+const modulesFolder = process.env.L99_MODULES_FOLDER || `/data/modules` // incls print-apply/module.xml etc
 
 console.log()
 console.log(`Ladder99 Adapter`)
@@ -28,7 +29,7 @@ console.log(`----------------------------------------------------------------`)
 
 async function main() {
   // read /data/setup/setup.yaml file
-  const setup = lib.readSetup()
+  const setup = lib.readSetup(setupFolder)
 
   // define cache shared across all devices and sources
   const cache = new Cache()

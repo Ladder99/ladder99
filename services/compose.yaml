@@ -21,6 +21,13 @@ services:
     profiles:
       - all
       - adapter
+    environment:
+      # specify where adapter code can find data.
+      # can override these at run time, eg to run adapter on windows with node,
+      # not inside docker.
+      L99_SETUP_FOLDER: /data/setup
+      L99_MODULES_FOLDER: /data/modules
+      L99_ADAPTER_FOLDER: /data/adapter
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml etc
       - ../modules:/data/modules # has module yamls
