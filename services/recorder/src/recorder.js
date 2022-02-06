@@ -16,7 +16,8 @@ const { mode = 'play' } = options
 // file system inputs
 const pluginsFolder = './plugins'
 // defined in compose.yaml with docker volume mappings
-const modulesFolder = '/data/modules' // incls print-apply/recordings, etc
+const setupFolder = process.env.L99_SETUP_FOLDER || '/data/setup'
+const modulesFolder = process.env.L99_MODULES_FOLDER || '/data/modules' // incls print-apply/recordings, etc
 
 console.log()
 console.log(`Recorder`)
@@ -24,7 +25,7 @@ console.log(`Plays/records device messages`)
 console.log(`------------------------------------------------------------`)
 
 async function main() {
-  const setup = lib.readSetup()
+  const setup = lib.readSetup(setupFolder)
   // iterate over devices in setup.yaml
   const { devices } = setup
   for (let device of devices) {
