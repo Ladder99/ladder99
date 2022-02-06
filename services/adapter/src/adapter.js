@@ -17,7 +17,7 @@ const defaultServer = { protocol: 'shdr', host: 'adapter', port: 7878 }
 const driversFolder = './drivers' // eg mqtt-json - must start with '.'
 
 // these folders may be defined in compose.yaml with docker volume mappings
-const setupFolder = process.env.L99_SETUP_FOLDER || `/data/modules`
+const setupFolder = process.env.L99_SETUP_FOLDER || `/data/setup`
 // const modulesFolder = `/data/modules` // incls print-apply/module.xml etc
 const modulesFolder = process.env.L99_MODULES_FOLDER || `/data/modules` // incls print-apply/module.xml etc
 

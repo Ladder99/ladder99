@@ -22,9 +22,8 @@ services:
       - all
       - adapter
     environment:
-      # specify where adapter code can find data.
-      # can override these at run time, eg to run adapter on windows with node,
-      # not inside docker.
+      # specify where code can find data.
+      # can override at run time, eg to run service on windows with node.
       L99_SETUP_FOLDER: /data/setup
       L99_MODULES_FOLDER: /data/modules
       L99_ADAPTER_FOLDER: /data/adapter
@@ -162,6 +161,9 @@ services:
       - meter
     # command: recorder --mode record
     environment:
+      # specify where code can find data.
+      # can override at run time, eg to run service on windows with node.
+      L99_SETUP_FOLDER: /data/setup
       # null means pass-through from environment
       PGHOST: null
       PGPORT: null

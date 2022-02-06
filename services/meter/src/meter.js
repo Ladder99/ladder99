@@ -9,6 +9,7 @@ console.log(`Ladder99 Meter`)
 console.log(`---------------------------------------------------`)
 
 const metricsFolder = './metrics'
+const setupFolder = process.env.L99_SETUP_FOLDER || `/data/setup`
 
 async function start() {
   // get database connection
@@ -18,7 +19,7 @@ async function start() {
 
   // read client's setup.yaml
   console.log(`Meter - reading client setup yaml...`)
-  const setup = lib.readSetup()
+  const setup = lib.readSetup(setupFolder)
   const client = setup.client || {}
 
   // iterate over devices, check what metrics they want, if any,
