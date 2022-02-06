@@ -7,6 +7,9 @@ import { AgentReader } from './agentReader.js'
 import { Endpoint } from './endpoint.js'
 import * as lib from './lib.js'
 
+// defined in compose.yaml with docker volume mappings
+const setupFolder = process.env.L99_SETUP_FOLDER || '/data/setup'
+
 console.log()
 console.log(`Ladder99 Relay`)
 console.log(`---------------------------------------------------`)
@@ -34,7 +37,7 @@ class Relay {
     await migrate(db)
 
     // read client's setup.yaml
-    const setup = lib.readSetup()
+    const setup = lib.readSetup(setupFolder)
 
     // get endpoints
     const endpoints = Endpoint.getEndpoints(params.agentEndpoints)

@@ -10,9 +10,9 @@ import libyaml from 'js-yaml' // see https://github.com/nodeca/js-yaml
 // import crypto from 'crypto' // node lib for random ids
 
 // load setup yaml, eg from ../client-oxbox/setup.yaml
-export function readSetup() {
+export function readSetup(setupFolder) {
   // defined in compose.yaml with docker volume mappings
-  const setupFolder = '/data/setup' // incls setup.yaml etc
+  // const setupFolder = '/data/setup' // incls setup.yaml etc
   const yamlfile = `${setupFolder}/setup.yaml`
   console.log(`Reading ${yamlfile}...`)
   const yamltree = importYaml(yamlfile)
