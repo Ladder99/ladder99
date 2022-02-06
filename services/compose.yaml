@@ -323,6 +323,11 @@ services:
       - all
       - record
     command: recorder --mode record
+    environment:
+      # specify where code can find data.
+      # can override at run time, eg to run service on windows with node.
+      L99_SETUP_FOLDER: /data/setup
+      L99_MODULES_FOLDER: /data/modules
     volumes:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
       - ../modules:/data/modules # has module-specific recordings folder
@@ -343,8 +348,13 @@ services:
       - dashboard
     init: true
     environment:
+      # specify where code can find data.
+      # can override at run time, eg to run service on windows with node.
+      L99_SETUP_FOLDER: /data/setup
       # override these as needed in client's compose-overrides.yaml
       AGENT_ENDPOINTS: http://agent:5000
+      #. will need to boost this as number of devices increases,
+      # until have automatic rate setting
       FETCH_INTERVAL: 2000
       FETCH_COUNT: 800
       # null means pass-through from environment
