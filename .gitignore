@@ -10,6 +10,7 @@ pi.sh
 .vscode
 .venv
 _old
+desktop.ini
 
 **/grafana/var
 **/mosquitto/data
