@@ -31,6 +31,8 @@ cmd="git pull"
 echo $cmd
 bash -c "$cmd"
 
-cmd="(cd $setup && git pull)"
+# set credential cache while we're at it so user doesn't have to
+# keep entering passcode - just do it once per hour.
+cmd="(cd $setup && git config credential.helper 'cache --timeout=3600' && git pull)"
 echo $cmd
 bash -c "$cmd"
