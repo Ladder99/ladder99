@@ -4,9 +4,9 @@
 # see ./start for how to run
 
 # version must be a string
-# note: '3' here means '3.0'
+# note: a '3' here means '3.0'
 # version: '3.7' # allows init keyword
-version: '3.8' # doesn't work with docker-compose package on ubuntu 20.04
+version: '3.8' # profiles?
 
 services:
   # adapter - convert machine data to shdr and send to agent
@@ -19,7 +19,6 @@ services:
     #. security hole - leave off for now, until need dymo driver.
     # privileged: true
     profiles:
-      - all
       - adapter
     environment:
       # specify where code can find data.
@@ -44,9 +43,7 @@ services:
     #. use mtconnect/agent once they publish it to docker hub
     image: ladder99/agent:latest
     profiles:
-      - all
       - agent
-      - html
     working_dir: /data/agent
     command: agent debug agent.cfg
     volumes:
@@ -66,7 +63,6 @@ services:
     # image: cloudbeaver/cloudbeaver:latest
     build: ./cloudbeaver
     profiles:
-      - all
       - cloudbeaver
     volumes:
       # - ../$SETUP/volumes/cloudbeaver/workspace:/apps/cloudbeaver/workspace
@@ -85,7 +81,6 @@ services:
     container_name: dozzle
     image: amir20/dozzle:latest
     profiles:
-      - all
       - dozzle
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -106,7 +101,6 @@ services:
     # image: grafana/grafana:7.5.5
     image: grafana/grafana:8.2.2
     profiles:
-      - all
       - grafana
       - dashboard
     ports:
@@ -157,7 +151,6 @@ services:
     container_name: meter
     build: ./meter
     profiles:
-      - all
       - meter
     # command: recorder --mode record
     environment:
@@ -185,7 +178,6 @@ services:
     container_name: mosquitto
     image: eclipse-mosquitto
     profiles:
-      - all
       - mosquitto
     ports:
       - 1883:1883
@@ -209,7 +201,6 @@ services:
     # image: nodered/node-red:latest
     image: nodered/node-red:2.1.6
     profiles:
-      - all
       - nodered
     restart: always
     networks:
@@ -236,9 +227,7 @@ services:
     container_name: pgadmin
     image: biarms/pgadmin4:latest
     profiles:
-      - all
       - pgadmin
-      - dashboard
     ports:
       - '5050:5050/tcp'
     restart: always
@@ -253,7 +242,6 @@ services:
     container_name: play
     build: ./recorder
     profiles:
-      - all
       - play
     command: recorder --mode play
     # ports:
@@ -273,7 +261,6 @@ services:
     container_name: portainer
     image: portainer/portainer-ce
     profiles:
-      - all
       - portainer
     ports:
       - '9000:9000'
@@ -295,7 +282,6 @@ services:
     ports:
       - $PGPORT:5432/tcp
     profiles:
-      - all
       - postgres
       - dashboard
     # init: true
@@ -320,7 +306,6 @@ services:
     container_name: record
     build: ./recorder
     profiles:
-      - all
       - record
     command: recorder --mode record
     environment:
@@ -343,7 +328,6 @@ services:
     container_name: relay
     build: ./relay
     profiles:
-      - all
       - relay
       - dashboard
     init: true
