@@ -1,4 +1,34 @@
-// read/write values for device availability calculations
+// read/write values for device availability calculations, where
+
+// availability = time machine is active / time machine is available for use.
+// active = part_count changed in previous time period.
+// available = current time is within the schedule for the machine.
+
+// in client's setup.yaml, need something like this (eg see client-oxbox) -
+// metrics:
+// - name: availability
+//   activePath: controller/partOccurrence/part_count-all
+//   startPath: processes/process_time-start
+//   stopPath: processes/process_time-complete
+
+// name = availability will cause this js plugin to be loaded.
+// then this code uses the given paths to look in the database for
+// activity and schedule information.
+// it then writes out the availability metric for each minute, hour, day, etc.
+
+// each minute will have a value 0 or 1, because we have to choose some
+// unit of time to look at the activity of a machine to say if it was 'active'
+// or not, and a minute seems like a good unit for these big machines.
+//. (or could pass base time unit in setup yaml)
+// and if it's active, it will also increment the current hour, day,
+// month, year bins.
+// this lets us look at the timeline at different resolutions in the dashboard.
+
+// if the current time is within the machine's schedule, it will similarly
+// increment the minute, hour, day, etc bins for 'available'.
+
+// to calculate the 'availability' percentage, the metrics view in the db
+// does 'active' / 'available'.
 
 const minutes = 60 * 1000 // 60 ms
 const hours = 60 * minutes
