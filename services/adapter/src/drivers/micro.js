@@ -2,6 +2,7 @@
 // fetches data from microcontroller/pc etc
 // see modules/micro folder.
 
+//. this library causes highcpu on windows - 2022-02.
 import si from 'systeminformation' // see https://github.com/sebhildebrandt/systeminformation
 
 const pollInterval = 5000 // msec //. get from setup
