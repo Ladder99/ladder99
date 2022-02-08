@@ -15,21 +15,21 @@ export class Clock {
     }
   }
 
-  // stop clock for given observation, return time delta in seconds
+  // stop 'clock' for given observation, return time delta in seconds
   stop(observation) {
     const { device_id, name } = observation
     let seconds
     if (this.startTimes[device_id] !== undefined) {
       if (this.startTimes[device_id][name] !== undefined) {
         seconds = observation.seconds1970 - this.startTimes[device_id][name]
-        // clear the clock
+        // clear the 'clock'
         delete this.startTimes[device_id][name]
       }
     }
     return seconds
   }
 
-  // clear clock for given observation
+  // clear 'clock' for given observation
   clear(observation) {
     const { device_id, name } = observation
     if (this.startTimes[device_id] !== undefined) {
