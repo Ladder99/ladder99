@@ -26,7 +26,7 @@ const typeFns = {
 
 export class AdapterDriver {
   async init({ deviceId, host, port, cache, inputs }) {
-    console.log(`CPC Initialize driver...`)
+    console.log(`CPC initialize driver...`)
     cache.set(`${deviceId}-avail`, 'UNAVAILABLE')
 
     // save params
@@ -44,14 +44,13 @@ export class AdapterDriver {
     console.log('CPC ids', this.ids)
     console.log('CPC query', this.query)
 
-    const that = this
-
+    // connect to device
     this.connect()
   }
 
   // connect to device and attach event handlers
   connect() {
-    console.log(`CPC driver connecting to TCP ${this.host}, ${this.port}...`)
+    console.log(`CPC connect to TCP ${this.host}:${this.port}...`)
     this.client = net.connect(this.port, this.host) // this waits here
     this.client.on('connect', this.onConnect)
     this.client.on('data', this.onData)
@@ -61,11 +60,17 @@ export class AdapterDriver {
 
   // connected to device
   onConnect() {
-    console.log(`CPC driver connected...`)
+    console.log(`CPC connected to device ${this.deviceId}...`)
     this.cache.set(`${this.deviceId}-avail`, 'AVAILABLE')
     this.poll() // first poll
     //. cancel timer if reconnect?
     this.timer = setInterval(this.poll.bind(this), pollInterval) // subsequent polls
+  }
+
+  // 'poll' device using tcp client.write - will receive data in 'data' events
+  poll() {
+    console.log(`CPC driver writing ${this.query}...`)
+    this.client.write(this.query + '\r\n')
   }
 
   // receive data from device, write to cache, output shdr to agent
@@ -73,7 +78,7 @@ export class AdapterDriver {
     const str = data.toString() // eg 'PathListGet:ReadValues:=,True,Joshau Schneider,254.280816,,0'
     console.log(`CPC driver received ${str.slice(0, 255)}...`)
     const valuesStr = str.split(':=')[1]
-    // note: for the list of messages, it sends one after the other -
+    // note: for the list of 'messages', it sends one after the other -
     // after the first one it doesn't include the :=, so this will return null.
     // so can ignore those, since we just want the first line.
     if (valuesStr) {
@@ -90,26 +95,23 @@ export class AdapterDriver {
 
   onError(error) {
     console.log(error)
-    //. try reconnect
   }
 
   onClose(had_error) {
     console.log('CPC connection closed...')
-    //. try reconnect
-    // that.connect()
+    this.reconnect()
   }
 
   onTimeout() {
     console.log('CPC connection timed out...')
-    //. try reconnect
-    // wait a while and try again
-    console.log(`CPC - waiting a while to try again...`)
-    //.await new Promise(resolve => setTimeout(resolve, reconnectInterval))
+    this.reconnect()
   }
 
-  // 'poll' device using tcp client.write - will receive data in 'data' events
-  poll() {
-    console.log(`CPC driver writing ${this.query}...`)
-    this.client.write(this.query + '\r\n')
+  async reconnect() {
+    clearTimeout(this.timer)
+    this.client.removeAllListeners() // clear the data, timeout etc handlers
+    console.log(`CPC - waiting a while to reconnect...`)
+    await new Promise(resolve => setTimeout(resolve, reconnectInterval))
+    this.connect()
   }
 }
