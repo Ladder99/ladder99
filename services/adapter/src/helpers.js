@@ -5,6 +5,108 @@ import * as lib from './lib.js'
 
 let keyvalues = {}
 
+// load the plugin specified by the drivers folder and driver name.
+// the driver can be at eg ./drivers/foo.js or ./drivers/foo/index.js.
+export async function getPlugin(driversFolder, driver) {
+  const path1 = `${driversFolder}/${driver}.js`
+  const path2 = `${driversFolder}/${driver}/index.js`
+  let code
+  try {
+    console.log(`Importing driver code: ${path1}...`)
+    code = await import(path1) // load the code
+  } catch {
+    console.log(`Importing driver code: ${path2}...`)
+    code = await import(path2) // load the code
+  }
+  const { AdapterDriver } = code
+  const plugin = new AdapterDriver() // instantiate the driver
+  return plugin
+  // const path = fs.existsSync(path1) ? path1 : path2 // this didn't work
+  // console.log(`Importing driver code: ${path}...`)
+}
+
+// get cache outputs from from outputs.yaml templates - do substitutions etc.
+// each element defines a shdr output.
+// templates is from outputs.yaml - array of { key, category, type, value, ... }.
+// types is from types.yaml - object of objects with key:values.
+// returns array of {key: string, value: int|str, dependsOn: string[]}.
+// eg [{ key: 'ac1-power_condition', value: 'FAULT', dependsOn: ['ac1-power_fault', 'ac1-power_warning']}, ...]
+// note: types IS used - it's in the closure formed by eval(str).
+export function getOutputs({ templates, types, deviceId }) {
+  // console.log('getOutputs - iterate over output templates')
+  const outputs = templates.map(template => {
+    const { value, dependsOn } = getValueFn(deviceId, template.value, types)
+    // get output object
+    // eg {
+    //   key: 'ac1-power_condition',
+    //   value: cache => cache.get('pr1-avail').value,
+    //   dependsOn: ['ac1-power_fault', 'ac1-power_warning'],
+    //   category: 'CONDITION',
+    //   type: 'VOLTAGE_DC',
+    //   representation: undefined,
+    // }
+    const output = {
+      // this is key in sense of shdr key
+      //. assume each starts with deviceId? some might end with a number instead
+      //. call this id, as it's such in the agent.xml
+      //. need to handle arbitrary deviceIds also, eg for jobboss to cutter connections?
+      //. eg could each output template have an optional deviceId to use here,
+      // in place of the default?
+      // key: `${deviceId}-${template.key}`,
+      key: `${template.deviceId || deviceId}-${template.key}`,
+      value, //. getValue or valueFn
+      dependsOn,
+      //. currently these need to be defined in the outputs.yaml file,
+      // instead of using the types in the module.xml file -
+      // will need to fix that.
+      category: template.category, // needed for cache getShdr fn
+      type: template.type, // ditto
+      representation: template.representation, // ditto
+      nativeCode: template.nativeCode, //. ?
+    }
+    return output
+  })
+  return outputs
+}
+
+// get valueFn and dependsOn array from a js code statement
+// eg "<foo>" becomes cache=>cache.get(`${deviceId}-foo`)
+//. call this getReferences - let caller do the fn eval - that's out of place here
+function getValueFn(deviceId, code = '', types = {}) {
+  // replace all occurrences of <key> with `cache.get('...')`.
+  // eg <status_faults> => cache.get(`${deviceId}-status_faults`)
+  // note: .*? is a non-greedy match, so doesn't eat other occurrences also.
+  const regexp1 = /(<(.*?)>)/gm
+  // eg "<power_fault> ? 'FAULT' : <power_warning> ? 'WARNING' : 'NORMAL'"
+  // eg "cache.get('ac1-power_fault') ? 'FAULT' : cache.get('ac1-power_warning') ? 'WARNING' : 'NORMAL'"
+  // should be okay to ditch replaceAll because we have /g for the regexp
+  // valueStr = valueStr.replaceAll( // needs node15
+  //. test this with two cache refs in a string "<foo> + <bar>" etc
+  code = code.replace(
+    regexp1,
+    `cache.get('${deviceId}-$2')` // $2 is the matched substring
+  )
+  if (code.includes('\n')) {
+    code = '{\n' + code + '\n}'
+  }
+
+  // define the value function //. call it valueFn?
+  const value = (cache, $, keyvalues) => eval(code)
+
+  // get list of cache ids this calculation depends on.
+  // get AFTER transforms, because user could specify a cache get manually.
+  // eg dependsOn = ['ac1-power_fault', 'ac1-power_warning']
+  const dependsOn = []
+  const regexp2 = /cache\.get\('(.*?)'\)/gm
+  let match
+  while ((match = regexp2.exec(code)) !== null) {
+    const key = match[1]
+    dependsOn.push(key)
+  }
+  //. sort/uniquify dependsOn array
+  return { value, dependsOn }
+}
+
 // define macros to be used by input/output yamls
 // prefix is deviceId- eg 'pr1-'
 // accessor is 'default' or 'value'
