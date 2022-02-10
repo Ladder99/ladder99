@@ -42,7 +42,7 @@ async function main() {
     const deviceName = device.name
 
     // each device gets a tcp connection to the agent
-    console.log(`Creating TCP server for Agent to connect to...`)
+    console.log(`Adapter - creating TCP server for Agent to connect to...`)
     const tcp = net.createServer()
 
     // handle tcp connection from agent.
@@ -50,7 +50,7 @@ async function main() {
     // so know where to send SHDR strings.
     tcp.on('connection', async socket => {
       const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
-      console.log('New client connection from Agent at', remoteAddress)
+      console.log('Adapter - new client connection from Agent', remoteAddress)
 
       // each device can have multiple sources.
       // iterate over sources, load driver for that source, call init on it.
@@ -64,18 +64,18 @@ async function main() {
         // get input handlers
         // these are interpreted by the driver
         const pathInputs = `${modulesFolder}/${module}/inputs.yaml`
-        console.log(`Reading ${pathInputs}...`)
+        console.log(`Adapter reading ${pathInputs}...`)
         const inputs = lib.importYaml(pathInputs) || {}
 
         // get output handlers
         // output yamls should all follow the same format, unlike input yamls.
         const pathOutputs = `${modulesFolder}/${module}/outputs.yaml`
-        console.log(`Reading ${pathOutputs}...`)
+        console.log(`Adapter reading ${pathOutputs}...`)
         const outputTemplates = (lib.importYaml(pathOutputs) || {}).outputs
 
         // get types, if any
         const pathTypes = `${modulesFolder}/${module}/types.yaml`
-        console.log(`Reading ${pathTypes}...`)
+        console.log(`Adapter reading ${pathTypes}...`)
         const types = (lib.importYaml(pathTypes) || {}).types
 
         if (outputTemplates) {
@@ -124,7 +124,7 @@ async function main() {
         // initialize driver plugin
         // note: this must be done AFTER getOutputs and addOutputs,
         // as that is where the dependsOn values are set, and this needs those.
-        console.log(`Initializing driver for ${driver}...`)
+        console.log(`Adapter initializing driver for ${driver}...`)
         plugin.init({
           client,
           deviceId,
@@ -179,21 +179,11 @@ async function main() {
 
     //. just handle one server/destination for now
     const server = destinations ? destinations[0] : defaultServer
-    console.log(`Listen for Agent on TCP socket at`, server, `...`)
+    console.log(`Adapter - listen for Agent on TCP socket at`, server, `...`)
 
-    // try {
     tcp.listen(server.port, server.host, () => {
-      console.log(`Listening...`)
+      console.log(`Adapter listening...`)
     })
-    // } catch (error) {
-    //   if (error.code === 'ENOTFOUND') {
-    //     console.log(
-    //       `TCP socket at ${destination.host}:${destination.port} not found.`
-    //     )
-    //   } else {
-    //     throw error
-    //   }
-    // }
   }
 }
 

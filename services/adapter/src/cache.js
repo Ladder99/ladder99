@@ -12,10 +12,6 @@
 // import { formatISO9075 } from 'date-fns'
 // import dayjs from 'dayjs'
 
-// can save some time/space by not including time in shdr
-// const includeTimestamp = true
-const includeTimestamp = false
-
 export class Cache {
   constructor() {
     this._map = new Map() // key-item pairs //. why not just {} ?
@@ -98,6 +94,7 @@ function getValue(cache, output) {
 // cache is the Cache object.
 // output has { key, category, type, representation, value, shdr, ... }.
 // timestamp is an optional STRING that goes at the front of the shdr.
+// can save some time/space by not including it.
 function getShdr(output, value, timestamp = '') {
   const { key, category, type, subType, representation, nativeCode } = output
   let shdr = ''
