@@ -27,11 +27,12 @@ export class Cache {
   // eg [{ key: 'ac1-power_condition', value: (fn), dependsOn: ['ac1-power_fault', 'ac1-power_warning'] }, ...]
   // so this builds a map from those dependsOn values to the output object.
   // eg { 'ac1-power_fault': [{ key:'ac1-power_condition', value: (fn), ...}], ... }
-  addOutputs(outputs, socket) {
+  // addOutputs(outputs, socket) {
+  addOutputs(outputs) {
     console.log(`cache.addOutputs - add ${outputs.length} outputs`)
     for (const output of outputs) {
       // console.log(output.key, output.dependsOn)
-      output.socket = socket // attach tcp socket to each output also
+      // output.socket = socket // attach tcp socket to each output also
       // add dependsOn eg ['ac1-power_fault', 'ac1-power_warning']
       for (const key of output.dependsOn) {
         if (this._mapKeyToOutputs[key]) {
@@ -40,6 +41,12 @@ export class Cache {
           this._mapKeyToOutputs[key] = [output]
         }
       }
+    }
+  }
+
+  setSocket(outputs, socket) {
+    for (const output of outputs) {
+      output.socket = socket // attach tcp socket to each output
     }
   }
 
@@ -61,15 +68,18 @@ export class Cache {
       const value = getValue(this, output)
       // send shdr to agent via tcp socket if value changed
       if (value !== output.lastValue) {
-        // const shdr = getShdr(this, output, value, timestamp)
         const shdr = getShdr(output, value, options.timestamp) // timestamp can be ''
         if (!options.quiet)
           console.log(`shdr changed - sending to tcp - ${shdr.slice(0, 60)}...`)
-        try {
-          output.socket.write(shdr + '\n')
-          output.lastValue = value
-        } catch (error) {
-          console.log(error)
+        if (output.socket) {
+          try {
+            output.socket.write(shdr + '\n')
+            output.lastValue = value
+          } catch (error) {
+            console.log(error)
+          }
+        } else {
+          console.log(`Cache - no socket to write to`)
         }
       }
     }
