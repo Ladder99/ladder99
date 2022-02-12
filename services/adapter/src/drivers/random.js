@@ -25,7 +25,7 @@ export class AdapterDriver {
             : 'WAIT'
         const operator = Math.random() > 0.5 ? 'Alice' : 'Bob'
 
-        //. will this work without timestamp?
+        // yes, this works without timestamp
         let shdr = ''
         if (availability !== previous.availability) {
           shdr += `|${device.id}-availability|${availability}`
