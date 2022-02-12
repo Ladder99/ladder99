@@ -96,15 +96,15 @@ async function setupDevice({ device, cache, client, devices }) {
     socket.on('error', onError)
     function onError(error) {
       console.log(error)
-      // tell cache so it doesn't try to write to old socket
+      // tell cache and plugins so they don't try to write to old socket
       for (let source of device.sources) {
         cache.setSocket(source.outputs, undefined)
         if (source.plugin) {
           source.plugin.setSocket(undefined)
         }
       }
-      //.. now try to reconnect - how? will do automatically?
-      // ie because tcp.on connect will still fire?
+      // reconnection will automatically be handled by tcp.on connection
+      // and onConnection, then new socket will be set on cache and plugins.
     }
 
     // handle ping/pong messages to/from agent,
