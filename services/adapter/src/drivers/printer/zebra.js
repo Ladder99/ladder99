@@ -26,7 +26,7 @@ const pollInterval = 3000 // ms
 const messagePauseTime = 500 // ms
 
 export class AdapterDriver {
-  init({ deviceId, protocol, host, port, cache, inputs, socket }) {
+  init({ device, protocol, host, port, cache }) {
     console.log(`Initialize Zebra driver...`)
 
     let client // tcp connection
@@ -257,7 +257,7 @@ export class AdapterDriver {
 
     // set a cache key to the given value, which will trigger shdr output
     function setCache(key, value = 'UNAVAILABLE') {
-      cache.set(`${deviceId}-${key}`, value)
+      cache.set(`${device.id}-${key}`, value)
     }
   }
 }

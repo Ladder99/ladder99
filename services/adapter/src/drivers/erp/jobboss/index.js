@@ -20,7 +20,7 @@ export class AdapterDriver {
   // jobbossId values and check their schedules and jobnums.
   async init({
     client,
-    deviceId,
+    device,
     cache,
     connection, // { server, port, database, user, password } - set in setup.yaml
     devices, // from setup.yaml
@@ -66,11 +66,11 @@ export class AdapterDriver {
     // mssql.on('error', err => { })
 
     function setAvailable() {
-      cache.set(`${deviceId}-availability`, 'AVAILABLE')
+      cache.set(`${device.id}-availability`, 'AVAILABLE')
     }
 
     function setUnavailable() {
-      cache.set(`${deviceId}-availability`, 'UNAVAILABLE')
+      cache.set(`${device.id}-availability`, 'UNAVAILABLE')
     }
   }
 }

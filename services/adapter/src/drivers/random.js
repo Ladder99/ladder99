@@ -3,7 +3,7 @@
 const pollInterval = 1000 // msec
 
 export class AdapterDriver {
-  init({ deviceId, protocol, host, port, cache, inputs, socket }) {
+  init({ device }) {
     console.log(`Initialize Random driver...`)
 
     const timer = setInterval(poll, pollInterval)
@@ -25,47 +25,25 @@ export class AdapterDriver {
 
       let shdr = ''
       if (availability !== previous.availability) {
-        shdr += `|${deviceId}-availability|${availability}`
+        shdr += `|${device.id}-availability|${availability}`
       }
       if (execution !== previous.execution) {
-        shdr += `|${deviceId}-execution|${execution}`
+        shdr += `|${device.id}-execution|${execution}`
       }
       if (operator !== previous.operator) {
-        shdr += `|${deviceId}-operator|${operator}`
+        shdr += `|${device.id}-operator|${operator}`
       }
-      if (shdr.length > 0) {
+      if (shdr.length > 0 && this.socket) {
         shdr = timestamp + shdr
         console.log(shdr)
-        socket.write(shdr + '\n') // write to agent
+        this.socket.write(shdr + '\n') // write to agent
       }
 
       previous = { availability, execution, operator }
-
-      // try {
-      //   const response = await fetch(url)
-      //   const text = await response.text()
-      //   const json = JSON.parse(text)
-      //   console.log(json)
-      //   const value = json.status === 'online' ? 'AVAILABLE' : 'UNAVAILABLE'
-      //   const timestamp = new Date().toISOString() //. get from json
-      //   const shdr = `${timestamp}|${deviceId}-connection|${value}` //.
-      //   console.log(shdr)
-      //   socket.write(shdr + '\n')
-      // } catch (error) {
-      //   if (error.code === 'ECONNREFUSED') {
-      //     // ignore - will try again
-      //   } else {
-      //     throw error
-      //   }
-      // }
     }
+  }
 
-    // write to cache
-    // //. cache must have calcs defined for the diff keys via outputs.yaml
-    // const key = 'connection'
-    // const item = lookup($, part)
-    // const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
-    // // item.receivedTime = receivedTime
-    // cache.set(cacheId, item) // save to the cache - may send shdr to tcp
+  setSocket(socket) {
+    this.socket = socket
   }
 }

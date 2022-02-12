@@ -25,18 +25,18 @@ const typeFns = {
 }
 
 export class AdapterDriver {
-  async init({ deviceId, host, port, cache, inputs }) {
+  async init({ device, host, port, cache, inputs }) {
     console.log(`CPC initialize driver...`)
-    cache.set(`${deviceId}-avail`, 'UNAVAILABLE')
+    cache.set(`${device.id}-avail`, 'UNAVAILABLE')
 
     // save params
-    this.deviceId = deviceId
+    this.deviceId = device.id
     this.host = host
     this.port = port
     this.cache = cache
 
     // get ids and query string
-    this.ids = inputs.inputs.map(input => `${deviceId}-${input.key}`) // eg ['ac1-operator_name', 'ac1-recipe_description', ...]
+    this.ids = inputs.inputs.map(input => `${device.id}-${input.key}`) // eg ['ac1-operator_name', 'ac1-recipe_description', ...]
     this.paths = inputs.inputs.map(input => input.path).join(',') // the cpc property path string, eg '.Autoclave.Alarms.ControlPower...,...'
     this.types = inputs.inputs.map(input => input.type) // eg [undefined, undefined, boolean, ...]
     this.query = `PathListGet:ReadValues:${this.paths}` // eg 'PathListGet:ReadValues:.Autoclave.Alarms.ControlPower\Condition,...'
