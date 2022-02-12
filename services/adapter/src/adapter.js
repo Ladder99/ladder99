@@ -38,7 +38,7 @@ async function main() {
   // define cache shared across all devices and sources
   const cache = new Cache()
 
-  // iterate over device definitions from setup.yaml file and do setup
+  // iterate over device definitions from setup.yaml file and do setup for each
   const client = setup.client || {}
   const devices = setup.devices || []
   for (const device of devices) {
@@ -50,7 +50,8 @@ main()
 
 // -------------------------------------------------------
 
-// setup a device by connecting to agent, initializing cache dataitems, etc
+// setup a device by connecting to agent, initializing cache dataitems,
+// and setting up each device source (loading plugins etc).
 async function setupDevice({ device, cache, client, devices }) {
   // console.log(`Device`, device) // don't print - might have passwords
 
@@ -60,7 +61,8 @@ async function setupDevice({ device, cache, client, devices }) {
   tcp.on('connection', onConnection) // handle connection from agent
 
   // each device can have multiple sources.
-  // iterate over sources, load driver for that source, call init on it.
+  // iterate over sources, load driver for that source, call init on it,
+  // save plugin (the driver instance) to source.
   for (const source of device.sources) {
     setupSource({ source, cache, client, devices, device })
   }
@@ -79,7 +81,7 @@ async function setupDevice({ device, cache, client, devices }) {
   // handle connection from agent
   async function onConnection(socket) {
     const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
-    console.log('Adapter - new client connection from Agent', remoteAddress)
+    console.log('Adapter - new connection from Agent', remoteAddress)
 
     // tell cache and plugins about the tcp socket
     for (let source of device.sources) {
@@ -157,12 +159,13 @@ async function setupSource({ source, cache, client, devices, device }) {
       deviceId: device.id,
     })
 
-    // add outputs for each source to cache
-    // these are not fully functional until we call setSocket
+    // add outputs for each source to cache.
+    // these are not fully functional until we call cache.setSocket.
+    // used to pass socket in here, but need to handle agent reconnection.
     cache.addOutputs(source.outputs)
   }
 
-  // iterate over input handlers
+  // iterate over input handlers, if any
   const handlers = Object.values(inputs.handlers || [])
   for (let handler of handlers) {
     // get macros (regexs to extract references from code)
@@ -194,11 +197,13 @@ async function setupSource({ source, cache, client, devices, device }) {
   // initialize driver plugin
   // note: this must be done AFTER getOutputs and addOutputs,
   // as that is where the dependsOn values are set, and this needs those.
+  //. add eg for each param
   console.log(`Adapter initializing driver for ${driver}...`)
   plugin.init({
     client,
     device,
-    driver,
+    driver, // eg 'random'
+
     // pass whole drivers array here also, in case driver needs to know other devices?
     // eg for jobboss - needs to know what workcenters/devices to look for.
     devices,
@@ -210,8 +215,6 @@ async function setupSource({ source, cache, client, devices, device }) {
 
     cache,
     inputs,
-    //. refac - ditch this
-    //.. socket, // usually drivers communicate with agent via cache, but this is useful for testing etc
     types,
     connection,
   })

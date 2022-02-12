@@ -10,38 +10,47 @@ export class AdapterDriver {
 
     let previous = {}
 
+    const that = this
+
     // send data directly to agent as shdr - ie skip cache for now.
     // these should only send something if value CHANGED.
     async function poll() {
-      const availability = Math.random() > 0.5 ? 'AVAILABLE' : 'UNAVAILABLE'
-      const execution =
-        availability === 'AVAILABLE'
-          ? Math.random() > 0.5
-            ? 'ACTIVE'
+      console.log(`Random - poll - send data to agent if have socket...`)
+      // only do once socket is available - see setSocket below
+      if (that.socket) {
+        const availability = Math.random() > 0.5 ? 'AVAILABLE' : 'UNAVAILABLE'
+        const execution =
+          availability === 'AVAILABLE'
+            ? Math.random() > 0.5
+              ? 'ACTIVE'
+              : 'WAIT'
             : 'WAIT'
-          : 'WAIT'
-      const operator = Math.random() > 0.5 ? 'Alice' : 'Bob'
+        const operator = Math.random() > 0.5 ? 'Alice' : 'Bob'
 
-      let shdr = ''
-      if (availability !== previous.availability) {
-        shdr += `|${device.id}-availability|${availability}`
-      }
-      if (execution !== previous.execution) {
-        shdr += `|${device.id}-execution|${execution}`
-      }
-      if (operator !== previous.operator) {
-        shdr += `|${device.id}-operator|${operator}`
-      }
-      if (shdr.length > 0 && this.socket) {
-        console.log('Random shdr', shdr)
-        this.socket.write(shdr + '\n') // write to agent
-      }
+        //. will this work without timestamp?
+        let shdr = ''
+        if (availability !== previous.availability) {
+          shdr += `|${device.id}-availability|${availability}`
+        }
+        if (execution !== previous.execution) {
+          shdr += `|${device.id}-execution|${execution}`
+        }
+        if (operator !== previous.operator) {
+          shdr += `|${device.id}-operator|${operator}`
+        }
+        if (shdr.length > 0) {
+          console.log('Random shdr', shdr)
+          that.socket.write(shdr + '\n') // write to agent
+        }
 
-      previous = { availability, execution, operator }
+        previous = { availability, execution, operator }
+      }
     }
   }
 
+  // set socket to agent once connection is established
   setSocket(socket) {
+    console.log(`Random - set socket`)
     this.socket = socket
   }
 }
