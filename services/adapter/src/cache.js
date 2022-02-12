@@ -46,7 +46,7 @@ export class Cache {
 
   // attach tcp socket to each output
   setSocket(outputs, socket) {
-    for (const output of outputs) {
+    for (const output of outputs || []) {
       output.socket = socket
     }
   }

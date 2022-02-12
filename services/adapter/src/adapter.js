@@ -81,9 +81,12 @@ async function setupDevice({ device, cache, client, devices }) {
     const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
     console.log('Adapter - new client connection from Agent', remoteAddress)
 
-    // tell cache about the tcp socket
+    // tell cache and plugins about the tcp socket
     for (let source of device.sources) {
       cache.setSocket(source.outputs, socket)
+      if (source.plugin) {
+        source.plugin.setSocket(socket) // some drivers/plugins need direct socket connection, eg random.js
+      }
     }
 
     // handle errors
@@ -105,7 +108,7 @@ async function setupDevice({ device, cache, client, devices }) {
       const str = buffer.toString().trim()
       if (str === '* PING') {
         // received PING from Agent - send PONG
-        const response = '* PONG 5000' //. msec - where get from?
+        const response = '* PONG 5000' //. msec - where from?
         socket.write(response + '\n')
       } else {
         console.log('Adapter received data:', str.slice(0, 20), '...')
@@ -124,6 +127,7 @@ async function setupSource({ source, cache, client, devices, device }) {
 
   // import driver plugin, eg micro.js
   const plugin = await getPlugin(driversFolder, driver)
+  source.plugin = plugin // save to source so on agent connection can tell it socket
 
   // get input handlers
   // these are interpreted by the driver
@@ -158,7 +162,7 @@ async function setupSource({ source, cache, client, devices, device }) {
     cache.addOutputs(source.outputs)
   }
 
-  // iterate over handlers
+  // iterate over input handlers
   const handlers = Object.values(inputs.handlers || [])
   for (let handler of handlers) {
     // get macros (regexs to extract references from code)
@@ -198,10 +202,12 @@ async function setupSource({ source, cache, client, devices, device }) {
     // pass whole drivers array here also, in case driver needs to know other devices?
     // eg for jobboss - needs to know what workcenters/devices to look for.
     devices,
+
     //. consolidate these into a connect object
     protocol,
     host,
     port,
+
     cache,
     inputs,
     //. refac - ditch this

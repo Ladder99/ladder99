@@ -1,8 +1,8 @@
 # setup for random driver
 
 devices:
-  - id: r1
-    name: random1 # this must match name in agent.cfg and agent.xml
+  - id: r1 # must match id in agent.xml
+    name: random1 # must match name in agent.cfg and agent.xml
 
     # specify sources for dataitem values
     sources:

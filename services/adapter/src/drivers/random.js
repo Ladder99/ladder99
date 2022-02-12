@@ -4,15 +4,14 @@ const pollInterval = 1000 // msec
 
 export class AdapterDriver {
   init({ device }) {
-    console.log(`Initialize Random driver...`)
+    console.log(`Random - initialize driver...`)
 
     const timer = setInterval(poll, pollInterval)
 
     let previous = {}
 
-    // send data directly to agent as shdr - ie skip the cache for now
-    //. these should only send something if value CHANGED
-    // orrr can set agent to ignore duplicates
+    // send data directly to agent as shdr - ie skip cache for now.
+    // these should only send something if value CHANGED.
     async function poll() {
       const availability = Math.random() > 0.5 ? 'AVAILABLE' : 'UNAVAILABLE'
       const execution =
@@ -34,7 +33,7 @@ export class AdapterDriver {
         shdr += `|${device.id}-operator|${operator}`
       }
       if (shdr.length > 0 && this.socket) {
-        console.log(shdr)
+        console.log('Random shdr', shdr)
         this.socket.write(shdr + '\n') // write to agent
       }
 
