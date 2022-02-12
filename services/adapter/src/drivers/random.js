@@ -6,18 +6,16 @@ export class AdapterDriver {
   init({ device }) {
     console.log(`Random - initialize driver...`)
 
-    const timer = setInterval(poll, pollInterval)
+    setInterval(poll.bind(this), pollInterval)
 
     let previous = {}
-
-    const that = this
 
     // send data directly to agent as shdr - ie skip cache for now.
     // these should only send something if value CHANGED.
     async function poll() {
       console.log(`Random - poll - send data to agent if have socket...`)
       // only do once socket is available - see setSocket below
-      if (that.socket) {
+      if (this.socket) {
         const availability = Math.random() > 0.5 ? 'AVAILABLE' : 'UNAVAILABLE'
         const execution =
           availability === 'AVAILABLE'
@@ -40,7 +38,7 @@ export class AdapterDriver {
         }
         if (shdr.length > 0) {
           console.log('Random shdr', shdr)
-          that.socket.write(shdr + '\n') // write to agent
+          this.socket.write(shdr + '\n') // write to agent
         }
 
         previous = { availability, execution, operator }
