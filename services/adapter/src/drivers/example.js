@@ -1,16 +1,16 @@
 // example driver
 
 export class AdapterDriver {
-  init({ deviceId, protocol, host, port, cache, inputs, socket }) {
+  init({ device, protocol, host, port, cache }) {
     console.log(`Initialize example driver...`)
 
     function setAvailable() {
-      cache.set(`${deviceId}-availability`, 'AVAILABLE')
+      cache.set(`${device.id}-availability`, 'AVAILABLE')
     }
 
     function setUnavailable() {
-      cache.set(`${deviceId}-availability`, 'UNAVAILABLE')
-      cache.set(`${deviceId}-mass`, 'UNAVAILABLE')
+      cache.set(`${device.id}-availability`, 'UNAVAILABLE')
+      cache.set(`${device.id}-mass`, 'UNAVAILABLE')
     }
   }
 }

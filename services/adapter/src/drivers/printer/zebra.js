@@ -26,7 +26,8 @@ const pollInterval = 3000 // ms
 const messagePauseTime = 500 // ms
 
 export class AdapterDriver {
-  init({ device, protocol, host, port, cache }) {
+  //. use connect obj
+  init({ device, host, port, cache }) {
     console.log(`Initialize Zebra driver...`)
 
     let client // tcp connection

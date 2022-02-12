@@ -15,7 +15,7 @@ const dataModeGrams = 2
 const dataModeOunces = 11
 
 export class AdapterDriver {
-  init({ deviceId, protocol, host, port, cache, inputs, socket }) {
+  init({ device, protocol, host, port, cache, inputs, socket }) {
     console.log(`Dymo - initialize Dymo M10 driver...`)
 
     // const devices = usb.getDeviceList()
@@ -67,12 +67,12 @@ export class AdapterDriver {
     function startReading() {
       if (reading) return
       try {
-        const device = new HID.HID(vendorId, productId)
+        const hid = new HID.HID(vendorId, productId)
 
         console.log('Dymo - starting to read data from scale')
         reading = true
 
-        device.on('data', function (data) {
+        hid.on('data', function (data) {
           const buffer = Buffer.from(data)
           const mass = buffer[4] + 256 * buffer[5]
 
@@ -88,7 +88,7 @@ export class AdapterDriver {
 
           const kg = grams / 1000
           // cache.set(`${deviceId}-mass`, { value: kg })
-          cache.set(`${deviceId}-mass`, kg)
+          cache.set(`${device.id}-mass`, kg)
           setAvailable()
         })
 
@@ -109,12 +109,12 @@ export class AdapterDriver {
     }
 
     function setAvailable() {
-      cache.set(`${deviceId}-availability`, 'AVAILABLE')
+      cache.set(`${device.id}-availability`, 'AVAILABLE')
     }
 
     function setUnavailable() {
-      cache.set(`${deviceId}-availability`, 'UNAVAILABLE')
-      cache.set(`${deviceId}-mass`, 'UNAVAILABLE')
+      cache.set(`${device.id}-availability`, 'UNAVAILABLE')
+      cache.set(`${device.id}-mass`, 'UNAVAILABLE')
     }
   }
 }

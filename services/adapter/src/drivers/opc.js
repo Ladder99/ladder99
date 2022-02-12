@@ -17,8 +17,8 @@ const {
 //. convert to class
 
 // initialize the client plugin
-export async function init({ url, cache, deviceId }) {
-  console.log('OPC init', { deviceId })
+export async function init({ url, cache, device }) {
+  console.log('OPC init', device.id)
 
   console.log(`OPC create client...`)
   const connectionStrategy = {
@@ -58,8 +58,7 @@ export async function init({ url, cache, deviceId }) {
     })
     console.log(`OPC read ${nodeId}:`, dataValue3.value) // a variant
     const operator = dataValue3.value.value //. better way?
-    // cache.set('ccs-pa-001-operator', { value: operator })
-    const key = `${deviceId}-operator`
+    const key = `${device.id}-operator`
     console.log(`OPC setting cache ${key}:`, operator)
     cache.set(key, operator)
 

@@ -17,13 +17,15 @@ import * as lib from '../lib.js'
 let keyvalues = {} // keyvalue store for yaml code to use - use 'let' so yaml code can reset it
 
 export class AdapterDriver {
+  //
   // initialize the client plugin
   // queries the device for address space definitions, subscribes to topics.
   // inputs is the inputs.yaml file parsed to a js tree.
   // note: types IS used - by the part(cache, $) fn evaluation
   // advice is a dict of optional fns that are called at various points in the code.
-  init({ deviceId, deviceName, host, port, cache, inputs, types, advice }) {
-    console.log('Initializing mqtt-json driver for', { deviceId })
+  //. is advice used also?
+  init({ device, host, port, cache, inputs, types, advice }) {
+    console.log('MQTT Initializing mqtt-json driver for', device.id)
     const url = `mqtt://${host}:${port}`
 
     // connect to mqtt broker/server
@@ -55,7 +57,7 @@ export class AdapterDriver {
       // do any static inits
       console.log(inputs.connect.static)
       for (const key of Object.keys(inputs.connect.static || {})) {
-        const cacheId = `${deviceId}-${key}`
+        const cacheId = `${device.id}-${key}`
         const value = inputs.connect.static[key]
         cache.set(cacheId, value)
       }
@@ -135,7 +137,7 @@ export class AdapterDriver {
               // note guard for undefined value -
               // if need to reset a cache value, must pass value 'UNAVAILABLE' explicitly.
               if (value !== undefined) {
-                const cacheId = deviceId + '-' + key // eg 'pa1-fault_count'
+                const cacheId = device.id + '-' + key // eg 'pa1-fault_count'
                 cache.set(cacheId, value) // save to the cache - may send shdr to agent
               }
             }
@@ -158,7 +160,7 @@ export class AdapterDriver {
                 const expression = handler.augmentedExpressions[equationKey]
                 const value = expression.fn(cache, $, keyvalues) // run the expression fn
                 if (value !== undefined) {
-                  const cacheId = deviceId + '-' + equationKey // eg 'pa1-fault_count'
+                  const cacheId = device.id + '-' + equationKey // eg 'pa1-fault_count'
                   cache.set(cacheId, value) // save to the cache - may send shdr to tcp
                   equationKeys2.add(cacheId)
                 }
@@ -175,7 +177,7 @@ export class AdapterDriver {
               const expression = handler.augmentedExpressions[equationKey]
               const value = expression.fn(cache, $, keyvalues) // run the expression fn
               if (value !== undefined) {
-                const cacheId = deviceId + '-' + equationKey // eg 'pa1-fault_count'
+                const cacheId = device.id + '-' + equationKey // eg 'pa1-fault_count'
                 cache.set(cacheId, value) // save to the cache - may send shdr to tcp
                 // equationKeys2.add(cacheId)
               }
@@ -198,8 +200,9 @@ export class AdapterDriver {
       }
     }
 
+    //.
     function replaceDeviceId(str) {
-      return str.replace('${deviceId}', deviceId)
+      return str.replace('${deviceId}', device.id)
     }
   }
 }

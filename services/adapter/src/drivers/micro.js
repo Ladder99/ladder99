@@ -9,7 +9,7 @@ import si from 'systeminformation' // see https://github.com/sebhildebrandt/syst
 const pollInterval = 5000 // msec //. get from setup
 
 export class AdapterDriver {
-  init({ deviceId, protocol, host, port, cache, inputs, socket }) {
+  init({ device, cache }) {
     console.log(`Initialize microcontroller driver...`)
 
     setUnavailable()
@@ -64,8 +64,7 @@ export class AdapterDriver {
     }
 
     function setValue(name, value) {
-      // cache.set(`${deviceId}-${name}`, value)
-      cache.set(`${deviceId}-${name}`, value, { quiet: true })
+      cache.set(`${device.id}-${name}`, value, { quiet: true })
     }
   }
 }
