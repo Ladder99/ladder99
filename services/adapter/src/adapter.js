@@ -31,6 +31,7 @@ console.log(`posts to TCP.`)
 console.log(`----------------------------------------------------------------`)
 
 async function main() {
+  //
   // read client setup.yaml file
   const setup = lib.readSetup(setupFolder)
 
@@ -89,6 +90,7 @@ async function main() {
         })
 
         // add outputs for each source to cache
+        // these are not fully functional until we call setSocket
         cache.addOutputs(source.outputs)
       }
 
@@ -129,7 +131,7 @@ async function main() {
         client,
         deviceId,
         deviceName,
-        //. why not just pass the whole device object? incl connection object etc
+        //. better to just pass the whole device object - incl connection object etc
         device,
         driver,
         //. pass whole drivers array here also, in case driver needs to know other devices?
@@ -147,24 +149,27 @@ async function main() {
       })
     }
 
+    // handle connection from agent
     async function onConnection(socket) {
       const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
       console.log('Adapter - new client connection from Agent', remoteAddress)
 
-      // tell cache about this socket
+      // tell cache about the tcp socket
       for (let source of device.sources) {
         cache.setSocket(source.outputs, socket)
       }
 
-      // handle incoming data - get PING from agent, return PONG
-      socket.on('data', onData)
-
       socket.on('error', onError)
+      socket.on('data', onData) // handle PING/PONG from agent
 
       // handle errors
       // eg "This socket has been ended by the other party"
       function onError(error) {
         console.log(error)
+        // tell cache so it doesn't try to write to old socket
+        for (let source of device.sources) {
+          cache.setSocket(source.outputs, undefined)
+        }
         //. now try to reconnect
       }
 
@@ -173,11 +178,11 @@ async function main() {
       function onData(buffer) {
         const str = buffer.toString().trim()
         if (str === '* PING') {
+          // received PING from Agent - send PONG
           const response = '* PONG 5000' //. msec - where get from?
-          // console.log(`Received PING from Agent - sending PONG:`, response)
           socket.write(response + '\n')
         } else {
-          console.log('Received data:', str.slice(0, 20), '...')
+          console.log('Adapter received data:', str.slice(0, 20), '...')
         }
       }
     }
@@ -191,8 +196,9 @@ async function main() {
     console.log(`Adapter - listen for Agent on TCP socket at`, server, `...`)
 
     // begin accepting connections on the specified port and host from agent.
+    // see onConnection for next step.
     tcp.listen(server.port, server.host)
-  }
+  } // do next device
 }
 
 main()
