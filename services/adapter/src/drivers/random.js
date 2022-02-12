@@ -12,8 +12,8 @@ export class AdapterDriver {
 
     // send data directly to agent as shdr - ie skip the cache for now
     //. these should only send something if value CHANGED
+    // orrr can set agent to ignore duplicates
     async function poll() {
-      const timestamp = new Date().toISOString()
       const availability = Math.random() > 0.5 ? 'AVAILABLE' : 'UNAVAILABLE'
       const execution =
         availability === 'AVAILABLE'
@@ -34,7 +34,6 @@ export class AdapterDriver {
         shdr += `|${device.id}-operator|${operator}`
       }
       if (shdr.length > 0 && this.socket) {
-        shdr = timestamp + shdr
         console.log(shdr)
         this.socket.write(shdr + '\n') // write to agent
       }
