@@ -1,4 +1,6 @@
 // random data driver - for testing
+// run with
+//   ./start ./setups/random adapter agent
 
 const pollInterval = 1000 // msec
 

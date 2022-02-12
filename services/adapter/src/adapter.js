@@ -99,6 +99,9 @@ async function setupDevice({ device, cache, client, devices }) {
       // tell cache so it doesn't try to write to old socket
       for (let source of device.sources) {
         cache.setSocket(source.outputs, undefined)
+        if (source.plugin) {
+          source.plugin.setSocket(undefined)
+        }
       }
       //.. now try to reconnect - how? will do automatically?
       // ie because tcp.on connect will still fire?
