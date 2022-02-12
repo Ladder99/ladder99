@@ -52,11 +52,7 @@ main()
 
 // setup a device by connecting to agent, initializing cache dataitems, etc
 async function setupDevice({ device, cache, client, devices }) {
-  //
   // console.log(`Device`, device) // don't print - might have passwords
-  //. ditch this
-  const deviceId = device.id
-  const deviceName = device.name
 
   // each device gets a separate tcp connection to the agent
   console.log(`Adapter - creating TCP server for Agent to connect to...`)
@@ -70,11 +66,10 @@ async function setupDevice({ device, cache, client, devices }) {
   }
 
   // start tcp server for Agent to listen to, eg at adapter:7878
-  //. rename to server(s)?
-  const { destinations } = device
-
+  const destinations = device.destinations || []
   //. just handle one server/destination for now
-  const server = destinations ? destinations[0] : defaultServer
+  const server = destinations[0] || defaultServer
+
   console.log(`Adapter - listen for Agent on TCP socket at`, server, `...`)
 
   // begin accepting connections on the specified port and host from agent.
@@ -91,11 +86,9 @@ async function setupDevice({ device, cache, client, devices }) {
       cache.setSocket(source.outputs, socket)
     }
 
-    socket.on('error', onError)
-    socket.on('data', onData) // handle PING/PONG from agent
-
     // handle errors
     // eg "This socket has been ended by the other party"
+    socket.on('error', onError)
     function onError(error) {
       console.log(error)
       // tell cache so it doesn't try to write to old socket
@@ -107,6 +100,7 @@ async function setupDevice({ device, cache, client, devices }) {
 
     // handle ping/pong messages to/from agent,
     // so agent knows we're alive.
+    socket.on('data', onData) // handle PING/PONG from agent
     function onData(buffer) {
       const str = buffer.toString().trim()
       if (str === '* PING') {
@@ -122,13 +116,13 @@ async function setupDevice({ device, cache, client, devices }) {
 
 // -------------------------------------------------------
 
-// setup a device source, which could be
+// setup a device source
 async function setupSource({ source, cache, client, devices, device }) {
   //
   // console.log(`source`, source) // don't print - might have password etc
   const { module, driver, protocol, host, port, connection } = source
 
-  // import driver plugin
+  // import driver plugin, eg micro.js
   const plugin = await getPlugin(driversFolder, driver)
 
   // get input handlers
@@ -199,7 +193,6 @@ async function setupSource({ source, cache, client, devices, device }) {
   console.log(`Adapter initializing driver for ${driver}...`)
   plugin.init({
     client,
-    //. refac each driver to use device, not deviceId and Name
     device,
     driver,
     //. pass whole drivers array here also, in case driver needs to know other devices?
