@@ -95,13 +95,13 @@ async function setupDevice({ device, cache, client, devices }) {
       for (let source of device.sources) {
         cache.setSocket(source.outputs, undefined)
       }
-      //. now try to reconnect
+      //.. now try to reconnect - how? will do automatically?
+      // ie because tcp.on connect will still fire?
     }
 
     // handle ping/pong messages to/from agent,
     // so agent knows we're alive.
-    socket.on('data', onData) // handle PING/PONG from agent
-    function onData(buffer) {
+    socket.on('data', function onData(buffer) {
       const str = buffer.toString().trim()
       if (str === '* PING') {
         // received PING from Agent - send PONG
@@ -110,7 +110,7 @@ async function setupDevice({ device, cache, client, devices }) {
       } else {
         console.log('Adapter received data:', str.slice(0, 20), '...')
       }
-    }
+    })
   }
 }
 
@@ -195,10 +195,10 @@ async function setupSource({ source, cache, client, devices, device }) {
     client,
     device,
     driver,
-    //. pass whole drivers array here also, in case driver needs to know other devices?
+    // pass whole drivers array here also, in case driver needs to know other devices?
     // eg for jobboss - needs to know what workcenters/devices to look for.
     devices,
-    //. will consolidate some of this stuff into a connection object
+    //. consolidate these into a connect object
     protocol,
     host,
     port,
