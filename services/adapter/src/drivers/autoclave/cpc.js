@@ -52,10 +52,11 @@ export class AdapterDriver {
   connect() {
     console.log(`CPC connect to TCP ${this.host}:${this.port}...`)
     this.client = net.connect(this.port, this.host) // this waits here
-    this.client.on('connect', this.onConnect)
-    this.client.on('data', this.onData)
-    this.client.on('error', this.onError)
-    this.client.on('timeout', this.onTimeout)
+    // attach event handlers
+    this.client.on('connect', this.onConnect.bind(this))
+    this.client.on('data', this.onData.bind(this))
+    this.client.on('error', this.onError.bind(this))
+    this.client.on('timeout', this.onTimeout.bind(this))
   }
 
   // connected to device
