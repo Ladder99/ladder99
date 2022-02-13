@@ -86,7 +86,7 @@ async function setupDevice({ device, cache, client, devices }) {
     // tell cache and plugins about the tcp socket
     for (let source of device.sources) {
       cache.setSocket(source.outputs, socket)
-      if (source.plugin) {
+      if (source.plugin && source.plugin.setSocket) {
         source.plugin.setSocket(socket) // some drivers/plugins need direct socket connection, eg random.js
       }
     }
@@ -99,7 +99,7 @@ async function setupDevice({ device, cache, client, devices }) {
       // tell cache and plugins so they don't try to write to old socket
       for (let source of device.sources) {
         cache.setSocket(source.outputs, undefined)
-        if (source.plugin) {
+        if (source.plugin && source.plugin.setSocket) {
           source.plugin.setSocket(undefined)
         }
       }
