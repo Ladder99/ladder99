@@ -48,6 +48,16 @@ export class Cache {
   setSocket(outputs, socket) {
     for (const output of outputs || []) {
       output.socket = socket
+      if (output.socket) {
+        // send last known data value to agent
+        const shdr = getShdr(output, output.lastValue)
+        console.log(`Cache - send ${shdr.slice(0, 60)}...`)
+        try {
+          output.socket.write(shdr + '\n')
+        } catch (error) {
+          console.log(error)
+        }
+      }
     }
   }
 
@@ -56,26 +66,28 @@ export class Cache {
   // options is { timestamp, quiet }
   // timestamp is an optional STRING that is used in the SHDR
   set(key, value, options = {}) {
-    if (!options.quiet)
-      console.log('cache.set', key, String(value).slice(0, 99))
+    if (!options.quiet) {
+      console.log('Cache - set', key, String(value).slice(0, 99))
+    }
     // update the cache value
     this._map.set(key, value)
     // get list of outputs associated with this key
     // eg ['ac1-power_condition']
     const outputs = this._mapKeyToOutputs[key] || []
-    // calculate outputs and send dependent shdr values to tcp
+    // calculate outputs and send changed shdr values to tcp
     for (const output of outputs) {
       // calculate value of this cache output
       const value = getValue(this, output)
-      // send shdr to agent via tcp socket if value changed
+      // if value changed, send shdr to agent via tcp socket
       if (value !== output.lastValue) {
-        const shdr = getShdr(output, value, options.timestamp) // timestamp can be ''
-        if (!options.quiet)
-          console.log(`shdr changed - sending to tcp - ${shdr.slice(0, 60)}...`)
+        output.lastValue = value
         if (output.socket) {
+          const shdr = getShdr(output, value, options.timestamp) // timestamp can be ''
+          if (!options.quiet) {
+            console.log(`Cache - SHDR changed, send ${shdr.slice(0, 60)}...`)
+          }
           try {
             output.socket.write(shdr + '\n')
-            output.lastValue = value
           } catch (error) {
             console.log(error)
           }
