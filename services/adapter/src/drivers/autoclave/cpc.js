@@ -52,6 +52,7 @@ export class AdapterDriver {
   connect() {
     console.log(`CPC connect to TCP ${this.host}:${this.port}...`)
     this.client = net.connect(this.port, this.host) // this waits here
+    console.log(`CPC connected - attaching listeners...`)
     // attach event handlers
     this.client.on('connect', this.onConnect.bind(this))
     this.client.on('data', this.onData.bind(this))
@@ -70,14 +71,15 @@ export class AdapterDriver {
 
   // 'poll' device using tcp client.write - will receive data in 'data' events
   poll() {
-    console.log(`CPC driver writing ${this.query}...`)
+    console.log(`CPC driver writing "${this.query}"`)
+    //. need to tie this to the onData better somehow?
     this.client.write(this.query + '\r\n')
   }
 
   // receive data from device, write to cache, output shdr to agent
   onData(data) {
     const str = data.toString() // eg 'PathListGet:ReadValues:=,True,Joshau Schneider,254.280816,,0'
-    console.log(`CPC driver received ${str.slice(0, 255)}...`)
+    console.log(`CPC driver received "${str.slice(0, 255)}..."`)
     const valuesStr = str.split(':=')[1]
     // note: for the list of 'messages', it sends one after the other -
     // after the first one it doesn't include the :=, so this will return null.

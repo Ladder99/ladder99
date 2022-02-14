@@ -67,7 +67,7 @@ export class Cache {
   // timestamp is an optional STRING that is used in the SHDR
   set(key, value, options = {}) {
     if (!options.quiet) {
-      console.log('Cache - set', key, String(value).slice(0, 99))
+      console.log(`Cache - set ${key}: "${String(value).slice(0, 99)}..."`)
     }
     // update the cache value
     this._map.set(key, value)
@@ -84,7 +84,7 @@ export class Cache {
         if (output.socket) {
           const shdr = getShdr(output, value, options.timestamp) // timestamp can be ''
           if (!options.quiet) {
-            console.log(`Cache - SHDR changed, send ${shdr.slice(0, 60)}...`)
+            console.log(`Cache - SHDR changed, send "${shdr.slice(0, 60)}..."`)
           }
           try {
             output.socket.write(shdr + '\n')
