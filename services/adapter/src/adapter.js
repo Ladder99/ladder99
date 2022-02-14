@@ -28,6 +28,7 @@ console.log()
 console.log(`Ladder99 Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
 console.log(`posts to TCP.`)
+console.log(new Date().toISOString())
 console.log(`----------------------------------------------------------------`)
 
 async function main() {
