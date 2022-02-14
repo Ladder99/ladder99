@@ -109,7 +109,11 @@ export class AdapterDriver {
   }
 
   onClose(had_error) {
-    console.log('CPC connection closed...')
+    console.log('CPC connection closed - set all to UNAVAILABLE...')
+    const value = 'UNAVAILABLE'
+    this.ids.forEach(id => {
+      this.cache.set(id, value)
+    })
     this.reconnect()
   }
 
