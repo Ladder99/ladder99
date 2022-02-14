@@ -67,7 +67,8 @@ export class Cache {
   // timestamp is an optional STRING that is used in the SHDR
   set(key, value, options = {}) {
     if (!options.quiet) {
-      console.log(`Cache - set ${key}: "${String(value).slice(0, 99)}..."`)
+      const s = typeof value === 'string' ? `"${value.slice(0, 99)}..."` : value
+      console.log(`Cache - set ${key}: ${s}`)
     }
     // update the cache value
     this._map.set(key, value)
