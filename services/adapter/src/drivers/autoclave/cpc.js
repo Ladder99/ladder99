@@ -58,6 +58,7 @@ export class AdapterDriver {
     this.client.on('data', this.onData.bind(this))
     this.client.on('error', this.onError.bind(this))
     this.client.on('timeout', this.onTimeout.bind(this))
+    this.client.on('close', this.onClose.bind(this))
   }
 
   // connected to device
@@ -84,6 +85,8 @@ export class AdapterDriver {
     // note: for the list of 'messages', it sends one after the other -
     // after the first one it doesn't include the :=, so this will return null.
     // so can ignore those, since we just want the first line.
+    //. actually, need to glom all the received strings together, until get a \r\n?
+    // THEN split them on the ':='.
     if (valuesStr) {
       const values = valuesStr.split(',') // eg ['', 'True', 'Joshau Schneider', ...]
       // write values to cache, which will output shdr to agent
@@ -100,17 +103,18 @@ export class AdapterDriver {
     console.log(error)
   }
 
+  onTimeout() {
+    console.log('CPC connection timed out...')
+    // this.reconnect()
+  }
+
   onClose(had_error) {
     console.log('CPC connection closed...')
     this.reconnect()
   }
 
-  onTimeout() {
-    console.log('CPC connection timed out...')
-    this.reconnect()
-  }
-
   async reconnect() {
+    console.log(`CPC reconnect - clear poll timer, remove listeners...`)
     clearTimeout(this.timer)
     this.client.removeAllListeners() // clear the data, timeout etc handlers
     console.log(`CPC - waiting a while to reconnect...`)
