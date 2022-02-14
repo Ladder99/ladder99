@@ -100,6 +100,7 @@ export class AdapterDriver {
   }
 
   onError(error) {
+    // this includes an ETIMEDOUT error message - then calls onTimeout eh?
     console.log(error)
   }
 
