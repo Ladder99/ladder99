@@ -50,7 +50,7 @@ export class Cache {
       output.socket = socket
       if (output.socket) {
         // send last known data value to agent
-        const shdr = getShdr(output, output.lastValue)
+        const shdr = getShdr(output, output.lastValue || 'UNAVAILABLE')
         console.log(`Cache - send ${shdr.slice(0, 60)}...`)
         try {
           output.socket.write(shdr + '\n')
