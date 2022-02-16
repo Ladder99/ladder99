@@ -11,7 +11,7 @@
 
 import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
 
-//. split the polling into high and low frequency polls -
+//. split the polling into high and low frequency polls?
 // eg low freq for the message list, since it sends back a lot of text
 const pollInterval = 2000 // msec
 const reconnectInterval = 5000 // msec
@@ -54,8 +54,9 @@ export class AdapterDriver {
     this.client = net.connect(this.port, this.host) // this waits here
     console.log(`CPC connected - attaching listeners...`)
     // attach event handlers
-    this.client.on('connect', this.onConnect.bind(this))
-    this.client.on('data', this.onData.bind(this))
+    // this.client.on('connect', this.onConnect.bind(this))
+    // this.client.on('data', this.onData.bind(this))
+    this.client.on('connect', () => console.log('onConnect'))
     this.client.on('error', this.onError.bind(this))
     this.client.on('timeout', this.onTimeout.bind(this))
     this.client.on('close', this.onClose.bind(this))
@@ -102,6 +103,8 @@ export class AdapterDriver {
   onError(error) {
     // this includes an ETIMEDOUT error message - then calls onTimeout eh?
     // also ECONNRESET message
+    console.log('CPC error')
+    console.log(error.message)
     console.log(error)
   }
 
