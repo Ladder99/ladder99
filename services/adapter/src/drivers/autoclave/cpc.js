@@ -51,8 +51,8 @@ export class AdapterDriver {
   // connect to device and attach event handlers
   connect() {
     console.log(`CPC connect to TCP ${this.host}:${this.port}...`)
-    this.client = net.connect(this.port, this.host) // this waits here
-    console.log(`CPC connected - attaching listeners...`)
+    this.client = net.connect(this.port, this.host) // this waits here?
+    console.log(`CPC attaching listeners...`)
     // attach event handlers
     // this.client.on('connect', this.onConnect.bind(this))
     // this.client.on('data', this.onData.bind(this))
@@ -101,7 +101,7 @@ export class AdapterDriver {
   }
 
   onError(error) {
-    // this includes an ETIMEDOUT error message - then calls onTimeout eh?
+    // this includes an ETIMEDOUT error message - then calls onTimeout eh? no!
     // also ECONNRESET message
     console.log('CPC error')
     console.log(error.message)
@@ -113,20 +113,16 @@ export class AdapterDriver {
     // this.reconnect()
   }
 
-  onClose(had_error) {
+  async onClose(had_error) {
     console.log('CPC connection closed - set all to UNAVAILABLE...')
     const value = 'UNAVAILABLE'
     this.ids.forEach(id => {
       this.cache.set(id, value)
     })
-    this.reconnect()
-  }
-
-  async reconnect() {
     console.log(`CPC reconnect - clear poll timer, remove listeners...`)
     clearTimeout(this.timer)
     this.client.removeAllListeners() // clear the data, timeout etc handlers
-    console.log(`CPC - waiting a while to reconnect...`)
+    console.log(`CPC waiting a while to reconnect...`)
     await new Promise(resolve => setTimeout(resolve, reconnectInterval))
     this.connect()
   }
