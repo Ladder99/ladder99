@@ -56,7 +56,6 @@ export class AdapterDriver {
     // attach event handlers
     this.client.on('connect', this.onConnect.bind(this))
     this.client.on('data', this.onData.bind(this))
-    // this.client.on('connect', () => console.log('onConnect'))
     this.client.on('error', this.onError.bind(this))
     this.client.on('timeout', this.onTimeout.bind(this))
     this.client.on('close', this.onClose.bind(this))
@@ -67,7 +66,6 @@ export class AdapterDriver {
     console.log(`CPC connected to device ${this.deviceId}...`)
     this.cache.set(`${this.deviceId}-avail`, 'AVAILABLE')
     this.poll() // first poll
-    //. cancel timer if reconnect?
     this.timer = setInterval(this.poll.bind(this), pollInterval) // subsequent polls
   }
 
@@ -119,8 +117,12 @@ export class AdapterDriver {
     this.ids.forEach(id => {
       this.cache.set(id, value)
     })
-    console.log(`CPC reconnect - clear poll timer, remove listeners...`)
-    clearTimeout(this.timer)
+    if (this.timer) {
+      console.log(`CPC clear poll timer...`)
+      clearTimeout(this.timer)
+      this.timer = null
+    }
+    console.log(`CPC remove listeners...`)
     this.client.removeAllListeners() // clear the data, timeout etc handlers
     console.log(`CPC waiting a while to reconnect...`)
     await new Promise(resolve => setTimeout(resolve, reconnectInterval))
