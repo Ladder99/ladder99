@@ -364,6 +364,24 @@ services:
         max-size: '20m'
   # superset - a sql-based dashboard application
 
+  # traefik - a reverse proxy
+  # need to 
+  traefik:
+    image: traefik:v2.5.3
+    container_name: traefik
+    profiles:
+      - traefik
+    ports:
+      - 80:80/tcp
+      - 443:443/tcp
+    networks:
+      - web
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ../$SETUP/volumes/traefik/traefik.toml:/traefik.toml
+      - ../$SETUP/volumes/traefik/traefik_dynamic.toml:/traefik_dynamic.toml
+      - ../$SETUP/volumes/traefik/acme.json:/acme.json
+
 networks:
   ladder99:
     name: ladder99
