@@ -54,9 +54,9 @@ export class AdapterDriver {
     this.client = net.connect(this.port, this.host) // this waits here?
     console.log(`CPC attaching listeners...`)
     // attach event handlers
-    // this.client.on('connect', this.onConnect.bind(this))
-    // this.client.on('data', this.onData.bind(this))
-    this.client.on('connect', () => console.log('onConnect'))
+    this.client.on('connect', this.onConnect.bind(this))
+    this.client.on('data', this.onData.bind(this))
+    // this.client.on('connect', () => console.log('onConnect'))
     this.client.on('error', this.onError.bind(this))
     this.client.on('timeout', this.onTimeout.bind(this))
     this.client.on('close', this.onClose.bind(this))
