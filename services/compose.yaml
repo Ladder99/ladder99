@@ -365,7 +365,8 @@ services:
   # superset - a sql-based dashboard application
 
   # traefik - a reverse proxy
-  # need to 
+  # will need to add labels to grafana or other service you want to expose -
+  # see client-mazak/compose-overrides.yaml or client-oxbox for examples.
   traefik:
     image: traefik:v2.5.3
     container_name: traefik
