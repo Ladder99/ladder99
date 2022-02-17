@@ -25,6 +25,7 @@ const typeFns = {
 }
 
 export class AdapterDriver {
+  //
   async init({ device, host, port, cache, inputs }) {
     console.log(`CPC initialize driver...`)
     cache.set(`${device.id}-avail`, 'UNAVAILABLE')

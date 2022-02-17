@@ -44,8 +44,12 @@ export class Cache {
     }
   }
 
-  // attach tcp socket to each output
+  // attach tcp socket to each output, or clear if socket=null
   setSocket(outputs, socket) {
+    console.log(`Cache - setSocket...`)
+    if (socket) {
+      console.log(`Cache - send last known data values to agent...`)
+    }
     for (const output of outputs || []) {
       output.socket = socket
       if (output.socket) {
@@ -65,6 +69,7 @@ export class Cache {
   // eg set('ac1-power_warning', true)
   // options is { timestamp, quiet }
   // timestamp is an optional STRING that is used in the SHDR
+  //. explain distinction between value param and value variable below, with examples
   set(key, value, options = {}) {
     if (!options.quiet) {
       const s = typeof value === 'string' ? `"${value.slice(0, 99)}..."` : value
@@ -85,7 +90,7 @@ export class Cache {
         if (output.socket) {
           const shdr = getShdr(output, value, options.timestamp) // timestamp can be ''
           if (!options.quiet) {
-            console.log(`Cache - SHDR changed, send "${shdr.slice(0, 60)}..."`)
+            console.log(`Cache - value changed, send "${shdr.slice(0, 60)}..."`)
           }
           try {
             output.socket.write(shdr + '\n')
