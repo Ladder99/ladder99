@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 8,
-  "iteration": 1645178976544,
+  "id": 7,
+  "iteration": 1645209609211,
   "links": [
     {
       "asDropdown": false,
@@ -148,9 +148,9 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
-          "text": "M12346",
-          "value": "M12346"
+          "selected": true,
+          "text": "Cutter",
+          "value": "Cutter"
         },
         "datasource": null,
         "definition": "select name from devices",
@@ -172,12 +172,12 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Events",
   "uid": "events",
-  "version": 12
+  "version": 2
 }
