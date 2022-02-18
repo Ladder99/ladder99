@@ -375,8 +375,10 @@ services:
     ports:
       - 80:80/tcp
       - 443:443/tcp
-    networks:
-      - web
+    # will need to specify this in client's compose-override.yaml,
+    # and create it manually with `docker network create web`.
+    # networks:
+    #   - web
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ../$SETUP/volumes/traefik/traefik.toml:/traefik.toml
