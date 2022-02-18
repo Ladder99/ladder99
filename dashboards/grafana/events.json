@@ -23,7 +23,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 8,
-  "iteration": 1645178096105,
+  "iteration": 1645178976544,
   "links": [
     {
       "asDropdown": false,
@@ -139,6 +139,7 @@
       "type": "table"
     }
   ],
+  "refresh": "5s",
   "schemaVersion": 31,
   "style": "dark",
   "tags": ["client"],
@@ -177,6 +178,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "Events",
-  "uid": "k8q5XNB7z",
-  "version": 10
+  "uid": "events",
+  "version": 12
 }
