@@ -23,6 +23,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 8,
+  "iteration": 1645178096105,
   "links": [
     {
       "asDropdown": false,
@@ -59,10 +60,6 @@
               {
                 "color": "green",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -87,24 +84,12 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "id"
-            },
-            "properties": [
-              {
-                "id": "custom.width",
-                "value": 70
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
               "options": "path"
             },
             "properties": [
               {
                 "id": "custom.width",
-                "value": 408
+                "value": 355
               }
             ]
           }
@@ -128,7 +113,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  path,\n  time,\n  value\nFROM history_all\nWHERE\n  device='$device'\n  -- and (\n  --   path LIKE 'controller%'\n  --   OR path IN ('availability', 'load-condition', 'message', 'functional-mode',\n  --   'system-condition', 'controller/emergency-stop', 'axes/c/rotary-mode')\n  -- )\n  and $__timeFilter(\"time\")\norder by time desc\nlimit 100",
+          "rawSql": "SELECT\n  time,\n  path,\n  value\nFROM history_all\nWHERE\n  device='$device'\n  -- and (\n  --   path LIKE 'controller%'\n  --   OR path IN ('availability', 'load-condition', 'message', 'functional-mode',\n  --   'system-condition', 'controller/emergency-stop', 'axes/c/rotary-mode')\n  -- )\n  and $__timeFilter(\"time\")\norder by time desc\nlimit 100",
           "refId": "A",
           "select": [
             [
@@ -158,7 +143,32 @@
   "style": "dark",
   "tags": ["client"],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "M12346",
+          "value": "M12346"
+        },
+        "datasource": null,
+        "definition": "select name from devices",
+        "description": "Device Name",
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "Device",
+        "multi": false,
+        "name": "device",
+        "options": [],
+        "query": "select name from devices",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
   },
   "time": {
     "from": "now-6h",
@@ -167,6 +177,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "Events",
-  "uid": "events",
-  "version": 7
+  "uid": "k8q5XNB7z",
+  "version": 10
 }
