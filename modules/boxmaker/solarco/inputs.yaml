@@ -24,7 +24,7 @@ connect:
   # can use ${deviceId} in topic names
   subscribe:
     - topic: solarco
-    - topic: l99/B01000/evt/io #. update this
+    - topic: l99/B01000/evt/io #. update this here and below
     # - topic: l99/B01000/evt/ident
     # - topic: l99/B01000/evt/agent
     # - topic: l99/B01000/evt/gateway
@@ -63,7 +63,7 @@ handlers:
   # ----------------------------------------------------------------------------
   # handle io messages
   # ----------------------------------------------------------------------------
-  #. update this topic
+  #. update this topic here and above
   l99/B01000/evt/io:
     # make '$' the message payload dictionary and add faultKeys for quick
     # lookups of faults - payload.faults is a dictionary of faults.
