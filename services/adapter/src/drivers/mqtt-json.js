@@ -78,12 +78,11 @@ export class AdapterDriver {
 
       // unpack the mqtt json payload, assuming it's a JSON string -
       // if not, just pass as string to handler.
-      //. this prints a big error message if try fails - do better
       let payload
       try {
         payload = JSON.parse(message)
       } catch (error) {
-        console.log(error)
+        console.log(error.message)
         payload = message
       }
 
