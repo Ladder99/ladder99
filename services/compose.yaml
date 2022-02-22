@@ -61,9 +61,13 @@ services:
   # cloudbeaver - database web ui
   cloudbeaver:
     container_name: cloudbeaver
-    # see client-mazak for example of running cloudbeaver on x86
+    # need to use image or build in client's compose-overrides.yaml.
+    # (tried using build: null, build: '' in client but couldn't turn off the build value,
+    # so just commented both image and build out)
+    # see client-mazak for example of running cloudbeaver on x86.
+    # https://hub.docker.com/r/dbeaver/cloudbeaver/tags
     # image: dbeaver/cloudbeaver:21.3.5 # use this for x86 etc
-    build: ./cloudbeaver # use this for ARM processors - need to build with Dockerfile
+    # build: ./cloudbeaver # use this for ARM processors - need to build with Dockerfile
     profiles:
       - cloudbeaver
     volumes:
