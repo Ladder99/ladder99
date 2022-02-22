@@ -14,7 +14,6 @@ services:
   adapter:
     container_name: adapter
     # image: ladder99/adapter:latest # use this if build docker image and push to hub
-    # build: ../services/adapter # see Dockerfile in this folder
     build: ./adapter # see Dockerfile in this folder
     # set this to give permission to access hardware (e.g. dymo scale in usb port).
     #. security hole - leave off for now, until need dymo driver.
@@ -62,11 +61,11 @@ services:
   # cloudbeaver - database web ui - more general than pgadmin
   cloudbeaver:
     container_name: cloudbeaver
-    # need to use image or build in client's compose-overrides.yaml.
-    # (tried using build: null, build: '' in client but couldn't turn off the build value,
-    # so just commented both image and build out)
+    # need to use image OR build in client's compose-overrides.yaml.
+    # (can't turn off a value with '' or null, so just commented both
+    # image and build out).
     # see client-mazak for example of running cloudbeaver on x86.
-    # https://hub.docker.com/r/dbeaver/cloudbeaver/tags
+    # see https://hub.docker.com/r/dbeaver/cloudbeaver/tags
     # image: dbeaver/cloudbeaver:21.3.5 # use this for x86 etc
     # build: ./cloudbeaver # use this for ARM processors - need to build with Dockerfile
     profiles:
@@ -109,29 +108,29 @@ services:
   # grafana - show real-time data from the database, handle notifications
   grafana:
     container_name: grafana
-    # image: grafana/grafana:7.5.5
     image: grafana/grafana:8.2.2
     profiles:
       - grafana
       - dashboard
-    ports:
-      - $GRAFANA_PORT:3000/tcp
+    # might need to turn this on for a client - see cloudbeaver comments.
+    # ports:
+    #   - $GRAFANA_PORT:3000/tcp
     environment:
       # need these for provisioning datasources
       #. don't use PGPASSWORD - how use .pgpass file with grafana tho?
-      # note: null is a docker convention for passing values in through 
-      # environment variables.
+      # null is a docker convention for passing values in through envars.
       PGHOST: null
       PGPORT: null
       PGDATABASE: null
       PGUSER: null
       PGPASSWORD: null
-      #. move these into compose-overrides.yaml
-      JOBBOSS_HOST: null
-      JOBBOSS_PORT: null
-      JOBBOSS_DATABASE: null
-      JOBBOSS_USER: null
-      JOBBOSS_PASSWORD: null
+      # moved these into compose-overrides.yaml for oxbox
+      # JOBBOSS_HOST: null
+      # JOBBOSS_PORT: null
+      # JOBBOSS_DATABASE: null
+      # JOBBOSS_USER: null
+      # JOBBOSS_PASSWORD: null
+      # not used
       # INFLUXDB_DB:
       # INFLUXDB_USER:
       # INFLUXDB_PASSWORD:
