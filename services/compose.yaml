@@ -124,12 +124,6 @@ services:
       PGDATABASE: null
       PGUSER: null
       PGPASSWORD: null
-      # moved these into compose-overrides.yaml for oxbox
-      # JOBBOSS_HOST: null
-      # JOBBOSS_PORT: null
-      # JOBBOSS_DATABASE: null
-      # JOBBOSS_USER: null
-      # JOBBOSS_PASSWORD: null
       # not used
       # INFLUXDB_DB:
       # INFLUXDB_USER:
@@ -170,7 +164,6 @@ services:
     build: ./meter
     profiles:
       - meter
-    # command: recorder --mode record
     environment:
       # specify where code can find data.
       # can override at run time, eg to run service on windows with node.
@@ -203,9 +196,6 @@ services:
       - ../$SETUP/volumes/mosquitto/config:/mosquitto/config # has mosquitto.conf
       - ../$SETUP/volumes/mosquitto/data:/mosquitto/data
       - ../$SETUP/volumes/mosquitto/log:/mosquitto/log
-    # environment:
-    #   - PUID=${PUID}
-    #   - PGID=${PGID}
     restart: always
     networks:
       - ladder99
@@ -216,7 +206,6 @@ services:
   # nodered - a visual programming environment
   nodered:
     container_name: nodered
-    # image: nodered/node-red:latest
     image: nodered/node-red:2.1.6
     profiles:
       - nodered
@@ -231,9 +220,8 @@ services:
       # note: have to `sudo chown pi:pi volumes/nodered/data` manually
       # for nodered to work. if don't, nodered will keep resetting and sending
       # messages over and over, flooding the mqtt adapter.
-      #. better way?
+      #. any better way?
       - ../$SETUP/volumes/nodered/data:/data:rw
-      # - ../$SETUP/volumes/ftpd/data:/volumes/ftpd-data:rw
     logging:
       driver: 'json-file'
       options:
@@ -262,8 +250,6 @@ services:
     profiles:
       - play
     command: recorder --mode play
-    # ports:
-    #   - 8080:8080
     volumes:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
       - ../modules:/data/modules # has module-specific recordings folder
@@ -297,8 +283,9 @@ services:
   postgres:
     container_name: postgres
     image: timescale/timescaledb:2.3.0-pg13
-    ports:
-      - $PGPORT:5432/tcp
+    # client might need to add this in compose-overrides.yaml
+    # ports:
+    #   - $PGPORT:5432/tcp
     profiles:
       - postgres
       - dashboard
@@ -397,10 +384,6 @@ services:
       - ../$SETUP/volumes/traefik/traefik.toml:/traefik.toml
       - ../$SETUP/volumes/traefik/traefik_dynamic.toml:/traefik_dynamic.toml
       - ../$SETUP/volumes/traefik/acme.json:/acme.json
-    # may need to specify this in client's compose-override.yaml,
-    # and create it manually with `docker network create web`.
-    # networks:
-    #   - web
 
 networks:
   ladder99:
