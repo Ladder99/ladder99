@@ -61,12 +61,11 @@ services:
   # cloudbeaver - database web ui
   cloudbeaver:
     container_name: cloudbeaver
-    # image: cloudbeaver/cloudbeaver:latest
-    build: ./cloudbeaver
+    # image: dbeaver/cloudbeaver:latest # use this for x86 etc
+    build: ./cloudbeaver # use this for ARM processors - need to build with Dockerfile
     profiles:
       - cloudbeaver
     volumes:
-      # - ../$SETUP/volumes/cloudbeaver/workspace:/apps/cloudbeaver/workspace
       - ../$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
     ports:
       - 8978:8978
@@ -383,15 +382,15 @@ services:
     ports:
       - 80:80/tcp
       - 443:443/tcp
-    # will need to specify this in client's compose-override.yaml,
-    # and create it manually with `docker network create web`.
-    # networks:
-    #   - web
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ../$SETUP/volumes/traefik/traefik.toml:/traefik.toml
       - ../$SETUP/volumes/traefik/traefik_dynamic.toml:/traefik_dynamic.toml
       - ../$SETUP/volumes/traefik/acme.json:/acme.json
+    # will need to specify this in client's compose-override.yaml,
+    # and create it manually with `docker network create web`.
+    # networks:
+    #   - web
 
 networks:
   ladder99:
