@@ -380,6 +380,9 @@ services:
       - 80:80/tcp
       - 443:443/tcp
     volumes:
+      # will need to do this before starting traefik -
+      #   mkdir ../client-oxbox/volumes/traefik
+      #   chmod 600 ../client-oxbox/volumes/traefik/acme.json
       - /var/run/docker.sock:/var/run/docker.sock
       - ../$SETUP/volumes/traefik/traefik.toml:/traefik.toml
       - ../$SETUP/volumes/traefik/traefik_dynamic.toml:/traefik_dynamic.toml
