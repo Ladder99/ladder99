@@ -7,6 +7,7 @@
 # note: a '3' here means '3.0'
 # version: '3.7' # allows init keyword
 version: '3.8' # profiles?
+# version: '3.9'
 
 services:
   # adapter - convert machine data to shdr and send to agent
@@ -58,7 +59,7 @@ services:
       options:
         max-size: '20m'
 
-  # cloudbeaver - database web ui
+  # cloudbeaver - database web ui - more general than pgadmin
   cloudbeaver:
     container_name: cloudbeaver
     # need to use image or build in client's compose-overrides.yaml.
@@ -72,7 +73,11 @@ services:
       - cloudbeaver
     volumes:
       - ../$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
-    # might need to turn this on for a client, unless using traefik
+    # need to leave this unspecified here, because clients that use traefik
+    # need it that way, and there's no way to remove a port through 
+    # overrides yet.
+    # see https://github.com/docker/compose/issues/3729
+    # so might need to turn this on for a client.
     # ports:
     #   - 8978:8978
     restart: always
