@@ -283,7 +283,7 @@ services:
   postgres:
     container_name: postgres
     image: timescale/timescaledb:2.3.0-pg13
-    # client might need to add this in compose-overrides.yaml
+    # NOTE: client might need to add this in compose-overrides.yaml
     # ports:
     #   - $PGPORT:5432/tcp
     profiles:
