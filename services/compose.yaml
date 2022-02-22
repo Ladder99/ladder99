@@ -61,7 +61,8 @@ services:
   # cloudbeaver - database web ui
   cloudbeaver:
     container_name: cloudbeaver
-    # image: dbeaver/cloudbeaver:latest # use this for x86 etc
+    # see client-mazak for example of running cloudbeaver on x86
+    # image: dbeaver/cloudbeaver:21.3.5 # use this for x86 etc
     build: ./cloudbeaver # use this for ARM processors - need to build with Dockerfile
     profiles:
       - cloudbeaver
