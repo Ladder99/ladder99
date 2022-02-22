@@ -72,8 +72,9 @@ services:
       - cloudbeaver
     volumes:
       - ../$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
-    ports:
-      - 8978:8978
+    # might need to turn this on for a client, unless using traefik
+    # ports:
+    #   - 8978:8978
     restart: always
     networks:
       - ladder99
@@ -392,7 +393,7 @@ services:
       - ../$SETUP/volumes/traefik/traefik.toml:/traefik.toml
       - ../$SETUP/volumes/traefik/traefik_dynamic.toml:/traefik_dynamic.toml
       - ../$SETUP/volumes/traefik/acme.json:/acme.json
-    # will need to specify this in client's compose-override.yaml,
+    # may need to specify this in client's compose-override.yaml,
     # and create it manually with `docker network create web`.
     # networks:
     #   - web
