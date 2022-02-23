@@ -112,7 +112,7 @@ services:
     profiles:
       - grafana
       - dashboard
-    # might need to turn this on for a client - see cloudbeaver comments.
+    # IMPORTANT: might need to turn this on for a client - see cloudbeaver comments.
     # ports:
     #   - $GRAFANA_PORT:3000/tcp
     environment:
