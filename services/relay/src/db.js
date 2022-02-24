@@ -123,13 +123,11 @@ export class Db {
       // VALUES ($1, $2, $3, $4::jsonb);`
       const values = records.map(record => [
         record.node_id,
-        // record.property_id,
         record.dataitem_id,
         record.time,
         record.value,
       ])
       const sql = pgFormat(
-        // `INSERT INTO history (node_id, property_id, time, value) VALUES %L;`,
         `INSERT INTO history (node_id, dataitem_id, time, value) VALUES %L;`,
         values
       )
@@ -143,16 +141,29 @@ export class Db {
     }
   }
 
+  // get device node_id associated with a device name.
+  // waits until it's there, in case this is run during setup.
+  async getDeviceId(deviceName) {
+    let result
+    while (true) {
+      const sql = `select node_id from devices where name='${deviceName}'`
+      result = await this.client.query(sql)
+      if (result.rows.length > 0) break
+      await new Promise(resolve => setTimeout(resolve, 4000)) // wait 4 secs
+    }
+    return result.rows[0].node_id
+  }
+
   // get latest value of a device's property path
   async getLatestValue(table, device, path) {
     const sql = `
-    select value
-    from ${table}
-    where device='${device.name}' and path='${path}'
-    order by time desc
-    limit 1;
+      select value
+      from ${table}
+      where device='${device.name}' and path='${path}'
+      order by time desc
+      limit 1;
     `
-    console.log(sql)
+    // console.log(sql)
     const result = await this.query(sql)
     // console.log(result)
     const value = result.rowCount > 0 && result.rows[0]['value']
