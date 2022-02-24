@@ -57,7 +57,7 @@ export class Metric {
     this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
 
     console.log(`Meter - get device node_id...`)
-    this.device.node_id = await this.getDeviceId() // repeats until device is there
+    this.device.node_id = await this.db.getDeviceId(device.name) // repeats until device is there
     console.log(this.device)
 
     //. poll for schedule info, save to this - set up timer for every 10mins?
@@ -69,19 +69,6 @@ export class Metric {
     await this.backfill() // backfill missing values
     await this.poll() // do first poll
     this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
-  }
-
-  // get device node_id associated with a device name.
-  // waits until it's there, in case this is run during setup.
-  async getDeviceId() {
-    let result
-    while (true) {
-      const sql = `select node_id from devices where name='${this.device.name}'`
-      result = await this.db.query(sql)
-      if (result.rows.length > 0) break
-      await new Promise(resolve => setTimeout(resolve, 4000)) // wait 4 secs
-    }
-    return result.rows[0].node_id
   }
 
   async backfill() {

@@ -27,30 +27,19 @@ export class Metric {
     this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
 
     console.log(`Meter - get device node_id...`)
-    this.device.node_id = await this.getDeviceId() // repeats until device is there
+    this.device.node_id = await this.db.getDeviceId(device.name) // repeats until device is there
     console.log(this.device)
+
+    this.lifetimeId = await this.db.getDataItemId(metric.lifetimePath) // repeat until dataitem there
+    console.log(this.lifetimeId)
 
     // get polling interval - either from metric in setup yaml or default value
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
 
     //...
     // await this.backfill() // backfill missing values
-    // await this.poll() // do first poll
+    await this.poll() // do first poll
     // this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
-  }
-
-  // get device node_id associated with a device name.
-  // waits until it's there, in case this is run during setup.
-  //. move to db.js - for availability.js also
-  async getDeviceId() {
-    let result
-    while (true) {
-      const sql = `select node_id from devices where name='${this.device.name}'`
-      result = await this.db.query(sql)
-      if (result.rows.length > 0) break
-      await new Promise(resolve => setTimeout(resolve, 4000)) // wait 4 secs
-    }
-    return result.rows[0].node_id
   }
 
   // async backfill() {
@@ -122,30 +111,13 @@ export class Metric {
   //   console.log(`Backfill done`)
   // }
 
-  // // poll db and update bins - called by timer
-  // async poll() {
-  //   console.log('Meter - poll db and update bins')
-  //   const now = new Date()
-  //   // shift now into server timezone (GMT) so can do comparisons properly
-  //   // const now = new Date(
-  //   //   new Date().getTime() +
-  //   //     (this.client.timezoneOffsetHrs || 0) * 60 * 60 * 1000
-  //   // )
-  //   console.log('Meter - now', now)
+  // poll db and update bins - called by timer
+  async poll() {
+    console.log('Meter Partcounts - poll db and update ')
+    // const now = new Date()
 
-  //   // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ... }
-  //   console.log(`Meter - get schedule...`)
-
-  //   //. do this every 10mins or so on separate timer, save to this
-  //   const schedule = await this.getSchedule()
-
-  //   // check if we're within scheduled time
-  //   const scheduled = now >= schedule.start && now <= schedule.stop
-  //   if (scheduled) {
-  //     console.log(`Meter - in scheduled time window - updatebins...`)
-  //     await this.updateBins(now, this.interval)
-  //   } else {
-  //     console.log(`Meter - not in scheduled time window`)
-  //   }
-  // }
+    // check if we're within scheduled time
+    // console.log(`Meter - in scheduled time window - updatebins...`)
+    // await this.updateBins(now, this.interval)
+  }
 }

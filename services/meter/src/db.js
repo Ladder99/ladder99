@@ -154,6 +154,19 @@ export class Db {
     return result.rows[0].node_id
   }
 
+  // get node_id associated with a dataitem path.
+  // waits until it's there, in case this is run during setup.
+  async getDataItemId(path) {
+    let result
+    while (true) {
+      const sql = `select node_id from dataitems where path='${path}'`
+      result = await this.client.query(sql)
+      if (result.rows.length > 0) break
+      await new Promise(resolve => setTimeout(resolve, 4000)) // wait 4 secs
+    }
+    return result.rows[0].node_id
+  }
+
   // get latest value of a device's property path
   async getLatestValue(table, device, path) {
     const sql = `
