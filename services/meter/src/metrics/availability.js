@@ -140,6 +140,8 @@ export class Metric {
     console.log(`Meter Availability - backfill done`)
   }
 
+  // ----------------------------
+
   // poll db and update bins - called by timer
   async poll() {
     console.log('Meter Availability - poll db and update bins')
@@ -152,7 +154,7 @@ export class Metric {
     console.log('Meter Availability - now', now)
 
     // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ... }
-    console.log(`Meter - get schedule...`)
+    console.log(`Meter Availability - get schedule...`)
 
     //. do this every 10mins or so on separate timer, save to this
     const schedule = await this.getSchedule()

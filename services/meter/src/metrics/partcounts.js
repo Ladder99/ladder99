@@ -4,9 +4,9 @@ const minutes = 60 * 1000 // 60 ms
 const hours = 60 * minutes
 const days = 24 * hours
 
-const backfillDefaultStart = 60 * days // ie look this far back for first backfill date, by default
-const metricIntervalDefault = 60 // seconds
-const resolutions = 'minute,hour,day,week,month,year'.split(',') //. 5min? 15min?
+const metricIntervalDefault = 5 // seconds
+// const backfillDefaultStart = 60 * days // ie look this far back for first backfill date, by default
+// const resolutions = 'minute,hour,day,week,month,year'.split(',') //. 5min? 15min?
 
 export class Metric {
   constructor() {
@@ -15,10 +15,12 @@ export class Metric {
     this.db = null
     this.interval = null
     this.timer = null
+    this.device_id = null
+    this.lifetime_id = null
   }
 
   async start({ client, db, device, metric }) {
-    console.log(`Meter - initialize partcounts metric...`)
+    console.log(`Meter Partcounts - initialize partcounts metric...`)
     this.client = client
     this.db = db
     this.device = device
@@ -26,43 +28,108 @@ export class Metric {
 
     this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
 
-    console.log(`Meter - get device node_id...`)
-    this.device.node_id = await this.db.getDeviceId(device.name) // repeats until device is there
+    console.log(`Meter Partcounts - get device node_id...`)
+    this.device_id = await this.db.getDeviceId(device.name) // repeats until device is there
     console.log(this.device)
 
-    this.lifetimeId = await this.db.getDataItemId(metric.lifetimePath) // repeat until dataitem there
-    console.log(this.lifetimeId)
+    // need this dataitemId as we'll be writing directly to the history table
+    this.lifetime_id = await this.db.getDataItemId(metric.lifetimePath) // repeat until dataitem there
+    console.log(this.lifetime_id)
 
     // get polling interval - either from metric in setup yaml or default value
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
 
-    //...
     // await this.backfill() // backfill missing values
     await this.poll() // do first poll
-    // this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
+    this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
 
-  // async backfill() {
-  //   console.log(`Meter - backfilling any missed dates...`)
+  // poll db and update lifetime count - called by timer
+  async poll() {
+    console.log('Meter Partcounts - poll db and write lifetime counts ')
 
-  //   const now = new Date()
-  //   const defaultStart = new Date(now.getTime() - backfillDefaultStart) // eg 60d ago
+    const now = new Date()
+    const start = new Date(now.getTime() - this.interval)
+    const stop = now
 
+    const rows = await this.getPartCounts(start, stop)
+    if (rows && rows.length > 1) {
+      let previous = rows[0] // { time, value }
+      for (let row of rows.slice(1)) {
+        // get delta from previous value
+        const delta = row.value - previous.value
+        if (delta > 0) {
+          //. write time, lifetime+delta
+        }
+        previous = row
+      }
+    }
+  }
+
+  async getPartCounts(start, stop) {
+    const sql = `
+      select 
+        time, value
+      from 
+        history_float
+      where
+        device = '${this.device.name}'
+        and path = '${this.metric.deltaPath}'
+        and time between '${start.toISOString()}' and '${stop.toISOString()}'
+      union (
+        select 
+          time, value
+        from 
+          history_float
+        where
+          device = '${this.device.name}'
+          and path = '${this.metric.deltaPath}'
+          and time < '${start.toISOString()}'
+        order by 
+          time desc
+        limit 1
+      )
+      order by 
+        time asc;
+    `
+    const result = await this.db.query(sql)
+    // result.rows will be like
+    // time, value
+    // 9:59:59am, 99
+    // 10:00:00am, 100
+    // 10:00:01am, 101
+    // 10:00:02am, 102
+    // 10:00:03am, "0"
+    // 10:00:04am, 1
+    // 10:00:05am, 2
+    return result.rows
+  }
+
+  // async getRecent(device, path) {
   //   // get starting point by finding most recent record in bins
   //   const sql = `
-  //     select time
-  //     from bins
-  //     where device_id=${this.device.node_id}
+  //     select time, value
+  //     from history_float
+  //     where device='${device.name}' and path='${path}'
   //     order by time desc
   //     limit 1;
   //   `
   //   const result = await this.db.query(sql)
-  //   const lastRead = result.rows.length > 0 && result.rows[0].time
-  //   console.log(`lastRead`, lastRead)
-  //   const startBackfill = lastRead ? new Date(lastRead) : defaultStart
-  //   console.log(`startBackfill`, startBackfill)
+  //   const recent = result.rows.length > 0 && result.rows[0] // null or { time, value }
+  //   return recent
+  // }
 
-  //   // get list of start/stop times since then, in order
+  // async backfill() {
+  //   console.log(`Meter Partcounts - backfill any missed partcounts...`)
+
+  //   //. get most recent delta and lifetime values
+  //   const recentDelta = await this.getRecent(this.device, this.metric.deltaPath)
+  //   const recentLifetime = await this.getRecent(
+  //     this.device,
+  //     this.metric.lifetimePath
+  //   )
+  //   // const startBackfill = lastRead && new Date(lastRead)
+
   //   const sql2 = `
   //     select time, path, value
   //     from history_all
@@ -89,35 +156,25 @@ export class Metric {
   //   }
   //   console.log('dict', startStopTimes)
 
-  //   // loop from startstart to now, interval 1 min
-  //   // check for active and available
-  //   // write to bins table those values
-  //   const startMinute = Math.floor(startBackfill.getTime() / minutes)
-  //   const nowMinute = Math.floor(now.getTime() / minutes)
-  //   console.log(`start, now`, startMinute, nowMinute)
-  //   let state = null
-  //   for (let minute = startMinute; minute < nowMinute; minute++) {
-  //     const path = startStopTimes[minute]
-  //     if (path === this.metric.startPath) {
-  //       state = 1
-  //     } else if (path === this.metric.stopPath) {
-  //       state = 0
-  //     }
-  //     if (state) {
-  //       const time = new Date(minute * minutes)
-  //       await this.updateBins(time, this.interval)
-  //     }
-  //   }
-  //   console.log(`Backfill done`)
+  //   // // loop from startstart to now, interval 1 min
+  //   // // check for active and available
+  //   // // write to bins table those values
+  //   // const startMinute = Math.floor(startBackfill.getTime() / minutes)
+  //   // const nowMinute = Math.floor(now.getTime() / minutes)
+  //   // console.log(`start, now`, startMinute, nowMinute)
+  //   // let state = null
+  //   // for (let minute = startMinute; minute < nowMinute; minute++) {
+  //   //   const path = startStopTimes[minute]
+  //   //   if (path === this.metric.startPath) {
+  //   //     state = 1
+  //   //   } else if (path === this.metric.stopPath) {
+  //   //     state = 0
+  //   //   }
+  //   //   if (state) {
+  //   //     const time = new Date(minute * minutes)
+  //   //     await this.updateBins(time, this.interval)
+  //   //   }
+  //   // }
+  //   // console.log(`Backfill done`)
   // }
-
-  // poll db and update bins - called by timer
-  async poll() {
-    console.log('Meter Partcounts - poll db and update ')
-    // const now = new Date()
-
-    // check if we're within scheduled time
-    // console.log(`Meter - in scheduled time window - updatebins...`)
-    // await this.updateBins(now, this.interval)
-  }
 }
