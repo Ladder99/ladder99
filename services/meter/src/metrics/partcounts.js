@@ -89,7 +89,7 @@ export class Metric {
   async writeHistory(device_id, dataitem_id, time, value) {
     const sql = `
       insert into history (node_id, dataitem_id, time, value)
-      values (${device_id}, ${dataitem_id}, '${time}', ${value});
+      values (${device_id}, ${dataitem_id}, '${time}', ${value}::jsonb);
     `
     // console.log('Partcounts - write', device_id, dataitem_id, time, value)
     // console.log('writeHistory', sql)
