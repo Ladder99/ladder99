@@ -93,6 +93,7 @@ export class Metric {
     `
     // console.log('Partcounts - write', device_id, dataitem_id, time, value)
     // console.log('writeHistory', sql)
+    console.log('Partcounts - write', time, value)
     await this.db.query(sql)
   }
 
