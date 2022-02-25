@@ -48,7 +48,7 @@ export class Metric {
     let lifetime = await this.getLastRecord(
       this.device.name,
       this.metric.lifetimePath,
-      start
+      start.toISOString()
     )
     console.log('lifetime', lifetime)
 
@@ -85,16 +85,19 @@ export class Metric {
   }
 
   // write a record to the history table
+  // time should be an ISO datetime string
   async writeHistory(device_id, dataitem_id, time, value) {
     const sql = `
       insert into history (node_id, dataitem_id, time, value)
       values (${device_id}, ${dataitem_id}, '${time}', ${value});
     `
-    console.log('writeHistory', sql)
-    await this.db.query(sql)
+    console.log('write', device_id, dataitem_id, time, value)
+    // console.log('writeHistory', sql)
+    // await this.db.query(sql)
   }
 
-  // get partcount records from history_float view
+  // get partcount records from history_float.
+  // start and stop should be Date objects.
   async getPartCounts(start, stop) {
     const sql = `
       select 
@@ -125,7 +128,8 @@ export class Metric {
     return result.rows
   }
 
-  // get last value of a path from history_float view, before a given time
+  // get last value of a path from history_float view, before a given time.
+  // start should be an ISO datetimestring
   async getLastRecord(device, path, start) {
     const sql = `
       select 
@@ -133,7 +137,7 @@ export class Metric {
       from 
         history_float
       where
-        device = '${device.name}' 
+        device = '${device}' 
         and path = '${path}'
         and time < '${start}'
       order by 
@@ -141,8 +145,8 @@ export class Metric {
       limit 1;
     `
     const result = await this.db.query(sql)
-    const recent = result.rows.length > 0 && result.rows[0] // null or { time, value }
-    return recent
+    const record = result.rows.length > 0 && result.rows[0] // null or { time, value }
+    return record
   }
 
   // backfill missing partcount records
@@ -152,14 +156,15 @@ export class Metric {
     const now = new Date()
 
     // get latest lifetime count record
-    const rec = await this.getLastRecord(
+    const record = await this.getLastRecord(
       this.device.name,
       this.metric.lifetimePath,
-      now
+      now.toISOString()
     )
-    if (rec && rec.length > 0) {
-      const start = rec.time
-      let lifetime = rec.value
+
+    if (record && record.length > 0) {
+      const start = record.time
+      let lifetime = record.value
       const stop = now
       const rows = await this.getPartCounts(start, stop) // gets last one before start also, if any
       let previous = rows[0]
@@ -169,6 +174,7 @@ export class Metric {
         await this.writeHistory(
           this.device_id,
           this.lifetime_id,
+          // new Date(row.time).toISOString(),
           row.time,
           lifetime
         )
