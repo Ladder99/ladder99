@@ -22,11 +22,11 @@ export class Metric {
 
     console.log(`Partcounts - get device node_id...`)
     this.device_id = await this.db.getDeviceId(device.name) // repeats until device is there
-    console.log('device', this.device)
+    console.log('Partcounts - device', this.device)
 
     // need this dataitemId as we'll be writing directly to the history table
     this.lifetime_id = await this.db.getDataItemId(metric.lifetimePath) // repeat until dataitem there
-    console.log('lifetime_id', this.lifetime_id)
+    console.log('Partcounts - lifetime_id', this.lifetime_id)
 
     // get polling interval - either from metric in setup yaml or default value
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
@@ -50,10 +50,10 @@ export class Metric {
       this.metric.lifetimePath,
       start.toISOString()
     )
-    console.log('lifetime', lifetime)
+    console.log('Partcounts - lifetime', lifetime)
 
     const rows = await this.getPartCounts(start, stop)
-    console.log('rows', rows)
+    console.log('Partcounts - rows', rows)
     // rows will be like (for start=10:00:00am, stop=10:00:05am)
     // time, value
     // 9:59:59am, 99
@@ -91,7 +91,7 @@ export class Metric {
       insert into history (node_id, dataitem_id, time, value)
       values (${device_id}, ${dataitem_id}, '${time}', ${value});
     `
-    console.log('write', device_id, dataitem_id, time, value)
+    console.log('Partcounts - write', device_id, dataitem_id, time, value)
     // console.log('writeHistory', sql)
     // await this.db.query(sql)
   }
