@@ -14,6 +14,7 @@ declare
   v_stop timestamptz := ms2timestamptz(p_stop);
   v_count0 float;
   v_count1 float;
+  v_count float;
 begin
   v_count0 := (
     select value from history_float 
