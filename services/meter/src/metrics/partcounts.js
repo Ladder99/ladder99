@@ -22,7 +22,7 @@ export class Metric {
 
     console.log(`Partcounts - get device node_id...`)
     this.device_id = await this.db.getDeviceId(device.name) // repeats until device is there
-    console.log('Partcounts - device', this.device)
+    // console.log('Partcounts - device', this.device)
 
     // need this dataitemId as we'll be writing directly to the history table
     this.lifetime_id = await this.db.getDataItemId(metric.lifetimePath) // repeat until dataitem there
