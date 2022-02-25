@@ -145,8 +145,8 @@ export class Metric {
       limit 1;
     `
     const result = await this.db.query(sql)
-    const record = result.rows.length > 0 && result.rows[0] // null or { time, value }
-    return record
+    const record = result.rows.length > 0 && result.rows[0]
+    return record // null or { time, value }
   }
 
   // backfill missing partcount records
@@ -161,8 +161,9 @@ export class Metric {
       this.metric.lifetimePath,
       now.toISOString()
     )
+    console.log('Partcounts - last record', record)
 
-    if (record && record.length > 0) {
+    if (record) {
       const start = record.time
       let lifetime = record.value
       const stop = now
@@ -174,7 +175,6 @@ export class Metric {
         await this.writeHistory(
           this.device_id,
           this.lifetime_id,
-          // new Date(row.time).toISOString(),
           row.time,
           lifetime
         )
