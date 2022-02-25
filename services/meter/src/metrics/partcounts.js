@@ -175,7 +175,7 @@ export class Metric {
     const now = new Date()
 
     // get latest lifetime count record
-    const record = await this.getLastRecord(
+    let record = await this.getLastRecord(
       this.device.name,
       this.metric.lifetimePath,
       now.toISOString()
@@ -193,6 +193,8 @@ export class Metric {
       if (!record2) {
         return
       }
+      // record = { time: record2.time, value: 0}
+      record = {}
       record.time = record2.time
       record.value = 0
     }
