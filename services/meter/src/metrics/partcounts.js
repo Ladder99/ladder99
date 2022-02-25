@@ -32,8 +32,8 @@ export class Metric {
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
 
     await this.backfill() // backfill missing values
-    await this.poll() // do first poll
-    this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
+    // await this.poll() // do first poll
+    // this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
 
   // poll db and update lifetime count - called by timer
