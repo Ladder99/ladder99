@@ -75,7 +75,7 @@ export class Metric {
           await this.writeHistory(
             this.device_id,
             this.lifetime_id,
-            row.time,
+            row.time.toISOString(),
             lifetime
           )
         }
@@ -212,7 +212,7 @@ export class Metric {
         await this.writeHistory(
           this.device_id,
           this.lifetime_id,
-          row.time,
+          row.time.toISOString(),
           lifetime
         )
       }
