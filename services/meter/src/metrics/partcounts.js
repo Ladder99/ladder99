@@ -20,7 +20,7 @@ export class Metric {
   }
 
   async start({ client, db, device, metric }) {
-    console.log(`Meter Partcounts - initialize partcounts metric...`)
+    console.log(`Partcounts - initialize partcounts metric...`)
     this.client = client
     this.db = db
     this.device = device
@@ -28,7 +28,7 @@ export class Metric {
 
     this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
 
-    console.log(`Meter Partcounts - get device node_id...`)
+    console.log(`Partcounts - get device node_id...`)
     this.device_id = await this.db.getDeviceId(device.name) // repeats until device is there
     console.log(this.device)
 
@@ -46,14 +46,14 @@ export class Metric {
 
   // poll db and update lifetime count - called by timer
   async poll() {
-    console.log('Meter Partcounts - poll db and write lifetime counts ')
+    console.log('Partcounts - poll db and write lifetime counts ')
 
     const now = new Date()
     const start = new Date(now.getTime() - this.interval)
     const stop = now
 
     // get last lifetime value, before start time
-    let lifetime = await this.getLastValue(
+    let lifetime = await this.getLastRecord(
       this.device.name,
       this.metric.lifetimePath,
       start
@@ -80,9 +80,10 @@ export class Metric {
           //. write time, lifetime+delta
           lifetime += delta
           // write time, lifetime
-          await this.writeLifetimeCount(
+          await this.writeHistory(
             this.device_id,
             this.lifetime_id,
+            row.time,
             lifetime
           )
         }
@@ -91,12 +92,12 @@ export class Metric {
     }
   }
 
-  async writeLifetimeCount(device_id, lifetime_id, time, lifetime) {
+  async writeHistory(device_id, dataitem_id, time, value) {
     const sql = `
       insert into history (node_id, dataitem_id, time, value)
-      values (${device_id}, ${lifetime_id}, '${time}', ${lifetime});
+      values (${device_id}, ${dataitem_id}, '${time}', ${value});
     `
-    console.log('writelifetimecount', sql)
+    console.log('writeHistory', sql)
     await this.db.query(sql)
   }
 
@@ -130,7 +131,8 @@ export class Metric {
     return result.rows
   }
 
-  async getLastValue(device, path, start) {
+  // get last value of a path from history_float view, before a given time
+  async getLastRecord(device, path, start) {
     const sql = `
       select 
         time, value
@@ -149,62 +151,35 @@ export class Metric {
     return recent
   }
 
-  // async backfill() {
-  //   console.log(`Meter Partcounts - backfill any missed partcounts...`)
+  async backfill() {
+    console.log(`Partcounts - backfill any missed partcounts...`)
 
-  //   //. get most recent delta and lifetime values
-  //   const recentDelta = await this.getRecent(this.device, this.metric.deltaPath)
-  //   const recentLifetime = await this.getRecent(
-  //     this.device,
-  //     this.metric.lifetimePath
-  //   )
-  //   // const startBackfill = lastRead && new Date(lastRead)
+    const now = new Date()
 
-  //   const sql2 = `
-  //     select time, path, value
-  //     from history_all
-  //     where
-  //       device = '${this.device.name}'
-  //       and path in ('${this.metric.startPath}', '${this.metric.stopPath}')
-  //       and time >= '${startBackfill.toISOString()}'
-  //     order by time asc;
-  //   `
-  //   const result2 = await this.db.query(sql2)
-
-  //   // loop over start/stop times, add to a dict
-  //   // row.value is sthing like '2022-01-27T05:00:00' with NO Z -
-  //   // ie it's 'local' time, which can only be interpreted correctly by
-  //   // knowing the client's timezone. so need to subtract that offset
-  //   const startStopTimes = {}
-  //   for (let row of result2.rows) {
-  //     const localTime = row.value
-  //     const time = new Date(localTime).getTime() - this.timezoneOffset
-  //     if (!isNaN(time)) {
-  //       const minute = Math.floor(time / minutes)
-  //       startStopTimes[minute] = row.path
-  //     }
-  //   }
-  //   console.log('dict', startStopTimes)
-
-  //   // // loop from startstart to now, interval 1 min
-  //   // // check for active and available
-  //   // // write to bins table those values
-  //   // const startMinute = Math.floor(startBackfill.getTime() / minutes)
-  //   // const nowMinute = Math.floor(now.getTime() / minutes)
-  //   // console.log(`start, now`, startMinute, nowMinute)
-  //   // let state = null
-  //   // for (let minute = startMinute; minute < nowMinute; minute++) {
-  //   //   const path = startStopTimes[minute]
-  //   //   if (path === this.metric.startPath) {
-  //   //     state = 1
-  //   //   } else if (path === this.metric.stopPath) {
-  //   //     state = 0
-  //   //   }
-  //   //   if (state) {
-  //   //     const time = new Date(minute * minutes)
-  //   //     await this.updateBins(time, this.interval)
-  //   //   }
-  //   // }
-  //   // console.log(`Backfill done`)
-  // }
+    // get latest lifetime count record
+    const rec = await this.getLastRecord(
+      this.device.name,
+      this.metric.lifetimePath,
+      now
+    )
+    if (rec && rec.length > 0) {
+      const start = rec.time
+      let lifetime = rec.value
+      const stop = now
+      const rows = await this.getPartCounts(start, stop) // gets last one before start also, if any
+      let previous = rows[0]
+      for (let row of rows.slice(1)) {
+        const delta = row.value - previous.value
+        lifetime += delta
+        await this.writeHistory(
+          this.device_id,
+          this.lifetime_id,
+          row.time,
+          lifetime
+        )
+        previous = row
+      }
+      console.log(`Partcounts - backfill done`)
+    }
+  }
 }
