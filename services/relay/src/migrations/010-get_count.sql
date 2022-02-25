@@ -5,7 +5,7 @@ create or replace function get_count(
   in p_stop bigint -- stop time in milliseconds since 1970-01-01
 )
 -- returns table ("time" timestamptz, "count" float)
-returns float
+returns table ("count" float)
 language plpgsql
 as
 $body$
@@ -39,5 +39,5 @@ $body$;
 --    'Cutter',
 --    'controller/partOccurrence/part_count-lifetime',
 --    timestamptz2ms('2022-02-01 18:00:00'),
---    timestamptz2ms('2022-02-02 18:00:00'),
+--    timestamptz2ms('2022-02-02 18:00:00')
 --  );
