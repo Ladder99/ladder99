@@ -1,4 +1,4 @@
-// read/write values for partcounts
+// read partcounts and write lifetime partcounts
 
 const minutes = 60 * 1000 // 60 ms
 const hours = 60 * minutes
@@ -58,8 +58,10 @@ export class Metric {
       this.metric.lifetimePath,
       start
     )
+    console.log('lifetime', lifetime)
 
     const rows = await this.getPartCounts(start, stop)
+    console.log('rows', rows)
     // rows will be like (for start=10:00:00am, stop=10:00:05am)
     // time, value
     // 9:59:59am, 99
@@ -94,8 +96,8 @@ export class Metric {
       insert into history (node_id, dataitem_id, time, value)
       values (${device_id}, ${lifetime_id}, '${time}', ${lifetime});
     `
-    const result = await this.db.query(sql)
-    return result.rows
+    console.log('writelifetimecount', sql)
+    await this.db.query(sql)
   }
 
   async getPartCounts(start, stop) {
