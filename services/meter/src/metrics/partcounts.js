@@ -1,12 +1,6 @@
 // read partcounts and write lifetime partcounts
 
-const minutes = 60 * 1000 // 60 ms
-const hours = 60 * minutes
-const days = 24 * hours
-
 const metricIntervalDefault = 5 // seconds
-// const backfillDefaultStart = 60 * days // ie look this far back for first backfill date, by default
-// const resolutions = 'minute,hour,day,week,month,year'.split(',') //. 5min? 15min?
 
 export class Metric {
   constructor() {
@@ -26,20 +20,18 @@ export class Metric {
     this.device = device
     this.metric = metric
 
-    this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
-
     console.log(`Partcounts - get device node_id...`)
     this.device_id = await this.db.getDeviceId(device.name) // repeats until device is there
-    console.log(this.device)
+    console.log('device', this.device)
 
     // need this dataitemId as we'll be writing directly to the history table
     this.lifetime_id = await this.db.getDataItemId(metric.lifetimePath) // repeat until dataitem there
-    console.log(this.lifetime_id)
+    console.log('lifetime_id', this.lifetime_id)
 
     // get polling interval - either from metric in setup yaml or default value
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
 
-    // await this.backfill() // backfill missing values
+    await this.backfill() // backfill missing values
     await this.poll() // do first poll
     this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
@@ -92,6 +84,7 @@ export class Metric {
     }
   }
 
+  // write a record to the history table
   async writeHistory(device_id, dataitem_id, time, value) {
     const sql = `
       insert into history (node_id, dataitem_id, time, value)
@@ -101,6 +94,7 @@ export class Metric {
     await this.db.query(sql)
   }
 
+  // get partcount records from history_float view
   async getPartCounts(start, stop) {
     const sql = `
       select 
@@ -151,6 +145,7 @@ export class Metric {
     return recent
   }
 
+  // backfill missing partcount records
   async backfill() {
     console.log(`Partcounts - backfill any missed partcounts...`)
 
