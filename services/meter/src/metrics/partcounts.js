@@ -52,7 +52,23 @@ export class Metric {
     const start = new Date(now.getTime() - this.interval)
     const stop = now
 
+    // get last lifetime value, before start time
+    let lifetime = await this.getLastValue(
+      this.device.name,
+      this.metric.lifetimePath,
+      start
+    )
+
     const rows = await this.getPartCounts(start, stop)
+    // rows will be like (for start=10:00:00am, stop=10:00:05am)
+    // time, value
+    // 9:59:59am, 99
+    // 10:00:00am, 100
+    // 10:00:01am, 101
+    // 10:00:02am, 102
+    // 10:00:03am, "0"
+    // 10:00:04am, 1
+    // 10:00:05am, 2
     if (rows && rows.length > 1) {
       let previous = rows[0] // { time, value }
       for (let row of rows.slice(1)) {
@@ -60,10 +76,26 @@ export class Metric {
         const delta = row.value - previous.value
         if (delta > 0) {
           //. write time, lifetime+delta
+          lifetime += delta
+          // write time, lifetime
+          await this.writeLifetimeCount(
+            this.device_id,
+            this.lifetime_id,
+            lifetime
+          )
         }
         previous = row
       }
     }
+  }
+
+  async writeLifetimeCount(device_id, lifetime_id, time, lifetime) {
+    const sql = `
+      insert into history (node_id, dataitem_id, time, value)
+      values (${device_id}, ${lifetime_id}, '${time}', ${lifetime});
+    `
+    const result = await this.db.query(sql)
+    return result.rows
   }
 
   async getPartCounts(start, stop) {
@@ -93,31 +125,27 @@ export class Metric {
         time asc;
     `
     const result = await this.db.query(sql)
-    // result.rows will be like
-    // time, value
-    // 9:59:59am, 99
-    // 10:00:00am, 100
-    // 10:00:01am, 101
-    // 10:00:02am, 102
-    // 10:00:03am, "0"
-    // 10:00:04am, 1
-    // 10:00:05am, 2
     return result.rows
   }
 
-  // async getRecent(device, path) {
-  //   // get starting point by finding most recent record in bins
-  //   const sql = `
-  //     select time, value
-  //     from history_float
-  //     where device='${device.name}' and path='${path}'
-  //     order by time desc
-  //     limit 1;
-  //   `
-  //   const result = await this.db.query(sql)
-  //   const recent = result.rows.length > 0 && result.rows[0] // null or { time, value }
-  //   return recent
-  // }
+  async getLastValue(device, path, start) {
+    const sql = `
+      select 
+        time, value
+      from 
+        history_float
+      where
+        device = '${device.name}' 
+        and path = '${path}'
+        and time < '${start}'
+      order by 
+        time desc
+      limit 1;
+    `
+    const result = await this.db.query(sql)
+    const recent = result.rows.length > 0 && result.rows[0] // null or { time, value }
+    return recent
+  }
 
   // async backfill() {
   //   console.log(`Meter Partcounts - backfill any missed partcounts...`)
