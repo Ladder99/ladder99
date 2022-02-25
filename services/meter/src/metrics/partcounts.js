@@ -32,8 +32,8 @@ export class Metric {
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
 
     await this.backfill() // backfill missing values
-    await this.poll() // do first poll
-    this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
+    // await this.poll() // do first poll
+    // this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
 
   // poll db and update lifetime count - called by timer
@@ -52,7 +52,7 @@ export class Metric {
     )
     console.log('Partcounts - lifetime', lifetime)
 
-    const rows = await this.getPartCounts(start, stop)
+    const rows = await this.getPartCounts(start, stop) // Date objects
     console.log('Partcounts - rows', rows)
     // rows will be like (for start=10:00:00am, stop=10:00:05am)
     // time, value
