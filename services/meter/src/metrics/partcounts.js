@@ -149,6 +149,25 @@ export class Metric {
     return record // null or { time, value }
   }
 
+  // get first value of a path from history_float view.
+  async getFirstRecord(device, path) {
+    const sql = `
+      select 
+        time, value
+      from 
+        history_float
+      where
+        device = '${device}' 
+        and path = '${path}'
+      order by 
+        time asc
+      limit 1;
+    `
+    const result = await this.db.query(sql)
+    const record = result.rows.length > 0 && result.rows[0]
+    return record // null or { time, value }
+  }
+
   // backfill missing partcount records
   async backfill() {
     console.log(`Partcounts - backfill any missed partcounts...`)
@@ -163,24 +182,37 @@ export class Metric {
     )
     console.log('Partcounts - last record', record)
 
-    if (record) {
-      const start = record.time
-      let lifetime = record.value
-      const stop = now
-      const rows = await this.getPartCounts(start, stop) // gets last one before start also, if any
-      let previous = rows[0]
-      for (let row of rows.slice(1)) {
-        const delta = row.value - previous.value
-        lifetime += delta
-        await this.writeHistory(
-          this.device_id,
-          this.lifetime_id,
-          row.time,
-          lifetime
-        )
-        previous = row
+    // if no lifetime record, start from the beginning
+    if (!record) {
+      const record2 = await this.getFirstRecord(
+        this.device.name,
+        this.metric.deltaPath
+      )
+      console.log('Partcounts - first record', record2)
+      // no delta data either, so exit
+      if (!record2) {
+        return
       }
-      console.log(`Partcounts - backfill done`)
+      record.time = record2.time
+      record.value = 0
     }
+
+    const start = record.time
+    let lifetime = record.value
+    const stop = now
+    const rows = await this.getPartCounts(start, stop) // gets last one before start also, if any
+    let previous = rows[0]
+    for (let row of rows.slice(1)) {
+      const delta = row.value - previous.value
+      lifetime += delta
+      await this.writeHistory(
+        this.device_id,
+        this.lifetime_id,
+        row.time,
+        lifetime
+      )
+      previous = row
+    }
+    console.log(`Partcounts - backfill done`)
   }
 }
