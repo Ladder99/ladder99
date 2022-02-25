@@ -32,8 +32,8 @@ export class Metric {
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
 
     await this.backfill() // backfill missing values
-    // await this.poll() // do first poll
-    // this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
+    await this.poll() // do first poll
+    this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
 
   // poll db and update lifetime count - called by timer
@@ -91,9 +91,9 @@ export class Metric {
       insert into history (node_id, dataitem_id, time, value)
       values (${device_id}, ${dataitem_id}, '${time}', ${value});
     `
-    console.log('Partcounts - write', device_id, dataitem_id, time, value)
+    // console.log('Partcounts - write', device_id, dataitem_id, time, value)
     // console.log('writeHistory', sql)
-    // await this.db.query(sql)
+    await this.db.query(sql)
   }
 
   // get partcount records from history_float.
