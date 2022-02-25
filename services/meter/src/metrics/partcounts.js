@@ -206,13 +206,15 @@ export class Metric {
     let previous = rows[0]
     for (let row of rows.slice(1)) {
       const delta = row.value - previous.value
-      lifetime += delta
-      await this.writeHistory(
-        this.device_id,
-        this.lifetime_id,
-        row.time,
-        lifetime
-      )
+      if (delta > 0) {
+        lifetime += delta
+        await this.writeHistory(
+          this.device_id,
+          this.lifetime_id,
+          row.time,
+          lifetime
+        )
+      }
       previous = row
     }
     console.log(`Partcounts - backfill done`)
