@@ -66,13 +66,20 @@ RUN cd ~ \
 #----------------------------------------------------------------------------
 # install app
 #----------------------------------------------------------------------------
-# RUN pwd
-RUN ls -l /root/cloudbeaver/deploy/cloudbeaver
+# RUN ls -l /root/cloudbeaver/deploy/cloudbeaver
+# drwxr-xr-x  2 root root  4096 Jan  9 11:44 conf
+# drwxr-xr-x 15 root root  4096 Jan  9 11:42 drivers
+# -rw-r--r--  1 root root   477 Jan  9 11:36 run-server.bat
+# -rwxr-xr-x  1 root root   469 Jan  9 11:36 run-server.sh
+# drwxr-xr-x  3 root root  4096 Jan  9 11:44 samples
+# drwxr-xr-x  6 root root  4096 Jan  9 11:44 server
+# drwxr-xr-x  4 root root 12288 Jan  9 11:59 web
+# drwxr-xr-x  2 root root  4096 Jan  9 11:36 workspace
 
 # # copy app from previous layer - 100+mb
 # COPY --from=build /root/cloudbeaver/deploy/cloudbeaver /root/cloudbeaver
 
-WORKDIR /root/cloudbeaver/deploy/cloudbeaver
+WORKDIR /root/cloudbeaver/deploy
 
 # copy to and use /opt/cloudbeaver, like their dockerfile does -
 # https://github.com/dbeaver/cloudbeaver/blob/devel/deploy/docker/Dockerfile
