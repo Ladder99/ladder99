@@ -6,7 +6,7 @@ create or replace function get_count(
 )
 -- returns table ("time" timestamptz, "count" float)
 returns table ("count" float)
-language plpgsql
+--returns float
 as
 $body$
 declare
@@ -29,8 +29,10 @@ begin
     limit 1
   );
   "count" := v_count1 - v_count0;
+  return next;
 end;
-$body$;
+$body$
+language plpgsql;
 
 -- test
 --  select count
