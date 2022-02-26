@@ -67,17 +67,17 @@ RUN cd ~ \
 # install app
 #----------------------------------------------------------------------------
 # RUN pwd
-RUN ls -l /root/cloudbeaver/deploy
+RUN ls -l /root/cloudbeaver/deploy/cloudbeaver
 
 # # copy app from previous layer - 100+mb
 # COPY --from=build /root/cloudbeaver/deploy/cloudbeaver /root/cloudbeaver
 
-# WORKDIR /root/cloudbeaver/deploy/cloudbeaver
+WORKDIR /root/cloudbeaver/deploy/cloudbeaver
 
 # copy to and use /opt/cloudbeaver, like their dockerfile does -
 # https://github.com/dbeaver/cloudbeaver/blob/devel/deploy/docker/Dockerfile
-# COPY cloudbeaver /opt/cloudbeaver
-COPY /root/cloudbeaver/deploy/cloudbeaver /opt/cloudbeaver
+COPY cloudbeaver /opt/cloudbeaver
+# COPY /root/cloudbeaver/deploy/cloudbeaver /opt/cloudbeaver
 
 EXPOSE 8978
 
