@@ -94,17 +94,19 @@ RUN cd ~ \
 # # https://stackoverflow.com/questions/30215830/dockerfile-copy-keep-subdirectory-structure
 # # https://stackoverflow.com/questions/49604332/dockerfile-what-are-the-intermediate-containers-doing-exactly
 
-# fine, put it back how we had it
-# WORKDIR /root/cloudbeaver/deploy/cloudbeaver
-
+#... see https://cloudbeaver.io/docs/Server-configuration/
+# need to modify conf file in /etc/cloudbeaver/
+# replace "workspace" with "/var/cloudbeaver/workspace"
+# use cat grep?
+# then run ./run-server.sh
 
 EXPOSE 8978
 
-# location of workspace
-WORKDIR /var/cloudbeaver
+# fine, put it back how we had it
+WORKDIR /root/cloudbeaver/deploy/cloudbeaver
 
 # can we tell cloudbeaver where to find the workspace folder, put bin somewhere else?
 # see https://github.com/dbeaver/dbeaver/wiki/Command-Line#system-parameters
-# ENTRYPOINT ["./run-server.sh"]
+ENTRYPOINT ["./run-server.sh"]
 # ENTRYPOINT ["./run-server.sh", "-data", "/var/cloudbeaver/workspace"] # nowork
-ENTRYPOINT ["/root/cloudbeaver/deploy/cloudbeaver/run-server.sh"]
+# ENTRYPOINT ["/root/cloudbeaver/deploy/cloudbeaver/run-server.sh"] # nowork - needs other folders
