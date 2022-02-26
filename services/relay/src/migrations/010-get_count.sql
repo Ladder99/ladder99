@@ -28,8 +28,7 @@ begin
     order by time asc
     limit 1
   );
-  v_count := v_count1 - v_count0;
-  return v_count;
+  "count" := v_count1 - v_count0;
 end;
 $body$;
 
