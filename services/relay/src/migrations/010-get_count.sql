@@ -14,6 +14,7 @@ declare
   v_stop timestamptz := ms2timestamptz(p_stop);
   v_count0 float;
   v_count1 float;
+  v_count2 float;
   v_count float;
 begin
   v_count0 := (
@@ -28,7 +29,13 @@ begin
     order by time asc
     limit 1
   );
-  "count" := v_count1 - v_count0;
+  v_count2 := (
+    select value from history_float 
+    where device=p_device and path=p_path and time < v_stop
+    order by time desc
+    limit 1
+  );
+  "count" := coalesce(v_count1, v_count2) - coalesce(v_count0, 0);
   return next;
 end;
 $body$
