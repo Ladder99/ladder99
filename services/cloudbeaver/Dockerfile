@@ -86,7 +86,7 @@ RUN cd ~ \
 # COPY cloudbeaver /opt/cloudbeaver
 # COPY cloudbeaver/ /opt/cloudbeaver
 RUN mkdir /opt/cloudbeaver
-COPY /root/cloudbeaver/deploy/cloudbeaver/ /opt/cloudbeaver/
+COPY /root/cloudbeaver/deploy/cloudbeaver/* /opt/cloudbeaver/
 
 EXPOSE 8978
 
