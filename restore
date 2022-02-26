@@ -1,4 +1,8 @@
 #!/bin/bash
+# restore a backup over the current database
+# eg
+#   ./restore db.sql (password)
+# (put a space before ./restore so pw doesn't get recorded in bash history)
 
 FILE=$1
 PASSWORD=$2
