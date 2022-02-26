@@ -94,4 +94,6 @@ EXPOSE 8978
 
 WORKDIR /opt/cloudbeaver/
 
+RUN ls -l
+
 ENTRYPOINT ["./run-server.sh"]
