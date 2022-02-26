@@ -1,10 +1,14 @@
 #!/bin/bash
 
+# transfer a file to another host
+# eg
+#   ./transfer backup.sql pi 10.0.1.1
+
 FILE=$1
-HOST=$2
-USER=$3
+USER=$2
+HOST=$3
 
 echo Transferring $FILE to $HOST...
 
 # eg scp db.sql pi@10.0.0.0:db.sql
-scp $FILE $USER@$HOST:$FILE
+sudo scp $FILE $USER@$HOST:~/$FILE
