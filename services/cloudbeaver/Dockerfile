@@ -66,6 +66,8 @@ RUN cd ~ \
 #----------------------------------------------------------------------------
 # install app
 #----------------------------------------------------------------------------
+RUN pwd
+RUN ls
 
 # # copy app from previous layer - 100+mb
 # COPY --from=build /root/cloudbeaver/deploy/cloudbeaver /root/cloudbeaver
