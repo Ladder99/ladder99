@@ -90,10 +90,12 @@ WORKDIR /root/cloudbeaver/deploy/cloudbeaver
 # COPY /root/cloudbeaver/deploy/cloudbeaver/ /opt/cloudbeaver/
 COPY . /opt/cloudbeaver/
 
-EXPOSE 8978
+RUN pwd && ls -l
 
 WORKDIR /opt/cloudbeaver/
 
-RUN ls -l
+RUN pwd && ls -l
+
+EXPOSE 8978
 
 ENTRYPOINT ["./run-server.sh"]
