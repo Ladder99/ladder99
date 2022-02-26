@@ -95,10 +95,16 @@ RUN cd ~ \
 # # https://stackoverflow.com/questions/49604332/dockerfile-what-are-the-intermediate-containers-doing-exactly
 
 # fine, put it back how we had it
-WORKDIR /root/cloudbeaver/deploy/cloudbeaver
+# WORKDIR /root/cloudbeaver/deploy/cloudbeaver
 
-# can we tell cloudbeaver where to find the workspace folder, put bin somewhere else?
 
 EXPOSE 8978
 
-ENTRYPOINT ["./run-server.sh", "-data", "/var/cloudbeaver/workspace"]
+# location of workspace
+WORKDIR /var/cloudbeaver
+
+# can we tell cloudbeaver where to find the workspace folder, put bin somewhere else?
+# see https://github.com/dbeaver/dbeaver/wiki/Command-Line#system-parameters
+# ENTRYPOINT ["./run-server.sh"]
+# ENTRYPOINT ["./run-server.sh", "-data", "/var/cloudbeaver/workspace"] # nowork
+ENTRYPOINT ["/root/cloudbeaver/deploy/cloudbeaver/run-server.sh"]
