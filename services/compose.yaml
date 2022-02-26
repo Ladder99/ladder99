@@ -76,7 +76,7 @@ services:
     # need it that way, and there's no way to remove a port through 
     # overrides yet.
     # see https://github.com/docker/compose/issues/3729
-    # so might need to turn this on for a client.
+    # IMPORTANT: might need to turn this on for a client.
     # ports:
     #   - 8978:8978
     restart: always
