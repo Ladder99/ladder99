@@ -1,12 +1,12 @@
+-- get an accumulated count between a start and stop time
+
 create or replace function get_count(
   in p_device text, -- the device name, eg 'Cutter'
   in p_path text, -- the counter path, eg 'controller/partOccurrence/part_count-lifetime'
   in p_start bigint, -- start time in milliseconds since 1970-01-01
   in p_stop bigint -- stop time in milliseconds since 1970-01-01
 )
--- returns table ("time" timestamptz, "count" float)
 returns table ("count" float)
---returns float
 as
 $body$
 declare
