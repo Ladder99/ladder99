@@ -77,25 +77,28 @@ RUN cd ~ \
 # drwxr-xr-x  2 root root  4096 Jan  9 11:36 workspace
 
 # # copy app from previous layer - 100+mb
-# COPY --from=build /root/cloudbeaver/deploy/cloudbeaver /root/cloudbeaver
-
-# WORKDIR /root/cloudbeaver/deploy
-WORKDIR /root/cloudbeaver/deploy/cloudbeaver
+# COPY --from=build /root/cloudbeaver/deploy/cloudbeaver /opt/cloudbeaver
 
 # copy to and use /opt/cloudbeaver, like their dockerfile does -
 # https://github.com/dbeaver/cloudbeaver/blob/devel/deploy/docker/Dockerfile
-# COPY cloudbeaver /opt/cloudbeaver
-# COPY cloudbeaver/ /opt/cloudbeaver
-# RUN mkdir /opt/cloudbeaver
-# COPY /root/cloudbeaver/deploy/cloudbeaver/ /opt/cloudbeaver/
-COPY . /opt/cloudbeaver/
+# WORKDIR /root/cloudbeaver/deploy/cloudbeaver
+# COPY . /opt/cloudbeaver/
+# RUN pwd && ls -l
+# # ok
 
-RUN pwd && ls -l
+# WORKDIR /opt/cloudbeaver/
+# RUN pwd && ls -l
+# # it's gone! it just shows Dockerfile, so it's pointing at the wrong folder? how?
+# # something mysterious with the mapping in compose.yaml from 
+# # local folder to /opt/cloudbeaver?
+# # https://stackoverflow.com/questions/30215830/dockerfile-copy-keep-subdirectory-structure
+# # https://stackoverflow.com/questions/49604332/dockerfile-what-are-the-intermediate-containers-doing-exactly
 
-WORKDIR /opt/cloudbeaver/
+# fine, put it back how we had it
+WORKDIR /root/cloudbeaver/deploy/cloudbeaver
 
-RUN pwd && ls -l
+# can we tell cloudbeaver where to find the workspace folder, put bin somewhere else?
 
 EXPOSE 8978
 
-ENTRYPOINT ["./run-server.sh"]
+ENTRYPOINT ["./run-server.sh", "-data", "/var/cloudbeaver/workspace"]

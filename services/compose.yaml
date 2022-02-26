@@ -71,7 +71,8 @@ services:
     profiles:
       - cloudbeaver
     volumes:
-      - ../$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
+      # - ../$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
+      - ../$SETUP/volumes/cloudbeaver/workspace:/var/cloudbeaver/workspace
     # need to leave this unspecified here, because clients that use traefik
     # need it that way, and there's no way to remove a port through 
     # overrides yet.
