@@ -83,8 +83,9 @@ WORKDIR /root/cloudbeaver/deploy
 
 # copy to and use /opt/cloudbeaver, like their dockerfile does -
 # https://github.com/dbeaver/cloudbeaver/blob/devel/deploy/docker/Dockerfile
-COPY cloudbeaver /opt/cloudbeaver
+# COPY cloudbeaver /opt/cloudbeaver
 # COPY /root/cloudbeaver/deploy/cloudbeaver /opt/cloudbeaver
+COPY cloudbeaver/ /opt/cloudbeaver
 
 EXPOSE 8978
 
