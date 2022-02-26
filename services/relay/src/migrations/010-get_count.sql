@@ -24,7 +24,7 @@ begin
   );
   v_count1 := (
     select value from history_float 
-    where device=p_device and path=p_path and time >= v_start
+    where device=p_device and path=p_path and time >= v_stop
     order by time asc
     limit 1
   );
