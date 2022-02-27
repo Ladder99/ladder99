@@ -3,11 +3,12 @@
 
 # see ./start for how to run
 
-# version must be a string
+# docker compose yaml version - must be a string
+# see https://docs.docker.com/compose/compose-file/compose-file-v3
 # note: a '3' here means '3.0'
 # version: '3.7' # allows init keyword
-version: '3.8' # profiles?
-# version: '3.9'
+version: '3.8'
+# version: '3.9' # not tested yet
 
 services:
   # adapter - convert machine data to shdr and send to agent
@@ -40,7 +41,8 @@ services:
   # agent - take in shdr and output xml/json/html
   agent:
     container_name: agent
-    #. use mtconnect/agent once they publish it to docker hub
+    #. use mtconnect/agent once mtconnect publishes theirs to docker hub
+    # see https://hub.docker.com/repository/docker/ladder99/agent for ours
     image: ladder99/agent:latest
     profiles:
       - agent
