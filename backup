@@ -1,10 +1,27 @@
 #!/bin/bash
 
+# backup the postgres database.
+# the db files are typically located in $SETUP/volumes/postgres, 
+#   eg ../client-oxbox/volumes/postgres.
+# usage -
+#   ./backup
+# this writes a .sql file to the main folder. 
+# you can then transfer the file using ./transfer - which see.
+
 SERVICE=postgres
 USER=postgres
 FILE=backup_`date +%Y-%m-%d"_"%H_%M_%S`.sql
 
 echo Backing up database $SERVICE to $FILE...
 
-# eg docker exec -t postgres pg_dumpall -c -U postgres > db.sql
-docker exec -t $SERVICE pg_dumpall -c -U $USER > $FILE && echo Done.
+# docker exec runs a command within the container $SERVICE, in this case postgres.
+#   -t allocates a pseudoterminal
+#   see https://stackoverflow.com/questions/30137135/confused-about-docker-t-option-to-allocate-a-pseudo-tty
+# pg_dumpall calls pg_dump for each database in a cluster
+#   --clean or -c: cleans/drops databases before recreating them
+#   --if-exists: adds IF EXISTS clauses to drop commands
+# eg 
+#   docker exec -t postgres pg_dumpall --clean --username postgres > db.sql
+docker exec -t $SERVICE \
+  pg_dumpall --clean --if-exists --username $USER > $FILE \
+  && echo Done.
