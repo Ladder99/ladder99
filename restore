@@ -1,19 +1,23 @@
 #!/bin/bash
-# restore a backup over the current database
-# eg
-#   ./restore db.sql (password)
-# (put a space before ./restore so pw doesn't get recorded in bash history)
+
+# restore a backup from ./backup over the current database.
+# USAGE
+#   ./restore db.sql
 
 FILE=$1
-PASSWORD=$2
 SERVICE=postgres
 USER=postgres
 DATABASE=postgres
 
 echo Restoring $FILE into $SERVICE, database $DATABASE...
 
-# import sql - drops the db and recreates it blank first
+# import sql to a new database
 cat $FILE | docker exec -i $SERVICE psql -U $USER $DATABASE
 
-# set the db password
-docker exec -i $SERVICE psql -U $USER -d $DATABASE -c "ALTER USER $USER WITH PASSWORD '$PASSWORD';"
+# set new password
+# docker exec -i $SERVICE psql -U $USER -d $DATABASE -c "ALTER USER $USER WITH PASSWORD '$PASSWORD';"
+
+# prompt the user for a new password
+#. need this because ?
+docker exec -i $SERVICE \
+  psql --username $USER --database $DATABASE -c "\password"
