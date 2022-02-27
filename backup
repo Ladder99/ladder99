@@ -8,20 +8,33 @@
 # this writes a .sql file to the main folder. 
 # you can then transfer the file using ./transfer - which see.
 
+# read envars
+source .env
+
+# set envars
 SERVICE=postgres
+DATABASE=postgres
 USER=postgres
-FILE=backup_`date +%Y-%m-%d"_"%H_%M_%S`.sql
+TIME=`date +%Y-%m-%d"_"%H%M%S`
+FILE=backup_$TIME.sql
+FOLDER=$SETUP/volumes/postgres/backups
 
-echo Backing up database $SERVICE to $FILE...
+echo Backing up $DATABASE to $FOLDER/$FILE...
 
-# docker exec runs a command within the container $SERVICE, in this case postgres.
-#   -t allocates a pseudoterminal
-#   see https://stackoverflow.com/questions/30137135/confused-about-docker-t-option-to-allocate-a-pseudo-tty
-# pg_dumpall calls pg_dump for each database in a cluster
-#   --clean or -c: cleans/drops databases before recreating them
-#   --if-exists: adds IF EXISTS clauses to drop commands
-# eg 
-#   docker exec -t postgres pg_dumpall --clean --username postgres > db.sql
-docker exec -t $SERVICE \
-  pg_dumpall --clean --if-exists --username $USER > $FILE \
-  && echo Done.
+# # docker exec runs a command within the container $SERVICE, in this case postgres.
+# #   -t allocates a pseudoterminal
+# #   see https://stackoverflow.com/questions/30137135/confused-about-docker-t-option-to-allocate-a-pseudo-tty
+# # pg_dumpall calls pg_dump for each database in a cluster
+# #   --clean or -c: cleans/drops databases before recreating them
+# #   --if-exists: adds IF EXISTS clauses to drop commands
+# # eg 
+# #   docker exec -t postgres pg_dumpall --clean --username postgres > db.sql
+# docker exec -t $SERVICE \
+#   pg_dumpall --clean --if-exists --username $USER > $FILE \
+#   && echo Done.
+
+# # -Fc specifies the custom/compact format, as opposed to plaintext sql
+# # -f specifies the output file
+# docker exec -t $SERVICE \
+#   pg_dump -Fc -f $FOLDER/$FILE $DATABASE \
+#   && echo Done.
