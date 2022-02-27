@@ -309,6 +309,7 @@ services:
       POSTGRES_PASSWORD: $PGPASSWORD
     volumes:
       - ../$SETUP/volumes/postgres/data:/var/lib/postgresql/data
+      - ../$SETUP/volumes/postgres/backups:/var/lib/postgresql/backups
     restart: always
     networks:
       - ladder99
