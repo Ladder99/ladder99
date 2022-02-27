@@ -87,9 +87,9 @@ export class Metric {
     `
     const result = await this.db.query(sql)
     const lastRead = result.rows.length > 0 && result.rows[0].time
-    console.log(`lastRead`, lastRead)
+    console.log(`Availability - lastRead`, lastRead)
     const startBackfill = lastRead ? new Date(lastRead) : defaultStart
-    console.log(`startBackfill`, startBackfill)
+    console.log(`Availability - startBackfill`, startBackfill)
 
     // get list of start/stop times since then, in order
     const sql2 = `
@@ -116,14 +116,14 @@ export class Metric {
         startStopTimes[minute] = row.path
       }
     }
-    console.log('dict', startStopTimes)
+    console.log('Availability - dict', startStopTimes)
 
     // loop from startstart to now, interval 1 min
     // check for active and available
     // write to bins table those values
     const startMinute = Math.floor(startBackfill.getTime() / minutes)
     const nowMinute = Math.floor(now.getTime() / minutes)
-    console.log(`start, now`, startMinute, nowMinute)
+    console.log(`Availability - start, now`, startMinute, nowMinute)
     let state = null
     for (let minute = startMinute; minute < nowMinute; minute++) {
       const path = startStopTimes[minute]
@@ -208,7 +208,7 @@ export class Metric {
         new Date(stop).getTime() - client.timezoneOffsetHrs * 60 * 60 * 1000
       ),
     }
-    console.log('schedule', schedule)
+    console.log('Availability - schedule', schedule)
     return schedule
   }
 
