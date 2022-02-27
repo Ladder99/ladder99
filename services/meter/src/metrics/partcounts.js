@@ -91,9 +91,7 @@ export class Metric {
       insert into history (node_id, dataitem_id, time, value)
       values (${device_id}, ${dataitem_id}, '${time}', '${value}'::jsonb);
     `
-    // console.log('Partcounts - write', device_id, dataitem_id, time, value)
-    // console.log('writeHistory', sql)
-    console.log('Partcounts - write', time, value)
+    console.log('Partcounts - write', device_id, dataitem_id, time, value)
     await this.db.query(sql)
   }
 
