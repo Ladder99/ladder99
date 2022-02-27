@@ -119,8 +119,7 @@ services:
     # ports:
     #   - $GRAFANA_PORT:3000/tcp
     environment:
-      # need these for provisioning datasources
-      #. don't use PGPASSWORD - how use .pgpass file with grafana tho?
+      # need these for provisioning datasources.
       # null is a docker convention for passing values in through envars.
       PGHOST: null
       PGPORT: null
@@ -286,16 +285,24 @@ services:
   postgres:
     container_name: postgres
     image: timescale/timescaledb:2.3.0-pg13
-    # NOTE: client might need to add this in compose-overrides.yaml
-    # ports:
-    #   - $PGPORT:5432/tcp
     profiles:
       - postgres
       - dashboard
-    # init: true
-    #. don't use PGPASSWORD - see https://stackoverflow.com/a/6405162/243392
-    # https://www.postgresql.org/docs/9.1/libpq-pgpass.html
-    #. are these actually even used? PGDATABASE etc are, but the left side?
+    # IMPORTANT: client might need to add this in compose-overrides.yaml
+    # ports:
+    #   - $PGPORT:5432/tcp
+    # re PGPASSWORD,
+    #   don't use PGPASSWORD? see https://stackoverflow.com/a/6405162/243392
+    #   instead use a .pgpass file https://www.postgresql.org/docs/9.1/libpq-pgpass.html
+    #   but PGPASSWORD's deprecation is contested -
+    #   see https://stackoverflow.com/questions/6523019/postgresql-scripting-psql-execution-with-password
+    # the PostgreSQL image uses these environment variables.
+    # note: POSTGRES_PASSWORD is REQUIRED.
+    # the first time this is run (and the data directory is empty), it uses 
+    # these envars to initialize the database. 
+    # to change the db password would require an ALTER USER SQL statement, 
+    # or \password in psql.
+    # see https://hub.docker.com/_/postgres
     environment:
       POSTGRES_DB: $PGDATABASE
       POSTGRES_USERNAME: $PGUSER

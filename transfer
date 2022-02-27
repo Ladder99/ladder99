@@ -8,7 +8,5 @@ FILE=$1
 USER=$2
 HOST=$3
 
-echo Transferring $FILE to $HOST...
-
 # eg scp db.sql pi@10.0.0.0:~/db.sql
 sudo scp $FILE $USER@$HOST:~/$FILE

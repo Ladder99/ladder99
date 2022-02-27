@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# backup the postgres database.
+# backup the currently running postgres database container.
 # the db files are typically located in $SETUP/volumes/postgres, 
 #   eg ../client-oxbox/volumes/postgres.
-# usage -
+# USAGE
 #   ./backup
 # this writes a .sql file to the main folder. 
 # you can then transfer the file using ./transfer - which see.
