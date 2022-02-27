@@ -1,12 +1,24 @@
 #!/bin/bash
 
 # backup the currently running postgres database container.
-# the db files are typically located in $SETUP/volumes/postgres, 
-#   eg ../client-oxbox/volumes/postgres.
-# USAGE
-#   ./backup
 # this writes a .sql file to the main folder. 
 # you can then transfer the file using ./transfer - which see.
+
+usage="
+Usage: ./backup
+
+Backup the currently running postgres database container.
+
+This writes a pg_dump backup with -Fc (custom/compact format)
+to a file in a Docker volume, then moves it out to the current directory.
+"
+
+# show help
+# if [ $# -eq 0 ]; then
+if [ "$1" = "-h" ]; then
+  echo "$usage"
+  exit 1
+fi
 
 # read envars
 source .env
@@ -16,11 +28,11 @@ SERVICE=postgres
 DATABASE=postgres
 USER=postgres
 TIME=`date +%Y-%m-%d"_"%H%M%S`
-FILE=backup_$TIME.sql
-FOLDER=$SETUP/volumes/postgres/backups
+FILE=backup_$TIME.bak
+FOLDER1=$SETUP/volumes/$SERVICE/backups # eg ../client-oxbox/volumes/postgres/backups
+FOLDER2=/var/lib/postgresql/backups # docker volume path - defined in compose.yaml
 
-echo Backing up $DATABASE to $FOLDER/$FILE...
-
+# #. old
 # # docker exec runs a command within the container $SERVICE, in this case postgres.
 # #   -t allocates a pseudoterminal
 # #   see https://stackoverflow.com/questions/30137135/confused-about-docker-t-option-to-allocate-a-pseudo-tty
@@ -33,8 +45,17 @@ echo Backing up $DATABASE to $FOLDER/$FILE...
 #   pg_dumpall --clean --if-exists --username $USER > $FILE \
 #   && echo Done.
 
-# # -Fc specifies the custom/compact format, as opposed to plaintext sql
+echo Backing up $DATABASE to $FOLDER2/$FILE...
+# # -Fc specifies the custom/compact format, as opposed to plaintext sql (-Fp)
 # # -f specifies the output file
-# docker exec -t $SERVICE \
-#   pg_dump -Fc -f $FOLDER/$FILE $DATABASE \
-#   && echo Done.
+# docker exec -t $SERVICE pg_dump -Fc -f $FOLDER2/$FILE $DATABASE
+
+# move the file to cwd
+if [ -e "$FOLDER1/$FILE" ]; then
+  echo Moving $FOLDER1/$FILE to current folder...
+  mv $FOLDER1/$FILE .
+else
+  echo No backup file exists at $FOLDER1/$FILE. 
+fi
+
+echo Done.
