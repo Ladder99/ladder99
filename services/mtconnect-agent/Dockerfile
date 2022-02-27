@@ -1,7 +1,7 @@
 # MTConnect C++ Agent Docker image build instructions
 # Adapted from https://mtcup.org/Installing_C++_Agent_on_Ubuntu
 # Agent source code https://github.com/mtconnect/cppagent
-# See also services/agent for Ladder99 Agent.
+# See also services/agent for Ladder99 Agent, which adds xsl stylesheets.
 
 #----------------------------------------------------------------------------
 # build os
@@ -30,7 +30,8 @@ RUN apt-get update && apt-get install -y \
 # build makefile
 #----------------------------------------------------------------------------
 
-# get latest cppagent source
+# get latest cppagent 
+#. use git checkout to get a specific version here
 RUN mkdir -p ~/agent/build \
   && cd ~/agent \
   && git clone https://github.com/mtconnect/cppagent.git

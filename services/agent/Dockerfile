@@ -1,4 +1,5 @@
 # Ladder99 Agent Docker image build instructions
+# This adds some custom xsl stylesheets on top of the MTConnect Agent
 # Adapted from http://mtcup.org/wiki/Installing_C%2B%2B_Agent_on_Ubuntu
 # See also services/mtconnect-agent for MTConnect Agent
 
