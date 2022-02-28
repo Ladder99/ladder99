@@ -1,0 +1,22 @@
+# # import sql to a new database
+# cat $FILE | docker exec -i $SERVICE psql -U $USER $DATABASE
+
+
+# <<HEREDOC ... HEREDOC is a bash heredoc string
+# see https://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
+SQL=$(cat <<HEREDOC
+\c $DATABASE
+\\
+CREATE EXTENSION IF NOT EXISTS timescaledb;
+SELECT timescaledb_pre_restore();
+\! pg_restore -Fc --verbose -d $DATABASE $FOLDER2/$FILE
+\\
+SELECT timescaledb_post_restore();
+HEREDOC
+)
+echo "$SQL"
+
+# # prompt the user for a new password
+# #. need this because ?
+# docker exec -i $SERVICE psql -U $USER -d $DATABASE -c "\password"
+

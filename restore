@@ -28,46 +28,32 @@ FILE=$1 # eg backup_2022-02-26_122455.bak
 FOLDER1=$SETUP/volumes/$SERVICE/backups # eg ../client-oxbox/volumes/postgres/backups
 FOLDER2=/var/lib/postgresql/backups # docker volume path - defined in compose.yaml
 
+# exit if no file
 if [ ! -e "$FILE" ]; then
   echo File $FILE does not exist.
   exit 1
 fi  
 
-# move backup file into docker folder temporarily
+# move file into docker volume/folder temporarily
 echo Moving $FILE into Docker volume $FOLDER1...
 sudo mv $FILE $FOLDER1/
 
-# # echo Importing $FILE into $DATABASE...
-# # import sql to a new database
-# cat $FILE | docker exec -i $SERVICE psql -U $USER $DATABASE
-
 # import the database
-# -i hooks up input
-# -c is command for psql
-# <<EOF ... EOF is a bash heredoc string
-# psql \c chooses a database
-# psql \! runs a shell command
-# -Fc is custom format (a compressed archive made by pg_dump)
-# see https://docs.timescale.com/timescaledb/latest/how-to-guides/backup-and-restore/pg-dump-and-restore
 echo Importing $FILE into $DATABASE...
-
-# # see https://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
-# # note: you cannot mix SQL and psql meta-commands within a -c option
-# # need a \\ separator between them.
-# # but pg_restore didn't work with this
-# SQL=$(cat <<HEREDOC
-# \c $DATABASE
-# \\
-# CREATE EXTENSION IF NOT EXISTS timescaledb;
-# SELECT timescaledb_pre_restore();
-# \! pg_restore -Fc --verbose -d $DATABASE $FOLDER2/$FILE
-# \\
-# SELECT timescaledb_post_restore();
-# HEREDOC
-# )
-# echo "$SQL"
-# docker exec -i $SERVICE psql -U $USER -d $DATABASE --echo-queries -c "$SQL"
-
+# docker exec runs a command within a container $SERVICE.
+# -i hooks up input
+# psql runs commands on a postgres db
+# note: you cannot mix SQL and psql meta-commands within a -c option -
+# the best way is to use separate -c commands. 
+# tried using a \\ separator in a heredoc but didn't work.
+#   -c is a command
+#   \c chooses a database
+#   \! runs a shell command
+# pg_restore imports a database
+#   -Fc is custom format (a compressed archive made by pg_dump)
+# note: need the pre and post restore functions, or else when you try to 
+# write to a hypertable you'll get an error.
+# see https://docs.timescale.com/timescaledb/latest/how-to-guides/backup-and-restore/pg-dump-and-restore
 docker exec -i $SERVICE psql -U $USER -d $DATABASE --echo-queries \
   -c "\c $DATABASE" \
   -c "CREATE EXTENSION IF NOT EXISTS timescaledb;" \
@@ -78,9 +64,5 @@ docker exec -i $SERVICE psql -U $USER -d $DATABASE --echo-queries \
 # put backup file back
 echo Moving $FILE back to original location...
 sudo mv $FOLDER1/$FILE $FILE
-
-# # prompt the user for a new password
-# #. need this because ?
-# docker exec -i $SERVICE psql -U $USER -d $DATABASE -c "\password"
 
 echo Done.
