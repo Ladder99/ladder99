@@ -51,29 +51,28 @@ sudo mv $FILE $FOLDER1/
 # see https://docs.timescale.com/timescaledb/latest/how-to-guides/backup-and-restore/pg-dump-and-restore
 echo Importing $FILE into $DATABASE...
 
-# SQL=<<EOF
-# \\c $DATABASE
+# # see https://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
+# # note: you cannot mix SQL and psql meta-commands within a -c option
+# # need a \\ separator between them.
+# SQL=$(cat <<HEREDOC
+# \c $DATABASE
+# \\
 # CREATE EXTENSION IF NOT EXISTS timescaledb;
 # SELECT timescaledb_pre_restore();
-# \\! pg_restore -Fc -d $DATABASE $FOLDER2/$FILE
+# \! pg_restore -Fc --verbose -d $DATABASE $FOLDER2/$FILE
+# \\
 # SELECT timescaledb_post_restore();
-# EOF
-# see https://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
-# note: you cannot mix SQL and psql meta-commands within a -c option
-# need a \\ separator between them.
-SQL=$(cat <<HEREDOC
-\c $DATABASE
-\\
-CREATE EXTENSION IF NOT EXISTS timescaledb;
-SELECT timescaledb_pre_restore();
-\! pg_restore -Fc --verbose -d $DATABASE $FOLDER2/$FILE
-\\
-SELECT timescaledb_post_restore();
-HEREDOC
-)
-echo "$SQL"
+# HEREDOC
+# )
+# echo "$SQL"
+# docker exec -i $SERVICE psql -U $USER -d $DATABASE --echo-queries -c "$SQL"
 
-docker exec -i $SERVICE psql -U $USER -d $DATABASE --echo-queries -c "$SQL"
+docker exec -i $SERVICE psql -U $USER -d $DATABASE --echo-queries \
+  -c "\c $DATABASE" \
+  -c "CREATE EXTENSION IF NOT EXISTS timescaledb;" \
+  -c "SELECT timescaledb_pre_restore();" \
+  -c "\! pg_restore -Fc --verbose -d $DATABASE $FOLDER2/$FILE" \
+  -c "SELECT timescaledb_post_restore();"
 
 # put backup file back
 echo Moving $FILE back to original location...
