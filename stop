@@ -3,25 +3,27 @@
 usage="
 Usage: ./stop SERVICES
 
-Stop Ladder99 services for the setup specified in .env.
+Stop Ladder99 services/profiles.
 
-CLIENT     setup client or folder, eg 'myclient' or './setups/micro'
-
-Use 'docker stop SERVICE' to stop an individual service.
+Setup folder is specified in local .env file - see .env-example.
 "
+# Use 'docker stop SERVICE' to stop an individual service.
 
 if [ $# -eq 0 ]; then
     echo "$usage"
     exit 1
 fi
 
-# get setup folder
-# if starts with '.' treat as a setup folder, else a client name
-if [[ $1 = .* ]]; then
-    setup=$1
-else
-    setup=../client-$1
-fi
+# # get setup folder
+# # if starts with '.' treat as a setup folder, else a client name
+# if [[ $1 = .* ]]; then
+#     setup=$1
+# else
+#     setup=../client-$1
+# fi
+
+# read envars, incl SETUP
+source .env
 
 # get command and call it
 cmd="shell/pipeline stop $setup"
