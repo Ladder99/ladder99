@@ -71,7 +71,7 @@ docker exec -i $SERVICE psql -U $USER -d $DATABASE --echo-queries \
   -c "\c $DATABASE" \
   -c "CREATE EXTENSION IF NOT EXISTS timescaledb;" \
   -c "SELECT timescaledb_pre_restore();" \
-  -c "\! pg_restore -Fc --verbose -d $DATABASE $FOLDER2/$FILE" \
+  -c "\! pg_restore -Fc --verbose -d $DATABASE -U $USER $FOLDER2/$FILE" \
   -c "SELECT timescaledb_post_restore();"
 
 # put backup file back
