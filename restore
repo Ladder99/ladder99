@@ -8,7 +8,7 @@ Restore a backup made with pg_dump -Fc over the current database.
 WARNING: this deletes all data in the current database!
 
 Example
-    ./restore db_2022-02-26_124355.sql
+    ./restore db_2022-02-26_124355.bak
 "
 
 # show help
