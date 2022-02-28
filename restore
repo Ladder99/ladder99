@@ -41,18 +41,15 @@ mv $FILE $FOLDER1/
 # # import sql to a new database
 # cat $FILE | docker exec -i $SERVICE psql -U $USER $DATABASE
 
-# -d $DATABASE
-# DROP DATABASE $DATABASE;
-# CREATE DATABASE $DATABASE; -- db postgres already exists
-
 # import the database
-echo Importing $FILE into $DATABASE...
 # -i hooks up input
 # -c is command for psql
 # <<EOF ... EOF is a bash heredoc string
 # psql \c chooses a database
 # psql \! runs a shell command
 # -Fc is custom format (a compressed archive made by pg_dump)
+# see https://docs.timescale.com/timescaledb/latest/how-to-guides/backup-and-restore/pg-dump-and-restore
+echo Importing $FILE into $DATABASE...
 docker exec -i $SERVICE \
   psql -U $USER -d $DATABASE -c <<EOF
 \\c $DATABASE
@@ -68,6 +65,6 @@ mv $FOLDER1/$FILE $FILE
 
 # # prompt the user for a new password
 # #. need this because ?
-# docker exec -i $SERVICE \
-#   psql -U $USER -d $DATABASE -c "\password"
+# docker exec -i $SERVICE psql -U $USER -d $DATABASE -c "\password"
 
+echo Done.

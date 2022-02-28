@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# update ladder99 and client code
-
 usage="
 Usage: ./update CLIENT
 
@@ -27,12 +25,16 @@ fi
 
 # build commands and call them
 
+# pull ladder99-ce repo
 cmd="git pull"
 echo $cmd
 bash -c "$cmd"
 
+# pull client repo
 # set credential cache while we're at it so user doesn't have to
 # keep entering passcode - just do it once per hour.
 cmd="(cd $setup && git config credential.helper 'cache --timeout=3600' && git pull)"
 echo $cmd
 bash -c "$cmd"
+
+echo Done.
