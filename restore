@@ -54,6 +54,7 @@ echo Importing $FILE into $DATABASE...
 # # see https://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
 # # note: you cannot mix SQL and psql meta-commands within a -c option
 # # need a \\ separator between them.
+# # but pg_restore didn't work with this
 # SQL=$(cat <<HEREDOC
 # \c $DATABASE
 # \\
