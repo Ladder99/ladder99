@@ -66,7 +66,7 @@ SQL=$(cat <<HEREDOC
 \\
 CREATE EXTENSION IF NOT EXISTS timescaledb;
 SELECT timescaledb_pre_restore();
-\! pg_restore -Fc -d $DATABASE $FOLDER2/$FILE
+\! pg_restore -Fc --verbose -d $DATABASE $FOLDER2/$FILE
 \\
 SELECT timescaledb_post_restore();
 HEREDOC
