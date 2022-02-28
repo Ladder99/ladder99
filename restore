@@ -51,14 +51,22 @@ sudo mv $FILE $FOLDER1/
 # see https://docs.timescale.com/timescaledb/latest/how-to-guides/backup-and-restore/pg-dump-and-restore
 echo Importing $FILE into $DATABASE...
 
-SQL=<<EOF
+# SQL=<<EOF
+# \\c $DATABASE
+# CREATE EXTENSION IF NOT EXISTS timescaledb;
+# SELECT timescaledb_pre_restore();
+# \\! pg_restore -Fc -d $DATABASE $FOLDER2/$FILE
+# SELECT timescaledb_post_restore();
+# EOF
+# see https://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
+SQL=$(cat <<'HEREDOC'
 \\c $DATABASE
 CREATE EXTENSION IF NOT EXISTS timescaledb;
 SELECT timescaledb_pre_restore();
 \\! pg_restore -Fc -d $DATABASE $FOLDER2/$FILE
 SELECT timescaledb_post_restore();
-EOF
-
+HEREDOC
+)
 echo $SQL
 
 docker exec -i $SERVICE psql -U $USER -d $DATABASE -c "$SQL"
