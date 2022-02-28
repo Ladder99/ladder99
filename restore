@@ -73,7 +73,7 @@ HEREDOC
 )
 echo "$SQL"
 
-docker exec -i $SERVICE psql -U $USER -d $DATABASE -c "$SQL"
+docker exec -i $SERVICE psql -U $USER -d $DATABASE --echo-queries -c "$SQL"
 
 # put backup file back
 echo Moving $FILE back to original location...
