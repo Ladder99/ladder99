@@ -60,6 +60,6 @@ done
 services=$* # eg 'agent play'
 
 # build command and call it
-cmd="shell/pipeline $mode $setup $services"
+cmd="export SETUP=$setup && shell/pipeline $mode $setup $services"
 echo $cmd
 bash -c "$cmd"
