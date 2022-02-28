@@ -50,14 +50,16 @@ sudo mv $FILE $FOLDER1/
 # -Fc is custom format (a compressed archive made by pg_dump)
 # see https://docs.timescale.com/timescaledb/latest/how-to-guides/backup-and-restore/pg-dump-and-restore
 echo Importing $FILE into $DATABASE...
-docker exec -i $SERVICE \
-  psql -U $USER -d $DATABASE -c <<EOF
+
+SQL=<<EOF
 \\c $DATABASE
 CREATE EXTENSION IF NOT EXISTS timescaledb;
 SELECT timescaledb_pre_restore();
 \\! pg_restore -Fc -d $DATABASE $FOLDER2/$FILE
 SELECT timescaledb_post_restore();
 EOF
+
+docker exec -i $SERVICE psql -U $USER -d $DATABASE -c "$SQL"
 
 # put backup file back
 echo Moving $FILE back to original location...
