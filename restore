@@ -59,6 +59,8 @@ SELECT timescaledb_pre_restore();
 SELECT timescaledb_post_restore();
 EOF
 
+echo $SQL
+
 docker exec -i $SERVICE psql -U $USER -d $DATABASE -c "$SQL"
 
 # put backup file back
