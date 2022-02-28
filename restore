@@ -60,14 +60,14 @@ echo Importing $FILE into $DATABASE...
 # EOF
 # see https://stackoverflow.com/questions/1167746/how-to-assign-a-heredoc-value-to-a-variable-in-bash
 SQL=$(cat <<'HEREDOC'
-\\c $DATABASE
+\c $DATABASE
 CREATE EXTENSION IF NOT EXISTS timescaledb;
 SELECT timescaledb_pre_restore();
-\\! pg_restore -Fc -d $DATABASE $FOLDER2/$FILE
+\! pg_restore -Fc -d $DATABASE $FOLDER2/$FILE
 SELECT timescaledb_post_restore();
 HEREDOC
 )
-echo $SQL
+echo "$SQL"
 
 docker exec -i $SERVICE psql -U $USER -d $DATABASE -c "$SQL"
 
