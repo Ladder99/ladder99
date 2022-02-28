@@ -35,7 +35,7 @@ fi
 
 # move backup file into docker folder temporarily
 echo Moving $FILE into Docker volume $FOLDER1...
-mv $FILE $FOLDER1/
+sudo mv $FILE $FOLDER1/
 
 # # echo Importing $FILE into $DATABASE...
 # # import sql to a new database
@@ -61,7 +61,7 @@ EOF
 
 # put backup file back
 echo Moving $FILE back to original location...
-mv $FOLDER1/$FILE $FILE
+sudo mv $FOLDER1/$FILE $FILE
 
 # # prompt the user for a new password
 # #. need this because ?
