@@ -79,7 +79,7 @@ if [ "$cmd" = "start" ] || [ "$cmd" = "startd" ]; then
     # pull any required images in the docker-compose files and start services.
     cmd="$baseCmd pull && $baseCmd up --build $flags"
 else
-    cmd="$baseCmd down"
+    cmd="$baseCmd stop"
 fi
 echo $cmd
 bash -c "export SETUP=$setup && $cmd"
