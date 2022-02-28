@@ -2,6 +2,9 @@
 
 # run ladder99 pipeline with docker compose.
 
+CLIENT        name of client folder - prepended with '../client-',
+              unless starts with './'
+
 usage="
 Usage: sh/start SETUP SERVICES
 
@@ -41,3 +44,27 @@ services=$* # eg 'agent play'
 cmd="sh/pipeline $cmd $setup $services"
 echo $cmd
 bash -c "$cmd"
+
+
+
+    # if [ $1 = "-s" ] || [ $1 = "--setup" ]; then
+    #     shift
+    #     setup=$1 # eg '../client-oxbox' or 'setups/test/micro'
+    #     shift
+    # fi
+
+# get setup folder
+# if starts with '.' treat as a setup folder, else a client name
+# if [[ $1 = \.* ]]; then
+# if [[ $1 == ./* ]]; then
+# if [[ "$1" == "."* ]]; then
+# if [[ $1 =~ ^\. ]]; then    # works on zsh not encab?
+# shopt -s extglob  # not avail on encab?
+# if [[ $1 = \.* ]]; then
+if [[ $1 = .* ]]; then
+    setup=$1
+else
+    setup=../client-$1
+fi
+shift
+

@@ -18,7 +18,7 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-# read envars
+# read envars, incl SETUP
 source .env
 
 # set envars

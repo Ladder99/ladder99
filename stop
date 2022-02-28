@@ -1,11 +1,9 @@
 #!/bin/bash
 
-# run ladder99 pipeline with docker compose.
-
 usage="
-Usage: ./stop CLIENT
+Usage: ./stop SERVICES
 
-Stop all Ladder99 services for the given client/setup
+Stop Ladder99 services for the setup specified in .env.
 
 CLIENT     setup client or folder, eg 'myclient' or './setups/micro'
 
