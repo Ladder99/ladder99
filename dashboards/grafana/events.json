@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 7,
-  "iteration": 1645209609211,
+  "id": 2,
+  "iteration": 1646169437415,
   "links": [
     {
       "asDropdown": false,
@@ -49,8 +49,105 @@
             "mode": "thresholds"
           },
           "custom": {
+            "align": "auto",
+            "displayMode": "auto"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "path"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 230
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 181
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 4,
+      "options": {
+        "showHeader": true,
+        "sortBy": []
+      },
+      "pluginVersion": "8.2.2",
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT \n  path,\n  time,\n  min(value->>0) as value -- just pick one of the values - should be the same\nFROM history_all\nWHERE\n  device='$device'\n  --and $__timeFilter(\"time\")\n  and (path, time) in (select path, max(time) from history_all group by path)\ngroup by path, time -- need this to eliminate duplicate records\norder by\n  path",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "DataItems (last known values)",
+      "type": "table"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
             "align": null,
-            "displayMode": "json-view",
+            "displayMode": "auto",
             "filterable": false
           },
           "mappings": [],
@@ -77,7 +174,7 @@
               },
               {
                 "id": "custom.width",
-                "value": 221
+                "value": 175
               }
             ]
           },
@@ -89,16 +186,16 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 355
+                "value": 241
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 11,
-        "w": 24,
-        "x": 0,
+        "h": 12,
+        "w": 12,
+        "x": 12,
         "y": 0
       },
       "id": 2,
@@ -113,7 +210,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  path,\n  value\nFROM history_all\nWHERE\n  device='$device'\n  -- and (\n  --   path LIKE 'controller%'\n  --   OR path IN ('availability', 'load-condition', 'message', 'functional-mode',\n  --   'system-condition', 'controller/emergency-stop', 'axes/c/rotary-mode')\n  -- )\n  and $__timeFilter(\"time\")\norder by time desc\nlimit 100",
+          "rawSql": "SELECT\n  path,\n  time,\n  value->>0 as value\nFROM history_all\nWHERE\n  device='$device'\n  -- and (\n  --   path LIKE 'controller%'\n  --   OR path IN ('availability', 'load-condition', 'message', 'functional-mode',\n  --   'system-condition', 'controller/emergency-stop', 'axes/c/rotary-mode')\n  -- )\n  and $__timeFilter(\"time\")\norder by time desc\n--limit 100",
           "refId": "A",
           "select": [
             [
@@ -135,7 +232,7 @@
           ]
         }
       ],
-      "title": "Events",
+      "title": "DataItems (recent changes)",
       "type": "table"
     }
   ],
@@ -148,9 +245,9 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "text": "Cutter",
-          "value": "Cutter"
+          "selected": false,
+          "text": "M12346",
+          "value": "M12346"
         },
         "datasource": null,
         "definition": "select name from devices",
@@ -177,7 +274,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "Events",
+  "title": "DataItems",
   "uid": "events",
-  "version": 2
+  "version": 12
 }
