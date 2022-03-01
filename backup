@@ -1,23 +1,29 @@
 #!/bin/bash
 
 usage="
-Usage: ./backup
+Usage: ./backup SETUP
 
-Backup the currently running postgres database container.
+Backup the currently running Postgres database container.
 
 This writes a pg_dump backup with -Fc (custom/compact format)
 to a file in a Docker volume, then moves it out to the current directory.
 "
 
 # show help
-# if [ $# -eq 0 ]; then
-if [ "$1" = "-h" ]; then
+if [ $# -eq 0 ]; then
+# if [ "$1" = "-h" ]; then
   echo "$usage"
   exit 1
 fi
 
-# read envars, incl SETUP
-source .env
+# get setup folder
+# if starts with '.' treat as a setup folder, else a client name
+if [[ $1 = .* ]]; then
+    SETUP=$1
+else
+    SETUP=../client-$1
+fi
+shift
 
 # set envars
 SERVICE=postgres

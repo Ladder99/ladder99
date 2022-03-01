@@ -1,30 +1,26 @@
 #!/bin/bash
 
 usage="
-Usage: ./update
+Usage: ./update SETUP
 
 Update Ladder99 pipeline and client code
 
-CLIENT        name of client folder - prepended with '../client-',
-              unless starts with './'
+SETUP        name of client or setup folder, eg oxbox or ./setups/vmc
 "
 
-# # show help
-# if [ $# -eq 0 ]; then
-#     echo "$usage"
-#     exit 1
-# fi
+# show help
+if [ $# -eq 0 ]; then
+    echo "$usage"
+    exit 1
+fi
 
-# # get setup folder
-# # if starts with '.' treat as a setup folder, else a client name
-# if [[ $1 = .* ]]; then
-#     setup=$1
-# else
-#     setup=../client-$1
-# fi
-
-# read envars, incl SETUP
-source .env
+# get setup folder
+# if starts with '.' treat as a setup folder, else a client name
+if [[ $1 = .* ]]; then
+    SETUP=$1
+else
+    SETUP=../client-$1
+fi
 
 # pull ladder99-ce repo
 cmd="git pull"

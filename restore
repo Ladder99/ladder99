@@ -1,14 +1,14 @@
 #!/bin/bash
 
 usage="
-Usage: ./restore FILE
+Usage: ./restore SETUP FILE
 
 Restore a backup made with pg_dump -Fc into the current database.
 
 WARNING: this deletes all data in the current database!
 
 Example
-    ./restore db_2022-02-26_124355.bak
+    ./restore oxbox db_2022-02-26_124355.bak
 "
 
 # show help
@@ -17,8 +17,14 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-# read envars, incl SETUP
-source .env
+# get setup folder
+# if starts with '.' treat as a setup folder, else a client name
+if [[ $1 = .* ]]; then
+    SETUP=$1
+else
+    SETUP=../client-$1
+fi
+shift
 
 # set envars
 SERVICE=postgres
