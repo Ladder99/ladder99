@@ -5,8 +5,7 @@ Usage: ./restore FILE
 
 Restore a backup made with pg_dump -Fc into the current database.
 
-WARNING: this MAY delete all data in the current database, if the backup
-was made with the --clean flag!
+WARNING: this deletes all data in the current database!
 
 Example
     ./restore db_2022-02-26_124355.bak
@@ -52,8 +51,7 @@ echo Importing $FILE into $DATABASE...
 #   \! runs a shell command
 # pg_restore imports a database
 #   -Fc is custom format (a compressed archive made by pg_dump)
-#   --clean would drop all objects before restoring them, but pg_dump can
-#     specify that also/instead.
+#   --clean drops all objects before restoring them
 # note: need the pre and post restore functions, or else when you try to 
 # write to a hypertable you'll get an error.
 # see https://docs.timescale.com/timescaledb/latest/how-to-guides/backup-and-restore/pg-dump-and-restore
@@ -61,7 +59,7 @@ docker exec -i $SERVICE psql -U $USER -d $DATABASE --echo-queries \
   -c "\c $DATABASE" \
   -c "CREATE EXTENSION IF NOT EXISTS timescaledb;" \
   -c "SELECT timescaledb_pre_restore();" \
-  -c "\! pg_restore -Fc --verbose -d $DATABASE -U $USER $FOLDER2/$FILE" \
+  -c "\! pg_restore -Fc --clean --verbose -d $DATABASE -U $USER $FOLDER2/$FILE" \
   -c "SELECT timescaledb_post_restore();"
 
 # put backup file back
