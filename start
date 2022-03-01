@@ -41,7 +41,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # default values
-mode=startd # detached mode
+MODE=startd # detached mode
 
 # get options/arguments
 # while $1 starts with '-'
@@ -49,23 +49,23 @@ while [[ $1 = \-* ]]
 do
     if [ $1 = "-c" ] || [ $1 = "--console" ]; then
         shift
-        mode=start # console mode
+        MODE=start # console mode
     fi
 done
 
 # get setup folder
 # if starts with '.' treat as a setup folder, else a client name
 if [[ $1 = .* ]]; then
-    setup=$1
+    SETUP=$1
 else
-    setup=../client-$1
+    SETUP=../client-$1
 fi
 shift
 
 # get services/profiles
-services=$* # eg 'agent play'
+SERVICES=$* # eg 'agent play'
 
 # build command and call it
-cmd="export SETUP=$setup && shell/pipeline $mode $setup $services"
+cmd="export SETUP=$SETUP && shell/pipeline $MODE $SETUP $SERVICES"
 echo $cmd
 bash -c "$cmd"

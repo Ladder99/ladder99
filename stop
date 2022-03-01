@@ -22,6 +22,6 @@ fi
 shift
 
 # get command and call it
-cmd="shell/pipeline stop $setup"
-echo $cmd
-bash -c "$cmd"
+CMD="shell/pipeline stop $SETUP"
+echo $CMD
+bash -c "$CMD"

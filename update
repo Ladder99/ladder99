@@ -23,15 +23,15 @@ else
 fi
 
 # pull ladder99-ce repo
-cmd="git pull"
-echo $cmd
-bash -c "$cmd"
+CMD="git pull"
+echo $CMD
+bash -c "$CMD"
 
 # pull client repo
 # set credential cache while we're at it so user doesn't have to
 # keep entering passcode - just do it once per hour.
-cmd="(cd $setup && git config credential.helper 'cache --timeout=3600' && git pull)"
-echo $cmd
-bash -c "$cmd"
+CMD="(cd $SETUP && git config credential.helper 'cache --timeout=3600' && git pull)"
+echo $CMD
+bash -c "$CMD"
 
 echo Done.
