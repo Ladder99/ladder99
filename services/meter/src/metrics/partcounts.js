@@ -45,11 +45,15 @@ export class Metric {
     const stop = now
 
     // get last lifetime value, before start time
-    let lifetime = await this.getLastRecord(
+    let lifetime = 0
+    const record = await this.getLastRecord(
       this.device.name,
       this.metric.lifetimePath,
       start.toISOString()
     )
+    if (record) {
+      lifetime = record.value
+    }
     console.log('Partcounts - lifetime', lifetime)
 
     const rows = await this.getPartCounts(start, stop) // Date objects
@@ -129,6 +133,7 @@ export class Metric {
 
   // get last value of a path from history_float view, before a given time.
   // start should be an ISO datetimestring
+  // returns null or { time, value }
   async getLastRecord(device, path, start) {
     const sql = `
       select 
