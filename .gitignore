@@ -12,6 +12,8 @@ pi.sh
 _old
 desktop.ini
 
+*.bak
+
 **/grafana/var
 **/mosquitto/data
 **/mosquitto/log
