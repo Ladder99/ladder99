@@ -11,3 +11,7 @@ services:
     command: '' # run the default command (simulation)
     profiles:
       - all
+
+  grafana:
+    ports:
+      - $GRAFANA_PORT:3000/tcp
