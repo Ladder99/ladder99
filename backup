@@ -50,7 +50,7 @@ docker exec -t $SERVICE pg_dump -U $USER -Fc -f $FOLDER2/$FILE $DATABASE
 # move the file to cwd
 if [ -e "$FOLDER1/$FILE" ]; then
   echo Moving $FOLDER1/$FILE to current folder...
-  mv $FOLDER1/$FILE .
+  sudo mv $FOLDER1/$FILE .
 else
   echo No backup file exists at $FOLDER1/$FILE. 
 fi
