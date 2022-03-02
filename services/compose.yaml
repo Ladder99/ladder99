@@ -64,36 +64,36 @@ services:
       options:
         max-size: '20m'
 
-  # ---------------------------------------------------------------------------
-  # cloudbeaver - database web ui - more general than pgadmin
-  # ---------------------------------------------------------------------------
-  cloudbeaver:
-    container_name: cloudbeaver
-    # need to use image OR build in client's compose-overrides.yaml.
-    # (can't turn off a value with '' or null (?), so just commented both
-    # image and build out).
-    # see client-mazak for example of running cloudbeaver on x86.
-    # see https://hub.docker.com/r/dbeaver/cloudbeaver/tags
-    image: dbeaver/cloudbeaver:21.3.5 # use this for x86 etc
-    # build: ./cloudbeaver # use this for ARM processors - need to build with Dockerfile
-    profiles:
-      - cloudbeaver
-    volumes:
-      # - ../$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
-      - ../$SETUP/volumes/cloudbeaver/workspace:/var/cloudbeaver/workspace
-    # need to leave this unspecified here, because clients that use traefik
-    # need it that way, and there's no way to remove a port through 
-    # overrides yet.
-    # see https://github.com/docker/compose/issues/3729
-    # IMPORTANT: might need to turn this on for a client.
-    # ports:
-    #   - 8978:8978
-    restart: always
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '20m'
+  # # ---------------------------------------------------------------------------
+  # # cloudbeaver - database web ui - more general than pgadmin
+  # # ---------------------------------------------------------------------------
+  # cloudbeaver:
+  #   container_name: cloudbeaver
+  #   # need to use image OR build in client's compose-overrides.yaml.
+  #   # (can't turn off a value with '' or null (?), so just commented both
+  #   # image and build out).
+  #   # see client-mazak for example of running cloudbeaver on x86.
+  #   # see https://hub.docker.com/r/dbeaver/cloudbeaver/tags
+  #   image: dbeaver/cloudbeaver:21.3.5 # use this for x86 etc
+  #   # build: ./cloudbeaver # use this for ARM processors - need to build with Dockerfile
+  #   profiles:
+  #     - cloudbeaver
+  #   volumes:
+  #     # - ../$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
+  #     - ../$SETUP/volumes/cloudbeaver/workspace:/var/cloudbeaver/workspace
+  #   # need to leave this unspecified here, because clients that use traefik
+  #   # need it that way, and there's no way to remove a port through 
+  #   # overrides yet.
+  #   # see https://github.com/docker/compose/issues/3729
+  #   # IMPORTANT: might need to turn this on for a client.
+  #   # ports:
+  #   #   - 8978:8978
+  #   restart: always
+  #   networks:
+  #     - ladder99
+  #   logging:
+  #     options:
+  #       max-size: '20m'
 
   # ---------------------------------------------------------------------------
   # dozzle - manage docker logs
