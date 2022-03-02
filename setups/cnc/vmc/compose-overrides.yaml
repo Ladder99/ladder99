@@ -10,4 +10,4 @@ services:
     working_dir: /etc/mtconnect/simulator
     command: '' # run the default command (simulation)
     profiles:
-      - dashboard
+      - all

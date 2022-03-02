@@ -11,7 +11,9 @@ version: '3.8'
 # version: '3.9' # not tested yet
 
 services:
+  # ---------------------------------------------------------------------------
   # adapter - convert machine data to shdr and send to agent
+  # ---------------------------------------------------------------------------
   adapter:
     container_name: adapter
     # image: ladder99/adapter:latest # use this if build docker image and push to hub
@@ -38,7 +40,9 @@ services:
       options:
         max-size: '20m'
 
+  # ---------------------------------------------------------------------------
   # agent - take in shdr and output xml/json/html
+  # ---------------------------------------------------------------------------
   agent:
     container_name: agent
     #. use mtconnect/agent once mtconnect publishes theirs to docker hub
@@ -60,7 +64,9 @@ services:
       options:
         max-size: '20m'
 
+  # ---------------------------------------------------------------------------
   # cloudbeaver - database web ui - more general than pgadmin
+  # ---------------------------------------------------------------------------
   cloudbeaver:
     container_name: cloudbeaver
     # need to use image OR build in client's compose-overrides.yaml.
@@ -89,7 +95,9 @@ services:
       options:
         max-size: '20m'
 
+  # ---------------------------------------------------------------------------
   # dozzle - manage docker logs
+  # ---------------------------------------------------------------------------
   dozzle:
     container_name: dozzle
     image: amir20/dozzle:latest
@@ -108,7 +116,9 @@ services:
       options:
         max-size: '20m'
 
+  # ---------------------------------------------------------------------------
   # grafana - show real-time data from the database, handle notifications
+  # ---------------------------------------------------------------------------
   grafana:
     container_name: grafana
     image: grafana/grafana:8.2.2
@@ -159,7 +169,9 @@ services:
       options:
         max-size: '20m'
 
+  # ---------------------------------------------------------------------------
   # meter - calculate metrics
+  # ---------------------------------------------------------------------------
   # note: set PGHOST, PGPORT, etc before running
   meter:
     container_name: meter
@@ -186,7 +198,9 @@ services:
       options:
         max-size: '20m'
 
+  # ---------------------------------------------------------------------------
   # mosquitto - get mqtt data from devices and publish to mtconnect adapter
+  # ---------------------------------------------------------------------------
   mosquitto:
     container_name: mosquitto
     image: eclipse-mosquitto
@@ -205,7 +219,9 @@ services:
       options:
         max-size: '20m'
 
+  # ---------------------------------------------------------------------------
   # nodered - a visual programming environment
+  # ---------------------------------------------------------------------------
   nodered:
     container_name: nodered
     image: nodered/node-red:2.1.6
@@ -230,7 +246,9 @@ services:
         max-file: '5'
         max-size: '1m'
 
+  # ---------------------------------------------------------------------------
   # pgadmin - admin console for postgres database
+  # ---------------------------------------------------------------------------
   pgadmin:
     container_name: pgadmin
     image: biarms/pgadmin4:latest
@@ -245,7 +263,9 @@ services:
       restart_policy:
         condition: on-failure
 
+  # ---------------------------------------------------------------------------
   # play - playback device recordings
+  # ---------------------------------------------------------------------------
   play:
     container_name: play
     build: ./recorder
@@ -262,7 +282,9 @@ services:
       options:
         max-size: '20m'
 
+  # ---------------------------------------------------------------------------
   # portainer - docker container viewer/management
+  # ---------------------------------------------------------------------------
   portainer:
     container_name: portainer
     image: portainer/portainer-ce
@@ -281,7 +303,9 @@ services:
     logging:
       driver: 'none'
 
+  # ---------------------------------------------------------------------------
   # postgres - store structure and time-series data
+  # ---------------------------------------------------------------------------
   postgres:
     container_name: postgres
     image: timescale/timescaledb:2.3.0-pg13
@@ -317,7 +341,9 @@ services:
       options:
         max-size: '20m'
 
+  # ---------------------------------------------------------------------------
   # record - record device messages for future playback
+  # ---------------------------------------------------------------------------
   record:
     container_name: record
     build: ./recorder
@@ -339,7 +365,9 @@ services:
       options:
         max-size: '20m'
 
+  # ---------------------------------------------------------------------------
   # relay - fetch data from agent and send to db
+  # ---------------------------------------------------------------------------
   relay:
     container_name: relay
     build: ./relay
@@ -379,7 +407,9 @@ services:
         max-size: '20m'
   # superset - a sql-based dashboard application
 
+  # ---------------------------------------------------------------------------
   # traefik - a reverse proxy
+  # ---------------------------------------------------------------------------
   # will need to add labels to grafana or other service you want to expose -
   # see client-mazak/compose-overrides.yaml or client-oxbox for examples.
   traefik:
