@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 7,
-  "iteration": 1645179035190,
+  "id": 6,
+  "iteration": 1646249341220,
   "links": [
     {
       "asDropdown": false,
@@ -393,75 +393,90 @@
         "y": 6
       },
       "id": 6,
-      "options": {
-        "border": {
-          "color": "yellow",
-          "size": 1,
-          "show": false
-        },
-        "fieldSets": [
-          {
-            "col": 2,
-            "color": "#e04c7b",
-            "dotSize": 2,
-            "hidden": false,
-            "lineSize": 1,
-            "lineType": "none"
+      "pconfig": {
+        "fixScale": "x",
+        "layout": {
+          "dragmode": "lasso",
+          "font": {
+            "family": "\"Open Sans\", Helvetica, Arial, sans-serif"
+          },
+          "hovermode": "closest",
+          "legend": {
+            "orientation": "h"
+          },
+          "showlegend": false,
+          "xaxis": {
+            "rangemode": "normal",
+            "showgrid": true,
+            "type": "auto",
+            "zeroline": false
+          },
+          "yaxis": {
+            "rangemode": "normal",
+            "showgrid": true,
+            "type": "linear",
+            "zeroline": false
+          },
+          "zaxis": {
+            "rangemode": "normal",
+            "showgrid": true,
+            "type": "linear",
+            "zeroline": false
           }
-        ],
-        "grid": {
-          "color": "gray"
         },
-        "label": {
-          "col": -1,
-          "color": "#CCC",
-          "textSize": 2
+        "loadFromCDN": false,
+        "settings": {
+          "displayModeBar": false,
+          "type": "scatter"
         },
-        "legend": {
-          "show": false,
-          "size": 3
-        },
-        "rotateYAxisTitle": false,
-        "xAxis": {
-          "col": 1,
-          "inverted": false
-        },
-        "xAxisExtents": {
-          "min": null,
-          "max": null
-        },
-        "xAxisTitle": {
-          "text": "x",
-          "color": "white",
-          "textSize": 1,
-          "rotated": false,
-          "logScale": false
-        },
-        "xMargins": {
-          "lower": null,
-          "upper": null
-        },
-        "yAxisExtents": {
-          "min": null,
-          "max": null
-        },
-        "yAxisTitle": {
-          "text": "y",
-          "color": "#777",
-          "textSize": 1,
-          "rotated": false,
-          "logScale": false
-        },
-        "yMargins": {
-          "lower": null,
-          "upper": null
-        }
+        "showAnnotations": true,
+        "traces": [
+          {
+            "mapping": {
+              "color": "x",
+              "size": null,
+              "text": null,
+              "x": "x",
+              "y": "y",
+              "z": null
+            },
+            "name": "Trace 1",
+            "settings": {
+              "color_option": "solid",
+              "line": {
+                "color": "#005f81",
+                "dash": "solid",
+                "shape": "linear",
+                "width": 6
+              },
+              "marker": {
+                "color": "#33B5E5",
+                "colorscale": "YlOrRd",
+                "line": {
+                  "color": "#DDD",
+                  "width": 0
+                },
+                "showscale": false,
+                "size": 2,
+                "sizemin": 3,
+                "sizemode": "diameter",
+                "sizeref": 0.2,
+                "symbol": "circle"
+              }
+            },
+            "show": {
+              "line": true,
+              "markers": true
+            }
+          }
+        ]
       },
       "pluginVersion": "7.5.5",
       "targets": [
         {
           "format": "table",
           "group": [],
+          "hide": true,
           "metricColumn": "none",
           "rawQuery": true,
           "rawSql": "SELECT time,\n  SUM(CASE path WHEN 'axes/x/position-actual' THEN value ELSE 0 END) AS x,\n  SUM(CASE path WHEN 'axes/y/position-actual' THEN value ELSE 0 END) AS y\nFROM history_float\nWHERE \n  device='$device' and\n  $__timeFilter(\"time\")\nGROUP BY time\n;\n",
@@ -484,12 +499,67 @@
               "type": "macro"
             }
           ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as x\nFROM history_float\nWHERE \n  device='$device'\n  and path='axes/x/position-actual'\n  and $__timeFilter(\"time\")\n  \n",
+          "refId": "B",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        },
+        {
+          "format": "time_series",
+          "group": [],
+          "hide": false,
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT time, value as y\nFROM history_float\nWHERE \n  device='$device'\n  and path='axes/y/position-actual'\n  and $__timeFilter(\"time\")\n",
+          "refId": "C",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
         }
       ],
       "timeFrom": null,
       "timeShift": null,
       "title": "Path 2d",
-      "type": "michaeldmoore-scatter-panel"
+      "type": "natel-plotly-panel",
+      "version": 1
     },
     {
       "datasource": null,
@@ -624,8 +694,8 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "M12346",
-          "value": "M12346"
+          "text": "VMC-3Axis",
+          "value": "VMC-3Axis"
         },
         "datasource": null,
         "definition": "select name from devices",
@@ -647,12 +717,12 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-1m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Paths",
   "uid": "paths",
-  "version": 15
+  "version": 3
 }
