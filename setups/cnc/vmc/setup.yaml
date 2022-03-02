@@ -1,0 +1,8 @@
+client:
+  name: VMC # not used yet
+  # tell server what timezone to report results in, what timezone schedules are in etc
+  timezoneOffsetHrs: -6 # hrs from GMT
+
+devices:
+  - id: dev # must match id in agent.xml
+    name: VMC-3Axis # must match name in agent.cfg and agent.xml
