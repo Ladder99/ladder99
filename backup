@@ -45,7 +45,7 @@ FOLDER2=/var/lib/postgresql/backups # docker volume path - defined in compose.ya
 #   -f: specifies the output file
 # see https://docs.timescale.com/timescaledb/latest/how-to-guides/backup-and-restore/pg-dump-and-restore
 echo Backing up $DATABASE to $FOLDER2/$FILE...
-docker exec -t $SERVICE pg_dump -Fc -f $FOLDER2/$FILE $DATABASE
+docker exec -t $SERVICE pg_dump -U $USER -Fc -f $FOLDER2/$FILE $DATABASE
 
 # move the file to cwd
 if [ -e "$FOLDER1/$FILE" ]; then
