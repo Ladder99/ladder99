@@ -39,13 +39,13 @@ FOLDER2=/var/lib/postgresql/backups # docker volume path - defined in compose.ya
 #   -t: allocates a pseudoterminal
 #   see https://stackoverflow.com/questions/30137135/confused-about-docker-t-option-to-allocate-a-pseudo-tty
 # pg_dump backs up a database
-#   --if-exists: adds IF EXISTS clauses to drop commands
+#   --if-exists: adds IF EXISTS clauses to drop commands (needs --clean though)
 #   -Fc: specifies the custom/compact format, as opposed to plaintext sql (-Fp)
 #   --clean or -c would be ignored here since using -Fc, so do in restore cmd
 #   -f: specifies the output file
 # see https://docs.timescale.com/timescaledb/latest/how-to-guides/backup-and-restore/pg-dump-and-restore
 echo Backing up $DATABASE to $FOLDER2/$FILE...
-docker exec -t $SERVICE pg_dump --if-exists -Fc -f $FOLDER2/$FILE $DATABASE
+docker exec -t $SERVICE pg_dump -Fc -f $FOLDER2/$FILE $DATABASE
 
 # move the file to cwd
 if [ -e "$FOLDER1/$FILE" ]; then
