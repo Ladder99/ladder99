@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1646169437415,
+  "id": 9,
+  "iteration": 1646317339657,
   "links": [
     {
       "asDropdown": false,
@@ -112,7 +112,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT \n  path,\n  time,\n  min(value->>0) as value -- just pick one of the values - should be the same\nFROM history_all\nWHERE\n  device='$device'\n  --and $__timeFilter(\"time\")\n  and (path, time) in (select path, max(time) from history_all group by path)\ngroup by path, time -- need this to eliminate duplicate records\norder by\n  path",
+          "rawSql": "SELECT \n  path,\n  time,\n  min(value->>0) as value -- just pick one of the values - should be the same\nFROM history_all\nWHERE\n  device='$device'\n  -- and $__timeFilter(\"time\")\n  and (path, time) in (\n    select path, max(time) from history_all \n    where time > (now() - interval '1 day')\n    group by path\n  )\ngroup by path, time -- need this to eliminate duplicate records\norder by\n  path",
           "refId": "A",
           "select": [
             [
@@ -210,7 +210,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  path,\n  time,\n  value->>0 as value\nFROM history_all\nWHERE\n  device='$device'\n  -- and (\n  --   path LIKE 'controller%'\n  --   OR path IN ('availability', 'load-condition', 'message', 'functional-mode',\n  --   'system-condition', 'controller/emergency-stop', 'axes/c/rotary-mode')\n  -- )\n  and $__timeFilter(\"time\")\norder by time desc\n--limit 100",
+          "rawSql": "SELECT\n  path,\n  time,\n  value->>0 as value\nFROM history_all\nWHERE\n  device='$device'\n  -- and (\n  --   path LIKE 'controller%'\n  --   OR path IN ('availability', 'load-condition', 'message', 'functional-mode',\n  --   'system-condition', 'controller/emergency-stop', 'axes/c/rotary-mode')\n  -- )\n  and $__timeFilter(\"time\")\norder by time desc\nlimit 100",
           "refId": "A",
           "select": [
             [
@@ -246,8 +246,8 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "M12346",
-          "value": "M12346"
+          "text": "Cutter",
+          "value": "Cutter"
         },
         "datasource": null,
         "definition": "select name from devices",
@@ -276,5 +276,5 @@
   "timezone": "",
   "title": "DataItems",
   "uid": "events",
-  "version": 12
+  "version": 3
 }
