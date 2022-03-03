@@ -186,7 +186,8 @@ services:
     #   - "8888:8888"
     dns: 8.8.8.8
     volumes:
-      #. why z-hue.ini?
+      #. why z-hue.ini? is it an arbitrary name for hue-overrides.ini?
+      # https://stackoverflow.com/questions/57116402/hue-access-to-hdfs-bypass-default-hue-ini
       - ../$SETUP/volumes/hue/hue.ini:/usr/share/hue/desktop/conf/z-hue.ini
     labels:
       - traefik.enable=true
