@@ -173,12 +173,13 @@ services:
         max-size: '20m'
 
   # ---------------------------------------------------------------------------
-  # hue - database ui
+  # hue - sql database ui
   # ---------------------------------------------------------------------------
-  # https://hub.docker.com/r/gethue/hue
   hue:
     container_name: hue
-    image: gethue/hue:latest #. fix
+    # https://hub.docker.com/r/gethue/hue
+    # image: gethue/hue:latest
+    image: gethue/hue:20220302-140101 # prefer a fixed version so doesn't keep downloading
     profiles:
       - hue
     # ports:
