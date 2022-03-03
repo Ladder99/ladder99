@@ -125,7 +125,10 @@ services:
     profiles:
       - grafana
       - dashboard
-    # IMPORTANT: might need to turn this on for a client - see cloudbeaver comments.
+    # IMPORTANT: might need to turn this on for a client - have to comment it
+    # out here because a client might need no ports exposed.
+    #. can you do that by setting grafana_port to nothing?
+    # see cloudbeaver comments.
     # ports:
     #   - $GRAFANA_PORT:3000/tcp
     environment:
@@ -175,13 +178,14 @@ services:
   # https://hub.docker.com/r/gethue/hue
   hue:
     container_name: hue
-    image: gethue/hue:latest
+    image: gethue/hue:latest #. fix
     profiles:
       - hue
-    #ports:
-    #  - "8888:8888"
+    # ports:
+    #   - "8888:8888"
     dns: 8.8.8.8
     volumes:
+      #. why z-hue.ini?
       - ../$SETUP/volumes/hue/hue.ini:/usr/share/hue/desktop/conf/z-hue.ini
     labels:
       - traefik.enable=true
@@ -194,9 +198,7 @@ services:
       - ladder99
     logging:
       options:
-        max-size: '20m'    
-
-
+        max-size: '20m'
 
   # ---------------------------------------------------------------------------
   # meter - calculate metrics
@@ -455,7 +457,9 @@ services:
     volumes:
       # will need to do this before starting traefik -
       #   mkdir ../client-oxbox/volumes/traefik
+      #   touch ../client-oxbox/volumes/traefik/acme.json
       #   chmod 600 ../client-oxbox/volumes/traefik/acme.json
+      #. is that correct?
       - /var/run/docker.sock:/var/run/docker.sock
       - ../$SETUP/volumes/traefik/traefik.toml:/traefik.toml
       - ../$SETUP/volumes/traefik/traefik_dynamic.toml:/traefik_dynamic.toml
