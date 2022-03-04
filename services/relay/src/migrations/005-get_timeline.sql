@@ -5,7 +5,8 @@
 -- get data for a timeline view (eg the 'discrete' plugin for grafana).
 -- like a regular query but also gets the last value before the start time,
 -- and assigns it to that start time.
--- returns time, value, with value being text, coerced from top-level jsonb value.
+-- returns time, value, with value being text, coerced from top-level jsonb value,
+-- as obtained from the history_all view.
 
 -- use from grafana like
 --   SELECT time, value AS "Availability" 
