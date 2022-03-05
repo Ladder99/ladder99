@@ -6,6 +6,9 @@ import { migrate } from './migrations/migrate.js'
 import { AgentReader } from './agentReader.js'
 import { Endpoint } from './endpoint.js'
 import * as lib from './lib.js'
+import * as foo from '../../common/foo.js'
+
+foo.foobar() //. test
 
 // defined in compose.yaml with docker volume mappings
 const setupFolder = process.env.L99_SETUP_FOLDER || '/data/setup'

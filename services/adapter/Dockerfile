@@ -50,6 +50,3 @@ COPY ./src ./src
 
 # base command - can pass params with CMD
 ENTRYPOINT ["node", "/data/app/src/adapter.js"]
-
-# default command when run container
-# CMD ["node", "/data/app/src/adapter.js"]

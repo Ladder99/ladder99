@@ -418,7 +418,10 @@ services:
   # fetch data from agent and send to db
   relay:
     container_name: relay
-    build: ./relay
+    # build: ./relay
+    build:
+      context: .
+      dockerfile: ./relay/Dockerfile
     profiles:
       - relay
     init: true

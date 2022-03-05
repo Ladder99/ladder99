@@ -1,4 +1,4 @@
-# recorder dockerfile
+# dockerfile for meter
 # based on https://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
 
 # FROM node:15  # huge 350mb compressed images
@@ -18,6 +18,3 @@ COPY ./src ./src
 
 # base command - can pass params with CMD
 ENTRYPOINT ["node", "/data/app/src/meter.js"]
-
-# default command when run container
-# CMD ["node", "/data/app/src/meter.js"]
