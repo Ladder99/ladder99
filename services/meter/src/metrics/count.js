@@ -1,4 +1,7 @@
-// read partcounts and write lifetime partcounts
+// read a counter and write the lifetime count
+
+// ie the counter can be reset any time, but the lifetime count
+// will keep increasing.
 
 const metricIntervalDefault = 5 // seconds
 
@@ -14,50 +17,50 @@ export class Metric {
   }
 
   async start({ client, db, device, metric }) {
-    console.log(`Partcounts - initialize partcounts metric...`)
+    console.log(`Count - initialize count metric...`)
     this.client = client
     this.db = db
     this.device = device
     this.metric = metric
 
-    console.log(`Partcounts - get device node_id...`)
+    console.log(`Count - get device node_id...`)
     this.device_id = await this.db.getDeviceId(device.name) // repeats until device is there
-    // console.log('Partcounts - device', this.device)
+    // console.log('Count - device', this.device)
 
     // need this dataitemId as we'll be writing directly to the history table
     this.lifetime_id = await this.db.getDataItemId(metric.lifetimePath) // repeat until dataitem there
-    console.log('Partcounts - lifetime_id', this.lifetime_id)
+    console.log('Count - lifetime_id', this.lifetime_id)
 
     // get polling interval - either from metric in setup yaml or default value
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
 
-    await this.backfill() // backfill missing values
+    await this.backfill() // backfill any missing values
     await this.poll() // do first poll
     this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
 
   // poll db and update lifetime count - called by timer
   async poll() {
-    console.log('Partcounts - poll db and write lifetime counts ')
+    console.log('Count - poll db and write lifetime count')
 
     const now = new Date()
-    const start = new Date(now.getTime() - this.interval)
-    const stop = now
+    const start = new Date(now.getTime() - this.interval).toISOString()
+    const stop = now.toISOString()
 
     // get last lifetime value, before start time
     let lifetime = 0
     const record = await this.getLastRecord(
       this.device.name,
       this.metric.lifetimePath,
-      start.toISOString()
+      start
     )
     if (record) {
       lifetime = record.value
     }
-    console.log('Partcounts - lifetime', lifetime)
+    console.log('Count - lifetime', lifetime)
 
-    const rows = await this.getPartCounts(start, stop) // Date objects
-    console.log('Partcounts - rows', rows)
+    const rows = await this.getCounts(start, stop) // Date objects
+    console.log('Count - rows', rows)
     // rows will be like (for start=10:00:00am, stop=10:00:05am)
     // time, value
     // 9:59:59am, 99
@@ -95,13 +98,13 @@ export class Metric {
       insert into history (node_id, dataitem_id, time, value)
       values (${device_id}, ${dataitem_id}, '${time}', '${value}'::jsonb);
     `
-    console.log('Partcounts - write', device_id, dataitem_id, time, value)
+    console.log('Count - write', device_id, dataitem_id, time, value)
     await this.db.query(sql)
   }
 
-  // get partcount records from history_float.
-  // start and stop should be Date objects.
-  async getPartCounts(start, stop) {
+  // get count records from history_float.
+  // start and stop should be ISO strings.
+  async getCounts(start, stop) {
     const sql = `
       select 
         time, value
@@ -110,7 +113,7 @@ export class Metric {
       where
         device = '${this.device.name}'
         and path = '${this.metric.deltaPath}'
-        and time between '${start.toISOString()}' and '${stop.toISOString()}'
+        and time between '${start}' and '${stop}'
       union (
         select 
           time, value
@@ -119,7 +122,7 @@ export class Metric {
         where
           device = '${this.device.name}'
           and path = '${this.metric.deltaPath}'
-          and time < '${start.toISOString()}'
+          and time < '${start}'
         order by 
           time desc
         limit 1
@@ -174,7 +177,7 @@ export class Metric {
 
   // backfill missing partcount records
   async backfill() {
-    console.log(`Partcounts - backfill any missed partcounts...`)
+    console.log(`Count - backfill any missed partcounts...`)
 
     const now = new Date()
 
@@ -184,7 +187,7 @@ export class Metric {
       this.metric.lifetimePath,
       now.toISOString()
     )
-    console.log('Partcounts - last record', record)
+    console.log('Count - last record', record)
 
     // if no lifetime record, start from the beginning
     if (!record) {
@@ -192,7 +195,7 @@ export class Metric {
         this.device.name,
         this.metric.deltaPath
       )
-      console.log('Partcounts - first record', record2)
+      console.log('Count - first record', record2)
       // no delta data either, so exit
       if (!record2) {
         return
@@ -203,10 +206,10 @@ export class Metric {
       record.value = 0
     }
 
-    const start = record.time
+    const start = record.time.toISOString()
+    const stop = now.toISOString()
     let lifetime = record.value
-    const stop = now
-    const rows = await this.getPartCounts(start, stop) // gets last one before start also, if any
+    const rows = await this.getCounts(start, stop) // gets last one before start also, if any
     let previous = rows[0]
     for (let row of rows.slice(1)) {
       const delta = row.value - previous.value
@@ -221,6 +224,6 @@ export class Metric {
       }
       previous = row
     }
-    console.log(`Partcounts - backfill done`)
+    console.log(`Count - backfill done`)
   }
 }
