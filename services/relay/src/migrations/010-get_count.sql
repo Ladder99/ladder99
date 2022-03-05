@@ -1,4 +1,17 @@
--- get an accumulated count between a start and stop time
+-- get count of a value between a start and stop time.
+
+-- basically the value at a stop time minus the value at a start time.
+-- the counter needs to be an ever-increasing lifetime value.
+
+-- example:
+--  select count
+--  from get_count(
+--    'Cutter',
+--    'controller/partOccurrence/part_count-lifetime',
+--    timestamptz2ms('2022-02-01 18:00:00'),
+--    timestamptz2ms('2022-02-02 18:00:00')
+--  );
+-- returns a count value like 154.0
 
 create or replace function get_count(
   in p_device text, -- the device name, eg 'Cutter'
@@ -7,9 +20,11 @@ create or replace function get_count(
   in p_stop bigint -- stop time in milliseconds since 1970-01-01
 )
 returns table ("count" float)
+language plpgsql
 as
 $body$
 declare
+  -- convert milliseconds to timestamp with timezone
   v_start timestamptz := ms2timestamptz(p_start);
   v_stop timestamptz := ms2timestamptz(p_stop);
   v_count0 float;
@@ -17,29 +32,35 @@ declare
   v_count2 float;
   v_count float;
 begin
+  -- get the last count value before the start time
   v_count0 := (
     select value from history_float 
     where device=p_device and path=p_path and time < v_start
     order by time desc
     limit 1
   );
+  -- get the first count value after the stop time
   v_count1 := (
     select value from history_float 
     where device=p_device and path=p_path and time >= v_stop
     order by time asc
     limit 1
   );
+  -- get the last count value before the stop time
   v_count2 := (
     select value from history_float 
     where device=p_device and path=p_path and time < v_stop
     order by time desc
     limit 1
   );
+  -- the net count is count at stop time minus count at start time.
+  -- coalesce(x, y) returns y if x is null.
+  -- so use count 2 as a backup in case there's no value after the 
+  -- stop time yet. 
   "count" := coalesce(v_count1, v_count2) - coalesce(v_count0, 0);
   return next;
 end;
-$body$
-language plpgsql;
+$body$;
 
 -- test
 --  select count
