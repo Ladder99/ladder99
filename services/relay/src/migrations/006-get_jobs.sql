@@ -1,6 +1,4 @@
----------------------------------------------------------------------
 -- get_jobs
----------------------------------------------------------------------
 
 -- get information about sales orders and jobs for a given time range.
 -- uses get_timeline fn.
@@ -14,6 +12,7 @@
 --   "rework" as "Rework"
 --  FROM get_jobs('Line' || ${line_all}, $__from, $__to);
 
+
 -- do this if change parameters OR return signature
 -- DROP FUNCTION IF EXISTS get_jobs(TEXT, bigint, bigint);
 
@@ -26,6 +25,8 @@ RETURNS TABLE ("line" TEXT, "order" TEXT, "item" TEXT, "count" TEXT, "duration" 
 AS
 $BODY$
 DECLARE
+  -- specify some paths
+  --. pass these in with these as defaults?
   path_order constant TEXT = 'controller/processOccurrence/process_aggregate_id-order_number[sales_order]';
   path_item constant TEXT = 'controller/partOccurrence/part_kind_id-part_name';
   path_count constant TEXT = 'controller/partOccurrence/part_count-complete';
