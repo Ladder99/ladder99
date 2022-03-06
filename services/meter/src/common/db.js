@@ -146,6 +146,8 @@ export class Db {
 
   // write a single record to the history table.
   // time should be an ISO datetime string, value a number or string.
+  //. merge with addHistory
+  //. rename to writeHistoryRecord?
   async writeHistory(device_id, dataitem_id, time, value) {
     const sql = `
       insert into history (node_id, dataitem_id, time, value)
@@ -198,10 +200,56 @@ export class Db {
     return value
   }
 
+  // get last value of a path from history_float view, before a given time.
+  // start should be an ISO datetimestring
+  // returns null or { time, value }
+  //. pass table also
+  //. merge with getLatestValue
+  async getLastRecord(device, path, start) {
+    const sql = `
+      select 
+        time, value
+      from 
+        history_float
+      where
+        device = '${device}' 
+        and path = '${path}'
+        and time < '${start}'
+      order by 
+        time desc
+      limit 1;
+    `
+    const result = await this.query(sql)
+    const record = result.rows.length > 0 && result.rows[0]
+    return record // null or { time, value }
+  }
+
+  // get first value of a path from history_float view.
+  // returns null or { time, value }
+  //. pass table also
+  async getFirstRecord(device, path) {
+    const sql = `
+      select 
+        time, value
+      from 
+        history_float
+      where
+        device = '${device}' 
+        and path = '${path}'
+      order by 
+        time asc
+      limit 1;
+    `
+    const result = await this.query(sql)
+    const record = result.rows.length > 0 && result.rows[0]
+    return record // null or { time, value }
+  }
+
   // get count records from history_float.
   // start and stop should be ISO strings.
-  //. move to db as getHistory - pass device, path
-  async getCounts(device, path, start, stop) {
+  //. rename to getHistory
+  //. pass table also
+  async getHistory(device, path, start, stop) {
     const sql = `
       select 
         time, value

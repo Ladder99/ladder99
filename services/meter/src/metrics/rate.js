@@ -1,6 +1,6 @@
+// rate metric
 // read values and write the rate of change between them
-
-// can use to get the production rate from a counter
+// eg can use to get the production rate from a counter
 
 const metricIntervalDefault = 5 // seconds
 
@@ -33,28 +33,20 @@ export class Metric {
     console.log('Rate - poll db and write rate')
 
     const now = new Date()
-
     const start = new Date(now.getTime() - this.interval).toISOString()
     const stop = now.toISOString()
-
     const device = this.device.name
     const path = this.metric.valuePath
 
     // get last value, before start time
     let value = 0
-    // const record = await this.getLastRecord(
-    //   this.device.name,
-    //   this.metric.valuePath,
-    //   start
-    // )
-    const record = await this.getLastRecord(device, path, start)
+    const record = await this.db.getLastRecord(device, path, start)
     if (record) {
       value = record.value
     }
     console.log('Rate - value', value)
 
-    // const rows = await this.getCounts(start, stop)
-    const rows = await this.db.getCounts(device, path, start, stop)
+    const rows = await this.db.getHistory(device, path, start, stop)
     console.log('Rate - rows', rows)
     // rows will be like (for start=10:00:00am, stop=10:00:05am)
     // time, value
@@ -86,49 +78,6 @@ export class Metric {
     }
   }
 
-  // get last value of a path from history_float view, before a given time.
-  // start should be an ISO datetimestring
-  // returns null or { time, value }
-  //. move to db as is
-  async getLastRecord(device, path, start) {
-    const sql = `
-      select 
-        time, value
-      from 
-        history_float
-      where
-        device = '${device}' 
-        and path = '${path}'
-        and time < '${start}'
-      order by 
-        time desc
-      limit 1;
-    `
-    const result = await this.db.query(sql)
-    const record = result.rows.length > 0 && result.rows[0]
-    return record // null or { time, value }
-  }
-
-  // get first value of a path from history_float view.
-  //. move to db as is
-  async getFirstRecord(device, path) {
-    const sql = `
-      select 
-        time, value
-      from 
-        history_float
-      where
-        device = '${device}' 
-        and path = '${path}'
-      order by 
-        time asc
-      limit 1;
-    `
-    const result = await this.db.query(sql)
-    const record = result.rows.length > 0 && result.rows[0]
-    return record // null or { time, value }
-  }
-
   // backfill any missing rate records
   async backfill() {
     console.log(`Rate - backfill any missing rate records...`)
@@ -140,20 +89,12 @@ export class Metric {
     // const start = now.toISOString()
 
     // get latest value record
-    // let record = await this.getLastRecord(
-    //   this.device.name,
-    //   this.metric.valuePath,
-    //   now.toISOString()
-    // )
-    let record = await this.getLastRecord(device, path, now.toISOString())
+    let record = await this.db.getLastRecord(device, path, now.toISOString())
     console.log('Rate - last record', record)
 
     // if no value record, start from the beginning
     if (!record) {
-      const record2 = await this.getFirstRecord(
-        this.device.name,
-        this.metric.deltaPath
-      )
+      const record2 = await this.db.getFirstRecord(device, path)
       console.log('Rate - first record', record2)
       // no delta data either, so exit
       if (!record2) {
@@ -168,8 +109,7 @@ export class Metric {
     const start = record.time.toISOString()
     const stop = now.toISOString()
     let lifetime = record.value
-    // const rows = await this.getCounts(start, stop) // gets last one before start also, if any
-    const rows = await this.db.getCounts(device, path, start, stop)
+    const rows = await this.db.getHistory(device, path, start, stop) // gets last one before start also, if any
     let previous = rows[0]
     for (let row of rows.slice(1)) {
       const delta = row.value - previous.value
