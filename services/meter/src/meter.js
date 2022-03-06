@@ -1,8 +1,8 @@
 // ladder99 meter
 // read data from database, calculate metrics, and write to db
 
-import { Db } from './db.js'
-import * as lib from './lib.js'
+import { Db } from './common/db.js'
+import * as lib from './common/lib.js'
 
 console.log()
 console.log(`Ladder99 Meter`)

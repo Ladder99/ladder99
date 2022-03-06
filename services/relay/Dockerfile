@@ -22,7 +22,7 @@ RUN npm install-clean --production
 ENV PATH /data/node_modules/.bin:$PATH
 # COPY ./src ./src
 COPY ./relay/src /data/app/src
-COPY ./common /data/common
+# COPY ./common /data/common
 
 # base command - can pass params with CMD
 ENTRYPOINT ["node", "/data/app/src/relay.js"]
