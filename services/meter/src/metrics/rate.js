@@ -38,25 +38,17 @@ export class Metric {
     const device = this.device.name
     const path = this.metric.valuePath
 
-    // get last value, before start time
+    // get last value before now
     let value = 0
-    const record = await this.db.getLastRecord(device, path, start)
+    const record = await this.db.getLastRecord(device, path, stop)
     if (record) {
       value = record.value
     }
-    console.log('Rate - value', value)
+    console.log('Rate - last value', value)
 
+    // get value history
+    //. could pass n records to get before start time, eg 3
     const rows = await this.db.getHistory(device, path, start, stop)
-    console.log('Rate - rows', rows)
-    // rows will be like (for start=10:00:00am, stop=10:00:05am)
-    // time, value
-    // 9:59:59am, 99
-    // 10:00:00am, 100
-    // 10:00:01am, 101
-    // 10:00:02am, 102
-    // 10:00:03am, "0"
-    // 10:00:04am, 1
-    // 10:00:05am, 2
     if (rows && rows.length > 1) {
       let previous = rows[0] // { time, value }
       for (let row of rows.slice(1)) {
