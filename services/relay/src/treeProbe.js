@@ -1,7 +1,7 @@
 // companion functions for dataProbe.js
 //. move there
 
-import * as lib from './lib.js'
+import * as lib from './common/lib.js'
 
 // these are the only elements we want to pick out of the probe xml.
 //. add Description elements - will add to Device obj

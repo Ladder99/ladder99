@@ -8,7 +8,7 @@ import fs from 'fs' // node lib - filesystem
 import convert from 'xml-js' // https://github.com/nashwaan/xml-js
 import * as treeProbe from './treeProbe.js'
 import * as treeObservations from './treeObservations.js'
-import * as lib from './lib.js'
+import * as lib from './common/lib.js'
 
 console.log()
 console.log('test.js')

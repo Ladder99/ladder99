@@ -1,11 +1,11 @@
 // ladder99 relay
 // capture data from ladder99 agent(s) and write to database
 
-import { Db } from './db.js'
+import { Db } from './common/db.js'
 import { migrate } from './migrations/migrate.js'
 import { AgentReader } from './agentReader.js'
 import { Endpoint } from './endpoint.js'
-import * as lib from './lib.js'
+import * as lib from './common/lib.js'
 
 // defined in compose.yaml with docker volume mappings
 const setupFolder = process.env.L99_SETUP_FOLDER || '/data/setup'

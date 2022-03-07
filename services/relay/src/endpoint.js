@@ -4,7 +4,7 @@
 import fs from 'fs' // node filesystem lib
 import fetch from 'node-fetch' // https://github.com/node-fetch/node-fetch
 import convert from 'xml-js' // convert xml to json https://github.com/nashwaan/xml-js
-import * as lib from './lib.js'
+import * as lib from './common/lib.js'
 
 export class Endpoint {
   constructor(baseUrl) {

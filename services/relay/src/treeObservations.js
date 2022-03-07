@@ -1,6 +1,6 @@
 // helper fns for dataObservations.js
 
-import * as lib from './lib.js'
+import * as lib from './common/lib.js'
 
 //. explain
 // const appendTags2 = lib.getSet('Angle')

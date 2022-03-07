@@ -110,6 +110,9 @@ export class Db {
     }
   }
 
+  // add an array of records to the history table
+  // each record should be { node_id, dataitem_id, time, value },
+  // where time is an ISOString, value is a number or string.
   async addHistory(records) {
     // if just one record, turn it into an array
     if (!Array.isArray(records)) {
@@ -132,13 +135,26 @@ export class Db {
         values
       )
       console.log(sql.slice(0, 100))
-      const res = await this.query(sql)
-      return res
+      const result = await this.query(sql)
+      return result
     } catch (e) {
       // eg error: duplicate key value violates unique constraint "nodes_path"
       // detail: "Key ((props ->> 'path'::text))=(Device(e05363af-95d1-4354-b749-8fbb09d3499e)) already exists.",
       console.log(e)
     }
+  }
+
+  // write a single record to the history table.
+  // time should be an ISO datetime string, value a number or string.
+  //. merge with addHistory, or rename to writeHistoryRecord?
+  async writeHistory(device_id, dataitem_id, time, value) {
+    const sql = `
+      insert into history (node_id, dataitem_id, time, value)
+      values (${device_id}, ${dataitem_id}, '${time}', '${value}'::jsonb);
+    `
+    console.log('db - write', device_id, dataitem_id, time, value)
+    const result = await this.query(sql)
+    return result
   }
 
   // get device node_id associated with a device name.
@@ -181,6 +197,85 @@ export class Db {
     // console.log(result)
     const value = result.rowCount > 0 && result.rows[0]['value']
     return value
+  }
+
+  // get last value of a path from history_float view, before a given time.
+  // start should be an ISO datetimestring
+  // returns null or { time, value }
+  //. pass table also
+  //. merge with getLatestValue
+  async getLastRecord(device, path, start) {
+    const sql = `
+      select 
+        time, value
+      from 
+        history_float
+      where
+        device = '${device}' 
+        and path = '${path}'
+        and time < '${start}'
+      order by 
+        time desc
+      limit 1;
+    `
+    const result = await this.query(sql)
+    const record = result.rows.length > 0 && result.rows[0]
+    return record // null or { time, value }
+  }
+
+  // get first value of a path from history_float view.
+  // returns null or { time, value }
+  //. pass table also
+  async getFirstRecord(device, path) {
+    const sql = `
+      select 
+        time, value
+      from 
+        history_float
+      where
+        device = '${device}' 
+        and path = '${path}'
+      order by 
+        time asc
+      limit 1;
+    `
+    const result = await this.query(sql)
+    const record = result.rows.length > 0 && result.rows[0]
+    return record // null or { time, value }
+  }
+
+  // get records from history_float.
+  // start and stop should be ISO strings.
+  // includes previous value before start time.
+  //. pass table also
+  async getHistory(device, path, start, stop) {
+    const sql = `
+      select 
+        time, value
+      from 
+        history_float
+      where
+        device = '${device}'
+        and path = '${path}'
+        and time between '${start}' and '${stop}'
+      union (
+        select 
+          time, value
+        from 
+          history_float
+        where
+          device = '${device}'
+          and path = '${path}'
+          and time < '${start}'
+        order by 
+          time desc
+        limit 1
+      )
+      order by 
+        time asc;
+    `
+    const result = await this.query(sql)
+    return result.rows
   }
 
   // //. read nodes and edges into graph structure
