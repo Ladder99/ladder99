@@ -6,18 +6,9 @@
 const metricIntervalDefault = 5 // seconds
 
 export class Metric {
-  constructor() {
-    this.device = null
-    this.metric = null
-    this.db = null
-    this.interval = null
-    this.timer = null
-    this.device_id = null
-    this.lifetime_id = null
-  }
-
+  //
   async start({ client, db, device, metric }) {
-    console.log(`Count - initialize count metric...`)
+    console.log(`Count - initialize metric...`)
     this.client = client
     this.db = db
     this.device = device
@@ -25,11 +16,10 @@ export class Metric {
 
     console.log(`Count - get device node_id...`)
     this.device_id = await this.db.getDeviceId(device.name) // repeats until device is there
-    // console.log('Count - device', this.device)
 
     // need this dataitemId as we'll be writing directly to the history table
+    console.log(`Count - get dataitem_id...`)
     this.lifetime_id = await this.db.getDataItemId(metric.lifetimePath) // repeat until dataitem there
-    console.log('Count - lifetime_id', this.lifetime_id)
 
     // get polling interval - either from metric in setup yaml or default value
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
@@ -46,20 +36,24 @@ export class Metric {
     const now = new Date()
     const start = new Date(now.getTime() - this.interval).toISOString()
     const stop = now.toISOString()
+    const device = this.device.name
+    const path = this.metric.lifetimePath
 
     // get last lifetime value, before start time
     let lifetime = 0
-    const record = await this.getLastRecord(
-      this.device.name,
-      this.metric.lifetimePath,
-      start
-    )
+    const record = await this.db.getLastRecord(device, path, start)
     if (record) {
       lifetime = record.value
     }
     console.log('Count - lifetime', lifetime)
 
-    const rows = await this.getCounts(start, stop) // Date objects
+    // const rows = await this.getCounts(start, stop) // Date objects
+    const rows = await this.db.getHistory(
+      device,
+      this.metric.deltaPath,
+      start,
+      stop
+    )
     console.log('Count - rows', rows)
     // rows will be like (for start=10:00:00am, stop=10:00:05am)
     // time, value
@@ -79,7 +73,7 @@ export class Metric {
           //. write time, lifetime+delta
           lifetime += delta
           // write time, lifetime
-          await this.writeHistory(
+          await this.db.writeHistory(
             this.device_id,
             this.lifetime_id,
             row.time.toISOString(),
@@ -91,90 +85,6 @@ export class Metric {
     }
   }
 
-  // write a record to the history table
-  // time should be an ISO datetime string
-  async writeHistory(device_id, dataitem_id, time, value) {
-    const sql = `
-      insert into history (node_id, dataitem_id, time, value)
-      values (${device_id}, ${dataitem_id}, '${time}', '${value}'::jsonb);
-    `
-    console.log('Count - write', device_id, dataitem_id, time, value)
-    await this.db.query(sql)
-  }
-
-  // get count records from history_float.
-  // start and stop should be ISO strings.
-  async getCounts(start, stop) {
-    const sql = `
-      select 
-        time, value
-      from 
-        history_float
-      where
-        device = '${this.device.name}'
-        and path = '${this.metric.deltaPath}'
-        and time between '${start}' and '${stop}'
-      union (
-        select 
-          time, value
-        from 
-          history_float
-        where
-          device = '${this.device.name}'
-          and path = '${this.metric.deltaPath}'
-          and time < '${start}'
-        order by 
-          time desc
-        limit 1
-      )
-      order by 
-        time asc;
-    `
-    const result = await this.db.query(sql)
-    return result.rows
-  }
-
-  // get last value of a path from history_float view, before a given time.
-  // start should be an ISO datetimestring
-  // returns null or { time, value }
-  async getLastRecord(device, path, start) {
-    const sql = `
-      select 
-        time, value
-      from 
-        history_float
-      where
-        device = '${device}' 
-        and path = '${path}'
-        and time < '${start}'
-      order by 
-        time desc
-      limit 1;
-    `
-    const result = await this.db.query(sql)
-    const record = result.rows.length > 0 && result.rows[0]
-    return record // null or { time, value }
-  }
-
-  // get first value of a path from history_float view.
-  async getFirstRecord(device, path) {
-    const sql = `
-      select 
-        time, value
-      from 
-        history_float
-      where
-        device = '${device}' 
-        and path = '${path}'
-      order by 
-        time asc
-      limit 1;
-    `
-    const result = await this.db.query(sql)
-    const record = result.rows.length > 0 && result.rows[0]
-    return record // null or { time, value }
-  }
-
   // backfill missing partcount records
   async backfill() {
     console.log(`Count - backfill any missed partcounts...`)
@@ -182,7 +92,7 @@ export class Metric {
     const now = new Date()
 
     // get latest lifetime count record
-    let record = await this.getLastRecord(
+    let record = await this.db.getLastRecord(
       this.device.name,
       this.metric.lifetimePath,
       now.toISOString()
@@ -191,7 +101,7 @@ export class Metric {
 
     // if no lifetime record, start from the beginning
     if (!record) {
-      const record2 = await this.getFirstRecord(
+      const record2 = await this.db.getFirstRecord(
         this.device.name,
         this.metric.deltaPath
       )
@@ -209,13 +119,19 @@ export class Metric {
     const start = record.time.toISOString()
     const stop = now.toISOString()
     let lifetime = record.value
-    const rows = await this.getCounts(start, stop) // gets last one before start also, if any
+    // const rows = await this.getCounts(start, stop) // gets last one before start also, if any
+    const rows = await this.db.getHistory(
+      this.device.name,
+      this.metric.deltaPath,
+      start,
+      stop
+    ) // gets last one before start also, if any
     let previous = rows[0]
     for (let row of rows.slice(1)) {
       const delta = row.value - previous.value
       if (delta > 0) {
         lifetime += delta
-        await this.writeHistory(
+        await this.db.writeHistory(
           this.device_id,
           this.lifetime_id,
           row.time.toISOString(),
