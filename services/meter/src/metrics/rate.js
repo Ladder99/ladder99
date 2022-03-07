@@ -86,7 +86,6 @@ export class Metric {
 
     const device = this.device.name
     const path = this.metric.valuePath
-    // const start = now.toISOString()
 
     // get latest value record
     let record = await this.db.getLastRecord(device, path, now.toISOString())
@@ -100,10 +99,7 @@ export class Metric {
       if (!record2) {
         return
       }
-      // record = { time: record2.time, value: 0}
-      record = {}
-      record.time = record2.time
-      record.value = 0
+      record = { time: record2.time, value: 0 }
     }
 
     const start = record.time.toISOString()
