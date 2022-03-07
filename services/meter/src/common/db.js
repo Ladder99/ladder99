@@ -146,14 +146,13 @@ export class Db {
 
   // write a single record to the history table.
   // time should be an ISO datetime string, value a number or string.
-  //. merge with addHistory
-  //. rename to writeHistoryRecord?
+  //. merge with addHistory, or rename to writeHistoryRecord?
   async writeHistory(device_id, dataitem_id, time, value) {
     const sql = `
       insert into history (node_id, dataitem_id, time, value)
       values (${device_id}, ${dataitem_id}, '${time}', '${value}'::jsonb);
     `
-    console.log('Rate - write', device_id, dataitem_id, time, value)
+    console.log('db - write', device_id, dataitem_id, time, value)
     const result = await this.query(sql)
     return result
   }
@@ -245,9 +244,9 @@ export class Db {
     return record // null or { time, value }
   }
 
-  // get count records from history_float.
+  // get records from history_float.
   // start and stop should be ISO strings.
-  //. rename to getHistory
+  // includes previous value before start time.
   //. pass table also
   async getHistory(device, path, start, stop) {
     const sql = `
