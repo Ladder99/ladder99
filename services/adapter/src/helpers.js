@@ -1,7 +1,7 @@
 // helper fns for different drivers
 
 import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
-import * as lib from './lib.js'
+import * as lib from './common/lib.js'
 
 let keyvalues = {}
 

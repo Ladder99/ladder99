@@ -3,7 +3,7 @@
 // updates shdr strings, passes them to agent via tcp.
 
 import net from 'net' // node lib for tcp
-import * as lib from './lib.js'
+import * as lib from './common/lib.js'
 import { Cache } from './cache.js'
 import {
   getOutputs,

@@ -4,7 +4,7 @@
 //   node src/helpers-test.js
 
 import * as helpers from './helpers.js'
-import * as lib from './lib.js'
+import * as lib from './common/lib.js'
 
 // ~inputs.yaml
 const inputs = {

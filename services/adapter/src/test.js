@@ -2,7 +2,7 @@
 
 import { Cache } from './cache.js'
 import { AdapterDriver } from './drivers/autoclave/cpc.js'
-import * as lib from './lib.js'
+import * as lib from './common/lib.js'
 
 console.log(Cache)
 console.log(AdapterDriver)
