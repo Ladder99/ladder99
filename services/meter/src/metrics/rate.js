@@ -7,7 +7,7 @@ const metricIntervalDefault = 5 // seconds
 export class Metric {
   //
   async start({ client, db, device, metric }) {
-    console.log(`Rate - initialize rate metric...`)
+    console.log(`Rate - initialize metric...`)
     this.client = client
     this.db = db
     this.device = device
@@ -17,8 +17,8 @@ export class Metric {
     this.device_id = await this.db.getDeviceId(device.name) // repeats until device is there
 
     // need this dataitemId as we'll be writing directly to the history table
+    console.log(`Rate - get rate dataitem_id...`)
     this.rate_id = await this.db.getDataItemId(metric.ratePath) // repeat until dataitem there
-    console.log('Rate - rate_id', this.rate_id)
 
     // get polling interval - either from metric in setup yaml or default value
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
