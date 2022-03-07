@@ -6,7 +6,7 @@
 import fs from 'fs' // node lib for filesystem
 import http from 'http' // node lib
 import parse from 'csv-parse/lib/sync.js' // see https://github.com/adaltas/node-csv-parse
-import * as lib from '../lib.js'
+import * as lib from '../common/lib.js'
 
 export class RecorderPlugin {
   async init({ deviceId, mode, host, port, loop, folder, csvfiles }) {

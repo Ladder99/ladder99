@@ -3,7 +3,7 @@
 import fs from 'fs' // node lib for filesystem
 import mqttlib from 'mqtt' // see https://github.com/mqttjs/MQTT.js
 import parse from 'csv-parse/lib/sync.js' // see https://github.com/adaltas/node-csv-parse
-import * as lib from '../lib.js'
+import * as lib from '../common/lib.js'
 
 export class RecorderPlugin {
   init({ deviceId, mode, host, port, folder, csvfiles, loop, topic }) {

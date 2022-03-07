@@ -15,7 +15,7 @@
 
 import net from 'net' // node lib for tcp - https://nodejs.org/api/net.html
 import * as parsers from './zebra-parsers.js'
-import * as lib from '../../lib.js'
+import * as lib from '../../common/lib.js'
 
 // want this low as possible - see below comment
 const pollInterval = 3000 // ms

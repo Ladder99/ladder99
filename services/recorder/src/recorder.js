@@ -4,7 +4,7 @@
 import fs from 'fs' // node lib for filesys
 // @ts-ignore
 import { Command } from 'commander/esm.mjs' // see https://github.com/tj/commander.js
-import * as lib from './lib.js'
+import * as lib from './common/lib.js'
 
 // parse command line arguments
 const program = new Command()

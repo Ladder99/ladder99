@@ -5,7 +5,7 @@
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 // import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
-import * as lib from '../lib.js'
+import * as lib from '../common/lib.js'
 
 //... move this into class
 //. and make it a const - call it sthing else - data?
