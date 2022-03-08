@@ -21,7 +21,9 @@ else
 fi
 shift
 
+SERVICES=$*
+
 # get command and call it
-CMD="shell/pipeline stop $SETUP"
+CMD="shell/pipeline stop $SETUP $SERVICES"
 echo $CMD
 bash -c "$CMD"
