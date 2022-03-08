@@ -2,6 +2,9 @@
 // read values and write the rate of change between them
 // eg can use to get the production rate from a counter
 
+//. this code is incomplete - need to finish poll and backfill methods
+// they're currently a mix of copy/paste from count.js and new stuff
+
 const metricIntervalDefault = 5 // seconds
 
 export class Metric {
