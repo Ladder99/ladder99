@@ -426,7 +426,10 @@ services:
       # specify where code can find data.
       # can override at run time, eg to run service on windows with node.
       L99_SETUP_FOLDER: /data/setup
-      # override these as needed in client's compose-overrides.yaml
+      # this can be an agent url, a comma-separated (no spaces) list of urls,
+      # or a .txt file with a url per line.
+      #. make this an array? but this is an envar so must be a string
+      # override as needed in client's compose-overrides.yaml.
       AGENT_ENDPOINTS: http://agent:5000
       #. will need to boost this as number of devices increases,
       # until have automatic rate setting

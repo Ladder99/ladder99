@@ -12,7 +12,8 @@ export class Endpoint {
   }
 
   // get array of endpoint objects
-  // str can be a url, a comma-separated list of urls, or a .txt file with a url per line
+  // str can be a url, a comma-separated list of urls, or a .txt file
+  // with a url per line.
   // note this is a STATIC fn
   static getEndpoints(endpointsStr) {
     let arr = []
