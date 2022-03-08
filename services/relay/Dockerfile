@@ -13,16 +13,13 @@ FROM node:15.14-slim
 # devDependencies. 
 WORKDIR /data
 ENV NODE_ENV production
-# COPY ./package*.json ./
-COPY ./relay/package*.json ./
+COPY ./package*.json ./
 RUN npm install-clean --production
 
 # install app
-# WORKDIR /data/app
+WORKDIR /data/app
 ENV PATH /data/node_modules/.bin:$PATH
-# COPY ./src ./src
-COPY ./relay/src /data/app/src
-# COPY ./common /data/common
+COPY ./src ./src
 
 # base command - can pass params with CMD
 ENTRYPOINT ["node", "/data/app/src/relay.js"]
