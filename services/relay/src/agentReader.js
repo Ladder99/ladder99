@@ -38,7 +38,7 @@ export class AgentReader {
 
     // probe - get agent data structures and write to db
     probe: do {
-      const probe = new Probe()
+      const probe = new Probe() // see dataProbe.js
       await probe.read(this.endpoint) // read xml into probe.json, probe.elements, probe.nodes
       await probe.write(this.db) // write/sync dataitems to db, get probe.indexes
       this.instanceId = probe.instanceId
