@@ -475,6 +475,8 @@ services:
     ports:
       - 80:80/tcp
       - 443:443/tcp
+    command:
+      - --certresolv.myresolver.acme.storage=/shared/acme.json
     volumes:
       # will need to do this before starting traefik -
       #   mkdir ../client-oxbox/volumes/traefik
@@ -482,9 +484,20 @@ services:
       #   chmod 600 ../client-oxbox/volumes/traefik/acme.json
       #. is that correct?
       - /var/run/docker.sock:/var/run/docker.sock
-      - ../$SETUP/volumes/traefik/traefik.toml:/traefik.toml
-      - ../$SETUP/volumes/traefik/traefik_dynamic.toml:/traefik_dynamic.toml
-      - ../$SETUP/volumes/traefik/acme.json:/acme.json
+      # - ../$SETUP/volumes/traefik/traefik.toml:/traefik.toml
+      # - ../$SETUP/volumes/traefik/traefik_dynamic.toml:/traefik_dynamic.toml
+      - ../$SETUP/volumes/traefik/traefik.toml:/shared/traefik.toml
+      - ../$SETUP/volumes/traefik/traefik_dynamic.toml:/shared/traefik_dynamic.toml
+      # can't do this as docker-compose will create acme.json as a directory - 
+      # "docker-compose only creates folders, acme.json can be a folder name, 
+      # it's impossible for it to know you want it to be a file. So if that file isn't 
+      # present at that path when you create the container, it will create a folder."
+      # and if you try manually creating a blank file and set chmod 600 on it, 
+      # traefik will complain.
+      # https://williamhayes.medium.com/traefik-letsencrypt-and-acme-json-configuration-problems-5780c914351d
+      # - ../$SETUP/volumes/traefik/acme.json:/acme.json
+      # so need to mount the directory?
+      - ../$SETUP/volumes/traefik/:/shared/
     networks:
       - ladder99
 
