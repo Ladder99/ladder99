@@ -419,9 +419,6 @@ services:
   relay:
     container_name: relay
     build: ./relay
-    # build:
-    #   context: .
-    #   dockerfile: ./relay/Dockerfile
     profiles:
       - relay
     init: true
