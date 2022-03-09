@@ -22,14 +22,14 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1646756874070,
+  "id": 7,
+  "iteration": 1646820351236,
   "links": [
     {
       "asDropdown": false,
       "icon": "external link",
-      "includeVars": true,
-      "keepTime": true,
+      "includeVars": false,
+      "keepTime": false,
       "tags": ["client"],
       "targetBlank": false,
       "title": "New link",
@@ -246,8 +246,8 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "M12346",
-          "value": "M12346"
+          "text": "JobBoss",
+          "value": "JobBoss"
         },
         "datasource": null,
         "definition": "select name from devices",
@@ -276,5 +276,5 @@
   "timezone": "",
   "title": "DataItems",
   "uid": "events",
-  "version": 2
+  "version": 15
 }
