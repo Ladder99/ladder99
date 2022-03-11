@@ -66,6 +66,33 @@ services:
       options:
         max-size: '20m'
 
+  # ---------------------------------------------------------------------------
+  # backup
+  # ---------------------------------------------------------------------------
+  # see https://github.com/offen/docker-volume-backup
+  backup:
+    container_name: backup
+    image: offen/docker-volume-backup:latest
+    profiles:
+      - backup
+    restart: always
+    networks:
+      - ladder99
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ../$SETUP/volumes/backups:/archive:rw
+      #. would prefer using $setup/volumes/backups/temp
+      #- postgres_temp:/backup/postgres.bak:ro
+      - ../$SETUP/volumes/postgres/backups:/backup/postgres:ro
+    environment:
+      - BACKUP_RETENTION_DAYS=3
+      - BACKUP_CRON_EXPRESSION=* 9 * * *
+    logging:
+      options:
+        max-size: '20m'
+
   #. why commented out?
   # # ---------------------------------------------------------------------------
   # # cloudbeaver
