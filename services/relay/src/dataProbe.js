@@ -14,13 +14,13 @@ export class Probe extends Data {
 
     // get flat list of devices, descriptions, dataitems, compositions from xml/json.
     // eg [{node_type, path, id, name, device, category}, ...]
-    this.elements = tree.getElements(this.json)
+    this.elements = tree.getElements(this.json) // see treeProbe.js
 
     // get devices and dataitems with unique paths.
     // nodes are just what we'll add to the db, elements are more complete.
     // nodes should just include devices and dataitems, with eg node_type='Device'
     // eg [{node_type, path, category}, ...]
-    this.nodes = tree.getNodes(this.elements)
+    this.nodes = tree.getNodes(this.elements) // see treeProbe.js
   }
 
   // write probe data in .json to db instance, get indexes
