@@ -407,6 +407,11 @@ services:
     volumes:
       - ../$SETUP/volumes/postgres/data:/var/lib/postgresql/data
       - ../$SETUP/volumes/postgres/backups:/var/lib/postgresql/backups
+      - ../$SETUP/volumes/postgres/tmp:/tmp:rw
+    labels:
+      - 'docker-volume-backup.stop-during-backup=false'
+      - "docker-volume-backup.exec-pre=/bin/sh -c 'mkdir -p /var/lib/postgresql/backups && pg_dumpall -U $PGUSER --clean --file /var/lib/postgresql/backups/postgres.sql'"
+      - "docker-volume-backup.exec-post=/bin/sh -c 'rm -rfv /var/lib/postgresql/backups/postgres.sql'"
     restart: always
     networks:
       - ladder99
