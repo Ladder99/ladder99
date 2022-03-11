@@ -69,6 +69,7 @@ services:
   # ---------------------------------------------------------------------------
   # backup
   # ---------------------------------------------------------------------------
+  # automatic/scheduled backup of database
   # see https://github.com/offen/docker-volume-backup
   backup:
     container_name: backup
@@ -81,12 +82,20 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # Mounting the Docker socket allows the script to stop and restart
+      # the container during backup. You can omit this if you don't want
+      # to stop the container.
+      # - /var/run/docker.sock:/var/run/docker.sock:ro
+      # By default, the `/backup` directory inside the container will be backed up.
+      # In case you need to use a custom location, set `BACKUP_SOURCES`.
+      # - ../$SETUP/volumes/postgres/backup:/backup
+      - backup:/backup
+      # If you mount a local directory or volume to `/archive`, a local
+      # copy of the backup will be stored there.
       - ../$SETUP/volumes/backups:/archive:rw
-      #. would prefer using $setup/volumes/backups/temp
-      #- postgres_temp:/backup/postgres.bak:ro
-      - ../$SETUP/volumes/postgres/backups:/backup/postgres:ro
+      # see also postgres service labels for pre and post commands etc
     environment:
+      # see client .env file for AWS_BUCKET_NAME etc
       - BACKUP_RETENTION_DAYS=3
       - BACKUP_CRON_EXPRESSION=* 9 * * *
     logging:
@@ -406,11 +415,15 @@ services:
       POSTGRES_PASSWORD: $PGPASSWORD
     volumes:
       - ../$SETUP/volumes/postgres/data:/var/lib/postgresql/data
-      - ../$SETUP/volumes/postgres/backups:/var/lib/postgresql/backups
-      - ../$SETUP/volumes/postgres/tmp:/tmp:rw
+      # - ../$SETUP/volumes/postgres/backups:/var/lib/postgresql/backups
+      # - ../$SETUP/volumes/postgres/tmp:/tmp:rw
+      - backup:/tmp/backup
     labels:
+      # see backup service for more settings
       - 'docker-volume-backup.stop-during-backup=false'
-      - "docker-volume-backup.exec-pre=/bin/sh -c 'mkdir -p /var/lib/postgresql/backups && pg_dumpall -U $PGUSER --clean --file /var/lib/postgresql/backups/postgres.sql'"
+      # - "docker-volume-backup.exec-pre=/bin/sh -c 'mkdir -p /var/lib/postgresql/backups && pg_dumpall -U $PGUSER --clean --file /var/lib/postgresql/backups/postgres.sql'"
+      # - "docker-volume-backup.exec-post=/bin/sh -c 'rm -rfv /var/lib/postgresql/backups/postgres.sql'"
+      - "docker-volume-backup.exec-pre=/bin/sh -c 'mkdir -p /tmp/backup && pg_dumpall -U $PGUSER --clean --file /tmp/backup/postgres.sql'"
       - "docker-volume-backup.exec-post=/bin/sh -c 'rm -rfv /var/lib/postgresql/backups/postgres.sql'"
     restart: always
     networks:
@@ -537,3 +550,7 @@ services:
 networks:
   ladder99:
     name: ladder99
+
+# need a docker volume to share data between backup and postgres services
+volumes:
+  backup:
