@@ -80,6 +80,9 @@ services:
     networks:
       - ladder99
     volumes:
+      # By default a container based on this image will run in the UTC timezone. 
+      # In case you want to run your cron rules in your local timezone (respecting DST), 
+      # you can mount your Docker host's /etc/timezone and /etc/localtime:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       # Mounting the Docker socket allows the script to stop and restart
@@ -96,7 +99,8 @@ services:
     environment:
       # see client .env file for AWS_BUCKET_NAME etc
       - BACKUP_RETENTION_DAYS=3
-      - BACKUP_CRON_EXPRESSION=* 9 * * *
+      # - BACKUP_CRON_EXPRESSION=* 9 * * *  # ran at top of every minute of 3am
+      - BACKUP_CRON_EXPRESSION=0 9 * * *
     logging:
       options:
         max-size: '20m'
