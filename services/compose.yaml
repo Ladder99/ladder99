@@ -87,24 +87,15 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       #
-      # Mounting the Docker socket allows the script to stop and restart
-      # the container during backup. You can omit this if you don't want
-      # to stop the container.
+      # without this backup doesn't communicate with other services properly (?)
       - /var/run/docker.sock:/var/run/docker.sock:ro
       #
       # By default, the `/backup` directory inside the container will be backed up.
       # In case you need to use a custom location, set `BACKUP_SOURCES`.
-      #. would prefer using $setup/volumes/backup/tmp ?
-      - backup:/backup
-      #- postgres_temp:/backup/postgres.bak:ro
-      # - ../$SETUP/volumes/postgres/backups:/backup/postgres:ro
-      # - ../$SETUP/volumes/postgres/backups:/backup:ro
-      # - ../$SETUP/volumes/backup/backup:/backup:ro
-      # - ../$SETUP/volumes/backup/tmp:/backup:ro
+      - backup:/backup # a docker volume - see postgres service and end of this file
       #
       # If you mount a local directory or volume to `/archive`, a local
       # copy of the backup will be stored there.
-      # - ../$SETUP/volumes/backups:/archive:rw
       - ../$SETUP/volumes/backup:/archive:rw
       #
       # see postgres service labels for pre and post commands etc
@@ -123,7 +114,7 @@ services:
       BACKUP_FILENAME: postgres-%Y-%m-%dT%H-%M-%S.tar.gz
       #
       # pruning
-      BACKUP_RETENTION_DAYS: 3
+      BACKUP_RETENTION_DAYS: 7
       BACKUP_CRON_EXPRESSION: '0 9 * * *' # 9am gmt ~ 3am cst
       # In case your target bucket or directory contains other files than the ones
       # managed by this container, you can limit the scope of rotation by setting
@@ -143,46 +134,44 @@ services:
       AWS_SECRET_ACCESS_KEY: null
       #
       # slack notifications
-      #. turn off until debug it all
-      # NOTIFICATION_URLS: null
-      # NOTIFICATION_LEVEL: info
+      NOTIFICATION_URLS: null
+      NOTIFICATION_LEVEL: info
 
     logging:
       options:
         max-size: '20m'
 
-  #. why commented out?
-  # # ---------------------------------------------------------------------------
-  # # cloudbeaver
-  # # ---------------------------------------------------------------------------
-  # # database web ui - more general than pgadmin
-  # cloudbeaver:
-  #   container_name: cloudbeaver
-  #   # need to use image OR build in client's compose-overrides.yaml.
-  #   # (can't turn off a value with '' or null (?), so just commented both
-  #   # image and build out).
-  #   # see client-mazak for example of running cloudbeaver on x86.
-  #   # see https://hub.docker.com/r/dbeaver/cloudbeaver/tags
-  #   image: dbeaver/cloudbeaver:21.3.5 # use this for x86 etc
-  #   # build: ./cloudbeaver # use this for ARM processors - need to build with Dockerfile
-  #   profiles:
-  #     - cloudbeaver
-  #   volumes:
-  #     # - ../$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
-  #     - ../$SETUP/volumes/cloudbeaver/workspace:/var/cloudbeaver/workspace
-  #   # need to leave this unspecified here, because clients that use traefik
-  #   # need it that way, and there's no way to remove a port through 
-  #   # overrides yet.
-  #   # see https://github.com/docker/compose/issues/3729
-  #   # IMPORTANT: might need to turn this on for a client.
-  #   # ports:
-  #   #   - 8978:8978
-  #   restart: always
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '20m'
+  # ---------------------------------------------------------------------------
+  # cloudbeaver
+  # ---------------------------------------------------------------------------
+  # database web ui - more general than pgadmin
+  cloudbeaver:
+    container_name: cloudbeaver
+    # need to use image OR build in client's compose-overrides.yaml.
+    # (can't turn off a value with '' or null (?), so just commented both
+    # image and build out).
+    # see client-mazak for example of running cloudbeaver on x86.
+    # see https://hub.docker.com/r/dbeaver/cloudbeaver/tags
+    image: dbeaver/cloudbeaver:21.3.5 # use this for x86 etc
+    # build: ./cloudbeaver # use this for ARM processors - need to build with Dockerfile
+    profiles:
+      - cloudbeaver
+    volumes:
+      # - ../$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
+      - ../$SETUP/volumes/cloudbeaver/workspace:/var/cloudbeaver/workspace
+    # need to leave this unspecified here, because clients that use traefik
+    # need it that way, and there's no way to remove a port through 
+    # overrides yet.
+    # see https://github.com/docker/compose/issues/3729
+    # IMPORTANT: might need to turn this on for a client.
+    # ports:
+    #   - 8978:8978
+    restart: always
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '20m'
 
   # ---------------------------------------------------------------------------
   # dozzle
@@ -464,17 +453,11 @@ services:
       POSTGRES_PASSWORD: $PGPASSWORD
     volumes:
       - ../$SETUP/volumes/postgres/data:/var/lib/postgresql/data
-      # - ../$SETUP/volumes/postgres/backups:/var/lib/postgresql/backups
-      # - ../$SETUP/volumes/postgres/tmp:/tmp:rw
-      # - backup:/tmp/backup
-      - backup:/backup
+      - backup:/backup # a docker volume - see backup service and end of this file
     labels:
       # see backup service for more settings
       # - 'docker-volume-backup.stop-during-backup=false'
-      # - "docker-volume-backup.exec-pre=/bin/sh -c 'mkdir -p /var/lib/postgresql/backups && pg_dumpall -U $PGUSER --clean --file /var/lib/postgresql/backups/postgres.sql'"
-      # - "docker-volume-backup.exec-post=/bin/sh -c 'rm -rfv /var/lib/postgresql/backups/postgres.sql'"
-      # note: because we always write to the same filename, the /backup folder
-      # won't get full
+      # note: dir won't get full because we always write to the same filename
       - "docker-volume-backup.exec-pre=/bin/sh -c 'pg_dumpall -U $PGUSER --clean --file /backup/dumpall.sql'"
     restart: always
     networks:
