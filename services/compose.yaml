@@ -90,11 +90,11 @@ services:
       # Mounting the Docker socket allows the script to stop and restart
       # the container during backup. You can omit this if you don't want
       # to stop the container.
-      # - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
       #
       # By default, the `/backup` directory inside the container will be backed up.
       # In case you need to use a custom location, set `BACKUP_SOURCES`.
-      #. would prefer using $setup/volumes/backups/temp
+      #. would prefer using $setup/volumes/backup/tmp ?
       - backup:/backup
       #- postgres_temp:/backup/postgres.bak:ro
       # - ../$SETUP/volumes/postgres/backups:/backup/postgres:ro
@@ -105,7 +105,6 @@ services:
       # If you mount a local directory or volume to `/archive`, a local
       # copy of the backup will be stored there.
       # - ../$SETUP/volumes/backups:/archive:rw
-      # - ../$SETUP/volumes/backup/archive:/archive:rw
       - ../$SETUP/volumes/backup:/archive:rw
       #
       # see postgres service labels for pre and post commands etc
@@ -133,19 +132,20 @@ services:
       # you can set BACKUP_PRUNING_PREFIX to `db-backup-` and make sure
       # unrelated files are not affected by the rotation mechanism.
       # (ie it'll prune only file starting with this prefix)
-      # (don't need this as )
-      # BACKUP_PRUNING_PREFIX: postgres-
+      # use this in case dump other stuff in these backup folders, eg a readme
+      BACKUP_PRUNING_PREFIX: postgres-
       #
       # cloud backup
       AWS_ENDPOINT: nyc3.digitaloceanspaces.com
       AWS_S3_BUCKET_NAME: ladder99
-      # AWS_S3_PATH: backup # replace with client name etc
+      # AWS_S3_PATH: backup/client # replace with client name etc
       AWS_ACCESS_KEY_ID: null
       AWS_SECRET_ACCESS_KEY: null
       #
       # slack notifications
-      NOTIFICATION_URLS: null
-      NOTIFICATION_LEVEL: info
+      #. turn off until debug it all
+      # NOTIFICATION_URLS: null
+      # NOTIFICATION_LEVEL: info
 
     logging:
       options:
