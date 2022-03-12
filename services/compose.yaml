@@ -89,17 +89,35 @@ services:
       # the container during backup. You can omit this if you don't want
       # to stop the container.
       # - /var/run/docker.sock:/var/run/docker.sock:ro
+      #
       # By default, the `/backup` directory inside the container will be backed up.
       # In case you need to use a custom location, set `BACKUP_SOURCES`.
-      - backup:/backup
+      #. would prefer using $setup/volumes/backups/temp
+      #- backup:/backup
+      #- postgres_temp:/backup/postgres.bak:ro
+      # - ../$SETUP/volumes/postgres/backups:/backup/postgres:ro
+      # - ../$SETUP/volumes/postgres/backups:/backup:ro
+      - ../$SETUP/volumes/backup/backup:/backup:ro
       # If you mount a local directory or volume to `/archive`, a local
       # copy of the backup will be stored there.
-      - ../$SETUP/volumes/backups:/archive:rw
+      # - ../$SETUP/volumes/backups:/archive:rw
+      - ../$SETUP/volumes/backup/archive:/archive:rw
       # see postgres service labels for pre and post commands etc
     environment:
-      # see client .env file for AWS_BUCKET_NAME etc
-      - BACKUP_RETENTION_DAYS=3
-      - BACKUP_CRON_EXPRESSION=0 9 * * *
+      # note: nulls are set in .env - keep out of repo
+      BACKUP_FILENAME: dumpall-%Y-%m-%dT%H-%M-%S.tar.gz
+      BACKUP_PRUNING_PREFIX: dumpall-
+      BACKUP_RETENTION_DAYS: 3
+      BACKUP_CRON_EXPRESSION: '0 9 * * *' # 9am gmt ~ 3am cst
+      # cloud backup
+      AWS_ENDPOINT: nyc3.digitaloceanspaces.com
+      AWS_S3_BUCKET_NAME: ladder99
+      # AWS_S3_PATH: backup
+      AWS_ACCESS_KEY_ID: null
+      AWS_SECRET_ACCESS_KEY: null
+      # slack notifications
+      NOTIFICATION_URLS: null
+      NOTIFICATION_LEVEL: info
     logging:
       options:
         max-size: '20m'
@@ -419,14 +437,14 @@ services:
       - ../$SETUP/volumes/postgres/data:/var/lib/postgresql/data
       # - ../$SETUP/volumes/postgres/backups:/var/lib/postgresql/backups
       # - ../$SETUP/volumes/postgres/tmp:/tmp:rw
-      - backup:/tmp/backup
+      # - backup:/tmp/backup
+      - backup:/backup
     labels:
       # see backup service for more settings
       # - 'docker-volume-backup.stop-during-backup=false'
       # - "docker-volume-backup.exec-pre=/bin/sh -c 'mkdir -p /var/lib/postgresql/backups && pg_dumpall -U $PGUSER --clean --file /var/lib/postgresql/backups/postgres.sql'"
       # - "docker-volume-backup.exec-post=/bin/sh -c 'rm -rfv /var/lib/postgresql/backups/postgres.sql'"
       - "docker-volume-backup.exec-pre=/bin/sh -c 'pg_dumpall -U $PGUSER --clean --file /backup/dumpall.sql'"
-      # - "docker-volume-backup.exec-post=/bin/sh -c 'rm -rfv /var/lib/postgresql/backups/postgres.sql'"
     restart: always
     networks:
       - ladder99
@@ -553,6 +571,6 @@ networks:
   ladder99:
     name: ladder99
 
-# need a docker volume to share data between backup and postgres services
+# docker volume to share data between backup and postgres services
 volumes:
   backup:
