@@ -99,7 +99,6 @@ services:
     environment:
       # see client .env file for AWS_BUCKET_NAME etc
       - BACKUP_RETENTION_DAYS=3
-      # - BACKUP_CRON_EXPRESSION=* 9 * * *  # ran at top of every minute of 3am
       - BACKUP_CRON_EXPRESSION=0 9 * * *
     logging:
       options:
