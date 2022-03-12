@@ -111,17 +111,18 @@ services:
       # BACKUP_PRUNING_PREFIX that will get expanded at runtime,
       # Please note that you will need to escape the `$` when providing the value
       # in a docker-compose.yml file, i.e. using $$VAR instead of $VAR.
-      BACKUP_FILENAME_EXPAND: true
-      CLIENT: ladder99 # replace with oxbox-004 etc
-      # BACKUP_FILENAME: dumpall-%Y-%m-%dT%H-%M-%S.tar.gz
-      BACKUP_FILENAME: $$CLIENT-%Y-%m-%dT%H-%M-%S.tar.gz
-      BACKUP_PRUNING_PREFIX: $$CLIENT-
+      # BACKUP_FILENAME_EXPAND: true
+      # CLIENT: ladder99 # replace with oxbox-004 etc
+      # BACKUP_FILENAME: $$CLIENT-%Y-%m-%dT%H-%M-%S.tar.gz
+      # BACKUP_PRUNING_PREFIX: $$CLIENT-
+      BACKUP_FILENAME: postgres-%Y-%m-%dT%H-%M-%S.tar.gz
+      BACKUP_PRUNING_PREFIX: postgres-
       BACKUP_RETENTION_DAYS: 3
       BACKUP_CRON_EXPRESSION: '0 9 * * *' # 9am gmt ~ 3am cst
       # cloud backup
       AWS_ENDPOINT: nyc3.digitaloceanspaces.com
       AWS_S3_BUCKET_NAME: ladder99
-      # AWS_S3_PATH: backup
+      # AWS_S3_PATH: backup # replace with client-oxbox etc
       AWS_ACCESS_KEY_ID: null
       AWS_SECRET_ACCESS_KEY: null
       # slack notifications
