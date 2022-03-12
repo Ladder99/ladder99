@@ -105,8 +105,17 @@ services:
       # see postgres service labels for pre and post commands etc
     environment:
       # note: nulls are set in .env - keep out of repo
-      BACKUP_FILENAME: dumpall-%Y-%m-%dT%H-%M-%S.tar.gz
-      BACKUP_PRUNING_PREFIX: dumpall-
+
+      # Setting BACKUP_FILENAME_EXPAND to true allows for environment variable
+      # placeholders in BACKUP_FILENAME, BACKUP_LATEST_SYMLINK and in
+      # BACKUP_PRUNING_PREFIX that will get expanded at runtime,
+      # Please note that you will need to escape the `$` when providing the value
+      # in a docker-compose.yml file, i.e. using $$VAR instead of $VAR.
+      BACKUP_FILENAME_EXPAND: true
+      CLIENT: ladder99 # replace with oxbox-004 etc
+      # BACKUP_FILENAME: dumpall-%Y-%m-%dT%H-%M-%S.tar.gz
+      BACKUP_FILENAME: $$CLIENT-%Y-%m-%dT%H-%M-%S.tar.gz
+      BACKUP_PRUNING_PREFIX: $$CLIENT-
       BACKUP_RETENTION_DAYS: 3
       BACKUP_CRON_EXPRESSION: '0 9 * * *' # 9am gmt ~ 3am cst
       # cloud backup
