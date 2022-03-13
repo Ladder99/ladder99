@@ -457,7 +457,7 @@ services:
     labels:
       # see backup service for more settings
       # - 'docker-volume-backup.stop-during-backup=false'
-      # note: dir won't get full because we always write to the same filename
+      # note: we always write to the same filename
       - "docker-volume-backup.exec-pre=/bin/sh -c 'pg_dumpall -U $PGUSER --clean --file /backup/dumpall.sql'"
     restart: always
     networks:
