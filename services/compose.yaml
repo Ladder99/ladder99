@@ -432,9 +432,11 @@ services:
     command: postgres -c 'max_connections=50' # need for grafana pages with lots of queries
     profiles:
       - postgres
+    #
     # IMPORTANT: client might need to add this in compose-overrides.yaml
     # ports:
     #   - $PGPORT:5432/tcp
+    #
     # re PGPASSWORD,
     #   see https://stackoverflow.com/a/6405162/243392
     #   use a .pgpass file? https://www.postgresql.org/docs/9.1/libpq-pgpass.html
