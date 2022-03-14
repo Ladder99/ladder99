@@ -115,7 +115,7 @@ services:
       #
       # pruning
       BACKUP_RETENTION_DAYS: 7
-      BACKUP_CRON_EXPRESSION: '0 9 * * *' # 9am gmt ~ 3am cst
+      BACKUP_CRON_EXPRESSION: '0 7 * * *' # 7am gmt ~ 1am cst
       # In case your target bucket or directory contains other files than the ones
       # managed by this container, you can limit the scope of rotation by setting
       # a prefix value. This would usually be the non-parametrized part of your
