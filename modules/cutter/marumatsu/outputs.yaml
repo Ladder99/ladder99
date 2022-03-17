@@ -30,8 +30,8 @@ outputs:
   - key: ctl-avail
     value: types.AVAILABILITY[<connection>]
 
-  # partcount_all
-  - key: pcall
+  # part_count-all
+  - key: pcjob
     value: <part_count>
 
   # shift start and stop times
