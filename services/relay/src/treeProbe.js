@@ -1,14 +1,10 @@
 // companion functions for dataProbe.js
-//. move there
 
 import * as lib from './common/lib.js'
 
 // these are the only elements we want to pick out of the probe xml.
 //. add Description elements - will add to Device obj
-//. add Composition elements - will need for uniquification
-// const appendTags = lib.getSet('Device,DataItem')
 const appendTags = lib.getSet('Device,DataItem,Composition')
-// const appendTags = lib.getSet('Device,DataItem,Description,Composition')
 
 // don't recurse down these elements - not interested in them or their children
 const skipTags = lib.getSet('Agent')
@@ -20,12 +16,19 @@ const ignoreTags = lib.getSet(
 )
 
 //. assume for now there there is only one of these in path, so can just lower case them
-//. in future, do two passes to determine if need to uniquify them with nums or names
-//. follow opcua-mtconnect convention of names in brackets eg 'tank[high]'
-//. or use aliases table to refer by number or name or id to a dataitem
+//. in future, do two passes to determine if need to uniquify them,
+// eg add name in brackets eg 'tank[high]'
+//. or use an aliases table to refer by number or name or id to a dataitem?
+// 2022-03-17 removed PartOccurrence,ProcessOccurrence,Systems from set
 const plainTags = lib.getSet(
-  'Axes,Controller,EndEffector,Feeder,PartOccurrence,Path,Personnel,ProcessOccurrence,Resources,Systems'
+  // 'Axes,Controller,EndEffector,Feeder,PartOccurrence,Path,Personnel,ProcessOccurrence,Resources,Systems'
+  'Axes,Controller,EndEffector,Feeder,Path,Personnel,Resources'
 )
+
+// started to do this, but no need to call these out explicitly -
+// the default behavior is to do this for any unknown tag - so can just
+// remove from plainTags above.
+// const useNameOrIdTags = lib.getSet('PartOccurrence,ProcessOccurrence,Systems')
 
 // ignore these DataItem attributes - not necessary to identify an element
 // in a path step, are accounted for explicitly, or are redundant.
@@ -184,9 +187,7 @@ function getPathStep(obj) {
   if (!obj) return ''
   if (ignoreTags.has(obj.tag)) return ''
   // handle plain tags, eg Path - for now just convert to 'path'.
-  //. will want to do two passes though - first to see how many Paths there are,
-  // then to assign numbers to the steps, eg path, path2, path3...,
-  // or names in brackets [path]
+  //. will want to do two passes - if >1 of same path, add name in brackets, eg 'path[x]'?
   if (plainTags.has(obj.tag)) return lib.getCamelCase(obj.tag) // eg 'processOccurrence'
   let step = ''
   switch (obj.tag) {
@@ -387,7 +388,7 @@ function makeUniquePaths(elements) {
           }
           break
         } else if (attribute === 'name') {
-          // use name as last resort - makes dashboard harder
+          // use name as last resort - makes dashboards harder to share
           for (const el of collision) {
             if (el[attribute]) {
               el.path += '[' + el[attribute].toLowerCase() + ']'
