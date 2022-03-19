@@ -33,24 +33,24 @@ class Relay {
     const db = new Db()
     await db.start()
 
-    // do migrations
+    // do migrations (setup db tables and views etc)
     await migrate(db)
 
-    // read client's setup.yaml
+    // read client's setup.yaml (includes devices, where to find their agents etc)
     const setup = lib.readSetup(setupFolder)
 
-    // get endpoints
+    // get endpoints (mtconnect agent urls)
     const endpoints = Endpoint.getEndpoints(params.agentEndpoints)
     console.log(`Agent endpoints:`, endpoints)
 
-    // create an agent reader instance for each endpoint
+    // create an agent reader instance for each agent/endpoint
     const agentReaders = endpoints.map(
       endpoint => new AgentReader({ db, endpoint, params, setup })
     )
 
-    // run agent readers
-    // node is single threaded with an event loop
-    // run in parallel so agent readers run independently of each other
+    // run agent readers (read mtconnect agent xml, write SQL to database)
+    // node is single threaded with an event loop -
+    // run in parallel so agent readers run independently of each other.
     for (const agentReader of agentReaders) {
       agentReader.start()
     }

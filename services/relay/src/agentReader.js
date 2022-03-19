@@ -24,6 +24,7 @@ export class AgentReader {
 
     this.from = null
     //. these will be dynamic - optimize on the fly
+    //. or use streaming instead of polling
     this.interval = params.fetchInterval
     this.count = params.fetchCount
   }
@@ -39,6 +40,7 @@ export class AgentReader {
     // probe - get agent data structures and write to db
     probe: do {
       const probe = new Probe() // see dataProbe.js
+      //. pass this.setup also so probe can use translations for dataitem paths
       await probe.read(this.endpoint) // read xml into probe.json, probe.elements, probe.nodes
       await probe.write(this.db) // write/sync dataitems to db, get probe.indexes
       this.instanceId = probe.instanceId
