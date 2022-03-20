@@ -97,9 +97,9 @@ for (let folder of folders) {
     const actual = current[id]
     const expected = snapshot[id]
     const okay = actual === expected
-    const status = okay ? chalk.green('[OK]') : chalk.red('[FAIL]')
-    const should = okay ? '' : `(expected ${chalk.blue(expected)})`
-    console.log(`${status} ${id}: ${chalk.blue(actual)} ${should}`)
+    const status = okay ? chalk.green('[OK]  ') : chalk.red('[FAIL]')
+    const should = okay ? '' : `(expected ${chalk.hex('#99d')(expected)})`
+    console.log(`${status} ${id}: ${chalk.hex('#99d')(actual)} ${should}`)
   }
   // look for missing items
   for (let id of Object.keys(snapshot)) {
