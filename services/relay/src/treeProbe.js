@@ -41,9 +41,9 @@ const ignoreAttributes = lib.getSet(
 )
 
 // attributes to try for uniquification, in order of preference
-// see makeUniquePaths
+// see fn makeUniquePaths
 const attributesToTry =
-  'compositionId,coordinateSystem,statistic,name,nativeName'.split(',')
+  'compositionId,coordinateSystem,statistic,name,nativeName,id'.split(',')
 
 //
 
@@ -421,6 +421,14 @@ function makeUniquePaths(elements) {
           break
         } else if (attribute === 'name' || attribute === 'nativeName') {
           // use name as last resort - makes dashboards harder to share
+          for (const el of collision) {
+            if (el[attribute]) {
+              el.path += '[' + el[attribute].toLowerCase() + ']'
+            }
+          }
+          break
+        } else if (attribute === 'id') {
+          // use id as last resort - makes dashboards harder to share
           for (const el of collision) {
             if (el[attribute]) {
               el.path += '[' + el[attribute].toLowerCase() + ']'
