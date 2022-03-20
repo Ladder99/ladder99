@@ -57,9 +57,12 @@ treeProbe.assignNodeIds(elements, indexes)
 //   dataitem_id: 2
 // },
 
-const paths = elements.map(element => element.path)
-console.log(paths.join('\n'))
+// const paths = elements.map(element => element.path)
+// console.log(paths.join('\n'))
 
+for (let element of elements) {
+  console.log(element.id + ': ' + element.path)
+}
 // console.log('indexes', indexes)
 
 // load an xml file, convert to json, parse and return

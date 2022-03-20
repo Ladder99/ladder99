@@ -1,13 +1,13 @@
-Device[camera1]
-availability
-process_timer-process
-process_timer-process-statistic=average
-part_count-remaining[calc]
-part_count-remaining[plc]
-part_count-remaining[printer]
-Device[camera2]
-availability
-temperature-motor
-temperature-ballscrew
-d2-xmotor
-d2-xballscrew
+d1: Device[camera1]
+d1-avail: availability
+d1-cycle: process_timer-process
+d1-cycleavg: process_timer-process-statistic=average
+d1-pcrem_calc: part_count-remaining[calc]
+d1-pcrem_plc: part_count-remaining[plc]
+d1-pcrem_pr: part_count-remaining[printer]
+d2: Device[camera2]
+d2-avail: availability
+d2-servotemp1: temperature-motor
+d2-screwtemp1: temperature-ballscrew
+d2-Xmotor: d2-xmotor
+d2-Xballscrew: d2-xballscrew
