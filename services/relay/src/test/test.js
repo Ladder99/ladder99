@@ -11,11 +11,11 @@ import * as treeProbe from '../treeProbe.js'
 let args = process.argv.slice(2)
 
 // option - update snapshot
+let update = false
 if (args[0] === '-u') {
-  console.log('hi')
+  update = true
   args = args.slice(1)
 }
-// console.log(args)
 const folders = args
 
 for (let folder of folders) {
@@ -24,10 +24,6 @@ for (let folder of folders) {
 
   // get probe xml as json
   const json = getXmlToJson(probeFile)
-
-  // get snapshot json
-  const snapshot = getJson(snapshotFile)
-  console.log(snapshot)
 
   // get elements (devices, all dataitems)
   // these include devices as props like device:'Device[camera2]'
@@ -62,7 +58,16 @@ for (let folder of folders) {
   for (let element of elements) {
     current[element.id] = element.path
   }
-  // console.log(JSON.stringify(current, null, 2))
+  if (update) {
+    console.log('writing', snapshotFile)
+    const str = JSON.stringify(current, null, 2)
+    fs.writeFileSync(snapshotFile, str)
+    continue
+  }
+
+  // get snapshot json with id:path
+  const snapshot = getJson(snapshotFile)
+  console.log(snapshot)
 
   // compare current and snapshot dictionaries
   for (let id of Object.keys(current)) {
