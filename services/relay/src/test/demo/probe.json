@@ -2,7 +2,7 @@
   "d1": "Device[camera1]",
   "d1-avail": "availability",
   "d1-cycle": "process_timer-process",
-  "d1-cycleavg": "process_timer-process-statistic=average",
+  "d1-cycleavg": "process_timer-process-average",
   "d1-pcrem_calc": "part_count-remaining[calc]",
   "d1-pcrem_plc": "part_count-remaining[plc]",
   "d1-pcrem_pr": "part_count-remaining[printer]",

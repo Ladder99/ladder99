@@ -89,7 +89,7 @@ for (let folder of folders) {
 
   // get snapshot json with id:path
   const snapshot = getJson(snapshotFile)
-  console.log(snapshot)
+  // console.log(snapshot)
 
   // compare current and snapshot dictionaries
   for (let id of Object.keys(current)) {
