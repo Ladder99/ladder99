@@ -1,5 +1,6 @@
-import fs from 'fs' // node lib - filesystem
-import convert from 'xml-js' // https://github.com/nashwaan/xml-js
+import fs from 'fs' // node filesystem library
+import convert from 'xml-js' // xml parser https://github.com/nashwaan/xml-js
+import chalk from 'chalk' // console colors https://github.com/chalk/chalk
 import * as treeProbe from '../treeProbe.js'
 
 const help = `
@@ -96,9 +97,9 @@ for (let folder of folders) {
     const actual = current[id]
     const expected = snapshot[id]
     const okay = actual === expected
-    const status = okay ? '[OK]' : '[FAIL]'
-    const should = okay ? '' : `(expected ${expected})`
-    console.log(`${status} ${id}: ${actual} ${should}`)
+    const status = okay ? chalk.green('[OK]') : chalk.red('[FAIL]')
+    const should = okay ? '' : `(expected ${chalk.blue(expected)})`
+    console.log(`${status} ${id}: ${chalk.blue(actual)} ${should}`)
   }
   // look for missing items
   for (let id of Object.keys(snapshot)) {
