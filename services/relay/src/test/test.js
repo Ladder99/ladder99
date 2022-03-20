@@ -1,8 +1,6 @@
 // run:
 // cd services/relay
 // npm test
-// or
-// node src/trees-test.js
 
 import fs from 'fs' // node lib - filesystem
 import convert from 'xml-js' // https://github.com/nashwaan/xml-js
