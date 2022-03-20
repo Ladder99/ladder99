@@ -95,14 +95,19 @@ for (let folder of folders) {
   // console.log(snapshot)
 
   // compare current and snapshot dictionaries
+  const paths = {}
   for (let id of Object.keys(current)) {
     const actual = current[id]
     const expected = snapshot[id]
-    const okay = actual === expected
+    const duplicate = paths[expected]
+    paths[expected] = true
+    const okay = actual === expected && !duplicate
     const status = okay ? chalk.green('[OK]  ') : chalk.red('[FAIL]')
     const added = expected === undefined
     const should = okay
       ? ''
+      : duplicate
+      ? '(duplicate path)'
       : added
       ? '(not in snapshot)'
       : `(expected ${chalk.hex('#99d')(expected)})`
