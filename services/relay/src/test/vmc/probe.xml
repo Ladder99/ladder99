@@ -90,6 +90,7 @@
             </Linear>
           </Components>
         </Axes>
+
         <Controller id="cn1" name="controller">
           <DataItems>
             <DataItem category="EVENT" id="msg" type="MESSAGE"/>
@@ -118,6 +119,7 @@
             </Path>
           </Components>
         </Controller>
+        
         <Systems id="systems" name="systems">
           <Components>
             <Electric id="el" name="electric">
