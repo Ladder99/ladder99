@@ -20,9 +20,11 @@ const ignoreTags = lib.getSet(
 // eg add name in brackets eg 'tank[high]'
 //. or use an aliases table to refer by number or name or id to a dataitem?
 // 2022-03-17 removed PartOccurrence,ProcessOccurrence,Systems from set
+// 2022-03-20 removed Controller,Path from set
 const plainTags = lib.getSet(
   // 'Axes,Controller,EndEffector,Feeder,PartOccurrence,Path,Personnel,ProcessOccurrence,Resources,Systems'
-  'Axes,Controller,EndEffector,Feeder,Path,Personnel,Resources'
+  // 'Axes,Controller,EndEffector,Feeder,Path,Personnel,Resources'
+  'Axes,EndEffector,Feeder,Personnel,Resources'
 )
 
 // started to do this, but no need to call these out explicitly -
@@ -40,7 +42,7 @@ const ignoreAttributes = lib.getSet(
 
 // attributes to try for uniquification, in order of preference
 // see makeUniquePaths
-const attributesToTry = 'compositionId,statistic,name'.split(',')
+const attributesToTry = 'compositionId,statistic,name,nativeName'.split(',')
 
 //
 
@@ -246,7 +248,15 @@ function getPathStep(obj) {
     default:
       // params = [obj.name || obj.id || '']
       //..
-      step = (obj.name || obj.id || '').toLowerCase()
+      // step = (obj.name || obj.id || '').toLowerCase()
+      // step = (obj.name || obj.nativeName || obj.id || '').toLowerCase()
+      step = (
+        obj.name ||
+        obj.nativeName ||
+        obj.tag ||
+        obj.id ||
+        ''
+      ).toLowerCase()
       break
   }
   return step
@@ -394,14 +404,14 @@ function makeUniquePaths(elements) {
           for (const el of collision) {
             // check if has attribute (one of the array might not)
             if (el[attribute]) {
+              // 2022-03-20 changed to just -statistic
               // el.path += '-statistic=' + el[attribute].toLowerCase()
               el.path += '-' + el[attribute].toLowerCase()
-              // el.path += '[' + el[attribute].toLowerCase() + ']'
             }
           }
           break
-        } else if (attribute === 'name') {
-          // use name or id as last resort - makes dashboards harder to share
+        } else if (attribute === 'name' || attribute === 'nativeName') {
+          // use name as last resort - makes dashboards harder to share
           for (const el of collision) {
             if (el[attribute]) {
               el.path += '[' + el[attribute].toLowerCase() + ']'
