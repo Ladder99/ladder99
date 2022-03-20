@@ -1,0 +1,13 @@
+Device[camera1]
+availability
+process_timer-process
+process_timer-process-statistic=average
+part_count-remaining[calc]
+part_count-remaining[plc]
+part_count-remaining[printer]
+Device[camera2]
+availability
+temperature-motor
+temperature-ballscrew
+d2-xmotor
+d2-xballscrew

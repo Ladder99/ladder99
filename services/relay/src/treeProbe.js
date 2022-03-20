@@ -341,7 +341,7 @@ function makeUniquePaths(elements) {
       d[fullpath] = element
     }
   }
-  console.log('collisions', collisions)
+  // console.log('collisions', collisions)
 
   // attributes to try for uniquification, in order of preference
   const attributesToTry = 'compositionId,statistic,name'.split(',')
