@@ -1,16 +1,24 @@
-// run:
-// cd services/relay
-// node src/test/test.js
-
 import fs from 'fs' // node lib - filesystem
 import convert from 'xml-js' // https://github.com/nashwaan/xml-js
 import * as treeProbe from '../treeProbe.js'
-// import * as treeObservations from '../treeObservations.js'
-// import * as lib from '../common/lib.js'
 
+const help = `
+Test dataitem paths as generated from probe.xml for different examples.
+
+Compares generated paths with snapshots, which can be updated with -u.
+Use -p to print the generated paths.
+
+Usage:
+    cd services/relay
+    node src/test/test.js [-u] [-p] folder1 [folder2...]
+
+Options:
+    -u update snapsots for given folders
+    -p print id:path for given folders
+`
+
+// get options and folders from cmdline
 let args = process.argv.slice(2)
-
-// option - update snapshot
 let update = false
 let print = false
 if (args[0] === '-u') {
@@ -22,6 +30,11 @@ if (args[0] === '-p') {
   args = args.slice(1)
 }
 const folders = args
+
+if (folders.length === 0) {
+  console.log(help)
+  process.exit(0)
+}
 
 for (let folder of folders) {
   const probeFile = `src/test/${folder}/probe.xml`
