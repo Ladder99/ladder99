@@ -42,7 +42,8 @@ const ignoreAttributes = lib.getSet(
 
 // attributes to try for uniquification, in order of preference
 // see makeUniquePaths
-const attributesToTry = 'compositionId,statistic,name,nativeName'.split(',')
+const attributesToTry =
+  'compositionId,coordinateSystem,statistic,name,nativeName'.split(',')
 
 //
 
@@ -399,6 +400,14 @@ function makeUniquePaths(elements) {
           //
           //. if paths still not unique, add name in brackets also eg '[high]'.
           //. use name || id, in case no name?
+          break
+        } else if (attribute === 'coordinateSystem') {
+          // note: The available values for coordinateSystem are WORK and MACHINE
+          for (const el of collision) {
+            if (el[attribute]) {
+              el.path += '-' + el[attribute].toLowerCase()
+            }
+          }
           break
         } else if (attribute === 'statistic') {
           for (const el of collision) {

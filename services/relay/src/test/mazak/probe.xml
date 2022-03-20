@@ -185,6 +185,7 @@
                 </Specifications>
               </Configuration>
               <DataItems>
+                <!-- note: The available values for coordinateSystem are WORK and MACHINE -->
                 <DataItem category="SAMPLE" coordinateSystem="MACHINE" id="Zabs" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER" />
                 <DataItem category="SAMPLE" coordinateSystem="WORK" id="Zpos" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER" />
                 <DataItem category="CONDITION" id="Ztravel" type="POSITION" />
