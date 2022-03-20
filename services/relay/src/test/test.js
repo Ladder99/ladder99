@@ -1,6 +1,6 @@
 // run:
 // cd services/relay
-// node src/test/print.js
+// node src/test/test.js
 
 import fs from 'fs' // node lib - filesystem
 import convert from 'xml-js' // https://github.com/nashwaan/xml-js
@@ -14,65 +14,55 @@ if (process.argv[2] === '-u') {
 }
 
 //. choose a folder
-const folder = 'src/test/demo'
+// const folder = 'src/test/demo'
 // const folder = 'src/test/vmc'
 // const folder = 'src/test/print-apply'
 // const folder = 'src/test/mazak'
 
-// get probe xml
-const json = getJson(`${folder}/probe.xml`)
-// console.log(json)
-// console.log(json.MTConnectDevices.Devices.Device)
-// console.log(json.MTConnectDevices.Devices.Device.DataItems.DataItem[0])
+const folders = 'demo,mazak,print-apply,vmc'.split(',')
 
-// get elements (devices, all dataitems)
-// these include devices as props like device:'Device[camera2]'
-const elements = treeProbe.getElements(json) //.slice(0, 3)
-// console.log('elements', elements)
+for (let folder of folders) {
+  const probeFile = `src/test/${folder}/probe.xml`
+  const snapshotFile = `src/test/${folder}/probe.json`
 
-// get nodes (devices and unique propdefs)
-const nodes = treeProbe.getNodes(elements) //.slice(0, 3)
-// console.log('nodes', nodes)
+  // get probe xml
+  // const json = getJson(`${folder}/probe.xml`)
+  const json = getJson(probeFile)
 
-// simulate db add/get - assign node_id to each node
-nodes.forEach((node, i) => (node.node_id = i + 1))
+  // get elements (devices, all dataitems)
+  // these include devices as props like device:'Device[camera2]'
+  const elements = treeProbe.getElements(json)
+  // console.log('elements', elements)
 
-const indexes = treeProbe.getIndexes(nodes, elements)
+  // get nodes (devices and unique propdefs)
+  const nodes = treeProbe.getNodes(elements)
+  // console.log('nodes', nodes)
 
-treeProbe.assignNodeIds(elements, indexes)
-// console.log('elements', elements)
-// {
-//   node_type: 'DataItem',
-//   path: 'availability',
-//   id: 'd1-avail',
-//   category: 'EVENT',
-//   type: 'AVAILABILITY',
-//   device: 'Device[camera1]',
-//   device_id: 1,
-//   dataitem_id: 2
-// },
-// {
-//   node_type: 'DataItem',
-//   path: 'availability',
-//   id: 'd2-avail',
-//   category: 'EVENT',
-//   type: 'AVAILABILITY',
-//   device: 'Device[camera2]',
-//   device_id: 8,
-//   dataitem_id: 2
-// },
+  // simulate db add/get - assign node_id to each node
+  nodes.forEach((node, i) => (node.node_id = i + 1))
 
-// const paths = elements.map(element => element.path)
-// console.log(paths.join('\n'))
+  const indexes = treeProbe.getIndexes(nodes, elements)
 
-const d = {}
-for (let element of elements) {
-  // console.log(element.id + ': ' + element.path)
-  d[element.id] = element.path
+  treeProbe.assignNodeIds(elements, indexes)
+  // console.log('elements', elements)
+  // eg
+  // {
+  //   node_type: 'DataItem',
+  //   path: 'availability',
+  //   id: 'd2-avail',
+  //   category: 'EVENT',
+  //   type: 'AVAILABILITY',
+  //   device: 'Device[camera2]',
+  //   device_id: 8,
+  //   dataitem_id: 2
+  // },
+
+  const d = {}
+  for (let element of elements) {
+    d[element.id] = element.path
+  }
+  console.log(JSON.stringify(d, null, 2))
 }
-// console.log('indexes', indexes)
-// console.log(d)
-console.log(JSON.stringify(d, null, 2))
 
 // load an xml file, convert to json, parse and return
 function getJson(path) {
