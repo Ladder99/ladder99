@@ -8,26 +8,26 @@ import * as treeProbe from '../treeProbe.js'
 // import * as treeObservations from '../treeObservations.js'
 // import * as lib from '../common/lib.js'
 
+let args = process.argv.slice(2)
+
 // option - update snapshot
-if (process.argv[2] === '-u') {
+if (args[0] === '-u') {
   console.log('hi')
+  args = args.slice(1)
 }
-
-//. choose a folder
-// const folder = 'src/test/demo'
-// const folder = 'src/test/vmc'
-// const folder = 'src/test/print-apply'
-// const folder = 'src/test/mazak'
-
-const folders = 'demo,mazak,print-apply,vmc'.split(',')
+// console.log(args)
+const folders = args
 
 for (let folder of folders) {
   const probeFile = `src/test/${folder}/probe.xml`
   const snapshotFile = `src/test/${folder}/probe.json`
 
-  // get probe xml
-  // const json = getJson(`${folder}/probe.xml`)
-  const json = getJson(probeFile)
+  // get probe xml as json
+  const json = getXmlToJson(probeFile)
+
+  // get snapshot json
+  const snapshot = getJson(snapshotFile)
+  console.log(snapshot)
 
   // get elements (devices, all dataitems)
   // these include devices as props like device:'Device[camera2]'
@@ -57,16 +57,32 @@ for (let folder of folders) {
   //   dataitem_id: 2
   // },
 
-  const d = {}
+  // get dictionary with id: path
+  const current = {}
   for (let element of elements) {
-    d[element.id] = element.path
+    current[element.id] = element.path
   }
-  console.log(JSON.stringify(d, null, 2))
+  console.log(JSON.stringify(current, null, 2))
+
+  // compare current and snapshot dictionaries
+  for (let id of Object.keys(current)) {
+    const actual = current[id]
+    const expected = snapshot[id]
+    const okay = actual === expected
+    const status = okay ? '[OK]' : '[FAIL]'
+    const should = okay ? '' : `(expected ${expected})`
+    console.log(`${status} ${id}: ${actual} ${should}`)
+  }
 }
 
 // load an xml file, convert to json, parse and return
-function getJson(path) {
+function getXmlToJson(path) {
   const xml = fs.readFileSync(path).toString()
   const json = JSON.parse(convert.xml2json(xml, { compact: true }))
+  return json
+}
+
+function getJson(path) {
+  const json = JSON.parse(fs.readFileSync(path).toString())
   return json
 }
