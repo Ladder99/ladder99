@@ -7,7 +7,7 @@
   "target": "es2017",
   "scripts": {
     "start": "node src/relay.js",
-    "test": "nodemon src/trees-test.js"
+    "test": "nodemon src/test/test.js"
   },
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "Apache2.0",
