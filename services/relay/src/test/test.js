@@ -62,7 +62,7 @@ for (let folder of folders) {
   for (let element of elements) {
     current[element.id] = element.path
   }
-  console.log(JSON.stringify(current, null, 2))
+  // console.log(JSON.stringify(current, null, 2))
 
   // compare current and snapshot dictionaries
   for (let id of Object.keys(current)) {
@@ -72,6 +72,13 @@ for (let folder of folders) {
     const status = okay ? '[OK]' : '[FAIL]'
     const should = okay ? '' : `(expected ${expected})`
     console.log(`${status} ${id}: ${actual} ${should}`)
+  }
+  // look for missing items
+  for (let id of Object.keys(snapshot)) {
+    if (!current[id]) {
+      const expected = snapshot[id]
+      console.log(`[FAIL] missing ${id} (expected ${expected})`)
+    }
   }
 }
 
