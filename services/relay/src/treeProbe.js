@@ -38,6 +38,10 @@ const ignoreAttributes = lib.getSet(
   'id,name,type,subType,compositionId,category,discrete,_key,tag,parents,units,nativeUnits,device'
 )
 
+// attributes to try for uniquification, in order of preference
+// see makeUniquePaths
+const attributesToTry = 'compositionId,statistic,name'.split(',')
+
 //
 
 // get flat list of elements from given json by recursing through probe structure.
@@ -322,12 +326,20 @@ export function getNodes(elements) {
 }
 
 // make element paths unique by adding more type or name info as needed.
-//. eg elements = [{path:'temp'},{path:'temp'},{path:'temp'}]
-// returns [{}]
+// eg with
+//   elements = [{ path:'foo', name:'x' }, { path:'foo', name:'y' }]
+// modifies array in-place to
+//   elements = [{ path:'foo[x]', name:'x' }, { path:'foo[y]', name:'y' }]
+//. return collisions?
 function makeUniquePaths(elements) {
   const d = {}
   const collisions = {}
   for (const element of elements) {
+    // define key - remove deviceId prefix from el.id, eg 'd1-xpos' -> 'xpos'
+    //. but this depends on dataitem id's being prefixed with 'deviceId-',
+    // which might not always be true.
+    // element.key = element.id.slice(element.id.indexOf('-') + 1)
+
     const fullpath = element.device + '/' + element.path
     // console.log(fullpath)
     if (d[fullpath]) {
@@ -343,9 +355,6 @@ function makeUniquePaths(elements) {
   }
   // console.log('collisions', collisions)
 
-  // attributes to try for uniquification, in order of preference
-  const attributesToTry = 'compositionId,statistic,name'.split(',')
-
   // get index on elements by id
   const elementById = {}
   Object.keys(elements).forEach(
@@ -359,11 +368,12 @@ function makeUniquePaths(elements) {
     const collision = collisions[fullpath]
     const n = collision.length
     // iterate over attributes to try and see if n-1 elements have one
+    // eg ['compositionId', 'statistic', 'name']
     for (const attribute of attributesToTry) {
       const nitemsWithAttribute = collision.filter(el => !!el[attribute]).length
       // check if at least n-1 items have attribute - if so use that for unique path
       if (nitemsWithAttribute >= n - 1) {
-        //. do as switch with fallthroughs
+        //. do as switch with fallthroughs?
         if (attribute === 'compositionId') {
           // if items have compositionId find the composition elements referenced
           // and use those types eg 'motor'.
@@ -373,6 +383,7 @@ function makeUniquePaths(elements) {
               const composition = elementById[compositionId]
               const compositionType = composition.type.toLowerCase() // eg 'motor'
               el.path += '-' + compositionType
+              // el.path += '[' + compositionType + ']'
             }
           }
           //
@@ -383,12 +394,14 @@ function makeUniquePaths(elements) {
           for (const el of collision) {
             // check if has attribute (one of the array might not)
             if (el[attribute]) {
-              el.path += '-statistic=' + el[attribute].toLowerCase()
+              // el.path += '-statistic=' + el[attribute].toLowerCase()
+              el.path += '-' + el[attribute].toLowerCase()
+              // el.path += '[' + el[attribute].toLowerCase() + ']'
             }
           }
           break
         } else if (attribute === 'name') {
-          // use name as last resort - makes dashboards harder to share
+          // use name or id as last resort - makes dashboards harder to share
           for (const el of collision) {
             if (el[attribute]) {
               el.path += '[' + el[attribute].toLowerCase() + ']'
