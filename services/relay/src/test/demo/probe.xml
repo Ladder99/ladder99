@@ -34,8 +34,11 @@
         <!-- <DataItem category="SAMPLE" compositionId="d2-Ymotor2" id="d2-servotemp3" nativeUnits="CELSIUS" type="TEMPERATURE" units="CELSIUS" /> -->
       </DataItems>
       <Compositions>
-        <Composition id="d2-Xmotor" type="MOTOR" />
+        <!-- as in mazak - no name attribute - must use id to distinguish? -->
         <Composition id="d2-Xballscrew" type="BALLSCREW" />
+        <Composition id="d2-Xmotor" type="MOTOR" />
+        <Composition id="d2-Yballscrew" type="BALLSCREW" />
+        <Composition id="d2-Ymotor" type="MOTOR" />
         <!-- <Composition id="d2-Ymotor" name="y1" type="MOTOR" /> -->
         <!-- <Composition id="d2-Ymotor2" name="y2" type="MOTOR" /> -->
       </Compositions>

@@ -75,7 +75,9 @@ for (let folder of folders) {
   // get dictionary with id: path
   const current = {}
   for (let element of elements) {
-    current[element.id] = element.path
+    if (element.node_type !== 'Composition') {
+      current[element.id] = element.path
+    }
   }
   const str = JSON.stringify(current, null, 2)
   if (print) {

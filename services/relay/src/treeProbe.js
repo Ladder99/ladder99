@@ -236,12 +236,12 @@ function getPathStep(obj) {
       step = getParamsStep(params)
       break
 
-    // case 'Specification':
-    // case 'Composition':
-    //   // params = [obj.type]
-    //   // if (obj.subType) params.push(obj.subType)
-    //   step = '?'
-    //   break
+    case 'Specification':
+    case 'Composition':
+      // params = [obj.type]
+      // if (obj.subType) params.push(obj.subType)
+      step = '?'
+      break
 
     default:
       // params = [obj.name || obj.id || '']
@@ -279,7 +279,7 @@ function getParamString(param) {
 
 // get nodes from elements.
 // nodes includes devices and dataitems with unique paths, ready to write to db.
-// elements is the more complete list.
+// elements is the more complete list - includes Compositions also, etc.
 // eg for elements = [{ node_type, id, name, device, path, category, type }, ...]
 // returns [{
 //   node_type: 'DataItem',
