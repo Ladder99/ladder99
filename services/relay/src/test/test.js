@@ -99,8 +99,8 @@ for (let folder of folders) {
   for (let id of Object.keys(current)) {
     const actual = current[id]
     const expected = snapshot[id]
-    const duplicate = paths[expected]
-    paths[expected] = true
+    const duplicate = paths[actual]
+    paths[actual] = true
     const okay = actual === expected && !duplicate
     const status = okay ? chalk.green('[OK]  ') : chalk.red('[FAIL]')
     const added = expected === undefined
