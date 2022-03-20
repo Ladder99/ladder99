@@ -1,0 +1,93 @@
+<MTConnectStreams xmlns:m="urn:mtconnect.org:MTConnectStreams:1.7"
+  xmlns="urn:mtconnect.org:MTConnectStreams:1.7"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:mtconnect.org:MTConnectStreams:1.7 http://schemas.mtconnect.org/schemas/MTConnectStreams_1.7.xsd">
+  <Header creationTime="2021-07-25T16:43:33Z" sender="0cecacf402b3" instanceId="1627231388" version="1.7.0.3" bufferSize="131072" nextSequence="57" firstSequence="1" lastSequence="56"/>
+  <Streams>
+    <DeviceStream name="Agent" uuid="0b49a3a0-18ca-0139-8748-2cde48001122">
+      <ComponentStream component="Adapter" name="adapter:7878" componentId="_7546f731da">
+        <Samples>
+          <AssetUpdateRate dataItemId="_7546f731da_asset_update_rate" sequence="16" statistic="AVERAGE" timestamp="2021-07-25T16:43:08.478246Z">UNAVAILABLE</AssetUpdateRate>
+          <ObservationUpdateRate dataItemId="_7546f731da_observation_update_rate" sequence="18" statistic="AVERAGE" timestamp="2021-07-25T16:43:08.478279Z">UNAVAILABLE</ObservationUpdateRate>
+          <ObservationUpdateRate dataItemId="_7546f731da_observation_update_rate" duration="10" sequence="37" statistic="AVERAGE" timestamp="2021-07-25T16:43:18.45048Z">0.3</ObservationUpdateRate>
+          <ObservationUpdateRate dataItemId="_7546f731da_observation_update_rate" duration="10" sequence="52" statistic="AVERAGE" timestamp="2021-07-25T16:43:28.45533Z">0.6</ObservationUpdateRate>
+        </Samples>
+        <Events>
+          <AdapterSoftwareVersion dataItemId="_7546f731da_adapter_software_version" sequence="15" timestamp="2021-07-25T16:43:08.478234Z">UNAVAILABLE</AdapterSoftwareVersion>
+          <AdapterURI dataItemId="_7546f731da_adapter_uri" sequence="19" timestamp="2021-07-25T16:43:08.478294Z">shdr://adapter:7878</AdapterURI>
+          <ConnectionStatus dataItemId="_7546f731da_connection_status" sequence="17" timestamp="2021-07-25T16:43:08.478265Z">UNAVAILABLE</ConnectionStatus>
+          <ConnectionStatus dataItemId="_7546f731da_connection_status" sequence="27" timestamp="2021-07-25T16:43:08.47952Z">LISTENING</ConnectionStatus>
+          <ConnectionStatus dataItemId="_7546f731da_connection_status" sequence="29" timestamp="2021-07-25T16:43:08.488653Z">ESTABLISHED</ConnectionStatus>
+          <MTConnectVersion dataItemId="_7546f731da_mtconnect_version" sequence="20" timestamp="2021-07-25T16:43:08.478326Z">UNAVAILABLE</MTConnectVersion>
+        </Events>
+      </ComponentStream>
+      <ComponentStream component="Adapter" name="adapter:7879" componentId="_e2328fab01">
+        <Samples>
+          <AssetUpdateRate dataItemId="_e2328fab01_asset_update_rate" sequence="26" statistic="AVERAGE" timestamp="2021-07-25T16:43:08.478771Z">UNAVAILABLE</AssetUpdateRate>
+          <ObservationUpdateRate dataItemId="_e2328fab01_observation_update_rate" sequence="24" statistic="AVERAGE" timestamp="2021-07-25T16:43:08.47873Z">UNAVAILABLE</ObservationUpdateRate>
+          <ObservationUpdateRate dataItemId="_e2328fab01_observation_update_rate" duration="10" sequence="38" statistic="AVERAGE" timestamp="2021-07-25T16:43:18.452325Z">0.3</ObservationUpdateRate>
+          <ObservationUpdateRate dataItemId="_e2328fab01_observation_update_rate" duration="10" sequence="51" statistic="AVERAGE" timestamp="2021-07-25T16:43:28.455163Z">0.6</ObservationUpdateRate>
+        </Samples>
+        <Events>
+          <AdapterSoftwareVersion dataItemId="_e2328fab01_adapter_software_version" sequence="22" timestamp="2021-07-25T16:43:08.478612Z">UNAVAILABLE</AdapterSoftwareVersion>
+          <AdapterURI dataItemId="_e2328fab01_adapter_uri" sequence="23" timestamp="2021-07-25T16:43:08.478709Z">shdr://adapter:7879</AdapterURI>
+          <ConnectionStatus dataItemId="_e2328fab01_connection_status" sequence="25" timestamp="2021-07-25T16:43:08.47876Z">UNAVAILABLE</ConnectionStatus>
+          <ConnectionStatus dataItemId="_e2328fab01_connection_status" sequence="28" timestamp="2021-07-25T16:43:08.479613Z">LISTENING</ConnectionStatus>
+          <ConnectionStatus dataItemId="_e2328fab01_connection_status" sequence="30" timestamp="2021-07-25T16:43:08.488722Z">ESTABLISHED</ConnectionStatus>
+          <MTConnectVersion dataItemId="_e2328fab01_mtconnect_version" sequence="21" timestamp="2021-07-25T16:43:08.478598Z">UNAVAILABLE</MTConnectVersion>
+        </Events>
+      </ComponentStream>
+      <ComponentStream component="Agent" name="Agent" componentId="agent_2cde48001122">
+        <Events>
+          <AssetChanged dataItemId="agent_2cde48001122_asset_chg" sequence="2" timestamp="2021-07-25T16:43:08.471442Z">UNAVAILABLE</AssetChanged>
+          <AssetRemoved dataItemId="agent_2cde48001122_asset_rem" sequence="1" timestamp="2021-07-25T16:43:08.471366Z">UNAVAILABLE</AssetRemoved>
+          <Availability dataItemId="agent_avail" sequence="6" timestamp="2021-07-25T16:43:08.471491Z">UNAVAILABLE</Availability>
+          <DeviceAdded dataItemId="device_added" sequence="5" timestamp="2021-07-25T16:43:08.471478Z">UNAVAILABLE</DeviceAdded>
+          <DeviceAdded dataItemId="device_added" sequence="10" timestamp="2021-07-25T16:43:08.475382Z">a123</DeviceAdded>
+          <DeviceAdded dataItemId="device_added" sequence="14" timestamp="2021-07-25T16:43:08.475427Z">a234</DeviceAdded>
+          <DeviceChanged dataItemId="device_changed" sequence="3" timestamp="2021-07-25T16:43:08.471456Z">UNAVAILABLE</DeviceChanged>
+          <DeviceRemoved dataItemId="device_removed" sequence="4" timestamp="2021-07-25T16:43:08.47147Z">UNAVAILABLE</DeviceRemoved>
+        </Events>
+      </ComponentStream>
+    </DeviceStream>
+    <DeviceStream name="camera1" uuid="a123">
+      <ComponentStream component="Device" name="camera1" componentId="d1">
+        <Events>
+          <Availability dataItemId="d1-connection" sequence="9" timestamp="2021-07-25T16:43:08.475366Z">UNAVAILABLE</Availability>
+          <Availability dataItemId="d1-connection" sequence="32" timestamp="2021-07-25T16:43:11.634Z">AVAILABLE</Availability>
+          <Availability dataItemId="d1-connection" sequence="34" timestamp="2021-07-25T16:43:14.64Z">UNAVAILABLE</Availability>
+          <Availability dataItemId="d1-connection" sequence="36" timestamp="2021-07-25T16:43:15.639Z">AVAILABLE</Availability>
+          <Availability dataItemId="d1-connection" sequence="40" timestamp="2021-07-25T16:43:18.645Z">UNAVAILABLE</Availability>
+          <Availability dataItemId="d1-connection" sequence="42" timestamp="2021-07-25T16:43:19.649Z">AVAILABLE</Availability>
+          <Availability dataItemId="d1-connection" sequence="44" timestamp="2021-07-25T16:43:22.659Z">UNAVAILABLE</Availability>
+          <Availability dataItemId="d1-connection" sequence="46" timestamp="2021-07-25T16:43:23.661Z">AVAILABLE</Availability>
+          <Availability dataItemId="d1-connection" sequence="48" timestamp="2021-07-25T16:43:26.676Z">UNAVAILABLE</Availability>
+          <Availability dataItemId="d1-connection" sequence="50" timestamp="2021-07-25T16:43:27.676Z">AVAILABLE</Availability>
+          <Availability dataItemId="d1-connection" sequence="53" timestamp="2021-07-25T16:43:30.675Z">UNAVAILABLE</Availability>
+          <Availability dataItemId="d1-connection" sequence="56" timestamp="2021-07-25T16:43:31.683Z">AVAILABLE</Availability>
+          <AssetChanged dataItemId="d1_asset_chg" sequence="8" timestamp="2021-07-25T16:43:08.475353Z">UNAVAILABLE</AssetChanged>
+          <AssetRemoved dataItemId="d1_asset_rem" sequence="7" timestamp="2021-07-25T16:43:08.47533Z">UNAVAILABLE</AssetRemoved>
+        </Events>
+      </ComponentStream>
+    </DeviceStream>
+    <DeviceStream name="camera2" uuid="a234">
+      <ComponentStream component="Device" name="camera2" componentId="d2">
+        <Events>
+          <Availability dataItemId="d2-connection" sequence="13" timestamp="2021-07-25T16:43:08.475421Z">UNAVAILABLE</Availability>
+          <Availability dataItemId="d2-connection" sequence="31" timestamp="2021-07-25T16:43:11.626Z">AVAILABLE</Availability>
+          <Availability dataItemId="d2-connection" sequence="33" timestamp="2021-07-25T16:43:14.638Z">UNAVAILABLE</Availability>
+          <Availability dataItemId="d2-connection" sequence="35" timestamp="2021-07-25T16:43:15.636Z">AVAILABLE</Availability>
+          <Availability dataItemId="d2-connection" sequence="39" timestamp="2021-07-25T16:43:18.642Z">UNAVAILABLE</Availability>
+          <Availability dataItemId="d2-connection" sequence="41" timestamp="2021-07-25T16:43:19.646Z">AVAILABLE</Availability>
+          <Availability dataItemId="d2-connection" sequence="43" timestamp="2021-07-25T16:43:22.657Z">UNAVAILABLE</Availability>
+          <Availability dataItemId="d2-connection" sequence="45" timestamp="2021-07-25T16:43:23.659Z">AVAILABLE</Availability>
+          <Availability dataItemId="d2-connection" sequence="47" timestamp="2021-07-25T16:43:26.672Z">UNAVAILABLE</Availability>
+          <Availability dataItemId="d2-connection" sequence="49" timestamp="2021-07-25T16:43:27.672Z">AVAILABLE</Availability>
+          <Availability dataItemId="d2-connection" sequence="54" timestamp="2021-07-25T16:43:30.676Z">UNAVAILABLE</Availability>
+          <Availability dataItemId="d2-connection" sequence="55" timestamp="2021-07-25T16:43:31.681Z">AVAILABLE</Availability>
+          <AssetChanged dataItemId="d2_asset_chg" sequence="12" timestamp="2021-07-25T16:43:08.475416Z">UNAVAILABLE</AssetChanged>
+          <AssetRemoved dataItemId="d2_asset_rem" sequence="11" timestamp="2021-07-25T16:43:08.475409Z">UNAVAILABLE</AssetRemoved>
+        </Events>
+      </ComponentStream>
+    </DeviceStream>
+  </Streams>
+</MTConnectStreams>

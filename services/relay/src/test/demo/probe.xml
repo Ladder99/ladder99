@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- handmade version for testing -->
+<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.7" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.7 http://www.mtconnect.org/schemas/MTConnectDevices_1.7.xsd">
+  <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.7.0.3" />
+  <Devices>
+
+    <Device id="d1" name="camera1" uuid="a123" sampleInterval="10">
+      <Description manufacturer="ladder99" model="camera" serialNumber="001">
+        camera1
+      </Description>
+      <DataItems>
+        <DataItem id="d1-avail" category="EVENT" type="AVAILABILITY" />
+        <!-- these differ by statistic -->
+        <DataItem category="SAMPLE" id="d1-cycle" name="cycle_time" type="PROCESS_TIMER" subType="PROCESS" />
+        <DataItem category="SAMPLE" id="d1-cycleavg" name="cycle_time_avg" type="PROCESS_TIMER" subType="PROCESS" statistic="AVERAGE" />
+        <!-- these differ by name -->
+        <DataItem category="SAMPLE" id="d1-pcrem_calc" name="calc" type="PART_COUNT" subType="REMAINING" />
+        <DataItem category="SAMPLE" id="d1-pcrem_plc" name="plc" type="PART_COUNT" subType="REMAINING" />
+        <DataItem category="SAMPLE" id="d1-pcrem_pr" name="printer" type="PART_COUNT" subType="REMAINING" />
+      </DataItems>
+    </Device>
+
+    <Device id="d2" name="camera2" uuid="a234" sampleInterval="10">
+      <Description manufacturer="ladder99" model="camera" serialNumber="002">
+        camera2
+      </Description>
+      <DataItems>
+        <DataItem id="d2-avail" category="EVENT" type="AVAILABILITY" />
+        <!-- these differ by compositionType -->
+        <DataItem category="SAMPLE" compositionId="d2-Xmotor" id="d2-servotemp1" nativeUnits="CELSIUS" type="TEMPERATURE" units="CELSIUS" />
+        <DataItem category="SAMPLE" compositionId="d2-Xballscrew" id="d2-screwtemp1" nativeUnits="CELSIUS" type="TEMPERATURE" units="CELSIUS" />
+        <!-- these differ by compositionName -->
+        <!-- <DataItem category="SAMPLE" compositionId="d2-Ymotor" id="d2-servotemp2" nativeUnits="CELSIUS" type="TEMPERATURE" units="CELSIUS" /> -->
+        <!-- <DataItem category="SAMPLE" compositionId="d2-Ymotor2" id="d2-servotemp3" nativeUnits="CELSIUS" type="TEMPERATURE" units="CELSIUS" /> -->
+      </DataItems>
+      <Compositions>
+        <Composition id="d2-Xmotor" type="MOTOR" />
+        <Composition id="d2-Xballscrew" type="BALLSCREW" />
+        <!-- <Composition id="d2-Ymotor" name="y1" type="MOTOR" /> -->
+        <!-- <Composition id="d2-Ymotor2" name="y2" type="MOTOR" /> -->
+      </Compositions>
+    </Device>
+
+  </Devices>
+</MTConnectDevices>
