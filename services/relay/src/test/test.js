@@ -98,7 +98,12 @@ for (let folder of folders) {
     const expected = snapshot[id]
     const okay = actual === expected
     const status = okay ? chalk.green('[OK]  ') : chalk.red('[FAIL]')
-    const should = okay ? '' : `(expected ${chalk.hex('#99d')(expected)})`
+    const added = expected === undefined
+    const should = okay
+      ? ''
+      : added
+      ? '(not in snapshot)'
+      : `(expected ${chalk.hex('#99d')(expected)})`
     console.log(`${status} ${id}: ${chalk.hex('#99d')(actual)} ${should}`)
   }
   // look for missing items
