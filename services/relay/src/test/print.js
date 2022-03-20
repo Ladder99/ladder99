@@ -8,6 +8,11 @@ import * as treeProbe from '../treeProbe.js'
 // import * as treeObservations from '../treeObservations.js'
 // import * as lib from '../common/lib.js'
 
+// option - update snapshot
+if (process.argv[2] === '-u') {
+  console.log('hi')
+}
+
 //. choose a folder
 const folder = 'src/test/demo'
 // const folder = 'src/test/vmc'
@@ -60,10 +65,14 @@ treeProbe.assignNodeIds(elements, indexes)
 // const paths = elements.map(element => element.path)
 // console.log(paths.join('\n'))
 
+const d = {}
 for (let element of elements) {
-  console.log(element.id + ': ' + element.path)
+  // console.log(element.id + ': ' + element.path)
+  d[element.id] = element.path
 }
 // console.log('indexes', indexes)
+// console.log(d)
+console.log(JSON.stringify(d, null, 2))
 
 // load an xml file, convert to json, parse and return
 function getJson(path) {
