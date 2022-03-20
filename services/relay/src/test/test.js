@@ -1,27 +1,23 @@
 // run:
 // cd services/relay
-// npm test
+// node src/test/print.js
 
 import fs from 'fs' // node lib - filesystem
 import convert from 'xml-js' // https://github.com/nashwaan/xml-js
 import * as treeProbe from '../treeProbe.js'
-import * as treeObservations from '../treeObservations.js'
-import * as lib from '../common/lib.js'
+// import * as treeObservations from '../treeObservations.js'
+// import * as lib from '../common/lib.js'
 
-console.log()
-console.log('test.js')
-console.log('------------------------------------------------')
-console.log()
-
-//------------------------------------------------------------------------
-
-// load and parse probe xml
+// option - update snapshot
+if (process.argv[2] === '-u') {
+  console.log('hi')
+}
 
 //. choose a folder
-const folder = 'examples/demo'
-// const folder = 'examples/vmc'
-// const folder = 'examples/ccs-pa'
-// const folder = 'examples/mazak'
+const folder = 'src/test/demo'
+// const folder = 'src/test/vmc'
+// const folder = 'src/test/print-apply'
+// const folder = 'src/test/mazak'
 
 // get probe xml
 const json = getJson(`${folder}/probe.xml`)
@@ -66,55 +62,17 @@ treeProbe.assignNodeIds(elements, indexes)
 //   dataitem_id: 2
 // },
 
+// const paths = elements.map(element => element.path)
+// console.log(paths.join('\n'))
+
+const d = {}
+for (let element of elements) {
+  // console.log(element.id + ': ' + element.path)
+  d[element.id] = element.path
+}
 // console.log('indexes', indexes)
-
-//
-
-//------------------------------------------------------------------------
-
-// load and parse current xml
-const json2 = getJson(`${folder}/current.xml`)
-
-const observations = treeObservations.getElements(json2)
-console.log('observations', observations)
-
-// // assign device_id and dataitem_id's to observations
-// treeObservations.assignNodeIds(observations, indexes)
-// console.log('observations', observations)
-
-// for (let obs of observations) {
-//   const node = indexes.objById[obs.dataItemId]
-//   if (node) {
-//     const { device_id, property_id } = node
-//     console.log(
-//       `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}, value ${obs.value}`
-//     )
-//   }
-// }
-
-//------------------------------------------------------------------------
-
-// // load and parse sample xml
-// const json3 = getJson(`${folder}/sample.xml`)
-
-// const observations3 = treeObservations.getElements(json3)
-// // console.log(observations)
-
-// for (let obs of observations3) {
-//   const node = indexes.objById[obs.dataItemId]
-//   if (node) {
-//     const { device_id, property_id } = node
-//     console.log(
-//       `write to node ${device_id}, property ${property_id}, time ${obs.timestamp}, value ${obs.value}`
-//     )
-//   }
-// }
-
-//------------------------------------------------------------------------
-
-// save json to a file
-// const nodesFile = 'foo.json'
-// fs.writeFileSync(nodesFile, JSON.stringify(json, null, 2))
+// console.log(d)
+console.log(JSON.stringify(d, null, 2))
 
 // load an xml file, convert to json, parse and return
 function getJson(path) {
@@ -122,6 +80,3 @@ function getJson(path) {
   const json = JSON.parse(convert.xml2json(xml, { compact: true }))
   return json
 }
-
-// const yaml = lib.importYaml('./src/canonical.yaml')
-// console.log(yaml)
