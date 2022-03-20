@@ -12,8 +12,13 @@ let args = process.argv.slice(2)
 
 // option - update snapshot
 let update = false
+let print = false
 if (args[0] === '-u') {
   update = true
+  args = args.slice(1)
+}
+if (args[0] === '-p') {
+  print = true
   args = args.slice(1)
 }
 const folders = args
@@ -58,9 +63,13 @@ for (let folder of folders) {
   for (let element of elements) {
     current[element.id] = element.path
   }
+  const str = JSON.stringify(current, null, 2)
+  if (print) {
+    console.log(str)
+    continue
+  }
   if (update) {
     console.log('writing', snapshotFile)
-    const str = JSON.stringify(current, null, 2)
     fs.writeFileSync(snapshotFile, str)
     continue
   }
