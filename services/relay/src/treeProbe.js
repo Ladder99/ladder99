@@ -23,11 +23,12 @@ const ignoreTags = lib.getSet(
 //. or use an aliases table to refer by number or name or id to a dataitem?
 // 2022-03-17 removed PartOccurrence,ProcessOccurrence,Systems from set
 // 2022-03-20 removed Controller,Path from set
+// 2022-03-21 remove Axes? remove all of these? use setup yaml to translate if needed?
 const plainTags = lib.getSet(
   // 'Axes,Controller,EndEffector,Feeder,PartOccurrence,Path,Personnel,ProcessOccurrence,Resources,Systems'
   // 'Axes,Controller,EndEffector,Feeder,Path,Personnel,Resources'
-  //. remove Axes?
-  'Axes,EndEffector,Feeder,Personnel,Resources'
+  // 'Axes,EndEffector,Feeder,Personnel,Resources'
+  'EndEffector,Feeder,Personnel,Resources'
 )
 
 // started to do this, but no need to call these out explicitly -
@@ -45,7 +46,7 @@ const ignoreAttributes = lib.getSet(
 
 // attributes to try for uniquification, in order of preference
 // see fn makeUniquePaths
-const attributesToTry =
+const uniquifyingAttributes =
   'compositionId,coordinateSystemIdRef,coordinateSystem,statistic,name,nativeName,id'.split(
     ','
   )
@@ -63,7 +64,7 @@ const attributesToTry =
 //   id: 'avail',
 //   type: 'AVAILABILITY',
 //   category: 'EVENT',
-//   device: 'Device(VMC-3Axis, 000)'
+//   device: 'Device[VMC-3Axis]'
 // }, ...]
 export function getElements(json) {
   const objs = []
@@ -80,27 +81,6 @@ export function getElements(json) {
   })
   return elements
 }
-
-// // transform json tree to flat list of object structures,
-// // filtering out unwanted elements.
-// // eg for json = { MTConnectDevices: { Devices: { Device: [...] }}}
-// // returns [
-// //   { node_type: 'Device', path, id, name, uuid },
-// //   { node_type: 'DataItem', path, id, name, category, type, subType },
-// // ...]
-// //. merge this with getElements or getNodes? this doesn't do much, adds confusion
-// export function getObjects(elements) {
-//   const objs = elements.map(element => {
-//     const node_type = element.tag // eg 'Device', 'DataItem'
-//     const path = element.steps && element.steps.filter(step => !!step).join('/')
-//     const obj = { node_type, path, ...element } // copy object, put node_type and path first
-//     // remove unneeded attributes
-//     delete obj.tag
-//     delete obj.steps
-//     return obj
-//   })
-//   return objs
-// }
 
 // do nothing fn - used as default/fallback
 const ignore = () => {}
@@ -218,11 +198,8 @@ function getPathStep(obj) {
       params = [obj.type] // eg ['position']
       if (obj.subType) params.push(obj.subType) // eg ['position', 'actual']
 
-      //. follow compositionId to get the type
-      // if path still not unique, will add composition name in brackets also
-
-      //. do this later
-      // // add named params to help uniquify the path, eg ['temperature', 'statistic=average']
+      //. do this in the uniquify fn
+      // add named params to help uniquify the path, eg ['temperature', 'statistic=average']
       // let namedParams = []
       // for (const key of Object.keys(obj)) {
       //   if (!ignoreAttributes.has(key)) {
@@ -252,10 +229,6 @@ function getPathStep(obj) {
       break
 
     default:
-      // params = [obj.name || obj.id || '']
-      //..
-      // step = (obj.name || obj.id || '').toLowerCase()
-      // step = (obj.name || obj.nativeName || obj.id || '').toLowerCase()
       step = (
         obj.name ||
         obj.nativeName ||
@@ -269,24 +242,18 @@ function getPathStep(obj) {
 }
 
 // get step string for the given array of params.
-// eg ['temperature', 'statistic=average'] => 'temperature-statistic=average'
+// eg ['temperature', 'average'] => 'temperature-average'
 function getParamsStep(params) {
-  const paramsStr =
-    // params.length > 0 && params[0].length > 0
+  const step =
     params.length > 0 && params[0] && params[0].length > 0
       ? params.map(getParamString).join('-')
       : ''
-  const step = `${paramsStr}`
   return step
 }
 
 // get string representation of a parameter
 // eg 'x:SOME_TYPE' -> 'some_type'
 function getParamString(param) {
-  // const str = param.replace('x:', '').replaceAll('_', '-').toLowerCase() // needs node15
-  // const regexp = new RegExp('_', 'g')
-  // const str = param.toLowerCase() // leave x: and underscores as is
-  // const str = param.replace('x:', '').replace(regexp, '-').toLowerCase()
   const str = param.replace('x:', '').toLowerCase() // leave underscores
   return str
 }
@@ -328,6 +295,8 @@ export function getNodes(elements) {
       // delete node.coordinateSystem
       // delete node.representation
     } else if (node.node_type === 'Composition') {
+      continue // don't add to node list
+    } else if (node.node_type === 'CoordinateSystem') {
       continue // don't add to node list
     }
     nodes.push(node)
@@ -385,7 +354,7 @@ function makeUniquePaths(elements) {
     const n = collision.length
     // iterate over attributes to try and see if n-1 elements have one
     // eg ['compositionId', 'statistic', 'name']
-    for (const attribute of attributesToTry) {
+    for (const attribute of uniquifyingAttributes) {
       const nitemsWithAttribute = collision.filter(el => !!el[attribute]).length
       // check if at least n-1 items have attribute - if so use that for unique path
       if (nitemsWithAttribute >= n - 1) {
@@ -399,11 +368,9 @@ function makeUniquePaths(elements) {
               const composition = elementById[compositionId]
               const compositionType = composition.type.toLowerCase() // eg 'motor'
               el.path += '-' + compositionType
-              // el.path += '[' + compositionType + ']'
             }
           }
-          //
-          //. if paths still not unique, add name in brackets also eg '[high]'.
+          //. if paths still not unique, add name in brackets also eg '[high]'?
           //. use name || id, in case no name?
           break
         } else if (attribute === 'coordinateSystemIdRef') {
@@ -416,8 +383,7 @@ function makeUniquePaths(elements) {
               el.path += '-' + coordinateType
             }
           }
-          //
-          //. if paths still not unique, add name in brackets also eg '[high]'.
+          //. if paths still not unique, add name in brackets also eg '[high]'?
           //. use name || id, in case no name?
           break
         } else if (attribute === 'coordinateSystem') {
@@ -448,6 +414,8 @@ function makeUniquePaths(elements) {
           break
         } else if (attribute === 'id') {
           // use id as last resort - makes dashboards harder to share
+          // note: had tried removing the deviceId- prefix,
+          // but that assumption doesn't hold for arbitrary agents.
           for (const el of collision) {
             if (el[attribute]) {
               el.path += '[' + el[attribute].toLowerCase() + ']'

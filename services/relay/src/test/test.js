@@ -73,9 +73,13 @@ for (let folder of folders) {
   // },
 
   // get dictionary with id: path
+  //. better way than specifying node_types here?
   const current = {}
   for (let element of elements) {
-    if (element.node_type !== 'Composition') {
+    if (
+      element.node_type !== 'Composition' &&
+      element.node_type !== 'CoordinateSystem'
+    ) {
       current[element.id] = element.path
     }
   }
@@ -121,6 +125,8 @@ for (let folder of folders) {
     }
   }
 }
+
+//
 
 // load an xml file, convert to json, parse and return
 function getXmlToJson(path) {
