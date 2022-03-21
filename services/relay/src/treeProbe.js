@@ -4,7 +4,9 @@ import * as lib from './common/lib.js'
 
 // these are the only elements we want to pick out of the probe xml.
 //. add Description elements - will add to Device obj
-const appendTags = lib.getSet('Device,DataItem,Composition')
+// note: need to read Composition and CoordinateSystem into dicts so can
+// dereference them to get their types etc.
+const appendTags = lib.getSet('Device,DataItem,Composition,CoordinateSystem')
 
 // don't recurse down these elements - not interested in them or their children
 const skipTags = lib.getSet('Agent')
@@ -12,7 +14,7 @@ const skipTags = lib.getSet('Agent')
 // ignore these element types for path parts - they don't add much info to the path,
 // as they're just containers.
 const ignoreTags = lib.getSet(
-  'Adapters,AssetCounts,Components,Compositions,Configurations,DataItems,Devices,Filters,Specifications'
+  'Adapters,AssetCounts,Components,Compositions,Configuration,CoordinateSystems,DataItems,Devices,Filters,Specifications'
 )
 
 //. assume for now there there is only one of these in path, so can just lower case them
@@ -24,6 +26,7 @@ const ignoreTags = lib.getSet(
 const plainTags = lib.getSet(
   // 'Axes,Controller,EndEffector,Feeder,PartOccurrence,Path,Personnel,ProcessOccurrence,Resources,Systems'
   // 'Axes,Controller,EndEffector,Feeder,Path,Personnel,Resources'
+  //. remove Axes?
   'Axes,EndEffector,Feeder,Personnel,Resources'
 )
 
@@ -34,7 +37,7 @@ const plainTags = lib.getSet(
 
 // ignore these DataItem attributes - not necessary to identify an element
 // in a path step, are accounted for explicitly, or are redundant.
-// any other attributes would be included, eg '-statistic=average'
+// any other attributes would be included, eg '-average'
 //. maybe do other way around - list of attributes to include?
 const ignoreAttributes = lib.getSet(
   'id,name,type,subType,compositionId,category,discrete,_key,tag,parents,units,nativeUnits,device'
@@ -43,7 +46,9 @@ const ignoreAttributes = lib.getSet(
 // attributes to try for uniquification, in order of preference
 // see fn makeUniquePaths
 const attributesToTry =
-  'compositionId,coordinateSystem,statistic,name,nativeName,id'.split(',')
+  'compositionId,coordinateSystemIdRef,coordinateSystem,statistic,name,nativeName,id'.split(
+    ','
+  )
 
 //
 
@@ -395,6 +400,20 @@ function makeUniquePaths(elements) {
               const compositionType = composition.type.toLowerCase() // eg 'motor'
               el.path += '-' + compositionType
               // el.path += '[' + compositionType + ']'
+            }
+          }
+          //
+          //. if paths still not unique, add name in brackets also eg '[high]'.
+          //. use name || id, in case no name?
+          break
+        } else if (attribute === 'coordinateSystemIdRef') {
+          // find the elements referenced and use those types, eg 'motor'.
+          for (const el of collision) {
+            if (el[attribute]) {
+              const coordinateSystemId = el[attribute]
+              const coordinateSystem = elementById[coordinateSystemId]
+              const coordinateType = coordinateSystem.type.toLowerCase() // eg 'motor'
+              el.path += '-' + coordinateType
             }
           }
           //
