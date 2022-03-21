@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.7" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.7 https://schemas.mtconnect.org/schemas/MTConnectDevices_1.7.xsd">
+  <Header creationTime="2021-09-20T00:00:00+00:00" deviceModelChangeTime="2021-09-20T00:00:00+00:00" sender="localhost" instanceId="12345678" bufferSize="131072" assetBufferSize="1000" assetCount="0" version="1.7.0.3" />
+  <Devices>
+
+    <!-- ========================================== -->
+    <!-- Micro -->
+    <!-- ========================================== -->
+    <!-- id must match that in setup.yaml -->
+    <!-- name must match that in agent.cfg and setup.yaml -->
+    <Device id="m" name="Micro" uuid="m" sampleInterval="5">
+      <DataItems>
+        <DataItem id="m-avail" name="availability" category="EVENT" type="AVAILABILITY" />
+        <DataItem id="m-cond" name="condition" category="CONDITION" type="SYSTEM" />
+        <DataItem id="m-temp" name="temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" />
+        <!-- <DataItem id="m-memtot" name="memory-total" category="SAMPLE" type="x:MEMORY" subType="x:TOTAL" units="x:BYTES" /> -->
+        <!-- . use memavail instead, put in nis also -->
+        <DataItem id="m-memfree" name="memory-free" category="SAMPLE" type="x:MEMORY" subType="x:FREE" units="x:BYTES" />
+        <DataItem id="m-memused" name="memory-used" category="SAMPLE" type="x:MEMORY" subType="x:USED" units="x:BYTES" />
+        <DataItem id="m-cputot" name="cpu-total" category="SAMPLE" type="x:CPU" subType="x:TOTAL" units="x:PERCENTAGE" />
+        <DataItem id="m-os" name="os" category="EVENT" type="VARIABLE" subType="x:OS" representation="DATA_SET" />
+      </DataItems>
+    </Device>
+
+    <!-- ========================================== -->
+    <!-- JobBoss -->
+    <!-- ========================================== -->
+    <!-- id must match that in setup.yaml -->
+    <!-- name must match that in agent.cfg and setup.yaml -->
+    <Device id="j" name="JobBoss" uuid="j" sampleInterval="5">
+      <DataItems>
+        <DataItem id="j-avail" name="availability" category="EVENT" type="AVAILABILITY" />
+        <DataItem id="j-cond" name="condition" category="CONDITION" type="SYSTEM" />
+        <!-- <DataItem id="j-job" name="job" category="EVENT" type="x:JOB" /> -->
+        <!-- <DataItem id="j-start" name="start" category="SAMPLE" type="PROCESS_TIME" subType="START" /> -->
+        <!-- <DataItem id="j-stop" name="stop" category="SAMPLE" type="PROCESS_TIME" subType="COMPLETE" /> -->
+      </DataItems>
+    </Device>
+
+    <!-- ========================================== -->
+    <!-- Marumatsu -->
+    <!-- ========================================== -->
+    <!-- Marumatsu Corrugated Slitter -->
+    <!-- was Cutter -->
+    <!-- id must match that in setup.yaml -->
+    <!-- name must match that in agent.cfg and setup.yaml -->
+    <!-- <Device id="marumatsu" name="Cutter" uuid="marumatsu" sampleInterval="1000"> -->
+    <Device id="m1" name="Marumatsu" uuid="marumatsu" sampleInterval="1000">
+      <Description manufacturer="Maramatsu" model="Unknown" serialNumber="Unknown">
+        Maramatsu Corrugated Slitter
+      </Description>
+
+      <!--
+        PROCESS_TIME/START [=value] && PROCESS_TIME/COMPLETE [=UNAVAILABLE] -> cache(shift_is_active) = true
+        PROCESS_TIME/START [UNAVAILABLE->value] -> transient cache(shift_is_starting) = true
+        PROCESS_TIME/COMPLETE [UNAVAILABLE->value] -> transient cache(shift_is_ending) = true
+        PROCESS_TIME/COMPLETE [value->UNAVAILABLE] -> transient cache(shift_has_ended) = true
+
+        note: I'm still hung up on this idea of maintaining a transient flag to drive cascading evaluations, 
+              where it's set to true based on some event transition, 
+              and then next sample/iteration it gets reset to false.
+      -->
+
+      <DataItems>
+
+        <!--
+          https://model.mtconnect.org/#Architecture__efa904df-e614-4dde-81d4-3d9d41ea5596
+
+          description:
+          - general availability of this device including:
+              Marumatsu controller - MQTT data
+              Shift start/stop - another data source
+
+          logic:
+          * EQUIPMENT_MODE/POWERED [OFF->ON,=ON] || cache(shift_is_starting) || cache(shift_is_active) -> AVAILABLE
+              
+              explanation: 
+                EMP transitioning from OFF to ON or in state ON 
+                  OR 
+                PTS transitioning from UNAVAILABLE to a value or has value
+                  THEN set to AVAILABLE
+
+          * EQUIPMENT_MODE/POWERED [ON->OFF,=OFF] && (cache(shift_is_ending) || cache(shift_has_ended)) -> UNAVAILABLE
+        -->
+        <DataItem category="EVENT" id="m1-avail" name="availability" type="AVAILABILITY" />
+        <DataItem category="EVENT" id="m1-chg" name="asset_changed" type="ASSET_CHANGED" />
+        <DataItem category="EVENT" id="m1-rem" name="asset_removed" type="ASSET_REMOVED" />
+      </DataItems>
+
+      <Components>
+        <Axes id="m1-axes" name="axes">
+          <Components>
+            <Linear id="m1-x" name="x">
+              <DataItems>
+                <!-- lifetime/aggregate part count -->
+                <!-- path='axes/x/part_count-all', was 'controller/partOccurrence/part_count-all' -->
+                <!-- <DataItem category="SAMPLE" id="m1-xct" name="x_parts_counted" type="PART_COUNT" subType="ALL" /> -->
+
+                <!-- l99/B01000/evt/vibration 
+                  var p = {
+                      "id": "479055",
+                      "a22": x_motor_velocity_rms_z,
+                      "a25": x_motor_accel_rms_z,
+                      "a192": x_motor_temperature,
+                      "a70": x_motor_velocity_rms_x,
+                      "a73": x_motor_accel_rms_x
+                  };
+                -->
+                <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xtemp" name="x_motor_temperature" type="TEMPERATURE" units="CELSIUS" />
+                <!-- native mm/sec -->
+                <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xvx" name="x_motor_velocity_rms_x" type="VELOCITY" units="MILLIMETER/SECOND" />
+                <!-- native mm/sec -->
+                <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xvz" name="x_motor_velocity_rms_z" type="VELOCITY" units="MILLIMETER/SECOND" />
+                <!-- native g = 9.80554m/s2, convert to mm/s2 -->
+                <!-- note: nativeScale = The multiplier for the native value. Conversion divides by this value -->
+                <!-- . fixed nativeUnits and scale - vscode complained about m/s2 and blank nativeScale -->
+                <!-- <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xaccx" name="x_motor_accel_rms_x" type="ACCELERATION" subType="ACTUAL" units="MILLIMETER/SECOND^2" nativeUnits="METER/SECOND^2" nativeScale="" /> -->
+                <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xaccx" name="x_motor_accel_rms_x" type="ACCELERATION" subType="ACTUAL" units="MILLIMETER/SECOND^2" nativeScale="0.001" />
+                <!-- native g = 9.80554m/s2, convert to mm/s2 -->
+                <!-- note: nativeScale = The multiplier for the native value. Conversion divides by this value -->
+                <!-- . fixed nativeUnits and scale - vscode complained about m/s2 and blank nativeScale -->
+                <!-- <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xaccz" name="x_motor_accel_rms_z" type="ACCELERATION" subType="ACTUAL" units="MILLIMETER/SECOND^2" nativeUnits="METER/SECOND^2" nativeScale="" /> -->
+                <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xaccz" name="x_motor_accel_rms_z" type="ACCELERATION" subType="ACTUAL" units="MILLIMETER/SECOND^2" nativeScale="0.001" />
+              </DataItems>
+              <Compositions>
+                <Composition id="m1-x_motor" type="MOTOR" />
+              </Compositions>
+            </Linear>
+          </Components>
+        </Axes>
+
+        <Processes id="m1-processes" name="processes">
+          <Components>
+            <!-- lifetime metrics -->
+            <ProcessOccurrence id="m1-process-life" name="life">
+              <DataItem category="SAMPLE" id="m1-pclife" name="parts_counted_life" type="PART_COUNT" subType="ALL" />
+            </ProcessOccurrence>
+
+            <!-- job metrics -->
+            <!-- note: a unique id is required for all Components, incl ProcessOccurrences -->
+            <!-- note: name is optional, unless there are more than one element of same type, -->
+            <!-- eg these two ProcessOccurrences -->
+            <!-- . gave these shorter ids, eg "m1-process_occurrence_job" -> "m1-process-job" -->
+            <!-- . gave these shorter names, eg "process_occurrence_job" -> "job" -->
+            <!-- <ProcessOccurrence id="m1-process_occurrence_job" name="process_occurrence_job"> -->
+            <ProcessOccurrence id="m1-process-job" name="job">
+              <DataItems>
+                <!-- MUST have ProcessOccurrenceId -->
+                <!--<DataItem category="EVENT" id="m1-process_occurrence_id_job" name="process_occurrence_id_job" type="PROCESS_OCCURRENCE_ID" />-->
+
+                <!-- current job number for this workcenter/device -->
+                <!-- path is 'processes/job/process_aggregate_id-order_number', was 'job' -->
+                <DataItem category="EVENT" id="m1-job" name="job" type="PROCESS_AGGREGATE_ID" subType="ORDER_NUMBER" />
+
+                <!-- job part count -->
+                <DataItem category="SAMPLE" id="m1-pcjob" name="parts_counted_job" type="PART_COUNT" subType="ALL" />
+              </DataItems>
+            </ProcessOccurrence>
+
+            <!-- shift metrics -->
+            <!-- <ProcessOccurrence id="m1-process_occurrence_shift" name="process_occurrence_shift"> -->
+            <ProcessOccurrence id="m1-process-shift" name="shift">
+              <DataItems>
+                <!-- part count for shift -->
+                <DataItem category="SAMPLE" id="m1-pcshift" name="parts_counted_shift" type="PART_COUNT" subType="ALL" />
+
+                <!-- MUST have ProcessOccurrenceId -->
+                <!--<DataItem category="EVENT" id="m1-process_occurrence_id_shift" name="process_occurrence_id_shift" type="PROCESS_OCCURRENCE_ID" />-->
+
+                <!-- shift start
+                  https://model.mtconnect.org/#Architecture__686755ea-ff11-4439-91a6-0a3b81216302
+
+                  description:
+                  - track shift start
+
+                  logic:
+                  * msg(shift_start) && PROCESS_TIME/COMPLETE [=UNAVAILABLE] -> assign(iso8601(shift_start))
+                  * cache(shift_has_ended) -> UNAVAILABLE
+                -->
+                <!-- path is 'processes/shift/process_time-start', was 'processes/process_time-start' -->
+                <DataItem category="EVENT" id="m1-start" name="start_time" type="PROCESS_TIME" subType="START" />
+
+                <!-- shift end
+                  https://model.mtconnect.org/#Architecture__ef33cc84-1908-412a-bcf1-72ad572bf837
+
+                  description:
+                  - track shift end
+
+                  logic:
+                  * msg(shift_end) && PROCESS_TIME/START [=value] -> assign(iso8601(shift_end))
+                      next_sample -> UNAVAILABLE                      
+                -->
+                <!-- path is 'processes/shift/process_time-complete', was 'processes/process_time-complete' -->
+                <DataItem category="EVENT" id="m1-complete" name="complete_time" type="PROCESS_TIME" subType="COMPLETE" />
+
+                <!--
+                  https://model.mtconnect.org/#Architecture__be00b027-3408-4419-bcbe-e6fbf0814d20
+
+                  description:
+                  - track state when startup state or delay and when processing parts
+
+                  logic:
+                  * cache(shift_is_starting) || cache(shift_is_active) -> READY
+                  * PART_PROCESSING_STATE [NEEDS_PROCESSING->IN_PROCESS,=IN_PROCESS] -> ACTIVE
+                  * PART_PROCESSING_STATE [IN_PROCESS->NEEDS_PROCESSING,=NEEDS_PROCESSING] -> READY
+                  * cache(shift_is_ending) || cache(shift_has_ended) -> UNAVAILABLE
+                -->
+                <!-- <DataItem category="EVENT" id="m1-procstate" name="process_state" type="PROCESS_STATE" /> -->
+
+                <!--
+                  https://model.mtconnect.org/#Architecture__683746cd-c233-4e1d-8f37-d11f8d0856fd
+                  
+                  description:
+                  - average cycle time, derived from part count
+                  - we most likeley won't get counts that increment by one.  there is too much delay in banner radio -> modbus polling.
+
+                  logic:
+                  * cache(shift_is_starting) -> assign(0)
+                  * msg(part_count) && cache(shift_is_active) -> assign(calc_cycle_time(part_count))
+                  * cache(shift_is_ending) || !cache(shift_is_active) -> UNAVAILABLE
+
+                -->
+                <!-- <DataItem category="SAMPLE" id="m1-cycleavg" name="cycle_time_avg" type="PROCESS_TIMER" subType="PROCESS" statistic="AVERAGE" units="SECOND" /> -->
+
+              </DataItems>
+            </ProcessOccurrence>
+
+          </Components>
+        </Processes>
+
+        <!-- . ditch this? just has m1-pps in it now, commented out -->
+        <Parts id="m1-parts" name="parts">
+          <PartOccurrence id="m1-part_occurrence" name="part_occurrence">
+            <!-- <DataItems> -->
+            <!--
+                https://model.mtconnect.org/#Architecture__c3f4e3e8-e63e-4a50-828a-9b239c644487
+
+                description:
+                - processing parts -> IN_PROCESS
+                - startup state or delay -> NEEDS_PROCESSING
+
+                logic:
+                * PROCESS_TIMER/PROCESS [<60] && cache(shift_is_active) -> IN_PROCESS
+                * PROCESS_TIMER/PROCESS [>60, 0] && (cache(shift_is_starting) || cache(shift_is_active)) -> NEEDS_PROCESSING
+                * cache(shift_is_ending) || !cache(shift_is_active) -> UNAVAILABLE
+              -->
+            <!-- <DataItem category="EVENT" id="m1-pps" name="part_processing_state" type="PART_PROCESSING_STATE" /> -->
+            <!-- </DataItems> -->
+          </PartOccurrence>
+        </Parts>
+
+        <Controller id="m1-controller" name="controller">
+          <DataItems>
+
+            <!--
+              https://model.mtconnect.org/#Architecture__efa904df-e614-4dde-81d4-3d9d41ea5596
+
+              description:
+              - availability of the Marumatsu controller itself
+              - controlled by birth and close/will message configured on 10.0.180.133 MQTT connection to 10.0.180.118
+
+              logic:
+              * msg(mqtt-birth) -> AVAILABLE
+              * msg(mqtt-death) -> UNAVAILABLE
+            -->
+            <DataItem category="EVENT" id="m1-ctl-avail" name="ctl_availability" type="AVAILABILITY" />
+
+            <!--
+              https://model.mtconnect.org/#Architecture__9f36f309-b458-4d91-8df6-a0066f4af584
+              
+              description:
+              - controller is powered or not
+              
+              logic:
+              * Controller/AVAILABILITY [UNAVAILABLE->AVAILABLE,=AVAILABLE] -> ON
+              * Controller/AVAILABILITY [AVAILABLE->UNAVAILABLE] -> OFF
+              * Controller/AVAILABILITY [=UNAVAILABLE] -> UNAVAILABLE
+            -->
+            <!-- <DataItem category="EVENT" id="m1-emp" name="power" type="EQUIPMENT_MODE" subType="POWERED" /> -->
+
+            <!--
+              https://model.mtconnect.org/#Architecture__0c3f6799-5984-4e43-98c4-7f4d694e318c
+
+              description:
+              - accumulated time when controller is powered, otherwise zero
+
+              logic:
+              * EQUIPMENT_MODE/POWERED [=ON] -> accumulate(time)
+              * EQUIPMENT_MODE/POWERED [ON->OFF,=OFF] -> 0
+            -->
+            <!-- <DataItem category="SAMPLE" id="m1-powered" name="powered_time" type="EQUIPMENT_TIMER" subType="POWERED" /> -->
+
+            <!--
+              https://model.mtconnect.org/#Architecture__dc15c276-39c2-48bc-ac96-568566b96b82
+              
+              description:
+              - accumulated time when producing parts, reset to zero when processing delay or controller off
+
+              logic:
+              * EQUIPMENT_MODE/POWERED [=ON] && PART_PROCESSING_STATE [=IN_PROCESS] -> accumulate(time)
+              * EQUIPMENT_MODE/POWERED [=ON] && PART_PROCESSING_STATE [IN_PROCESS->NEEDS_PROCESSING,=NEEDS_PROCESSING] -> 0
+              * EQUIPMENT_MODE/POWERED [ON->OFF,=OFF] -> UNAVAILABLE
+            -->
+            <!-- <DataItem category="SAMPLE" id="m1-loaded" name="loaded_time" type="EQUIPMENT_TIMER" subType="LOADED" /> -->
+
+            <!--
+              https://model.mtconnect.org/#Architecture__9d916c3b-726a-4d21-aaf3-26510a7c1c8c
+
+              description:
+              - accumulated time when not producing parts, reset to zero when processing parts or controller off
+
+              logic:
+              * EQUIPMENT_MODE/POWERED [=ON] && PART_PROCESSING_STATE [=NEEDS_PROCESSING] -> accumulate(time)
+              * EQUIPMENT_MODE/POWERED [=ON] && PART_PROCESSING_STATE [NEEDS_PROCESSING->IN_PROCESS,=IN_PROCESS] -> 0
+              * EQUIPMENT_MODE/POWERED [ON->OFF,=OFF] -> UNAVAILABLE
+            -->
+            <!-- <DataItem category="SAMPLE" id="m1-delayed" name="delayed_time" type="EQUIPMENT_TIMER" subType="DELAYED" /> -->
+
+          </DataItems>
+        </Controller>
+
+        <!-- added 2/23 -->
+        <Systems id="m1-systems" name="systems">
+          <Components>
+            <Hydraulic id="hydraulic" name="hydraulic">
+              <DataItems>
+                <!-- l99/B01000/evt/pressure { "id": "unknown" "a2": c-stacker_pressure } -->
+                <!-- agent.cfg conversionRequired: yes -->
+                <DataItem category="SAMPLE" id="m1-sp" name="stacker_pressure" type="PRESSURE" units="PASCAL" nativeUnits="POUND/INCH^2" />
+              </DataItems>
+            </Hydraulic>
+          </Components>
+        </Systems>
+      </Components>
+    </Device>
+
+    <!-- ========================================== -->
+    <!-- Solarco -->
+    <!-- ========================================== -->
+    <!-- Solarco Boxmatic automatic boxmaker -->
+    <!-- id must match that in setup.yaml -->
+    <!-- name must match that in agent.cfg and setup.yaml -->
+    <Device id="s1" name="Solarco" uuid="solarco" sampleInterval="1000">
+      <Description manufacturer="Solarco" model="Boxmatic" serialNumber="Unknown">
+        Solarco Boxmatic automatic boxmaker      
+      </Description>
+      <!-- . copy from marumatsu when finalized -->
+    </Device>
+
+  </Devices>
+</MTConnectDevices>
