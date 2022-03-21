@@ -56,7 +56,9 @@ for (let folder of folders) {
   // simulate db add/get - assign node_id to each node
   nodes.forEach((node, i) => (node.node_id = i + 1))
 
+  // get { nodeByNodeId: { 3:... }, nodeByPath: { bar:... }, elementById: { foo:... } }
   const indexes = treeProbe.getIndexes(nodes, elements)
+  // console.log(indexes)
 
   treeProbe.assignNodeIds(elements, indexes)
   // console.log('elements', elements)
@@ -73,10 +75,11 @@ for (let folder of folders) {
   // },
 
   // get dictionary with id: path
-  //. better way than specifying node_types here?
   const current = {}
   for (let element of elements) {
+    //. better way than specifying node_types here?
     if (
+      element.node_type !== 'Device' &&
       element.node_type !== 'Composition' &&
       element.node_type !== 'CoordinateSystem'
     ) {
@@ -103,8 +106,11 @@ for (let folder of folders) {
   for (let id of Object.keys(current)) {
     const actual = current[id]
     const expected = snapshot[id]
-    const duplicate = paths[actual]
-    paths[actual] = true
+    const element = indexes.elementById[id]
+    const fullpath = element ? element.device + '/' + actual : ''
+    const duplicate = paths[fullpath]
+    // paths[actual] = true
+    paths[fullpath] = true
     const okay = actual === expected && !duplicate
     const status = okay ? chalk.green('[OK]  ') : chalk.red('[FAIL]')
     const added = expected === undefined
