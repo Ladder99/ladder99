@@ -310,13 +310,8 @@ export function getNodes(elements) {
   return nodes
 }
 
-// make element paths unique by adding more type or name info as needed.
-// eg with
-//   elements = [{ path:'foo', name:'x' }, { path:'foo', name:'y' }]
-// modifies array in-place to
-//   elements = [{ path:'foo[x]', name:'x' }, { path:'foo[y]', name:'y' }]
-//. return collisions?
-function makeUniquePaths(elements) {
+// get dict of dataitem collisions based on fullpath (device/path)
+function getCollisions(elements) {
   const d = {}
   const collisions = {}
   for (const element of elements) {
@@ -326,7 +321,6 @@ function makeUniquePaths(elements) {
     // element.key = element.id.slice(element.id.indexOf('-') + 1)
 
     const fullpath = element.device + '/' + element.path
-    // console.log(fullpath)
     if (d[fullpath]) {
       // collision - add these elements to list as needing uniquification
       if (collisions[fullpath]) {
@@ -339,6 +333,19 @@ function makeUniquePaths(elements) {
     }
   }
   // console.log('collisions', collisions)
+
+  return collisions
+}
+
+// make element paths unique by adding more type or name info as needed.
+// eg with
+//   elements = [{ path:'foo', name:'x' }, { path:'foo', name:'y' }]
+// modifies array in-place to
+//   elements = [{ path:'foo[x]', name:'x' }, { path:'foo[y]', name:'y' }]
+//. return collisions?
+function makeUniquePaths(elements) {
+  // get dict of fullpath collisions (device/path)
+  const collisions = getCollisions(elements)
 
   // get index on elements by id
   const elementById = {}
@@ -370,8 +377,7 @@ function makeUniquePaths(elements) {
               el.path += '-' + compositionType
             }
           }
-          //. if paths still not unique, add name in brackets also eg '[high]'?
-          //. use name || id, in case no name?
+          //. if paths still not unique, add name || id in brackets also eg '[high]'
           break
         } else if (attribute === 'coordinateSystemIdRef') {
           // find the elements referenced and use those types, eg 'motor'.
