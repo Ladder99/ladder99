@@ -108,20 +108,26 @@
                   };
                 -->
                 <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xtemp" name="x_motor_temperature" type="TEMPERATURE" units="CELSIUS" />
+
                 <!-- native mm/sec -->
-                <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xvx" name="x_motor_velocity_rms_x" type="VELOCITY" units="MILLIMETER/SECOND" />
+                <!-- <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xvx" name="x_motor_velocity_rms_x" type="VELOCITY" units="MILLIMETER/SECOND" /> -->
+                <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xvx" name="rms_x" type="VELOCITY" units="MILLIMETER/SECOND" />
                 <!-- native mm/sec -->
-                <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xvz" name="x_motor_velocity_rms_z" type="VELOCITY" units="MILLIMETER/SECOND" />
+                <!-- <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xvz" name="x_motor_velocity_rms_z" type="VELOCITY" units="MILLIMETER/SECOND" /> -->
+                <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xvz" name="rms_z" type="VELOCITY" units="MILLIMETER/SECOND" />
+
                 <!-- native g = 9.80554m/s2, convert to mm/s2 -->
                 <!-- note: nativeScale = The multiplier for the native value. Conversion divides by this value -->
                 <!-- . fixed nativeUnits and scale - vscode complained about m/s2 and blank nativeScale -->
                 <!-- <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xaccx" name="x_motor_accel_rms_x" type="ACCELERATION" subType="ACTUAL" units="MILLIMETER/SECOND^2" nativeUnits="METER/SECOND^2" nativeScale="" /> -->
-                <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xaccx" name="x_motor_accel_rms_x" type="ACCELERATION" subType="ACTUAL" units="MILLIMETER/SECOND^2" nativeScale="0.001" />
+                <!-- <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xaccx" name="x_motor_accel_rms_x" type="ACCELERATION" subType="ACTUAL" units="MILLIMETER/SECOND^2" nativeScale="0.001" /> -->
+                <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xaccx" name="rms_x" type="ACCELERATION" subType="ACTUAL" units="MILLIMETER/SECOND^2" nativeScale="0.001" />
                 <!-- native g = 9.80554m/s2, convert to mm/s2 -->
                 <!-- note: nativeScale = The multiplier for the native value. Conversion divides by this value -->
                 <!-- . fixed nativeUnits and scale - vscode complained about m/s2 and blank nativeScale -->
                 <!-- <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xaccz" name="x_motor_accel_rms_z" type="ACCELERATION" subType="ACTUAL" units="MILLIMETER/SECOND^2" nativeUnits="METER/SECOND^2" nativeScale="" /> -->
-                <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xaccz" name="x_motor_accel_rms_z" type="ACCELERATION" subType="ACTUAL" units="MILLIMETER/SECOND^2" nativeScale="0.001" />
+                <!-- <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xaccz" name="x_motor_accel_rms_z" type="ACCELERATION" subType="ACTUAL" units="MILLIMETER/SECOND^2" nativeScale="0.001" /> -->
+                <DataItem category="SAMPLE" compositionId="m1-x_motor" id="m1-xaccz" name="rms_z" type="ACCELERATION" subType="ACTUAL" units="MILLIMETER/SECOND^2" nativeScale="0.001" />
               </DataItems>
               <Compositions>
                 <Composition id="m1-x_motor" type="MOTOR" />
