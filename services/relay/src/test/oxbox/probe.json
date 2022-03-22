@@ -1,5 +1,4 @@
 {
-  "m": "Device[Micro]",
   "m-avail": "availability",
   "m-cond": "system-condition",
   "m-temp": "temperature",
@@ -7,10 +6,8 @@
   "m-memused": "memory-used",
   "m-cputot": "cpu-total",
   "m-os": "variable-os",
-  "j": "Device[JobBoss]",
   "j-avail": "availability",
   "j-cond": "system-condition",
-  "m1": "Device[Marumatsu]",
   "m1-avail": "availability",
   "m1-chg": "asset_changed",
   "m1-rem": "asset_removed",
@@ -26,6 +23,5 @@
   "m1-start": "processes/shift/process_time-start",
   "m1-complete": "processes/shift/process_time-complete",
   "m1-ctl-avail": "controller/availability",
-  "m1-sp": "systems/hydraulic/pressure",
-  "s1": "Device[Solarco]"
+  "m1-sp": "systems/hydraulic/pressure"
 }
