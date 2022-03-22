@@ -21,68 +21,38 @@ Options:
 `
 
 // get options and folders from cmdline
-let args = process.argv.slice(2)
-let update = false
-let print = false
-if (args[0] === '-u') {
-  update = true
-  args = args.slice(1)
-}
-if (args[0] === '-p') {
-  print = true
-  args = args.slice(1)
-}
-const folders = args
+const options = getOptions()
 
 // show help
-if (folders.length === 0) {
+if (options.help) {
   console.log(help)
   process.exit(0)
 }
 
-for (let folder of folders) {
+for (let folder of options.folders) {
   const probeFile = `src/test/${folder}/probe.xml`
   const snapshotFile = `src/test/${folder}/probe.json`
 
-  // get probe xml as json
-  const json = getXmlToJson(probeFile)
+  // parse xml to list of nodes and elements
+  const json = getXmlToJson(probeFile) // parse probe xml to json
+  const elements = treeProbe.getElements(json) // devices, all dataitems
+  const nodes = treeProbe.getNodes(elements) // devices and unique propdefs
+  simulateDb(nodes) // assign a unique node_id to each node
+  const indexes = treeProbe.getIndexes(nodes, elements) // get { nodeByNodeId, nodeByPath, elementById }
+  treeProbe.assignNodeIds(elements, indexes) // assign device_id and dataitem_id to dataitem elements.
+  const current = getCurrent(elements)
 
-  // get elements (devices, all dataitems)
-  const elements = treeProbe.getElements(json)
-
-  // get nodes (devices and unique propdefs)
-  const nodes = treeProbe.getNodes(elements)
-
-  // simulate db add/get - assign node_id to each node
-  nodes.forEach((node, i) => (node.node_id = i + 1))
-
-  // get { nodeByNodeId: { 3:... }, nodeByPath: { bar:... }, elementById: { foo:... } }
-  const indexes = treeProbe.getIndexes(nodes, elements)
-
-  treeProbe.assignNodeIds(elements, indexes)
-
-  // get dictionary with id: path
-  const current = {}
-  for (let element of elements) {
-    //. need better way
-    if (
-      element.node_type !== 'Device' &&
-      element.node_type !== 'Composition' &&
-      element.node_type !== 'CoordinateSystem'
-    ) {
-      current[element.id] = element.path
-    }
-  }
-
-  const str = JSON.stringify(current, null, 2)
-
-  if (print) {
+  // optional - print json
+  if (options.print) {
+    const str = JSON.stringify(current, null, 2)
     console.log(str)
     continue
   }
 
-  if (update) {
+  // optional - write json to snapshot file
+  if (options.update) {
     console.log('writing', snapshotFile)
+    const str = JSON.stringify(current, null, 2)
     fs.writeFileSync(snapshotFile, str)
     continue
   }
@@ -111,7 +81,8 @@ for (let folder of folders) {
       : `(expected ${chalk.hex('#99d')(expected)})`
     console.log(`${status} ${id}: ${chalk.hex('#99d')(actual)} ${should}`)
   }
-  // look for missing items
+
+  // look for missing items also
   for (let id of Object.keys(snapshot)) {
     if (!current[id]) {
       const expected = snapshot[id]
@@ -120,7 +91,45 @@ for (let folder of folders) {
   }
 }
 
-//
+// ---------------------- helpers
+
+// parse command line arguments, return as options
+function getOptions() {
+  const options = {}
+  let args = process.argv.slice(2)
+  if (args[0] === '-u') {
+    options.update = true
+    args = args.slice(1)
+  }
+  if (args[0] === '-p') {
+    options.print = true
+    args = args.slice(1)
+  }
+  options.folders = args
+  options.help = options.folders.length === 0
+  return options
+}
+
+// assign a unique node_id to each node
+function simulateDb(nodes) {
+  nodes.forEach((node, i) => (node.node_id = i + 1))
+}
+
+// get dictionary with id: path
+function getCurrent(elements) {
+  //. better way?
+  const current = {}
+  for (let element of elements) {
+    if (
+      element.node_type !== 'Device' &&
+      element.node_type !== 'Composition' &&
+      element.node_type !== 'CoordinateSystem'
+    ) {
+      current[element.id] = element.path
+    }
+  }
+  return current
+}
 
 // load an xml file, convert to json, parse and return
 function getXmlToJson(path) {
@@ -129,6 +138,7 @@ function getXmlToJson(path) {
   return json
 }
 
+// load a json file
 function getJson(path) {
   const json = JSON.parse(fs.readFileSync(path).toString())
   return json
