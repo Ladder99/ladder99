@@ -107,7 +107,7 @@ for (let folder of folders) {
     const actual = current[id]
     const expected = snapshot[id]
     const element = indexes.elementById[id]
-    const fullpath = element ? element.device + '/' + actual : ''
+    const fullpath = element ? element.device + '/' + actual : actual
     const duplicate = paths[fullpath]
     // paths[actual] = true
     paths[fullpath] = true

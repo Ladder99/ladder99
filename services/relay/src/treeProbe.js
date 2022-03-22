@@ -365,7 +365,6 @@ function makeUniquePaths(elements) {
       const nitemsWithAttribute = collision.filter(el => !!el[attribute]).length
       // check if at least n-1 items have attribute - if so use that for unique path
       if (nitemsWithAttribute >= n - 1) {
-        //. do as switch with fallthroughs?
         if (attribute === 'compositionId') {
           // if items have compositionId find the composition elements referenced
           // and use those types eg 'motor'.
@@ -378,6 +377,7 @@ function makeUniquePaths(elements) {
             }
           }
           //. if paths still not unique, add name || id in brackets also eg '[high]'
+          // ie if paths are unique, can break out of for loop here
           break
         } else if (attribute === 'coordinateSystemIdRef') {
           // find the elements referenced and use those types, eg 'motor'.
