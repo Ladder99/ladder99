@@ -1,7 +1,9 @@
+// test path generation from mtconnect agent xml
+
 import fs from 'fs' // node filesystem library
 import convert from 'xml-js' // xml parser https://github.com/nashwaan/xml-js
 import chalk from 'chalk' // console colors https://github.com/chalk/chalk
-import * as treeProbe from '../treeProbe.js'
+import * as treeProbe from '../treeProbe.js' // our parser code to test
 
 const help = `
 Test dataitem paths as generated from probe.xml for different examples.
@@ -32,6 +34,7 @@ if (args[0] === '-p') {
 }
 const folders = args
 
+// show help
 if (folders.length === 0) {
   console.log(help)
   process.exit(0)
@@ -45,39 +48,23 @@ for (let folder of folders) {
   const json = getXmlToJson(probeFile)
 
   // get elements (devices, all dataitems)
-  // these include devices as props like device:'Device[camera2]'
   const elements = treeProbe.getElements(json)
-  // console.log('elements', elements)
 
   // get nodes (devices and unique propdefs)
   const nodes = treeProbe.getNodes(elements)
-  // console.log('nodes', nodes)
 
   // simulate db add/get - assign node_id to each node
   nodes.forEach((node, i) => (node.node_id = i + 1))
 
   // get { nodeByNodeId: { 3:... }, nodeByPath: { bar:... }, elementById: { foo:... } }
   const indexes = treeProbe.getIndexes(nodes, elements)
-  // console.log(indexes)
 
   treeProbe.assignNodeIds(elements, indexes)
-  // console.log('elements', elements)
-  // eg
-  // {
-  //   node_type: 'DataItem',
-  //   path: 'availability',
-  //   id: 'd2-avail',
-  //   category: 'EVENT',
-  //   type: 'AVAILABILITY',
-  //   device: 'Device[camera2]',
-  //   device_id: 8,
-  //   dataitem_id: 2
-  // },
 
   // get dictionary with id: path
   const current = {}
   for (let element of elements) {
-    //. better way than specifying node_types here?
+    //. need better way
     if (
       element.node_type !== 'Device' &&
       element.node_type !== 'Composition' &&
@@ -86,11 +73,14 @@ for (let folder of folders) {
       current[element.id] = element.path
     }
   }
+
   const str = JSON.stringify(current, null, 2)
+
   if (print) {
     console.log(str)
     continue
   }
+
   if (update) {
     console.log('writing', snapshotFile)
     fs.writeFileSync(snapshotFile, str)
@@ -99,7 +89,6 @@ for (let folder of folders) {
 
   // get snapshot json with id:path
   const snapshot = getJson(snapshotFile)
-  // console.log(snapshot)
 
   // compare current and snapshot dictionaries
   const paths = {}
@@ -109,7 +98,6 @@ for (let folder of folders) {
     const element = indexes.elementById[id]
     const fullpath = element ? element.device + '/' + actual : actual
     const duplicate = paths[fullpath]
-    // paths[actual] = true
     paths[fullpath] = true
     const okay = actual === expected && !duplicate
     const status = okay ? chalk.green('[OK]  ') : chalk.red('[FAIL]')
