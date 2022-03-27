@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# test ladder99 agent paths
+
+usage="
+Usage: ./test SETUP
+
+[desc]
+
+SETUP is a client name or setup folder, eg oxbox, or ./setups/vmc.
+
+Examples
+    ./test oxbox
+    ./test ./setups/vmc
+"
+
+# show help
+if [ $# -eq 0 ]; then
+    echo "$usage"
+    exit 1
+fi
+
+# get setup folder
+# if starts with '.' treat as a setup folder, else a client name
+if [[ $1 = .* ]]; then
+    SETUP=$1
+else
+    SETUP=../client-$1
+fi
+shift
+
+# build command and call it
+CMD="node services/relay/src/test/test.js $SETUP/volumes/agent"
+# echo $CMD
+bash -c "$CMD"

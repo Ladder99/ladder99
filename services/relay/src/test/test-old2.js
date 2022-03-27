@@ -6,7 +6,7 @@ import chalk from 'chalk' // console colors https://github.com/chalk/chalk
 import * as treeProbe from '../treeProbe.js' // our parser code to test
 
 const help = `
-Test dataitem paths as generated from agent.xml.
+Test dataitem paths as generated from probe.xml for different examples.
 
 Compares generated paths with snapshots, which can be updated with -u.
 Use -p to print the generated paths.
@@ -30,10 +30,8 @@ if (options.help) {
 }
 
 for (let folder of options.folders) {
-  // const probeFile = `src/test/${folder}/probe.xml`
-  const probeFile = `${folder}/agent.xml`
-  // const snapshotFile = `src/test/${folder}/probe.json`
-  const snapshotFile = `${folder}/paths-snapshot.json`
+  const probeFile = `src/test/${folder}/probe.xml`
+  const snapshotFile = `src/test/${folder}/probe.json`
 
   // parse xml to list of nodes and elements
   const json = getXmlToJson(probeFile) // parse probe xml to json
@@ -43,11 +41,6 @@ for (let folder of options.folders) {
   const indexes = treeProbe.getIndexes(nodes, elements) // get { nodeByNodeId, nodeByPath, elementById }
   treeProbe.assignNodeIds(elements, indexes) // assign device_id and dataitem_id to dataitem elements.
   const current = getCurrent(elements)
-
-  if (!fs.existsSync(snapshotFile)) {
-    console.log(`No snapshot file - printing paths...`)
-    options.print = true
-  }
 
   // optional - print json
   if (options.print) {
