@@ -29,72 +29,69 @@ if (options.help) {
   process.exit(0)
 }
 
-for (let folder of options.folders) {
-  // const probeFile = `src/test/${folder}/probe.xml`
-  const probeFile = `${folder}/agent.xml`
-  // const snapshotFile = `src/test/${folder}/probe.json`
-  const snapshotFile = `${folder}/paths-snapshot.json`
+const probeFile = `${options.folder}/agent.xml`
+const snapshotFile = `${options.folder}/paths-snapshot.json`
 
-  // parse xml to list of nodes and elements
-  const json = getXmlToJson(probeFile) // parse probe xml to json
-  const elements = treeProbe.getElements(json) // devices, all dataitems
-  const nodes = treeProbe.getNodes(elements) // devices and unique propdefs
-  simulateDb(nodes) // assign a unique node_id to each node
-  const indexes = treeProbe.getIndexes(nodes, elements) // get { nodeByNodeId, nodeByPath, elementById }
-  treeProbe.assignNodeIds(elements, indexes) // assign device_id and dataitem_id to dataitem elements.
-  const current = getCurrent(elements)
+// parse xml to list of nodes and elements
+const json = getXmlToJson(probeFile) // parse probe xml to json
+const elements = treeProbe.getElements(json) // devices, all dataitems
+const nodes = treeProbe.getNodes(elements) // devices and unique propdefs
+simulateDb(nodes) // assign a unique node_id to each node
+const indexes = treeProbe.getIndexes(nodes, elements) // get { nodeByNodeId, nodeByPath, elementById }
+treeProbe.assignNodeIds(elements, indexes) // assign device_id and dataitem_id to dataitem elements.
+const current = getCurrent(elements)
 
-  if (!fs.existsSync(snapshotFile)) {
-    console.log(`No snapshot file - printing paths...`)
-    options.print = true
-  }
+// optional - write json to snapshot file
+if (options.update) {
+  console.log('writing', snapshotFile)
+  const str = JSON.stringify(current, null, 2)
+  fs.writeFileSync(snapshotFile, str)
+  process.exit(0)
+}
 
-  // optional - print json
-  if (options.print) {
-    const str = JSON.stringify(current, null, 2)
-    console.log(str)
-    continue
-  }
+// optional - print json
+// if (options.print) {
+if (options.print || !fs.existsSync(snapshotFile)) {
+  const str = JSON.stringify(current, null, 2)
+  console.log(str)
+  process.exit(0)
+}
 
-  // optional - write json to snapshot file
-  if (options.update) {
-    console.log('writing', snapshotFile)
-    const str = JSON.stringify(current, null, 2)
-    fs.writeFileSync(snapshotFile, str)
-    continue
-  }
+// if (!fs.existsSync(snapshotFile)) {
+//   console.log(`No snapshot file - printing paths...`)
+//   options.print = true
+// }
 
-  // get snapshot json with id:path
-  const snapshot = getJson(snapshotFile)
+// get snapshot json with id:path
+const snapshot = getJson(snapshotFile)
 
-  // compare current and snapshot dictionaries
-  const paths = {}
-  for (let id of Object.keys(current)) {
-    const actual = current[id]
+// compare current and snapshot dictionaries
+const paths = {}
+for (let id of Object.keys(current)) {
+  const actual = current[id]
+  const expected = snapshot[id]
+  const element = indexes.elementById[id]
+  const fullpath = element ? element.device + '/' + actual : actual
+  const duplicate = paths[fullpath]
+  paths[fullpath] = true
+  const okay = actual === expected && !duplicate
+  const status = okay ? chalk.green('[OK]  ') : chalk.red('[FAIL]')
+  const added = expected === undefined
+  const should = okay
+    ? ''
+    : duplicate
+    ? '(duplicate path)'
+    : added
+    ? '(not in snapshot)'
+    : `(expected ${chalk.hex('#99d')(expected)})`
+  console.log(`${status} ${id}: ${chalk.hex('#99d')(actual)} ${should}`)
+}
+
+// look for missing items also
+for (let id of Object.keys(snapshot)) {
+  if (!current[id]) {
     const expected = snapshot[id]
-    const element = indexes.elementById[id]
-    const fullpath = element ? element.device + '/' + actual : actual
-    const duplicate = paths[fullpath]
-    paths[fullpath] = true
-    const okay = actual === expected && !duplicate
-    const status = okay ? chalk.green('[OK]  ') : chalk.red('[FAIL]')
-    const added = expected === undefined
-    const should = okay
-      ? ''
-      : duplicate
-      ? '(duplicate path)'
-      : added
-      ? '(not in snapshot)'
-      : `(expected ${chalk.hex('#99d')(expected)})`
-    console.log(`${status} ${id}: ${chalk.hex('#99d')(actual)} ${should}`)
-  }
-
-  // look for missing items also
-  for (let id of Object.keys(snapshot)) {
-    if (!current[id]) {
-      const expected = snapshot[id]
-      console.log(`[FAIL] missing ${id} (expected ${expected})`)
-    }
+    console.log(`[FAIL] missing ${id} (expected ${expected})`)
   }
 }
 
@@ -112,8 +109,15 @@ function getOptions() {
     options.print = true
     args = args.slice(1)
   }
-  options.folders = args
-  options.help = options.folders.length === 0
+  options.folder = args[0]
+  if (options.folder) {
+    if (options.folder.startsWith('./')) {
+      options.folder = 'services/relay/src/test/' + options.folder
+    } else {
+      options.folder = '../client-' + options.folder + '/volumes/agent'
+    }
+  }
+  options.help = options.folder === undefined
   return options
 }
 
