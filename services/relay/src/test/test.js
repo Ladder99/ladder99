@@ -13,11 +13,11 @@ Use -p to print the generated paths.
 
 Usage:
     cd services/relay
-    node src/test/test.js [-u] [-p] folder1 [folder2...]
+    node src/test/test.js [-u] [-p] folder
 
 Options:
-    -u update snapsots for given folders
-    -p print id:path for given folders
+    -u update snapshots for given folder
+    -p print id:path json for given folder
 `
 
 // get options and folders from cmdline
