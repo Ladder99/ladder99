@@ -30,7 +30,7 @@ if (options.help) {
 }
 
 const probeFile = `${options.folder}/agent.xml`
-const snapshotFile = `${options.folder}/paths-snapshot.json`
+const snapshotFile = `${options.folder}/path-snapshot.json`
 
 // parse xml to list of nodes and elements
 const json = getXmlToJson(probeFile) // parse probe xml to json
