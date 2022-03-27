@@ -7,6 +7,11 @@ import * as tree from './treeProbe.js'
 export class Probe extends Data {
   type = 'probe' // used by read method
 
+  constructor(setup) {
+    super()
+    this.setup = setup
+  }
+
   // read json into this.json, this.header, then parse .json tree into
   // flat list of .elements and .nodes.
   async read() {
@@ -21,6 +26,13 @@ export class Probe extends Data {
     // nodes should just include devices and dataitems, with eg node_type='Device'
     // eg [{node_type, path, category}, ...]
     this.nodes = tree.getNodes(this.elements) // see treeProbe.js
+
+    //. translate paths in this.nodes to canonical paths, if specified in this.setup
+    this.translate()
+  }
+
+  translate() {
+    // this.setup
   }
 
   // write probe data in .json to db instance, get indexes
