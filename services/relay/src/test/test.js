@@ -36,7 +36,7 @@ const snapshotFile = `${options.folder}/path-snapshot.json`
 
 // parse xml to list of nodes and elements
 //. make this a method in treeProbe
-const setup = lib.importYaml(setupFile)
+const setup = lib.importYaml(setupFile) || {}
 const json = getXmlToJson(probeFile) // parse probe xml to json
 const elements = treeProbe.getElements(json) // devices, all dataitems
 const nodes = treeProbe.getNodes(elements, setup) // devices and unique propdefs
@@ -116,7 +116,8 @@ function getOptions() {
   options.folder = args[0]
   if (options.folder) {
     if (options.folder.startsWith('./')) {
-      options.folder = 'services/relay/src/test/' + options.folder
+      options.clientFolder = 'services/relay/src/test/' + options.folder
+      options.folder = options.clientFolder
     } else {
       options.clientFolder = '../client-' + options.folder
       options.folder = options.clientFolder + '/volumes/agent'
