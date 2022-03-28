@@ -232,8 +232,8 @@ function getPathStep(obj) {
       step = (
         obj.name ||
         obj.nativeName ||
-        obj.tag ||
         obj.id ||
+        obj.tag ||
         ''
       ).toLowerCase()
       break
