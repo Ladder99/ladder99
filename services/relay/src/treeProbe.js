@@ -198,19 +198,6 @@ function getPathStep(obj) {
       params = [obj.type] // eg ['position']
       if (obj.subType) params.push(obj.subType) // eg ['position', 'actual']
 
-      //. do this in the uniquify fn
-      // add named params to help uniquify the path, eg ['temperature', 'statistic=average']
-      // let namedParams = []
-      // for (const key of Object.keys(obj)) {
-      //   if (!ignoreAttributes.has(key)) {
-      //     namedParams.push(key + '=' + obj[key])
-      //   }
-      // }
-      // namedParams.sort()
-      // for (const namedParam of namedParams) {
-      //   params.push(namedParam)
-      // }
-
       // add condition to end
       if (obj.category === 'CONDITION') {
         params.push('condition')
@@ -229,11 +216,15 @@ function getPathStep(obj) {
       break
 
     default:
+      // i think we want name||nativeName||tag||id - save id for last resort?
+      // eg <Axes id="a" name="base"> gives 'base'
+      // eg <Axes id="a"> gives 'axes'
+      // yeah?
       step = (
         obj.name ||
         obj.nativeName ||
-        obj.id ||
         obj.tag ||
+        obj.id ||
         ''
       ).toLowerCase()
       break
@@ -271,12 +262,15 @@ function getParamString(param) {
 //   type: 'AVAILABILITY'
 // }, ...]
 // note that id, name, device were removed
-export function getNodes(elements) {
+export function getNodes(elements, setup) {
   let nodes = []
 
   // handle path collisions by adding more type or name info as needed.
   //. might need indexes first?
   makeUniquePaths(elements)
+
+  // translate paths using regexps to get canonical paths
+  translatePaths(elements, setup)
 
   for (const element of elements) {
     const node = { ...element } // copy element
@@ -442,6 +436,19 @@ function getUniqueByPath(nodes) {
   const d = {}
   nodes.forEach(node => (d[node.path] = node))
   return Object.values(d)
+}
+
+// translate paths in nodes to canonical paths, as specified in the optional setup.paths
+function translatePaths(nodes, setup) {
+  const translations = setup.paths || {}
+  for (let key of Object.keys(translations)) {
+    const value = translations[key]
+    const regexp = new RegExp(key, 'g')
+    for (let node of nodes) {
+      // node.path = node.path.replaceAll(regexp, value)
+      node.path = node.path.replaceAll('base/', 'axes/')
+    }
+  }
 }
 
 // check if all paths in the collision set are unique

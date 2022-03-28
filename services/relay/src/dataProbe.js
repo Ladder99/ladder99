@@ -25,14 +25,7 @@ export class Probe extends Data {
     // nodes are just what we'll add to the db, elements are more complete.
     // nodes should just include devices and dataitems, with eg node_type='Device'
     // eg [{node_type, path, category}, ...]
-    this.nodes = tree.getNodes(this.elements) // see treeProbe.js
-
-    //. translate paths in this.nodes to canonical paths, if specified in this.setup
-    this.translate()
-  }
-
-  translate() {
-    // this.setup
+    this.nodes = tree.getNodes(this.elements, this.setup) // see treeProbe.js
   }
 
   // write probe data in .json to db instance, get indexes

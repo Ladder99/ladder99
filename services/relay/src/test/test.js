@@ -4,6 +4,7 @@ import fs from 'fs' // node filesystem library
 import convert from 'xml-js' // xml parser https://github.com/nashwaan/xml-js
 import chalk from 'chalk' // console colors https://github.com/chalk/chalk
 import * as treeProbe from '../treeProbe.js' // our parser code to test
+import * as lib from '../common/lib.js' // our library fns
 
 const help = `
 Test dataitem paths as generated from agent.xml.
@@ -29,13 +30,16 @@ if (options.help) {
   process.exit(0)
 }
 
+const setupFile = `${options.clientFolder}/setup.yaml`
 const probeFile = `${options.folder}/agent.xml`
 const snapshotFile = `${options.folder}/path-snapshot.json`
 
 // parse xml to list of nodes and elements
+//. make this a method in treeProbe
+const setup = lib.importYaml(setupFile)
 const json = getXmlToJson(probeFile) // parse probe xml to json
 const elements = treeProbe.getElements(json) // devices, all dataitems
-const nodes = treeProbe.getNodes(elements) // devices and unique propdefs
+const nodes = treeProbe.getNodes(elements, setup) // devices and unique propdefs
 simulateDb(nodes) // assign a unique node_id to each node
 const indexes = treeProbe.getIndexes(nodes, elements) // get { nodeByNodeId, nodeByPath, elementById }
 treeProbe.assignNodeIds(elements, indexes) // assign device_id and dataitem_id to dataitem elements.
@@ -114,7 +118,8 @@ function getOptions() {
     if (options.folder.startsWith('./')) {
       options.folder = 'services/relay/src/test/' + options.folder
     } else {
-      options.folder = '../client-' + options.folder + '/volumes/agent'
+      options.clientFolder = '../client-' + options.folder
+      options.folder = options.clientFolder + '/volumes/agent'
     }
   }
   options.help = options.folder === undefined
@@ -154,3 +159,16 @@ function getJson(path) {
   const json = JSON.parse(fs.readFileSync(path).toString())
   return json
 }
+
+// // import a yaml file and parse to js struct.
+// // returns the js struct or null if file not avail.
+// export function importYaml(path) {
+//   try {
+//     const yaml = fs.readFileSync(path, 'utf8')
+//     const yamlTree = libyaml.load(yaml)
+//     return yamlTree
+//   } catch (error) {
+//     console.log(error.message)
+//   }
+//   return null
+// }
