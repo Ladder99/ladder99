@@ -1,5 +1,4 @@
 {
-  "pa1": "Device[pa1]",
   "pa1-connection": "availability",
   "pa1-dev_cond": "system-condition",
   "pa1-dev_msg": "message",
