@@ -1,5 +1,4 @@
 {
-  "dev": "Device[VMC-3Axis]",
   "avail": "availability",
   "dev_asset_chg": "asset_changed",
   "dev_asset_rem": "asset_removed",
@@ -36,8 +35,8 @@
   "cn6": "controller/path/execution",
   "cnt1": "controller/path/tool_id",
   "Ppos": "controller/path/path_position-actual",
-  "Frt": "controller/path/path_feedrate",
-  "Fovr": "controller/path/path_feedrate",
+  "Frt": "controller/path/path_feedrate[frt]",
+  "Fovr": "controller/path/path_feedrate[fovr]",
   "p2": "systems/electric/power_state",
   "clow": "systems/coolant/level-condition",
   "coolpres": "systems/coolant/pressure-condition",
