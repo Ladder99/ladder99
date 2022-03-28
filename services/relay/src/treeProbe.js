@@ -403,7 +403,7 @@ function makeUniquePaths(elements) {
           for (const el of collision) {
             // check if has attribute (one of the array might not)
             if (el[attribute]) {
-              // 2022-03-20 changed to just -statistic
+              // 2022-03-20 changed to just -average, etc
               // el.path += '-statistic=' + el[attribute].toLowerCase()
               el.path += '-' + el[attribute].toLowerCase()
             }
