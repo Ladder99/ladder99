@@ -376,9 +376,8 @@ function makeUniquePaths(elements) {
               el.path += '-' + compositionType
             }
           }
-          //. if paths still not unique, add name || id in brackets also eg '[high]'
-          // ie if paths are unique, can break out of for loop here
-          break
+          // if paths are unique, break out of for loop here - else try next uniquifier
+          if (pathsAreUnique(collision)) break
         } else if (attribute === 'coordinateSystemIdRef') {
           // find the elements referenced and use those types, eg 'motor'.
           for (const el of collision) {
@@ -389,9 +388,8 @@ function makeUniquePaths(elements) {
               el.path += '-' + coordinateType
             }
           }
-          //. if paths still not unique, add name in brackets also eg '[high]'?
-          //. use name || id, in case no name?
-          break
+          // if paths are unique, break out of for loop here - else try next uniquifier
+          if (pathsAreUnique(collision)) break
         } else if (attribute === 'coordinateSystem') {
           // note: The available values for coordinateSystem are WORK and MACHINE
           for (const el of collision) {
@@ -399,7 +397,8 @@ function makeUniquePaths(elements) {
               el.path += '-' + el[attribute].toLowerCase()
             }
           }
-          break
+          // if paths are unique, break out of for loop here - else try next uniquifier
+          if (pathsAreUnique(collision)) break
         } else if (attribute === 'statistic') {
           for (const el of collision) {
             // check if has attribute (one of the array might not)
@@ -409,7 +408,8 @@ function makeUniquePaths(elements) {
               el.path += '-' + el[attribute].toLowerCase()
             }
           }
-          break
+          // if paths are unique, break out of for loop here - else try next uniquifier
+          if (pathsAreUnique(collision)) break
         } else if (attribute === 'name' || attribute === 'nativeName') {
           // use name as last resort - makes dashboards harder to share
           for (const el of collision) {
@@ -417,7 +417,8 @@ function makeUniquePaths(elements) {
               el.path += '[' + el[attribute].toLowerCase() + ']'
             }
           }
-          break
+          // if paths are unique, break out of for loop here - else try next uniquifier
+          if (pathsAreUnique(collision)) break
         } else if (attribute === 'id') {
           // use id as last resort - makes dashboards harder to share
           // note: had tried removing the deviceId- prefix,
@@ -441,6 +442,17 @@ function getUniqueByPath(nodes) {
   const d = {}
   nodes.forEach(node => (d[node.path] = node))
   return Object.values(d)
+}
+
+// check if all paths in the collision set are unique
+function pathsAreUnique(collision) {
+  let allUnique = true
+  const d = {}
+  for (let el of collision) {
+    if (d[el.path]) allUnique = false // ie saw this path before
+    d[el.path] = true
+  }
+  return allUnique
 }
 
 // get indexes for given nodes and elements: nodeByNodeId, nodeByPath, elementById.
