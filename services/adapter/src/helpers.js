@@ -35,7 +35,12 @@ export async function getPlugin(driversFolder, driver) {
 export function getOutputs({ templates, types, deviceId }) {
   // console.log('getOutputs - iterate over output templates')
   const outputs = templates.map(template => {
-    const { value, dependsOn } = getValueFn(deviceId, template.value, types)
+    // const { value, dependsOn } = getValueFn(deviceId, template.value, types)
+    const { value, dependsOn } = getValueFn(
+      deviceId,
+      template.value || `<${template.key}>`, // if value not specified, use <key>
+      types
+    )
     // get output object
     // eg {
     //   key: 'ac1-power_condition',

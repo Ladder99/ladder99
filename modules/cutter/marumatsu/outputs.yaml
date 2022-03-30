@@ -34,6 +34,13 @@ outputs:
   - key: pcjob
     value: <part_count>
 
+  # as a shortcut, can just specify the key - value inferred to be <the key>
+  - key: xvelz
+  - key: xaccz
+  - key: xtemp
+  - key: xvelx
+  - key: xaccx
+
   # shift start and stop times
   - key: start
     value: <start>
