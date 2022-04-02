@@ -115,7 +115,8 @@ services:
       # BACKUP_PRUNING_PREFIX that will get expanded at runtime,
       # Please note that you will need to escape the `$` when providing the value
       # in a docker-compose.yml file, i.e. using $$VAR instead of $VAR.
-      BACKUP_FILENAME_EXPAND: true
+      # note: must be 'true', not true
+      BACKUP_FILENAME_EXPAND: 'true'
       #
       # pruning
       # In case your target bucket or directory contains other files than the ones
