@@ -98,24 +98,26 @@ services:
       # copy of the backup will be stored there.
       - ../$SETUP/volumes/backup:/archive:rw
       #
-      # see postgres service labels for pre and post commands etc
+      # NOTE: see postgres service labels for pre and post commands etc
       #
     environment:
-      # note: nulls are set in .env - keep out of repo
+      # NOTE: null values are set in .env - keep out of repo
+      #
+      # IMPORTANT: override this in client's compose-overrides.yaml with client name!
+      CLIENT: overrideme
+      #
+      # The name of the backup file including the `.tar.gz` extension.
+      BACKUP_FILENAME: backup-$CLIENT-%Y-%m-%dT%H-%M-%S.tar.gz
+      BACKUP_PRUNING_PREFIX: backup-$CLIENT-
       #
       # Setting BACKUP_FILENAME_EXPAND to true allows for environment variable
       # placeholders in BACKUP_FILENAME, BACKUP_LATEST_SYMLINK and in
       # BACKUP_PRUNING_PREFIX that will get expanded at runtime,
       # Please note that you will need to escape the `$` when providing the value
       # in a docker-compose.yml file, i.e. using $$VAR instead of $VAR.
-      # BACKUP_FILENAME_EXPAND: true
-      #
-      # The name of the backup file including the `.tar.gz` extension.
-      BACKUP_FILENAME: postgres-%Y-%m-%dT%H-%M-%S.tar.gz
+      BACKUP_FILENAME_EXPAND: true
       #
       # pruning
-      BACKUP_RETENTION_DAYS: 7
-      BACKUP_CRON_EXPRESSION: '0 7 * * *' # 7am gmt ~ 1am cst
       # In case your target bucket or directory contains other files than the ones
       # managed by this container, you can limit the scope of rotation by setting
       # a prefix value. This would usually be the non-parametrized part of your
@@ -123,18 +125,15 @@ services:
       # you can set BACKUP_PRUNING_PREFIX to `db-backup-` and make sure
       # unrelated files are not affected by the rotation mechanism.
       # (ie it'll prune only file starting with this prefix)
-      # use this in case dump other stuff in these backup folders, eg a readme.
-      # well, can't use this if trying to write to an aws_s3_path remotely also -
-      # because for that, need to specify full path here, eg 'backup/oxbox/postgres-',
-      # and then the local copies won't get pruned.
-      # BACKUP_PRUNING_PREFIX: postgres-
+      BACKUP_RETENTION_DAYS: 7
+      BACKUP_CRON_EXPRESSION: '0 7 * * *' # 7am gmt ~ 1am cst
       #
       # cloud backup
       AWS_ENDPOINT: nyc3.digitaloceanspaces.com
       AWS_S3_BUCKET_NAME: ladder99
-      # AWS_S3_PATH: backup/client # replace with client name etc
       AWS_ACCESS_KEY_ID: null
       AWS_SECRET_ACCESS_KEY: null
+      # AWS_S3_PATH: backup/client # don't use this - causes probs with local backups
       #
       # slack notifications
       NOTIFICATION_URLS: null
