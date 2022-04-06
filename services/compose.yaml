@@ -318,6 +318,9 @@ services:
   # mosquitto
   # ---------------------------------------------------------------------------
   # get mqtt data from devices and publish to mtconnect adapter
+  # see https://hub.docker.com/_/eclipse-mosquitto
+  # and https://mosquitto.org/
+  # the image defines three directories in /mosquitto - config, data, log
   mosquitto:
     container_name: mosquitto
     image: eclipse-mosquitto
