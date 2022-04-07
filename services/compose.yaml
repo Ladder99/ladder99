@@ -335,6 +335,7 @@ services:
     restart: always
     networks:
       - ladder99
+    # see https://kossy0701.medium.com/what-is-tty-true-in-docker-compose-yml-47a72891aee2
     tty: true
     logging:
       options:
