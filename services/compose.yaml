@@ -335,6 +335,7 @@ services:
     restart: always
     networks:
       - ladder99
+    tty: true
     logging:
       options:
         max-size: '20m'
