@@ -271,12 +271,6 @@ services:
       #. why z-hue.ini? is it an arbitrary name for hue-overrides.ini?
       # https://stackoverflow.com/questions/57116402/hue-access-to-hdfs-bypass-default-hue-ini
       - ../$SETUP/volumes/hue/hue.ini:/usr/share/hue/desktop/conf/z-hue.ini
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.hue.rule=Host(`demo-north-beaver.ladder99.com`)
-      - traefik.http.routers.hue.tls=true
-      - traefik.http.routers.hue.tls.certresolver=lets-encrypt
-      - traefik.port=8888
     restart: always
     networks:
       - ladder99
