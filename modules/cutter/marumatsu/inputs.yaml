@@ -23,12 +23,13 @@ connect:
   # subscribe to these topics
   # can use ${deviceId} in topic names
   subscribe:
-    - topic: marumatsu
+    - topic: controller
     - topic: l99/B01000/evt/io
+    - topic: l99/B01000/evt/vibration
+    - topic: l99/B01000/evt/pressure
     # - topic: l99/B01000/evt/ident
     # - topic: l99/B01000/evt/agent
     # - topic: l99/B01000/evt/gateway
-    # - topic: l99/B01000/evt/vibration
     # - topic: l99/B01000/evt/current
 
   # # publish an empty message to receive the query response
@@ -43,9 +44,9 @@ connect:
 # define message topic handlers
 handlers:
   # ----------------------------------------------------------------------------
-  # handle marumatsu messages
+  # handle controller messages
   # ----------------------------------------------------------------------------
-  marumatsu:
+  controller:
     # make '$' the payload value - 'birth', 'sleep', or 'death'
     initialize: '$ = payload'
     # define lookup function, which returns a value given some js code.
