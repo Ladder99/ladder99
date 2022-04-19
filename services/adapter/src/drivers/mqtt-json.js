@@ -86,6 +86,9 @@ export class AdapterDriver {
         payload = message
       }
 
+      //.................. very temporary stopgap while travelling ...................
+      if (payload.id && payload.id !== '535172') return
+
       // iterate over message handlers - array of [topic, handler]
       // eg [['l99/ccs/evt/query', { unsubscribe, initialize, definitions, inputs, ... }], ...]
       let msgHandled = false
