@@ -211,7 +211,7 @@ services:
     #. can you do that by setting grafana_port to nothing?
     # see cloudbeaver comments.
     # ports:
-    #   - $GRAFANA_PORT:3000/tcp
+    #   - '$GRAFANA_PORT:3000/tcp'
     environment:
       # need these for provisioning datasources.
       # null is a docker convention for passing values in through envars.
