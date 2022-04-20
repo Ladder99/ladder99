@@ -173,7 +173,7 @@ export class AdapterDriver {
           } else {
             // ie handler.process = 'text_message'
 
-            let equationKeys = new Set(['connection'])
+            let equationKeys = new Set(['connection']) //.. ?
 
             for (let equationKey of equationKeys) {
               const expression = handler.augmentedExpressions[equationKey]
