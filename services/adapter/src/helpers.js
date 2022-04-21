@@ -3,6 +3,7 @@
 import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 import * as lib from './common/lib.js'
 
+//. is this used? by the eval fns? should it not be instantiated in a class for each device?
 let keyvalues = {}
 
 // load the plugin specified by the drivers folder and driver name.

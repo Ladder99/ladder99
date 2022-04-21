@@ -126,12 +126,13 @@ async function setupDevice({ device, cache, client, devices }) {
 // -------------------------------------------------------
 
 // setup a device source
+// loads and initializes any plugin/driver code
 async function setupSource({ source, cache, client, devices, device }) {
   //
   // console.log(`source`, source) // don't print - might have password etc
   const { module, driver, protocol, host, port, connection } = source
 
-  // import driver plugin, eg micro.js
+  // import driver plugin, eg micro.js or mqtt-json.js
   const plugin = await getPlugin(driversFolder, driver)
   source.plugin = plugin // save to source so on agent connection can tell it socket
 
@@ -204,6 +205,10 @@ async function setupSource({ source, cache, client, devices, device }) {
   //. add eg for each param
   console.log(`Adapter initializing driver for ${driver}...`)
   plugin.init({
+    //. simpler/better to pass the whole source object here, in case has weird stuff in it.
+    //. so - remove all the source subobjects below, and update all the drivers.
+    source,
+
     client,
     device,
     driver, // eg 'random'

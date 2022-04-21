@@ -95,14 +95,13 @@ handlers:
   #     "a73": x_motor_accel_rms_x
   # };
   l99/B01000/evt/vibration:
-    # make '$' the message payload dictionary and add faultKeys for quick
-    # lookups of faults - payload.faults is a dictionary of faults.
+    # make '$' the message payload dictionary
     initialize: '$ = payload'
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
     #. explain
-    #. call it iterate-expressions
+    #. call it 'algorithm: iterate-expressions'
     process: iterate_inputs
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.

@@ -21,10 +21,10 @@ export class AdapterDriver {
   // initialize the client plugin
   // queries the device for address space definitions, subscribes to topics.
   // inputs is the inputs.yaml file parsed to a js tree.
-  // note: types IS used - by the part(cache, $) fn evaluation
   // advice is a dict of optional fns that are called at various points in the code.
   //. is advice used also?
-  init({ device, host, port, cache, inputs, types, advice }) {
+  // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
+  init({ source, device, host, port, cache, inputs, types, advice }) {
     console.log('MQTT Initializing mqtt-json driver for', device.id)
     const url = `mqtt://${host}:${port}`
 
@@ -114,7 +114,8 @@ export class AdapterDriver {
           let $ = {} // a variable representing payload data - must be let not const
           eval(handler.initialize)
 
-          //. call this iterate_expressions
+          //. call this handler.algorithm, update all modules
+          //. call this iterate_expressions, update all module inputs.yaml
           if (handler.process === 'iterate_inputs') {
             console.log(`MQTT handle iterate_inputs`)
             //
