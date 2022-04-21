@@ -87,7 +87,12 @@ export class AdapterDriver {
       }
 
       //.................. very temporary stopgap while travelling ...................
-      if (payload.id && payload.id !== '535172') return
+      // if (payload.id && payload.id !== '535172') return
+      if (
+        source.messageIds &&
+        !source.messageIds.split(',').includes(payload.id)
+      )
+        return
 
       // iterate over message handlers - array of [topic, handler]
       // eg [['l99/ccs/evt/query', { unsubscribe, initialize, definitions, inputs, ... }], ...]
