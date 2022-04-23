@@ -27,10 +27,10 @@ $BODY$;
 -- test fn
 --.... turn off before committing
 
-SELECT time, value 
-FROM get_last_value(
-  'Marumatsu',
-  'availability', 
-  '1week'
-);
+-- SELECT time, value 
+-- FROM get_last_value(
+--   'Marumatsu',
+--   'availability', 
+--   '1week'
+-- );
 
