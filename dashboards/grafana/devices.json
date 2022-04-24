@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 9,
-  "iteration": 1649418755585,
+  "id": 12,
+  "iteration": 1650763191897,
   "links": [
     {
       "asDropdown": false,
@@ -77,7 +77,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
+        "w": 6,
         "x": 0,
         "y": 0
       },
@@ -107,7 +107,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time, value\nFROM history_text\nWHERE\n  device = $device\n  and path = 'availability'\nORDER BY time desc\nlimit 1",
+          "rawSql": "SELECT\n  time, value\nFROM history_text\nWHERE\n  device = $device\n  and path = 'availability'\n  and time > now() - interval '1w'\nORDER BY time desc\nlimit 1",
           "refId": "A",
           "select": [
             [
@@ -172,5 +172,5 @@
   "timezone": "",
   "title": "Devices",
   "uid": "devices",
-  "version": 13
+  "version": 2
 }
