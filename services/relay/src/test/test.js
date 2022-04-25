@@ -1,24 +1,32 @@
 // test path generation from mtconnect agent xml
+// see help below for usage
+// see also 'test' script in top-level folder, which runs this
 
 import fs from 'fs' // node filesystem library
 import convert from 'xml-js' // xml parser https://github.com/nashwaan/xml-js
 import chalk from 'chalk' // console colors https://github.com/chalk/chalk
 import * as treeProbe from '../treeProbe.js' // our parser code to test
+// import * as endpoint from '../endpoint.js' // includes xml parser factory
 import * as lib from '../common/lib.js' // our library fns
+
+// const parser = endpoint.getXMLParser()
 
 const help = `
 Test dataitem paths as generated from agent.xml.
 
 Compares generated paths with snapshots, which can be updated with -u.
 Use -p to print the generated paths.
+Use -n to print the nodes as will be added to database.
 
 Usage:
     cd services/relay
-    node src/test/test.js [-u] [-p] folder
+    node src/test/test.js [-u] [-p] [-n] folder [specifier]
 
 Options:
     -u update snapshots for given folder
     -p print id:path json for given folder
+    -n print nodes for given folder
+    specifier - will be appended to filename as folder/agent-specifier.xml
 `
 
 // get options and folders from cmdline
@@ -31,8 +39,8 @@ if (options.help) {
 }
 
 const setupFile = `${options.clientFolder}/setup.yaml`
-const probeFile = `${options.folder}/agent.xml`
-const snapshotFile = `${options.folder}/path-snapshot.json`
+const probeFile = `${options.folder}/agent${options.specifier}.xml`
+const snapshotFile = `${options.folder}/path-snapshot${options.specifier}.json`
 
 // parse xml to list of nodes and elements
 //. make this a method in treeProbe
@@ -50,6 +58,13 @@ if (options.update) {
   console.log('writing', snapshotFile)
   const str = JSON.stringify(current, null, 2)
   fs.writeFileSync(snapshotFile, str)
+  process.exit(0)
+}
+
+// optional - print nodes
+if (options.nodes) {
+  const str = JSON.stringify(nodes, null, 2)
+  console.log(str)
   process.exit(0)
 }
 
@@ -113,6 +128,10 @@ function getOptions() {
     options.print = true
     args = args.slice(1)
   }
+  if (args[0] === '-n') {
+    options.nodes = true
+    args = args.slice(1)
+  }
   options.folder = args[0]
   if (options.folder) {
     if (options.folder.startsWith('./')) {
@@ -124,6 +143,7 @@ function getOptions() {
     }
   }
   options.help = options.folder === undefined
+  options.specifier = args[1] ? '-' + args[1] : ''
   return options
 }
 
