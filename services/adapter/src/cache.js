@@ -8,10 +8,6 @@
 
 //. eg ___
 
-// import { lightFormat } from 'date-fns'
-// import { formatISO9075 } from 'date-fns'
-// import dayjs from 'dayjs'
-
 export class Cache {
   constructor() {
     this._map = new Map() // key-item pairs //. why not just {} ?
@@ -142,6 +138,7 @@ function getShdr(output, value, timestamp = '') {
   } else if (category === 'CONDITION') {
     //. pick these values out of the value, which should be an object
     //. also, can have >1 value for a condition - how handle?
+    //. see https://github.com/Ladder99/ladder99-ce/issues/130
     if (!value || value === 'UNAVAILABLE') {
       shdr = `${timestamp}|${key}|${value}||||${value}`
     } else {
@@ -149,7 +146,7 @@ function getShdr(output, value, timestamp = '') {
       const nativeCode = 'nativeCode'
       const nativeSeverity = 'nativeSeverity'
       const qualifier = 'qualifier'
-      const message = value
+      const message = value //. need to escape spaces and pipes - gets sent as CDATA in agent output, yes?
       shdr = `${timestamp}|${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
     }
   } else {
