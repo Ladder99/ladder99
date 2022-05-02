@@ -31,6 +31,8 @@ Adapter plugins are defined in services/adapter/src/drivers.
 
 ## Links
 
+For architecture, design decisions, and milestones/versions/branches, see https://github.com/Ladder99/ladder99-ce/wiki.
+
 For the Ladder99 documentation, see https://docs.ladder99.com.
 
 For more on MTConnect, see https://www.mtconnect.org.
