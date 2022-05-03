@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 12,
-  "iteration": 1650763191897,
+  "id": 9,
+  "iteration": 1651610286461,
   "links": [
     {
       "asDropdown": false,
@@ -51,24 +51,27 @@
           "mappings": [
             {
               "options": {
+                "AVAILABLE": {
+                  "color": "green",
+                  "index": 1,
+                  "text": "ON"
+                },
                 "UNAVAILABLE": {
                   "color": "red",
-                  "index": 0
+                  "index": 0,
+                  "text": "OFF"
                 }
               },
               "type": "value"
             }
           ],
+          "noValue": "Unknown",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
+                "color": "#6f6f6f",
                 "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
               }
             ]
           }
@@ -77,7 +80,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 6,
+        "w": 3,
         "x": 0,
         "y": 0
       },
@@ -107,7 +110,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time, value\nFROM history_text\nWHERE\n  device = $device\n  and path = 'availability'\n  and time > now() - interval '1w'\nORDER BY time desc\nlimit 1",
+          "rawSql": "select time, value from get_last_value($device, 'availability', '1w');",
           "refId": "A",
           "select": [
             [
@@ -171,6 +174,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "Devices",
-  "uid": "devices",
-  "version": 2
+  "uid": "v4HPISUnk",
+  "version": 26
 }
