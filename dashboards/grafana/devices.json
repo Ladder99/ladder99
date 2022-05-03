@@ -152,7 +152,7 @@
         "definition": "select name from devices",
         "description": null,
         "error": null,
-        "hide": 0,
+        "hide": 2,
         "includeAll": true,
         "label": null,
         "multi": false,
@@ -175,5 +175,5 @@
   "timezone": "",
   "title": "Devices",
   "uid": "v4HPISUnk",
-  "version": 26
+  "version": 27
 }
