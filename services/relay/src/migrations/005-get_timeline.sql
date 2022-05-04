@@ -22,7 +22,7 @@ CREATE OR REPLACE FUNCTION get_timeline (
   IN from_ms bigint, -- start time in milliseconds since 1970-01-01
   IN to_ms bigint, -- end time in milliseconds since 1970-01-01
   IN clamp boolean = TRUE, -- return left edge as first time 
-  IN search_limit text = '1h' -- search limit - don't search further into past than this
+  IN search_limit text = '1w' -- search limit - don't search further into past than this
 )
 RETURNS TABLE ("time" timestamp, "value" text) -- ANSI standard SQL
 LANGUAGE sql
