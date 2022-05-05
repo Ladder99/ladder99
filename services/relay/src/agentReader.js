@@ -60,7 +60,7 @@ export class AgentReader {
           await sample.read(this.endpoint, this.from, this.count) // get observations
           if (instanceIdChanged(sample, probe)) break probe
           await sample.write(this.db, probe.indexes) // write this.observations to db
-          await this.feedback.check(probe) // check for changes, write feedback to devices
+          await this.feedback.check(sample) // check for changes, write feedback to devices
           this.from = sample.sequence.next //. ?
           await lib.sleep(this.interval)
         } while (true)
