@@ -51,7 +51,7 @@ export class AgentReader {
         await current.read(this.endpoint) // get observations and this.sequence numbers
         if (instanceIdChanged(current, probe)) break probe
         await current.write(this.db, probe.indexes) // write this.observations to db
-        await this.feedback.check(current) // check for changes, write feedback to devices
+        await this.feedback.set(current) // set current monitored values
         this.from = current.sequence.next
 
         // sample - get sequence of dataitem values, write to db
