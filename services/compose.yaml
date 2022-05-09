@@ -434,22 +434,27 @@ services:
     ports:
       - $PGPORT:5432/tcp
     #
+    # the PostgreSQL image uses these environment variables.
     # re PGPASSWORD,
     #   see https://stackoverflow.com/a/6405162/243392
     #   use a .pgpass file? https://www.postgresql.org/docs/9.1/libpq-pgpass.html
     #   but PGPASSWORD's deprecation is contested -
     #   see https://stackoverflow.com/questions/6523019/postgresql-scripting-psql-execution-with-password
-    # the PostgreSQL image uses these environment variables.
-    # note: POSTGRES_PASSWORD is REQUIRED.
-    # the first time this is run (and the data directory is empty), it uses 
-    # these envars to initialize the database. 
-    # to change the db password would require an ALTER USER SQL statement, 
-    # or \password in psql.
-    # see https://hub.docker.com/_/postgres
     environment:
       POSTGRES_DB: $PGDATABASE
       POSTGRES_USERNAME: $PGUSER
+      # note: POSTGRES_PASSWORD is REQUIRED.
+      # the first time this is run (and the data directory is empty), it uses 
+      # these envars to initialize the database. 
+      # to change the db password would require an ALTER USER SQL statement, 
+      # or \password in psql.
+      # see https://hub.docker.com/_/postgres
       POSTGRES_PASSWORD: $PGPASSWORD
+      # note: we need PGDATA for Windows so can point to a subdirectory of the mount folder.
+      # otherwise get error saying unable to set permissions on the folder.
+      # put here so it's consistent across platforms.
+      # see https://lifesaver.codes/answer/chmod-changing-permissions-of-var-lib-postgresql-data-permission-denied-116
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
       - ../$SETUP/volumes/postgres/data:/var/lib/postgresql/data
       - backup:/backup # a docker volume - see backup service and end of this file
