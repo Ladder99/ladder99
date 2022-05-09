@@ -456,7 +456,8 @@ services:
       # # see https://lifesaver.codes/answer/chmod-changing-permissions-of-var-lib-postgresql-data-permission-denied-116
       # PGDATA: /var/lib/postgresql/data/pgdata
       # that didn't work. but can use wsl terminal to run ./start ?
-      # see https://stackoverflow.com/questions/66753829/how-to-move-workspacea-simple-project-from-windows-file-system-mnt-to-linu
+      # see https://github.com/bitnami/bitnami-docker-postgresql/issues/237#issuecomment-672249407
+      # and https://stackoverflow.com/questions/66753829/how-to-move-workspacea-simple-project-from-windows-file-system-mnt-to-linu
     volumes:
       - ../$SETUP/volumes/postgres/data:/var/lib/postgresql/data
       - backup:/backup # a docker volume - see backup service and end of this file
