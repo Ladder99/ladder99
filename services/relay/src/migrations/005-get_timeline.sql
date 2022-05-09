@@ -83,13 +83,13 @@ $BODY$
 -- then tacks on the value for the left edge.
 -- first define some SQL variables
 -- referenced below with eg '(TABLE from_time)'
-declare
+DECLARE
   from_time timestamptz := ms2timestamptz(from_ms);
   to_time timestamptz := ms2timestamptz(to_ms);
-begin
+BEGIN
 -- do a straightforward query for time and value for the 
 -- given device, path, and timestamp
-return query
+RETURN QUERY
 SELECT history_all.time, history_all.value->>0 AS value -- note: ->>0 extracts the top-level jsonb value
 FROM history_all
 WHERE
@@ -118,11 +118,12 @@ FROM
   ) AS subquery1 -- subquery name is required but not used
 ORDER BY time; -- sort the combined query results
 -- handle case where no data found
+-- see https://stackoverflow.com/questions/39162608/postgres-conditional-union
 -- because grafana needs SOMETHING to work with, or else leaves tooltips everywhere
 IF NOT FOUND THEN
   RETURN QUERY SELECT from_time as time, null as value;
 END IF;
-end;
+END;
 $BODY$;
 
 
