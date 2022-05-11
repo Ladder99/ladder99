@@ -450,11 +450,14 @@ services:
       # or \password in psql.
       # see https://hub.docker.com/_/postgres
       POSTGRES_PASSWORD: $PGPASSWORD
-      # note: we need PGDATA for Windows so can point to a subdirectory of the mount folder.
-      # otherwise get error saying unable to set permissions on the folder.
-      # put here so it's consistent across platforms.
-      # see https://lifesaver.codes/answer/chmod-changing-permissions-of-var-lib-postgresql-data-permission-denied-116
-      PGDATA: /var/lib/postgresql/data/pgdata
+      # # note: we need PGDATA for Windows so can point to a subdirectory of the mount folder.
+      # # otherwise get error saying unable to set permissions on the folder.
+      # # put here so it's consistent across platforms.
+      # # see https://lifesaver.codes/answer/chmod-changing-permissions-of-var-lib-postgresql-data-permission-denied-116
+      # PGDATA: /var/lib/postgresql/data/pgdata
+      # that didn't work. but can use wsl terminal to run ./start ?
+      # see https://github.com/bitnami/bitnami-docker-postgresql/issues/237#issuecomment-672249407
+      # and https://stackoverflow.com/questions/66753829/how-to-move-workspacea-simple-project-from-windows-file-system-mnt-to-linu
     volumes:
       - ../$SETUP/volumes/postgres/data:/var/lib/postgresql/data
       - backup:/backup # a docker volume - see backup service and end of this file
