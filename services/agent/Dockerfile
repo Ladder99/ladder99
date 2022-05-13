@@ -51,7 +51,8 @@ CMD /usr/bin/ruby /etc/mtconnect/simulator/run_scenario.rb -l \
 #
 # our pipeline docker-compose yaml has this for the agent service -
 #   agent:
-#     command: agent debug /data/agent/agent.cfg
+#     working_dir: /data/agent
+#     command: agent run agent.cfg
 #     volumes:
 #       - ./$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
 #
