@@ -37,8 +37,14 @@ export class Data {
     //   //. adjust fetch count/speed
     // }
     if (this.json.MTConnectError) {
-      this.errors = this.json.MTConnectError.Errors.map(e => e.Error.errorCode)
-      throw new Error(JSON.stringify(this.errors))
+      // this.errors = this.json.MTConnectError.Errors.map(e => e.Error.errorCode) // fails if only one error
+      // let errors = this.json.MTConnectError.Errors
+      // if (!Array.isArray(errors)) errors = [errors]
+      // 'from' must be greater than 647331 - prevent with firstSequence
+      // 'count' must be less than or equal to 32 - prevent with bufferSize
+      console.log(this.json)
+      console.log(`Tried to read from ${from} with count ${count}.`)
+      throw new Error('MTConnectError - see logs for details')
     }
 
     // get .header for probe, current, or sample xmls
@@ -56,6 +62,7 @@ export class Data {
         first: this.header.firstSequence,
         next: this.header.nextSequence,
         last: this.header.lastSequence,
+        size: this.header.bufferSize,
       }
     }
   }

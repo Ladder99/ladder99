@@ -53,6 +53,9 @@ export class AgentReader {
         await current.write(this.db, probe.indexes) // write this.observations to db
         await this.feedback.set(current) // set current monitored values
         this.from = current.sequence.next
+        if (this.count > current.sequence.size) {
+          this.count = current.sequence.size
+        }
 
         // sample - get sequence of dataitem values, write to db
         const sample = new Observations('sample')
@@ -61,7 +64,7 @@ export class AgentReader {
           if (instanceIdChanged(sample, probe)) break probe
           await sample.write(this.db, probe.indexes) // write this.observations to db
           await this.feedback.check(sample) // check for changes, write feedback to devices
-          this.from = sample.sequence.next //. ?
+          this.from = sample.sequence.next // make sure our 'from' value is ok
           await lib.sleep(this.interval)
         } while (true)
       } while (true)
