@@ -39,12 +39,19 @@ export class Data {
     if (this.json.MTConnectError) {
       // this.errors = this.json.MTConnectError.Errors.map(e => e.Error.errorCode) // fails if only one error
       // let errors = this.json.MTConnectError.Errors
-      // if (!Array.isArray(errors)) errors = [errors]
-      // 'from' must be greater than 647331 - prevent with firstSequence
-      // 'count' must be less than or equal to 32 - prevent with bufferSize
+      // 'from' must be greater than 647331 - respond to with from=<that number+1 or more>, or better - bump back to the 'current' read loop
+      // 'count' must be less than or equal to 32 - prevent with count<=bufferSize
       console.log(this.json)
       console.log(`Tried to read from ${from} with count ${count}.`)
-      throw new Error('MTConnectError - see logs for details')
+      // throw new Error('MTConnectError - see logs for details')
+      return false // failed read - will bump back to 'current' loop
+      // if (!Array.isArray(errors)) errors = [errors]
+      // for (let error of errors) {
+      //   const str = JSON.stringify(error)
+      //   if (str.includes('greater than')) {
+      //   }
+      // }
+      // return { fromMinimum }
     }
 
     // get .header for probe, current, or sample xmls
@@ -65,5 +72,6 @@ export class Data {
         size: this.header.bufferSize,
       }
     }
+    return true // handled read okay
   }
 }

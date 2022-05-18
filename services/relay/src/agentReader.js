@@ -60,12 +60,23 @@ export class AgentReader {
         // sample - get sequence of dataitem values, write to db
         const sample = new Observations('sample')
         sample: do {
-          await sample.read(this.endpoint, this.from, this.count) // get observations
+           // get observations
+          if (!await sample.read(this.endpoint, this.from, this.count)) {
+            // handle out of range error during read by increasing throughput
+            this.count += 100
+            // this.interval -= 100
+            console.log(`Got error during read - increasing throughput: count=${this.count}.`)
+            break current
+           }
           if (instanceIdChanged(sample, probe)) break probe
           await sample.write(this.db, probe.indexes) // write this.observations to db
           await this.feedback.check(sample) // check for changes, write feedback to devices
           this.from = sample.sequence.next // make sure our 'from' value is ok
-          await lib.sleep(this.interval)
+          // too many observations might come in during this interval, 
+          // so next read could get an xml error message.
+          // so need dynamic from, count, and interval.
+          // if get error, decrease this.interval and/or increase this.count and bump back to 'current' loop.
+          await lib.sleep(this.interval) 
         } while (true)
       } while (true)
     } while (true)
