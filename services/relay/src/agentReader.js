@@ -53,6 +53,8 @@ export class AgentReader {
         await current.write(this.db, probe.indexes) // write this.observations to db
         await this.feedback.set(current) // set current monitored values
         this.from = current.sequence.next
+        // make sure our count value is not over the agent buffer size, 
+        // else next read would get an error.
         if (this.count > current.sequence.size) {
           this.count = current.sequence.size
         }
@@ -63,7 +65,7 @@ export class AgentReader {
            // get observations
           if (!await sample.read(this.endpoint, this.from, this.count)) {
             // handle out of range error during read by increasing throughput
-            this.count += 100
+            this.count += 100 // the number of observations to read next time
             // this.interval -= 100
             console.log(`Got error during read - increasing throughput: count=${this.count}.`)
             break current
