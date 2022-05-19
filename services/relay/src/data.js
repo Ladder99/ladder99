@@ -37,21 +37,23 @@ export class Data {
     //   //. adjust fetch count/speed
     // }
     if (this.json.MTConnectError) {
-      // this.errors = this.json.MTConnectError.Errors.map(e => e.Error.errorCode) // fails if only one error
-      // let errors = this.json.MTConnectError.Errors
-      // 'from' must be greater than 647331 - respond to with from=<that number+1 or more>, or better - bump back to the 'current' read loop
-      // 'count' must be less than or equal to 32 - prevent with count<=bufferSize
+      console.log(`Error - tried to read from ${from} with count ${count}.`)
       console.log(this.json)
-      console.log(`Tried to read from ${from} with count ${count}.`)
-      // throw new Error('MTConnectError - see logs for details')
-      return false // failed read - will bump back to 'current' loop
-      // if (!Array.isArray(errors)) errors = [errors]
-      // for (let error of errors) {
-      //   const str = JSON.stringify(error)
-      //   if (str.includes('greater than')) {
-      //   }
-      // }
+      // throw new Error('MTConnectError - see logs for details') // this stops the relay service
+      // xml error messages include:
+      //   'count' must be less than or equal to 32 - prevent with count<=bufferSize
+      //   'from' must be greater than 647331 - respond with from=<that number+1 or more>, or better - bump back to the 'current' read loop
+      //   'from' must be less than 809 - how does this happen? when agent gets reset?
+      // this.errors = this.json.MTConnectError.Errors.map(e => e.Error.errorCode) // fails if only one error
+      let errors = this.json.MTConnectError.Errors
+      if (!Array.isArray(errors)) errors = [errors]
+      for (let error of errors) {
+        const str = JSON.stringify(error)
+        if (str.includes('greater than')) {
+        }
+      }
       // return { fromMinimum }
+      return false // failed read - will bump from 'sample' back to 'current' loop
     }
 
     // get .header for probe, current, or sample xmls
