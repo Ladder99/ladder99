@@ -509,6 +509,8 @@ services:
     build: ./relay
     profiles:
       - relay
+    # this runs a process manager that passes SIGTERM to your app gracefully
+    # see https://maximorlov.com/process-signals-inside-docker-containers/
     init: true
     environment:
       # specify where code can find data.

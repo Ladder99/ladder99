@@ -22,4 +22,8 @@ ENV PATH /data/node_modules/.bin:$PATH
 COPY ./src ./src
 
 # base command - can pass params with CMD
+# note: When you run an image that uses the exec form (ie an array), 
+# Docker will run the command as is, without a wrapper process. 
+# Your Node.js application will be the first and only running process with PID 1.
+
 ENTRYPOINT ["node", "/data/app/src/relay.js"]
