@@ -2,4 +2,5 @@
 
 # list docker containers, to fit narrow screen
 
-docker container ls --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}\t{{.Image}}\t{{.Command}}'
+# docker container ls --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}\t{{.Image}}\t{{.Command}}'
+docker container ls --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'
