@@ -1,6 +1,7 @@
 // check schedule info from jobboss db
 
 import fs from 'fs' // node lib for filesys
+import { DateTime } from 'luxon' // see https://moment.github.io/luxon/
 
 const minutes = 60 * 1000 // 60 ms
 const hours = 60 * minutes
@@ -93,11 +94,18 @@ export class Schedule {
   // and write to the cache
   async poll() {
     console.log(`Jobboss schedule poll`)
-    // since the server is set to Z/GMT time, need to 'trick' it to thinking it's 6 hrs earlier
-    const datetime = new Date(
-      new Date().getTime() +
-        (this.client.timezoneOffsetHrs || 0) * 60 * 60 * 1000
-    )
+
+    // since the server is set to Z/GMT time, need to 'trick' it to thinking it's 5 or 6 hrs earlier
+    // const datetime = new Date(
+    //   new Date().getTime() +
+    //     (this.client.timezoneOffsetHrs || 0) * 60 * 60 * 1000
+    // )
+    // we can use Luxon to get offsets for a particular timezone, eg 'America/Chicago'.
+    // ie instead of hardcoding it to -5 hours or something.
+    // there's probably a better way to do this with luxon, but this is the simplest change.
+    const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
+    const datetime = new Date(new Date().getTime() + offsetMinutes * 60 * 1000)
+
     for (let device of this.devices) {
       if (device.jobbossId) {
         const schedule = await this.getSchedule(device, datetime) // get { start, stop }
