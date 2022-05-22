@@ -16,7 +16,7 @@
     "luxon": "^2.4.0",
     "mqtt": "^4.2.6",
     "mssql": "^7.3.0",
-    "node-fetch": "^3.0.0",
+    "node-fetch": "^3.2.4",
     "node-hid": "^2.1.1",
     "node-opcua-client": "^2.50.0",
     "nodemon": "^2.0.14",
