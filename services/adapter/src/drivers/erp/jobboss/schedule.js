@@ -100,7 +100,7 @@ export class Schedule {
     //   new Date().getTime() +
     //     (this.client.timezoneOffsetHrs || 0) * 60 * 60 * 1000
     // )
-    // we can use Luxon to get offsets for a particular timezone, eg 'America/Chicago'.
+    // we can use Luxon to get offset for a particular timezone, eg 'America/Chicago'.
     // ie instead of hardcoding it to -5 hours or something.
     // there's probably a better way to do this with luxon, but this is the simplest change.
     const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420

@@ -30,6 +30,8 @@
 // to calculate the 'availability' percentage, the metrics view in the db
 // does 'active' / 'available'.
 
+import { DateTime } from 'luxon' // see https://moment.github.io/luxon/
+
 const minutes = 60 * 1000 // 60 ms
 const hours = 60 * minutes
 const days = 24 * hours
@@ -54,7 +56,13 @@ export class Metric {
     this.device = device
     this.metric = metric
 
-    this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
+    // get timezone offset from Zulu in milliseconds
+    // this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
+    // use timezone string like 'America/Chicago' instead of a hardcoded offset like -5.
+    // we can use Luxon to get offset for a particular timezone.
+    // there's probably a better way to do this with luxon, but this is the simplest change.
+    const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
+    this.timezoneOffset = offsetMinutes * 60 * 1000 // ms
 
     console.log(`Availability - get device node_id...`)
     this.device.node_id = await this.db.getDeviceId(device.name) // repeats until device is there
