@@ -23,7 +23,7 @@ export class AgentReader {
     this.instanceId = null
 
     this.from = null
-    //. these will be dynamic - optimize on the fly
+    // these are dynamic - optimized on the fly
     //. or use streaming instead of polling
     this.interval = params.fetchInterval
     this.count = params.fetchCount
