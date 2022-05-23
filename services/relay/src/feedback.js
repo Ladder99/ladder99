@@ -6,6 +6,11 @@
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
+// optional flag defined in .env
+// lets you turn off the feedback mechanism from oxbox 004,
+// but leave it on for 001. otherwise they might interfere with each other.
+const feedbackOff = process.env.RELAY_FEEDBACK_OFF
+
 // a Feedback instance monitors dataitems for changes and
 // sends feedback to devices.
 export class Feedback {
@@ -18,6 +23,8 @@ export class Feedback {
   // find relevant devices, connect to them, save connections
   start() {
     console.log('Feedback - start')
+
+    if (feedbackOff) return
 
     const that = this
 
@@ -43,6 +50,7 @@ export class Feedback {
 
   // save current values so can check for changes in the check method
   set(current) {
+    if (feedbackOff) return
     console.log(`Feedback - check current data...`)
     const observations = current.observations || []
     // find relevant devices
@@ -85,6 +93,7 @@ export class Feedback {
 
   // note: this is called by agentReader.js whenever new observations come in.
   async check(sample) {
+    if (feedbackOff) return
     console.log(`Feedback - check sample data...`)
     const observations = sample.observations || []
     // find relevant devices
