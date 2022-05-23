@@ -380,6 +380,9 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
+    logging:
+      options:
+        max-size: '20m'
 
   # ---------------------------------------------------------------------------
   # play
@@ -591,6 +594,9 @@ services:
       - ../$SETUP/volumes/traefik/:/etc/traefik/
     networks:
       - ladder99
+    logging:
+      options:
+        max-size: '20m'
 
 networks:
   ladder99:
