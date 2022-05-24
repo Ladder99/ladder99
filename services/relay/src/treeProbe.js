@@ -445,8 +445,8 @@ function translatePaths(nodes, setup) {
     const value = translations[key]
     const regexp = new RegExp(key, 'g')
     for (let node of nodes) {
-      // node.path = node.path.replaceAll(regexp, value)
-      node.path = node.path.replaceAll('base/', 'axes/')
+      node.path = node.path.replaceAll(regexp, value)
+      // node.path = node.path.replaceAll('base/', 'axes/')
     }
   }
 }
