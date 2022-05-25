@@ -210,10 +210,12 @@ export class Metric {
     // shift these by client timezoneOffsetHrs, as need them for comparisons
     const schedule = {
       start: new Date(
-        new Date(start).getTime() - client.timezoneOffsetHrs * 60 * 60 * 1000
+        // new Date(start).getTime() - client.timezoneOffsetHrs * 60 * 60 * 1000
+        new Date(start).getTime() - this.timezoneOffset
       ),
       stop: new Date(
-        new Date(stop).getTime() - client.timezoneOffsetHrs * 60 * 60 * 1000
+        // new Date(stop).getTime() - client.timezoneOffsetHrs * 60 * 60 * 1000
+        new Date(stop).getTime() - this.timezoneOffset
       ),
     }
     console.log('Availability - schedule', schedule)
