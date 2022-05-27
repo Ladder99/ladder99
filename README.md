@@ -16,7 +16,7 @@ MTConnect standardizes factory device data flow and vocabulary - it was started 
 
 Ladder99 is developed by MRIIOT, your agile digital transformation partners.
 
-![screenshot](design/screenshots/agent-html_1200.jpg)
+![screenshot](docs/screenshots/agent-html_1200.jpg)
 
 ## Folders
 
