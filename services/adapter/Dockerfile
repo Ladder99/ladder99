@@ -38,14 +38,14 @@ RUN apt-get update -y && apt-get install --fix-missing -y nodejs npm libudev-dev
   libusb-1.0-0 libusb-1.0-0-dev pkg-config
 
 # install javascript dependencies
-# for npm install-clean, see https://docs.npmjs.com/cli/v8/commands/npm-ci
+# for npm clean-install, see https://docs.npmjs.com/cli/v8/commands/npm-ci
 # note: With the --production flag (or when the NODE_ENV environment 
 # variable is set to production), npm will not install modules listed in 
 # devDependencies. 
 WORKDIR /data
 ENV NODE_ENV production
 COPY ./package*.json ./
-RUN npm install-clean --production
+RUN npm clean-install --production
 
 # install app
 WORKDIR /data/app
