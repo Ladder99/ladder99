@@ -37,6 +37,8 @@ For more on MTConnect, see https://www.mtconnect.org.
 
 For more on MRIIOT and what we offer, see https://mriiot.com.
 
+For architecture, design decisions, and milestones/versions/branches, see the [internal docs](docs).
+
 ## License
 
 Apache 2.0
