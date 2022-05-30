@@ -27,25 +27,26 @@
 # lts is currently node 16
 FROM node:lts-slim AS build
 
-# install javascript dependencies
-# for npm clean-install, see https://docs.npmjs.com/cli/v8/commands/npm-ci
-# note: With the --production flag (or when the NODE_ENV environment 
-# variable is set to production), npm will not install modules listed in 
-# devDependencies.
 WORKDIR /usr/app
 ENV NODE_ENV production
 COPY package.json /usr/app/
 
-#. really not sure of this sequence - where do npm audit fix?
+# install javascript dependencies
 
-# make package-lock.json, node_modules
-RUN npm install --production
+# generate package-lock from package.json, but don't create node_modules
+# note: With the --only=production flag (or when the NODE_ENV environment 
+# variable is set to production), npm will not install modules listed in 
+# devDependencies.
+RUN npm install --package-lock-only --only=production
 
-# install from package-lock.json
-RUN npm clean-install --only=production
+# fix vulnerabilities where able and update package-lock.json.
+# normally audit fix runs a full install under the hood, but we don't want that yet.
+RUN npm audit fix --package-lock-only --only=production
 
-# fix vulnerabilities where able
-RUN npm audit fix
+# install deterministically from package-lock.json to node_modules.
+# audit=false means don't submit packages to registry.
+# see https://docs.npmjs.com/cli/v8/commands/npm-ci
+RUN npm clean-install --audit=false --only=production
 
 
 # ------------------------------------------------------------------------
@@ -58,10 +59,10 @@ USER node
 WORKDIR /usr/app
 
 # need package.json so node will know we're using modules
-COPY --chown=node:node --from=build /usr/app/node_modules /usr/app/node_modules
-
 COPY --chown=node:node package.json /usr/app/package.json
+
 COPY --chown=node:node src /usr/app/src
+COPY --chown=node:node --from=build /usr/app/node_modules /usr/app/node_modules
 
 # base command - can pass params with CMD [?]
 # note: When you run an image that uses the exec form (ie an array), 
