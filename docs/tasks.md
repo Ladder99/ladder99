@@ -1,5 +1,4 @@
-- [Clearing up disk space](#clearing-up-disk-space)
-- [Fixing vulnerabilities](#fixing-vulnerabilities)
+# Tasks
 
 ## Clearing up disk space
 
