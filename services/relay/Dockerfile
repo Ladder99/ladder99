@@ -10,6 +10,13 @@
 # see https://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
 # and https://snyk.io/blog/10-best-practices-to-containerize-nodejs-web-applications-with-docker/
 
+# not sure we need two stages, but it works
+
+
+# ------------------------------------------------------------------------
+# first stage - get dependencies
+# ------------------------------------------------------------------------
+
 # start with an os image
 # Users should look to upgrade to v16 as soon as possible. The currently active 
 # LTS branch, v14, will be maintained through the end of April 2023.
@@ -28,18 +35,31 @@ FROM node:lts-slim AS build
 WORKDIR /usr/app
 ENV NODE_ENV production
 COPY package.json /usr/app/
-RUN npm install
+
+#. really not sure of this sequence - where do npm audit fix?
+
+# make package-lock.json, node_modules
+RUN npm install --production
+
+# install from package-lock.json
 RUN npm clean-install --only=production
-RUN npm audit
+
+# fix vulnerabilities where able
 RUN npm audit fix
 
+
+# ------------------------------------------------------------------------
 # second stage - copy over node_modules and source code
+# ------------------------------------------------------------------------
+
 FROM node:lts-slim
 ENV NODE_ENV production
 USER node
 WORKDIR /usr/app
-# need package.json here so node will know we're using modules
+
+# need package.json so node will know we're using modules
 COPY --chown=node:node --from=build /usr/app/node_modules /usr/app/node_modules
+
 COPY --chown=node:node package.json /usr/app/package.json
 COPY --chown=node:node src /usr/app/src
 
