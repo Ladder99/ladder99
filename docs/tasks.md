@@ -2,7 +2,7 @@
 
 ## Clearing up disk space
 
-docker system prune didn't work? must rm /var/lib/docker
+docker system prune didn't work? must use `rm -r /var/lib/docker`
 
 it seems to be a bug with devicemapper
 https://github.com/moby/moby/issues/3182
@@ -59,18 +59,10 @@ eg on oxbox 001 -
 
 ## Fixing vulnerabilities
 
-in nodejs services, eg adapter, meter, relay
+for nodejs services (adapter, compiler, meter, recorder, relay), whenever you start a service it will fix any known security vulnerabilities, where possible.
 
-when you build and run these services on encabs, messages may flash by about security vulnerabilities. 
+when you run something like `./start oxbox relay`, it builds the docker image and runs a container using the associated [Dockerfile](../services/relay/Dockerfile).
 
-if you run `npm audit` on these folders locally, you can see what dependencies need patching, and if there's one available.
+that build will do a fresh install of all the packages defined in packages.json, and do an audit to look for known security vulnerabilities, and apply upgrades where possible.
 
-run `npm audit fix` in each of those folders - this updates the package-lock.json references.
-
-git commit them all, git push.
-
-then in encabulators run:
-
-    docker stop adapter meter relay
-    ./update oxbox  -- pulls updated package-lock.jsons
-    ./start oxbox adapter meter relay  -- builds and runs the docker images with updated packages
+the Dockerfiles use node LTS, which is currently on version 16, and will be supported until 2024-04-30
