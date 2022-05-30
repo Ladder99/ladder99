@@ -24,7 +24,7 @@
 # FROM node:15  # huge 350mb compressed image
 # FROM node:15-alpine  # smallest, but harder to work with
 # FROM node:15.14-slim
-# lts is currently node 16
+# lts is currently node 16, maintained until April 2024.
 FROM node:lts-slim AS build
 
 WORKDIR /usr/app
