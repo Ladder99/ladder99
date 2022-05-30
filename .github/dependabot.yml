@@ -2,6 +2,8 @@ version: 2
 updates:
   - package-ecosystem: 'npm'
     directory: /services/adapter
+    # Raise pull requests for version updates
+    # to npm against the 'develop' branch
     target-branch: 'develop'
     schedule:
       interval: 'daily'
