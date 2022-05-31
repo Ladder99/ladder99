@@ -5,7 +5,7 @@
 # to run image as a container,
 #   docker run -it --init --rm --name containerfoo imagefoo
 #
-# keep in synch with other Dockerfiles - adapter, meter, recorder, relay.
+# keep in synch with other Dockerfiles - meter, recorder, relay.
 #
 # see https://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
 # and https://snyk.io/blog/10-best-practices-to-containerize-nodejs-web-applications-with-docker/
