@@ -92,9 +92,8 @@ WORKDIR /usr/app
 
 # need package.json so node will know we're using modules
 COPY --chown=node:node package.json /usr/app/package.json
-
-COPY --chown=node:node src /usr/app/src
 COPY --chown=node:node --from=build /usr/app/node_modules /usr/app/node_modules
+COPY --chown=node:node src /usr/app/src
 
 # base command - can pass params with CMD [?]
 # note: When you run an image that uses the exec form (ie an array), 
