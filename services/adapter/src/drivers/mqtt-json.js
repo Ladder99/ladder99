@@ -3,7 +3,6 @@
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
-// import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../common/lib.js'
 
@@ -71,7 +70,7 @@ export class AdapterDriver {
     // message - array of bytes (assumed to be a json string)
     function onMessage(msgTopic, message) {
       message = message.toString()
-      console.log(`MQTT got message ${msgTopic}: ${message.slice(0, 140)}`)
+      // console.log(`MQTT got message ${msgTopic}: ${message.slice(0, 140)}`)
       // console.log(`Got message on topic ${msgTopic}: ${message}`)
 
       // const receivedTime = new Date()
@@ -86,13 +85,7 @@ export class AdapterDriver {
         payload = message
       }
 
-      //.................. very temporary stopgap while travelling ...................
-      // if (payload.id && payload.id !== '535172') return
-      // if (
-      //   source.messageIds &&
-      //   !source.messageIds.split(',').includes(payload.id)
-      // )
-      //   return
+      //.................. temporary stopgap - won't scale ...................
       if (source.messageIds && !source.messageIds[payload.id]) return
 
       // iterate over message handlers - array of [topic, handler]
@@ -103,7 +96,8 @@ export class AdapterDriver {
 
         // eg msgTopic => 'l99/ccs/evt/query'
         if (topic === msgTopic) {
-          console.log(`MQTT handle topic ${topic}`)
+          //
+          // console.log(`MQTT handle topic ${topic}`)
 
           // unsubscribe from topics as needed
           for (const entry of handler.unsubscribe || []) {
@@ -116,20 +110,20 @@ export class AdapterDriver {
           // eg can assign payload values to a dictionary $ here for fast lookups.
           // eg initialize: 'payload.forEach(item => $[item.address] = item)'
           // eg initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
-          console.log(`MQTT run initialize handler`)
+          // console.log(`MQTT run initialize handler`)
           let $ = {} // a variable representing payload data - must be let not const
           eval(handler.initialize)
 
           //. call this handler.algorithm, update all modules
           //. call this iterate_expressions, update all module inputs.yaml
           if (handler.process === 'iterate_inputs') {
-            console.log(`MQTT handle iterate_inputs`)
+            // console.log(`MQTT handle iterate_inputs`)
             //
             // define lookup function
             // eg lookup: '($, js) => eval(js)'
             //. do this before-hand somewhere and store as handler.lookupFn,
             // to save eval time.
-            console.log(`MQTT define lookup fn`, handler.lookup.toString())
+            // console.log(`MQTT define lookup fn`, handler.lookup.toString())
             const lookup = eval(handler.lookup)
 
             // iterate over expressions - an array of [key, expression],
@@ -137,11 +131,11 @@ export class AdapterDriver {
             // evaluate each expression and add value to cache.
             //. this could be like the other process - use msg('foo'), calculations,
             // then would be reactive instead of evaluating each expression, and unifies code.
-            console.log(`MQTT iterate over expressions`)
+            // console.log(`MQTT iterate over expressions`)
             const pairs = Object.entries(handler.expressions || {})
             for (const [key, expression] of pairs) {
               // use the lookup function to get value from payload, if there
-              console.log(`MQTT lookup ${expression} for ${key}`)
+              // console.log(`MQTT lookup ${expression} for ${key}`)
               const value = lookup($, expression)
               // note guard for undefined value -
               // if need to reset a cache value, must pass value 'UNAVAILABLE' explicitly.
