@@ -161,19 +161,23 @@ export class Metric {
     // )
     console.log('Availability - now', now)
 
-    // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ... }
+    // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ..., holiday }
     console.log(`Availability - get schedule...`)
 
-    //. do this every 10mins or so on separate timer, save to this
+    //. could do this every 10mins or so on separate timer, save to this.schedule
     const schedule = await this.getSchedule()
 
-    // check if we're within scheduled time
-    const scheduled = now >= schedule.start && now <= schedule.stop
-    if (scheduled) {
-      console.log(`Availability - in scheduled time window`)
-      await this.updateBins(now, this.interval)
+    // update bins if we're in the scheduled time window
+    if (schedule.holiday) {
+      console.log(`Availability - holiday`)
     } else {
-      console.log(`Availability - not in scheduled time window`)
+      const inWindow = now >= schedule.start && now <= schedule.stop
+      if (inWindow) {
+        console.log(`Availability - in scheduled time window`)
+        await this.updateBins(now, this.interval)
+      } else {
+        console.log(`Availability - not in scheduled time window`)
+      }
     }
   }
 
@@ -197,27 +201,24 @@ export class Metric {
   // converts the timestrings to local time for the client.
   //. will want to pass an optional datetime for the date to search for.
   async getSchedule() {
+    const getHoliday = text =>
+      text === 'UNAVAILABLE' || text === 'HOLIDAY' ? 'HOLIDAY' : undefined
+    const getDate = text =>
+      // shift date by client timezoneOffset, as need for comparisons
+      new Date(new Date(text).getTime() - this.timezoneOffset)
     const table = 'history_text'
     const device = this.device
-    const client = this.client
     const { startPath, stopPath } = this.metric
     // note: these can return 'UNAVAILABLE' or 'HOLIDAY', in which case,
     // schedule.start etc will be 'Invalid Date'.
     // any comparison with those will yield false.
-    //.. search for a given date, not latest value
-    const start = await this.db.getLatestValue(table, device, startPath)
-    const stop = await this.db.getLatestValue(table, device, stopPath)
-    // shift these by client timezoneOffsetHrs, as need them for comparisons
-    const schedule = {
-      start: new Date(
-        // new Date(start).getTime() - client.timezoneOffsetHrs * 60 * 60 * 1000
-        new Date(start).getTime() - this.timezoneOffset
-      ),
-      stop: new Date(
-        // new Date(stop).getTime() - client.timezoneOffsetHrs * 60 * 60 * 1000
-        new Date(stop).getTime() - this.timezoneOffset
-      ),
-    }
+    //. search for a given date, not latest value [why?]
+    const startText = await this.db.getLatestValue(table, device, startPath)
+    const stopText = await this.db.getLatestValue(table, device, stopPath)
+    const holiday = getHoliday(startText) || getHoliday(stopText) // 'HOLIDAY' or undefined
+    const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
+    const stop = holiday || getDate(stopText)
+    const schedule = { start, stop, holiday }
     console.log('Availability - schedule', schedule)
     return schedule
   }
