@@ -25,7 +25,7 @@ export class Cache {
   // eg { 'ac1-power_fault': [{ key:'ac1-power_condition', value: (fn), ...}], ... }
   // addOutputs(outputs, socket) {
   addOutputs(outputs) {
-    console.log(`cache.addOutputs - add ${outputs.length} outputs`)
+    console.log(`Cache - add ${outputs.length} outputs`)
     for (const output of outputs) {
       // console.log(output.key, output.dependsOn)
       // output.socket = socket // attach tcp socket to each output also
@@ -51,7 +51,7 @@ export class Cache {
       if (output.socket) {
         // send last known data value to agent
         const shdr = getShdr(output, output.lastValue || 'UNAVAILABLE')
-        console.log(`Cache - send ${shdr.slice(0, 60)}...`)
+        // console.log(`Cache - send ${shdr.slice(0, 60)}...`)
         try {
           output.socket.write(shdr + '\n')
         } catch (error) {
@@ -62,15 +62,15 @@ export class Cache {
   }
 
   // set a key-value pair in the cache.
-  // eg set('ac1-power_warning', true)
+  // eg set('ac1-power_warning', { quiet: true})
   // options is { timestamp, quiet }
   // timestamp is an optional STRING that is used in the SHDR
   //. explain distinction between value param and value variable below, with examples
   set(key, value, options = {}) {
-    if (!options.quiet) {
-      const s = typeof value === 'string' ? `"${value.slice(0, 99)}..."` : value
-      console.log(`Cache - set ${key}: ${s}`)
-    }
+    // if (!options.quiet) {
+    //   const s = typeof value === 'string' ? `"${value.slice(0, 99)}..."` : value
+    //   console.log(`Cache - set ${key}: ${s}`)
+    // }
     // update the cache value
     this._map.set(key, value)
     // get list of outputs associated with this key
@@ -150,7 +150,7 @@ function getShdr(output, value, timestamp = '') {
       shdr = `${timestamp}|${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
     }
   } else {
-    console.warn(`warning: unknown category '${category}'`)
+    console.warn(`Cache warning: unknown category '${category}'`)
   }
   return shdr
 }
