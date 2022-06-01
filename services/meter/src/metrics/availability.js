@@ -63,6 +63,7 @@ export class Metric {
     // there's probably a better way to do this with luxon, but this is the simplest change.
     const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
     this.timezoneOffset = offsetMinutes * 60 * 1000 // ms
+    console.log(`Availability - tz, offset`, client.timezone, offsetMinutes)
 
     console.log(`Availability - get device node_id...`)
     this.device.node_id = await this.db.getDeviceId(device.name) // repeats until device is there
@@ -134,6 +135,7 @@ export class Metric {
     console.log(`Availability - start, now`, startMinute, nowMinute)
     let state = null
     for (let minute = startMinute; minute < nowMinute; minute++) {
+      console.log(`Availability - backfill minute`, minute)
       const path = startStopTimes[minute]
       if (path === this.metric.startPath) {
         state = 1
@@ -173,7 +175,7 @@ export class Metric {
     } else {
       const inWindow = now >= schedule.start && now <= schedule.stop
       if (inWindow) {
-        console.log(`Availability - in scheduled time window`)
+        console.log(`Availability - in scheduled time window, so update bins`)
         await this.updateBins(now, this.interval)
       } else {
         console.log(`Availability - not in scheduled time window`)
