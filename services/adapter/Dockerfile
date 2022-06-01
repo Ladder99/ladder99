@@ -87,13 +87,17 @@ RUN npm clean-install --audit=false --only=production
 
 FROM node:lts-slim
 ENV NODE_ENV production
-USER node
+#. um, getting read/write errors on cookie files because they're already there as root
+# USER node
 WORKDIR /usr/app
 
 # need package.json so node will know we're using modules
-COPY --chown=node:node package.json /usr/app/package.json
-COPY --chown=node:node --from=build /usr/app/node_modules /usr/app/node_modules
-COPY --chown=node:node src /usr/app/src
+# COPY --chown=node:node package.json /usr/app/package.json
+# COPY --chown=node:node --from=build /usr/app/node_modules /usr/app/node_modules
+# COPY --chown=node:node src /usr/app/src
+COPY package.json /usr/app/package.json
+COPY --from=build /usr/app/node_modules /usr/app/node_modules
+COPY src /usr/app/src
 
 # base command - can pass params with CMD [?]
 # note: When you run an image that uses the exec form (ie an array), 
