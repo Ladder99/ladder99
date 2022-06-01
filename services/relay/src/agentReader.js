@@ -101,7 +101,7 @@ export class AgentReader {
 
 function instanceIdChanged(data1, data2) {
   if (data1.instanceId !== data2.instanceId) {
-    console.log(`InstanceId changed - falling back to probe...`)
+    console.log(`Relay - instanceId changed - falling back to probe...`)
     return true
   }
   return false

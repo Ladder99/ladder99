@@ -18,26 +18,19 @@ export class Data {
   // note: subclass is responsible for parsing the .json and converting it to
   // dataitem elements etc.
   async read(endpoint, from, count) {
-    console.log(`Read ${endpoint.baseUrl}, ${from}, ${count}`)
+    console.log(`Relay - read ${endpoint.baseUrl}, ${from}, ${count}`)
 
     this.json = await endpoint.fetchJson(this.type, from, count)
 
     // parse .json
-    console.log(`Parse header...`)
+    // console.log(`Relay - parse header...`)
 
     // get .errors
     //. handle errors as needed
-    // eg <Errors><Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error></Errors>
-    // if (codes.includes('OUT_OF_RANGE')) {
-    //   // we lost some data, so reset the index and get from start of buffer
-    //   console.log(
-    //     `Out of range error - some data was lost. Will reset index and get as much as possible from start of buffer.`
-    //   )
-    //   this.from = null
-    //   //. adjust fetch count/speed
-    // }
     if (this.json.MTConnectError) {
-      console.log(`Error - tried to read from ${from} with count ${count}.`)
+      console.log(
+        `Relay error - tried to read from ${from} with count ${count}.`
+      )
       console.log(this.json)
       // throw new Error('MTConnectError - see logs for details') // this stops the relay service
       // xml error messages include:
@@ -52,7 +45,6 @@ export class Data {
         if (str.includes('greater than')) {
         }
       }
-      // return { fromMinimum }
       return false // failed read - will bump from 'sample' back to 'current' loop
     }
 

@@ -94,7 +94,7 @@ export class Feedback {
   // note: this is called by agentReader.js whenever new observations come in.
   async check(sample) {
     if (feedbackOff) return
-    console.log(`Feedback - check sample data...`)
+    // console.log(`Feedback - check sample data...`)
     const observations = sample.observations || []
     // find relevant devices
     for (let device of this.setup.devices || []) {
@@ -106,7 +106,7 @@ export class Feedback {
           //. hardcode as mqtt for now
           if (source.mqtt) {
             // check for changed observation (feedback.monitor is a dataitemId)
-            console.log(`Feedback - looking for changes in ${feedback.monitor}`)
+            // console.log(`Feedback - looking for changes in ${feedback.monitor}`)
             for (let observation of observations) {
               if (observation.dataItemId === feedback.monitor) {
                 if (
