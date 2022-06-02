@@ -23,7 +23,8 @@ export class AgentReader {
     this.instanceId = null
 
     this.from = null
-    //. these will be dynamic - optimize on the fly
+    // these are dynamic - optimized on the fly
+    //. or use streaming instead of polling
     this.interval = params.fetchInterval
     this.count = params.fetchCount
   }
@@ -38,7 +39,8 @@ export class AgentReader {
 
     // probe - get agent data structures and write to db
     probe: do {
-      const probe = new Probe()
+      // we pass this.setup also so probe can use translations for dataitem paths
+      const probe = new Probe(this.setup) // see dataProbe.js
       await probe.read(this.endpoint) // read xml into probe.json, probe.elements, probe.nodes
       await probe.write(this.db) // write/sync dataitems to db, get probe.indexes
       this.instanceId = probe.instanceId
@@ -49,17 +51,45 @@ export class AgentReader {
         await current.read(this.endpoint) // get observations and this.sequence numbers
         if (instanceIdChanged(current, probe)) break probe
         await current.write(this.db, probe.indexes) // write this.observations to db
-        await this.feedback.check(current) // check for changes, write feedback to devices
+        await this.feedback.set(current) // set current monitored values
         this.from = current.sequence.next
+        // make sure our count value is not over the agent buffer size,
+        // else next sample read would get an error.
+        if (this.count > current.sequence.size) {
+          this.count = current.sequence.size
+        }
 
         // sample - get sequence of dataitem values, write to db
         const sample = new Observations('sample')
         sample: do {
-          await sample.read(this.endpoint, this.from, this.count) // get observations
+          // get observations
+          const status = await sample.read(this.endpoint, this.from, this.count)
+          // if (!(await sample.read(this.endpoint, this.from, this.count))) {
+          //   // handle out of range error during read by increasing throughput
+          //   this.count += 100 // the number of observations to read next time
+          //   // this.interval -= 100
+          //   console.log(
+          //     `Got error during read - increasing throughput: count=${this.count}.`
+          //   )
+          //   break current
+          // }
           if (instanceIdChanged(sample, probe)) break probe
+          if (!status) {
+            // handle out of range error during read by increasing throughput
+            this.count += 100 // the number of observations to read next time
+            // this.interval -= 100
+            console.log(
+              `Got error during read - increasing throughput: count=${this.count}.`
+            )
+            break current
+          }
           await sample.write(this.db, probe.indexes) // write this.observations to db
-          await this.feedback.check(probe) // check for changes, write feedback to devices
-          this.from = sample.sequence.next //. ?
+          await this.feedback.check(sample) // check for changes, write feedback to devices
+          this.from = sample.sequence.next // make sure our 'from' value is ok
+          // too many observations might come in during this interval,
+          // so next read could get an xml error message.
+          // so need dynamic from, count, and interval.
+          // if get error, decrease this.interval and/or increase this.count and bump back to 'current' loop.
           await lib.sleep(this.interval)
         } while (true)
       } while (true)
@@ -71,7 +101,7 @@ export class AgentReader {
 
 function instanceIdChanged(data1, data2) {
   if (data1.instanceId !== data2.instanceId) {
-    console.log(`InstanceId changed - falling back to probe...`)
+    console.log(`Relay - instanceId changed - falling back to probe...`)
     return true
   }
   return false

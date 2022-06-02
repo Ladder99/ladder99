@@ -6,6 +6,11 @@
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
+// optional flag defined in .env
+// lets you turn off the feedback mechanism from oxbox 004,
+// but leave it on for 001. otherwise they might interfere with each other.
+const feedbackOff = process.env.RELAY_FEEDBACK_OFF
+
 // a Feedback instance monitors dataitems for changes and
 // sends feedback to devices.
 export class Feedback {
@@ -18,6 +23,8 @@ export class Feedback {
   // find relevant devices, connect to them, save connections
   start() {
     console.log('Feedback - start')
+
+    if (feedbackOff) return
 
     const that = this
 
@@ -33,8 +40,40 @@ export class Feedback {
           // handle connection
           mqtt.on('connect', function onConnect() {
             console.log(`Feedback - connected to mqtt broker`)
-            source.mqtt = mqtt // save connection
+            //. save to source.feedback object instead?
+            source.mqtt = mqtt // save connection to source object
           })
+        }
+      }
+    }
+  }
+
+  // save current values so can check for changes in the check method
+  set(current) {
+    if (feedbackOff) return
+    console.log(`Feedback - check current data...`)
+    const observations = current.observations || []
+    // find relevant devices
+    for (let device of this.setup.devices || []) {
+      // find relevant sources
+      for (let source of device.sources || []) {
+        const feedback = source.feedback
+        if (feedback) {
+          // make sure we have a connection available
+          //. hardcode as mqtt for now
+          if (source.mqtt) {
+            // check for changed observation
+            // console.log(`Feedback - looking for changes in ${feedback.monitor}`)
+            for (let observation of observations) {
+              if (observation.dataItemId === feedback.monitor) {
+                console.log(
+                  `Feedback - setting saved value to ${observation.value}...`
+                )
+                // save observation value (eg jobnum) to source object
+                source.lastValue = observation.value
+              }
+            }
+          }
         }
       }
     }
@@ -53,9 +92,10 @@ export class Feedback {
   // data is a Data object from dataObservations.js
 
   // note: this is called by agentReader.js whenever new observations come in.
-  async check(data) {
-    console.log(`Feedback - check observations...`)
-    const observations = data.observations || []
+  async check(sample) {
+    if (feedbackOff) return
+    // console.log(`Feedback - check sample data...`)
+    const observations = sample.observations || []
     // find relevant devices
     for (let device of this.setup.devices || []) {
       // find relevant sources
@@ -65,23 +105,25 @@ export class Feedback {
           // make sure we have a connection available
           //. hardcode as mqtt for now
           if (source.mqtt) {
-            // check for changed observation
-            console.log(`Feedback - looking for changes in ${feedback.monitor}`)
+            // check for changed observation (feedback.monitor is a dataitemId)
+            // console.log(`Feedback - looking for changes in ${feedback.monitor}`)
             for (let observation of observations) {
               if (observation.dataItemId === feedback.monitor) {
                 if (
-                  source.lastValue &&
+                  source.lastValue !== undefined &&
                   observation.value !== source.lastValue
                 ) {
                   console.log(
-                    `Feedback - ${observation.dataItemId} changed from ${source.lastValue} to ${observation.value}...`
+                    `Feedback - ${observation.dataItemId} changed from ${source.lastValue} to ${observation.value}`
                   )
-                  console.log(
-                    `Feedback - publishing to ${feedback.topic}: ${feedback.payload}...`
-                  )
-
-                  // publish mqtt message
-                  source.mqtt.publish(feedback.topic, feedback.payload)
+                  for (let message of feedback.messages) {
+                    const payloadStr = JSON.stringify(message.payload)
+                    console.log(
+                      `Feedback - publishing to ${message.topic}: ${payloadStr}...`
+                    )
+                    // publish mqtt message
+                    source.mqtt.publish(message.topic, payloadStr)
+                  }
 
                   // save observation value (eg jobnum)
                   source.lastValue = observation.value

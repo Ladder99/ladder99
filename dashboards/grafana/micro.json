@@ -23,12 +23,13 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
+  "id": 3,
+  "iteration": 1653145937593,
   "links": [
     {
       "asDropdown": false,
       "icon": "external link",
-      "includeVars": true,
+      "includeVars": false,
       "keepTime": false,
       "tags": ["client"],
       "targetBlank": false,
@@ -93,7 +94,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as free\nFROM history_float\nWHERE\n  path='memory-free' and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as free\nFROM history_float\nWHERE\n  device='$device'\n  and path='memory-free'\n  and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -120,7 +121,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as used\nFROM history_float\nWHERE\n  path='memory-used' and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as used\nFROM history_float\nWHERE\n  device='$device'\n  and path='memory-used'\n  and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "C",
           "select": [
             [
@@ -251,7 +252,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as total\nFROM history_float\nWHERE\n  path='cpu-total' and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as total\nFROM history_float\nWHERE\n  device='$device'\n  and path='cpu-total'\n  and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "B",
           "select": [
             [
@@ -382,7 +383,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as temp\nFROM history_float\nWHERE\n  path='temperature' and\n  $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as temp\nFROM history_float\nWHERE\n  device='$device'\n  and path='temperature'\n  and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -527,7 +528,34 @@
   "style": "dark",
   "tags": ["client"],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": true,
+          "text": "Micro",
+          "value": "Micro"
+        },
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "device",
+        "options": [
+          {
+            "selected": true,
+            "text": "Micro",
+            "value": "Micro"
+          }
+        ],
+        "query": "Micro",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
   },
   "time": {
     "from": "now-30m",
@@ -550,5 +578,5 @@
   "timezone": "",
   "title": "Microcontroller",
   "uid": "micro",
-  "version": 8
+  "version": 5
 }

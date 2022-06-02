@@ -1,1 +1,0 @@
-# Solarco Boxmatic automatic boxmaker

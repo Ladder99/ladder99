@@ -6,9 +6,7 @@
 # docker compose yaml version - must be a string
 # see https://docs.docker.com/compose/compose-file/compose-file-v3
 # note: a '3' here means '3.0'
-# version: '3.7' # allows init keyword
 version: '3.8'
-# version: '3.9' # not tested yet
 
 services:
   # ---------------------------------------------------------------------------
@@ -50,6 +48,8 @@ services:
     #. use mtconnect/agent once mtconnect publishes theirs to docker hub
     # see https://hub.docker.com/repository/docker/ladder99/agent for ours
     image: ladder99/agent:latest
+    # for testing - see https://hub.docker.com/repository/docker/ladder99/agent2
+    # image: ladder99/agent2:latest
     profiles:
       - agent
     working_dir: /data/agent
@@ -66,38 +66,114 @@ services:
       options:
         max-size: '20m'
 
-  #. why commented out?
-  # # ---------------------------------------------------------------------------
-  # # cloudbeaver
-  # # ---------------------------------------------------------------------------
-  # # database web ui - more general than pgadmin
-  # cloudbeaver:
-  #   container_name: cloudbeaver
-  #   # need to use image OR build in client's compose-overrides.yaml.
-  #   # (can't turn off a value with '' or null (?), so just commented both
-  #   # image and build out).
-  #   # see client-mazak for example of running cloudbeaver on x86.
-  #   # see https://hub.docker.com/r/dbeaver/cloudbeaver/tags
-  #   image: dbeaver/cloudbeaver:21.3.5 # use this for x86 etc
-  #   # build: ./cloudbeaver # use this for ARM processors - need to build with Dockerfile
-  #   profiles:
-  #     - cloudbeaver
-  #   volumes:
-  #     # - ../$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
-  #     - ../$SETUP/volumes/cloudbeaver/workspace:/var/cloudbeaver/workspace
-  #   # need to leave this unspecified here, because clients that use traefik
-  #   # need it that way, and there's no way to remove a port through 
-  #   # overrides yet.
-  #   # see https://github.com/docker/compose/issues/3729
-  #   # IMPORTANT: might need to turn this on for a client.
-  #   # ports:
-  #   #   - 8978:8978
-  #   restart: always
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '20m'
+  # ---------------------------------------------------------------------------
+  # backup
+  # ---------------------------------------------------------------------------
+  # automatic/scheduled backup of database
+  # see https://github.com/offen/docker-volume-backup
+  backup:
+    container_name: backup
+    image: offen/docker-volume-backup:latest
+    profiles:
+      - backup
+    restart: always
+    networks:
+      - ladder99
+    volumes:
+      # By default a container based on this image will run in the UTC timezone. 
+      # In case you want to run your cron rules in your local timezone (respecting DST), 
+      # you can mount your Docker host's /etc/timezone and /etc/localtime:
+      # (doesn't really matter, as servers are set to UTC anyway)
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      #
+      # without this backup doesn't communicate with other services properly (?)
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      #
+      # By default, the `/backup` directory inside the container will be backed up.
+      # In case you need to use a custom location, set `BACKUP_SOURCES`.
+      - backup:/backup # a docker volume - see postgres service and end of this file
+      #
+      # If you mount a local directory or volume to `/archive`, a local
+      # copy of the backup will be stored there.
+      - ../$SETUP/volumes/backup:/archive:rw
+      #
+      # NOTE: see postgres service labels for pre and post commands etc
+      #
+    environment:
+      # NOTE: null values are set in .env - keep out of repo
+      #
+      # The name of the backup file including the `.tar.gz` extension.
+      # IMPORTANT: override this in client's compose-overrides.yaml with client name!
+      BACKUP_FILENAME: backup-CLIENT-%Y-%m-%dT%H-%M-%S.tar.gz
+      BACKUP_PRUNING_PREFIX: backup-CLIENT-
+      #
+      # Setting BACKUP_FILENAME_EXPAND to true allows for environment variable
+      # placeholders in BACKUP_FILENAME, BACKUP_LATEST_SYMLINK and in
+      # BACKUP_PRUNING_PREFIX that will get expanded at runtime,
+      # Please note that you will need to escape the `$` when providing the value
+      # in a docker-compose.yml file, i.e. using $$VAR instead of $VAR.
+      # note: the envar must be set BEFORE this compose yaml file is read. 
+      # note: must be 'true', not true
+      # BACKUP_FILENAME_EXPAND: 'true'
+      #
+      # pruning
+      # In case your target bucket or directory contains other files than the ones
+      # managed by this container, you can limit the scope of rotation by setting
+      # a prefix value. This would usually be the non-parametrized part of your
+      # BACKUP_FILENAME. E.g. if BACKUP_FILENAME is `db-backup-%Y-%m-%dT%H-%M-%S.tar.gz`,
+      # you can set BACKUP_PRUNING_PREFIX to `db-backup-` and make sure
+      # unrelated files are not affected by the rotation mechanism.
+      # (ie it'll prune only file starting with this prefix)
+      BACKUP_RETENTION_DAYS: 7
+      BACKUP_CRON_EXPRESSION: '0 7 * * *' # 7am gmt ~ 1am cst
+      #
+      # cloud backup
+      AWS_ENDPOINT: nyc3.digitaloceanspaces.com
+      AWS_S3_BUCKET_NAME: ladder99
+      AWS_ACCESS_KEY_ID: null
+      AWS_SECRET_ACCESS_KEY: null
+      # AWS_S3_PATH: backup/client # don't use this - causes probs with local backups
+      #
+      # slack notifications
+      NOTIFICATION_URLS: null
+      NOTIFICATION_LEVEL: info
+
+    logging:
+      options:
+        max-size: '20m'
+
+  # ---------------------------------------------------------------------------
+  # cloudbeaver
+  # ---------------------------------------------------------------------------
+  # database web ui - more general than pgadmin
+  cloudbeaver:
+    container_name: cloudbeaver
+    # need to use image OR build in client's compose-overrides.yaml.
+    # (can't turn off a value with '' or null (?), so just commented both
+    # image and build out).
+    # see client-mazak for example of running cloudbeaver on x86.
+    # see https://hub.docker.com/r/dbeaver/cloudbeaver/tags
+    image: dbeaver/cloudbeaver:21.3.5 # use this for x86 etc
+    # build: ./cloudbeaver # use this for ARM processors - need to build with Dockerfile
+    profiles:
+      - cloudbeaver
+    volumes:
+      # - ../$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
+      - ../$SETUP/volumes/cloudbeaver/workspace:/var/cloudbeaver/workspace
+    # need to leave this unspecified here, because clients that use traefik
+    # need it that way, and there's no way to remove a port through 
+    # overrides yet.
+    # see https://github.com/docker/compose/issues/3729
+    # IMPORTANT: might need to turn this on for a client.
+    # ports:
+    #   - 8978:8978
+    restart: always
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '20m'
 
   # ---------------------------------------------------------------------------
   # dozzle
@@ -135,7 +211,7 @@ services:
     #. can you do that by setting grafana_port to nothing?
     # see cloudbeaver comments.
     # ports:
-    #   - $GRAFANA_PORT:3000/tcp
+    #   - '$GRAFANA_PORT:3000/tcp'
     environment:
       # need these for provisioning datasources.
       # null is a docker convention for passing values in through envars.
@@ -195,12 +271,6 @@ services:
       #. why z-hue.ini? is it an arbitrary name for hue-overrides.ini?
       # https://stackoverflow.com/questions/57116402/hue-access-to-hdfs-bypass-default-hue-ini
       - ../$SETUP/volumes/hue/hue.ini:/usr/share/hue/desktop/conf/z-hue.ini
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.hue.rule=Host(`demo-north-beaver.ladder99.com`)
-      - traefik.http.routers.hue.tls=true
-      - traefik.http.routers.hue.tls.certresolver=lets-encrypt
-      - traefik.port=8888
     restart: always
     networks:
       - ladder99
@@ -242,6 +312,9 @@ services:
   # mosquitto
   # ---------------------------------------------------------------------------
   # get mqtt data from devices and publish to mtconnect adapter
+  # see https://hub.docker.com/_/eclipse-mosquitto
+  # and https://mosquitto.org/
+  # the image defines three directories in /mosquitto - config, data, log
   mosquitto:
     container_name: mosquitto
     image: eclipse-mosquitto
@@ -256,6 +329,8 @@ services:
     restart: always
     networks:
       - ladder99
+    # see https://kossy0701.medium.com/what-is-tty-true-in-docker-compose-yml-47a72891aee2
+    tty: true
     logging:
       options:
         max-size: '20m'
@@ -305,6 +380,9 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
+    logging:
+      options:
+        max-size: '20m'
 
   # ---------------------------------------------------------------------------
   # play
@@ -358,28 +436,41 @@ services:
     command: postgres -c 'max_connections=50' # need for grafana pages with lots of queries
     profiles:
       - postgres
-    # IMPORTANT: client might need to add this in compose-overrides.yaml
-    # ports:
-    #   - $PGPORT:5432/tcp
+    ports:
+      - $PGPORT:5432/tcp
+    #
+    # the PostgreSQL image uses these environment variables.
     # re PGPASSWORD,
     #   see https://stackoverflow.com/a/6405162/243392
     #   use a .pgpass file? https://www.postgresql.org/docs/9.1/libpq-pgpass.html
     #   but PGPASSWORD's deprecation is contested -
     #   see https://stackoverflow.com/questions/6523019/postgresql-scripting-psql-execution-with-password
-    # the PostgreSQL image uses these environment variables.
-    # note: POSTGRES_PASSWORD is REQUIRED.
-    # the first time this is run (and the data directory is empty), it uses 
-    # these envars to initialize the database. 
-    # to change the db password would require an ALTER USER SQL statement, 
-    # or \password in psql.
-    # see https://hub.docker.com/_/postgres
     environment:
       POSTGRES_DB: $PGDATABASE
       POSTGRES_USERNAME: $PGUSER
+      # note: POSTGRES_PASSWORD is REQUIRED.
+      # the first time this is run (and the data directory is empty), it uses 
+      # these envars to initialize the database. 
+      # to change the db password would require an ALTER USER SQL statement, 
+      # or \password in psql.
+      # see https://hub.docker.com/_/postgres
       POSTGRES_PASSWORD: $PGPASSWORD
+      # # note: we need PGDATA for Windows so can point to a subdirectory of the mount folder.
+      # # otherwise get error saying unable to set permissions on the folder.
+      # # put here so it's consistent across platforms.
+      # # see https://lifesaver.codes/answer/chmod-changing-permissions-of-var-lib-postgresql-data-permission-denied-116
+      # PGDATA: /var/lib/postgresql/data/pgdata
+      # that didn't work. but can use wsl terminal to run ./start ?
+      # see https://github.com/bitnami/bitnami-docker-postgresql/issues/237#issuecomment-672249407
+      # and https://stackoverflow.com/questions/66753829/how-to-move-workspacea-simple-project-from-windows-file-system-mnt-to-linu
     volumes:
       - ../$SETUP/volumes/postgres/data:/var/lib/postgresql/data
-      - ../$SETUP/volumes/postgres/backups:/var/lib/postgresql/backups
+      - backup:/backup # a docker volume - see backup service and end of this file
+    labels:
+      # see backup service for more settings
+      # - 'docker-volume-backup.stop-during-backup=false'
+      # note: we always write to the same filename
+      - "docker-volume-backup.exec-pre=/bin/sh -c 'pg_dumpall -U $PGUSER --clean --file /backup/dumpall.sql'"
     restart: always
     networks:
       - ladder99
@@ -421,12 +512,18 @@ services:
     build: ./relay
     profiles:
       - relay
+    # this runs a process manager that passes SIGTERM to your app gracefully
+    # see https://maximorlov.com/process-signals-inside-docker-containers/
     init: true
     environment:
       # specify where code can find data.
       # can override at run time, eg to run service on windows with node.
       L99_SETUP_FOLDER: /data/setup
-      # override these as needed in client's compose-overrides.yaml
+      # this can be an agent url, a comma-separated (no spaces) list of urls,
+      # or a .txt file with a url per line.
+      # NO TRAILING SLASHES
+      #. make this an array? but this is an envar so must be a string
+      # override as needed in client's compose-overrides.yaml.
       AGENT_ENDPOINTS: http://agent:5000
       #. will need to boost this as number of devices increases,
       # until have automatic rate setting
@@ -463,7 +560,7 @@ services:
   # ---------------------------------------------------------------------------
   # a reverse proxy
   # will need to add labels to grafana or other service you want to expose -
-  # see client-mazak/compose-overrides.yaml or client-oxbox for examples.
+  # see client-demo/compose-overrides.yaml or client-oxbox for examples.
   traefik:
     image: traefik:v2.5.3
     container_name: traefik
@@ -497,7 +594,14 @@ services:
       - ../$SETUP/volumes/traefik/:/etc/traefik/
     networks:
       - ladder99
+    logging:
+      options:
+        max-size: '20m'
 
 networks:
   ladder99:
     name: ladder99
+
+# docker volume to share data between backup and postgres services
+volumes:
+  backup:

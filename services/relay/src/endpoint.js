@@ -12,7 +12,8 @@ export class Endpoint {
   }
 
   // get array of endpoint objects
-  // str can be a url, a comma-separated list of urls, or a .txt file with a url per line
+  // str can be a url, a comma-separated list of urls, or a .txt file
+  // with a url per line.
   // note this is a STATIC fn
   static getEndpoints(endpointsStr) {
     let arr = []
@@ -40,22 +41,22 @@ export class Endpoint {
     let json
     do {
       const url = this.getUrl(type, from, count)
-      console.log(`Getting data from ${url}...`)
+      // console.log(`Relay - getting data from ${url}...`)
       try {
         const response = await fetch(url)
         const xml = await response.text()
         json = JSON.parse(convert.xml2json(xml, { compact: true }))
       } catch (error) {
         if (error.code === 'ENOTFOUND') {
-          console.log(`Error - Agent not found at ${url}...`)
+          console.log(`Relay error - Agent not found at ${url}...`)
         } else if (error.code === 'ECONNREFUSED') {
-          console.log(`Error - Connection refused at ${url}...`)
+          console.log(`Relay error - Connection refused at ${url}...`)
         } else {
           throw error
         }
       }
       if (!json) {
-        console.log(`No data available - will wait and try again...`)
+        console.log(`Relay no data available - will wait and try again...`)
         await lib.sleep(4000)
       }
     } while (!json)

@@ -235,6 +235,7 @@ export class AdapterDriver {
       setCache('msg', msgs)
 
       // set condition and state
+      //. pass all errors/warnings here - see https://github.com/Ladder99/ladder99-ce/issues/130
       if (errors.length > 0) {
         setCache('cond', 'FAULT')
         setCache('state', 'INTERRUPTED') // execution state - see also HS handler

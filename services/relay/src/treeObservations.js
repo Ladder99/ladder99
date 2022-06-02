@@ -97,7 +97,7 @@ export function assignNodeIds(observations, indexes) {
       obs.dataitem_id = element.dataitem_id
     } else {
       console.log(
-        `Warning: elementById index missing dataItem ${obs.dataItemId}`
+        `Relay warning: elementById index missing dataItem ${obs.dataItemId}`
       )
     }
   }

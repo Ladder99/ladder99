@@ -134,7 +134,7 @@ export class Db {
         `INSERT INTO history (node_id, dataitem_id, time, value) VALUES %L;`,
         values
       )
-      console.log(sql.slice(0, 100))
+      // console.log(sql.slice(0, 100))
       const result = await this.query(sql)
       return result
     } catch (e) {

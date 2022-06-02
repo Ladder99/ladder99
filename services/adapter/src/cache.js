@@ -8,10 +8,6 @@
 
 //. eg ___
 
-// import { lightFormat } from 'date-fns'
-// import { formatISO9075 } from 'date-fns'
-// import dayjs from 'dayjs'
-
 export class Cache {
   constructor() {
     this._map = new Map() // key-item pairs //. why not just {} ?
@@ -29,7 +25,7 @@ export class Cache {
   // eg { 'ac1-power_fault': [{ key:'ac1-power_condition', value: (fn), ...}], ... }
   // addOutputs(outputs, socket) {
   addOutputs(outputs) {
-    console.log(`cache.addOutputs - add ${outputs.length} outputs`)
+    console.log(`Cache - add ${outputs.length} outputs`)
     for (const output of outputs) {
       // console.log(output.key, output.dependsOn)
       // output.socket = socket // attach tcp socket to each output also
@@ -55,7 +51,7 @@ export class Cache {
       if (output.socket) {
         // send last known data value to agent
         const shdr = getShdr(output, output.lastValue || 'UNAVAILABLE')
-        console.log(`Cache - send ${shdr.slice(0, 60)}...`)
+        // console.log(`Cache - send ${shdr.slice(0, 60)}...`)
         try {
           output.socket.write(shdr + '\n')
         } catch (error) {
@@ -66,15 +62,15 @@ export class Cache {
   }
 
   // set a key-value pair in the cache.
-  // eg set('ac1-power_warning', true)
+  // eg set('ac1-power_warning', { quiet: true})
   // options is { timestamp, quiet }
   // timestamp is an optional STRING that is used in the SHDR
   //. explain distinction between value param and value variable below, with examples
   set(key, value, options = {}) {
-    if (!options.quiet) {
-      const s = typeof value === 'string' ? `"${value.slice(0, 99)}..."` : value
-      console.log(`Cache - set ${key}: ${s}`)
-    }
+    // if (!options.quiet) {
+    //   const s = typeof value === 'string' ? `"${value.slice(0, 99)}..."` : value
+    //   console.log(`Cache - set ${key}: ${s}`)
+    // }
     // update the cache value
     this._map.set(key, value)
     // get list of outputs associated with this key
@@ -142,6 +138,7 @@ function getShdr(output, value, timestamp = '') {
   } else if (category === 'CONDITION') {
     //. pick these values out of the value, which should be an object
     //. also, can have >1 value for a condition - how handle?
+    //. see https://github.com/Ladder99/ladder99-ce/issues/130
     if (!value || value === 'UNAVAILABLE') {
       shdr = `${timestamp}|${key}|${value}||||${value}`
     } else {
@@ -149,11 +146,11 @@ function getShdr(output, value, timestamp = '') {
       const nativeCode = 'nativeCode'
       const nativeSeverity = 'nativeSeverity'
       const qualifier = 'qualifier'
-      const message = value
+      const message = value //. need to escape spaces and pipes - gets sent as CDATA in agent output, yes?
       shdr = `${timestamp}|${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
     }
   } else {
-    console.warn(`warning: unknown category '${category}'`)
+    console.warn(`Cache warning: unknown category '${category}'`)
   }
   return shdr
 }

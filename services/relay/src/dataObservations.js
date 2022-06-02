@@ -7,6 +7,7 @@ import * as treeObservations from './treeObservations.js'
 
 // Observations - stores an array of observations - current or sample
 export class Observations extends Data {
+  //
   constructor(type) {
     super()
     this.type = type // used by read method - will be 'current' or 'sample'
@@ -15,8 +16,10 @@ export class Observations extends Data {
 
   // read dataitem values from current/sample endpoints as .json,
   // convert .json tree to .observations (flat list of elements).
+  // parameters are (endpoint) or (endpoint, from, count)
   async read() {
-    await super.read(...arguments) // see base class in data.js
+    // super.read will return false if gets an xml error message
+    if (!await super.read(...arguments)) return false // see base class in data.js
 
     // get flat list of observations from xml tree
     // observations is [{ tag, dataItemId, name, timestamp, value }, ...]
@@ -33,6 +36,8 @@ export class Observations extends Data {
     // sort observations by timestamp asc, for correct state machine transitions.
     // because sequence nums could be out of order, depending on network.
     this.observations.sort((a, b) => a.timestampSecs - b.timestampSecs)
+    
+    return true
   }
 
   // write values from this.observations to db
@@ -48,14 +53,12 @@ export class Observations extends Data {
 
     // write all records to db
     return await db.addHistory(records)
-
-    // this.from = nextSequence
   }
 }
 
 // build up an array of history records to write
 // see https://stackoverflow.com/a/63167970/243392
-//. uhh, this hardly does anything now
+//. this hardly does anything now
 // just filters down to dataitem's we're interested in, converts value to num/string
 function getHistoryRecords(observations) {
   const records = []

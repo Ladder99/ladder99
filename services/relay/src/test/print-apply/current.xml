@@ -1,0 +1,114 @@
+<MTConnectStreams xmlns:m="urn:mtconnect.org:MTConnectStreams:1.7"
+  xmlns="urn:mtconnect.org:MTConnectStreams:1.7"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:mtconnect.org:MTConnectStreams:1.7 http://schemas.mtconnect.org/schemas/MTConnectStreams_1.7.xsd">
+  <Header creationTime="2021-07-25T14:27:39Z" sender="3826c91dc587" instanceId="1627223252" version="1.7.0.3" bufferSize="131072" nextSequence="98" firstSequence="1" lastSequence="97"/>
+  <Streams>
+    <DeviceStream name="Agent" uuid="0b49a3a0-18ca-0139-8748-2cde48001122">
+      <ComponentStream component="Adapter" name="adapter:7878" componentId="_7546f731da">
+        <Samples>
+          <AssetUpdateRate dataItemId="_7546f731da_asset_update_rate" sequence="54" statistic="AVERAGE" timestamp="2021-07-25T14:27:32.859341Z">UNAVAILABLE</AssetUpdateRate>
+          <ObservationUpdateRate dataItemId="_7546f731da_observation_update_rate" sequence="56" statistic="AVERAGE" timestamp="2021-07-25T14:27:32.859362Z">UNAVAILABLE</ObservationUpdateRate>
+        </Samples>
+        <Events>
+          <AdapterSoftwareVersion dataItemId="_7546f731da_adapter_software_version" sequence="53" timestamp="2021-07-25T14:27:32.859317Z">UNAVAILABLE</AdapterSoftwareVersion>
+          <AdapterURI dataItemId="_7546f731da_adapter_uri" sequence="57" timestamp="2021-07-25T14:27:32.859375Z">shdr://adapter:7878</AdapterURI>
+          <ConnectionStatus dataItemId="_7546f731da_connection_status" sequence="60" timestamp="2021-07-25T14:27:32.862994Z">ESTABLISHED</ConnectionStatus>
+          <MTConnectVersion dataItemId="_7546f731da_mtconnect_version" sequence="58" timestamp="2021-07-25T14:27:32.859381Z">UNAVAILABLE</MTConnectVersion>
+        </Events>
+      </ComponentStream>
+      <ComponentStream component="Agent" name="Agent" componentId="agent_2cde48001122">
+        <Events>
+          <AssetChanged dataItemId="agent_2cde48001122_asset_chg" sequence="2" timestamp="2021-07-25T14:27:32.851378Z">UNAVAILABLE</AssetChanged>
+          <AssetRemoved dataItemId="agent_2cde48001122_asset_rem" sequence="1" timestamp="2021-07-25T14:27:32.851314Z">UNAVAILABLE</AssetRemoved>
+          <Availability dataItemId="agent_avail" sequence="6" timestamp="2021-07-25T14:27:32.851416Z">UNAVAILABLE</Availability>
+          <DeviceAdded dataItemId="device_added" sequence="52" timestamp="2021-07-25T14:27:32.856507Z">e05363</DeviceAdded>
+          <DeviceChanged dataItemId="device_changed" sequence="3" timestamp="2021-07-25T14:27:32.851384Z">UNAVAILABLE</DeviceChanged>
+          <DeviceRemoved dataItemId="device_removed" sequence="4" timestamp="2021-07-25T14:27:32.85139Z">UNAVAILABLE</DeviceRemoved>
+        </Events>
+      </ComponentStream>
+    </DeviceStream>
+    <DeviceStream name="pa1" uuid="e05363">
+      <ComponentStream component="Device" name="pa1" componentId="pa1">
+        <Events>
+          <AssetChanged dataItemId="pa1-asset_changed" sequence="35" timestamp="2021-07-25T14:27:32.856274Z">UNAVAILABLE</AssetChanged>
+          <AssetRemoved dataItemId="pa1-asset_removed" sequence="19" timestamp="2021-07-25T14:27:32.85602Z">UNAVAILABLE</AssetRemoved>
+          <Availability dataItemId="pa1-connection" sequence="61" timestamp="2021-07-25T14:27:35.232Z">AVAILABLE</Availability>
+          <Message dataItemId="pa1-dev_msg" sequence="28" timestamp="2021-07-25T14:27:32.856178Z">UNAVAILABLE</Message>
+          <FunctionalMode dataItemId="pa1-func_mode" sequence="69" timestamp="2021-07-25T14:27:35.237Z">MAINTENANCE</FunctionalMode>
+          <Firmware dataItemId="pa1-fw_ver" sequence="62" subType="VERSION" timestamp="2021-07-25T14:27:35.233Z">1.3.0.3</Firmware>
+        </Events>
+        <Condition>
+          <Normal dataItemId="pa1-dev_cond" sequence="81" timestamp="2021-07-25T14:27:36.055Z" type="SYSTEM"/>
+        </Condition>
+      </ComponentStream>
+      <ComponentStream component="Controller" componentId="pa1-controller">
+        <Events>
+          <EmergencyStop dataItemId="pa1-e_stop" sequence="72" timestamp="2021-07-25T14:27:35.238Z">ARMED</EmergencyStop>
+        </Events>
+      </ComponentStream>
+      <ComponentStream component="EndEffector" componentId="pa1-end_effector">
+        <Samples>
+          <EquipmentTimer dataItemId="pa1-cylinder_extend_time" sequence="26" subType="WORKING" timestamp="2021-07-25T14:27:32.856132Z">UNAVAILABLE</EquipmentTimer>
+          <EquipmentTimer dataItemId="pa1-cylinder_home_disengage_time" sequence="48" subType="WORKING" timestamp="2021-07-25T14:27:32.856443Z">UNAVAILABLE</EquipmentTimer>
+          <EquipmentTimer dataItemId="pa1-cylinder_travel_time" sequence="49" subType="WORKING" timestamp="2021-07-25T14:27:32.856458Z">UNAVAILABLE</EquipmentTimer>
+          <EquipmentTimer dataItemId="pa1-tamp_vacuum_delay" sequence="51" subType="DELAY" timestamp="2021-07-25T14:27:32.856487Z">UNAVAILABLE</EquipmentTimer>
+        </Samples>
+        <Events>
+          <Message dataItemId="pa1-end_eff_message" sequence="30" timestamp="2021-07-25T14:27:32.856212Z">UNAVAILABLE</Message>
+          <PartDetect dataItemId="pa1-smart_tamp_part_detect" sequence="44" timestamp="2021-07-25T14:27:32.856396Z">UNAVAILABLE</PartDetect>
+          <ActuatorState dataItemId="pa1-tamp_air_assist" sequence="46" timestamp="2021-07-25T14:27:32.85642Z">UNAVAILABLE</ActuatorState>
+          <ActuatorState dataItemId="pa1-tamp_cylinder" sequence="47" timestamp="2021-07-25T14:27:32.856431Z">UNAVAILABLE</ActuatorState>
+          <ActuatorState dataItemId="pa1-tamp_vacuum" sequence="41" timestamp="2021-07-25T14:27:32.856359Z">UNAVAILABLE</ActuatorState>
+        </Events>
+        <Condition>
+          <Normal dataItemId="pa1-end_eff_cond" sequence="82" timestamp="2021-07-25T14:27:36.056Z" type="SYSTEM"/>
+        </Condition>
+      </ComponentStream>
+      <ComponentStream component="Feeder" componentId="pa1-feeder">
+        <Samples>
+          <EquipmentTimer dataItemId="pa1-idle_time" sequence="10" subType="DELAY" timestamp="2021-07-25T14:27:32.855807Z">UNAVAILABLE</EquipmentTimer>
+          <EquipmentTimer dataItemId="pa1-print_signal_time" sequence="29" subType="DELAY" timestamp="2021-07-25T14:27:32.856198Z">UNAVAILABLE</EquipmentTimer>
+          <EquipmentTimer dataItemId="pa1-print_time" sequence="12" subType="WORKING" timestamp="2021-07-25T14:27:32.855841Z">UNAVAILABLE</EquipmentTimer>
+          <EquipmentTimer dataItemId="pa1-printer_end_print_wait" sequence="9" subType="DELAY" timestamp="2021-07-25T14:27:32.855794Z">UNAVAILABLE</EquipmentTimer>
+          <EquipmentTimer dataItemId="pa1-printer_start_print_duration" sequence="40" subType="DELAY" timestamp="2021-07-25T14:27:32.856342Z">UNAVAILABLE</EquipmentTimer>
+          <EquipmentTimer dataItemId="pa1-product_sensor_one_debounce" sequence="8" subType="DELAY" timestamp="2021-07-25T14:27:32.855777Z">UNAVAILABLE</EquipmentTimer>
+          <Unknown dataItemId="pa1-product_sensor_one_edge_trigger" sequence="17" timestamp="2021-07-25T14:27:32.856007Z">UNAVAILABLE</Unknown>
+          <EquipmentTimer dataItemId="pa1-transport_time" sequence="11" subType="DELAY" timestamp="2021-07-25T14:27:32.855825Z">UNAVAILABLE</EquipmentTimer>
+        </Samples>
+        <Events>
+          <Message dataItemId="pa1-feed_message" sequence="18" timestamp="2021-07-25T14:27:32.856014Z">UNAVAILABLE</Message>
+          <PartDetect dataItemId="pa1-feed_part_detect" sequence="16" timestamp="2021-07-25T14:27:32.855996Z">UNAVAILABLE</PartDetect>
+          <ActuatorState dataItemId="pa1-printer_feed" sequence="45" timestamp="2021-07-25T14:27:32.856413Z">UNAVAILABLE</ActuatorState>
+          <ActuatorState dataItemId="pa1-printer_pause" sequence="13" timestamp="2021-07-25T14:27:32.855859Z">UNAVAILABLE</ActuatorState>
+          <ActuatorState dataItemId="pa1-printer_reprint" sequence="15" timestamp="2021-07-25T14:27:32.855977Z">UNAVAILABLE</ActuatorState>
+          <ActuatorState dataItemId="pa1-printer_start_print" sequence="96" timestamp="2021-07-25T14:27:38.676Z">INACTIVE</ActuatorState>
+          <ActuatorState dataItemId="pa1-web_take_up_motor_state" sequence="14" timestamp="2021-07-25T14:27:32.855948Z">UNAVAILABLE</ActuatorState>
+        </Events>
+        <Condition>
+          <Normal dataItemId="pa1-feed_cond" sequence="84" timestamp="2021-07-25T14:27:36.057Z" type="SYSTEM"/>
+        </Condition>
+      </ComponentStream>
+      <ComponentStream component="Path" name="path" componentId="pa1-path1">
+        <Samples>
+          <ClockTime dataItemId="pa1-clk_time" sequence="78" timestamp="2021-07-25T14:27:36.047Z">1615427419.65992</ClockTime>
+          <Count dataItemId="pa1-cycle_count" sequence="37" timestamp="2021-07-25T14:27:32.856301Z">UNAVAILABLE</Count>
+          <ProcessTimer dataItemId="pa1-cycle_time" sequence="68" subType="PROCESS" timestamp="2021-07-25T14:27:35.236Z">5</ProcessTimer>
+          <Count dataItemId="pa1-fault_count" sequence="39" timestamp="2021-07-25T14:27:32.856326Z">UNAVAILABLE</Count>
+          <Count dataItemId="pa1-life_count" sequence="97" timestamp="2021-07-25T14:27:39.079Z">7</Count>
+          <EquipmentTimer dataItemId="pa1-up_time" sequence="79" subType="OPERATING" timestamp="2021-07-25T14:27:36.048Z">6309035.98490267</EquipmentTimer>
+        </Samples>
+        <Events>
+          <Program dataItemId="pa1-program" sequence="64" subType="MAIN" timestamp="2021-07-25T14:27:35.234Z">PGM0</Program>
+          <Execution dataItemId="pa1-state" sequence="63" timestamp="2021-07-25T14:27:35.233Z">ACTIVE</Execution>
+          <Block dataItemId="pa1-step" sequence="77" timestamp="2021-07-25T14:27:36.046Z">STEP1</Block>
+          <WaitState dataItemId="pa1-wait_state" sequence="24" timestamp="2021-07-25T14:27:32.85607Z">UNAVAILABLE</WaitState>
+        </Events>
+      </ComponentStream>
+      <ComponentStream component="Personnel" componentId="pa1-personnel">
+        <Events>
+          <User dataItemId="pa1-operator" sequence="7" subType="OPERATOR" timestamp="2021-07-25T14:27:32.855714Z">UNAVAILABLE</User>
+        </Events>
+      </ComponentStream>
+    </DeviceStream>
+  </Streams>
+</MTConnectStreams>

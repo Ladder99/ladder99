@@ -13,11 +13,16 @@
 --  );
 -- returns a count value like 154.0
 
+-- need this if change parameters OR return signature
+DROP FUNCTION IF EXISTS get_count(text, text, bigint, bigint);
+DROP FUNCTION IF EXISTS get_count(text, text, bigint, bigint, text);
+
 create or replace function get_count(
   in p_device text, -- the device name, eg 'Cutter'
   in p_path text, -- the counter path, eg 'controller/partOccurrence/part_count-lifetime'
   in p_start bigint, -- start time in milliseconds since 1970-01-01
-  in p_stop bigint -- stop time in milliseconds since 1970-01-01
+  in p_stop bigint, -- stop time in milliseconds since 1970-01-01
+  in p_search_limit text = '1 week' -- search limit for before start time - eg '1h', '1week' etc
 )
 returns table ("count" float)
 language plpgsql
@@ -35,21 +40,33 @@ begin
   -- get the last count value before the start time
   v_count0 := (
     select value from history_float 
-    where device=p_device and path=p_path and time < v_start
+    where 
+      device=p_device 
+      and path=p_path 
+      and time <= v_start
+      and time >= v_start - p_search_limit::interval
     order by time desc
     limit 1
   );
   -- get the first count value after the stop time
   v_count1 := (
     select value from history_float 
-    where device=p_device and path=p_path and time >= v_stop
+    where 
+      device=p_device 
+      and path=p_path 
+      and time >= v_stop
+      and time < v_stop + p_search_limit::interval
     order by time asc
     limit 1
   );
   -- get the last count value before the stop time
   v_count2 := (
     select value from history_float 
-    where device=p_device and path=p_path and time < v_stop
+    where 
+      device=p_device 
+      and path=p_path 
+      and time < v_stop
+      and time > v_start
     order by time desc
     limit 1
   );
@@ -62,11 +79,12 @@ begin
 end;
 $body$;
 
--- test
---  select count
---  from get_count(
---    'Cutter',
---    'controller/partOccurrence/part_count-lifetime',
---    timestamptz2ms('2022-02-01 18:00:00'),
---    timestamptz2ms('2022-02-02 18:00:00')
---  );
+-- test - don't commit!
+
+-- select count
+-- from get_count(
+--   'Marumatsu',
+--   'processes/job/part_count-all',
+--   timestamptz2ms('2022-02-01 18:00:00'),
+--   timestamptz2ms('2022-02-02 18:00:00')
+-- );

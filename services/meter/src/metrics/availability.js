@@ -30,6 +30,8 @@
 // to calculate the 'availability' percentage, the metrics view in the db
 // does 'active' / 'available'.
 
+import { DateTime } from 'luxon' // see https://moment.github.io/luxon/
+
 const minutes = 60 * 1000 // 60 ms
 const hours = 60 * minutes
 const days = 24 * hours
@@ -54,7 +56,14 @@ export class Metric {
     this.device = device
     this.metric = metric
 
-    this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
+    // get timezone offset from Zulu in milliseconds
+    // this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
+    // use timezone string like 'America/Chicago' instead of a hardcoded offset like -5.
+    // we can use Luxon to get offset for a particular timezone.
+    // there's probably a better way to do this with luxon, but this is the simplest change.
+    const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
+    this.timezoneOffset = offsetMinutes * 60 * 1000 // ms
+    console.log(`Availability - tz, offset`, client.timezone, offsetMinutes)
 
     console.log(`Availability - get device node_id...`)
     this.device.node_id = await this.db.getDeviceId(device.name) // repeats until device is there
@@ -126,6 +135,7 @@ export class Metric {
     console.log(`Availability - start, now`, startMinute, nowMinute)
     let state = null
     for (let minute = startMinute; minute < nowMinute; minute++) {
+      console.log(`Availability - backfill minute`, minute)
       const path = startStopTimes[minute]
       if (path === this.metric.startPath) {
         state = 1
@@ -153,19 +163,23 @@ export class Metric {
     // )
     console.log('Availability - now', now)
 
-    // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ... }
+    // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ..., holiday }
     console.log(`Availability - get schedule...`)
 
-    //. do this every 10mins or so on separate timer, save to this
+    //. could do this every 10mins or so on separate timer, save to this.schedule
     const schedule = await this.getSchedule()
 
-    // check if we're within scheduled time
-    const scheduled = now >= schedule.start && now <= schedule.stop
-    if (scheduled) {
-      console.log(`Availability - in scheduled time window`)
-      await this.updateBins(now, this.interval)
+    // update bins if we're in the scheduled time window
+    if (schedule.holiday) {
+      console.log(`Availability - holiday`)
     } else {
-      console.log(`Availability - not in scheduled time window`)
+      const inWindow = now >= schedule.start && now <= schedule.stop
+      if (inWindow) {
+        console.log(`Availability - in scheduled time window, so update bins`)
+        await this.updateBins(now, this.interval)
+      } else {
+        console.log(`Availability - not in scheduled time window`)
+      }
     }
   }
 
@@ -189,25 +203,24 @@ export class Metric {
   // converts the timestrings to local time for the client.
   //. will want to pass an optional datetime for the date to search for.
   async getSchedule() {
+    const getHoliday = text =>
+      text === 'UNAVAILABLE' || text === 'HOLIDAY' ? 'HOLIDAY' : undefined
+    const getDate = text =>
+      // shift date by client timezoneOffset, as need for comparisons
+      new Date(new Date(text).getTime() - this.timezoneOffset)
     const table = 'history_text'
     const device = this.device
-    const client = this.client
     const { startPath, stopPath } = this.metric
     // note: these can return 'UNAVAILABLE' or 'HOLIDAY', in which case,
     // schedule.start etc will be 'Invalid Date'.
     // any comparison with those will yield false.
-    //.. search for a given date, not latest value
-    const start = await this.db.getLatestValue(table, device, startPath)
-    const stop = await this.db.getLatestValue(table, device, stopPath)
-    // shift these by client timezoneOffsetHrs, as need them for comparisons
-    const schedule = {
-      start: new Date(
-        new Date(start).getTime() - client.timezoneOffsetHrs * 60 * 60 * 1000
-      ),
-      stop: new Date(
-        new Date(stop).getTime() - client.timezoneOffsetHrs * 60 * 60 * 1000
-      ),
-    }
+    //. search for a given date, not latest value [why?]
+    const startText = await this.db.getLatestValue(table, device, startPath)
+    const stopText = await this.db.getLatestValue(table, device, stopPath)
+    const holiday = getHoliday(startText) || getHoliday(stopText) // 'HOLIDAY' or undefined
+    const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
+    const stop = holiday || getDate(stopText)
+    const schedule = { start, stop, holiday }
     console.log('Availability - schedule', schedule)
     return schedule
   }

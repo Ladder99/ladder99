@@ -6,6 +6,8 @@ This is a work in progress.
 
 Eventually would like to handle different data types through plugins, eg mqtt.
 
+Entry point is src/index.js.
+
 ## Recording
 
 To record data from devices, eg

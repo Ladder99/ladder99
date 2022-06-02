@@ -14,6 +14,7 @@ export async function migrate(db) {
   await readFile(db, `src/migrations/008-get_availability.sql`)
   await readFile(db, `src/migrations/009-metrics.sql`)
   await readFile(db, `src/migrations/010-get_count.sql`)
+  await readFile(db, `src/migrations/011-get_last_value.sql`)
 }
 
 async function readFile(db, filename) {

@@ -1,0 +1,54 @@
+# outputs
+
+# these outputs are placed in the module.xml tree and define the
+# shdr strings that are calculated from the cache and sent to the agent.
+
+# the item's id in the xml and the shdr key is `${deviceId}-${key}`
+# the shdr value is defined with the item value code.
+
+# value is javascript, evaluated by the cache in calculating the shdr output.
+# <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo')
+
+# note: cache keys are ARBITRARY,
+# ie not necessarily the same as dataitem id OR name.
+# eg <status_step> references the cache value at 'kl1-status_step',
+# which was set in inputs.yaml, while the output key here is 'step',
+# which becomes eg 'kl1-step' for the SHDR id.
+# the idea is to keep the SHDR id's as short as possible, to reduce network bandwidth,
+# while the dataitem name can be more descriptive.
+
+# note: category is used to determine shdr representation.
+# only need to specify category if CONDITION.
+# only need to specify type if is MESSAGE.
+# see end of services/adapter/src/cache.js for details.
+
+# note: as a shortcut, can just specify the key -
+# value will be inferred to be <key>.
+
+outputs:
+  # ------------------------------------------------------------------
+  # device
+  # ------------------------------------------------------------------
+
+  - key: ctl-avail
+    value: types.AVAILABILITY[<connection>]
+
+  - key: pcjob
+    value: <part_count>
+
+  # current job number
+  - key: job
+
+  # shift start and stop times
+  - key: start
+  - key: complete
+
+  # motor
+  - key: xvelz
+  - key: xaccz
+  - key: xtemp
+  - key: xvelx
+  - key: xaccx
+
+  # pressure
+  - key: sp

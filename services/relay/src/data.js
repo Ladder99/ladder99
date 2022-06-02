@@ -18,27 +18,34 @@ export class Data {
   // note: subclass is responsible for parsing the .json and converting it to
   // dataitem elements etc.
   async read(endpoint, from, count) {
-    console.log(`Read ${endpoint.baseUrl}, ${from}, ${count}`)
+    console.log(`Relay - read ${endpoint.baseUrl}, ${from}, ${count}`)
 
     this.json = await endpoint.fetchJson(this.type, from, count)
 
     // parse .json
-    console.log(`Parse header...`)
+    // console.log(`Relay - parse header...`)
 
     // get .errors
     //. handle errors as needed
-    // eg <Errors><Error errorCode="OUT_OF_RANGE">'from' must be greater than 647331</Error></Errors>
-    // if (codes.includes('OUT_OF_RANGE')) {
-    //   // we lost some data, so reset the index and get from start of buffer
-    //   console.log(
-    //     `Out of range error - some data was lost. Will reset index and get as much as possible from start of buffer.`
-    //   )
-    //   this.from = null
-    //   //. adjust fetch count/speed
-    // }
     if (this.json.MTConnectError) {
-      this.errors = this.json.MTConnectError.Errors.map(e => e.Error.errorCode)
-      throw new Error(JSON.stringify(this.errors))
+      console.log(
+        `Relay error - tried to read from ${from} with count ${count}.`
+      )
+      console.log(this.json)
+      // throw new Error('MTConnectError - see logs for details') // this stops the relay service
+      // xml error messages include:
+      //   'count' must be less than or equal to 32 - prevent with count<=bufferSize
+      //   'from' must be greater than 647331 - respond with from=<that number+1 or more>, or better - bump back to the 'current' read loop
+      //   'from' must be less than 809 - how does this happen? when agent gets reset?
+      // this.errors = this.json.MTConnectError.Errors.map(e => e.Error.errorCode) // fails if only one error
+      let errors = this.json.MTConnectError.Errors
+      if (!Array.isArray(errors)) errors = [errors]
+      for (let error of errors) {
+        const str = JSON.stringify(error)
+        if (str.includes('greater than')) {
+        }
+      }
+      return false // failed read - will bump from 'sample' back to 'current' loop
     }
 
     // get .header for probe, current, or sample xmls
@@ -56,7 +63,9 @@ export class Data {
         first: this.header.firstSequence,
         next: this.header.nextSequence,
         last: this.header.lastSequence,
+        size: this.header.bufferSize,
       }
     }
+    return true // handled read okay
   }
 }
