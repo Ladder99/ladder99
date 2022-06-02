@@ -1,6 +1,0 @@
-# inputs
-# define values to be read by erp.js driver and how to write to cache
-
-# this yaml format is specific to the erp.js adapter driver.
-inputs:
-  #. currently just hardcoded in erp.js or random.js driver
