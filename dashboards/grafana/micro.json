@@ -24,7 +24,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 3,
-  "iteration": 1653145937593,
+  "iteration": 1654251445048,
   "links": [
     {
       "asDropdown": false,
@@ -311,7 +311,7 @@
           "format": "percent",
           "label": null,
           "logBase": 1,
-          "max": null,
+          "max": "100",
           "min": "0",
           "show": true
         },
@@ -578,5 +578,5 @@
   "timezone": "",
   "title": "Microcontroller",
   "uid": "micro",
-  "version": 5
+  "version": 7
 }
