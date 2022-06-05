@@ -6,7 +6,7 @@
 
 devices:
   - id: m1
-    name: micro1 # this must match name in agent.cfg and agent.xml
+    name: Micro # this must match name in agent.cfg and agent.xml
     module: micro
 
     # specify sources for dataitem values

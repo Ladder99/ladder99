@@ -5,7 +5,7 @@
   <Header creationTime="2021-02-23T18:44:40+00:00" sender="localhost" instanceId="1267728234" bufferSize="131072" version="1.7.0.3" />
   <Devices>
 
-    <Device id="m1" name="micro1" uuid="a123" sampleInterval="5">
+    <Device id="m1" name="Micro" uuid="a123" sampleInterval="5">
       <Description manufacturer="Ladder99" model="Glimpse" serialNumber="001">
         Ladder99 Glimpse
       </Description>
