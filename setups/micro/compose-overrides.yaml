@@ -6,7 +6,13 @@ version: '3.8'
 services:
   adapter:
     profiles:
-      - dashboard
+      - all
   agent:
     profiles:
-      - dashboard
+      - all
+  postgres:
+    profiles:
+      - all
+  relay:
+    profiles:
+      - all
