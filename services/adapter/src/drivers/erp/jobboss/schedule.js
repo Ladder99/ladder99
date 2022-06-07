@@ -68,9 +68,7 @@ export class Schedule {
           // timestring (3rd param) is optional for cache.set -
           // need it here so xml will get the value for relay to pick up,
           // so meter can filter to a record it needs.
-          // bug: schedule.start/stop can be null or HOLIDAY etc - invalid timestamps!
-          // this.cache.set(`${device.id}-start`, schedule.start, schedule.start)
-          // this.cache.set(`${device.id}-complete`, schedule.stop, schedule.stop)
+          // note: schedule.start/stop can be null or HOLIDAY etc
           const datetimeStr = datetime.toISOString()
           this.cache.set(`${device.id}-start`, schedule.start, {
             timestamp: datetimeStr,
@@ -104,7 +102,9 @@ export class Schedule {
     // ie instead of hardcoding it to -5 hours or something.
     // there's probably a better way to do this with luxon, but this is the simplest change.
     const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
+    console.log(`JobBoss schedule offsetMinutes`, offsetMinutes)
     const datetime = new Date(new Date().getTime() + offsetMinutes * 60 * 1000)
+    console.log(`JobBoss schedule datetime`, datetime)
 
     for (let device of this.devices) {
       if (device.jobbossId) {
@@ -129,6 +129,12 @@ export class Schedule {
     const workcenter = device.jobbossId // eg '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' for Marumatsu
     const sequence = datetime.getDay() // day of week with 0=sunday, 1=monday. this works even if Z time is next day.
     const dateString = getLocalDateFromDateTime(datetime) // eg '2022-01-18' - works even if Z time is next day.
+    console.log(
+      `JobBoss workcenter, sequence, dateString`,
+      workcenter,
+      sequence,
+      dateString
+    )
 
     // lookup workcenter and date in wc shift override table
     const result1 = await this.pool.query`
@@ -136,6 +142,7 @@ export class Schedule {
       from WCShift_Override
       where WorkCenter_OID=${workcenter} and cast(Date as date)=${dateString}
     `
+    //. default should be UNAVAILABLE? or more descriptive?
     let start = null
     let stop = null
     if (result1.recordset.length === 0) {
@@ -150,10 +157,13 @@ export class Schedule {
           join Shift_Day sd on wss.Shift_ID=sd.Shift
         where WorkCenter_OID=${workcenter} and Sequence=${sequence}
       `
-      // console.log(result2)
       if (result2.recordset.length > 0) {
+        // note: start stop are Date objects
         start = result2.recordset[0].start // eg 1970-01-01T05:00:00Z - note the Z
         stop = result2.recordset[0].stop // eg 1970-01-01T13:30:00Z
+        console.log(`JobBoss - start, stop`, start, stop)
+      } else {
+        console.log(`JobBoss - no results`)
       }
     } else if (result1.recordset[0].Is_Work_Day) {
       //
@@ -168,15 +178,18 @@ export class Schedule {
         where WorkCenter_OID=${workcenter} 
           and Date=${dateString} and Sequence=${sequence}
       `
-      console.log(result3)
       if (result3.recordset.length > 0) {
+        // note: start stop are Date objects
         start = result3.recordset[0].start // eg 1970-01-01T05:00:00Z - note the Z
         stop = result3.recordset[0].stop
+        console.log(`JobBoss - start, stop`, start, stop)
+      } else {
+        console.log(`JobBoss - no results`)
       }
     } else {
       //
       // if isworkday=0 then not a workday - might have 2 records, one for each shift
-      //   for now just say the whole day is a holiday - no start/end times
+      //. for now just say the whole day is a holiday - no start/end times
       //. does that mean don't write anything? or unavail? or holiday?
       console.log(`JobBoss - day is holiday (isworkday=0)...`)
       start = 'HOLIDAY'
@@ -185,6 +198,7 @@ export class Schedule {
 
     // get start and stop as local datetime strings, eg '2022-01-23 05:00:00'
     // with NO Z!
+    // note: start and stop can be strings or Date objects
     if (start && typeof start === 'object') {
       start = getTimeAsLocalDateTimeString(start, datetime, dateString)
     }
