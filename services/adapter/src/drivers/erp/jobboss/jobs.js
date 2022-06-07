@@ -38,7 +38,7 @@ export class Jobs {
   // }
 
   async poll() {
-    console.log(`JobBoss - polling for job info...`)
+    // console.log(`JobBoss - checking for job number change...`)
 
     // simple test - works
     // this.cache.set(`${deviceId}-job`, Math.floor(Math.random() * 1000))
