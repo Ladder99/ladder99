@@ -5,3 +5,5 @@
 **/mosquitto/log
 **/portainer/data
 **/postgres/data
+
+agent.log*
