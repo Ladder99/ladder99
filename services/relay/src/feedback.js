@@ -10,6 +10,7 @@ import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 // lets you turn off the feedback mechanism from oxbox 004,
 // but leave it on for 001. otherwise they might interfere with each other.
 const feedbackOff = process.env.RELAY_FEEDBACK_OFF
+console.log(`Feedback - RELAY_FEEDBACK_OFF value =`, feedbackOff)
 
 // a Feedback instance monitors dataitems for changes and
 // sends feedback to devices.
