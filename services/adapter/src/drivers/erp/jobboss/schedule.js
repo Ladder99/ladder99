@@ -86,12 +86,13 @@ export class Schedule {
       console.log(`JobBoss - update cookie file`, cookie)
       fs.writeFileSync(cookiePath, JSON.stringify(cookie))
     }
+    console.log(`JobBoss - done with backfill`)
   }
 
   // poll the jobboss schedule information for current day,
   // and write to the cache
   async poll() {
-    console.log(`Jobboss schedule poll`)
+    console.log(`Jobboss schedule - poll`)
 
     // since the server is set to Z/GMT time, need to 'trick' it to thinking it's 5 or 6 hrs earlier
     // const datetime = new Date(
@@ -102,9 +103,9 @@ export class Schedule {
     // ie instead of hardcoding it to -5 hours or something.
     // there's probably a better way to do this with luxon, but this is the simplest change.
     const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
-    console.log(`JobBoss schedule offsetMinutes`, offsetMinutes)
+    console.log(`JobBoss schedule - offsetMinutes`, offsetMinutes)
     const datetime = new Date(new Date().getTime() + offsetMinutes * 60 * 1000)
-    console.log(`JobBoss schedule datetime`, datetime)
+    console.log(`JobBoss schedule - datetime`, datetime)
 
     for (let device of this.devices) {
       if (device.jobbossId) {
