@@ -18,7 +18,7 @@ export class Data {
   // note: subclass is responsible for parsing the .json and converting it to
   // dataitem elements etc.
   async read(endpoint, from, count) {
-    console.log(`Relay - read ${endpoint.baseUrl}, ${from}, ${count}`)
+    // console.log(`Relay - read ${endpoint.baseUrl}, ${from}, ${count}`) // too verbose
 
     this.json = await endpoint.fetchJson(this.type, from, count)
 

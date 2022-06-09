@@ -96,9 +96,14 @@ export function assignNodeIds(observations, indexes) {
       obs.device_id = element.device_id
       obs.dataitem_id = element.dataitem_id
     } else {
-      console.log(
-        `Relay warning: elementById index missing dataItem ${obs.dataItemId}`
-      )
+      // don't print if it starts with an underscore - those are (usually) uninteresting
+      // agent dataitems like '_7546f731da_observation_update_rate', and they
+      // fill up the logs.
+      if (!obs.dataItemId.startsWith('_')) {
+        console.log(
+          `Relay warning: elementById index missing dataItem ${obs.dataItemId}`
+        )
+      }
     }
   }
 }
