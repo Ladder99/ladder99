@@ -375,6 +375,8 @@ services:
       - pgadmin
     ports:
       - '5050:5050/tcp'
+    volumes:
+      - ../$SETUP/volumes/pgadmin:/pgadmin
     restart: always
     networks:
       - ladder99
@@ -464,6 +466,7 @@ services:
       # that didn't work. but can use wsl terminal to run ./start ?
       # see https://github.com/bitnami/bitnami-docker-postgresql/issues/237#issuecomment-672249407
       # and https://stackoverflow.com/questions/66753829/how-to-move-workspacea-simple-project-from-windows-file-system-mnt-to-linu
+      # this seems to work, to use a subdir
     volumes:
       - ../$SETUP/volumes/postgres/data:/var/lib/postgresql/data
       - backup:/backup # a docker volume - see backup service and end of this file
