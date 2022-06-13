@@ -578,6 +578,7 @@ services:
       - 443:443/tcp
     command:
       - --certresolv.myresolver.acme.storage=/etc/traefik/acme.json
+    restart: always
     volumes:
       # will need to do this before starting traefik -
       #   mkdir ../client-oxbox/volumes/traefik
