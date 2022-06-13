@@ -1,31 +1,21 @@
 // endpoint
 // fetch data from url endpoint as xml or json
 
-import fs from 'fs' // node filesystem lib
+// import fs from 'fs' // node filesystem lib
 import fetch from 'node-fetch' // https://github.com/node-fetch/node-fetch
 import convert from 'xml-js' // convert xml to json https://github.com/nashwaan/xml-js
 import * as lib from './common/lib.js'
 
 export class Endpoint {
   constructor(baseUrl) {
-    this.baseUrl = baseUrl // eg http://localhost:5000
+    this.baseUrl = baseUrl // eg http://agent:5000
   }
 
-  // get array of endpoint objects
-  // str can be a url, a comma-separated list of urls, or a .txt file
-  // with a url per line.
-  // note this is a STATIC fn
-  static getEndpoints(endpointsStr) {
-    let arr = []
-    if (endpointsStr.includes(',')) {
-      arr = endpointsStr.split(',')
-    } else if (endpointsStr.endsWith('.txt')) {
-      const s = String(fs.readFileSync(endpointsStr)).trim()
-      arr = s.split('\n')
-    } else {
-      arr = [endpointsStr]
-    }
-    const endpoints = arr.map(url => new Endpoint(url))
+  // get array of Endpoint objects
+  // note this is a STATIC fn!
+  static getEndpoints(setup) {
+    const urls = setup.agents || ['http://agent:5000'] // defaults to the agent docker service
+    const endpoints = urls.map(url => new Endpoint(url))
     return endpoints
   }
 
@@ -67,12 +57,15 @@ export class Endpoint {
   // type is 'probe', 'current', or 'sample'.
   // from and count are optional.
   getUrl(type, from, count) {
-    const url =
-      from === undefined
-        ? `${this.baseUrl}/${type}`
-        : `${this.baseUrl}/${type}?${
-            from !== null ? 'from=' + from + '&' : ''
-          }count=${count}`
+    // const url =
+    //   from === undefined
+    //     ? `${this.baseUrl}/${type}`
+    //     : `${this.baseUrl}/${type}?${
+    //         from !== null ? 'from=' + from + '&' : ''
+    //       }count=${count}`
+    const base = `${this.baseUrl}/${type}`
+    const fromStr = from !== null ? `from=${from}&` : ''
+    const url = from === undefined ? base : `${base}?${fromStr}count=${count}`
     return url
   }
 }

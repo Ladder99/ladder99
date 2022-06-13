@@ -20,7 +20,7 @@ const params = {
   // these are the agents we'll be reading from.
   // currently set in compose-overrides.yaml, but
   //. eventually will read from setup.xml or setup.yaml - could be per device and/or defaults
-  agentEndpoints: process.env.AGENT_ENDPOINTS || 'http://localhost:5000',
+  // agentEndpoints: process.env.AGENT_ENDPOINTS || 'http://localhost:5000',
   //. these will need to be dynamic - adjusted on the fly
   fetchInterval: Number(process.env.FETCH_INTERVAL || 2000), // how often to fetch sample data, msec
   fetchCount: Number(process.env.FETCH_COUNT || 800), // how many samples to fetch each time
@@ -40,7 +40,7 @@ class Relay {
     const setup = lib.readSetup(setupFolder)
 
     // get endpoints (mtconnect agent urls)
-    const endpoints = Endpoint.getEndpoints(params.agentEndpoints)
+    const endpoints = Endpoint.getEndpoints(setup) // static fn
     console.log(`Agent endpoints:`, endpoints)
 
     // create an agent reader instance for each agent/endpoint
