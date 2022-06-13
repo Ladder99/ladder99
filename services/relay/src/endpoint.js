@@ -1,14 +1,13 @@
 // endpoint
 // fetch data from url endpoint as xml or json
 
-// import fs from 'fs' // node filesystem lib
 import fetch from 'node-fetch' // https://github.com/node-fetch/node-fetch
 import convert from 'xml-js' // convert xml to json https://github.com/nashwaan/xml-js
 import * as lib from './common/lib.js'
 
 export class Endpoint {
   constructor(baseUrl) {
-    this.baseUrl = baseUrl // eg http://agent:5000
+    this.baseUrl = baseUrl // eg 'http://agent:5000'
   }
 
   // get array of Endpoint objects
