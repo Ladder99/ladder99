@@ -7,6 +7,10 @@ import * as lib from './common/lib.js'
 
 export class Endpoint {
   constructor(baseUrl) {
+    // remove any trailing slash
+    if (baseUrl.endsWith('/')) {
+      baseUrl = baseUrl.slice(0, baseUrl.length - 1)
+    }
     this.baseUrl = baseUrl // eg 'http://agent:5000'
   }
 
