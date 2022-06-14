@@ -104,7 +104,7 @@ export class Schedule {
     // there's probably a better way to do this with luxon, but this is the simplest change.
     const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
     console.log(`JobBoss schedule - offsetMinutes`, offsetMinutes)
-    const datetime = new Date(new Date().getTime() + offsetMinutes * 60 * 1000)
+    const datetime = new Date(new Date().getTime() + offsetMinutes * 60 * 1000) // ms
     console.log(`JobBoss schedule - datetime`, datetime)
 
     for (let device of this.devices) {
