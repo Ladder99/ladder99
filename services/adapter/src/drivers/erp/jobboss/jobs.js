@@ -59,7 +59,7 @@ export class Jobs {
           order by
             actual_start desc
         `
-        const result = await this.pool.query(sql)
+        const result = await this.pool.query(sql) // no error handler needed here - pool catches it?
         const job = result.recordset.length > 0 && result.recordset[0].job
         this.cache.set(`${device.id}-job`, job)
       }

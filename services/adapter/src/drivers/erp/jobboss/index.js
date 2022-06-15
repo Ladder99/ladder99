@@ -11,8 +11,17 @@ import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/n
 import { Jobs } from './jobs.js'
 import { Schedule } from './schedule.js'
 
-const initialDelay = 6000 // ms
-const waitForDb = 4000 // ms
+const initialDelay = 8000 // ms
+const waitForDb = 8000 // ms
+
+const errorMessages = {
+  ELOGIN: 'Login failed (locked out)',
+  ETIMEOUT: 'Connection timeout',
+  EALREADYCONNECTED: 'Database is already connected',
+  EALREADYCONNECTING: 'Already connecting to database',
+  EINSTLOOKUP: 'Instance lookup failed',
+  ESOCKET: 'Socket error (could not connect to db url)',
+}
 
 export class AdapterDriver {
   // note - device here is the jobboss object from setup yaml -
@@ -29,53 +38,36 @@ export class AdapterDriver {
     setUnavailable()
 
     // need to wait a bit to make sure the cutter cache items are setup before
-    // writing to them. they're setup via the cutter/marumatsu module.
+    // writing to them. they're setup via the cutter module.
     //. better - check they are there in a loop with delay...
     //  ieg check cache.get('c-start') etc for existence?
     console.log(`JobBoss - waiting a bit...`)
     await new Promise(resolve => setTimeout(resolve, initialDelay))
 
-    // mssql driver insists on a number for the port
-    connection = { ...connection, port: Number(connection.port) }
+    console.log(`JobBoss - connecting to database...`, connection.server)
+    connection = { ...connection, port: Number(connection.port) } // need number, not string
+    const pool = new mssql.ConnectionPool(connection)
+    pool.connect()
 
-    let pool
-    while (!pool) {
-      try {
-        console.log(`JobBoss - connecting to database...`, connection.server)
-        pool = await mssql.connect(connection)
+    // you should aim to only close a pool when you know it will never be needed by
+    // the application again. Typically this will only be when your application is shutting down.
+    // pool.close()
 
-        console.log(`JobBoss - connected`)
-        setAvailable()
+    // attach error handler
+    // IMPORTANT: Always attach an error listener to created connection. Whenever
+    // something goes wrong with the connection it will emit an error and if there is
+    // no listener it will crash your application with an uncaught error.
+    pool.error(handleError)
 
-        // start the polls
-        const jobs = new Jobs()
-        const schedule = new Schedule()
+    console.log(`JobBoss - connected`)
+    setAvailable()
 
-        await jobs.start({ cache, pool, devices })
-        await schedule.start({ cache, pool, devices, client })
-        //
-      } catch (error) {
-        if (error.code === 'ESOCKET') {
-          // could not connect to db url
-          console.log('JobBoss Error - ESOCKET')
-        } else if (error.code === 'ELOGIN') {
-          // could not login to db, eg if it's doing backup?
-          console.log('JobBoss Error - ELOGIN')
-        } else if (error.code === 'ETIMEOUT') {
-          // times out connecting to db url after 15secs
-          console.log('JobBoss Error - ETIMEOUT')
-        } else {
-          console.log(error)
-        }
-        console.log(`JobBoss - no db - waiting a bit to try again...`)
-        setUnavailable()
-        // pool = null //...
-        await new Promise(resolve => setTimeout(resolve, waitForDb))
-      }
-    }
+    // start the polls
+    const jobs = new Jobs()
+    const schedule = new Schedule()
 
-    //. method doesn't exist, but is in the readme
-    // mssql.on('error', err => { })
+    await jobs.start({ cache, pool, devices })
+    await schedule.start({ cache, pool, devices, client })
 
     function setAvailable() {
       cache.set(`${device.id}-availability`, 'AVAILABLE')
@@ -83,6 +75,15 @@ export class AdapterDriver {
 
     function setUnavailable() {
       cache.set(`${device.id}-availability`, 'UNAVAILABLE')
+    }
+
+    async function handleError(error) {
+      const msg = errorMessages[error.code] || error.code
+      console.log('JobBoss error: ', msg)
+      console.log(`JobBoss - waiting a bit to try again...`)
+      setUnavailable()
+      //. cancel existing timers and recreate them?
+      await new Promise(resolve => setTimeout(resolve, waitForDb))
     }
   }
 }
