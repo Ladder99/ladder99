@@ -55,9 +55,21 @@ export class AdapterDriver {
         await schedule.start({ cache, pool, devices, client })
         //
       } catch (error) {
-        console.log(error)
+        if (error.code === 'ESOCKET') {
+          // could not connect to db url
+          console.log('JobBoss Error - ESOCKET')
+        } else if (error.code === 'ELOGIN') {
+          // could not login to db, eg if it's doing backup?
+          console.log('JobBoss Error - ELOGIN')
+        } else if (error.code === 'ETIMEOUT') {
+          // times out connecting to db url after 15secs
+          console.log('JobBoss Error - ETIMEOUT')
+        } else {
+          console.log(error)
+        }
         console.log(`JobBoss - no db - waiting a bit to try again...`)
         setUnavailable()
+        // pool = null //...
         await new Promise(resolve => setTimeout(resolve, waitForDb))
       }
     }
