@@ -27,7 +27,7 @@ export class Schedule {
   }
 
   async backfill() {
-    console.log(`JobBoss backfill any missed dates...`)
+    console.log(`JobBoss schedule backfill any missed dates...`)
 
     const now = new Date()
     const defaultStart = new Date(now.getTime() - backfillDefaultStart) // eg 60d ago
@@ -35,12 +35,15 @@ export class Schedule {
     // read cookie file, if any
     let cookie = {}
     try {
-      console.log(`JobBoss backfill - read cookie file...`)
+      console.log(`JobBoss schedule backfill - read cookie file...`)
       const s = String(fs.readFileSync(cookiePath))
       cookie = JSON.parse(s)
-      console.log(`JobBoss backfill - cookie`, cookie)
+      console.log(`JobBoss schedule backfill - cookie`, cookie)
     } catch (e) {
-      console.log(`JobBoss backfill error no cookie file, use`, defaultStart)
+      console.log(
+        `JobBoss schedule backfill error - no cookie file, use`,
+        defaultStart
+      )
     }
 
     // loop over devices from setup.yaml
@@ -55,7 +58,7 @@ export class Schedule {
         // get start date and ndays ago
         const start = lastRead ? new Date(lastRead) : defaultStart
         const ndays = Math.floor((now.getTime() - start.getTime()) / days)
-        console.log(`JobBoss backfill - start and ndays`, start, ndays)
+        console.log(`JobBoss schedule backfill - start and ndays`, start, ndays)
 
         // lookup missing days and set values
         for (let day = 0; day < ndays; day++) {
@@ -76,14 +79,14 @@ export class Schedule {
       }
 
       // update cookie file
-      console.log(`JobBoss backfill - update cookie file`, cookie)
+      console.log(`JobBoss schedule backfill - update cookie file`, cookie)
       try {
         fs.writeFileSync(cookiePath, JSON.stringify(cookie))
       } catch (e) {
-        console.log('JobBoss backfill - error writing cookie file')
+        console.log('JobBoss schedule backfill - error writing cookie file')
       }
     }
-    console.log(`JobBoss backfill - done`)
+    console.log(`JobBoss schedule backfill - done`)
   }
 
   // poll the jobboss schedule information for current day,
@@ -109,8 +112,9 @@ export class Schedule {
         const schedule = await this.getSchedule(device, datetime) // get { start, stop }
         console.log('JobBoss schedule', schedule)
         // write start/stop times to cache for this device -
-        // eg start is a STRING like '2022-01-23T05:00:00' with NO Z!
-        // that way, it will be interpreted by new Date(start) as a local time.
+        // start/stop are STRINGS like 'UNAVAILABLE', or 'HOLIDAY', or
+        // '2022-01-23T05:00:00' with NO Z!
+        // that way, they will be interpreted by new Date(start) as a local time.
         this.cache.set(`${device.id}-start`, schedule.start)
         this.cache.set(`${device.id}-complete`, schedule.stop)
       }
@@ -118,11 +122,11 @@ export class Schedule {
   }
 
   // get workcenter schedule for given device and datetime.
-  // returns as { start, stop } times, which can be strings like
-  // '2022-01-23 05:00:00' (with no Z! it's local time), or null
-  // (eg Sunday), or 'HOLIDAY'.
+  // return as { start, stop } times, which can be strings like
+  // '2022-01-23 05:00:00' (with no Z! it's local time), or 'HOLIDAY',
+  // or 'UNAVAILABLE'.
   async getSchedule(device, datetime) {
-    console.log(`JobBoss - getSchedule for`, device.name, datetime)
+    console.log(`JobBoss schedule - get for`, device.name, datetime)
 
     const workcenter = device.jobbossId // eg '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' for Marumatsu
     const sequence = datetime.getDay() // day of week with 0=sunday, 1=monday. this works even if Z time is next day.
@@ -141,13 +145,13 @@ export class Schedule {
         where WorkCenter_OID=${workcenter} and cast(Date as date)=${dateString}
       `
     } catch (e) {
-      console.log('JobBoss getSchedule error', e)
+      console.log('JobBoss schedule error', e)
       return { start, stop }
     }
 
     if (result1.recordset.length === 0) {
       //
-      console.log(`JobBoss - no override record, so get standard schedule...`)
+      console.log(`JobBoss schedule - no override, so get standard schedule`)
       // if no record then lookup workcenter in WCShift_Standard
       //   get shift_id, look that up with sequencenum in shift_day table for start/end
       // (or do a join query)
@@ -161,15 +165,16 @@ export class Schedule {
         // note: start stop are Date objects
         start = result2.recordset[0].start // eg 1970-01-01T05:00:00Z - note the Z
         stop = result2.recordset[0].stop // eg 1970-01-01T13:30:00Z
+        // convert to strings
         start = getTimeAsLocalDateTimeString(start, datetime, dateString) // no Z!
         stop = getTimeAsLocalDateTimeString(stop, datetime, dateString)
-        console.log(`JobBoss - start, stop`, start, stop)
+        console.log(`JobBoss schedule - start, stop`, start, stop)
       } else {
-        console.log(`JobBoss - no results`)
+        console.log(`JobBoss schedule - no results`)
       }
     } else if (result1.recordset[0].Is_Work_Day) {
       //
-      console.log(`JobBoss - work day override - get schedule...`)
+      console.log(`JobBoss schedule - work day override - get schedule...`)
       // if isworkday then lookup hours in shift_day table -
       //   get shift_id, lookup in shift_day table with dayofweek for sequencenum
       //   get start/end times from record
@@ -184,24 +189,26 @@ export class Schedule {
         // note: start stop are Date objects
         start = result3.recordset[0].start // eg 1970-01-01T05:00:00Z - note the Z
         stop = result3.recordset[0].stop
+        // convert to strings
         start = getTimeAsLocalDateTimeString(start, datetime, dateString) // no Z!
         stop = getTimeAsLocalDateTimeString(stop, datetime, dateString)
-        console.log(`JobBoss - start, stop`, start, stop)
+        console.log(`JobBoss schedule - start, stop`, start, stop)
       } else {
-        console.log(`JobBoss - no results`)
+        console.log(`JobBoss schedule - no results`)
       }
     } else {
       //
       // if isworkday=0 then not a workday - might have 2 records, one for each shift
       //. for now just say the whole day is a holiday - no start/end times
-      console.log(`JobBoss - day is holiday (isworkday=0)...`)
+      console.log(`JobBoss schedule - day is holiday (isworkday=0)...`)
       start = 'HOLIDAY'
       stop = 'HOLIDAY'
     }
-
     return { start, stop }
   }
 }
+
+//. move to common library
 
 // get a date string from a datetime value,
 // eg 2022-01-18T14:24:00 -> '2022-01-18'

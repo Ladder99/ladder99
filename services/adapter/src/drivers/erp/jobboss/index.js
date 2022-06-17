@@ -50,7 +50,6 @@ export class AdapterDriver {
 
     // note: pool is the mssql global pool object - it's not gonna be destroyed if
     // there's an error, so no need to recreate it in error handlers.
-    // const pool = await connect(connection)
     let pool
     while (!pool) {
       try {
@@ -79,8 +78,8 @@ export class AdapterDriver {
     await jobs.start({ cache, pool, devices })
     await schedule.start({ cache, pool, devices, client })
 
-    // you should aim to only close a pool when you know it will never be needed by
-    // the application again. Typically this will only be when your application is shutting down.
+    // only close a pool when you know it will never be needed by the application again.
+    // Typically this will only be when your application is shutting down.
     //. ie add interrupt handlers
     // pool.close()
 
@@ -97,9 +96,8 @@ export class AdapterDriver {
     async function handleError(error) {
       const msg = errorMessages[error.code] || error.code
       console.log('JobBoss error: ', msg)
-      console.log(`JobBoss - waiting a bit to try again...`)
+      console.log('JobBoss - waiting a bit to try again...')
       setUnavailable()
-      //. cancel existing timers and recreate them? i dont think so
       await new Promise(resolve => setTimeout(resolve, waitForDb))
     }
   }
