@@ -19,7 +19,8 @@ SERVICE=$1
 PATTERN=$2
 
 # include timestamps
-docker logs -t $SERVICE &2>1 | grep $PATTERN
+# docker logs -t $SERVICE &2>1 | grep $PATTERN
+docker logs -t $SERVICE | grep $PATTERN
 
 # find docker service id
 # ID=`docker inspect --format={{.Id}} $SERVICE`
