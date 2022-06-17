@@ -26,7 +26,7 @@ export class Jobs {
         //. check status for completion? (S=started, C=complete?)
         const sql = `
           select top 1
-            Job
+            Job --, Est_Required_Qty, Act_Run_Qty
           from
             Job_Operation
           where
