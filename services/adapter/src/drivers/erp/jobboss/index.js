@@ -11,8 +11,8 @@ import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/n
 import { Jobs } from './jobs.js'
 import { Schedule } from './schedule.js'
 
-const initialDelay = 8000 // ms
-const waitForDb = 8000 // ms
+const initialDelay = 6000 // ms
+const waitForDb = 6000 // ms
 
 const errorMessages = {
   ELOGIN: 'Login failed (locked out)',
@@ -24,6 +24,7 @@ const errorMessages = {
 }
 
 export class AdapterDriver {
+  //
   // note - device here is the jobboss object from setup yaml -
   // this code will iterate over all devices in setup yaml to find ones with
   // jobbossId values and check their schedules and jobnums.
@@ -39,19 +40,28 @@ export class AdapterDriver {
 
     // need to wait a bit to make sure the cutter cache items are setup before
     // writing to them. they're setup via the cutter module.
+    //. why? which items?
     //. better - check they are there in a loop with delay...
-    //  ieg check cache.get('c-start') etc for existence?
+    //  ieg check cache.get('m1-start') etc for existence?
     console.log(`JobBoss - waiting a bit...`)
     await new Promise(resolve => setTimeout(resolve, initialDelay))
 
-    console.log(`JobBoss - connecting to database...`, connection.server)
     connection = { ...connection, port: Number(connection.port) } // need number, not string
-    const pool = new mssql.ConnectionPool(connection)
-    pool.connect()
 
-    // you should aim to only close a pool when you know it will never be needed by
-    // the application again. Typically this will only be when your application is shutting down.
-    // pool.close()
+    // note: pool is the mssql global pool object - it's not gonna be destroyed if
+    // there's an error, so no need to recreate it in error handlers.
+    // const pool = await connect(connection)
+    let pool
+    while (!pool) {
+      try {
+        console.log(`JobBoss - connecting to database...`, connection.server)
+        // connect will return the existing global pool or create a new one if it doesn't exist
+        pool = await mssql.connect(connection)
+      } catch (error) {
+        handleError(error) // print error and wait a bit
+        // try again, in a loop
+      }
+    }
 
     // attach error handler
     // IMPORTANT: Always attach an error listener to created connection. Whenever
@@ -63,11 +73,18 @@ export class AdapterDriver {
     setAvailable()
 
     // start the polls
-    const jobs = new Jobs()
-    const schedule = new Schedule()
+    const jobs = new Jobs() // fetch current jobnum
+    const schedule = new Schedule() // fetch current schedule hours
 
     await jobs.start({ cache, pool, devices })
     await schedule.start({ cache, pool, devices, client })
+
+    // you should aim to only close a pool when you know it will never be needed by
+    // the application again. Typically this will only be when your application is shutting down.
+    //. ie add interrupt handlers
+    // pool.close()
+
+    // helper fns
 
     function setAvailable() {
       cache.set(`${device.id}-availability`, 'AVAILABLE')
@@ -82,7 +99,7 @@ export class AdapterDriver {
       console.log('JobBoss error: ', msg)
       console.log(`JobBoss - waiting a bit to try again...`)
       setUnavailable()
-      //. cancel existing timers and recreate them?
+      //. cancel existing timers and recreate them? i dont think so
       await new Promise(resolve => setTimeout(resolve, waitForDb))
     }
   }

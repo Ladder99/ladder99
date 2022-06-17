@@ -27,7 +27,7 @@ export class Schedule {
   }
 
   async backfill() {
-    console.log(`JobBoss - backfilling any missed dates...`)
+    console.log(`JobBoss backfill any missed dates...`)
 
     const now = new Date()
     const defaultStart = new Date(now.getTime() - backfillDefaultStart) // eg 60d ago
@@ -35,15 +35,12 @@ export class Schedule {
     // read cookie file, if any
     let cookie = {}
     try {
-      console.log(`JobBoss - read cookie file...`)
+      console.log(`JobBoss backfill - read cookie file...`)
       const s = String(fs.readFileSync(cookiePath))
       cookie = JSON.parse(s)
-      console.log(`JobBoss - cookie`, cookie)
+      console.log(`JobBoss backfill - cookie`, cookie)
     } catch (e) {
-      console.log(
-        `JobBoss - missing cookie file - using default start date`,
-        defaultStart
-      )
+      console.log(`JobBoss backfill error no cookie file, use`, defaultStart)
     }
 
     // loop over devices from setup.yaml
@@ -58,24 +55,20 @@ export class Schedule {
         // get start date and ndays ago
         const start = lastRead ? new Date(lastRead) : defaultStart
         const ndays = Math.floor((now.getTime() - start.getTime()) / days)
-        console.log(`JobBoss - start and ndays`, start, ndays)
+        console.log(`JobBoss backfill - start and ndays`, start, ndays)
 
         // lookup missing days and set values
         for (let day = 0; day < ndays; day++) {
           const datetime = new Date(start.getTime() + day * days)
           const schedule = await this.getSchedule(device, datetime) // get { start, stop }
-          console.log(`JobBoss - day, datetime, sched`, day, datetime, schedule)
-          // timestring (3rd param) is optional for cache.set -
+          // console.log(`JobBoss - day, datetime, sched`, day, datetime, schedule)
+          // timestamp string in 3rd param is optional for cache.set -
           // need it here so xml will get the value for relay to pick up,
           // so meter can filter to a record it needs.
           // note: schedule.start/stop can be null or HOLIDAY etc
-          const datetimeStr = datetime.toISOString()
-          this.cache.set(`${device.id}-start`, schedule.start, {
-            timestamp: datetimeStr,
-          })
-          this.cache.set(`${device.id}-complete`, schedule.stop, {
-            timestamp: datetimeStr,
-          })
+          const timestamp = datetime.toISOString()
+          this.cache.set(`${device.id}-start`, schedule.start, { timestamp })
+          this.cache.set(`${device.id}-complete`, schedule.stop, { timestamp })
         }
 
         // update cookie
@@ -83,10 +76,14 @@ export class Schedule {
       }
 
       // update cookie file
-      console.log(`JobBoss - update cookie file`, cookie)
-      fs.writeFileSync(cookiePath, JSON.stringify(cookie))
+      console.log(`JobBoss backfill - update cookie file`, cookie)
+      try {
+        fs.writeFileSync(cookiePath, JSON.stringify(cookie))
+      } catch (e) {
+        console.log('JobBoss backfill - error writing cookie file')
+      }
     }
-    console.log(`JobBoss - done with backfill`)
+    console.log(`JobBoss backfill - done`)
   }
 
   // poll the jobboss schedule information for current day,
@@ -130,12 +127,6 @@ export class Schedule {
     const workcenter = device.jobbossId // eg '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' for Marumatsu
     const sequence = datetime.getDay() // day of week with 0=sunday, 1=monday. this works even if Z time is next day.
     const dateString = getLocalDateFromDateTime(datetime) // eg '2022-01-18' - works even if Z time is next day.
-    console.log(
-      `JobBoss workcenter, sequence, dateString`,
-      workcenter,
-      sequence,
-      dateString
-    )
 
     // lookup workcenter and date in wc shift override table
     const result1 = await this.pool.query`

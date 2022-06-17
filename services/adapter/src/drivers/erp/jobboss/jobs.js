@@ -40,9 +40,6 @@ export class Jobs {
   async poll() {
     // console.log(`JobBoss - checking for job number change...`)
 
-    // simple test - works
-    // this.cache.set(`${deviceId}-job`, Math.floor(Math.random() * 1000))
-
     // iterate over all devices, check if has a jobboss ID //. call it workcenterId?
     for (let device of this.devices) {
       if (device.jobbossId) {
@@ -59,9 +56,13 @@ export class Jobs {
           order by
             actual_start desc
         `
-        const result = await this.pool.query(sql) // no error handler needed here - pool catches it?
-        const job = result.recordset.length > 0 && result.recordset[0].job
-        this.cache.set(`${device.id}-job`, job)
+        try {
+          const result = await this.pool.query(sql) // pool error handler should catch any errors?
+          const job = result.recordset.length > 0 && result.recordset[0].job
+          this.cache.set(`${device.id}-job`, job)
+        } catch (error) {
+          console.log(error)
+        }
       }
     }
   }
