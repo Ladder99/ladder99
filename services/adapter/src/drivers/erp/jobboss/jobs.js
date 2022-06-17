@@ -37,8 +37,8 @@ export class Jobs {
         // pool error handler should catch any errors, but add try/catch in case not
         try {
           const result = await this.pool.query(sql)
-          const job = result.recordset.length > 0 && result.recordset[0].job
-          console.log('device', device, 'job', job)
+          const job = result.recordset.length > 0 && result.recordset[0].Job // must match case of sql
+          console.log('device', device.name, 'job', job)
           this.cache.set(`${device.id}-job`, job)
         } catch (error) {
           console.log('JobBoss jobs error', error)
