@@ -66,7 +66,8 @@ export class AdapterDriver {
     // IMPORTANT: Always attach an error listener to created connection. Whenever
     // something goes wrong with the connection it will emit an error and if there is
     // no listener it will crash your application with an uncaught error.
-    pool.error(handleError)
+    // pool.error(handleError)
+    pool.on('error', handleError)
 
     console.log(`JobBoss - connected`)
     setAvailable()
