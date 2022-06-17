@@ -6,6 +6,7 @@ export class Jobs {
   //
   // will check jobnum for each device in devices
   async start({ cache, pool, devices }) {
+    console.log('JobBoss jobs - start poll interval', pollInterval, 'ms')
     this.cache = cache
     this.pool = pool
     this.devices = devices
@@ -37,6 +38,7 @@ export class Jobs {
         try {
           const result = await this.pool.query(sql)
           const job = result.recordset.length > 0 && result.recordset[0].job
+          console.log('device', device, 'job', job)
           this.cache.set(`${device.id}-job`, job)
         } catch (error) {
           console.log('JobBoss jobs error', error)

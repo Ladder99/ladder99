@@ -15,7 +15,7 @@ export class Schedule {
   //
   // check jobboss for schedule for each device in devices
   async start({ cache, pool, devices, client }) {
-    console.log(`Jobboss schedule - start`)
+    console.log('Jobboss schedule - backfill/start poll', pollInterval, 'ms')
     this.cache = cache
     this.pool = pool
     this.devices = devices
