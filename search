@@ -3,21 +3,32 @@
 # search through docker logs
 # see https://stackoverflow.com/questions/34724980/finding-a-string-in-docker-logs-of-container
 
-container=$1
-pattern=$2
-id=`docker inspect --format={{.Id}} $container`
+usage="
+Usage: ./search SERVICE PATTERN
 
-# show container directory
-# sudo ls -l /var/lib/docker/containers/$id
+Search Docker service logs for the given pattern using grep
+"
+
+# show help
+if [ $# -eq 0 ]; then
+    echo "$usage"
+    exit 1
+fi
+
+SERVICE=$1
+PATTERN=$2
+
+# include timestamps
+docker logs -t $SERVICE &2>1 | grep $PATTERN
+
+# find docker service id
+# ID=`docker inspect --format={{.Id}} $SERVICE`
+
+# show service directory
+# sudo ls -l /var/lib/docker/containers/$ID
 
 # include all json log files
-# sudo grep $pattern /var/lib/docker/containers/$id
-
-# better - include timestamps
-# docker logs -t $container &2>1 | grep $pattern
-# eg
-# docker logs -t adapter &2>1 | grep jobboss
+# sudo grep $PATTERN /var/lib/docker/containers/$ID
 
 # open log in editor - use /<text>[ENTER] to search forward, hit n for next
-sudo vim /var/lib/docker/containers/$id/$id-json.log
-
+# sudo vim /var/lib/docker/containers/$ID/$ID-json.log
