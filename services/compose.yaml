@@ -290,6 +290,7 @@ services:
       - logzio-logs
     environment:
       LOGZIO_TOKEN: null
+      LOGZIO_TYPE: docker_logs
       LOGZIO_CODEC: json
       skipContainerName: cloudbeaver,dozzle,hue,logzio-logs,pgadmin,portainer,traefik
     volumes:
