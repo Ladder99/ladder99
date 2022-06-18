@@ -279,29 +279,29 @@ services:
       options:
         max-size: '20m'
 
-  # ---------------------------------------------------------------------------
-  # logzio-logs
-  # ---------------------------------------------------------------------------
-  # monitor docker logs with logz.io
-  logzio-logs:
-    container_name: logzio-logs
-    image: logzio/docker-collector-logs
-    profiles:
-      - logzio-logs
-    environment:
-      LOGZIO_TOKEN: null
-      LOGZIO_TYPE: docker_logs
-      LOGZIO_CODEC: json
-      skipContainerName: cloudbeaver,dozzle,hue,logzio-logs,pgadmin,portainer,traefik
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /var/run/docker/containers:/var/lib/docker/containers
-    restart: always
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '20m'
+  # # ---------------------------------------------------------------------------
+  # # logzio-logs
+  # # ---------------------------------------------------------------------------
+  # # monitor docker logs with logz.io
+  # logzio-logs:
+  #   container_name: logzio-logs
+  #   image: logzio/docker-collector-logs
+  #   profiles:
+  #     - logzio-logs
+  #   environment:
+  #     LOGZIO_TOKEN: null
+  #     LOGZIO_TYPE: docker_logs
+  #     LOGZIO_CODEC: json
+  #     skipContainerName: cloudbeaver,dozzle,hue,logzio-logs,pgadmin,portainer,traefik
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - /var/run/docker/containers:/var/lib/docker/containers
+  #   restart: always
+  #   networks:
+  #     - ladder99
+  #   logging:
+  #     options:
+  #       max-size: '20m'
 
   # ---------------------------------------------------------------------------
   # meter
@@ -580,6 +580,34 @@ services:
     logging:
       options:
         max-size: '20m'
+
+  # ---------------------------------------------------------------------------
+  # sematext
+  # ---------------------------------------------------------------------------
+  # send logs to sematext.com for monitoring
+  sematext:
+    image: sematext/agent:latest
+    container_name: sematext
+    profiles:
+      - sematext
+    environment:
+      - INFRA_TOKEN=null # set this in .env file
+      - SERVER_BASE_URL=https://spm-receiver.sematext.com
+      - LOGS_RECEIVER_URL=https://logsene-receiver.sematext.com
+      - EVENT_RECEIVER_URL=https://event-receiver.sematext.com
+      - COMMAND_SERVER_URL=https://command.sematext.com
+    cap_add:
+      - SYS_ADMIN
+    restart: always
+    volumes:
+      - /:/hostfs:ro
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+      - /var/run/:/var/run
+      - /sys/kernel/debug:/sys/kernel/debug
+      - /sys:/host/sys:ro
+      - /dev:/hostfs/dev:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
 
   # ---------------------------------------------------------------------------
   # superset
