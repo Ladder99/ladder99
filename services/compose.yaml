@@ -591,7 +591,7 @@ services:
     profiles:
       - sematext
     environment:
-      - INFRA_TOKEN=null # set this in .env file
+      - INFRA_TOKEN=$INFRA_TOKEN # set this in .env file
       - SERVER_BASE_URL=https://spm-receiver.sematext.com
       - LOGS_RECEIVER_URL=https://logsene-receiver.sematext.com
       - EVENT_RECEIVER_URL=https://event-receiver.sematext.com
