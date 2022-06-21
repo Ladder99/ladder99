@@ -221,7 +221,13 @@ export class Metric {
     const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
     const stop = holiday || getDate(stopText)
     const schedule = { start, stop, holiday }
-    console.log('Availability - schedule', schedule)
+    console.log(
+      'Availability - device, start, stop, holiday',
+      this.device.name,
+      schedule.start,
+      schedule.stop,
+      schedule.holiday
+    )
     return schedule
   }
 

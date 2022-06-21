@@ -31,7 +31,7 @@ export class Metric {
 
   // poll db and update lifetime count - called by timer
   async poll() {
-    console.log('Count - poll db, write lifetime count for', this.device.name)
+    // console.log('Count - poll db, write lifetime count for', this.device.name)
 
     const now = new Date()
     const start = new Date(now.getTime() - this.interval).toISOString()
