@@ -135,7 +135,7 @@ export class Metric {
     console.log(`Availability - start, now`, startMinute, nowMinute)
     let state = null
     for (let minute = startMinute; minute < nowMinute; minute++) {
-      console.log(`Availability - backfill minute`, minute)
+      // console.log(`Availability - backfill minute`, minute)
       const path = startStopTimes[minute]
       if (path === this.metric.startPath) {
         state = 1
@@ -154,48 +154,48 @@ export class Metric {
 
   // poll db and update bins - called by timer
   async poll() {
-    console.log('Availability - poll db and update bins')
+    // console.log('Availability - poll db and update bins')
     const now = new Date()
     // shift now into server timezone (GMT) so can do comparisons properly
     // const now = new Date(
     //   new Date().getTime() +
     //     (this.client.timezoneOffsetHrs || 0) * 60 * 60 * 1000
     // )
-    console.log('Availability - now', now)
+    // console.log('Availability - now', now)
 
     // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ..., holiday }
-    console.log(`Availability - get schedule...`)
+    // console.log(`Availability - get schedule...`)
 
     //. could do this every 10mins or so on separate timer, save to this.schedule
     const schedule = await this.getSchedule()
 
     // update bins if we're in the scheduled time window
     if (schedule.holiday) {
-      console.log(`Availability - holiday`)
+      // console.log(`Availability - holiday`)
     } else {
       const inWindow = now >= schedule.start && now <= schedule.stop
       if (inWindow) {
-        console.log(`Availability - in scheduled time window, so update bins`)
+        // console.log(`Availability - in scheduled time window, so update bins`)
         await this.updateBins(now, this.interval)
       } else {
-        console.log(`Availability - not in scheduled time window`)
+        // console.log(`Availability - not in scheduled time window`)
       }
     }
   }
 
   async updateBins(now, interval) {
     // check for events in previous n secs, eg 60
-    console.log(`Availability - check if device was active`)
+    // console.log(`Availability - check if device was active`)
     const start = new Date(now.getTime() - interval)
     const stop = now
     const deviceWasActive = await this.getActive(start, stop)
     // if device was active, increment the active bin
     if (deviceWasActive) {
-      console.log(`Availability - device was active, increment active bin`)
+      // console.log(`Availability - device was active, increment active bin`)
       await this.incrementBins(now, 'active')
     }
     // always increment the available bin
-    console.log(`Availability - always increment the available bin`)
+    // console.log(`Availability - always increment the available bin`)
     await this.incrementBins(now, 'available')
   }
 
@@ -228,11 +228,11 @@ export class Metric {
   // check if device was 'active' (ie has events on the active path), between two times.
   // returns true/false
   async getActive(start, stop) {
-    console.log(
-      `Availability - check if device was active between`,
-      start,
-      stop
-    )
+    // console.log(
+    //   `Availability - check if device was active between`,
+    //   start,
+    //   stop
+    // )
     const sql = `
       select count(value) > 0 as active
       -- just look at _float, not _all - _all includes "0"'s, which don't get plotted

@@ -31,7 +31,7 @@ export class Metric {
 
   // poll db and update lifetime count - called by timer
   async poll() {
-    console.log('Count - poll db and write lifetime count')
+    // console.log('Count - poll db and write lifetime count')
 
     const now = new Date()
     const start = new Date(now.getTime() - this.interval).toISOString()
@@ -45,7 +45,7 @@ export class Metric {
     if (record) {
       lifetime = record.value
     }
-    console.log('Count - lifetime', lifetime)
+    // console.log('Count - lifetime', lifetime)
 
     // const rows = await this.getCounts(start, stop) // Date objects
     const rows = await this.db.getHistory(
@@ -54,7 +54,7 @@ export class Metric {
       start,
       stop
     )
-    console.log('Count - rows', rows)
+    // console.log('Count - rows', rows)
     // rows will be like (for start=10:00:00am, stop=10:00:05am)
     // time, value
     // 9:59:59am, 99

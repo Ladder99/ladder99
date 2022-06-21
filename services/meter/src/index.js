@@ -6,7 +6,8 @@ import * as lib from './common/lib.js'
 
 console.log()
 console.log(`Ladder99 Meter`)
-console.log(`---------------------------------------------------`)
+console.log(`Read data from database, calculate metrics, write to db`)
+console.log(`--------------------------------------------------------------`)
 
 const metricsFolder = './metrics'
 const setupFolder = process.env.L99_SETUP_FOLDER || `/data/setup`
