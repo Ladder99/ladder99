@@ -31,7 +31,7 @@ export class Metric {
 
   // poll db and update lifetime count - called by timer
   async poll() {
-    // console.log('Count - poll db and write lifetime count')
+    console.log('Count - poll db, write lifetime count for', this.device.name)
 
     const now = new Date()
     const start = new Date(now.getTime() - this.interval).toISOString()
@@ -87,7 +87,7 @@ export class Metric {
 
   // backfill missing partcount records
   async backfill() {
-    console.log(`Count - backfill any missed partcounts...`)
+    console.log(`Count - backfill any missed partcounts for`, this.device.name)
 
     const now = new Date()
 
