@@ -30,7 +30,7 @@
 // to calculate the 'availability' percentage, the metrics view in the db
 // does 'active' / 'available'.
 
-import { DateTime } from 'luxon' // see https://moment.github.io/luxon/
+import { DateTime } from 'luxon' // for timezones - see https://moment.github.io/luxon/
 
 const minutes = 60 * 1000 // 60 ms
 const hours = 60 * minutes
@@ -156,12 +156,6 @@ export class Metric {
   async poll() {
     // console.log('Availability - poll db and update bins')
     const now = new Date()
-    // shift now into server timezone (GMT) so can do comparisons properly
-    // const now = new Date(
-    //   new Date().getTime() +
-    //     (this.client.timezoneOffsetHrs || 0) * 60 * 60 * 1000
-    // )
-    // console.log('Availability - now', now)
 
     // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ..., holiday }
     // console.log(`Availability - get schedule...`)
@@ -189,12 +183,14 @@ export class Metric {
     const start = new Date(now.getTime() - interval)
     const stop = now
     const deviceWasActive = await this.getActive(start, stop)
-    // if device was active, increment the active bin
+    // if device was active, increment the 'active' bin
     if (deviceWasActive) {
-      // console.log(`Availability - device was active, increment active bin`)
+      // console.log(
+      //   `Availability - ${this.device.name} was active, increase active bin`
+      // )
       await this.incrementBins(now, 'active')
     }
-    // always increment the available bin
+    // always increment the 'available' bin
     // console.log(`Availability - always increment the available bin`)
     await this.incrementBins(now, 'available')
   }
@@ -221,13 +217,12 @@ export class Metric {
     const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
     const stop = holiday || getDate(stopText)
     const schedule = { start, stop, holiday }
-    console.log(
-      'Availability - device, start, stop, holiday',
-      this.device.name,
-      schedule.start,
-      schedule.stop,
-      schedule.holiday
-    )
+    // console.log(
+    //   'Availability - ${this.device.name} start, stop, holiday',
+    //   schedule.start,
+    //   schedule.stop,
+    //   schedule.holiday
+    // )
     return schedule
   }
 
@@ -277,7 +272,6 @@ export class Metric {
         on conflict (device_id, resolution, time) do
           update set ${field} = coalesce(bins.${field}, 0) + ${delta};
       `
-      // console.log(sql)
       await this.db.query(sql)
     }
   }
