@@ -38,6 +38,7 @@ export class Endpoint {
       try {
         const response = await fetch(url)
         const xml = await response.text()
+        //. this has an xml2js method - use that instead
         json = JSON.parse(convert.xml2json(xml, { compact: true }))
       } catch (error) {
         if (error.code === 'ENOTFOUND') {
