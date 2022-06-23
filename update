@@ -22,15 +22,17 @@ else
     SETUP=../client-$1
 fi
 
-# pull ladder99-ce repo
-CMD="git pull"
-echo $CMD
-bash -c "$CMD"
+# # pull ladder99-ce repo
+# CMD="git pull"
+# echo $CMD
+# bash -c "$CMD"
 
-# pull client repo
+# pull ladder99-ce repo then client repo
 # set credential cache while we're at it so user doesn't have to
-# keep entering passcode - just do it once per hour.
-CMD="(cd $SETUP && git config credential.helper 'cache --timeout=36000' && git pull)"
+# keep entering passcode - 360000=100h.
+# do both pulls in same command so if first fails, won't do second - 
+# because it was easy to miss the failed first command.
+CMD="git pull && (cd $SETUP && git config credential.helper 'cache --timeout=360000' && git pull)"
 echo $CMD
 bash -c "$CMD"
 
