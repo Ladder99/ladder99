@@ -392,6 +392,8 @@ services:
   # pgadmin
   # ---------------------------------------------------------------------------
   # admin console for postgres database
+  # note: must set permissions for volumes/pgadmin directory - eg
+  #   sudo chown -R 5050:5050 ../client-oxbox/volumes/pgadmin
   pgadmin:
     container_name: pgadmin
     image: biarms/pgadmin4:latest
@@ -401,6 +403,7 @@ services:
       - '5050:5050/tcp'
     volumes:
       - ../$SETUP/volumes/pgadmin:/pgadmin
+      - ../$SETUP/volumes/pgadmin/config:/pgadmin/config
     restart: always
     networks:
       - ladder99
