@@ -32,10 +32,14 @@ outputs:
   # ------------------------------------------------------------------
 
   # availability
+  # general availability of this device including:
+  # Marumatsu controller - MQTT data
+  # Shift start/stop - another data source
+  #. how include time within shift here?
   #. is it okay to have >1 output for an input?
-  # eg can we reuse <connection> to get availability?
-  # - key: avail
-  # value: types.AVAILABILITY[<connection>]
+  # eg can we reuse <connection> to get availability? double check
+  - key: avail
+    value: types.AVAILABILITY[<connection>]
 
   # this maps to controller/availability in the xml
   - key: ctl-avail
