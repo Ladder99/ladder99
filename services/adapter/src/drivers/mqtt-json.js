@@ -54,7 +54,7 @@ export class AdapterDriver {
       }
 
       // do any static inits
-      console.log(inputs.connect.static)
+      console.log('MQTT static inits:', inputs.connect.static)
       for (const key of Object.keys(inputs.connect.static || {})) {
         const cacheId = `${device.id}-${key}`
         const value = inputs.connect.static[key]
@@ -70,7 +70,7 @@ export class AdapterDriver {
     // message - array of bytes (assumed to be a json string)
     function onMessage(msgTopic, message) {
       message = message.toString()
-      // console.log(`MQTT got message ${msgTopic}: ${message.slice(0, 140)}`)
+      console.log(`MQTT got message ${msgTopic}: ${message.slice(0, 140)}`)
       // console.log(`Got message on topic ${msgTopic}: ${message}`)
 
       // const receivedTime = new Date()
@@ -86,7 +86,12 @@ export class AdapterDriver {
       }
 
       //.................. temporary stopgap - won't scale ...................
-      if (payload.id && source.messageIds && !source.messageIds[payload.id])
+      if (
+        typeof payload === 'object' &&
+        payload.id &&
+        source.messageIds &&
+        !source.messageIds[payload.id]
+      )
         return
 
       // iterate over message handlers - array of [topic, handler]
