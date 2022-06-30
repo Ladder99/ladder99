@@ -172,14 +172,16 @@ export class AdapterDriver {
               equationKeys = getEquationKeys2(equationKeys2, handler.maps)
               depth += 1
             } while (equationKeys.size > 0 && depth < 6) // prevent endless loops
+            //
           } else {
+            //
             // ie handler.process = 'text_message'
-
-            let equationKeys = new Set(['connection']) //.. ?
+            let equationKeys = new Set(['connection']) //. should get this from inputs.yaml
 
             for (let equationKey of equationKeys) {
               const expression = handler.augmentedExpressions[equationKey]
               const value = expression.fn(cache, $, keyvalues) // run the expression fn
+              console.log(`MQTT handle text_message`, topic, equationKey, value)
               if (value !== undefined) {
                 const cacheId = device.id + '-' + equationKey // eg 'pa1-fault_count'
                 cache.set(cacheId, value) // save to the cache - may send shdr to tcp
