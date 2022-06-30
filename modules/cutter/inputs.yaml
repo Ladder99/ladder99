@@ -5,8 +5,8 @@
 
 # the ladder99 adapter subscribes to topics from an mqtt broker,
 # the mqtt broker sends data from the device(s) to adapter,
-# and adapter parses messages, writes values to cache, which may output shdr
-# to the mtconnect agent.
+# and adapter parses messages, writes values to cache, which outputs shdr
+# to the mtconnect agent when the values change.
 
 # this file is parsed by the adapter driver services/adapter/src/drivers/mqtt-json.js.
 
@@ -15,6 +15,7 @@
 # eg the 'status_step' key references the cache value at 'kl1-status_step',
 # which is set below, while the output key in outputs.yaml is 'step',
 # which becomes eg 'kl1-step' for the SHDR id.
+
 # the idea is to keep the SHDR id's as short as possible, to reduce network bandwidth,
 # while the dataitem name can be more descriptive.
 

@@ -6,10 +6,10 @@ import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../common/lib.js'
 
-//... move this into class
+//. move this into class
 //. and make it a const - call it sthing else - data?
 //. pass it into expression fns as this.data?
-// then expressions could refer to it by eg `data.foo.bar = 3
+// then expressions could refer to it by eg `data.foo.bar = 3`
 // see https://stackoverflow.com/questions/15189857/what-is-the-most-efficient-way-to-empty-a-plain-object-in-javascript
 // so `keyvalues={}` would create a new object and leave the original object as is,
 // ie not garbage collected?
@@ -86,7 +86,8 @@ export class AdapterDriver {
       }
 
       //.................. temporary stopgap - won't scale ...................
-      if (source.messageIds && !source.messageIds[payload.id]) return
+      if (payload.id && source.messageIds && !source.messageIds[payload.id])
+        return
 
       // iterate over message handlers - array of [topic, handler]
       // eg [['l99/ccs/evt/query', { unsubscribe, initialize, definitions, inputs, ... }], ...]

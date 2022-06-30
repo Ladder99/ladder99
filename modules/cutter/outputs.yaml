@@ -14,6 +14,7 @@
 # eg <status_step> references the cache value at 'kl1-status_step',
 # which was set in inputs.yaml, while the output key here is 'step',
 # which becomes eg 'kl1-step' for the SHDR id.
+
 # the idea is to keep the SHDR id's as short as possible, to reduce network bandwidth,
 # while the dataitem name can be more descriptive.
 
@@ -30,6 +31,13 @@ outputs:
   # device
   # ------------------------------------------------------------------
 
+  # availability
+  #. is it okay to have >1 output for an input?
+  # eg can we reuse <connection> to get availability?
+  # - key: avail
+  # value: types.AVAILABILITY[<connection>]
+
+  # this maps to controller/availability in the xml
   - key: ctl-avail
     value: types.AVAILABILITY[<connection>]
 
