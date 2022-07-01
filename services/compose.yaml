@@ -402,7 +402,8 @@ services:
     profiles:
       - pgadmin
     ports:
-      - '5050:5050/tcp'
+      # - '5050:5050/tcp'
+      - '5050:80'
     volumes:
       #   - ../$SETUP/volumes/pgadmin:/pgadmin
       #   - ../$SETUP/volumes/pgadmin/config:/pgadmin/config
