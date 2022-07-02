@@ -53,8 +53,6 @@ handlers:
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
-    #. explain
-    # process: iterate_message_contents
     process: text_message
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'connection' => 's-connection'.

@@ -70,7 +70,10 @@ export class AdapterDriver {
     // message - array of bytes (assumed to be a json string)
     function onMessage(msgTopic, message) {
       message = message.toString()
-      console.log(`MQTT got message ${msgTopic}: ${message.slice(0, 140)}`)
+
+      //. temporary guard
+      if (msgTopic === 'controller')
+        console.log(`MQTT got message ${msgTopic}: ${message.slice(0, 140)}`)
       // console.log(`Got message on topic ${msgTopic}: ${message}`)
 
       // const receivedTime = new Date()
@@ -123,6 +126,7 @@ export class AdapterDriver {
           //. call this handler.algorithm, update all modules
           //. call this iterate_expressions, update all module inputs.yaml
           if (handler.process === 'iterate_inputs') {
+            //
             // console.log(`MQTT handle iterate_inputs`)
             //
             // define lookup function
@@ -150,7 +154,9 @@ export class AdapterDriver {
                 cache.set(cacheId, value) // save to the cache - may send shdr to agent
               }
             }
+            //
           } else if (handler.process === 'iterate_message_contents') {
+            //
             // get set of keys for eqns we need to execute based on the payload
             // eg set{'has_current_job', 'job_meta', ...}
             //. call this dependencies = getDependencies?
@@ -178,10 +184,17 @@ export class AdapterDriver {
               depth += 1
             } while (equationKeys.size > 0 && depth < 6) // prevent endless loops
             //
-          } else {
+          } else if (handler.process === 'text_message') {
             //
-            // ie handler.process = 'text_message'
+            // this is hardcoded at the moment to a 'connection' string
+
             let equationKeys = new Set(['connection']) //. should get this from inputs.yaml
+
+            // note: the variable '$' should have been set to the value of the variable payload with
+            //   initialize: '$ = payload'
+            // expression should be like
+            //   connection: $
+            // so `expression.fn(cache, $, keyvalues)` below just evals to $
 
             for (let equationKey of equationKeys) {
               const expression = handler.augmentedExpressions[equationKey]
@@ -193,6 +206,9 @@ export class AdapterDriver {
                 // equationKeys2.add(cacheId)
               }
             }
+            //
+          } else {
+            console.log(`MQTT Error - missing handler.process`, handler.process)
           }
 
           // subscribe to any topics
