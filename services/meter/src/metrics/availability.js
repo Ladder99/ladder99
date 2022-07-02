@@ -63,7 +63,12 @@ export class Metric {
     // there's probably a better way to do this with luxon, but this is the simplest change.
     const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
     this.timezoneOffset = offsetMinutes * 60 * 1000 // ms
-    console.log(`Availability - tz, offset`, client.timezone, offsetMinutes)
+    console.log(
+      `Availability tz, offset`,
+      this.device.name,
+      client.timezone,
+      offsetMinutes
+    )
 
     console.log(`Availability - get device node_id...`)
     this.device.node_id = await this.db.getDeviceId(device.name) // repeats until device is there
@@ -81,7 +86,9 @@ export class Metric {
   }
 
   async backfill() {
-    console.log(`Availability - backfilling any missed dates...`)
+    const deviceName = this.device.name
+
+    console.log(`Availability ${deviceName} - backfilling missed dates...`)
 
     const now = new Date()
     const defaultStart = new Date(now.getTime() - backfillDefaultStart) // eg 60d ago
@@ -96,9 +103,9 @@ export class Metric {
     `
     const result = await this.db.query(sql)
     const lastRead = result.rows.length > 0 && result.rows[0].time
-    console.log(`Availability - lastRead`, lastRead)
+    console.log(`Availability ${deviceName} - lastRead`, lastRead)
     const startBackfill = lastRead ? new Date(lastRead) : defaultStart
-    console.log(`Availability - startBackfill`, startBackfill)
+    console.log(`Availability ${deviceName} - startBackfill`, startBackfill)
 
     // get list of start/stop times since then, in order
     const sql2 = `
@@ -125,14 +132,14 @@ export class Metric {
         startStopTimes[minute] = row.path
       }
     }
-    console.log('Availability - dict', startStopTimes)
+    console.log(`Availability ${deviceName} - dict`, startStopTimes)
 
     // loop from startstart to now, interval 1 min
     // check for active and available
     // write to bins table those values
     const startMinute = Math.floor(startBackfill.getTime() / minutes)
     const nowMinute = Math.floor(now.getTime() / minutes)
-    console.log(`Availability - start, now`, startMinute, nowMinute)
+    console.log(`Availability ${deviceName} start, now`, startMinute, nowMinute)
     let state = null
     for (let minute = startMinute; minute < nowMinute; minute++) {
       // console.log(`Availability - backfill minute`, minute)
@@ -147,51 +154,54 @@ export class Metric {
         await this.updateBins(time, this.interval)
       }
     }
-    console.log(`Availability - backfill done`)
+    console.log(`Availability ${deviceName} - backfill done`)
   }
 
   // ----------------------------
 
   // poll db and update bins - called by timer
   async poll() {
-    // console.log('Availability - poll db and update bins')
+    const deviceName = this.device.name
+
+    console.log(`Availability ${deviceName} - poll db and update bins`)
     const now = new Date()
 
     // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ..., holiday }
-    // console.log(`Availability - get schedule...`)
+    // console.log(`Availability ${deviceName} - get schedule...`)
 
     //. could do this every 10mins or so on separate timer, save to this.schedule
     const schedule = await this.getSchedule()
 
     // update bins if we're in the scheduled time window
     if (schedule.holiday) {
-      // console.log(`Availability - holiday`)
+      // console.log(`Availability ${deviceName} - holiday`)
     } else {
       const inWindow = now >= schedule.start && now <= schedule.stop
       if (inWindow) {
-        // console.log(`Availability - in scheduled time window, so update bins`)
+        // console.log(`Availability ${deviceName} - in scheduled time window, so update bins`)
         await this.updateBins(now, this.interval)
       } else {
-        // console.log(`Availability - not in scheduled time window`)
+        // console.log(`Availability ${deviceName} - not in scheduled time window`)
       }
     }
   }
 
   async updateBins(now, interval) {
+    const deviceName = this.device.name
     // check for events in previous n secs, eg 60
-    // console.log(`Availability - check if device was active`)
+    // console.log(`Availability ${deviceName} - check if device was active`)
     const start = new Date(now.getTime() - interval)
     const stop = now
     const deviceWasActive = await this.getActive(start, stop)
     // if device was active, increment the 'active' bin
     if (deviceWasActive) {
-      // console.log(
-      //   `Availability - ${this.device.name} was active, increase active bin`
-      // )
+      console.log(`Availability ${deviceName} was active, increase active bin`)
       await this.incrementBins(now, 'active')
     }
-    // always increment the 'available' bin
-    // console.log(`Availability - always increment the available bin`)
+    // // always increment the 'available' bin
+    // console.log(
+    //   `Availability ${deviceName} - always increment the available bin`
+    // )
     await this.incrementBins(now, 'available')
   }
 
