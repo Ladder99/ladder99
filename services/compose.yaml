@@ -393,24 +393,30 @@ services:
   # ---------------------------------------------------------------------------
   # admin console for postgres database
   # note: must set permissions for volumes/pgadmin directory - eg
-  #   sudo chown -R 5050:5050 ../client-oxbox/volumes/pgadmin
+  #   sudo chown -R 1000:50 ../client-oxbox/volumes/pgadmin # for biarms/pgadmin4
+  #   sudo chown -R 5050:5050 ../client-oxbox/volumes/pgadmin # for dpage/pgadmin4
   # see https://www.pgadmin.org/docs/pgadmin4/development/container_deployment.html#mapped-files-and-directories
   pgadmin:
     container_name: pgadmin
-    image: biarms/pgadmin4:latest
-    # image: dpage/pgadmin4:6.11 # haven't gotten to work yet
+    # image: biarms/pgadmin4:latest # see https://hub.docker.com/r/biarms/pgadmin4
+    image: dpage/pgadmin4:6.11 # haven't gotten to work yet
     profiles:
       - pgadmin
     ports:
-      - '5050:5050/tcp'
-      # - '5050:80'
+      # - '5050:5050/tcp' # for biarms/pgadmin4
+      - '5050:80' # for dpage/pgadmin4
     volumes:
+      # for biarms/pgadmin4
+      # - ../$SETUP/volumes/pgadmin:/pgadmin
+      # - ../$SETUP/volumes/pgadmin/config:/pgadmin/config
+      # for dpage/pgadmin4
+      # - ../$SETUP/volumes/pgadmin:/var/lib/pgadmin
       - ../$SETUP/volumes/pgadmin:/pgadmin
-      - ../$SETUP/volumes/pgadmin/config:/pgadmin/config
-    # - ../$SETUP/volumes/pgadmin:/var/lib/pgadmin
-    # environment:
-    #   PGADMIN_DEFAULT_EMAIL: null
-    #   PGADMIN_DEFAULT_PASSWORD: null
+    environment:
+      # for dpage/pgadmin4
+      PGADMIN_DEFAULT_EMAIL: null
+      PGADMIN_DEFAULT_PASSWORD: null
+      SCRIPT_NAME: /pgadmin4
     restart: always
     networks:
       - ladder99
