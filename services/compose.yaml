@@ -413,7 +413,7 @@ services:
       # for dpage/pgadmin4
       PGADMIN_DEFAULT_EMAIL: null
       PGADMIN_DEFAULT_PASSWORD: null
-      SCRIPT_NAME: /pgadmin4
+      # SCRIPT_NAME: /pgadmin4
     restart: always
     networks:
       - ladder99
