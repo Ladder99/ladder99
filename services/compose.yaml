@@ -406,12 +406,9 @@ services:
       # - '5050:5050/tcp' # for biarms/pgadmin4
       - '5050:80' # for dpage/pgadmin4
     volumes:
-      # for biarms/pgadmin4
-      # - ../$SETUP/volumes/pgadmin:/pgadmin
-      # - ../$SETUP/volumes/pgadmin/config:/pgadmin/config
-      # for dpage/pgadmin4
-      # - ../$SETUP/volumes/pgadmin:/var/lib/pgadmin
       - ../$SETUP/volumes/pgadmin:/pgadmin
+      - ../$SETUP/volumes/pgadmin/config:/pgadmin/config
+      # - ../$SETUP/volumes/pgadmin:/var/lib/pgadmin
     environment:
       # for dpage/pgadmin4
       PGADMIN_DEFAULT_EMAIL: null
