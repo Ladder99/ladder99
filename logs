@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# search through docker logs
+# tail/search docker logs
 # see https://stackoverflow.com/questions/34724980/finding-a-string-in-docker-logs-of-container
 
 usage="
-Usage: ./search SERVICE PATTERN
+Usage: ./logs SERVICE [PATTERN]
 
-Search Docker service logs for the given pattern using grep
+Follow Docker service logs, and optionally search for a pattern using grep
 "
 
 # show help
@@ -18,8 +18,14 @@ fi
 SERVICE=$1
 PATTERN=$2
 
-# docker logs --timestamps $SERVICE &2>1 | grep $PATTERN
-docker logs --timestamps $SERVICE | grep -i $PATTERN
+# docker logs -t $SERVICE &2>1 | grep $PATTERN
+
+# check if PATTERN is empty
+if [ -z "$PATTERN" ]; then
+    docker logs --timestamps --follow $SERVICE
+elif
+    docker logs --timestamps --follow $SERVICE | grep -i $PATTERN
+fi
 
 # find docker service id
 # ID=`docker inspect --format={{.Id}} $SERVICE`
