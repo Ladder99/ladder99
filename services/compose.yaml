@@ -399,7 +399,7 @@ services:
   pgadmin:
     container_name: pgadmin
     # image: biarms/pgadmin4:latest # see https://hub.docker.com/r/biarms/pgadmin4
-    image: dpage/pgadmin4:6.11 # haven't gotten to work yet
+    image: dpage/pgadmin4:6.11 # see https://hub.docker.com/r/dpage/pgadmin4
     profiles:
       - pgadmin
     ports:
@@ -408,12 +408,12 @@ services:
     volumes:
       # - ../$SETUP/volumes/pgadmin:/pgadmin
       # - ../$SETUP/volumes/pgadmin/config:/pgadmin/config
+      # for dpage/pgadmin4
       - ../$SETUP/volumes/pgadmin:/var/lib/pgadmin
     environment:
       # for dpage/pgadmin4
       PGADMIN_DEFAULT_EMAIL: null
       PGADMIN_DEFAULT_PASSWORD: null
-      # SCRIPT_NAME: /pgadmin4
     restart: always
     networks:
       - ladder99
