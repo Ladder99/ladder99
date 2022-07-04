@@ -392,6 +392,7 @@ services:
   # pgadmin
   # ---------------------------------------------------------------------------
   # admin console for postgres database
+  #. haven't been able to get dpage/pgadmin4 to work, though it's more up-to-date
   # note: must set permissions for volumes/pgadmin directory - eg
   #   sudo chown -R 1000:50 ../client-oxbox/volumes/pgadmin # for biarms/pgadmin4
   #   sudo chown -R 5050:5050 ../client-oxbox/volumes/pgadmin # for dpage/pgadmin4
