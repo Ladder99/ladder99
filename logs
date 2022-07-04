@@ -23,7 +23,7 @@ PATTERN=$2
 # check if PATTERN is empty
 if [ -z "$PATTERN" ]; then
     docker logs --timestamps --follow $SERVICE
-elif
+else
     docker logs --timestamps --follow $SERVICE | grep -i $PATTERN
 fi
 
