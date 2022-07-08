@@ -13,6 +13,7 @@ export class Metric {
     this.db = db
     this.device = device
     this.metric = metric
+    this.lastTimestamp = null
 
     console.log(`Count - get device node_id...`)
     this.device_id = await this.db.getDeviceId(device.name) // repeats until device is there
@@ -33,8 +34,13 @@ export class Metric {
   async poll() {
     // console.log('Count - poll db, write lifetime count for', this.device.name)
 
+    //. due to nature of js event loop, this is not gonna be exactly every this.interval ms
+    // that means we could potentiall miss job count records, causing 'misses'.
     const now = new Date()
-    const start = new Date(now.getTime() - this.interval).toISOString()
+    // const start = new Date(now.getTime() - this.interval).toISOString()
+    const start =
+      this.lastTimestamp ||
+      new Date(now.getTime() - this.interval).toISOString()
     const stop = now.toISOString()
     const device = this.device.name
     const path = this.metric.lifetimePath
@@ -47,7 +53,6 @@ export class Metric {
     }
     // console.log('Count - lifetime', lifetime)
 
-    // const rows = await this.getCounts(start, stop) // Date objects
     const rows = await this.db.getHistory(
       device,
       this.metric.deltaPath,
@@ -64,13 +69,13 @@ export class Metric {
     // 10:00:03am, "0"
     // 10:00:04am, 1
     // 10:00:05am, 2
+    //. why not just write one record, instead of the whole history?
     if (rows && rows.length > 1) {
       let previous = rows[0] // { time, value }
       for (let row of rows.slice(1)) {
         // get delta from previous value
         const delta = row.value - previous.value
         if (delta > 0) {
-          //. write time, lifetime+delta
           lifetime += delta
           // write time, lifetime
           await this.db.writeHistory(
@@ -83,6 +88,8 @@ export class Metric {
         previous = row
       }
     }
+    // save time for next poll
+    this.lastTimestamp = stop
   }
 
   // backfill missing partcount records

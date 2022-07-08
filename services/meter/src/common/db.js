@@ -247,7 +247,7 @@ export class Db {
   // get records from history_float.
   // start and stop should be ISO strings.
   // includes previous value before start time.
-  //. pass table also
+  //. pass table also, ie history_float vs history_text
   async getHistory(device, path, start, stop) {
     const sql = `
       select 
