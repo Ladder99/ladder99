@@ -257,7 +257,7 @@ export class Db {
       where
         device = '${device}'
         and path = '${path}'
-        and time between '${start}' and '${stop}'
+        and time >= '${start}' and time < '${stop}'
       union (
         select 
           time, value
