@@ -126,8 +126,8 @@ export class Feedback {
                     // publish mqtt message
                     source.mqtt.publish(message.topic, payloadStr)
                     // wait a bit
-                    console.log(`Feedback - wait 1 sec`)
-                    await new Promise(resolve => setTimeout(resolve, 1000))
+                    console.log(`Feedback - wait 5 sec`)
+                    await new Promise(resolve => setTimeout(resolve, 5000))
                   }
 
                   // save observation value (eg jobnum)
