@@ -35,34 +35,35 @@ export class Metric {
   // poll db and update lifetime count - called by timer
   async poll() {
     const deviceName = this.device.name
-    // console.log(`Count ${deviceName} - poll db, write lifetime count`)
+    console.log(`Count ${deviceName} - poll db, write lifetime count`)
 
-    //. due to nature of js event loop, this is not gonna be exactly every this.interval ms
-    // that means we could potentiall miss job count records, causing 'misses'.
+    // due to nature of js event loop, poll is not gonna be called exactly every this.interval ms.
+    // that means we could miss job count records, causing 'misses'.
     const now = new Date()
     // const start = new Date(now.getTime() - this.interval).toISOString()
     const start =
       this.lastTimestamp ||
       new Date(now.getTime() - this.interval).toISOString()
     const stop = now.toISOString()
-    const device = this.device.name
     const path = this.metric.lifetimePath
+    console.log(`Count ${deviceName} - start,stop`, start, stop)
 
     // get last lifetime value, before start time
     let lifetime = 0
-    const record = await this.db.getLastRecord(device, path, start)
+    const record = await this.db.getLastRecord(deviceName, path, start)
     if (record) {
       lifetime = record.value
     }
-    // console.log(`Count ${deviceName} - lifetime`, lifetime)
+    console.log(`Count ${deviceName} - lifetime`, lifetime)
 
+    // get job counts
     const rows = await this.db.getHistory(
-      device,
+      deviceName,
       this.metric.deltaPath,
       start,
       stop
     )
-    // console.log(`Count ${deviceName} - rows`, rows)
+    console.log(`Count ${deviceName} - rows`, rows)
     // rows will be like (for start=10:00:00am, stop=10:00:05am)
     // time, value
     // 9:59:59am, 99
@@ -103,7 +104,7 @@ export class Metric {
 
     // get latest lifetime count record
     let record = await this.db.getLastRecord(
-      this.device.name,
+      deviceName,
       this.metric.lifetimePath,
       now.toISOString()
     )
@@ -112,7 +113,7 @@ export class Metric {
     // if no lifetime record, start from the beginning
     if (!record) {
       const record2 = await this.db.getFirstRecord(
-        this.device.name,
+        deviceName,
         this.metric.deltaPath
       )
       console.log(`Count ${deviceName} - first record`, record2)
@@ -131,7 +132,7 @@ export class Metric {
     let lifetime = record.value
     // const rows = await this.getCounts(start, stop) // gets last one before start also, if any
     const rows = await this.db.getHistory(
-      this.device.name,
+      deviceName,
       this.metric.deltaPath,
       start,
       stop

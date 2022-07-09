@@ -20,6 +20,7 @@ export class Jobs {
     //
     // iterate over all devices, check if has a jobbossId
     for (let device of this.devices) {
+      const deviceName = device.name
       if (device.jobbossId) {
         // get the most recently started job for this workcenter/device.
         // could also use where work_center='MARUMATSU', but not guaranteed unique.
@@ -39,9 +40,12 @@ export class Jobs {
           const result = await this.pool.query(sql)
           const job = result.recordset.length > 0 && result.recordset[0].Job // must match case of sql
           // console.log('device', device.name, 'job', job)
-          this.cache.set(`${device.id}-job`, job)
+          this.cache.set(`${device.id}-job`, job) // will send shdr to agent IF cache value changed
+
+          //. if job changed, query db for estqty,runqty also, set the cache values
+          //
         } catch (error) {
-          console.log('JobBoss jobs error', error)
+          console.log(`JobBoss jobs ${deviceName} error`, error)
         }
       }
     }
