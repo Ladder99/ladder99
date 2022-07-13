@@ -39,6 +39,7 @@ export class Metric {
 
     // due to nature of js event loop, poll is not gonna be called exactly every this.interval ms.
     // that means we could miss job count records, causing 'misses'.
+    // so keep track of lastTimestamp.
     const now = new Date()
     // const start = new Date(now.getTime() - this.interval).toISOString()
     const start =

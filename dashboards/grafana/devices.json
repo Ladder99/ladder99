@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 9,
-  "iteration": 1651610286461,
+  "id": 12,
+  "iteration": 1657708854731,
   "links": [
     {
       "asDropdown": false,
@@ -80,7 +80,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
+        "w": 4.8,
         "x": 0,
         "y": 0
       },
@@ -110,7 +110,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "select time, value from get_last_value($device, 'availability', '1w');",
+          "rawSql": "--select time, value from get_last_value($device, 'availability', '1w');\n\n-- this will be the new get_last_value fn\nselect time, value->>0 as value from history\nwhere node_id=(select node_id from nodes where props->>'name'=$device)\n  and dataitem_id=(select node_id from nodes where props->>'path'='availability')\norder by time desc\nlimit 1;\n\n",
           "refId": "A",
           "select": [
             [
@@ -175,5 +175,5 @@
   "timezone": "",
   "title": "Devices",
   "uid": "v4HPISUnk",
-  "version": 27
+  "version": 13
 }
