@@ -89,6 +89,7 @@ export class AdapterDriver {
       }
 
       //.................. temporary stopgap - won't scale ...................
+      //. better to have payload.id as part of the message topic so can route messages better
       if (
         typeof payload === 'object' &&
         payload.id &&
@@ -186,8 +187,7 @@ export class AdapterDriver {
             //
           } else if (handler.process === 'text_message') {
             //
-            // this is hardcoded at the moment to a 'connection' string
-
+            //. this is hardcoded at the moment to a 'connection' string
             let equationKeys = new Set(['connection']) //. should get this from inputs.yaml
 
             // note: the variable '$' should have been set to the value of the variable payload with
