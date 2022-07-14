@@ -12,7 +12,7 @@ export class Metric {
     this.db = db
     this.device = device
     this.metric = metric
-    this.lastTimestamp = null
+    this.lastStop = null
 
     const deviceName = this.device.name
     console.log(`Count ${deviceName} - start metric...`)
@@ -39,61 +39,68 @@ export class Metric {
 
     // due to nature of js event loop, poll is not gonna be called exactly every this.interval ms.
     // that means we could miss job count records, causing 'misses'.
-    // so keep track of lastTimestamp.
+    // so keep track of lastStop.
     const now = new Date()
-    // const start = new Date(now.getTime() - this.interval).toISOString()
     const start =
-      this.lastTimestamp ||
-      new Date(now.getTime() - this.interval).toISOString()
+      this.lastStop || new Date(now.getTime() - this.interval).toISOString()
     const stop = now.toISOString()
-    const path = this.metric.lifetimePath
+    const lifetimePath = this.metric.lifetimePath
     console.log(`Count ${deviceName} - start,stop`, start, stop)
 
-    // get last lifetime value, before start time
-    let lifetime = 0
-    const record = await this.db.getLastRecord(deviceName, path, start)
-    if (record) {
-      lifetime = record.value
-    }
-    console.log(`Count ${deviceName} - lifetime`, lifetime)
+    // get last lifetime count, before start time
+    const record = await this.db.getLastRecord(deviceName, lifetimePath, start)
+    let lifetimeCount = record ? record.value : 0
+    console.log(`Count ${deviceName} - lifetimeCount`, lifetimeCount)
 
     // get job counts
+    //. currently gets from history_float view
     const rows = await this.db.getHistory(
       deviceName,
       this.metric.deltaPath,
       start,
       stop
     )
-    console.log(`Count ${deviceName} - rows`, rows)
+    console.log(`Count ${deviceName} - job count rows`, rows)
     // rows will be like (for start=10:00:00am, stop=10:00:05am)
     // time, value
     // 9:59:59am, 99
     // 10:00:00am, 100
     // 10:00:01am, 101
     // 10:00:02am, 102
-    // 10:00:03am, "0"
+    // 10:00:03am, 0
     // 10:00:04am, 1
     // 10:00:05am, 2
     if (rows && rows.length > 1) {
-      let previous = rows[0] // { time, value }
+      let previousRow = rows[0] // { time, value }
+      const lifetimeRows = []
       for (let row of rows.slice(1)) {
         // get delta from previous value
-        const delta = row.value - previous.value
-        if (delta > 0) {
-          lifetime += delta
+        const deltaCount = row.value - previousRow.value
+        if (deltaCount > 0) {
+          lifetimeCount += deltaCount
           // write time, lifetime
-          await this.db.writeHistory(
-            this.device_id,
-            this.lifetime_id,
-            row.time.toISOString(),
-            lifetime
-          )
+          // better to save these up in an array and write all at once, for speed
+          // await this.db.writeHistory(
+          //   this.device_id,
+          //   this.lifetime_id,
+          //   row.time.toISOString(),
+          //   lifetimeCount
+          // )
+          const lifetimeRow = {
+            node_id: this.device_id,
+            dataitem_id: this.lifetime_id,
+            time: row.time.toISOString(),
+            value: lifetimeCount,
+          }
+          lifetimeRows.push(lifetimeRow)
         }
-        previous = row
+        previousRow = row
       }
+      console.log(`Count ${deviceName} - writing lifetime rows`, lifetimeRows)
+      await this.db.addHistory(lifetimeRows)
     }
     // save time for next poll
-    this.lastTimestamp = stop
+    this.lastStop = stop
   }
 
   // backfill missing partcount records
