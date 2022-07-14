@@ -82,7 +82,7 @@ handlers:
     # 'js' is some javascript calculation code to determine its value.
     expressions:
       part_count: $.a5
-      # radio: $.a8 # 128=connected
+      radio: $.a8===128 # 128=controller node is connected to DXM (which is connected to 001)
 
   # ----------------------------------------------------------------------------
   # handle motor messages

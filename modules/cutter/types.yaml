@@ -3,14 +3,18 @@
 # these types can be used in output expressions
 
 types:
-  #   ACTUATOR_STATE:
-  #     0: INACTIVE
-  #     1: ACTIVE
-
   AVAILABILITY:
     birth: AVAILABLE
     death: UNAVAILABLE
     sleep: UNAVAILABLE
+
+  RADIO:
+    true: AVAILABLE
+    false: UNAVAILABLE
+
+  #   ACTUATOR_STATE:
+  #     0: INACTIVE
+  #     1: ACTIVE
 #   POWER:
 #     online: ON
 #     offline: OFF

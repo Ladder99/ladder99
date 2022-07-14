@@ -36,14 +36,14 @@ outputs:
   # Marumatsu controller - MQTT data
   # Shift start/stop - another data source
   #. how include time within shift here?
-  #. is it okay to have >1 output for an input?
-  # eg can we reuse <connection> to get availability? double check
   - key: avail
     value: types.AVAILABILITY[<connection>]
 
   # this maps to controller/availability in the xml
+  # - key: ctl-avail
+  #   value: types.AVAILABILITY[<connection>]
   - key: ctl-avail
-    value: types.AVAILABILITY[<connection>]
+    value: types.RADIO[<radio>] # register io.a8===128
 
   - key: pcjob
     value: <part_count>
