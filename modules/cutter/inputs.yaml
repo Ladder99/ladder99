@@ -55,7 +55,7 @@ handlers:
     # define algorithm to process inputs
     process: text_message
     # define key-js pairs
-    # 'key' is mapped to a cache id, eg 'connection' => 's-connection'.
+    # 'key' is mapped to a cache id, eg 'connection' => 's1-connection'.
     # 'js' is some javascript calculation code to determine its value.
     # in this case it's just the payload string itself - 'birth', 'death', etc.
     expressions:
@@ -68,8 +68,7 @@ handlers:
   #   {"id":"535172","a1":0.021972991531242846,"a2":0.013122758831158923,"a3":0.007629510948348211,"a4":0.021972991531242846,"a5":0,"a6":0,"a8":128}
   # where a5 is the partcount
   l99/B01000/evt/io:
-    # make '$' the message payload dictionary and add faultKeys for quick
-    # lookups of faults - payload.faults is a dictionary of faults.
+    # make '$' the message payload dictionary
     initialize: '$ = payload'
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
@@ -78,11 +77,12 @@ handlers:
     #. call it iterate-expressions
     process: iterate_inputs
     # define key-js pairs
-    # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
+    # 'key' is mapped to a cache id, eg 'connection' => 's1-connection'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
       part_count: $.a5
-      radio: $.a8===128 # 128=controller node is connected to DXM (which is connected to 001)
+      # radio: $.a8===128 # 128=controller node is connected to DXM (which is connected to 001)
+      radio: "$.a8===128 && cache.get(device.id + '-connection')==='birth'"
 
   # ----------------------------------------------------------------------------
   # handle motor messages
