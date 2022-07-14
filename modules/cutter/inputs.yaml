@@ -57,6 +57,7 @@ handlers:
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'connection' => 's-connection'.
     # 'js' is some javascript calculation code to determine its value.
+    # in this case it's just the payload string itself - 'birth', 'death', etc.
     expressions:
       connection: $
 
@@ -81,7 +82,7 @@ handlers:
     # 'js' is some javascript calculation code to determine its value.
     expressions:
       part_count: $.a5
-      # foo: $.a8 # 128=connected
+      # radio: $.a8 # 128=connected
 
   # ----------------------------------------------------------------------------
   # handle motor messages
