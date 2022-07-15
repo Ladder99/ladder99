@@ -31,25 +31,20 @@ outputs:
   # device
   # ------------------------------------------------------------------
 
-  # availability
-  # general availability of this device including:
-  # Marumatsu controller - MQTT data
-  # Shift start/stop - another data source
-  #. how include time within shift here?
+  # availability - displayed in Devices page
   - key: avail
-    value: types.AVAILABILITY[<connection>]
+    value: types.AVAILABILITY[<dxm>]
 
-  # this maps to controller/availability in the xml
-  # - key: ctl-avail
-  #   value: types.AVAILABILITY[<connection>]
+  # controller/availability - displayed in Graphs page as Machine Status ON/OFF
   - key: ctl-avail
-    value: types.RADIO[<radio>] # register io.a8===128
-
-  - key: pcjob
-    value: <part_count>
+    value: types.AVAILABILITY[<dxm> && <controller>]
 
   # current job number
   - key: job
+
+  # part count of current job
+  - key: pcjob
+    value: <part_count>
 
   # shift start and stop times
   - key: start

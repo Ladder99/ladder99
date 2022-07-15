@@ -53,13 +53,12 @@ handlers:
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
-    process: text_message
+    process: iterate_inputs
     # define key-js pairs
-    # 'key' is mapped to a cache id, eg 'connection' => 's1-connection'.
+    # 'key' is mapped to a cache id, eg 'controller' => 's1-controller'.
     # 'js' is some javascript calculation code to determine its value.
-    # in this case it's just the payload string itself - 'birth', 'death', etc.
     expressions:
-      connection: $
+      dxm: $==='birth'
 
   # ----------------------------------------------------------------------------
   # handle io messages
@@ -80,9 +79,8 @@ handlers:
     # 'key' is mapped to a cache id, eg 'connection' => 's1-connection'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
+      controller: $.a8===128 # 128=controller node is connected to DXM (which is connected to 001)
       part_count: $.a5
-      # radio: $.a8===128 # 128=controller node is connected to DXM (which is connected to 001)
-      radio: "$.a8===128 && cache.get(device.id + '-connection')==='birth'"
 
   # ----------------------------------------------------------------------------
   # handle motor messages

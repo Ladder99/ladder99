@@ -4,17 +4,13 @@
 
 types:
   AVAILABILITY:
-    birth: AVAILABLE
-    death: UNAVAILABLE
-    sleep: UNAVAILABLE
-
-  RADIO:
     true: AVAILABLE
     false: UNAVAILABLE
+#
+#   ACTUATOR_STATE:
+#     0: INACTIVE
+#     1: ACTIVE
 
-  #   ACTUATOR_STATE:
-  #     0: INACTIVE
-  #     1: ACTIVE
 #   POWER:
 #     online: ON
 #     offline: OFF

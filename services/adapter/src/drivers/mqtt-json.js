@@ -185,28 +185,28 @@ export class AdapterDriver {
               depth += 1
             } while (equationKeys.size > 0 && depth < 6) // prevent endless loops
             //
-          } else if (handler.process === 'text_message') {
-            //
-            //. this is hardcoded at the moment to a 'connection' string
-            let equationKeys = new Set(['connection']) //. should get this from inputs.yaml
+            // } else if (handler.process === 'text_message') {
+            //   //
+            //   //. this is hardcoded at the moment to a 'connection' string
+            //   let equationKeys = new Set(['connection']) //. should get this from inputs.yaml
 
-            // note: the variable '$' should have been set to the value of the variable payload with
-            //   initialize: '$ = payload'
-            // expression should be like
-            //   connection: $
-            // so `expression.fn(cache, $, keyvalues)` below just evals to $
+            //   // note: the variable '$' should have been set to the value of the variable payload with
+            //   //   initialize: '$ = payload'
+            //   // expression should be like
+            //   //   connection: $
+            //   // so `expression.fn(cache, $, keyvalues)` below just evals to $
 
-            for (let equationKey of equationKeys) {
-              const expression = handler.augmentedExpressions[equationKey]
-              const value = expression.fn(cache, $, keyvalues) // run the expression fn
-              console.log(`MQTT handle text_message`, topic, equationKey, value)
-              if (value !== undefined) {
-                const cacheId = device.id + '-' + equationKey // eg 'pa1-fault_count'
-                cache.set(cacheId, value) // save to the cache - may send shdr to tcp
-                // equationKeys2.add(cacheId)
-              }
-            }
-            //
+            //   for (let equationKey of equationKeys) {
+            //     const expression = handler.augmentedExpressions[equationKey]
+            //     const value = expression.fn(cache, $, keyvalues) // run the expression fn
+            //     console.log(`MQTT handle text_message`, topic, equationKey, value)
+            //     if (value !== undefined) {
+            //       const cacheId = device.id + '-' + equationKey // eg 'pa1-fault_count'
+            //       cache.set(cacheId, value) // save to the cache - may send shdr to tcp
+            //       // equationKeys2.add(cacheId)
+            //     }
+            //   }
+            //   //
           } else {
             console.log(`MQTT Error - missing handler.process`, handler.process)
           }
