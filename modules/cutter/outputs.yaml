@@ -31,24 +31,24 @@ outputs:
   # device
   # ------------------------------------------------------------------
 
-  # availability - displayed in Devices page
-  - key: avail
+  # displayed in Devices page
+  - key: avail # availability
     value: types.AVAILABILITY[<dxm>]
 
-  # controller/availability - displayed in Graphs page as Machine Status ON/OFF
-  - key: ctl-avail
+  # displayed in Graphs page as Machine Status ON/OFF
+  - key: ctl-avail # controller/availability
     value: types.AVAILABILITY[<dxm> && <controller>]
 
   # current job number
-  - key: job
+  - key: job # processes/job/process_aggregate_id/order_number
 
   # part count of current job
-  - key: pcjob
+  - key: pcjob # processes/job/part_count-all
     value: <part_count>
 
-  # shift start and stop times
-  - key: start
-  - key: complete
+  # shift start/stop
+  - key: start # processes/shift/process_time-start
+  - key: complete # processes/shift/process_time-complete
 
   # motor
   - key: xvelz
