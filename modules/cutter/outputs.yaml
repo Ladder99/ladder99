@@ -42,9 +42,13 @@ outputs:
   # current job number
   - key: job # processes/job/process_aggregate_id/order_number
 
-  # part count of current job
+  # current job current part count
   - key: pcjob # processes/job/part_count-all
     value: <part_count>
+
+  # current lifetime part count
+  # - key: pclife # processes/life/part_count-all
+  #   value: <pclife> + <delta pcjob>
 
   # shift start/stop
   - key: start # processes/shift/process_time-start
