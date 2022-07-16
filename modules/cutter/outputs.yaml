@@ -3,6 +3,8 @@
 # these outputs are placed in the module.xml tree and define the
 # shdr strings that are calculated from the cache and sent to the agent.
 
+# this file is processed by adapter/index.js
+
 # the item's id in the xml and the shdr key is `${deviceId}-${key}`
 # the shdr value is defined with the item value code.
 
