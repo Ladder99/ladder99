@@ -33,7 +33,7 @@ outputs:
   # device
   # ------------------------------------------------------------------
 
-  # displayed in Devices page and Graphs page as ON/OFF.
+  # displayed in Devices and Graphs pages as ON/OFF.
   # this had been just using <dxm>, but decided to split the dxm out
   # to a separate device, and use dxm && controller here. 2022-07-19
   - key: avail # availability
