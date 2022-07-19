@@ -33,13 +33,15 @@ outputs:
   # device
   # ------------------------------------------------------------------
 
-  # displayed in Devices page
+  # displayed in Devices page and Graphs page as ON/OFF.
+  # this had been just using <dxm>, but decided to split the dxm out
+  # to a separate device, and use dxm && controller here. 2022-07-19
   - key: avail # availability
-    value: types.AVAILABILITY[<dxm>]
-
-  # displayed in Graphs page as Machine Status ON/OFF
-  - key: ctl-avail # controller/availability
     value: types.AVAILABILITY[<dxm> && <controller>]
+
+  # # displayed in Graphs page as Machine Status ON/OFF
+  # - key: ctl-avail # controller/availability
+  #   value: types.AVAILABILITY[<dxm> && <controller>]
 
   # current job number
   - key: job # processes/job/process_aggregate_id/order_number
