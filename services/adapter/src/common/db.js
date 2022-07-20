@@ -75,8 +75,11 @@ export class Db {
 
   // execute a query and return results
   async query(sql, options) {
-    //. add try catch block - ignore error? or just print it?
-    return await this.client.query(sql, options)
+    try {
+      return await this.client.query(sql, options)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   // add a node to nodes table - if already there, return node_id of existing record.
