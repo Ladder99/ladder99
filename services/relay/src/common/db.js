@@ -74,12 +74,14 @@ export class Db {
   }
 
   // execute a query and return results
+  //. added try catch, then removed as it broke code like this.add
   async query(sql, options) {
-    try {
-      return await this.client.query(sql, options)
-    } catch (error) {
-      console.log(error)
-    }
+    // try {
+    return await this.client.query(sql, options)
+    // } catch (error) {
+    //   console.log(error)
+    //   throw error
+    // }
   }
 
   // add a node to nodes table - if already there, return node_id of existing record.
