@@ -67,7 +67,8 @@ SELECT
   -- concat(nodes.props->>'name', ' (', nodes.props->>'uuid', ')') as name_uuid,
   nodes.props->>'name' as name,
   nodes.props->>'uuid' as uuid, 
-  nodes.props->>'path' as path
+  nodes.props->>'path' as path,
+  nodes.props->>'order' as "order"
 FROM 
   nodes
 WHERE
