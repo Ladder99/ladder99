@@ -23,7 +23,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 12,
-  "iteration": 1657708854731,
+  "iteration": 1658456360058,
   "links": [
     {
       "asDropdown": false,
@@ -80,7 +80,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4.8,
+        "w": 3,
         "x": 0,
         "y": 0
       },
@@ -136,6 +136,7 @@
       "type": "stat"
     }
   ],
+  "refresh": "10s",
   "schemaVersion": 31,
   "style": "dark",
   "tags": ["client"],
@@ -149,7 +150,7 @@
           "value": "$__all"
         },
         "datasource": null,
-        "definition": "select name from devices",
+        "definition": "select name from devices order by \"order\", name",
         "description": null,
         "error": null,
         "hide": 2,
@@ -158,11 +159,11 @@
         "multi": false,
         "name": "device",
         "options": [],
-        "query": "select name from devices",
+        "query": "select name from devices order by \"order\", name",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 1,
+        "sort": 0,
         "type": "query"
       }
     ]
@@ -175,5 +176,5 @@
   "timezone": "",
   "title": "Devices",
   "uid": "v4HPISUnk",
-  "version": 13
+  "version": 17
 }
