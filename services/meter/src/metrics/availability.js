@@ -4,6 +4,8 @@
 // active = part_count changed in previous time period.
 // available = current time is within the schedule for the machine.
 
+// availability is also called utilization in some client setups
+
 // in client's setup.yaml, need something like this (eg see client-oxbox) -
 // metrics:
 // - name: availability
@@ -79,6 +81,9 @@ export class Metric {
 
     // get polling interval - either from metric in setup yaml or default value
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
+
+    // get overtime active interval
+    this.overtimeActiveInterval = 5 * minutes // ms //. pass through the metric as above
 
     await this.backfill() // backfill missing values
     await this.poll() // do first poll
@@ -167,21 +172,24 @@ export class Metric {
     const now = new Date()
 
     // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ..., holiday }
-    // console.log(`Availability ${deviceName} - get schedule...`)
-
-    //. could do this every 10mins or so on separate timer, save to this.schedule
+    //. do this every 10mins or so on separate timer, save to this.schedule
     const schedule = await this.getSchedule()
 
-    // update bins if we're in the scheduled time window
-    if (schedule.holiday) {
-      // console.log(`Availability ${deviceName} - holiday`)
+    // update active and available bins as needed
+    const isDuringShift =
+      !schedule.holiday && now >= schedule.start && now <= schedule.stop
+    if (isDuringShift) {
+      await this.updateBins(now, this.interval)
     } else {
-      const inWindow = now >= schedule.start && now <= schedule.stop
-      if (inWindow) {
-        // console.log(`Availability ${deviceName} - in scheduled time window, so update bins`)
+      // check for events in previous n mins, eg 5.
+      // this accounts for workers working outside of normal shift times,
+      // giving an approximate availability value without them having
+      // to punch in/out.
+      const start = new Date(now.getTime() - this.overtimeActiveInterval)
+      const stop = now
+      const hasBeenActiveRecently = await this.getActive(start, stop)
+      if (hasBeenActiveRecently) {
         await this.updateBins(now, this.interval)
-      } else {
-        // console.log(`Availability ${deviceName} - not in scheduled time window`)
       }
     }
   }
@@ -189,7 +197,6 @@ export class Metric {
   async updateBins(now, interval) {
     const deviceName = this.device.name
     // check for events in previous n secs, eg 60
-    // console.log(`Availability ${deviceName} - check if device was active`)
     const start = new Date(now.getTime() - interval)
     const stop = now
     const deviceWasActive = await this.getActive(start, stop)
@@ -198,10 +205,7 @@ export class Metric {
       console.log(`Availability ${deviceName} was active, increase active bin`)
       await this.incrementBins(now, 'active')
     }
-    // // always increment the 'available' bin
-    // console.log(
-    //   `Availability ${deviceName} - always increment the available bin`
-    // )
+    // always increment the 'available' bin
     await this.incrementBins(now, 'available')
   }
 
@@ -237,19 +241,14 @@ export class Metric {
   }
 
   // check if device was 'active' (ie has events on the active path), between two times.
-  // returns true/false
+  // returns true/false.
   async getActive(start, stop) {
-    // console.log(
-    //   `Availability - check if device was active between`,
-    //   start,
-    //   stop
-    // )
+    // -- just look at history_float, not _all - _all includes "0"'s, which don't get plotted
+    // -- on the partcount graph, but can affect the availability score - so it
+    // -- looks like the availability has some spurious value.
+    // -- from history_all
     const sql = `
       select count(value) > 0 as active
-      -- just look at _float, not _all - _all includes "0"'s, which don't get plotted
-      -- on the partcount graph, but can affect the availability score - so it
-      -- looks like the availability has some spurious value. 
-      -- from history_all
       from history_float
       where
         device = '${this.device.name}'
