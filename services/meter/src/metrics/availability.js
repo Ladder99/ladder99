@@ -180,18 +180,19 @@ export class Metric {
       !schedule.holiday && now >= schedule.start && now <= schedule.stop
     if (isDuringShift) {
       await this.updateBins(now, this.interval)
-    } else {
-      // check for events in previous n mins, eg 5.
-      // this accounts for workers working outside of normal shift times,
-      // giving an approximate availability value without them having
-      // to punch in/out.
-      const start = new Date(now.getTime() - this.overtimeActiveInterval)
-      const stop = now
-      const hasBeenActiveRecently = await this.getActive(start, stop)
-      if (hasBeenActiveRecently) {
-        await this.updateBins(now, this.interval)
-      }
     }
+    // else {
+    //   // check for events in previous n mins, eg 5.
+    //   // this accounts for workers working outside of normal shift times,
+    //   // giving an approximate availability value without them having
+    //   // to punch in/out.
+    //   const start = new Date(now.getTime() - this.overtimeActiveInterval)
+    //   const stop = now
+    //   const hasBeenActiveRecently = await this.getActive(start, stop)
+    //   if (hasBeenActiveRecently) {
+    //     await this.updateBins(now, this.interval)
+    //   }
+    // }
   }
 
   async updateBins(now, interval) {
