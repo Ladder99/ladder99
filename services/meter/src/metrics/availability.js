@@ -161,7 +161,7 @@ export class Metric {
       // 2022-08-03 handle overtime by allowing active minutes outside of shift hours
       // check for events in previous n secs, eg 60
       const time = new Date(minute * minutes)
-      const start = new Date(time.getTime() - interval)
+      const start = new Date(time.getTime() - 1 * minutes)
       const stop = time
       const deviceWasActive = await this.getActive(start, stop)
       if (deviceWasActive) {
@@ -208,7 +208,8 @@ export class Metric {
     // 2022-08-03 handle overtime by allowing active minutes outside of shift hours
     // const start = new Date(now.getTime() - interval)
     //.
-    const start = this.previousStopTime || new Date(now.getTime() - interval)
+    const start =
+      this.previousStopTime || new Date(now.getTime() - this.interval)
     const stop = now
     const deviceWasActive = await this.getActive(start, stop)
     if (deviceWasActive) {
