@@ -206,7 +206,9 @@ export class Metric {
     //   }
     // }
     // 2022-08-03 handle overtime by allowing active minutes outside of shift hours
-    const start = new Date(now.getTime() - interval)
+    // const start = new Date(now.getTime() - interval)
+    //.
+    const start = this.previousStopTime || new Date(now.getTime() - interval)
     const stop = now
     const deviceWasActive = await this.getActive(start, stop)
     if (deviceWasActive) {
@@ -216,6 +218,7 @@ export class Metric {
     if (isDuringShift) {
       await this.incrementBins(now, 'available')
     }
+    this.previousStopTime = stop
   }
 
   // async updateBins(now, interval) {
@@ -267,10 +270,6 @@ export class Metric {
   // check if device was 'active' (ie has events on the active path), between two times.
   // returns true/false.
   async getActive(start, stop) {
-    // -- just look at history_float, not _all - _all includes "0"'s, which don't get plotted
-    // -- on the partcount graph, but can affect the availability score - so it
-    // -- looks like the availability has some spurious value.
-    // -- from history_all
     const sql = `
       select count(value) > 0 as active
       from history_float
