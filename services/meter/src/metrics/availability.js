@@ -82,8 +82,8 @@ export class Metric {
     // get polling interval - either from metric in setup yaml or default value
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
 
-    // get overtime active interval
-    this.overtimeActiveInterval = 5 * minutes // ms //. pass through the metric as above
+    // // get overtime active interval
+    // this.overtimeActiveInterval = 5 * minutes // ms //. pass through the metric as above
 
     await this.backfill() // backfill missing values
     await this.poll() // do first poll
@@ -154,9 +154,21 @@ export class Metric {
       } else if (path === this.metric.stopPath) {
         state = 0
       }
+      // if (state) {
+      //   const time = new Date(minute * minutes)
+      //   await this.updateBins(time, this.interval)
+      // }
+      // 2022-08-03 handle overtime by allowing active minutes outside of shift hours
+      // check for events in previous n secs, eg 60
+      const time = new Date(minute * minutes)
+      const start = new Date(time.getTime() - interval)
+      const stop = time
+      const deviceWasActive = await this.getActive(start, stop)
+      if (deviceWasActive) {
+        await this.incrementBins(time, 'active')
+      }
       if (state) {
-        const time = new Date(minute * minutes)
-        await this.updateBins(time, this.interval)
+        await this.incrementBins(time, 'available')
       }
     }
     console.log(`Availability ${deviceName} - backfill done`)
@@ -178,9 +190,9 @@ export class Metric {
     // update active and available bins as needed
     const isDuringShift =
       !schedule.holiday && now >= schedule.start && now <= schedule.stop
-    if (isDuringShift) {
-      await this.updateBins(now, this.interval)
-    }
+    // if (isDuringShift) {
+    //   await this.updateBins(now, this.interval)
+    // }
     // else {
     //   // check for events in previous n mins, eg 5.
     //   // this accounts for workers working outside of normal shift times,
@@ -193,22 +205,33 @@ export class Metric {
     //     await this.updateBins(now, this.interval)
     //   }
     // }
-  }
-
-  async updateBins(now, interval) {
-    const deviceName = this.device.name
-    // check for events in previous n secs, eg 60
+    // 2022-08-03 handle overtime by allowing active minutes outside of shift hours
     const start = new Date(now.getTime() - interval)
     const stop = now
     const deviceWasActive = await this.getActive(start, stop)
-    // if device was active, increment the 'active' bin
     if (deviceWasActive) {
-      console.log(`Availability ${deviceName} was active, increase active bin`)
+      console.log(`Availability ${deviceName} - increasing active bin`)
       await this.incrementBins(now, 'active')
     }
-    // always increment the 'available' bin
-    await this.incrementBins(now, 'available')
+    if (isDuringShift) {
+      await this.incrementBins(now, 'available')
+    }
   }
+
+  // async updateBins(now, interval) {
+  //   const deviceName = this.device.name
+  //   // check for events in previous n secs, eg 60
+  //   const start = new Date(now.getTime() - interval)
+  //   const stop = now
+  //   const deviceWasActive = await this.getActive(start, stop)
+  //   // if device was active, increment the 'active' bin
+  //   if (deviceWasActive) {
+  //     console.log(`Availability ${deviceName} was active, increase active bin`)
+  //     await this.incrementBins(now, 'active')
+  //   }
+  //   // always increment the 'available' bin
+  //   await this.incrementBins(now, 'available')
+  // }
 
   // query db for start and stop datetime dataitems.
   // converts the timestrings to local time for the client.
@@ -258,7 +281,7 @@ export class Metric {
       limit 1;
     `
     const result = await this.db.query(sql)
-    const deviceWasActive = result.rows[0].active // t/f
+    const deviceWasActive = result.rows[0].active // t/f - column name must match case
     return deviceWasActive
   }
 
@@ -269,6 +292,8 @@ export class Metric {
   //. what timezone is time in? what about timeISO?
   async incrementBins(time, field, delta = 1) {
     const timeISO = time.toISOString()
+    // rollup counts for different time-scales.
+    // this is an alternative to aggregated queries, which might use in future.
     for (let resolution of resolutions) {
       // upsert/increment the given field by delta
       const sql = `
