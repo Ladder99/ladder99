@@ -120,6 +120,7 @@ function getValue(cache, output) {
 // output has { key, category, type, representation, value, shdr, ... }.
 // timestamp is an optional STRING that goes at the front of the shdr.
 // can save some time/space by not including it.
+// eg SHDR could be '|m1-avail|AVAILABLE'
 function getShdr(output, value, timestamp = '') {
   const { key, category, type, subType, representation, nativeCode } = output
   let shdr = ''

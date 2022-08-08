@@ -15,16 +15,16 @@ outputs:
   - key: avail
     value: <availability>
 
-  - key: job
+  - key: job # processes/job/process_aggregate_id-order_number
     value: <job>
 
   #. how handle writing to other devices?
   # could specify device here and use that in getOutputs fn
   # but how know the device types in advance?
-  - key: start
+  - key: start # processes/shift/process_time-start
     device: c
     value: <start>
 
-  - key: complete
+  - key: complete # processes/shift/process_time-complete
     device: c
     value: <complete>

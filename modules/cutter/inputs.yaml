@@ -68,6 +68,7 @@ handlers:
   # where a5 is the partcount
   l99/B01000/evt/io:
     # make '$' the message payload dictionary
+    #. JSON.parse the string explicitly here! otherwise, have to do try/catch for plain string handling
     initialize: '$ = payload'
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
@@ -115,7 +116,7 @@ handlers:
   # ----------------------------------------------------------------------------
   # handle pressure
   # ----------------------------------------------------------------------------
-  # <!-- l99/B01000/evt/pressure { "id": "unknown" "a2": c-stacker_pressure } -->
+  # <!-- l99/B01000/evt/pressure { "id": "479055" "a2": c-stacker_pressure } -->
   # <!-- agent.cfg conversionRequired: yes -->
   # <DataItem category="SAMPLE" id="m1-sp" name="stacker_pressure" type="PRESSURE" units="PASCAL" nativeUnits="POUND/INCH^2" />
   l99/B01000/evt/pressure:

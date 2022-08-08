@@ -59,11 +59,11 @@ outputs:
   - key: complete # processes/shift/process_time-complete
 
   # motor
-  - key: xvelz
-  - key: xaccz
-  - key: xtemp
+  - key: xtemp # axes/x/motor/temperature
   - key: xvelx
+  - key: xvelz
   - key: xaccx
+  - key: xaccz
 
   # pressure
   - key: sp
