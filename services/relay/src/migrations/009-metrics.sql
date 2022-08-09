@@ -13,6 +13,7 @@ create table if not exists bins (
   available int, -- number of minutes device was available during time resolution
   primary key (device_id, resolution, time) -- need this so can find right record quickly for updating
 );
+-- note: this gets converted to a hypertable in step 012
 
 
 ---------------------------------------------------------------------
@@ -20,10 +21,7 @@ create table if not exists bins (
 ---------------------------------------------------------------------
 -- a view on the bins table - adds name, calculates uptime
 
---. make a materialized view for more speed?
-
 drop view if exists metrics;
-
 create or replace view metrics as
 select 
   devices.props->>'name' as device,
@@ -37,7 +35,7 @@ select
   coalesce(bins.active::float,0) / nullif(bins.available::float,0.0) as availability
 from bins
 join nodes as devices on bins.device_id = devices.node_id;
-
+-- note: this gets dropped in 012
 
 
 ---------------------------------------------------------------------
