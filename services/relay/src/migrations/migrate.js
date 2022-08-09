@@ -1,6 +1,8 @@
 import fs from 'fs' // node lib
 
-const versions = {
+// a migration has key=current version, and a list of files to execute.
+// the current version will be incremented by 1 after the migration is done.
+const migrations = {
   0: [
     '001-extensions',
     '002-base-tables',
@@ -15,19 +17,19 @@ const versions = {
     '011-get_last_value',
   ],
   1: ['012-bins-hypertable'],
-  //. this hasn't been tested yet, so be careful adding next version
   2: [],
 }
 
-// handle versions - use meta table
+// handle migrations - use meta table
 export async function migrate(db) {
   console.log(`Migrating database structures...`)
   let currentVersion = (await db.getMetaValue('schema-version')) || 0
   console.log(`Current version`, currentVersion)
   const oldVersion = currentVersion
-  for (let version of Object.keys(versions)) {
-    if (currentVersion === version) {
-      const filenames = versions[version]
+  for (let migrationVersion of Object.keys(migrations)) {
+    // note == instead of ===, in case of string value
+    if (currentVersion == migrationVersion) {
+      const filenames = migrations[migrationVersion]
       for (let filename of filenames) {
         const path = `src/migrations/${filename}.sql`
         await readFile(db, path)
