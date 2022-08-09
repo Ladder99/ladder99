@@ -84,14 +84,23 @@ export class Db {
   // add a node to nodes table - if already there, return node_id of existing record.
   // uses node.path to determine uniqueness and look up record.
   // assumes nodes table has a unique index on that json prop.
-  async add(node) {
+  // ^ gonna change this approach
+  // async add(node) {
+  async addOrGetNode(node) {
     try {
       const values = `'${JSON.stringify(node)}'`
-      const sql = `INSERT INTO nodes (props) VALUES (${values}) RETURNING node_id;`
+      const sql = `
+        INSERT INTO nodes (props) VALUES (${values}) RETURNING node_id
+          ON CONFLICT DO NOTHING;`
       console.log(sql)
       const res = await this.query(sql)
-      // @ts-ignore
-      const { node_id } = res.rows[0]
+      let node_id
+      if (res.rows && res.rows[0]) {
+        node_id = res.rows[0].node_id
+      } else {
+        console.log(`property already there - looking up:  ${node.path}`)
+        node_id = await getNodeId(node)
+      }
       return node_id
     } catch (error) {
       // eg error: duplicate key value violates unique constraint "nodes_path"
@@ -99,17 +108,29 @@ export class Db {
       // console.log(error)
       if (error.code === '23505') {
         console.log(`property already there - looking up:  ${node.path}`)
-        const sql = `SELECT node_id FROM nodes WHERE props->>'path' = $1::text;`
-        console.log(sql, node.path)
-        const res = await this.query(sql, [node.path])
-        // @ts-ignore
-        const { node_id } = res.rows[0]
+        node_id = await getNodeId(node)
         console.log('got', node_id)
-        return node_id
       } else {
         console.log(error)
       }
     }
+  }
+
+  async addNode(node) {
+    const values = `'${JSON.stringify(node)}'`
+    const sql = `INSERT INTO nodes (props) VALUES (${values}) RETURNING node_id;`
+    // console.log(sql)
+    const res = await this.query(sql)
+    const { node_id } = res.rows[0]
+    return node_id
+  }
+
+  async getNodeId(node) {
+    const sql = `SELECT node_id FROM nodes WHERE props->>'path' = $1::text;`
+    console.log(sql, node.path)
+    const res = await this.query(sql, [node.path])
+    const { node_id } = res.rows[0]
+    return node_id
   }
 
   // add an array of records to the history table

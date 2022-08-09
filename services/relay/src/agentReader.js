@@ -43,6 +43,7 @@ export class AgentReader {
       const probe = new Probe(this.setup) // see dataProbe.js
       await probe.read(this.endpoint) // read xml into probe.json, probe.elements, probe.nodes
       await probe.write(this.db) // write/sync dataitems to db, get probe.indexes
+      process.exit(0) //.... working on data.read method
       this.instanceId = probe.instanceId
 
       // current - get last known values of all dataitems and write to db

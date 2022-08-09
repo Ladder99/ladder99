@@ -35,7 +35,6 @@ select
   coalesce(bins.active::float,0) / nullif(bins.available::float,0.0) as availability
 from bins
 join nodes as devices on bins.device_id = devices.node_id;
--- note: this gets dropped in 012
 
 
 ---------------------------------------------------------------------
