@@ -15,12 +15,15 @@ const versions = {
     '011-get_last_value',
   ],
   1: ['012-bins-hypertable'],
+  //. this hasn't been tested yet, so be careful adding next version
+  2: [],
 }
 
 // handle versions - use meta table
 export async function migrate(db) {
   console.log(`Migrating database structures...`)
   let currentVersion = (await db.getMetaValue('schema-version')) || 0
+  console.log(`Current version`, currentVersion)
   const oldVersion = currentVersion
   for (let version of Object.keys(versions)) {
     if (currentVersion === version) {
@@ -33,6 +36,7 @@ export async function migrate(db) {
     }
   }
   if (currentVersion !== oldVersion) {
+    console.log(`Update version to`, currentVersion)
     await db.setMetaValue('schema-version', currentVersion)
   }
   console.log(`Done migrating.`)
