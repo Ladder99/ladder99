@@ -139,6 +139,7 @@ export class Schedule {
     // lookup workcenter and date in wc shift override table
     let result1
     try {
+      // select Shift_ID, Is_Work_Day from WCShift_Override where WorkCenter_OID=${workcenter} and cast(Date as date)=${dateString}
       result1 = await this.pool.query`
         select Shift_ID, Is_Work_Day 
         from WCShift_Override

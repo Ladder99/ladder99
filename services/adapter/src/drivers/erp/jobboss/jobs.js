@@ -25,6 +25,7 @@ export class Jobs {
         // get the most recently started job for this workcenter/device.
         // could also use where work_center='MARUMATSU', but not guaranteed unique.
         //. check status for completion? (S=started, C=complete?)
+        // "select top 1 Job from Job_Operation where WorkCenter_OID=foofoo order by Actual_Start desc"
         const sql = `
           select top 1
             Job --, Est_Required_Qty, Act_Run_Qty
