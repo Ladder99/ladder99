@@ -1,18 +1,14 @@
 // database class
 // wraps postgres/timescaledb/timegraph db
 
-// IMPORTANT: keep code in synch with these services - meter, relay
+// IMPORTANT: keep code in synch with these services - adapter, meter, recorder, relay
 
 // note: needs PGHOST, PGPORT, PGDATABASE, PGUSER, PGPASSWORD
 // environment variables set for connection
 
-// run
-//   npm install pg pg-format
-
 import pg from 'pg' // postgres driver https://github.com/brianc/node-postgres
 const { Pool } = pg // note: import { Pool } from 'pg' gives error, so must do this
 import pgFormat from 'pg-format' // see https://github.com/datalanche/node-pg-format
-// import * as lib from './lib.js'
 
 export class Db {
   constructor() {
@@ -201,7 +197,7 @@ export class Db {
     // console.log(sql)
     const result = await this.query(sql)
     // console.log(result)
-    const value = result.rowCount > 0 && result.rows[0]['value']
+    const value = result.rowCount > 0 && result.rows[0]['value'] // colname must match case
     return value
   }
 
@@ -284,17 +280,25 @@ export class Db {
     return result.rows
   }
 
-  // //. read nodes and edges into graph structure
-  // async getGraph(Graph) {
-  //   const graph = new Graph()
-  //   const sql = `SELECT * FROM nodes;`
-  //   const res = await this.client.query(sql)
-  //   const nodes = res.rows // [{ _id, props }]
-  //   console.log(nodes)
-  //   for (const node of nodes) {
-  //     graph.addNode(node)
-  //   }
-  //   //. get edges also
-  //   return graph
-  // }
+  async getMetaValue(key) {
+    // get value of key-value pair from meta table
+    const sql = `select value from meta where name=$1`
+    try {
+      const result = await this.query(sql, [key])
+      const value = result.rows.length > 0 && result.rows[0]['value'] // colname must match case
+      return value
+    } catch (error) {
+      return null // assume error is due to not having the table yet
+    }
+  }
+
+  async setMetaValue(key, value) {
+    // upsert key-value pair to meta table
+    const sql = `
+      insert into meta (name, value) values ($1, $2::jsonb)
+      on conflict (name) do update set value = $2;
+    `
+    const result = await this.query(sql, [key, value])
+    return result
+  }
 }
