@@ -1,20 +1,41 @@
 import fs from 'fs' // node lib
 
-//. handle versions - use meta table
-//. move src/migrations elsewhere eventually?
+const versions = {
+  1: [
+    '001-extensions',
+    '002-base-tables',
+    '003-base-views',
+    '004-base-functions',
+    '005-get_timeline',
+    '006-get_jobs',
+    '007-get_rate',
+    '008-get_availability',
+    '009-metrics',
+    '010-get_count',
+    '011-get_last_value',
+  ],
+  2: ['012-bins-hypertable'],
+}
+
+// handle versions - use meta table
 export async function migrate(db) {
   console.log(`Migrating database structures...`)
-  await readFile(db, `src/migrations/001-extensions.sql`)
-  await readFile(db, `src/migrations/002-base-tables.sql`)
-  await readFile(db, `src/migrations/003-base-views.sql`)
-  await readFile(db, `src/migrations/004-base-functions.sql`)
-  await readFile(db, `src/migrations/005-get_timeline.sql`)
-  await readFile(db, `src/migrations/006-get_jobs.sql`)
-  await readFile(db, `src/migrations/007-get_rate.sql`)
-  await readFile(db, `src/migrations/008-get_availability.sql`)
-  await readFile(db, `src/migrations/009-metrics.sql`)
-  await readFile(db, `src/migrations/010-get_count.sql`)
-  await readFile(db, `src/migrations/011-get_last_value.sql`)
+  let currentVersion = (await db.getMetaValue('schema-version')) || 0
+  const oldVersion = currentVersion
+  for (let version of Object.keys(versions)) {
+    if (currentVersions === version) {
+      const filenames = versions[version]
+      for (let filename of filenames) {
+        const path = `src/migrations/${filename}.sql`
+        await readFile(db, path)
+      }
+      currentVersion += 1
+    }
+  }
+  if (currentVersion !== oldVersion) {
+    await db.setMetaValue('schema-version', currentVersion)
+  }
+  console.log(`Done migrating.`)
 }
 
 async function readFile(db, filename) {
