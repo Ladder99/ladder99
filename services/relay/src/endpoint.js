@@ -34,10 +34,7 @@ export class Endpoint {
   // get array of Endpoint objects - called from index.js
   // note this is a STATIC fn
   static getEndpoints(setup) {
-    // const urls = setup.agents || ['http://agent:5000'] // defaults to the local agent docker service
-    // const endpoints = urls.map(url => new Endpoint(url))
-    // return endpoints
-    const agents = setup.agents || { main: 'http://agent:5000' } // defaults to local agent service
+    const agents = setup?.relay?.agents || { main: 'http://agent:5000' } // defaults to local agent service
     const endpoints = Object.keys(agents).map(
       alias => new Endpoint(agents[alias], alias) // ie url, alias
     )
@@ -48,6 +45,7 @@ export class Endpoint {
   // later agents can provide json, but best to always get xml and
   // transform to js, so don't need to know agent version.
   // type is 'probe', 'current', or 'sample'.
+  // called by data.js
   async fetchJsTree(type, from, count) {
     let jsTree
     do {
