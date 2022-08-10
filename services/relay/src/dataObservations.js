@@ -14,12 +14,12 @@ export class Observations extends Data {
     this.observations = null // array of dataitems
   }
 
-  // read dataitem values from current/sample endpoints as .json,
-  // convert .json tree to .observations (flat list of elements).
+  // read dataitem values from current/sample endpoints as xml/js tree,
+  // convert .jsTree to .observations (flat list of elements).
   // parameters are (endpoint) or (endpoint, from, count)
   async read() {
     // super.read will return false if gets an xml error message
-    if (!await super.read(...arguments)) return false // see base class in data.js
+    if (!(await super.read(...arguments))) return false // see base class in data.js
 
     // get flat list of observations from xml tree
     // observations is [{ tag, dataItemId, name, timestamp, value }, ...]
@@ -31,12 +31,12 @@ export class Observations extends Data {
     //   timestamp: '2021-09-14T17:53:21.414Z',
     //   value: 'AVAILABLE'
     // }, ...]
-    this.observations = treeObservations.getElements(this.json)
+    this.observations = treeObservations.getElements(this.jsTree)
 
     // sort observations by timestamp asc, for correct state machine transitions.
     // because sequence nums could be out of order, depending on network.
     this.observations.sort((a, b) => a.timestampSecs - b.timestampSecs)
-    
+
     return true
   }
 

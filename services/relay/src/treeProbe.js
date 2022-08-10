@@ -5,6 +5,7 @@ import * as lib from './common/lib.js'
 //. will want to keep track of attributes tacked onto the path -
 // and/or specify them all in advance so they're in a known order
 //. what else do we need?
+//. or better - specify the main ones in order, then anything else goes in alpha order
 const attributes = 'coordinateSystem,statistic'.split(',')
 
 // -------------------------------------------
@@ -181,17 +182,17 @@ function flatten(part, list, parent, tag = 'Document') {
     list.push(obj)
 
     // add all attributes in the value object to this object.
-    // note: '_attributes' is used by the xml processing library to store element attributes.
-    if (part['_attributes']) {
-      Object.assign(obj, part['_attributes'])
-      delete part['_attributes'] // remove attributes so don't get recursed down
+    // note: '_' is used by the xml processing library to store element attributes.
+    if (part['_']) {
+      Object.assign(obj, part['_'])
+      delete part['_'] // remove attributes so don't get recursed down
     }
 
     // add text contents as obj.value
-    // note: '#text' is used by the xml processing library to store element contents.
-    if (part['#text']) {
-      obj.value = part['#text']
-      delete part['#text']
+    // note: '$' is used by the xml processing library to store element contents.
+    if (part['$']) {
+      obj.value = part['$']
+      delete part['$']
     }
 
     // recurse over part's keyvalues.

@@ -41,9 +41,9 @@ export class AgentReader {
     probe: do {
       // we pass this.setup also so probe can use translations for dataitem paths
       const probe = new Probe(this.setup) // see dataProbe.js
-      await probe.read(this.endpoint) // read xml into probe.json, probe.elements, probe.nodes
-      await probe.write(this.db) // write/sync dataitems to db, get probe.indexes
+      await probe.read(this.endpoint) // read xml into probe.js, probe.elements, probe.nodes
       process.exit(0) //.... working on data.read method
+      await probe.write(this.db) // write/sync dataitems to db, get probe.indexes
       this.instanceId = probe.instanceId
 
       // current - get last known values of all dataitems and write to db
