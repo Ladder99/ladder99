@@ -40,7 +40,7 @@ class Relay {
     const setup = lib.readSetup(setupFolder)
 
     // get endpoints (mtconnect agent urls)
-    const endpoints = Endpoint.getEndpoints(setup) // static fn
+    const endpoints = Endpoint.getEndpoints(setup) // static fn - see endpoint.js
     console.log(`Agent endpoints:`, endpoints)
 
     // create an agent reader instance for each agent/endpoint

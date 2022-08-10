@@ -77,7 +77,7 @@ async function setupDevice({ device, cache, client, devices }) {
 
   // begin accepting connections on the specified port and host from agent.
   // see onConnection for next step.
-  tcp.listen(server.port, server.host)
+  tcp.listen(server.port, server.host) // eg port:7878 host:adapter
 
   // handle connection from agent
   async function onConnection(socket) {

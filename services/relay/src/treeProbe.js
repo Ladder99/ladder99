@@ -38,17 +38,33 @@ export function getNodes(tree, setup) {
   addPath(list)
   cleanup(list)
   list = filterList(list) // only include nodes that have id
+  console.log(list)
+  process.exit(0)
   return list
 }
 
 //
 
+// get flat list from a tree of elements
+// eg an element of the list could be
+// {
+//   parent: { parent: [Object] },
+//   tag: 'DataItem',
+//   category: 'SAMPLE',
+//   id: 'm-temp',
+//   name: 'temperature',
+//   nativeUnits: 'CELSIUS',
+//   type: 'TEMPERATURE',
+//   units: 'CELSIUS'
+// }
 function getList(tree) {
   let list = []
   flatten(tree, list)
   return list
 }
 
+// cleanup the flat list of nodes
+// currently - remove parent, step, etc
 function cleanup(list) {
   for (let el of list) {
     delete el.parent
@@ -60,6 +76,8 @@ function cleanup(list) {
   }
 }
 
+// add a full path to each element,
+// which includes the parents
 function addFullPath(list) {
   for (let el of list) {
     if (!el.parent) continue

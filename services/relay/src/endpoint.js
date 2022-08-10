@@ -20,19 +20,27 @@ const convertOptions = {
 }
 
 export class Endpoint {
-  constructor(baseUrl) {
+  //
+  // each endpoint has a url and an alias, which come from setup yaml
+  constructor(baseUrl, alias) {
     // remove any trailing slash
     if (baseUrl.endsWith('/')) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1)
     }
     this.baseUrl = baseUrl // eg 'http://agent:5000'
+    this.alias = alias
   }
 
-  // get array of Endpoint objects
-  // note this is a STATIC fn!
+  // get array of Endpoint objects - called from index.js
+  // note this is a STATIC fn
   static getEndpoints(setup) {
-    const urls = setup.agents || ['http://agent:5000'] // defaults to the local agent docker service
-    const endpoints = urls.map(url => new Endpoint(url))
+    // const urls = setup.agents || ['http://agent:5000'] // defaults to the local agent docker service
+    // const endpoints = urls.map(url => new Endpoint(url))
+    // return endpoints
+    const agents = setup.agents || { main: 'http://agent:5000' } // defaults to local agent service
+    const endpoints = Object.keys(agents).map(
+      alias => new Endpoint(agents[alias], alias) // ie url, alias
+    )
     return endpoints
   }
 
