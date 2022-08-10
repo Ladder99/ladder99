@@ -4,6 +4,7 @@
 
 //. this library causes highcpu on windows - 2022-02
 // https://github.com/sebhildebrandt/systeminformation/issues/626
+// best for now is to not include the micro driver in the client setup on windows.
 import si from 'systeminformation' // see https://github.com/sebhildebrandt/systeminformation
 
 const pollInterval = 5000 // msec //. get from setup
