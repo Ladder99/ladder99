@@ -8,6 +8,7 @@ import { Endpoint } from './endpoint.js'
 import * as lib from './common/lib.js'
 
 // defined in compose.yaml with docker volume mappings
+//. move into params below
 const setupFolder = process.env.L99_SETUP_FOLDER || '/data/setup'
 
 console.log()
@@ -17,15 +18,10 @@ console.log(`---------------------------------------------------`)
 
 // get envars - typically set in compose.yaml and compose-overrides.yaml files
 const params = {
-  // AGENT_URLS can be a single url, a comma-delim list of urls, or a txt filename with urls.
-  // these are the agents we'll be reading from.
-  // currently set in compose-overrides.yaml, but
-  //. eventually will read from setup.xml or setup.yaml - could be per device and/or defaults
-  // agentEndpoints: process.env.AGENT_ENDPOINTS || 'http://localhost:5000',
-  //. these will need to be dynamic - adjusted on the fly
+  retryTime: 4000, // ms between connection retries etc
+  // these are dynamic - adjusted on the fly
   fetchInterval: Number(process.env.FETCH_INTERVAL || 2000), // how often to fetch sample data, msec
   fetchCount: Number(process.env.FETCH_COUNT || 800), // how many samples to fetch each time
-  retryTime: 4000, // ms between connection retries etc
 }
 
 async function start(params) {
