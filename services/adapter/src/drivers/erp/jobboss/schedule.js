@@ -50,7 +50,8 @@ export class Schedule {
     for (let device of this.devices) {
       //
       // just want those with a jobboss id (ie workcenter object uuid)
-      if (device.jobbossId) {
+      const jobbossId = device.custom?.jobbossId
+      if (jobbossId) {
         //
         // get last date from cookie file
         const { lastRead } = cookie[device.name] || {} // eg '2022-01-11T01:21:00'
@@ -108,7 +109,8 @@ export class Schedule {
     console.log(`JobBoss schedule - datetime`, datetime)
 
     for (let device of this.devices) {
-      if (device.jobbossId) {
+      const jobbossId = device.custom?.jobbossId
+      if (jobbossId) {
         const schedule = await this.getSchedule(device, datetime) // get { start, stop }
         console.log('JobBoss schedule', schedule)
         // write start/stop times to cache for this device -
@@ -128,7 +130,7 @@ export class Schedule {
   async getSchedule(device, datetime) {
     console.log(`JobBoss schedule - get for`, device.name, datetime)
 
-    const workcenter = device.jobbossId // eg '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' for Marumatsu
+    const workcenter = device.custom?.jobbossId // eg '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' for Marumatsu
     const sequence = datetime.getDay() // day of week with 0=sunday, 1=monday. this works even if Z time is next day.
     const dateString = getLocalDateFromDateTime(datetime) // eg '2022-01-18' - works even if Z time is next day.
 
