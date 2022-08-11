@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# this doesn't work correctly, because docker doesn't handle profiles
-# for stop, only services. so, just use 'docker stop ...' to stop services.
+# this doesn't work correctly, because docker-compose doesn't handle profiles
+# for stop, only services. 
 
 usage="
 Usage: ./stop SETUP SERVICES
 
-Stop Ladder99 services/profiles.
+Stop Ladder99 services.
 "
 # Can also use 'docker stop SERVICE' to stop an individual service.
 
