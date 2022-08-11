@@ -12,19 +12,11 @@ SETUP is a client name or setup folder, eg oxbox, or ./setups/vmc.
 OPTIONS
   -c, --console   run the services attached to the console for logging
 
-SERVICES      space-delim list of profiles/services to start
+SERVICES      space-delim list of services or profiles to start
   all         run all relevant services for a setup - eg adapter, agent, etc
-  adapter     ladder99 adapter - converts machine language to shdr
-  agent       mtconnect agent - converts shdr to xml and html (port 5000)
-  cloudbeaver database web viewer (port 8978)
-  dozzle      docker log file browser (port 8080)
-  grafana     ladder99 dashboard - displays database data (port 80)
-  pgadmin     manages postgres database (port 5050)
-  portainer   manages docker containers (port 9000)
-  postgres    ladder99 database with timescaledb extension (port 5432)
 
 Examples
-    ./start oxbox all
+    ./start oxbox base
     ./start ./setups/vmc agent grafana
     ./start oxbox --console play
 "
@@ -54,11 +46,12 @@ do
 done
 
 # get setup folder
-# if starts with '.' treat as a setup folder, else a client name
+# if starts with '.' treat as relative to main dir, else relative to setups folder
 if [[ $1 = .* ]]; then
     SETUP=$1
 else
-    SETUP=../client-$1
+    # SETUP=../client-$1
+    SETUP=./setups/$1
 fi
 shift
 

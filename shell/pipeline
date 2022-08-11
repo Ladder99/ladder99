@@ -74,7 +74,8 @@ if [ "$cmd" = "startd" ]; then
 fi
 
 # get command and run it
-baseCmd="docker-compose $args $profileFlags"
+# -p specifies project name - otherwise it uses the parent folder name
+baseCmd="docker-compose -p ladder99 $args $profileFlags"
 if [ "$cmd" = "start" ] || [ "$cmd" = "startd" ]; then
     # pull any required images in the docker-compose files and start services.
     cmd="$baseCmd pull && $baseCmd up --build $flags"
