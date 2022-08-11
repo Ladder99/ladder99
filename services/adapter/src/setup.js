@@ -8,12 +8,6 @@ import {
   compileExpressions,
 } from './helpers.js'
 
-// // default server if none provided in setup.yaml
-// const defaultServer = { protocol: 'shdr', host: 'adapter', port: 7878 }
-
-// // file system inputs
-// const driversFolder = './drivers' // eg mqtt-json - must start with '.'
-
 // setup a device by connecting to agent, initializing cache dataitems,
 // and setting up each device source (loading plugins etc).
 export async function setupDevice({ params, device, cache, client, devices }) {
@@ -32,9 +26,7 @@ export async function setupDevice({ params, device, cache, client, devices }) {
   }
 
   // start tcp server for Agent to listen to, eg at adapter:7878
-  const destinations = device.destinations || []
-  //. just handle one server/destination for now
-  const server = destinations[0] || params.defaultServer
+  const server = device.connection || params.defaultServer
 
   console.log(`Adapter - listen for Agent on TCP socket at`, server, `...`)
 
