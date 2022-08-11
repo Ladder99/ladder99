@@ -1,1 +1,8 @@
-./adapter/
+./adapter
+./compiler
+./diode
+./meter
+./plc4x
+./recorder
+./relay
+./simulator
