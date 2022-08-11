@@ -12,7 +12,7 @@ import {
   compileExpressions,
 } from './helpers.js'
 
-// default server if none provided in model.yaml
+// default server if none provided in setup.yaml
 const defaultServer = { protocol: 'shdr', host: 'adapter', port: 7878 }
 
 // file system inputs
@@ -31,7 +31,7 @@ console.log(`posts to TCP.`)
 console.log(new Date().toISOString())
 console.log(`----------------------------------------------------------------`)
 
-async function main() {
+async function start() {
   //
   // read client setup.yaml file
   const setup = lib.readSetup(setupFolder)
@@ -41,13 +41,13 @@ async function main() {
 
   // iterate over device definitions from setup.yaml file and do setup for each
   const client = setup.client || {}
-  const devices = setup.devices || []
+  const devices = setup?.adapter?.devices || []
   for (const device of devices) {
     setupDevice({ device, cache, client, devices })
   }
 }
 
-main()
+start()
 
 // -------------------------------------------------------
 
@@ -213,7 +213,7 @@ async function setupSource({ source, cache, client, devices, device }) {
     device,
     driver, // eg 'random'
 
-    // pass whole drivers array here also, in case driver needs to know other devices?
+    // pass whole drivers array here also, in case driver needs to know other devices.
     // eg for jobboss - needs to know what workcenters/devices to look for.
     devices,
 

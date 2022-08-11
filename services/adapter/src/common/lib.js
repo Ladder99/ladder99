@@ -11,8 +11,6 @@ import libyaml from 'js-yaml' // see https://github.com/nodeca/js-yaml
 
 // load setup yaml, eg from ../client-oxbox/setup.yaml
 export function readSetup(setupFolder) {
-  // defined in compose.yaml with docker volume mappings
-  // const setupFolder = '/data/setup' // incls setup.yaml etc
   const yamlfile = `${setupFolder}/setup.yaml`
   console.log(`Reading ${yamlfile}...`)
   const yamltree = importYaml(yamlfile)
@@ -39,8 +37,10 @@ export function importYaml(path) {
   return null
 }
 
-// recurse over values, replacing eg $FOO with process.env['FOO']
+// recurse over all values in a yaml,
+// replacing eg $FOO with process.env['FOO'].
 export function replaceEnvars(setup) {
+  if (setup === undefined || setup === null) return // in case of malformed file
   for (let key of Object.keys(setup)) {
     const value = setup[key]
     if (typeof value === 'string' && value[0] === '$') {
@@ -51,7 +51,7 @@ export function replaceEnvars(setup) {
       // console.log(`replacing ${value} with ${envarValue}`)
       setup[key] = envarValue
     } else if (typeof value === 'object') {
-      replaceEnvars(value)
+      replaceEnvars(value) // recurse
     }
   }
 }
