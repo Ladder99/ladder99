@@ -30,7 +30,8 @@ services:
       L99_ADAPTER_FOLDER: /data/adapter
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml etc
-      - ../modules:/data/modules # has module yamls
+      # - ../modules:/data/modules # has module yamls
+      - ../setups/common/modules:/data/modules # has module yamls
       - ../$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
     restart: always
     networks:
@@ -238,7 +239,8 @@ services:
       # other folders are specified there.
       - ../$SETUP/volumes/grafana/etc:/etc/grafana
       - ../$SETUP/volumes/grafana/var:/var/lib/grafana
-      - ../dashboards/grafana:/etc/dashboards
+      # - ../dashboards/grafana:/etc/dashboards
+      - ../setups/common/dashboards/grafana:/etc/dashboards
     # as of v7.3, the Grafana Docker image runs with the root group (id 0) instead
     # of the grafana group (id 472), for better compatibility with OpenShift.
     # grafana gives permission error without user:root - not on mac. only on arm?
@@ -330,7 +332,7 @@ services:
       PGPASSWORD: null
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml
-      # - ../modules:/data/modules # has module-specific folders
+      # - ../setups/common/modules:/data/modules # has module-specific folders
     restart: always
     networks:
       - ladder99
@@ -443,7 +445,8 @@ services:
     command: recorder --mode play
     volumes:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
-      - ../modules:/data/modules # has module-specific recordings folder
+      # - ../modules:/data/modules # has module-specific recordings folder
+      - ../setups/common/modules:/data/modules # has module-specific recordings folder
     restart: always
     networks:
       - ladder99
@@ -544,7 +547,8 @@ services:
       L99_MODULES_FOLDER: /data/modules
     volumes:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
-      - ../modules:/data/modules # has module-specific recordings folder
+      # - ../modules:/data/modules # has module-specific recordings folder
+      - ../setups/common/modules:/data/modules # has module-specific recordings folder
     restart: always
     networks:
       - ladder99
