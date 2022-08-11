@@ -13,27 +13,33 @@ export class AgentReader {
   // endpoint is an Endpoint instance - endpoint.js - to poll agent
   // params includes { fetchInterval, fetchCount }
   // setup is client's setup.yaml
-  // called by relay.js
-  constructor({ db, endpoint, params, setup }) {
+  // called by index.js
+  constructor({ params, db, endpoint, setup }) {
+    this.params = params
     this.db = db
     this.endpoint = endpoint
-    this.params = params
     this.setup = setup
 
     this.instanceId = null
 
     this.from = null
-    // these are dynamic - optimized on the fly
-    //. or use streaming instead of polling
+
+    // these are dynamic - optimized on the fly for each agent.
+    //. or later use streaming instead of polling
     this.interval = params.fetchInterval
     this.count = params.fetchCount
   }
 
   // start fetching and processing data
   async start() {
+    //
+    // don't read this agent if specified in setup.yaml
+    if (this.endpoint?.agent?.ignore) return
+
     // make feedback object to track data and feedback to devices as needed.
     // used to track jobnum change to reset marumatsu counter.
     //. this will be replaced by MTConnect Interfaces.
+    //. actually, will be moved into adapter
     this.feedback = new Feedback(this.setup)
     this.feedback.start() // get mqtt connection, start check timer
 

@@ -5,6 +5,8 @@ import fetch from 'node-fetch' // https://github.com/node-fetch/node-fetch
 import convert from 'xml-js' // convert xml to json https://github.com/nashwaan/xml-js
 import * as lib from './common/lib.js'
 
+const waitTryAgain = 4000 // ms
+
 // xml to js conversion options
 // https://github.com/nashwaan/xml-js#compact-vs-non-compact
 // https://github.com/nashwaan/xml-js#options-for-converting-xml--js-object--json
@@ -21,14 +23,9 @@ const convertOptions = {
 
 export class Endpoint {
   //
-  // each endpoint has a url and an alias, which come from setup yaml
-  constructor(baseUrl, alias) {
-    // remove any trailing slash
-    if (baseUrl.endsWith('/')) {
-      baseUrl = baseUrl.slice(0, baseUrl.length - 1)
-    }
-    this.baseUrl = baseUrl // eg 'http://agent:5000'
-    this.alias = alias
+  // each endpoint has an agent object, which comes from setup yaml
+  constructor(agent) {
+    this.agent = agent // eg { alias, url, ignore, retention, devices, ... }
   }
 
   // get data from agent rest endpoint as js object tree.
@@ -57,7 +54,7 @@ export class Endpoint {
       }
       if (!jsTree) {
         console.log(`Relay no data available - will wait and try again...`)
-        await lib.sleep(4000)
+        await lib.sleep(waitTryAgain)
       }
     } while (!jsTree)
     return jsTree
@@ -67,7 +64,7 @@ export class Endpoint {
   // type is 'probe', 'current', or 'sample'.
   // from and count are optional.
   getUrl(type, from, count) {
-    const base = `${this.baseUrl}/${type}`
+    const base = `${this.agent.url}/${type}`
     const fromStr = from !== null ? `from=${from}&` : ''
     const url = from === undefined ? base : `${base}?${fromStr}count=${count}`
     return url

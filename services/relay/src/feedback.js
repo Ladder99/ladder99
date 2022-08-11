@@ -14,6 +14,7 @@ const feedbackOff = process.env.RELAY_FEEDBACK_OFF
 // a Feedback instance monitors dataitems for changes and
 // sends feedback to devices.
 export class Feedback {
+  //
   constructor(setup) {
     this.setup = setup
     this.timer = null
