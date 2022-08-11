@@ -5,18 +5,18 @@ import fetch from 'node-fetch' // https://github.com/node-fetch/node-fetch
 import convert from 'xml-js' // convert xml to json https://github.com/nashwaan/xml-js
 import * as lib from './common/lib.js'
 
-// xml to js options
+// xml to js conversion options
 // https://github.com/nashwaan/xml-js#compact-vs-non-compact
 // https://github.com/nashwaan/xml-js#options-for-converting-xml--js-object--json
 // https://github.com/nashwaan/xml-js#options-for-changing-key-names
 const convertOptions = {
   compact: true,
+  ignoreDoctype: true,
   ignoreDeclaration: true,
   ignoreInstruction: true,
-  ignoreDoctype: true,
-  trim: true,
-  attributesKey: '_', // default '_attributes'
-  textKey: '$', // default '_text'
+  trim: true, // ditch whitespace around text values
+  attributesKey: '_', // default is '_attributes'
+  textKey: '$', // default is '_text'
 }
 
 export class Endpoint {
@@ -29,16 +29,6 @@ export class Endpoint {
     }
     this.baseUrl = baseUrl // eg 'http://agent:5000'
     this.alias = alias
-  }
-
-  // get array of Endpoint objects - called from index.js
-  // note this is a STATIC fn
-  static getEndpoints(setup) {
-    const agents = setup?.relay?.agents || { main: 'http://agent:5000' } // defaults to local agent service
-    const endpoints = Object.keys(agents).map(
-      alias => new Endpoint(agents[alias], alias) // ie url, alias
-    )
-    return endpoints
   }
 
   // get data from agent rest endpoint as js object tree.
