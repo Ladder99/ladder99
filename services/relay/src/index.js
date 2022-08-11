@@ -12,6 +12,7 @@ const setupFolder = process.env.L99_SETUP_FOLDER || '/data/setup'
 
 console.log()
 console.log(`Ladder99 Relay`)
+console.log(new Date().toISOString())
 console.log(`---------------------------------------------------`)
 
 // get envars - typically set in compose.yaml and compose-overrides.yaml files
@@ -27,35 +28,32 @@ const params = {
   retryTime: 4000, // ms between connection retries etc
 }
 
-class Relay {
-  async start(params) {
-    // get database connection
-    const db = new Db()
-    await db.start()
+async function start(params) {
+  // get database connection
+  const db = new Db()
+  await db.start()
 
-    // do migrations (setup db tables and views etc)
-    await migrate(db)
+  // do migrations (setup db tables and views etc)
+  await migrate(db)
 
-    // read client's setup.yaml (includes devices, where to find their agents etc)
-    const setup = lib.readSetup(setupFolder)
+  // read client's setup.yaml (includes devices, where to find their agents etc)
+  const setup = lib.readSetup(setupFolder)
 
-    // get endpoints (mtconnect agent urls)
-    const endpoints = Endpoint.getEndpoints(setup) // static fn - see endpoint.js
-    console.log(`Agent endpoints:`, endpoints)
+  // get endpoints (mtconnect agent urls)
+  const endpoints = Endpoint.getEndpoints(setup) // static fn - see endpoint.js
+  console.log(`Agent endpoints:`, endpoints)
 
-    // create an agent reader instance for each agent/endpoint
-    const agentReaders = endpoints.map(
-      endpoint => new AgentReader({ db, endpoint, params, setup })
-    )
+  // create an agent reader instance for each agent/endpoint
+  const agentReaders = endpoints.map(
+    endpoint => new AgentReader({ db, endpoint, params, setup })
+  )
 
-    // run agent readers (read mtconnect agent xml, write SQL to database)
-    // node is single threaded with an event loop -
-    // run in parallel so agent readers run independently of each other.
-    for (const agentReader of agentReaders) {
-      agentReader.start()
-    }
+  // run agent readers (read mtconnect agent xml, write SQL to database)
+  // node is single threaded with an event loop -
+  // run in parallel so agent readers run independently of each other.
+  for (const agentReader of agentReaders) {
+    agentReader.start()
   }
 }
 
-const relay = new Relay()
-relay.start(params)
+start(params)
