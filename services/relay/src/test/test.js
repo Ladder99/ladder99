@@ -45,16 +45,30 @@ const setupFile = `${options.clientFolder}/setup.yaml`
 const probeFile = `${options.folder}/agent${options.specifier}.xml`
 const snapshotFile = `${options.folder}/path-snapshot${options.specifier}.json`
 
-// parse xml to list of nodes and elements
-//. make this a method in treeProbe
 const setup = lib.importYaml(setupFile) || {}
-const json = getXmlToJson(probeFile) // parse probe xml to json
-const elements = treeProbe.getElements(json) // devices, all dataitems
-const nodes = treeProbe.getNodes(elements, setup) // devices and unique propdefs
-simulateDb(nodes) // assign a unique node_id to each node
-const indexes = treeProbe.getIndexes(nodes, elements) // get { nodeByNodeId, nodeByPath, elementById }
-treeProbe.assignNodeIds(elements, indexes) // assign device_id and dataitem_id to dataitem elements.
-const current = getCurrent(elements)
+
+// parse xml to list of nodes and elements
+//. make this a method in treeProbe, for testing
+
+// const setup = lib.importYaml(setupFile) || {}
+// const json = getXmlToJson(probeFile) // parse probe xml to json
+// const elements = treeProbe.getElements(json) // devices, all dataitems
+// const nodes = treeProbe.getNodes(elements, setup) // devices and unique propdefs
+// simulateDb(nodes) // assign a unique node_id to each node
+// const indexes = treeProbe.getIndexes(nodes, elements) // get { nodeByNodeId, nodeByPath, elementById }
+// treeProbe.assignNodeIds(elements, indexes) // assign device_id and dataitem_id to dataitem elements.
+// const current = getCurrent(elements)
+
+// from agentReader.js
+// const probe = new Probe(setup, agent) // see dataProbe.js
+// const endpoint = mock
+// await probe.read(endpoint) // read xml into probe.js, probe.elements, probe.nodes
+// console.log(probe.nodes)
+// nodes = tree.getNodes(this.jsTree, this.setup, this.agent)
+
+const agent = setup.relay.agents[0] //?
+const jsTree = getXmlToJsTree(probeFile) // parse probe xml to jstree
+const nodes = treeProbe.getNodes(jsTree, setup, agent)
 
 // optional - write json to snapshot file
 if (options.update) {
@@ -173,10 +187,20 @@ function getCurrent(elements) {
   return current
 }
 
-// load an xml file, convert to json, parse and return
-function getXmlToJson(path) {
+// load an xml file, convert to jstree, parse and return
+function getXmlToJsTree(path) {
+  // options copied from endpointjs
+  const convertOptions = {
+    compact: true,
+    ignoreDoctype: true,
+    ignoreDeclaration: true,
+    ignoreInstruction: true,
+    trim: true, // ditch whitespace around text values
+    attributesKey: '_', // default is '_attributes'
+    textKey: '$', // default is '_text'
+  }
   const xml = fs.readFileSync(path).toString()
-  const json = JSON.parse(convert.xml2json(xml, { compact: true }))
+  const json = convert.xml2js(xml, convertOptions)
   return json
 }
 

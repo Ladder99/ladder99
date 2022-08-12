@@ -12,5 +12,5 @@ This may eventually be replaced by an instance of the Adapter, with ingress driv
 
 First, install the dependencies locally with `npm install`.
 
-Then `npm run test` to see the options available.
+Then `npm test` to see the options available.
 
