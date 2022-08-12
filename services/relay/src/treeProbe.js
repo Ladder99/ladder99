@@ -31,14 +31,14 @@ export function getNodes(tree, setup, agent) {
   let list = getList(tree) // flatten the tree
   addAgent(list, agent) // add agentAlias from setup to each element
   addDevice(list) // add deviceId to each element
+  // addGid(list) // gid is device uuid + '#' + element id
   addFid(list) // fid is the full id = agentAlias[/deviceId[/dataitemId]]
   list.forEach(el => delete el.parent) // remove parent attributes
-  console.log(list)
-  process.exit(0)
-  // addGid(list) // gid is device uuid + '#' + element id
   addStep(list, translations)
   const index = getIndex(list)
   resolveReferences(list, index) // resolve steps like '${Cmotor}' to 'motor'
+  console.log(list)
+  process.exit(0)
   addFullPath(list)
   addPath(list)
   cleanup(list)
@@ -72,7 +72,8 @@ function addFid(list) {
     const fid =
       (el.agentAlias ? el.agentAlias : '') +
       (el.deviceId ? '/' + el.deviceId : '') +
-      (el.tag === 'DataItem' ? '/' + el.id : '')
+      // (el.tag === 'DataItem' ? '/' + el.id : '')
+      (el.id ? '/' + el.id : '')
     if (fid) el.fid = fid
   }
 }
@@ -137,7 +138,8 @@ function addPath(list) {
 
 function addStep(list, translations) {
   for (let el of list) {
-    el.step = getStep(el, translations)
+    const step = getStep(el, translations)
+    if (step) el.step = step
   }
 }
 
@@ -146,27 +148,27 @@ function filterList(list) {
   return list.filter(el => !!el.id) // just need those with an id
 }
 
-// get an index for gid (eg 'abcd-123...#m1-avail') to element.
-//. call it indexGidToNode? gidToNode? call this getGidToNode?
+// get an index for fid (eg 'main/m/m1-avail') to element.
+//. call it indexFidToNode? fidToNode? call this getFidToNode?
 function getIndex(list) {
   const index = {}
   for (let el of list) {
-    if (el.gid) {
-      index[el.gid] = el
+    if (el.fid) {
+      index[el.fid] = el
     }
   }
   return index
 }
 
-// add gid (device uuid + element id) to all elements -
-// it should be unique across all documents.
-function addGid(list) {
-  for (let el of list) {
-    if (el.id) {
-      el.gid = (el.device || el.uuid) + '#' + el.id
-    }
-  }
-}
+// // add gid (device uuid + element id) to all elements -
+// // it should be unique across all documents.
+// function addGid(list) {
+//   for (let el of list) {
+//     if (el.id) {
+//       el.gid = (el.device || el.uuid) + '#' + el.id
+//     }
+//   }
+// }
 
 // resolve references in path steps.
 // eg if step contains '${Cmotor}', get element id='Cmotor',
@@ -176,12 +178,13 @@ function addGid(list) {
 //. handle 'type[name]' and 'type' differently? eg with ${foo}.typename or .type?
 function resolveReferences(list, index) {
   for (let el of list) {
-    if (el.step.includes('$')) {
+    if (el.step && el.step.includes('$')) {
       const regexp = /[$][{](.*)[}]/g // finds '${id}' and extracts id
       for (let match of el.step.matchAll(regexp)) {
         const id = match[1] // eg 'foo'
-        const gid = el.device + '#' + id // ie 'device(uuid)#id'
-        const node = index[gid] // get the node object
+        // const gid = el.device + '#' + id // ie 'device(uuid)#id'
+        const fid = el.agentAlias + '/' + el.deviceId + '/' + id
+        const node = index[fid] // get the node object
         if (node) {
           // replace original with new step string, eg 'foo-${id}' -> 'foo-motor[a]'
           const name = el.name ? `[${el.name}]` : ''
@@ -289,8 +292,10 @@ function getStep(obj, translations) {
 
 const stepHandlers = {
   // MTConnectDevices: () => 'mtconnect',
-  Agent: obj => `agent(${obj.uuid})`,
-  Device: obj => `device(${obj.uuid})`,
+  // Agent: obj => `agent(${obj.uuid})`,
+  Agent: obj => obj.agentAlias,
+  // Device: obj => `device(${obj.uuid})`,
+  Device: obj => obj.deviceId,
   Linear: obj => `linear[${obj.name.toLowerCase()}]`,
   Rotary: obj => `rotary[${obj.name.toLowerCase()}]`,
   DataItem: getDataItemStep,
