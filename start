@@ -51,7 +51,8 @@ if [[ $1 = .* ]]; then
     SETUP=$1
 else
     # SETUP=../client-$1
-    SETUP=./setups/$1
+    # SETUP=./setups/$1
+    SETUP=../setup-$1
 fi
 shift
 
