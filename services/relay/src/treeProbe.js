@@ -29,11 +29,12 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 export function getNodes(tree, setup, agent) {
   const translations = setup.translations || {} // dict of gid->path step
   let list = getList(tree) // flatten the tree
-  addAgentId(list, agent) // add agent id from setup
-  addFid(list) // fid is the full id = agentId[/deviceId[/dataitemId]], where agentId is from setup yaml
+  addAgent(list, agent) // add agentAlias from setup to each element
+  addDevice(list) // add deviceId to each element
+  addFid(list) // fid is the full id = agentAlias[/deviceId[/dataitemId]]
+  list.forEach(el => delete el.parent) // remove parent attributes
   console.log(list)
   process.exit(0)
-  // addDevice(list)
   // addGid(list) // gid is device uuid + '#' + element id
   addStep(list, translations)
   const index = getIndex(list)
@@ -45,22 +46,34 @@ export function getNodes(tree, setup, agent) {
   return list
 }
 
-function addAgentId(list, agent) {
+function addAgent(list, agent) {
   for (let el of list) {
-    if (el.tag === 'Agent') {
-      el.fid = agent.id
-    }
+    if (el.id) el.agentAlias = agent.id
   }
 }
 
+// add device/agent uuid to elements
+function addDevice(list) {
+  let deviceId
+  for (let el of list) {
+    // agents and devices have uuids that identify items beneath them in tree
+    if (el.tag === 'Agent' || el.tag === 'Device') {
+      deviceId = el.id
+    }
+    // assign each element its ancestor's uuid in the device attribute.
+    // but only if the element has an id - don't need/want it otherwise.
+    if (deviceId && el.id) el.deviceId = deviceId
+  }
+}
+
+// add full id to elements
 function addFid(list) {
   for (let el of list) {
-    if (!el.parent) continue
-    if (el.parent.fid) {
-      el.fid = el.parent.fid + (el.id ? '/' + el.id : '')
-    } else {
-      el.fid = el.id
-    }
+    const fid =
+      (el.agentAlias ? el.agentAlias : '') +
+      (el.deviceId ? '/' + el.deviceId : '') +
+      (el.tag === 'DataItem' ? '/' + el.id : '')
+    if (fid) el.fid = fid
   }
 }
 
@@ -143,21 +156,6 @@ function getIndex(list) {
     }
   }
   return index
-}
-
-// add device/agent uuid to elements
-function addDevice(list) {
-  let device
-  for (let el of list) {
-    // agents and devices have uuids that identify items beneath them in tree
-    if (el.tag === 'Agent' || el.tag === 'Device') {
-      device = el.uuid
-    } else {
-      // assign each element its ancestor's uuid in the device attribute.
-      // but only if the element has an id - don't need/want it otherwise.
-      if (device && el.id) el.device = device
-    }
-  }
 }
 
 // add gid (device uuid + element id) to all elements -
