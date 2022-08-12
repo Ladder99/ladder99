@@ -25,7 +25,7 @@ export class Endpoint {
   //
   // each endpoint has an agent object, which comes from setup yaml
   constructor(agent) {
-    this.agent = agent // eg { alias, url, ignore, retention, devices, ... }
+    this.agent = agent // eg { id, url, ignore, retention, devices, ... }
   }
 
   // get data from agent rest endpoint as js object tree.

@@ -33,8 +33,13 @@ export class AgentReader {
   // start fetching and processing data
   async start() {
     //
-    // don't read this agent if specified in setup.yaml
-    if (this.endpoint?.agent?.ignore) return
+    const agent = this.endpoint?.agent
+
+    // don't read this agent if 'ignore' flag is set in setup.yaml
+    if (agent?.ignore) {
+      console.log(`Ignore Agent ${agent?.id} as specified in setup.yaml`)
+      return
+    }
 
     // make feedback object to track data and feedback to devices as needed.
     // used to track jobnum change to reset marumatsu counter.
@@ -46,7 +51,7 @@ export class AgentReader {
     // probe - get agent data structures and write to db
     probe: do {
       // we pass this.setup also so probe can use translations for dataitem paths
-      const probe = new Probe(this.setup) // see dataProbe.js
+      const probe = new Probe(this.setup, agent) // see dataProbe.js
       await probe.read(this.endpoint) // read xml into probe.js, probe.elements, probe.nodes
       process.exit(0) //.... working on data.read method
       await probe.write(this.db) // write/sync dataitems to db, get probe.indexes

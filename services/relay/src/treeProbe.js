@@ -26,11 +26,15 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 //   type: 'AVAILABILITY',
 //   category: 'EVENT',
 // }, ...]
-export function getNodes(tree, setup) {
+export function getNodes(tree, setup, agent) {
   const translations = setup.translations || {} // dict of gid->path step
   let list = getList(tree) // flatten the tree
-  addDevice(list)
-  addGid(list) // gid is device uuid + '#' + element id
+  addAgentId(list, agent) // add agent id from setup
+  addFid(list) // fid is the full id = agentId[/deviceId[/dataitemId]], where agentId is from setup yaml
+  console.log(list)
+  process.exit(0)
+  // addDevice(list)
+  // addGid(list) // gid is device uuid + '#' + element id
   addStep(list, translations)
   const index = getIndex(list)
   resolveReferences(list, index) // resolve steps like '${Cmotor}' to 'motor'
@@ -38,9 +42,26 @@ export function getNodes(tree, setup) {
   addPath(list)
   cleanup(list)
   list = filterList(list) // only include nodes that have id
-  console.log(list)
-  process.exit(0)
   return list
+}
+
+function addAgentId(list, agent) {
+  for (let el of list) {
+    if (el.tag === 'Agent') {
+      el.fid = agent.id
+    }
+  }
+}
+
+function addFid(list) {
+  for (let el of list) {
+    if (!el.parent) continue
+    if (el.parent.fid) {
+      el.fid = el.parent.fid + (el.id ? '/' + el.id : '')
+    } else {
+      el.fid = el.id
+    }
+  }
 }
 
 //

@@ -16,8 +16,7 @@ console.log(`---------------------------------------------------`)
 const params = {
   retryTime: 4000, // ms between connection retries etc
   // this is the default ladder99 agent service - can override or specify others in setup.yaml.
-  // defaultAgents: { main: 'http://agent:5000' }, // main is the alias/keyword - don't change!
-  defaultAgents: [{ alias: 'main', url: 'http://agent:5000' }], // don't change alias!
+  defaultAgents: [{ id: 'main', url: 'http://agent:5000' }], // don't change id!
   // hardcoded default folder is defined in compose.yaml with docker volume mappings
   setupFolder: process.env.L99_SETUP_FOLDER || '/data/setup',
   // these are dynamic - adjusted on the fly
@@ -38,7 +37,7 @@ async function start(params) {
   const setup = lib.readSetup(params.setupFolder)
 
   // get array of agent objects from setup yaml
-  const agents = setup?.relay?.agents || defaultAgents
+  const agents = setup?.relay?.agents || params.defaultAgents
 
   // remove any trailing slash from base urls
   agents.forEach(agent => {

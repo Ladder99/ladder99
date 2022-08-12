@@ -7,13 +7,14 @@ import * as tree from './treeProbe.js'
 export class Probe extends Data {
   type = 'probe' // used by this.read()
 
-  constructor(setup) {
+  constructor(setup, agent) {
     super()
     this.setup = setup
+    this.agent = agent
   }
 
   // read xml into this.jsTree, this.header, then parse jsTree into
-  // flat list of .elements and .nodes.
+  // flat list of .nodes.
   async read() {
     await super.read(...arguments) // gets this.jsTree - see base class in data.js
 
@@ -27,7 +28,7 @@ export class Probe extends Data {
     // // eg [{node_type, path, category}, ...]
     // this.nodes = tree.getNodes(this.elements, this.setup) // see treeProbe.js
 
-    this.nodes = tree.getNodes(this.jsTree, this.setup) // see treeProbe.js
+    this.nodes = tree.getNodes(this.jsTree, this.setup, this.agent) // see treeProbe.js
   }
 
   // write probe data in jsTree to db instance, get indexes
