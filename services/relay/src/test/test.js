@@ -27,6 +27,9 @@ Options:
     -p print id:path json for given folder
     -n print nodes for given folder
     specifier - will be appended to filename as folder/agent-specifier.xml
+
+Examples:
+    npm test -p demo
 `
 
 // get options and folders from cmdline
@@ -135,10 +138,12 @@ function getOptions() {
   options.folder = args[0]
   if (options.folder) {
     if (options.folder.startsWith('./')) {
-      options.clientFolder = 'services/relay/src/test/' + options.folder
+      // options.clientFolder = 'services/relay/src/test/' + options.folder
+      options.clientFolder = options.folder
       options.folder = options.clientFolder
     } else {
-      options.clientFolder = '../client-' + options.folder
+      // options.clientFolder = '../setup-' + options.folder
+      options.clientFolder = '../../../setup-' + options.folder
       options.folder = options.clientFolder + '/volumes/agent'
     }
   }
