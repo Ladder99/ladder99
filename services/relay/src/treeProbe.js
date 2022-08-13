@@ -66,18 +66,19 @@ function addDevice(list) {
     if (el.tag === 'Agent' || el.tag === 'Device') {
       deviceId = el.id
     }
-    // assign each element its ancestor's uuid in the device attribute.
+    // assign each element its ancestor's id in the device attribute.
     // but only if the element has an id - don't need/want it otherwise.
     if (deviceId && el.id) el.deviceId = deviceId
   }
 }
 
-// add context (agentAlias/deviceId) to each element, eg 'main/m1'
+// add context (agentAlias/deviceId) to each element, eg 'main/m1'.
+// if it's a device or agent though, context is just agentAlias, eg 'main'.
 function addContext(list) {
   for (let el of list) {
-    const context =
-      (el.agentAlias ? el.agentAlias : '') +
-      (el.deviceId ? '/' + el.deviceId : '')
+    const isDevice = el.tag === 'Device' || el.tag === 'Agent'
+    let context = el.agentAlias ? el.agentAlias : ''
+    if (!isDevice) context += el.deviceId ? '/' + el.deviceId : ''
     if (context) el.context = context
   }
 }
@@ -100,7 +101,8 @@ function addPath(list) {
     if (el.parent && el.parent.path) {
       el.path = el.parent.path + (el.step ? '/' + el.step : '')
     } else {
-      if (el.tag !== 'Agent' && el.tag !== 'Device') el.path = el.step || ''
+      // if (el.tag !== 'Agent' && el.tag !== 'Device') el.path = el.step || ''
+      el.path = el.step
     }
   }
 }
@@ -108,7 +110,8 @@ function addPath(list) {
 // add a full path to each element, which includes the parents up to the agent
 function addFullPath(list) {
   for (let el of list) {
-    el.fullpath = el.context + '/' + el.path
+    // el.fullpath = el.context + '/' + el.path
+    el.fullpath = el.agentAlias + '/' + el.path
   }
 }
 
@@ -341,25 +344,25 @@ function getParamString(param) {
 
 // -----------------------------------------------------------------
 
-// get indexes for given nodes: nodeByNodeId, nodeByPath.
+// get indexes for given nodes: nodeByNodeId, nodeByFullid.
 // eg for
-//   nodes = [{ node_id: 3, id: 'foo', path: 'bar' }, ...]
+//   nodes = [{ node_id: 3, id: 'foo', fullid: 'd1/foo', path: 'bar' }, ...]
 // returns
-//   { nodeByNodeId: { 3: {...} }, nodeByPath: { bar:... } }
+//   { nodeByNodeId: { 3: {...} }, nodeByFullid: { 'd1/foo':... } }
 //. explain why we need each index - what uses them
 export function getIndexes(nodes) {
   //
   // init indexes
   const nodeByNodeId = {}
-  const nodeByPath = {}
+  const nodeByFullid = {}
 
   // add nodes
   for (let node of nodes) {
     nodeByNodeId[node.node_id] = node
-    nodeByPath[node.path] = node
+    nodeByFullid[node.fullid] = node
   }
 
-  return { nodeByNodeId, nodeByPath }
+  return { nodeByNodeId, nodeByFullid }
 }
 
 // assign device_id and dataitem_id to nodes.
@@ -367,8 +370,10 @@ export function getIndexes(nodes) {
 export function assignNodeIds(nodes, indexes) {
   nodes.forEach(node => {
     if (node.node_type === 'DataItem') {
-      node.device_id = indexes.nodeByPath[node.device].node_id
-      node.dataitem_id = indexes.nodeByPath[node.path].node_id
+      // node.device_id = indexes.nodeByPath[node.device].node_id
+      // node.dataitem_id = indexes.nodeByPath[node.path].node_id
+      node.device_id = indexes.nodeByFullid[node.context].node_id //?
+      node.dataitem_id = indexes.nodeByFullid[node.fullid].node_id //?
     }
   })
 }

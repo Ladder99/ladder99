@@ -89,7 +89,15 @@ const indexes = treeProbe.getIndexes(nodes)
 treeProbe.assignNodeIds(nodes, indexes)
 
 // console.dir(nodes, { depth: 4 })
-console.log(indexes)
+// console.log(indexes)
+
+// console.log(nodes.filter(node => node.tag === 'Device'))
+
+const device = indexes.nodeByFullid['mazak5717/d1']
+const dataitem = indexes.nodeByFullid['mazak5717/d1/rmtmp1']
+console.log(device)
+console.log(dataitem)
+
 process.exit(0)
 
 // -----------------------------------------------------------------
