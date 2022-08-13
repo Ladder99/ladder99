@@ -119,7 +119,6 @@ function addFullPath(list, agent) {
     if (el.parent.fullpath) {
       el.fullpath = el.parent.fullpath + (el.step ? '/' + el.step : '')
     } else {
-      // el.fullpath = el.step || ''
       el.fullpath = agent.id + (el.step ? '/' + el.step : '')
     }
   }
