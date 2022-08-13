@@ -69,6 +69,13 @@ const setup = lib.importYaml(setupFile) || {}
 const agent = setup.relay.agents[2] //..
 const jsTree = getXmlToJsTree(probeFile) // parse probe xml to jstree
 const nodes = treeProbe.getNodes(jsTree, setup, agent)
+console.dir(nodes, { depth: 4 })
+process.exit(0)
+
+// simulateDb(nodes) // assign a unique node_id to each node
+// const indexes = treeProbe.getIndexes(nodes, elements) // get { nodeByNodeId, nodeByPath, elementById }
+// treeProbe.assignNodeIds(elements, indexes) // assign device_id and dataitem_id to dataitem elements.
+// const current = getCurrent(elements)
 
 // optional - write json to snapshot file
 if (options.update) {

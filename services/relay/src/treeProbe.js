@@ -46,15 +46,15 @@ export function getNodes(tree, setup, agent) {
   cleanup(list)
   // list.forEach(el => delete el.parent) // remove parent attributes
   // list = list.filter(el => el.id === 'servo_cond')
-  console.log(list)
-  process.exit(0)
+  // console.log(list)
+  // process.exit(0)
   list = filterList(list) // only include nodes that have id
   return list
 }
 
 function addAgent(list, agent) {
   for (let el of list) {
-    el.agentAlias = agent.alias
+    if (el.id) el.agentAlias = agent.alias
   }
 }
 
@@ -85,8 +85,10 @@ function addContext(list) {
 // add full id to elements, eg 'main/m1/availability'
 function addFullid(list) {
   for (let el of list) {
-    const fullid = el.context + (el.id ? '/' + el.id : '')
-    if (fullid) el.fullid = fullid
+    if (el.id) {
+      const fullid = el.context + (el.id ? '/' + el.id : '')
+      if (fullid) el.fullid = fullid
+    }
   }
 }
 
