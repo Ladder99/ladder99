@@ -338,3 +338,37 @@ function getParamString(param) {
   const str = param.toLowerCase().replace('x:', '') // leave underscores
   return str
 }
+
+// -----------------------------------------------------------------
+
+// get indexes for given nodes: nodeByNodeId, nodeByPath.
+// eg for
+//   nodes = [{ node_id: 3, id: 'foo', path: 'bar' }, ...]
+// returns
+//   { nodeByNodeId: { 3: {...} }, nodeByPath: { bar:... } }
+//. explain why we need each index - what uses them
+export function getIndexes(nodes) {
+  //
+  // init indexes
+  const nodeByNodeId = {}
+  const nodeByPath = {}
+
+  // add nodes
+  for (let node of nodes) {
+    nodeByNodeId[node.node_id] = node
+    nodeByPath[node.path] = node
+  }
+
+  return { nodeByNodeId, nodeByPath }
+}
+
+// assign device_id and dataitem_id to nodes.
+// will use these to write values to history and bins tables.
+export function assignNodeIds(nodes, indexes) {
+  nodes.forEach(node => {
+    if (node.node_type === 'DataItem') {
+      node.device_id = indexes.nodeByPath[node.device].node_id
+      node.dataitem_id = indexes.nodeByPath[node.path].node_id
+    }
+  })
+}

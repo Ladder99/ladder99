@@ -69,13 +69,30 @@ const setup = lib.importYaml(setupFile) || {}
 const agent = setup.relay.agents[2] //..
 const jsTree = getXmlToJsTree(probeFile) // parse probe xml to jstree
 const nodes = treeProbe.getNodes(jsTree, setup, agent)
-console.dir(nodes, { depth: 4 })
-process.exit(0)
 
-// simulateDb(nodes) // assign a unique node_id to each node
+simulateDb(nodes) // assign a unique node_id to each node
+
 // const indexes = treeProbe.getIndexes(nodes, elements) // get { nodeByNodeId, nodeByPath, elementById }
 // treeProbe.assignNodeIds(elements, indexes) // assign device_id and dataitem_id to dataitem elements.
 // const current = getCurrent(elements)
+
+// get indexes - nodeByNodeId, nodeByPath, elementById
+//. why do we need those 3 indexes? explain
+//. nodeByNodeId - gives node object for a given node_id, eg 3 -> {}
+//. nodeByPath - gives node object for given path, eg __
+//. elementById - gives element object for given dataitem id, eg 'pr1-avail' -> {}
+const indexes = treeProbe.getIndexes(nodes)
+
+// assign device_id and dataitem_id to dataitem elements.
+// will need these to write values from current/sample endpoints
+// to history and bins tables.
+treeProbe.assignNodeIds(nodes, indexes)
+
+// console.dir(nodes, { depth: 4 })
+console.log(indexes)
+process.exit(0)
+
+// -----------------------------------------------------------------
 
 // optional - write json to snapshot file
 if (options.update) {

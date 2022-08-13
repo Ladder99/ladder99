@@ -34,8 +34,6 @@ export class Probe extends Data {
   // write probe data in jsTree to db instance, get indexes
   async write(db) {
     // add/get nodes to db - devices and dataitems
-    //. maybe should just get nodes here from elements with simple filter?
-    // ie filter from all elements to just dataitems?
     for (let node of this.nodes) {
       //. this is upsert - call it so
       //. change to addOrGet(node)
