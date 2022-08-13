@@ -23,9 +23,8 @@ const convertOptions = {
 
 export class Endpoint {
   //
-  // each endpoint has an agent object, which comes from setup yaml
-  constructor(agent) {
-    this.agent = agent // eg { id, url, ignore, retention, devices, ... }
+  constructor(url) {
+    this.url = url
   }
 
   // get data from agent rest endpoint as js object tree.
@@ -64,7 +63,7 @@ export class Endpoint {
   // type is 'probe', 'current', or 'sample'.
   // from and count are optional.
   getUrl(type, from, count) {
-    const base = `${this.agent.url}/${type}`
+    const base = `${this.url}/${type}`
     const fromStr = from !== null ? `from=${from}&` : ''
     const url = from === undefined ? base : `${base}?${fromStr}count=${count}`
     return url

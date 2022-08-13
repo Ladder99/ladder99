@@ -14,11 +14,12 @@ export class AgentReader {
   // params includes { fetchInterval, fetchCount }
   // setup is client's setup.yaml
   // called by index.js
-  constructor({ params, db, endpoint, setup }) {
+  constructor({ params, db, endpoint, setup, agent }) {
     this.params = params
     this.db = db
     this.endpoint = endpoint
     this.setup = setup
+    this.agent = agent
 
     this.instanceId = null
 
@@ -33,11 +34,9 @@ export class AgentReader {
   // start fetching and processing data
   async start() {
     //
-    const agent = this.endpoint?.agent
-
     // don't read this agent if 'ignore' flag is set in setup.yaml
-    if (agent?.ignore) {
-      console.log(`Ignore Agent ${agent?.id} as specified in setup.yaml`)
+    if (this.agent?.ignore) {
+      console.log(`Ignore Agent ${this.agent?.id} as specified in setup.yaml`)
       return
     }
 
@@ -51,7 +50,7 @@ export class AgentReader {
     // probe - get agent data structures and write to db
     probe: do {
       // we pass this.setup also so probe can use translations for dataitem paths
-      const probe = new Probe(this.setup, agent) // see dataProbe.js
+      const probe = new Probe(this.setup, this.agent) // see dataProbe.js
       await probe.read(this.endpoint) // read xml into probe.js, probe.elements, probe.nodes
       process.exit(0) //.... working on data.read method
       await probe.write(this.db) // write/sync dataitems to db, get probe.indexes

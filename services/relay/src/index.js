@@ -16,7 +16,7 @@ console.log(`---------------------------------------------------`)
 const params = {
   retryTime: 4000, // ms between connection retries etc
   // this is the default ladder99 agent service - can override or specify others in setup.yaml.
-  defaultAgents: [{ id: 'main', url: 'http://agent:5000' }], // don't change id!
+  defaultAgent: { alias: 'main', url: 'http://agent:5000' }, // don't change alias!
   // hardcoded default folder is defined in compose.yaml with docker volume mappings
   setupFolder: process.env.L99_SETUP_FOLDER || '/data/setup',
   // these are dynamic - adjusted on the fly
@@ -30,35 +30,32 @@ async function start(params) {
   const db = new Db()
   await db.start()
 
-  // do migrations (setup db tables and views etc)
+  // run migrations (setup db tables and views etc)
   await migrate(db)
 
   // read client's setup.yaml (includes devices, where to find their agents etc)
   const setup = lib.readSetup(params.setupFolder)
 
-  // get array of agent objects from setup yaml
-  const agents = setup?.relay?.agents || params.defaultAgents
+  // get array of agent objects from setup yaml. each has { alias, url, ... }
+  const agents = setup?.relay?.agents || [params.defaultAgent]
 
-  // remove any trailing slash from base urls
-  agents.forEach(agent => {
+  for (let agent of agents) {
+    //
+    // remove any trailing slash from base urls
     if (agent.url.endsWith('/')) {
       agent.url = agent.url.slice(0, agent.url.length - 1)
     }
-  })
 
-  // get array of endpoint objects, which point to mtconnect agents
-  const endpoints = agents.map(agent => new Endpoint(agent))
-  console.log(`Agent endpoints:`, endpoints)
+    // get endpoint object, which points to mtconnect agent
+    const endpoint = new Endpoint(agent.url)
+    console.log(`Agent endpoint:`, endpoint)
 
-  // create an agent reader instance for each agent/endpoint
-  const agentReaders = endpoints.map(
-    endpoint => new AgentReader({ params, db, endpoint, setup })
-  )
+    // get agent reader, which will read and process data from endpoint
+    const agentReader = new AgentReader({ params, db, endpoint, setup, agent })
 
-  // run agent readers (read mtconnect agent xml, write SQL to database).
-  // nodejs is single threaded with an event loop -
-  // run in parallel so agent readers run independently of each other.
-  for (const agentReader of agentReaders) {
+    // run agent readers (read mtconnect agent xml, write SQL to database).
+    // nodejs is single threaded with an event loop -
+    // run in parallel so agent readers run independently of each other.
     agentReader.start()
   }
 }

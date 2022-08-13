@@ -31,16 +31,16 @@ export function getNodes(tree, setup, agent) {
   let list = getList(tree) // flatten the tree
   addAgent(list, agent) // add agentAlias from setup to each element
   addDevice(list) // add deviceId to each element
-  // addGid(list) // gid is device uuid + '#' + element id
-  addFid(list) // fid is the full id = agentAlias[/deviceId[/dataitemId]]
+  addContext(list) // context = agentAlias[/deviceId]
+  addFullid(list) // fullid = agentAlias[/deviceId[/dataitemId]] = context[/dataitemId]
   addStep(list, translations)
-  const index = getIndex(list)
+  const index = getIndexFullidToNode(list)
   resolveReferences(list, index) // resolve steps like '${Cmotor}' to 'motor'
-  addFullPath(list, agent)
-  list.forEach(el => delete el.parent) // remove parent attributes
-  console.log(list)
-  process.exit(0)
   addPath(list)
+  addFullPath(list)
+  list.forEach(el => delete el.parent) // remove parent attributes
+  console.log(list[40])
+  process.exit(0)
   cleanup(list)
   list = filterList(list) // only include nodes that have id
   return list
@@ -48,7 +48,7 @@ export function getNodes(tree, setup, agent) {
 
 function addAgent(list, agent) {
   for (let el of list) {
-    if (el.id) el.agentAlias = agent.id
+    if (el.id) el.agentAlias = agent.alias
   }
 }
 
@@ -66,15 +66,46 @@ function addDevice(list) {
   }
 }
 
-// add full id to elements
-function addFid(list) {
+// add context (agentAlias/deviceId) to each element
+function addContext(list) {
   for (let el of list) {
-    const fid =
+    const context =
       (el.agentAlias ? el.agentAlias : '') +
-      (el.deviceId ? '/' + el.deviceId : '') +
-      // (el.tag === 'DataItem' ? '/' + el.id : '')
-      (el.id ? '/' + el.id : '')
-    if (fid) el.fid = fid
+      (el.deviceId ? '/' + el.deviceId : '')
+    if (context) el.context = context
+  }
+}
+
+// add full id to elements
+function addFullid(list) {
+  for (let el of list) {
+    if (el.id) {
+      const fullid = el.context + (el.id ? '/' + el.id : '')
+      if (fullid) el.fullid = fullid
+    }
+  }
+}
+
+// add path for each element
+function addPath(list) {
+  for (let el of list) {
+    if (el.parent && el.id) {
+      if (el.parent.path) {
+        el.path = el.parent.path + (el.step ? '/' + el.step : '')
+      } else {
+        el.path = el.step || ''
+      }
+    }
+  }
+}
+
+// add a full path to each element, which includes the parents up to the agent
+function addFullPath(list) {
+  for (let el of list) {
+    if (el.id) {
+      const fullpath = el.context + (el.path ? '/' + el.path : '')
+      if (fullpath) el.fullpath = fullpath
+    }
   }
 }
 
@@ -111,31 +142,6 @@ function cleanup(list) {
   }
 }
 
-// add a full path to each element,
-// which includes the parents
-function addFullPath(list, agent) {
-  for (let el of list) {
-    if (!el.parent) continue
-    if (el.parent.fullpath) {
-      el.fullpath = el.parent.fullpath + (el.step ? '/' + el.step : '')
-    } else {
-      el.fullpath = agent.id + (el.step ? '/' + el.step : '')
-    }
-  }
-}
-
-function addPath(list) {
-  for (let el of list) {
-    if (!el.parent) continue
-    if (el.tag === 'Device' || el.tag === 'Agent') continue
-    if (el.parent.path) {
-      el.path = el.parent.path + (el.step ? '/' + el.step : '')
-    } else {
-      el.path = el.step || ''
-    }
-  }
-}
-
 function addStep(list, translations) {
   for (let el of list) {
     const step = getStep(el, translations)
@@ -148,27 +154,16 @@ function filterList(list) {
   return list.filter(el => !!el.id) // just need those with an id
 }
 
-// get an index for fid (eg 'main/m/m1-avail') to element.
-//. call it indexFidToNode? fidToNode? call this getFidToNode?
-function getIndex(list) {
+// get an index for full id (eg 'main/m/m1-avail') to element.
+function getIndexFullidToNode(list) {
   const index = {}
   for (let el of list) {
-    if (el.fid) {
-      index[el.fid] = el
+    if (el.fullid) {
+      index[el.fullid] = el
     }
   }
   return index
 }
-
-// // add gid (device uuid + element id) to all elements -
-// // it should be unique across all documents.
-// function addGid(list) {
-//   for (let el of list) {
-//     if (el.id) {
-//       el.gid = (el.device || el.uuid) + '#' + el.id
-//     }
-//   }
-// }
 
 // resolve references in path steps.
 // eg if step contains '${Cmotor}', get element id='Cmotor',
@@ -181,12 +176,12 @@ function resolveReferences(list, index) {
     if (el.step && el.step.includes('$')) {
       const regexp = /[$][{](.*)[}]/g // finds '${id}' and extracts id
       for (let match of el.step.matchAll(regexp)) {
-        const id = match[1] // eg 'foo'
-        // const gid = el.device + '#' + id // ie 'device(uuid)#id'
-        const fid = el.agentAlias + '/' + el.deviceId + '/' + id
+        const id = match[1] // eg 'Cmotor'
+        const fid = el.agentAlias + '/' + el.deviceId + '/' + id // eg 'main/m1/Cmotor'
+        // const fid = el.context + '/' + id // eg 'main/m1/Cmotor'
         const node = index[fid] // get the node object
         if (node) {
-          // replace original with new step string, eg 'foo-${id}' -> 'foo-motor[a]'
+          // replace original with new step string, eg 'Cmotor-${id}' -> 'Cmotor-motor[a]'
           const name = el.name ? `[${el.name}]` : ''
           const original = match[0] // eg '${id}'
           const replacement = node.type.toLowerCase() + name // eg 'motor[a]'
