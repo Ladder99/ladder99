@@ -36,16 +36,15 @@ export class Probe extends Data {
     // add/get nodes to db - devices and dataitems
     for (let node of this.nodes) {
       //. this is upsert - call it so
-      //. change to addOrGet(node)
-      node.node_id = await db.add(node) // write to db and save resulting node_id
+      // node.node_id = await db.add(node) // write to db and save resulting node_id
+      node.node_id = await db.addOrGet(node) // write to db and save resulting node_id
     }
 
-    // get indexes - nodeByNodeId, nodeByPath, elementById
-    //. why do we need those 3 indexes? explain
+    // get indexes - nodeByNodeId, nodeByFullid
+    //. why do we need those indexes? explain
     //. nodeByNodeId - gives node object for a given node_id, eg 3 -> {}
-    //. nodeByPath - gives node object for given path, eg __
-    //. elementById - gives element object for given dataitem id, eg 'pr1-avail' -> {}
-    this.indexes = tree.getIndexes(this.nodes, this.elements)
+    //. nodeByFullid - gives node object for given fullid, eg 'main/d1/avail' -> {}
+    this.indexes = tree.getIndexes(this.nodes)
 
     // assign device_id and dataitem_id to dataitem elements.
     // will need these to write values from current/sample endpoints

@@ -85,6 +85,7 @@ export class Db {
   // uses node.path to determine uniqueness and look up record.
   // assumes nodes table has a unique index on that json prop.
   // ^ gonna change this approach
+  //. can you use ON CONFLICT to return existing node_id?
   // async add(node) {
   async addOrGetNode(node) {
     try {

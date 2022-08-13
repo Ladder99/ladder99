@@ -110,7 +110,6 @@ function addPath(list) {
 // add a full path to each element, which includes the parents up to the agent
 function addFullPath(list) {
   for (let el of list) {
-    // el.fullpath = el.context + '/' + el.path
     el.fullpath = el.agentAlias + '/' + el.path
   }
 }
