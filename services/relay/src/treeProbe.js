@@ -33,13 +33,13 @@ export function getNodes(tree, setup, agent) {
   addDevice(list) // add deviceId to each element
   // addGid(list) // gid is device uuid + '#' + element id
   addFid(list) // fid is the full id = agentAlias[/deviceId[/dataitemId]]
-  list.forEach(el => delete el.parent) // remove parent attributes
   addStep(list, translations)
   const index = getIndex(list)
   resolveReferences(list, index) // resolve steps like '${Cmotor}' to 'motor'
+  addFullPath(list, agent)
+  list.forEach(el => delete el.parent) // remove parent attributes
   console.log(list)
   process.exit(0)
-  addFullPath(list)
   addPath(list)
   cleanup(list)
   list = filterList(list) // only include nodes that have id
@@ -113,13 +113,14 @@ function cleanup(list) {
 
 // add a full path to each element,
 // which includes the parents
-function addFullPath(list) {
+function addFullPath(list, agent) {
   for (let el of list) {
     if (!el.parent) continue
     if (el.parent.fullpath) {
       el.fullpath = el.parent.fullpath + (el.step ? '/' + el.step : '')
     } else {
-      el.fullpath = el.step || ''
+      // el.fullpath = el.step || ''
+      el.fullpath = agent.id + (el.step ? '/' + el.step : '')
     }
   }
 }
