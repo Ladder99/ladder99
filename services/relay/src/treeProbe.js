@@ -33,13 +33,14 @@ export function getNodes(tree, setup, agent) {
   addDevice(list) // add deviceId to each element
   addContext(list) // context = agentAlias[/deviceId]
   addFullid(list) // fullid = agentAlias[/deviceId[/dataitemId]] = context[/dataitemId]
-  addStep(list, translations)
+  addStep(list, translations) // eg 'system'
   const index = getIndexFullidToNode(list)
   resolveReferences(list, index) // resolve steps like '${Cmotor}' to 'motor'
-  addPath(list)
-  addFullPath(list)
-  list.forEach(el => delete el.parent) // remove parent attributes
-  console.log(list[40])
+  addPath(list) // eg 'linear[x]/velocity'
+  addFullPath(list) // eg 'main/m1/linear[x]/velocity'
+  // list.forEach(el => delete el.parent) // remove parent attributes
+  list = list.filter(el => el.id === 'servo_cond')
+  console.log(list)
   process.exit(0)
   cleanup(list)
   list = filterList(list) // only include nodes that have id
@@ -48,7 +49,7 @@ export function getNodes(tree, setup, agent) {
 
 function addAgent(list, agent) {
   for (let el of list) {
-    if (el.id) el.agentAlias = agent.alias
+    el.agentAlias = agent.alias
   }
 }
 
@@ -56,7 +57,7 @@ function addAgent(list, agent) {
 function addDevice(list) {
   let deviceId
   for (let el of list) {
-    // agents and devices have uuids that identify items beneath them in tree
+    // grab agent or device id
     if (el.tag === 'Agent' || el.tag === 'Device') {
       deviceId = el.id
     }
@@ -66,7 +67,7 @@ function addDevice(list) {
   }
 }
 
-// add context (agentAlias/deviceId) to each element
+// add context (agentAlias/deviceId) to each element, eg 'main/m1'
 function addContext(list) {
   for (let el of list) {
     const context =
@@ -76,25 +77,23 @@ function addContext(list) {
   }
 }
 
-// add full id to elements
+// add full id to elements, eg 'main/m1/availability'
 function addFullid(list) {
   for (let el of list) {
-    if (el.id) {
-      const fullid = el.context + (el.id ? '/' + el.id : '')
-      if (fullid) el.fullid = fullid
-    }
+    const fullid = el.context + (el.id ? '/' + el.id : '')
+    if (fullid) el.fullid = fullid
   }
 }
 
 // add path for each element
 function addPath(list) {
   for (let el of list) {
-    if (el.parent && el.id) {
-      if (el.parent.path) {
-        el.path = el.parent.path + (el.step ? '/' + el.step : '')
-      } else {
-        el.path = el.step || ''
-      }
+    // build up the path starting from the root ancestor
+    // this only works because the nodes are in proper order
+    if (el.parent && el.parent.path) {
+      el.path = el.parent.path + (el.step ? '/' + el.step : '')
+    } else {
+      if (el.tag !== 'Agent' && el.tag !== 'Device') el.path = el.step || ''
     }
   }
 }
@@ -102,10 +101,7 @@ function addPath(list) {
 // add a full path to each element, which includes the parents up to the agent
 function addFullPath(list) {
   for (let el of list) {
-    if (el.id) {
-      const fullpath = el.context + (el.path ? '/' + el.path : '')
-      if (fullpath) el.fullpath = fullpath
-    }
+    el.fullpath = el.context + '/' + el.path
   }
 }
 
@@ -286,10 +282,8 @@ function getStep(obj, translations) {
 }
 
 const stepHandlers = {
-  // MTConnectDevices: () => 'mtconnect',
-  // Agent: obj => `agent(${obj.uuid})`,
-  Agent: obj => obj.agentAlias,
-  // Device: obj => `device(${obj.uuid})`,
+  MTConnectDevices: () => obj.agentAlias,
+  Agent: obj => obj.deviceId,
   Device: obj => obj.deviceId,
   Linear: obj => `linear[${obj.name.toLowerCase()}]`,
   Rotary: obj => `rotary[${obj.name.toLowerCase()}]`,
