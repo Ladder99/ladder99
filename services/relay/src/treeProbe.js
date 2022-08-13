@@ -27,22 +27,27 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 //   category: 'EVENT',
 // }, ...]
 export function getNodes(tree, setup, agent) {
-  const translations = setup.translations || {} // dict of gid->path step
+  // const translations = setup.translations || {} // dict of gid->path step
+  // get translation index from deviceId to step translations dict
+  const translationIndex = {}
+  agent.devices.forEach(
+    device => (translationIndex[device.id] = device.translations)
+  )
   let list = getList(tree) // flatten the tree
   addAgent(list, agent) // add agentAlias from setup to each element
   addDevice(list) // add deviceId to each element
   addContext(list) // context = agentAlias[/deviceId]
   addFullid(list) // fullid = agentAlias[/deviceId[/dataitemId]] = context[/dataitemId]
-  addStep(list, translations) // eg 'system'
+  addStep(list, translationIndex) // eg 'system'
   const index = getIndexFullidToNode(list)
   resolveReferences(list, index) // resolve steps like '${Cmotor}' to 'motor'
   addPath(list) // eg 'linear[x]/velocity'
   addFullPath(list) // eg 'main/m1/linear[x]/velocity'
+  cleanup(list)
   // list.forEach(el => delete el.parent) // remove parent attributes
-  list = list.filter(el => el.id === 'servo_cond')
+  // list = list.filter(el => el.id === 'servo_cond')
   console.log(list)
   process.exit(0)
-  cleanup(list)
   list = filterList(list) // only include nodes that have id
   return list
 }
@@ -138,8 +143,9 @@ function cleanup(list) {
   }
 }
 
-function addStep(list, translations) {
+function addStep(list, translationIndex) {
   for (let el of list) {
+    const translations = translationIndex[el.deviceId] || {}
     const step = getStep(el, translations)
     if (step) el.step = step
   }
@@ -270,14 +276,12 @@ function flatten(part, list, parent, tag = 'Document') {
 //   for a Device element, return 'device(abcd-123...)'
 //   for a DataItem element, return 'position-actual'
 function getStep(obj, translations) {
-  //
-  // handle translations, eg 'abcd-123#a' -> 'axes' (instead of 'base')
-  const translation = translations[obj.gid]
-  if (translation) return translation
-
   // call the step handler for the given tag, or a fallback handler
   const stepHandler = stepHandlers[obj.tag] || stepHandlers.other
   const step = stepHandler(obj)
+  // handle translation
+  const translation = translations[step]
+  if (translation) return translation
   return step
 }
 
