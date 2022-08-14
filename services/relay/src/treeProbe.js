@@ -17,18 +17,11 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 //   and DataItems = { DataItem: [ { _attributes: { id:'avail', type, category }}, ...]}
 //   where _attributes is an object with the attributes and values
 // gives something like [{
-//   tag: 'DataItem',
-//   device: 'abcd-1234'
-//   path: 'availability',
-//   fullpath: 'device(abcd-1234)/availability',
-//   id: 'avail',
-//   gid: 'abcd-1234#avail',
-//   type: 'AVAILABILITY',
-//   category: 'EVENT',
+//.
 // }, ...]
-export function getNodes(tree, setup, agent) {
-  // const translations = setup.translations || {} // dict of gid->path step
-  // get translation index from deviceId to step translations dict
+export function getNodes(tree, agent) {
+  // get translations for each device
+  // eg 'd1' => { base: 'axes', ... }
   const translationIndex = {}
   agent.devices.forEach(
     device => (translationIndex[device.id] = device.translations)
@@ -36,29 +29,30 @@ export function getNodes(tree, setup, agent) {
   let list = getList(tree) // flatten the tree
   addAgent(list, agent) // add agentAlias from setup to each element
   addDevice(list) // add deviceId to each element
-  addContext(list) // context = agentAlias[/deviceId]
-  addFullid(list) // fullid = agentAlias[/deviceId[/dataitemId]] = context[/dataitemId]
+  addContext(list) // contextPath = agentAlias[/deviceId]
+  addUid(list) // uid = agentAlias[/deviceId[/dataitemId]] = contextPath[/dataitemId]
   addStep(list, translationIndex) // eg 'system'
-  const index = getIndexFullidToNode(list)
+  const index = getIndexUidToNode(list)
   resolveReferences(list, index) // resolve steps like '${Cmotor}' to 'motor'
-  addPath(list) // eg 'linear[x]/velocity'
-  addFullPath(list) // eg 'main/m1/linear[x]/velocity'
+  addShortPath(list) // eg 'linear[x]/velocity'
+  addPath(list) // eg 'main/m1/linear[x]/velocity'
   cleanup(list)
   // list.forEach(el => delete el.parent) // remove parent attributes
   // list = list.filter(el => el.id === 'servo_cond')
-  // console.log(list)
-  // process.exit(0)
+  console.log(list)
+  process.exit(0)
   list = filterList(list) // only include nodes that have id
   return list
 }
 
+// add agent alias from setup yaml
 function addAgent(list, agent) {
   for (let el of list) {
     if (el.id) el.agentAlias = agent.alias
   }
 }
 
-// add device/agent uuid to elements
+// add device/agent id to elements
 function addDevice(list) {
   let deviceId
   for (let el of list) {
@@ -72,45 +66,44 @@ function addDevice(list) {
   }
 }
 
-// add context (agentAlias/deviceId) to each element, eg 'main/m1'.
-// if it's a device or agent though, context is just agentAlias, eg 'main'.
+// add contextPath (agentAlias/deviceId) to each element, eg 'main/m1'.
+// if it's a device or agent though, contextPath is just agentAlias, eg 'main'.
 function addContext(list) {
   for (let el of list) {
     const isDevice = el.tag === 'Device' || el.tag === 'Agent'
-    let context = el.agentAlias ? el.agentAlias : ''
-    if (!isDevice) context += el.deviceId ? '/' + el.deviceId : ''
-    if (context) el.context = context
+    let contextPath = el.agentAlias ? el.agentAlias : ''
+    if (!isDevice) contextPath += el.deviceId ? '/' + el.deviceId : ''
+    if (contextPath) el.contextPath = contextPath
   }
 }
 
-// add full id to elements, eg 'main/m1/availability'
-function addFullid(list) {
+// add uid to elements, eg 'main/m1/availability'
+function addUid(list) {
   for (let el of list) {
     if (el.id) {
-      const fullid = el.context + (el.id ? '/' + el.id : '')
-      if (fullid) el.fullid = fullid
+      const uid = el.contextPath + (el.id ? '/' + el.id : '')
+      if (uid) el.uid = uid
     }
   }
 }
 
 // add path for each element
-function addPath(list) {
+function addShortPath(list) {
   for (let el of list) {
     // build up the path starting from the root ancestor
     // this only works because the nodes are in proper order
-    if (el.parent && el.parent.path) {
-      el.path = el.parent.path + (el.step ? '/' + el.step : '')
+    if (el.parent && el.parent.shortPath) {
+      el.shortPath = el.parent.shortPath + (el.step ? '/' + el.step : '')
     } else {
-      // if (el.tag !== 'Agent' && el.tag !== 'Device') el.path = el.step || ''
-      el.path = el.step
+      el.shortPath = el.step
     }
   }
 }
 
 // add a full path to each element, which includes the parents up to the agent
-function addFullPath(list) {
+function addPath(list) {
   for (let el of list) {
-    el.fullpath = el.agentAlias + '/' + el.path
+    el.path = el.agentAlias + '/' + el.shortPath
   }
 }
 
@@ -161,11 +154,11 @@ function filterList(list) {
 }
 
 // get an index for full id (eg 'main/m/m1-avail') to element.
-function getIndexFullidToNode(list) {
+function getIndexUidToNode(list) {
   const index = {}
   for (let el of list) {
-    if (el.fullid) {
-      index[el.fullid] = el
+    if (el.uid) {
+      index[el.uid] = el
     }
   }
   return index
@@ -183,9 +176,9 @@ function resolveReferences(list, index) {
       const regexp = /[$][{](.*)[}]/g // finds '${id}' and extracts id
       for (let match of el.step.matchAll(regexp)) {
         const id = match[1] // eg 'Cmotor'
-        const fid = el.agentAlias + '/' + el.deviceId + '/' + id // eg 'main/m1/Cmotor'
-        // const fid = el.context + '/' + id // eg 'main/m1/Cmotor'
-        const node = index[fid] // get the node object
+        const uid = el.agentAlias + '/' + el.deviceId + '/' + id // eg 'main/m1/Cmotor'
+        // const uid = el.contextPath + '/' + id // eg 'main/m1/Cmotor'
+        const node = index[uid] // get the node object
         if (node) {
           // replace original with new step string, eg 'Cmotor-${id}' -> 'Cmotor-motor[a]'
           const name = el.name ? `[${el.name}]` : ''
@@ -343,25 +336,25 @@ function getParamString(param) {
 
 // -----------------------------------------------------------------
 
-// get indexes for given nodes: nodeByNodeId, nodeByFullid.
+// get indexes for given nodes: nodeByNodeId, nodeByUid.
 // eg for
-//   nodes = [{ node_id: 3, id: 'foo', fullid: 'd1/foo', path: 'bar' }, ...]
+//   nodes = [{ node_id: 3, id: 'foo', uid: 'd1/foo', path: 'bar' }, ...]
 // returns
-//   { nodeByNodeId: { 3: {...} }, nodeByFullid: { 'd1/foo':... } }
+//   { nodeByNodeId: { 3: {...} }, nodeByUid: { 'd1/foo':... } }
 //. explain why we need each index - what uses them
 export function getIndexes(nodes) {
   //
   // init indexes
   const nodeByNodeId = {}
-  const nodeByFullid = {}
+  const nodeByUid = {}
 
   // add nodes
   for (let node of nodes) {
     nodeByNodeId[node.node_id] = node
-    nodeByFullid[node.fullid] = node
+    nodeByUid[node.uid] = node
   }
 
-  return { nodeByNodeId, nodeByFullid }
+  return { nodeByNodeId, nodeByUid }
 }
 
 // assign device_id and dataitem_id to nodes.
@@ -371,8 +364,8 @@ export function assignNodeIds(nodes, indexes) {
     if (node.node_type === 'DataItem') {
       // node.device_id = indexes.nodeByPath[node.device].node_id
       // node.dataitem_id = indexes.nodeByPath[node.path].node_id
-      node.device_id = indexes.nodeByFullid[node.context].node_id //?
-      node.dataitem_id = indexes.nodeByFullid[node.fullid].node_id //?
+      node.device_id = indexes.nodeByUid[node.contextPath].node_id //?
+      node.dataitem_id = indexes.nodeByUid[node.uid].node_id //?
     }
   })
 }

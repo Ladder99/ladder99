@@ -66,9 +66,9 @@ const setup = lib.importYaml(setupFile) || {}
 // console.log(probe.nodes)
 // nodes = tree.getNodes(this.jsTree, this.setup, this.agent)
 
-const agent = setup.relay.agents[2] //..
+const agent = setup.relay.agents[2] //.. corresponds to `npm test demo mazak`
 const jsTree = getXmlToJsTree(probeFile) // parse probe xml to jstree
-const nodes = treeProbe.getNodes(jsTree, setup, agent)
+const nodes = treeProbe.getNodes(jsTree, agent)
 
 simulateDb(nodes) // assign a unique node_id to each node
 

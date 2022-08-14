@@ -81,40 +81,51 @@ export class Db {
     // }
   }
 
-  // add a node to nodes table - if already there, return node_id of existing record.
-  // uses node.path to determine uniqueness and look up record.
+  // add a node to nodes table - if already there, update existing values.
+  // always return node_id.
+  // uses node.id to look up record.
   // assumes nodes table has a unique index on that json prop.
-  // ^ gonna change this approach
-  //. can you use ON CONFLICT to return existing node_id?
+  //. use ON CONFLICT to return existing node_id
+  //. distribute this to other svcs
   // async add(node) {
-  async addOrGetNode(node) {
-    try {
-      const values = `'${JSON.stringify(node)}'`
-      const sql = `
-        INSERT INTO nodes (props) VALUES (${values}) RETURNING node_id
-          ON CONFLICT DO NOTHING;`
-      console.log(sql)
-      const res = await this.query(sql)
-      let node_id
-      if (res.rows && res.rows[0]) {
-        node_id = res.rows[0].node_id
-      } else {
-        console.log(`property already there - looking up:  ${node.path}`)
-        node_id = await getNodeId(node)
-      }
-      return node_id
-    } catch (error) {
-      // eg error: duplicate key value violates unique constraint "nodes_path"
-      // detail: "Key ((props ->> 'path'::text))=(Device(e05363af-95d1-4354-b749-8fbb09d3499e)) already exists.",
-      // console.log(error)
-      if (error.code === '23505') {
-        console.log(`property already there - looking up:  ${node.path}`)
-        node_id = await getNodeId(node)
-        console.log('got', node_id)
-      } else {
-        console.log(error)
-      }
-    }
+  async upsert(node) {
+    const values = `'${JSON.stringify(node)}'`
+    // oh - in old version had a unique key on path, which would give conflict if exists.
+    // so we need a unique key on id
+    const sql = `
+        insert into nodes (props) values (${values}) 
+          on conflict ((props->>'id')) do
+            update set props = (${values}) 
+              returning node_id;`
+    console.log(sql)
+    const res = await this.query(sql)
+    const node_id = res.rows[0]?.node_id
+    return node_id
+    // try {
+    // const values = `'${JSON.stringify(node)}'`
+    // const sql = `
+    //   INSERT INTO nodes (props) VALUES (${values}) RETURNING node_id
+    //     ON CONFLICT DO NOTHING;`
+    // let node_id
+    // if (res.rows && res.rows[0]) {
+    // node_id = res.rows[0]?.node_id
+    // } else {
+    //   console.log(`property already there - looking up:  ${node.path}`)
+    //   node_id = await getNodeId(node)
+    // }
+    // return node_id
+    // } catch (error) {
+    //   // eg error: duplicate key value violates unique constraint "nodes_path"
+    //   // detail: "Key ((props ->> 'path'::text))=(Device(e05363af-95d1-4354-b749-8fbb09d3499e)) already exists.",
+    //   // console.log(error)
+    //   if (error.code === '23505') {
+    //     console.log(`property already there - looking up:  ${node.path}`)
+    //     node_id = await getNodeId(node)
+    //     console.log('got', node_id)
+    //   } else {
+    //     console.log(error)
+    //   }
+    // }
   }
 
   async addNode(node) {

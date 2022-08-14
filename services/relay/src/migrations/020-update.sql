@@ -24,12 +24,12 @@ WHERE
 ---------------------------------------------------------------------
 -- nodes table
 ---------------------------------------------------------------------
---. why were we dropping this?
+--. why were we dropping this? mebbe aren't using it anywhere anymore
 -- -- ditch unique path index
 -- DROP INDEX IF EXISTS nodes_path;
 
--- add unique gid index (gid = global id = device uuid + dataitemid OR a unique alias)
-CREATE UNIQUE INDEX IF NOT EXISTS nodes_gid ON nodes ((props->>'gid'));
+-- add unique fullid index (fullid = agentAlias/deviceId/dataitemId)
+CREATE UNIQUE INDEX IF NOT EXISTS nodes_fullid ON nodes ((props->>'fullid'));
 
 
 ---------------------------------------------------------------------

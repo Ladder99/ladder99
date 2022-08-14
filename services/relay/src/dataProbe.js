@@ -28,7 +28,8 @@ export class Probe extends Data {
     // // eg [{node_type, path, category}, ...]
     // this.nodes = tree.getNodes(this.elements, this.setup) // see treeProbe.js
 
-    this.nodes = tree.getNodes(this.jsTree, this.setup, this.agent) // see treeProbe.js
+    // this.nodes = tree.getNodes(this.jsTree, this.setup, this.agent) // see treeProbe.js
+    this.nodes = tree.getNodes(this.jsTree, this.agent) // see treeProbe.js
   }
 
   // write probe data in jsTree to db instance, get indexes
@@ -37,7 +38,8 @@ export class Probe extends Data {
     for (let node of this.nodes) {
       //. this is upsert - call it so
       // node.node_id = await db.add(node) // write to db and save resulting node_id
-      node.node_id = await db.addOrGet(node) // write to db and save resulting node_id
+      // node.node_id = await db.addOrGet(node) // write to db and save resulting node_id
+      node.node_id = await db.upsert(node) // write to db and save resulting node_id
     }
 
     // get indexes - nodeByNodeId, nodeByFullid
