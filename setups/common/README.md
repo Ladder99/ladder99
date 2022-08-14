@@ -1,4 +1,2 @@
-modules and dashboards common to different clients/setups
-
-this is part of the ladder99 repo
+These are modules and dashboards common to different client setups. If they become too specialized they can be moved into a custom setup repo.
 
