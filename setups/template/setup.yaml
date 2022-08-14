@@ -1,0 +1,30 @@
+# client setup
+
+# define the devices.xml structure, using a module.xml for dataitems.
+# read by the ladder99 adapter.
+
+# sources define the inputs to the cache.
+# will be compiled by ladder99 compiler into volumes/agent/agent.xml
+# and volumes/agent/agent.cfg.
+
+client:
+  name: Template # not used yet
+  # tell server what timezone to report results in, what timezone schedules are in etc
+  # timezone: America/Chicago #. use this eventually - would include DST
+  timezoneOffsetHrs: -6 # hrs from GMT - currently used by jobboss driver and availability.js
+
+adapter:
+  devices:
+    # --------------------------------------------------------------------
+    # micro
+    # --------------------------------------------------------------------
+    - id: m
+      name: Micro # this must match name in agent.cfg and agent.xml
+      sources:
+        - module: micro # module defines inputs and outputs with yaml files
+          driver: micro # adapter plugin - manages protocol and payload
+      # where to post output - just uses first output for now
+      destinations:
+        - protocol: shdr
+          host: adapter
+          port: 7890 # must match agent.cfg value

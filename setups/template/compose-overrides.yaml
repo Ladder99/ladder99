@@ -1,0 +1,15 @@
+# docker-compose overrides
+# overrides and extends the values in ladder99-ce/services/compose.yaml
+
+# see other client repos for ideas for adding information to services.
+# typically, would add 'profiles: - all' to each service used.
+# that way, we know what is needed, and can start them all with
+#   ./start <client> all
+# also may need to specify ports here, eg for grafana - see compose.yaml.
+
+# version must be a string - need 3.8 for profiles
+version: '3.8'
+# services:
+#   adapter:
+#     profiles:
+#       - all
