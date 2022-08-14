@@ -36,16 +36,13 @@ export class Probe extends Data {
   async write(db) {
     // add/get nodes to db - devices and dataitems
     for (let node of this.nodes) {
-      //. this is upsert - call it so
-      // node.node_id = await db.add(node) // write to db and save resulting node_id
-      // node.node_id = await db.addOrGet(node) // write to db and save resulting node_id
-      node.node_id = await db.upsert(node) // write to db and save resulting node_id
+      node.node_id = await db.upsert(node) // write/read db and save resulting node_id
     }
 
-    // get indexes - nodeByNodeId, nodeByFullid
+    // get indexes - nodeByNodeId, nodeByUid
     //. why do we need those indexes? explain
     //. nodeByNodeId - gives node object for a given node_id, eg 3 -> {}
-    //. nodeByFullid - gives node object for given fullid, eg 'main/d1/avail' -> {}
+    //. nodeByUid - gives node object for given uid, eg 'main/d1/avail' -> {}
     this.indexes = tree.getIndexes(this.nodes)
 
     // assign device_id and dataitem_id to dataitem elements.

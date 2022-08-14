@@ -13,11 +13,31 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 // get flat list of nodes from given tree by recursing through probe structure.
 // eg
 //   tree = { MTConnectDevices: { Header, Devices: { Agent, Device } } }
-//   with Device = { _attributes, Description, DataItems, Components: { Axes, Controller, Systems }}
-//   and DataItems = { DataItem: [ { _attributes: { id:'avail', type, category }}, ...]}
-//   where _attributes is an object with the attributes and values
+//   with Device = { _, Description, DataItems, Components: { Axes, Controller, Systems }}
+//   and DataItems = { DataItem: [ { _: { id, type, category }}, ...]}
+//   where _ is an object with the attributes and values
 // gives something like [{
-//.
+//   tag: 'DataItem',
+//   category: 'SAMPLE',
+//   id: 'rmtmp1',
+//   nativeUnits: 'CELSIUS',
+//   type: 'TEMPERATURE',
+//   units: 'CELSIUS',
+//   filters: {
+//     filter: {
+//       type: 'MINIMUM_DELTA',
+//       value: '0.5',
+//       shortPath: 'd1/auxiliaries/environmental/temperature'
+//     },
+//     shortPath: 'd1/auxiliaries/environmental/temperature'
+//   },
+//   agentAlias: 'mazak5717',
+//   deviceId: 'd1',
+//   contextPath: 'mazak5717/d1',
+//   uid: 'mazak5717/d1/rmtmp1',
+//   shortPath: 'd1/auxiliaries/environmental/temperature',
+//   path: 'mazak5717/d1/auxiliaries/environmental/temperature',
+//   node_id: 149
 // }, ...]
 export function getNodes(tree, agent) {
   // get translations for each device
@@ -39,8 +59,8 @@ export function getNodes(tree, agent) {
   cleanup(list)
   // list.forEach(el => delete el.parent) // remove parent attributes
   // list = list.filter(el => el.id === 'servo_cond')
-  console.log(list)
-  process.exit(0)
+  // console.log(list)
+  // process.exit(0)
   list = filterList(list) // only include nodes that have id
   return list
 }
@@ -362,10 +382,8 @@ export function getIndexes(nodes) {
 export function assignNodeIds(nodes, indexes) {
   nodes.forEach(node => {
     if (node.node_type === 'DataItem') {
-      // node.device_id = indexes.nodeByPath[node.device].node_id
-      // node.dataitem_id = indexes.nodeByPath[node.path].node_id
-      node.device_id = indexes.nodeByUid[node.contextPath].node_id //?
-      node.dataitem_id = indexes.nodeByUid[node.uid].node_id //?
+      node.device_id = indexes.nodeByUid[node.contextPath].node_id
+      node.dataitem_id = indexes.nodeByUid[node.uid].node_id
     }
   })
 }
