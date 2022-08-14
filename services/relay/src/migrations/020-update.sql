@@ -1,13 +1,25 @@
 ---------------------------------------------------------------------
--- nodes table
+-- schemas
+---------------------------------------------------------------------
+
+CREATE SCHEMA IF NOT EXISTS raw;
+
+
+---------------------------------------------------------------------
+-- tables
 ---------------------------------------------------------------------
 -- add unique uid index (uid = agentAlias/deviceId/dataitemId)
 CREATE UNIQUE INDEX IF NOT EXISTS nodes_uid ON nodes ((props->>'uid'));
+
+-- move public.history table to raw.history
+ALTER TABLE history SET SCHEMA raw;
+
 
 ---------------------------------------------------------------------
 -- views
 ---------------------------------------------------------------------
 
+-- update devices
 DROP VIEW IF EXISTS devices;  -- because `create or replace` isn't enough!
 CREATE OR REPLACE VIEW devices AS
 SELECT
@@ -25,6 +37,7 @@ WHERE
   nodes.props->>'node_type'='Device';
 
 
+-- update dataitems
 --. call this tags?
 DROP VIEW IF EXISTS dataitems;  -- because `create or replace` isn't enough!
 CREATE OR REPLACE VIEW dataitems AS
