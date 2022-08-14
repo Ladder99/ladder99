@@ -8,10 +8,14 @@ CREATE SCHEMA IF NOT EXISTS raw;
 ---------------------------------------------------------------------
 -- tables
 ---------------------------------------------------------------------
+
 -- add unique uid index (uid = agentAlias/deviceId/dataitemId)
 CREATE UNIQUE INDEX IF NOT EXISTS nodes_uid ON nodes ((props->>'uid'));
 
--- move public.history table to raw.history
+-- move tables from public to raw schema
+ALTER TABLE nodes SET SCHEMA raw;
+ALTER TABLE edges SET SCHEMA raw;
+ALTER TABLE meta SET SCHEMA raw;
 ALTER TABLE history SET SCHEMA raw;
 
 

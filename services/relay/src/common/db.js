@@ -93,7 +93,7 @@ export class Db {
     // oh - in old version had a unique key on path, which would give conflict if exists.
     // so we need a unique key on id
     const sql = `
-        insert into nodes (props) values (${values}) 
+        insert into raw.nodes (props) values (${values}) 
           on conflict ((props->>'uid')) do
             update set props = (${values}) 
               returning node_id;`
@@ -130,7 +130,7 @@ export class Db {
 
   async addNode(node) {
     const values = `'${JSON.stringify(node)}'`
-    const sql = `INSERT INTO nodes (props) VALUES (${values}) RETURNING node_id;`
+    const sql = `INSERT INTO raw.nodes (props) VALUES (${values}) RETURNING node_id;`
     // console.log(sql)
     const res = await this.query(sql)
     const { node_id } = res.rows[0]
@@ -138,7 +138,7 @@ export class Db {
   }
 
   async getNodeId(node) {
-    const sql = `SELECT node_id FROM nodes WHERE props->>'path' = $1::text;`
+    const sql = `SELECT node_id FROM raw.nodes WHERE props->>'path' = $1::text;`
     console.log(sql, node.path)
     const res = await this.query(sql, [node.path])
     const { node_id } = res.rows[0]
@@ -166,7 +166,7 @@ export class Db {
         record.value,
       ])
       const sql = pgFormat(
-        `INSERT INTO history (node_id, dataitem_id, time, value) VALUES %L;`,
+        `INSERT INTO raw.history (node_id, dataitem_id, time, value) VALUES %L;`,
         values
       )
       // console.log(sql.slice(0, 100))
@@ -184,7 +184,7 @@ export class Db {
   //. merge with addHistory, or rename to writeHistoryRecord?
   async writeHistory(device_id, dataitem_id, time, value) {
     const sql = `
-      insert into history (node_id, dataitem_id, time, value)
+      insert into raw.history (node_id, dataitem_id, time, value)
       values (${device_id}, ${dataitem_id}, '${time}', '${value}'::jsonb);
     `
     console.log('db - write', device_id, dataitem_id, time, value)
@@ -219,6 +219,7 @@ export class Db {
   }
 
   // get latest value of a device's property path
+  // table should be history_all, _float, _text
   async getLatestValue(table, device, path) {
     const sql = `
       select value
@@ -315,7 +316,7 @@ export class Db {
 
   async getMetaValue(key) {
     // get value of key-value pair from meta table
-    const sql = `select value from meta where name=$1`
+    const sql = `select value from raw.meta where name=$1`
     try {
       const result = await this.query(sql, [key])
       const value = result.rows.length > 0 && result.rows[0]['value'] // colname must match case
@@ -328,8 +329,10 @@ export class Db {
   async setMetaValue(key, value) {
     // upsert key-value pair to meta table
     const sql = `
-      insert into meta (name, value) values ($1, $2::jsonb)
-      on conflict (name) do update set value = $2;
+      insert into raw.meta (name, value) 
+        values ($1, $2::jsonb)
+          on conflict (name) do 
+            update set value = $2;
     `
     const result = await this.query(sql, [key, value])
     return result
