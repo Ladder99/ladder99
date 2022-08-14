@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS nodes (
 );
 
 -- see https://stackoverflow.com/questions/17807030/how-to-create-index-on-json-field-in-postgres
-CREATE INDEX IF NOT EXISTS nodes_type ON nodes ((props->>'type'));
+CREATE INDEX IF NOT EXISTS nodes_type ON nodes ((props->>'type')); --. why need this? explain
 CREATE UNIQUE INDEX IF NOT EXISTS nodes_path ON nodes ((props->>'path'));
 
 -- adding this index actually doubles the time for get_timeline to run! why?

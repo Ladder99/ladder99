@@ -1,8 +1,7 @@
 
--- delete all views in case the structure has changed
--- (will eventually have to use migrations for this)
+-- delete all views in case the structure has changed -
+-- saying `create or replace view` is NOT ENOUGH.
 -- do in reverse order of definitions below, in case there are dependencies.
-
 DROP VIEW IF EXISTS dataitems;
 DROP VIEW IF EXISTS devices;
 DROP VIEW IF EXISTS history_text;

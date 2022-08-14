@@ -54,8 +54,9 @@ export function getNodes(tree, agent) {
   addStep(list, translationIndex) // eg 'system'
   const index = getIndexUidToNode(list)
   resolveReferences(list, index) // resolve steps like '${Cmotor}' to 'motor'
-  addShortPath(list) // eg 'linear[x]/velocity'
+  addShortPath(list) // eg 'linear[x]/velocity' //. currently includes device tho - fix!
   addPath(list) // eg 'main/m1/linear[x]/velocity'
+  addNodeType(list) // convert .tag='DataItem' etc to .node_type
   cleanup(list)
   // list.forEach(el => delete el.parent) // remove parent attributes
   // list = list.filter(el => el.id === 'servo_cond')
@@ -127,7 +128,13 @@ function addPath(list) {
   }
 }
 
-//
+function addNodeType(list) {
+  for (let el of list) {
+    el.node_type = el.tag
+  }
+}
+
+// -----------------------------------------------------------------
 
 // get flat list from a tree of elements
 // eg an element of the list could be
@@ -153,9 +160,10 @@ function cleanup(list) {
   for (let el of list) {
     delete el.parent
     delete el.step
+    delete el.tag
     if (!el.id) {
       delete el.path
-      delete el.fullpath
+      delete el.shortPath
     }
   }
 }
