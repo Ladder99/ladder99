@@ -94,7 +94,7 @@ export class Db {
     // so we need a unique key on id
     const sql = `
         insert into nodes (props) values (${values}) 
-          on conflict ((props->>'id')) do
+          on conflict ((props->>'uid')) do
             update set props = (${values}) 
               returning node_id;`
     console.log(sql)

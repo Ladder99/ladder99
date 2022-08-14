@@ -36,7 +36,9 @@ export class AgentReader {
     //
     // don't read this agent if 'ignore' flag is set in setup.yaml
     if (this.agent?.ignore) {
-      console.log(`Ignore Agent ${this.agent?.id} as specified in setup.yaml`)
+      console.log(
+        `Ignore Agent ${this.agent?.alias} as specified in setup.yaml`
+      )
       return
     }
 
@@ -52,10 +54,11 @@ export class AgentReader {
       // we pass this.setup also so probe can use translations for dataitem paths
       const probe = new Probe(this.setup, this.agent) // see dataProbe.js
       await probe.read(this.endpoint) // read xml into probe.js, probe.elements, probe.nodes
-      console.log(probe.nodes)
-      process.exit(0) //.... working on data.read method
+      // console.log(probe.nodes)
+      // process.exit(0)
       await probe.write(this.db) // write/sync dataitems to db, get probe.indexes
       this.instanceId = probe.instanceId
+      process.exit(0) //....
 
       // current - get last known values of all dataitems and write to db
       current: do {

@@ -48,7 +48,7 @@ export class Probe extends Data {
     // assign device_id and dataitem_id to dataitem elements.
     // will need these to write values from current/sample endpoints
     // to history and bins tables.
-    tree.assignNodeIds(this.elements, this.indexes)
+    tree.assignNodeIds(this.nodes, this.indexes)
 
     // console.log('indexes', this.indexes)
   }
