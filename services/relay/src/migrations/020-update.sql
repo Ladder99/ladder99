@@ -13,10 +13,11 @@ CREATE SCHEMA IF NOT EXISTS raw;
 CREATE UNIQUE INDEX IF NOT EXISTS nodes_uid ON nodes ((props->>'uid'));
 
 -- move tables from public to raw schema
-ALTER TABLE nodes SET SCHEMA raw;
+ALTER TABLE bins SET SCHEMA raw;
 ALTER TABLE edges SET SCHEMA raw;
-ALTER TABLE meta SET SCHEMA raw;
 ALTER TABLE history SET SCHEMA raw;
+ALTER TABLE meta SET SCHEMA raw;
+ALTER TABLE nodes SET SCHEMA raw;
 
 
 ---------------------------------------------------------------------

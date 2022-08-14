@@ -14,6 +14,7 @@ create table if not exists bins (
   primary key (device_id, resolution, time) -- need this so can find right record quickly for updating
 );
 -- note: this gets converted to a hypertable in step 012
+-- and moved to raw schema in 020
 
 
 ---------------------------------------------------------------------

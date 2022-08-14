@@ -101,7 +101,7 @@ export class Metric {
     // get starting point by finding most recent record in bins
     const sql = `
       select time 
-      from bins 
+      from raw.bins 
       where device_id=${this.device.node_id} 
       order by time desc 
       limit 1;
@@ -297,15 +297,15 @@ export class Metric {
     for (let resolution of resolutions) {
       // upsert/increment the given field by delta
       const sql = `
-        insert into bins (device_id, resolution, time, ${field})
+        insert into raw.bins (device_id, resolution, time, ${field})
           values (
             ${this.device.node_id},
             ('1 '||'${resolution}')::interval,
             date_trunc('${resolution}', '${timeISO}'::timestamptz),
             ${delta}
           )
-        on conflict (device_id, resolution, time) do
-          update set ${field} = coalesce(bins.${field}, 0) + ${delta};
+            on conflict (device_id, resolution, time) do
+              update set ${field} = coalesce(raw.bins.${field}, 0) + ${delta};
       `
       await this.db.query(sql)
     }
