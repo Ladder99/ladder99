@@ -2,19 +2,18 @@
 -- devices
 ---------------------------------------------------------------------
 
+DROP VIEW IF EXISTS devices;  -- because create or replace isn't enough!
 CREATE OR REPLACE VIEW devices AS
 SELECT
   nodes.node_id,
-  -- needed name to make a unique string when viewing multiple agents 
-  -- on the same device with the mazak endpoints.
-  -- concat(nodes.props->>'name', ' (', nodes.props->>'uuid', ')') as name_uuid,
-  nodes.props->>'name' as name,
   nodes.props->>'id' as id,
-  nodes.props->>'uuid' as uuid, 
-  nodes.props->>'gid' as gid, -- uuid:id or unique alias
-  nodes.props->>'fullpath' as fullpath,
+  nodes.props->>'uid' as uid, -- agentAlias/deviceId
+  nodes.props->>'uuid' as uuid, -- supposedly unique id
   nodes.props->>'path' as path,
-  nodes.props->>'order' as "order"
+  nodes.props->>'shortPath' as shortpath,
+  nodes.props->>'name' as name,
+  nodes.props->>'order' as "order",
+  nodes.props as props
 FROM 
   nodes
 WHERE
@@ -24,12 +23,8 @@ WHERE
 ---------------------------------------------------------------------
 -- nodes table
 ---------------------------------------------------------------------
---. why were we dropping this? mebbe aren't using it anywhere anymore
--- -- ditch unique path index
--- DROP INDEX IF EXISTS nodes_path;
-
--- add unique fullid index (fullid = agentAlias/deviceId/dataitemId)
-CREATE UNIQUE INDEX IF NOT EXISTS nodes_fullid ON nodes ((props->>'fullid'));
+-- add unique uid index (uid = agentAlias/deviceId/dataitemId)
+CREATE UNIQUE INDEX IF NOT EXISTS nodes_uid ON nodes ((props->>'uid'));
 
 
 ---------------------------------------------------------------------
