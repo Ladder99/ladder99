@@ -21,12 +21,13 @@ export function getNodes(jsTree, agent) {
   const nodes = []
   recurse(jsTree, nodes)
   for (let el of nodes) {
-    el.uid = agent.alias + '/' + el.id // ok?
+    el.uid = agent.alias + '/' + el.dataItemId // ok?
   }
+  console.log(nodes)
+  process.exit(0) //........
   return nodes
 }
 
-//. copypasted from treeProbe.js - cleanup
 const ignore = () => {}
 const elementHandlers = {
   // handle attributes, eg { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
@@ -55,7 +56,7 @@ function recurse(element, elements, tag = '', parents = []) {
     const pairs = Object.entries(element).filter(([key]) => !skipTags2.has(key))
 
     // iterate over keyvalue pairs
-    // eg key='_attributes', value={ id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
+    // eg key='_', value={ id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
     for (const [key, value] of pairs) {
       const handler = elementHandlers[key] || ignore // get keyvalue handler
       handler(obj, value) // adds value data to obj

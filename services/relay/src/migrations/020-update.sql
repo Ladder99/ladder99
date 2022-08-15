@@ -11,6 +11,7 @@ CREATE SCHEMA IF NOT EXISTS raw;
 
 -- add unique uid index (uid = agentAlias/deviceId/dataitemId)
 CREATE UNIQUE INDEX IF NOT EXISTS nodes_uid ON nodes ((props->>'uid'));
+DROP INDEX IF EXISTS raw.nodes_path; -- we use uid to enforce uniqueness now
 
 -- move tables from public to raw schema
 ALTER TABLE bins SET SCHEMA raw;

@@ -83,15 +83,14 @@ export class Db {
 
   // add a node to nodes table - if already there, update existing values.
   // always return node_id.
-  // uses node.id to look up record.
+  // uses node.uid to look up record.
   // assumes nodes table has a unique index on that json prop.
   //. use ON CONFLICT to return existing node_id
   //. distribute this to other svcs
-  // async add(node) {
   async upsert(node) {
     const values = `'${JSON.stringify(node)}'`
-    // oh - in old version had a unique key on path, which would give conflict if exists.
-    // so we need a unique key on id
+    // old version had a unique key on path, which would give conflict if exists.
+    // so we need a unique key on uid.
     const sql = `
         insert into raw.nodes (props) values (${values}) 
           on conflict ((props->>'uid')) do

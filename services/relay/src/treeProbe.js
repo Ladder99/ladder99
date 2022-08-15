@@ -49,13 +49,13 @@ export function getNodes(tree, agent) {
   let list = getList(tree) // flatten the tree
   addAgent(list, agent) // add agentAlias from setup to each element
   addDevice(list) // add deviceId to each element
-  addContext(list) // contextPath = agentAlias[/deviceId]
-  addUid(list) // uid = agentAlias[/deviceId[/dataitemId]] = contextPath[/dataitemId]
+  addContext(list) // contextPath = agentAlias[/deviceId], eg 'main/d1'
+  addUid(list, agent) // uid = agentAlias[/dataitemId], eg 'main/d1-avail'
   addStep(list, translationIndex) // eg 'system'
   const index = getIndexUidToNode(list)
   resolveReferences(list, index) // resolve steps like '${Cmotor}' to 'motor'
-  addShortPath(list) // eg 'linear[x]/velocity' //. currently includes device tho - fix!
-  addPath(list) // eg 'main/m1/linear[x]/velocity'
+  addShortPath(list) // eg 'd1/linear[x]/velocity' //. currently includes device tho - remove?
+  addPath(list) // eg 'main/d1/linear[x]/velocity'
   addNodeType(list) // convert .tag='DataItem' etc to .node_type
   cleanup(list)
   // list.forEach(el => delete el.parent) // remove parent attributes
@@ -98,11 +98,12 @@ function addContext(list) {
   }
 }
 
-// add uid to elements, eg 'main/m1/availability'
-function addUid(list) {
+// add uid to elements, eg 'main/m1-avail'
+function addUid(list, agent) {
   for (let el of list) {
     if (el.id) {
-      const uid = el.contextPath + (el.id ? '/' + el.id : '')
+      // const uid = el.contextPath + (el.id ? '/' + el.id : '')
+      const uid = agent.alias + (el.id ? '/' + el.id : '')
       if (uid) el.uid = uid
     }
   }
@@ -204,8 +205,9 @@ function resolveReferences(list, index) {
       const regexp = /[$][{](.*)[}]/g // finds '${id}' and extracts id
       for (let match of el.step.matchAll(regexp)) {
         const id = match[1] // eg 'Cmotor'
-        const uid = el.agentAlias + '/' + el.deviceId + '/' + id // eg 'main/m1/Cmotor'
+        // const uid = el.agentAlias + '/' + el.deviceId + '/' + id // eg 'main/m1/Cmotor'
         // const uid = el.contextPath + '/' + id // eg 'main/m1/Cmotor'
+        const uid = el.agentAlias + '/' + id // eg 'main/Cmotor'
         const node = index[uid] // get the node object
         if (node) {
           // replace original with new step string, eg 'Cmotor-${id}' -> 'Cmotor-motor[a]'
