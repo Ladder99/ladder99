@@ -17,20 +17,22 @@ const skipTags2 = lib.getSet('')
 //   timestamp: '2021-09-14T17:53:21.414Z',
 //   value: 'AVAILABLE'
 // }, ...]
-export function getElements(json) {
-  const elements = []
-  recurse(json, elements)
-  return elements
+export function getNodes(jsTree, agent) {
+  const nodes = []
+  recurse(jsTree, nodes)
+  for (let el of nodes) {
+    el.uid = agent.alias + '/' + el.id // ok?
+  }
+  return nodes
 }
 
 //. copypasted from treeProbe.js - cleanup
 const ignore = () => {}
 const elementHandlers = {
   // handle attributes, eg { id: 'd1', name: 'M12346', uuid: 'M80104K162N' }
-  _attributes: (obj, value) =>
-    Object.keys(value).forEach(key => (obj[key] = value[key])),
+  _: (obj, value) => Object.keys(value).forEach(key => (obj[key] = value[key])),
   // handle text/value, eg value = 'Mill w/Smooth-G'
-  _text: (obj, value) => (obj.value = value),
+  $: (obj, value) => (obj.value = value),
 }
 
 // traverse a tree of elements, adding them to an array
@@ -90,11 +92,12 @@ function recurse(element, elements, tag = '', parents = []) {
 // assign device node_id and dataitem node_id to observation objects
 export function assignNodeIds(observations, indexes) {
   for (let obs of observations) {
-    const element = indexes.elementById[obs.dataItemId]
-    if (element) {
-      // note: these had been tacked onto the element objects during index creation.
-      obs.device_id = element.device_id
-      obs.dataitem_id = element.dataitem_id
+    // const node = indexes.nodeByUid[obs.dataItemId]
+    const node = indexes.nodeByUid[obs.uid]
+    if (node) {
+      // note: these had been tacked onto the node objects during index creation.
+      obs.device_id = node.device_id
+      obs.dataitem_id = node.dataitem_id
     } else {
       // don't print if it starts with an underscore - those are (usually) uninteresting
       // agent dataitems like '_7546f731da_observation_update_rate', and they

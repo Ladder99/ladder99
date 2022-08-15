@@ -8,9 +8,10 @@ import * as treeObservations from './treeObservations.js'
 // Observations - stores an array of observations - current or sample
 export class Observations extends Data {
   //
-  constructor(type) {
+  constructor(type, agent) {
     super()
     this.type = type // used by read method - will be 'current' or 'sample'
+    this.agent = agent
     this.observations = null // array of dataitems
   }
 
@@ -31,7 +32,7 @@ export class Observations extends Data {
     //   timestamp: '2021-09-14T17:53:21.414Z',
     //   value: 'AVAILABLE'
     // }, ...]
-    this.observations = treeObservations.getElements(this.jsTree)
+    this.observations = treeObservations.getNodes(this.jsTree, this.agent)
 
     // sort observations by timestamp asc, for correct state machine transitions.
     // because sequence nums could be out of order, depending on network.
@@ -45,9 +46,9 @@ export class Observations extends Data {
     //
     // assign device_id and dataitem_id's to observations
     treeObservations.assignNodeIds(this.observations, indexes)
-    // observations is now [{ device_id, dataitem_id, tag, dataItemId, name, timestamp, value }, ...]
 
     // get history records to write to db
+    // observations is now [{ device_id, dataitem_id, tag, dataItemId, name, timestamp, value }, ...]
     //. records is
     const records = getHistoryRecords(this.observations)
 
@@ -67,7 +68,7 @@ function getHistoryRecords(observations) {
       // obs.value is always string, due to the way the xml is stored, like <value>10</value>
       //. better to use dataitem category to convert to number?
       //  ie SAMPLES are numeric, EVENTS are strings
-      //.. convert UNAVAILABLEs to null?
+      //. convert UNAVAILABLEs to null?
       //. keep in mind that conditions can have >1 value also
       const value = Number(obs.value) || JSON.stringify(obs.value)
       const record = {
