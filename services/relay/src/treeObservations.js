@@ -2,11 +2,7 @@
 
 import * as lib from './common/lib.js'
 
-//. explain
-// const appendTags2 = lib.getSet('Angle')
-
-//. explain
-const skipTags2 = lib.getSet('')
+// const skipTags = lib.getSet('')
 
 // get flat list of elements from given json tree
 // returns eg [{
@@ -21,9 +17,10 @@ export function getNodes(jsTree, agent) {
   const nodes = []
   recurse(jsTree, nodes)
   for (let el of nodes) {
-    el.uid = agent.alias + '/' + el.dataItemId // ok?
+    el.uid = agent.alias + '/' + el.dataItemId // eg 'main/avail'
   }
-  console.log(nodes) //....
+  // console.log(nodes)
+  // process.exit(0)
   return nodes
 }
 
@@ -48,11 +45,9 @@ function recurse(element, elements, tag = '', parents = []) {
     // tag is eg 'DataItem', parents is list of ancestors - will be deleted before return.
     let obj = { tag, parents }
 
-    // add obj to return list if one of certain tags (eg DataItem)
-    // if (appendTags2.has(tag)) elements.push(obj)
-
     // get keyvalue pairs, skipping unwanted tags
-    const pairs = Object.entries(element).filter(([key]) => !skipTags2.has(key))
+    // const pairs = Object.entries(element).filter(([key]) => !skipTags.has(key))
+    const pairs = Object.entries(element)
 
     // iterate over keyvalue pairs
     // eg key='_', value={ id: 'd1', name: 'M12346', uuid: 'M80104K162N' }

@@ -2,6 +2,10 @@
 
 import * as lib from './common/lib.js'
 
+// don't record these tags or their children
+// the Agent tag has lots of extraneous stuff we don't want to record, yet
+const skipTags = lib.getSet('Agent')
+
 //. will want to keep track of attributes tacked onto the path -
 // and/or specify them all in advance so they're in a known order
 //. what else do we need?
@@ -27,21 +31,18 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 //     filter: {
 //       type: 'MINIMUM_DELTA',
 //       value: '0.5',
-//       shortPath: 'd1/auxiliaries/environmental/temperature'
 //     },
-//     shortPath: 'd1/auxiliaries/environmental/temperature'
 //   },
 //   agentAlias: 'mazak5717',
 //   deviceId: 'd1',
 //   contextPath: 'mazak5717/d1',
-//   uid: 'mazak5717/d1/rmtmp1',
+//   uid: 'mazak5717/rmtmp1',
 //   shortPath: 'd1/auxiliaries/environmental/temperature',
 //   path: 'mazak5717/d1/auxiliaries/environmental/temperature',
 //   node_id: 149
 // }, ...]
 export function getNodes(tree, agent) {
-  // get translations for each device
-  // eg 'd1' => { base: 'axes', ... }
+  // get translations for each device, eg 'd1' => { base: 'axes', ... }
   const translationIndex = {}
   agent.devices.forEach(
     device => (translationIndex[device.id] = device.translations)
@@ -234,6 +235,9 @@ function flatten(part, list, parent, tag = 'Document') {
   //
   if (lib.isObject(part)) {
     //
+    // skip tags and their children we don't care about, eg 'Agent'
+    if (skipTags.has(tag)) return
+
     // start a new object, where we will write the element attributes,
     // WITHOUT the subelements (eg write Device without the DataItems subelement).
     let obj = {}
