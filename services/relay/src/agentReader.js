@@ -73,7 +73,7 @@ export class AgentReader {
         }
 
         // sample - get sequence of dataitem values, write to db
-        const sample = new Observations('sample')
+        const sample = new Observations('sample', this.agent)
         sample: do {
           // get observations
           const status = await sample.read(this.endpoint, this.from, this.count)

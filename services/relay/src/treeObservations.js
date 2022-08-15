@@ -23,8 +23,7 @@ export function getNodes(jsTree, agent) {
   for (let el of nodes) {
     el.uid = agent.alias + '/' + el.dataItemId // ok?
   }
-  console.log(nodes)
-  process.exit(0) //........
+  console.log(nodes) //....
   return nodes
 }
 
