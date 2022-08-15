@@ -47,8 +47,11 @@ export class Endpoint {
           console.log(`Relay error - Agent not found at ${url}...`)
         } else if (error.code === 'ECONNREFUSED') {
           console.log(`Relay error - Connection refused at ${url}...`)
+        } else if (error.code === 'EHOSTUNREACH') {
+          console.log(`Relay error - Host unreachable at ${url}...`)
         } else {
-          throw error
+          // throw error // don't do this - could have some weird error that kills relay
+          console.error(error)
         }
       }
       if (!jsTree) {
