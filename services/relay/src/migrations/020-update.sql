@@ -24,6 +24,9 @@ ALTER TABLE nodes SET SCHEMA raw;
 -- views
 ---------------------------------------------------------------------
 
+-- rename history_all view
+ALTER VIEW history_all RENAME TO history;
+
 -- update devices
 DROP VIEW IF EXISTS devices;  -- because `create or replace` isn't enough!
 CREATE OR REPLACE VIEW devices AS
