@@ -4,14 +4,9 @@
 
 CREATE SCHEMA IF NOT EXISTS raw;
 
-
 ---------------------------------------------------------------------
 -- tables
 ---------------------------------------------------------------------
-
--- add unique uid index (uid = agentAlias/deviceId/dataitemId)
-CREATE UNIQUE INDEX IF NOT EXISTS nodes_uid ON nodes ((props->>'uid'));
-DROP INDEX IF EXISTS raw.nodes_path; -- we use uid to enforce uniqueness now
 
 -- move tables from public to raw schema
 ALTER TABLE bins SET SCHEMA raw;
@@ -20,13 +15,18 @@ ALTER TABLE history SET SCHEMA raw;
 ALTER TABLE meta SET SCHEMA raw;
 ALTER TABLE nodes SET SCHEMA raw;
 
+-- add unique uid index (uid = agentAlias/deviceId/dataitemId)
+CREATE UNIQUE INDEX IF NOT EXISTS nodes_uid ON raw.nodes ((props->>'uid'));
+DROP INDEX IF EXISTS raw.nodes_path; -- we use uid to enforce uniqueness now
+
 
 ---------------------------------------------------------------------
 -- views
 ---------------------------------------------------------------------
 
--- rename history_all view
-ALTER VIEW history_all RENAME TO history;
+-- eh, not worth the trouble now
+-- -- rename history_all view
+-- ALTER VIEW history_all RENAME TO history;
 
 -- update devices
 DROP VIEW IF EXISTS devices;  -- because `create or replace` isn't enough!
@@ -35,19 +35,18 @@ SELECT
   nodes.node_id,
   nodes.props->>'id' as id,
   nodes.props->>'uid' as uid, -- ie `agentAlias/deviceId`, eg 'main/d1'
-  nodes.props->>'uuid' as uuid, -- a 'supposedly' unique id, but depends on agent.xml developer
+  nodes.props->>'uuid' as uuid, -- a supposedly unique id, but depends on agent.xml developer
   nodes.props->>'path' as path,
   nodes.props->>'shortPath' as shortpath,
   nodes.props->>'name' as name
   nodes.props as props
 FROM 
-  nodes
+  raw.nodes as nodes
 WHERE
   nodes.props->>'node_type'='Device';
 
 
 -- update dataitems
---. call this tags?
 DROP VIEW IF EXISTS dataitems;  -- because `create or replace` isn't enough!
 CREATE OR REPLACE VIEW dataitems AS
 SELECT
@@ -63,7 +62,7 @@ SELECT
   nodes.props->>'statistic' as statistic,
   nodes.props as props
 FROM 
-  nodes
+  raw.nodes as nodes
 WHERE
-  nodes.props->>'node_type'='DataItem'; --. or Tag, if go that way
+  nodes.props->>'node_type'='DataItem';
 
