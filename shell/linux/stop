@@ -20,13 +20,13 @@ fi
 if [[ $1 = .* ]]; then
     SETUP=$1
 else
-    SETUP=../client-$1
+    SETUP=../setup-$1
 fi
 shift
 
 SERVICES=$*
 
 # get command and call it
-CMD="shell/pipeline stop $SETUP $SERVICES"
+CMD="shell/linux/pipeline stop $SETUP $SERVICES"
 echo $CMD
 bash -c "$CMD"

@@ -18,6 +18,16 @@ Ladder99 is developed by MRIIOT, your agile digital transformation partners.
 
 ![screenshot](docs/images/screenshots/agent-html_1200.jpg)
 
+## Start
+
+On Mac or Linux,
+
+    ./l99 example
+
+on Windows,
+
+    l99 example
+
 ## Folders
 
 - docs - design documents, diagrams

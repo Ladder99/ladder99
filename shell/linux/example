@@ -1,0 +1,16 @@
+#!/bin/bash
+
+usage="
+Usage: ./l99 example
+
+Run an example setup.
+"
+
+SETUP=./setups/example
+CMD=start
+PARAMS=agent adapter meter relay
+shell/linux/start $SETUP $CMD $PARAMS
+
+echo
+echo Running Ladder99 example pipeline.
+echo Visit http://localhost:3000 in your browser.

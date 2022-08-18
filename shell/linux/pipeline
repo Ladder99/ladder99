@@ -57,9 +57,9 @@ if [ -e $envfile ]; then
 else
     echo No .env file found - copying from default...
     cp setups/.env-default $envfile
-    echo.
+    echo
     echo PLEASE SET INITIAL PASSWORDS IN $envfile! e.g. nano $envfile
-    echo.
+    echo
     exit 1
 fi
 
