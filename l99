@@ -39,7 +39,7 @@ fi
 
 
 CMD=$1
-CMD_PATH=shell/$CMD
+CMD_PATH=shell/linux/$CMD
 shift
 PARAMS=$*
 

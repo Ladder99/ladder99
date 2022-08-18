@@ -60,6 +60,6 @@ shift
 SERVICES=$* # eg 'agent play'
 
 # build command and call it
-CMD="export SETUP=$SETUP && shell/pipeline $MODE $SETUP $SERVICES"
+CMD="export SETUP=$SETUP && shell/linux/pipeline $MODE $SETUP $SERVICES"
 echo $CMD
 bash -c "$CMD"
