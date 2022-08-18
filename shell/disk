@@ -5,10 +5,10 @@ Usage: ./disk SETUP
 
 Print disk usage for given setup
 
-SETUP is a client name or setup folder, eg oxbox, or ./setups/vmc.
+SETUP is a client name or setup folder, eg demo, or ./setups/example.
 "
 
-# show help
+# show help if count of params is zero
 if [ $# -eq 0 ]; then
     echo "$usage"
     exit 1
@@ -19,7 +19,7 @@ fi
 if [[ $1 = .* ]]; then
     SETUP=$1
 else
-    SETUP=../client-$1
+    SETUP=../setup-$1
 fi
 shift
 
@@ -31,5 +31,12 @@ echo Disk usage
 df -h /
 echo
 echo Setup usage
-sudo du -d1 -h $SETUP/volumes/
+# sudo du -d1 -h $SETUP/volumes/
 
+CMD="du -d1 -h $SETUP/volumes/"
+echo $CMD
+if hash sudo 2>/dev/null; then
+    sudo $CMD
+else
+    $CMD
+fi

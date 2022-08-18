@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# run a ladder99 shell command
+
+usage="
+Usage: ./l99 [COMMAND [PARAMS]]
+
+Run a Ladder99 command.
+
+COMMAND      
+  disk      show disk usage for a setup
+  list      list running services
+  logs      show logs for a running or stopped service
+  search    search service logs for a string
+  start     start or restart a service
+  stop      stop a running service
+  update    update source code for ladder99 and a given setup
+
+Run the command or with -h for help on that command.
+
+Examples
+    ./l99 list
+    ./l99 disk demo
+    ./l99 start demo base
+    ./l99 stop demo relay
+    ./l99 update demo
+"
+
+# note: this needs to run as /bin/bash, NOT /bin/sh - led to bug on encabulator
+# where it wasn't parsing [[ $setup = .* ]] correctly.
+# some discussion here
+# https://unix.stackexchange.com/questions/379464/why-does-this-script-work-in-the-terminal-but-not-from-a-file
+
+# show help if count of params is zero
+if [ $# -eq 0 ]; then
+    echo "$usage"
+    exit 1
+fi
+
+
+CMD=$1
+CMD_PATH=shell/$CMD
+shift
+PARAMS=$*
+
+"$CMD_PATH" $PARAMS

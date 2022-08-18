@@ -26,7 +26,7 @@ Examples
 # some discussion here
 # https://unix.stackexchange.com/questions/379464/why-does-this-script-work-in-the-terminal-but-not-from-a-file
 
-# show help
+# show help if count of params is zero
 if [ $# -eq 0 ]; then
     echo "$usage"
     exit 1
