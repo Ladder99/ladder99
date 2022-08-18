@@ -1,11 +1,11 @@
 #!/bin/bash
 
 usage="
-Usage: ./update SETUP
+Usage: ./l99 update SETUP
 
-Update Ladder99 pipeline and client code
+Update Ladder99 pipeline and client code.
 
-SETUP        name of client or setup folder, eg oxbox or ./setups/vmc
+SETUP        name of client or setup folder, eg demo or ./setups/example
 "
 
 # show help

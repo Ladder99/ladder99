@@ -4,7 +4,7 @@
 # for stop, only services. 
 
 usage="
-Usage: ./stop SETUP SERVICES
+Usage: ./l99 stop SETUP SERVICES
 
 Stop Ladder99 services.
 "

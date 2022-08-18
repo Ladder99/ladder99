@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # list docker containers, to fit narrow screen
+
 # also sorts alpha
 # see https://stackoverflow.com/questions/46173298/how-to-sort-or-order-results-docker-ps-format/49973096#49973096
 

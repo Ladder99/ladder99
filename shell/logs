@@ -1,15 +1,16 @@
 #!/bin/bash
 
 # tail/search docker logs
+
 # see https://stackoverflow.com/questions/34724980/finding-a-string-in-docker-logs-of-container
 
 usage="
-Usage: ./logs SERVICE [PATTERN]
+Usage: ./l99 logs SERVICE [PATTERN]
 
-Follow Docker service logs, and optionally search for a pattern using grep
+Follow Docker service logs, and optionally search for a pattern using grep.
 "
 
-# show help
+# show help if count of params is zero
 if [ $# -eq 0 ]; then
     echo "$usage"
     exit 1

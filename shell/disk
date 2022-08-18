@@ -1,11 +1,15 @@
 #!/bin/bash
 
 usage="
-Usage: ./disk SETUP
+Usage: ./l99 disk SETUP
 
-Print disk usage for given setup
+Print disk usage for a given setup.
 
-SETUP is a client name or setup folder, eg demo, or ./setups/example.
+SETUP is a client name or setup folder.
+
+Examples
+    ./l99 disk demo
+    ./l99 disk ./setups/example
 "
 
 # show help if count of params is zero
@@ -31,10 +35,10 @@ echo Disk usage
 df -h /
 echo
 echo Setup usage
-# sudo du -d1 -h $SETUP/volumes/
 
 CMD="du -d1 -h $SETUP/volumes/"
-echo $CMD
+
+# sudo isn't always available, eg in git bash environment
 if hash sudo 2>/dev/null; then
     sudo $CMD
 else
