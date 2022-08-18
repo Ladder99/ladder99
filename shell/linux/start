@@ -7,10 +7,11 @@ Usage: ./l99 start [OPTIONS] SETUP SERVICES
 
 Run the Ladder99 pipeline with a list of services/profiles to include.
 
-SETUP is a client name or setup folder, eg oxbox, or ./setups/vmc.
-
 OPTIONS
-  -c, --console   run the services attached to the console for logging
+  -c, --console   run the services attached to the console for logging -
+                  default is to run detached.
+
+SETUP is a client name or setup folder, eg oxbox, or ./setups/vmc.
 
 SERVICES      space-delim list of services or profiles to start
   all         run all relevant services for a setup - eg adapter, agent, etc
@@ -18,7 +19,7 @@ SERVICES      space-delim list of services or profiles to start
 Examples
     ./l99 start demo base
     ./l99 start ./setups/example agent grafana
-    ./l99 start demo --console play
+    ./l99 start --console demo relay
 "
 
 # note: this needs to run as /bin/bash, NOT /bin/sh - led to bug on encabulator
@@ -32,34 +33,80 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-# default values
-MODE=startd # detached mode
-
 # get options/arguments
-# while $1 starts with '-'
-while [[ $1 = \-* ]]
+
+# get mode - detached or console
+MODE=--detach
+while [[ $1 = \-* ]] # while $1 starts with '-'
 do
     if [ $1 = "-c" ] || [ $1 = "--console" ]; then
         shift
-        MODE=start # console mode
+        MODE=
     fi
 done
 
 # get setup folder
-# if starts with '.' treat as relative to main dir, else relative to setups folder
+# if starts with '.' treat as relative to main dir, else it's a ../setup- folder
 if [[ $1 = .* ]]; then
     SETUP=$1
 else
-    # SETUP=../client-$1
-    # SETUP=./setups/$1
     SETUP=../setup-$1
 fi
 shift
 
-# get services/profiles
-SERVICES=$* # eg 'agent play'
+# no services specified
+if [ $# -eq 0 ]; then
+    # echo "$usage"
+    echo Missing services/profiles to start.
+    exit 1
+fi
+SERVICES=$* # eg 'agent'
+# SERVICES=${*:-"base"} # eg 'agent', defaults to 'base'
 
-# build command and call it
-CMD="export SETUP=$SETUP && shell/linux/pipeline $MODE $SETUP $SERVICES"
+# file paths
+PIPELINE="services/compose.yaml"
+OVERRIDES="$SETUP/compose-overrides.yaml"
+ENVFILE="$SETUP/.env"
+
+# add main docker compose file for pipeline
+ARGS="--file $PIPELINE"
+# add docker compose file for overrides, if exists
+if [ -e $OVERRIDES ]; then
+    ARGS="$ARGS --file $OVERRIDES"
+fi
+
+# add .env file if there
+if [ -e $ENVFILE ]; then
+    ARGS="$ARGS --env-file $ENVFILE"
+else
+    echo No .env file found - copying from default...
+    cp ./setups/.env-default $ENVFILE
+    echo
+    echo PLEASE SET INITIAL PASSWORDS IN $ENVFILE! e.g. nano $ENVFILE
+    echo
+    exit 1
+fi
+
+# get profile flags - one per service/profile specified
+PROFILE_FLAGS=""
+for PROFILE in $SERVICES; do
+    PROFILE_FLAGS="$PROFILE_FLAGS --profile $PROFILE"
+done
+
+# # build command and call it
+# CMD="export SETUP=$SETUP && shell/linux/pipeline $MODE $SETUP $SERVICES"
+# echo $CMD
+# bash -c "$CMD"
+
+# get command and run it
+# -p specifies project name, as shown in docker management consoles - 
+# otherwise it uses the parent folder name.
+BASE_CMD="docker-compose -p ladder99 $ARGS $PROFILE_FLAGS"
+
+# pull any required images in the docker-compose files and start services.
+CMD="
+$BASE_CMD pull && \
+$BASE_CMD up --build $MODE"
+
 echo $CMD
-bash -c "$CMD"
+bash -c "export SETUP=$SETUP && $CMD"

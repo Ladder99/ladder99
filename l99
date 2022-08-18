@@ -38,9 +38,9 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-
 CMD=$1
 CMD_PATH=shell/linux/$CMD
+
 shift
 PARAMS=$*
 
