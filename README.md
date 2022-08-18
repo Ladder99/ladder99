@@ -20,14 +20,12 @@ Ladder99 is developed by MRIIOT, your agile digital transformation partners.
 
 ## Folders
 
-- dashboards - generic dashboard definitions, usable by any client
-- design - documents, diagrams
-- modules - dataitem definitions - input/output yamls, recordings for playback
-- services - source code for different sections of the pipeline - adapter, agent, compiler, etc.
-- setups - example setups to demonstrate different modules
+- docs - design documents, diagrams
+- services - source code for different sections of the pipeline - adapter, relay, etc.
+- setups - setups to demonstrate different modules
 - shell - shell scripts
 
-Adapter plugins are defined in services/adapter/src/drivers.
+Adapter plugins are defined in `services/adapter/src/drivers`.
 
 ## Links
 
