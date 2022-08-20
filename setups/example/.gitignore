@@ -21,3 +21,5 @@ volumes/nodered
 volumes/portainer/data
 volumes/postgres/data
 volumes/traefik/acme.json
+
+!.env
