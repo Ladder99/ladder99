@@ -9,9 +9,7 @@
 
 client:
   name: Template # not used yet
-  # tell server what timezone to report results in, what timezone schedules are in etc
-  # timezone: America/Chicago #. use this eventually - would include DST
-  timezoneOffsetHrs: -6 # hrs from GMT - currently used by jobboss driver and availability.js
+  timezone: America/Chicago # currently used by adapter jobboss driver and meter availability.js
 
 adapter:
   devices:

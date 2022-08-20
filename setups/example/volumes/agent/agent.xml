@@ -5,6 +5,7 @@
   <Devices>
 
     <!-- Micro -->
+    <!-- id and name must match that in setup.yaml -->
     <Device id="m" name="Micro" uuid="cb149555-2aaf-45f5-8381-1a11c6edbcdb" sampleInterval="5">
       <DataItems>
         <DataItem id="m-avail" name="availability" category="EVENT" type="AVAILABILITY" />

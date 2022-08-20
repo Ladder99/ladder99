@@ -2,23 +2,21 @@
 
 client:
   name: Example # not used yet
-  # tell server what timezone to report results in, what timezone schedules are in etc
-  # timezone: America/Chicago #. use this eventually - would include DST
-  timezoneOffsetHrs: -6 # hrs from GMT - currently used by jobboss driver and availability.js
+  timezone: America/Chicago # currently used by adapter jobboss driver and meter availability.js
 
 # read by the ladder99 adapter
-devices:
-  # --------------------------------------------------------------------
-  # micro
-  # --------------------------------------------------------------------
-  - id: m
-    name: Micro # this must match name in agent.cfg and agent.xml
-    # sources define the inputs to the cache.
-    sources:
-      - module: micro # module defines inputs and outputs with yaml files
-        driver: micro # adapter plugin - manages protocol and payload
-    # where to post output - just uses first output for now
-    destinations:
-      - protocol: shdr
+adapter:
+  devices:
+    # --------------------------------------------------------------------
+    # micro
+    # --------------------------------------------------------------------
+    - id: m # must match id in agent.xml
+      name: Micro # this must match name in agent.cfg and agent.xml
+      # sources define the inputs to the cache.
+      sources:
+        - module: micro # module defines inputs and outputs with yaml files
+          driver: micro # adapter plugin - manages protocol and payload
+      # where to post output - just uses first output for now
+      connection:
         host: adapter # must match agent.cfg value
         port: 7890 # must match agent.cfg value
