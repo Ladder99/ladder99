@@ -7,10 +7,9 @@ Run an example setup.
 "
 
 SETUP=./setups/example
-CMD=start
-PARAMS=agent adapter meter relay
-shell/linux/start $SETUP $CMD $PARAMS
+PARAMS="agent adapter meter relay"
+shell/linux/start $SETUP $PARAMS
 
 echo
 echo Running Ladder99 example pipeline.
-echo Visit http://localhost:3000 in your browser.
+echo Visit http://localhost in your browser.
