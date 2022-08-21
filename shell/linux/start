@@ -63,13 +63,16 @@ else
 fi
 shift
 
-# no services specified
+# if no services specified, default to 'base'
 if [ $# -eq 0 ]; then
     # echo "$usage"
-    echo Missing services/profiles to start.
-    exit 1
+    # echo Missing services/profiles to start.
+    # exit 1
+    SERVICES=base
+else
+    SERVICES=$* # eg 'agent adapter'
 fi
-SERVICES=$* # eg 'agent'
+# SERVICES=$* # eg 'agent'
 # SERVICES=${*:-"base"} # eg 'agent', defaults to 'base'
 
 # file paths
