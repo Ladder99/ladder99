@@ -9,7 +9,23 @@
 
 # version must be a string - need 3.8 for profiles
 version: '3.8'
-# services:
+
+services:
 #   adapter:
+#     profiles:
+#       - base
+#   agent:
+#     profiles:
+#       - base
+#   dozzle:
+#     profiles:
+#       - base
+#   grafana:
+#     profiles:
+#       - base
+#   relay:
+#     profiles:
+#       - base
+#   meter:
 #     profiles:
 #       - base

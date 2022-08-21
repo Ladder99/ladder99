@@ -17,9 +17,15 @@ services:
   agent:
     profiles:
       - base
+  dozzle:
+    profiles:
+      - base
   grafana:
     profiles:
       - base
+  # meter:
+  #   profiles:
+  #     - base
   relay:
     profiles:
       - base

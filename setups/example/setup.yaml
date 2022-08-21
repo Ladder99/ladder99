@@ -37,8 +37,8 @@ relay:
           #   - id: m-os
           #     retention: 1d
 
-    - alias: mazak5701 # assigned agent alias - don't change!
-      url: http://mtconnect.mazakcorp.com:5701
-      devices:
-        - id: d1
-          alias: Mazak Mill 12345
+    # - alias: mazak5701 # assigned agent alias - don't change!
+    #   url: http://mtconnect.mazakcorp.com:5701
+    #   devices:
+    #     - id: d1
+    #       alias: Mazak Mill 12345
