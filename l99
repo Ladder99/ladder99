@@ -3,7 +3,7 @@
 # run a ladder99 shell command
 
 usage="
-Usage: ./l99 [COMMAND [PARAMS]]
+Usage: ./l99 COMMAND [PARAMS]
 
 Run a Ladder99 command.
 

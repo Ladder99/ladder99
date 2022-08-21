@@ -19,25 +19,32 @@ if [ $# -eq 0 ]; then
 fi
 
 # get setup folder
-# if starts with '.' treat as a setup folder, else a client name
-if [[ $1 = .* ]]; then
-    SETUP=$1
+
+# # if starts with '.' treat as a setup folder, else a client name
+# if [[ $1 = .* ]]; then
+#     SETUP=$1
+# else
+#     SETUP=../setup-$1
+# fi
+# shift
+
+# handle example setup specially
+if [ $1 = example ]; then
+    SETUP=setups/example
 else
     SETUP=../setup-$1
 fi
 shift
 
-# also sorts alpha
-# see https://stackoverflow.com/questions/46173298/how-to-sort-or-order-results-docker-ps-format/49973096#49973096
-# docker container ls --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}' | (read -r; printf "%s\n" "$REPLY"; sort -k 1 )
+# show all disk usage
 echo
 echo Disk usage
 df -h /
+
+# show usage for the setup volumes
 echo
 echo Setup usage
-
 CMD="du -d1 -h $SETUP/volumes/"
-
 # sudo isn't always available, eg in git bash environment
 if hash sudo 2>/dev/null; then
     sudo $CMD

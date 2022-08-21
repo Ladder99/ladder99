@@ -46,9 +46,18 @@ do
 done
 
 # get setup folder
-# if starts with '.' treat as relative to main dir, else it's a ../setup- folder
-if [[ $1 = .* ]]; then
-    SETUP=$1
+
+# # if starts with '.' treat as relative to main dir, else it's a ../setup- folder
+# if [[ $1 = .* ]]; then
+#     SETUP=$1
+# else
+#     SETUP=../setup-$1
+# fi
+# shift
+
+# handle example setup specially
+if [ $1 = example ]; then
+    SETUP=setups/example
 else
     SETUP=../setup-$1
 fi

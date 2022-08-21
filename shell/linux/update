@@ -15,12 +15,21 @@ if [ $# -eq 0 ]; then
 fi
 
 # get setup folder
-# if starts with '.' treat as a setup folder, else a client name
-if [[ $1 = .* ]]; then
-    SETUP=$1
+
+# # if starts with '.' treat as a setup folder, else a client name
+# if [[ $1 = .* ]]; then
+#     SETUP=$1
+# else
+#     SETUP=../client-$1
+# fi
+
+# handle example setup specially
+if [ $1 = example ]; then
+    SETUP=setups/example
 else
-    SETUP=../client-$1
+    SETUP=../setup-$1
 fi
+shift
 
 # # pull ladder99-ce repo
 # CMD="git pull"
