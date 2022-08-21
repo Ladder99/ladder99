@@ -4,7 +4,7 @@
 # see other setup repos for ideas for adding information to services.
 # typically, would add 'profiles: - base' to each service used.
 # that way, we know what is needed, and can start them all with
-#   ./l99 start <setup>
+#   ./l99 start <setup> base
 # also may need to specify ports here, eg for grafana - see compose.yaml.
 
 # version must be a string - need 3.8 for profiles
