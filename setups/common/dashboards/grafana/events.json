@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 3,
-  "iteration": 1661160122679,
+  "id": 7,
+  "iteration": 1646820351236,
   "links": [
     {
       "asDropdown": false,
@@ -246,11 +246,11 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "Main/m",
-          "value": "Main/m"
+          "text": "JobBoss",
+          "value": "JobBoss"
         },
         "datasource": null,
-        "definition": "select uid from devices",
+        "definition": "select name from devices",
         "description": "Device Name",
         "error": null,
         "hide": 0,
@@ -259,7 +259,7 @@
         "multi": false,
         "name": "device",
         "options": [],
-        "query": "select uid from devices",
+        "query": "select name from devices",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -276,5 +276,5 @@
   "timezone": "",
   "title": "DataItems",
   "uid": "events",
-  "version": 3
+  "version": 15
 }
