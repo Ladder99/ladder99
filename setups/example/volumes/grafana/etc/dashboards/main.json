@@ -24,7 +24,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 7,
-  "iteration": 1661170154021,
+  "iteration": 1661170696274,
   "links": [
     {
       "asDropdown": false,
@@ -1201,7 +1201,7 @@
           "value": "Mazak5701/d1"
         },
         "datasource": null,
-        "definition": "select uid from devices",
+        "definition": "select uid from devices where uid <> 'Main/m'",
         "description": "Device Name",
         "error": null,
         "hide": 0,
@@ -1210,7 +1210,7 @@
         "multi": false,
         "name": "device",
         "options": [],
-        "query": "select uid from devices",
+        "query": "select uid from devices where uid <> 'Main/m'",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -1267,5 +1267,5 @@
   "timezone": "",
   "title": "Main",
   "uid": "main",
-  "version": 16
+  "version": 17
 }
