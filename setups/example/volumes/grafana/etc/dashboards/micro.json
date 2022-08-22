@@ -23,8 +23,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 3,
-  "iteration": 1654251445048,
+  "id": 4,
+  "iteration": 1661159815368,
   "links": [
     {
       "asDropdown": false,
@@ -94,7 +94,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as free\nFROM history_float\nWHERE\n  device='$device'\n  and path='memory-free'\n  and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as free\nFROM history_float\nWHERE\n  path='$device/memory-free'\n  and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -121,7 +121,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as used\nFROM history_float\nWHERE\n  device='$device'\n  and path='memory-used'\n  and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as used\nFROM history_float\nWHERE\n  path='$device/memory-used'\n  and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "C",
           "select": [
             [
@@ -252,7 +252,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as total\nFROM history_float\nWHERE\n  device='$device'\n  and path='cpu-total'\n  and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as total\nFROM history_float\nWHERE\n  path='$device/cpu-total'\n  and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "B",
           "select": [
             [
@@ -383,7 +383,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as temp\nFROM history_float\nWHERE\n  device='$device'\n  and path='temperature'\n  and $__timeFilter(\"time\")\nORDER BY time",
+          "rawSql": "SELECT time, value as temp\nFROM history_float\nWHERE\n  path='$device/temperature'\n  and $__timeFilter(\"time\")\nORDER BY time",
           "refId": "A",
           "select": [
             [
@@ -532,9 +532,9 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "text": "Micro",
-          "value": "Micro"
+          "selected": false,
+          "text": "Main/m",
+          "value": "Main/m"
         },
         "description": null,
         "error": null,
@@ -546,11 +546,11 @@
         "options": [
           {
             "selected": true,
-            "text": "Micro",
-            "value": "Micro"
+            "text": "Main/m",
+            "value": "Main/m"
           }
         ],
-        "query": "Micro",
+        "query": "Main/m",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
@@ -558,7 +558,7 @@
     ]
   },
   "time": {
-    "from": "now-30m",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {
@@ -578,5 +578,5 @@
   "timezone": "",
   "title": "Microcontroller",
   "uid": "micro",
-  "version": 7
+  "version": 3
 }
