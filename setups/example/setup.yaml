@@ -4,7 +4,7 @@ client:
   name: Example # not used yet
   timezone: America/Chicago # currently used by adapter jobboss driver and meter availability.js
 
-# read by the ladder99 adapter
+# ladder99 adapter reads this section to know what devices to poll/subscribe to.
 adapter:
   devices:
     - id: m # must match id in agent.xml
@@ -13,12 +13,12 @@ adapter:
       sources:
         - module: micro # module defines inputs and outputs with yaml files
           driver: micro # adapter plugin - manages protocol and payload
-      # where to post output - just uses first output for now
+      # where agent will connect to adapter
       connection:
         host: adapter # must match agent.cfg value
         port: 7890 # must match agent.cfg value
 
-# relay reads this section to know what agents to read data from.
+# ladder99 relay reads this section to know what agents to read data from.
 # warning: don't change the agent aliases (eg main) as they are used to synch data with db.
 relay:
   # retention: 1wk # could specify a top-level retention for all agents here

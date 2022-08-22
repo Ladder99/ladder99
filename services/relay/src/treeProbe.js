@@ -50,7 +50,8 @@ export function getNodes(tree, agent) {
   let list = getList(tree) // flatten the tree
   addAgent(list, agent) // add agentAlias from setup to each element
   addDevice(list) // add deviceId to each element
-  addContext(list) // contextPath = agentAlias[/deviceId], eg 'main/d1'
+  // addContext(list) // contextPath = agentAlias[/deviceId], eg 'main/d1'
+  addContext(list) // contextPath = agentAlias[/deviceAlias], eg 'Main/MazakM123'
   addUid(list, agent) // uid = agentAlias[/dataitemId], eg 'main/d1-avail'
   addStep(list, translationIndex) // eg 'system'
   const index = getIndexUidToNode(list)
@@ -113,8 +114,8 @@ function addUid(list, agent) {
 // add path for each element
 function addShortPath(list) {
   for (let el of list) {
-    // build up the path starting from the root ancestor
-    // this only works because the nodes are in proper order
+    // build up the path starting from the root ancestor.
+    // this only works because the nodes are in proper order.
     if (el.parent && el.parent.shortPath) {
       el.shortPath = el.parent.shortPath + (el.step ? '/' + el.step : '')
     } else {
