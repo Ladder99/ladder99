@@ -14,6 +14,8 @@ DROP VIEW IF EXISTS history_all;
 -- the history table, but with name and path dereferenced,
 -- and value as the original jsonb object.
 
+--. use value->>0 as value ?
+
 CREATE OR REPLACE VIEW history_all AS
 SELECT 
   devices.props->>'name' AS device,
