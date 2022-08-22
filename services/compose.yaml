@@ -239,19 +239,20 @@ services:
       # other folders are specified there.
       - ../$SETUP/volumes/grafana/etc:/etc/grafana
       - ../$SETUP/volumes/grafana/var:/var/lib/grafana
-      # - ../dashboards/grafana:/etc/dashboards
       - ../setups/common/dashboards/grafana:/etc/dashboards
     # as of v7.3, the Grafana Docker image runs with the root group (id 0) instead
-    # of the grafana group (id 472), for better compatibility with OpenShift.
-    # grafana gives permission error without user:root - not on mac. only on arm?
-    # get this error when don't set user -
+    # of the grafana group (id 472), for better compatibility with OpenShift. [?]
+    # grafana gives permission error without user:root - not on mac tho. only on arm?
     # https://community.grafana.com/t/new-docker-install-with-persistent-storage-permission-problem/10896/13
-    # setting this gives same error - why? `id -a` shows 1000
-    # user: '1000:1000'
-    # setting this gives error - UID and GID not set, but grafana works - why?
-    # are blanks equivalent to root user?
-    #. these could be set by ./start script?
-    # user: '$UID:$GID'
+    # Speaking in generalities it is not a security problem to run a container as root. 
+    # If you run as a regular user and some hacker breaks your application they will 
+    # have access to whatever a regular user has access to. If you run as root and 
+    # some hacker breaks your application they will have access to the entire 
+    # container. It sounds like running as a regular user is safer; but in practice 
+    # there is nothing important on the container that the regular user does not 
+    # have access to. Hopefully the hacker does not figure out how to break out 
+    # of the container. [?]
+    # https://stackoverflow.com/questions/64271295/runnig-docker-as-nonroot-with-user-id-u-cant-create-var-lib#comment113675767_64272066
     user: root
     restart: always
     networks:
