@@ -11,27 +11,27 @@
 version: '3.8'
 
 services:
-  # adapter:
-  #   profiles:
-  #     - base
-  # agent:
-  #   profiles:
-  #     - base
-  # dozzle:
-  #   profiles:
-  #     - base
-  # grafana:
-  #   profiles:
-  #     - base
-  # postgres:
-  #   profiles:
-  #     - base
-  # pgadmin:
-  #   profiles:
-  #     - base
-  # relay:
-  #   profiles:
-  #     - base
+  adapter:
+    profiles:
+      - base
+  agent:
+    profiles:
+      - base
+  dozzle:
+    profiles:
+      - base
+  grafana:
+    profiles:
+      - base
+  postgres:
+    profiles:
+      - base
+  pgadmin:
+    profiles:
+      - base
+  relay:
+    profiles:
+      - base
   # meter:
   #   profiles:
   #     - base

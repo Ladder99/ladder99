@@ -1,0 +1,26 @@
+#!/bin/bash
+
+usage="
+Usage: ./l99 init SETUP
+
+Initialize a new setup in ../setup-SETUP.
+
+Example
+    ./l99 init my-company
+"
+
+# show help if count of params is zero
+if [ $# -eq 0 ]; then
+    echo "$usage"
+    exit 1
+fi
+
+# get dest folder
+DEST=../setup-$1
+shift
+
+# copy from setups/template
+echo
+echo Copying from setups/template...
+CMD="cp -R setups/template $DEST"
+$CMD

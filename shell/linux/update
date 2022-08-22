@@ -5,7 +5,7 @@ Usage: ./l99 update SETUP
 
 Update Ladder99 pipeline and client code.
 
-SETUP        name of client or setup folder, eg demo or ./setups/example
+SETUP        name of client or setup folder, eg demo
 "
 
 # show help
@@ -30,11 +30,6 @@ else
     SETUP=../setup-$1
 fi
 shift
-
-# # pull ladder99-ce repo
-# CMD="git pull"
-# echo $CMD
-# bash -c "$CMD"
 
 # pull ladder99-ce repo then client repo
 # set credential cache while we're at it so user doesn't have to
