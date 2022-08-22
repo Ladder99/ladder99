@@ -330,6 +330,7 @@ const stepHandlers = {
     // use name/tag for last resort
     // eg <Axes id="a"> gives 'axes'
     // eg <Axes id="a" name="base"> gives 'base', but can translate with regexp later
+    //. why this way?
     return (obj.name || obj.nativeName || obj.tag || '').toLowerCase()
   },
 }
