@@ -16,11 +16,17 @@ if [ $# -eq 0 ]; then
 fi
 
 # get dest folder
-DEST=../setup-$1
+SETUP=$1
+DEST=../setup-$SETUP
 shift
 
-# copy from setups/template
+# copy setup
+# rsync has an --exclude param, but installing rsync on git bash for windows is complex - 
+#  https://superuser.com/questions/701141/how-to-add-more-commands-to-git-bash
 echo
-echo Copying from setups/template...
-CMD="cp -R setups/template $DEST"
-$CMD
+echo Copying from setups/example...
+cp -R setups/example $DEST \
+&& rm -r $DEST/volumes/postgres \
+&& rm -r $DEST/volumes/grafana/var \
+&& rm -r $DEST/volumes/pgadmin \
+&& echo Done. Try ./l99 start $SETUP
