@@ -21,11 +21,8 @@ SERVICES=$*
 if [ $SERVICES = "all" ]; then
   # CMD="docker stop $(docker ps -q)"
   # --force = no confirmation
-  CMD="docker system prune --force"
+  docker system prune --force \
+  && docker rm --force --volumes $(docker ps -q -a)
 else
-  CMD="docker stop $SERVICES"
+  docker stop $SERVICES
 fi
-
-# get command and call it
-echo $CMD
-bash -c "$CMD"
