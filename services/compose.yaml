@@ -1,7 +1,7 @@
 # docker compose file for the complete ladder99 pipeline.
 # can override these settings in setup-specific compose-overrides.yaml files.
 
-# see ./start for how to run
+# see ./l99 start for how to run
 
 # docker compose yaml version - must be a string
 # see https://docs.docker.com/compose/compose-file/compose-file-v3
@@ -30,7 +30,6 @@ services:
       L99_ADAPTER_FOLDER: /data/adapter
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml etc
-      # - ../modules:/data/modules # has module yamls
       - ../setups/common/modules:/data/modules # has module yamls
       - ../$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
     restart: always
