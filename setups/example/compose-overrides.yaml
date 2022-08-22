@@ -22,13 +22,6 @@ services:
   grafana:
     profiles:
       - base
-    user: root
-    # entrypoint:
-    #   - /bin/sh
-    #   - -c
-    #   - |
-    #     chown grafana /var/lib/grafana
-    #     exec su grafana -s /bin/sh -c /run.sh
   meter:
     profiles:
       - base
