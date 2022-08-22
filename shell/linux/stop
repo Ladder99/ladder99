@@ -7,6 +7,8 @@ usage="
 Usage: ./l99 stop SERVICES
 
 Stop Ladder99 services.
+
+To stop all running services, use ./l99 stop all
 "
 
 if [ $# -eq 0 ]; then
@@ -15,6 +17,10 @@ if [ $# -eq 0 ]; then
 fi
 
 SERVICES=$*
+
+if [ $SERVICES = "all" ]; then
+  SERVICES=$(docker ps -q)
+fi
 
 # get command and call it
 CMD="docker stop $SERVICES"
