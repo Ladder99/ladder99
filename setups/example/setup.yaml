@@ -29,7 +29,7 @@ relay:
       # retention: 2d # could clear all unneeded data at midnight - then vacuum analyze db?
       # without a list of devices here, relay would read all available in agent
       devices:
-        - id: m
+        - id: m # must match id in agent.xml
           alias: Microcontroller # as displayed in grafana - can change. without this, just use device name?
           # ignore: true # can specify this to turn device recording on/off
           # could override settings per dataitem -
@@ -37,8 +37,8 @@ relay:
           #   - id: m-os
           #     retention: 1d
 
-    # - alias: mazak5701 # assigned agent alias - don't change!
-    #   url: http://mtconnect.mazakcorp.com:5701
-    #   devices:
-    #     - id: d1
-    #       alias: Mazak Mill 12345
+    - alias: Mazak5701 # assigned agent alias - don't change!
+      url: http://mtconnect.mazakcorp.com:5701
+      devices:
+        - id: d1 # must match id in agent.xml
+          alias: MazakMill12345 # used in path expressions - no spaces!
