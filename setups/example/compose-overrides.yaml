@@ -22,9 +22,9 @@ services:
   grafana:
     profiles:
       - base
-  meter:
-    profiles:
-      - base
+  # meter:
+  #   profiles:
+  #     - base
   postgres:
     profiles:
       - base

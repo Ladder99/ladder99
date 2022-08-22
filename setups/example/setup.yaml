@@ -18,7 +18,7 @@ adapter:
         host: adapter # must match agent.cfg value
         port: 7890 # must match agent.cfg value
 
-# ladder99 relay reads this section to know what agents to read data from.
+# ladder99 relay reads this section to know what agents and devices to read data from.
 # warning: don't change the agent aliases (eg main) as they are used to synch data with db.
 relay:
   # retention: 1wk # could specify a top-level retention for all agents here
