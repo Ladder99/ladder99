@@ -42,3 +42,19 @@ relay:
       devices:
         - id: d1 # must match id in agent.xml
           alias: MazakMill12345 # used in path expressions - no spaces!
+          # ignore: true # set true to hide device in dashboards, pause recording, etc
+          # dataitem step translations
+          translations:
+            base: axes
+            Cload: load-index
+            Sload: load-spindle
+          # ignore or set retention for individual dataitems
+          dataitems:
+            - id: d1-auto_time
+              ignore: true
+            - id: d1-total_time
+              ignore: true
+            - id: d1-cut_time
+              ignore: true
+            - id: d1-total_auto_cut_time
+              ignore: true
