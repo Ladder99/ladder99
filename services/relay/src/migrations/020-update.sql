@@ -38,7 +38,7 @@ SELECT
   nodes.props->>'uuid' as uuid, -- a supposedly unique id, but depends on agent.xml developer
   nodes.props->>'path' as path,
   nodes.props->>'shortPath' as shortpath,
-  nodes.props->>'name' as name
+  nodes.props->>'name' as name,
   nodes.props as props
 FROM 
   raw.nodes as nodes
