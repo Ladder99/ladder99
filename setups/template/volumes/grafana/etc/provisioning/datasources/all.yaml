@@ -1,0 +1,54 @@
+# see https://grafana.com/docs/grafana/latest/administration/provisioning/#data-sources
+
+# config file version
+apiVersion: 1
+
+# # list of datasources to delete
+# deleteDatasources:
+#   - name: Graphite
+#     orgId: 1
+
+# list of datasources to insert/update
+datasources:
+  - name: Postgres
+    type: postgres
+
+    # custom UID which can be used to reference this datasource in
+    # other parts of the configuration, if not specified will be generated automatically
+    uid: timescaledb
+
+    # access mode. proxy or direct (Server or Browser in the UI). Required
+    access: direct
+
+    # url: host.docker.internal:5433 # for macos
+    # url: postgres:5432
+    url: $PGHOST:$PGPORT
+    user: $PGUSER
+    database: $PGDATABASE
+
+    # enable/disable basic auth
+    basicAuth: false
+
+    # enable/disable with credentials headers
+    withCredentials: false
+
+    # mark as default datasource. Max one per org
+    isDefault: true
+
+    # fields that will be converted to json and stored in jsonData
+    jsonData:
+      graphiteVersion: '1.1'
+      tlsAuth: false
+      tlsAuthWithCACert: false
+      postgresVersion: 1300 # postgres v13
+      sslmode: disable
+      timescaledb: true # uses timescaledb extension
+
+    # json object of data that will be encrypted
+    secureJsonData:
+      password: $PGPASSWORD
+
+    # allow users to edit datasources from the UI
+    editable: true
+
+    version: 1

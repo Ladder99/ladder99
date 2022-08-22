@@ -203,14 +203,14 @@ services:
   # grafana
   # ---------------------------------------------------------------------------
   # show real-time data from the database, handle notifications
-  #. can't upgrade beyond 8.3.5 yet -
+  #. can't upgrade beyond 8.3.5 yet - get Origin not allowed error on dash
   # see https://github.com/grafana/grafana/issues/45117
   # see https://grafana.com/tutorials/run-grafana-behind-a-proxy/#configure-traefik
   # see https://goteleport.com/docs/application-access/getting-started/
   grafana:
     container_name: grafana
     image: grafana/grafana:8.2.2
-    # image: grafana/grafana:9.0.2 #. get Origin not allowed error on dash
+    # image: grafana/grafana-oss:9.1.0
     profiles:
       - grafana
     # IMPORTANT: might need to turn this on for a client - have to comment it
@@ -252,7 +252,6 @@ services:
     # are blanks equivalent to root user?
     #. these could be set by ./start script?
     # user: '$UID:$GID'
-    #. don't use this? how?
     user: root
     restart: always
     networks:
