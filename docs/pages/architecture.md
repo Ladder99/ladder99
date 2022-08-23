@@ -1,18 +1,17 @@
-# Architecture
+## Architecture
 
-Data flows from devices through the Adapter, Agent, and Relay to the Database, Dashboard, and other applications.
+Data flows from **Devices** through the **Adapter**, **Agent**, and **Relay** to the **Database**, **Dashboard**, and other applications.
 
-## Diagram
-
-![img](../../design/architecture.dot.svg)
+![](docs/pages/_images/ladder99-arch-oxbox-2022-06.png)
 
 ## How it works
 
-The Adapter polls or subscribes to messages from devices, and translates them to SHDR (Simple Hierarchical Data Representation), eg "2021-02-28T02:40:00|key|value", which it sends on to the Agent.
+The **Adapter** polls or subscribes to messages from **Devices**, and translates the data to **SHDR** (Simple Hierarchical Data Representation), a simple text format, eg "2021-02-28T02:40:00|count|32", which it sends on to the **Agent**.
 
-The Agent fits that data into an XML tree representing the device structures. This XML can be viewed in the browser, or transformed into HTML.
+The **Agent** fits that data into an XML tree representing the device structures. This XML can be viewed in the browser directly, or transformed into HTML.
 
-The Relay then consumes the XML and feeds it to the Database and Dashboard.
+The **Relay** then consumes the XML and feeds it to the **Database**. 
 
-<!-- MQTT is a publish/subscribe message protocol. Messages from factory devices go to an MQTT Broker (Mosquitto). -->
-<!-- via an optional one-way data diode (Java + RabbitMQ) -->
+The **Meter** polls the Database for changes and writes updated statistics.
+
+And finally, the **Dashboard** polls the Database and displays current and historical values in a browser.

@@ -22,8 +22,8 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'Ladder99'
-author = 'Ladder99 LLC'
-copyright = str(datetime.now().year) + ', Ladder99 LLC'
+author = 'MRIIOT LLC'
+copyright = str(datetime.now().year) + ', MRIIOT LLC'
 
 
 # -- General configuration ---------------------------------------------------
