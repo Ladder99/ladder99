@@ -4,9 +4,10 @@ Ladder99
 
 **Ladder99** is a free and open-source software pipeline that transforms data from your devices to a standard vocabulary, which can then feed into a database and dashboard, or any MTConnect-compatible application.
 
-.. image:: pages/_images/agent-html_1200.jpg
+.. .. image:: pages/_images/agent-html_1200.jpg
+.. image:: pages/_images/grafana-pa.jpg
 
-**MTConnect** standardizes factory device data flow and vocabulary - it was started by UC Berkeley, Georgia Institute of Technology, and Sun Microsystems in 2008, and continues under active development. 
+**MTConnect** standardizes factory device data vocabulary - it was started by UC Berkeley, Georgia Institute of Technology, and Sun Microsystems in 2008, and continues under active development. 
 
 .. toctree::
    :maxdepth: 1

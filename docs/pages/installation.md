@@ -1,12 +1,20 @@
 # Installation
 
-Open a terminal window (if on Windows, use Git Bash), and go to a good working directory - the Desktop or your home directory will do. 
+## Install Git
 
-> Note: It's not recommended to use a cloud folder like Dropbox, as this would slow down the installation.
+**Git** gives us access to the source code for Ladder99, and also provides a console on Windows that acts more like a Linux console. 
+
+You can install it from https://git-scm.com/downloads.
+
+
+## Open Terminal
+
+Open a terminal window (if on Windows, use Git Bash), and go to a good working directory - e.g. the Desktop or your home directory. 
+
 
 ## Install Docker
 
-Ladder99 uses **Docker** to run services on different platforms.
+**Docker** lets us run the different parts of the pipeline in a consistent way on different platforms.
 
 First check if it's on your system -
 
@@ -15,6 +23,7 @@ docker version
 ```
 
 If not there, install it - https://docs.docker.com/get-docker/.
+
 
 ## Install Docker Compose
 
@@ -26,9 +35,10 @@ docker-compose version
 
 Install or upgrade it at https://docs.docker.com/compose/install/.
 
+
 ## Install Ladder99
 
-Next, install the Ladder99 pipeline by cloning the code from GitHub. If you don't have **git**, you can install it from https://git-scm.com/downloads -
+Next, install the Ladder99 pipeline source code by cloning the code from GitHub -
 
 ```
 git clone https://github.com/Ladder99/ladder99
