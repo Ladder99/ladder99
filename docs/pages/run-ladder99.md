@@ -1,10 +1,11 @@
 # Run Ladder99
 
-Ladder99 comes with an example setup that pulls data from a live Mazak CNC machine, and the local/host computer. 
+Ladder99 comes with an example that displays data from a live factory machine. 
 
-## Build Services
 
-To test the pipeline, run the example setup with 
+## Run Pipeline
+
+Run the example setup with
 
 ```
 ./l99 start example
@@ -12,9 +13,10 @@ To test the pipeline, run the example setup with
 
 The first time you run this it will download and build all the different services. This WILL take several minutes, so grab a coffee!
 
-## Run Pipeline
 
-When you first run `./l99 start` for a setup it will ask you to edit a .env file, mainly to set the database password. This is optional - the password will default to 'postgres'.
+## Edit Password (optional)
+
+Next, Ladder99 will ask you to edit a .env file, mainly to set the database password. This is optional - the password will default to 'postgres'.
 
 ```
 $ ./l99 start example
@@ -26,13 +28,14 @@ Then re-run the start command.
 
 Now run `./l99 start example` again. 
 
+
 ## View Dashboard
 
 Now go to the dashboard at http://localhost/d/main. 
 
 The first time you visit Grafana, it will ask you for the username and password - this is just 'admin' and 'admin'. Then you will need to enter a new password. 
 
-Grafana will then show the live status of a remote Mazak CNC machine. 
+Grafana will then show the live status of a Mazak CNC machine. 
 
 [img]
 
@@ -42,9 +45,10 @@ The 'Micro' page will show your computer's memory, CPU usage, and temperature (i
 
 ![](_images/ladder99-dash-micro.jpg)
 
+
 ## Stop Pipeline
 
-To stop all the Ladder99 services, say
+When you're done, stop all the Ladder99 services with
 
 ```
 ./l99 stop all

@@ -25,6 +25,9 @@ services:
   # meter:
   #   profiles:
   #     - base
+  portainer:
+    profiles:
+      - base
   postgres:
     profiles:
       - base

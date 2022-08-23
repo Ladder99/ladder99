@@ -2,17 +2,19 @@
 
 Now let's run the MTConnect Agent, which comes with a recording of a CNC machine for playback. 
 
+
 ## Run Image
 
-This command will download an image of the Agent from Docker Hub and run it -
+This command will download an image of the Agent from Docker Hub (a central repository for Docker services) and run it -
 
 ```
 docker run -it --rm --init --name agent -p5000:5000 ladder99/agent
 ```
 
+
 ## View Output
 
-View the output in your browser at http://localhost:5000  -
+View the output in your browser at http://localhost:5000 -
 
 ![](_images/agent-html_1200.jpg)
 
@@ -22,6 +24,7 @@ Click on the **Current** tab to see the current data values, then click on the A
 
 Click the question mark to see more help. 
 
+
 ## Query Agent
 
 The Agent comes with a buffer to store data values, and you can query it with XPath expressions. 
@@ -30,7 +33,7 @@ For example, to see the last 10 values for the x-axis position, visit http://loc
 
 ![](_images/ladder99-agent-sample.png)
 
+
 ## Exit Agent
 
 When you're done, hit Ctrl+C in the terminal window.
-
