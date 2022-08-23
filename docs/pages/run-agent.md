@@ -24,6 +24,7 @@ Click on the **Current** tab to see the current data values, then click on the A
 
 Click the question mark to see more help. 
 
+
 ## XML Output
 
 ![](_images/agent-xml.jpg)
