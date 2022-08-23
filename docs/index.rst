@@ -11,7 +11,7 @@ Ladder99
    :caption: Table of Contents
 
    pages/welcome
-   pages/architecture
+   pages/how-it-works
    pages/installation
    .. pages/pipeline
    pages/adapter
