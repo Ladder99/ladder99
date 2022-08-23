@@ -1,10 +1,12 @@
 # About
 
-## Ladder99 LLC
+## Goals
 
-We are a small company started in 2021 with plans to create a free and open ecosystem around MTConnect, including device adapters and visualizations.
+Ladder99 is developed by MRIIOT, with the goal to help develop the free and open ecosystem around MTConnect, including device adapters and visualizations.
 
-Our plan is to eventually release additional premium services built around the Ladder99 pipeline, including Cloud storage, Knowledge Graph integration, and Predictive Analytics.
+Our plan is to eventually release additional premium services built around the Ladder99 pipeline, including Cloud storage, Knowledge Graph integration, and Predictive Analytics, and more.
+
+Our website explains our approach to agile digital transformation - https://mriiot.com.
 
 ## Repository
 
@@ -20,4 +22,4 @@ Follow us on Twitter at https://twitter.com/ladder99_com, and Medium at https://
 
 ## License
 
-The Ladder99 pipeline is released under the MIT License.
+Ladder99 Community Edition is released under the Apache 2.0 License.

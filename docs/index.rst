@@ -18,7 +18,6 @@ Ladder99
    pages/installation
    pages/run-agent
    pages/run-ladder99
-   .. pages/pipeline
    .. pages/adapter
    .. pages/develop-adapter
    .. pages/agent
