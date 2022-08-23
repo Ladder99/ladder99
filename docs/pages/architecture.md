@@ -1,4 +1,4 @@
-## Architecture
+# Architecture
 
 Data flows from **Devices** through the **Adapter**, **Agent**, and **Relay** to the **Database**, **Dashboard**, and other applications.
 

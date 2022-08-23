@@ -1,6 +1,8 @@
-## Ladder99
+# Installation
 
-**Ladder99** is a pipeline that includes **Adapters** that feed data from various devices to the MTConnect **Agent**, and a **Relay** that reads the Agent output and passes it on to a Database - a Dashboard then displays the current and past values.
+<!-- ## Ladder99
+
+**Ladder99** is a pipeline that includes **Adapters** that feed data from various devices to the MTConnect **Agent**, and a **Relay** that reads the Agent output and passes it on to a Database - a Dashboard then displays the current and past values. -->
 
 ## Install Docker Compose
 
