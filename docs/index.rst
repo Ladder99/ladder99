@@ -13,7 +13,7 @@ Ladder99
    :maxdepth: 1
    :caption: Table of Contents
 
-   pages/welcome
+   pages/what-is-ladder99
    pages/how-it-works
    pages/installation
    pages/run-agent
