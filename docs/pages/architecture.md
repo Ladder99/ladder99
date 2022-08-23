@@ -2,7 +2,7 @@
 
 Data flows from **Devices** through the **Adapter**, **Agent**, and **Relay** to the **Database**, **Dashboard**, and other applications.
 
-![](docs/pages/_images/ladder99-arch-oxbox-2022-06.png)
+![](_images/ladder99-arch-oxbox-2022-06.png)
 
 ## How it works
 

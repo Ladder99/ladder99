@@ -51,7 +51,7 @@ Once it's done, you can view the dashboard at http://localhost/d/main. The first
 
 Click on the 'microcontroller' link at the top-right of the page to see your computer's memory, cpu usage, and temperature (if your processor supports it) over time. 
 
-![](docs/pages/_images/ladder99-dash-micro.jpg)
+![](_images/ladder99-dash-micro.jpg)
 
 To stop all the services, say
 
