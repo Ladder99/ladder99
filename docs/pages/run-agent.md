@@ -1,20 +1,8 @@
-# Getting Started
+# Run Agent
 
-## Install Docker
+Now let's run the MTConnect Agent, which comes with a recording of a CNC machine for playback. 
 
-Ladder99 uses Docker to run services on different platforms.
-
-First, open a Terminal or Command Prompt window (on Windows, use Git Bash), and check if it's on your system -
-
-```
-docker version
-```
-
-If not there, install it - https://docs.docker.com/get-docker/.
-
-## Run MTConnect Agent
-
-Now let's run the MTConnect Agent. This command will download an image of the Agent from Docker Hub and run it, which by default plays back a recording of a CNC machine in a loop -
+This command will download an image of the Agent from Docker Hub and run it -
 
 ```
 docker run -it --rm --init --name agent -p5000:5000 ladder99/agent
@@ -37,3 +25,4 @@ For example, to see the last 10 values for the x-axis position, visit http://loc
 Click the question mark to see more help. 
 
 When you're done, hit Ctrl+C in the terminal window.
+

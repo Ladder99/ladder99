@@ -4,7 +4,9 @@ Data flows from **Devices** through the **Adapter**, **Agent**, and **Relay** to
 
 ![](_images/ladder99-arch-oxbox-2022-06.png)
 
-The **Adapter** polls or subscribes to messages from **Devices**, and translates the data to SHDR (Simple Hierarchical Data Representation), a simple text format, eg "2021-02-28T02:40:00|count|32", which it sends on to the **Agent**.
+The **Adapter** polls or subscribes to messages from **Devices**, and translates the data to a simple text format, which it sends on to the **Agent**.
+
+<!-- The **Adapter** polls or subscribes to messages from **Devices**, and translates the data to SHDR (Simple Hierarchical Data Representation), a simple text format, eg "2021-02-28T02:40:00|count|32", which it sends on to the **Agent**. -->
 
 The **Agent** fits that data into an XML tree representing the device structures. This XML can be viewed in the browser directly, or transformed into HTML.
 

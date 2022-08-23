@@ -13,8 +13,10 @@ Ladder99
    pages/welcome
    pages/how-it-works
    pages/installation
+   pages/run-agent
+   pages/run-ladder99
    .. pages/pipeline
-   pages/adapter
+   .. pages/adapter
    .. pages/develop-adapter
    .. pages/agent
    .. pages/relay
@@ -23,7 +25,6 @@ Ladder99
    .. pages/develop-agent
    pages/about
 
-   .. pages/getting-started
    .. pages/setting-up-devices
    .. pages/developing-adapters
    .. pages/contributing
