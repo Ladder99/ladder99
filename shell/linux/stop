@@ -16,13 +16,16 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
+#. add prune option to clear up space?
+
 SERVICES=$*
 
 if [ $SERVICES = "all" ]; then
   # CMD="docker stop $(docker ps -q)"
   # --force = no confirmation
-  docker system prune --force \
-  && docker rm --force --volumes $(docker ps -q -a)
+  # docker system prune --force \
+  # && docker rm --force --volumes $(docker ps -q -a)
+  docker rm --force --volumes $(docker ps -q)
 else
   docker stop $SERVICES
 fi
