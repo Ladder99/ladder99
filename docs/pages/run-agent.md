@@ -2,7 +2,7 @@
 
 Now let's run the MTConnect Agent, which comes with a recording of a CNC machine for playback. 
 
-## Download and Run Image
+## Run Image
 
 This command will download an image of the Agent from Docker Hub and run it -
 

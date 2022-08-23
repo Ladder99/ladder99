@@ -1,6 +1,6 @@
 # Run Ladder99
 
-Ladder99 comes with an example setup that pulls data from a LIVE Mazak CNC machine, and the local/host computer. 
+Ladder99 comes with an example setup that pulls data from a live Mazak CNC machine, and the local/host computer. 
 
 ## Build Services
 
