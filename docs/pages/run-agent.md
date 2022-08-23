@@ -5,7 +5,7 @@ Now let's run the MTConnect Agent, which comes with a recording of a CNC machine
 
 ## Run Image
 
-This command will download an image of the Agent from Docker Hub (a central repository for Docker services) and run it -
+This command will download an image of the Agent from Docker Hub (a central repository for Docker services) and run the simulation -
 
 ```
 docker run -it --rm --init --name agent -p5000:5000 ladder99/agent
@@ -23,6 +23,10 @@ The Agent starts in the **Probe** tab, which shows the data items available for 
 Click on the **Current** tab to see the current data values, then click on the Autorefresh button to have the view refreshed every 2 seconds. 
 
 Click the question mark to see more help. 
+
+## XML Output
+
+![](_images/agent-xml.jpg)
 
 
 ## Query Agent
