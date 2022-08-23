@@ -1,6 +1,6 @@
 # Agent
 
-Ladder99 Agent is a Docker image of the MTConnect Agent, which receives data from one or more device Adapters, fits the key-value data into an XML tree, and serves output as an HTML webpage.
+Ladder99 Agent is a Docker image of the MTConnect Agent, which receives data from one or more device Adapters, fits the data into an XML tree, and serves it as an HTML webpage.
 
 ## Default Setup
 

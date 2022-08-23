@@ -8,13 +8,11 @@ The Adapter reads data from a device and translates it into SHDR, a simple key-v
 
 You can run some sample data with
 
-    sh/start ccs-pa adapter agent mosquitto play
+    ./l99 start development/ccs-pa adapter agent mosquitto play
 
 then visit http://localhost:5000/current.
 
 ## Diagram
-
-<!-- https://lucid.app/lucidchart/invitations/accept/inv_54a6833b-a66a-472e-a4e8-a5806660a405?viewport_loc=-90%2C129%2C1696%2C676%2C0_0 -->
 
 ![adapter](_images/adapter.png)
 
