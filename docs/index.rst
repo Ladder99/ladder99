@@ -7,7 +7,7 @@ Ladder99
 .. image:: pages/_images/agent-html_1200.jpg
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: Table of Contents
 
    pages/welcome
