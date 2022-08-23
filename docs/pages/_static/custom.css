@@ -4,6 +4,10 @@ body {
   /* --logocolor: #555; */
 }
 
+.highlight {
+  background: rgb(173, 178, 225);
+}
+
 .wy-side-nav-search {
   background-color: var(--themecolor);
 }
