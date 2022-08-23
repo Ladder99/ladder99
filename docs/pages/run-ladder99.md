@@ -6,16 +6,16 @@ To test the pipeline, run the 'example' setup with
 ./l99 start example
 ```
 
-The first time you run this it will download and build all the different services. 
+The first time you run this it will download and build all the different services. This WILL take several minutes, so grab a coffee!
 
-This WILL take several minutes, so grab a coffee!
-
-The first time you run `./l99 start` for a setup it will ask you to edit a .env file, mainly to set the database password. This is optional - the password will default to 'postgres'.
+When you first run `./l99 start` for a setup it will ask you to edit a .env file, mainly to set the database password. This is optional - the password will default to 'postgres'.
 
 ```
 $ ./l99 start example
 No .env file found - copying from default...
-PLEASE EDIT setups/example/.env, e.g. nano setups/example/.env
+PLEASE SET INITIAL PASSWORDS IN .env FILE - e.g.
+$ nano setups/example/.env
+Then re-run the start command. 
 ```
 
 Now run `./l99 start example` again. 
