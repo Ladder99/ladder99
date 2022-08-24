@@ -1,4 +1,4 @@
-# Demo
+# Demonstration
 
 To see what Ladder99 can do, we have a demo running on our site.
 
