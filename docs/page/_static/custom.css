@@ -8,6 +8,12 @@ body {
   background: rgb(210, 210, 255);
 }
 
+.rst-content .linenodiv pre, 
+.rst-content div[class^="highlight"] pre, 
+.rst-content pre.literal-block {
+  font-size: 14px;
+}
+
 .wy-side-nav-search {
   background-color: var(--themecolor);
 }
