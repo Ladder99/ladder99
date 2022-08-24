@@ -24,7 +24,7 @@ import sphinx_rtd_theme
 project = 'Ladder99'
 author = 'MRIIOT LLC'
 copyright = str(datetime.now().year) + ', MRIIOT LLC'
-root_doc = 'source/contents'
+# root_doc = 'source/contents'
 
 # -- General configuration ---------------------------------------------------
 
