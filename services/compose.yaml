@@ -32,7 +32,7 @@ services:
       - ../$SETUP:/data/setup # has setup.yaml etc
       - ../setups/common/modules:/data/modules # has module yamls
       - ../$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     logging:
@@ -60,7 +60,7 @@ services:
       - ../$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
     ports:
       - 5000:5000
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     logging:
@@ -77,7 +77,7 @@ services:
     image: offen/docker-volume-backup:latest
     profiles:
       - backup
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     volumes:
@@ -169,7 +169,7 @@ services:
     # IMPORTANT: might need to turn this on for a client.
     # ports:
     #   - 8978:8978
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     logging:
@@ -191,7 +191,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 8080:8080
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     logging:
@@ -253,7 +253,7 @@ services:
     # of the container. [?]
     # https://stackoverflow.com/questions/64271295/runnig-docker-as-nonroot-with-user-id-u-cant-create-var-lib#comment113675767_64272066
     user: root
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     logging:
@@ -278,7 +278,7 @@ services:
       #. why z-hue.ini? is it an arbitrary name for hue-overrides.ini?
       # https://stackoverflow.com/questions/57116402/hue-access-to-hdfs-bypass-default-hue-ini
       - ../$SETUP/volumes/hue/hue.ini:/usr/share/hue/desktop/conf/z-hue.ini
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     logging:
@@ -302,7 +302,7 @@ services:
   #   volumes:
   #     - /var/run/docker.sock:/var/run/docker.sock:ro
   #     - /var/run/docker/containers:/var/lib/docker/containers
-  #   restart: always
+  #   restart: unless-stopped
   #   networks:
   #     - ladder99
   #   logging:
@@ -332,7 +332,7 @@ services:
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml
       # - ../setups/common/modules:/data/modules # has module-specific folders
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     logging:
@@ -357,7 +357,7 @@ services:
       - ../$SETUP/volumes/mosquitto/config:/mosquitto/config # has mosquitto.conf
       - ../$SETUP/volumes/mosquitto/data:/mosquitto/data
       - ../$SETUP/volumes/mosquitto/log:/mosquitto/log
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     # see https://kossy0701.medium.com/what-is-tty-true-in-docker-compose-yml-47a72891aee2
@@ -375,7 +375,7 @@ services:
     image: nodered/node-red:2.1.6
     profiles:
       - nodered
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     ports:
@@ -422,7 +422,7 @@ services:
       # for dpage/pgadmin4
       PGADMIN_DEFAULT_EMAIL: null
       PGADMIN_DEFAULT_PASSWORD: null
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     deploy:
@@ -446,7 +446,7 @@ services:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
       # - ../modules:/data/modules # has module-specific recordings folder
       - ../setups/common/modules:/data/modules # has module-specific recordings folder
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     logging:
@@ -469,7 +469,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /var/run/docker.sock:/var/run/docker.sock
       - ../$SETUP/volumes/portainer/data:/data
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     logging:
@@ -522,7 +522,7 @@ services:
       # - 'docker-volume-backup.stop-during-backup=false'
       # note: we always write to the same filename
       - "docker-volume-backup.exec-pre=/bin/sh -c 'pg_dumpall -U $PGUSER --clean --file /backup/dumpall.sql'"
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     logging:
@@ -548,7 +548,7 @@ services:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
       # - ../modules:/data/modules # has module-specific recordings folder
       - ../setups/common/modules:/data/modules # has module-specific recordings folder
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     logging:
@@ -596,7 +596,7 @@ services:
     # and https://docs.docker.com/compose/compose-file/compose-file-v3/#extra_hosts
     extra_hosts:
       - 'host.docker.internal:host-gateway'
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     volumes:
@@ -623,7 +623,7 @@ services:
       - COMMAND_SERVER_URL=https://command.sematext.com
     cap_add:
       - SYS_ADMIN
-    restart: always
+    restart: unless-stopped
     volumes:
       - /:/hostfs:ro
       - /etc/passwd:/etc/passwd:ro
@@ -645,7 +645,7 @@ services:
       - REGION=US
     cap_add:
       - SYS_ADMIN
-    restart: always
+    restart: unless-stopped
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
 
@@ -670,7 +670,7 @@ services:
       - 443:443/tcp
     command:
       - --certresolv.myresolver.acme.storage=/etc/traefik/acme.json
-    restart: always
+    restart: unless-stopped
     volumes:
       # will need to do this before starting traefik -
       #   mkdir ../client-oxbox/volumes/traefik
