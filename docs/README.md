@@ -2,20 +2,36 @@
 
 ## Installation
 
-Install Python dependencies with
+### Linux
+
+Install Sphinx and Python dependencies with
 
     shell/docs/install
+
+Then run with
+
+<!-- shell/docs/start -->
+
+    docs/make html
+
+### Windows
+
+Install Sphinx and Python dependencies with 
+
+    choco install sphinx
+
+Then run with
+
+    docs\make html
 
 
 ## Developing
 
-Serve the docs for development with
+Visit http://localhost:8080
 
-    shell/docs/start
+Edit index in docs/index.rst and markdown files in docs/pages.
 
-then visit http://localhost:8080.
-
-Docs are automatically built by readthedocs.org when changes are pushed to the github repo. See https://ladder99.readthedocs.io/en/latest/.
+Docs are also automatically built by readthedocs.org when changes are pushed to the github repo. See https://ladder99.readthedocs.io.
 
 
 ## Contributing
