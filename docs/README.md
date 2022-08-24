@@ -4,17 +4,19 @@
 
 Install Python dependencies with
 
-    sh/docs/install
+    shell/docs/install
+
 
 ## Developing
 
 Serve the docs for development with
 
-    sh/docs/start
+    shell/docs/start
 
 then visit http://localhost:8080.
 
 Docs are automatically built by readthedocs.org when changes are pushed to the github repo. See https://ladder99.readthedocs.io/en/latest/.
+
 
 ## Contributing
 
