@@ -9,10 +9,10 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
    :caption: Table of Contents
 
    page/demo
-   page/quickstart
    page/what-is-ladder99
    page/what-is-mtconnect
    page/how-does-it-work
+   page/quickstart
    page/installation
    page/running-agent
    page/running-ladder99
