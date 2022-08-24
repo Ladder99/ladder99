@@ -2,18 +2,18 @@
 
 Now let's create a new setup so we can hook it up to your own Agent. 
 
-This will copy the example setup we saw earlier into the folder `../setup-foo` -
+This will copy the example setup we saw earlier into the folder `../setup-test` -
 
-`./l99 init foo`
+    ./l99 init test
      
 Then start the pipeline with
 
-`./l99 start foo`
+    ./l99 start test
 
 
 ## Setup.yaml
 
-Now have a look inside the main configuration file, `../setup-foo/setup.yaml` - 
+Now have a look inside the main configuration file, `../setup-test/setup.yaml` - 
 
 First note the **adapter** section - this specifies the device drivers to feed to our Agent. In this case, we have a microcontroller driver, which reads some stats of the local/host computer. 
 
@@ -81,7 +81,7 @@ relay:
 
 ## Compose-overrides.yaml
 
-Another file with configuration settings is `../setup-foo/compose-overrides.yaml`. This contains extra configuration for Docker - in this case, mostly just telling it to run all services with a profile name of 'base'. 
+Another file with configuration settings is `../setup-test/compose-overrides.yaml`. This contains extra configuration for Docker - in this case, mostly just telling it to run all services with a profile name of 'base'. 
 
 ```yaml
 # docker-compose overrides
@@ -180,4 +180,13 @@ etc, with one section per service.
 
 ## Add Your Agent
 
-pokpok
+To add your own agent to the setup, add the following to `../setup-test/setup.yaml` -
+
+```yaml
+    - alias: [a name for your agent] # assigned agent alias - don't change!
+      url: http://[your agent ip address here]
+```
+
+Then restart the relevant portions of the pipeline - 
+
+    ./l99 start relay
