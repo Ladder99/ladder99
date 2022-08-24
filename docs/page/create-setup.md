@@ -2,6 +2,9 @@
 
 Now let's create a new setup so we can hook it up to your own Agent. 
 
+
+## Copy Example
+
 This will copy the example setup we saw earlier into the folder `../setup-test` -
 
     ./l99 init test
@@ -9,6 +12,19 @@ This will copy the example setup we saw earlier into the folder `../setup-test` 
 Then start the pipeline with
 
     ./l99 start test
+
+
+## Edit Passwords
+
+Ladder99 will first ask you to edit a .env file, mainly to set the initial passwords -
+
+    nano ../setup-test/.env
+
+Edit the Grafana and Postgres passwords, and run 
+
+    ./l99 start test
+
+again.
 
 
 ## Setup.yaml

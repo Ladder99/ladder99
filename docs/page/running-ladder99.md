@@ -14,19 +14,6 @@ Run the example setup with
 The first time you run this it will download and build all the different services. This WILL take several minutes, so grab a coffee!
 
 
-## Edit Password (optional)
-
-Next, Ladder99 will ask you to edit a .env file, mainly to set the database password. This is optional - the password will default to 'postgres'.
-
-```
-$ ./l99 start example
-No .env file found - copying from default...
-PLEASE SET INITIAL PASSWORDS IN .env FILE - e.g.
-$ nano setups/example/.env
-Then re-run the start command. 
-```
-
-Now run `./l99 start example` again. 
 
 
 ## View Dashboard
