@@ -7,6 +7,7 @@ Ladder99
    :caption: Table of Contents
 
    page/what-is-ladder99
+   page/what-is-mtconnect
    page/how-does-it-work
    page/installation
    page/running-agent
