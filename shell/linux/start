@@ -63,9 +63,15 @@ else
 fi
 shift
 
+if [ ! -e $SETUP ]; then
+    echo Setup folder $SETUP does not exist. Did you forget the setup name?
+    echo
+    # echo "$usage"
+    exit 1
+fi
+
 # if no services specified, default to 'base'
 if [ $# -eq 0 ]; then
-    # echo "$usage"
     # echo Missing services/profiles to start.
     # exit 1
     SERVICES=base
