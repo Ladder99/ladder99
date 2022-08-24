@@ -1,5 +1,10 @@
 # Ladder99 Documentation
 
+Be careful messing with the directory structures here - it's very touchy. In particular, the sphinx-autobuild project might be out of date and not work the same as the Sphinx build command. 
+
+Configuration is set in .readthedocs.yaml and docs/conf.py
+
+
 ## Installation
 
 Install Sphinx and Python dependencies with
@@ -24,11 +29,6 @@ Edit files in docs/source - index in index.rst and markdown files for pages. Sph
 ## Deploying
 
 Docs are automatically built by readthedocs.org when changes are pushed to the github repo. See https://ladder99.readthedocs.io.
-
-
-## Configuration
-
-Configuration is set in .readthedocs.yaml and docs/conf.py
 
 
 ## Contributing
