@@ -6,7 +6,7 @@ Open up Grafana at `http://localhost/d/micro` - note the header has a time range
 
 Now let's look at a query. Click on the CPU header and select 'Edit', then look in the 'Data Source' box -
 
-```sql
+```
 SELECT time, value as total
 FROM history_float
 WHERE
@@ -31,7 +31,7 @@ Now let's look at another query, for the timeline on the main page - click on 'M
 
 Click on 'Timeline', and 'Edit'. This has a series of queries, starting with
 
-```sql
+```
 SELECT time, value as "Availability"
 FROM get_timeline('$device', '$device/availability', $__from, $__to, true, '1d')
 ```
