@@ -4,6 +4,8 @@ Be careful messing with the directory structures here - it's very touchy. In par
 
 Configuration is set in .readthedocs.yaml and docs/conf.py
 
+Styles can be overridden in source/_static/custom.css.
+
 
 ## Installation
 

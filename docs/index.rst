@@ -6,21 +6,11 @@ Ladder99
    :maxdepth: 1
    :caption: Table of Contents
 
-   source/what-is-ladder99
-   source/how-does-it-work
-   source/installation
-   source/running-agent
-   source/running-ladder99
-   source/create-setup
-   source/grafana
-   source/about
-
-.. what-is-ladder99
-.. how-does-it-work
-.. installation
-.. running-agent
-.. running-ladder99
-.. create-setup
-.. grafana
-.. about
-
+   page/what-is-ladder99
+   page/how-does-it-work
+   page/installation
+   page/running-agent
+   page/running-ladder99
+   page/create-setup
+   page/grafana
+   page/about
