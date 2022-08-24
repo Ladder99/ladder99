@@ -82,7 +82,9 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['pages/_static']
 
-# custom.css is inside one of the html_static_path folders (e.g. _static)
+# custom.css is inside one of the html_static_path folders (e.g. _static).
+# note: changing the styles in this file might take a while to propagate.
+# click shift+refresh to see if that will bypass the cache.
 html_css_files = ["custom.css"]
 
 # Add any extra paths that contain custom files (such as robots.txt or
