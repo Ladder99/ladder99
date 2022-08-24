@@ -16,21 +16,22 @@ MTConnect standardizes factory device data flow and vocabulary - it was started 
 
 Ladder99 is developed by MRIIOT, your agile digital transformation partners.
 
-![screenshot](docs/images/screenshots/agent-html_1200.jpg)
+![screenshot](design/images/screenshots/agent-html_1200.jpg)
 
 ## Start
 
 On Mac or Linux,
 
-    ./l99 example
+    ./l99 start example
 
 on Windows,
 
-    l99 example
+    l99 start example
 
 ## Folders
 
-- docs - design documents, diagrams
+- design - design notes, diagrams
+- docs - website walkthrough and documentation
 - services - source code for different sections of the pipeline - adapter, relay, etc.
 - setups - setups to demonstrate different modules
 - shell - shell scripts
@@ -45,8 +46,8 @@ For more on MTConnect, see https://www.mtconnect.org.
 
 For more on MRIIOT and what we offer, see https://mriiot.com.
 
-For architecture, design decisions, and milestones/versions/branches, see the [internal docs](docs).
+For architecture, design decisions, and milestones/versions/branches, see the [internal documentation](design).
 
 ## License
 
-Apache 2.0
+Open source Apache 2.0
