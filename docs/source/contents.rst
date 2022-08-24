@@ -11,4 +11,6 @@ Ladder99
    installation
    running-agent
    running-ladder99
+   create-setup
+   grafana
    about

@@ -4,4 +4,4 @@
 
 # note: -a rebuilds everything on a change - needed because the sidebar
 # can get all out of whack otherwise.
-sphinx-autobuild -a --port 8080 docs docs/build/html
+sphinx-autobuild -a docs docs/build/html
