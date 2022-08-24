@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# install sphinx and python dependencies
+
+# # create and use a virtual environment
+# python3 -m venv ~/.venv/ladder99-venv
+# source ~/.venv/ladder99-venv/bin/activate
+
+# install/upgrade Sphinx
+# -U, --upgrade means to upgrade all packages to the newest available version - 
+# so if you already have a package installed, it will upgrade the package for you.
+pip install -U Sphinx
+
+# install python dependencies
+pip install -r docs/requirements.txt

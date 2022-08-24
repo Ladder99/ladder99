@@ -2,36 +2,28 @@
 
 ## Installation
 
-### Linux
-
 Install Sphinx and Python dependencies with
 
-    shell/docs/install
+    docs/shell/install
 
-Then run with
 
-<!-- shell/docs/start -->
+## Running
 
-    docs/make html
+Run Sphinx autobuild with
 
-### Windows
+    docs/shell/start
 
-Install Sphinx and Python dependencies with 
-
-    choco install sphinx
-
-Then run with
-
-    docs\make html
+Visit http://localhost:8080
 
 
 ## Developing
 
-Visit http://localhost:8080
+Edit files in docs/source - index in index.rst and markdown files for pages. Sphinx autobuild will update the local server files.
 
-Edit index in docs/index.rst and markdown files in docs/pages.
 
-Docs are also automatically built by readthedocs.org when changes are pushed to the github repo. See https://ladder99.readthedocs.io.
+## Deploying
+
+Docs are automatically built by readthedocs.org when changes are pushed to the github repo. See https://ladder99.readthedocs.io.
 
 
 ## Contributing
