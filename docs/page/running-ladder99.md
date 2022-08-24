@@ -37,7 +37,7 @@ The first time you visit Grafana, it will ask you for the username and password 
 
 Grafana will then show the live status of a Mazak CNC machine. 
 
-[img]
+![](_images/grafana-demo.png)
 
 Try clicking on the different pages linked at the top - 'DataItems', 'Devices', 'Main', 'Microcontroller'.
 
@@ -54,6 +54,8 @@ To see the list of running services and their status,
 ./l99 list
 ```
 
+e.g.
+
 ```
 $ ./l99 list
 NAMES      STATUS        PORTS
@@ -66,7 +68,7 @@ postgres   Up 16 hours   0.0.0.0:5432->5432/tcp
 relay      Up 16 hours
 ```
 
-The url and port listed on the left is what you would enter in the browser to access that service - e.g. for Dozzle, which provides logs for each service, is at http://localhost:8080.
+The url and port listed on the left is what you would enter in the browser to access that service - e.g. for Dozzle it's http://localhost:8080.
 
 
 ## Stop Pipeline
