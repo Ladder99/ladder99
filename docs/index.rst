@@ -14,10 +14,10 @@ Ladder99
    :caption: Table of Contents
 
    pages/what-is-ladder99
-   pages/how-it-works
+   pages/how-does-it-work
    pages/installation
-   pages/run-agent
-   pages/run-ladder99
+   pages/running-agent
+   pages/running-ladder99
    .. pages/adapter
    .. pages/develop-adapter
    .. pages/agent

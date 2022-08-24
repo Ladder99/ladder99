@@ -1,4 +1,4 @@
-# How It Works
+# How Does It Work?
 
 Data flows from **Devices** through the **Adapter**, **Agent**, and **Relay** to the **Database**, **Meter**, **Dashboard**, and other applications.
 

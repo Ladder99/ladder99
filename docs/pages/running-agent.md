@@ -1,4 +1,4 @@
-# Run Agent
+# Running Agent
 
 Now let's run the MTConnect Agent, which comes with a recording of a CNC machine for playback. 
 
