@@ -1,10 +1,7 @@
 # Quickstart
 
-Install git, docker, docker-compose.
-
-Run
+For tech-savy users who want to get the pipeline up and running quickly, you can install git, docker, docker-compose, and run
 
     ./l99 start example
 
-Visit http://localhost/d/main - enter admin/admin for username/password.
-
+Then visit http://localhost/d/main - enter admin/admin for username/password.
