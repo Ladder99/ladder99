@@ -1,4 +1,4 @@
-# Grafana
+# Dashboard
 
 Open up Grafana at `http://localhost/d/micro` - note the header has a time range of 3 hours, and a refresh rate of 5 seconds. 
 

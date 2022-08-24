@@ -8,6 +8,8 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
    :maxdepth: 1
    :caption: Table of Contents
 
+   page/demo
+   page/quickstart
    page/what-is-ladder99
    page/what-is-mtconnect
    page/how-does-it-work
@@ -15,5 +17,5 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
    page/running-agent
    page/running-ladder99
    page/create-setup
-   page/grafana
+   page/dashboard
    page/about
