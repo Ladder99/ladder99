@@ -1,12 +1,13 @@
 # Dashboard
 
-Open up Grafana at `http://localhost/d/micro` - note the header has a time range of 3 hours, and a refresh rate of 5 seconds. 
+Open up Grafana at http://localhost/d/micro - note the header has a time range of 3 hours, and a refresh rate of 5 seconds. 
+
 
 ## Queries
 
 Now let's look at a query. Click on the CPU header and select 'Edit', then look in the 'Data Source' box -
 
-```
+```sql
 SELECT time, value as total
 FROM history_float
 WHERE
@@ -25,13 +26,14 @@ This query will be run every 5 seconds, and the graph updated.
 
 Click 'Discard' to exit the query editor. 
 
+
 ## Functions
 
 Now let's look at another query, for the timeline on the main page - click on 'Main' in the header. 
 
 Click on 'Timeline', and 'Edit'. This has a series of queries, starting with
 
-```
+```sql
 SELECT time, value as "Availability"
 FROM get_timeline('$device', '$device/availability', $__from, $__to, true, '1d')
 ```
@@ -49,6 +51,7 @@ WHERE
 ```
 
 We're selecting time and value from the history_all view for a given device, path, and time range. 
+
 
 ## Data Model
 
