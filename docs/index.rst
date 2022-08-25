@@ -12,12 +12,19 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
    page/what-is-ladder99
    page/what-is-mtconnect
    page/how-does-it-work
+
    page/quickstart
    page/installation
    page/running-agent
    page/running-ladder99
+   
    page/create-setup
    page/dashboard
    page/configuration
+   
    page/services
+   page/adapter
+
    page/about
+
+   page/introduction/test
