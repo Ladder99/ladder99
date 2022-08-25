@@ -14,6 +14,10 @@ body {
   font-size: 14px;
 }
 
+.rst-content code, .rst-content tt, code {
+	font-size: 85%;
+}
+
 .wy-side-nav-search {
   background-color: var(--themecolor);
 }
