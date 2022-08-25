@@ -5,7 +5,7 @@ Ladder99
 Welcome to the documentation for **Ladder99** - an open-source data pipeline connecting factory devices to a database historian and beyond, using the open standard vocabulary of **MTConnect**.
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Table of Contents
 
    page/demonstration

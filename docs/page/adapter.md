@@ -14,9 +14,9 @@ You can run some sample data with
 
 then visit http://localhost:5000/current.
 
-## Diagram
+<!-- ## Diagram
 
-![](_images/adapter.png)
+![](_images/adapter.png) -->
 
 ## How it works
 
@@ -44,6 +44,6 @@ The Cache is a key-value store in the Adapter that can execute code when a value
 
 Each Adapter has a TCP server which talks to the Agent. It sends SHDR data which the Agent splits up and applies to the model defined by the agent.xml file.
 
-### Agent
+<!-- ### Agent
 
-The Agent receives the SHDR data and applies it to the agent.xml model, then publishes that data in XML format when requested by HTTP.
+The Agent receives the SHDR data and applies it to the agent.xml model, then publishes that data in XML format when requested by HTTP. -->
