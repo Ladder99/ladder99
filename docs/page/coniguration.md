@@ -1,8 +1,31 @@
 # Configuration
 
-## Setup.yaml
+The main configuration file is `setup.yaml`, located in the project setup folder, e.g. `../setup-demo`.
 
-Now have a look inside the main configuration file, `../setup-test/setup.yaml` - 
+Others are `../setup-demo/compose-overrides.yaml` and `ladder99/services/compose.yaml`.
+
+
+## Yaml
+
+First, what is 'yaml'?
+
+It stands for "yet another markup language", and is a way of providing structured data to applications, often for configuration purposes. 
+
+For example, a yaml file might look like the following - 
+
+```yaml
+lotr:
+  title: Lord of the Rings
+  type: series
+  author: tolkien
+  books:
+    - The Fellowship of the Rings
+    - The Two Towers
+    - The Return of the King
+```
+
+
+## Setup.yaml
 
 First note the **adapter** section - this specifies the device drivers to feed to our Agent. In this case, we have a microcontroller driver, which reads some stats of the local/host computer. 
 
@@ -119,7 +142,7 @@ This lets us run `./l99 start example`, which by default runs the profile 'base'
 
 ## Compose.yaml
 
-The main Docker configuration file is in `ladder99/services/compose.yaml` - 
+The main Docker configuration file for Ladder99 is in `ladder99/services/compose.yaml` - 
 
 ```yaml
 # docker compose file for the complete ladder99 pipeline.
@@ -164,5 +187,5 @@ services:
         max-size: '20m'
 ```
 
-etc, with one section per service. 
+with one section for each service. 
 
