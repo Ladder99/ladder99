@@ -3,7 +3,7 @@
 # run ladder99 pipeline with docker compose.
 
 usage="
-Usage: ./l99 start [OPTIONS] SETUP SERVICES
+Usage: ./l99 start [OPTIONS] SETUP [SERVICES]
 
 Run the Ladder99 pipeline with a list of services/profiles to include.
 
@@ -11,14 +11,15 @@ OPTIONS
   -c, --console   run the services attached to the console for logging -
                   default is to run detached.
 
-SETUP is a client name or setup folder, eg oxbox, or ./setups/vmc.
+SETUP is 'example', or a setup name, which maps to a directory ../setup-SETUP
 
 SERVICES      space-delim list of services or profiles to start
-  all         run all relevant services for a setup - eg adapter, agent, etc
+  base        run all relevant services for a setup - eg adapter, agent, etc.
+              this is the default.
 
 Examples
-    ./l99 start demo base
-    ./l99 start ./setups/example agent grafana
+    ./l99 start example
+    ./l99 start example agent grafana
     ./l99 start --console demo relay
 "
 
