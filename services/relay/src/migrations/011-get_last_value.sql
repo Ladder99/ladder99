@@ -16,6 +16,7 @@ CREATE OR REPLACE FUNCTION get_last_value (
   IN pathname text, -- the history view path, eg 'availability'
   IN search_limit text = '1d' -- search limit - don't search further into past than this
 )
+--. why timestamp, not timestamptz ?
 RETURNS TABLE ("time" timestamp, "value" text) -- ANSI standard SQL
 LANGUAGE sql
 AS
