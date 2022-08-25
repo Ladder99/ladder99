@@ -2,20 +2,18 @@
 
 The main configuration file is `setup.yaml`, located in the project setup folder, e.g. `../setup-demo`.
 
-Others are `../setup-demo/compose-overrides.yaml` and `ladder99/services/compose.yaml`.
 
-
-## Yaml
+## YAML
 
 First, what is 'yaml'?
 
-It stands for "yet another markup language", and is a way of providing structured data to applications, often for configuration purposes. 
+YAML stands for "yet another markup language", and is a way of providing structured data to applications, often for configuration purposes. 
 
 For example, a yaml file might look like the following - 
 
 ```yaml
 lotr:
-  title: Lord of the Rings
+  title: Lord of the Rings  # this is a comment, which is ignored by yaml
   type: series
   author: tolkien
   books:
