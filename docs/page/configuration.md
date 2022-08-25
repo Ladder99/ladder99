@@ -90,6 +90,7 @@ relay:
               ignore: true
 ```
 
+Link to the full setup.yaml for the example setup [here](../../setups/example/setup.yaml).
 
 ## Compose-overrides.yaml
 
@@ -138,6 +139,9 @@ services:
 ```
 
 This lets us run `./l99 start example`, which by default runs the profile 'base' - though you can also say `./l99 start example agent`, to run only the agent service, for example.
+
+Link to the full compose-overrides.yaml for the example setup [here](../../setups/example/compose-overrides.yaml).
+
 
 
 ## Compose.yaml
@@ -188,4 +192,6 @@ services:
 ```
 
 with one section for each service. 
+
+Link to the full compose.yaml for Ladder99 [here](../../services/compose.yaml).
 
