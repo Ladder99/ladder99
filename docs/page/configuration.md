@@ -13,7 +13,7 @@ For example, a yaml file might look like the following -
 
 ```yaml
 lotr:
-  title: Lord of the Rings  # this is a comment, which is ignored by yaml
+  title: Lord of the Rings  # this is a comment, which is ignored
   type: series
   author: tolkien
   books:
@@ -90,6 +90,7 @@ relay:
 
 Link to the full setup.yaml for the example setup [here](../../setups/example/setup.yaml).
 
+
 ## Compose-overrides.yaml
 
 Another file with configuration settings is `../setup-test/compose-overrides.yaml`. This contains extra configuration for Docker - in this case, mostly just telling it to run all services with a profile name of 'base'. 
@@ -139,57 +140,4 @@ services:
 This lets us run `./l99 start example`, which by default runs the profile 'base' - though you can also say `./l99 start example agent`, to run only the agent service, for example.
 
 Link to the full compose-overrides.yaml for the example setup [here](../../setups/example/compose-overrides.yaml).
-
-
-
-## Compose.yaml
-
-The main Docker configuration file for Ladder99 is in `ladder99/services/compose.yaml` - 
-
-```yaml
-# docker compose file for the complete ladder99 pipeline.
-# can override these settings in setup-specific compose-overrides.yaml files.
-
-# see ./l99 start for how to run
-
-# docker compose yaml version - must be a string
-# see https://docs.docker.com/compose/compose-file/compose-file-v3
-# note: a '3' here means '3.0'
-version: '3.8'
-
-services:
-  # ---------------------------------------------------------------------------
-  # adapter
-  # ---------------------------------------------------------------------------
-  # convert machine data to shdr and send to agent
-  adapter:
-    container_name: adapter
-    # image: ladder99/adapter:latest # use this if build docker image and push to hub
-    build: ./adapter # see Dockerfile in this folder
-    # set this to give permission to access hardware (e.g. dymo scale in usb port).
-    #. security hole - leave off for now, until need dymo driver.
-    # privileged: true
-    profiles:
-      - adapter
-    environment:
-      # specify where code can find data.
-      # can override at run time, eg to run service on windows with node.
-      L99_SETUP_FOLDER: /data/setup
-      L99_MODULES_FOLDER: /data/modules
-      L99_ADAPTER_FOLDER: /data/adapter
-    volumes:
-      - ../$SETUP:/data/setup # has setup.yaml etc
-      - ../setups/common/modules:/data/modules # has module yamls
-      - ../$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
-    restart: always
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '20m'
-```
-
-with one section for each service. 
-
-Link to the full compose.yaml for Ladder99 [here](../../services/compose.yaml).
 

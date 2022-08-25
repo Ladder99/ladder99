@@ -19,4 +19,5 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
    page/create-setup
    page/dashboard
    page/configuration
+   page/services
    page/about
