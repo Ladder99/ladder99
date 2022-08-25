@@ -24,7 +24,8 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
    
    page/services
    page/adapter
+   page/agent
 
    page/about
 
-   page/introduction/test
+   page/introduction

@@ -4,7 +4,7 @@ Ladder99 is made up of several services that work together to form a data pipeli
 
 | Service | Description | URL |
 |---------|------------|---------|
-| Adapter | polls/subscribes to devices, converts to text representation, sends to Agent |  |
+| Adapter | polls/subscribes to devices, converts to text, sends to Agent |  |
 | Agent | fits text representation into XML tree | http://localhost:5000 |
 | Relay | polls Agent and writes new values to database |  |
 | Postgres | database that stores device history in tables |  |
