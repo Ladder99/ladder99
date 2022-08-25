@@ -25,7 +25,7 @@ Visit http://localhost:8080
 
 ## Developing
 
-Edit files in docs/source - index in index.rst and markdown files for pages. Sphinx autobuild will update the local server files.
+The first page with table of contents is in docs/index.rst - others are Markdown files in docs/page folder.
 
 
 ## Deploying
