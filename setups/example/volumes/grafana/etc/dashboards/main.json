@@ -23,8 +23,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 7,
-  "iteration": 1661170696274,
+  "id": 6,
+  "iteration": 1661487138613,
   "links": [
     {
       "asDropdown": false,
@@ -93,7 +93,7 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 4.8,
+        "w": 4,
         "x": 0,
         "y": 1
       },
@@ -119,7 +119,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value\nFROM history_float\nWHERE\n  device='$device'\n  and path in ($sample_load)\n  and $__timeFilter(\"time\")\norder by time desc\nlimit 1",
+          "rawSql": "SELECT time, value\nFROM history_float\nWHERE\n  path = concat('$device','/axes/', $sample_load, '/load')\n  and $__timeFilter(\"time\")\norder by time desc\nlimit 1",
           "refId": "loads repeater",
           "select": [
             [
@@ -1196,7 +1196,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "Mazak5701/d1",
           "value": "Mazak5701/d1"
         },
@@ -1224,25 +1224,57 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": ["All"],
-          "value": ["$__all"]
+          "text": "All",
+          "value": "$__all"
         },
-        "datasource": null,
-        "definition": "select path from dataitems where category='SAMPLE' and type='LOAD'",
         "description": "sample_load",
         "error": null,
         "hide": 2,
         "includeAll": true,
         "label": "sample_load",
-        "multi": true,
+        "multi": false,
         "name": "sample_load",
-        "options": [],
-        "query": "select path from dataitems where category='SAMPLE' and type='LOAD'",
-        "refresh": 1,
-        "regex": "",
+        "options": [
+          {
+            "selected": true,
+            "text": "All",
+            "value": "$__all"
+          },
+          {
+            "selected": false,
+            "text": "linear[x]",
+            "value": "linear[x]"
+          },
+          {
+            "selected": false,
+            "text": "linear[y]",
+            "value": "linear[y]"
+          },
+          {
+            "selected": false,
+            "text": "linear[z]",
+            "value": "linear[z]"
+          },
+          {
+            "selected": false,
+            "text": "rotary[a]",
+            "value": "rotary[a]"
+          },
+          {
+            "selected": false,
+            "text": "rotary[b]",
+            "value": "rotary[b]"
+          },
+          {
+            "selected": false,
+            "text": "rotary[c]",
+            "value": "rotary[c]"
+          }
+        ],
+        "query": "linear[x],linear[y],linear[z],rotary[a],rotary[b],rotary[c]",
+        "queryValue": "",
         "skipUrlSync": false,
-        "sort": 1,
-        "type": "query"
+        "type": "custom"
       }
     ]
   },
@@ -1267,5 +1299,5 @@
   "timezone": "",
   "title": "Main",
   "uid": "main",
-  "version": 17
+  "version": 7
 }
