@@ -44,9 +44,11 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 export function getNodes(tree, agent) {
   // get translations for each device, eg 'd1' => { base: 'axes', ... }
   const translationIndex = {}
-  agent.devices.forEach(
-    device => (translationIndex[device.id] = device.translations)
-  )
+  if (agent.devices) {
+    agent.devices.forEach(
+      device => (translationIndex[device.id] = device.translations)
+    )
+  }
   let list = getList(tree) // flatten the tree
   addAgent(list, agent) // add agentAlias from setup to each element
   addDevice(list) // add deviceId to each element
