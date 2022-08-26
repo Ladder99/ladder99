@@ -16,20 +16,18 @@ Then start the pipeline with
 
 ## Edit Passwords
 
-Ladder99 will first ask you to edit a .env file, mainly to set the initial passwords -
+Ladder99 will first ask you to edit a `.env` file, mainly to set the initial passwords -
 
     nano ../setup-test/.env
 
-Edit the Grafana and Postgres passwords, and run 
+Edit the Grafana and Postgres passwords if desired, save the file, and run again -
 
     ./l99 start test
-
-again.
 
 
 ## Add Agent
 
-To add another agent to the setup, add the following to `../setup-test/setup.yaml` -
+To add another Agent to the setup, add the following to `../setup-test/setup.yaml` -
 
 ```yaml
     - alias: NIST # or your own agent name # don't change once set!
@@ -40,5 +38,5 @@ Then restart the relevant portions of the pipeline -
 
     ./l99 start relay
 
-Now you should see machines from your new agent showing up in the dashboard. You may need to refresh the browser window with F5 first. 
+Now you should see machines from your new agent showing up in the dashboard. You may need to refresh the browser window by hitting F5 first. 
 
