@@ -71,10 +71,11 @@ html_logo = 'page/_images/Ladder99Logo-gray.png'
 html_favicon = 'page/_images/favicon.ico'
 
 # Theme options are theme-specific and customize the look and feel of a theme
-# further.  For a list of options available for each theme, see the
-# documentation.
+# further.  For a list of options available for each theme, see the documentation.
+
 html_theme_options = {
     'logo_only': True,
+    'collapse_navigation': False,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
