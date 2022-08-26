@@ -75,7 +75,7 @@ html_favicon = 'page/_images/favicon.ico'
 
 html_theme_options = {
     'logo_only': True,
-    'collapse_navigation': False,
+    # 'collapse_navigation': False,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
