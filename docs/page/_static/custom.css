@@ -19,7 +19,7 @@ body {
 }
 
 .wy-side-nav-search {
-  position: fixed;
+  /* position: fixed; */
   background-color: var(--themecolor);
 }
 .wy-nav-top {

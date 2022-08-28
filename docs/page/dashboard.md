@@ -18,7 +18,7 @@ ORDER BY time
 
 This is a SQL query, fetching data from the local Postgres database, which is running in Docker. 
 
-`$device` is a variable, which can be specified in the Grafana page. In this case, it's equivalent to 'Main/m', so the complete path is 'Main/m/cpu-total'. 
+`$device` is a variable, which can be specified in the Grafana page settings. In this case, it's equivalent to 'Main/m', so the complete path is 'Main/m/cpu-total'. 
 
 `$__timeFilter("time")` is a Grafana maco, which expands to something like *"time" BETWEEN '2022-08-22T12:03:25.593Z' AND '2022-08-22T15:03:25.593Z'* in the final query. 
 
@@ -55,23 +55,23 @@ We're selecting time and value from the history_all view for a given device, pat
 
 ## Data Model
 
-The database is made up of tables and views - 
+The database is made up of user-facing views and their underlying tables -
 
-Tables:
-- **nodes** - stores device and dataitem definitions
-- **edges** - will store connections between nodes
-- **history** - stores historical values for dataitems
-- **meta** - stores database version information
-
-Views:
-- **devices** - shows a list of available devices
+Views (in the 'public' schema):
+- **devices** - a list of available devices
 - **dataitems** - a list of all device dataitems
 - **history_all** - history containing both text and numeric values
 - **history_text** - history with only text values
 - **history_float** - history with only numeric values
 
+Tables (in the 'raw' schema):
+- **nodes** - stores device and dataitem definitions
+- **edges** - will store connections between nodes
+- **history** - stores historical values for dataitems
+- **meta** - stores database version information
+
 
 ## DataItems
 
-You can see the available dataitems in the 'Data' page.
+You can see the available dataitems in the 'DataItems' page.
 

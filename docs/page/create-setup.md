@@ -27,7 +27,7 @@ Edit the Grafana and Postgres passwords if desired, save the file, and run again
 
 ## Add Agent
 
-To add another Agent to the setup, add the following to `../setup-test/setup.yaml` -
+To add another Agent to the setup, add the following to `../setup-test/setup.yaml` (the indentation is important!) -
 
 ```yaml
     - alias: NIST # or your own agent name # don't change once set!
@@ -36,7 +36,7 @@ To add another Agent to the setup, add the following to `../setup-test/setup.yam
 
 Then restart the relevant portions of the pipeline - 
 
-    ./l99 start relay
+    ./l99 start test relay
 
 Now you should see machines from your new agent showing up in the dashboard. You may need to refresh the browser window by hitting F5 first. 
 
