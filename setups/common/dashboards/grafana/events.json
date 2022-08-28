@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 7,
-  "iteration": 1646820351236,
+  "id": 3,
+  "iteration": 1661718191492,
   "links": [
     {
       "asDropdown": false,
@@ -40,6 +40,20 @@
   ],
   "liveNow": false,
   "panels": [
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 8,
+      "panels": [],
+      "title": "All DataItems",
+      "type": "row"
+    },
     {
       "datasource": null,
       "description": "",
@@ -76,7 +90,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 230
+                "value": 424
               }
             ]
           },
@@ -95,10 +109,10 @@
         ]
       },
       "gridPos": {
-        "h": 12,
-        "w": 12,
+        "h": 9,
+        "w": 23,
         "x": 0,
-        "y": 0
+        "y": 1
       },
       "id": 4,
       "options": {
@@ -136,6 +150,18 @@
       ],
       "title": "DataItems (last known values)",
       "type": "table"
+    },
+    {
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 10
+      },
+      "id": 6,
+      "title": "Recent Values",
+      "type": "row"
     },
     {
       "datasource": null,
@@ -186,17 +212,17 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 241
+                "value": 418
               }
             ]
           }
         ]
       },
       "gridPos": {
-        "h": 12,
-        "w": 12,
-        "x": 12,
-        "y": 0
+        "h": 9,
+        "w": 23,
+        "x": 0,
+        "y": 11
       },
       "id": 2,
       "options": {
@@ -246,11 +272,11 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "JobBoss",
-          "value": "JobBoss"
+          "text": "Mazak5701/d1",
+          "value": "Mazak5701/d1"
         },
         "datasource": null,
-        "definition": "select name from devices",
+        "definition": "select uid from devices",
         "description": "Device Name",
         "error": null,
         "hide": 0,
@@ -259,7 +285,7 @@
         "multi": false,
         "name": "device",
         "options": [],
-        "query": "select name from devices",
+        "query": "select uid from devices",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -276,5 +302,5 @@
   "timezone": "",
   "title": "DataItems",
   "uid": "events",
-  "version": 15
+  "version": 6
 }
