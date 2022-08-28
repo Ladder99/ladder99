@@ -24,7 +24,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 6,
-  "iteration": 1661487138613,
+  "iteration": 1661696336865,
   "links": [
     {
       "asDropdown": false,
@@ -1279,7 +1279,7 @@
     ]
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {
@@ -1299,5 +1299,5 @@
   "timezone": "",
   "title": "Main",
   "uid": "main",
-  "version": 7
+  "version": 9
 }
