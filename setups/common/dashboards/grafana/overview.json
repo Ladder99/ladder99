@@ -297,7 +297,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "\nwith \n  available as (values (8.0)),\n  now as (values (now())),\n  midnight as (values (date_trunc('day', (table now))))\nselect (table now) as time, (max(value)-min(value))/60.0/60.0/(table available) as availability\nfrom history_float\nwhere path = concat($device, '/controller/accumulated_time-cut')\nand time >= (table midnight) and time < (table now)\n\n",
+          "rawSql": "\nwith \n  available as (values (8.0)), -- hours that machine is available for use\n  now as (values (now())),\n  midnight as (values (date_trunc('day', (table now))))\nselect (table now) as time, (max(value)-min(value))/60.0/60.0/(table available) as availability\nfrom history_float\nwhere path = concat($device, '/controller/accumulated_time-cut')\nand time >= (table midnight) and time < (table now)\n\n",
           "refId": "A",
           "select": [
             [
@@ -333,6 +333,7 @@
           "mappings": [],
           "max": 1,
           "min": 0,
+          "noValue": "N/A",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -371,7 +372,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "-- select now() as time, 0.5 as value\n\nselect now() as time, (max(value)-min(value))/1200.0 as speed\nfrom history_float\nwhere path = concat($device, '/controller/path/part_count')\nand time > '2022-08-27'\n\n",
+          "rawSql": "with \n  max_rate as (values (1200)), -- maximum production rate in parts per hour (pph)\n  now as (values (now())),\n  midnight as (values (date_trunc('day', (table now))))\nselect \n  (table now) as time, \n  (max(value)-min(value)) / \n  (max(extract(epoch from time))-min(extract(epoch from time))) / \n  (table max_rate) \n  as speed\nfrom history_float\nwhere path = concat($device, '/controller/path/part_count')\nand time >= (table midnight) and time < (table now)\n\n",
           "refId": "A",
           "select": [
             [
@@ -407,6 +408,7 @@
           "mappings": [],
           "max": 1,
           "min": 0,
+          "noValue": "N/A",
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -445,7 +447,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "-- select now() as time, 0.5 as value\n\nselect now() as time, (max(value)-min(value)) as quality\nfrom history_float\nwhere path = concat($device, '/controller/path/part_count')\nand time > '2022-08-27'\n\n",
+          "rawSql": "with \n  now as (values (now())),\n  midnight as (values (date_trunc('day', (table now)))),\n  good_path as (values (concat($device, '/controller/path/part_count-good'))),\n  total_path as (values (concat($device, '/controller/path/part_count'))), -- or with '-all'?\n  good_parts as (\n    select value from history_float \n    where path=(table good_path) \n    and time>=(table midnight) and time<(table now)\n  ),\n  total_parts as (\n    select value from history_float \n    where path=(table total_path) \n    and time>=(table midnight) and time<(table now)\n  )\nselect \n  (table now) as time, \n  (table good_parts) / (table total_parts) as quality\n",
           "refId": "A",
           "select": [
             [
@@ -577,12 +579,12 @@
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-1d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Overview",
-  "uid": "overview",
-  "version": 17
+  "uid": "jQD1IEWVk",
+  "version": 19
 }
