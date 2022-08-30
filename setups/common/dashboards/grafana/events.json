@@ -23,7 +23,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 3,
-  "iteration": 1661791742751,
+  "iteration": 1661815840074,
   "links": [
     {
       "asDropdown": false,
@@ -492,144 +492,6 @@
       ],
       "title": "Plot of recent values",
       "type": "row"
-    },
-    {
-      "collapsed": false,
-      "datasource": null,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 4
-      },
-      "id": 19,
-      "panels": [],
-      "title": "Timeline of recent values",
-      "type": "row"
-    },
-    {
-      "backgroundColor": "rgba(128,128,128,0.1)",
-      "colorMaps": [
-        {
-          "color": "#CCC",
-          "text": "N/A"
-        }
-      ],
-      "crosshairColor": "#8F070C",
-      "datasource": null,
-      "description": "",
-      "display": "timeline",
-      "expandFromQueryS": 0,
-      "extendLastValue": true,
-      "gridPos": {
-        "h": 4,
-        "w": 24,
-        "x": 0,
-        "y": 5
-      },
-      "highlightOnMouseover": true,
-      "id": 17,
-      "legendSortBy": "-ms",
-      "lineColor": "rgba(0,0,0,0.1)",
-      "metricNameColor": "#000000",
-      "rangeMaps": [
-        {
-          "from": "null",
-          "text": "N/A",
-          "to": "null"
-        }
-      ],
-      "rowHeight": 50,
-      "showLegend": true,
-      "showLegendNames": true,
-      "showLegendPercent": true,
-      "showLegendValues": true,
-      "showTimeAxis": true,
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "-- select time, value\n-- from history_text\n-- where path='$path'\n-- and $__timeFilter(time)\n-- order by time\n\nselect time, value\nfrom get_timeline('$device', '$path', $__from, $__to, true, '1d')\n",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "textSize": 24,
-      "textSizeTime": 12,
-      "timeOptions": [
-        {
-          "name": "Years",
-          "value": "years"
-        },
-        {
-          "name": "Months",
-          "value": "months"
-        },
-        {
-          "name": "Weeks",
-          "value": "weeks"
-        },
-        {
-          "name": "Days",
-          "value": "days"
-        },
-        {
-          "name": "Hours",
-          "value": "hours"
-        },
-        {
-          "name": "Minutes",
-          "value": "minutes"
-        },
-        {
-          "name": "Seconds",
-          "value": "seconds"
-        },
-        {
-          "name": "Milliseconds",
-          "value": "milliseconds"
-        }
-      ],
-      "timePrecision": {
-        "name": "Minutes",
-        "value": "minutes"
-      },
-      "timeTextColor": "#d8d9da",
-      "title": "$path",
-      "type": "natel-discrete-panel",
-      "units": "short",
-      "use12HourClock": false,
-      "useTimePrecision": false,
-      "valueMaps": [
-        {
-          "op": "=",
-          "text": "N/A",
-          "value": "null"
-        }
-      ],
-      "valueTextColor": "#000000",
-      "writeAllValues": false,
-      "writeLastValue": true,
-      "writeMetricNames": false
     }
   ],
   "refresh": "5s",
@@ -641,9 +503,9 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "text": "Mazak5701/d1",
-          "value": "Mazak5701/d1"
+          "selected": false,
+          "text": "NIST/GFAgie01",
+          "value": "NIST/GFAgie01"
         },
         "datasource": null,
         "definition": "select uid from devices",
@@ -666,8 +528,8 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "Mazak5701/d1/availability",
-          "value": "Mazak5701/d1/availability"
+          "text": "NIST/GFAgie01/system-condition",
+          "value": "NIST/GFAgie01/system-condition"
         },
         "datasource": null,
         "definition": "select path from dataitems where props->>'contextPath'='$device' order by path",
@@ -689,12 +551,12 @@
     ]
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "DataItems",
   "uid": "events",
-  "version": 12
+  "version": 13
 }
