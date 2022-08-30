@@ -29,8 +29,9 @@ ENVFILE=$DEST/.env
 echo
 echo Copying from setups/example...
 cp -R setups/example $DEST \
-&& rm -r $DEST/volumes/postgres \
-&& rm -r $DEST/volumes/grafana/var \
-&& rm -r $DEST/volumes/pgadmin \
+&& rm -rf $DEST/volumes/postgres \
+&& rm -rf $DEST/volumes/grafana/var \
+&& rm -rf $DEST/volumes/pgadmin \
 && rm $ENVFILE \
 && echo Done. Try ./l99 start $SETUP
+
