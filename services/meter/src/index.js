@@ -13,6 +13,7 @@ const metricsFolder = './metrics'
 const setupFolder = process.env.L99_SETUP_FOLDER || `/data/setup`
 
 async function start() {
+  //
   // get database connection
   console.log(`Meter - connecting to db...`)
   const db = new Db()
