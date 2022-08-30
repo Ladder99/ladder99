@@ -110,7 +110,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 12,
+        "w": 15,
         "x": 0,
         "y": 1
       },
@@ -196,8 +196,8 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 4,
-        "x": 12,
+        "w": 5,
+        "x": 15,
         "y": 1
       },
       "id": 6,
@@ -297,7 +297,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "\nwith \n  available as (values (8.0)), -- hours that machine is available for use\n  now as (values (now())),\n  midnight as (values (date_trunc('day', (table now))))\nselect (table now) as time, (max(value)-min(value))/60.0/60.0/(table available) as availability\nfrom history_float\nwhere path = concat($device, '/controller/accumulated_time-cut')\nand time >= (table midnight) and time < (table now)\n\n",
+          "rawSql": "\nwith\n  path_activity as (values (concat($device, '/controller/accumulated_time-cut'))),\n  available as (values (8.0)), -- hours that machine is available for use\n  now as (values (now())),\n  midnight as (values (date_trunc('day', (table now))))\nselect (table now) as time, (max(value)-min(value))/60.0/60.0/(table available) as availability\nfrom history_float\nwhere path = (table path_activity)\nand time >= (table midnight) and time < (table now)\n\n",
           "refId": "A",
           "select": [
             [
@@ -483,11 +483,12 @@
           "mappings": [],
           "max": 1,
           "min": 0,
+          "noValue": "N/A",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "blue",
+                "color": "orange",
                 "value": null
               }
             ]
@@ -579,12 +580,12 @@
     ]
   },
   "time": {
-    "from": "now-1d",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Overview",
   "uid": "jQD1IEWVk",
-  "version": 19
+  "version": 20
 }
