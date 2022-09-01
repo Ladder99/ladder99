@@ -52,18 +52,19 @@ echo Copying from setups/example...
 # or using sudo to cp everything including potentially large pg folders.
 # so, will need to keep this up-to-date if add more to the example folder!
 
-# && cp setups/example/.gitignore $DEST \
-# && cp setups/example/compose-overrides.yaml $DEST \
-# && cp setups/example/README.md $DEST \
-# && cp setups/example/setup.yaml $DEST \
+# this gives a warning message
+# && cp setups/example/* $DEST \
+# && rm $ENVFILE \
 
 mkdir $DEST \
 && mkdir $DEST/volumes \
 && mkdir $DEST/volumes/grafana \
 && cp -R setups/example/volumes/agent $DEST/volumes/agent/ \
 && cp -R setups/example/volumes/grafana/etc $DEST/volumes/grafana/etc/ \
-&& cp setups/example/* $DEST \
-&& rm $ENVFILE \
+&& cp setups/example/.gitignore $DEST \
+&& cp setups/example/compose-overrides.yaml $DEST \
+&& cp setups/example/README.md $DEST \
+&& cp setups/example/setup.yaml $DEST \
 && echo Done. Try ./l99 start $SETUP \
 && echo
 
