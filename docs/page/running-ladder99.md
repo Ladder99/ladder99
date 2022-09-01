@@ -1,6 +1,6 @@
 # Running Ladder99
 
-Ladder99 comes with an example that displays data from a **live** CNC machine. 
+Ladder99 comes with an example setup that displays data from a **LIVE** Mazak CNC machine. 
 
 
 ## Run Pipeline
@@ -8,54 +8,79 @@ Ladder99 comes with an example that displays data from a **live** CNC machine.
 Run the example setup with
 
 ```
+cd ladder99
 ./l99 start example
 ```
 
-The first time you run this it will download and build all the different services. This WILL take several minutes, so grab a coffee!
+The first time you run this it will download and build all the different services. 
+
+This WILL take several minutes, so grab a coffee and check out the next section!
 
 
+## MTConnect Agent
+
+While you're waiting, take a look at http://mtconnect.mazakcorp.com - this shows a list of Mazak Agents you can connect to. 
+
+Try http://mtconnect.mazakcorp.com:5701/ - this shows the list of dataitems available from the Agent, in XML format. For example, the a motor temperature looks like this -
+
+```xml
+<DataItem category="SAMPLE" compositionId="Cmotor" id="Stemp" nativeUnits="CELSIUS" type="TEMPERATURE" units="CELSIUS"></DataItem>
+```
+
+Now try http://mtconnect.mazakcorp.com:5701/current - this shows the current values for the dataitems - e.g. here the temperature is 23 Celsius -
+
+```xml
+<Temperature dataItemId="Stemp" timestamp="2022-08-31T20:28:32.484493Z" compositionId="Cmotor" sequence="2664042">23</Temperature>
+```
+
+
+## View Services
+
+When the `./l99 start example` command is finished, you'll see output like the following -
+
+```
+Recreating pgadmin   ... done
+Recreating portainer ... done
+Recreating grafana   ... done
+Recreating postgres  ... done
+Recreating agent     ... done
+Recreating relay     ... done
+Recreating adapter   ... done
+```
+
+Let's make sure all the services are running okay - 
+
+```bash
+$ ./l99 list
+NAMES       STATUS                         PORTS
+adapter     Up 34 seconds
+agent       Up 32 seconds                  0.0.0.0:5000->5000/tcp
+dozzle      Up 5 hours                     0.0.0.0:8080->8080/tcp
+grafana     Up 42 seconds                  0.0.0.0:80->3000/tcp
+pgadmin     Up 44 seconds               0.0.0.0:5050->5050/tcp
+portainer   Up 43 seconds                  8000/tcp, 9443/tcp, 0.0.0.0:9000->9000/tcp
+postgres    Up 42 seconds                  0.0.0.0:5432->5432/tcp
+relay       Up 44 seconds
+```
+
+Everything looks good!
 
 
 ## View Dashboard
 
-Now you can go to the dashboard at http://localhost/d/main. 
+Now you can visit the Grafana dashboard at http://localhost/d/main. 
 
-The first time you visit Grafana, it will ask you for the username and password - this is just 'admin' and 'admin'. Then you will need to enter a new password. 
+The username/password for the example setup is admin/grafana. 
 
-Grafana will then show the live status of a Mazak CNC machine. 
+The dashboard will show the live status of a Mazak CNC machine. 
 
 ![](_images/grafana-demo.png)
 
 Try clicking on the different pages linked at the top - 'DataItems', 'Devices', 'Main', 'Microcontroller'.
 
-The 'Microcontroller' page will show your computer's memory, CPU usage, and temperature (if your processor supports it) over time. 
+For example, the 'Microcontroller' page will show your computer's memory, CPU usage, and temperature (if your processor supports it) over time. 
 
 ![](_images/ladder99-dash-micro.jpg)
-
-
-## List Services
-
-To see the list of running services and their status,
-
-```
-./l99 list
-```
-
-e.g.
-
-```
-$ ./l99 list
-NAMES      STATUS        PORTS
-adapter    Up 16 hours
-agent      Up 12 hours   0.0.0.0:5000->5000/tcp
-dozzle     Up 16 hours   0.0.0.0:8080->8080/tcp
-grafana    Up 16 hours   0.0.0.0:80->3000/tcp
-pgadmin    Up 16 hours   0.0.0.0:5050->5050/tcp
-postgres   Up 16 hours   0.0.0.0:5432->5432/tcp
-relay      Up 16 hours
-```
-
-The url and port listed on the left is what you would enter in the browser to access that service - e.g. for Dozzle it's http://localhost:8080.
 
 
 ## Stop Pipeline

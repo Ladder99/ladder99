@@ -15,6 +15,31 @@ Ladder99 is made up of several services that work together to form a data pipeli
 | Pgadmin | manages database | http://localhost:5050 |
 
 
+## List Services
+
+To see the list of running services and their status,
+
+```
+./l99 list
+```
+
+e.g.
+
+```
+$ ./l99 list
+NAMES      STATUS        PORTS
+adapter    Up 16 hours
+agent      Up 12 hours   0.0.0.0:5000->5000/tcp
+dozzle     Up 16 hours   0.0.0.0:8080->8080/tcp
+grafana    Up 16 hours   0.0.0.0:80->3000/tcp
+pgadmin    Up 16 hours   0.0.0.0:5050->5050/tcp
+postgres   Up 16 hours   0.0.0.0:5432->5432/tcp
+relay      Up 16 hours
+```
+
+The url and port listed on the left is what you would enter in the browser to access that service - e.g. for Dozzle it's http://localhost:8080.
+
+
 ## Compose.yaml
 
 The main configuration file for Ladder99 is in `ladder99/services/compose.yaml` - this tells Docker how to run the different services. 
