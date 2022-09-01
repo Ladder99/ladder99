@@ -102,7 +102,7 @@ else
     cp ./setups/.env-default $ENVFILE
     echo
     echo PLEASE SET INITIAL PASSWORDS IN .env FILE 
-    echo (unless this is just for testing) - e.g.
+    echo Unless this is just for testing.
     echo     nano $ENVFILE
     echo Then re-run the command. 
     echo
