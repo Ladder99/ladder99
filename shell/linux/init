@@ -21,17 +21,41 @@ shift
 
 DEST=../setup-$SETUP
 
+# check if destination already exists
+if [ -d "$DEST" ]; then
+  echo Error: a folder for $SETUP already exists at $DEST. 
+  echo Please try a different setup name.
+  exit 1
+fi
+
 ENVFILE=$DEST/.env
 
 # copy setup
-# rsync has an --exclude param, but installing rsync on git bash for windows is complex - 
-#  https://superuser.com/questions/701141/how-to-add-more-commands-to-git-bash
 echo
 echo Copying from setups/example...
-cp -R setups/example $DEST \
-&& rm -rf $DEST/volumes/postgres \
-&& rm -rf $DEST/volumes/grafana/var \
-&& rm -rf $DEST/volumes/pgadmin \
-&& rm $ENVFILE \
-&& echo Done. Try ./l99 start $SETUP
 
+# need `2>/dev/null || :` to suppress the error msgs and errors in cp,
+# see https://serverfault.com/a/153893/211025.
+# but
+# rsync has an --exclude param, but installing rsync on git bash for windows is complex - 
+#  https://superuser.com/questions/701141/how-to-add-more-commands-to-git-bash
+# sudo cp -R setups/example $DEST \
+# cp -R setups/example $DEST 2>/dev/null || : \
+# && rm $ENVFILE \
+# && rm -rf $DEST/volumes/grafana/var \
+# && rm -rf $DEST/volumes/pgadmin \
+# && rm -rf $DEST/volumes/postgres \
+# && rm -rf $DEST/volumes/portainer \
+
+# need to specify everything explicitly here - 
+# alternative is installing rsync on gitbash, or ignoring cp errors, 
+# or using sudo to cp everything including potentially large pg folders.
+# so, will need to keep this up-to-date if add more to the example folder!
+mkdir $DEST \
+&& cp -R setups/example/volumes/agent $DEST/volumes/agent \
+&& cp -R setups/example/volumes/grafana/etc $DEST/volumes/grafana/etc \
+&& cp setups/example/.gitignore $DEST \
+&& cp setups/example/compose-overrides.yaml $DEST \
+&& cp setups/example/README.md $DEST \
+&& cp setups/example/setup.yaml $DEST \
+&& echo Done. Try ./l99 start $SETUP
