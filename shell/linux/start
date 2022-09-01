@@ -101,8 +101,9 @@ else
     echo No .env file found - copying from default...
     cp ./setups/.env-default $ENVFILE
     echo
-    echo PLEASE SET INITIAL PASSWORDS IN .env FILE - e.g.
-    echo $ nano $ENVFILE
+    echo PLEASE SET INITIAL PASSWORDS IN .env FILE 
+    echo (unless this is just for testing) - e.g.
+    echo     nano $ENVFILE
     echo Then re-run the command. 
     echo
     exit 1

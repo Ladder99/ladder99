@@ -58,4 +58,6 @@ mkdir $DEST \
 && cp setups/example/compose-overrides.yaml $DEST \
 && cp setups/example/README.md $DEST \
 && cp setups/example/setup.yaml $DEST \
-&& echo Done. Try ./l99 start $SETUP
+&& echo Done. Try ./l99 start $SETUP \
+&& echo
+
