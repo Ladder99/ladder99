@@ -19,7 +19,6 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
 
    page/quickstart
    page/installation
-   page/running-agent
    page/running-ladder99
    
 .. toctree::
