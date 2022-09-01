@@ -103,7 +103,7 @@ else
     echo
     echo PLEASE SET INITIAL PASSWORDS IN .env FILE 
     echo Unless this is just for testing.
-    echo     nano $ENVFILE
+    echo $ nano $ENVFILE
     echo Then re-run the command. 
     echo
     exit 1
