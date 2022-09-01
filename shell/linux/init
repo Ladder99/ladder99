@@ -52,8 +52,8 @@ echo Copying from setups/example...
 # or using sudo to cp everything including potentially large pg folders.
 # so, will need to keep this up-to-date if add more to the example folder!
 mkdir $DEST \
-&& cp -R setups/example/volumes/agent $DEST/volumes/agent \
-&& cp -R setups/example/volumes/grafana/etc $DEST/volumes/grafana/etc \
+&& cp -R setups/example/volumes/agent $DEST/volumes \
+&& cp -R setups/example/volumes/grafana/etc $DEST/volumes/grafana \
 && cp setups/example/.gitignore $DEST \
 && cp setups/example/compose-overrides.yaml $DEST \
 && cp setups/example/README.md $DEST \
