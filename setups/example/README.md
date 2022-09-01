@@ -8,6 +8,7 @@ Do the following to test the pipeline
 
     git clone https://github.com/Ladder99/ladder99
     cd ladder99
+    git checkout historian
     ./l99 start example
 
 It may take a while to build and start the first time it's run (eg 10+ mins).
