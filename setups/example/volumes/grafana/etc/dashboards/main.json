@@ -23,8 +23,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 6,
-  "iteration": 1661696336865,
+  "id": 8,
+  "iteration": 1662041054330,
   "links": [
     {
       "asDropdown": false,
@@ -93,7 +93,7 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 4,
+        "w": 6,
         "x": 0,
         "y": 1
       },
@@ -111,7 +111,7 @@
         "text": {}
       },
       "pluginVersion": "8.2.2",
-      "repeat": "sample_load",
+      "repeat": "query0",
       "repeatDirection": "h",
       "targets": [
         {
@@ -119,7 +119,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value\nFROM history_float\nWHERE\n  path = concat('$device','/axes/', $sample_load, '/load')\n  and $__timeFilter(\"time\")\norder by time desc\nlimit 1",
+          "rawSql": "SELECT time, value\nFROM history_float\nWHERE\n  -- path = concat('$device','/axes/', $sample_load, '/load')\n  path = $query0\n  and $__timeFilter(\"time\")\norder by time desc\nlimit 1",
           "refId": "loads repeater",
           "select": [
             [
@@ -141,7 +141,7 @@
           ]
         }
       ],
-      "title": "$sample_load",
+      "title": "$query0",
       "type": "gauge"
     },
     {
@@ -1196,9 +1196,9 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
-          "text": "Mazak5701/d1",
-          "value": "Mazak5701/d1"
+          "selected": true,
+          "text": "FANUC/f_sim",
+          "value": "FANUC/f_sim"
         },
         "datasource": null,
         "definition": "select uid from devices where uid <> 'Main/m'",
@@ -1275,6 +1275,30 @@
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": null,
+        "definition": "select path from dataitems where path like '$device/axes/%/load'",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": false,
+        "name": "query0",
+        "options": [],
+        "query": "select path from dataitems where path like '$device/axes/%/load'",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
       }
     ]
   },
@@ -1299,5 +1323,5 @@
   "timezone": "",
   "title": "Main",
   "uid": "main",
-  "version": 9
+  "version": 8
 }
