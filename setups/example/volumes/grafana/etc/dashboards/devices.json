@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 2,
-  "iteration": 1661161411733,
+  "id": 3,
+  "iteration": 1662040058432,
   "links": [
     {
       "asDropdown": false,
@@ -80,7 +80,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 24,
+        "w": 4.8,
         "x": 0,
         "y": 0
       },
@@ -110,7 +110,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "--select time, value from get_last_value($device, 'availability', '1w');\n\n-- this will be the new get_last_value fn\n-- select time, value->>0 as value from raw.history\n-- where node_id=(select node_id from nodes where props->>'uid'=$device)\n--   and dataitem_id=(select node_id from nodes where props->>'path'='availability')\n-- order by time desc\n-- limit 1;\n\nselect time, value->>0 as value, $device as d from history_all\nwhere device=$device\n  and path=concat($device, '/availability')\norder by time desc\nlimit 1;\n",
+          "rawSql": "--select time, value from get_last_value($device, 'availability', '1w');\n\n-- this will be the new get_last_value fn\nselect time, value->>0 as value from raw.history\nwhere node_id=(select node_id from raw.nodes where props->>'path'=$device)\n  and dataitem_id=(select node_id from raw.nodes where props->>'path'=concat($device,'/availability'))\norder by time desc\nlimit 1;\n\n",
           "refId": "A",
           "select": [
             [
@@ -150,20 +150,20 @@
           "value": "$__all"
         },
         "datasource": null,
-        "definition": "select uid from devices",
+        "definition": "select path from devices order by name",
         "description": null,
         "error": null,
-        "hide": 0,
+        "hide": 2,
         "includeAll": true,
         "label": null,
         "multi": false,
         "name": "device",
         "options": [],
-        "query": "select uid from devices",
+        "query": "select path from devices order by name",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
-        "sort": 1,
+        "sort": 0,
         "type": "query"
       }
     ]
@@ -176,5 +176,5 @@
   "timezone": "",
   "title": "Devices",
   "uid": "devices",
-  "version": 5
+  "version": 3
 }
