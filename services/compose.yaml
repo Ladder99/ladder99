@@ -408,6 +408,7 @@ services:
     # image: dpage/pgadmin4:6.11 # see https://hub.docker.com/r/dpage/pgadmin4
     profiles:
       - pgadmin
+    user: root # so don't need to do chown 5050 etc?
     ports:
       - '5050:5050/tcp' # for biarms/pgadmin4
       # - '5050:80' # for dpage/pgadmin4
