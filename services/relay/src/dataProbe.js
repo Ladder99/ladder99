@@ -21,6 +21,34 @@ export class Probe extends Data {
     // get flat list of devices, descriptions, dataitems, compositions from xml/js.
     // eg [{node_type, path, category}, ...]
     this.nodes = tree.getNodes(this.jsTree, this.agent) // see treeProbe.js
+
+    //. check for path collisions - in which case stop the service with a message
+    // to add translation step to setup.yaml.
+    const d = {}
+    for (let node of this.nodes) {
+      if (d[node.path]) {
+        d[node.path].push(node)
+      } else {
+        d[node.path] = [node]
+      }
+    }
+    console.log(d)
+    const collisions = []
+    for (let key of Object.keys(d)) {
+      if (d[key].length > 1) {
+        collisions.push(d[key])
+      }
+    }
+    console.log(collisions)
+    if (collisions.length > 0) {
+      console.log(`
+ERROR: The following dataitems have duplicate paths, ie same positions in the XML 
+tree and type+subtype. 
+Please add translations for them in setup.yaml for this project.
+`)
+      console.log(collisions.map(collision => collision.map(node => node.path)))
+      // process.exit(1)
+    }
   }
 
   // write probe data in jsTree to db instance, get indexes
