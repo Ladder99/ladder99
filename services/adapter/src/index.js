@@ -33,7 +33,7 @@ const params = {
   modulesFolder: process.env.L99_MODULES_FOLDER || `/data/modules`, // incls print-apply/module.xml etc
 }
 
-async function main() {
+async function main(params) {
   //
   // read client setup.yaml file
   const setup = lib.readSetup(params.setupFolder)
@@ -45,8 +45,8 @@ async function main() {
   const client = setup.client || {}
   const devices = setup.devices || []
   for (const device of devices) {
-    setupDevice({ device, cache, client, devices })
+    setupDevice({ params, device, cache, client, devices })
   }
 }
 
-main()
+main(params)

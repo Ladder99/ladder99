@@ -1,6 +1,13 @@
 // setup a device source
 // loads and initializes any plugin/driver code
-export async function setupSource({ source, cache, client, devices, device }) {
+export async function setupSource({
+  params,
+  source,
+  cache,
+  client,
+  devices,
+  device,
+}) {
   //
   // console.log(`source`, source) // don't print - might have password etc
   const { module, driver, protocol, host, port, connection } = source
