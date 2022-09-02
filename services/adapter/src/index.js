@@ -4,14 +4,7 @@
 
 import * as lib from './common/lib.js'
 import { Cache } from './cache.js'
-import {
-  getOutputs,
-  getPlugin,
-  getMacros,
-  compileExpressions,
-} from './helpers.js'
 import { setupDevice } from './setupDevice.js'
-import { setupSource } from './setupSource.js'
 
 console.log()
 console.log(`Ladder99 Adapter`)

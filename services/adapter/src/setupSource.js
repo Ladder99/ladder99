@@ -1,5 +1,13 @@
 // setup a device source
-// loads and initializes any plugin/driver code
+// load and initialize any plugin/driver code
+
+import {
+  getOutputs,
+  getPlugin,
+  getMacros,
+  compileExpressions,
+} from './helpers.js'
+
 export async function setupSource({
   params,
   source,

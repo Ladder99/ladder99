@@ -2,6 +2,7 @@
 // and setting up each device source (loading plugins etc).
 
 import net from 'net' // node lib for tcp
+import { setupSource } from './setupSource.js'
 
 export async function setupDevice({ params, device, cache, client, devices }) {
   // console.log(`Device`, device) // don't print - might have passwords
@@ -58,8 +59,7 @@ export async function setupDevice({ params, device, cache, client, devices }) {
       // and onConnection, then new socket will be set on cache and plugins.
     }
 
-    // handle ping/pong messages to/from agent,
-    // so agent knows we're alive.
+    // handle ping/pong messages to/from agent, so it knows we're alive.
     socket.on('data', function onData(buffer) {
       const str = buffer.toString().trim()
       if (str === '* PING') {
