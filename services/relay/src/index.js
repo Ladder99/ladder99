@@ -8,6 +8,7 @@ import { Endpoint } from './endpoint.js'
 import * as lib from './common/lib.js'
 
 // defined in compose.yaml with docker volume mappings
+//. move into params obj
 const setupFolder = process.env.L99_SETUP_FOLDER || '/data/setup'
 
 console.log()
