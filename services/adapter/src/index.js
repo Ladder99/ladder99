@@ -1,6 +1,6 @@
 // adapter
-// polls or subscribes to data via plugins, updates cache,
-// updates shdr strings, passes them to agent via tcp.
+// poll or subscribe to data via plugins, update cache,
+// update shdr strings, pass them to agent via tcp.
 
 import * as lib from './common/lib.js'
 import { Cache } from './cache.js'
@@ -13,7 +13,7 @@ console.log(`posts to TCP.`)
 console.log(new Date().toISOString())
 console.log(`----------------------------------------------------------------`)
 
-// get envars - typically set in compose.yaml and compose-overrides.yaml files
+// get params - typically set in compose.yaml and compose-overrides.yaml files
 const params = {
   // default tcp server for agent if none provided in setup.yaml
   defaultServer: { protocol: 'shdr', host: 'adapter', port: 7878 },
