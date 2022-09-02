@@ -7,16 +7,16 @@ import { AgentReader } from './agentReader.js'
 import { Endpoint } from './endpoint.js'
 import * as lib from './common/lib.js'
 
-// defined in compose.yaml with docker volume mappings
-//. move into params obj
-const setupFolder = process.env.L99_SETUP_FOLDER || '/data/setup'
-
 console.log()
 console.log(`Ladder99 Relay`)
+console.log(`Capture data from MTConnect Agent(s) and write values to database`)
+console.log(new Date().toISOString())
 console.log(`---------------------------------------------------`)
 
 // get envars - typically set in compose.yaml and compose-overrides.yaml files
 const params = {
+  // defined in compose.yaml with docker volume mappings
+  setupFolder: process.env.L99_SETUP_FOLDER || '/data/setup',
   // AGENT_URLS can be a single url, a comma-delim list of urls, or a txt filename with urls.
   // these are the agents we'll be reading from.
   // currently set in compose-overrides.yaml, but
@@ -38,7 +38,7 @@ class Relay {
     await migrate(db)
 
     // read client's setup.yaml (includes devices, where to find their agents etc)
-    const setup = lib.readSetup(setupFolder)
+    const setup = lib.readSetup(params.setupFolder)
 
     // get endpoints (mtconnect agent urls)
     const endpoints = Endpoint.getEndpoints(setup) // static fn
