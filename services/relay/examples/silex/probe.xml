@@ -1,0 +1,116 @@
+<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.3"
+  xmlns="urn:mtconnect.org:MTConnectDevices:1.3"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.3 /schemas/MTConnectDevices_1.3.xsd">
+  <Header creationTime="2020-12-31T15:33:36Z" sender="FBR-67E500" instanceId="1609428101" version="1.3.0.17" assetBufferSize="1024" assetCount="0" bufferSize="32768"/>
+  <Devices>
+    <Device id="FBR-100AN" name="FBR-67E500-01" uuid="000">
+      <Description manufacturer="silex"/>
+      <DataItems>
+        <DataItem category="EVENT" id="navail" name="n.avail-" type="AVAILABILITY"/>
+        <DataItem category="CONDITION" id="nopmessage" name="n.opmessage-" type="SYSTEM"/>
+        <DataItem category="EVENT" id="FBR-100AN_asset_chg" type="ASSET_CHANGED"/>
+        <DataItem category="EVENT" id="FBR-100AN_asset_rem" type="ASSET_REMOVED"/>
+      </DataItems>
+      <Components>
+        <Axes id="ax" name="Axes">
+          <DataItems>
+            <DataItem category="SAMPLE" id="nallServoSpindlePwrCons1" name="n.allServoSpindlePwrCons-1" nativeUnits="KILOWATT_HOUR" type="ELECTRICAL_ENERGY" units="WATT_SECOND"/>
+          </DataItems>
+          <Components>
+            <Rotary id="C1" name="C1" nativeName="S1_P1">
+              <DataItems>
+                <DataItem category="CONDITION" id="nservoS1P1" name="n.servo-S1_P1" type="ACTUATOR"/>
+                <DataItem category="SAMPLE" id="nloadS1P1" name="n.load-S1_P1" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
+                <DataItem category="SAMPLE" id="nspeedS1P1" name="n.speed-S1_P1" nativeUnits="REVOLUTION/MINUTE" subType="ACTUAL" type="ROTARY_VELOCITY" units="REVOLUTION/MINUTE"/>
+                <DataItem category="EVENT" id="nspdlmodeS1P1" name="n.spdlmode-S1_P1" type="ROTARY_MODE">
+                  <Constraints>
+                    <Value>SPINDLE</Value>
+                    <Value>INDEX</Value>
+                    <Value>CONTOUR</Value>
+                  </Constraints>
+                </DataItem>
+                <DataItem category="SAMPLE" id="nspindleInslnResS1P1" name="n.spindleInslnRes-S1_P1" nativeUnits="OHM" type="RESISTANCE" units="OHM"/>
+              </DataItems>
+            </Rotary>
+            <Linear id="X1" name="X1" nativeName="X_P1">
+              <DataItems>
+                <DataItem category="CONDITION" id="nservoXP1" name="n.servo-X_P1" type="ACTUATOR"/>
+                <DataItem category="CONDITION" id="noverheatXP1" name="n.overheat-X_P1" type="TEMPERATURE"/>
+                <DataItem category="CONDITION" id="ntravelXP1" name="n.travel-X_P1" type="POSITION"/>
+                <DataItem category="SAMPLE" id="nactXP1" name="n.act-X_P1" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER"/>
+                <DataItem category="SAMPLE" id="nloadXP1" name="n.load-X_P1" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
+                <DataItem category="SAMPLE" id="nloadCurrentPercentXP1" name="n.loadCurrentPercent-X_P1" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
+                <DataItem category="SAMPLE" id="nloadCurrentAmpereXP1" name="n.loadCurrentAmpere-X_P1" nativeUnits="AMPERE" type="AMPERAGE" units="AMPERE"/>
+                <DataItem category="SAMPLE" id="nmovingAxisInslnResXP1" name="n.movingAxisInslnRes-X_P1" nativeUnits="OHM" type="RESISTANCE" units="OHM"/>
+                <DataItem category="EVENT" id="naxisTotalTravelAmtXP1" name="n.axisTotalTravelAmt-X_P1" type="MESSAGE"/>
+                <DataItem category="SAMPLE" id="nservoAdjRealSpeedXP1" name="n.servoAdjRealSpeed-X_P1" nativeUnits="REVOLUTION/MINUTE" subType="ACTUAL" type="ROTARY_VELOCITY" units="REVOLUTION/MINUTE"/>
+              </DataItems>
+            </Linear>
+            <Linear id="Y1" name="Y1" nativeName="Y_P1">
+              <DataItems>
+                <DataItem category="CONDITION" id="nservoYP1" name="n.servo-Y_P1" type="ACTUATOR"/>
+                <DataItem category="CONDITION" id="noverheatYP1" name="n.overheat-Y_P1" type="TEMPERATURE"/>
+                <DataItem category="CONDITION" id="ntravelYP1" name="n.travel-Y_P1" type="POSITION"/>
+                <DataItem category="SAMPLE" id="nactYP1" name="n.act-Y_P1" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER"/>
+                <DataItem category="SAMPLE" id="nloadYP1" name="n.load-Y_P1" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
+                <DataItem category="SAMPLE" id="nloadCurrentPercentYP1" name="n.loadCurrentPercent-Y_P1" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
+                <DataItem category="SAMPLE" id="nloadCurrentAmpereYP1" name="n.loadCurrentAmpere-Y_P1" nativeUnits="AMPERE" type="AMPERAGE" units="AMPERE"/>
+                <DataItem category="SAMPLE" id="nmovingAxisInslnResYP1" name="n.movingAxisInslnRes-Y_P1" nativeUnits="OHM" type="RESISTANCE" units="OHM"/>
+                <DataItem category="EVENT" id="naxisTotalTravelAmtYP1" name="n.axisTotalTravelAmt-Y_P1" type="MESSAGE"/>
+                <DataItem category="SAMPLE" id="nservoAdjRealSpeedYP1" name="n.servoAdjRealSpeed-Y_P1" nativeUnits="REVOLUTION/MINUTE" subType="ACTUAL" type="ROTARY_VELOCITY" units="REVOLUTION/MINUTE"/>
+              </DataItems>
+            </Linear>
+            <Linear id="Z1" name="Z1" nativeName="Z_P1">
+              <DataItems>
+                <DataItem category="CONDITION" id="nservoZP1" name="n.servo-Z_P1" type="ACTUATOR"/>
+                <DataItem category="CONDITION" id="noverheatZP1" name="n.overheat-Z_P1" type="TEMPERATURE"/>
+                <DataItem category="CONDITION" id="ntravelZP1" name="n.travel-Z_P1" type="POSITION"/>
+                <DataItem category="SAMPLE" id="nactZP1" name="n.act-Z_P1" nativeUnits="MILLIMETER" subType="ACTUAL" type="POSITION" units="MILLIMETER"/>
+                <DataItem category="SAMPLE" id="nloadZP1" name="n.load-Z_P1" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
+                <DataItem category="SAMPLE" id="nloadCurrentPercentZP1" name="n.loadCurrentPercent-Z_P1" nativeUnits="PERCENT" type="LOAD" units="PERCENT"/>
+                <DataItem category="SAMPLE" id="nloadCurrentAmpereZP1" name="n.loadCurrentAmpere-Z_P1" nativeUnits="AMPERE" type="AMPERAGE" units="AMPERE"/>
+                <DataItem category="SAMPLE" id="nmovingAxisInslnResZP1" name="n.movingAxisInslnRes-Z_P1" nativeUnits="OHM" type="RESISTANCE" units="OHM"/>
+                <DataItem category="EVENT" id="naxisTotalTravelAmtZP1" name="n.axisTotalTravelAmt-Z_P1" type="MESSAGE"/>
+                <DataItem category="SAMPLE" id="nservoAdjRealSpeedZP1" name="n.servoAdjRealSpeed-Z_P1" nativeUnits="REVOLUTION/MINUTE" subType="ACTUAL" type="ROTARY_VELOCITY" units="REVOLUTION/MINUTE"/>
+              </DataItems>
+            </Linear>
+          </Components>
+        </Axes>
+        <Controller id="cn1" name="controller">
+          <DataItems>
+            <DataItem category="EVENT" id="nestop1" name="n.estop-1" type="EMERGENCY_STOP"/>
+          </DataItems>
+          <Components>
+            <Path id="Path" name="Path">
+              <DataItems>
+                <DataItem category="CONDITION" id="nsystem1" name="n.system-1" type="SYSTEM"/>
+                <DataItem category="CONDITION" id="nlogic1" name="n.logic-1" type="LOGIC_PROGRAM"/>
+                <DataItem category="CONDITION" id="ncomms1" name="n.comms-1" type="COMMUNICATIONS"/>
+                <DataItem category="CONDITION" id="nmotion1" name="n.motion-1" type="MOTION_PROGRAM"/>
+                <DataItem category="CONDITION" id="nservonoaxis1" name="n.servonoaxis-1" type="ACTUATOR"/>
+                <DataItem category="EVENT" id="nmode1" name="n.mode-1" type="CONTROLLER_MODE"/>
+                <DataItem category="EVENT" id="npartcnt1" name="n.partcnt-1" type="PART_COUNT"/>
+                <DataItem category="EVENT" id="nexecution1" name="n.execution-1" type="EXECUTION"/>
+                <DataItem category="SAMPLE" id="npathfdrt1" name="n.pathfdrt-1" nativeUnits="MILLIMETER/SECOND" subType="ACTUAL" type="PATH_FEEDRATE" units="MILLIMETER/SECOND"/>
+                <DataItem category="EVENT" id="nline1" name="n.line-1" type="LINE"/>
+                <DataItem category="EVENT" id="nprogram1" name="n.program-1" type="PROGRAM"/>
+                <DataItem category="EVENT" id="nprogcom1" name="n.progcom-1" type="PROGRAM_COMMENT"/>
+                <DataItem category="EVENT" id="ntoolnumber1" name="n.toolnumber-1" type="TOOL_NUMBER"/>
+                <DataItem category="EVENT" id="nfeedoverride1" name="n.feedoverride-1" subType="PROGRAMMED" type="PATH_FEEDRATE_OVERRIDE"/>
+                <DataItem category="EVENT" id="nblock1" name="n.block-1" type="BLOCK"/>
+                <DataItem category="EVENT" id="nactaxes1" name="n.actaxes-1" type="ACTIVE_AXES"/>
+                <DataItem category="EVENT" id="nrapidoverride1" name="n.rapidoverride-1" subType="RAPID" type="PATH_FEEDRATE_OVERRIDE"/>
+                <DataItem category="EVENT" id="nspdloverride1" name="n.spdloverride-1" type="ROTARY_VELOCITY_OVERRIDE"/>
+                <DataItem category="EVENT" id="ndryrun1" name="n.dryrun-1" type="INTERFACE_STATE"/>
+                <DataItem category="EVENT" id="nfeedrate1" name="n.feedrate-1" type="INTERFACE_STATE"/>
+                <DataItem category="EVENT" id="nM001" name="n.M00-1" type="INTERFACE_STATE"/>
+                <DataItem category="EVENT" id="nM011" name="n.M01-1" type="INTERFACE_STATE"/>
+                <DataItem category="SAMPLE" id="ncycletime1" name="n.cycletime-1" nativeUnits="SECOND" type="ACCUMULATED_TIME" units="SECOND"/>
+              </DataItems>
+            </Path>
+          </Components>
+        </Controller>
+      </Components>
+    </Device>
+  </Devices>
+</MTConnectDevices>

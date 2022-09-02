@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="/styles/Streams.xsl"?>
+<MTConnectStreams xmlns:m="urn:mtconnect.org:MTConnectStreams:1.3"
+  xmlns="urn:mtconnect.org:MTConnectStreams:1.3"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:mtconnect.org:MTConnectStreams:1.3 /schemas/MTConnectStreams_1.3.xsd">
+  <Header creationTime="2020-12-31T15:22:26Z" sender="FBR-67E500" instanceId="1609428101" version="1.3.0.17" bufferSize="32768" nextSequence="128" firstSequence="1" lastSequence="127"/>
+  <Streams>
+    <DeviceStream name="FBR-67E500-01" uuid="000">
+      <ComponentStream component="Rotary" name="C1" componentId="C1">
+        <Samples>
+          <Load dataItemId="nloadS1P1" timestamp="2020-12-31T15:21:42.849960Z" name="n.load-S1_P1" sequence="97">0</Load>
+          <RotaryVelocity dataItemId="nspeedS1P1" timestamp="2020-12-31T15:21:42.850652Z" name="n.speed-S1_P1" sequence="114" subType="ACTUAL">0</RotaryVelocity>
+          <Resistance dataItemId="nspindleInslnResS1P1" timestamp="2020-12-31T15:21:47.013479Z" name="n.spindleInslnRes-S1_P1" sequence="127">0</Resistance>
+        </Samples>
+        <Events>
+          <RotaryMode dataItemId="nspdlmodeS1P1" timestamp="2020-12-31T15:21:42.850652Z" name="n.spdlmode-S1_P1" sequence="113">SPINDLE</RotaryMode>
+        </Events>
+        <Condition>
+          <Normal dataItemId="nservoS1P1" timestamp="2020-12-31T15:21:41.892043Z" name="n.servo-S1_P1" sequence="73" type="ACTUATOR"/>
+        </Condition>
+      </ComponentStream>
+      <ComponentStream component="Device" name="FBR-67E500-01" componentId="FBR-100AN">
+        <Events>
+          <AssetChanged dataItemId="FBR-100AN_asset_chg" timestamp="2020-12-31T15:21:41.805464Z" sequence="1" assetType="">UNAVAILABLE</AssetChanged>
+          <AssetRemoved dataItemId="FBR-100AN_asset_rem" timestamp="2020-12-31T15:21:41.805464Z" sequence="2" assetType="">UNAVAILABLE</AssetRemoved>
+          <Availability dataItemId="navail" timestamp="2020-12-31T15:21:41.890836Z" name="n.avail-" sequence="65">AVAILABLE</Availability>
+        </Events>
+        <Condition>
+          <Normal dataItemId="nopmessage" timestamp="2020-12-31T15:21:41.891525Z" name="n.opmessage-" sequence="69" type="SYSTEM"/>
+        </Condition>
+      </ComponentStream>
+      <ComponentStream component="Path" name="Path" componentId="Path">
+        <Samples>
+          <AccumulatedTime dataItemId="ncycletime1" timestamp="2020-12-31T15:21:42.849960Z" name="n.cycletime-1" sequence="91">0</AccumulatedTime>
+          <PathFeedrate dataItemId="npathfdrt1" timestamp="2020-12-31T15:21:42.850652Z" name="n.pathfdrt-1" sequence="109" subType="ACTUAL">0</PathFeedrate>
+        </Samples>
+        <Events>
+          <InterfaceState dataItemId="nM001" timestamp="2020-12-31T15:21:42.849590Z" name="n.M00-1" sequence="82">DISABLED</InterfaceState>
+          <InterfaceState dataItemId="nM011" timestamp="2020-12-31T15:21:42.849590Z" name="n.M01-1" sequence="83">DISABLED</InterfaceState>
+          <ActiveAxes dataItemId="nactaxes1" timestamp="2020-12-31T15:21:47.013479Z" name="n.actaxes-1" sequence="122">X Y Z</ActiveAxes>
+          <Block dataItemId="nblock1" timestamp="2020-12-31T15:21:42.849960Z" name="n.block-1" sequence="90">O0001(ROUGH)(TOOL=D12FEM)</Block>
+          <InterfaceState dataItemId="ndryrun1" timestamp="2020-12-31T15:21:42.849960Z" name="n.dryrun-1" sequence="92">DISABLED</InterfaceState>
+          <Execution dataItemId="nexecution1" timestamp="2020-12-31T15:21:42.849960Z" name="n.execution-1" sequence="94">READY</Execution>
+          <PathFeedrateOverride dataItemId="nfeedoverride1" timestamp="2020-12-31T15:21:42.961549Z" name="n.feedoverride-1" sequence="116" subType="PROGRAMMED">90</PathFeedrateOverride>
+          <InterfaceState dataItemId="nfeedrate1" timestamp="2020-12-31T15:21:42.849960Z" name="n.feedrate-1" sequence="95">DISABLED</InterfaceState>
+          <Line dataItemId="nline1" timestamp="2020-12-31T15:21:42.849960Z" name="n.line-1" sequence="96">0</Line>
+          <ControllerMode dataItemId="nmode1" timestamp="2020-12-31T15:21:42.850652Z" name="n.mode-1" sequence="108">AUTOMATIC</ControllerMode>
+          <PartCount dataItemId="npartcnt1" timestamp="2020-12-31T15:21:42.961549Z" name="n.partcnt-1" sequence="117">129</PartCount>
+          <ProgramComment dataItemId="nprogcom1" timestamp="2020-12-31T15:21:44.017833Z" name="n.progcom-1" sequence="120">(ROUGH)</ProgramComment>
+          <Program dataItemId="nprogram1" timestamp="2020-12-31T15:21:44.017833Z" name="n.program-1" sequence="121">//CNC_MEM/USER/PATH1/O1</Program>
+          <PathFeedrateOverride dataItemId="nrapidoverride1" timestamp="2020-12-31T15:21:42.961549Z" name="n.rapidoverride-1" sequence="118" subType="RAPID">100</PathFeedrateOverride>
+          <RotaryVelocityOverride dataItemId="nspdloverride1" timestamp="2020-12-31T15:21:42.961549Z" name="n.spdloverride-1" sequence="119">120</RotaryVelocityOverride>
+          <ToolNumber dataItemId="ntoolnumber1" timestamp="2020-12-31T15:21:42.850652Z" name="n.toolnumber-1" sequence="115">0</ToolNumber>
+        </Events>
+        <Condition>
+          <Normal dataItemId="ncomms1" timestamp="2020-12-31T15:21:41.891010Z" name="n.comms-1" sequence="66" type="COMMUNICATIONS"/>
+          <Fault dataItemId="nlogic1" timestamp="2020-12-31T15:21:42.850417Z" name="n.logic-1" sequence="107" nativeCode="SW100" type="LOGIC_PROGRAM">PARAMETER ENABLE SWITCH ON</Fault>
+          <Normal dataItemId="nmotion1" timestamp="2020-12-31T15:21:41.891408Z" name="n.motion-1" sequence="68" type="MOTION_PROGRAM"/>
+          <Normal dataItemId="nservonoaxis1" timestamp="2020-12-31T15:21:41.892519Z" name="n.servonoaxis-1" sequence="77" type="ACTUATOR"/>
+          <Normal dataItemId="nsystem1" timestamp="2020-12-31T15:21:41.892651Z" name="n.system-1" sequence="78" type="SYSTEM"/>
+        </Condition>
+      </ComponentStream>
+      <ComponentStream component="Linear" name="X1" componentId="X1">
+        <Samples>
+          <Position dataItemId="nactXP1" timestamp="2020-12-31T15:21:42.849590Z" name="n.act-X_P1" sequence="84" subType="ACTUAL">0</Position>
+          <Amperage dataItemId="nloadCurrentAmpereXP1" timestamp="2020-12-31T15:21:42.849960Z" name="n.loadCurrentAmpere-X_P1" sequence="101">0</Amperage>
+          <Load dataItemId="nloadCurrentPercentXP1" timestamp="2020-12-31T15:21:42.849960Z" name="n.loadCurrentPercent-X_P1" sequence="104">0</Load>
+          <Load dataItemId="nloadXP1" timestamp="2020-12-31T15:21:42.849960Z" name="n.load-X_P1" sequence="98">0</Load>
+          <Resistance dataItemId="nmovingAxisInslnResXP1" timestamp="2020-12-31T15:21:47.013479Z" name="n.movingAxisInslnRes-X_P1" sequence="124">0</Resistance>
+          <RotaryVelocity dataItemId="nservoAdjRealSpeedXP1" timestamp="2020-12-31T15:21:42.850652Z" name="n.servoAdjRealSpeed-X_P1" sequence="110" subType="ACTUAL">0</RotaryVelocity>
+        </Samples>
+        <Events>
+          <Message dataItemId="naxisTotalTravelAmtXP1" timestamp="2020-12-31T15:21:42.849774Z" name="n.axisTotalTravelAmt-X_P1" sequence="87">UNAVAILABLE</Message>
+        </Events>
+        <Condition>
+          <Normal dataItemId="noverheatXP1" timestamp="2020-12-31T15:21:41.891654Z" name="n.overheat-X_P1" sequence="70" type="TEMPERATURE"/>
+          <Normal dataItemId="nservoXP1" timestamp="2020-12-31T15:21:41.892170Z" name="n.servo-X_P1" sequence="74" type="ACTUATOR"/>
+          <Normal dataItemId="ntravelXP1" timestamp="2020-12-31T15:21:41.892766Z" name="n.travel-X_P1" sequence="79" type="POSITION"/>
+        </Condition>
+      </ComponentStream>
+      <ComponentStream component="Linear" name="Y1" componentId="Y1">
+        <Samples>
+          <Position dataItemId="nactYP1" timestamp="2020-12-31T15:21:42.849590Z" name="n.act-Y_P1" sequence="85" subType="ACTUAL">0</Position>
+          <Amperage dataItemId="nloadCurrentAmpereYP1" timestamp="2020-12-31T15:21:42.849960Z" name="n.loadCurrentAmpere-Y_P1" sequence="102">0</Amperage>
+          <Load dataItemId="nloadCurrentPercentYP1" timestamp="2020-12-31T15:21:42.849960Z" name="n.loadCurrentPercent-Y_P1" sequence="105">0</Load>
+          <Load dataItemId="nloadYP1" timestamp="2020-12-31T15:21:42.849960Z" name="n.load-Y_P1" sequence="99">0</Load>
+          <Resistance dataItemId="nmovingAxisInslnResYP1" timestamp="2020-12-31T15:21:47.013479Z" name="n.movingAxisInslnRes-Y_P1" sequence="125">0</Resistance>
+          <RotaryVelocity dataItemId="nservoAdjRealSpeedYP1" timestamp="2020-12-31T15:21:42.850652Z" name="n.servoAdjRealSpeed-Y_P1" sequence="111" subType="ACTUAL">0</RotaryVelocity>
+        </Samples>
+        <Events>
+          <Message dataItemId="naxisTotalTravelAmtYP1" timestamp="2020-12-31T15:21:42.849842Z" name="n.axisTotalTravelAmt-Y_P1" sequence="88">UNAVAILABLE</Message>
+        </Events>
+        <Condition>
+          <Normal dataItemId="noverheatYP1" timestamp="2020-12-31T15:21:41.891777Z" name="n.overheat-Y_P1" sequence="71" type="TEMPERATURE"/>
+          <Normal dataItemId="nservoYP1" timestamp="2020-12-31T15:21:41.892285Z" name="n.servo-Y_P1" sequence="75" type="ACTUATOR"/>
+          <Normal dataItemId="ntravelYP1" timestamp="2020-12-31T15:21:41.892879Z" name="n.travel-Y_P1" sequence="80" type="POSITION"/>
+        </Condition>
+      </ComponentStream>
+      <ComponentStream component="Linear" name="Z1" componentId="Z1">
+        <Samples>
+          <Position dataItemId="nactZP1" timestamp="2020-12-31T15:21:42.849590Z" name="n.act-Z_P1" sequence="86" subType="ACTUAL">0</Position>
+          <Amperage dataItemId="nloadCurrentAmpereZP1" timestamp="2020-12-31T15:21:42.849960Z" name="n.loadCurrentAmpere-Z_P1" sequence="103">0</Amperage>
+          <Load dataItemId="nloadCurrentPercentZP1" timestamp="2020-12-31T15:21:42.849960Z" name="n.loadCurrentPercent-Z_P1" sequence="106">0</Load>
+          <Load dataItemId="nloadZP1" timestamp="2020-12-31T15:21:42.849960Z" name="n.load-Z_P1" sequence="100">0</Load>
+          <Resistance dataItemId="nmovingAxisInslnResZP1" timestamp="2020-12-31T15:21:47.013479Z" name="n.movingAxisInslnRes-Z_P1" sequence="126">0</Resistance>
+          <RotaryVelocity dataItemId="nservoAdjRealSpeedZP1" timestamp="2020-12-31T15:21:42.850652Z" name="n.servoAdjRealSpeed-Z_P1" sequence="112" subType="ACTUAL">0</RotaryVelocity>
+        </Samples>
+        <Events>
+          <Message dataItemId="naxisTotalTravelAmtZP1" timestamp="2020-12-31T15:21:42.849896Z" name="n.axisTotalTravelAmt-Z_P1" sequence="89">UNAVAILABLE</Message>
+        </Events>
+        <Condition>
+          <Normal dataItemId="noverheatZP1" timestamp="2020-12-31T15:21:41.891901Z" name="n.overheat-Z_P1" sequence="72" type="TEMPERATURE"/>
+          <Normal dataItemId="nservoZP1" timestamp="2020-12-31T15:21:41.892396Z" name="n.servo-Z_P1" sequence="76" type="ACTUATOR"/>
+          <Normal dataItemId="ntravelZP1" timestamp="2020-12-31T15:21:41.892998Z" name="n.travel-Z_P1" sequence="81" type="POSITION"/>
+        </Condition>
+      </ComponentStream>
+      <ComponentStream component="Axes" name="Axes" componentId="ax">
+        <Samples>
+          <ElectricalEnergy dataItemId="nallServoSpindlePwrCons1" timestamp="2020-12-31T15:21:47.013479Z" name="n.allServoSpindlePwrCons-1" sequence="123">0</ElectricalEnergy>
+        </Samples>
+      </ComponentStream>
+      <ComponentStream component="Controller" name="controller" componentId="cn1">
+        <Events>
+          <EmergencyStop dataItemId="nestop1" timestamp="2020-12-31T15:21:42.849960Z" name="n.estop-1" sequence="93">ARMED</EmergencyStop>
+        </Events>
+      </ComponentStream>
+    </DeviceStream>
+  </Streams>
+</MTConnectStreams>
