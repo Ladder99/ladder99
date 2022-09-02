@@ -9,7 +9,7 @@ import { setupDevice } from './setupDevice.js'
 console.log()
 console.log(`Ladder99 Adapter`)
 console.log(`Polls/subscribes to data, writes to cache, transforms to SHDR,`)
-console.log(`posts to TCP.`)
+console.log(`posts to Agent via TCP.`)
 console.log(new Date().toISOString())
 console.log(`----------------------------------------------------------------`)
 
