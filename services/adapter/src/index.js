@@ -5,6 +5,7 @@
 import * as lib from './common/lib.js'
 import { Cache } from './cache.js'
 import { setupDevice } from './setupDevice.js'
+import { Mqtt } from './mqtt.js'
 
 console.log()
 console.log(`Ladder99 Adapter`)
@@ -33,6 +34,9 @@ async function main(params) {
 
   // define cache shared across all devices and sources
   const cache = new Cache()
+
+  //. subscribe to setup-level mqtt topic, which will be handled by diff device handlers.
+  // const mqttConnection = new Mqtt({ setup })
 
   // iterate over device definitions from setup.yaml file and do setup for each
   const client = setup.client || {}
