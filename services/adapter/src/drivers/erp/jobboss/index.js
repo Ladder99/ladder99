@@ -57,7 +57,7 @@ export class AdapterDriver {
         // connect will return the existing global pool or create a new one if it doesn't exist
         pool = await mssql.connect(connection)
       } catch (error) {
-        handleError(error) // print error and wait a bit
+        await handleError(error) // print error and wait a bit
         // try again, in a loop
       }
     }
