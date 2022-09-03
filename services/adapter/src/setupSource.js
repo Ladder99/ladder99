@@ -1,6 +1,7 @@
 // setup a device source
 // load and initialize any plugin/driver code
 
+import * as lib from './common/lib.js'
 import {
   getOutputs,
   getPlugin,
