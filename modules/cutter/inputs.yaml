@@ -47,6 +47,7 @@ handlers:
   # ----------------------------------------------------------------------------
   # handle controller messages
   # ----------------------------------------------------------------------------
+  # payload is just a string - birth, sleep, or death
   controller:
     # make '$' the payload value - 'birth', 'sleep', or 'death'
     initialize: '$ = payload'
@@ -55,7 +56,7 @@ handlers:
     # define algorithm to process inputs
     process: iterate_inputs
     # define key-js pairs
-    # 'key' is mapped to a cache id, eg 'controller' => 's1-controller'.
+    # 'key' is mapped to a cache id, eg 'dxm' => 'm1-dxm'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
       dxm: $==='birth'
@@ -65,7 +66,7 @@ handlers:
   # ----------------------------------------------------------------------------
   # a message on this topic might look like this -
   #   {"id":"535172","a1":0.021972991531242846,"a2":0.013122758831158923,"a3":0.007629510948348211,"a4":0.021972991531242846,"a5":0,"a6":0,"a8":128}
-  # where a5 is the partcount
+  # where id is the device to dispatch the message to and a5 is the partcount
   l99/B01000/evt/io:
     # make '$' the message payload dictionary
     #. JSON.parse the string explicitly here! otherwise, have to do try/catch for plain string handling
