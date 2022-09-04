@@ -99,8 +99,9 @@ export class AdapterDriver {
         return
 
       // iterate over message handlers - array of [topic, handler]
-      //. better to have a dict to lookup topic handler instantly
       // eg [['l99/ccs/evt/query', { unsubscribe, initialize, definitions, inputs, ... }], ...]
+      //. better to have a dict to lookup topic handler -
+      //. ie const handler = inputs.handlers[msgTopic]
       let msgHandled = false
       for (let [topic, handler] of Object.entries(inputs.handlers)) {
         topic = replaceDeviceId(topic)
