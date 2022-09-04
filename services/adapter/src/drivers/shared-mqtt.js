@@ -1,17 +1,17 @@
-// mqtt driver
-// subscribes to mqtt topics, receives messages, parses them.
+// shared-mqtt driver
+// subscribes to mqtt topics, receives messages, dispatches them to subscribers.
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 // import * as lib from './common/lib.js'
 
-export class Mqtt {
+export class SharedMqtt {
   //
   constructor() {
-    this.subscribers = {} // key is topic
+    this.topics = {}
+    this.subscribers = {} // key is topic, value is array of { callback, selector }
   }
 
-  init({ setup }) {
-    //source, device, host, port, cache, inputs, types, advice }) {
+  start({ host, port }) {
     console.log('Adapter initializing mqtt driver')
     const url = `mqtt://${host}:${port}`
 
