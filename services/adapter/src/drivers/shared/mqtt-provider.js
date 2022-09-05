@@ -1,17 +1,16 @@
-// shared mqtt provider driver
+// mqtt provider
 // subscribes to mqtt topics, receives messages, dispatches them to subscribers.
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 // import * as lib from './common/lib.js'
 
-export class SharedMqtt {
+export class AdapterDriver {
   //
   constructor() {
-    this.topics = {}
     this.subscribers = {} // key is topic, value is array of { callback, selector }
   }
 
-  start({ host, port }) {
+  start({}) {
     console.log('MQTT-provider initializing mqtt driver')
     const url = `mqtt://${host}:${port}`
 
