@@ -5,7 +5,7 @@
 import * as lib from './common/lib.js'
 import { Cache } from './cache.js'
 import { setupDevice } from './setupDevice.js'
-// import { SharedProvider } from './drivers/shared-mqtt.js' //. will be dynamic import
+import { AdapterDriver } from './drivers/shared-mqtt.js' //. will be dynamic import
 
 console.log()
 console.log(`Ladder99 Adapter`)
@@ -47,14 +47,19 @@ async function start(params) {
   //   foo.start(connection) //. await?
   //   shared[key] = foo
   // }
-  const shared = new Shared(setup)
-  // const shared = setup.adapter.shared.map(obj => {})
+  // const shared = setup.adapter?.shared.map(connection => {})
+  const connection = setup.adapter?.shared[0] || []
+  const foo = new AdapterDriver()
+  foo.init(connection)
+  const shared = {
+    foo,
+  }
 
   // iterate over device definitions from setup.yaml file and do setup for each
   const client = setup.client || {}
   const devices = setup.devices || []
   for (const device of devices) {
-    setupDevice({ params, device, cache, client, devices })
+    setupDevice({ params, device, cache, client, devices }) //. add shared
   }
 }
 

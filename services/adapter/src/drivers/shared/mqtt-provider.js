@@ -10,9 +10,9 @@ export class AdapterDriver {
     this.subscribers = {} // key is topic, value is array of { callback, selector }
   }
 
-  start({}) {
+  init({ address, topics }) {
     console.log('MQTT-provider initializing mqtt driver')
-    const url = `mqtt://${host}:${port}`
+    const url = `mqtt://${address.host}:${address.port}`
 
     // connect to mqtt broker/server
     console.log(`MQTT-provider connecting to broker on ${url}...`)
@@ -26,11 +26,11 @@ export class AdapterDriver {
       console.log(`MQTT-provider registering message handler`)
       mqtt.on('message', onMessage) //. bind(this) ?
 
-      //. loop over all topics and subscribe to each
       // subscribe to any topics defined
-      // const topic = replaceDeviceId(entry.topic)
-      console.log(`MQTT-provider subscribing to ${topic}`)
-      mqtt.subscribe(topic)
+      for (let topic of topics) {
+        console.log(`MQTT-provider subscribing to ${topic}`)
+        mqtt.subscribe(topic)
+      }
 
       // console.log(`MQTT-provider listening for mqtt messages...`)
     })
