@@ -1,4 +1,4 @@
-// shared-mqtt driver
+// shared mqtt provider driver
 // subscribes to mqtt topics, receives messages, dispatches them to subscribers.
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
@@ -12,28 +12,28 @@ export class SharedMqtt {
   }
 
   start({ host, port }) {
-    console.log('Adapter initializing mqtt driver')
+    console.log('MQTT-provider initializing mqtt driver')
     const url = `mqtt://${host}:${port}`
 
     // connect to mqtt broker/server
-    console.log(`Adapter connecting to broker on ${url}...`)
+    console.log(`MQTT-provider connecting to broker on ${url}...`)
     const mqtt = libmqtt.connect(url)
 
     // handle connection
     mqtt.on('connect', function onConnect() {
-      console.log(`Adapter connected to broker on ${url}`)
+      console.log(`MQTT-provider connected to broker on ${url}`)
 
       // register message handler
-      console.log(`Adapter registering message handler`)
+      console.log(`MQTT-provider registering message handler`)
       mqtt.on('message', onMessage) //. bind(this) ?
 
       //. loop over all topics and subscribe to each
-      // // subscribe to any topics defined
-      // // const topic = replaceDeviceId(entry.topic)
-      // console.log(`Adapter subscribing to ${topic}`)
-      // mqtt.subscribe(topic)
+      // subscribe to any topics defined
+      // const topic = replaceDeviceId(entry.topic)
+      console.log(`MQTT-provider subscribing to ${topic}`)
+      mqtt.subscribe(topic)
 
-      console.log(`Adapter listening for mqtt messages...`)
+      // console.log(`MQTT-provider listening for mqtt messages...`)
     })
 
     // handle incoming messages and dispatch them to subscribers
@@ -41,7 +41,9 @@ export class SharedMqtt {
     // message - array of bytes (assumed to be a json string)
     function onMessage(topic, message) {
       message = message.toString()
-      console.log(`MQTT got message ${topic}: ${message.slice(0, 140)}`)
+      console.log(
+        `MQTT-provider got message ${topic}: ${message.slice(0, 140)}`
+      )
       const payload = JSON.parse(message)
       // payload.id
       //. dispatch message to correct subscribers
