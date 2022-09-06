@@ -7,7 +7,7 @@ import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 const mqtts = {}
 
 // memoized mqtt constructor
-//. memoize by module also? eg 'cutter' vs 'print-apply'?
+//. memoize by module also, eg 'cutter' vs 'print-apply'?
 export function getMqtt(url) {
   if (mqtts[url]) {
     return mqtts[url]
@@ -23,18 +23,28 @@ export class MqttProvider {
   //
   constructor(url) {
     this.url = url
-    this.mqtt = libmqtt.connect(url)
     this.subscribers = {} // key is topic, value is array of { callback, selector }
-    this.handlers = {} // key is event name eg 'message', value is handler fn
+    // instead of a single handler for each event, we need several, eg one for each device
+    this.handlers = {
+      connect: [],
+      message: [],
+    }
+    this.mqtt = libmqtt.connect(url)
+    this.mqtt.on('connect', () => {
+      console.log(`MQTT-provider connected to broker on`, url)
+      for (let handler of this.handlers.connect) {
+        handler()
+      }
+      this.mqtt.on('message', handler)
+    })
   }
 
   on(event, handler) {
     if (event === 'connect') {
-      this.mqtt.on('connect', handler)
+      this.handlers.connect.push(handler)
     } else if (event === 'message') {
       //. so we're gonna need to intercept messages, filter on a selector object,
       // and only THEN, call the wrapped message handler.
-      // this.mqtt.on('message', handler)
       this.handlers[event] = handler
     }
   }
@@ -85,9 +95,9 @@ export class MqttProvider {
 
   // subscribe to a topic with an optional selector fn.
   // note: we don't need to pass in a callback because this object
-  // will always just call the 'message' handler.
-  //. but don't we need diff threads to call?
-  // ie when we register onMessage, each one can go to a diff target, eh?
+  // will always just call the 'message' handler, filtered by the selector.
+  //. but don't we need the diff threads to call?
+  // ie when we register onMessage, each one can go to a diff target, eh? yah.
   subscribe(topic, selector = () => true) {
     this.subscribers[topic] = this.subscribers[topic] || []
     this.subscribers[topic].push(selector)

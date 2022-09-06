@@ -33,18 +33,18 @@ export class AdapterDriver {
     // connect to mqtt broker/server
     console.log(`MQTT-subscriber connecting to broker on ${url}...`)
     // const mqtt = libmqtt.connect(url)
-    const mqtt = getMqtt(url)
+    const mqtt = getMqtt(url) // connects an underlying libmqtt object
 
     //. our mqtt object should have same api as libmqtt's object,
     // just extended a little bit.
 
     // handle connection
     mqtt.on('connect', function onConnect() {
-      console.log(`MQTT-subscriber connected to broker on ${url}`)
+      console.log(`MQTT-subscriber connected to MQTT-provider`)
 
       // register message handler
       console.log(`MQTT-subscriber registering message handler`)
-      mqtt.on('message', onMessage)
+      mqtt.on('message', onMessage) // callback takes topic and payload
 
       // subscribe to any topics defined
       for (const entry of inputs.connect.subscribe) {
