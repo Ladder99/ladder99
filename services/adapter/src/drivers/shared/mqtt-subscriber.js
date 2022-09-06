@@ -27,11 +27,11 @@ export class AdapterDriver {
   //. is advice used also?
   // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
   init({ source, device, host, port, cache, inputs, types, advice }) {
-    console.log('MQTT-subscriber Initializing mqtt-json driver for', device.id)
+    console.log('MQTT-subscriber initializing driver for', device.id)
     const url = `mqtt://${host}:${port}`
 
     // connect to mqtt broker/server
-    console.log(`MQTT-subscriber connecting to broker on ${url}...`)
+    console.log(`MQTT-subscriber getting MQTT-provider singleton...`)
     // const mqtt = libmqtt.connect(url)
     const mqtt = getMqtt(url) // connects an underlying libmqtt object
 
@@ -44,7 +44,7 @@ export class AdapterDriver {
 
       // register message handler
       console.log(`MQTT-subscriber registering message handler`)
-      mqtt.on('message', onMessage) // callback takes topic and payload
+      mqtt.on('message', onMessage) // callback fn takes topic and payload
 
       // subscribe to any topics defined
       for (const entry of inputs.connect.subscribe) {

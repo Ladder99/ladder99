@@ -21,21 +21,30 @@ export function getMqtt(url) {
 // this is a singleton for a given mqtt url.
 export class MqttProvider {
   //
+  // url is sthing like 'mqtt://localhost:1883'
   constructor(url) {
+    console.log(`MQTT-provider constructor`)
     this.url = url
-    this.subscribers = {} // key is topic, value is array of { callback, selector }
+    this.subscribers = {} // key is topic, value is ...
+
     // instead of a single handler for each event, we need several, eg one for each device
     this.handlers = {
       connect: [],
       message: [],
     }
+    console.log(`MQTT-provider connecting to url`, url)
     this.mqtt = libmqtt.connect(url)
+
+    // intercept the connect event from the proxied object and call all our subscribers
     this.mqtt.on('connect', () => {
       console.log(`MQTT-provider connected to broker on`, url)
-      for (let handler of this.handlers.connect) {
-        handler()
+
+      // call all 'connect' callbacks
+      for (let callback of this.handlers.connect) {
+        callback()
       }
-      this.mqtt.on('message', handler)
+
+      this.mqtt.on('message', this.onMessage)
     })
   }
 
@@ -45,7 +54,7 @@ export class MqttProvider {
     } else if (event === 'message') {
       //. so we're gonna need to intercept messages, filter on a selector object,
       // and only THEN, call the wrapped message handler.
-      this.handlers[event] = handler
+      this.handlers.message.push(handler)
     }
   }
 
@@ -101,5 +110,9 @@ export class MqttProvider {
   subscribe(topic, selector = () => true) {
     this.subscribers[topic] = this.subscribers[topic] || []
     this.subscribers[topic].push(selector)
+  }
+
+  onMessage(msgTopic, msgPayload) {
+    //. we need to filter on eg payload.id === some value
   }
 }
