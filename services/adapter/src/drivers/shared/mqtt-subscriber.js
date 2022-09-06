@@ -40,6 +40,7 @@ export class AdapterDriver {
     // just extended a little bit.
 
     // get selectors for each topic
+    // eg
     // topicSelectors: # topics and selector objects - payload must match given contents
     //   l99/B01000/evt/io:
     //     id: 535172
@@ -51,7 +52,7 @@ export class AdapterDriver {
     for (let topic of Object.keys(source.topicSelectors)) {
       const obj = source.topicSelectors[topic]
       //. for now assume selection is done by id
-      const selector = payload => (payload.id = obj.id)
+      const selector = payload => payload.id === obj.id
       selectors[topic] = selector
     }
 
@@ -245,7 +246,7 @@ export class AdapterDriver {
             const topic = replaceDeviceId(entry.topic)
             console.log(`MQTT-subscriber subscribe to ${topic}`)
             // mqtt.subscribe(topic)
-            mqtt.subscribe(topic, _) //. add selector
+            mqtt.subscribe(topic) //. add selector?
           }
 
           msgHandled = true

@@ -93,6 +93,10 @@ export class MqttProvider {
     this.subscribers[topic].push(selector)
   }
 
+  publish(topic, message) {
+    this.mqtt.publish(topic, message)
+  }
+
   onMessage(msgTopic, msgPayload) {
     //. we need to filter on eg payload.id === some value
   }
