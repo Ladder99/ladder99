@@ -64,7 +64,6 @@ export class MqttProvider {
     // handle incoming messages and dispatch them to subscribers
     // topic - eg 'l99/pa1/evt/query'
     // message - array of bytes (assumed to be a json string)
-    //. we need to filter on eg payload.id === some value
     function onMessage(topic, message) {
       message = message.toString()
       console.log(
@@ -72,6 +71,9 @@ export class MqttProvider {
       )
       const payload = JSON.parse(message)
       // peek inside the payload to see who to dispatch this message to.
+      //. for now we need to filter on eg payload.id === some value
+      //. make a dict for dispatching instead of linear search, ie on id
+      // note: subscriber = { callback, selector }
       for (let subscriber of this.subscibers[topic]) {
         const selector = subscriber?.selector || (() => true)
         if (selector(topic, payload)) {
@@ -82,15 +84,14 @@ export class MqttProvider {
   }
 
   // subscribe to a topic with an optional selector fn.
-  // note: we don't need to pass in a callback because this object
-  // will always just call the 'message' handler, filtered by the selector.
-  //. but don't we need the diff threads to call?
-  // ie when we register onMessage, each one can go to a diff target, eh? yah.
-  subscribe(topic, selector = payload => true) {
+  // add a callback here, store in the subscriber object with selector.
+  subscribe(topic, callback, selector = payload => true) {
     this.subscribers[topic] = this.subscribers[topic] || []
-    this.subscribers[topic].push(selector)
+    const subscriber = { callback, selector }
+    this.subscribers[topic].push(subscriber)
   }
 
+  //. pass callback here to distinguish subscribers?
   unsubscribe(topic) {
     console.log(`MQTT-provider unsubscribe ${topic} - not yet implemented`)
     // this.subscribers[topic]. remove topic uuid
