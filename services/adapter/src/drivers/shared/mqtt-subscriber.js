@@ -32,11 +32,28 @@ export class AdapterDriver {
 
     // connect to mqtt broker/server
     console.log(`MQTT-subscriber getting MQTT-provider singleton...`)
+
     // const mqtt = libmqtt.connect(url)
-    const mqtt = getMqtt(url) // connects an underlying libmqtt object
+    const mqtt = getMqtt(url) // starts connection to a singleton libmqtt object
 
     //. our mqtt object should have same api as libmqtt's object,
     // just extended a little bit.
+
+    // get selectors for each topic
+    // topicSelectors: # topics and selector objects - payload must match given contents
+    //   l99/B01000/evt/io:
+    //     id: 535172
+    //   l99/B01000/evt/vibration:
+    //     id: 479055
+    //   l99/B01000/evt/pressure:
+    //     id: 541790
+    const selectors = {} // key is topic, value is selector fn
+    for (let topic of Object.keys(source.topicSelectors)) {
+      const obj = source.topicSelectors[topic]
+      //. for now assume selection is done by id
+      const selector = payload => (payload.id = obj.id)
+      selectors[topic] = selector
+    }
 
     // handle connection
     mqtt.on('connect', function onConnect() {
@@ -46,12 +63,12 @@ export class AdapterDriver {
       console.log(`MQTT-subscriber registering message handler`)
       mqtt.on('message', onMessage) // callback fn takes topic and payload
 
-      // subscribe to any topics defined
+      // subscribe to any topics defined in inputs.yaml
       for (const entry of inputs.connect.subscribe) {
         const topic = replaceDeviceId(entry.topic)
         console.log(`MQTT-subscriber subscribing to ${topic}`)
-        // mqtt.subscribe(topic)
-        mqtt.subscribe(topic, _) //. add selector for dispatcher to filter on
+        // mqtt.subscribe(topic) // old code
+        mqtt.subscribe(topic, selectors[topic]) // extend mqtt api to add selector for dispatcher to filter on
       }
 
       // publish to any topics defined

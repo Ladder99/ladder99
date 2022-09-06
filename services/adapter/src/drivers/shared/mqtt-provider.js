@@ -4,7 +4,7 @@
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 // import * as lib from './common/lib.js'
 
-const mqtts = {}
+const mqtts = {} // key is url, value is an MqttProvider object
 
 // memoized mqtt constructor
 //. memoize by module also, eg 'cutter' vs 'print-apply'?
@@ -12,76 +12,54 @@ export function getMqtt(url) {
   if (mqtts[url]) {
     return mqtts[url]
   }
-  const mqtt = new MqttProvider(url)
+  const mqtt = new MqttProvider()
+  mqtt.start(url)
   mqtts[url] = mqtt
   return mqtt
 }
+
+//
 
 // this class wraps the original mqtt object, adding additional dispatch capabilities.
 // this is a singleton for a given mqtt url.
 export class MqttProvider {
   //
-  // url is sthing like 'mqtt://localhost:1883'
-  constructor(url) {
-    console.log(`MQTT-provider constructor`)
-    this.url = url
-    this.subscribers = {} // key is topic, value is ...
-
+  constructor() {
     // instead of a single handler for each event, we need several, eg one for each device
     this.handlers = {
       connect: [],
       message: [],
     }
+    this.subscribers = {} // key is topic, value is ...
+  }
+
+  // register event handlers, eg 'connect', 'message'
+  on(event, handler) {
+    this.handlers[event].push(handler)
+  }
+
+  // start the underlying mqtt connection
+  // url is sthing like 'mqtt://localhost:1883'
+  start(url) {
+    this.url = url
     console.log(`MQTT-provider connecting to url`, url)
     this.mqtt = libmqtt.connect(url)
 
-    // intercept the connect event from the proxied object and call all our subscribers
-    this.mqtt.on('connect', () => {
-      console.log(`MQTT-provider connected to broker on`, url)
+    // handle events from the proxied object
+    this.mqtt.on('message', onMessage)
+    this.mqtt.on('connect', onConnect)
 
-      // call all 'connect' callbacks
+    function onConnect() {
+      console.log(`MQTT-provider connected to broker on`, url)
       for (let callback of this.handlers.connect) {
         callback()
       }
-
-      this.mqtt.on('message', this.onMessage)
-    })
-  }
-
-  on(event, handler) {
-    if (event === 'connect') {
-      this.handlers.connect.push(handler)
-    } else if (event === 'message') {
-      //. so we're gonna need to intercept messages, filter on a selector object,
-      // and only THEN, call the wrapped message handler.
-      this.handlers.message.push(handler)
-    }
-  }
-
-  init({ address, topics }) {
-    console.log('MQTT-provider initializing mqtt driver')
-    const url = `mqtt://${address.host}:${address.port}`
-
-    // connect to mqtt broker/server
-    console.log(`MQTT-provider connecting to broker on ${url}...`)
-    const mqtt = libmqtt.connect(url)
-
-    // handle connection
-    mqtt.on('connect', function onConnect() {
-      console.log(`MQTT-provider connected to broker on ${url}`)
-
-      // register message handler
-      console.log(`MQTT-provider registering message handler`)
-      mqtt.on('message', onMessage) //. bind(this) ?
-
       // subscribe to any topics defined
       for (let topic of topics) {
         console.log(`MQTT-provider subscribing to ${topic}`)
         mqtt.subscribe(topic)
       }
-
-      // console.log(`MQTT-provider listening for mqtt messages...`)
-    })
+    }
 
     // handle incoming messages and dispatch them to subscribers
     // topic - eg 'l99/pa1/evt/query'
@@ -99,6 +77,9 @@ export class MqttProvider {
           subscriber.callback(topic, payload)
         }
       }
+      // for (let callback of this.handlers.message) {
+      //   callback()
+      // }
     }
   }
 
