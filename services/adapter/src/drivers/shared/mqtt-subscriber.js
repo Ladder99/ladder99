@@ -34,13 +34,12 @@ export class AdapterDriver {
     console.log(`MQTT-subscriber getting MQTT-provider singleton...`)
 
     // const mqtt = libmqtt.connect(url)
+
+    //. our mqtt object has same api as libmqtt's object, just extended a little bit.
     const mqtt = getMqtt(url) // starts connection to a singleton libmqtt object
 
-    //. our mqtt object should have same api as libmqtt's object,
-    // just extended a little bit.
-
     // get selectors for each topic
-    // eg
+    // eg from setup.yaml -
     // topicSelectors: # topics and selector objects - payload must match given contents
     //   l99/B01000/evt/io:
     //     id: 535172
@@ -51,8 +50,7 @@ export class AdapterDriver {
     const selectors = {} // key is topic, value is selector fn
     for (let topic of Object.keys(source.topicSelectors)) {
       const obj = source.topicSelectors[topic]
-      //. for now assume selection is done by id
-      const selector = payload => payload.id === obj.id
+      const selector = payload => payload.id === obj.id //. for now assume selection is done by id
       selectors[topic] = selector
     }
 
@@ -93,7 +91,9 @@ export class AdapterDriver {
     // handle incoming messages.
     // eg for ccs-pa have query, status, and read messages.
     // msgTopic - mqtt topic, eg 'l99/pa1/evt/query'
-    // message - array of bytes (assumed to be a json string)
+    // message - array of bytes (assumed to be a string or json string)
+    //. so we need to handle messages differently depending on the topic -
+    // need a dict to dispatch on - currently does linear search through them.
     function onMessage(msgTopic, message) {
       message = message.toString()
 
@@ -140,7 +140,7 @@ export class AdapterDriver {
           for (const entry of handler.unsubscribe || []) {
             const topic = replaceDeviceId(entry.topic)
             console.log(`MQTT-subscriber unsubscribe from ${topic}`)
-            mqtt.unsubscribe(topic)
+            mqtt.unsubscribe(topic) //. um, which callback to remove? need an id from mqtt
           }
 
           // run initialize handler
@@ -245,7 +245,6 @@ export class AdapterDriver {
           for (const entry of handler.subscribe || []) {
             const topic = replaceDeviceId(entry.topic)
             console.log(`MQTT-subscriber subscribe to ${topic}`)
-            // mqtt.subscribe(topic)
             mqtt.subscribe(topic) //. add selector?
           }
 

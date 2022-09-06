@@ -64,22 +64,20 @@ export class MqttProvider {
     // handle incoming messages and dispatch them to subscribers
     // topic - eg 'l99/pa1/evt/query'
     // message - array of bytes (assumed to be a json string)
+    //. we need to filter on eg payload.id === some value
     function onMessage(topic, message) {
       message = message.toString()
       console.log(
         `MQTT-provider got message ${topic}: ${message.slice(0, 140)}`
       )
       const payload = JSON.parse(message)
-      // payload.id
-      //. dispatch message to correct subscribers
+      // peek inside the payload to see who to dispatch this message to.
       for (let subscriber of this.subscibers[topic]) {
-        if (subscriber.selector(topic, payload)) {
+        const selector = subscriber?.selector || (() => true)
+        if (selector(topic, payload)) {
           subscriber.callback(topic, payload)
         }
       }
-      // for (let callback of this.handlers.message) {
-      //   callback()
-      // }
     }
   }
 
@@ -88,16 +86,19 @@ export class MqttProvider {
   // will always just call the 'message' handler, filtered by the selector.
   //. but don't we need the diff threads to call?
   // ie when we register onMessage, each one can go to a diff target, eh? yah.
-  subscribe(topic, selector = () => true) {
+  subscribe(topic, selector = payload => true) {
     this.subscribers[topic] = this.subscribers[topic] || []
     this.subscribers[topic].push(selector)
   }
 
-  publish(topic, message) {
-    this.mqtt.publish(topic, message)
+  unsubscribe(topic) {
+    console.log(`MQTT-provider unsubscribe ${topic} - not yet implemented`)
+    // this.subscribers[topic]. remove topic uuid
+    // if none left,
+    // this.mqtt.unsubscribe(topic)
   }
 
-  onMessage(msgTopic, msgPayload) {
-    //. we need to filter on eg payload.id === some value
+  publish(topic, message) {
+    this.mqtt.publish(topic, message)
   }
 }
