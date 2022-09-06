@@ -48,18 +48,18 @@ async function start(params) {
   //   shared[key] = foo
   // }
   // const shared = setup.adapter?.shared.map(connection => {})
-  const connection = setup.adapter?.shared[0] || []
-  const foo = new AdapterDriver()
-  foo.init(connection)
-  const shared = {
-    foo,
-  }
+  // const connection = setup.adapter?.shared[0] || []
+  // const driver = new AdapterDriver()
+  // driver.init(connection)
+  // const shared = {
+  //   'shared-mqtt1': driver,
+  // }
 
   // iterate over device definitions from setup.yaml file and do setup for each
   const client = setup.client || {}
   const devices = setup.devices || []
   for (const device of devices) {
-    setupDevice({ params, device, cache, client, devices }) //. add shared
+    setupDevice({ params, device, cache, client, devices })
   }
 }
 

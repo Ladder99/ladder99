@@ -4,7 +4,17 @@
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 // import * as lib from './common/lib.js'
 
-export class AdapterDriver {
+const mqtts = {}
+
+export function getMqtt(url) {
+  if (mqtts[url]) {
+    return mqtts[url]
+  }
+  const mqtt = libmqtt.connect(url)
+  mqtts[url] = mqtt
+}
+
+export class MqttProvider {
   //
   constructor() {
     this.subscribers = {} // key is topic, value is array of { callback, selector }

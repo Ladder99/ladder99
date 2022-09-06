@@ -1,10 +1,11 @@
-// mqtt subscriber
-// subscribes to mqtt topics from provider, receives messages,
+// shared/mqtt-json driver
+// subscribes to mqtt topics through shared provider, receives messages,
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
 // import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../common/lib.js'
+import { getMqtt } from './mqtt-provider.js'
 
 //. move this into class
 //. and make it a const - call it sthing else - data?
@@ -24,49 +25,49 @@ export class AdapterDriver {
   //. is advice used also?
   // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
   init({ source, device, host, port, cache, inputs, types, advice }) {
-    // console.log('MQTT-subscriber Initializing mqtt-json driver for', device.id)
-    // const url = `mqtt://${host}:${port}`
+    console.log('MQTT Initializing mqtt-json driver for', device.id)
+    const url = `mqtt://${host}:${port}`
 
-    // // connect to mqtt broker/server
-    // console.log(`MQTT-subscriber connecting to broker on ${url}...`)
+    // connect to mqtt broker/server
+    console.log(`MQTT connecting to broker on ${url}...`)
     // const mqtt = libmqtt.connect(url)
+    const mqtt = getMqtt(url)
+    //. our mqtt object should have same api as libmqtt's
 
     //. wait until provider is connected
 
     // handle connection
-    // mqtt.on('connect', function onConnect() {
-    provider.on('connect', function onConnect() {
-      console.log(`MQTT-subscriber connected to broker on ${url}`)
+    mqtt.on('connect', function onConnect() {
+      console.log(`MQTT connected to broker on ${url}`)
 
       // register message handler
-      console.log(`MQTT-subscriber registering message handler`)
-      // mqtt.on('message', onMessage)
-      provider.on('message', onMessage)
+      console.log(`MQTT registering message handler`)
+      mqtt.on('message', onMessage)
 
       // subscribe to any topics defined
       for (const entry of inputs.connect.subscribe) {
         const topic = replaceDeviceId(entry.topic)
-        console.log(`MQTT-subscriber subscribing to ${topic}`)
+        console.log(`MQTT subscribing to ${topic}`)
         // mqtt.subscribe(topic)
-        provider.subscribe(topic, _) //. add selector
+        mqtt.subscribe(topic, _) //. add selector for dispatcher to filter on
       }
 
-      // // publish to any topics defined
-      // for (const entry of inputs.connect.publish || []) {
-      //   const topic = replaceDeviceId(entry.topic)
-      //   console.log(`MQTT-subscriber publishing to ${topic}`)
-      //   mqtt.publish(topic, entry.message)
-      // }
+      // publish to any topics defined
+      for (const entry of inputs.connect.publish || []) {
+        const topic = replaceDeviceId(entry.topic)
+        console.log(`MQTT publishing to ${topic}`)
+        mqtt.publish(topic, entry.message)
+      }
 
-      // // do any static inits
-      // console.log('MQTT-subscriber static inits:', inputs.connect.static)
-      // for (const key of Object.keys(inputs.connect.static || {})) {
-      //   const cacheId = `${device.id}-${key}`
-      //   const value = inputs.connect.static[key]
-      //   cache.set(cacheId, value)
-      // }
+      // do any static inits
+      console.log('MQTT static inits:', inputs.connect.static)
+      for (const key of Object.keys(inputs.connect.static || {})) {
+        const cacheId = `${device.id}-${key}`
+        const value = inputs.connect.static[key]
+        cache.set(cacheId, value)
+      }
 
-      console.log(`MQTT-subscriber listening for messages...`)
+      console.log(`MQTT listening for messages...`)
     })
 
     // handle incoming messages.
@@ -78,9 +79,7 @@ export class AdapterDriver {
 
       // //. temporary guard
       // if (msgTopic === 'controller')
-      //   console.log(
-      //     `MQTT-subscriber got message ${msgTopic}: ${message.slice(0, 140)}`
-      //   )
+      //   console.log(`MQTT got message ${msgTopic}: ${message.slice(0, 140)}`)
       // // console.log(`Got message on topic ${msgTopic}: ${message}`)
 
       // unpack the mqtt json payload, assuming it's a JSON string -
@@ -117,12 +116,12 @@ export class AdapterDriver {
           //
           // console.log(`MQTT handle topic ${topic}`)
 
-          // // unsubscribe from topics as needed
-          // for (const entry of handler.unsubscribe || []) {
-          //   const topic = replaceDeviceId(entry.topic)
-          //   console.log(`MQTT-subscriber unsubscribe from ${topic}`)
-          //   mqtt.unsubscribe(topic)
-          // }
+          // unsubscribe from topics as needed
+          for (const entry of handler.unsubscribe || []) {
+            const topic = replaceDeviceId(entry.topic)
+            console.log(`MQTT unsubscribe from ${topic}`)
+            mqtt.unsubscribe(topic)
+          }
 
           // run initialize handler
           // eg can assign payload values to a dictionary $ here for fast lookups.
@@ -216,18 +215,15 @@ export class AdapterDriver {
             //   }
             //   //
           } else {
-            console.log(
-              `MQTT-subscriber Error - missing handler.process`,
-              handler.process
-            )
+            console.log(`MQTT Error - missing handler.process`, handler.process)
           }
 
           // subscribe to any topics
           for (const entry of handler.subscribe || []) {
             const topic = replaceDeviceId(entry.topic)
-            console.log(`MQTT-subscriber subscribe to ${topic}`)
+            console.log(`MQTT subscribe to ${topic}`)
             // mqtt.subscribe(topic)
-            provider.subscribe(topic, _) //. add selector
+            mqtt.subscribe(topic, _) //. add selector
           }
 
           msgHandled = true
@@ -235,7 +231,7 @@ export class AdapterDriver {
       }
 
       if (!msgHandled) {
-        console.log(`MQTT-subscriber WARNING: no handler for topic`, msgTopic)
+        console.log(`MQTT WARNING: no handler for topic`, msgTopic)
       }
     }
 
