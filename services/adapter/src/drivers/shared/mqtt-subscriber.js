@@ -2,6 +2,8 @@
 // subscribes to mqtt topics through shared provider, receives messages,
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
+// this file is a copy of drivers/mqtt-json.js - would be nice to merge them together if possible.
+
 // import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../common/lib.js'
@@ -25,29 +27,29 @@ export class AdapterDriver {
   //. is advice used also?
   // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
   init({ source, device, host, port, cache, inputs, types, advice }) {
-    console.log('MQTT Initializing mqtt-json driver for', device.id)
+    console.log('MQTT-subscriber Initializing mqtt-json driver for', device.id)
     const url = `mqtt://${host}:${port}`
 
     // connect to mqtt broker/server
-    console.log(`MQTT connecting to broker on ${url}...`)
+    console.log(`MQTT-subscriber connecting to broker on ${url}...`)
     // const mqtt = libmqtt.connect(url)
     const mqtt = getMqtt(url)
-    //. our mqtt object should have same api as libmqtt's
 
-    //. wait until provider is connected
+    //. our mqtt object should have same api as libmqtt's object,
+    // just extended a little bit.
 
     // handle connection
     mqtt.on('connect', function onConnect() {
-      console.log(`MQTT connected to broker on ${url}`)
+      console.log(`MQTT-subscriber connected to broker on ${url}`)
 
       // register message handler
-      console.log(`MQTT registering message handler`)
+      console.log(`MQTT-subscriber registering message handler`)
       mqtt.on('message', onMessage)
 
       // subscribe to any topics defined
       for (const entry of inputs.connect.subscribe) {
         const topic = replaceDeviceId(entry.topic)
-        console.log(`MQTT subscribing to ${topic}`)
+        console.log(`MQTT-subscriber subscribing to ${topic}`)
         // mqtt.subscribe(topic)
         mqtt.subscribe(topic, _) //. add selector for dispatcher to filter on
       }
@@ -55,19 +57,19 @@ export class AdapterDriver {
       // publish to any topics defined
       for (const entry of inputs.connect.publish || []) {
         const topic = replaceDeviceId(entry.topic)
-        console.log(`MQTT publishing to ${topic}`)
+        console.log(`MQTT-subscriber publishing to ${topic}`)
         mqtt.publish(topic, entry.message)
       }
 
       // do any static inits
-      console.log('MQTT static inits:', inputs.connect.static)
+      console.log('MQTT-subscriber static inits:', inputs.connect.static)
       for (const key of Object.keys(inputs.connect.static || {})) {
         const cacheId = `${device.id}-${key}`
         const value = inputs.connect.static[key]
         cache.set(cacheId, value)
       }
 
-      console.log(`MQTT listening for messages...`)
+      console.log(`MQTT-subscriber listening for messages...`)
     })
 
     // handle incoming messages.
@@ -79,7 +81,7 @@ export class AdapterDriver {
 
       // //. temporary guard
       // if (msgTopic === 'controller')
-      //   console.log(`MQTT got message ${msgTopic}: ${message.slice(0, 140)}`)
+      //   console.log(`MQTT-subscriber got message ${msgTopic}: ${message.slice(0, 140)}`)
       // // console.log(`Got message on topic ${msgTopic}: ${message}`)
 
       // unpack the mqtt json payload, assuming it's a JSON string -
@@ -114,12 +116,12 @@ export class AdapterDriver {
         // eg msgTopic => 'l99/ccs/evt/query'
         if (topic === msgTopic) {
           //
-          // console.log(`MQTT handle topic ${topic}`)
+          // console.log(`MQTT-subscriber handle topic ${topic}`)
 
           // unsubscribe from topics as needed
           for (const entry of handler.unsubscribe || []) {
             const topic = replaceDeviceId(entry.topic)
-            console.log(`MQTT unsubscribe from ${topic}`)
+            console.log(`MQTT-subscriber unsubscribe from ${topic}`)
             mqtt.unsubscribe(topic)
           }
 
@@ -127,7 +129,7 @@ export class AdapterDriver {
           // eg can assign payload values to a dictionary $ here for fast lookups.
           // eg initialize: 'payload.forEach(item => $[item.address] = item)'
           // eg initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
-          // console.log(`MQTT run initialize handler`)
+          // console.log(`MQTT-subscriber run initialize handler`)
           let $ = {} // a variable representing payload data - must be let not const
           eval(handler.initialize)
 
@@ -135,13 +137,13 @@ export class AdapterDriver {
           //. call this iterate_expressions, update all module inputs.yaml
           if (handler.process === 'iterate_inputs') {
             //
-            // console.log(`MQTT handle iterate_inputs`)
+            // console.log(`MQTT-subscriber handle iterate_inputs`)
             //
             // define lookup function
             // eg lookup: '($, js) => eval(js)'
             //. do this before-hand somewhere and store as handler.lookupFn,
             // to save eval time.
-            // console.log(`MQTT define lookup fn`, handler.lookup.toString())
+            // console.log(`MQTT-subscriber define lookup fn`, handler.lookup.toString())
             const lookup = eval(handler.lookup)
 
             // iterate over expressions - an array of [key, expression],
@@ -149,11 +151,11 @@ export class AdapterDriver {
             // evaluate each expression and add value to cache.
             //. this could be like the other process - use msg('foo'), calculations,
             // then would be reactive instead of evaluating each expression, and unifies code.
-            // console.log(`MQTT iterate over expressions`)
+            // console.log(`MQTT-subscriber iterate over expressions`)
             const pairs = Object.entries(handler.expressions || {})
             for (const [key, expression] of pairs) {
               // use the lookup function to get value from payload, if there
-              // console.log(`MQTT lookup ${expression} for ${key}`)
+              // console.log(`MQTT-subscriber lookup ${expression} for ${key}`)
               const value = lookup($, expression)
               // note guard for undefined value -
               // if need to reset a cache value, must pass value 'UNAVAILABLE' explicitly.
@@ -215,13 +217,16 @@ export class AdapterDriver {
             //   }
             //   //
           } else {
-            console.log(`MQTT Error - missing handler.process`, handler.process)
+            console.log(
+              `MQTT-subscriber Error - missing handler.process`,
+              handler.process
+            )
           }
 
           // subscribe to any topics
           for (const entry of handler.subscribe || []) {
             const topic = replaceDeviceId(entry.topic)
-            console.log(`MQTT subscribe to ${topic}`)
+            console.log(`MQTT-subscriber subscribe to ${topic}`)
             // mqtt.subscribe(topic)
             mqtt.subscribe(topic, _) //. add selector
           }
@@ -231,7 +236,7 @@ export class AdapterDriver {
       }
 
       if (!msgHandled) {
-        console.log(`MQTT WARNING: no handler for topic`, msgTopic)
+        console.log(`MQTT-subscriber WARNING: no handler for topic`, msgTopic)
       }
     }
 
