@@ -93,11 +93,12 @@ WORKDIR /usr/app
 # COPY --chown=node:node package.json /usr/app/package.json
 # COPY --chown=node:node --from=build /usr/app/node_modules /usr/app/node_modules
 # COPY --chown=node:node src /usr/app/src
-# COPY package.json /usr/app/package.json
-# COPY --from=build /usr/app/node_modules /usr/app/node_modules
-# COPY src /usr/app/src
-COPY package.json src /usr/app/
+COPY package.json /usr/app/package.json
 COPY --from=build /usr/app/node_modules /usr/app/node_modules
+COPY src /usr/app/src
+#. nowork
+# COPY package.json src /usr/app/
+# COPY --from=build /usr/app/node_modules /usr/app/node_modules
 
 # base command - can pass params with CMD [?]
 # note: When you run an image that uses the exec form (ie an array), 
