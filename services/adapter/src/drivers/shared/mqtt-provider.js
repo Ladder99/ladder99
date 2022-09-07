@@ -51,14 +51,14 @@ export class MqttProvider {
 
     function onConnect() {
       console.log(`MQTT-provider connected to broker on`, url)
-      for (let callback of this.handlers.connect) {
-        callback()
-      }
-      // subscribe to any topics defined
-      for (let topic of topics) {
-        console.log(`MQTT-provider subscribing to ${topic}`)
-        mqtt.subscribe(topic)
-      }
+      // for (let callback of this.handlers.connect) {
+      //   callback()
+      // }
+      // // subscribe to any topics defined
+      // for (let topic of topics) {
+      //   console.log(`MQTT-provider subscribing to ${topic}`)
+      //   mqtt.subscribe(topic)
+      // }
     }
 
     // handle incoming messages and dispatch them to subscribers
