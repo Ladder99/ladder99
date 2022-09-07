@@ -5,8 +5,8 @@
 // this file is a copy of drivers/mqtt-json.js - would be nice to merge them together if possible.
 
 // import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
-import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
-import * as lib from '../common/lib.js'
+import { getEquationKeys, getEquationKeys2 } from '../../helpers.js'
+import * as lib from '../../common/lib.js'
 import { getMqtt } from './mqtt-provider.js'
 
 //. move this into class

@@ -2,7 +2,7 @@
 // subscribes to mqtt topics, receives messages, dispatches them to subscribers.
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
-// import * as lib from './common/lib.js'
+// import * as lib from '../../common/lib.js'
 
 const mqtts = {} // key is url, value is an MqttProvider object
 
