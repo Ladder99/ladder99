@@ -59,6 +59,12 @@ export class MqttProvider {
       //   console.log(`MQTT-provider subscribing to ${topic}`)
       //   mqtt.subscribe(topic)
       // }
+      console.log(`MQTT-provider calling connect handlers`)
+      for (let handler of this.handlers.connect) {
+        // const selector = subscriber?.selector || (() => true)
+        // if (selector(topic, payload)) {
+        handler()
+      }
     }
 
     // handle incoming messages and dispatch them to subscribers
