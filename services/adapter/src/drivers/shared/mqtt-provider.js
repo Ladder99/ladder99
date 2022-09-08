@@ -51,7 +51,7 @@ export class MqttProvider {
     this.mqtt.on('connect', onConnect)
 
     function onConnect() {
-      console.log(`MQTT-provider connected to broker on`, url)
+      console.log(`MQTT-provider connected to broker on`, this.url)
       // for (let callback of this.handlers.connect) {
       //   callback()
       // }
