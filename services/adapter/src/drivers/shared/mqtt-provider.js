@@ -47,8 +47,8 @@ export class MqttProvider {
     this.mqtt = libmqtt.connect(this.url)
 
     // handle events from the proxied object
-    this.mqtt.on('message', onMessage)
-    this.mqtt.on('connect', onConnect)
+    this.mqtt.on('message', onMessage.bind(this))
+    this.mqtt.on('connect', onConnect.bind(this))
 
     function onConnect() {
       console.log(`MQTT-provider connected to broker on`, this.url)
