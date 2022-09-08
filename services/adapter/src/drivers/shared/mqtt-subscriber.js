@@ -34,7 +34,7 @@ export class AdapterDriver {
     console.log(`MQTT-subscriber getting MQTT-provider singleton...`)
     // const mqtt = libmqtt.connect(url)
     //. our mqtt object has same api as libmqtt's object, just extended a little bit.
-    const mqtt = getMqtt(url) // starts connection to a singleton libmqtt object
+    const mqtt = getMqtt(url) // get singleton libmqtt object, but don't try to connect yet
 
     // get selectors for each topic
     // eg from setup.yaml -
@@ -87,6 +87,9 @@ export class AdapterDriver {
 
       console.log(`MQTT-subscriber listening for messages...`)
     })
+
+    // now connect
+    mqtt.start()
 
     // handle incoming messages.
     // eg for ccs-pa have query, status, and read messages.

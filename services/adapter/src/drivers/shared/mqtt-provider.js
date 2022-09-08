@@ -12,8 +12,8 @@ export function getMqtt(url) {
   if (mqtts[url]) {
     return mqtts[url]
   }
-  const mqtt = new MqttProvider()
-  mqtt.start(url)
+  const mqtt = new MqttProvider(url)
+  // mqtt.start()
   mqtts[url] = mqtt
   return mqtt
 }
@@ -24,8 +24,11 @@ export function getMqtt(url) {
 // this is a singleton for a given mqtt url.
 export class MqttProvider {
   //
-  constructor() {
+  // url is sthing like 'mqtt://localhost:1883'
+  constructor(url) {
+    this.url = url
     // instead of a single handler for each event, we need several, eg one for each device
+    //. uhh handlers vs subscribers?
     this.handlers = {
       connect: [],
       message: [],
@@ -39,11 +42,9 @@ export class MqttProvider {
   }
 
   // start the underlying mqtt connection
-  // url is sthing like 'mqtt://localhost:1883'
-  start(url) {
-    this.url = url
-    console.log(`MQTT-provider connecting to url`, url)
-    this.mqtt = libmqtt.connect(url)
+  start() {
+    console.log(`MQTT-provider connecting to url`, this.url)
+    this.mqtt = libmqtt.connect(this.url)
 
     // handle events from the proxied object
     this.mqtt.on('message', onMessage)
