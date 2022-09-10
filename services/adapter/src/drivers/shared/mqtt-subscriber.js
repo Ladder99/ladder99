@@ -56,9 +56,9 @@ export class AdapterDriver {
     provider.on('connect', function onConnect() {
       console.log(`MQTT-subscriber connected to MQTT-provider`)
 
-      // register message handler
-      console.log(`MQTT-subscriber registering message handler`)
-      provider.on('message', onMessage) // callback fn takes topic and payload
+      // // register message handler
+      // console.log(`MQTT-subscriber registering message handler`)
+      // provider.on('message', onMessage) // callback fn takes topic and payload
 
       // subscribe to any topics defined in inputs.yaml
       for (const entry of inputs.connect.subscribe) {
@@ -101,10 +101,9 @@ export class AdapterDriver {
     function onMessage(msgTopic, message) {
       message = message.toString()
 
-      // //. temporary guard
-      // if (msgTopic === 'controller')
-      //   console.log(`MQTT-subscriber got message ${msgTopic}: ${message.slice(0, 140)}`)
-      // // console.log(`Got message on topic ${msgTopic}: ${message}`)
+      console.log(
+        `MQTT-subscriber got message ${msgTopic}: ${message.slice(0, 140)}`
+      )
 
       // unpack the mqtt json payload, assuming it's a JSON string -
       // if not, just pass as string to handler.

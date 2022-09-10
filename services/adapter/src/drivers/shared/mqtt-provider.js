@@ -32,7 +32,7 @@ export class MqttProvider {
       connect: [],
       message: [],
     }
-    this.subscribers = {} // key is topic, value is ...
+    this.subscribers = {} // key is topic, value is { callback, selector }
   }
 
   // register event handlers, eg 'connect', 'message'
@@ -90,6 +90,7 @@ export class MqttProvider {
   // subscribe to a topic with an optional selector fn.
   // add a callback here, store in the subscriber object with selector.
   subscribe(topic, callback, selector = payload => true) {
+    console.log(`MQTT-provider subscribe to ${topic}`, selector)
     this.subscribers[topic] = this.subscribers[topic] || []
     const subscriber = { callback, selector }
     this.subscribers[topic].push(subscriber)
