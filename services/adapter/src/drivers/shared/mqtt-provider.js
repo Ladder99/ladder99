@@ -93,9 +93,10 @@ export class MqttProvider {
   // add a callback here, store in the subscriber object with selector.
   subscribe(topic, callback, selector = payload => true) {
     console.log(`MQTT-provider subscribe to ${topic}`, selector.toString())
-    this.subscribers[topic] = this.subscribers[topic] || []
     const subscriber = { callback, selector }
+    this.subscribers[topic] = this.subscribers[topic] || []
     this.subscribers[topic].push(subscriber)
+    console.log(`MQTT-provider subscribers`, this.subscribers)
     this.mqtt.subscribe(topic) //. hopefully idempotent?
   }
 

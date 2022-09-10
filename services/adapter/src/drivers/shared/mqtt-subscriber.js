@@ -52,8 +52,10 @@ export class AdapterDriver {
       // NOTE: we use == instead of ===, because payload.id is a string
       const selector = payload => payload.id == obj.id //. for now assume selection is done by id
       selectors[topic] = selector
+      // selectors[topic] = selectors[topic] || []
+      // selectors[topic].push(selector)
     }
-    // console.log(`MQTT-subscriber`, selectors)
+    console.log(`MQTT-subscriber selectors`, selectors)
 
     // register connection handler
     provider.on('connect', function onConnect() {
