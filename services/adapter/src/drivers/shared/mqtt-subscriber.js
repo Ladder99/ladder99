@@ -45,21 +45,19 @@ export class AdapterDriver {
     //     id: 479055
     //   l99/B01000/evt/pressure:
     //     id: 541790
+    console.log(`MQTT-subscriber get selectors from`, source.topicSelectors)
     const selectors = {} // key is topic, value will be selector fn
     for (let topic of Object.keys(source.topicSelectors)) {
-      const obj = source.topicSelectors[topic]
+      const obj = source.topicSelectors[topic] // eg { id: 513241 }
       // NOTE: we use == instead of ===, because payload.id is a string
       const selector = payload => payload.id == obj.id //. for now assume selection is done by id
       selectors[topic] = selector
     }
+    // console.log(`MQTT-subscriber`, selectors)
 
     // register connection handler
     provider.on('connect', function onConnect() {
       console.log(`MQTT-subscriber connected to MQTT-provider`)
-
-      // // register message handler
-      // console.log(`MQTT-subscriber registering message handler`)
-      // provider.on('message', onMessage) // callback fn takes topic and payload
 
       // subscribe to any topics defined in inputs.yaml
       for (const entry of inputs.connect.subscribe) {
@@ -239,7 +237,6 @@ export class AdapterDriver {
           for (const entry of handler.subscribe || []) {
             const topic = replaceDeviceId(entry.topic)
             console.log(`MQTT-subscriber subscribe to ${topic}`)
-            // provider.subscribe(topic) //. add selector?
             provider.subscribe(topic, onMessage, selectors[topic])
           }
 

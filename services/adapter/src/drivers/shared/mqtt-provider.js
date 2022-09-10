@@ -95,7 +95,7 @@ export class MqttProvider {
     this.subscribers[topic] = this.subscribers[topic] || []
     const subscriber = { callback, selector }
     this.subscribers[topic].push(subscriber)
-    this.mqtt.subscribe(topic) //. hopefully idempotent
+    this.mqtt.subscribe(topic) //. hopefully idempotent?
   }
 
   //. pass callback here to distinguish subscribers
