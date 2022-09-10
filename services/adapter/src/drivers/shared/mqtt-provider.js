@@ -51,17 +51,9 @@ export class MqttProvider {
 
     function onConnect() {
       console.log(`MQTT-provider connected to broker on`, this.url)
-      // for (let callback of this.handlers.connect) {
-      //   callback()
-      // }
-      // // subscribe to any topics defined
-      // for (let topic of topics) {
-      //   console.log(`MQTT-provider subscribing to ${topic}`)
-      //   mqtt.subscribe(topic)
-      // }
       console.log(`MQTT-provider calling connect handlers`)
       for (let handler of this.handlers.connect) {
-        handler()
+        handler() // eg onConnect(topic, payload) in mqtt-subscriber - subscribes to topics
       }
     }
 
@@ -90,10 +82,11 @@ export class MqttProvider {
   // subscribe to a topic with an optional selector fn.
   // add a callback here, store in the subscriber object with selector.
   subscribe(topic, callback, selector = payload => true) {
-    console.log(`MQTT-provider subscribe to ${topic}`, selector)
+    console.log(`MQTT-provider subscribe to ${topic}`, selector.toString())
     this.subscribers[topic] = this.subscribers[topic] || []
     const subscriber = { callback, selector }
     this.subscribers[topic].push(subscriber)
+    this.mqtt.subscribe(topic) //. hopefully idempotent
   }
 
   //. pass callback here to distinguish subscribers
