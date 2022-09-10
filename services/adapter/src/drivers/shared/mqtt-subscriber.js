@@ -48,7 +48,8 @@ export class AdapterDriver {
     const selectors = {} // key is topic, value will be selector fn
     for (let topic of Object.keys(source.topicSelectors)) {
       const obj = source.topicSelectors[topic]
-      const selector = payload => payload.id === obj.id //. for now assume selection is done by id
+      // NOTE: we use == instead of ===, because payload.id is a string
+      const selector = payload => payload.id == obj.id //. for now assume selection is done by id
       selectors[topic] = selector
     }
 
