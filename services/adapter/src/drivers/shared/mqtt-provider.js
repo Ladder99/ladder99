@@ -65,7 +65,15 @@ export class MqttProvider {
       console.log(
         `MQTT-provider got message ${topic}: ${message.slice(0, 140)}`
       )
-      const payload = JSON.parse(message)
+      let payload
+      try {
+        payload = JSON.parse(message)
+      } catch (e) {
+        payload = message
+        return
+      }
+      //. what to do if payload is just a string? then it applies to all devices.
+      //. uhh
       // peek inside the payload to see who to dispatch this message to.
       //. for now we need to filter on eg payload.id === some value
       //. make a dict for dispatching instead of linear search, ie on id
@@ -73,7 +81,8 @@ export class MqttProvider {
       for (let subscriber of this.subscibers[topic]) {
         const selector = subscriber?.selector || (() => true)
         if (selector(topic, payload)) {
-          subscriber.callback(topic, payload)
+          console.log(`MQTT-provider calling subscriber`)
+          subscriber.callback(topic, message)
         }
       }
     }
