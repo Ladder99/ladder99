@@ -13,7 +13,6 @@ export function getMqtt(url) {
     return mqtts[url]
   }
   const mqtt = new MqttProvider(url)
-  // mqtt.start()
   mqtts[url] = mqtt
   return mqtt
 }
@@ -62,8 +61,6 @@ export class MqttProvider {
       // }
       console.log(`MQTT-provider calling connect handlers`)
       for (let handler of this.handlers.connect) {
-        // const selector = subscriber?.selector || (() => true)
-        // if (selector(topic, payload)) {
         handler()
       }
     }
@@ -98,7 +95,7 @@ export class MqttProvider {
     this.subscribers[topic].push(subscriber)
   }
 
-  //. pass callback here to distinguish subscribers?
+  //. pass callback here to distinguish subscribers
   unsubscribe(topic) {
     console.log(`MQTT-provider unsubscribe ${topic} - not yet implemented`)
     // this.subscribers[topic]. remove topic uuid

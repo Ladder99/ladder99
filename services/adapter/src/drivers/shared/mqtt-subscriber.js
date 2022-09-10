@@ -2,12 +2,12 @@
 // subscribes to mqtt topics through shared provider, receives messages,
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
-// this file is a copy of drivers/mqtt-json.js - would be nice to merge them together if possible.
+// this file is a copy of drivers/mqtt-json.js - //. should merge them together
 
 // import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
+import { getMqtt } from './mqtt-provider.js' // this wraps libmqtt
 import { getEquationKeys, getEquationKeys2 } from '../../helpers.js'
 import * as lib from '../../common/lib.js'
-import { getMqtt } from './mqtt-provider.js'
 
 //. move this into class
 //. and make it a const - call it sthing else - data?
@@ -34,7 +34,7 @@ export class AdapterDriver {
     console.log(`MQTT-subscriber getting MQTT-provider singleton...`)
     // const mqtt = libmqtt.connect(url)
     //. our mqtt object has same api as libmqtt's object, just extended a little bit.
-    const mqtt = getMqtt(url) // get singleton libmqtt object, but don't try to connect yet
+    const provider = getMqtt(url) // get singleton libmqtt object, but don't try to connect yet
 
     // get selectors for each topic
     // eg from setup.yaml -
@@ -52,13 +52,13 @@ export class AdapterDriver {
       selectors[topic] = selector
     }
 
-    // handle connection
-    mqtt.on('connect', function onConnect() {
+    // register connection handler
+    provider.on('connect', function onConnect() {
       console.log(`MQTT-subscriber connected to MQTT-provider`)
 
       // register message handler
       console.log(`MQTT-subscriber registering message handler`)
-      mqtt.on('message', onMessage) // callback fn takes topic and payload
+      provider.on('message', onMessage) // callback fn takes topic and payload
 
       // subscribe to any topics defined in inputs.yaml
       for (const entry of inputs.connect.subscribe) {
@@ -66,15 +66,16 @@ export class AdapterDriver {
         console.log(`MQTT-subscriber subscribing to ${topic}`)
         // mqtt.subscribe(topic) // old code
         // extend mqtt api to add callback and optional selector for dispatcher to filter on.
-        // we need the callback because otherwise our mqtt provider wouldn't know where to send msg.
-        mqtt.subscribe(topic, onMessage, selectors[topic])
+        // we need the callback because otherwise the provider wouldn't know where to send msg,
+        // ie which of the many mqtt-subscriber instances to send to.
+        provider.subscribe(topic, onMessage, selectors[topic])
       }
 
       // publish to any topics defined
       for (const entry of inputs.connect.publish || []) {
         const topic = replaceDeviceId(entry.topic)
         console.log(`MQTT-subscriber publishing to ${topic}`)
-        mqtt.publish(topic, entry.message)
+        provider.publish(topic, entry.message)
       }
 
       // do any static inits
@@ -89,7 +90,7 @@ export class AdapterDriver {
     })
 
     // now connect
-    mqtt.start()
+    provider.start()
 
     // handle incoming messages.
     // eg for ccs-pa have query, status, and read messages.
@@ -133,7 +134,7 @@ export class AdapterDriver {
           for (const entry of handler.unsubscribe || []) {
             const topic = replaceDeviceId(entry.topic)
             console.log(`MQTT-subscriber unsubscribe from ${topic}`)
-            mqtt.unsubscribe(topic) //. pass onMessage fn
+            provider.unsubscribe(topic) //. pass onMessage fn
           }
 
           // run initialize handler
@@ -238,7 +239,8 @@ export class AdapterDriver {
           for (const entry of handler.subscribe || []) {
             const topic = replaceDeviceId(entry.topic)
             console.log(`MQTT-subscriber subscribe to ${topic}`)
-            mqtt.subscribe(topic) //. add selector?
+            // provider.subscribe(topic) //. add selector?
+            provider.subscribe(topic, onMessage, selectors[topic])
           }
 
           msgHandled = true
