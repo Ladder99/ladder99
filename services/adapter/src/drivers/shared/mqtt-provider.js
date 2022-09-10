@@ -80,7 +80,8 @@ export class MqttProvider {
       // note: subscriber = { callback, selector }
       for (let subscriber of this.subscribers[topic]) {
         const selector = subscriber?.selector || (() => true)
-        if (selector(topic, payload)) {
+        // if (selector(topic, payload)) {
+        if (selector(payload)) {
           console.log(`MQTT-provider calling subscriber`)
           subscriber.callback(topic, message)
         }
