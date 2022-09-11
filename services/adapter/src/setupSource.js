@@ -67,7 +67,7 @@ export async function setupSource({
     const macros = getMacros(prefix, handler.accessor)
 
     // parse input handler code, get dependency graph, compile fns
-    // eg maps could be { addr: { '%Z61.0': Set(1) { 'has_current_job' } }, ...}
+    // eg maps could be { addr: { '%Z61.0': Set{ 'has_current_job' } }, ...}
     // use like
     //   const keys = [...maps.addr['%Z61.0']] // = ['has_current_job', 'foo_bar']
     // so can know what formulas need to be evaluated for some given addr
