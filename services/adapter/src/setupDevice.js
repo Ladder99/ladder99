@@ -38,6 +38,7 @@ export async function setupDevice({ params, device, cache, client, devices }) {
     // tell cache and plugins about the tcp socket
     for (let source of device.sources) {
       cache.setSocket(source.outputs, socket) //. this should trigger sending all cache values
+      //. if have multiple plugins would need to set them all here
       if (source.plugin && source.plugin.setSocket) {
         source.plugin.setSocket(socket) // some drivers/plugins need direct socket connection, eg random.js
       }
