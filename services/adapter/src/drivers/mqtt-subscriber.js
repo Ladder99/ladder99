@@ -37,7 +37,7 @@ export class AdapterDriver {
     console.log('MQTT-subscriber getting provider for', connection)
     let provider
     if (typeof connection === 'string') {
-      provider = connections[connection] // get shared connection - eg mqtt-provider
+      provider = connections[connection]?.plugin // get shared connection - eg mqtt-provider
     } else {
       console.log(
         `MQTT-subscriber doesn't handle direct connections yet - use a shared connection with mqtt-provider.`
