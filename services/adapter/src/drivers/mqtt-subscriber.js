@@ -34,6 +34,7 @@ export class AdapterDriver {
     // const mqtt = libmqtt.connect(url)
     //. our mqtt object has same api as libmqtt's object, just extended a little bit.
     // const provider = getMqtt(url) // get singleton libmqtt object, but don't try to connect yet
+    console.log('MQTT-subscriber getting provider for', connection)
     let provider
     if (typeof connection === 'string') {
       provider = connections[connection] // get shared connection - eg mqtt-provider
@@ -44,6 +45,7 @@ export class AdapterDriver {
       process.exit(1)
       // provider = libmqtt.connect(connection.url) // direct connection - different api though
     }
+    console.log(`MQTT-subscriber got provider`, provider)
 
     // get selectors for each topic
     // eg from setup.yaml -
@@ -62,7 +64,7 @@ export class AdapterDriver {
       const selector = payload => payload.id == obj.id //. for now assume selection is done by id - expand later
       selectors[topic] = selector
     }
-    console.log(`MQTT-subscriber selectors`, selectors)
+    // console.log(`MQTT-subscriber selectors`, selectors)
 
     // register connection handler
     provider.on('connect', function onConnect() {
