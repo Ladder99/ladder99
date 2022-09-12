@@ -16,6 +16,7 @@ export async function setupSource({
   client,
   devices,
   device,
+  connections,
 }) {
   //
   // console.log(`source`, source) // don't print - might have password etc
@@ -121,7 +122,7 @@ export async function setupSource({
   // //. load feedbackjs if specified in setup.yaml and start it
   // const feedback = source.feedback
   // if (feedback) {
-  //   // import driver plugin, eg micro.js or mqtt-json.js
+  //   // import driver plugin
   //   const plugin = await getPlugin(params.driversFolder, 'feedback.js')
   //   //. how send it the mqtt-provider instance? or can it just import it?
   //   plugin.init({ feedback, cache, host, port })

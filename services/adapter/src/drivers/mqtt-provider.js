@@ -33,16 +33,15 @@ export class AdapterDriver {
   // }
 
   // url is sthing like 'mqtt://localhost:1883'
-  init({ params, url, cache }) {
-    this.params = params
+  init({ url }) {
     this.url = url
-    this.cache = cache
     // instead of a single handler for each event, we need several, eg one for each device
     this.handlers = {
       connect: [],
       message: [],
     }
     this.subscribers = {} // key is topic, value is { callback, selector }
+    this.mqtt = null
     this.start()
   }
 

@@ -1,8 +1,9 @@
-// shared/mqtt-json driver
+// mqtt-subscriber driver
+
 // subscribes to mqtt topics through shared provider, receives messages,
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
-// this file is a copy of drivers/mqtt-json.js - //. should merge them together
+// this file is a copy of drivers/mqtt-json.js - //. merge them together
 
 // import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 // import { getMqtt } from './mqtt-provider.js' // this wraps libmqtt

@@ -43,7 +43,7 @@ async function start(params) {
     // this instantiates a new instance of the AdapterDriver class.
     const plugin = await getPlugin(params.driversFolder, connection.driver)
     const { url } = connection
-    plugin.init({ params, url, cache })
+    plugin.init({ url })
     connection.plugin = plugin
     connections[connection.name] = connection // add to dictionary
   }

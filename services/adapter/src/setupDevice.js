@@ -4,7 +4,14 @@
 import net from 'net' // node lib for tcp
 import { setupSource } from './setupSource.js'
 
-export async function setupDevice({ params, device, cache, client, devices }) {
+export async function setupDevice({
+  params,
+  device,
+  cache,
+  client,
+  devices,
+  connections,
+}) {
   // console.log(`Device`, device) // don't print - might have passwords
 
   // each device gets a separate tcp connection to the agent
@@ -16,7 +23,7 @@ export async function setupDevice({ params, device, cache, client, devices }) {
   // iterate over sources, load driver for that source, call init on it,
   // save plugin (the driver instance) to source.
   for (const source of device.sources) {
-    setupSource({ params, source, cache, client, devices, device })
+    setupSource({ params, source, cache, client, devices, device, connections })
   }
 
   // start tcp server for Agent to listen to, eg at adapter:7878
