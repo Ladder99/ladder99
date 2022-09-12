@@ -14,6 +14,9 @@ export async function setupDevice({
 }) {
   // console.log(`Device`, device) // don't print - might have passwords
 
+  //. refactor this code - put all agent/tcp stuff in Agent class, in agent.js file
+  // const agent = new Agent()
+
   // each device gets a separate tcp connection to the agent
   console.log(`Adapter - creating TCP server for Agent to connect to...`)
   const tcp = net.createServer()
@@ -30,10 +33,9 @@ export async function setupDevice({
   const destinations = device.destinations || []
   const server = destinations[0] || params.defaultServer //. just handle one for now
 
-  console.log(`Adapter - listen for Agent on TCP socket at`, server, `...`)
-
   // begin accepting connections on the specified port and host from agent.
   // see onConnection for next step.
+  console.log(`Adapter - listen for Agent on TCP socket at`, server, `...`)
   tcp.listen(server.port, server.host)
 
   // handle connection from agent

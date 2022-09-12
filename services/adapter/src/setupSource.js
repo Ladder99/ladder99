@@ -11,7 +11,7 @@ import {
 
 export async function setupSource({
   params,
-  source,
+  source, // eg { module, driver, connection } - connection could be a string for a shared connection name, or { host, port }, or { url }
   cache,
   client,
   devices,
@@ -19,11 +19,15 @@ export async function setupSource({
   connections,
 }) {
   //
-  // console.log(`source`, source) // don't print - might have password etc
-  const { module, driver, protocol, host, port } = source
+  console.log(`Adapter setup source`, source) // don't print - might have password etc
+  // const { module, driver, protocol, host, port } = source
+  const { module, driver, connection } = source
+  // module can be eg 'cutter' for box cutters
+  //. allow custom modules per setup, eg oxbox
 
   // import driver plugin, eg micro.js or mqtt-subscriber.js.
   // this instantiates a new instance of the AdapterDriver class.
+  // but doesn't start the plugin - that's at the end of this code.
   const plugin = await getPlugin(params.driversFolder, driver)
   source.plugin = plugin // save to source so on agent connection can tell it socket
 
@@ -45,6 +49,7 @@ export async function setupSource({
   const types = (lib.importYaml(pathTypes) || {}).types
 
   if (outputTemplates) {
+    console.log(`Adapter adding outputs to cache...`)
     // compile value js strings from outputs.yaml.
     // source.outputs is array of {key: string, value: function, dependsOn: string[]}.
     // eg [{ key: 'ac1-power_condition', value: 'FAULT', dependsOn: ['ac1-power_fault', 'ac1-power_warning'] }, ...]
@@ -62,8 +67,13 @@ export async function setupSource({
   }
 
   // iterate over input handlers, if any
-  const handlers = Object.values(inputs.handlers || [])
-  for (let handler of handlers) {
+  // const handlers = Object.values(inputs.handlers || [])
+  const handlers = Object.keys(inputs.handlers || [])
+  for (let handlerKey of handlers) {
+    console.log(`Adapter processing inputs for`, handlerKey) // eg 'l99/B01000/evt/io'
+
+    const handler = handlers[handlerKey] // eg { initialize, process, lookup, expressions }
+
     // get macros (regexs to extract references from code)
     const prefix = device.id + '-'
     const macros = getMacros(prefix, handler.accessor)
@@ -94,21 +104,22 @@ export async function setupSource({
   // note: this must be done AFTER getOutputs and addOutputs,
   // as that is where the dependsOn values are set, and this needs those.
   //. add eg for each param
-  console.log(`Adapter initializing driver for ${driver}...`)
+  console.log(`Adapter starting driver for`, device.id, driver)
   plugin.init({
     //. simpler/better to pass the whole source object here, in case has weird stuff in it.
     //. so - remove all the source subobjects below, and update all the drivers.
-    source,
+    source, // the whole source tree, eg { module, driver, connection, ... }
 
-    client,
-    device,
-    driver, // eg 'random'
+    client, // eg { name, timezone } defined at top of setup.yaml
+    device, // eg { id, name, sources, ... }
+    driver, // eg 'mqtt-subscriber'
 
     // pass whole drivers array here also, in case driver needs to know other devices?
     // eg for jobboss - needs to know what workcenters/devices to look for.
     devices,
 
     //. consolidate these into a connect object
+    // connection,
     protocol,
     host,
     port,
@@ -116,16 +127,7 @@ export async function setupSource({
     cache,
     inputs,
     types,
-    // connection,
-    connections,
-  })
 
-  // //. load feedbackjs if specified in setup.yaml and start it
-  // const feedback = source.feedback
-  // if (feedback) {
-  //   // import driver plugin
-  //   const plugin = await getPlugin(params.driversFolder, 'feedback.js')
-  //   //. how send it the mqtt-provider instance? or can it just import it?
-  //   plugin.init({ feedback, cache, host, port })
-  // }
+    connections, // shared connections defined at top of setup.yaml
+  })
 }
