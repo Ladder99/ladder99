@@ -24,6 +24,8 @@ export async function setupSource({
   const { module, driver, connection } = source
   // module can be eg 'cutter' for box cutters
   //. allow custom modules per setup, eg oxbox
+  // connection can be a shared connection name, eg 'shared-mqtt',
+  // or an object, eg { url } or { host, port }
 
   // import driver plugin, eg micro.js or mqtt-subscriber.js.
   // this instantiates a new instance of the AdapterDriver class.
@@ -129,5 +131,6 @@ export async function setupSource({
     types,
 
     connections, // shared connections defined at top of setup.yaml
+    connection, // a shared connection name, or { host, port }, etc
   })
 }

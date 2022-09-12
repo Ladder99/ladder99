@@ -27,16 +27,23 @@ export class AdapterDriver {
   // advice is a dict of optional fns that are called at various points in the code.
   //. is advice used also?
   // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
-  init({ source, device, host, port, cache, inputs, types, connections }) {
+  init({ source, device, cache, inputs, types, connections, connection }) {
     console.log('MQTT-subscriber initializing driver for', device.id)
-    // const url = `mqtt://${host}:${port}`
 
     // connect to mqtt broker/server
-    // console.log(`MQTT-subscriber getting MQTT-provider singleton...`)
     // const mqtt = libmqtt.connect(url)
     //. our mqtt object has same api as libmqtt's object, just extended a little bit.
     // const provider = getMqtt(url) // get singleton libmqtt object, but don't try to connect yet
-    const provider = connections[source.connection] //. ?
+    let provider
+    if (typeof connection === 'string') {
+      provider = connections[connection] // get shared connection - eg mqtt-provider
+    } else {
+      console.log(
+        `MQTT-subscriber doesn't handle direct connections yet - use a shared connection with mqtt-provider.`
+      )
+      process.exit(1)
+      // provider = libmqtt.connect(connection.url) // direct connection - different api though
+    }
 
     // get selectors for each topic
     // eg from setup.yaml -
@@ -51,11 +58,9 @@ export class AdapterDriver {
     const selectors = {} // key is topic, value will be selector fn
     for (let topic of Object.keys(source.topicSelectors)) {
       const obj = source.topicSelectors[topic] // eg { id: 513241 }
-      // NOTE: we use == instead of ===, because payload.id is a string
+      // NOTE: we use == instead of ===, because payload.id may be a string
       const selector = payload => payload.id == obj.id //. for now assume selection is done by id
       selectors[topic] = selector
-      // selectors[topic] = selectors[topic] || []
-      // selectors[topic].push(selector)
     }
     console.log(`MQTT-subscriber selectors`, selectors)
 
@@ -110,7 +115,7 @@ export class AdapterDriver {
 
       // unpack the mqtt json payload, assuming it's a JSON string -
       // if not, just pass as string to handler.
-      //. let input.yaml do this if needed
+      //. let input.yaml do this if needed - ie with initialize method?
       let payload
       try {
         payload = JSON.parse(message)
