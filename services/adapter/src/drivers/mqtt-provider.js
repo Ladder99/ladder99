@@ -18,20 +18,8 @@ import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 //
 
 // this class wraps the original mqtt object, adding additional dispatch capabilities.
-// this is a singleton for a given mqtt url.
 export class AdapterDriver {
   //
-  // // url is sthing like 'mqtt://localhost:1883'
-  // constructor(url) {
-  //   this.url = url
-  //   // instead of a single handler for each event, we need several, eg one for each device
-  //   this.handlers = {
-  //     connect: [],
-  //     message: [],
-  //   }
-  //   this.subscribers = {} // key is topic, value is { callback, selector }
-  // }
-
   // url is sthing like 'mqtt://localhost:1883'
   init({ url }) {
     this.url = url
@@ -100,7 +88,6 @@ export class AdapterDriver {
       // note: subscriber = { callback, selector }
       for (let subscriber of this.subscribers[topic]) {
         const selector = subscriber?.selector || (() => true)
-        // if (selector(topic, payload)) {
         if (selector(payload)) {
           console.log(`MQTT-provider calling subscriber`)
           subscriber.callback(topic, message)

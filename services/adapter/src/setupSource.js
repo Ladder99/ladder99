@@ -20,7 +20,8 @@ export async function setupSource({
 }) {
   //
   // console.log(`source`, source) // don't print - might have password etc
-  const { module, driver, protocol, host, port, connection } = source
+  // const { module, driver, protocol, host, port, connection } = source
+  const { module, driver, protocol, host, port } = source
 
   // import driver plugin, eg micro.js or mqtt-json.js.
   // this instantiates a new instance of the AdapterDriver class.
@@ -116,7 +117,8 @@ export async function setupSource({
     cache,
     inputs,
     types,
-    connection,
+    // connection,
+    connections,
   })
 
   // //. load feedbackjs if specified in setup.yaml and start it

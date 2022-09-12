@@ -27,15 +27,16 @@ export class AdapterDriver {
   // advice is a dict of optional fns that are called at various points in the code.
   //. is advice used also?
   // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
-  init({ source, device, host, port, cache, inputs, types, advice }) {
+  init({ source, device, host, port, cache, inputs, types, connections }) {
     console.log('MQTT-subscriber initializing driver for', device.id)
-    const url = `mqtt://${host}:${port}`
+    // const url = `mqtt://${host}:${port}`
 
     // connect to mqtt broker/server
-    console.log(`MQTT-subscriber getting MQTT-provider singleton...`)
+    // console.log(`MQTT-subscriber getting MQTT-provider singleton...`)
     // const mqtt = libmqtt.connect(url)
     //. our mqtt object has same api as libmqtt's object, just extended a little bit.
-    const provider = getMqtt(url) // get singleton libmqtt object, but don't try to connect yet
+    // const provider = getMqtt(url) // get singleton libmqtt object, but don't try to connect yet
+    const provider = connections[source.connection] //. ?
 
     // get selectors for each topic
     // eg from setup.yaml -
