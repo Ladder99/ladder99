@@ -122,9 +122,9 @@ export async function setupSource({
 
     //. consolidate these into a connect object
     // connection,
-    protocol,
-    host,
-    port,
+    // protocol,
+    // host,
+    // port,
 
     cache,
     inputs,
