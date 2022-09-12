@@ -5,6 +5,7 @@
 import * as lib from './common/lib.js'
 import { Cache } from './cache.js'
 import { setupDevice } from './setupDevice.js'
+import { getPlugin } from './helpers.js'
 
 console.log()
 console.log(`Ladder99 Adapter`)
@@ -39,8 +40,10 @@ async function start(params) {
   const connectionList = setup?.adapter?.connections || []
   for (const connection of connectionList) {
     // import driver plugin, eg micro.js or mqtt-json.js
+    // this instantiates a new instance of the AdapterDriver class.
     const plugin = await getPlugin(params.driversFolder, connection.driver)
-    plugin.init({ params, connection, cache })
+    const { url } = connection
+    plugin.init({ params, url, cache })
     connection.plugin = plugin
     connections[connection.name] = connection // add to dictionary
   }

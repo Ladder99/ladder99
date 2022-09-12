@@ -3,18 +3,17 @@
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
-const mqtts = {} // key is url, value is an MqttProvider object
-
-// memoized mqtt constructor
-//. memoize by module also, eg 'cutter' vs 'print-apply'?
-export function getMqtt(url) {
-  if (mqtts[url]) {
-    return mqtts[url]
-  }
-  const mqtt = new AdapterDriver(url)
-  mqtts[url] = mqtt
-  return mqtt
-}
+// const mqtts = {} // key is url, value is an MqttProvider object
+// // memoized mqtt constructor
+// //. memoize by module also, eg 'cutter' vs 'print-apply'?
+// export function getMqtt(url) {
+//   if (mqtts[url]) {
+//     return mqtts[url]
+//   }
+//   const mqtt = new AdapterDriver(url)
+//   mqtts[url] = mqtt
+//   return mqtt
+// }
 
 //
 
@@ -22,16 +21,29 @@ export function getMqtt(url) {
 // this is a singleton for a given mqtt url.
 export class AdapterDriver {
   //
+  // // url is sthing like 'mqtt://localhost:1883'
+  // constructor(url) {
+  //   this.url = url
+  //   // instead of a single handler for each event, we need several, eg one for each device
+  //   this.handlers = {
+  //     connect: [],
+  //     message: [],
+  //   }
+  //   this.subscribers = {} // key is topic, value is { callback, selector }
+  // }
+
   // url is sthing like 'mqtt://localhost:1883'
-  constructor(url) {
+  init({ params, url, cache }) {
+    this.params = params
     this.url = url
+    this.cache = cache
     // instead of a single handler for each event, we need several, eg one for each device
-    //. uhh handlers vs subscribers?
     this.handlers = {
       connect: [],
       message: [],
     }
     this.subscribers = {} // key is topic, value is { callback, selector }
+    this.start()
   }
 
   // register event handlers, eg 'connect', 'message'

@@ -21,7 +21,8 @@ export async function setupSource({
   // console.log(`source`, source) // don't print - might have password etc
   const { module, driver, protocol, host, port, connection } = source
 
-  // import driver plugin, eg micro.js or mqtt-json.js
+  // import driver plugin, eg micro.js or mqtt-json.js.
+  // this instantiates a new instance of the AdapterDriver class.
   const plugin = await getPlugin(params.driversFolder, driver)
   source.plugin = plugin // save to source so on agent connection can tell it socket
 
