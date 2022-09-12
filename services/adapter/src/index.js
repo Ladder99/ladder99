@@ -34,11 +34,22 @@ async function start(params) {
   // define cache shared across all devices and sources
   const cache = new Cache()
 
+  // setup shared connections
+  const connections = {} // key is name, value is { name, driver, url, plugin }
+  const connectionList = setup?.adapter?.connections || []
+  for (const connection of connectionList) {
+    // import driver plugin, eg micro.js or mqtt-json.js
+    const plugin = await getPlugin(params.driversFolder, connection.driver)
+    plugin.init({ params, connection, cache })
+    connection.plugin = plugin
+    connections[connection.name] = connection // add to dictionary
+  }
+
   // iterate over device definitions from setup.yaml file and do setup for each
   const client = setup.client || {}
   const devices = setup.devices || []
   for (const device of devices) {
-    setupDevice({ params, device, cache, client, devices })
+    setupDevice({ params, device, cache, client, devices, connections })
   }
 }
 

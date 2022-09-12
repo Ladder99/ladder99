@@ -20,6 +20,8 @@ export class AdapterDriver {
     // const mqtt = libmqtt.connect(url)
     //. our mqtt object has same api as libmqtt's object, just extended a little bit.
     this.provider = getMqtt(url) // get singleton libmqtt object, but don't try to connect yet
+    //. or pass it a callback for onConnect, in which we do all this other stuff
+    // if mqtt is already connected, it would just call the callback immediately
 
     // poll jobnum - when changes, send reset cmd, wait for response, send 2nd cmd
     this.check()
