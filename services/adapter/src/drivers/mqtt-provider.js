@@ -42,12 +42,18 @@ export class AdapterDriver {
     }
     this.subscribers = {} // key is topic, value is { callback, selector }
     this.mqtt = null
+    this.connected = false
     this.start()
   }
 
   // register event handlers, eg 'connect', 'message'
   on(event, handler) {
     this.handlers[event].push(handler)
+    // call the handler if we're already connected
+    if (event === 'connect' && this.connected) {
+      handler()
+      handler.called = true
+    }
   }
 
   // start the underlying mqtt connection
@@ -60,10 +66,14 @@ export class AdapterDriver {
     this.mqtt.on('connect', onConnect.bind(this))
 
     function onConnect() {
+      this.connected = true
       console.log(`MQTT-provider connected to broker on`, this.url)
       console.log(`MQTT-provider calling connect handlers`)
       for (let handler of this.handlers.connect) {
-        handler() // eg onConnect(topic, payload) in mqtt-subscriber - subscribes to topics
+        if (!handler.called) {
+          handler() // eg onConnect(topic, payload) in mqtt-subscriber - subscribes to topics
+          handler.called = true
+        }
       }
     }
 

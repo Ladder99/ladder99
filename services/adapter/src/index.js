@@ -39,7 +39,7 @@ async function start(params) {
   const connections = {} // key is name, value is { name, driver, url, plugin }
   const connectionList = setup?.adapter?.connections || []
   for (const connection of connectionList) {
-    // import driver plugin, eg micro.js or mqtt-json.js
+    // import driver plugin, eg mqtt-provider.js
     // this instantiates a new instance of the AdapterDriver class.
     const plugin = await getPlugin(params.driversFolder, connection.driver)
     const { url } = connection
