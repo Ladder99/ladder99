@@ -47,19 +47,19 @@ export class AdapterDriver {
 
     // get selectors for each topic
     // eg from setup.yaml -
-    // topicSelectors: # topics and selector objects - payload must match given contents
+    // topics: # topics and selector objects - payload must match given contents
     //   l99/B01000/evt/io:
     //     id: 535172
     //   l99/B01000/evt/vibration:
     //     id: 479055
     //   l99/B01000/evt/pressure:
     //     id: 541790
-    console.log(`MQTT-subscriber get selectors from`, source.topicSelectors)
+    console.log(`MQTT-subscriber get selectors from`, source.topics)
     const selectors = {} // key is topic, value will be selector fn
-    for (let topic of Object.keys(source.topicSelectors)) {
-      const obj = source.topicSelectors[topic] // eg { id: 513241 }
+    for (let topic of Object.keys(source.topics)) {
+      const obj = source.topics[topic] // eg { id: 513241 }
       // NOTE: we use == instead of ===, because payload.id may be a string
-      const selector = payload => payload.id == obj.id //. for now assume selection is done by id
+      const selector = payload => payload.id == obj.id //. for now assume selection is done by id - expand later
       selectors[topic] = selector
     }
     console.log(`MQTT-subscriber selectors`, selectors)

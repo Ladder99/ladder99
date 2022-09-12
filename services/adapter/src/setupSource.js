@@ -74,7 +74,7 @@ export async function setupSource({
   for (let handlerKey of handlers) {
     console.log(`Adapter processing inputs for`, handlerKey) // eg 'l99/B01000/evt/io'
 
-    const handler = handlers[handlerKey] // eg { initialize, process, lookup, expressions }
+    const handler = inputs.handlers[handlerKey] // eg { initialize, process, lookup, expressions }
 
     // get macros (regexs to extract references from code)
     const prefix = device.id + '-'
