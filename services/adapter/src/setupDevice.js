@@ -28,8 +28,7 @@ export async function setupDevice({
 
   // start tcp server for Agent to listen to, eg at adapter:7878
   const destinations = device.destinations || []
-  //. just handle one server/destination for now
-  const server = destinations[0] || params.defaultServer
+  const server = destinations[0] || params.defaultServer //. just handle one for now
 
   console.log(`Adapter - listen for Agent on TCP socket at`, server, `...`)
 
