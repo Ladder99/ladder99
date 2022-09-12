@@ -2,7 +2,6 @@
 // subscribes to mqtt topics, receives messages, dispatches them to subscribers.
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
-// import * as lib from '../../common/lib.js'
 
 const mqtts = {} // key is url, value is an MqttProvider object
 
@@ -12,7 +11,7 @@ export function getMqtt(url) {
   if (mqtts[url]) {
     return mqtts[url]
   }
-  const mqtt = new MqttProvider(url)
+  const mqtt = new AdapterDriver(url)
   mqtts[url] = mqtt
   return mqtt
 }
@@ -21,7 +20,7 @@ export function getMqtt(url) {
 
 // this class wraps the original mqtt object, adding additional dispatch capabilities.
 // this is a singleton for a given mqtt url.
-export class MqttProvider {
+export class AdapterDriver {
   //
   // url is sthing like 'mqtt://localhost:1883'
   constructor(url) {

@@ -34,7 +34,7 @@ async function start(params) {
   // define cache shared across all devices and sources
   const cache = new Cache()
 
-  // setup shared connections
+  // setup any shared connections
   const connections = {} // key is name, value is { name, driver, url, plugin }
   const connectionList = setup?.adapter?.connections || []
   for (const connection of connectionList) {

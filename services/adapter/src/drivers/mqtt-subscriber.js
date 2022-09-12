@@ -5,9 +5,9 @@
 // this file is a copy of drivers/mqtt-json.js - //. should merge them together
 
 // import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
-import { getMqtt } from './mqtt-provider.js' // this wraps libmqtt
-import { getEquationKeys, getEquationKeys2 } from '../../helpers.js'
-import * as lib from '../../common/lib.js'
+// import { getMqtt } from './mqtt-provider.js' // this wraps libmqtt
+import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
+import * as lib from '../common/lib.js'
 
 //. move this into class
 //. and make it a const - call it sthing else - data?
