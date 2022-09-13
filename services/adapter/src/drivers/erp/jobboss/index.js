@@ -30,10 +30,10 @@ export class AdapterDriver {
   // jobbossId values and check their schedules and jobnums.
   async init({
     client, // { name, timezone }
-    device,
+    device, // { module, driver, connection, ... }
+    // connection, // { server, port, database, user, password } - set in setup.yaml
+    devices, // [{ module, driver, connection, ...}, ...]
     cache,
-    connection, // { server, port, database, user, password } - set in setup.yaml
-    devices, // from setup.yaml
   }) {
     console.log(`JobBoss - initialize driver...`)
     setUnavailable()
@@ -46,7 +46,9 @@ export class AdapterDriver {
     console.log(`JobBoss - waiting a bit...`)
     await new Promise(resolve => setTimeout(resolve, initialDelay))
 
-    connection = { ...connection, port: Number(connection.port) } // need number, not string
+    // make connection object, { server, port, database, ... }
+    const port = Number(device.connection.port) // need number, not string
+    const connection = { ...device.connection, port }
 
     // note: pool is the mssql global pool object - it's not gonna be destroyed if
     // there's an error, so no need to recreate it in error handlers.
