@@ -39,8 +39,7 @@ async function start(params) {
   // setup any shared inputs
   const inputs = setup?.adapter?.inputs || {}
   for (const input of Object.values(inputs)) {
-    // import driver plugin
-    // this instantiates a new instance of the AdapterDriver class.
+    // import driver plugin - instantiates a new instance of the AdapterDriver class
     const plugin = await getPlugin(params.driversFolder, input.driver) // eg 'mqtt-provider.js'
     const { url } = input // eg 'mqtt://mosquitto:1883'
     plugin.init({ url }) // this connects to the mqtt broker

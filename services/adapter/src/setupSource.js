@@ -21,9 +21,8 @@ export async function setupSource({
 }) {
   //
   console.log(`Adapter setup source`, source) // don't print - might have password etc
-  // const { module, driver, protocol, host, port } = source
-  // const { module, driver, connection } = source
-  const { module: moduleName, driver, connection } = source
+  const { driver, connection } = source
+  const moduleName = source.module
 
   // module can be eg 'cutter' for box cutters
   //. allow custom modules per setup, eg oxbox
@@ -138,6 +137,7 @@ export async function setupSource({
     cache,
     // inputs,
     // types,
+    moduleName,
     module, // { inputs, outputs, types }
 
     inputs, // shared connections defined at top of setup.yaml

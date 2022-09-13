@@ -39,7 +39,6 @@ export class AdapterDriver {
       process.exit(1)
       // provider = libmqtt.connect(connection.url) // direct connection - different api though
     }
-    console.log(`MQTT-subscriber got provider`, provider)
 
     // get selectors for each topic
     // eg from setup.yaml -
