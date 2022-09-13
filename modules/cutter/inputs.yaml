@@ -42,7 +42,7 @@ connect:
   #   # this sets the cache value at eg 'kl1-procname' to 'KITTING'
   #   procname: KITTING
 
-# define message topic handlers
+# define message topic handlers - if add new ones be sure to subscribe above!
 handlers:
   # ----------------------------------------------------------------------------
   # handle controller messages

@@ -17,7 +17,7 @@ export async function setupSource({
   client,
   devices,
   device,
-  connections,
+  inputs,
 }) {
   //
   console.log(`Adapter setup source`, source) // don't print - might have password etc
@@ -132,7 +132,7 @@ export async function setupSource({
     inputs,
     types,
 
-    connections, // shared connections defined at top of setup.yaml
+    inputs, // shared connections defined at top of setup.yaml
     connection, // a shared connection name, or { host, port }, etc
   })
 }

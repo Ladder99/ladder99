@@ -11,12 +11,9 @@ export async function setupDevice({
   cache,
   client,
   devices,
-  connections,
+  inputs,
 }) {
-  // console.log(`Device`, device) // don't print - might have passwords
-
-  //. refactor this code - put all agent/tcp stuff in Agent class, in agent.js file
-  // const agent = new Agent()
+  console.log(`Adapter setup device`, device.id) // don't print device obj - might have passwords
 
   // each device gets a separate tcp connection to the agent
   console.log(`Adapter - creating TCP server for Agent to connect to...`)
@@ -35,9 +32,12 @@ export async function setupDevice({
       client,
       devices,
       device,
-      connections,
+      inputs,
     })
   }
+
+  //. refactor this code - put all agent/tcp stuff in Agent class, in agent.js file
+  // const agent = new Agent()
 
   // start tcp server for Agent to listen to, eg at adapter:7878
 

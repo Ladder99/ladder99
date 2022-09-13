@@ -25,13 +25,13 @@ export class AdapterDriver {
   // advice is a dict of optional fns that are called at various points in the code.
   //. is advice used also?
   // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
-  init({ source, device, cache, inputs, types, connections, connection }) {
+  init({ source, device, cache, inputs, types, inputs, connection }) {
     console.log('MQTT-subscriber initializing driver for', device.id)
 
     // connect to mqtt broker/server
     //. our mqtt provider object has same api as libmqtt's object, just extended a little bit.
     console.log('MQTT-subscriber getting provider for', connection)
-    const provider = connections[connection]?.plugin // get shared connection - eg mqtt-provider
+    const provider = inputs[connection]?.plugin // get shared connection - eg mqtt-provider.js
     if (!provider) {
       console.log(`Error - unknown provider connection`, connection)
       process.exit(1)
@@ -53,10 +53,10 @@ export class AdapterDriver {
     for (let topic of Object.keys(source.topics)) {
       const obj = source.topics[topic] // eg { id: 513241 }
       // NOTE: we use == instead of ===, because payload.id may be a string
-      const selector = payload => payload.id == obj.id //. for now assume selection is done by id - expand later
+      //. for now assume selection is done by id - expand later!
+      const selector = payload => payload.id == obj.id
       selectors[topic] = selector
     }
-    // console.log(`MQTT-subscriber selectors`, selectors)
 
     // register connection handler
     provider.on('connect', function onConnect() {
