@@ -41,25 +41,21 @@ export async function setupSource({
 
   // get input handlers, if any for this source
   // these are interpreted by the driver
-  const pathInputs = `${params.modulesFolder}/${module}/inputs.yaml`
+  const pathInputs = `${params.modulesFolder}/${moduleName}/inputs.yaml`
   console.log(`Adapter reading ${pathInputs}...`)
-  // const inputs = lib.importYaml(pathInputs) || {}
   module.inputs = lib.importYaml(pathInputs) || {}
 
   // get output handlers
   // output yamls should all follow the same format, unlike input yamls.
-  const pathOutputs = `${params.modulesFolder}/${module}/outputs.yaml`
+  const pathOutputs = `${params.modulesFolder}/${moduleName}/outputs.yaml`
   console.log(`Adapter reading ${pathOutputs}...`)
-  // const outputTemplates = (lib.importYaml(pathOutputs) || {}).outputs
   module.outputs = (lib.importYaml(pathOutputs) || {}).outputs
 
   // get types, if any
-  const pathTypes = `${params.modulesFolder}/${module}/types.yaml`
+  const pathTypes = `${params.modulesFolder}/${moduleName}/types.yaml`
   console.log(`Adapter reading ${pathTypes}...`)
-  // const types = (lib.importYaml(pathTypes) || {}).types
   module.types = (lib.importYaml(pathTypes) || {}).types
 
-  // if (outputTemplates) {
   if (module.outputs) {
     console.log(`Adapter adding outputs to cache...`)
     // compile value js strings from outputs.yaml.
