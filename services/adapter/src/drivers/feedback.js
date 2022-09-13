@@ -10,14 +10,6 @@ export class AdapterDriver {
     this.oldValue = null
 
     this.source = source
-    // module: feedback # defines any inputs and outputs with yaml files
-    // driver: feedback # adapter plugin - manages protocol and payload
-    // connection: shared-mqtt # use shared mqtt connection - defined at top
-    // monitor: m1-job # reset the part counter when this value changes
-    // publish: l99/B01000/cmd/modbus
-    // address: 142
-    // subscribe: l99/B01000/evt/io # watch this when post to publish
-    // id: 535172 # dispatch on this payload.id
 
     // get base data
     this.topic = setup.adapter?.reset?.topic || 'missing-topic'

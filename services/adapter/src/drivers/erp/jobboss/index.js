@@ -29,7 +29,7 @@ export class AdapterDriver {
   // this code will iterate over all devices in setup yaml to find ones with
   // jobbossId values and check their schedules and jobnums.
   async init({
-    client,
+    client, // { name, timezone }
     device,
     cache,
     connection, // { server, port, database, user, password } - set in setup.yaml

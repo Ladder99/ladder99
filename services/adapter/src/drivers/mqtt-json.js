@@ -2,6 +2,8 @@
 // subscribes to mqtt topics, receives messages,
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
+//. this is gonna be obsolete - replaced by mqtt-subscriber.js
+
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../common/lib.js'

@@ -22,10 +22,12 @@ export async function setupSource({
   //
   console.log(`Adapter setup source`, source) // don't print - might have password etc
   // const { module, driver, protocol, host, port } = source
-  const { module, driver, connection } = source
+  // const { module, driver, connection } = source
+  const { module: moduleName, driver, connection } = source
+
   // module can be eg 'cutter' for box cutters
   //. allow custom modules per setup, eg oxbox
-  // connection can be a shared connection name, eg 'shared-mqtt',
+  // connection can be a shared connection name, eg 'mqtt',
   // or an object, eg { url } or { host, port }
 
   // import driver plugin, eg micro.js or mqtt-subscriber.js.
@@ -34,32 +36,39 @@ export async function setupSource({
   const plugin = await getPlugin(params.driversFolder, driver)
   source.plugin = plugin // save to source so on agent connection can tell it socket
 
+  // create a module object consisting of yaml file contents
+  const module = {}
+
   // get input handlers, if any for this source
   // these are interpreted by the driver
   const pathInputs = `${params.modulesFolder}/${module}/inputs.yaml`
   console.log(`Adapter reading ${pathInputs}...`)
-  const inputs = lib.importYaml(pathInputs) || {}
+  // const inputs = lib.importYaml(pathInputs) || {}
+  module.inputs = lib.importYaml(pathInputs) || {}
 
   // get output handlers
   // output yamls should all follow the same format, unlike input yamls.
   const pathOutputs = `${params.modulesFolder}/${module}/outputs.yaml`
   console.log(`Adapter reading ${pathOutputs}...`)
-  const outputTemplates = (lib.importYaml(pathOutputs) || {}).outputs
+  // const outputTemplates = (lib.importYaml(pathOutputs) || {}).outputs
+  module.outputs = (lib.importYaml(pathOutputs) || {}).outputs
 
   // get types, if any
   const pathTypes = `${params.modulesFolder}/${module}/types.yaml`
   console.log(`Adapter reading ${pathTypes}...`)
-  const types = (lib.importYaml(pathTypes) || {}).types
+  // const types = (lib.importYaml(pathTypes) || {}).types
+  module.types = (lib.importYaml(pathTypes) || {}).types
 
-  if (outputTemplates) {
+  // if (outputTemplates) {
+  if (module.outputs) {
     console.log(`Adapter adding outputs to cache...`)
     // compile value js strings from outputs.yaml.
     // source.outputs is array of {key: string, value: function, dependsOn: string[]}.
     // eg [{ key: 'ac1-power_condition', value: 'FAULT', dependsOn: ['ac1-power_fault', 'ac1-power_warning'] }, ...]
     // save those outputs onto the source object, so can call setSocket later.
     source.outputs = getOutputs({
-      templates: outputTemplates,
-      types,
+      templates: module.outputs,
+      types: module.types,
       deviceId: device.id,
     })
 
@@ -71,11 +80,12 @@ export async function setupSource({
 
   // iterate over input handlers, if any
   // const handlers = Object.values(inputs.handlers || [])
-  const handlers = Object.keys(inputs.handlers || [])
-  for (let handlerKey of handlers) {
+  // const handlerKeys = Object.keys(module.inputs.handlers || [])
+  const handlers = module?.inputs?.handlers || {}
+  for (let handlerKey of Object.keys(handlers)) {
     console.log(`Adapter processing inputs for`, handlerKey) // eg 'l99/B01000/evt/io'
 
-    const handler = inputs.handlers[handlerKey] // eg { initialize, process, lookup, expressions }
+    const handler = module.inputs.handlers[handlerKey] // eg { initialize, process, lookup, expressions }
 
     // get macros (regexs to extract references from code)
     const prefix = device.id + '-'
@@ -106,10 +116,11 @@ export async function setupSource({
   // initialize driver plugin
   // note: this must be done AFTER getOutputs and addOutputs,
   // as that is where the dependsOn values are set, and this needs those.
-  //. add eg for each param
+  //. add example for each param
   console.log(`Adapter starting driver for`, device.id, driver)
   plugin.init({
-    setup,
+    setup, // the main setup.yaml file contents
+
     //. simpler/better to pass the whole source object here, in case has weird stuff in it.
     //. so - remove all the source subobjects below, and update all the drivers.
     source, // the whole source tree, eg { module, driver, connection, ... }
@@ -129,8 +140,9 @@ export async function setupSource({
     // port,
 
     cache,
-    inputs,
-    types,
+    // inputs,
+    // types,
+    module, // { inputs, outputs, types }
 
     inputs, // shared connections defined at top of setup.yaml
     connection, // a shared connection name, or { host, port }, etc

@@ -44,8 +44,8 @@ export async function setupDevice({
   // const destinations = device.destinations || []
   // const server = destinations[0] || params.defaultServer //. just handle one for now
   // const destination = device.destination
-  // this works even if no destination specified
-  const server = { ...params.agent, ...device?.destination } // eg { host: adapter, port: 7878 }
+  // this works even if no outputs specified
+  const server = { ...params.agent, ...device?.outputs?.agent } // eg { host: adapter, port: 7878 }
 
   // begin accepting connections on the specified port and host from agent.
   // see onConnection for next step.
