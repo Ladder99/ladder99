@@ -17,7 +17,7 @@ console.log(`----------------------------------------------------------------`)
 // get params - typically set in compose.yaml and compose-overrides.yaml files
 const params = {
   // default tcp server for agent if none provided in setup.yaml
-  defaultServer: { protocol: 'shdr', host: 'adapter', port: 7878 },
+  agent: { protocol: 'shdr', host: 'adapter', port: 7878 },
   // file system inputs
   driversFolder: './drivers', // eg mqtt-json - must start with '.'
   // these folders may be defined in compose.yaml with docker volume mappings.

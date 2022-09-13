@@ -6,7 +6,7 @@ export class AdapterDriver {
     console.log(`Feedback initialize driver for`, device.id)
     console.log(`Feedback source`, source)
 
-    this.cache = cache
+    this.cache = cache // need for monitoring a value
     this.oldValue = null
 
     this.source = source
@@ -23,6 +23,7 @@ export class AdapterDriver {
     this.topic = setup.adapter?.reset?.topic || 'missing-topic'
     this.payload = setup.adapter?.reset?.payload || {}
     this.wait = setup.adapter?.reset?.wait || 'missing-topic'
+    const interval = setup.adapter?.reset?.interval
 
     // connect to mqtt broker/server
     console.log('Feedback getting provider for', connection)
@@ -35,7 +36,7 @@ export class AdapterDriver {
 
     // check jobnum - when changes, send reset cmd, wait for response, send 2nd cmd
     this.poll()
-    setInterval(this.poll.bind(this), 2000)
+    setInterval(this.poll.bind(this), interval)
   }
 
   poll() {

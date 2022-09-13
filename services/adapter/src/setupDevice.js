@@ -40,8 +40,12 @@ export async function setupDevice({
   }
 
   // start tcp server for Agent to listen to, eg at adapter:7878
-  const destinations = device.destinations || []
-  const server = destinations[0] || params.defaultServer //. just handle one for now
+
+  // const destinations = device.destinations || []
+  // const server = destinations[0] || params.defaultServer //. just handle one for now
+  // const destination = device.destination
+  // this works even if no destination specified
+  const server = { ...params.agent, ...device?.destination } // eg { host: adapter, port: 7878 }
 
   // begin accepting connections on the specified port and host from agent.
   // see onConnection for next step.
