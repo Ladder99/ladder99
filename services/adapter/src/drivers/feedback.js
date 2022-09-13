@@ -49,14 +49,14 @@ export class AdapterDriver {
       // publish to reset topic
       const { address, values } = this.source
       const payload = { ...this.payload, address, value: this.values[0] }
-      this.provider.publish(this.topic, payload)
+      this.provider.publish(this.topic, JSON.toString(payload))
       this.oldValue = newValue
 
       function waitForSignal(payload) {
         //. make a15 a param
         if (payload.a15 == this.values[0]) {
           const payload = { ...this.payload, address, value: this.values[1] }
-          this.provider.publish(this.topic, payload)
+          this.provider.publish(this.topic, JSON.toString(payload))
           this.provider.unsubscribe(this.topic, callback) //. handle callback
         }
       }
