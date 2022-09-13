@@ -31,10 +31,14 @@ export function setupDevice({
     })
   }
 
+  // get host and port
+  // this works even if no outputs or agent specified
+  const address = { ...params.agent, ...device?.outputs?.agent } // eg { host: adapter, port: 7878 }
+
   // start tcp server for Agent to listen to, eg at adapter:7878.
   // each device gets a separate tcp connection to the agent - same host, diff port.
   const agent = new Agent()
-  agent.start({ params, device, onConnect, onError })
+  agent.start({ address, onConnect, onError })
 
   // handle tcp connection
   function onConnect(socket) {
@@ -62,23 +66,20 @@ export function setupDevice({
 }
 
 class Agent {
-  start({ params, device, onConnect, onError }) {
+  start({ address, onConnect, onError }) {
     console.log(`Adapter - creating TCP server for Agent to connect to...`)
+
     this.onConnect = onConnect
     this.onError = onError
 
     const tcp = net.createServer()
-    tcp.on('connection', this.handleConnection.bind(this)) // handle connection from agent
-
-    // get host port
-    // this works even if no outputs specified
-    this.server = { ...params.agent, ...device?.outputs?.agent } // eg { host: adapter, port: 7878 }
+    tcp.on('connection', this.handleConnection.bind(this))
 
     // start tcp server for Agent to listen to, eg at adapter:7878
     // begin accepting connections on the specified port and host from agent.
-    // see onConnection for next step.
-    console.log(`Adapter - listen for Agent on TCP socket at`, server)
-    tcp.listen(server.port, server.host)
+    // see handleConnection for next step.
+    console.log(`Adapter - listen for Agent on TCP socket at`, address)
+    tcp.listen(address.port, address.host)
   }
 
   handleConnection(socket) {
@@ -99,12 +100,10 @@ class Agent {
   handleData(buffer) {
     const str = buffer.toString().trim()
     if (str === '* PING') {
-      // received PING from Agent - send PONG
       const response = '* PONG 5000' //. msec - where from?
       this.socket.write(response + '\n')
     } else {
       console.log('Adapter received data:', str.slice(0, 20), '...')
     }
-    // this.onData(buffer) // callback
   }
 }
