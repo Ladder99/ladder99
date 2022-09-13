@@ -2,7 +2,7 @@
 
 export class AdapterDriver {
   //
-  init({ setup, source, device, cache, connections, connection }) {
+  init({ setup, source, device, cache, inputs, connection }) {
     console.log(`Feedback initialize driver for`, device.id)
     console.log(`Feedback source`, source)
 
@@ -12,19 +12,22 @@ export class AdapterDriver {
     this.source = source
 
     // get base data
-    this.topic = setup.adapter?.reset?.topic || 'missing-topic'
-    this.payload = setup.adapter?.reset?.payload || {}
-    this.wait = setup.adapter?.reset?.wait || 'missing-topic'
-    const interval = setup.adapter?.reset?.interval
+    const feedback = setup?.adapter?.drivers?.feedback || {}
+    this.topic = feedback.topic || 'missing-topic'
+    this.wait = feedback.wait || 'missing-topic'
+    this.payload = feedback.payload || {}
+    this.values = feedback.values
+    const interval = feedback.interval
 
     // connect to mqtt broker/server
+    //. could we pass provider down instead of repeating this?
     console.log('Feedback getting provider for', connection)
-    const provider = connections[connection]?.plugin // get shared connection - eg mqtt-provider
+    const provider = inputs[connection]?.plugin // get shared connection - eg mqtt-provider
     if (!provider) {
       console.log(`Error - unknown provider connection`, connection)
       process.exit(1)
     }
-    console.log(`Feedback got provider`, provider)
+    this.provider = provider
 
     // check jobnum - when changes, send reset cmd, wait for response, send 2nd cmd
     this.poll()
@@ -44,12 +47,17 @@ export class AdapterDriver {
       this.provider.subscribe(this.wait, callback, selector)
 
       // publish to reset topic
-      this.provider.publish(this.source.publish, payload)
+      const { address, values } = this.source
+      const payload = { ...this.payload, address, value: this.values[0] }
+      this.provider.publish(this.topic, payload)
       this.oldValue = newValue
+
       function waitForSignal(payload) {
-        if (payload.a15 == 5392) {
-          this.provider.publish(topic, payload)
-          this.provider.unsubscribe(this.source.subscribe, callback)
+        //. make a15 a param
+        if (payload.a15 == this.values[0]) {
+          const payload = { ...this.payload, address, value: this.values[1] }
+          this.provider.publish(this.topic, payload)
+          this.provider.unsubscribe(this.topic, callback) //. handle callback
         }
       }
     }

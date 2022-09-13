@@ -21,13 +21,10 @@ export class AdapterDriver {
   //
   // initialize the client plugin
   // queries the device for address space definitions, subscribes to topics.
-  // inputs is the inputs.yaml file parsed to a js tree.
-  // advice is a dict of optional fns that are called at various points in the code.
-  //. is advice used also?
-  // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
   init({ source, device, cache, module, inputs, connection }) {
     console.log('MQTT-subscriber initializing driver for', device.id)
 
+    // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
     const { types } = module // module is { inputs, outputs, types }, from yaml files
 
     // connect to mqtt broker/server
@@ -45,10 +42,6 @@ export class AdapterDriver {
     // topics: # topics and selector objects - payload must match given contents
     //   l99/B01000/evt/io:
     //     id: 535172
-    //   l99/B01000/evt/vibration:
-    //     id: 479055
-    //   l99/B01000/evt/pressure:
-    //     id: 541790
     console.log(`MQTT-subscriber get selectors from`, source.topics)
     const selectors = {} // key is topic, value will be selector fn
     for (let topic of Object.keys(source.topics)) {

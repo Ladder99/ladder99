@@ -25,9 +25,7 @@ export async function setupSource({
   const moduleName = source.module
 
   // module can be eg 'cutter' for box cutters
-  //. allow custom modules per setup, eg oxbox
-  // connection can be a shared connection name, eg 'mqtt',
-  // or an object, eg { url } or { host, port }
+  //. allow custom modules per setup, eg oxbox - ie add to setup-oxbox folder
 
   // import driver plugin, eg micro.js or mqtt-subscriber.js.
   // this instantiates a new instance of the AdapterDriver class.
@@ -38,22 +36,24 @@ export async function setupSource({
   // create a module object consisting of yaml file contents
   const module = {}
 
-  // get input handlers, if any for this source
-  // these are interpreted by the driver
-  const pathInputs = `${params.modulesFolder}/${moduleName}/inputs.yaml`
-  console.log(`Adapter reading ${pathInputs}...`)
-  module.inputs = lib.importYaml(pathInputs) || {}
+  if (moduleName) {
+    // get input handlers, if any for this source
+    // these are interpreted by the driver
+    const pathInputs = `${params.modulesFolder}/${moduleName}/inputs.yaml`
+    console.log(`Adapter reading ${pathInputs}...`)
+    module.inputs = lib.importYaml(pathInputs) || {}
 
-  // get output handlers
-  // output yamls should all follow the same format, unlike input yamls.
-  const pathOutputs = `${params.modulesFolder}/${moduleName}/outputs.yaml`
-  console.log(`Adapter reading ${pathOutputs}...`)
-  module.outputs = (lib.importYaml(pathOutputs) || {}).outputs
+    // get output handlers
+    // output yamls should all follow the same format, unlike input yamls.
+    const pathOutputs = `${params.modulesFolder}/${moduleName}/outputs.yaml`
+    console.log(`Adapter reading ${pathOutputs}...`)
+    module.outputs = (lib.importYaml(pathOutputs) || {}).outputs
 
-  // get types, if any
-  const pathTypes = `${params.modulesFolder}/${moduleName}/types.yaml`
-  console.log(`Adapter reading ${pathTypes}...`)
-  module.types = (lib.importYaml(pathTypes) || {}).types
+    // get types, if any
+    const pathTypes = `${params.modulesFolder}/${moduleName}/types.yaml`
+    console.log(`Adapter reading ${pathTypes}...`)
+    module.types = (lib.importYaml(pathTypes) || {}).types
+  }
 
   if (module.outputs) {
     console.log(`Adapter adding outputs to cache...`)
@@ -74,8 +74,6 @@ export async function setupSource({
   }
 
   // iterate over input handlers, if any
-  // const handlers = Object.values(inputs.handlers || [])
-  // const handlerKeys = Object.keys(module.inputs.handlers || [])
   const handlers = module?.inputs?.handlers || {}
   for (let handlerKey of Object.keys(handlers)) {
     console.log(`Adapter processing inputs for`, handlerKey) // eg 'l99/B01000/evt/io'
@@ -135,9 +133,7 @@ export async function setupSource({
     // port,
 
     cache,
-    // inputs,
-    // types,
-    moduleName,
+    moduleName, // eg 'cutter', 'feedback'
     module, // { inputs, outputs, types }
 
     inputs, // shared connections defined at top of setup.yaml
