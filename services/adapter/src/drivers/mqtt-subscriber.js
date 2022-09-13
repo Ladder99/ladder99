@@ -25,8 +25,10 @@ export class AdapterDriver {
   // advice is a dict of optional fns that are called at various points in the code.
   //. is advice used also?
   // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
-  init({ source, device, cache, inputs, types, inputs, connection }) {
+  init({ source, device, cache, module, inputs, connection }) {
     console.log('MQTT-subscriber initializing driver for', device.id)
+
+    const { types } = module // module is { inputs, outputs, types }, from yaml files
 
     // connect to mqtt broker/server
     //. our mqtt provider object has same api as libmqtt's object, just extended a little bit.
@@ -63,7 +65,7 @@ export class AdapterDriver {
       console.log(`MQTT-subscriber connected to MQTT-provider`)
 
       // subscribe to any topics defined in inputs.yaml
-      for (const entry of inputs.connect.subscribe) {
+      for (const entry of module?.inputs?.connect?.subscribe || []) {
         const topic = replaceDeviceId(entry.topic)
         console.log(`MQTT-subscriber subscribing to ${topic}`)
         // mqtt.subscribe(topic) // old code
@@ -74,17 +76,20 @@ export class AdapterDriver {
       }
 
       // publish to any topics defined
-      for (const entry of inputs.connect.publish || []) {
+      for (const entry of module?.inputs?.connect?.publish || []) {
         const topic = replaceDeviceId(entry.topic)
         console.log(`MQTT-subscriber publishing to ${topic}`)
         provider.publish(topic, entry.message)
       }
 
       // do any static inits
-      console.log('MQTT-subscriber static inits:', inputs.connect.static)
-      for (const key of Object.keys(inputs.connect.static || {})) {
+      console.log(
+        'MQTT-subscriber static inits:',
+        module?.inputs?.connect?.static
+      )
+      for (const key of Object.keys(module?.inputs?.connect?.static || {})) {
         const cacheId = `${device.id}-${key}`
-        const value = inputs.connect.static[key]
+        const value = module.inputs.connect.static[key]
         cache.set(cacheId, value)
       }
 
@@ -123,7 +128,7 @@ export class AdapterDriver {
       //. better to have a dict to lookup topic handler -
       //. ie const handler = inputs.handlers[msgTopic]
       let msgHandled = false
-      for (let [topic, handler] of Object.entries(inputs.handlers)) {
+      for (let [topic, handler] of Object.entries(module.inputs.handlers)) {
         topic = replaceDeviceId(topic)
 
         // eg msgTopic => 'l99/ccs/evt/query'

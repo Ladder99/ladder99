@@ -15,7 +15,8 @@ export async function getPlugin(driversFolder, driver) {
   try {
     console.log(`Importing driver code: ${path1}...`)
     code = await import(path1) // load the code
-  } catch {
+  } catch (error) {
+    console.log('Error', error.message)
     console.log(`Importing driver code: ${path2}...`)
     code = await import(path2) // load the code
   }
