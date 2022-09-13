@@ -51,7 +51,6 @@ async function start(params) {
   const client = setup?.client || {}
   const devices = setup?.devices || []
   for (const device of devices) {
-    // setupDevice({ setup, params, device, cache, client, devices, connections })
     setupDevice({ setup, params, device, cache, client, devices, inputs })
   }
 }
