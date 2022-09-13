@@ -3,10 +3,8 @@
 // subscribes to mqtt topics through shared provider, receives messages,
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
-// this file is a copy of drivers/mqtt-json.js - //. merge them together
+// this file is a copy of drivers/mqtt-json.js - //. merge them together and delete that one
 
-// import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
-// import { getMqtt } from './mqtt-provider.js' // this wraps libmqtt
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../common/lib.js'
 
@@ -31,17 +29,11 @@ export class AdapterDriver {
     console.log('MQTT-subscriber initializing driver for', device.id)
 
     // connect to mqtt broker/server
-    // const mqtt = libmqtt.connect(url)
-    //. our mqtt object has same api as libmqtt's object, just extended a little bit.
-    // const provider = getMqtt(url) // get singleton libmqtt object, but don't try to connect yet
+    //. our mqtt provider object has same api as libmqtt's object, just extended a little bit.
     console.log('MQTT-subscriber getting provider for', connection)
-    let provider
-    if (typeof connection === 'string') {
-      provider = connections[connection]?.plugin // get shared connection - eg mqtt-provider
-    } else {
-      console.log(
-        `MQTT-subscriber doesn't handle direct connections yet - use a shared connection with mqtt-provider.`
-      )
+    const provider = connections[connection]?.plugin // get shared connection - eg mqtt-provider
+    if (!provider) {
+      console.log(`Error - unknown provider connection`, connection)
       process.exit(1)
       // provider = libmqtt.connect(connection.url) // direct connection - different api though
     }

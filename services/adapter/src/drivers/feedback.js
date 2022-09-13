@@ -1,45 +1,62 @@
 // feedback driver
 
-import { getMqtt } from './mqtt-provider.js' // this wraps libmqtt
-
 export class AdapterDriver {
-  init({ feedback, cache, host, port }) {
-    console.log(`Initialize feedback driver...`)
-    console.log(feedback)
-    this.feedback = feedback
+  //
+  init({ setup, source, device, cache, connections, connection }) {
+    console.log(`Feedback initialize driver for`, device.id)
+    console.log(`Feedback source`, source)
+
     this.cache = cache
-    this.provider = provider //. how get? just import and call getProvider?
     this.oldValue = null
 
-    //. mebbe setup yaml should provide as a url
-    const url = `mqtt://${host}:${port}`
-    console.log('MQTT-subscriber initializing driver', url)
+    this.source = source
+    // module: feedback # defines any inputs and outputs with yaml files
+    // driver: feedback # adapter plugin - manages protocol and payload
+    // connection: shared-mqtt # use shared mqtt connection - defined at top
+    // monitor: m1-job # reset the part counter when this value changes
+    // publish: l99/B01000/cmd/modbus
+    // address: 142
+    // subscribe: l99/B01000/evt/io # watch this when post to publish
+    // id: 535172 # dispatch on this payload.id
+
+    // get base data
+    this.topic = setup.adapter?.reset?.topic || 'missing-topic'
+    this.payload = setup.adapter?.reset?.payload || {}
+    this.wait = setup.adapter?.reset?.wait || 'missing-topic'
 
     // connect to mqtt broker/server
-    console.log(`MQTT-subscriber getting MQTT-provider singleton...`)
-    // const mqtt = libmqtt.connect(url)
-    //. our mqtt object has same api as libmqtt's object, just extended a little bit.
-    this.provider = getMqtt(url) // get singleton libmqtt object, but don't try to connect yet
-    //. or pass it a callback for onConnect, in which we do all this other stuff
-    // if mqtt is already connected, it would just call the callback immediately
+    console.log('Feedback getting provider for', connection)
+    const provider = connections[connection]?.plugin // get shared connection - eg mqtt-provider
+    if (!provider) {
+      console.log(`Error - unknown provider connection`, connection)
+      process.exit(1)
+    }
+    console.log(`Feedback got provider`, provider)
 
-    // poll jobnum - when changes, send reset cmd, wait for response, send 2nd cmd
-    this.check()
-    global.setInterval(this.check, 2000)
+    // check jobnum - when changes, send reset cmd, wait for response, send 2nd cmd
+    this.poll()
+    setInterval(this.poll.bind(this), 2000)
   }
 
-  check() {
+  poll() {
+    // check if value changed, then send reset commands
     //. don't want this to send reset if just starting up though - how avoid?
-    const newValue = cache.get('m1-job') //.
+    const newValue = this.cache.get(this.source.monitor) // eg 'm1-job'
     if (newValue !== this.oldValue) {
       //. send msg, wait for response, send second
-      this.provider.subscribe(topic2, callback, selector)
-      this.provider.publish(topic, payload)
+
+      // subscribe to response topic
+      const selector = payload => payload.id == this.source.id // eg id=535172
+      const callback = waitForSignal.bind(this)
+      this.provider.subscribe(this.wait, callback, selector)
+
+      // publish to reset topic
+      this.provider.publish(this.source.publish, payload)
       this.oldValue = newValue
-      function callback(payload) {
+      function waitForSignal(payload) {
         if (payload.a15 == 5392) {
           this.provider.publish(topic, payload)
-          this.provider.unsubscribe(topic2, callback)
+          this.provider.unsubscribe(this.source.subscribe, callback)
         }
       }
     }

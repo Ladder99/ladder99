@@ -10,6 +10,7 @@ import {
 } from './helpers.js'
 
 export async function setupSource({
+  setup,
   params,
   source, // eg { module, driver, connection } - connection could be a string for a shared connection name, or { host, port }, or { url }
   cache,
@@ -108,6 +109,7 @@ export async function setupSource({
   //. add eg for each param
   console.log(`Adapter starting driver for`, device.id, driver)
   plugin.init({
+    setup,
     //. simpler/better to pass the whole source object here, in case has weird stuff in it.
     //. so - remove all the source subobjects below, and update all the drivers.
     source, // the whole source tree, eg { module, driver, connection, ... }
