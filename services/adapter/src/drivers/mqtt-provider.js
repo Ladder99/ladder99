@@ -90,7 +90,7 @@ export class AdapterDriver {
         const selector = subscriber?.selector || (() => true)
         if (selector(payload)) {
           console.log(`MQTT-provider calling subscriber`)
-          subscriber.callback(topic, message)
+          subscriber.callback(topic, message) // note: we pass the original unparsed message
         }
       }
     }
@@ -99,7 +99,7 @@ export class AdapterDriver {
   // subscribe to a topic with an optional selector fn.
   // add a callback here, store in the subscriber object with selector.
   subscribe(topic, callback, selector = payload => true) {
-    console.log(`MQTT-provider subscribe to ${topic}`, selector.toString())
+    console.log(`MQTT-provider subscribe`, topic, selector.toString())
     const subscriber = { callback, selector }
     this.subscribers[topic] = this.subscribers[topic] || []
     this.subscribers[topic].push(subscriber)
@@ -107,12 +107,21 @@ export class AdapterDriver {
     this.mqtt.subscribe(topic) //. hopefully idempotent?
   }
 
-  //. pass callback here to distinguish subscribers
-  unsubscribe(topic) {
-    console.log(`MQTT-provider unsubscribe ${topic} - not yet implemented`)
-    // this.subscribers[topic]. remove topic uuid
-    // if none left,
-    // this.mqtt.unsubscribe(topic)
+  // pass callback here to distinguish subscribers
+  unsubscribe(topic, callback) {
+    console.log(`MQTT-provider unsubscribe`, topic)
+    const subscribers = this.subscribers[topic] || [] // eg [{ callback, selector }, ...]
+    const i = subscribers.findIndex(
+      subscriber => subscriber.callback === callback
+    )
+    if (i !== -1) {
+      this.subscribers[topic] = [
+        ...subscribers.slice(0, i),
+        ...subscribers.slice(i + 1),
+      ]
+      //. if none left, could this.mqtt.unsubscribe(topic)
+      console.log(`MQTT-provider down to`, this.subscribers[topic])
+    }
   }
 
   publish(topic, message) {
