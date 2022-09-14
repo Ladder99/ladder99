@@ -1,4 +1,4 @@
-// check for jobnum changes from jobboss db
+// get jobnum from jobboss
 
 const pollInterval = 5000 // ms - ie poll for job num change every 5 secs
 

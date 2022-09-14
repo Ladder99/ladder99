@@ -19,7 +19,7 @@ const params = {
   // default tcp server for agent if none provided in setup.yaml
   agent: { protocol: 'shdr', host: 'adapter', port: 7878 },
   // file system inputs
-  driversFolder: './drivers', // eg mqtt-json - must start with '.'
+  driversFolder: './drivers', // eg for mqtt-subscriber.js - must start with '.'
   // these folders may be defined in compose.yaml with docker volume mappings.
   // when adapter.js is run, it expects config in /data/setup and /data/models.
   // so /data/setup includes setup.yaml, which includes a list of devices to setup.
@@ -40,7 +40,7 @@ async function start(params) {
   const inputs = setup?.adapter?.inputs || {}
   for (const input of Object.values(inputs)) {
     // import driver plugin - instantiates a new instance of the AdapterDriver class
-    const plugin = await getPlugin(params.driversFolder, input.driver) // eg 'mqtt-provider.js'
+    const plugin = await getPlugin(params.driversFolder, input.driver) // eg 'mqtt-provider'
     const { url } = input // eg 'mqtt://mosquitto:1883'
     plugin.init({ url }) // this connects to the mqtt broker
     input.plugin = plugin

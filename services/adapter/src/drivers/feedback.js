@@ -9,18 +9,20 @@ export class AdapterDriver {
     this.cache = cache // need for monitoring a value
     this.oldValue = null
 
-    this.source = source
+    this.source = source // { driver, connection, address, id }
 
-    // get base data
+    // get base data, if there
     const feedback = setup?.adapter?.drivers?.feedback || {}
-    this.topic = feedback.topic || 'missing-topic'
-    this.wait = feedback.wait || 'missing-topic'
-    this.payload = feedback.payload || {}
-    this.values = feedback.values
-    const interval = feedback.interval
+    this.command = feedback.command || 'missing-command-topic' // topic for commands
+    this.wait = feedback.wait || 'missing-wait-topic' // topic to wait on
+    this.payload = feedback.payload || {} // defaults for command payload
+    this.values = feedback.values // array of the two values to send with commands
 
-    // connect to mqtt broker/server
+    const interval = feedback.interval // poll interval, ms
+
+    // get connection to mqtt broker/server
     //. could we pass provider down instead of repeating this?
+    // ie pass down providers, and we just say providers.mqtt?
     console.log('Feedback getting provider for', connection)
     const provider = inputs[connection]?.plugin // get shared connection - eg mqtt-provider
     if (!provider) {

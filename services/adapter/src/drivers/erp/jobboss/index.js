@@ -12,7 +12,7 @@ import { Jobs } from './jobs.js'
 import { Schedule } from './schedule.js'
 
 const initialDelay = 6000 // ms
-const waitForDb = 6000 // ms
+const waitForDb = 15000 // ms - because db timeout is 15secs
 
 const errorMessages = {
   ELOGIN: 'Login failed (locked out)',
@@ -38,11 +38,11 @@ export class AdapterDriver {
     console.log(`JobBoss - initialize driver...`)
     setUnavailable()
 
-    // need to wait a bit to make sure the cutter cache items are setup before
+    // need to wait to make sure the cutter cache items are setup before
     // writing to them. they're setup via the cutter module.
     //. why? which items?
     //. better - check they are there in a loop with delay...
-    //  ieg check cache.get('m1-start') etc for existence?
+    //  ieg check cache.get('m1-start') etc for existence
     console.log(`JobBoss - waiting a bit...`)
     await new Promise(resolve => setTimeout(resolve, initialDelay))
 

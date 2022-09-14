@@ -33,7 +33,7 @@ export async function setupSource({
   const plugin = await getPlugin(params.driversFolder, driver)
   source.plugin = plugin // save to source so on agent connection can tell it socket
 
-  // create a module object consisting of yaml file contents
+  // create a module object for the yaml file contents - inputs.yaml, outputs.yaml, types.yaml
   const module = {}
 
   if (moduleName) {
@@ -106,6 +106,20 @@ export async function setupSource({
     }
   }
 
+  // get provider here and pass down.
+  // eg get shared or unique mqtt broker/server.
+  // the mqtt-provider object has same api as libmqtt's object, just extended a little bit.
+  // connection could be a string for a shared connection or an object { host, port } etc.
+  // currently just handles string.
+  console.log('Adapter getting provider for', connection)
+  //. handle connection objects { host, port } etc here
+  // const provider = libmqtt.connect(connection.url) // direct connection
+  const provider = inputs[connection]?.plugin // get shared connection - eg mqtt-provider.js
+  if (!provider) {
+    console.log(`Error - unknown provider connection`, connection)
+    process.exit(1)
+  }
+
   // initialize driver plugin
   // note: this must be done AFTER getOutputs and addOutputs,
   // as that is where the dependsOn values are set, and this needs those.
@@ -120,23 +134,18 @@ export async function setupSource({
 
     client, // eg { name, timezone } defined at top of setup.yaml
     device, // eg { id, name, sources, ... }
-    driver, // eg 'mqtt-subscriber'
+    driver, // eg 'mqtt-subscriber' - maps to 'drivers/mqtt-subscriber.js'
 
-    // pass whole drivers array here also, in case driver needs to know other devices?
-    // eg for jobboss - needs to know what workcenters/devices to look for.
+    // pass whole drivers array here, in case driver needs to know other devices.
+    // eg jobboss driver needs to know what workcenters/devices to look for.
     devices,
 
-    //. consolidate these into a connect object
-    // connection,
-    // protocol,
-    // host,
-    // port,
+    cache, // the shared cache object
 
-    cache,
     moduleName, // eg 'cutter', 'feedback'
     module, // { inputs, outputs, types }
 
-    inputs, // shared connections defined at top of setup.yaml
+    inputs, // shared input connections defined at top of setup.yaml, if any
     connection, // a shared connection name, or { host, port }, etc
   })
 }

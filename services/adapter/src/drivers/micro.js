@@ -17,6 +17,7 @@ export class AdapterDriver {
 
     async function readData() {
       try {
+        //. get disk space used
         // get specs object like { mem: 'total, free, used' }, as expected by si module
         // const specs = {}
         // inputs.inputs.forEach(input => (specs[input.item] = input.subitems))
