@@ -48,14 +48,14 @@ export class AdapterDriver {
       this.provider.publish(this.command, JSON.toString(payload))
       this.oldValue = newValue
 
-      function waitForSignal(payload) {
+      function waitForSignal(topic, payload) {
         payload = JSON.parse(payload)
         // eg this.wait.attribute is 'a15', values[0] is 5392
         // note: we use == because either might be a string, not number
         if (payload[this.wait.attribute] == values[0]) {
           const payload = { ...this.payload, address, value: values[1] }
           this.provider.publish(this.command, JSON.toString(payload))
-          this.provider.unsubscribe(this.wait.topic, callback)
+          this.provider.unsubscribe(topic, callback)
         }
       }
     }
