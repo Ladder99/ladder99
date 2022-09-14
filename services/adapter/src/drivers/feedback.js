@@ -2,7 +2,7 @@
 
 export class AdapterDriver {
   //
-  init({ setup, source, device, cache, inputs, connection }) {
+  init({ setup, source, device, cache, provider }) {
     console.log(`Feedback initialize driver for`, device.id)
     console.log(`Feedback source`, source)
 
@@ -20,16 +20,7 @@ export class AdapterDriver {
 
     const interval = feedback.interval // poll interval, ms
 
-    // get connection to mqtt broker/server
-    //. could we pass provider down instead of repeating this?
-    // ie pass down providers, and we just say providers.mqtt?
-    console.log('Feedback getting provider for', connection)
-    const provider = inputs[connection]?.plugin // get shared connection - eg mqtt-provider
-    if (!provider) {
-      console.log(`Error - unknown provider connection`, connection)
-      process.exit(1)
-    }
-    this.provider = provider
+    this.provider = provider // eg the mqtt-provider.js object
 
     // check jobnum - when changes, send reset cmd, wait for response, send 2nd cmd
     this.poll()

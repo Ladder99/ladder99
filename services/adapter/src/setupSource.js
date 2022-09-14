@@ -17,7 +17,7 @@ export async function setupSource({
   client,
   devices,
   device,
-  inputs,
+  inputs, // shared connections
 }) {
   //
   console.log(`Adapter setup source`, source) // don't print - might have password etc
@@ -106,18 +106,19 @@ export async function setupSource({
     }
   }
 
-  // get provider here and pass down.
-  // eg get shared or unique mqtt broker/server.
-  // the mqtt-provider object has same api as libmqtt's object, just extended a little bit.
+  // get any shared provider here and pass down.
   // connection could be a string for a shared connection or an object { host, port } etc.
   // currently just handles string.
-  console.log('Adapter getting provider for', connection)
-  //. handle connection objects { host, port } etc here
-  // const provider = libmqtt.connect(connection.url) // direct connection
-  const provider = inputs[connection]?.plugin // get shared connection - eg mqtt-provider.js
-  if (!provider) {
-    console.log(`Error - unknown provider connection`, connection)
-    process.exit(1)
+  // note: the mqtt-provider object has same api as libmqtt's object, just extended a little bit.
+  //. if connection is an object eg { host, port }, just pass that to the driver and let it handle it.
+  let provider
+  if (typeof connection === 'string') {
+    console.log('Adapter getting provider for', connection)
+    provider = inputs[connection]?.plugin // get shared connection - eg mqtt-provider.js
+    if (!provider) {
+      console.log(`Error - unknown provider connection`, connection)
+      process.exit(1)
+    }
   }
 
   // initialize driver plugin
@@ -147,5 +148,6 @@ export async function setupSource({
 
     inputs, // shared input connections defined at top of setup.yaml, if any
     connection, // a shared connection name, or { host, port }, etc
+    provider, // a shared provider, if any
   })
 }

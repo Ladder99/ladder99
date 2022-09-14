@@ -21,24 +21,11 @@ export class AdapterDriver {
   //
   // initialize the client plugin
   // queries the device for address space definitions, subscribes to topics.
-  init({ source, device, cache, module, inputs, connection }) {
+  init({ source, device, cache, module, provider }) {
     console.log('MQTT-subscriber initializing driver for', device.id)
 
     // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
     const { types } = module // module is { inputs, outputs, types }, from yaml files
-
-    // connect to mqtt broker/server
-    // the mqtt-provider object has same api as libmqtt's object, just extended a little bit.
-    // connection could be a string for a shared connection or an object { host, port } etc.
-    // currently just handles string.
-    // const provider = lib.getProvider({ inputs, connection}) //. for future
-    // provider = libmqtt.connect(connection.url) // direct connection
-    console.log('MQTT-subscriber getting provider for', connection)
-    const provider = inputs[connection]?.plugin // get shared connection - eg mqtt-provider.js
-    if (!provider) {
-      console.log(`Error - unknown provider connection`, connection)
-      process.exit(1)
-    }
 
     // get selectors for each topic
     // eg from setup.yaml -
