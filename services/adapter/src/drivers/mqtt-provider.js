@@ -70,9 +70,7 @@ export class AdapterDriver {
     // message - array of bytes (assumed to be a json string)
     function onMessage(topic, message) {
       message = message.toString()
-      console.log(
-        `MQTT-provider got message ${topic}: ${message.slice(0, 140)}`
-      )
+      // console.log(`MQTT-provider message ${topic}: ${message.slice(0, 140)}`)
       let payload
       try {
         payload = JSON.parse(message)

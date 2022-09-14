@@ -90,9 +90,9 @@ export class AdapterDriver {
     function onMessage(msgTopic, message) {
       message = message.toString()
 
-      console.log(
-        `MQTT-subscriber got message ${msgTopic}: ${message.slice(0, 140)}`
-      )
+      // console.log(
+      //   `MQTT-subscriber message ${msgTopic}: ${message.slice(0, 140)}`
+      // )
 
       // unpack the mqtt json payload, assuming it's a JSON string -
       // if not, just pass as string to handler.

@@ -32,6 +32,9 @@ export class AdapterDriver {
     this.oldValue = this.oldValue || newValue // this will avoid firing all this off if just starting up, when oldValue=null
     if (newValue !== this.oldValue) {
       // send msg, wait for response, send second
+      console.log(
+        `Feedback - value changed from ${this.oldValue} to ${this.newValue}`
+      )
 
       // subscribe to response topic
       // will subscribe to mqtt-provider with dispatch based on payload.id
@@ -45,6 +48,7 @@ export class AdapterDriver {
       const { address } = this.source // { driver, connection, address, id }
       const values = this.values // eg [5392, 0]
       const payload = { ...this.payload, address, value: values[0] } // { address, value, unitid, quantity, fc }
+      console.log(`Feedback - publishing command`, this.command, payload)
       this.provider.publish(this.command, JSON.toString(payload))
       this.oldValue = newValue
 
@@ -55,8 +59,10 @@ export class AdapterDriver {
         if (payload[this.wait.attribute] == values[0]) {
           // publish second command
           const payload = { ...this.payload, address, value: values[1] }
+          console.log(`Feedback - publish 2nd command`, this.command, payload)
           this.provider.publish(this.command, JSON.toString(payload))
           // unsubscribe from the wait topic
+          console.log(`Feedback - unsubscribe`, topic)
           this.provider.unsubscribe(topic, callback)
         }
       }
