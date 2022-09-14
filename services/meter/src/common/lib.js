@@ -27,7 +27,6 @@ export function readSetup(setupFolder) {
 
 // import a yaml file and parse to js struct.
 // returns the js struct or null if file not avail.
-/** @returns {object} */
 export function importYaml(path) {
   try {
     const yaml = fs.readFileSync(path, 'utf8')
@@ -40,6 +39,7 @@ export function importYaml(path) {
 }
 
 // recurse over values, replacing eg $FOO with process.env['FOO']
+//. couldn't we just replaceAll on the file string?
 export function replaceEnvars(setup) {
   for (let key of Object.keys(setup)) {
     const value = setup[key]
@@ -50,7 +50,7 @@ export function replaceEnvars(setup) {
       const envarValue = process.env[envarName]
       // console.log(`replacing ${value} with ${envarValue}`)
       setup[key] = envarValue
-    } else if (typeof value === 'object') {
+    } else if (value && typeof value === 'object') {
       replaceEnvars(value)
     }
   }
