@@ -27,9 +27,9 @@ export class AdapterDriver {
   }
 
   poll() {
-    // check if value changed, then send reset commands
-    //. don't want this to send reset if just starting up though - how avoid? good q
+    // check if value changed, then send reset commands - unless just starting up
     const newValue = this.cache.get(this.dataitem) // eg 'm1-job'
+    this.oldValue = this.oldValue || newValue // this will avoid firing all this off if just starting up, when oldValue=null
     if (newValue !== this.oldValue) {
       // send msg, wait for response, send second
 
@@ -53,8 +53,10 @@ export class AdapterDriver {
         // eg this.wait.attribute is 'a15', values[0] is 5392
         // note: we use == because either might be a string, not number
         if (payload[this.wait.attribute] == values[0]) {
+          // publish second command
           const payload = { ...this.payload, address, value: values[1] }
           this.provider.publish(this.command, JSON.toString(payload))
+          // unsubscribe from the wait topic
           this.provider.unsubscribe(topic, callback)
         }
       }
