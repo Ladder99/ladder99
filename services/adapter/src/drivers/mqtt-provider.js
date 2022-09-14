@@ -70,7 +70,7 @@ export class AdapterDriver {
     // message - array of bytes (assumed to be a json string)
     function onMessage(topic, message) {
       message = message.toString()
-      // console.log(`MQTT-provider message ${topic}: ${message.slice(0, 140)}`)
+      console.log(`MQTT-provider message ${topic}: ${message.slice(0, 140)}`)
       let payload
       try {
         payload = JSON.parse(message)
@@ -87,7 +87,7 @@ export class AdapterDriver {
       for (let subscriber of this.subscribers[topic]) {
         const selector = subscriber?.selector || (() => true)
         if (selector(payload)) {
-          // console.log(`MQTT-provider calling subscriber with`, topic)
+          console.log(`MQTT-provider calling subscriber with`, topic)
           subscriber.callback(topic, message) // note: we pass the original unparsed message
         }
       }
