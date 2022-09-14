@@ -30,25 +30,33 @@ export class AdapterDriver {
   // jobbossId values and check their schedules and jobnums.
   async init({
     client, // { name, timezone }
-    device, // { module, driver, connection, ... }
-    // connection, // { server, port, database, user, password } - set in setup.yaml
+    device, // { id }
+    source, // { module, driver, connection, ... }
     devices, // [{ module, driver, connection, ...}, ...]
     cache,
   }) {
     console.log(`JobBoss - initialize driver...`)
     setUnavailable()
 
+    if (!source?.connection?.server || !source?.connection?.port) {
+      console.log(
+        `JobBoss error - missing connection info - check setup.yaml and envars.`
+      )
+      return
+    }
+
     // need to wait to make sure the cutter cache items are setup before
     // writing to them. they're setup via the cutter module.
-    //. why? which items?
-    //. better - check they are there in a loop with delay...
-    //  ieg check cache.get('m1-start') etc for existence
+    //... better - check they are there in a loop with delay...
+    // ieg check cache.get('m1-start') etc for existence
     console.log(`JobBoss - waiting a bit...`)
     await new Promise(resolve => setTimeout(resolve, initialDelay))
 
+    // connection, // { server, port, database, user, password } - set in setup.yaml
+
     // make connection object, { server, port, database, ... }
-    const port = Number(device.connection.port) // need number, not string
-    const connection = { ...device.connection, port }
+    const port = Number(source.connection.port) // need number, not string
+    const connection = { ...source.connection, port }
 
     // note: pool is the mssql global pool object - it's not gonna be destroyed if
     // there's an error, so no need to recreate it in error handlers.

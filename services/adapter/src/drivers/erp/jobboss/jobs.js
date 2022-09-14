@@ -20,7 +20,6 @@ export class Jobs {
     //
     // iterate over all devices, check if has a jobbossId
     for (let device of this.devices) {
-      const deviceName = device.name
       if (device.jobbossId) {
         // get the most recently started job for this workcenter/device.
         // could also use where work_center='MARUMATSU', but not guaranteed unique.
@@ -46,7 +45,7 @@ export class Jobs {
           //. if job changed, query db for estqty,runqty also, set the cache values
           //
         } catch (error) {
-          console.log(`JobBoss jobs ${deviceName} error`, error)
+          console.log(`JobBoss jobs ${device.name} error`, error)
         }
       }
     }
