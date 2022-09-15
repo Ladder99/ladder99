@@ -68,7 +68,7 @@ export class Metric {
     this.timezoneOffset = offsetMinutes * 60 * 1000 // ms
     console.log(
       `Availability tz, offset`,
-      this.device.name,
+      device.name,
       client.timezone,
       offsetMinutes
     )
@@ -90,9 +90,9 @@ export class Metric {
     // // get overtime active interval
     // this.overtimeActiveInterval = 5 * minutes // ms //. pass through the metric as above
 
-    await this.backfill() // backfill missing values
+    // await this.backfill() // backfill missing values
 
-    console.log(`Availability - start polling with interval`, this.interval)
+    console.log(`Availability - poll with interval`, device.name, this.interval)
     await this.poll() // do first poll
     this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
