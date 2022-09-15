@@ -90,7 +90,7 @@ export class Metric {
     // // get overtime active interval
     // this.overtimeActiveInterval = 5 * minutes // ms //. pass through the metric as above
 
-    // await this.backfill() // backfill missing values
+    await this.backfill() // backfill missing values
 
     console.log(`Availability - poll with interval`, device.name, this.interval)
     await this.poll() // do first poll
@@ -146,15 +146,24 @@ export class Metric {
     }
     console.log(`Availability ${deviceName} - dict`, startStopTimes)
 
+    const minToDate = min => new Date(min * minutes).toISOString()
+
     // loop from startstart to now, interval 1 min
     // check for active and available
     // write to bins table those values
     const startMinute = Math.floor(startBackfill.getTime() / minutes)
     const nowMinute = Math.floor(now.getTime() / minutes)
-    console.log(`Availability ${deviceName} start, now`, startMinute, nowMinute)
+    console.log(
+      `Availability ${deviceName} start, now`,
+      minToDate(startMinute),
+      minToDate(nowMinute)
+    )
     let state = null
     for (let minute = startMinute; minute < nowMinute; minute++) {
-      // console.log(`Availability - backfill minute`, minute)
+      console.log(
+        `Availability ${deviceName} backfill minute`,
+        minToDate(minute)
+      )
       const path = startStopTimes[minute]
       if (path === this.metric.startPath) {
         state = 1
