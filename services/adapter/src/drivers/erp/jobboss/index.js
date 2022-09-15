@@ -45,12 +45,8 @@ export class AdapterDriver {
       return
     }
 
-    // need to wait to make sure the cutter cache items are setup before
+    // wait to make sure the cutter cache items are setup before
     // writing to them. they're setup via the cutter module.
-    //... better - check they are there in a loop with delay...
-    // ieg check cache.get('m1-start') etc for existence
-    // console.log(`JobBoss - waiting a bit...`)
-    // await new Promise(resolve => setTimeout(resolve, initialDelay))
     console.log(`JobBoss - waiting until cache dataitems populated...`)
     for (let device of this.devices) {
       if (device.jobbossId) {
