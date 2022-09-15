@@ -154,7 +154,7 @@ export class Db {
       insert into history (node_id, dataitem_id, time, value)
       values (${device_id}, ${dataitem_id}, '${time}', '${value}'::jsonb);
     `
-    console.log('db - write', device_id, dataitem_id, time, value)
+    // console.log('db - write', device_id, dataitem_id, time, value)
     const result = await this.query(sql)
     return result
   }

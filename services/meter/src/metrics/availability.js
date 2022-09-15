@@ -38,7 +38,7 @@ const minutes = 60 * 1000 // 60 ms
 const hours = 60 * minutes
 const days = 24 * hours
 
-const backfillDefaultStart = 60 * days // ie look this far back for first backfill date, by default
+const backfillDefaultStart = 30 * days // ie look this far back for first backfill date, by default
 const metricIntervalDefault = 60 // seconds
 const resolutions = 'minute,hour,day,week,month,year'.split(',') //. 5min? 15min?
 
