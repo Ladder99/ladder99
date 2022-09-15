@@ -11,7 +11,7 @@ import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/n
 import { Jobs } from './jobs.js'
 import { Schedule } from './schedule.js'
 
-const initialDelay = 6000 // ms
+const initialDelay = 1000 // ms
 const waitForDb = 15000 // ms - because db timeout is 15secs
 
 const errorMessages = {
@@ -49,13 +49,22 @@ export class AdapterDriver {
     // writing to them. they're setup via the cutter module.
     //... better - check they are there in a loop with delay...
     // ieg check cache.get('m1-start') etc for existence
-    console.log(`JobBoss - waiting a bit...`)
-    await new Promise(resolve => setTimeout(resolve, initialDelay))
+    // console.log(`JobBoss - waiting a bit...`)
+    // await new Promise(resolve => setTimeout(resolve, initialDelay))
+    console.log(`JobBoss - waiting until cache dataitems populated...`)
+    for (let device of this.devices) {
+      if (device.jobbossId) {
+        const key = `${device.id}-start`
+        while (!cache.has(key)) {
+          client.log(`JobBoss - waiting on ${key}...`)
+          await new Promise(resolve => setTimeout(resolve, initialDelay))
+        }
+      }
+    }
+    client.log(`JobBoss - all cache dataitems populated.`)
 
-    // connection, // { server, port, database, user, password } - set in setup.yaml
-
-    // make connection object, { server, port, database, ... }
-    const port = Number(source.connection.port) // need number, not string
+    // make connection object, { server, port, database, user, password }
+    const port = Number(source.connection.port) // mssql needs number, not string
     const connection = { ...source.connection, port }
 
     // note: pool is the mssql global pool object - it's not gonna be destroyed if

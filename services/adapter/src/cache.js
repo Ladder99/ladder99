@@ -105,6 +105,11 @@ export class Cache {
   get(key) {
     return this._map.get(key)
   }
+
+  // check if cache has a key
+  has(key) {
+    return this._map.has(key)
+  }
 }
 
 // calculate value for the given cache output (can use other cache keyvalues)

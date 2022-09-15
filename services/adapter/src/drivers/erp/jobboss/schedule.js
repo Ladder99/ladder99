@@ -8,7 +8,7 @@ const hours = 60 * minutes
 const days = 24 * hours
 
 const pollInterval = 10 * minutes // ie poll for schedule change every n minutes
-const backfillDefaultStart = 60 * days // ie look this far back for first backfill date, by default
+const backfillDefaultStart = 30 * days // ie look this far back for first backfill date, by default
 const cookiePath = '/data/adapter/cookies/jobboss/schedule.json'
 
 export class Schedule {

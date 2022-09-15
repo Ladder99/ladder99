@@ -42,7 +42,7 @@ export class Jobs {
           // console.log('device', device.name, 'job', job)
           this.cache.set(`${device.id}-job`, job) // will send shdr to agent IF cache value changed
 
-          //. if job changed, query db for estqty,runqty also, set the cache values
+          //. if job changed, could query db for estqty,runqty also, set the cache values
           //
         } catch (error) {
           console.log(`JobBoss jobs ${device.name} error`, error)
