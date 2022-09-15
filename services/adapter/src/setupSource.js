@@ -20,7 +20,7 @@ export async function setupSource({
   inputs, // shared connections
 }) {
   //
-  console.log(`Adapter setup source`, source) // don't print - might have password etc
+  console.log(`Adapter setup source`, source.module, source.driver) // don't print full source - might have db password!
   const { driver, connection } = source
   const moduleName = source.module
 

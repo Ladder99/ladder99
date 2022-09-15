@@ -13,11 +13,11 @@ export async function getPlugin(driversFolder, driver) {
   const path2 = `${driversFolder}/${driver}/index.js`
   let code
   try {
-    console.log(`Importing driver code: ${path1}...`)
+    console.log(`Adapter importing driver code: ${path1}...`)
     code = await import(path1) // load the code
   } catch (error) {
-    console.log('Error', error.message)
-    console.log(`Importing driver code: ${path2}...`)
+    // console.log('Error', error.message)
+    console.log(`Adapter importing driver code: ${path2}...`)
     code = await import(path2) // load the code
   }
   const { AdapterDriver } = code

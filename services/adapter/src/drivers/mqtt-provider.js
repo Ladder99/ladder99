@@ -22,6 +22,7 @@ export class AdapterDriver {
   //
   // url is sthing like 'mqtt://localhost:1883'
   init({ url }) {
+    console.log(`MQTT-provider init`, url)
     this.url = url
     // instead of a single handler for each event, we need several, eg one for each device
     this.handlers = {
@@ -35,6 +36,7 @@ export class AdapterDriver {
   }
 
   // register event handlers, eg 'connect', 'message'
+  // calls connect handler if provider is already connected, else waits for onConnect fn
   on(event, handler) {
     this.handlers[event].push(handler)
     // call the handler if we're already connected
