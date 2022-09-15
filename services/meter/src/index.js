@@ -23,7 +23,7 @@ async function start() {
   const setup = lib.readSetup(setupFolder)
   const client = setup.client || {} // has { name, timezone }
 
-  const defaultMetrics = setup?.adapter?.metrics || {}
+  const defaultMetrics = setup?.adapter?.metrics || {} // eg { availability, count, ... }
 
   // iterate over devices, check what metrics they want, if any,
   // load those metric plugins, start them up - let them poll db as needed etc.
