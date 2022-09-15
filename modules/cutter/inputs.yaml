@@ -23,6 +23,7 @@
 connect:
   # subscribe to these topics
   # can use ${deviceId} in topic names
+  # note: a device will only subscribe to those it has
   subscribe:
     - topic: controller
     - topic: l99/B01000/evt/io

@@ -30,16 +30,25 @@ export class AdapterDriver {
     // get selectors for each topic
     // eg from setup.yaml -
     // topics: # topics and selector objects - payload must match given contents
+    //   controller: true
     //   l99/B01000/evt/io:
     //     id: 535172
     console.log(`MQTT-subscriber get selectors from`, source.topics)
     const selectors = {} // key is topic, value will be selector fn
     for (let topic of Object.keys(source.topics)) {
-      const obj = source.topics[topic] // eg { id: 513241 }
-      // NOTE: we use == instead of ===, because payload.id may be a string
-      //. for now assume selection is done by id - expand later!
-      const selector = payload => payload.id == obj.id
-      console.log(`MQTT-subscriber selector`, topic, String(selector), obj.id)
+      const value = source.topics[topic] // eg { id: 513241 }, or true, or false
+      // let selector = () => true // if setup lists a topic, assume it's to be included
+      let selector = true // if setup lists a topic, assume it's to be included
+      if (typeof value === 'boolean') {
+        // selector = () => value // true or false
+        selector = value // true or false
+      } else if (value.id !== undefined) {
+        //. for now assume selection is done by id - expand to arbitrary objects later!
+        // NOTE: we use == instead of ===, because payload.id may be a string
+        selector = payload => payload.id == value.id
+      }
+      // selector can be t/f or a function of the message payload
+      console.log(`MQTT-subscriber selector`, topic, String(selector), value)
       selectors[topic] = selector
     }
 
@@ -50,12 +59,15 @@ export class AdapterDriver {
       // subscribe to any topics defined in inputs.yaml
       for (const entry of module?.inputs?.connect?.subscribe || []) {
         const topic = replaceDeviceId(entry.topic)
-        console.log(`MQTT-subscriber subscribing to ${topic}`)
-        // mqtt.subscribe(topic) // old code
-        // extend mqtt api to add callback and optional selector for dispatcher to filter on.
-        // we need the callback because otherwise the provider wouldn't know where to send msg,
-        // ie which of the many mqtt-subscriber instances to send to.
-        provider.subscribe(topic, onMessage, selectors[topic])
+        const selector = selectors[topic]
+        if (selector && selector !== false) {
+          console.log(`MQTT-subscriber subscribing to ${topic}`)
+          // mqtt.subscribe(topic) // old code
+          // extend mqtt api to add callback and optional selector for dispatcher to filter on.
+          // we need the callback because otherwise the provider wouldn't know where to send msg,
+          // ie which of the many mqtt-subscriber instances to send to.
+          provider.subscribe(topic, onMessage, selector)
+        }
       }
 
       // publish to any topics defined

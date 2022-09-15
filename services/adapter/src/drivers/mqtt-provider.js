@@ -89,9 +89,8 @@ export class AdapterDriver {
       for (let subscriber of this.subscribers[topic]) {
         const { callback, selector } = subscriber
         // const selector = subscriber?.selector || (() => true)
-        if (selector(payload)) {
+        if (selector === true || selector(payload)) {
           console.log(`MQTT-provider calling subscriber with`, topic)
-          // subscriber.callback(topic, message) // note: we pass the original unparsed message
           callback(topic, message) // note: we pass the original unparsed message
         }
       }
