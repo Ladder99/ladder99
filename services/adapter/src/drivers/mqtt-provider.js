@@ -30,7 +30,7 @@ export class AdapterDriver {
     }
     this.subscribers = {} // key is topic, value is { callback, selector }
     this.mqtt = null
-    this.connected = false
+    this.connected = false // set flag
     this.start()
   }
 
@@ -54,8 +54,8 @@ export class AdapterDriver {
     this.mqtt.on('connect', onConnect.bind(this))
 
     function onConnect() {
-      this.connected = true
-      console.log(`MQTT-provider connected to broker on`, this.url)
+      this.connected = true // set flag
+      console.log(`MQTT-provider connected to shared broker on`, this.url)
       console.log(`MQTT-provider calling connect handlers`)
       for (let handler of this.handlers.connect) {
         if (!handler.called) {
@@ -85,10 +85,12 @@ export class AdapterDriver {
       //. make a dict for dispatching instead of linear search, ie on id
       // note: subscriber = { callback, selector }
       for (let subscriber of this.subscribers[topic]) {
-        const selector = subscriber?.selector || (() => true)
+        const { callback, selector } = subscriber
+        // const selector = subscriber?.selector || (() => true)
         if (selector(payload)) {
           console.log(`MQTT-provider calling subscriber with`, topic)
-          subscriber.callback(topic, message) // note: we pass the original unparsed message
+          // subscriber.callback(topic, message) // note: we pass the original unparsed message
+          callback(topic, message) // note: we pass the original unparsed message
         }
       }
     }
@@ -113,6 +115,7 @@ export class AdapterDriver {
       subscriber => subscriber.callback === callback
     )
     if (i !== -1) {
+      // remove subscriber from list
       this.subscribers[topic] = [
         ...subscribers.slice(0, i),
         ...subscribers.slice(i + 1),
