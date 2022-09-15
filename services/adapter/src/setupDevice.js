@@ -13,7 +13,7 @@ export function setupDevice({
   devices,
   inputs,
 }) {
-  console.log(`Adapter setup device`, device.id) // don't print device obj - might have passwords
+  console.log(`Adapter setup device`, device.name) // don't print device obj - might have passwords
 
   // setup sources
   // each device can have multiple sources.

@@ -3,20 +3,6 @@
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
-// const mqtts = {} // key is url, value is an MqttProvider object
-// // memoized mqtt constructor
-// //. memoize by module also, eg 'cutter' vs 'print-apply'?
-// export function getMqtt(url) {
-//   if (mqtts[url]) {
-//     return mqtts[url]
-//   }
-//   const mqtt = new AdapterDriver(url)
-//   mqtts[url] = mqtt
-//   return mqtt
-// }
-
-//
-
 // this class wraps the original mqtt object, adding additional dispatch capabilities.
 export class AdapterDriver {
   //
@@ -24,26 +10,15 @@ export class AdapterDriver {
   init({ url }) {
     console.log(`MQTT-provider init`, url)
     this.url = url
+    this.mqtt = null
+    this.connected = false // set flag
     // instead of a single handler for each event, we need several, eg one for each device
     this.handlers = {
       connect: [],
       message: [],
     }
     this.subscribers = {} // key is topic, value is { callback, selector }
-    this.mqtt = null
-    this.connected = false // set flag
     this.start()
-  }
-
-  // register event handlers, eg 'connect', 'message'
-  // calls connect handler if provider is already connected, else waits for onConnect fn
-  on(event, handler) {
-    this.handlers[event].push(handler)
-    // call the handler if we're already connected
-    if (event === 'connect' && this.connected) {
-      handler()
-      handler.called = true
-    }
   }
 
   // start the underlying mqtt connection
@@ -72,7 +47,7 @@ export class AdapterDriver {
     // message - array of bytes (assumed to be a string or json string)
     function onMessage(topic, message) {
       message = message.toString()
-      console.log(`MQTT-provider message ${topic}: ${message.slice(0, 140)}`)
+      // console.log(`MQTT-provider message ${topic}: ${message.slice(0, 140)}`)
       let payload
       try {
         payload = JSON.parse(message)
@@ -80,16 +55,27 @@ export class AdapterDriver {
         payload = message
       }
       // peek inside the payload if needed to see who to dispatch this message to.
-      //. for now we need to filter on eg payload.id == some value
+      //. for now we just filter on eg payload.id == some value
       //. make a dict for dispatching instead of linear search, ie on id? but would need array of callbacks for plain text msgs
       for (let subscriber of this.subscribers[topic]) {
         const { callback, selector } = subscriber
         // selector can be a boolean or a fn of the message payload
         if (selector === true || selector(payload)) {
-          console.log(`MQTT-provider calling subscriber with`, topic)
+          // console.log(`MQTT-provider calling subscriber with`, topic)
           callback(topic, message) // note: we pass the original unparsed message
         }
       }
+    }
+  }
+
+  // register event handlers, eg 'connect', 'message'
+  // calls connect handler if provider is already connected, else waits for onConnect fn
+  on(event, handler) {
+    this.handlers[event].push(handler)
+    // call the handler if we're already connected
+    if (event === 'connect' && this.connected) {
+      handler()
+      handler.called = true
     }
   }
 
@@ -100,8 +86,8 @@ export class AdapterDriver {
     const subscriber = { callback, selector }
     this.subscribers[topic] = this.subscribers[topic] || []
     this.subscribers[topic].push(subscriber)
-    console.log(`MQTT-provider subscribers`, this.subscribers)
-    this.mqtt.subscribe(topic) //. hopefully idempotent?
+    // console.log(`MQTT-provider subscribers`, this.subscribers)
+    this.mqtt.subscribe(topic) // idempotent - ie okay to subscribe to same topic multiple times
   }
 
   // pass callback here to distinguish subscribers
@@ -117,7 +103,7 @@ export class AdapterDriver {
         ...subscribers.slice(0, i),
         ...subscribers.slice(i + 1),
       ]
-      //. if none left, could this.mqtt.unsubscribe(topic)
+      //. if none left, could do this.mqtt.unsubscribe(topic)?
       console.log(`MQTT-provider down to`, this.subscribers[topic])
     }
   }

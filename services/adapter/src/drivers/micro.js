@@ -10,7 +10,7 @@ const pollInterval = 5000 // msec //. get from setup
 
 export class AdapterDriver {
   init({ device, cache }) {
-    console.log(`Initialize microcontroller driver...`)
+    console.log(`Micro initialize driver...`)
 
     setUnavailable()
     setInterval(readData, pollInterval)
