@@ -75,11 +75,7 @@ export class Metric {
 
     console.log(`Availability - get device node_id...`)
     this.device.node_id = await this.db.getDeviceId(device.name) // repeats until device is there
-    console.log(
-      `Availability - device,node_id`,
-      device.name,
-      this.device.node_id
-    )
+    console.log(`Availability ${device.name} node_id`, this.device.node_id)
 
     //. poll for schedule info, save to this - set up timer for every 10mins?
     // pollSchedule vs pollMetrics?
@@ -92,7 +88,7 @@ export class Metric {
 
     await this.backfill() // backfill missing values
 
-    console.log(`Availability - poll with interval`, device.name, this.interval)
+    console.log(`Availability ${device.name} poll with interval`, this.interval)
     await this.poll() // do first poll
     this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
@@ -160,10 +156,10 @@ export class Metric {
     )
     let state = null
     for (let minute = startMinute; minute < nowMinute; minute++) {
-      console.log(
-        `Availability ${deviceName} backfill minute`,
-        minToDate(minute)
-      )
+      // console.log(
+      //   `Availability ${deviceName} backfill minute`,
+      //   minToDate(minute)
+      // )
       const path = startStopTimes[minute]
       if (path === this.metric.startPath) {
         state = 1
