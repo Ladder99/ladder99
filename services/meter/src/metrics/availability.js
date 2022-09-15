@@ -53,6 +53,7 @@ export class Metric {
 
   async start({ client, db, device, metric }) {
     console.log(`Availability - initialize availability metric...`)
+    console.log(`Availability - time resolutions`, resolutions)
     this.client = client
     this.db = db
     this.device = device
@@ -74,7 +75,11 @@ export class Metric {
 
     console.log(`Availability - get device node_id...`)
     this.device.node_id = await this.db.getDeviceId(device.name) // repeats until device is there
-    console.log(this.device)
+    console.log(
+      `Availability - device,node_id`,
+      device.name,
+      this.device.node_id
+    )
 
     //. poll for schedule info, save to this - set up timer for every 10mins?
     // pollSchedule vs pollMetrics?
@@ -86,6 +91,8 @@ export class Metric {
     // this.overtimeActiveInterval = 5 * minutes // ms //. pass through the metric as above
 
     await this.backfill() // backfill missing values
+
+    console.log(`Availability - start polling with interval`, this.interval)
     await this.poll() // do first poll
     this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }

@@ -17,6 +17,7 @@ async function start() {
   console.log(`Meter - connecting to db...`)
   const db = new Db()
   await db.start()
+  console.log(`Meter - connected`)
 
   // read client's setup.yaml
   console.log(`Meter - reading client setup yaml...`)
@@ -24,14 +25,15 @@ async function start() {
   const client = setup.client || {} // has { name, timezone }
 
   const defaultMetrics = setup?.adapter?.metrics || {} // eg { availability, count, ... }
+  console.log(`Meter - default metrics`, defaultMetrics)
 
   // iterate over devices, check what metrics they want, if any,
   // load those metric plugins, start them up - let them poll db as needed etc.
   for (let device of setup.devices || []) {
     // const metrics = device.metrics || []
     const metrics = { ...defaultMetrics, ...device.metrics }
+    console.log(`Meter - device metrics`, device.id, metrics)
     for (let name of Object.keys(metrics)) {
-      // const { name } = metric
       const metric = metrics[name]
 
       // import metric plugin
