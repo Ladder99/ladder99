@@ -12,7 +12,7 @@ const feedbackOff = process.env.RELAY_FEEDBACK_OFF
 export class AdapterDriver {
   //
   init({ setup, source, device, cache, provider }) {
-    // console.log(`Feedback - RELAY_FEEDBACK_OFF =`, feedbackOff)
+    // console.log(`Feedback - RELAY_FEEDBACK_OFF =`, feedbackOff) //..............
     // if (feedbackOff) return
     console.log(`Feedback initialize driver for`, device.id)
     console.log(`Feedback source`, source)
@@ -53,14 +53,15 @@ export class AdapterDriver {
       const callback = waitForSignal.bind(this)
       const selector = payload => payload.id == this.source.id // eg id=535172
       console.log(`Feedback - subscribing to`, topic, selector)
-      this.provider.subscribe(topic, callback, selector)
+      // this.provider.subscribe(topic, callback, selector) //...............
 
       // publish to reset topic
       const { address } = this.source // { driver, connection, address, id }
       const values = this.values // eg [5392, 0]
       const payload = { ...this.payload, address, value: values[0] } // { address, value, unitid, quantity, fc }
       console.log(`Feedback - publishing command`, this.command, payload)
-      this.provider.publish(this.command, JSON.toString(payload))
+      console.log(`Feedback - waiting for response...`)
+      // this.provider.publish(this.command, JSON.toString(payload)) //..............
       this.oldValue = newValue
 
       function waitForSignal(topic, payload) {
@@ -69,6 +70,7 @@ export class AdapterDriver {
         // note: we use == because either might be a string, not number
         if (payload[this.wait.attribute] == values[0]) {
           // publish second command
+          console.log(`Feedback - got response`)
           const payload = { ...this.payload, address, value: values[1] }
           console.log(`Feedback - publish 2nd command`, this.command, payload)
           this.provider.publish(this.command, JSON.toString(payload))
