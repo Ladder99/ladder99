@@ -30,21 +30,25 @@ async function start() {
   // iterate over devices, check what metrics they want, if any,
   // load those metric plugins, start them up - let them poll db as needed etc.
   for (let device of setup.devices || []) {
-    // const metrics = device.metrics || []
-    const metrics = { ...defaultMetrics, ...device.metrics }
-    console.log(`Meter - device metrics`, device.id, metrics)
-    for (let name of Object.keys(metrics)) {
-      const metric = metrics[name]
+    // in setup.yaml can specify metrics:false for a device
+    if (device.metrics !== false) {
+      const metrics = { ...defaultMetrics, ...device.metrics }
+      console.log(`Meter - device metrics`, device.id, metrics)
+      for (let name of Object.keys(metrics)) {
+        const metric = metrics[name] // eg name='availability', metric={ activePath, startPath, stopPath }
+        // in setup.yaml can specify metrics:availability:false etc to turn off specific metrics
+        if (metric !== false) {
+          // import metric plugin
+          const pathMetric = `${metricsFolder}/${name}.js` // eg './metrics/availability.js'
+          console.log(`Meter - importing ${pathMetric}...`)
+          const { Metric } = await import(pathMetric)
+          const plugin = new Metric()
 
-      // import metric plugin
-      const pathMetric = `${metricsFolder}/${name}.js` // eg './metrics/availability.js'
-      console.log(`Meter - importing ${pathMetric}...`)
-      const { Metric } = await import(pathMetric)
-      const plugin = new Metric()
-
-      // start it
-      console.log(`Meter - starting ${device.name} ${name}...`)
-      plugin.start({ client, db, device, metric })
+          // start it
+          console.log(`Meter - starting ${device.name} ${name}...`)
+          plugin.start({ client, db, device, metric })
+        }
+      }
     }
   }
 }
