@@ -52,12 +52,12 @@ export class AdapterDriver {
       if (device.jobbossId) {
         const key = `${device.id}-start`
         while (!cache.has(key)) {
-          client.log(`JobBoss - waiting on ${key}...`)
+          console.log(`JobBoss - waiting on ${key}...`)
           await new Promise(resolve => setTimeout(resolve, initialDelay))
         }
       }
     }
-    client.log(`JobBoss - all cache dataitems populated.`)
+    console.log(`JobBoss - all cache dataitems populated.`)
 
     // make connection object, { server, port, database, user, password }
     const port = Number(source.connection.port) // mssql needs number, not string
