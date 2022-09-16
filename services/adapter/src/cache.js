@@ -24,19 +24,21 @@ export class Cache {
   // so this builds a map from those dependsOn values to the output object.
   // eg { 'ac1-power_fault': [{ key:'ac1-power_condition', value: (fn), ...}], ... }
   addOutputs(outputs) {
-    console.log(
-      `Cache - add outputs`,
-      outputs.map(o => o.key)
-    )
-    for (const output of outputs) {
-      // console.log(output.key, output.dependsOn)
-      // output.socket = socket // attach tcp socket to each output also
-      // add dependsOn eg ['ac1-power_fault', 'ac1-power_warning']
-      for (const key of output.dependsOn) {
-        if (this._mapKeyToOutputs[key]) {
-          this._mapKeyToOutputs[key].push(output)
-        } else {
-          this._mapKeyToOutputs[key] = [output]
+    if (outputs) {
+      console.log(
+        `Cache addOutputs`,
+        outputs.map(o => o.key)
+      )
+      for (const output of outputs) {
+        // console.log(output.key, output.dependsOn)
+        // output.socket = socket // attach tcp socket to each output also
+        // add dependsOn eg ['ac1-power_fault', 'ac1-power_warning']
+        for (const key of output.dependsOn) {
+          if (this._mapKeyToOutputs[key]) {
+            this._mapKeyToOutputs[key].push(output)
+          } else {
+            this._mapKeyToOutputs[key] = [output]
+          }
         }
       }
     }
@@ -44,20 +46,26 @@ export class Cache {
 
   // attach tcp socket to each output, or clear if socket=null
   setSocket(outputs, socket) {
-    console.log(`Cache - setSocket...`)
-    if (socket) {
-      console.log(`Cache - send last known data values to agent...`)
-    }
-    for (const output of outputs || []) {
-      output.socket = socket
-      if (output.socket) {
-        // send last known data value to agent
-        const shdr = getShdr(output, output.lastValue || 'UNAVAILABLE')
-        // console.log(`Cache - send ${shdr.slice(0, 60)}...`)
-        try {
-          output.socket.write(shdr + '\n')
-        } catch (error) {
-          console.log(error)
+    // can ignore if no outputs
+    if (outputs) {
+      console.log(
+        `Cache setSocket`,
+        outputs.map(o => o.key)
+      )
+      if (socket) {
+        console.log(`Cache send last known data values to agent...`)
+      }
+      for (const output of outputs || []) {
+        output.socket = socket
+        if (output.socket) {
+          // send last known data value to agent
+          const shdr = getShdr(output, output.lastValue || 'UNAVAILABLE')
+          // console.log(`Cache - send ${shdr.slice(0, 60)}...`)
+          try {
+            output.socket.write(shdr + '\n')
+          } catch (error) {
+            console.log(error)
+          }
         }
       }
     }
@@ -91,7 +99,7 @@ export class Cache {
         if (output.socket) {
           const shdr = getShdr(output, value, options.timestamp) // timestamp can be ''
           if (!options.quiet) {
-            console.log(`Cache - value changed, send "${shdr.slice(0, 60)}..."`)
+            console.log(`Cache value changed, send "${shdr.slice(0, 60)}..."`)
           }
           try {
             output.socket.write(shdr + '\n')
@@ -99,7 +107,7 @@ export class Cache {
             console.log(error)
           }
         } else {
-          console.log(`Cache - no socket to write to`)
+          console.log(`Cache no socket to write to`)
         }
       }
     }
