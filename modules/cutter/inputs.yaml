@@ -23,7 +23,7 @@
 connect:
   # subscribe to these topics
   # can use ${deviceId} in topic names
-  # note: a device will only subscribe to those it has
+  # note: a device will only subscribe to those it has defined in setup.yaml source.topics!
   subscribe:
     - topic: controller
     - topic: l99/B01000/evt/io
@@ -34,15 +34,6 @@ connect:
     # - topic: l99/B01000/evt/gateway
     # - topic: l99/B01000/evt/current
 
-  # # publish an empty message to receive the query response
-  # publish:
-  #   - topic: l99/B01000/cmd/query
-  #     message: '{}'
-  # # define any one-time cache values to set
-  # static:
-  #   # this sets the cache value at eg 'kl1-procname' to 'KITTING'
-  #   procname: KITTING
-
 # define message topic handlers - if add new ones be sure to subscribe above!
 handlers:
   # ----------------------------------------------------------------------------
@@ -51,8 +42,10 @@ handlers:
   controller:
     # make '$' the payload value
     text: true # payload is a plain string - 'birth', 'sleep', 'death'
+    #. parameterize this fn to eg 'initialize:text'
     initialize: '$ = payload'
     # define lookup function, which returns a value given some js code.
+    #. parameterize this fn to eg 'lookup:eval' ?
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
     # this algorithm iterates over expressions, evaluates each, and adds value to cache.

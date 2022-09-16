@@ -133,15 +133,17 @@ export class AdapterDriver {
         // eg can assign payload values to a dictionary $ here for fast lookups.
         // eg initialize: 'payload.forEach(item => $[item.address] = item)'
         // eg initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
+        //. parameterize this so don't need to put code in the yaml
         // console.log(`MQTT-subscriber run initialize handler`)
         let $ = {} // a variable representing payload data - must be let not const
         eval(handler.initialize)
 
+        // this algorithm iterates over expressions, evaluates each, and adds value to cache.
+        // expressions is an array of [key, expression] - eg [['fault_count', '%M55.2'], ...].
+        //. this could be like the other algorithm - use msg('foo'), calculations -
+        // then would be reactive instead of evaluating each expression, and unifies code!
+        //. call this 'eval_expressions'
         if (handler.algorithm === 'iterate_expressions') {
-          // this algorithm iterates over expressions, evaluates each, and adds value to cache.
-          // expressions is an array of [key, expression] - eg [['fault_count', '%M55.2'], ...].
-          //. this could be like the other algorithm - use msg('foo'), calculations,
-          // then would be reactive instead of evaluating each expression, and unifies code.
           const expressions = handler.expressions || {}
           for (const [key, expression] of Object.entries(expressions)) {
             // use the lookup function to get value from payload
@@ -155,7 +157,7 @@ export class AdapterDriver {
             }
           }
           //
-          //. iterate_payload_contents
+          //. call this iterate_payload_contents
         } else if (handler.algorithm === 'iterate_message_contents') {
           //
           // get set of keys for eqns we need to execute based on the payload
@@ -183,6 +185,7 @@ export class AdapterDriver {
                 equationKeys2.add(cacheId)
               }
             }
+            //. merge this algorithm with getEquationKeys
             equationKeys = getEquationKeys2(equationKeys2, handler.maps)
             depth += 1
           } while (equationKeys.size > 0 && depth < 6) // prevent endless loops

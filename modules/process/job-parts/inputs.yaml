@@ -8,7 +8,7 @@
 # and adapter parses messages, writes values to cache, which may output shdr
 # to the mtconnect agent.
 
-# this file is parsed by the adapter driver services/adapter/src/drivers/mqtt-json.js.
+# this file is parsed by the adapter driver services/adapter/src/drivers/mqtt-subscriber.js.
 
 # note: cache keys are ARBITRARY,
 # ie not necessarily the same as dataitem id OR name.
