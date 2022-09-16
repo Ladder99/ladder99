@@ -134,7 +134,7 @@ export class AdapterDriver {
             // use the lookup function to get value from payload
             // eg handler.lookupFn could be ($, js) => eval(js), ie just evaluate the js expression
             // const value = handler.lookupFn($, expression)
-            const lookupFn = eval(lookup) //. need to do this here because of closure crap?
+            const lookupFn = eval(handler.lookup) //. need to do this here because of closure crap?
             const value = lookupFn($, expression)
             // note guard for undefined value -
             // if need to reset a cache value, must pass value 'UNAVAILABLE' explicitly.
