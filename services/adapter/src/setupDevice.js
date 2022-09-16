@@ -44,7 +44,7 @@ export function setupDevice({
   function onConnect(socket) {
     // tell cache and plugins about the tcp socket
     for (let source of device.sources) {
-      cache.setSocket(source.outputs, socket) //. this should trigger sending all cache values
+      cache.setSocket(source.outputs, socket) // this should trigger sending all cache values
       if (source.plugin && source.plugin.setSocket) {
         source.plugin.setSocket(socket) // some drivers/plugins need direct socket connection, eg random.js
       }
