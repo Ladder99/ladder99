@@ -42,7 +42,7 @@ handlers:
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
     #. explain
-    process: iterate_expressions
+    algorithm: iterate_expressions
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'connection' => 's1-connection'.
     # 'js' is some javascript calculation code to determine its value.

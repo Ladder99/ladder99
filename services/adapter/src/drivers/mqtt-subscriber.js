@@ -137,16 +137,11 @@ export class AdapterDriver {
         let $ = {} // a variable representing payload data - must be let not const
         eval(handler.initialize)
 
-        //. call this handler.algorithm, update all modules
         if (handler.algorithm === 'iterate_expressions') {
-          // console.log(`MQTT-subscriber handle iterate_expressions`)
-
-          // iterate over expressions - an array of [key, expression],
-          // eg [['fault_count', '%M55.2'], ...].
-          // evaluate each expression and add value to cache.
+          // this algorithm iterates over expressions, evaluates each, and adds value to cache.
+          // expressions is an array of [key, expression] - eg [['fault_count', '%M55.2'], ...].
           //. this could be like the other algorithm - use msg('foo'), calculations,
           // then would be reactive instead of evaluating each expression, and unifies code.
-          // console.log(`MQTT-subscriber iterate over expressions`)
           const expressions = handler.expressions || {}
           for (const [key, expression] of Object.entries(expressions)) {
             // use the lookup function to get value from payload
