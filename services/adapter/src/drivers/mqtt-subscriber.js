@@ -133,7 +133,9 @@ export class AdapterDriver {
           for (const [key, expression] of Object.entries(expressions)) {
             // use the lookup function to get value from payload
             // eg handler.lookupFn could be ($, js) => eval(js), ie just evaluate the js expression
-            const value = handler.lookupFn($, expression)
+            // const value = handler.lookupFn($, expression)
+            const lookupFn = eval(lookup) //. need to do this here because of closure crap?
+            const value = lookupFn($, expression)
             // note guard for undefined value -
             // if need to reset a cache value, must pass value 'UNAVAILABLE' explicitly.
             if (value !== undefined) {
@@ -188,7 +190,6 @@ export class AdapterDriver {
         for (const entry of handler.subscribe || []) {
           const topic = replaceDeviceId(entry.topic)
           console.log(`MQTT-subscriber subscribe to ${topic}`)
-          // provider.subscribe(topic, onMessage.bind(this), selectors[topic])
           provider.subscribe(topic, onMessage, selectors[topic])
         }
       }

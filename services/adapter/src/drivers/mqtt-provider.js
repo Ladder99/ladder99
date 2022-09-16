@@ -86,7 +86,7 @@ export class AdapterDriver {
     this.subscribers[topic] = this.subscribers[topic] || []
     this.subscribers[topic].push(subscriber)
     // console.log(`MQTT-provider subscribers`, this.subscribers)
-    this.mqtt.subscribe(topic) // idempotent - ie okay to subscribe to same topic multiple times
+    this.mqtt.subscribe(topic) // idempotent - ie okay to subscribe to same topic multiple times?
   }
 
   // pass callback here to distinguish subscribers
