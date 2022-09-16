@@ -74,6 +74,8 @@ export class Cache {
     //   const s = typeof value === 'string' ? `"${value.slice(0, 99)}..."` : value
     //   console.log(`Cache - set ${key}: ${s}`)
     // }
+    //. don't allow undefined as a value? not in vocabulary of mtc
+    if (value === undefined) return
     // update the cache value
     this._map.set(key, value)
     // get list of outputs associated with this key
