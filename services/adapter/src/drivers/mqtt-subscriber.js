@@ -138,14 +138,13 @@ export class AdapterDriver {
         eval(handler.initialize)
 
         //. call this handler.algorithm, update all modules
-        //. call this iterate_expressions, update all module inputs.yaml
-        if (handler.process === 'iterate_expressions') {
+        if (handler.algorithm === 'iterate_expressions') {
           // console.log(`MQTT-subscriber handle iterate_expressions`)
 
           // iterate over expressions - an array of [key, expression],
           // eg [['fault_count', '%M55.2'], ...].
           // evaluate each expression and add value to cache.
-          //. this could be like the other process - use msg('foo'), calculations,
+          //. this could be like the other algorithm - use msg('foo'), calculations,
           // then would be reactive instead of evaluating each expression, and unifies code.
           // console.log(`MQTT-subscriber iterate over expressions`)
           const expressions = handler.expressions || {}
@@ -161,12 +160,14 @@ export class AdapterDriver {
             }
           }
           //
-        } else if (handler.process === 'iterate_message_contents') {
+          //. iterate_payload_contents
+        } else if (handler.algorithm === 'iterate_message_contents') {
           //
           // get set of keys for eqns we need to execute based on the payload
           // eg set{'has_current_job', 'job_meta', ...}
           //. call this dependencies = getDependencies?
           //  or references = getReferences ?
+          // yeah
           let equationKeys = getEquationKeys(payload, handler.maps)
 
           // make sure all '=' expressions will be evaluated
@@ -190,12 +191,14 @@ export class AdapterDriver {
             equationKeys = getEquationKeys2(equationKeys2, handler.maps)
             depth += 1
           } while (equationKeys.size > 0 && depth < 6) // prevent endless loops
-        } else {
           //
+        } else if (handler.algorithm) {
           console.log(
-            `MQTT-subscriber error missing handler.process`,
-            handler.process
+            `MQTT-subscriber error unknown algorithm ${handler.algorithm}`
           )
+          //
+        } else {
+          console.log(`MQTT-subscriber error no algorithm set for ${topic}`)
         }
 
         // subscribe to any topics
