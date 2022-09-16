@@ -48,7 +48,7 @@ export class AdapterDriver {
     // wait to make sure the cutter cache items are setup before
     // writing to them. they're setup via the cutter module.
     console.log(`JobBoss - waiting until cache dataitems populated...`)
-    for (let device of this.devices) {
+    for (let device of devices) {
       if (device.jobbossId) {
         const key = `${device.id}-start`
         while (!cache.has(key)) {
