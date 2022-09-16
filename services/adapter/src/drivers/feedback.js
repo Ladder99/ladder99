@@ -12,11 +12,12 @@ const feedbackOff = process.env.L99_FEEDBACK_OFF
 export class AdapterDriver {
   //
   init({ setup, source, device, cache, provider }) {
-    console.log(`Feedback - L99_FEEDBACK_OFF =`, feedbackOff)
+    const me = `Feedback ${device.name}:`
+    // console.log(`Feedback - L99_FEEDBACK_OFF =`, feedbackOff)
+    console.log(me, `L99_FEEDBACK_OFF =`, feedbackOff)
     if (feedbackOff) return
 
-    console.log(`Feedback initialize driver for`, device.id)
-    console.log(`Feedback source`, source)
+    console.log(me, `initialize driver, source`, source)
 
     this.cache = cache // need for monitoring a value
     this.source = source // { driver, connection, address, id }
@@ -44,24 +45,22 @@ export class AdapterDriver {
     this.oldValue = this.oldValue || newValue // this will avoid firing all this off if just starting up, when oldValue=null
     if (newValue !== this.oldValue) {
       // send msg, wait for response, send second
-      console.log(
-        `Feedback - value changed from ${this.oldValue} to ${newValue}`
-      )
+      console.log(me, `value changed from ${this.oldValue} to ${newValue}`)
 
       // subscribe to response topic
       // will subscribe to mqtt-provider with dispatch based on payload.id
       const topic = this.wait.topic
       const callback = waitForSignal.bind(this)
       const selector = payload => payload.id == this.source.id // eg id=535172
-      console.log(`Feedback - subscribing to`, topic, selector)
+      console.log(me, `subscribing to`, topic, selector)
       this.provider.subscribe(topic, callback, selector)
 
       // publish to reset topic
       const { address } = this.source // { driver, connection, address, id }
       const values = this.values // eg [5392, 0]
       const payload = { ...this.payload, address, value: values[0] } // { address, value, unitid, quantity, fc }
-      console.log(`Feedback - publishing command`, this.command, payload)
-      console.log(`Feedback - waiting for response...`)
+      console.log(me, `publishing command`, this.command, payload)
+      console.log(me, `waiting for response...`)
       this.provider.publish(this.command, JSON.toString(payload))
       this.oldValue = newValue
 
@@ -71,21 +70,15 @@ export class AdapterDriver {
         // note: we use == because either might be a string, not number
         if (payload[this.wait.attribute] == values[0]) {
           // publish second command
-          console.log(`Feedback - got response`)
+          console.log(me, `got response`)
           const payload = { ...this.payload, address, value: values[1] }
-          console.log(`Feedback - publish 2nd command`, this.command, payload)
+          console.log(me, `publish 2nd command`, this.command, payload)
           this.provider.publish(this.command, JSON.toString(payload))
           // unsubscribe from the wait topic
-          console.log(`Feedback - unsubscribe`, topic)
-          this.provider.unsubscribe(topic, callback)
+          console.log(me, `unsubscribe`, topic)
+          this.provider.unsubscribe(topic, callback) //. does this work?
         }
       }
     }
-  }
-
-  // this method is OPTIONAL - some drivers might need a direct connection
-  // to agent, eg see random.js.
-  setSocket(socket) {
-    this.socket = socket
   }
 }

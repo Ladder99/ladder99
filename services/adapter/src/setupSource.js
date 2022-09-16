@@ -56,7 +56,7 @@ export async function setupSource({
   }
 
   if (module.outputs) {
-    console.log(`Adapter adding outputs to cache...`)
+    console.log(`Adapter adding outputs to cache for ${device.name}...`)
     // compile value js strings from outputs.yaml.
     // source.outputs is array of {key: string, value: function, dependsOn: string[]}.
     // eg [{ key: 'ac1-power_condition', value: 'FAULT', dependsOn: ['ac1-power_fault', 'ac1-power_warning'] }, ...]
@@ -113,10 +113,10 @@ export async function setupSource({
   //. if connection is an object eg { host, port }, just pass that to the driver and let it handle it.
   let provider
   if (typeof connection === 'string') {
-    console.log('Adapter getting provider for', connection)
+    console.log('Adapter getting provider for', device.name, connection)
     provider = inputs[connection]?.plugin // get shared connection - eg mqtt-provider.js
     if (!provider) {
-      console.log(`Error - unknown provider connection`, connection)
+      console.log(`Error unknown provider connection`, device.name, connection)
       process.exit(1)
     }
   }
@@ -125,7 +125,7 @@ export async function setupSource({
   // note: this must be done AFTER getOutputs and addOutputs,
   // as that is where the dependsOn values are set, and this needs those.
   //. add example for each param
-  console.log(`Adapter starting driver for`, device.id, driver)
+  console.log(`Adapter starting driver for`, device.name, driver)
   plugin.init({
     setup, // the main setup.yaml file contents
 

@@ -103,8 +103,8 @@ export class AdapterDriver {
         ...subscribers.slice(0, i),
         ...subscribers.slice(i + 1),
       ]
-      //. if none left, could do this.mqtt.unsubscribe(topic)?
       console.log(`MQTT-provider down to`, this.subscribers[topic])
+      //. if none left, could do this.mqtt.unsubscribe(topic)
     } else {
       console.log(`MQTT-provider error - subscriber not found`)
     }

@@ -45,9 +45,10 @@ export class AdapterDriver {
 
     // pre-evaluate expressions from yaml code
     // eg handler.lookup could be '($, js) => eval(js)' // woo double eval
+    //. is it okay to do this here? issues with closure?
     for (let handler of Object.values(handlers)) {
       const lookup = handler.lookup || (() => {})
-      console.log(`MQTT-subscriber lookup fn`, lookup.toString())
+      // console.log(`MQTT-subscriber lookup fn`, lookup.toString())
       handler.lookupFn = eval(lookup)
     }
 
