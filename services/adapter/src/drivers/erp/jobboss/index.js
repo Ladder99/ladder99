@@ -47,7 +47,7 @@ export class AdapterDriver {
 
     // wait to make sure all cutter cache items are setup before
     // writing to them. they're setup via the cutter module.
-    await waitForCacheItems(devices)
+    await waitForCacheItems()
 
     // make connection object, { server, port, database, user, password }
     const port = Number(source.connection.port) // mssql needs number, not string
@@ -106,19 +106,19 @@ export class AdapterDriver {
       setUnavailable()
       await new Promise(resolve => setTimeout(resolve, waitForDb))
     }
-  }
-}
 
-async function waitForCacheItems(devices) {
-  console.log(`JobBoss - waiting until cache dataitems populated...`)
-  for (let device of devices) {
-    if (device.jobbossId) {
-      const key = `${device.id}-start`
-      while (!cache.hasOutput(key)) {
-        console.log(`JobBoss - waiting on ${key}...`)
-        await new Promise(resolve => setTimeout(resolve, initialDelay))
+    async function waitForCacheItems() {
+      console.log(`JobBoss - waiting until cache dataitems populated...`)
+      for (let device of devices) {
+        if (device.jobbossId) {
+          const key = `${device.id}-start`
+          while (!cache.hasOutput(key)) {
+            console.log(`JobBoss - waiting on ${key}...`)
+            await new Promise(resolve => setTimeout(resolve, initialDelay))
+          }
+        }
       }
+      console.log(`JobBoss - all cache dataitems populated.`)
     }
   }
-  console.log(`JobBoss - all cache dataitems populated.`)
 }
