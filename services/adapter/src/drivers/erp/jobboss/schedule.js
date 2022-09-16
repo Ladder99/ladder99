@@ -79,7 +79,7 @@ export class Schedule {
       }
 
       // update cookie file
-      console.log(`JobBoss schedule backfill - update cookie file`, cookie)
+      console.log(`JobBoss schedule backfill - update cookie file`, cookiePath)
       try {
         fs.writeFileSync(cookiePath, JSON.stringify(cookie))
       } catch (e) {
