@@ -46,23 +46,22 @@ export class AdapterDriver {
     // topic - eg 'l99/pa1/evt/query'
     // message - array of bytes (assumed to be a string or json string)
     function onMessage(topic, message) {
-      message = message.toString()
-      // console.log(`MQTT-provider message ${topic}: ${message.slice(0, 140)}`)
-      let payload
+      const payload = message.toString()
+      // console.log(`MQTT-provider payload ${topic}: ${payload.slice(0, 140)}`)
+      // not sure how we can get around having a trycatch block and json parse,
+      // as payload might be a plain string.
       try {
-        payload = JSON.parse(message)
-      } catch (e) {
-        payload = message
-      }
+        payload = JSON.parse(payload)
+      } catch (e) {}
       // peek inside the payload if needed to see who to dispatch this message to.
-      //. for now we just filter on eg payload.id == some value
       //. make a dict for dispatching instead of linear search, ie on id? but would need array of callbacks for plain text msgs
+      // for now we just filter on eg payload.id == some value
       for (let subscriber of this.subscribers[topic]) {
         const { callback, selector } = subscriber
         // selector can be a boolean or a fn of the message payload
         if (selector === true || selector(payload)) {
           // console.log(`MQTT-provider calling subscriber with`, topic)
-          callback(topic, message) // note: we pass the original unparsed message
+          callback(topic, message) // note: we pass the original byte array message
         }
       }
     }
@@ -99,12 +98,15 @@ export class AdapterDriver {
     )
     if (i !== -1) {
       // remove subscriber from list
+      console.log(`MQTT-provider found subscriber - removing...`)
       this.subscribers[topic] = [
         ...subscribers.slice(0, i),
         ...subscribers.slice(i + 1),
       ]
       //. if none left, could do this.mqtt.unsubscribe(topic)?
       console.log(`MQTT-provider down to`, this.subscribers[topic])
+    } else {
+      console.log(`MQTT-provider error - subscriber not found`)
     }
   }
 

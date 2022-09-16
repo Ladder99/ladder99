@@ -22,29 +22,16 @@ export class AdapterDriver {
     // keyvalue store for yaml code to use
     const keyvalues = {}
 
-    // get selectors for each topic
-    // eg from setup.yaml -
-    // topics: # topics and selector objects - payload must match given contents
+    // get selector fns for each topic - eg from setup.yaml -
+    // topics:
     //   controller: true
     //   l99/B01000/evt/io:
     //     id: 535172
-    const topics = source.topics || {} // eg { controller, 'l99/B01000/evt/io' }
-    console.log(`MQTT-subscriber get selectors from`, topics)
-    const selectors = {} // key is topic, value will be selector fn
-    for (let topic of Object.keys(topics)) {
-      const value = topics[topic] // eg { id: 513241 }, or true, or false
-      let selector = true // if setup lists a topic, assume it's to be included
-      if (typeof value === 'boolean') {
-        selector = value // true or false
-      } else if (value.id !== undefined) {
-        //. for now assume selection is done by id - expand to arbitrary objects later!
-        // NOTE: we use == instead of ===, because payload.id may be a string
-        selector = payload => payload.id == value.id
-      }
-      // selector can be t/f or a function of the message payload
-      console.log(`MQTT-subscriber selector`, topic, String(selector), value)
-      selectors[topic] = selector
-    }
+    // -> selectors = { controller: true, 'l99...': payload.id==535172 }
+    // this acts as a filter/dispatch mechanism for the topics defined in the inputs.yaml.
+    // important: if topic is not included in this section it won't be subscribed to!
+    //. note: for now we assume selection is done by id - expand to arbitrary objects later!
+    const selectors = getSelectors(source)
 
     // save topic handlers
     // iterate over message handlers - array of [topic, handler]
@@ -69,8 +56,8 @@ export class AdapterDriver {
       console.log(`MQTT-subscriber connected to MQTT-provider`)
 
       // subscribe to any topics defined in inputs.yaml
-      const entries = module?.inputs?.connect?.subscribe || []
-      for (const entry of entries) {
+      const subscribe = module?.inputs?.connect?.subscribe || []
+      for (const entry of subscribe) {
         const topic = replaceDeviceId(entry.topic)
         // can set a topic to false in setup.yaml to not subscribe to it
         const selector = selectors[topic]
@@ -81,9 +68,6 @@ export class AdapterDriver {
           // we need the callback because otherwise the provider wouldn't know where to send msg,
           // ie which of the many mqtt-subscriber instances to send to.
           // onMessage is defined below.
-          //. does bind(this) create a new function each time? if so how unsubscribe?
-          // well - it didn't work anyway - too much confusion with this
-          // provider.subscribe(topic, onMessage.bind(this), selector)
           provider.subscribe(topic, onMessage, selector)
         }
       }
@@ -113,8 +97,6 @@ export class AdapterDriver {
     // topic - mqtt topic, eg 'l99/pa1/evt/query'
     // message - array of bytes (assumed to be a string or json string)
     function onMessage(topic, payload) {
-      // let handler = this.topicHandlers[topic]
-      // const handler = this.topicHandlers[topic]
       const handler = topicHandlers[topic]
       if (!handler) {
         console.log(`MQTT-subscriber warning: no handler for topic`, topic)
@@ -123,15 +105,12 @@ export class AdapterDriver {
         // console.log(`MQTT-subscriber msg ${msgTopic}: ${payload.slice(0, 140)}`)
 
         // if payload is plain text, set handler.text true in inputs.yaml - else parse as json
-        if (!handler.text) {
-          payload = JSON.parse(payload)
-        }
+        if (!handler.text) payload = JSON.parse(payload)
 
         // unsubscribe from topics as needed
         for (const entry of handler.unsubscribe || []) {
           const topic = replaceDeviceId(entry.topic)
           console.log(`MQTT-subscriber unsubscribe from ${topic}`)
-          // provider.unsubscribe(topic, onMessage.bind(this))
           provider.unsubscribe(topic, onMessage)
         }
 
@@ -219,4 +198,27 @@ export class AdapterDriver {
       return str.replace('${deviceId}', device.id)
     }
   }
+}
+
+// helpers
+
+function getSelectors(source) {
+  const topics = source.topics || {} // eg { controller, 'l99/B01000/evt/io' }
+  console.log(`MQTT-subscriber get selectors from`, topics)
+  const selectors = {} // key is topic, value will be selector fn
+  for (let topic of Object.keys(topics)) {
+    const value = topics[topic] // eg { id: 513241 }, or true, or false
+    let selector = true // if setup lists a topic, assume it's to be included
+    if (typeof value === 'boolean') {
+      selector = value // true or false
+    } else if (value.id !== undefined) {
+      //. for now assume selection is done by id - expand to arbitrary objects later!
+      // NOTE: we use == instead of ===, because payload.id may be a string
+      selector = payload => payload.id == value.id
+    }
+    // selector can be t/f or a function of the message payload
+    console.log(`MQTT-subscriber selector`, topic, String(selector), value)
+    selectors[topic] = selector
+  }
+  return selectors
 }
