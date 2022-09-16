@@ -7,12 +7,12 @@
 // optional flag defined in .env
 // lets you turn off the feedback mechanism from oxbox 004,
 // but leave it on for 001. otherwise they might interfere with each other.
-const feedbackOff = process.env.RELAY_FEEDBACK_OFF
+const feedbackOff = process.env.L99_FEEDBACK_OFF
 
 export class AdapterDriver {
   //
   init({ setup, source, device, cache, provider }) {
-    console.log(`Feedback - RELAY_FEEDBACK_OFF =`, feedbackOff)
+    console.log(`Feedback - L99_FEEDBACK_OFF =`, feedbackOff)
     if (feedbackOff) return
 
     console.log(`Feedback initialize driver for`, device.id)

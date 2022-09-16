@@ -28,6 +28,9 @@ services:
       L99_SETUP_FOLDER: /data/setup
       L99_MODULES_FOLDER: /data/modules
       L99_ADAPTER_FOLDER: /data/adapter
+      # turn feedback driver off if needed - eg for development machine.
+      # null means pass-through from environment.
+      L99_FEEDBACK_OFF: null
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml etc
       - ../modules:/data/modules # has module yamls
@@ -568,9 +571,6 @@ services:
       # specify where code can find data.
       # can override at run time, eg to run service on windows with node.
       L99_SETUP_FOLDER: /data/setup
-      # turn relay feedback off if needed - eg for development machine
-      # null means pass-through from environment
-      RELAY_FEEDBACK_OFF: null
       # this can be an agent url, a comma-separated (no spaces) list of urls,
       # or a .txt file with a url per line.
       # NO TRAILING SLASHES
