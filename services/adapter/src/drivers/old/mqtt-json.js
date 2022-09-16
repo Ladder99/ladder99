@@ -130,9 +130,9 @@ export class AdapterDriver {
 
           //. call this handler.algorithm, update all modules
           //. call this iterate_expressions, update all module inputs.yaml
-          if (handler.process === 'iterate_inputs') {
+          if (handler.process === 'iterate_expressions') {
             //
-            // console.log(`MQTT handle iterate_inputs`)
+            // console.log(`MQTT handle iterate_expressions`)
             //
             // define lookup function
             // eg lookup: '($, js) => eval(js)'

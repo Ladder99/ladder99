@@ -55,7 +55,7 @@ handlers:
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
-    process: iterate_inputs
+    process: iterate_expressions
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'dxm' => 'm1-dxm'.
     # 'js' is some javascript calculation code to determine its value.
@@ -75,8 +75,7 @@ handlers:
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
     #. explain
-    #. call it iterate-expressions
-    process: iterate_inputs
+    process: iterate_expressions
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'connection' => 's1-connection'.
     # 'js' is some javascript calculation code to determine its value.
@@ -103,7 +102,7 @@ handlers:
     # define algorithm to process inputs
     #. explain
     #. call it 'algorithm: iterate-expressions'
-    process: iterate_inputs
+    process: iterate_expressions
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
     # 'js' is some javascript calculation code to determine its value.
@@ -127,8 +126,7 @@ handlers:
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
     #. explain
-    #. call it iterate-expressions
-    process: iterate_inputs
+    process: iterate_expressions
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
     # 'js' is some javascript calculation code to determine its value.

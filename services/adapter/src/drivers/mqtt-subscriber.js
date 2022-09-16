@@ -117,7 +117,7 @@ export class AdapterDriver {
         payload = payload.toString()
         // console.log(`MQTT-subscriber msg ${msgTopic}: ${payload.slice(0, 140)}`)
 
-        // assume the payload is a json string - if not, set handler.text true in inputs.yaml
+        // if payload is plain text, set handler.text true in inputs.yaml - else parse as json
         if (!handler.text) {
           payload = JSON.parse(payload)
         }
@@ -139,8 +139,8 @@ export class AdapterDriver {
 
         //. call this handler.algorithm, update all modules
         //. call this iterate_expressions, update all module inputs.yaml
-        if (handler.process === 'iterate_inputs') {
-          // console.log(`MQTT-subscriber handle iterate_inputs`)
+        if (handler.process === 'iterate_expressions') {
+          // console.log(`MQTT-subscriber handle iterate_expressions`)
 
           // iterate over expressions - an array of [key, expression],
           // eg [['fault_count', '%M55.2'], ...].
