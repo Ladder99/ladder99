@@ -11,7 +11,7 @@ import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/n
 import { Jobs } from './jobs.js'
 import { Schedule } from './schedule.js'
 
-const initialDelay = 1000 // ms
+const initialDelay = 5000 // ms
 const waitForDb = 15000 // ms - because db timeout is 15secs
 
 const errorMessages = {
@@ -38,26 +38,16 @@ export class AdapterDriver {
     console.log(`JobBoss - initialize driver...`)
     setUnavailable()
 
-    if (!source?.connection?.server || !source?.connection?.port) {
+    if (!source.connection?.server || !source.connection?.port) {
       console.log(
         `JobBoss error - missing connection info - check setup.yaml and envars.`
       )
       return
     }
 
-    // wait to make sure the cutter cache items are setup before
+    // wait to make sure all cutter cache items are setup before
     // writing to them. they're setup via the cutter module.
-    console.log(`JobBoss - waiting until cache dataitems populated...`)
-    for (let device of devices) {
-      if (device.jobbossId) {
-        const key = `${device.id}-start`
-        while (!cache.has(key)) {
-          console.log(`JobBoss - waiting on ${key}...`)
-          await new Promise(resolve => setTimeout(resolve, initialDelay))
-        }
-      }
-    }
-    console.log(`JobBoss - all cache dataitems populated.`)
+    await waitForCacheItems(devices)
 
     // make connection object, { server, port, database, user, password }
     const port = Number(source.connection.port) // mssql needs number, not string
@@ -117,4 +107,18 @@ export class AdapterDriver {
       await new Promise(resolve => setTimeout(resolve, waitForDb))
     }
   }
+}
+
+async function waitForCacheItems(devices) {
+  console.log(`JobBoss - waiting until cache dataitems populated...`)
+  for (let device of devices) {
+    if (device.jobbossId) {
+      const key = `${device.id}-start`
+      while (!cache.hasOutput(key)) {
+        console.log(`JobBoss - waiting on ${key}...`)
+        await new Promise(resolve => setTimeout(resolve, initialDelay))
+      }
+    }
+  }
+  console.log(`JobBoss - all cache dataitems populated.`)
 }

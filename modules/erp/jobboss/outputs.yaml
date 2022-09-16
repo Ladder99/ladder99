@@ -18,9 +18,6 @@ outputs:
   - key: job # processes/job/process_aggregate_id-order_number
     value: <job>
 
-  #. how handle writing to other devices?
-  # could specify device here and use that in getOutputs fn
-  # but how know the device types in advance?
   - key: start # processes/shift/process_time-start
     device: c
     value: <start>

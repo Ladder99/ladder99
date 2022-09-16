@@ -18,14 +18,16 @@ export class Cache {
   // each cache key can have multiple output calculations associated with it.
   // this builds a map from a key to a list of outputs.
   // each output goes to the same tcp socket.
-  // called from adapter.js for each device source.
+  // called for each device source.
   // outputs is [{ key, category, type, representation, socket, dependsOn, value }, ...]
   // eg [{ key: 'ac1-power_condition', value: (fn), dependsOn: ['ac1-power_fault', 'ac1-power_warning'] }, ...]
   // so this builds a map from those dependsOn values to the output object.
   // eg { 'ac1-power_fault': [{ key:'ac1-power_condition', value: (fn), ...}], ... }
-  // addOutputs(outputs, socket) {
   addOutputs(outputs) {
-    console.log(`Cache - add ${outputs.length} outputs`)
+    console.log(
+      `Cache - add outputs`,
+      outputs.map(o => o.key)
+    )
     for (const output of outputs) {
       // console.log(output.key, output.dependsOn)
       // output.socket = socket // attach tcp socket to each output also
@@ -66,6 +68,7 @@ export class Cache {
   // options is { timestamp, quiet }
   // timestamp is an optional STRING that is used in the SHDR
   //. explain distinction between value param and value variable below, with examples
+  //. instead of fixed code here for output, could have custom code - set other cache values, etc
   set(key, value, options = {}) {
     // if (!options.quiet) {
     //   const s = typeof value === 'string' ? `"${value.slice(0, 99)}..."` : value
@@ -109,6 +112,11 @@ export class Cache {
   // check if cache has a key
   has(key) {
     return this._map.has(key)
+  }
+
+  // check if key has a shdr output associated with it
+  hasOutput(key) {
+    return this._mapKeyToOutputs[key] !== undefined
   }
 }
 

@@ -50,7 +50,7 @@ export class AdapterDriver {
     // iterate over message handlers - array of [topic, handler]
     // eg [['l99/ccs/evt/query', { unsubscribe, initialize, definitions, inputs, ... }], ...]
     const topicHandlers = {}
-    const handlers = module?.inputs?.handlers || {}
+    const handlers = module.inputs?.handlers || {}
     for (let [topic, handler] of Object.entries(handlers)) {
       topic = replaceDeviceId(topic)
       topicHandlers[topic] = handler
