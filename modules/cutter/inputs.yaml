@@ -48,9 +48,9 @@ handlers:
   # ----------------------------------------------------------------------------
   # handle controller messages
   # ----------------------------------------------------------------------------
-  # payload is just a string - birth, sleep, or death
   controller:
-    # make '$' the payload value - 'birth', 'sleep', or 'death'
+    # make '$' the payload value
+    text: true # payload is a plain string - 'birth', 'sleep', 'death'
     initialize: '$ = payload'
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
@@ -70,7 +70,6 @@ handlers:
   # where id is the device to dispatch the message to and a5 is the partcount
   l99/B01000/evt/io:
     # make '$' the message payload dictionary
-    #. JSON.parse the string explicitly here! otherwise, have to do try/catch for plain string handling
     initialize: '$ = payload'
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
@@ -122,8 +121,7 @@ handlers:
   # <!-- agent.cfg conversionRequired: yes -->
   # <DataItem category="SAMPLE" id="m1-sp" name="stacker_pressure" type="PRESSURE" units="PASCAL" nativeUnits="POUND/INCH^2" />
   l99/B01000/evt/pressure:
-    # make '$' the message payload dictionary and add faultKeys for quick
-    # lookups of faults - payload.faults is a dictionary of faults.
+    # make '$' the message payload dictionary
     initialize: '$ = payload'
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
