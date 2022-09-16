@@ -4,6 +4,7 @@
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
 //. chop this code up into smaller fns - hard to read
+// be careful with types and keyvalues, and other closure vars
 
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../common/lib.js'
@@ -48,11 +49,11 @@ export class AdapterDriver {
     // save topic handlers
     // iterate over message handlers - array of [topic, handler]
     // eg [['l99/ccs/evt/query', { unsubscribe, initialize, definitions, inputs, ... }], ...]
-    this.topicHandlers = {}
+    const topicHandlers = {}
     const handlers = module?.inputs?.handlers || {}
     for (let [topic, handler] of Object.entries(handlers)) {
       topic = replaceDeviceId(topic)
-      this.topicHandlers[topic] = handler
+      topicHandlers[topic] = handler
     }
 
     // pre-evaluate expressions from yaml code
@@ -81,7 +82,9 @@ export class AdapterDriver {
           // ie which of the many mqtt-subscriber instances to send to.
           // onMessage is defined below.
           //. does bind(this) create a new function each time? if so how unsubscribe?
-          provider.subscribe(topic, onMessage.bind(this), selector)
+          // well - it didn't work anyway - too much confusion with this
+          // provider.subscribe(topic, onMessage.bind(this), selector)
+          provider.subscribe(topic, onMessage, selector)
         }
       }
 
@@ -110,7 +113,9 @@ export class AdapterDriver {
     // topic - mqtt topic, eg 'l99/pa1/evt/query'
     // message - array of bytes (assumed to be a string or json string)
     function onMessage(topic, payload) {
-      let handler = this.topicHandlers[topic]
+      // let handler = this.topicHandlers[topic]
+      // const handler = this.topicHandlers[topic]
+      const handler = topicHandlers[topic]
       if (!handler) {
         console.log(`MQTT-subscriber warning: no handler for topic`, topic)
       } else {
@@ -126,7 +131,8 @@ export class AdapterDriver {
         for (const entry of handler.unsubscribe || []) {
           const topic = replaceDeviceId(entry.topic)
           console.log(`MQTT-subscriber unsubscribe from ${topic}`)
-          provider.unsubscribe(topic, onMessage.bind(this))
+          // provider.unsubscribe(topic, onMessage.bind(this))
+          provider.unsubscribe(topic, onMessage)
         }
 
         // run initialize handler
@@ -203,7 +209,8 @@ export class AdapterDriver {
         for (const entry of handler.subscribe || []) {
           const topic = replaceDeviceId(entry.topic)
           console.log(`MQTT-subscriber subscribe to ${topic}`)
-          provider.subscribe(topic, onMessage.bind(this), selectors[topic])
+          // provider.subscribe(topic, onMessage.bind(this), selectors[topic])
+          provider.subscribe(topic, onMessage, selectors[topic])
         }
       }
     }
