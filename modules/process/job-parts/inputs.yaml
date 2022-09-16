@@ -18,6 +18,11 @@
 # the idea is to keep the SHDR id's as short as possible, to reduce network bandwidth,
 # while the dataitem name can be more descriptive.
 
+#. the intention is to parameterize these yaml files to reduce the amount of js code in them.
+# eg
+# initialize: '$ = JSON.parse(payload); $.faultKeys=Object.keys($.faults || {});'
+# well, the first part would be easy, but how would handle second?
+
 # define connect handler
 connect:
   # subscribe to these topics

@@ -28,8 +28,9 @@ handlers:
     # what we want to do is assign the default value to each item's key,
     # where the key is keys[0], eg 'printer_ribbon_low'.
     # $ is a variable declared as `let $ = {}` before this code is executed.
-    #. this complexity could be hidden from the user in the plugin code somehow.
+    #. this complexity should be hidden from the user in the plugin code with parameterization.
     initialize: 'payload.forEach(item => $[item.keys[0]] = item)'
+
     # lookup: '($, part) => ({ value: ($[part] || {}).default })'
     lookup: '($, part) => ($[part] || {}).default'
 

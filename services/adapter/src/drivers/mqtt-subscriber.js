@@ -3,6 +3,8 @@
 // subscribes to mqtt topics through shared mqtt-provider, receives messages,
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
+//. chop this code up into smaller fns - hard to read
+
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../common/lib.js'
 
@@ -78,12 +80,13 @@ export class AdapterDriver {
           // we need the callback because otherwise the provider wouldn't know where to send msg,
           // ie which of the many mqtt-subscriber instances to send to.
           // onMessage is defined below.
-          provider.subscribe(topic, onMessage, selector)
+          //. does bind(this) create a new function each time? if so how unsubscribe?
+          provider.subscribe(topic, onMessage.bind(this), selector)
         }
       }
 
       // publish to any topics defined
-      const publish = module?.inputs?.connect?.publish || []
+      const publish = module?.inputs?.connect?.publish || [] // list of { topic, message }
       for (const entry of publish) {
         const topic = replaceDeviceId(entry.topic)
         console.log(`MQTT-subscriber publishing to ${topic}`)
@@ -106,30 +109,24 @@ export class AdapterDriver {
     // eg for ccs-pa have query, status, and read messages.
     // topic - mqtt topic, eg 'l99/pa1/evt/query'
     // message - array of bytes (assumed to be a string or json string)
-    function onMessage(topic, message) {
+    function onMessage(topic, payload) {
       let handler = this.topicHandlers[topic]
       if (!handler) {
         console.log(`MQTT-subscriber warning: no handler for topic`, topic)
       } else {
-        message = message.toString()
-        // console.log(`MQTT-subscriber msg ${msgTopic}: ${message.slice(0, 140)}`)
+        payload = payload.toString()
+        // console.log(`MQTT-subscriber msg ${msgTopic}: ${payload.slice(0, 140)}`)
 
-        // unpack the mqtt json payload, assuming it's a JSON string -
-        // if not, just pass as string to handler.
-        //. let input.yaml do this if needed - ie with initialize method?
-        let payload
-        try {
-          payload = JSON.parse(message)
-        } catch (error) {
-          console.log(error.message)
-          payload = message
+        // assume the payload is a json string - if not, set handler.text true in inputs.yaml
+        if (!handler.text) {
+          payload = JSON.parse(payload)
         }
 
         // unsubscribe from topics as needed
         for (const entry of handler.unsubscribe || []) {
           const topic = replaceDeviceId(entry.topic)
           console.log(`MQTT-subscriber unsubscribe from ${topic}`)
-          provider.unsubscribe(topic, onMessage)
+          provider.unsubscribe(topic, onMessage.bind(this))
         }
 
         // run initialize handler
@@ -202,11 +199,10 @@ export class AdapterDriver {
         }
 
         // subscribe to any topics
-        const entries = handler.subscribe || []
-        for (const entry of entries) {
+        for (const entry of handler.subscribe || []) {
           const topic = replaceDeviceId(entry.topic)
           console.log(`MQTT-subscriber subscribe to ${topic}`)
-          provider.subscribe(topic, onMessage, selectors[topic])
+          provider.subscribe(topic, onMessage.bind(this), selectors[topic])
         }
       }
     }
