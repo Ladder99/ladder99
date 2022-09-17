@@ -1,1 +1,17 @@
 # Troubleshooting
+
+You can check the status of the Ladder99 services with `./l99 list`, e.g. -
+
+```bash
+$ ./l99 list  # or just 'l99 list' on Windows
+NAMES       STATUS                         PORTS
+adapter     Up 34 seconds
+agent       Up 32 seconds                  0.0.0.0:5000->5000/tcp
+dozzle      Up 5 hours                     0.0.0.0:8080->8080/tcp
+grafana     Up 42 seconds                  0.0.0.0:80->3000/tcp
+pgadmin     Up 44 seconds                  0.0.0.0:5050->5050/tcp
+portainer   Up 43 seconds                  8000/tcp, 9443/tcp, 0.0.0.0:9000->9000/tcp
+postgres    Up 42 seconds                  0.0.0.0:5432->5432/tcp
+relay       Up 44 seconds
+```
+
