@@ -51,7 +51,6 @@ services:
     #. use mtconnect/agent once mtconnect publishes theirs to docker hub
     # see https://hub.docker.com/repository/docker/ladder99/agent for ours
     image: ladder99/agent:1.7.0.3-0.1.2
-    # for testing - see https://hub.docker.com/repository/docker/ladder99/agent2
     # image: ladder99/agent:latest # this will be agent2.0 soon
     # image: ladder99/agent:2.0.0.7
     profiles:
