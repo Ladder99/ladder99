@@ -7,36 +7,19 @@ Ladder99 comes with an example setup that displays data from a **LIVE** Mazak CN
 
 Run the example setup with
 
-```
+```bash
 cd ladder99
-./l99 start example
+./l99 start example  # or just 'l99 start example' on Windows
 ```
 
 The first time you run this it will download and build all the different services. 
 
-This WILL take several minutes, so grab a coffee and check out the next section!
-
-
-## MTConnect Agent
-
-While you're waiting, take a look at http://mtconnect.mazakcorp.com - this shows a list of Mazak Agents you can connect to. 
-
-Try http://mtconnect.mazakcorp.com:5701/ - this shows the list of dataitems available from the Agent, in XML format. For example, the a motor temperature looks like this -
-
-```xml
-<DataItem category="SAMPLE" compositionId="Cmotor" id="Stemp" nativeUnits="CELSIUS" type="TEMPERATURE" units="CELSIUS"></DataItem>
-```
-
-Now try http://mtconnect.mazakcorp.com:5701/current - this shows the current values for the dataitems - e.g. here the temperature is 23 Celsius -
-
-```xml
-<Temperature dataItemId="Stemp" timestamp="2022-08-31T20:28:32.484493Z" compositionId="Cmotor" sequence="2664042">23</Temperature>
-```
+This WILL take several minutes, so grab a coffee!
 
 
 ## View Services
 
-When the `./l99 start example` command is finished, you'll see output like the following -
+Ladder99 is made up of a set of services. When the `start example` command is finished, you'll see output like the following -
 
 ```
 Recreating pgadmin   ... done
@@ -48,10 +31,10 @@ Recreating relay     ... done
 Recreating adapter   ... done
 ```
 
-Let's make sure all the services are running okay - 
+First let's make sure all the services are running okay - 
 
 ```bash
-$ ./l99 list
+$ ./l99 list  # or just 'l99 list' on Windows
 NAMES       STATUS                         PORTS
 adapter     Up 34 seconds
 agent       Up 32 seconds                  0.0.0.0:5000->5000/tcp
@@ -63,7 +46,9 @@ postgres    Up 42 seconds                  0.0.0.0:5432->5432/tcp
 relay       Up 44 seconds
 ```
 
-Everything looks good!
+Everything looks good! 
+
+If you see any services are marked as 'stopped' or 'restarting', see the [Troubleshooting](troubleshooting.md) section
 
 
 ## View Dashboard
@@ -87,6 +72,6 @@ For example, the 'Microcontroller' page will show your computer's memory, CPU us
 
 When you're done, you can stop all the Ladder99 services with
 
-```
-./l99 stop all
+```bash
+./l99 stop all  # or just 'l99 stop all' on Windows
 ```
