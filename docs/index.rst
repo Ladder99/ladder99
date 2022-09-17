@@ -20,6 +20,8 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
    page/quickstart
    page/installation
    page/running-ladder99
+   page/viewing-dashboard
+   page/viewing-agent
    
 .. toctree::
    :maxdepth: 1
@@ -36,6 +38,7 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
    page/services
    page/adapter
    page/agent
+   page/database
 
 .. toctree::
    :maxdepth: 1
