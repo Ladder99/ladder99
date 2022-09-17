@@ -14,7 +14,7 @@ export class AdapterDriver {
   // initialize the client plugin
   // queries the device for address space definitions, subscribes to topics.
   init({ source, device, cache, module, provider }) {
-    console.log('MQTT-subscriber initializing driver for', device.id)
+    console.log('MQTT-subscriber initializing driver for', device.name)
 
     // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
     const { types } = module // module is { inputs, outputs, types }, from yaml files
@@ -103,7 +103,7 @@ export class AdapterDriver {
         console.log(`MQTT-subscriber warning: no handler for topic`, topic)
       } else {
         payload = payload.toString()
-        // console.log(`MQTT-subscriber msg ${msgTopic}: ${payload.slice(0, 140)}`)
+        // console.log(`MQTT-subscriber msg ${topic}: ${payload.slice(0, 140)}`)
 
         // if payload is plain text, set handler.text true in inputs.yaml - else parse as json
         if (!handler.text) payload = JSON.parse(payload)

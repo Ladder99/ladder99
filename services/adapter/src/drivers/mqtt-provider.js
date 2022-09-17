@@ -46,8 +46,9 @@ export class AdapterDriver {
     // topic - eg 'l99/pa1/evt/query'
     // message - array of bytes (assumed to be a string or json string)
     function onMessage(topic, message) {
-      const payload = message.toString()
-      // console.log(`MQTT-provider payload ${topic}: ${payload.slice(0, 140)}`)
+      if (!this.subscribers[topic]) return // quit if no subscribers
+      let payload = message.toString() // must be let!
+      // console.log(`MQTT-provider got ${topic}: ${payload.slice(0, 140)}`)
       // not sure how we can get around having a trycatch block and json parse,
       // as payload might be a plain string.
       try {
@@ -59,6 +60,7 @@ export class AdapterDriver {
       for (let subscriber of this.subscribers[topic]) {
         const { callback, selector } = subscriber
         // selector can be a boolean or a fn of the message payload
+        if (selector === false) continue
         if (selector === true || selector(payload)) {
           // console.log(`MQTT-provider calling subscriber with`, topic)
           callback(topic, message) // note: we pass the original byte array message

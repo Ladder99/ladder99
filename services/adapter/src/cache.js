@@ -79,11 +79,11 @@ export class Cache {
   //. instead of fixed code here for output, could have custom code - set other cache values, etc
   set(key, value, options = {}) {
     // if (!options.quiet) {
-    //   const s = typeof value === 'string' ? `"${value.slice(0, 99)}..."` : value
-    //   console.log(`Cache - set ${key}: ${s}`)
+    // const s = typeof value === 'string' ? `"${value.slice(0, 99)}..."` : value
+    // console.log(`Cache - set ${key}: ${s}`)
     // }
-    //. don't allow undefined as a value? not in vocabulary of mtc
-    if (value === undefined) return
+    // //. don't allow undefined as a value? not in vocabulary of mtc
+    // if (value === undefined) return
     // update the cache value
     this._map.set(key, value)
     // get list of outputs associated with this key
@@ -92,6 +92,7 @@ export class Cache {
     // calculate outputs and send changed shdr values to tcp
     for (const output of outputs) {
       // calculate value of this cache output
+      //. confusing to have two 'value' variables!
       const value = getValue(this, output)
       // if value changed, send shdr to agent via tcp socket
       if (value !== output.lastValue) {
