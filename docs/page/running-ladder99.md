@@ -32,4 +32,4 @@ Recreating adapter   ... done
 
 Ladder99 is made up of a set of services - this shows the status of each. If you have any trouble, check the [Troubleshooting](troubleshooting.md) page.
 
-Next let's look at the dashboard!
+Next let's look at the dashboard.

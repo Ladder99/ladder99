@@ -1,6 +1,6 @@
 # Services
 
-Ladder99 is made up of several services that work together to form a data pipeline. Some have user-facing web pages, which can be accessed through the URLs below. 
+Ladder99 is made up of several services that work together to form a data pipeline. Some have user-facing web pages, which can be accessed through the URLs below-
 
 | Service | Description | URL |
 |---------|------------|---------|
@@ -15,7 +15,7 @@ Ladder99 is made up of several services that work together to form a data pipeli
 | Pgadmin | manages database | http://localhost:5050 |
 
 
-## List Services
+<!-- ## List Services
 
 To see the list of running services and their status,
 
@@ -37,7 +37,7 @@ postgres   Up 16 hours   0.0.0.0:5432->5432/tcp
 relay      Up 16 hours
 ```
 
-The url and port listed on the left is what you would enter in the browser to access that service - e.g. for Dozzle it's http://localhost:8080.
+The url and port listed on the left is what you would enter in the browser to access that service - e.g. for Dozzle it's http://localhost:8080. -->
 
 
 ## Compose.yaml
