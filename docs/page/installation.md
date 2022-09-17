@@ -2,14 +2,18 @@
 
 ## Install Git
 
-**Git** gives us access to the source code for Ladder99, and also provides a console on Windows that acts more like a Linux console, Git Bash. 
+**Git** gives us access to the source code for Ladder99, and also provides a console on Windows that acts more like a Linux console, **Git Bash**. 
 
 You can install it from https://git-scm.com/downloads.
 
 
 ## Open Terminal
 
-Open a terminal window (if on Windows, use Git Bash), and go to a good working directory - e.g. the Desktop or your home directory, and make a ladder99 folder -
+Open a terminal window (if on Windows, run **Git Bash**) -
+
+![](_images/git-bash.jpg)
+
+then go to a good working directory and make a folder for Ladder99 and any custom setups - e.g.
 
 ```bash
 cd ~
@@ -50,7 +54,7 @@ git clone https://github.com/Ladder99/ladder99
 cd ladder99
 ```
 
-Note that we'll end up in the directory `~/ladder99/ladder99`.
+Note that we could end up in a directory like `~/ladder99/ladder99`.
 
 Then check out the latest branch with -
 

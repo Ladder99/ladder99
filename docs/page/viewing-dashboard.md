@@ -8,6 +8,9 @@ Login with username 'admin', password 'grafana'.
 
 ![](_images/grafana-login.jpg)
 
+Note: normally the initial password for the admin account is 'admin', but for the Example setup we've pre-set the password for you.
+
+
 ## Main Page
 
 The dashboard will show the LIVE status of a Mazak CNC machine, as provided by Mazak -
