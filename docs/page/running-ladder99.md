@@ -8,8 +8,7 @@ Ladder99 comes with an example setup that displays data from a **LIVE** Mazak CN
 Run the example setup with
 
 ```bash
-cd ladder99
-./l99 start example  # or just 'l99 start example' on Windows
+./l99 start example
 ```
 
 The first time you run this it will download and build all the different services. 

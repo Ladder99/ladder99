@@ -1,6 +1,6 @@
 # Demonstration
 
-To see what Ladder99 can do, we have a demo running on our site.
+To see what Ladder99 can do, check out the live demo running on our site.
 
 ## Dashboard
 

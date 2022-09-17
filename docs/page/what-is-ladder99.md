@@ -4,6 +4,6 @@
 
 You can think of it as a historian for MTConnect devices.
 
-It comes with a database and user-customizable dashboard -
+It comes with a user-customizable dashboard -
 
 ![](_images/grafana-pa.jpg)
