@@ -6,6 +6,8 @@ To see what Ladder99 can do, we have a demo running on our site.
 
 The **Dashboard** shows the current and past history of different attributes for several live machines from different sources. 
 
+Login with username 'demo', password 'demo'. 
+
 https://demo-north.ladder99.com
 
 ![](_images/grafana-demo.png)

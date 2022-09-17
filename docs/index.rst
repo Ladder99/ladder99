@@ -8,9 +8,9 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
    :maxdepth: 1
    :caption: Introduction
 
-   page/demonstration
    page/what-is-ladder99
    page/what-is-mtconnect
+   page/demonstration
    page/how-does-it-work
 
 .. toctree::
