@@ -5,11 +5,9 @@ The main configuration file is `setup.yaml`, located in the project setup folder
 
 ## YAML
 
-First, what is 'yaml'?
+YAML stands for "yet another markup language", and is a way of providing structured data to applications, often for configuration. 
 
-YAML stands for "yet another markup language", and is a way of providing structured data to applications, often for configuration purposes. 
-
-For example, a yaml file might look like the following - 
+<!-- For example, a yaml file might look like the following - 
 
 ```yaml
 lotr:
@@ -20,7 +18,7 @@ lotr:
     - The Fellowship of the Rings
     - The Two Towers
     - The Return of the King
-```
+``` -->
 
 
 ## Setup.yaml

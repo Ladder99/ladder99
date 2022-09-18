@@ -2,9 +2,9 @@
 
 ## MRIIOT
 
-Ladder99 is developed by MRIIOT LLC, with the aim to help develop the free and open ecosystem around MTConnect, including device adapters and visualizations.
+Ladder99 is developed by MRIIOT LLC, with the aim to help grow the free and open ecosystem around MTConnect, including device adapters and visualizations.
 
-Our plan is to eventually release additional premium services built around the Ladder99 pipeline, including Cloud storage, Knowledge Graph integration, Predictive Analytics, and more.
+Our plan is to eventually release additional premium services around the Ladder99 pipeline, including cloud storage, knowledge graph integration, predictive analytics, and more.
 
 Our website explains our approach to agile digital transformation - https://mriiot.com.
 

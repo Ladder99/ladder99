@@ -9,7 +9,7 @@ You can install it from https://git-scm.com/downloads.
 
 ## Open Terminal
 
-Open a terminal window (if on Windows, run **Git Bash**) -
+Open a terminal window - if on Windows, run **Git Bash** -
 
 ![](_images/git-bash.jpg)
 
@@ -54,7 +54,7 @@ git clone https://github.com/Ladder99/ladder99
 cd ladder99
 ```
 
-Note that we could end up in a directory like `~/ladder99/ladder99`.
+Note that we will end up in a directory like `~/ladder99/ladder99`.
 
 Then check out the latest branch with -
 
