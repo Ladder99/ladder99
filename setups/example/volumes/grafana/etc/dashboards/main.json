@@ -24,7 +24,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 8,
-  "iteration": 1663481895398,
+  "iteration": 1663482584771,
   "links": [
     {
       "asDropdown": false,
@@ -732,7 +732,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as coolant\nFROM history_float\nWHERE\n  path='$device/systems/coolant/temperature' and\n  $__timeFilter(\"time\")\norder by time",
+          "rawSql": "SELECT time, 'coolant' as path, value as coolant\nFROM history_float\nWHERE\n  path='$device/systems/coolant/temperature' and\n  $__timeFilter(\"time\")\norder by time",
           "refId": "A",
           "select": [
             [
@@ -1224,7 +1224,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
+          "selected": false,
           "text": ["All"],
           "value": ["$__all"]
         },
@@ -1268,5 +1268,5 @@
   "timezone": "",
   "title": "Main",
   "uid": "main",
-  "version": 6
+  "version": 7
 }
