@@ -22,8 +22,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 12,
-  "iteration": 1658456360058,
+  "id": 3,
+  "iteration": 1662040058432,
   "links": [
     {
       "asDropdown": false,
@@ -80,7 +80,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
+        "w": 4.8,
         "x": 0,
         "y": 0
       },
@@ -110,7 +110,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "--select time, value from get_last_value($device, 'availability', '1w');\n\n-- this will be the new get_last_value fn\nselect time, value->>0 as value from history\nwhere node_id=(select node_id from nodes where props->>'name'=$device)\n  and dataitem_id=(select node_id from nodes where props->>'path'='availability')\norder by time desc\nlimit 1;\n\n",
+          "rawSql": "--select time, value from get_last_value($device, 'availability', '1w');\n\n-- this will be the new get_last_value fn\nselect time, value->>0 as value from raw.history\nwhere node_id=(select node_id from raw.nodes where props->>'path'=$device)\n  and dataitem_id=(select node_id from raw.nodes where props->>'path'=concat($device,'/availability'))\norder by time desc\nlimit 1;\n\n",
           "refId": "A",
           "select": [
             [
@@ -150,7 +150,7 @@
           "value": "$__all"
         },
         "datasource": null,
-        "definition": "select name from devices order by \"order\", name",
+        "definition": "select path from devices order by name",
         "description": null,
         "error": null,
         "hide": 2,
@@ -159,7 +159,7 @@
         "multi": false,
         "name": "device",
         "options": [],
-        "query": "select name from devices order by \"order\", name",
+        "query": "select path from devices order by name",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -175,6 +175,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "Devices",
-  "uid": "v4HPISUnk",
-  "version": 17
+  "uid": "devices",
+  "version": 3
 }
