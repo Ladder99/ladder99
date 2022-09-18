@@ -1,5 +1,7 @@
 import fs from 'fs' // node lib
 
+//. make subfolders for idempotent, versions, etc
+
 // a migration has key=current version, and a list of files to execute.
 // the current version will be incremented by 1 after the migration is done.
 const migrations = {
@@ -18,6 +20,7 @@ const migrations = {
   ],
   1: ['012-bins-hypertable'],
   2: ['020-update'],
+  3: ['021-update'],
 }
 
 // handle migrations - use meta table

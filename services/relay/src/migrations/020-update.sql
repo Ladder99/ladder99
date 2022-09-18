@@ -24,10 +24,6 @@ DROP INDEX IF EXISTS raw.nodes_path; -- we use uid to enforce uniqueness now
 -- views
 ---------------------------------------------------------------------
 
--- eh, not worth the trouble now
--- -- rename history_all view
--- ALTER VIEW history_all RENAME TO history;
-
 -- update devices
 DROP VIEW IF EXISTS devices;  -- because `create or replace` isn't enough!
 CREATE OR REPLACE VIEW devices AS
@@ -68,9 +64,7 @@ WHERE
 
 
 -- update history_all
-
---. use value->>0 as value ?
-
+DROP VIEW IF EXISTS history_all;  -- because `create or replace` isn't enough!
 CREATE OR REPLACE VIEW history_all AS
 SELECT 
   devices.props->>'uid' AS device,
