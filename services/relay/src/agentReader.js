@@ -4,7 +4,6 @@
 
 import { Probe } from './dataProbe.js'
 import { Observations } from './dataObservations.js'
-import { Feedback } from './feedback.js'
 import * as lib from './common/lib.js'
 
 export class AgentReader {
@@ -37,17 +36,10 @@ export class AgentReader {
     // don't read this agent if 'ignore' flag is set in setup.yaml
     if (this.agent?.ignore) {
       console.log(
-        `Ignore Agent ${this.agent?.alias} as specified in setup.yaml`
+        `Relay ignore agent ${this.agent?.alias} as specified in setup.yaml`
       )
       return
     }
-
-    // make feedback object to track data and feedback to devices as needed.
-    // used to track jobnum change to reset marumatsu counter.
-    //. this will be replaced by MTConnect Interfaces.
-    //. actually, will be moved into adapter
-    this.feedback = new Feedback(this.setup)
-    this.feedback.start() // get mqtt connection, start check timer
 
     // probe - get agent data structures and write to db
     probe: do {
@@ -56,7 +48,6 @@ export class AgentReader {
       await probe.read(this.endpoint) // read xml into probe.js, probe.elements, probe.nodes
       await probe.write(this.db) // write/sync dataitems to db, get probe.indexes
       this.instanceId = probe.instanceId
-      // process.exit(0) //....
 
       // current - get last known values of all dataitems and write to db
       current: do {
@@ -64,7 +55,6 @@ export class AgentReader {
         await current.read(this.endpoint) // get observations and this.sequence numbers
         if (instanceIdChanged(current, probe)) break probe
         await current.write(this.db, probe.indexes) // write this.observations to db
-        await this.feedback.set(current) // set current monitored values
         this.from = current.sequence.next
         // make sure our count value is not over the agent buffer size,
         // else next sample read would get an error.
@@ -92,12 +82,11 @@ export class AgentReader {
             this.count += 100 // the number of observations to read next time
             // this.interval -= 100
             console.log(
-              `Got error during read - increasing throughput: count=${this.count}.`
+              `Relay got error during read - increasing throughput: count=${this.count}.`
             )
             break current
           }
           await sample.write(this.db, probe.indexes) // write this.observations to db
-          await this.feedback.check(sample) // check for changes, write feedback to devices
           this.from = sample.sequence.next // make sure our 'from' value is ok
           // too many observations might come in during this interval,
           // so next read could get an xml error message.
