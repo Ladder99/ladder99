@@ -1,7 +1,7 @@
 
 -- delete all views in case the structure has changed -
 -- saying `create or replace view` is NOT ENOUGH.
--- do in reverse order of definitions below, in case there are dependencies.
+-- note: must do in reverse order of definitions below, in case there are dependencies.
 DROP VIEW IF EXISTS dataitems;
 DROP VIEW IF EXISTS devices;
 DROP VIEW IF EXISTS history_text;
@@ -13,8 +13,6 @@ DROP VIEW IF EXISTS history_all;
 ---------------------------------------------------------------------
 -- the history table, but with name and path dereferenced,
 -- and value as the original jsonb object.
-
---. use value->>0 as value ?
 
 CREATE OR REPLACE VIEW history_all AS
 SELECT 

@@ -63,15 +63,17 @@ WHERE
   nodes.props->>'node_type'='DataItem';
 
 
--- update history_all
-DROP VIEW IF EXISTS history_all;  -- because `create or replace` isn't enough!
-CREATE OR REPLACE VIEW history_all AS
-SELECT 
-  devices.props->>'uid' AS device,
-  dataitems.props->>'path' AS path,
-  history.time,
-  history.value -- a jsonb object - need to cast it as in below views
-FROM raw.history
-JOIN raw.nodes AS devices ON raw.history.node_id=devices.node_id
-JOIN raw.nodes AS dataitems ON raw.history.dataitem_id=dataitems.node_id;
+--. this will also change history_text etc defs because have cast from jsonb
+-- -- update history_all
+-- -- note: can't drop this as other objects depend on it (history_float, history_text).
+-- -- DROP VIEW IF EXISTS history_all;  -- because `create or replace` isn't enough!
+-- CREATE OR REPLACE VIEW history_all AS
+-- SELECT 
+--   devices.props->>'uid' AS device,
+--   dataitems.props->>'path' AS path,
+--   history.time,
+--   history.value -- a jsonb object - need to cast it as in below views
+-- FROM raw.history
+-- JOIN raw.nodes AS devices ON raw.history.node_id=devices.node_id
+-- JOIN raw.nodes AS dataitems ON raw.history.dataitem_id=dataitems.node_id;
 
