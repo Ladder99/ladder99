@@ -55,7 +55,7 @@ const setup = lib.importYaml(setupFile) || {}
 // const elements = treeProbe.getElements(json) // devices, all dataitems
 // const nodes = treeProbe.getNodes(elements, setup) // devices and unique propdefs
 // simulateDb(nodes) // assign a unique node_id to each node
-// const indexes = treeProbe.getIndexes(nodes, elements) // get { nodeByNodeId, nodeByPath, elementById }
+// const indexes = treeProbe.getIndexes(nodes, elements) // get { nodeByUid }
 // treeProbe.assignNodeIds(elements, indexes) // assign device_id and dataitem_id to dataitem elements.
 // const current = getCurrent(elements)
 
@@ -72,15 +72,11 @@ const nodes = treeProbe.getNodes(jsTree, agent)
 
 simulateDb(nodes) // assign a unique node_id to each node
 
-// const indexes = treeProbe.getIndexes(nodes, elements) // get { nodeByNodeId, nodeByPath, elementById }
+// const indexes = treeProbe.getIndexes(nodes, elements) // get { nodeByUid }
 // treeProbe.assignNodeIds(elements, indexes) // assign device_id and dataitem_id to dataitem elements.
 // const current = getCurrent(elements)
 
-// get indexes - nodeByNodeId, nodeByPath, elementById
-//. why do we need those 3 indexes? explain
-//. nodeByNodeId - gives node object for a given node_id, eg 3 -> {}
-//. nodeByPath - gives node object for given path, eg __
-//. elementById - gives element object for given dataitem id, eg 'pr1-avail' -> {}
+// get indexes
 const indexes = treeProbe.getIndexes(nodes)
 
 // assign device_id and dataitem_id to dataitem elements.

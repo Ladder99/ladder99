@@ -66,10 +66,8 @@ Please add translations for them in setup.yaml for this project.
       node.node_id = await db.upsert(node) // write/read db and save resulting node_id
     }
 
-    // get indexes - nodeByNodeId, nodeByUid
-    //. why do we need those indexes? explain
-    //. nodeByNodeId - gives node object for a given node_id, eg 3 -> {}
-    //. nodeByUid - gives node object for given uid, eg 'main/d1/avail' -> {}
+    // get indexes
+    // - nodeByUid - gives node object for given uid, eg 'Main/m-avail' -> {...}
     this.indexes = tree.getIndexes(this.nodes)
 
     // assign device_id and dataitem_id to dataitem elements.

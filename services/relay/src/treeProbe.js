@@ -183,7 +183,9 @@ function addStep(list, translationIndex) {
 
 // filter the list of elements down to those needed for the relay and db
 function filterList(list) {
-  return list.filter(el => !!el.id) // just need those with an id
+  list = list.filter(el => !!el.id) // just need those with an id
+  list = list.filter(el => !el.node_type === 'Composition') // ditch compositions
+  return list
 }
 
 // get an index for full id (eg 'main/m/m1-avail') to element.
@@ -374,25 +376,19 @@ function getParamString(param) {
 
 // -----------------------------------------------------------------
 
-// get indexes for given nodes: nodeByNodeId, nodeByUid.
-// eg for
-//   nodes = [{ node_id: 3, id: 'foo', uid: 'd1/foo', path: 'bar' }, ...]
-// returns
-//   { nodeByNodeId: { 3: {...} }, nodeByUid: { 'd1/foo':... } }
-//. explain why we need each index - what uses them
+// get indexes for given nodes
+// - nodeByUid - map of uid to node
 export function getIndexes(nodes) {
   //
   // init indexes
-  const nodeByNodeId = {}
   const nodeByUid = {}
 
   // add nodes
   for (let node of nodes) {
-    nodeByNodeId[node.node_id] = node
     nodeByUid[node.uid] = node
   }
 
-  return { nodeByNodeId, nodeByUid }
+  return { nodeByUid }
 }
 
 // assign device_id and dataitem_id to nodes.

@@ -4,7 +4,7 @@ import * as lib from './common/lib.js'
 
 // const skipTags = lib.getSet('')
 
-// get flat list of elements from given json tree
+// get flat list of elements from given js tree
 // returns eg [{
 //   tag: 'Availability',
 //   dataItemId: 'm1-avail',
@@ -87,7 +87,6 @@ function recurse(element, elements, tag = '', parents = []) {
 // assign device node_id and dataitem node_id to observation objects
 export function assignNodeIds(observations, indexes) {
   for (let obs of observations) {
-    // const node = indexes.nodeByUid[obs.dataItemId]
     const node = indexes.nodeByUid[obs.uid]
     if (node) {
       // note: these had been tacked onto the node objects during index creation.
@@ -99,7 +98,7 @@ export function assignNodeIds(observations, indexes) {
       // fill up the logs.
       if (!obs.dataItemId.startsWith('_')) {
         console.log(
-          `Relay warning: elementById index missing dataItem ${obs.dataItemId}`
+          `Relay warning: nodeByUid index missing dataItem ${obs.uid}`
         )
       }
     }
