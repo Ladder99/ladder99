@@ -9,6 +9,7 @@ adapter:
   devices:
     - id: m # must match id in agent.xml
       name: Micro # this must match name in agent.cfg and agent.xml
+      # see also device alias in relay section
       # sources define the inputs to the cache.
       sources:
         - module: micro # module defines inputs and outputs with yaml files
@@ -32,13 +33,14 @@ relay:
         - id: m # must match id in agent.xml
           alias: Microcontroller # as displayed in grafana - can change. without this, just use device name?
           # ignore: true # can specify this to turn device recording on/off
-          # could override settings per dataitem -
+          # could ignore or set retention for individual dataitems
           # dataitems:
           #   - id: m-os
           #     retention: 1d
 
-    - alias: Mazak5701 # assigned agent alias - don't change!
-      url: http://mtconnect.mazakcorp.com:5701
+    - alias: Mazak5701 # arbitrary assigned agent alias - used by db - don't change!
+      url: http://mtconnect.mazakcorp.com:5701 # url to the agent
+      # retention: 1y
       devices:
         - id: d1 # must match id in agent.xml
           alias: MazakMill12345 # used in path expressions - no spaces!
@@ -48,7 +50,7 @@ relay:
             base: axes
             Cload: load-index
             Sload: load-spindle
-          # ignore or set retention for individual dataitems
+          # could ignore or set retention for individual dataitems
           dataitems:
             - id: d1-auto_time
               ignore: true

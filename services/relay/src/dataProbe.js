@@ -26,23 +26,22 @@ export class Probe extends Data {
     await this.checkForCollisions()
   }
 
+  // check for path collisions
   async checkForCollisions() {
-    const d = {}
+    const pathNodes = {}
     for (let node of this.nodes) {
-      if (d[node.path]) {
-        d[node.path].push(node)
+      if (pathNodes[node.path]) {
+        pathNodes[node.path].push(node)
       } else {
-        d[node.path] = [node]
+        pathNodes[node.path] = [node]
       }
     }
-    // console.log(d)
     const collisions = []
-    for (let key of Object.keys(d)) {
-      if (d[key].length > 1) {
-        collisions.push(d[key])
+    for (let key of Object.keys(pathNodes)) {
+      if (pathNodes[key].length > 1) {
+        collisions.push(pathNodes[key])
       }
     }
-    // console.log(collisions)
     if (collisions.length > 0) {
       console.log(`
 Relay error: The following dataitems have duplicate paths, 
@@ -50,7 +49,7 @@ ie same positions in the XML tree and type+subtype.
 Please add translations for them in setup.yaml for this project.
 `)
       console.log(collisions.map(collision => collision.map(node => node.path)))
-      await new Promise(resolve => setTimeout(resolve, 5000))
+      await new Promise(resolve => setTimeout(resolve, 5000)) // pause
       process.exit(1)
     }
   }
@@ -73,7 +72,5 @@ Please add translations for them in setup.yaml for this project.
     // will need these to write values from current/sample endpoints
     // to history and bins tables.
     tree.assignNodeIds(this.nodes, this.indexes)
-
-    // console.log('indexes', this.indexes)
   }
 }
