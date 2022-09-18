@@ -13,8 +13,7 @@ export class Probe extends Data {
     this.agent = agent
   }
 
-  // read xml into this.jsTree, this.header, then parse jsTree into
-  // flat list of .nodes.
+  // read xml into this.jsTree, this.header, then parse jsTree into flat list of .nodes.
   async read() {
     await super.read(...arguments) // gets this.jsTree - see base class in data.js
 
@@ -22,8 +21,12 @@ export class Probe extends Data {
     // eg [{node_type, path, category}, ...]
     this.nodes = tree.getNodes(this.jsTree, this.agent) // see treeProbe.js
 
-    //. check for path collisions - in which case stop the service with a message
+    // check for path collisions - in which case stop the service with a message
     // to add translation step to setup.yaml.
+    await this.checkForCollisions()
+  }
+
+  async checkForCollisions() {
     const d = {}
     for (let node of this.nodes) {
       if (d[node.path]) {
@@ -42,12 +45,13 @@ export class Probe extends Data {
     console.log(collisions)
     if (collisions.length > 0) {
       console.log(`
-ERROR: The following dataitems have duplicate paths, ie same positions in the XML 
-tree and type+subtype. 
+Relay error: The following dataitems have duplicate paths, 
+ie same positions in the XML tree and type+subtype. 
 Please add translations for them in setup.yaml for this project.
 `)
       console.log(collisions.map(collision => collision.map(node => node.path)))
-      // process.exit(1)
+      await new Promise(resolve => setTimeout(resolve, 5000))
+      process.exit(1)
     }
   }
 
