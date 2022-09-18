@@ -28,6 +28,7 @@ export class Probe extends Data {
 
   // check for path collisions
   async checkForCollisions() {
+    // get dict with path=>[node1, node2, ...]
     const pathNodes = {}
     for (let node of this.nodes) {
       if (pathNodes[node.path]) {
@@ -36,19 +37,22 @@ export class Probe extends Data {
         pathNodes[node.path] = [node]
       }
     }
+    // get
     const collisions = []
     for (let key of Object.keys(pathNodes)) {
       if (pathNodes[key].length > 1) {
         collisions.push(pathNodes[key])
       }
     }
+    // stop if any collisions
     if (collisions.length > 0) {
       console.log(`
 Relay error: The following dataitems have duplicate paths, 
 ie same positions in the XML tree and type+subtype. 
 Please add translations for them in setup.yaml for this project.
 `)
-      console.log(collisions.map(collision => collision.map(node => node.path)))
+      console.log(collisions)
+      // console.log(collisions.map(collision => collision.map(node => node.path)))
       await new Promise(resolve => setTimeout(resolve, 5000)) // pause
       process.exit(1)
     }

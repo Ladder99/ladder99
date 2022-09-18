@@ -58,7 +58,7 @@ export function getNodes(tree, agent) {
   addStep(list, translationIndex) // eg 'system'
   const index = getIndexUidToNode(list)
   resolveReferences(list, index) // resolve steps like '${Cmotor}' to 'motor'
-  addShortPath(list) // eg 'd1/linear[x]/velocity' //. currently includes device tho - remove?
+  addShortPath(list) // eg 'd1/linear[x]/velocity' //. currently includes device tho - remove
   addPath(list) // eg 'main/d1/linear[x]/velocity'
   addNodeType(list) // convert .tag='DataItem' etc to .node_type
   cleanup(list)
@@ -360,7 +360,7 @@ function getDataItemStep(obj) {
 
   // build the step string
   const composition = obj.compositionId ? `$\{${obj.compositionId}}/` : '' // eg '${Cmotor}' - see resolveReferences
-  const step = composition + params.map(getParamString).join('-') || '' // eg 'position-actual'
+  const step = composition + params.map(getParamString).join('-') || '' // eg 'motor/position-actual'
   return step
 }
 
