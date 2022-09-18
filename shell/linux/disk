@@ -7,9 +7,8 @@ Print disk usage for a given setup.
 
 SETUP is a client name or setup folder.
 
-Examples
+Example
     ./l99 disk demo
-    ./l99 disk ./setups/example
 "
 
 # show help if count of params is zero
@@ -29,11 +28,14 @@ fi
 # shift
 
 # handle example setup specially
-if [ $1 = example ]; then
-    SETUP=setups/example
-else
-    SETUP=../setup-$1
-fi
+# if [ $1 = example ]; then
+#     SETUP=setups/example
+# else
+#     SETUP=../setup-$1
+# fi
+# shift
+
+SETUP=../setup-$1
 shift
 
 # show all disk usage

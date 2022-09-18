@@ -56,12 +56,15 @@ done
 # fi
 # shift
 
-# handle example setup specially
-if [ $1 = example ]; then
-    SETUP=setups/example
-else
-    SETUP=../setup-$1
-fi
+# # handle example setup specially
+# if [ $1 = example ]; then
+#     SETUP=setups/example
+# else
+#     SETUP=../setup-$1
+# fi
+# shift
+
+SETUP=../setup-$1
 shift
 
 if [ ! -e $SETUP ]; then
