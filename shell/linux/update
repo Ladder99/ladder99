@@ -23,16 +23,17 @@ fi
 #     SETUP=../client-$1
 # fi
 
-# # handle example setup specially
-# if [ $1 = example ]; then
-#     SETUP=setups/example
-# else
-#     SETUP=../setup-$1
-# fi
+# handle example setup specially
+if [ $1 = example ]; then
+    SETUP=setups/example
+else
+    SETUP=../setup-$1
+fi
+shift
+
+# SETUP=../setup-$1
 # shift
 
-SETUP=../setup-$1
-shift
 
 # pull ladder99-ce repo then client repo
 # set credential cache while we're at it so user doesn't have to

@@ -56,16 +56,16 @@ done
 # fi
 # shift
 
-# # handle example setup specially
-# if [ $1 = example ]; then
-#     SETUP=setups/example
-# else
-#     SETUP=../setup-$1
-# fi
-# shift
-
-SETUP=../setup-$1
+# handle example setup specially
+if [ $1 = example ]; then
+    SETUP=setups/example
+else
+    SETUP=../setup-$1
+fi
 shift
+
+# SETUP=../setup-$1
+# shift
 
 if [ ! -e $SETUP ]; then
     echo Setup folder $SETUP does not exist. Did you forget the setup name?
