@@ -35,14 +35,14 @@ export class Probe extends Data {
         d[node.path] = [node]
       }
     }
-    console.log(d)
+    // console.log(d)
     const collisions = []
     for (let key of Object.keys(d)) {
       if (d[key].length > 1) {
         collisions.push(d[key])
       }
     }
-    console.log(collisions)
+    // console.log(collisions)
     if (collisions.length > 0) {
       console.log(`
 Relay error: The following dataitems have duplicate paths, 

@@ -24,10 +24,8 @@ export class Data {
 
     // handle errors
     if (this.jsTree.MTConnectError) {
-      console.log(
-        `Relay error - tried to read from ${from} with count ${count}.`
-      )
-      console.log(this.jsTree)
+      console.log(`Relay error tried to read from ${from} with count ${count}.`)
+      // console.log(this.jsTree)
       // throw new Error('MTConnectError - see logs for details') // this stops the relay service
       // could parse the xml error messages, but simplest to just return false and
       // let the caller bump up the bandwidth.

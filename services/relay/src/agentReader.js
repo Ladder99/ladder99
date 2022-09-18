@@ -35,9 +35,7 @@ export class AgentReader {
     //
     // don't read this agent if 'ignore' flag is set in setup.yaml
     if (this.agent?.ignore) {
-      console.log(
-        `Relay ignore agent ${this.agent?.alias} as specified in setup.yaml`
-      )
+      console.log(`Relay ignore agent per setup.yaml`, this.agent?.alias)
       return
     }
 
