@@ -24,7 +24,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 8,
-  "iteration": 1662041054330,
+  "iteration": 1663481895398,
   "links": [
     {
       "asDropdown": false,
@@ -57,6 +57,7 @@
     },
     {
       "datasource": null,
+      "description": "",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -93,7 +94,7 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 6,
+        "w": 4.8,
         "x": 0,
         "y": 1
       },
@@ -111,7 +112,7 @@
         "text": {}
       },
       "pluginVersion": "8.2.2",
-      "repeat": "query0",
+      "repeat": "axis",
       "repeatDirection": "h",
       "targets": [
         {
@@ -119,7 +120,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value\nFROM history_float\nWHERE\n  -- path = concat('$device','/axes/', $sample_load, '/load')\n  path = $query0\n  and $__timeFilter(\"time\")\norder by time desc\nlimit 1",
+          "rawSql": "SELECT time, value\nFROM history_float\nWHERE\n  path = concat('$device','/axes/', $axis, '/load')\n  -- path = $axis\n  and $__timeFilter(\"time\")\norder by time desc\nlimit 1",
           "refId": "loads repeater",
           "select": [
             [
@@ -141,7 +142,7 @@
           ]
         }
       ],
-      "title": "$query0",
+      "title": "$axis",
       "type": "gauge"
     },
     {
@@ -1197,8 +1198,8 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "FANUC/f_sim",
-          "value": "FANUC/f_sim"
+          "text": "Mazak5701/d1",
+          "value": "Mazak5701/d1"
         },
         "datasource": null,
         "definition": "select uid from devices where uid <> 'Main/m'",
@@ -1223,77 +1224,21 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
+          "selected": true,
+          "text": ["All"],
+          "value": ["$__all"]
         },
-        "description": "sample_load",
+        "datasource": null,
+        "definition": "select substring(path, 'axes/(.*)/load$') from dataitems where path like '$device/axes/%/load' order by path",
+        "description": null,
         "error": null,
         "hide": 2,
         "includeAll": true,
-        "label": "sample_load",
-        "multi": false,
-        "name": "sample_load",
-        "options": [
-          {
-            "selected": true,
-            "text": "All",
-            "value": "$__all"
-          },
-          {
-            "selected": false,
-            "text": "linear[x]",
-            "value": "linear[x]"
-          },
-          {
-            "selected": false,
-            "text": "linear[y]",
-            "value": "linear[y]"
-          },
-          {
-            "selected": false,
-            "text": "linear[z]",
-            "value": "linear[z]"
-          },
-          {
-            "selected": false,
-            "text": "rotary[a]",
-            "value": "rotary[a]"
-          },
-          {
-            "selected": false,
-            "text": "rotary[b]",
-            "value": "rotary[b]"
-          },
-          {
-            "selected": false,
-            "text": "rotary[c]",
-            "value": "rotary[c]"
-          }
-        ],
-        "query": "linear[x],linear[y],linear[z],rotary[a],rotary[b],rotary[c]",
-        "queryValue": "",
-        "skipUrlSync": false,
-        "type": "custom"
-      },
-      {
-        "allValue": null,
-        "current": {
-          "selected": false,
-          "text": "All",
-          "value": "$__all"
-        },
-        "datasource": null,
-        "definition": "select path from dataitems where path like '$device/axes/%/load'",
-        "description": null,
-        "error": null,
-        "hide": 0,
-        "includeAll": true,
         "label": null,
-        "multi": false,
-        "name": "query0",
+        "multi": true,
+        "name": "axis",
         "options": [],
-        "query": "select path from dataitems where path like '$device/axes/%/load'",
+        "query": "select substring(path, 'axes/(.*)/load$') from dataitems where path like '$device/axes/%/load' order by path",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -1323,5 +1268,5 @@
   "timezone": "",
   "title": "Main",
   "uid": "main",
-  "version": 8
+  "version": 6
 }
