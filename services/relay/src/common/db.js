@@ -25,14 +25,14 @@ export class Db {
     const pool = new Pool()
     do {
       try {
-        console.log(`Trying to connect to db...`, {
+        console.log(`db trying to connect to db...`, {
           host: process.env.PGHOST,
           port: process.env.PGPORT,
           database: process.env.PGDATABASE,
         })
         client = await pool.connect() // uses envars PGHOST, PGPORT etc
       } catch (error) {
-        console.log(`Error ${error.code} - will sleep before retrying...`)
+        console.log(`db error ${error.code} - will sleep before retrying...`)
         console.log(error)
         // await lib.sleep(4000)
         await new Promise(resolve => setTimeout(resolve, 4000))
@@ -54,7 +54,7 @@ export class Db {
     function getShutdown(signal) {
       return error => {
         console.log()
-        console.log(`Signal ${signal} received - shutting down...`)
+        console.log(`db signal ${signal} received - shutting down...`)
         if (error) console.error(error.stack || error)
         that.disconnect()
         process.exit(error ? 1 : 0)
@@ -64,7 +64,7 @@ export class Db {
 
   disconnect() {
     if (!this.client) {
-      console.log(`Releasing db client...`)
+      console.log(`db releasing db client...`)
       this.client.release()
     }
   }
@@ -96,7 +96,8 @@ export class Db {
           on conflict ((props->>'uid')) do
             update set props = (${values}) 
               returning node_id;`
-    console.log(sql)
+    // console.log(sql)
+    console.log(`db upsert node`, node.type, node.path)
     const res = await this.query(sql)
     const node_id = res.rows[0]?.node_id
     return node_id
@@ -138,7 +139,7 @@ export class Db {
 
   async getNodeId(node) {
     const sql = `SELECT node_id FROM raw.nodes WHERE props->>'path' = $1::text;`
-    console.log(sql, node.path)
+    console.log(`db get node_id for`, node.path)
     const res = await this.query(sql, [node.path])
     const { node_id } = res.rows[0]
     return node_id
@@ -186,7 +187,7 @@ export class Db {
       insert into raw.history (node_id, dataitem_id, time, value)
       values (${device_id}, ${dataitem_id}, '${time}', '${value}'::jsonb);
     `
-    console.log('db - write', device_id, dataitem_id, time, value)
+    console.log('db write', device_id, dataitem_id, time, value)
     const result = await this.query(sql)
     return result
   }
