@@ -31,8 +31,7 @@ relay:
       # without a list of devices here, relay would read all available in agent
       devices:
         - id: m # must match id in agent.xml
-          # alias: Microcontroller # as displayed in grafana - can change. without this, just use device name?
-          alias: Micro # as displayed in grafana - can change. without this, just use device name?
+          alias: Micro # used in path expressions - no spaces!
           # ignore: true # can specify this to turn device recording on/off
           # could ignore or set retention for individual dataitems
           # dataitems:
