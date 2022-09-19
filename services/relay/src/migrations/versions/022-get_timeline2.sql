@@ -24,30 +24,30 @@ BEGIN
 -- do a straightforward query for time and value for the 
 -- given device, path, and timestamp
 RETURN QUERY
-SELECT history_all.time, history_all.value
-FROM history_all
+SELECT history_text.time, history_text.value
+FROM history_text
 WHERE
   device = devicepath and
   path = datapath and
-  history_all.time >= from_time and
-  history_all.time <= to_time
+  history_text.time >= from_time and
+  history_text.time <= to_time
 -- now tack on the time and value for the left edge with a UNION query
 UNION
-SELECT timex as time, valuex value
+SELECT timex as time, valuex as value
 FROM
   -- need this subquery so can order the results by time descending,
   -- so can get the last value before the left edge.
   (
   SELECT
-    CASE WHEN clamp THEN from_time ELSE history_all.time END AS timex,
-    history_all.value as valuex
-  FROM history_all
+    CASE WHEN clamp THEN from_time ELSE history_text.time END AS timex,
+    history_text.value as valuex
+  FROM history_text
   WHERE
     device = devicepath
     and path = datapath
-    and history_all.time <= from_time
-    and history_all.time >= from_time - search_limit::interval
-  ORDER BY history_all.time DESC
+    and history_text.time <= from_time
+    and history_text.time >= from_time - search_limit::interval
+  ORDER BY history_text.time DESC
   LIMIT 1 -- just want the last value
   ) AS subquery1 -- subquery name is required but not used
 ORDER BY time; -- sort the combined query results

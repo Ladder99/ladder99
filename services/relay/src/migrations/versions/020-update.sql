@@ -49,7 +49,7 @@ SELECT
   nodes.node_id,
   -- nodes.props->>'id' as id,
   -- nodes.props->>'uid' as uid, -- ie `agentAlias/deviceId/dataitemId`, eg 'main/d1/avail'
-  nodes.props->>'path' as path, -- eg 'main/d1/availability'
+  nodes.props->>'path' as path, -- eg 'Main/d1/availability'
   nodes.props->>'category' as category, 
   nodes.props->>'type' as type,
   nodes.props->>'subType' as subtype,
