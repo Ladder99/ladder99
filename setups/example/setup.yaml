@@ -51,6 +51,7 @@ relay:
             Cload: load-index
             Sload: load-spindle
           # could ignore or set retention for individual dataitems
+          #. use dataitemId: etc
           dataitems:
             - id: d1-auto_time
               ignore: true

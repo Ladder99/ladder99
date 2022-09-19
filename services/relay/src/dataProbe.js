@@ -23,11 +23,50 @@ export class Probe extends Data {
 
     // check for path collisions - in which case stop the service with a message
     // to add translation step to setup.yaml.
-    await this.checkForCollisions()
+    const collisions = await this.getPathCollisions()
+    if (collisions.length > 0) {
+      console.log(`
+Relay error: The following dataitems have duplicate paths, 
+ie same positions in the XML tree and type+subtype. 
+Please add translations for them in setup.yaml for this project.
+
+eg with the following output,
+  [
+    [
+      { id: 'Cload', path: 'Mazak5701/d1/base/rotary[c]/load' },
+      { id: 'Sload', path: 'Mazak5701/d1/base/rotary[c]/load' }
+    ]
+  ]
+
+you could add the following translation block to setup.yaml:
+  relay:
+    agents:
+      - alias: Mazak5701
+        url: http://mtconnect.mazakcorp.com:5701
+        devices:
+          - id: d1
+            alias: MazakMill12345
+            translations:
+              Cload: load-index
+              Sload: load-spindle
+
+giving the following unique paths -
+  Mazak5701/d1/base/rotary[c]/load-index
+  Mazak5701/d1/base/rotary[c]/load-spindle
+`)
+      // console.log(collisions)
+      console.log(
+        collisions.map(collision =>
+          collision.map(node => ({ id: node.id, path: node.path }))
+        )
+      )
+      await new Promise(resolve => setTimeout(resolve, 5000)) // pause
+      process.exit(1)
+    }
   }
 
-  // check for path collisions
-  async checkForCollisions() {
+  // get list of path collisions
+  async getPathCollisions() {
     // get dict with path=>[node1, node2, ...]
     const pathNodes = {}
     for (let node of this.nodes) {
@@ -37,25 +76,14 @@ export class Probe extends Data {
         pathNodes[node.path] = [node]
       }
     }
-    // get
+    // get list of collisions
     const collisions = []
     for (let key of Object.keys(pathNodes)) {
       if (pathNodes[key].length > 1) {
         collisions.push(pathNodes[key])
       }
     }
-    // stop if any collisions
-    if (collisions.length > 0) {
-      console.log(`
-Relay error: The following dataitems have duplicate paths, 
-ie same positions in the XML tree and type+subtype. 
-Please add translations for them in setup.yaml for this project.
-`)
-      console.log(collisions)
-      // console.log(collisions.map(collision => collision.map(node => node.path)))
-      await new Promise(resolve => setTimeout(resolve, 5000)) // pause
-      process.exit(1)
-    }
+    return collisions
   }
 
   // write probe data in jsTree to db instance, get indexes
