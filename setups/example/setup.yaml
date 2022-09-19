@@ -44,7 +44,8 @@ relay:
       # retention: 1y
       devices:
         - id: d1 # must match id in agent.xml
-          alias: MazakMill12345 # used in path expressions - no spaces!
+          # alias: MazakMill12345 # used in path expressions - no spaces!
+          alias: Mill12345 # used in path expressions - no spaces!
           # ignore: true # set true to hide device in dashboards, pause recording, etc
           # dataitem step translations - dataitemId->step
           translations:
