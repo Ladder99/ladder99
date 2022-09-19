@@ -20,7 +20,7 @@ async function start() {
   await db.start()
 
   // read client's setup.yaml
-  console.log(`Meter - reading client setup yaml...`)
+  console.log(`Meter - reading client setup.yaml...`)
   const setup = lib.readSetup(setupFolder)
   const client = setup.client || {}
 
