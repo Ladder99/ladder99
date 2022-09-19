@@ -19,7 +19,7 @@ const migrations = {
     ],
     1: ['012-bins-hypertable'],
     2: ['020-update'],
-    // 3: ['021-update'],
+    3: ['021-update-views', '022-get_timeline2', '023-get_last_value2'],
   },
 }
 
