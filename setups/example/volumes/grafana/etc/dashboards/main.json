@@ -23,8 +23,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 8,
-  "iteration": 1663482584771,
+  "id": 6,
+  "iteration": 1663589143756,
   "links": [
     {
       "asDropdown": false,
@@ -94,7 +94,7 @@
       },
       "gridPos": {
         "h": 5,
-        "w": 4.8,
+        "w": 6,
         "x": 0,
         "y": 1
       },
@@ -1197,12 +1197,12 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "text": "Mazak5701/d1",
-          "value": "Mazak5701/d1"
+          "selected": false,
+          "text": "Mazak5701/Mill12345",
+          "value": "Mazak5701/Mill12345"
         },
         "datasource": null,
-        "definition": "select uid from devices where uid <> 'Main/m'",
+        "definition": "select path from devices where path <> 'Main/Micro'",
         "description": "Device Name",
         "error": null,
         "hide": 0,
@@ -1211,7 +1211,7 @@
         "multi": false,
         "name": "device",
         "options": [],
-        "query": "select uid from devices where uid <> 'Main/m'",
+        "query": "select path from devices where path <> 'Main/Micro'",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -1224,7 +1224,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
+          "selected": true,
           "text": ["All"],
           "value": ["$__all"]
         },
@@ -1248,7 +1248,7 @@
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -1268,5 +1268,5 @@
   "timezone": "",
   "title": "Main",
   "uid": "main",
-  "version": 7
+  "version": 2
 }
