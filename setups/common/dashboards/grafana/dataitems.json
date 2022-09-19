@@ -126,7 +126,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT \n--  path,\n  substring(path, '^$device/(.*)') as attribute,\n  time,\n  min(value) as value -- just pick one of the values - should be the same\nFROM history_all\nWHERE\n  (path, time) in (\n    select path, max(time) from history_all \n    where time > (now() - interval '1 day')\n      and device='$device'\n    group by path\n  )\ngroup by path, time -- need this to eliminate duplicate records\norder by path\n",
+          "rawSql": "-- SELECT \n-- --  path,\n--   substring(path, '^$device/(.*)') as attribute,\n--   time,\n--   min(value) as value -- just pick one of the values - should be the same\n-- FROM history_all\n-- WHERE\n--   (path, time) in (\n--     select path, max(time) from history_all \n--     where time > (now() - interval '1 day')\n--       and device='$device'\n--     group by path\n--   )\n-- group by path, time -- need this to eliminate duplicate records\n-- order by path\n\n\nselect \n--path as attribute, \nsubstring(path, '^$device/(.*)') as attribute,\ntime, value, \nlower(units) as units\nfrom history_all\nwhere path in ($path)\n",
           "refId": "A",
           "select": [
             [
@@ -238,7 +238,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  --path,\n  substring(path,'$device/(.*)') as attribute,\n  time,\n  value\nFROM history_all\nWHERE\n  device='$device'\n--  path like '$device/%'\n  -- and (\n  --   path LIKE 'controller%'\n  --   OR path IN ('availability', 'load-condition', 'message', 'functional-mode',\n  --   'system-condition', 'controller/emergency-stop', 'axes/c/rotary-mode')\n  -- )\n  and $__timeFilter(\"time\")\norder by time desc\nlimit 200",
+          "rawSql": "SELECT\n  --path,\n  substring(path,'$device/(.*)') as attribute,\n  time,\n  value,\n  lower(units) as units\nFROM history_all\nWHERE\n  device='$device'\n--  path like '$device/%'\n  -- and (\n  --   path LIKE 'controller%'\n  --   OR path IN ('availability', 'load-condition', 'message', 'functional-mode',\n  --   'system-condition', 'controller/emergency-stop', 'axes/c/rotary-mode')\n  -- )\n  and $__timeFilter(\"time\")\norder by time desc\nlimit 200",
           "refId": "A",
           "select": [
             [
@@ -328,5 +328,5 @@
   "timezone": "",
   "title": "DataItems",
   "uid": "dataitems",
-  "version": 2
+  "version": 5
 }
