@@ -43,9 +43,10 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 // }, ...]
 export function getNodes(tree, agent) {
   const translationIndex = getTranslationIndex(agent)
+  const devices = getDevices(agent) // maps id->device
   let list = getList(tree) // flatten the tree
   addAgent(list, agent) // add agentAlias from setup to each element
-  addDevice(list) // add deviceId to each element
+  addDevice(list, devices) // add deviceId and deviceAlias to each element
   addContext(list) // contextPath = agentAlias[/deviceAlias], eg 'Main/MazakM123'
   addUid(list, agent) // uid = agentAlias[/dataitemId], eg 'Main/d1-avail'
   addStep(list, translationIndex) // eg 'system'
@@ -58,7 +59,7 @@ export function getNodes(tree, agent) {
   // list.forEach(el => delete el.parent) // remove parent attributes
   // list = list.filter(el => el.id === 'servo_cond')
   list = filterList(list) // only include nodes that have id
-  list = list.filter(el => el.node_type !== 'Composition') //.
+  list = list.filter(el => el.node_type !== 'Composition') //. better way?
   // console.log('getNodes', list)
   // process.exit(0)
   return list
@@ -82,17 +83,31 @@ function addAgent(list, agent) {
   }
 }
 
-// add device/agent id to elements
-function addDevice(list) {
+function getDevices(agent) {
+  const devices = {}
+  if (agent.devices) {
+    agent.devices.forEach(device => {
+      devices[device.id] = device
+    })
+  }
+  return devices
+}
+
+// add device/agent id and alias to elements
+function addDevice(nodes, devices) {
   let deviceId
-  for (let el of list) {
-    // grab agent or device id
-    if (el.tag === 'Agent' || el.tag === 'Device') {
-      deviceId = el.id
+  let deviceAlias
+  for (let node of nodes) {
+    // grab agent or device id and alias
+    if (node.tag === 'Agent' || node.tag === 'Device') {
+      deviceId = node.id
+      deviceAlias = devices[deviceId]?.alias
     }
     // assign each element its ancestor's id in the device attribute.
     // but only if the element has an id - don't need/want it otherwise.
-    if (deviceId && el.id) el.deviceId = deviceId
+    if (deviceId && node.id) node.deviceId = deviceId
+    // save device alias too
+    if (deviceId && deviceAlias) node.deviceAlias = deviceAlias
   }
 }
 
@@ -326,9 +341,11 @@ function getStep(obj, translations) {
 }
 
 const stepHandlers = {
-  MTConnectDevices: () => obj.agentAlias,
-  Agent: obj => obj.deviceId,
-  Device: obj => obj.deviceId,
+  MTConnectDevices: obj => obj.agentAlias, //.? ''?
+  // Agent: obj => obj.deviceId,
+  // Device: obj => obj.deviceId,
+  Agent: obj => obj.deviceAlias, //. ?
+  Device: obj => obj.deviceAlias,
   Linear: obj => `linear[${obj.name.toLowerCase()}]`,
   Rotary: obj => `rotary[${obj.name.toLowerCase()}]`,
   DataItem: getDataItemStep,
