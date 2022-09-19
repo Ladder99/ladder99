@@ -66,8 +66,8 @@ Please add translations for them in setup.yaml for this project.
       node.node_id = await db.upsert(node) // write/read db and save resulting node_id
     }
 
-    // get indexes
-    // - nodeByUid - gives node object for given uid, eg 'Main/m-avail' -> {...}
+    // get indexes -
+    // nodeByUid - gives node object for given uid, eg 'Main/m-avail' -> {...}
     this.indexes = tree.getIndexes(this.nodes)
 
     // assign device_id and dataitem_id to dataitem elements.

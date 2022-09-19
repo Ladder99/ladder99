@@ -42,7 +42,7 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 //   node_id: 149
 // }, ...]
 export function getNodes(tree, agent) {
-  // get translations for each device, eg 'd1' => { base: 'axes', ... }
+  // get translations for each device, eg 'd1' -> { base: 'axes', ... }
   const translationIndex = {}
   if (agent.devices) {
     agent.devices.forEach(
@@ -52,11 +52,10 @@ export function getNodes(tree, agent) {
   let list = getList(tree) // flatten the tree
   addAgent(list, agent) // add agentAlias from setup to each element
   addDevice(list) // add deviceId to each element
-  // addContext(list) // contextPath = agentAlias[/deviceId], eg 'main/d1'
   addContext(list) // contextPath = agentAlias[/deviceAlias], eg 'Main/MazakM123'
-  addUid(list, agent) // uid = agentAlias[/dataitemId], eg 'main/d1-avail'
+  addUid(list, agent) // uid = agentAlias[/dataitemId], eg 'Main/d1-avail'
   addStep(list, translationIndex) // eg 'system'
-  const index = getIndexUidToNode(list)
+  const index = getIndexUidToNode(list) // get index, as used in resolveReferences
   resolveReferences(list, index) // resolve steps like '${Cmotor}' to 'motor'
   addShortPath(list) // eg 'd1/linear[x]/velocity' //. currently includes device tho - remove
   addPath(list) // eg 'main/d1/linear[x]/velocity'
@@ -64,9 +63,9 @@ export function getNodes(tree, agent) {
   cleanup(list)
   // list.forEach(el => delete el.parent) // remove parent attributes
   // list = list.filter(el => el.id === 'servo_cond')
+  list = filterList(list) // only include nodes that have id
   // console.log(list)
   // process.exit(0)
-  list = filterList(list) // only include nodes that have id
   return list
 }
 
@@ -91,8 +90,8 @@ function addDevice(list) {
   }
 }
 
-// add contextPath (agentAlias/deviceId) to each element, eg 'main/m1'.
-// if it's a device or agent though, contextPath is just agentAlias, eg 'main'.
+// add contextPath (agentAlias/deviceId) to each element, eg 'Main/m1'.
+// if it's a device or agent though, contextPath is just agentAlias, eg 'Main'.
 function addContext(list) {
   for (let el of list) {
     const isDevice = el.tag === 'Device' || el.tag === 'Agent'
@@ -102,11 +101,10 @@ function addContext(list) {
   }
 }
 
-// add uid to elements, eg 'main/m1-avail'
+// add uid to elements, eg 'Main/m-avail'
 function addUid(list, agent) {
   for (let el of list) {
     if (el.id) {
-      // const uid = el.contextPath + (el.id ? '/' + el.id : '')
       const uid = agent.alias + (el.id ? '/' + el.id : '')
       if (uid) el.uid = uid
     }
@@ -114,6 +112,7 @@ function addUid(list, agent) {
 }
 
 // add path for each element
+//. this is currently including the device - remove it? but check addPath below
 function addShortPath(list) {
   for (let el of list) {
     // build up the path starting from the root ancestor.
@@ -188,7 +187,7 @@ function filterList(list) {
   return list
 }
 
-// get an index for full id (eg 'main/m/m1-avail') to element.
+// get an index for uid (eg 'Main/m-avail') to node.
 function getIndexUidToNode(list) {
   const index = {}
   for (let el of list) {
