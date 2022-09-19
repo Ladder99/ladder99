@@ -26,7 +26,7 @@ async function start() {
 
   // iterate over devices, check what metrics they want, if any,
   // load those metric plugins, start them up - let them poll db as needed etc.
-  for (let device of setup.devices) {
+  for (let device of setup.adapter?.devices || []) {
     const metrics = device.metrics || []
     for (let metric of metrics) {
       const { name } = metric
