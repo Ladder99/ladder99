@@ -50,9 +50,10 @@ export class Endpoint {
           // throw error // don't throw error - would kill relay
           console.error('Relay error', error)
         }
-        console.log('Relay error - fetch response', response)
+        console.log(`Relay error - fetch response`, response)
         console.log(`Relay error - retrying in ${waitTryAgain} ms...`)
         await lib.sleep(waitTryAgain)
+        response = null // so loop again
       }
     } while (!response)
 
