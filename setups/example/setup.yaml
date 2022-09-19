@@ -20,15 +20,15 @@ adapter:
         port: 7890 # must match agent.cfg value
 
 # ladder99 relay reads this section to know what agents and devices to read data from.
-# warning: don't change the agent aliases (eg main) as they are used to synch data with db.
+# warning: don't change the agent aliases (eg main) as they are used to synch data with db (?)
 relay:
   # retention: 1wk # could specify a top-level retention for all agents here
   agents:
     - alias: Main # this is an arbitrary assigned to each agent, used by the db - don't change (?)
       url: http://agent:5000 # url to the agent
       # ignore: true # can specify this to turn agent recording on/off
-      # retention: 2d # could clear all unneeded data at midnight - then vacuum analyze db
-      # without a list of devices here, relay would read all available in agent
+      # retention: 2d # could clear all unneeded data at midnight - then vacuum analyze db.
+      # without a list of devices here, relay would read all available in agent.
       devices:
         - id: m # must match id in agent.xml
           alias: Micro # used in path expressions - no spaces!
@@ -51,23 +51,21 @@ relay:
             a: axes
             Cload: load-index
             Sload: load-spindle
-          # could ignore or set retention for individual dataitems
-          #. use dataitemId: etc
+          # can ignore or set retention for individual dataitems
           dataitems:
-            - id: d1-auto_time
+            d1-auto_time:
               ignore: true
-            - id: d1-total_time
+            d1-total_time:
               ignore: true
-            - id: d1-cut_time
+            d1-cut_time:
               ignore: true
-            - id: d1-total_auto_cut_time
+            d1-total_auto_cut_time:
               ignore: true
 
-# ladder99 meter service reads this section.
+# ladder99 meter service reads this section
 meter:
-  common:
-    availability:
-    # load the availability.js plugin
+  defaults:
+    # availability.js plugin defaults
     # gets active = time machine was active in previous time period,
     # based on part count changes,
     # and available = time is within start/stop schedule.
@@ -82,13 +80,13 @@ meter:
       startTime: '05:00:00'
       stopTime: '13:30:00'
 
-    # load the count.js plugin
+    # count.js plugin defaults
     # accumulates count deltas into the lifetime count
     count:
       deltaPath: processes/job/part_count-all
       lifetimePath: processes/life/part_count-all
 
-    # # load the rate.js plugin
+    # # rate.js plugin defaults
     # # calculates the rate of change between counts, ie the production rate.
     # #. not finished yet
     # rate:
