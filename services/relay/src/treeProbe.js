@@ -21,7 +21,7 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 //   and DataItems = { DataItem: [ { _: { id, type, category }}, ...]}
 //   where _ is an object with the attributes and values
 // gives something like [{
-//   tag: 'DataItem',
+//   node_type: 'DataItem',
 //   category: 'SAMPLE',
 //   id: 'rmtmp1',
 //   nativeUnits: 'CELSIUS',
@@ -42,13 +42,7 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 //   node_id: 149
 // }, ...]
 export function getNodes(tree, agent) {
-  // get translations for each device, eg 'd1' -> { base: 'axes', ... }
-  const translationIndex = {}
-  if (agent.devices) {
-    agent.devices.forEach(
-      device => (translationIndex[device.id] = device.translations)
-    )
-  }
+  const translationIndex = getTranslationIndex(agent)
   let list = getList(tree) // flatten the tree
   addAgent(list, agent) // add agentAlias from setup to each element
   addDevice(list) // add deviceId to each element
@@ -64,9 +58,21 @@ export function getNodes(tree, agent) {
   // list.forEach(el => delete el.parent) // remove parent attributes
   // list = list.filter(el => el.id === 'servo_cond')
   list = filterList(list) // only include nodes that have id
-  // console.log(list)
+  list = list.filter(el => el.node_type !== 'Composition')
+  console.log('getNodes', list)
   // process.exit(0)
   return list
+}
+
+// get translations for each device, eg 'd1' -> { base: 'axes', ... }
+function getTranslationIndex(agent) {
+  const translationIndex = {}
+  if (agent.devices) {
+    agent.devices.forEach(
+      device => (translationIndex[device.id] = device.translations)
+    )
+  }
+  return translationIndex
 }
 
 // add agent alias from setup yaml
@@ -183,7 +189,7 @@ function addStep(list, translationIndex) {
 // filter the list of elements down to those needed for the relay and db
 function filterList(list) {
   list = list.filter(el => !!el.id) // just need those with an id
-  list = list.filter(el => !el.node_type === 'Composition') // ditch compositions
+  // list = list.filter(el => !el.node_type === 'Composition') //. ditch compositions
   return list
 }
 
