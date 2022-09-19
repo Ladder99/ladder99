@@ -58,8 +58,8 @@ export function getNodes(tree, agent) {
   // list.forEach(el => delete el.parent) // remove parent attributes
   // list = list.filter(el => el.id === 'servo_cond')
   list = filterList(list) // only include nodes that have id
-  list = list.filter(el => el.node_type !== 'Composition')
-  console.log('getNodes', list)
+  list = list.filter(el => el.node_type !== 'Composition') //.
+  // console.log('getNodes', list)
   // process.exit(0)
   return list
 }
@@ -317,12 +317,11 @@ function flatten(part, list, parent, tag = 'Document') {
 //   for a Device element, return 'device(abcd-123...)'
 //   for a DataItem element, return 'position-actual'
 function getStep(obj, translations) {
+  const translation = translations[obj.id] // eg 'a'->'axes'
+  if (translation) return translation
   // call the step handler for the given tag, or a fallback handler
   const stepHandler = stepHandlers[obj.tag] || stepHandlers.other
   const step = stepHandler(obj)
-  // handle translation
-  const translation = translations[step]
-  if (translation) return translation
   return step
 }
 

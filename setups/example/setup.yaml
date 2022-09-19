@@ -45,9 +45,9 @@ relay:
         - id: d1 # must match id in agent.xml
           alias: MazakMill12345 # used in path expressions - no spaces!
           # ignore: true # set true to hide device in dashboards, pause recording, etc
-          # dataitem step translations
+          # dataitem step translations - dataitemId->step
           translations:
-            base: axes
+            a: axes
             Cload: load-index
             Sload: load-spindle
           # could ignore or set retention for individual dataitems
