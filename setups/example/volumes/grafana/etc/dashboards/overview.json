@@ -23,8 +23,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 8,
-  "iteration": 1661855856201,
+  "id": 7,
+  "iteration": 1663589407840,
   "links": [
     {
       "asDropdown": false,
@@ -556,12 +556,12 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
-          "text": "Mazak5701/d1",
-          "value": "Mazak5701/d1"
+          "selected": true,
+          "text": "Mazak5701/Mill12345",
+          "value": "Mazak5701/Mill12345"
         },
         "datasource": null,
-        "definition": "select uid from devices order by uid",
+        "definition": "select path from devices order by path",
         "description": null,
         "error": null,
         "hide": 0,
@@ -570,7 +570,7 @@
         "multi": false,
         "name": "device",
         "options": [],
-        "query": "select uid from devices order by uid",
+        "query": "select path from devices order by path",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -587,5 +587,5 @@
   "timezone": "",
   "title": "Overview",
   "uid": "overview",
-  "version": 20
+  "version": 2
 }
