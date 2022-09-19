@@ -33,7 +33,7 @@ export class Db {
         client = await pool.connect() // uses envars PGHOST, PGPORT etc
       } catch (error) {
         console.log(`db error ${error.code} - will sleep before retrying...`)
-        console.log(error)
+        console.log('db', error.message)
         // await lib.sleep(4000)
         await new Promise(resolve => setTimeout(resolve, 4000))
       }

@@ -33,15 +33,12 @@ export class Endpoint {
   // type is 'probe', 'current', or 'sample'.
   // called by data.js
   async fetchJsTree(type, from, count) {
-    let jsTree
+    // get raw text response from endpoint - repeat until no error
+    let response
     do {
       const url = this.getUrl(type, from, count)
       try {
-        const response = await fetch(url)
-        const xml = await response.text()
-        jsTree = convert.xml2js(xml, convertOptions)
-        // console.dir(jsTree, { depth: 5 })
-        // process.exit(0)
+        response = await fetch(url)
       } catch (error) {
         if (error.code === 'ENOTFOUND') {
           console.log(`Relay error - Agent not found at ${url}...`)
@@ -50,15 +47,20 @@ export class Endpoint {
         } else if (error.code === 'EHOSTUNREACH') {
           console.log(`Relay error - Host unreachable at ${url}...`)
         } else {
-          // throw error // don't do this - could have some weird error that kills relay
-          console.error(error)
+          // throw error // don't throw error - would kill relay
+          console.error('Relay error', error)
         }
-      }
-      if (!jsTree) {
-        console.log(`Relay no data available - will wait and try again...`)
+        console.log('Relay error - fetch response', response)
+        console.log(`Relay error - retrying in ${waitTryAgain} ms...`)
         await lib.sleep(waitTryAgain)
       }
-    } while (!jsTree)
+    } while (!response)
+
+    // parse response as xml, convert to a js tree
+    const xml = await response.text()
+    const jsTree = convert.xml2js(xml, convertOptions)
+    // console.dir(jsTree, { depth: 5 })
+    // process.exit(0)
     return jsTree
   }
 
