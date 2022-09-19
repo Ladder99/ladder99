@@ -39,10 +39,10 @@ export async function migrate(db) {
   let currentVersion = (await db.getMetaValue('schema-version')) || 0
   console.log(`Migrate current version`, currentVersion)
   const oldVersion = currentVersion
-  for (let migrationVersion of Object.keys(migrations)) {
+  for (let migrationVersion of Object.keys(migrations.versions)) {
     // note == instead of ===, in case of string value
     if (currentVersion == migrationVersion) {
-      const filenames = migrations[migrationVersion]
+      const filenames = migrations.versions[migrationVersion]
       for (let filename of filenames) {
         const path = `src/migrations/versions/${filename}.sql`
         await readFile(db, path)
