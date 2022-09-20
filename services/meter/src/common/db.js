@@ -163,7 +163,7 @@ export class Db {
   // waits until it's there, in case this is run during setup.
   async getNodeId(path) {
     let result
-    const sql = `select node_id from nodes where props->>'path'='${path}'`
+    const sql = `select node_id from raw.nodes where props->>'path'='${path}'`
     while (true) {
       // need try catch in case db is not migrated yet
       try {
