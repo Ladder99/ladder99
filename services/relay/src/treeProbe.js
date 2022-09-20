@@ -44,11 +44,11 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 // }, ...]
 export function getNodes(tree, agent) {
   const translationIndex = getTranslationIndex(agent) // map device id to device.translations, if any
-  const devices = getDevices(agent) // maps device id->device node
+  const devices = getDevices(agent) // maps device id->device node, if any
   let list = getList(tree) // flatten the tree
   addAgent(list, agent) // add agentAlias from setup to each element
   addDevice(list, devices) // add deviceId and deviceAlias to each element
-  addContext(list) // contextPath = agentAlias[/deviceId], eg 'Main/d1'
+  addContext(list) // contextId = agentAlias[/deviceId], eg 'Main/d1' - use this to lookup device in db
   addUid(list, agent) // uid = agentAlias[/dataitemId], eg 'Main/d1-avail'
   addStep(list, translationIndex) // eg 'system'
   const index = getIndexUidToNode(list) // get index, as used in resolveReferences
@@ -58,8 +58,8 @@ export function getNodes(tree, agent) {
   addNodeType(list) // convert .tag='DataItem' etc to .node_type
   cleanup(list)
   // list.forEach(el => delete el.parent) // remove parent attributes
-  list = list.filter(el => el.id === 'Mazak03-X_2') //..
-  console.log('getNodes', list)
+  // list = list.filter(el => el.id === 'Mazak03-X_2') //..
+  // console.log('getNodes', list)
   // process.exit(0)
   list = filterList(list) // only include nodes that have id
   list = list.filter(el => el.node_type !== 'Composition') //. better way?
@@ -84,6 +84,7 @@ function addAgent(list, agent) {
   }
 }
 
+// get dict of devices as defined in setup.yaml - could be empty
 function getDevices(agent) {
   const devices = {}
   if (agent.devices) {
@@ -98,15 +99,20 @@ function getDevices(agent) {
 function addDevice(nodes, devices) {
   let deviceId
   let deviceAlias
+  const missing = []
   for (let node of nodes) {
     // grab agent or device id and alias
     if (node.tag === 'Agent' || node.tag === 'Device') {
       deviceId = node.id
       deviceAlias = devices[deviceId]?.alias
       if (node.tag === 'Device' && !deviceAlias) {
-        console.log(
-          `Warning: device ${deviceId} has no alias - could add one in setup.yaml`
-        )
+        missing.push(deviceId)
+        // console.dir(node, { depth: 3 })
+        deviceAlias =
+          node.name ||
+          node.description?.value ||
+          node.description?.manufacturer + '_' + node.description?.model
+        deviceAlias = deviceAlias.replace(/ /g, '_')
       }
     }
     // assign each element its ancestor's id in the device attribute.
@@ -115,17 +121,23 @@ function addDevice(nodes, devices) {
     // save device alias too
     if (deviceId && deviceAlias) node.deviceAlias = deviceAlias
   }
+  if (missing.length) {
+    console.log(`
+Relay warning: the following devices have no alias - could add in setup.yaml.
+`)
+    console.log(missing.join('\n'))
+    console.log()
+  }
 }
 
-// add contextPath (agentAlias/deviceAlias) to each element, eg 'Main/Micro'.
-// if it's a device or agent though, contextPath is just agentAlias, eg 'Main'.
+// add contextId (agentAlias/deviceId) to each element, eg 'Main/m'.
+// if it's a device or agent though, contextId is just agentAlias, eg 'Main'.
 function addContext(list) {
   for (let el of list) {
     const isDevice = el.tag === 'Device' || el.tag === 'Agent'
-    let contextPath = el.agentAlias ? el.agentAlias : ''
-    // if (!isDevice) contextPath += el.deviceAlias ? '/' + el.deviceAlias : ''
-    if (!isDevice) contextPath += el.deviceId ? '/' + el.deviceId : ''
-    if (contextPath) el.contextPath = contextPath
+    let contextId = el.agentAlias ? el.agentAlias : ''
+    if (!isDevice) contextId += el.deviceId ? '/' + el.deviceId : ''
+    if (contextId) el.contextId = contextId
   }
 }
 
@@ -157,7 +169,10 @@ function addShortPath(list) {
 function addPath(list) {
   for (let el of list) {
     // el.path = el.agentAlias + '/' + el.shortPath
-    el.path = el.agentAlias + '/' + el.deviceAlias + '/' + el.shortPath
+    el.path = el.agentAlias + (el.shortPath ? '/' + el.shortPath : '')
+    // el.path = el.agentAlias + '/' + el.deviceAlias + '/' + el.shortPath
+    // contextId is agentAlias/deviceId
+    // el.path = el.contextId + (el.shortPath ? '/' + el.shortPath : '')
   }
 }
 
@@ -240,7 +255,7 @@ function resolveReferences(list, index) {
       for (let match of el.step.matchAll(regexp)) {
         const id = match[1] // eg 'Cmotor'
         // const uid = el.agentAlias + '/' + el.deviceId + '/' + id // eg 'main/m1/Cmotor'
-        // const uid = el.contextPath + '/' + id // eg 'main/m1/Cmotor'
+        // const uid = el.contextId + '/' + id // eg 'main/m1/Cmotor'
         const uid = el.agentAlias + '/' + id // eg 'main/Cmotor'
         const node = index[uid] // get the node object
         if (node) {
@@ -352,8 +367,8 @@ const stepHandlers = {
   MTConnectDevices: obj => obj.agentAlias, //.? ''?
   // Agent: obj => obj.deviceId,
   // Device: obj => obj.deviceId,
-  Agent: obj => obj.deviceAlias, //. ?
-  Device: obj => obj.deviceAlias,
+  Agent: obj => obj.deviceAlias || obj.deviceId, //.
+  Device: obj => obj.deviceAlias || obj.deviceId,
   Linear: obj => `linear[${obj.name.toLowerCase()}]`,
   Rotary: obj => `rotary[${obj.name.toLowerCase()}]`,
   DataItem: getDataItemStep,
@@ -426,7 +441,7 @@ export function getIndexes(nodes) {
 export function assignNodeIds(nodes, indexes) {
   nodes.forEach(node => {
     if (node.node_type === 'DataItem') {
-      node.device_id = indexes.nodeByUid[node.contextPath].node_id
+      node.device_id = indexes.nodeByUid[node.contextId].node_id
       node.dataitem_id = indexes.nodeByUid[node.uid].node_id
     }
   })
