@@ -33,21 +33,22 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 //       value: '0.5',
 //     },
 //   },
-//   agentAlias: 'mazak5717',
+//   agentAlias: 'Mazak5717',
 //   deviceId: 'd1',
-//   contextPath: 'mazak5717/d1',
-//   uid: 'mazak5717/rmtmp1',
+//   deviceAlias: 'Mill12345',
+//   contextId: 'Mazak5717/d1',
+//   uid: 'Mazak5717/rmtmp1',
 //   shortPath: 'd1/auxiliaries/environmental/temperature',
-//   path: 'mazak5717/d1/auxiliaries/environmental/temperature',
+//   path: 'Mazak5717/Mill12345/auxiliaries/environmental/temperature',
 //   node_id: 149
 // }, ...]
 export function getNodes(tree, agent) {
-  const translationIndex = getTranslationIndex(agent)
-  const devices = getDevices(agent) // maps id->device
+  const translationIndex = getTranslationIndex(agent) // map device id to device.translations, if any
+  const devices = getDevices(agent) // maps device id->device node
   let list = getList(tree) // flatten the tree
   addAgent(list, agent) // add agentAlias from setup to each element
   addDevice(list, devices) // add deviceId and deviceAlias to each element
-  addContext(list) // contextPath = agentAlias[/deviceAlias], eg 'Main/MazakM123'
+  addContext(list) // contextPath = agentAlias[/deviceId], eg 'Main/d1'
   addUid(list, agent) // uid = agentAlias[/dataitemId], eg 'Main/d1-avail'
   addStep(list, translationIndex) // eg 'system'
   const index = getIndexUidToNode(list) // get index, as used in resolveReferences
@@ -57,11 +58,11 @@ export function getNodes(tree, agent) {
   addNodeType(list) // convert .tag='DataItem' etc to .node_type
   cleanup(list)
   // list.forEach(el => delete el.parent) // remove parent attributes
-  // list = list.filter(el => el.id === 'servo_cond')
+  list = list.filter(el => el.id === 'Mazak03-X_2') //..
+  console.log('getNodes', list)
+  // process.exit(0)
   list = filterList(list) // only include nodes that have id
   list = list.filter(el => el.node_type !== 'Composition') //. better way?
-  // console.log('getNodes', list)
-  // process.exit(0)
   return list
 }
 
@@ -102,6 +103,11 @@ function addDevice(nodes, devices) {
     if (node.tag === 'Agent' || node.tag === 'Device') {
       deviceId = node.id
       deviceAlias = devices[deviceId]?.alias
+      if (node.tag === 'Device' && !deviceAlias) {
+        console.log(
+          `Warning: device ${deviceId} has no alias - could add one in setup.yaml`
+        )
+      }
     }
     // assign each element its ancestor's id in the device attribute.
     // but only if the element has an id - don't need/want it otherwise.
@@ -111,12 +117,13 @@ function addDevice(nodes, devices) {
   }
 }
 
-// add contextPath (agentAlias/deviceId) to each element, eg 'Main/m1'.
+// add contextPath (agentAlias/deviceAlias) to each element, eg 'Main/Micro'.
 // if it's a device or agent though, contextPath is just agentAlias, eg 'Main'.
 function addContext(list) {
   for (let el of list) {
     const isDevice = el.tag === 'Device' || el.tag === 'Agent'
     let contextPath = el.agentAlias ? el.agentAlias : ''
+    // if (!isDevice) contextPath += el.deviceAlias ? '/' + el.deviceAlias : ''
     if (!isDevice) contextPath += el.deviceId ? '/' + el.deviceId : ''
     if (contextPath) el.contextPath = contextPath
   }
@@ -149,7 +156,8 @@ function addShortPath(list) {
 // add a full path to each element, which includes the parents up to the agent
 function addPath(list) {
   for (let el of list) {
-    el.path = el.agentAlias + '/' + el.shortPath
+    // el.path = el.agentAlias + '/' + el.shortPath
+    el.path = el.agentAlias + '/' + el.deviceAlias + '/' + el.shortPath
   }
 }
 
@@ -375,6 +383,7 @@ function getDataItemStep(obj) {
   // add all other available attributes for path, eg coordinateSystem="MACHINE"
   //. what else do we need?
   //. handle discrete=true
+  //. add all attributes in alpha order, minus those already added - type, subtype, cat, etc?
   for (let attribute of attributes) {
     if (obj[attribute]) {
       params.push(obj[attribute])

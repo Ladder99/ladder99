@@ -43,7 +43,7 @@ export class AgentReader {
     probe: do {
       // we pass this.setup also so probe can use translations for dataitem paths
       const probe = new Probe(this.setup, this.agent) // see dataProbe.js
-      await probe.read(this.endpoint) // read xml into probe.js, probe.elements, probe.nodes
+      await probe.read(this.endpoint) // read xml into probe.jsTree, probe.nodes, check for path collisions
       await probe.write(this.db) // write/sync dataitems to db, get probe.indexes
       // console.log('probe', this.agent.alias, probe.indexes)
       // process.exit(0)

@@ -20,11 +20,11 @@ adapter:
         port: 7890 # must match agent.cfg value
 
 # relay service reads this section to know what agents and devices to read data from.
-# warning: don't change the agent aliases (eg main) as they are used to synch data with db (?)
+# warning: don't change the agent aliases (eg main) as they are used to synch data with db.
 relay:
   # retention: 1wk # could specify a top-level retention for all agents here
   agents:
-    - alias: Main # this is an arbitrary assigned to each agent, used by the db - don't change (?)
+    - alias: Main # this is an arbitrary assigned to each agent, used by the db - don't change.
       url: http://agent:5000 # url to the agent
       # ignore: true # can specify this to turn agent recording on/off
       # retention: 2d # could clear all unneeded data at midnight - then vacuum analyze db.
@@ -38,7 +38,7 @@ relay:
           #   - id: m-os
           #     retention: 1d
 
-    - alias: Mazak5701 # arbitrary assigned agent alias - used by db - don't change (?)
+    - alias: Mazak5701 # arbitrary assigned agent alias - used by db - don't change.
       url: http://mtconnect.mazakcorp.com:5701 # url to the agent
       # retention: 1y
       devices:

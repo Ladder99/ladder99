@@ -1,6 +1,8 @@
 // endpoint
 // fetch data from url endpoint as xml/js tree
 
+//. call this agent.js!
+
 import fetch from 'node-fetch' // https://github.com/node-fetch/node-fetch
 import convert from 'xml-js' // convert xml to json https://github.com/nashwaan/xml-js
 import * as lib from './common/lib.js'
