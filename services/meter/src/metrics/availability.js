@@ -43,16 +43,10 @@ const metricIntervalDefault = 60 // seconds
 const resolutions = 'minute,hour,day,week,month,year'.split(',') //. 5min? 15min?
 
 export class Metric {
-  constructor() {
-    this.device = null
-    this.settings = null
-    this.db = null
-    this.interval = null
-    this.timer = null
-  }
-
+  //
   async start({ client, db, device, settings }) {
-    console.log(`Availability - initialize availability metric`, settings)
+    this.me = `Availability ${device.alias}:`
+    console.log(this.me, `initialize`, settings)
     this.client = client
     this.db = db
     this.device = device
@@ -65,16 +59,11 @@ export class Metric {
     // there's probably a better way to do this with luxon, but this is the simplest change.
     const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
     this.timezoneOffset = offsetMinutes * 60 * 1000 // ms
-    console.log(
-      `Availability tz, offset`,
-      this.device.name,
-      client.timezone,
-      offsetMinutes
-    )
+    console.log(this.me, `tz, offset`, client.timezone, offsetMinutes)
 
-    console.log(`Availability - get device node_id...`)
+    console.log(this.me, `waiting to get device node_id...`)
     this.device.node_id = await this.db.getDeviceId(device.name) // repeats until device is there
-    console.log(this.device)
+    console.log(this.me, `node_id`, this.device)
 
     //. poll for schedule info, save to this - set up timer for every 10mins?
     // pollSchedule vs pollMetrics?
@@ -91,9 +80,7 @@ export class Metric {
   }
 
   async backfill() {
-    const deviceName = this.device.name
-
-    console.log(`Availability ${deviceName} - backfilling missed dates...`)
+    console.log(this.me, `backfilling missed dates...`)
 
     const now = new Date()
     const defaultStart = new Date(now.getTime() - backfillDefaultStart) // eg 60d ago
@@ -108,9 +95,9 @@ export class Metric {
     `
     const result = await this.db.query(sql)
     const lastRead = result.rows.length > 0 && result.rows[0].time
-    console.log(`Availability ${deviceName} - lastRead`, lastRead)
+    console.log(this.me, `lastRead`, lastRead)
     const startBackfill = lastRead ? new Date(lastRead) : defaultStart
-    console.log(`Availability ${deviceName} - startBackfill`, startBackfill)
+    console.log(this.me, `startBackfill`, startBackfill)
 
     // get list of start/stop times since then, in order
     const sql2 = `
@@ -137,14 +124,14 @@ export class Metric {
         startStopTimes[minute] = row.path
       }
     }
-    console.log(`Availability ${deviceName} - dict`, startStopTimes)
+    console.log(this.me, `dict`, startStopTimes)
 
     // loop from startstart to now, interval 1 min
     // check for active and available
     // write to bins table those values
     const startMinute = Math.floor(startBackfill.getTime() / minutes)
     const nowMinute = Math.floor(now.getTime() / minutes)
-    console.log(`Availability ${deviceName} start, now`, startMinute, nowMinute)
+    console.log(this.me, `start, now`, startMinute, nowMinute)
     let state = null
     for (let minute = startMinute; minute < nowMinute; minute++) {
       // console.log(`Availability - backfill minute`, minute)
@@ -171,7 +158,7 @@ export class Metric {
         await this.incrementBins(time, 'available')
       }
     }
-    console.log(`Availability ${deviceName} - backfill done`)
+    console.log(this.me, `backfill done`)
   }
 
   // ----------------------------
@@ -180,7 +167,7 @@ export class Metric {
   async poll() {
     const deviceName = this.device.name
 
-    console.log(`Availability ${deviceName} - poll db and update bins`)
+    console.log(this.me, `poll db and update bins`)
     const now = new Date()
 
     // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ..., holiday }
@@ -213,7 +200,7 @@ export class Metric {
     const stop = now
     const deviceWasActive = await this.getActive(start, stop)
     if (deviceWasActive) {
-      console.log(`Availability ${deviceName} - increasing active bin`)
+      console.log(this.me, `increasing active bin`)
       await this.incrementBins(now, 'active')
     }
     if (isDuringShift) {

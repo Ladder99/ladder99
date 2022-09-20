@@ -31,7 +31,7 @@ async function start() {
   const agents = (setup.relay || {}).agents || [] // list of agents, each with list of devices
   for (let agent of agents) {
     const agentAlias = agent.alias
-    const devices = agent.devices || []
+    const devices = agent.devices || [] // [{ id, alias, ... }, ...]
     for (let device of devices) {
       // eg 'availability'
       const deviceAlias = device.alias
