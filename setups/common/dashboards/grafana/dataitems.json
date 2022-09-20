@@ -23,7 +23,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
-  "iteration": 1663587954059,
+  "iteration": 1663689694240,
   "links": [
     {
       "asDropdown": false,
@@ -273,12 +273,12 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
-          "text": "Main/Micro",
-          "value": "Main/Micro"
+          "selected": true,
+          "text": "Mazak5701/Mill12345",
+          "value": "Mazak5701/Mill12345"
         },
         "datasource": null,
-        "definition": "select uid from devices",
+        "definition": "select path from devices",
         "description": "Device Name",
         "error": null,
         "hide": 0,
@@ -287,7 +287,7 @@
         "multi": false,
         "name": "device",
         "options": [],
-        "query": "select uid from devices",
+        "query": "select path from devices",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -297,7 +297,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
+          "selected": true,
           "text": ["All"],
           "value": ["$__all"]
         },
@@ -328,5 +328,5 @@
   "timezone": "",
   "title": "DataItems",
   "uid": "dataitems",
-  "version": 5
+  "version": 2
 }
