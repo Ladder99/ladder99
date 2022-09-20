@@ -161,14 +161,19 @@ export class Db {
 
   //. merge these into getNodeId(path)? search raw.nodes where props->>'path' = path.
 
-  // get device node_id associated with a device path, eg 'Main/Micro'.
+  // get node_id associated with a path, eg 'Main/Micro/availability'.
   // waits until it's there, in case this is run during setup.
-  async getDeviceId(devicePath) {
+  async getNodeId(path) {
     let result
+    const sql = `select node_id from nodes where props->>'path'='${path}'`
     while (true) {
-      const sql = `select node_id from devices where path='${devicePath}'`
-      result = await this.client.query(sql)
-      if (result.rows.length > 0) break
+      // need try catch in case db is not migrated yet
+      try {
+        result = await this.client.query(sql)
+      } catch (error) {
+        console.log(error.message)
+      }
+      if (result?.rows?.length > 0) break
       await new Promise(resolve => setTimeout(resolve, 5000)) // wait 5 secs
     }
     return result.rows[0].node_id
@@ -178,11 +183,16 @@ export class Db {
   // waits until it's there, in case this is run during setup.
   async getDataItemId(path) {
     let result
+    const sql = `select node_id from dataitems where path='${path}'`
     while (true) {
-      const sql = `select node_id from dataitems where path='${path}'`
-      result = await this.client.query(sql)
-      if (result.rows.length > 0) break
-      await new Promise(resolve => setTimeout(resolve, 4000)) // wait 4 secs
+      // need try catch in case db is not migrated yet
+      try {
+        result = await this.client.query(sql)
+      } catch (error) {
+        console.log(error.message)
+      }
+      if (result?.rows?.length > 0) break
+      await new Promise(resolve => setTimeout(resolve, 5000)) // wait 5 secs
     }
     return result.rows[0].node_id
   }

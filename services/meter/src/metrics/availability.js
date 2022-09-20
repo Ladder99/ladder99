@@ -63,7 +63,7 @@ export class Metric {
     console.log(this.me, `tz, offset`, client.timezone, offsetMinutes)
 
     console.log(this.me, `getting device node_id...`)
-    this.device.node_id = await this.db.getDeviceId(device.path) // repeats until device is there
+    this.device.node_id = await this.db.getNodeId(device.path) // repeats until device is there
     console.log(this.me, `node_id`, this.device.node_id)
 
     //. poll for schedule info, save to this - set up timer for every 10mins?

@@ -18,11 +18,12 @@ export class Metric {
     console.log(`Count ${deviceName} - start metric...`)
 
     console.log(`Count ${deviceName} - get device node_id...`)
-    this.device_id = await this.db.getDeviceId(device.name) // repeats until device is there
+    this.device_id = await this.db.getNodeId(device.path) // repeats until device is there
 
     // need this dataitemId as we'll be writing directly to the history table
     console.log(`Count ${deviceName} - get dataitem_id...`)
-    this.lifetime_id = await this.db.getDataItemId(metric.lifetimePath) // repeat until dataitem there
+    const path = `${device.path}/${metric.lifetimePath}`
+    this.lifetime_id = await this.db.getNodeId(path) // repeat until dataitem there
 
     // get polling interval - either from metric in setup yaml or default value
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
