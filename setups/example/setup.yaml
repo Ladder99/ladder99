@@ -4,7 +4,7 @@ client:
   name: Example # not used yet
   timezone: America/Chicago # currently used by adapter jobboss driver and meter availability.js
 
-# ladder99 adapter reads this section to know what devices to poll/subscribe to.
+# adapter service reads this section to know what devices to poll/subscribe to.
 adapter:
   devices:
     - id: m # must match id in agent.xml
@@ -19,7 +19,7 @@ adapter:
         host: adapter # must match agent.cfg value
         port: 7890 # must match agent.cfg value
 
-# ladder99 relay reads this section to know what agents and devices to read data from.
+# relay service reads this section to know what agents and devices to read data from.
 # warning: don't change the agent aliases (eg main) as they are used to synch data with db (?)
 relay:
   # retention: 1wk # could specify a top-level retention for all agents here
@@ -62,8 +62,7 @@ relay:
             d1-total_auto_cut_time:
               ignore: true
 
-# ladder99 meter service reads this section
-# it also reads the relay section to know what agents and devices to read data from
+# meter service reads this section, AND the relay section for list of agents and devices.
 meter:
   defaults:
     # availability.js plugin defaults
@@ -95,5 +94,7 @@ meter:
     #   valuePath: processes/life/part_count-all
     #.   ratePath: controller/partOccurrence/part_count-rate
 
-  #. could have overrides per agent / device here - eg turn off for micro
-  # overrides:
+  # set overrides per agent/device/plugin here
+  overrides:
+    Main/Micro:
+      ignore: true
