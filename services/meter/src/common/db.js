@@ -25,15 +25,15 @@ export class Db {
     const pool = new Pool()
     do {
       try {
-        console.log(`Trying to connect to db...`, {
+        console.log(`db trying to connect to db...`, {
           host: process.env.PGHOST,
           port: process.env.PGPORT,
           database: process.env.PGDATABASE,
         })
         client = await pool.connect() // uses envars PGHOST, PGPORT etc
       } catch (error) {
-        console.log(`Error ${error.code} - will sleep before retrying...`)
-        console.log(error)
+        console.log(`db error ${error.code} - will sleep before retrying...`)
+        console.log('db', error.message)
         // await lib.sleep(4000)
         await new Promise(resolve => setTimeout(resolve, 4000))
       }
@@ -54,7 +54,7 @@ export class Db {
     function getShutdown(signal) {
       return error => {
         console.log()
-        console.log(`Signal ${signal} received - shutting down...`)
+        console.log(`db signal ${signal} received - shutting down...`)
         if (error) console.error(error.stack || error)
         that.disconnect()
         process.exit(error ? 1 : 0)
@@ -64,7 +64,7 @@ export class Db {
 
   disconnect() {
     if (!this.client) {
-      console.log(`Releasing db client...`)
+      console.log(`db releasing db client...`)
       this.client.release()
     }
   }
@@ -81,36 +81,42 @@ export class Db {
     // }
   }
 
-  // add a node to nodes table - if already there, return node_id of existing record.
-  // uses node.path to determine uniqueness and look up record.
+  // add a node to nodes table - if already there, update existing values.
+  // always return node_id.
+  // uses node.uid to look up record.
   // assumes nodes table has a unique index on that json prop.
-  async add(node) {
-    try {
-      const values = `'${JSON.stringify(node)}'`
-      const sql = `INSERT INTO nodes (props) VALUES (${values}) RETURNING node_id;`
-      console.log(sql)
-      const res = await this.query(sql)
-      // @ts-ignore
-      const { node_id } = res.rows[0]
-      return node_id
-    } catch (error) {
-      // eg error: duplicate key value violates unique constraint "nodes_path"
-      // detail: "Key ((props ->> 'path'::text))=(Device(e05363af-95d1-4354-b749-8fbb09d3499e)) already exists.",
-      // console.log(error)
-      if (error.code === '23505') {
-        console.log(`property already there - looking up:  ${node.path}`)
-        const sql = `SELECT node_id FROM nodes WHERE props->>'path' = $1::text;`
-        console.log(sql, node.path)
-        const res = await this.query(sql, [node.path])
-        // @ts-ignore
-        const { node_id } = res.rows[0]
-        console.log('got', node_id)
-        return node_id
-      } else {
-        console.log(error)
-      }
-    }
+  //. use ON CONFLICT to return existing node_id
+  //. distribute this to other svcs
+  async upsert(node) {
+    const values = `'${JSON.stringify(node)}'`
+    // old version had a unique key on path, which would give conflict if exists.
+    // so we need a unique key on uid.
+    const sql = `
+        insert into raw.nodes (props) values (${values}) 
+          on conflict ((props->>'uid')) do
+            update set props = (${values}) 
+              returning node_id;`
+    console.log(`db upsert node`, node.path, node.uid)
+    const res = await this.query(sql)
+    const node_id = res.rows[0]?.node_id
+    return node_id
   }
+
+  // async addNode(node) {
+  //   const values = `'${JSON.stringify(node)}'`
+  //   const sql = `INSERT INTO raw.nodes (props) VALUES (${values}) RETURNING node_id;`
+  //   const res = await this.query(sql)
+  //   const { node_id } = res.rows[0]
+  //   return node_id
+  // }
+
+  // async getNodeId(node) {
+  //   const sql = `SELECT node_id FROM raw.nodes WHERE props->>'path' = $1::text;`
+  //   console.log(`db get node_id for`, node.path)
+  //   const res = await this.query(sql, [node.path])
+  //   const { node_id } = res.rows[0]
+  //   return node_id
+  // }
 
   // add an array of records to the history table
   // each record should be { node_id, dataitem_id, time, value },
@@ -133,7 +139,7 @@ export class Db {
         record.value,
       ])
       const sql = pgFormat(
-        `INSERT INTO history (node_id, dataitem_id, time, value) VALUES %L;`,
+        `INSERT INTO raw.history (node_id, dataitem_id, time, value) VALUES %L;`,
         values
       )
       // console.log(sql.slice(0, 100))
@@ -151,10 +157,10 @@ export class Db {
   //. merge with addHistory, or rename to writeHistoryRecord?
   async writeHistory(device_id, dataitem_id, time, value) {
     const sql = `
-      insert into history (node_id, dataitem_id, time, value)
+      insert into raw.history (node_id, dataitem_id, time, value)
       values (${device_id}, ${dataitem_id}, '${time}', '${value}'::jsonb);
     `
-    console.log('db - write', device_id, dataitem_id, time, value)
+    console.log('db write', device_id, dataitem_id, time, value)
     const result = await this.query(sql)
     return result
   }
@@ -186,6 +192,7 @@ export class Db {
   }
 
   // get latest value of a device's property path
+  // table should be history_all, _float, _text
   async getLatestValue(table, device, path) {
     const sql = `
       select value
@@ -282,7 +289,7 @@ export class Db {
 
   async getMetaValue(key) {
     // get value of key-value pair from meta table
-    const sql = `select value from meta where name=$1`
+    const sql = `select value from raw.meta where name=$1`
     try {
       const result = await this.query(sql, [key])
       const value = result.rows.length > 0 && result.rows[0]['value'] // colname must match case
@@ -295,8 +302,10 @@ export class Db {
   async setMetaValue(key, value) {
     // upsert key-value pair to meta table
     const sql = `
-      insert into meta (name, value) values ($1, $2::jsonb)
-      on conflict (name) do update set value = $2;
+      insert into raw.meta (name, value) 
+        values ($1, $2::jsonb)
+          on conflict (name) do 
+            update set value = $2;
     `
     const result = await this.query(sql, [key, value])
     return result
