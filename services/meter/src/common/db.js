@@ -34,7 +34,6 @@ export class Db {
       } catch (error) {
         console.log(`db error ${error.code} - will sleep before retrying...`)
         console.log('db', error.message)
-        // await lib.sleep(4000)
         await new Promise(resolve => setTimeout(resolve, 4000))
       }
     } while (!client)
@@ -73,12 +72,7 @@ export class Db {
   //. added try catch for adapter in case crashed,
   // then removed as it broke code as in this.add(node).
   async query(sql, options) {
-    // try {
     return await this.client.query(sql, options)
-    // } catch (error) {
-    //   console.log(error)
-    //   throw error
-    // }
   }
 
   // add a node to nodes table - if already there, update existing values.
@@ -165,15 +159,17 @@ export class Db {
     return result
   }
 
-  // get device node_id associated with a device name.
+  //. merge these into getNodeId(path)? search raw.nodes where props->>'path' = path.
+
+  // get device node_id associated with a device path, eg 'Main/Micro'.
   // waits until it's there, in case this is run during setup.
-  async getDeviceId(deviceName) {
+  async getDeviceId(devicePath) {
     let result
     while (true) {
-      const sql = `select node_id from devices where name='${deviceName}'`
+      const sql = `select node_id from devices where path='${devicePath}'`
       result = await this.client.query(sql)
       if (result.rows.length > 0) break
-      await new Promise(resolve => setTimeout(resolve, 4000)) // wait 4 secs
+      await new Promise(resolve => setTimeout(resolve, 5000)) // wait 5 secs
     }
     return result.rows[0].node_id
   }
@@ -191,13 +187,15 @@ export class Db {
     return result.rows[0].node_id
   }
 
-  // get latest value of a device's property path
-  // table should be history_all, _float, _text
+  // get latest value of a device's property path.
+  // table should be one of history_all, _float, _text.
+  // device should include path property, eg 'Main/Micro'
+  // path should be eg 'Main/Micro/availability'
   async getLatestValue(table, device, path) {
     const sql = `
       select value
       from ${table}
-      where device='${device.name}' and path='${path}'
+      where device='${device.path}' and path='${path}'
       order by time desc
       limit 1;
     `

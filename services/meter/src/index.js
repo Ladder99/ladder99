@@ -30,28 +30,25 @@ async function start() {
   // iterate over agents and their devices, as specified in RELAY section
   const agents = (setup.relay || {}).agents || [] // list of agents, each with list of devices
   for (let agent of agents) {
-    const agentAlias = agent.alias
     const devices = agent.devices || [] // [{ id, alias, ... }, ...]
     for (let device of devices) {
-      // eg 'availability'
-      const deviceAlias = device.alias
-      const agentDevice = `${agentAlias}/${deviceAlias}`
+      device.path = `${agent.alias}/${device.alias}`
       const meterKeys = Object.keys(defaults) // list of meter keys, eg ['availability', ...]
       for (let meterKey of meterKeys) {
         const defaultSettings = defaults[meterKey] || {}
-        const overrideSettings = overrides[agentDevice] || {}
+        const overrideSettings = overrides[device.path] || {}
         const settings = { ...defaultSettings, ...overrideSettings }
         const { ignore } = settings
         if (ignore) continue
 
         // import metric plugin
         const pathMetric = `${metricsFolder}/${meterKey}.js` // eg './metrics/availability.js'
-        console.log(`Meter - importing ${pathMetric}...`)
+        console.log(`Meter ${device.path} importing ${pathMetric}...`)
         const { Metric } = await import(pathMetric)
         const plugin = new Metric()
 
         // start it up - poll db as needed
-        console.log(`Meter - starting ${device.alias} ${meterKey}...`)
+        console.log(`Meter ${device.path} starting ${meterKey}...`)
         plugin.start({ client, db, device, settings })
       }
     }

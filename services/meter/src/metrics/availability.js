@@ -38,14 +38,15 @@ const minutes = 60 * 1000 // 60 ms
 const hours = 60 * minutes
 const days = 24 * hours
 
-const backfillDefaultStart = 60 * days // ie look this far back for first backfill date, by default
+// const backfillDefaultStart = 60 * days // ie look this far back for first backfill date, by default
+const backfillDefaultStart = 2 * days // ie look this far back for first backfill date, by default
 const metricIntervalDefault = 60 // seconds
 const resolutions = 'minute,hour,day,week,month,year'.split(',') //. 5min? 15min?
 
 export class Metric {
   //
   async start({ client, db, device, settings }) {
-    this.me = `Availability ${device.alias}:`
+    this.me = `Availability ${device.path}:`
     console.log(this.me, `initialize`, settings)
     this.client = client
     this.db = db
@@ -61,15 +62,15 @@ export class Metric {
     this.timezoneOffset = offsetMinutes * 60 * 1000 // ms
     console.log(this.me, `tz, offset`, client.timezone, offsetMinutes)
 
-    console.log(this.me, `waiting to get device node_id...`)
-    this.device.node_id = await this.db.getDeviceId(device.name) // repeats until device is there
-    console.log(this.me, `node_id`, this.device)
+    console.log(this.me, `getting device node_id...`)
+    this.device.node_id = await this.db.getDeviceId(device.path) // repeats until device is there
+    console.log(this.me, `node_id`, this.device.node_id)
 
     //. poll for schedule info, save to this - set up timer for every 10mins?
     // pollSchedule vs pollMetrics?
 
     // get polling interval - either from metric in setup yaml or default value
-    this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
+    this.interval = (settings.interval || metricIntervalDefault) * 1000 // ms
 
     // // get overtime active interval
     // this.overtimeActiveInterval = 5 * minutes // ms //. pass through the metric as above
@@ -83,7 +84,7 @@ export class Metric {
     console.log(this.me, `backfilling missed dates...`)
 
     const now = new Date()
-    const defaultStart = new Date(now.getTime() - backfillDefaultStart) // eg 60d ago
+    const defaultStart = new Date(now.getTime() - backfillDefaultStart) // eg 30d ago
 
     // get starting point by finding most recent record in bins
     const sql = `
@@ -95,12 +96,13 @@ export class Metric {
     `
     const result = await this.db.query(sql)
     const lastRead = result.rows.length > 0 && result.rows[0].time
-    console.log(this.me, `lastRead`, lastRead)
-    const startBackfill = lastRead ? new Date(lastRead) : defaultStart
-    console.log(this.me, `startBackfill`, startBackfill)
+    console.log(this.me, `lastRead`, lastRead) // will be false if NO data in bins
+    if (lastRead) {
+      const startBackfill = lastRead ? new Date(lastRead) : defaultStart
+      console.log(this.me, `startBackfill`, startBackfill)
 
-    // get list of start/stop times since then, in order
-    const sql2 = `
+      // get alternating list of start/stop times since then, in order
+      const sql2 = `
       select time, path, value
       from history_all
       where
@@ -109,64 +111,63 @@ export class Metric {
         and time >= '${startBackfill.toISOString()}'
       order by time asc;
     `
-    const result2 = await this.db.query(sql2)
+      const result2 = await this.db.query(sql2)
 
-    // loop over start/stop times, add to a dict
-    // row.value is sthing like '2022-01-27T05:00:00' with NO Z -
-    // ie it's 'local' time, which can only be interpreted correctly by
-    // knowing the client's timezone. so need to subtract that offset
-    const startStopTimes = {}
-    for (let row of result2.rows) {
-      const localTime = row.value
-      const time = new Date(localTime).getTime() - this.timezoneOffset
-      if (!isNaN(time)) {
-        const minute = Math.floor(time / minutes)
-        startStopTimes[minute] = row.path
+      // loop over start/stop times, add to a dict.
+      const startStopTimes = {} // map from minute to path
+      for (let row of result2.rows) {
+        // row.value is sthing like '2022-01-27T05:00:00' with NO Z -
+        // ie it's 'local' time, which can only be interpreted correctly by
+        // knowing the client's timezone. so need to subtract that offset
+        const localTime = row.value
+        const time = new Date(localTime).getTime() - this.timezoneOffset
+        if (!isNaN(time)) {
+          const minute = Math.floor(time / minutes)
+          startStopTimes[minute] = row.path
+        }
       }
-    }
-    console.log(this.me, `dict`, startStopTimes)
+      console.log(this.me, `startStopTimes`, startStopTimes)
 
-    // loop from startstart to now, interval 1 min
-    // check for active and available
-    // write to bins table those values
-    const startMinute = Math.floor(startBackfill.getTime() / minutes)
-    const nowMinute = Math.floor(now.getTime() / minutes)
-    console.log(this.me, `start, now`, startMinute, nowMinute)
-    let state = null
-    for (let minute = startMinute; minute < nowMinute; minute++) {
-      // console.log(`Availability - backfill minute`, minute)
-      const path = startStopTimes[minute]
-      if (path === this.settings.startPath) {
-        state = 1
-      } else if (path === this.settings.stopPath) {
-        state = 0
-      }
-      // if (state) {
-      //   const time = new Date(minute * minutes)
-      //   await this.updateBins(time, this.interval)
-      // }
-      // 2022-08-03 handle overtime by allowing active minutes outside of shift hours
-      // check for events in previous n secs, eg 60
-      const time = new Date(minute * minutes)
-      const start = new Date(time.getTime() - 1 * minutes)
-      const stop = time
-      const deviceWasActive = await this.getActive(start, stop)
-      if (deviceWasActive) {
-        await this.incrementBins(time, 'active')
-      }
-      if (state) {
-        await this.incrementBins(time, 'available')
+      // loop from start to now, interval 1 min
+      // check for active and available
+      // write to bins table those values
+      const startMinute = Math.floor(startBackfill.getTime() / minutes)
+      const nowMinute = Math.floor(now.getTime() / minutes)
+      console.log(this.me, `loop start to now minutes`, startMinute, nowMinute)
+      let state = null
+      for (let minute = startMinute; minute < nowMinute; minute++) {
+        // console.log(`Availability - backfill minute`, minute)
+        const path = startStopTimes[minute]
+        if (path === this.settings.startPath) {
+          state = 2
+        } else if (path === this.settings.stopPath) {
+          state = 1
+        } else {
+          state = null
+        }
+        if (state) {
+          // 2022-08-03 handle overtime by allowing active minutes outside of shift hours
+          // check for events in previous n secs, eg 60
+          const time = new Date(minute * minutes)
+          const start = new Date(time.getTime() - 1 * minutes)
+          const stop = time
+          const deviceWasActive = await this.getActive(start, stop)
+          if (deviceWasActive) {
+            await this.incrementBins(time, 'active')
+          }
+          if (state === 2) {
+            await this.incrementBins(time, 'available')
+          }
+        }
       }
     }
     console.log(this.me, `backfill done`)
   }
 
-  // ----------------------------
+  //
 
   // poll db and update bins - called by timer
   async poll() {
-    const deviceName = this.device.name
-
     console.log(this.me, `poll db and update bins`)
     const now = new Date()
 
@@ -262,7 +263,7 @@ export class Metric {
       select count(value) > 0 as active
       from history_float
       where
-        device = '${this.device.name}'
+        device = '${this.device.path}'
         and path = '${this.settings.activePath}'
         and time between '${start.toISOString()}' and '${stop.toISOString()}'
       limit 1;
