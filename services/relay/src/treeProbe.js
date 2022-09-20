@@ -42,7 +42,7 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 //   path: 'Mazak5717/Mill12345/auxiliaries/environmental/temperature',
 //   node_id: 149
 // }, ...]
-export function getNodes(tree, agent) {
+export async function getNodes(tree, agent) {
   const translationIndex = getTranslationIndex(agent) // map device id to device.translations, if any
   const devices = getDevices(agent) // maps device id->device node, if any
   let list = getList(tree) // flatten the tree
@@ -63,6 +63,10 @@ export function getNodes(tree, agent) {
   // process.exit(0)
   list = filterList(list) // only include nodes that have id
   list = list.filter(el => el.node_type !== 'Composition') //. better way?
+  // check for path collisions - in which case stop the service with a message
+  // to add translation step to setup.yaml.
+  const collisions = await getPathCollisions(list)
+  handleCollisions(collisions)
   return list
 }
 
@@ -445,4 +449,67 @@ export function assignNodeIds(nodes, indexes) {
       node.dataitem_id = indexes.nodeByUid[node.uid].node_id
     }
   })
+}
+
+// get list of path collisions
+async function getPathCollisions(nodes) {
+  // get dict with path=>[node1, node2, ...]
+  const pathNodes = {}
+  for (let node of nodes) {
+    if (pathNodes[node.path]) {
+      pathNodes[node.path].push(node)
+    } else {
+      pathNodes[node.path] = [node]
+    }
+  }
+  // get list of collisions
+  const collisions = []
+  for (let key of Object.keys(pathNodes)) {
+    if (pathNodes[key].length > 1) {
+      collisions.push(pathNodes[key])
+    }
+  }
+  return collisions
+}
+
+async function handleCollisions(collisions) {
+  if (collisions.length > 0) {
+    console.log(`
+Relay error: The following dataitems have duplicate paths, 
+ie same positions in the XML tree and type+subtype. 
+Please add translations for them in setup.yaml for this project.
+
+eg with the following output,
+  [
+    [
+      { id: 'Cload', path: 'Mazak5701/d1/base/rotary[c]/load' },
+      { id: 'Sload', path: 'Mazak5701/d1/base/rotary[c]/load' }
+    ]
+  ]
+
+you could add the following translation block to setup.yaml:
+  relay:
+    agents:
+      - alias: Mazak5701
+        url: http://mtconnect.mazakcorp.com:5701
+        devices:
+          - id: d1
+            alias: MazakMill12345
+            translations:
+              Cload: load-index
+              Sload: load-spindle
+
+giving the following unique paths -
+  Mazak5701/d1/base/rotary[c]/load-index
+  Mazak5701/d1/base/rotary[c]/load-spindle
+`)
+    // console.log(collisions)
+    console.log(
+      collisions.map(collision =>
+        collision.map(node => ({ id: node.id, path: node.path }))
+      )
+    )
+    await new Promise(resolve => setTimeout(resolve, 5000)) // pause
+    process.exit(1)
+  }
 }
