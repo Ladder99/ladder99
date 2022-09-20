@@ -45,18 +45,18 @@ const resolutions = 'minute,hour,day,week,month,year'.split(',') //. 5min? 15min
 export class Metric {
   constructor() {
     this.device = null
-    this.metric = null
+    this.settings = null
     this.db = null
     this.interval = null
     this.timer = null
   }
 
-  async start({ client, db, device, metric }) {
-    console.log(`Availability - initialize availability metric...`)
+  async start({ client, db, device, settings }) {
+    console.log(`Availability - initialize availability metric`, settings)
     this.client = client
     this.db = db
     this.device = device
-    this.metric = metric
+    this.settings = settings
 
     // get timezone offset from Zulu in milliseconds
     // this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
@@ -118,7 +118,7 @@ export class Metric {
       from history_all
       where
         device = '${this.device.name}'
-        and path in ('${this.metric.startPath}', '${this.metric.stopPath}')
+        and path in ('${this.settings.startPath}', '${this.settings.stopPath}')
         and time >= '${startBackfill.toISOString()}'
       order by time asc;
     `
@@ -149,9 +149,9 @@ export class Metric {
     for (let minute = startMinute; minute < nowMinute; minute++) {
       // console.log(`Availability - backfill minute`, minute)
       const path = startStopTimes[minute]
-      if (path === this.metric.startPath) {
+      if (path === this.settings.startPath) {
         state = 1
-      } else if (path === this.metric.stopPath) {
+      } else if (path === this.settings.stopPath) {
         state = 0
       }
       // if (state) {
@@ -248,7 +248,7 @@ export class Metric {
       new Date(new Date(text).getTime() - this.timezoneOffset)
     const table = 'history_text'
     const device = this.device
-    const { startPath, stopPath } = this.metric
+    const { startPath, stopPath } = this.settings
     // note: these can return 'UNAVAILABLE' or 'HOLIDAY', in which case,
     // schedule.start etc will be 'Invalid Date'.
     // any comparison with those will yield false.
@@ -276,7 +276,7 @@ export class Metric {
       from history_float
       where
         device = '${this.device.name}'
-        and path = '${this.metric.activePath}'
+        and path = '${this.settings.activePath}'
         and time between '${start.toISOString()}' and '${stop.toISOString()}'
       limit 1;
     `

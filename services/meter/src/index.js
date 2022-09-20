@@ -28,13 +28,17 @@ async function start() {
   const meterKeys = Object.keys(defaults) // list of meter keys, eg ['availability', ...]
   const overrides = meter.overrides || {} // overrides per device
 
-  // iterate over agents and their devices, as specified in relay section
-  const agents = setup.relay || [] // list of agents, each with list of devices
+  // iterate over agents and their devices, as specified in RELAY section
+  const agents = (setup.relay || {}).agents || [] // list of agents, each with list of devices
   for (let agent of agents) {
     const devices = agent.devices || []
     for (let device of devices) {
+      // eg 'availability'
       for (let meterKey of meterKeys) {
-        const settings = { ...defaults[meterKey], ...overrides[device.id] } //. .id? alias?
+        const defaultSettings = defaults[meterKey] || {}
+        // const overrideSettings = (overrides[device.uid] || {})[meterKey] || {} //. .id? uid?
+        const overrideSettings = {} //.
+        const settings = { ...defaultSettings, ...overrideSettings }
 
         // import metric plugin
         const pathMetric = `${metricsFolder}/${meterKey}.js` // eg './metrics/availability.js'
