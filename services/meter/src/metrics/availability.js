@@ -53,6 +53,10 @@ export class Metric {
     this.device = device
     this.settings = settings
 
+    this.activeFullPath = `${device.path}/${settings.activePath}`
+    this.startFullPath = `${device.path}/${settings.startPath}`
+    this.stopFullPath = `${device.path}/${settings.stopPath}`
+
     // get timezone offset from Zulu in milliseconds
     // this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
     // use timezone string like 'America/Chicago' instead of a hardcoded offset like -5.
@@ -106,8 +110,8 @@ export class Metric {
       select time, path, value
       from history_all
       where
-        device = '${this.device.name}'
-        and path in ('${this.settings.startPath}', '${this.settings.stopPath}')
+        device = '${this.device.path}'
+        and path in ('${this.startFullPath}', '${this.stopFullPath}')
         and time >= '${startBackfill.toISOString()}'
       order by time asc;
     `
@@ -138,9 +142,9 @@ export class Metric {
       for (let minute = startMinute; minute < nowMinute; minute++) {
         // console.log(`Availability - backfill minute`, minute)
         const path = startStopTimes[minute]
-        if (path === this.settings.startPath) {
+        if (path === this.startFullPath) {
           state = 2
-        } else if (path === this.settings.stopPath) {
+        } else if (path === this.stopFullPath) {
           state = 1
         } else {
           state = null
@@ -236,13 +240,21 @@ export class Metric {
       new Date(new Date(text).getTime() - this.timezoneOffset)
     const table = 'history_text'
     const device = this.device
-    const { startPath, stopPath } = this.settings
+    // const { startPath, stopPath } = this.settings
     // note: these can return 'UNAVAILABLE' or 'HOLIDAY', in which case,
     // schedule.start etc will be 'Invalid Date'.
     // any comparison with those will yield false.
     //. search for a given date, not latest value [why?]
-    const startText = await this.db.getLatestValue(table, device, startPath)
-    const stopText = await this.db.getLatestValue(table, device, stopPath)
+    const startText = await this.db.getLatestValue(
+      table,
+      device,
+      this.startFullPath
+    )
+    const stopText = await this.db.getLatestValue(
+      table,
+      device,
+      this.stopFullPath
+    )
     const holiday = getHoliday(startText) || getHoliday(stopText) // 'HOLIDAY' or undefined
     const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
     const stop = holiday || getDate(stopText)
@@ -264,7 +276,7 @@ export class Metric {
       from history_float
       where
         device = '${this.device.path}'
-        and path = '${this.settings.activePath}'
+        and path = '${this.activeFullPath}'
         and time between '${start.toISOString()}' and '${stop.toISOString()}'
       limit 1;
     `

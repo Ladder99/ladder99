@@ -159,8 +159,6 @@ export class Db {
     return result
   }
 
-  //. merge these into getNodeId(path)? search raw.nodes where props->>'path' = path.
-
   // get node_id associated with a path, eg 'Main/Micro/availability'.
   // waits until it's there, in case this is run during setup.
   async getNodeId(path) {
@@ -179,28 +177,10 @@ export class Db {
     return result.rows[0].node_id
   }
 
-  // get node_id associated with a dataitem path.
-  // waits until it's there, in case this is run during setup.
-  async getDataItemId(path) {
-    let result
-    const sql = `select node_id from dataitems where path='${path}'`
-    while (true) {
-      // need try catch in case db is not migrated yet
-      try {
-        result = await this.client.query(sql)
-      } catch (error) {
-        console.log(error.message)
-      }
-      if (result?.rows?.length > 0) break
-      await new Promise(resolve => setTimeout(resolve, 5000)) // wait 5 secs
-    }
-    return result.rows[0].node_id
-  }
-
-  // get latest value of a device's property path.
-  // table should be one of history_all, _float, _text.
+  // get latest value of a property path.
+  // table should be one of 'history_all', _float, _text.
   // device should include path property, eg 'Main/Micro'
-  // path should be eg 'Main/Micro/availability'
+  // path should be the full path, eg 'Main/Micro/availability'
   async getLatestValue(table, device, path) {
     const sql = `
       select value
