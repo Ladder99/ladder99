@@ -5,7 +5,9 @@
 # see https://stackoverflow.com/questions/34724980/finding-a-string-in-docker-logs-of-container
 
 usage="
-Usage: ./l99 logs SERVICE [PATTERN]
+Usage: ./l99 logs [OPTIONS] SERVICE [PATTERN]
+
+OPTIONS can be -t or --timestamps
 
 Follow Docker service logs, and optionally search for a pattern using grep.
 "
@@ -16,6 +18,14 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
+# handle options
+OPTIONS=
+while [[ $1 = \-* ]] # while $1 starts with '-'
+do
+    OPTIONS="$OPTIONS $1"
+    shift
+done
+
 SERVICE=$1
 PATTERN=$2
 
@@ -23,9 +33,11 @@ PATTERN=$2
 
 # check if PATTERN is empty
 if [ -z "$PATTERN" ]; then
-    docker logs --timestamps --follow $SERVICE
+    # docker logs --timestamps --follow $SERVICE
+    docker logs $OPTIONS --follow $SERVICE
 else
-    docker logs --timestamps --follow $SERVICE | grep -i $PATTERN
+    # docker logs --timestamps --follow $SERVICE | grep -i $PATTERN
+    docker logs $OPTIONS --follow $SERVICE | grep -i $PATTERN
 fi
 
 # find docker service id
