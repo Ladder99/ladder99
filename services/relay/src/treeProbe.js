@@ -175,10 +175,8 @@ function addShortPath(list) {
 // add a full path to each element, which includes the parents up to the agent
 function addPath(list) {
   for (let el of list) {
-    // el.path = el.agentAlias + '/' + el.shortPath
     el.path = el.agentAlias + (el.shortPath ? '/' + el.shortPath : '')
     // el.path = el.agentAlias + '/' + el.deviceAlias + '/' + el.shortPath
-    // contextId is agentAlias/deviceId
     // el.path = el.contextId + (el.shortPath ? '/' + el.shortPath : '')
   }
 }
@@ -362,12 +360,12 @@ function flatten(part, list, parent, tag = 'Document') {
 
 // ----------------------------------------------------------
 
-// get path step for the given object
+// get path step for the given node
 // eg
-//   for a Device element, return 'device(abcd-123...)'
-//   for a DataItem element, return 'position-actual'
+//   for a Device node, return device alias
+//   for a DataItem node, return 'PositionActual'
 function getStep(obj, translations) {
-  const translation = translations[obj.id] // eg 'a'->'axes'
+  const translation = translations[obj.id] // eg 'a'->'Axes'
   if (translation) return translation
   // call the step handler for the given tag, or a fallback handler
   const stepHandler = stepHandlers[obj.tag] || stepHandlers.other
@@ -376,11 +374,11 @@ function getStep(obj, translations) {
 }
 
 const stepHandlers = {
-  MTConnectDevices: obj => obj.agentAlias, //.?
-  // Agent: obj => obj.deviceAlias || obj.deviceId,
-  // Device: obj => obj.deviceAlias || obj.deviceId,
-  Agent: obj => obj.deviceId,
-  Device: obj => obj.deviceId,
+  MTConnectDevices: obj => obj.agentAlias,
+  Agent: obj => obj.deviceAlias || obj.deviceId,
+  Device: obj => obj.deviceAlias || obj.deviceId, // use alias if specified
+  // Agent: obj => obj.deviceId,
+  // Device: obj => obj.deviceId,
   // Linear: obj => `linear[${obj.name.toLowerCase()}]`,
   // Rotary: obj => `rotary[${obj.name.toLowerCase()}]`,
   Axes: obj => `Axes`, //[${obj.name}]`,

@@ -23,7 +23,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
-  "iteration": 1663689694240,
+  "iteration": 1663780873554,
   "links": [
     {
       "asDropdown": false,
@@ -274,8 +274,8 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "Mazak5701/Mill12345",
-          "value": "Mazak5701/Mill12345"
+          "text": "NIST/GFAgie01",
+          "value": "NIST/GFAgie01"
         },
         "datasource": null,
         "definition": "select path from devices",
@@ -328,5 +328,5 @@
   "timezone": "",
   "title": "DataItems",
   "uid": "dataitems",
-  "version": 2
+  "version": 5
 }
