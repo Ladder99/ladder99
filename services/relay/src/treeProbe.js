@@ -35,11 +35,11 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 //   },
 //   agentAlias: 'Mazak5717',
 //   deviceId: 'd1',
-//   deviceAlias: 'Mill12345',
+//   deviceAlias: 'Mill 12345',
 //   contextId: 'Mazak5717/d1',
 //   uid: 'Mazak5717/rmtmp1',
 //   shortPath: 'd1/auxiliaries/environmental/temperature',
-//   path: 'Mazak5717/Mill12345/auxiliaries/environmental/temperature',
+//   path: 'Mazak5717/d1/auxiliaries/environmental/temperature',
 //   node_id: 149
 // }, ...]
 export async function getNodes(tree, agent) {
@@ -53,8 +53,8 @@ export async function getNodes(tree, agent) {
   addStep(nodes, translationIndex) // eg 'system'
   const index = getIndexUidToNode(nodes) // get index, as used in resolveReferences
   resolveReferences(nodes, index) // resolve steps like '${Cmotor}' to 'motor'
-  addShortPath(nodes) // eg 'd1/linear[x]/velocity' //. currently includes device tho - remove
-  addPath(nodes) // eg 'main/d1/linear[x]/velocity'
+  addShortPath(nodes) // eg 'd1/linear[x]/velocity' //. currently includes device? remove
+  addPath(nodes) // eg 'Main/d1/axes/linear[x]/velocity'
   addNodeType(nodes) // convert .tag='DataItem' etc to .node_type
   cleanup(nodes)
   // nodes.forEach(el => delete el.parent) // remove parent attributes
@@ -63,12 +63,11 @@ export async function getNodes(tree, agent) {
   // process.exit(0)
   nodes = filterList(nodes) // only include nodes that have id
   nodes = nodes.filter(el => el.node_type !== 'Composition') //. better way?
-  // check for path collisions - in which case stop the service with a message
-  // to add translation step to setup.yaml.
+  // check for path collisions and resolve by adding name in brackets
   let collisions = await getPathCollisions(nodes)
-  await resolveCollisions(collisions) // add [name] to path where needed etc
+  await resolveCollisions(collisions) // add [name] to path where needed
   collisions = await getPathCollisions(nodes) // check for any remaining collisions
-  await handleCollisions(collisions)
+  await handleCollisions(collisions) // print msg and stop if any left
   return nodes
 }
 
@@ -370,13 +369,15 @@ function getStep(obj, translations) {
 }
 
 const stepHandlers = {
-  MTConnectDevices: obj => obj.agentAlias, //.? ''?
-  // Agent: obj => obj.deviceId,
-  // Device: obj => obj.deviceId,
-  Agent: obj => obj.deviceAlias || obj.deviceId, //.
-  Device: obj => obj.deviceAlias || obj.deviceId,
-  Linear: obj => `linear[${obj.name.toLowerCase()}]`,
-  Rotary: obj => `rotary[${obj.name.toLowerCase()}]`,
+  MTConnectDevices: obj => obj.agentAlias, //.?
+  // Agent: obj => obj.deviceAlias || obj.deviceId,
+  // Device: obj => obj.deviceAlias || obj.deviceId,
+  Agent: obj => obj.deviceId,
+  Device: obj => obj.deviceId,
+  // Linear: obj => `linear[${obj.name.toLowerCase()}]`,
+  // Rotary: obj => `rotary[${obj.name.toLowerCase()}]`,
+  Linear: obj => `Linear[${obj.name}]`,
+  Rotary: obj => `Rotary[${obj.name}]`,
   DataItem: getDataItemStep,
   ref: obj => '${' + obj.id + '}', // eg '${m1-foo}' - will be replaced
   other: obj => {
@@ -385,7 +386,8 @@ const stepHandlers = {
     // eg <Axes id="a"> gives 'axes'
     // eg <Axes id="a" name="base"> gives 'base', but can translate with regexp later
     //. why this way?
-    return (obj.name || obj.nativeName || obj.tag || '').toLowerCase()
+    // return (obj.name || obj.nativeName || obj.tag || '').toLowerCase()
+    return obj.name || obj.nativeName || obj.tag || ''
   },
 }
 
@@ -413,16 +415,40 @@ function getDataItemStep(obj) {
 
   // build the step string
   const composition = obj.compositionId ? `$\{${obj.compositionId}}/` : '' // eg '${Cmotor}' - see resolveReferences
-  const step = composition + params.map(getParamString).join('-') || '' // eg 'motor/position-actual'
+  // const step = composition + params.map(getParamString).join('-') || '' // eg 'motor/position-actual'
+  const step = composition + params.map(getParamString).join('') || '' // eg 'Motor/PositionActual'
   return step
 }
 
 // get string representation of a parameter.
 // remove leading x:, which indicates an ad-hoc value.
-// eg 'x:SOME_TYPE' -> 'some_type'
+// eg 'X:SOME_TYPE' -> 'some_type'
+//. eg 'X:SOME_TYPE' -> 'SomeType'
 function getParamString(param) {
-  const str = param.toLowerCase().replace('x:', '') // leave underscores
-  return str
+  // const str = param.toLowerCase().replace('x:', '') // leave underscores
+  param = param.replace('X:', '')
+  return getProperCase(param)
+}
+
+// convert FOO to Foo, foo_bar and FOO_BAR to FooBar
+function getProperCase(str) {
+  let state = 0
+  let proper = ''
+  for (let c of str) {
+    if (state === 0) {
+      c = c.toUpperCase()
+      state = 1
+    } else if (state === 1) {
+      if (c === '_') {
+        state = 0
+        continue
+      } else {
+        c = c.toLowerCase()
+      }
+    }
+    proper += c
+  }
+  return proper
 }
 
 // -----------------------------------------------------------------
