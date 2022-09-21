@@ -3,13 +3,9 @@
 # run ladder99 pipeline with docker compose.
 
 usage="
-Usage: ./l99 start [OPTIONS] SETUP [SERVICES]
+Usage: ./l99 start SETUP [SERVICES]
 
 Run the Ladder99 pipeline with a list of services/profiles to include.
-
-OPTIONS
-  -c, --console   run the services attached to the console for logging -
-                  default is to run detached.
 
 SETUP is 'example', or a setup name, which maps to a directory ../setup-SETUP
 
@@ -20,7 +16,7 @@ SERVICES      space-delim list of services or profiles to start
 Examples
     ./l99 start example
     ./l99 start example agent grafana
-    ./l99 start --console demo relay
+    ./l99 start demo relay
 "
 
 # note: this needs to run as /bin/bash, NOT /bin/sh - led to bug on encabulator
@@ -37,14 +33,15 @@ fi
 # get options/arguments
 
 # get mode - detached or console
+# removed console mode because hitting ctrl-c would stop ALL other services!
 MODE=--detach
-while [[ $1 = \-* ]] # while $1 starts with '-'
-do
-    if [ $1 = "-c" ] || [ $1 = "--console" ]; then
-        shift
-        MODE=
-    fi
-done
+# while [[ $1 = \-* ]] # while $1 starts with '-'
+# do
+#     if [ $1 = "-c" ] || [ $1 = "--console" ]; then
+#         shift
+#         MODE=
+#     fi
+# done
 
 # get setup folder
 
