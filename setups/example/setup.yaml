@@ -24,26 +24,25 @@ adapter:
 relay:
   # retention: 1wk # could specify a top-level retention for all agents here
   agents:
-    - alias: Main # this is an arbitrary assigned to each agent, used by the db - don't change.
+    - alias: Main # this is an identifier for the agent, used by the db - don't change once set!
       url: http://agent:5000 # url to the agent
       # ignore: true # can specify this to turn agent recording on/off
       # retention: 2d # could clear all unneeded data at midnight - then vacuum analyze db.
       # without a list of devices here, relay would read all available in agent.
       devices:
         - id: m # must match id in agent.xml
-          alias: Micro # used in path expressions - no spaces!
+          alias: Micro # used in path expressions - no spaces - use underscore if needed
           # ignore: true # could specify this to turn device recording on/off
           # retention: 1 week # clear old data at midnight - then vacuum analyze db
           # dataitems:
           #   - id: m-os
           #     retention: 1d
 
-    - alias: Mazak5701 # arbitrary assigned agent alias - used by db - don't change.
+    - alias: Mazak5701 # this is an identifier for the agent, used by the db - don't change once set!
       url: http://mtconnect.mazakcorp.com:5701 # url to the agent
       # retention: 1y
       devices:
         - id: d1 # must match id in agent.xml
-          # alias: MazakMill12345 # used in path expressions - no spaces!
           alias: Mill12345 # used in path expressions - no spaces!
           # ignore: true # set true to hide device in dashboards, pause recording, etc
           # dataitem step translations - dataitemId->step
@@ -94,7 +93,7 @@ meter:
     #   valuePath: processes/life/part_count-all
     #.   ratePath: controller/partOccurrence/part_count-rate
 
-  # set overrides per agent/device/plugin here
+  # set overrides per agentAlias/deviceId/plugin here
   overrides:
-    Main/Micro:
+    Main/m:
       ignore: true

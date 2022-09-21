@@ -53,7 +53,7 @@ export async function getNodes(tree, agent) {
   addStep(nodes, translationIndex) // eg 'System'
   const index = getIndexUidToNode(nodes) // get index, as used in resolveReferences
   resolveReferences(nodes, index) // resolve steps like '${Cmotor}' to 'Motor'
-  addShortPath(nodes) // eg 'd1/Linear[x]/Velocity' //. currently includes device? remove
+  addShortPath(nodes) // eg 'd1/Linear[x]/Velocity' //. currently includes deviceId? remove
   addPath(nodes) // eg 'Main/d1/Axes/Linear[X]/Velocity'
   addNodeType(nodes) // convert .tag='DataItem' etc to .node_type
   cleanup(nodes) // remove .parent, etc
@@ -223,6 +223,7 @@ function cleanup(list) {
   }
 }
 
+// each node element gets a 'step' attribute which is its contribution to the path
 function addStep(list, translationIndex) {
   for (let el of list) {
     const translations = translationIndex[el.deviceId] || {}

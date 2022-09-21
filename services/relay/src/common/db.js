@@ -96,7 +96,7 @@ export class Db {
           on conflict ((props->>'uid')) do
             update set props = (${values}) 
               returning node_id;`
-    console.log(`db upsert node`, node.path, node.uid)
+    console.log(`db upsert node ${node.uid}: ${node.path}`)
     const res = await this.query(sql)
     const node_id = res.rows[0]?.node_id
     return node_id
