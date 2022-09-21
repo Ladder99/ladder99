@@ -45,29 +45,31 @@ const attributes = 'coordinateSystem,statistic'.split(',')
 export async function getNodes(tree, agent) {
   const translationIndex = getTranslationIndex(agent) // map device id to device.translations, if any
   const devices = getDevices(agent) // maps device id->device node, if any
-  let list = getList(tree) // flatten the tree
-  addAgent(list, agent) // add agentAlias from setup to each element
-  addDevice(list, devices) // add deviceId and deviceAlias to each element
-  addContext(list) // contextId = agentAlias[/deviceId], eg 'Main/d1' - use this to lookup device in db
-  addUid(list, agent) // uid = agentAlias[/dataitemId], eg 'Main/d1-avail'
-  addStep(list, translationIndex) // eg 'system'
-  const index = getIndexUidToNode(list) // get index, as used in resolveReferences
-  resolveReferences(list, index) // resolve steps like '${Cmotor}' to 'motor'
-  addShortPath(list) // eg 'd1/linear[x]/velocity' //. currently includes device tho - remove
-  addPath(list) // eg 'main/d1/linear[x]/velocity'
-  addNodeType(list) // convert .tag='DataItem' etc to .node_type
-  cleanup(list)
-  // list.forEach(el => delete el.parent) // remove parent attributes
-  // list = list.filter(el => el.id === 'Mazak03-X_2') //..
-  // console.log('getNodes', list)
+  let nodes = getList(tree) // flatten the tree
+  addAgent(nodes, agent) // add agentAlias from setup to each element
+  addDevice(nodes, devices) // add deviceId and deviceAlias to each element
+  addContext(nodes) // contextId = agentAlias[/deviceId], eg 'Main/d1' - use this to lookup device in db
+  addUid(nodes, agent) // uid = agentAlias[/dataitemId], eg 'Main/d1-avail'
+  addStep(nodes, translationIndex) // eg 'system'
+  const index = getIndexUidToNode(nodes) // get index, as used in resolveReferences
+  resolveReferences(nodes, index) // resolve steps like '${Cmotor}' to 'motor'
+  addShortPath(nodes) // eg 'd1/linear[x]/velocity' //. currently includes device tho - remove
+  addPath(nodes) // eg 'main/d1/linear[x]/velocity'
+  addNodeType(nodes) // convert .tag='DataItem' etc to .node_type
+  cleanup(nodes)
+  // nodes.forEach(el => delete el.parent) // remove parent attributes
+  // nodes = nodes.filter(el => el.id === 'Mazak03-X_2') //..
+  // console.log('getNodes', nodes)
   // process.exit(0)
-  list = filterList(list) // only include nodes that have id
-  list = list.filter(el => el.node_type !== 'Composition') //. better way?
+  nodes = filterList(nodes) // only include nodes that have id
+  nodes = nodes.filter(el => el.node_type !== 'Composition') //. better way?
   // check for path collisions - in which case stop the service with a message
   // to add translation step to setup.yaml.
-  const collisions = await getPathCollisions(list)
-  handleCollisions(collisions)
-  return list
+  let collisions = await getPathCollisions(nodes)
+  await resolveCollisions(collisions) // add [name] to path where needed etc
+  collisions = await getPathCollisions(nodes) // check for any remaining collisions
+  await handleCollisions(collisions)
+  return nodes
 }
 
 // get translations for each device, eg 'd1' -> { base: 'axes', ... }
@@ -480,12 +482,8 @@ ie same positions in the XML tree and type+subtype.
 Please add translations for them in setup.yaml for this project.
 
 eg with the following output,
-  [
-    [
-      { id: 'Cload', path: 'Mazak5701/d1/base/rotary[c]/load' },
-      { id: 'Sload', path: 'Mazak5701/d1/base/rotary[c]/load' }
-    ]
-  ]
+  Cload: Mazak5701/d1/base/rotary[c]/load
+  Sload: Mazak5701/d1/base/rotary[c]/load
 
 you could add the following translation block to setup.yaml:
   relay:
@@ -494,7 +492,7 @@ you could add the following translation block to setup.yaml:
         url: http://mtconnect.mazakcorp.com:5701
         devices:
           - id: d1
-            alias: MazakMill12345
+            alias: Mill12345
             translations:
               Cload: load-index
               Sload: load-spindle
@@ -503,13 +501,31 @@ giving the following unique paths -
   Mazak5701/d1/base/rotary[c]/load-index
   Mazak5701/d1/base/rotary[c]/load-spindle
 `)
-    // console.log(collisions)
+    for (let collision of collisions) {
+      console.log(collision.map(node => `${node.id}: ${node.path}`).join('\n'))
+      console.log()
+    }
     console.log(
-      collisions.map(collision =>
-        collision.map(node => ({ id: node.id, path: node.path }))
-      )
+      `Exiting after 5 secs - please run 'docker stop relay' to prevent restart.`
     )
     await new Promise(resolve => setTimeout(resolve, 5000)) // pause
     process.exit(1)
+  }
+}
+
+// resolve collisions by appending name in brackets
+async function resolveCollisions(collisions) {
+  console.log(`Resolving collisions by adding [name|nativeName|id] to path...`)
+  console.log(`These are id:path pairs`)
+  console.log(`If you don't like these, you can add translations in setup.yaml`)
+  console.log()
+  for (let collision of collisions) {
+    for (let node of collision) {
+      // append brackets
+      const name = node.name || node.nativeName || node.id
+      node.path = `${node.path}[${name.toLowerCase()}]`
+      console.log(`Resolved ${node.id}: ${node.path}`)
+    }
+    console.log()
   }
 }

@@ -19,7 +19,7 @@ export class Probe extends Data {
 
     // get flat list of devices, descriptions, dataitems, compositions from xml/js.
     // eg [{node_type, path, category}, ...]
-    this.nodes = tree.getNodes(this.jsTree, this.agent) // see treeProbe.js
+    this.nodes = await tree.getNodes(this.jsTree, this.agent) // see treeProbe.js
   }
 
   // write probe data in jsTree to db instance, get indexes
