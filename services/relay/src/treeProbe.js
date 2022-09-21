@@ -56,13 +56,12 @@ export async function getNodes(tree, agent) {
   addShortPath(nodes) // eg 'd1/Linear[x]/Velocity' //. currently includes device? remove
   addPath(nodes) // eg 'Main/d1/Axes/Linear[X]/Velocity'
   addNodeType(nodes) // convert .tag='DataItem' etc to .node_type
-  cleanup(nodes)
-  // nodes.forEach(el => delete el.parent) // remove parent attributes
+  cleanup(nodes) // remove .parent, etc
   // nodes = nodes.filter(el => el.id === 'Mazak03-X_2') //..
   // console.log('getNodes', nodes)
   // process.exit(0)
   nodes = filterList(nodes) // only include nodes that have id
-  nodes = nodes.filter(el => el.node_type !== 'Composition') //. better way?
+  // nodes = nodes.filter(el => el.node_type !== 'Composition') //. better way?
   // check for path collisions and resolve by adding name in brackets
   let collisions = await getPathCollisions(nodes)
   await resolveCollisions(collisions) // add [name] to path where needed
@@ -234,8 +233,11 @@ function addStep(list, translationIndex) {
 
 // filter the list of elements down to those needed for the relay and db
 function filterList(list) {
-  list = list.filter(el => !!el.id) // just need those with an id
-  // list = list.filter(el => !el.node_type === 'Composition') //. ditch compositions
+  // list = list.filter(el => !!el.id) // just need those with an id
+  // list = list.filter(el => el.node_type !== 'Composition')
+  list = list.filter(
+    el => el.node_type === 'Device' || el.node_type === 'DataItem'
+  )
   return list
 }
 
@@ -329,7 +331,8 @@ function flatten(part, list, parent, tag = 'Document') {
     // if obj has no id and we're not at root object, add it as a child of its parent.
     // this lets us store things like Description, Filters, etc as part of their parent.
     if (!obj.id && parent) {
-      const tagid = lib.getCamelCase(obj.tag) // eg 'filters'
+      // const tagid = lib.getCamelCase(obj.tag) // eg 'filters'
+      const tagid = toPascalCase(obj.tag) // eg 'Filters'
       delete obj.tag // eg 'Filters'
       // but only add object if it has some data in it
       // (obj will always have .parent, so ignore 1)
@@ -379,6 +382,8 @@ const stepHandlers = {
   Device: obj => obj.deviceId,
   // Linear: obj => `linear[${obj.name.toLowerCase()}]`,
   // Rotary: obj => `rotary[${obj.name.toLowerCase()}]`,
+  Axes: obj => `Axes`, //[${obj.name}]`,
+  Controller: obj => `Controller`, //[${obj.name}]`,
   Linear: obj => `Linear[${obj.name}]`,
   Rotary: obj => `Rotary[${obj.name}]`,
   DataItem: getDataItemStep,
@@ -425,36 +430,17 @@ function getDataItemStep(obj) {
 
 // get string representation of a parameter.
 // remove leading x:, which indicates an ad-hoc value.
-// eg 'X:SOME_TYPE' -> 'some_type'
-//. eg 'X:SOME_TYPE' -> 'SomeType'
+//x eg 'X:SOME_TYPE' -> 'some_type'
+// eg 'X:SOME_TYPE' -> 'SomeType'
 function getParamString(param) {
   // const str = param.toLowerCase().replace('x:', '') // leave underscores
-  param = param.replace('X:', '')
-  // return getProperCase(param)
+  // param = param.replace('X:', '').replace(':x','')
+  param = param.replace(/^[xX][:]/, m => '')
+  console.log(param)
   return toPascalCase(param)
 }
 
-// convert FOO to Foo, foo_bar and FOO_BAR to FooBar
-// function getProperCase(str) {
-//   let state = 0
-//   let proper = ''
-//   for (let c of str) {
-//     if (state === 0) {
-//       c = c.toUpperCase()
-//       state = 1
-//     } else if (state === 1) {
-//       if (c === '_') {
-//         state = 0
-//         continue
-//       } else {
-//         c = c.toLowerCase()
-//       }
-//     }
-//     proper += c
-//   }
-//   return proper
-// }
-
+// convert foo_bar to fooBar, etc
 //. move to libjs
 function toCamelCase(str) {
   return str
@@ -464,8 +450,8 @@ function toCamelCase(str) {
     )
 }
 
-//. move to libjs
 // convert FOO_BAR to FooBar, etc
+//. move to libjs
 function toPascalCase(str) {
   str = toCamelCase(str)
   return str[0].toUpperCase() + str.slice(1)
@@ -561,6 +547,7 @@ giving the following unique paths -
 
 // resolve collisions by appending name in brackets
 async function resolveCollisions(collisions) {
+  if (collisions.length === 0) return
   console.log(`Resolving collisions by adding [name|nativeName|id] to path...`)
   console.log(`These are id:path pairs`)
   console.log(`If you don't like these, you can add translations in setup.yaml`)
@@ -569,7 +556,8 @@ async function resolveCollisions(collisions) {
     for (let node of collision) {
       // append brackets
       const name = node.name || node.nativeName || node.id
-      node.path = `${node.path}[${name.toLowerCase()}]`
+      // node.path = `${node.path}[${name.toLowerCase()}]`
+      node.path = `${node.path}[${name}]`
       console.log(`Collision resolved for ${node.id}: ${node.path}`)
     }
     console.log()
