@@ -24,7 +24,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 4,
-  "iteration": 1663764197885,
+  "iteration": 1663784937042,
   "links": [
     {
       "asDropdown": false,
@@ -533,8 +533,8 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "Main/m",
-          "value": "Main/m"
+          "text": "Main/Micro",
+          "value": "Main/Micro"
         },
         "description": null,
         "error": null,
@@ -546,11 +546,11 @@
         "options": [
           {
             "selected": true,
-            "text": "Main/m",
-            "value": "Main/m"
+            "text": "Main/Micro",
+            "value": "Main/Micro"
           }
         ],
-        "query": "Main/m",
+        "query": "Main/Micro",
         "queryValue": "",
         "skipUrlSync": false,
         "type": "custom"
@@ -578,5 +578,5 @@
   "timezone": "",
   "title": "Microcontroller",
   "uid": "micro",
-  "version": 2
+  "version": 4
 }
