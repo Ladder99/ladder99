@@ -436,7 +436,6 @@ function getParamString(param) {
   // const str = param.toLowerCase().replace('x:', '') // leave underscores
   // param = param.replace('X:', '').replace(':x','')
   param = param.replace(/^[xX][:]/, m => '')
-  console.log(param)
   return toPascalCase(param)
 }
 
