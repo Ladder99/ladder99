@@ -69,17 +69,14 @@ COPY package.json /usr/app/
 # note: With the --only=production flag (or when the NODE_ENV environment 
 # variable is set to production), npm will not install modules listed in 
 # devDependencies.
-RUN npm install --package-lock-only --only=production
-
 # fix vulnerabilities where able and update package-lock.json.
 # normally audit fix runs a full install under the hood, but we don't want that yet.
-RUN npm audit fix --package-lock-only --only=production
-
 # install deterministically from package-lock.json to node_modules.
 # audit=false means don't submit packages to registry.
 # see https://docs.npmjs.com/cli/v8/commands/npm-ci
-RUN npm clean-install --audit=false --only=production
-
+RUN npm install --package-lock-only --only=production \
+  && npm audit fix --package-lock-only --only=production \
+  && npm clean-install --audit=false --only=production
 
 # ------------------------------------------------------------------------
 # second stage - copy over node_modules and source code
@@ -98,6 +95,7 @@ WORKDIR /usr/app
 COPY package.json /usr/app/package.json
 COPY --from=build /usr/app/node_modules /usr/app/node_modules
 COPY src /usr/app/src
+# COPY package.json src/** /usr/app/ # how do this?
 
 # base command - can pass params with CMD [?]
 # note: When you run an image that uses the exec form (ie an array), 
