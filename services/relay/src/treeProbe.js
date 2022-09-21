@@ -50,11 +50,11 @@ export async function getNodes(tree, agent) {
   addDevice(nodes, devices) // add deviceId and deviceAlias to each element
   addContext(nodes) // contextId = agentAlias[/deviceId], eg 'Main/d1' - use this to lookup device in db
   addUid(nodes, agent) // uid = agentAlias[/dataitemId], eg 'Main/d1-avail'
-  addStep(nodes, translationIndex) // eg 'system'
+  addStep(nodes, translationIndex) // eg 'System'
   const index = getIndexUidToNode(nodes) // get index, as used in resolveReferences
-  resolveReferences(nodes, index) // resolve steps like '${Cmotor}' to 'motor'
-  addShortPath(nodes) // eg 'd1/linear[x]/velocity' //. currently includes device? remove
-  addPath(nodes) // eg 'Main/d1/axes/linear[x]/velocity'
+  resolveReferences(nodes, index) // resolve steps like '${Cmotor}' to 'Motor'
+  addShortPath(nodes) // eg 'd1/Linear[x]/Velocity' //. currently includes device? remove
+  addPath(nodes) // eg 'Main/d1/Axes/Linear[X]/Velocity'
   addNodeType(nodes) // convert .tag='DataItem' etc to .node_type
   cleanup(nodes)
   // nodes.forEach(el => delete el.parent) // remove parent attributes
@@ -104,7 +104,7 @@ function getDevices(agent) {
 function addDevice(nodes, devices) {
   let deviceId
   let deviceAlias
-  const missing = []
+  const missing = [] // list of deviceIds
   for (let node of nodes) {
     // grab agent or device id and alias
     if (node.tag === 'Agent' || node.tag === 'Device') {
@@ -130,7 +130,10 @@ function addDevice(nodes, devices) {
     console.log(`
 Relay warning: the following devices have no alias - could add in setup.yaml.
 `)
-    console.log(missing.join('\n'))
+    // console.log(missing.join('\n'))
+    for (let deviceId of missing) {
+      console.log(`Alias missing for ${deviceId}`)
+    }
     console.log()
   }
 }
@@ -427,28 +430,45 @@ function getDataItemStep(obj) {
 function getParamString(param) {
   // const str = param.toLowerCase().replace('x:', '') // leave underscores
   param = param.replace('X:', '')
-  return getProperCase(param)
+  // return getProperCase(param)
+  return toPascalCase(param)
 }
 
 // convert FOO to Foo, foo_bar and FOO_BAR to FooBar
-function getProperCase(str) {
-  let state = 0
-  let proper = ''
-  for (let c of str) {
-    if (state === 0) {
-      c = c.toUpperCase()
-      state = 1
-    } else if (state === 1) {
-      if (c === '_') {
-        state = 0
-        continue
-      } else {
-        c = c.toLowerCase()
-      }
-    }
-    proper += c
-  }
-  return proper
+// function getProperCase(str) {
+//   let state = 0
+//   let proper = ''
+//   for (let c of str) {
+//     if (state === 0) {
+//       c = c.toUpperCase()
+//       state = 1
+//     } else if (state === 1) {
+//       if (c === '_') {
+//         state = 0
+//         continue
+//       } else {
+//         c = c.toLowerCase()
+//       }
+//     }
+//     proper += c
+//   }
+//   return proper
+// }
+
+//. move to libjs
+function toCamelCase(str) {
+  return str
+    .toLowerCase()
+    .replace(/([-_][a-z])/gi, m =>
+      m.toUpperCase().replace('-', '').replace('_', '')
+    )
+}
+
+//. move to libjs
+// convert FOO_BAR to FooBar, etc
+function toPascalCase(str) {
+  str = toCamelCase(str)
+  return str[0].toUpperCase() + str.slice(1)
 }
 
 // -----------------------------------------------------------------
@@ -550,7 +570,7 @@ async function resolveCollisions(collisions) {
       // append brackets
       const name = node.name || node.nativeName || node.id
       node.path = `${node.path}[${name.toLowerCase()}]`
-      console.log(`Resolved ${node.id}: ${node.path}`)
+      console.log(`Collision resolved for ${node.id}: ${node.path}`)
     }
     console.log()
   }
