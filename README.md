@@ -20,13 +20,9 @@ Ladder99 is developed by MRIIOT, your agile digital transformation partners.
 
 ## Start
 
-On Mac or Linux,
+On Mac or Linux Terminal, or with Git Bash on Windows -
 
     ./l99 start example
-
-on Windows,
-
-    l99 start example
 
 ## Folders
 
