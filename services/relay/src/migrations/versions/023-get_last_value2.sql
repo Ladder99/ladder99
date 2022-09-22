@@ -5,7 +5,6 @@ CREATE OR REPLACE FUNCTION get_last_value (
   IN subpath text, -- the history view subpath, eg 'Availability'
   IN search_limit text = '1d' -- search limit - don't search further into past than this
 )
--- RETURNS TABLE ("time" timestamp, "value" text) -- ANSI standard SQL
 RETURNS TABLE ("time" timestamptz, "value" text) -- ANSI standard SQL
 LANGUAGE sql
 AS
