@@ -222,8 +222,12 @@ export class Metric {
     // startTime is like '05:00:00', so need to tack on current date
     if (this.startTime) {
       const today = new Date().toISOString().slice(0, 11)
-      const start = new Date(today + this.startTime)
-      const stop = new Date(today + this.stopTime)
+      const start = new Date(
+        today + this.startTime + this.offsetMinutes * minutes
+      )
+      const stop = new Date(
+        today + this.stopTime + this.offsetMinutes * minutes
+      )
       const holiday = null //. this.holiday
       return { start, stop, holiday }
     }
