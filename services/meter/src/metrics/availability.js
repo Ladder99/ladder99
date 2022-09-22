@@ -56,6 +56,8 @@ export class Metric {
     this.activeFullPath = `${device.path}/${settings.activePath}`
     this.startFullPath = `${device.path}/${settings.startPath}`
     this.stopFullPath = `${device.path}/${settings.stopPath}`
+    this.startTime = settings.startTime
+    this.stopTime = settings.stopTime
 
     // get timezone offset from Zulu in milliseconds
     // this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
@@ -66,7 +68,7 @@ export class Metric {
     this.timezoneOffset = offsetMinutes * 60 * 1000 // ms
     console.log(this.me, `tz, offset`, client.timezone, offsetMinutes)
 
-    console.log(this.me, `getting device node_id...`)
+    console.log(this.me, `getting device node_id for ${device.path}...`)
     this.device.node_id = await this.db.getNodeId(device.path) // repeats until device is there
     console.log(this.me, `node_id`, this.device.node_id)
 
@@ -79,7 +81,7 @@ export class Metric {
     // // get overtime active interval
     // this.overtimeActiveInterval = 5 * minutes // ms //. pass through the metric as above
 
-    await this.backfill() // backfill missing values
+    //.. await this.backfill() // backfill missing values
     await this.poll() // do first poll
     this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
@@ -182,24 +184,7 @@ export class Metric {
     // update active and available bins as needed
     const isDuringShift =
       !schedule.holiday && now >= schedule.start && now <= schedule.stop
-    // if (isDuringShift) {
-    //   await this.updateBins(now, this.interval)
-    // }
-    // else {
-    //   // check for events in previous n mins, eg 5.
-    //   // this accounts for workers working outside of normal shift times,
-    //   // giving an approximate availability value without them having
-    //   // to punch in/out.
-    //   const start = new Date(now.getTime() - this.overtimeActiveInterval)
-    //   const stop = now
-    //   const hasBeenActiveRecently = await this.getActive(start, stop)
-    //   if (hasBeenActiveRecently) {
-    //     await this.updateBins(now, this.interval)
-    //   }
-    // }
     // 2022-08-03 handle overtime by allowing active minutes outside of shift hours
-    // const start = new Date(now.getTime() - interval)
-    //.
     const start =
       this.previousStopTime || new Date(now.getTime() - this.interval)
     const stop = now
@@ -209,6 +194,7 @@ export class Metric {
       await this.incrementBins(now, 'active')
     }
     if (isDuringShift) {
+      console.log(this.me, `increasing available bin`)
       await this.incrementBins(now, 'available')
     }
     this.previousStopTime = stop
@@ -233,6 +219,12 @@ export class Metric {
   // converts the timestrings to local time for the client.
   //. will want to pass an optional datetime for the date to search for.
   async getSchedule() {
+    if (this.startTime) {
+      const start = new Date(this.startTime)
+      const stop = new Date(this.stopTime)
+      const holiday = null //. this.holiday
+      return { start, stop, holiday }
+    }
     const getHoliday = text =>
       text === 'UNAVAILABLE' || text === 'HOLIDAY' ? 'HOLIDAY' : undefined
     const getDate = text =>

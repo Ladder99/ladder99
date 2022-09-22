@@ -45,21 +45,21 @@ relay:
         - id: d1 # must match id in agent.xml
           alias: Mill12345 # used in path expressions - no spaces!
           # ignore: true # set true to hide device in dashboards, pause recording, etc
-          # dataitem step translations - dataitemId->step
+          # dataitem step translations - dataitemId->pathstep
           # translations:
-          # a: axes
-          # Cload: LoadIndex
-          # Sload: LoadSpindle
-          # can ignore or set retention for individual dataitems
-          dataitems:
-            d1-auto_time:
-              ignore: true
-            d1-total_time:
-              ignore: true
-            d1-cut_time:
-              ignore: true
-            d1-total_auto_cut_time:
-              ignore: true
+          #   a: axes
+          #   Cload: LoadIndex
+          #   Sload: LoadSpindle
+          # # could ignore or set retention for individual dataitems
+          # dataitems:
+          #   d1-auto_time:
+          #     ignore: true
+          #   d1-total_time:
+          #     ignore: true
+          #   d1-cut_time:
+          #     ignore: true
+          #   d1-total_auto_cut_time:
+          #     ignore: true
 
 # meter service reads this section, AND the relay section for list of agents and devices.
 meter:
@@ -70,30 +70,30 @@ meter:
     # and available = time is within start/stop schedule.
     # note that times have NO Z, ie they're purely local times, as obtained from jobboss.
     availability:
-      # activePath: processes/job/part_count-all # for oxbox
-      activePath: controller/accumulated_time-cut
+      activePath: Controller/AccumulatedTimeCut # acctimeAuto has auto incrementing time
       # # # get start and stop times from xml, which could be set by jobboss driver
-      # # startPath: processes/shift/process_time-start # eg '2022-01-27T05:00:00'
-      # # stopPath: processes/shift/process_time-complete # eg '2022-01-27T13:30:00'
+      # # startPath: Processes/Shift/ProcessTimeStart # eg '2022-01-27T05:00:00'
+      # # stopPath: Processes/Shift/ProcessTimeComplete # eg '2022-01-27T13:30:00'
       # # or set manual times
-      # #. this could get very complex - just keep it simple for now
-      # startTime: '05:00:00'
-      # stopTime: '13:30:00'
+      # # this could get very complex - just keep it simple for now
+      startTime: '05:00:00'
+      stopTime: '13:30:00'
 
     # # count.js plugin defaults
     # # accumulates count deltas into the lifetime count
     # count:
-    #   deltaPath: processes/job/part_count-all
-    #   lifetimePath: processes/life/part_count-all
+    #   deltaPath: Processes/Job/PartCountAll
+    #   lifetimePath: Processes/Life/PartCountAll
 
     # # rate.js plugin defaults
     # # calculates the rate of change between counts, ie the production rate.
     # #. not finished yet
     # rate:
-    #   valuePath: processes/life/part_count-all
-    #.   ratePath: controller/partOccurrence/part_count-rate
+    #   valuePath: Processes/Life/PartCountAll
+    #.   ratePath: controller/PartOccurrence/PartCountRate
 
-  # set overrides per agentAlias/deviceId/plugin here
+  # set overrides per agentAlias/deviceAlias/meter here
   overrides:
-    Main/m:
-      ignore: true
+    Main/Micro:
+      availability:
+        ignore: true
