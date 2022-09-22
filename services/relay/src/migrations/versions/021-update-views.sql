@@ -21,7 +21,7 @@ JOIN raw.nodes AS dataitems ON raw.history.dataitem_id=dataitems.node_id;
 
 
 -- note: float is an alias for 'double precision' or float8
---. how handle UNDEFINED? translate to null here?
+--. how handle UNAVAILABLE? translate to null here?
 CREATE OR REPLACE VIEW history_float AS
 SELECT
   devices.props->>'path' AS device, -- was 'name' as device
