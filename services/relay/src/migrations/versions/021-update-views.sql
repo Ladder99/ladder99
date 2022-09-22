@@ -21,14 +21,7 @@ JOIN raw.nodes AS dataitems ON raw.history.dataitem_id=dataitems.node_id;
 
 
 -- note: float is an alias for 'double precision' or float8
---. how handle UNDEFINED? should translate to null in relay?
--- CREATE OR REPLACE VIEW history_float AS
--- -- SELECT device, path, time, value::float
--- SELECT device, path, time, value
--- FROM history_all
--- -- WHERE jsonb_typeof(value) = 'number';
--- WHERE pg_typeof(value) = 'number';
-
+--. how handle UNDEFINED? translate to null here?
 CREATE OR REPLACE VIEW history_float AS
 SELECT
   devices.props->>'path' AS device, -- was 'name' as device
@@ -44,11 +37,6 @@ WHERE jsonb_typeof(value) = 'number';
 
 -- note: #>>'{}' extracts the top-level json string without enclosing double quotes
 -- see https://dba.stackexchange.com/questions/207984/unquoting-json-strings-print-json-strings-without-quotes
--- CREATE OR REPLACE VIEW history_text AS
--- SELECT device, path, time, value#>>'{}' as value
--- FROM history_all
--- WHERE jsonb_typeof(value) = 'string';
-
 CREATE OR REPLACE VIEW history_text AS
 SELECT
   devices.props->>'path' AS device, -- was 'name' as device
@@ -60,3 +48,41 @@ FROM raw.history
 JOIN raw.nodes AS devices ON raw.history.node_id=devices.node_id
 JOIN raw.nodes AS dataitems ON raw.history.dataitem_id=dataitems.node_id
 WHERE jsonb_typeof(value) = 'string';
+
+
+
+-- DROP VIEW IF EXISTS devices;
+-- DROP VIEW IF EXISTS dataitems;
+
+-- CREATE OR REPLACE VIEW devices AS
+-- SELECT
+--   nodes.node_id,
+--   nodes.props->>'id' as id, -- deviceId - only unique within a single agent
+--   nodes.props->>'uid' as uid, -- `agentAlias/deviceId`, eg 'Main/d1' - makes deviceId unique across agents
+--   nodes.props->>'path' as path, -- `agentAlias/deviceAlias`, eg 'Main/Micro' - friendly identifier
+--   nodes.props->>'name' as name, -- name from agent.xml, eg 'Microcontroller'
+--   nodes.props as props -- everything else
+-- FROM 
+--   raw.nodes as nodes
+-- WHERE
+--   nodes.props->>'node_type'='Device';
+
+
+-- CREATE OR REPLACE VIEW dataitems AS
+-- SELECT
+--   nodes.node_id,
+--   -- nodes.props->>'id' as id,
+--   -- nodes.props->>'uid' as uid, -- ie `agentAlias/deviceId/dataitemId`, eg 'Main/m/avail'
+--   nodes.props->>'path' as path, -- `agentAlias/deviceAlias/path/to/dataitem`, eg 'Main/Micro/Availability'
+--   nodes.props->>'category' as category, 
+--   nodes.props->>'type' as type,
+--   nodes.props->>'subType' as subtype,
+--   nodes.props->>'units' as units,
+--   nodes.props->>'nativeUnits' as nativeunits,
+--   nodes.props->>'statistic' as statistic,
+--   nodes.props as props
+-- FROM 
+--   raw.nodes as nodes
+-- WHERE
+--   nodes.props->>'node_type'='DataItem';
+
