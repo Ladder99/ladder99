@@ -60,7 +60,7 @@
               }
             ]
           },
-          "unit": "percentunit"
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -387,7 +387,8 @@
                 "value": 80
               }
             ]
-          }
+          },
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -572,5 +573,5 @@
   "timezone": "",
   "title": "Metrics",
   "uid": "metrics",
-  "version": 4
+  "version": 6
 }
