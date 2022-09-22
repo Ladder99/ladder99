@@ -605,49 +605,49 @@ services:
       options:
         max-size: '20m'
 
-  # ---------------------------------------------------------------------------
-  # sematext
-  # ---------------------------------------------------------------------------
-  # send logs to sematext.com for monitoring
-  sematext:
-    image: sematext/agent:latest
-    container_name: sematext
-    profiles:
-      - sematext
-    environment:
-      # - INFRA_TOKEN=$INFRA_TOKEN # set this in .env file
-      - INFRA_TOKEN # set this in .env file
-      - SERVER_BASE_URL=https://spm-receiver.sematext.com
-      - LOGS_RECEIVER_URL=https://logsene-receiver.sematext.com
-      - EVENT_RECEIVER_URL=https://event-receiver.sematext.com
-      - COMMAND_SERVER_URL=https://command.sematext.com
-    cap_add:
-      - SYS_ADMIN
-    restart: unless-stopped
-    volumes:
-      - /:/hostfs:ro
-      - /etc/passwd:/etc/passwd:ro
-      - /etc/group:/etc/group:ro
-      - /var/run/:/var/run
-      - /sys/kernel/debug:/sys/kernel/debug
-      - /sys:/host/sys:ro
-      - /dev:/hostfs/dev:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+  # # ---------------------------------------------------------------------------
+  # # sematext
+  # # ---------------------------------------------------------------------------
+  # # send logs to sematext.com for monitoring
+  # sematext:
+  #   image: sematext/agent:latest
+  #   container_name: sematext
+  #   profiles:
+  #     - sematext
+  #   environment:
+  #     # - INFRA_TOKEN=$INFRA_TOKEN # set this in .env file
+  #     - INFRA_TOKEN # set this in .env file
+  #     - SERVER_BASE_URL=https://spm-receiver.sematext.com
+  #     - LOGS_RECEIVER_URL=https://logsene-receiver.sematext.com
+  #     - EVENT_RECEIVER_URL=https://event-receiver.sematext.com
+  #     - COMMAND_SERVER_URL=https://command.sematext.com
+  #   cap_add:
+  #     - SYS_ADMIN
+  #   restart: unless-stopped
+  #   volumes:
+  #     - /:/hostfs:ro
+  #     - /etc/passwd:/etc/passwd:ro
+  #     - /etc/group:/etc/group:ro
+  #     - /var/run/:/var/run
+  #     - /sys/kernel/debug:/sys/kernel/debug
+  #     - /sys:/host/sys:ro
+  #     - /dev:/hostfs/dev:ro
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
 
-  sematext-logs:
-    image: sematext/logagent:latest
-    container_name: sematext-logs
-    profiles:
-      - sematext-logs
-    environment:
-      # - LOGS_TOKEN=$LOGS_TOKEN # set this in .env file
-      - LOGS_TOKEN # set this in .env file
-      - REGION=US
-    cap_add:
-      - SYS_ADMIN
-    restart: unless-stopped
-    volumes:
-      - '/var/run/docker.sock:/var/run/docker.sock'
+  # sematext-logs:
+  #   image: sematext/logagent:latest
+  #   container_name: sematext-logs
+  #   profiles:
+  #     - sematext-logs
+  #   environment:
+  #     # - LOGS_TOKEN=$LOGS_TOKEN # set this in .env file
+  #     - LOGS_TOKEN # set this in .env file
+  #     - REGION=US
+  #   cap_add:
+  #     - SYS_ADMIN
+  #   restart: unless-stopped
+  #   volumes:
+  #     - '/var/run/docker.sock:/var/run/docker.sock'
 
   # ---------------------------------------------------------------------------
   # superset
