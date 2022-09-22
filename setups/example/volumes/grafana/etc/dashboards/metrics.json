@@ -23,8 +23,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 7,
-  "iteration": 1663589407840,
+  "id": 8,
+  "iteration": 1663842358213,
   "links": [
     {
       "asDropdown": false,
@@ -41,214 +41,6 @@
   ],
   "liveNow": false,
   "panels": [
-    {
-      "collapsed": false,
-      "datasource": null,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 0
-      },
-      "id": 4,
-      "panels": [],
-      "repeat": "device",
-      "title": "$device",
-      "type": "row"
-    },
-    {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 15,
-        "x": 0,
-        "y": 1
-      },
-      "id": 2,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "single"
-        }
-      },
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "select time, value from history_float where path=concat($device,'/controller/accumulated_time-cut')",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "cutting time",
-      "type": "timeseries"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "AVAILABLE": {
-                  "color": "green",
-                  "index": 1,
-                  "text": "ON"
-                },
-                "UNAVAILABLE": {
-                  "color": "red",
-                  "index": 0,
-                  "text": "OFF"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "noValue": "Unknown",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#6f6f6f",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 4,
-        "w": 5,
-        "x": 15,
-        "y": 1
-      },
-      "id": 6,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["last"],
-          "fields": "/^value$/",
-          "values": false
-        },
-        "text": {
-          "valueSize": 20
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "8.2.2",
-      "repeat": null,
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "--select time, value from get_last_value($device, 'availability', '1w');\n\n-- this will be the new get_last_value fn\n-- select time, value as value from history_text\n-- where node_id=(select node_id from nodes where props->>'uid'=$device)\n--   and dataitem_id=(select node_id from nodes where props->>'shortPath'='availability')\n-- order by time desc\n-- limit 1;\n\nselect time, value as value from history_text\nwhere path = concat($device, '/availability')\norder by time desc\nlimit 1;\n\n",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "$device",
-      "type": "stat"
-    },
     {
       "datasource": null,
       "fieldConfig": {
@@ -276,7 +68,7 @@
         "h": 5,
         "w": 5,
         "x": 0,
-        "y": 5
+        "y": 0
       },
       "id": 35,
       "options": {
@@ -297,7 +89,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "\nwith\n  path_activity as (values (concat($device, '/controller/accumulated_time-cut'))),\n  available as (values (8.0)), -- hours that machine is available for use\n  now as (values (now())),\n  midnight as (values (date_trunc('day', (table now))))\nselect (table now) as time, (max(value)-min(value))/60.0/60.0/(table available) as availability\nfrom history_float\nwhere path = (table path_activity)\nand time >= (table midnight) and time < (table now)\n\n",
+          "rawSql": "select \n  time, availability -- , active, available\nfrom \n  metrics\nwhere \n  device = $device -- eg 'Cutter'\n  and resolution = '1h' -- eg '1 day'\n  and time > now() - '1h'::interval\norder by \n  time\nlimit 1\n;\n\n-- select * \n-- from get_availability_from_metrics_view($device, $__from, $__to, '1h')\n-- order by time desc\n-- limit 1\n",
           "refId": "A",
           "select": [
             [
@@ -351,7 +143,7 @@
         "h": 5,
         "w": 5,
         "x": 5,
-        "y": 5
+        "y": 0
       },
       "id": 37,
       "options": {
@@ -426,7 +218,7 @@
         "h": 5,
         "w": 5,
         "x": 10,
-        "y": 5
+        "y": 0
       },
       "id": 39,
       "options": {
@@ -501,7 +293,7 @@
         "h": 5,
         "w": 5,
         "x": 15,
-        "y": 5
+        "y": 0
       },
       "id": 41,
       "options": {
@@ -546,6 +338,199 @@
       ],
       "title": "OEE",
       "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 15,
+        "x": 0,
+        "y": 5
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "select *\nfrom get_availability_from_metrics_view($device, $__from, $__to)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "OEE Factors",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [
+            {
+              "options": {
+                "AVAILABLE": {
+                  "color": "green",
+                  "index": 1,
+                  "text": "ON"
+                },
+                "UNAVAILABLE": {
+                  "color": "red",
+                  "index": 0,
+                  "text": "OFF"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "noValue": "Unknown",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#6f6f6f",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 5,
+        "x": 15,
+        "y": 5
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": ["last"],
+          "fields": "/^value$/",
+          "values": false
+        },
+        "text": {
+          "valueSize": 20
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.2.2",
+      "repeat": null,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "--select time, value from get_last_value($device, 'availability', '1w');\n\n-- this will be the new get_last_value fn\n-- select time, value as value from history_text\n-- where node_id=(select node_id from nodes where props->>'uid'=$device)\n--   and dataitem_id=(select node_id from nodes where props->>'shortPath'='availability')\n-- order by time desc\n-- limit 1;\n\nselect time, value as value from history_text\nwhere path = concat($device, '/Availability')\norder by time desc\nlimit 1;\n\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": ["value"],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "history_float",
+          "timeColumn": "\"time\"",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "$device",
+      "type": "stat"
     }
   ],
   "schemaVersion": 31,
@@ -556,7 +541,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
+          "selected": false,
           "text": "Mazak5701/Mill12345",
           "value": "Mazak5701/Mill12345"
         },
@@ -580,12 +565,12 @@
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Metrics",
   "uid": "metrics",
-  "version": 2
+  "version": 4
 }

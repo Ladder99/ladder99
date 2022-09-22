@@ -46,12 +46,12 @@ join nodes as devices on bins.device_id = devices.node_id;
 -- get percent of time a device is active vs available.
 -- chooses a resolution (hour, day, etc) based on time range.
 
---. call this get_availability - replace other version
+--. call this get_metric_availability - replace other version
 
 -- call it from grafana like so - 
 --   set timezone to 'America/Chicago';
 --   select time, availability
---   from get_availability_from_metrics_view('Cutter', $__from, $__to)
+--   from get_availability_from_metrics_view('Main/Cutter', $__from, $__to)
 
 drop function if exists get_availability_from_metrics_view(text, bigint, bigint, text);
 
@@ -70,7 +70,7 @@ declare
   v_stop timestamptz := ms2timestamptz(p_stop);
   v_range interval := v_stop - v_start;
   -- choose v_binsize based on v_range size
-  v_binsize interval := case 
+  v_binsize interval := case
     when (p_binsize is not null) then '1 '||p_binsize -- eg '1 day'
     -- note: interval of month or greater is not supported by postgres!
     -- when (v_range > interval '2 months') then '1 month'
