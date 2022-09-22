@@ -24,7 +24,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 6,
-  "iteration": 1663829185880,
+  "iteration": 1663840813125,
   "links": [
     {
       "asDropdown": false,
@@ -99,7 +99,6 @@
         "y": 1
       },
       "id": 43,
-      "maxPerRow": 8,
       "options": {
         "orientation": "horizontal",
         "reduceOptions": {
@@ -120,7 +119,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value\nFROM history_float\nWHERE\n  path = concat('$device','/Axes/', $axis, '/Load')\n  and $__timeFilter(\"time\")\norder by time desc\nlimit 1",
+          "rawSql": "SELECT time, value\nFROM history_float\nWHERE\n  path = concat('$device','/Axes/', '${axis:string}', '/Load')\n  and $__timeFilter(\"time\")\norder by time desc\nlimit 1",
           "refId": "loads repeater",
           "select": [
             [
@@ -1170,9 +1169,9 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
-          "text": "Mazak5701/Mill12345",
-          "value": "Mazak5701/Mill12345"
+          "selected": true,
+          "text": "NIST/Mazak_Integrex",
+          "value": "NIST/Mazak_Integrex"
         },
         "datasource": null,
         "definition": "select path from devices where path <> 'Main/Micro'",
@@ -1197,9 +1196,9 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "text": ["All"],
-          "value": ["$__all"]
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": null,
         "definition": "select substring(path, 'Axes/(.*)/Load$') from dataitems where path like '$device/Axes/%/Load' order by path",
@@ -1208,7 +1207,7 @@
         "hide": 2,
         "includeAll": true,
         "label": null,
-        "multi": true,
+        "multi": false,
         "name": "axis",
         "options": [],
         "query": "select substring(path, 'Axes/(.*)/Load$') from dataitems where path like '$device/Axes/%/Load' order by path",
@@ -1241,5 +1240,5 @@
   "timezone": "",
   "title": "Main",
   "uid": "main",
-  "version": 11
+  "version": 15
 }
