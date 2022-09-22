@@ -271,7 +271,8 @@ function resolveReferences(list, index) {
           // replace original with new step string, eg 'Cmotor-${id}' -> 'Cmotor-motor[a]'
           const name = el.name ? `[${el.name}]` : ''
           const original = match[0] // eg '${id}'
-          const replacement = node.type.toLowerCase() + name // eg 'motor[a]'
+          // const replacement = node.type.toLowerCase() + name // eg 'motor[a]'
+          const replacement = toPascalCase(node.type) + name // eg 'motor[a]'
           el.step = el.step.replaceAll(original, replacement)
         }
       }
@@ -377,13 +378,9 @@ const stepHandlers = {
   MTConnectDevices: obj => obj.agentAlias,
   Agent: obj => obj.deviceAlias || obj.deviceId,
   Device: obj => obj.deviceAlias || obj.deviceId, // use alias if specified
-  // Agent: obj => obj.deviceId,
-  // Device: obj => obj.deviceId,
-  // Linear: obj => `linear[${obj.name.toLowerCase()}]`,
-  // Rotary: obj => `rotary[${obj.name.toLowerCase()}]`,
-  Axes: obj => `Axes`, //[${obj.name}]`,
-  Controller: obj => `Controller`, //[${obj.name}]`,
-  Linear: obj => `Linear[${obj.name}]`,
+  // Axes: obj => `Axes`, //[${obj.name}]`,
+  // Controller: obj => `Controller`, //[${obj.name}]`,
+  Linear: obj => `Linear[${obj.name}]`, // eg 'Linear[X]'
   Rotary: obj => `Rotary[${obj.name}]`,
   DataItem: getDataItemStep,
   ref: obj => '${' + obj.id + '}', // eg '${m1-foo}' - will be replaced
@@ -394,7 +391,8 @@ const stepHandlers = {
     // eg <Axes id="a" name="base"> gives 'base', but can translate with regexp later
     //. why this way?
     // return (obj.name || obj.nativeName || obj.tag || '').toLowerCase()
-    return obj.name || obj.nativeName || obj.tag || ''
+    // return obj.name || obj.nativeName || obj.tag || ''
+    return obj.tag || '' // eg 'Axes', 'Controller'
   },
 }
 
