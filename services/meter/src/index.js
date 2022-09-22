@@ -34,10 +34,11 @@ async function start() {
     const devices = agent.devices || [] // [{ id, alias, ... }, ...]
     for (let device of devices) {
       device.path = `${agent.alias}/${device.alias}` // eg 'Mazak5701/Mill12345
+      const overrideMeters = overrides[device.path] || {} // eg { ignore: true }
       const meterKeys = Object.keys(defaults) // list of meters, eg ['availability', 'count', ...]
       for (let meterKey of meterKeys) {
         const defaultSettings = defaults[meterKey] || {} // eg { activePath, ... }
-        const overrideSettings = overrides[device.path] || {} // eg { ignore: true }
+        const overrideSettings = overrideMeters[meterKey] || {} // eg { activePath, ... }
         const settings = { ...defaultSettings, ...overrideSettings }
         const { ignore } = settings
         if (ignore) continue // don't run this meter for this device
