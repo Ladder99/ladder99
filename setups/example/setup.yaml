@@ -46,10 +46,10 @@ relay:
           alias: Mill12345 # used in path expressions - no spaces!
           # ignore: true # set true to hide device in dashboards, pause recording, etc
           # dataitem step translations - dataitemId->step
-          translations:
-            a: axes
-            Cload: load-index
-            Sload: load-spindle
+          # translations:
+          # a: axes
+          # Cload: LoadIndex
+          # Sload: LoadSpindle
           # can ignore or set retention for individual dataitems
           dataitems:
             d1-auto_time:
