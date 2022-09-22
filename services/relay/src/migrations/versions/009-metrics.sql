@@ -5,6 +5,8 @@
 ---------------------------------------------------------------------
 -- store data for metrics
 
+--. move this data into history table?
+
 create table if not exists bins (
   device_id integer references nodes, -- node_id of a device
   resolution interval, -- 1min, 1hr, 1day, 1week, 1month, 1quarter, 1year
