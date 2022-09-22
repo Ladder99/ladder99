@@ -23,7 +23,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 2,
-  "iteration": 1663780873554,
+  "iteration": 1663827810346,
   "links": [
     {
       "asDropdown": false,
@@ -126,7 +126,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "-- SELECT \n-- --  path,\n--   substring(path, '^$device/(.*)') as attribute,\n--   time,\n--   min(value) as value -- just pick one of the values - should be the same\n-- FROM history_all\n-- WHERE\n--   (path, time) in (\n--     select path, max(time) from history_all \n--     where time > (now() - interval '1 day')\n--       and device='$device'\n--     group by path\n--   )\n-- group by path, time -- need this to eliminate duplicate records\n-- order by path\n\n\nselect \n--path as attribute, \nsubstring(path, '^$device/(.*)') as attribute,\ntime, value, \nlower(units) as units\nfrom history_all\nwhere path in ($path)\n",
+          "rawSql": "SELECT \n  substring(path, '^$device/(.*)') as attribute,\n  time,\n  min(value) as value, -- just pick one of the values - should be the same\n  lower(units) as units\nFROM history_all\nWHERE\n  (path, time) in (\n    select path, max(time) from history_all \n    where time > (now() - interval '1 day')\n      and device='$device'\n    group by path\n  )\ngroup by path, time, units -- need this to eliminate duplicate records\norder by path\n\n\n-- select \n-- --path as attribute, \n-- substring(path, '^$device/(.*)') as attribute,\n-- time, value, \n-- lower(units) as units\n-- from history_all\n-- where path in ($path)\n",
           "refId": "A",
           "select": [
             [
@@ -148,7 +148,7 @@
           ]
         }
       ],
-      "title": "DataItems (last known values)",
+      "title": "Last Known Values ($device)",
       "type": "table"
     },
     {
@@ -260,7 +260,7 @@
           ]
         }
       ],
-      "title": "DataItems (recent changes)",
+      "title": "Recent Changes ($device)",
       "type": "table"
     }
   ],
@@ -274,8 +274,8 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "NIST/GFAgie01",
-          "value": "NIST/GFAgie01"
+          "text": "Mazak5701/Mill12345",
+          "value": "Mazak5701/Mill12345"
         },
         "datasource": null,
         "definition": "select path from devices",
@@ -328,5 +328,5 @@
   "timezone": "",
   "title": "DataItems",
   "uid": "dataitems",
-  "version": 5
+  "version": 12
 }
