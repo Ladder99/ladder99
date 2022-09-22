@@ -24,7 +24,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 6,
-  "iteration": 1663782657796,
+  "iteration": 1663829185880,
   "links": [
     {
       "asDropdown": false,
@@ -52,7 +52,7 @@
       },
       "id": 49,
       "panels": [],
-      "title": "Axis Load",
+      "title": "Axis Load ($device)",
       "type": "row"
     },
     {
@@ -626,7 +626,7 @@
         "value": "minutes"
       },
       "timeTextColor": "rgb(146, 146, 146)",
-      "title": "Timeline",
+      "title": "Timeline ($device)",
       "type": "natel-discrete-panel",
       "units": "short",
       "use12HourClock": false,
@@ -655,7 +655,7 @@
       },
       "id": 39,
       "panels": [],
-      "title": "Temperature/Load",
+      "title": "Temperature and Load",
       "type": "row"
     },
     {
@@ -705,7 +705,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, path, value\nFROM history_float\nWHERE\n  -- path='$device/axes/rotary[c]/temperature' and\n  path like '$device/Axes[%]/Temperature' and\n  $__timeFilter(\"time\")\norder by time\n",
+          "rawSql": "SELECT time, substring(path, 'Axes/(.*)/Temperature') as axis, value as temp\nFROM history_float\nWHERE\n  path like '$device/Axes/%/Temperature' and\n  $__timeFilter(\"time\")\norder by time\n",
           "refId": "c",
           "select": [
             [
@@ -732,7 +732,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, 'coolant' as path, value as coolant\nFROM history_float\nWHERE\n  path='$device/Systems/Coolant/Temperature' and\n  $__timeFilter(\"time\")\norder by time",
+          "rawSql": "SELECT time, 'Coolant' as axis, value as \"temp Coolant\"\nFROM history_float\nWHERE\n  path='$device/Systems/Coolant/Temperature' and\n  $__timeFilter(\"time\")\norder by time",
           "refId": "A",
           "select": [
             [
@@ -758,7 +758,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Temperature",
+      "title": "Temperature (C) ($device)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -845,7 +845,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, path, value\nFROM history_float\nWHERE\n  -- device='$device' and\n  -- path='$device/axes/rotary[c]/load' and\n  path like '$device/Axes%/Load' and\n  $__timeFilter(\"time\")\norder by time",
+          "rawSql": "SELECT time, substring(path, 'Axes/(.*)/Load') as axis, value as load\nFROM history_float\nWHERE\n  path like '$device/Axes/%/Load%' -- note the trailing %, if had to add [name]\n  and $__timeFilter(\"time\")\norder by time",
           "refId": "c",
           "select": [
             [
@@ -871,7 +871,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Load",
+      "title": "Load ($device)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -977,7 +977,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  time,\n  value as \"feedrate\"\nFROM history_float\nWHERE\n  -- device='$device' and\n  path='$device/Controller/Path/PathFeedrateActual' and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT time, substring(path, '$device/(.*)') as path, value as rate\nFROM history_float\nWHERE\n  path like '$device/%Feedrate%' and\n  $__timeFilter(\"time\")\norder by time asc",
           "refId": "A",
           "select": [
             [
@@ -1003,7 +1003,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Path Feedrate (mm/sec)",
+      "title": "Path Feedrate (mm/sec) ($device)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1095,7 +1095,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as Actual\nFROM history_float\nWHERE\n  -- device='$device' and\n  -- path='axes/c/spindle_speed-actual' and\n  path='$device/Axes/Rotary[C]/RotaryVelocityActual' and\n  $__timeFilter(\"time\")",
+          "rawSql": "SELECT time, substring(path, '$device/(.*)') as path, value as speed\nFROM history_float\nWHERE\n  path like '$device/%RotaryVelocity%'\n  and $__timeFilter(\"time\")\norder by time asc",
           "refId": "A",
           "select": [
             [
@@ -1115,40 +1115,13 @@
               "type": "macro"
             }
           ]
-        },
-        {
-          "format": "time_series",
-          "group": [],
-          "hide": false,
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT time, value as Override\nFROM history_float\nWHERE\n  -- device='$device' and\n  -- path='axes/c/spindle-speed-override' and\n  path='$device/Controller/Path/RotaryVelocityOverride' and\n  $__timeFilter(\"time\")",
-          "refId": "B",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
         }
       ],
       "thresholds": [],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Spindle Speed",
+      "title": "Spindle Speed ($device)",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -1197,9 +1170,9 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "text": "NIST/Hurco02",
-          "value": "NIST/Hurco02"
+          "selected": false,
+          "text": "Mazak5701/Mill12345",
+          "value": "Mazak5701/Mill12345"
         },
         "datasource": null,
         "definition": "select path from devices where path <> 'Main/Micro'",
@@ -1248,7 +1221,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {
@@ -1268,5 +1241,5 @@
   "timezone": "",
   "title": "Main",
   "uid": "main",
-  "version": 9
+  "version": 11
 }
