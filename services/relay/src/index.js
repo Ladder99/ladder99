@@ -5,6 +5,7 @@ import { Db } from './common/db.js'
 import { migrate } from './migrations/migrate.js'
 import { AgentReader } from './agentReader.js'
 import { Endpoint } from './endpoint.js'
+import { Pruner } from './pruner.js'
 import * as lib from './common/lib.js'
 
 console.log()
@@ -16,7 +17,7 @@ console.log(`---------------------------------------------------`)
 const params = {
   retryTime: 4000, // ms between connection retries etc
   // this is the default ladder99 agent service - can override or specify others in setup.yaml.
-  defaultAgent: { alias: 'main', url: 'http://agent:5000' }, // don't change alias!
+  defaultAgent: { alias: 'Main', url: 'http://agent:5000' }, // don't change agent alias once relay runs.
   // hardcoded default folder is defined in compose.yaml with docker volume mappings
   setupFolder: process.env.L99_SETUP_FOLDER || '/data/setup',
   // these are dynamic - adjusted on the fly
@@ -58,6 +59,9 @@ async function start(params) {
     // run in parallel so agent readers run independently of each other.
     agentReader.start()
   }
+
+  const pruner = new Pruner({ params, db, setup })
+  pruner.start()
 }
 
 start(params)
