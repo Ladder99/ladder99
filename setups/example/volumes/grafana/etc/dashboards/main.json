@@ -24,7 +24,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 6,
-  "iteration": 1663922146551,
+  "iteration": 1663941540386,
   "links": [
     {
       "asDropdown": false,
@@ -1160,7 +1160,7 @@
       }
     }
   ],
-  "refresh": "",
+  "refresh": "5s",
   "schemaVersion": 31,
   "style": "dark",
   "tags": ["client"],
@@ -1240,5 +1240,5 @@
   "timezone": "",
   "title": "Main",
   "uid": "main",
-  "version": 14
+  "version": 16
 }
