@@ -18,7 +18,7 @@ outputs:
     value: <condition>
 
   - key: temp
-    category: EVENT
+    category: SAMPLE
     type: TEMPERATURE
     value: <temperature>
 
@@ -71,6 +71,24 @@ outputs:
     type: x:CPU
     subType: x:SYSTEM
     value: <cpu-system>
+
+  - key: disksize
+    category: SAMPLE
+    type: x:DISK
+    subType: x:SIZE
+    value: <disk-size>
+
+  - key: diskused
+    category: SAMPLE
+    type: x:DISK
+    subType: x:USED
+    value: <disk-used>
+
+  - key: diskuse
+    category: SAMPLE
+    type: x:DISK
+    subType: x:USE
+    value: <disk-use>
 
   - key: os
     category: EVENT

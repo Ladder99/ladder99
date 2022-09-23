@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.7" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="urn:mtconnect.org:MTConnectDevices:1.7" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.7 https://schemas.mtconnect.org/schemas/MTConnectDevices_1.7.xsd">
+<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.7"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="urn:mtconnect.org:MTConnectDevices:1.7" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.7 https://schemas.mtconnect.org/schemas/MTConnectDevices_1.7.xsd">
   <Header creationTime="2021-09-20T00:00:00+00:00" deviceModelChangeTime="2021-09-20T00:00:00+00:00" sender="localhost" instanceId="12345678" bufferSize="131072" assetBufferSize="1000" assetCount="0" version="1.7.0.3" />
   <Devices>
 
@@ -12,10 +14,13 @@
         <DataItem id="m-cond" name="condition" category="CONDITION" type="SYSTEM" />
         <DataItem id="m-temp" name="temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" />
         <!-- <DataItem id="m-memtot" name="memory-total" category="SAMPLE" type="x:MEMORY" subType="x:TOTAL" units="x:BYTES" /> -->
-        <!-- . use memavail instead, put in nis also -->
+        <!-- . use memavail instead? -->
         <DataItem id="m-memfree" name="memory-free" category="SAMPLE" type="x:MEMORY" subType="x:FREE" units="x:BYTES" />
         <DataItem id="m-memused" name="memory-used" category="SAMPLE" type="x:MEMORY" subType="x:USED" units="x:BYTES" />
         <DataItem id="m-cputot" name="cpu-total" category="SAMPLE" type="x:CPU" subType="x:TOTAL" units="x:PERCENTAGE" />
+        <DataItem id="m-disksize" name="disk-size" category="SAMPLE" type="x:DISK" subType="x:SIZE" units="x:BYTES" />
+        <DataItem id="m-diskused" name="disk-used" category="SAMPLE" type="x:DISK" subType="x:USED" units="x:BYTES" />
+        <DataItem id="m-diskuse" name="disk-use" category="SAMPLE" type="x:DISK" subType="x:USE" units="x:PERCENTAGE" />
         <DataItem id="m-os" name="os" category="EVENT" type="VARIABLE" subType="x:OS" representation="DATA_SET" />
       </DataItems>
     </Device>

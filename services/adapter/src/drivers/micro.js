@@ -21,16 +21,40 @@ export class AdapterDriver {
         // get specs object like { mem: 'total, free, used' }, as expected by si module
         // const specs = {}
         // inputs.inputs.forEach(input => (specs[input.item] = input.subitems))
+
+        // most interesting ones avail ---
+        // battery: hasBattery, currentCapacity, maxCapacity, capacityUnit, percent mWh
+        // cpu: manufacturer, brand, speed, cores
+        // cpuTemperature: main, cores
+        // currentLoad: currentLoad, currentLoadUser, currentLoadSystem
+        // disksIO: rIO, wIO
+        // dockerContainers: name, createdAt, state
+        // fsSize: fs, type, size, available
+        // mem: total, free, used
+        // osInfo: platform, distro, release, codename, arch, hostname
+        // wifiInterfaces: id, model, vendor
         const specs = {
           cpuTemperature: 'main',
           mem: 'total, free, used',
           currentLoad: 'currentLoad, currentLoadUser, currentLoadSystem',
+          fsSize: 'fs, size, used, use', // [ { fs: '/', size: 100, used: 20, use: 5.0 }, ... ]
           osInfo: 'platform, distro, release, codename, arch, hostname',
         }
 
         // read the specs data
         const data = await si.get(specs)
         // console.log(data) // too much info
+
+        // get total disk space as { size, used, use }
+        const disk = data.fsSize.reduce(
+          (acc, fs) => {
+            acc.size += fs.size
+            acc.used += fs.used
+            return acc
+          },
+          { size: 0, used: 0 }
+        )
+        disk.use = (disk.used / (disk.size || 1)) * 100
 
         // write values to cache
         setValue('availability', 'AVAILABLE')
@@ -42,6 +66,9 @@ export class AdapterDriver {
         setValue('cpu-total', rounded(data.currentLoad.currentLoad, 1))
         setValue('cpu-user', rounded(data.currentLoad.currentLoadUser, 1))
         setValue('cpu-system', rounded(data.currentLoad.currentLoadSystem, 1))
+        setValue('disk-size', disk.size)
+        setValue('disk-used', rounded(disk.used, -4))
+        setValue('disk-use', rounded(disk.use, 0))
         setValue('os', getDataSet(data.osInfo))
         //
       } catch (e) {
@@ -61,6 +88,9 @@ export class AdapterDriver {
       setValue('cpu-total', 'UNAVAILABLE')
       setValue('cpu-user', 'UNAVAILABLE')
       setValue('cpu-system', 'UNAVAILABLE')
+      setValue('disk-size', 'UNAVAILABLE')
+      setValue('disk-used', 'UNAVAILABLE')
+      setValue('disk-use', 'UNAVAILABLE')
       setValue('os', 'UNAVAILABLE')
     }
 
@@ -85,6 +115,7 @@ function getDataSet(obj) {
   return str
 }
 
+//. to libjs
 function rounded(value, decimals = 0) {
   if (value !== null && value !== undefined) {
     if (decimals < 0) {

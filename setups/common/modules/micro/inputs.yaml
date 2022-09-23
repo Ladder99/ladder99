@@ -27,16 +27,3 @@ inputs:
   #   item: osInfo
   #   subitems: platform, distro, release, codename, arch, hostname
   #   representation: dataset
-
-  # ---- most interesting ones avail
-
-  # battery: hasBattery, currentCapacity, maxCapacity, capacityUnit, percent # mWh
-  # cpu: manufacturer, brand, speed, cores
-  # cpuTemperature: main, cores
-  # currentLoad: currentLoad, currentLoadUser, currentLoadSystem
-  # disksIO: rIO, wIO
-  # dockerContainers: name, createdAt, state
-  # fsSize: fs, type, size, available
-  # mem: total, free, used
-  # osInfo: platform, distro, release, codename, arch, hostname
-  # wifiInterfaces: id, model, vendor
