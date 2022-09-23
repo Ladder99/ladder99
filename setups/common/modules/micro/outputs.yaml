@@ -90,6 +90,12 @@ outputs:
     subType: x:USE
     value: <disk-use>
 
+  - key: diskavail
+    category: SAMPLE
+    type: x:DISK
+    subType: x:AVAILABLE
+    value: <disk-available>
+
   - key: os
     category: EVENT
     type: VARIABLE

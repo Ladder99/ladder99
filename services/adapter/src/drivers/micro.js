@@ -37,7 +37,7 @@ export class AdapterDriver {
           cpuTemperature: 'main',
           mem: 'total, free, used',
           currentLoad: 'currentLoad, currentLoadUser, currentLoadSystem',
-          fsSize: 'fs, size, used, use', // [ { fs: '/', size: 100, used: 20, use: 5.0 }, ... ]
+          fsSize: 'fs, size, used, use, available', // gives an array
           osInfo: 'platform, distro, release, codename, arch, hostname',
         }
 
@@ -56,9 +56,10 @@ export class AdapterDriver {
         //   (acc, fs) => {
         //     acc.size += fs.size
         //     acc.used += fs.used
+        //     acc.available += fs.available
         //     return acc
         //   },
-        //   { size: 0, used: 0 }
+        //   { size: 0, used: 0, available: 0 }
         // )
         // disk.use = (disk.used / (disk.size || 1)) * 100
         const disk = data.fsSize.find(fs => fs.fs === 'drvfs') || {}
@@ -73,9 +74,10 @@ export class AdapterDriver {
         setValue('cpu-total', rounded(data.currentLoad.currentLoad, 1))
         setValue('cpu-user', rounded(data.currentLoad.currentLoadUser, 1))
         setValue('cpu-system', rounded(data.currentLoad.currentLoadSystem, 1))
-        setValue('disk-size', disk.size)
-        setValue('disk-used', rounded(disk.used, -6))
-        setValue('disk-use', rounded(disk.use, 0))
+        setValue('disk-size', disk.size) // bytes
+        setValue('disk-used', rounded(disk.used, -6)) // bytes rounded to mb
+        setValue('disk-use', rounded(disk.use, 0)) // percent
+        setValue('disk-available', rounded(disk.available, -6)) // bytes rounded to mb
         setValue('os', getDataSet(data.osInfo))
         //
       } catch (e) {
@@ -98,6 +100,7 @@ export class AdapterDriver {
       setValue('disk-size', 'UNAVAILABLE')
       setValue('disk-used', 'UNAVAILABLE')
       setValue('disk-use', 'UNAVAILABLE')
+      setValue('disk-available', 'UNAVAILABLE')
       setValue('os', 'UNAVAILABLE')
     }
 
