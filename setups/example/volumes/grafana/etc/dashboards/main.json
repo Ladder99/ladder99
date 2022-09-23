@@ -24,7 +24,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 6,
-  "iteration": 1663840813125,
+  "iteration": 1663922146551,
   "links": [
     {
       "asDropdown": false,
@@ -976,7 +976,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, substring(path, '$device/(.*)') as path, value as rate\nFROM history_float\nWHERE\n  path like '$device/%Feedrate%' and\n  $__timeFilter(\"time\")\norder by time asc",
+          "rawSql": "SELECT\n  time,\n  substring(path, '$device/(.*)') as path,\n  value as feedrate\nFROM history_float\nWHERE\n  path like '$device/Axes/%/AxisFeedrate'\n  and $__timeFilter(\"time\")\nORDER BY time\n",
           "refId": "A",
           "select": [
             [
@@ -1169,9 +1169,9 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "text": "NIST/Mazak_Integrex",
-          "value": "NIST/Mazak_Integrex"
+          "selected": false,
+          "text": "Mazak5701/Mill12345",
+          "value": "Mazak5701/Mill12345"
         },
         "datasource": null,
         "definition": "select path from devices where path <> 'Main/Micro'",
@@ -1240,5 +1240,5 @@
   "timezone": "",
   "title": "Main",
   "uid": "main",
-  "version": 15
+  "version": 14
 }
