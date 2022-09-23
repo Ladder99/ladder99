@@ -74,7 +74,7 @@ export class AdapterDriver {
         setValue('cpu-user', rounded(data.currentLoad.currentLoadUser, 1))
         setValue('cpu-system', rounded(data.currentLoad.currentLoadSystem, 1))
         setValue('disk-size', disk.size)
-        setValue('disk-used', rounded(disk.used, -4))
+        setValue('disk-used', rounded(disk.used, -6))
         setValue('disk-use', rounded(disk.use, 0))
         setValue('os', getDataSet(data.osInfo))
         //
