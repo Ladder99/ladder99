@@ -15,32 +15,22 @@ export class Autoprune {
   // start the autoprune timer
   start() {
     console.log(`Autoprune - start job scheduler for`, this.when)
-    // schedule.scheduleJob(this.when, this.prune.bind(this)) // eg call prune once a week
-    this.prune() //. direct testing
+    schedule.scheduleJob(this.when, this.prune.bind(this)) // eg call prune once a week
+    this.prune() //... direct test
   }
 
   // prune old data from db based on retention schedules in setup.yaml.
   // note: setup.relay doesn't have to be there - hence setup?.relay.
   async prune() {
     console.log(`Autoprune - pruning old data...`)
-    // const plans = [] // for tree/array of plan objects - [{ retention, clauses, parent }, ....]
-    // this.getPlans(plans, this.setup?.relay) // recurses setup, starting at relay setting
-    // console.log(`Autoprune - plans`, plans)
 
-    // add plan clauses and parent links to setup tree
-    // eg adds this.setup.relay.clauses, this.setup.relay.parent
-    // this.addPlans(this.setup, 'relay') // recurse setup, starting at relay setting
-    this.addPlans(this.setup.relay, 'relay') // recurse setup, starting at relay setting
+    this.pruneLevel(this.setup.relay, 'relay') // recurse setup, starting at relay setting
 
-    // this.addSql(this.setup)
+    console.log(`Autoprune - setup.relay`)
+    console.dir(this.setup.relay, { depth: null })
 
-    console.log(`Autoprune - setup`)
-    console.dir(this.setup, { depth: null })
+    await this.vacuumAnalyze()
 
-    // await this.deletePlans(plans) // now delete the data
-
-    //. vacuum analyze
-    // await this.db.query(`VACUUM ANALYZE`)
     process.exit(0) //.
   }
 
@@ -50,10 +40,8 @@ export class Autoprune {
   // config is like { id|alias, retention, [nextLevel] },
   // level is the current config level, eg 'dataitems',
   // parent is the parent config/setup object.
-  async addPlans(config, level, parent = null) {
-    console.log('addPlans', level)
-    //
-    // const config = setup[level] // includes { id|alias, retention, [nextLevel] }
+  async pruneLevel(config, level, parent = null) {
+    console.log('pruneLevel', level)
 
     const retention = config.retention // eg '1wk' or undefined
 
@@ -76,7 +64,8 @@ export class Autoprune {
       }
     }
 
-    // get new axis to recurse down, if any, eg 'relay' -> 'agents'
+    // get new axis to recurse down, if any, eg 'relay' -> 'agents'.
+    // this tree is hard to navigate because each level has different child attribute.
     const getNextLevel = {
       relay: 'agents',
       agents: 'devices',
@@ -87,45 +76,27 @@ export class Autoprune {
 
     if (nextLevel) {
       // get child config items - eg agents, devices, dataitems
-      const childConfigs = config[nextLevel] // eg config['agents'] = [{alias:'Main',...},...]
+      const childConfigs = config[nextLevel]
       const childParent = config
       // recurse down child configs, if any - eg agent of agents
       for (let childConfig of childConfigs || []) {
-        // this.getPlans(plans, childConfig, nextLevel, childParent) // recurse down the tree
-        this.addPlans(childConfig, nextLevel, childParent) // recurse down the tree
+        this.pruneLevel(childConfig, nextLevel, childParent) // recurse down the tree
       }
     }
 
-    // now build sql statements
+    // now build and run sql statements
     if (config.autoprune) {
       const where = config.autoprune.clauses
         .map(clause => `(${clause})`)
         .join(' and ')
-      const sql = `
-        DELETE FROM raw.history
-        WHERE ?
-        AND timestamp < now() - ?::interval
-      `
-      const sqlValues = [where, config.autoprune.retention]
-      config.autoprune.sql = sql
-      config.autoprune.sqlValues = sqlValues
+      const sql = `delete from raw.history where ? and timestamp<now()-?::interval;`
+      const values = [where, config.autoprune.retention]
+      // config.autoprune.sql = sql
+      // config.autoprune.values = values
+      //. assert values are safe
+      console.log({ sql, values })
+      // await this.db.query(sql, values)
     }
-  }
-
-  // recurse down setup tree, adding sql delete queries to each level
-  addSql(setup) {
-    const clauses = setup?.autoprune?.clauses
-      .map(clause => `(${clause})`)
-      .join(' and ')
-    const sql = `
-      DELETE FROM raw.history 
-      WHERE ?
-      AND timestamp < now() - ?::interval
-    `
-    const sqlValues = [clauses, setup.autoprune.retention]
-    setup.autoprune.sql = sql
-    setup.autoprune.sqlValues = sqlValues
-    // this.addSql(setup)
   }
 
   // get a where clause for 'select node_id from dataitems where ...' query
@@ -148,40 +119,10 @@ export class Autoprune {
     }
   }
 
-  // // add exception to parent filters
-  // addException(plans, parent, exception) {
-  //   if (parent) {
-  //     console.log('parent', parent)
-  //     parent.clauses.push(exception)
-  //     this.addException(plans, parent.parent, exception) // recurse up the tree
-  //   }
-  // }
-
-  // // get a set of nodes for a given clause
-  // async getNodeIds(clause = '1=1') {
-  //   const result = await this.db.query(
-  //     `select node_id from dataitems where ${clause}`
-  //   )
-  //   // extract set of node_ids from rows
-  //   const nodeIdList = (result.rows || []).map(row => row.node_id)
-  //   const nodeIds = new Set(nodeIdList)
-  //   return nodeIds
-  // }
-
-  // delete data from database
-  //. wouldnt you want this to recurse down a tree? i guess it has a list, but
-  async deletePlans(plans) {
-    console.log(`Autoprune - delete data`)
-    for (let plan of plans) {
-      const clauses = plan.clauses.map(clause => `(${clause})`).join(' and ')
-      const sql = `
-        DELETE FROM raw.history 
-        WHERE ?
-        AND timestamp < now() - ?::interval
-        `
-      const values = [clauses, plan.retention]
-      console.log('Autoprune sql', sql, values)
-      // await this.db.query(sql, values)
-    }
+  // run vacuum analyze on all tables - to reclaim deleted rows disk space
+  async vacuumAnalyze() {
+    console.log(`Autoprune - vacuum analyze...`)
+    const sql = `vacuum analyze`
+    await this.db.query(sql)
   }
 }
