@@ -48,7 +48,7 @@ export class Endpoint {
           console.log(`Relay error - Host unreachable at ${url}...`)
         } else {
           // throw error // don't throw error - would kill relay
-          console.error('Relay error', error)
+          console.error('Relay error', error.message)
         }
         console.log(`Relay error - fetch response`, response)
         console.log(`Relay error - retrying in ${waitTryAgain} ms...`)

@@ -5,7 +5,7 @@ import { Db } from './common/db.js'
 import { migrate } from './migrations/migrate.js'
 import { AgentReader } from './agentReader.js'
 import { Endpoint } from './endpoint.js'
-import { Pruner } from './pruner.js'
+// import { Autoprune } from './autoprune.js'
 import * as lib from './common/lib.js'
 
 console.log()
@@ -37,7 +37,7 @@ async function start(params) {
   // read client's setup.yaml (includes devices, where to find their agents etc)
   const setup = lib.readSetup(params.setupFolder)
 
-  // get array of agent objects from setup yaml. each has { alias, url, ... }
+  // get array of agent objects from setup yaml. each has { alias, url, devices, ... }
   const agents = setup?.relay?.agents || [params.defaultAgent]
 
   for (let agent of agents) {
@@ -60,8 +60,8 @@ async function start(params) {
     agentReader.start()
   }
 
-  const pruner = new Pruner({ params, db, setup })
-  pruner.start()
+  // const autoprune = new Autoprune(params, db, setup)
+  // autoprune.start()
 }
 
 start(params)

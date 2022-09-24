@@ -29,18 +29,18 @@ relay:
     - alias: Main # this is an identifier for the agent, used by the db - don't change once set!
       url: http://agent:5000 # url to the agent
       # ignore: true # can specify this to turn agent recording on/off for all devices.
-      retention: 1wk # overrides relay retention value
+      # retention: 1wk # set agent retention period - overrides relay retention value
       devices:
         - id: m # must match id in agent.xml
           alias: Micro # used in path expressions - no spaces - use underscore if needed
-          # ignore: true # specify this to turn device recording on/off - or say retention: 0 ?
-          # retention: 1wk # overrides agent retention value
+          retention: 1wk # set device retention period - overrides agent retention value
+          # ignore: true # specify this to turn device recording on/off
           # # could translate, ignore, or set retention for individual dataitems
           # dataitems:
           #   - id: m-cpu
           #     ignore: true # overrides device ignore value
-          #     retention: 1wk # overrides device retention value
-          #     pathstep: m-cpufoo # optional translation
+          #     retention: 1wk # set dataitem retention period - overrides device retention value
+          #     pathstep: CpuFoo # optional path translation
 
     - alias: Mazak5701 # this is an identifier for the agent, used by the db - don't change once set!
       url: http://mtconnect.mazakcorp.com:5701 # url to the agent

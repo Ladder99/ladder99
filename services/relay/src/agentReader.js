@@ -4,6 +4,7 @@
 
 import { Probe } from './dataProbe.js'
 import { Observations } from './dataObservations.js'
+import { Autoprune } from './autoprune.js'
 import * as lib from './common/lib.js'
 
 export class AgentReader {
@@ -12,6 +13,7 @@ export class AgentReader {
   // endpoint is an Endpoint instance - endpoint.js - to poll agent
   // params includes { fetchInterval, fetchCount }
   // setup is client's setup.yaml
+  // agent is a single agent from setup.yaml
   // called by index.js
   constructor({ params, db, endpoint, setup, agent }) {
     this.params = params
@@ -19,6 +21,7 @@ export class AgentReader {
     this.endpoint = endpoint
     this.setup = setup
     this.agent = agent
+    this.autoprune = null
 
     this.instanceId = null
 
@@ -39,14 +42,14 @@ export class AgentReader {
       return
     }
 
+    this.autoprune = new Autoprune(this.params, this.db, this.agent)
+
     // probe - get agent data structures and write to db
     probe: do {
       // we pass this.setup also so probe can use translations for dataitem paths
       const probe = new Probe(this.setup, this.agent) // see dataProbe.js
-      await probe.read(this.endpoint) // read xml into probe.jsTree, probe.nodes, check for path collisions
+      await probe.read(this.endpoint) // read xml into probe.jsTree, probe.nodes, check for path collisions - exit if unresolved
       await probe.write(this.db) // write/sync dataitems to db, get probe.indexes
-      // console.log('probe', this.agent.alias, probe.indexes)
-      // process.exit(0)
       this.instanceId = probe.instanceId
 
       // current - get last known values of all dataitems and write to db
