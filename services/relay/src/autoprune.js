@@ -29,11 +29,13 @@ export class Autoprune {
 
     // add plan clauses and parent links to setup tree
     // eg adds this.setup.relay.clauses, this.setup.relay.parent
-    this.addPlans(this.setup, 'relay') // recurse setup, starting at relay setting
+    // this.addPlans(this.setup, 'relay') // recurse setup, starting at relay setting
+    this.addPlans(this.setup.relay, 'relay') // recurse setup, starting at relay setting
 
-    this.addSql(this.setup)
+    // this.addSql(this.setup)
 
-    console.log(`Autoprune - setup`, this.setup.relay)
+    console.log(`Autoprune - setup`)
+    console.dir(this.setup, { depth: null })
 
     // await this.deletePlans(plans) // now delete the data
 
@@ -48,10 +50,11 @@ export class Autoprune {
   // config is like { id|alias, retention, [nextLevel] },
   // level is the current config level, eg 'dataitems',
   // parent is the parent config/setup object.
-  async addPlans(setup, level, parent = null) {
-    console.log('addPlans', level, parent?.alias)
+  async addPlans(config, level, parent = null) {
+    console.log('addPlans', level)
     //
-    const config = setup[level] // includes { id|alias, retention, [nextLevel] }
+    // const config = setup[level] // includes { id|alias, retention, [nextLevel] }
+
     const retention = config.retention // eg '1wk' or undefined
 
     // if this level specifies a retention, add an autoprune object to the setup tree
@@ -66,8 +69,8 @@ export class Autoprune {
       // add negation as an exception to any parent filters, recursing upwards
       const exception = 'not ' + clause //. will this work?
       while (parent) {
-        if (parent.clauses) {
-          parent.clauses.push(exception)
+        if (parent.autoprune?.clauses) {
+          parent.autoprune.clauses.push(exception)
         }
         parent = parent.parent
       }
@@ -86,36 +89,40 @@ export class Autoprune {
       // get child config items - eg agents, devices, dataitems
       const childConfigs = config[nextLevel] // eg config['agents'] = [{alias:'Main',...},...]
       const childParent = config
-      // recurse down child configs, if any
+      // recurse down child configs, if any - eg agent of agents
       for (let childConfig of childConfigs || []) {
         // this.getPlans(plans, childConfig, nextLevel, childParent) // recurse down the tree
         this.addPlans(childConfig, nextLevel, childParent) // recurse down the tree
       }
     }
 
-    // // now build sql statements
-    // const clauses = config.autoprune.clauses
-    //   .map(clause => `(${clause})`)
-    //   .join(' and ')
-    // const sql = `
-    //   DELETE FROM raw.history
-    //   WHERE ?
-    //   AND timestamp < now() - ?::interval
-    // `
-    // const sqlValues = [clauses, plan.retention]
-    // setup.autoprune.sql = sql
-    // setup.autoprune.sqlValues = sqlValues
+    // now build sql statements
+    if (config.autoprune) {
+      const where = config.autoprune.clauses
+        .map(clause => `(${clause})`)
+        .join(' and ')
+      const sql = `
+        DELETE FROM raw.history
+        WHERE ?
+        AND timestamp < now() - ?::interval
+      `
+      const sqlValues = [where, config.autoprune.retention]
+      config.autoprune.sql = sql
+      config.autoprune.sqlValues = sqlValues
+    }
   }
 
   // recurse down setup tree, adding sql delete queries to each level
   addSql(setup) {
-    const clauses = setup.clauses.map(clause => `(${clause})`).join(' and ')
+    const clauses = setup?.autoprune?.clauses
+      .map(clause => `(${clause})`)
+      .join(' and ')
     const sql = `
       DELETE FROM raw.history 
       WHERE ?
       AND timestamp < now() - ?::interval
     `
-    const sqlValues = [clauses, plan.retention]
+    const sqlValues = [clauses, setup.autoprune.retention]
     setup.autoprune.sql = sql
     setup.autoprune.sqlValues = sqlValues
     // this.addSql(setup)
@@ -137,7 +144,7 @@ export class Autoprune {
       }
       //
     } else if (level === 'dataitems') {
-      return `props->>'id = '${config.id}'` // match dataitem id, eg 'm-avail'
+      return `props->>'id' = '${config.id}'` // match dataitem id, eg 'm-avail'
     }
   }
 
