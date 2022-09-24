@@ -60,6 +60,7 @@ async function start(params) {
     agentReader.start()
   }
 
+  // // start the autoprune scheduler
   // const autoprune = new Autoprune(params, db, setup)
   // autoprune.start()
 }

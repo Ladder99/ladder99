@@ -4,7 +4,6 @@
 
 import { Probe } from './dataProbe.js'
 import { Observations } from './dataObservations.js'
-import { Autoprune } from './autoprune.js'
 import * as lib from './common/lib.js'
 
 export class AgentReader {
@@ -21,7 +20,7 @@ export class AgentReader {
     this.endpoint = endpoint
     this.setup = setup
     this.agent = agent
-    this.autoprune = null
+    // this.autoprune = null
 
     this.instanceId = null
 
@@ -41,8 +40,6 @@ export class AgentReader {
       console.log(`Relay ignore agent per setup.yaml`, this.agent.alias)
       return
     }
-
-    this.autoprune = new Autoprune(this.params, this.db, this.agent)
 
     // probe - get agent data structures and write to db
     probe: do {
