@@ -33,10 +33,12 @@ export class Autoprune {
     // await this.db.query(`VACUUM ANALYZE`)
   }
 
-  // get tree/list of plan objects recursively, like { retention:'1wk', clauses:['1=1',...], parent: null}.
-  // config should have { id|alias, retention, [nextlevel] },
-  // where level is the current config level, eg with 'dataitems',
-  //   { alias: 'Micro', retention: '1wk', dataitems: [...]},
+  // get tree/list of plan objects recursively,
+  // like { retention:'1wk', clauses:['1=1',...], parent: null}.
+  // plans is the growing list of plan objects.
+  // config is like { id|alias, retention, [nextlevel] },
+  // level is the current config level, eg 'dataitems',
+  // parent is the parent config object.
   async getPlans(plans, config = {}, level = 'relay', parent = null) {
     //
     const retention = config.retention // eg '1wk' or undefined
@@ -49,11 +51,11 @@ export class Autoprune {
       const plan = { retention, clauses, parent }
       plans.push(plan)
 
-      // add negation as an exception to any parent filters, recursing upwards
-      if (parent) {
-        const exception = 'not ' + clause //. see if this works
-        this.addException(plans, parent, exception) // recurse up the tree
-      }
+      // // add negation as an exception to any parent filters, recursing upwards
+      // if (parent) {
+      //   const exception = 'not ' + clause //. see if this works
+      //   this.addException(plans, parent, exception) // recurse up the tree
+      // }
     }
 
     // get new axis to recurse down, if any, eg 'relay' -> 'agents'
@@ -79,31 +81,27 @@ export class Autoprune {
   // get a where clause for 'select node_id from dataitems where ...' query
   getClause(config, level, parent) {
     if (level === 'relay') {
-      // match ALL dataitems
-      return '1=1'
+      return '1=1' // match ALL dataitems
       //
     } else if (level === 'agents') {
-      // match agent alias, eg 'Main/%'
-      return `path like '${config.alias}/%'`
+      return `path like '${config.alias}/%'` // match agent alias, eg 'Main/%'
       //
     } else if (level === 'devices') {
       if (config.alias) {
-        // match device alias, eg 'Main/Micro/%'
-        return `path like '${parent.alias}/${config.alias}/%'`
+        return `path like '${parent.alias}/${config.alias}/%'` // match device alias, eg 'Main/Micro/%'
       } else if (config.id) {
-        // match device contextId, eg 'Main/m'
-        return `props->>'contextId' = '${parent.alias}/${config.id}`
+        return `props->>'contextId' = '${parent.alias}/${config.id}` // match device contextId, eg 'Main/m'
       }
       //
     } else if (level === 'dataitems') {
-      // match dataitem id, eg 'm-avail'
-      return `props->>'id = '${config.id}'`
+      return `props->>'id = '${config.id}'` // match dataitem id, eg 'm-avail'
     }
   }
 
   // add exception to parent filters
   addException(plans, parent, exception) {
     if (parent) {
+      console.log('parent', parent)
       parent.clauses.push(exception)
       this.addException(plans, parent.parent, exception) // recurse up the tree
     }
@@ -121,7 +119,7 @@ export class Autoprune {
   // }
 
   // delete data from database
-  async deleteData(plans) {
+  async deletePlans(plans) {
     console.log(`Autoprune - delete data`)
     for (let plan of plans) {
       const clauses = plan.clauses.map(clause => `(${clause})`).join(' and ')
