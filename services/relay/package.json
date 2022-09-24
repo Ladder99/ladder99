@@ -7,7 +7,8 @@
   "target": "es2017",
   "scripts": {
     "start": "node src/index.js",
-    "test": "node src/test/test.js"
+    "test": "node src/test/test.js",
+    "test-autoprune": "node src/test/test-autoprune.js"
   },
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "Apache2.0",

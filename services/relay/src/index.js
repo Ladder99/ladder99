@@ -7,23 +7,12 @@ import { AgentReader } from './agentReader.js'
 import { Endpoint } from './endpoint.js'
 import { Autoprune } from './autoprune.js'
 import * as lib from './common/lib.js'
+import { params } from './params.js'
 
 console.log()
 console.log(`Ladder99 Relay`)
 console.log(new Date().toISOString())
 console.log(`---------------------------------------------------`)
-
-// get envars - typically set in compose.yaml and compose-overrides.yaml files
-const params = {
-  retryTime: 4000, // ms between connection retries etc
-  // this is the default ladder99 agent service - can override or specify others in setup.yaml.
-  defaultAgent: { alias: 'Main', url: 'http://agent:5000' }, // don't change agent alias once relay runs.
-  // hardcoded default folder is defined in compose.yaml with docker volume mappings
-  setupFolder: process.env.L99_SETUP_FOLDER || '/data/setup',
-  // these are dynamic - adjusted on the fly
-  fetchInterval: Number(process.env.FETCH_INTERVAL || 2000), // how often to fetch sample data, msec
-  fetchCount: Number(process.env.FETCH_COUNT || 800), // how many samples to fetch each time
-}
 
 async function start(params) {
   //

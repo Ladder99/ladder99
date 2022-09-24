@@ -16,70 +16,113 @@ export class Autoprune {
   start() {
     console.log(`Autoprune - start job scheduler for`, this.when)
     // schedule.scheduleJob(this.when, this.prune.bind(this)) // eg call prune once a week
-    this.prune() //. test
+    this.prune() //. direct testing
   }
 
   // prune old data from db based on retention schedules in setup.yaml.
   // note: setup.relay doesn't have to be there - hence setup?.relay.
   async prune() {
     console.log(`Autoprune - pruning old data...`)
-    const plans = [] // for tree/array of plan objects - [{ retention, clauses, parent }, ....]
-    this.getPlans(plans, this.setup?.relay) // recurses setup, starting at relay setting
-    console.log(`Autoprune - plans`, plans)
-    // const sql = this.getSql(plans) // now delete the data
-    // await this.db.query(sql)
-    await this.deletePlans(plans) // now delete the data
+    // const plans = [] // for tree/array of plan objects - [{ retention, clauses, parent }, ....]
+    // this.getPlans(plans, this.setup?.relay) // recurses setup, starting at relay setting
+    // console.log(`Autoprune - plans`, plans)
+
+    // add plan clauses and parent links to setup tree
+    // eg adds this.setup.relay.clauses, this.setup.relay.parent
+    this.addPlans(this.setup, 'relay') // recurse setup, starting at relay setting
+
+    this.addSql(this.setup)
+
+    console.log(`Autoprune - setup`, this.setup.relay)
+
+    // await this.deletePlans(plans) // now delete the data
+
     //. vacuum analyze
     // await this.db.query(`VACUUM ANALYZE`)
+    process.exit(0) //.
   }
 
   // get tree/list of plan objects recursively,
   // like { retention:'1wk', clauses:['1=1',...], parent: null}.
   // plans is the growing list of plan objects.
-  // config is like { id|alias, retention, [nextlevel] },
+  // config is like { id|alias, retention, [nextLevel] },
   // level is the current config level, eg 'dataitems',
-  // parent is the parent config object.
-  async getPlans(plans, config = {}, level = 'relay', parent = null) {
+  // parent is the parent config/setup object.
+  async addPlans(setup, level, parent = null) {
+    console.log('addPlans', level, parent?.alias)
     //
+    const config = setup[level] // includes { id|alias, retention, [nextLevel] }
     const retention = config.retention // eg '1wk' or undefined
 
-    // if this level specifies a retention, add a new plan object to the list
+    // if this level specifies a retention, add an autoprune object to the setup tree
     if (retention) {
-      // make a plan object for this level
-      const clause = this.getClause(config, level, parent) // eg `path like 'Main/Micro'` or `1=1` etc
+      // get where clause differently depending on setup level
+      const clause = this.getWhereClause(config, level, parent) // eg `path like 'Main/Micro'` or `1=1` etc
       const clauses = [clause]
-      const plan = { retention, clauses, parent }
-      plans.push(plan)
 
-      // // add negation as an exception to any parent filters, recursing upwards
-      // if (parent) {
-      //   const exception = 'not ' + clause //. see if this works
-      //   this.addException(plans, parent, exception) // recurse up the tree
-      // }
+      // start autoprune object for this level
+      config.autoprune = { level, clauses, retention, parent }
+
+      // add negation as an exception to any parent filters, recursing upwards
+      const exception = 'not ' + clause //. will this work?
+      while (parent) {
+        if (parent.clauses) {
+          parent.clauses.push(exception)
+        }
+        parent = parent.parent
+      }
     }
 
     // get new axis to recurse down, if any, eg 'relay' -> 'agents'
-    const getChildLevel = {
+    const getNextLevel = {
       relay: 'agents',
       agents: 'devices',
       devices: 'dataitems',
       dataitems: null,
     }
-    const childLevel = getChildLevel[level]
+    const nextLevel = getNextLevel[level] // eg 'agents'
 
-    if (childLevel) {
+    if (nextLevel) {
       // get child config items - eg agents, devices, dataitems
-      const childConfigs = config[childLevel] // eg config['agents'] = [{alias:'Main',...},...]
+      const childConfigs = config[nextLevel] // eg config['agents'] = [{alias:'Main',...},...]
       const childParent = config
       // recurse down child configs, if any
       for (let childConfig of childConfigs || []) {
-        this.getPlans(plans, childConfig, childLevel, childParent) // recurse down the tree
+        // this.getPlans(plans, childConfig, nextLevel, childParent) // recurse down the tree
+        this.addPlans(childConfig, nextLevel, childParent) // recurse down the tree
       }
     }
+
+    // // now build sql statements
+    // const clauses = config.autoprune.clauses
+    //   .map(clause => `(${clause})`)
+    //   .join(' and ')
+    // const sql = `
+    //   DELETE FROM raw.history
+    //   WHERE ?
+    //   AND timestamp < now() - ?::interval
+    // `
+    // const sqlValues = [clauses, plan.retention]
+    // setup.autoprune.sql = sql
+    // setup.autoprune.sqlValues = sqlValues
+  }
+
+  // recurse down setup tree, adding sql delete queries to each level
+  addSql(setup) {
+    const clauses = setup.clauses.map(clause => `(${clause})`).join(' and ')
+    const sql = `
+      DELETE FROM raw.history 
+      WHERE ?
+      AND timestamp < now() - ?::interval
+    `
+    const sqlValues = [clauses, plan.retention]
+    setup.autoprune.sql = sql
+    setup.autoprune.sqlValues = sqlValues
+    // this.addSql(setup)
   }
 
   // get a where clause for 'select node_id from dataitems where ...' query
-  getClause(config, level, parent) {
+  getWhereClause(config, level, parent) {
     if (level === 'relay') {
       return '1=1' // match ALL dataitems
       //
@@ -98,14 +141,14 @@ export class Autoprune {
     }
   }
 
-  // add exception to parent filters
-  addException(plans, parent, exception) {
-    if (parent) {
-      console.log('parent', parent)
-      parent.clauses.push(exception)
-      this.addException(plans, parent.parent, exception) // recurse up the tree
-    }
-  }
+  // // add exception to parent filters
+  // addException(plans, parent, exception) {
+  //   if (parent) {
+  //     console.log('parent', parent)
+  //     parent.clauses.push(exception)
+  //     this.addException(plans, parent.parent, exception) // recurse up the tree
+  //   }
+  // }
 
   // // get a set of nodes for a given clause
   // async getNodeIds(clause = '1=1') {
@@ -119,6 +162,7 @@ export class Autoprune {
   // }
 
   // delete data from database
+  //. wouldnt you want this to recurse down a tree? i guess it has a list, but
   async deletePlans(plans) {
     console.log(`Autoprune - delete data`)
     for (let plan of plans) {

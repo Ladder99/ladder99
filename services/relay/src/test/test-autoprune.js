@@ -1,0 +1,11 @@
+import { Autoprune } from '../autoprune.js'
+import * as lib from '../common/lib.js'
+import { params } from '../params.js'
+
+params.setupFolder = 'src/test'
+
+const db = {}
+const setup = lib.readSetup(params.setupFolder)
+
+const autoprune = new Autoprune(params, db, setup)
+autoprune.start()
