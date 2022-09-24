@@ -70,22 +70,16 @@ export class Db {
   }
 
   // execute a query and return results.
-  //. added try catch for adapter in case crashed,
-  // then removed as it broke code as in this.add(node).
+  // note: added try catch for adapter in case crashed,
+  // but it broke code as in this.add(node), so removed.
   async query(sql, options) {
-    // try {
     return await this.client.query(sql, options)
-    // } catch (error) {
-    //   console.log(error)
-    //   throw error
-    // }
   }
 
   // add a node to nodes table - if already there, update existing values.
   // always return node_id.
   // uses node.uid to look up record.
   // assumes nodes table has a unique index on that json prop.
-  //. use ON CONFLICT to return existing node_id
   //. distribute this to other svcs
   async upsert(node) {
     const values = `'${JSON.stringify(node)}'`
@@ -97,26 +91,10 @@ export class Db {
             update set props = (${values}) 
               returning node_id;`
     console.log(`db upsert node ${node.uid}: ${node.path}`)
-    const res = await this.query(sql)
-    const node_id = res.rows[0]?.node_id
+    const result = await this.query(sql)
+    const node_id = result.rows[0]?.node_id
     return node_id
   }
-
-  // async addNode(node) {
-  //   const values = `'${JSON.stringify(node)}'`
-  //   const sql = `INSERT INTO raw.nodes (props) VALUES (${values}) RETURNING node_id;`
-  //   const res = await this.query(sql)
-  //   const { node_id } = res.rows[0]
-  //   return node_id
-  // }
-
-  // async getNodeId(node) {
-  //   const sql = `SELECT node_id FROM raw.nodes WHERE props->>'path' = $1::text;`
-  //   console.log(`db get node_id for`, node.path)
-  //   const res = await this.query(sql, [node.path])
-  //   const { node_id } = res.rows[0]
-  //   return node_id
-  // }
 
   // add an array of records to the history table
   // each record should be { node_id, dataitem_id, time, value },
