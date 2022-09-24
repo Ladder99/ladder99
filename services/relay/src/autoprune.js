@@ -16,14 +16,15 @@ export class Autoprune {
     this.params = params
     this.db = db
     this.setup = setup
-    this.when = { hour: 0, minute: 0, dayOfWeek: 0 } // sunday 0:00 - ie saturday midnight
+    // this.when = { hour: 0, minute: 0, dayOfWeek: 0 } // sunday 0:00 - ie saturday midnight
+    this.when = { hour: 19, minute: 0, dayOfWeek: 6 } // sat 7pm
   }
 
   // start the autoprune timer
   async start() {
-    // console.log(`Autoprune start job scheduler for`, this.when)
-    //. schedule.scheduleJob(this.when, this.prune.bind(this)) // eg call prune once a week
-    await this.prune() //... direct test
+    console.log(`Autoprune start job scheduler for`, this.when)
+    schedule.scheduleJob(this.when, this.prune.bind(this)) // eg call prune once a week
+    // await this.prune() //... direct test
   }
 
   // prune old data from db based on retention schedules in setup.yaml.
@@ -98,24 +99,27 @@ export class Autoprune {
         ?.map(clause => `(${clause})`)
         .join(' and ')
       const nodeIds = await this.getNodeIds(dataitemFilter)
-      console.log(`Autoprune nodeIds for ${level}`, nodeIds)
-
-      // validate with select query
-      if (true) {
-        const where = `node_id in (${nodeIds.join(',')})`
-        const sql = `select * from raw.history where ${where} and time < now() - '${interval}'::interval`
-        console.log({ sql })
-        const result = await this.db.query(sql)
-        console.log(result)
-      }
+      // console.log(`Autoprune nodeIds for ${level}`, nodeIds)
 
       // delete old data using node_ids
       if (nodeIds.length > 0) {
+        // //
+        // // validate with select query //. for testing
+        // if (true) {
+        //   const where = `node_id in (${nodeIds.join(',')})`
+        //   const sql = `select * from raw.history where ${where} and time < now() - '${interval}'::interval`
+        //   console.log({ sql })
+        //   const result = await this.db.query(sql)
+        //   console.log(result.rows)
+        // }
+
         const sql = `delete from raw.history where $1 and time < now() - '$2'::interval`
         const where = `node_id in (${nodeIds.join(',')})`
         const values = [where, interval]
-        console.log('Autoprune run query with', { sql, values })
+        console.log(`Autoprune ${sql}, ${nodeIds.length} node_ids, ${interval}`)
         await this.db.query(sql, values)
+      } else {
+        console.log(`Autoprune no node_ids for`, dataitemFilter)
       }
     }
   }
@@ -147,7 +151,7 @@ export class Autoprune {
     // const values = [dataitemFilter]
     console.log('Autoprune getNodeIds', { sql })
     const result = await this.db.query(sql)
-    const nodeIds = result.rows?.map(row => row.node_id)
+    const nodeIds = result.rows?.map(row => Number(row.node_id)).sort()
     console.log(nodeIds)
     return nodeIds
   }
@@ -156,6 +160,7 @@ export class Autoprune {
   async vacuumAnalyze() {
     console.log(`Autoprune vacuum analyze...`)
     const sql = `vacuum analyze`
-    await this.db.query(sql)
+    const result = await this.db.query(sql)
+    console.log('vacresult', result)
   }
 }
