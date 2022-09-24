@@ -14,18 +14,26 @@ export class Autoprune {
 
   // start the autoprune timer
   start() {
-    schedule.scheduleJob(this.when, this.prune.bind(this)) // eg call prune once a week
+    console.log(`Autoprune - start job scheduler for`, this.when)
+    // schedule.scheduleJob(this.when, this.prune.bind(this)) // eg call prune once a week
+    this.prune() //. test
   }
 
   // prune old data from db based on retention schedules in setup.yaml.
   // note: setup.relay doesn't have to be there - hence setup?.relay.
   async prune() {
+    console.log(`Autoprune - pruning old data...`)
     const plans = [] // for tree/array of plan objects - [{ retention, clauses, parent }, ....]
     this.getPlans(plans, this.setup?.relay) // recurses setup, starting at relay setting
-    this.deleteData(plans) // now delete the data
+    console.log(`Autoprune - plans`, plans)
+    // const sql = this.getSql(plans) // now delete the data
+    // await this.db.query(sql)
+    await this.deletePlans(plans) // now delete the data
+    //. vacuum analyze
+    // await this.db.query(`VACUUM ANALYZE`)
   }
 
-  // get tree/list of plan objects like { retention:'1wk', clauses:['1=1',...], parent: null}.
+  // get tree/list of plan objects recursively, like { retention:'1wk', clauses:['1=1',...], parent: null}.
   // config should have { id|alias, retention, [nextlevel] },
   // where level is the current config level, eg with 'dataitems',
   //   { alias: 'Micro', retention: '1wk', dataitems: [...]},
@@ -101,26 +109,29 @@ export class Autoprune {
     }
   }
 
-  // get a set of nodes for a given clause
-  async getNodeIds(clause = '1=1') {
-    const result = await this.db.query(
-      `select node_id from dataitems where ${clause}`
-    )
-    // extract set of node_ids from rows
-    const nodeIdList = (result.rows || []).map(row => row.node_id)
-    const nodeIds = new Set(nodeIdList)
-    return nodeIds
-  }
+  // // get a set of nodes for a given clause
+  // async getNodeIds(clause = '1=1') {
+  //   const result = await this.db.query(
+  //     `select node_id from dataitems where ${clause}`
+  //   )
+  //   // extract set of node_ids from rows
+  //   const nodeIdList = (result.rows || []).map(row => row.node_id)
+  //   const nodeIds = new Set(nodeIdList)
+  //   return nodeIds
+  // }
 
   // delete data from database
   async deleteData(plans) {
+    console.log(`Autoprune - delete data`)
     for (let plan of plans) {
+      const clauses = plan.clauses.map(clause => `(${clause})`).join(' and ')
       const sql = `
         DELETE FROM raw.history 
-        WHERE node_id IN (?) AND timestamp < now() - ?::interval
+        WHERE ?
+        AND timestamp < now() - ?::interval
         `
-      const values = [nodeIds, plan.retention]
-      console.log('sql', sql, values)
+      const values = [clauses, plan.retention]
+      console.log('Autoprune sql', sql, values)
       // await this.db.query(sql, values)
     }
   }

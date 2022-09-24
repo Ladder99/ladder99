@@ -5,7 +5,7 @@ import { Db } from './common/db.js'
 import { migrate } from './migrations/migrate.js'
 import { AgentReader } from './agentReader.js'
 import { Endpoint } from './endpoint.js'
-// import { Autoprune } from './autoprune.js'
+import { Autoprune } from './autoprune.js'
 import * as lib from './common/lib.js'
 
 console.log()
@@ -60,9 +60,9 @@ async function start(params) {
     agentReader.start()
   }
 
-  // // start the autoprune scheduler
-  // const autoprune = new Autoprune(params, db, setup)
-  // autoprune.start()
+  // start the autoprune scheduler
+  const autoprune = new Autoprune(params, db, setup)
+  autoprune.start()
 }
 
 start(params)
