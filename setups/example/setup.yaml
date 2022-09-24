@@ -24,23 +24,23 @@ adapter:
 # would clear all unneeded data weekly - then vacuum analyze db.
 # warning: don't change the agent aliases (eg main) as they are used to synch data with db.
 relay:
-  # retention: 1wk # can specify retention period for all agents here
+  retention: 1wk # can specify retention period for ALL agents here
   agents:
     - alias: Main # this is an identifier for the agent, used by the db - don't change once set!
       url: http://agent:5000 # url to the agent
+      retention: 1wk # set agent retention period - overrides relay retention value
       # ignore: true # can specify this to turn agent recording on/off for all devices.
-      # retention: 1wk # set agent retention period - overrides relay retention value
       devices:
         - id: m # must match id in agent.xml
           alias: Micro # used in path expressions - no spaces - use underscore if needed
           retention: 1wk # set device retention period - overrides agent retention value
           # ignore: true # specify this to turn device recording on/off
-          # # could translate, ignore, or set retention for individual dataitems
-          # dataitems:
-          #   - id: m-cpu
-          #     ignore: true # overrides device ignore value
-          #     retention: 1wk # set dataitem retention period - overrides device retention value
-          #     pathstep: CpuFoo # optional path translation
+          # could translate, ignore, or set retention for individual dataitems
+          dataitems:
+            - id: m-cpu
+              retention: 1wk # set dataitem retention period - overrides device retention value
+              # ignore: true # overrides device ignore value
+              # pathstep: CpuFoo # optional path translation
 
     - alias: Mazak5701 # this is an identifier for the agent, used by the db - don't change once set!
       url: http://mtconnect.mazakcorp.com:5701 # url to the agent
