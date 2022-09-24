@@ -41,7 +41,7 @@ export class Autoprune {
   // level is the current config level, eg 'dataitems',
   // parent is the parent config/setup object.
   async pruneLevel(config, level, parent = null) {
-    console.log('pruneLevel', level)
+    console.log('Autoprune pruneLevel', level)
 
     const retention = config.retention // eg '1wk' or undefined
 
@@ -86,16 +86,19 @@ export class Autoprune {
 
     // now build and run sql statements
     if (config.autoprune) {
-      const where = config.autoprune.clauses
-        .map(clause => `(${clause})`)
-        .join(' and ')
       const sql = `delete from raw.history where ? and timestamp<now()-?::interval;`
-      const values = [where, config.autoprune.retention]
+      const where = config.autoprune.clauses
+        ?.map(clause => `(${clause})`)
+        .join(' and ')
+      const interval = config.autoprune.retention
+      const values = [where, interval]
       // config.autoprune.sql = sql
       // config.autoprune.values = values
-      //. assert values are safe
+      //. make sure values are safe, esp interval - if 0 would delete all data!
       console.log({ sql, values })
-      // await this.db.query(sql, values)
+      if (interval) {
+        await this.db.query(sql, values)
+      }
     }
   }
 
