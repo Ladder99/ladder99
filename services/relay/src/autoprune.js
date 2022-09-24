@@ -25,7 +25,7 @@ export class Autoprune {
     this.deleteData(plans) // now delete the data
   }
 
-  // get tree/array of plan objects like { retention:'1wk', clauses:['1=1',...], parent: null}.
+  // get tree/list of plan objects like { retention:'1wk', clauses:['1=1',...], parent: null}.
   // config should have { id|alias, retention, [nextlevel] },
   // where level is the current config level, eg with 'dataitems',
   //   { alias: 'Micro', retention: '1wk', dataitems: [...]},
@@ -33,39 +33,63 @@ export class Autoprune {
     //
     const retention = config.retention // eg '1wk' or undefined
 
+    // if this level specifies a retention, add a new plan object to the list
     if (retention) {
-      // create plan object for this level
-      //. could match on alias or id -
-      //. for now, assume we have a device alias.
-      const match = 0
-      // const clause = `path like '${agent.alias}%'` //. eg
-      const clause = this.getClause(config, level)
+      // make a plan object for this level
+      const clause = this.getClause(config, level, parent) // eg `path like 'Main/Micro'` or `1=1` etc
       const clauses = [clause]
       const plan = { retention, clauses, parent }
       plans.push(plan)
 
-      // add clause as an exception to parent filters, recursing upwards
-      const exception = 'not ' + clause
+      // add negation as an exception to any parent filters, recursing upwards
       if (parent) {
+        const exception = 'not ' + clause //. see if this works
         this.addException(plans, parent, exception) // recurse up the tree
       }
     }
 
-    // get new axis to recurse down, if any
-    const getNextLevel = {
+    // get new axis to recurse down, if any, eg 'relay' -> 'agents'
+    const getChildLevel = {
       relay: 'agents',
       agents: 'devices',
       devices: 'dataitems',
       dataitems: null,
     }
-    const nextLevel = getNextLevel[level]
-    if (!nextLevel) return // we're done
+    const childLevel = getChildLevel[level]
 
-    // recurse down child configs, eg agents, devices, dataitems
-    const childConfigs = config[nextLevel] || []
-    for (let childConfig of childConfigs) {
-      // call with config as parent
-      this.getPlans(plans, childConfig, nextLevel, config) // recurse down the tree
+    if (childLevel) {
+      // get child config items - eg agents, devices, dataitems
+      const childConfigs = config[childLevel] // eg config['agents'] = [{alias:'Main',...},...]
+      const childParent = config
+      // recurse down child configs, if any
+      for (let childConfig of childConfigs || []) {
+        this.getPlans(plans, childConfig, childLevel, childParent) // recurse down the tree
+      }
+    }
+  }
+
+  // get a where clause for 'select node_id from dataitems where ...' query
+  getClause(config, level, parent) {
+    if (level === 'relay') {
+      // match ALL dataitems
+      return '1=1'
+      //
+    } else if (level === 'agents') {
+      // match agent alias, eg 'Main/%'
+      return `path like '${config.alias}/%'`
+      //
+    } else if (level === 'devices') {
+      if (config.alias) {
+        // match device alias, eg 'Main/Micro/%'
+        return `path like '${parent.alias}/${config.alias}/%'`
+      } else if (config.id) {
+        // match device contextId, eg 'Main/m'
+        return `props->>'contextId' = '${parent.alias}/${config.id}`
+      }
+      //
+    } else if (level === 'dataitems') {
+      // match dataitem id, eg 'm-avail'
+      return `props->>'id = '${config.id}'`
     }
   }
 
