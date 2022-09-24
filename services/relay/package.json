@@ -16,6 +16,7 @@
     "js-yaml": "^4.1.0",
     "mqtt": "^4.3.4",
     "node-fetch": "^3.0.0",
+    "node-schedule": "^2.1.0",
     "pg": "^8.7.1",
     "pg-format": "^1.0.4",
     "pg-hstore": "^2.3.4",
