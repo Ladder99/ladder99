@@ -20,12 +20,12 @@ export class Autoprune {
   // remove old data from db based on retention schedules in setup.yaml.
   // note: setup.relay doesn't have to be there - hence setup?.relay.
   async prune() {
-    // get tree array of prune objects - [{ retention, clauses, parent }, ....]
-    const prunes = []
-    this.getPrunes(prunes, this.setup?.relay) // recurses setup, starting at relay setting
+    // get tree array of plan objects - [{ retention, clauses, parent }, ....]
+    const plans = []
+    this.getPlans(plans, this.setup?.relay) // recurses setup, starting at relay setting
 
-    // once we get the prune objects, we can delete old data from the db
-    this.deleteData(prunes)
+    // once we get the plan objects, we can delete old data from the db
+    this.deleteData(plans)
   }
 
   // foo() {
@@ -33,31 +33,31 @@ export class Autoprune {
   //   let retention = setup?.relay?.retention // eg '1wk' or null
   //   if (retention) {
   //     const clauses = ['1=1'] // ALL dataitems
-  //     const prune = { clauses, retention }
-  //     prunes.push(prune)
+  //     const plan = { clauses, retention }
+  //     plans.push(plan)
   //   }
 
   //   // iterate over any agents specified
   //   for (let agent of setup?.relay?.agents || []) {
   //     // see if agent has a different retention specified -
-  //     // if so, add a prune object with node_ids and retention.
+  //     // if so, add a plan object with node_ids and retention.
   //     retention = agent.retention // eg '1wk' or null
   //     if (retention) {
   //       // add exception to parent filters
   //       const exception = `path not like '${agent.alias}%'`
-  //       for (let prune of prunes) {
-  //         prune.clauses.push(exception)
+  //       for (let plan of plans) {
+  //         plan.clauses.push(exception)
   //       }
   //       // add clause to current agent filter
   //       const clause = `path like '${agent.alias}%'`
-  //       const prune = { clauses: [clause], retention }
-  //       prunes.push(prune)
+  //       const plan = { clauses: [clause], retention }
+  //       plans.push(plan)
   //     }
 
   //     // iterate over any devices specified
   //     for (let device of agent.devices || []) {
   //       // see if device has a different retention specified -
-  //       // if so, add a prune object with clauses and retention.
+  //       // if so, add a plan object with clauses and retention.
   //       retention = device.retention // eg '1wk' or null
 
   //       if (retention) {
@@ -65,10 +65,10 @@ export class Autoprune {
   //         //. for now, assume we have a device alias.
   //         const clause = `path like '${agent.alias}/${device.alias}%'`
   //         const exception = `path not like '${agent.alias}/${device.alias}%'`
-  //         const prune = { clauses: [clause], retention }
-  //         prunes.push(prune)
+  //         const plan = { clauses: [clause], retention }
+  //         plans.push(plan)
   //         // add exception to parent filters
-  //         for (let parent of prunes.slice(0, -1)) {
+  //         for (let parent of plans.slice(0, -1)) {
   //           parent.clauses.push(exception)
   //         }
   //       }
@@ -81,18 +81,21 @@ export class Autoprune {
   //   }
   // }
 
-  // get array of prune objects - ieg [{ retention:'1wk', clauses:['1=1',...], parent: null}, ...]
+  // get array of plan objects - ieg [{ retention:'1wk', clauses:['1=1',...], parent: null}, ...]
   // config should have { id|alias, retention, [childprop] } -
-  // eg { alias: 'Micro', retention: '1wk', dataitems: [...]}
-  async getPrunes(prunes, config = {}, childprop = 'agents', parent = null) {
+  // eg { alias: 'Micro', retention: '1wk', dataitems: [...]}.
+  // recurses down config tree.
+  async getPlans(plans, config = {}, childprop = 'agents', parent = null) {
+    //
     const retention = config.retention // eg '1wk' or undefined
     if (retention) {
       const clauses = ['1=1'] // ALL dataitems
       const parent = config
-      const prune = { retention, clauses, parent }
-      prunes.push(prune)
+      const plan = { retention, clauses, parent }
+      plans.push(plan)
     }
 
+    // choose new axis to recurse down
     if (childprop === 'agents') {
       childprop = 'devices'
     } else if (childprop === 'devices') {
@@ -102,7 +105,7 @@ export class Autoprune {
     // iterate over any child configs, eg agents, devices, dataitems
     const children = config[childprop] || []
     for (let child of children) {
-      this.getPrune(prunes, child, childprop, config)
+      this.getPlans(plans, child, childprop, config)
     }
 
     // see if level has a different retention specified -
@@ -111,13 +114,13 @@ export class Autoprune {
     if (retention) {
       // add clause to current agent filter
       const clause = `path like '${agent.alias}%'`
-      const prune = { clauses: [clause], retention }
-      prunes.push(prune)
+      const plan = { clauses: [clause], retention }
+      plans.push(plan)
       // add exception to parent filters
       const exception = `path not like '${agent.alias}%'`
       if (parent) {
         //. recurse up the tree
-        this.addException(prunes, parent, exception)
+        this.addException(plans, parent, exception)
       }
     }
 
@@ -132,10 +135,10 @@ export class Autoprune {
         //. for now, assume we have a device alias.
         const clause = `path like '${agent.alias}/${device.alias}%'`
         const exception = `path not like '${agent.alias}/${device.alias}%'`
-        const prune = { clauses: [clause], retention }
-        prunes.push(prune)
+        const plan = { clauses: [clause], retention }
+        plans.push(plan)
         // add exception to parent filters
-        for (let parent of prunes.slice(0, -1)) {
+        for (let parent of plans.slice(0, -1)) {
           parent.clauses.push(exception)
         }
       }
@@ -143,9 +146,9 @@ export class Autoprune {
   }
 
   // add exception to parent filters
-  addException(prunes, parent, exception) {
-    for (let prune of prunes) {
-      if (prune.parent === parent) {
+  addException(plans, parent, exception) {
+    for (let plan of plans) {
+      if (plan.parent === parent) {
         prune.clauses.push(exception)
       }
     }
@@ -163,13 +166,13 @@ export class Autoprune {
   }
 
   // delete data from database
-  async deleteData(prunes) {
-    for (let prune of prunes) {
+  async deleteData(plans) {
+    for (let plan of plans) {
       const sql = `
         DELETE FROM raw.history 
         WHERE node_id IN (?) AND timestamp < now() - ?::interval
         `
-      const values = [nodeIds, prune.retention]
+      const values = [nodeIds, plan.retention]
       console.log('sql', sql, values)
       // await this.db.query(sql, values)
     }
