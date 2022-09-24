@@ -14,143 +14,66 @@ export class Autoprune {
 
   // start the autoprune timer
   start() {
-    schedule.scheduleJob(this.when, this.prune.bind(this)) // eg once a week
+    schedule.scheduleJob(this.when, this.prune.bind(this)) // eg call prune once a week
   }
 
-  // remove old data from db based on retention schedules in setup.yaml.
+  // prune old data from db based on retention schedules in setup.yaml.
   // note: setup.relay doesn't have to be there - hence setup?.relay.
   async prune() {
-    // get tree array of plan objects - [{ retention, clauses, parent }, ....]
-    const plans = []
+    const plans = [] // for tree/array of plan objects - [{ retention, clauses, parent }, ....]
     this.getPlans(plans, this.setup?.relay) // recurses setup, starting at relay setting
-
-    // once we get the plan objects, we can delete old data from the db
-    this.deleteData(plans)
+    this.deleteData(plans) // now delete the data
   }
 
-  // foo() {
-  //   // if relay retention is specified, get node_ids for ALL dataitems in all agents.
-  //   let retention = setup?.relay?.retention // eg '1wk' or null
-  //   if (retention) {
-  //     const clauses = ['1=1'] // ALL dataitems
-  //     const plan = { clauses, retention }
-  //     plans.push(plan)
-  //   }
-
-  //   // iterate over any agents specified
-  //   for (let agent of setup?.relay?.agents || []) {
-  //     // see if agent has a different retention specified -
-  //     // if so, add a plan object with node_ids and retention.
-  //     retention = agent.retention // eg '1wk' or null
-  //     if (retention) {
-  //       // add exception to parent filters
-  //       const exception = `path not like '${agent.alias}%'`
-  //       for (let plan of plans) {
-  //         plan.clauses.push(exception)
-  //       }
-  //       // add clause to current agent filter
-  //       const clause = `path like '${agent.alias}%'`
-  //       const plan = { clauses: [clause], retention }
-  //       plans.push(plan)
-  //     }
-
-  //     // iterate over any devices specified
-  //     for (let device of agent.devices || []) {
-  //       // see if device has a different retention specified -
-  //       // if so, add a plan object with clauses and retention.
-  //       retention = device.retention // eg '1wk' or null
-
-  //       if (retention) {
-  //         //. could match on deviceAlias or deviceId -
-  //         //. for now, assume we have a device alias.
-  //         const clause = `path like '${agent.alias}/${device.alias}%'`
-  //         const exception = `path not like '${agent.alias}/${device.alias}%'`
-  //         const plan = { clauses: [clause], retention }
-  //         plans.push(plan)
-  //         // add exception to parent filters
-  //         for (let parent of plans.slice(0, -1)) {
-  //           parent.clauses.push(exception)
-  //         }
-  //       }
-
-  //       // iterate over any dataitems specified
-  //       for (let dataitem of device.dataitems || []) {
-  //         const dataitemRetention = dataitem.retention
-  //       }
-  //     }
-  //   }
-  // }
-
-  // get array of plan objects - ieg [{ retention:'1wk', clauses:['1=1',...], parent: null}, ...]
-  // config should have { id|alias, retention, [childprop] } -
-  // eg { alias: 'Micro', retention: '1wk', dataitems: [...]}.
-  // recurses down config tree.
-  async getPlans(plans, config = {}, childprop = 'agents', parent = null) {
+  // get tree/array of plan objects like { retention:'1wk', clauses:['1=1',...], parent: null}.
+  // config should have { id|alias, retention, [nextlevel] },
+  // where level is the current config level, eg with 'dataitems',
+  //   { alias: 'Micro', retention: '1wk', dataitems: [...]},
+  async getPlans(plans, config = {}, level = 'relay', parent = null) {
     //
     const retention = config.retention // eg '1wk' or undefined
+
     if (retention) {
-      const clauses = ['1=1'] // ALL dataitems
-      const parent = config
+      // create plan object for this level
+      //. could match on alias or id -
+      //. for now, assume we have a device alias.
+      const match = 0
+      // const clause = `path like '${agent.alias}%'` //. eg
+      const clause = this.getClause(config, level)
+      const clauses = [clause]
       const plan = { retention, clauses, parent }
       plans.push(plan)
-    }
 
-    // choose new axis to recurse down
-    if (childprop === 'agents') {
-      childprop = 'devices'
-    } else if (childprop === 'devices') {
-      childprop = 'dataitems'
-    }
-
-    // iterate over any child configs, eg agents, devices, dataitems
-    const children = config[childprop] || []
-    for (let child of children) {
-      this.getPlans(plans, child, childprop, config)
-    }
-
-    // see if level has a different retention specified -
-    // if so, add a prune object with node_ids and retention.
-    retention = agent.retention // eg '1wk' or null
-    if (retention) {
-      // add clause to current agent filter
-      const clause = `path like '${agent.alias}%'`
-      const plan = { clauses: [clause], retention }
-      plans.push(plan)
-      // add exception to parent filters
-      const exception = `path not like '${agent.alias}%'`
+      // add clause as an exception to parent filters, recursing upwards
+      const exception = 'not ' + clause
       if (parent) {
-        //. recurse up the tree
-        this.addException(plans, parent, exception)
+        this.addException(plans, parent, exception) // recurse up the tree
       }
     }
 
-    // recurse over any children specified
-    for (let device of agent.devices || []) {
-      // see if device has a different retention specified -
-      // if so, add a prune object with clauses and retention.
-      retention = device.retention // eg '1wk' or null
+    // get new axis to recurse down, if any
+    const getNextLevel = {
+      relay: 'agents',
+      agents: 'devices',
+      devices: 'dataitems',
+      dataitems: null,
+    }
+    const nextLevel = getNextLevel[level]
+    if (!nextLevel) return // we're done
 
-      if (retention) {
-        //. could match on deviceAlias or deviceId -
-        //. for now, assume we have a device alias.
-        const clause = `path like '${agent.alias}/${device.alias}%'`
-        const exception = `path not like '${agent.alias}/${device.alias}%'`
-        const plan = { clauses: [clause], retention }
-        plans.push(plan)
-        // add exception to parent filters
-        for (let parent of plans.slice(0, -1)) {
-          parent.clauses.push(exception)
-        }
-      }
+    // recurse down child configs, eg agents, devices, dataitems
+    const childConfigs = config[nextLevel] || []
+    for (let childConfig of childConfigs) {
+      // call with config as parent
+      this.getPlans(plans, childConfig, nextLevel, config) // recurse down the tree
     }
   }
 
   // add exception to parent filters
   addException(plans, parent, exception) {
-    for (let plan of plans) {
-      if (plan.parent === parent) {
-        prune.clauses.push(exception)
-      }
+    if (parent) {
+      parent.clauses.push(exception)
+      this.addException(plans, parent.parent, exception) // recurse up the tree
     }
   }
 
