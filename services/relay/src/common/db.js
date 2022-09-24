@@ -70,9 +70,9 @@ export class Db {
   }
 
   // execute a query and return results.
-  // note: added try catch for adapter in case crashed,
-  // but it broke code as in this.add(node), so removed.
   async query(sql, options) {
+    // note: added try catch for adapter in case crashed,
+    // but it broke code as in this.add(node), so removed.
     return await this.client.query(sql, options)
   }
 

@@ -79,7 +79,7 @@ export class Autoprune {
       // recurse down child configs, if any - eg agent of agents
       for (let childConfig of childConfigs || []) {
         console.log('Autoprune recurse', childConfig.alias || childConfig.id)
-        this.pruneLevel(childConfig, nextLevel, childParent) // recurse down the tree
+        await this.pruneLevel(childConfig, nextLevel, childParent) // recurse down the tree
       }
     }
 
@@ -98,19 +98,20 @@ export class Autoprune {
         ?.map(clause => `(${clause})`)
         .join(' and ')
       const nodeIds = await this.getNodeIds(dataitemFilter)
-      console.log(`Autoprune nodeIds for ${level} ${config.alias}`, nodeIds)
+      console.log(`Autoprune nodeIds for ${level}`, nodeIds)
 
       // validate with select query
       if (true) {
-        const where = `${dataitemFilter} and time < now() - ${interval}::interval`
-        const validateSql = `select * from raw.history where ${where}`
-        const result = await this.db.query(validateSql)
-        console.log(`Autoprune validate`, result)
+        const where = `node_id in (${nodeIds.join(',')})`
+        const sql = `select * from raw.history where ${where} and time < now() - '${interval}'::interval`
+        console.log({ sql })
+        const result = await this.db.query(sql)
+        console.log(result)
       }
 
       // delete old data using node_ids
       if (nodeIds.length > 0) {
-        const sql = `delete from raw.history where ? and time < now() - ?::interval`
+        const sql = `delete from raw.history where $1 and time < now() - '$2'::interval`
         const where = `node_id in (${nodeIds.join(',')})`
         const values = [where, interval]
         console.log('Autoprune run query with', { sql, values })
@@ -142,11 +143,12 @@ export class Autoprune {
 
   // get node_ids for a given dataitem filter, eg `(1=1) and (path like 'Main/Micro/%')`
   async getNodeIds(dataitemFilter) {
-    const sql = `select node_id from dataitems where $1`
-    const values = [dataitemFilter]
-    console.log('Autoprune getNodeIds', { sql, values })
-    const result = await this.db.query(sql, values)
+    const sql = `select node_id from dataitems where ${dataitemFilter}`
+    // const values = [dataitemFilter]
+    console.log('Autoprune getNodeIds', { sql })
+    const result = await this.db.query(sql)
     const nodeIds = result.rows?.map(row => row.node_id)
+    console.log(nodeIds)
     return nodeIds
   }
 

@@ -20,25 +20,25 @@ adapter:
         port: 7890 # must match agent.cfg value
 
 # relay service reads this section to know what agents and devices to read data from.
-# can specify retention periods for data for agent, device, or dataitems - 1wk minimum.
+# can specify retention periods for data for agent, device, or dataitems - 1w minimum.
 # would clear all unneeded data weekly - then vacuum analyze db.
 # warning: don't change the agent aliases (eg main) as they are used to synch data with db.
 relay:
-  retention: 1wk # can specify retention period for ALL agents here
+  retention: 1w # can specify retention period for ALL agents here
   agents:
     - alias: Main # this is an identifier for the agent, used by the db - don't change once set!
       url: http://agent:5000 # url to the agent
-      retention: 1wk # set agent retention period - overrides relay retention value
+      retention: 1w # set agent retention period - overrides relay retention value
       # ignore: true # can specify this to turn agent recording on/off for all devices.
       devices:
         - id: m # must match id in agent.xml
           alias: Micro # used in path expressions - no spaces - use underscore if needed
-          retention: 1wk # set device retention period - overrides agent retention value
+          retention: 1w # set device retention period - overrides agent retention value
           # ignore: true # specify this to turn device recording on/off
           # could translate, ignore, or set retention for individual dataitems
           dataitems:
-            - id: m-cpu
-              retention: 1wk # set dataitem retention period - overrides device retention value
+            - id: m-avail
+              retention: 1w # set dataitem retention period - overrides device retention value
               # ignore: true # overrides device ignore value
               # pathstep: CpuFoo # optional path translation
 
