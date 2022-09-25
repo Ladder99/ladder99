@@ -43,7 +43,10 @@ export class Autoprune {
     // like in this example which will log a message every Sunday at 2:30pm:
     //   const job = schedule.scheduleJob({hour: 14, minute: 30, dayOfWeek: 0}, foo)
     this.job = schedule.scheduleJob(this.when, this.prune.bind(this))
-    console.log(`Autoprune scheduled`, this.job.nextInvocation().toISOString())
+    console.log(
+      `Autoprune scheduled for`,
+      this.job.nextInvocation().toISOString()
+    )
   }
 
   // prune old data from db based on retention schedules in setup.yaml.
