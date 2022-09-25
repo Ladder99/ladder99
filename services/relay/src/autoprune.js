@@ -159,7 +159,7 @@ export class Autoprune {
   // while raw.history has node_id (the device) and dataitem_id (the full path).
   async getDataItemIds(dataitemFilter) {
     const sql = `select node_id from dataitems where ${dataitemFilter}`
-    console.log('Autoprune getDataItemIds', { sql })
+    console.log('Autoprune getDataItemIds', sql)
     const result = await this.db.query(sql)
     // bug: javascript sort does alphabetical, NOT numeric sort, even if convert array to numbers!
     // so must use a compare function.
