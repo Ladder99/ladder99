@@ -23,7 +23,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 3,
-  "iteration": 1663781598918,
+  "iteration": 1664129764505,
   "links": [
     {
       "asDropdown": false,
@@ -110,7 +110,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "select time, value from get_last_value($device, 'Availability', '1w');\n",
+          "rawSql": "select time, value from get_last_value($device || '/Availability', '1w');\n",
           "refId": "A",
           "select": [
             [
