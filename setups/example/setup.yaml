@@ -36,11 +36,11 @@ relay:
           retention: 1w # device data retention period - overrides agent retention value
           # ignore: true # specify this to turn device recording on/off
           # # can translate, ignore, or set retention for individual dataitems
-          # dataitems:
-          #   - id: m-avail # this is deviceId-dataitemId, where dataitemId is defined in agent.xml.
-          #     # retention: 1w # dataitem retention period - overrides device retention value
-          #     # ignore: true # ignore this dataitem - overrides device ignore value
-          #     # pathstep: AvailFoo # optional path step translation for this dataitem
+          dataitems:
+            - id: m-temp # this is 'deviceId-dataitemId', where dataitemId is defined in agent.xml.
+              retention: 1d # dataitem retention period - overrides device retention value
+              # ignore: true # ignore this dataitem - overrides device ignore value
+              # pathstep: AvailFoo # optional path step translation for this dataitem
 
     - alias: Mazak5701 # this is an identifier for the agent, used by the db - don't change once set!
       url: http://mtconnect.mazakcorp.com:5701 # url to the agent

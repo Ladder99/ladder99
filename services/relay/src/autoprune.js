@@ -4,16 +4,17 @@
 import schedule from 'node-schedule' // https://github.com/node-schedule/node-schedule
 
 // sheduled autoprune day/time
-//. could specify in setup.yaml if needed to
-// NEED TIMEZONE! why?
+//. could specify this in setup.yaml if needed to.
 // this format is from node-schedule's scheduleJob fn.
+// note: for testing, can comment these out so will run every minute.
+// important: docker defaults to utc, so must specify timezone!
 const when = {
-  // hour: 0, // unspecified/null means every hour
-  // minute: 0, // must specify this - unspecified/null means every minute
-  minute: [0, 15, 30, 45],
-  dayOfWeek: [0], // 0=sunday
-  // important: docker defaults to utc, so must specify timezone
-  tz: 'America/Chicago', //? https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  // hour: 0, // must specify 0, as unspecified/null means every hour
+  // minute: 0, // must specify 0, as unspecified/null means every minute
+  // second: 0, // this is the default
+  // dayOfWeek: 0, // 0=sunday
+  // this will get overridden by setup.client.timezone value
+  tz: 'America/Chicago', // https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 }
 
 // next levels for recursing through setup.yaml
