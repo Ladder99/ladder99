@@ -23,8 +23,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 6,
-  "iteration": 1663941540386,
+  "id": 7,
+  "iteration": 1664132534953,
   "links": [
     {
       "asDropdown": false,
@@ -265,7 +265,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Availability\"\nFROM get_timeline('$device', '$device/Availability', $__from, $__to, true, '1d')\n",
+          "rawSql": "SELECT time, value as \"Availability\"\nFROM get_timeline('$device/Availability', $__from, $__to, true, '1d')\n",
           "refId": "Av",
           "select": [
             [
@@ -292,7 +292,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Controller Mode\"\nFROM get_timeline('$device', '$device/Controller/Path/ControllerMode', $__from, $__to, true, '1d')\n",
+          "rawSql": "SELECT time, value as \"Controller Mode\"\nFROM get_timeline('$device/Controller/Path/ControllerMode', $__from, $__to, true, '1d')\n",
           "refId": "CoM",
           "select": [
             [
@@ -319,7 +319,7 @@
           "hide": true,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Electric Power\"\nFROM get_timeline('$device', '$device/Systems/Electric/PowerState', $__from, $__to, true, '1d')\n",
+          "rawSql": "SELECT time, value as \"Electric Power\"\nFROM get_timeline('$device/Systems/Electric/PowerState', $__from, $__to, true, '1d')\n",
           "refId": "El",
           "select": [
             [
@@ -346,7 +346,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Emergency Stop\"\nFROM get_timeline('$device', '$device/Controller/EmergencyStop', $__from, $__to, true, '1d')\n",
+          "rawSql": "SELECT time, value as \"Emergency Stop\"\nFROM get_timeline('$device/Controller/EmergencyStop', $__from, $__to, true, '1d')\n",
           "refId": "Em",
           "select": [
             [
@@ -373,7 +373,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Execution\"\nFROM get_timeline('$device', '$device/Controller/Path/Execution', $__from, $__to, true, '1d')\n",
+          "rawSql": "SELECT time, value as \"Execution\"\nFROM get_timeline('$device/Controller/Path/Execution', $__from, $__to, true, '1d')\n",
           "refId": "Ex",
           "select": [
             [
@@ -400,7 +400,7 @@
           "hide": true,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Rotary Mode\"\nFROM get_timeline('$device', '$device/Axes[C]/RotaryMode', $__from, $__to, true, '1d')\n",
+          "rawSql": "SELECT time, value as \"Rotary Mode\"\nFROM get_timeline('$device/Axes[C]/RotaryMode', $__from, $__to, true, '1d')\n",
           "refId": "Ro",
           "select": [
             [
@@ -427,7 +427,7 @@
           "hide": true,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"System Condition\"\nFROM get_timeline('$device', '$device/SystemCondition', $__from, $__to, true, '1d')\n",
+          "rawSql": "SELECT time, value as \"System Condition\"\nFROM get_timeline('$device/SystemCondition', $__from, $__to, true, '1d')\n",
           "refId": "Sys",
           "select": [
             [
@@ -454,7 +454,7 @@
           "hide": true,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Functional Mode\"\nFROM get_timeline('$device', '$device/FunctionalMode', $__from, $__to, true, '1h')\n",
+          "rawSql": "SELECT time, value as \"Functional Mode\"\nFROM get_timeline('$device/FunctionalMode', $__from, $__to, true, '1h')\n",
           "refId": "Fm",
           "select": [
             [
@@ -481,7 +481,7 @@
           "hide": true,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Equipment Mode / Operating\"\nFROM get_timeline('$device', '$device/EquipmentModeOperating', $__from, $__to, true, '1h')\n",
+          "rawSql": "SELECT time, value as \"Equipment Mode / Operating\"\nFROM get_timeline('$device/EquipmentModeOperating', $__from, $__to, true, '1h')\n",
           "refId": "EmO",
           "select": [
             [
@@ -508,7 +508,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Equipment Mode / Working\"\nFROM get_timeline('$device', '$device/EquipmentModeWorking', $__from, $__to, true, '1h')\n",
+          "rawSql": "SELECT time, value as \"Equipment Mode / Working\"\nFROM get_timeline('$device/EquipmentModeWorking', $__from, $__to, true, '1h')\n",
           "refId": "EmW",
           "select": [
             [
@@ -535,7 +535,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Equipment Mode / Delay\"\nFROM get_timeline('$device', '$device/EquipmentModeDelay', $__from, $__to, true, '1h')\n",
+          "rawSql": "SELECT time, value as \"Equipment Mode / Delay\"\nFROM get_timeline('$device/EquipmentModeDelay', $__from, $__to, true, '1h')\n",
           "refId": "EmD",
           "select": [
             [
@@ -562,7 +562,7 @@
           "hide": false,
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT time, value as \"Equipment Mode / Loaded\"\nFROM get_timeline('$device', '$device/EquipmentModeLoaded', $__from, $__to, true, '1h')\n",
+          "rawSql": "SELECT time, value as \"Equipment Mode / Loaded\"\nFROM get_timeline('$device/EquipmentModeLoaded', $__from, $__to, true, '1h')\n",
           "refId": "EmL",
           "select": [
             [
@@ -1170,8 +1170,8 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "Mazak5701/Mill12345",
-          "value": "Mazak5701/Mill12345"
+          "text": "Mazak5701/Mill-12345",
+          "value": "Mazak5701/Mill-12345"
         },
         "datasource": null,
         "definition": "select path from devices where path <> 'Main/Micro'",
@@ -1240,5 +1240,5 @@
   "timezone": "",
   "title": "Main",
   "uid": "main",
-  "version": 16
+  "version": 2
 }
