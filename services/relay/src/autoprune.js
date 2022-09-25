@@ -3,19 +3,24 @@
 
 import schedule from 'node-schedule' // https://github.com/node-schedule/node-schedule
 
+// sheduled autoprune day/time
+//. could specify in setup.yaml if needed to
+// NEED TIMEZONE! why?
+// this format is from node-schedule's scheduleJob fn.
+const when = {
+  // hour: 3, // unspecified means every hour
+  // minute: 0,
+  minute: [0, 15, 30, 45],
+  dayOfWeek: [0], // 0=sunday
+  tz: 'America/Chicago', //? https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+}
+
+// next levels for recursing through setup.yaml
 const getNextLevel = {
   relay: 'agents',
   agents: 'devices',
   devices: 'dataitems',
   dataitems: null,
-}
-
-// sheduled day/time
-const when = {
-  hour: 3,
-  minute: 26,
-  dayOfWeek: [0], // 0=sunday
-  tz: 'America/Chicago',
 }
 
 export class Autoprune {
@@ -25,11 +30,6 @@ export class Autoprune {
     this.db = db
     this.setup = setup
     this.job = null
-    // see start() for this.when format
-    //. could specify schedule in setup.yaml if needed to
-    // this.when = { hour: 0, minute: 0, dayOfWeek: 0 } // 0=sunday
-    // NEED TIMEZONE!
-    // this.when = { hour: 3, minute: 24, dayOfWeek: [0], tz: 'America/Chicago' } // 0=sunday - for testing
     this.when = when
   }
 
@@ -40,7 +40,7 @@ export class Autoprune {
     // To make things a little easier, an object literal syntax is also supported,
     // like in this example which will log a message every Sunday at 2:30pm:
     //   const job = schedule.scheduleJob({hour: 14, minute: 30, dayOfWeek: 0}, foo)
-    this.job = schedule.scheduleJob(this.when, this.prune.bind(this)) // eg call prune once a week
+    this.job = schedule.scheduleJob(this.when, this.prune.bind(this))
     console.log(`Autoprune scheduled`, this.job.nextInvocation().toISOString())
   }
 
@@ -48,54 +48,53 @@ export class Autoprune {
   // note: setup.relay doesn't have to be there - hence setup?.relay.
   async prune() {
     console.log(`Autoprune pruning old data...`)
-
     await this.pruneLevel(this.setup.relay, 'relay') // recurse setup, starting at relay setting
-
-    console.log(`Autoprune setup.relay`)
-    console.dir(this.setup.relay, { depth: null })
-
-    await this.vacuumAnalyze()
+    // console.dir(this.setup.relay, { depth: null })
+    await this.vacuumAnalyze() // free old data
   }
 
   // prune dataitem history for a setup.yaml level.
   // config is like { id|alias, retention, [nextLevel] }.
   // level is the current config level, eg 'devices'.
   // parent is the parent config/setup object.
+  // [nextLevel] is the next level to recurse to, eg dataitems.
   async pruneLevel(config, level, parent = null) {
-    console.log('Autoprune pruneLevel', level, config.alias || config.id)
+    console.log('Autoprune level', level, config.alias || config.id || 'top')
 
     const retention = config.retention // eg '1wk' or undefined
 
     // if this level specifies a retention, add an autoprune object to the setup tree
     if (retention) {
-      // get where clause differently depending on setup level
+      // get where clause differently depending on setup level.
+      // we make this an array so can add override clauses from lower levels.
       const clause = this.getWhereClause(config, level, parent) // eg `path like 'Main/Micro'` etc
       const clauses = [clause]
 
-      // start autoprune object for this level
+      // add autoprune object to this level
       config.autoprune = { level, clauses, retention, parent }
 
-      // add negation as an exception to all parent filters, recursing upwards
-      const exception = 'not ' + clause //. will this work?
+      // add clause negation as an exception to all parent filters, recursing upwards.
+      // this way, parent prunes don't step on our toes.
+      const exception = 'not ' + clause
       while (parent) {
         if (parent.autoprune?.clauses) {
           parent.autoprune.clauses.push(exception)
         }
-        parent = parent.parent
+        parent = parent.parent // go up a level
       }
     }
 
-    // get new axis to recurse down, if any, eg 'relay' -> 'agents'.
-    // this tree is weird to navigate because each level has different child attribute.
+    // get new child property to recurse down.
+    // the tree is a little weird because each level has a different child property.
     const nextLevel = getNextLevel[level] // eg 'relay' -> 'agents'
 
     // recurse down to next level, if any
     if (nextLevel) {
-      // get child config items - eg agents, devices, dataitems
-      const childConfigs = config[nextLevel]
+      // get child config items, if any - eg agents, devices, dataitems
+      const childConfigs = config[nextLevel] || []
       const childParent = config
-      // recurse down child configs, if any - eg agent of agents
-      for (let childConfig of childConfigs || []) {
+      // recurse down child configs - eg agent of agents
+      for (let childConfig of childConfigs) {
         console.log('Autoprune recurse', childConfig.alias || childConfig.id)
         await this.pruneLevel(childConfig, nextLevel, childParent) // recurse down the tree
       }
@@ -120,22 +119,6 @@ export class Autoprune {
 
       // delete old data using node_ids
       if (nodeIds.length > 0) {
-        // //
-        // // validate with select query //. for testing
-        // if (true) {
-        //   const where = `node_id in (${nodeIds.join(',')})`
-        //   const sql = `select * from raw.history where ${where} and time < now() - '${interval}'::interval`
-        //   console.log({ sql })
-        //   const result = await this.db.query(sql)
-        //   console.log(result.rows)
-        // }
-
-        // const sql = `delete from raw.history where $1 and time < now() - $2::interval`
-        // const where = `node_id in (${nodeIds.join(',')})`
-        // const values = [where, interval]
-        // console.log(`Autoprune ${sql}, ${nodeIds.length} node_ids, ${interval}`)
-        // await this.db.query(sql, values)
-
         const where = `node_id in (${nodeIds.join(',')})`
         const sql = `delete from raw.history where ${where} and time < now() - '${interval}'::interval`
         console.log(`Autoprune run query`, sql)
@@ -164,17 +147,16 @@ export class Autoprune {
     } else if (level === 'dataitems') {
       return `props->>'id' = '${config.id}'` // match dataitem id, eg 'm-avail'
     }
-    console.log(`Autoprune getWhereClause unknown level ${level}`)
+    console.log(`Autoprune error getWhereClause unknown level ${level}`)
   }
 
   // get node_ids for a given dataitem filter, eg `(1=1) and (path like 'Main/Micro/%')`
   async getNodeIds(dataitemFilter) {
     const sql = `select node_id from dataitems where ${dataitemFilter}`
-    // const values = [dataitemFilter]
     console.log('Autoprune getNodeIds', { sql })
     const result = await this.db.query(sql)
     const nodeIds = result.rows?.map(row => Number(row.node_id)).sort()
-    console.log(nodeIds)
+    // console.log(nodeIds)
     return nodeIds
   }
 
@@ -182,7 +164,7 @@ export class Autoprune {
   async vacuumAnalyze() {
     console.log(`Autoprune vacuum analyze...`)
     const sql = `vacuum analyze`
-    const result = await this.db.query(sql)
-    console.log('vacresult', result)
+    const result = await this.db.query(sql) // eg { command: 'VACUUM', rowCount: 0 }
+    // console.log('vacresult', result)
   }
 }
