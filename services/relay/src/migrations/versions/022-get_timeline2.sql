@@ -1,9 +1,9 @@
 -- need this if change parameters OR return signature
 DROP FUNCTION IF EXISTS get_timeline(text, text, bigint, bigint, boolean, text);
+DROP FUNCTION IF EXISTS get_timeline(text, bigint, bigint, boolean, text);
 
 CREATE OR REPLACE FUNCTION get_timeline (
-  IN devicepath text, -- the device path, eg 'Main/Micro'
-  IN datapath text, -- the history view subpath, eg 'Main/Micro/Availability' -- yeah, eh
+  IN pathstring text, -- the history view path, eg 'Main/Micro/Availability'
   IN from_ms bigint, -- start time in milliseconds since 1970-01-01
   IN to_ms bigint, -- end time in milliseconds since 1970-01-01
   IN clamp boolean = TRUE, -- return left edge as first time 
@@ -27,8 +27,7 @@ RETURN QUERY
 SELECT history_text.time, history_text.value
 FROM history_text
 WHERE
-  device = devicepath and
-  path = datapath and
+  path = pathstring and
   history_text.time >= from_time and
   history_text.time <= to_time
 -- now tack on the time and value for the left edge with a UNION query
@@ -43,8 +42,7 @@ FROM
     history_text.value as valuex
   FROM history_text
   WHERE
-    device = devicepath
-    and path = datapath
+    path = pathstring
     and history_text.time <= from_time
     and history_text.time >= from_time - search_limit::interval
   ORDER BY history_text.time DESC
@@ -64,8 +62,7 @@ $BODY$;
 -- test fn
 --.... turn off before committing
 -- select * from get_timeline(
--- 	'Main/Marumatsu', 
--- 	'availability',
+-- 	'Main/Marumatsu/Availability',
 -- 	timestamptz2ms('2022-04-01'),
 -- 	timestamptz2ms('2022-05-05')
 -- )
