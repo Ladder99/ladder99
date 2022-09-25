@@ -10,9 +10,9 @@ import schedule from 'node-schedule' // https://github.com/node-schedule/node-sc
 // important: docker defaults to utc, so must specify timezone!
 // note: second defaults to 0, so will run at top of minute.
 const when = {
-  // hour: 0, // must specify 0, as unspecified/null means every hour
-  // minute: 0, // must specify 0, as unspecified/null means every minute
-  // dayOfWeek: 0, // 0=sunday
+  hour: 0, // must specify 0, as unspecified/null means every hour
+  minute: 0, // must specify 0, as unspecified/null means every minute
+  dayOfWeek: 0, // 0=sunday
   // this will get overridden by setup.client.timezone value
   tz: 'America/Chicago', // https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 }
