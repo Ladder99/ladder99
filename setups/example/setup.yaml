@@ -48,7 +48,7 @@ relay:
       # ignore: true # ignore this agent - overrides relay ignore value
       devices:
         - id: d1 # must match id in agent.xml
-          alias: Mill12345 # used in path expressions - no spaces!
+          alias: Mill-12345 # used in path expressions - no spaces!
           # retention: 1y # device retention - overrides agent retention value
           # ignore: true # ignore this device - overrides agent ignore value - not yet implemented
           # dataitems:
