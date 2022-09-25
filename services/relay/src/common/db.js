@@ -72,12 +72,12 @@ export class Db {
   // result is an object with { rows, rowCount, command, oid, fields }.
   async query(sql, options) {
     try {
-      return await this.client.query(sql, options)
+      return await this.client.query(sql, options) // return results, which is { rows, rowCount, ... }
     } catch (error) {
       console.log('db query', sql, options)
       console.log('db query error', error.message)
     }
-    return null
+    return null // indicates error
   }
 
   // add a node to nodes table - if already there, update existing values.
@@ -92,8 +92,8 @@ export class Db {
           on conflict ((props->>'uid')) do
             update set props = (${values}) 
               returning node_id;`
-    const result = await this.query(sql)
-    const node_id = result.rows.length > 0 && result.rows[0]?.node_id
+    const result = await this.query(sql) // could be null
+    const node_id = result?.rows?.length > 0 && result.rows[0]?.node_id
     return node_id
   }
 
@@ -122,12 +122,12 @@ export class Db {
         values
       )
       // console.log(sql.slice(0, 100))
-      const result = await this.query(sql)
+      const result = await this.query(sql) // could be null
       return result
-    } catch (e) {
+    } catch (error) {
       // eg error: duplicate key value violates unique constraint "nodes_path"
       // detail: "Key ((props ->> 'path'::text))=(Device(e05363af-95d1-4354-b749-8fbb09d3499e)) already exists.",
-      console.log(e)
+      console.log(error.message)
     }
   }
 
@@ -140,7 +140,7 @@ export class Db {
       values (${device_id}, ${dataitem_id}, '${time}', '${value}'::jsonb);
     `
     console.log('db write', device_id, dataitem_id, time, value)
-    const result = await this.query(sql)
+    const result = await this.query(sql) // could be null
     return result
   }
 
@@ -150,11 +150,11 @@ export class Db {
     let result
     while (true) {
       const sql = `select node_id from devices where name='${deviceName}'`
-      result = await this.client.query(sql)
-      if (result.rows.length > 0) break
+      result = await this.client.query(sql) // could be null
+      if (result?.rows?.length > 0) break
       await new Promise(resolve => setTimeout(resolve, 4000)) // wait 4 secs
     }
-    return result.rows[0].node_id
+    return result?.rows[0].node_id
   }
 
   // get node_id associated with a dataitem path.
@@ -163,11 +163,11 @@ export class Db {
     let result
     while (true) {
       const sql = `select node_id from dataitems where path='${path}'`
-      result = await this.client.query(sql)
-      if (result.rows.length > 0) break
+      result = await this.client.query(sql) // could be null
+      if (result?.rows?.length > 0) break
       await new Promise(resolve => setTimeout(resolve, 4000)) // wait 4 secs
     }
-    return result.rows[0].node_id
+    return result?.rows[0].node_id
   }
 
   // get latest value of a device's property path
@@ -180,10 +180,8 @@ export class Db {
       order by time desc
       limit 1;
     `
-    // console.log(sql)
-    const result = await this.query(sql)
-    // console.log(result)
-    const value = result.rowCount > 0 && result.rows[0]['value'] // colname must match case
+    const result = await this.query(sql) // could be null
+    const value = result?.rowCount > 0 && result.rows[0]['value'] // colname must match case
     return value
   }
 
@@ -206,8 +204,8 @@ export class Db {
         time desc
       limit 1;
     `
-    const result = await this.query(sql)
-    const record = result.rows.length > 0 && result.rows[0]
+    const result = await this.query(sql) // could be null
+    const record = result?.rows?.length > 0 && result.rows[0]
     return record // null or { time, value }
   }
 
@@ -227,8 +225,8 @@ export class Db {
         time asc
       limit 1;
     `
-    const result = await this.query(sql)
-    const record = result.rows.length > 0 && result.rows[0]
+    const result = await this.query(sql) // could be null
+    const record = result?.rows?.length > 0 && result.rows[0]
     return record // false or { time, value }
   }
 
@@ -263,15 +261,15 @@ export class Db {
       order by 
         time asc;
     `
-    const result = await this.query(sql)
+    const result = await this.query(sql) // could be null
     return result?.rows || []
   }
 
   // get value of key-value pair from meta table
   async getMetaValue(key) {
     const sql = `select value from raw.meta where name=$1`
-    const result = await this.query(sql, [key])
-    const value = result.rows.length > 0 && result.rows[0]['value'] // colname must match case
+    const result = await this.query(sql, [key]) // could be null
+    const value = result?.rows?.length > 0 && result.rows[0]['value'] // colname must match case
     return value
   }
 
@@ -283,7 +281,7 @@ export class Db {
           on conflict (name) do 
             update set value = $2;
     `
-    const result = await this.query(sql, [key, value])
+    const result = await this.query(sql, [key, value]) // could be null
     return result
   }
 }
