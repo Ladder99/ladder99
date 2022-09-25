@@ -8,10 +8,11 @@ import schedule from 'node-schedule' // https://github.com/node-schedule/node-sc
 // NEED TIMEZONE! why?
 // this format is from node-schedule's scheduleJob fn.
 const when = {
-  // hour: 3, // unspecified means every hour
-  // minute: 0,
+  // hour: 0, // unspecified/null means every hour
+  // minute: 0, // must specify this - unspecified/null means every minute
   minute: [0, 15, 30, 45],
   dayOfWeek: [0], // 0=sunday
+  // important: docker defaults to utc, so must specify timezone
   tz: 'America/Chicago', //? https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 }
 
@@ -30,7 +31,7 @@ export class Autoprune {
     this.db = db
     this.setup = setup
     this.job = null
-    this.when = when
+    this.when = { ...when, tz: this.setup.client?.timezone } // use setup.yaml timezone if specified
   }
 
   // start the autoprune timer
@@ -155,7 +156,10 @@ export class Autoprune {
     const sql = `select node_id from dataitems where ${dataitemFilter}`
     console.log('Autoprune getNodeIds', { sql })
     const result = await this.db.query(sql)
-    const nodeIds = result.rows?.map(row => Number(row.node_id)).sort()
+    // bug: javascript sort does alphabetical, NOT numeric sort, even if convert array to numbers!
+    // so must use a compare function.
+    const nodeIds =
+      result.rows?.map(row => Number(row.node_id)).sort((a, b) => a - b) || []
     // console.log(nodeIds)
     return nodeIds
   }
@@ -166,5 +170,6 @@ export class Autoprune {
     const sql = `vacuum analyze`
     const result = await this.db.query(sql) // eg { command: 'VACUUM', rowCount: 0 }
     // console.log('vacresult', result)
+    console.log(`Autoprune vacuum analyze done`)
   }
 }

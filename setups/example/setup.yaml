@@ -2,7 +2,7 @@
 
 client:
   name: Example # not used yet
-  timezone: America/Chicago # currently used by adapter jobboss driver and meter availability.js
+  timezone: America/Chicago # used by autoprune, adapter jobboss driver, and meter availability.js
 
 # adapter service reads this section to know what devices to poll/subscribe to.
 adapter:
@@ -50,11 +50,11 @@ relay:
         - id: d1 # must match id in agent.xml
           alias: Mill12345 # used in path expressions - no spaces!
           # retention: 1y # device retention - overrides agent retention value
-          # ignore: true # ignore this device - overrides agent ignore value
+          # ignore: true # ignore this device - overrides agent ignore value - not yet implemented
           # dataitems:
-          #   # note: the d1-Cload and d1-Sload dataitems have the same type signature,
-          #   # hence path. to resolve that the Relay will add the name or id in brackets,
-          #   # eg '.../Load[Cload]'. you can override that by specifying a pathstep here.
+          #   # note: the d1-Cload and d1-Sload dataitems have the same type signature, hence path.
+          #   # to resolve that the Relay will add the name or id in brackets, eg '.../Load[Cload]'.
+          #   # you can override that by specifying pathsteps here.
           #   - id: d1-Cload
           #     pathstep: Load[Index] # override path step for this dataitem
           #   - id: d1-Sload
