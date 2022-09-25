@@ -24,80 +24,83 @@ adapter:
 # would clear all unneeded data weekly - then vacuum analyze db.
 # warning: don't change the agent aliases (eg main) as they are used to synch data with db.
 relay:
-  retention: 1w # can specify retention period for ALL agents here
+  # retention: 1w # can specify data retention period for ALL agents here
   agents:
     - alias: Main # this is an identifier for the agent, used by the db - don't change once set!
       url: http://agent:5000 # url to the agent
-      retention: 1w # set agent retention period - overrides relay retention value
+      # retention: 1w # agent data retention period - overrides relay retention value
       # ignore: true # can specify this to turn agent recording on/off for all devices.
       devices:
-        - id: m # must match id in agent.xml
-          alias: Micro # used in path expressions - no spaces - use underscore if needed
-          retention: 1w # set device retention period - overrides agent retention value
+        - id: m # device id - must match id in agent.xml
+          alias: Micro # device alias is used in path expressions - no spaces
+          retention: 1w # device data retention period - overrides agent retention value
           # ignore: true # specify this to turn device recording on/off
-          # could translate, ignore, or set retention for individual dataitems
-          dataitems:
-            - id: m-avail
-              retention: 1w # set dataitem retention period - overrides device retention value
-              # ignore: true # overrides device ignore value
-              # pathstep: CpuFoo # optional path translation
+          # # can translate, ignore, or set retention for individual dataitems
+          # dataitems:
+          #   - id: m-avail # this is deviceId-dataitemId, where dataitemId is defined in agent.xml.
+          #     # retention: 1w # dataitem retention period - overrides device retention value
+          #     # ignore: true # ignore this dataitem - overrides device ignore value
+          #     # pathstep: AvailFoo # optional path step translation for this dataitem
 
     - alias: Mazak5701 # this is an identifier for the agent, used by the db - don't change once set!
       url: http://mtconnect.mazakcorp.com:5701 # url to the agent
-      # retention: 1y # override relay retention value
-      # ignore: true # override relay ignore value
+      # retention: 1y # agent retention - overrides relay retention value
+      # ignore: true # ignore this agent - overrides relay ignore value
       devices:
         - id: d1 # must match id in agent.xml
           alias: Mill12345 # used in path expressions - no spaces!
-          # ignore: true # override agent ignore value
-          # retention: 1y # override agent retention value
+          # retention: 1y # device retention - overrides agent retention value
+          # ignore: true # ignore this device - overrides agent ignore value
           # dataitems:
+          #   # note: the d1-Cload and d1-Sload dataitems have the same type signature,
+          #   # hence path. to resolve that the Relay will add the name or id in brackets,
+          #   # eg '.../Load[Cload]'. you can override that by specifying a pathstep here.
           #   - id: d1-Cload
-          #     pathstep: Load[Index]
+          #     pathstep: Load[Index] # override path step for this dataitem
           #   - id: d1-Sload
           #     pathstep: Load[Spindle]
           #   - id: d1-auto_time
-          #     ignore: true
+          #     ignore: true # ignore this dataitem - overrides device ignore value
           #   - id: d1-total_time
           #     ignore: true
           #   - id: d1-cut_time
           #     ignore: true
           #   - id: d1-total_auto_cut_time
           #     ignore: true
+#
+# # meter service reads this section, AND the relay section for list of agents and devices.
+# meter:
+#   defaults:
+#     # availability.js plugin defaults
+#     # gets active = time machine was active in previous time period,
+#     # based on part count changes,
+#     # and available = time is within start/stop schedule.
+#     # note that times have NO Z, ie they're purely local times, as obtained from jobboss.
+#     availability:
+#       activePath: Controller/AccumulatedTimeCut # acctimeAuto has auto incrementing time
+#       # # get start and stop times from xml, which could be set by jobboss driver
+#       # startPath: Processes/Shift/ProcessTimeStart # eg '2022-01-27T05:00:00'
+#       # stopPath: Processes/Shift/ProcessTimeComplete # eg '2022-01-27T13:30:00'
+#       # or set manual times
+#       # this could get very complex - just keep it simple for now
+#       startTime: '05:00:00'
+#       stopTime: '13:30:00'
 
-# meter service reads this section, AND the relay section for list of agents and devices.
-meter:
-  defaults:
-    # availability.js plugin defaults
-    # gets active = time machine was active in previous time period,
-    # based on part count changes,
-    # and available = time is within start/stop schedule.
-    # note that times have NO Z, ie they're purely local times, as obtained from jobboss.
-    availability:
-      activePath: Controller/AccumulatedTimeCut # acctimeAuto has auto incrementing time
-      # # get start and stop times from xml, which could be set by jobboss driver
-      # startPath: Processes/Shift/ProcessTimeStart # eg '2022-01-27T05:00:00'
-      # stopPath: Processes/Shift/ProcessTimeComplete # eg '2022-01-27T13:30:00'
-      # or set manual times
-      # this could get very complex - just keep it simple for now
-      startTime: '05:00:00'
-      stopTime: '13:30:00'
+#     # # count.js plugin defaults
+#     # # accumulates count deltas into the lifetime count
+#     # count:
+#     #   deltaPath: Processes/Job/PartCountAll
+#     #   lifetimePath: Processes/Life/PartCountAll
 
-    # # count.js plugin defaults
-    # # accumulates count deltas into the lifetime count
-    # count:
-    #   deltaPath: Processes/Job/PartCountAll
-    #   lifetimePath: Processes/Life/PartCountAll
+#     # # rate.js plugin defaults
+#     # # calculates the rate of change between counts, ie the production rate.
+#     # #. not finished yet
+#     # rate:
+#     #   valuePath: Processes/Life/PartCountAll
+#     #.   ratePath: controller/PartOccurrence/PartCountRate
 
-    # # rate.js plugin defaults
-    # # calculates the rate of change between counts, ie the production rate.
-    # #. not finished yet
-    # rate:
-    #   valuePath: Processes/Life/PartCountAll
-    #.   ratePath: controller/PartOccurrence/PartCountRate
-
-  # set overrides per agentAlias/deviceAlias/meter here
-  overrides:
-    Main/Micro:
-      availability:
-        ignore: true
+#   # set overrides per agentAlias/deviceAlias/meter here
+#   overrides:
+#     Main/Micro:
+#       availability:
+#         ignore: true
