@@ -2,7 +2,7 @@ DROP FUNCTION IF EXISTS get_last_value(text, text, text);
 
 CREATE OR REPLACE FUNCTION get_last_value (
   IN devicepath text, -- the device path, eg 'Main/Micro'
-  IN subpath text, -- the history view subpath, eg 'Availability'
+  IN subpath text, -- the history view subpath, eg 'Availability' -- will append to devicepath
   IN search_limit text = '1d' -- search limit - don't search further into past than this
 )
 RETURNS TABLE ("time" timestamptz, "value" text) -- ANSI standard SQL

@@ -3,7 +3,7 @@ DROP FUNCTION IF EXISTS get_timeline(text, text, bigint, bigint, boolean, text);
 
 CREATE OR REPLACE FUNCTION get_timeline (
   IN devicepath text, -- the device path, eg 'Main/Micro'
-  IN datapath text, -- the history view path, eg 'availability'
+  IN datapath text, -- the history view subpath, eg 'Main/Micro/Availability' -- yeah, eh
   IN from_ms bigint, -- start time in milliseconds since 1970-01-01
   IN to_ms bigint, -- end time in milliseconds since 1970-01-01
   IN clamp boolean = TRUE, -- return left edge as first time 
