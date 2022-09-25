@@ -115,12 +115,13 @@ export class Autoprune {
       const dataitemFilter = config.autoprune.clauses
         ?.map(clause => `(${clause})`)
         .join(' and ')
-      const nodeIds = await this.getNodeIds(dataitemFilter)
-      // console.log(`Autoprune nodeIds for ${level}`, nodeIds)
+      const dataitemIds = await this.getDataItemIds(dataitemFilter)
+      // console.log(`Autoprune dataitemIds for ${level}`, dataitemIds)
 
       // delete old data using node_ids
-      if (nodeIds.length > 0) {
-        const where = `node_id in (${nodeIds.join(',')})`
+      if (dataitemIds.length > 0) {
+        // const where = `node_id in (${dataitemIds.join(',')})`
+        const where = `dataitem_id in (${dataitemIds.join(',')})`
         const sql = `delete from raw.history where ${where} and time < now() - '${interval}'::interval`
         console.log(`Autoprune run query`, sql)
         await this.db.query(sql)
@@ -151,10 +152,13 @@ export class Autoprune {
     console.log(`Autoprune error getWhereClause unknown level ${level}`)
   }
 
-  // get node_ids for a given dataitem filter, eg `(1=1) and (path like 'Main/Micro/%')`
-  async getNodeIds(dataitemFilter) {
+  // get node_ids for a given dataitem filter, eg `(1=1) and (path like 'Main/Micro/%')`.
+  // important: this is technically a list of dataitem_ids, not device node_ids!
+  // because the nodes table stores both devices and dataitems,
+  // while raw.history has node_id (the device) and dataitem_id (the full path).
+  async getDataItemIds(dataitemFilter) {
     const sql = `select node_id from dataitems where ${dataitemFilter}`
-    console.log('Autoprune getNodeIds', { sql })
+    console.log('Autoprune getDataItemIds', { sql })
     const result = await this.db.query(sql)
     // bug: javascript sort does alphabetical, NOT numeric sort, even if convert array to numbers!
     // so must use a compare function.
