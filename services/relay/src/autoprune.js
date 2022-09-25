@@ -10,9 +10,9 @@ import schedule from 'node-schedule' // https://github.com/node-schedule/node-sc
 // important: docker defaults to utc, so must specify timezone!
 // note: second defaults to 0, so will run at top of minute.
 const when = {
-  hour: 0, // must specify 0, as unspecified/null means every hour
-  minute: 0, // must specify 0, as unspecified/null means every minute
-  dayOfWeek: 0, // 0=sunday
+  // hour: 0, // must specify 0, as unspecified/null means every hour
+  // minute: 0, // must specify 0, as unspecified/null means every minute
+  // dayOfWeek: 0, // 0=sunday
   // this will get overridden by setup.client.timezone value
   tz: 'America/Chicago', // https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 }
@@ -48,8 +48,8 @@ export class Autoprune {
 
   // prune old data from db based on retention schedules in setup.yaml.
   // note: setup.relay doesn't have to be there - hence setup?.relay.
-  async prune() {
-    console.log(`Autoprune pruning old data...`)
+  async prune(callTime) {
+    console.log(`Autoprune pruning old data at`, callTime.toISOString())
     await this.pruneLevel(this.setup.relay, 'relay') // recurse setup, starting at relay setting
     // console.dir(this.setup.relay, { depth: null })
     await this.vacuumAnalyze() // free old data
@@ -61,7 +61,7 @@ export class Autoprune {
   // parent is the parent config/setup object.
   // [nextLevel] is the next level to recurse to, eg dataitems.
   async pruneLevel(config, level, parent = null) {
-    console.log('Autoprune level', level, config.alias || config.id || 'top')
+    // console.log('Autoprune level', level, config.alias || config.id || 'top')
 
     const retention = config.retention // eg '1wk' or undefined
 
@@ -97,7 +97,7 @@ export class Autoprune {
       const childParent = config
       // recurse down child configs - eg agent of agents
       for (let childConfig of childConfigs) {
-        console.log('Autoprune recurse', childConfig.alias || childConfig.id)
+        // console.log('Autoprune recurse', childConfig.alias || childConfig.id)
         await this.pruneLevel(childConfig, nextLevel, childParent) // recurse down the tree
       }
     }
@@ -124,7 +124,7 @@ export class Autoprune {
         // const where = `node_id in (${dataitemIds.join(',')})`
         const where = `dataitem_id in (${dataitemIds.join(',')})`
         const sql = `delete from raw.history where ${where} and time < now() - '${interval}'::interval`
-        console.log(`Autoprune run query`, sql)
+        console.log(`Autoprune delete:`, sql)
         await this.db.query(sql)
       } else {
         console.log(`Autoprune no node_ids for`, dataitemFilter)
@@ -159,7 +159,7 @@ export class Autoprune {
   // while raw.history has node_id (the device) and dataitem_id (the full path).
   async getDataItemIds(dataitemFilter) {
     const sql = `select node_id from dataitems where ${dataitemFilter}`
-    console.log('Autoprune getDataItemIds', sql)
+    console.log('Autoprune query:', sql)
     const result = await this.db.query(sql)
     // bug: javascript sort does alphabetical, NOT numeric sort, even if convert array to numbers!
     // so must use a compare function.
