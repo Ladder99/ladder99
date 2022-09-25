@@ -34,8 +34,7 @@ export class Db {
       } catch (error) {
         console.log(`db error ${error.code} - will sleep before retrying...`)
         console.log('db', error.message)
-        // await lib.sleep(4000)
-        await new Promise(resolve => setTimeout(resolve, 4000))
+        await new Promise(resolve => setTimeout(resolve, 4000)) // sleep 4secs
       }
     } while (!client)
     this.client = client
@@ -69,30 +68,32 @@ export class Db {
     }
   }
 
-  // execute a query and return results.
+  // execute a query and return result, or null if error.
+  // result is an object with { rows, rowCount, command, oid, fields }.
   async query(sql, options) {
-    // note: added try catch for adapter in case crashed,
-    // but it broke code as in this.add(node), so removed.
-    return await this.client.query(sql, options)
+    try {
+      return await this.client.query(sql, options)
+    } catch (error) {
+      console.log('db query', sql, options)
+      console.log('db query error', error.message)
+    }
+    return null
   }
 
   // add a node to nodes table - if already there, update existing values.
   // always return node_id.
   // uses node.uid to look up record.
-  // assumes nodes table has a unique index on that json prop.
-  //. distribute this to other svcs
+  // assumes nodes table has a unique index on that json prop!
   async upsert(node) {
+    console.log(`db upsert node ${node.uid}: ${node.path}`)
     const values = `'${JSON.stringify(node)}'`
-    // old version had a unique key on path, which would give conflict if exists.
-    // so we need a unique key on uid.
     const sql = `
         insert into raw.nodes (props) values (${values}) 
           on conflict ((props->>'uid')) do
             update set props = (${values}) 
               returning node_id;`
-    console.log(`db upsert node ${node.uid}: ${node.path}`)
     const result = await this.query(sql)
-    const node_id = result.rows[0]?.node_id
+    const node_id = result.rows.length > 0 && result.rows[0]?.node_id
     return node_id
   }
 
@@ -228,13 +229,14 @@ export class Db {
     `
     const result = await this.query(sql)
     const record = result.rows.length > 0 && result.rows[0]
-    return record // null or { time, value }
+    return record // false or { time, value }
   }
 
   // get records from history_float.
   // start and stop should be ISO strings.
   // includes previous value before start time.
   //. pass table also, ie history_float vs history_text
+  //. currently just used by count and rate meter plugins - merge with getHistoryRecords?
   async getHistory(device, path, start, stop) {
     const sql = `
       select 
@@ -262,23 +264,19 @@ export class Db {
         time asc;
     `
     const result = await this.query(sql)
-    return result.rows
+    return result?.rows || []
   }
 
+  // get value of key-value pair from meta table
   async getMetaValue(key) {
-    // get value of key-value pair from meta table
     const sql = `select value from raw.meta where name=$1`
-    try {
-      const result = await this.query(sql, [key])
-      const value = result.rows.length > 0 && result.rows[0]['value'] // colname must match case
-      return value
-    } catch (error) {
-      return null // assume error is due to not having the table yet
-    }
+    const result = await this.query(sql, [key])
+    const value = result.rows.length > 0 && result.rows[0]['value'] // colname must match case
+    return value
   }
 
+  // upsert key-value pair to meta table
   async setMetaValue(key, value) {
-    // upsert key-value pair to meta table
     const sql = `
       insert into raw.meta (name, value) 
         values ($1, $2::jsonb)
