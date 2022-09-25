@@ -574,14 +574,6 @@ services:
       # turn relay feedback off if needed - eg for development machine
       # null means pass-through from environment
       RELAY_FEEDBACK_OFF: null
-      # this can be an agent url, a comma-separated (no spaces) list of urls,
-      # or a .txt file with a url per line.
-      # NO TRAILING SLASHES
-      #. make this an array? but this is an envar so must be a string
-      # override as needed in client's compose-overrides.yaml.
-      AGENT_ENDPOINTS: http://agent:5000
-      #. will need to boost this as number of devices increases,
-      # until have automatic rate setting
       FETCH_INTERVAL: 2000
       FETCH_COUNT: 800
       # null means pass-through from environment
