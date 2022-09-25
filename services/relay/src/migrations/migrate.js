@@ -59,5 +59,5 @@ export async function migrate(db) {
 
 async function readFile(db, filename) {
   console.log(`Migrate loading ${filename}...`)
-  return await db.query(String(fs.readFileSync(filename)))
+  return await db.query(String(fs.readFileSync(filename))) // can be null
 }

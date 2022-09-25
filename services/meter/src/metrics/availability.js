@@ -279,7 +279,7 @@ export class Metric {
       limit 1;
     `
     const result = await this.db.query(sql)
-    const deviceWasActive = result.rows[0].active // t/f - column name must match case
+    const deviceWasActive = result?.rows[0]?.active // t/f - column name must match case
     return deviceWasActive
   }
 

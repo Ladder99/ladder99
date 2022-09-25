@@ -163,11 +163,11 @@ export class Autoprune {
   async getDataItemIds(dataitemFilter) {
     const sql = `select node_id from dataitems where ${dataitemFilter}`
     console.log('Autoprune query:', sql)
-    const result = await this.db.query(sql)
+    const result = await this.db.query(sql) // can be null
     // bug: javascript sort does alphabetical, NOT numeric sort, even if convert array to numbers!
     // so must use a compare function.
     const nodeIds =
-      result.rows?.map(row => Number(row.node_id)).sort((a, b) => a - b) || []
+      result?.rows?.map(row => Number(row.node_id)).sort((a, b) => a - b) || []
     // console.log(nodeIds)
     return nodeIds
   }
@@ -176,8 +176,7 @@ export class Autoprune {
   async vacuumAnalyze() {
     console.log(`Autoprune vacuum analyze...`)
     const sql = `vacuum analyze`
-    const result = await this.db.query(sql) // eg { command: 'VACUUM', rowCount: 0 }
-    // console.log('vacresult', result)
+    const result = await this.db.query(sql) // eg { command: 'VACUUM', rowCount: 0 } or null
     console.log(`Autoprune vacuum analyze done`)
   }
 }
