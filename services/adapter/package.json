@@ -1,17 +1,15 @@
 {
   "name": "ladder99-adapter",
-  "version": "0.1.0",
+  "version": "0.8.0",
   "description": "Ladder99 Adapter",
   "type": "module",
   "target": "es2017",
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "Apache2.0",
   "scripts": {
-    "test": "nodemon src/test.js"
+    "test": "node src/test.js"
   },
   "dependencies": {
-    "date-fns": "^2.25.0",
-    "dayjs": "^1.10.7",
     "js-yaml": "^4.0.0",
     "luxon": "^2.4.0",
     "mqtt": "^4.2.6",
@@ -19,7 +17,6 @@
     "node-fetch": "^3.0.0",
     "node-hid": "^2.1.1",
     "node-opcua-client": "^2.50.0",
-    "nodemon": "^2.0.14",
     "systeminformation": "^5.9.8",
     "usb": "^1.8.0",
     "uuid": "^8.3.2",
