@@ -496,7 +496,8 @@ services:
     # maybe we don't need this? is this just so can connect outside of the docker network?
     # no, we seem to need it - commented it out and relay no longer worked.
     ports:
-      - $PGPORT:5432/tcp
+      # - $PGPORT:5432/tcp
+      - 127.0.0.1:$PGPORT:5432/tcp # this way, only localhost can access the port
     #
     # the PostgreSQL image uses these environment variables.
     # re PGPASSWORD,
