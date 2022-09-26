@@ -2,12 +2,13 @@
 // fetches data from microcontroller/pc etc
 // see modules/micro folder.
 
-//. this library causes highcpu on windows - 2022-02
+// this library causes highcpu on windows - 2022-02
 // https://github.com/sebhildebrandt/systeminformation/issues/626
 // best for now is to not include the micro driver in the client setup on windows.
+// seems to be fixed, or works from git bash - 2022-09-26.
 import si from 'systeminformation' // see https://github.com/sebhildebrandt/systeminformation
 
-const pollInterval = 5000 // msec //. get from setup
+const pollInterval = 5000 // msec //. could get from setup
 
 export class AdapterDriver {
   init({ device, cache }) {

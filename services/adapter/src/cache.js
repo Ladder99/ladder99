@@ -6,13 +6,11 @@
 // when a key-item value is set, the cache will perform any associated output
 // calculations and send shdr output to attached tcp socket, IF value changed.
 
-//. eg ___
-
 export class Cache {
   //
   constructor() {
-    this._map = new Map() // key-item pairs //. why not just {} ?
-    this._mapKeyToOutputs = {} // list of outputs assoc with each key, //. eg ?
+    this._map = new Map() // key-item pairs //. explain why not just {}
+    this._mapKeyToOutputs = {} // list of outputs assoc with each key, //. eg
   }
 
   // addOutputs

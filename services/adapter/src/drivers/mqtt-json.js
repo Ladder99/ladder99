@@ -7,12 +7,9 @@ import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../common/lib.js'
 
 //. move this into class
-//. and make it a const - call it sthing else - data?
-//. pass it into expression fns as this.data?
-// then expressions could refer to it by eg `data.foo.bar = 3`
-// see https://stackoverflow.com/questions/15189857/what-is-the-most-efficient-way-to-empty-a-plain-object-in-javascript
-// so `keyvalues={}` would create a new object and leave the original object as is,
-// ie not garbage collected?
+//. and make it a const
+//. pass it into expression fns?
+// then expressions could refer to it by eg `keyvalues.foo.bar = 3`
 let keyvalues = {} // keyvalue store for yaml code to use - use 'let' so yaml code can reset it
 
 export class AdapterDriver {
@@ -20,8 +17,7 @@ export class AdapterDriver {
   // initialize the client plugin
   // queries the device for address space definitions, subscribes to topics.
   // inputs is the inputs.yaml file parsed to a js tree.
-  // advice is a dict of optional fns that are called at various points in the code.
-  //. is advice used also?
+  // advice is a dict of optional fns that are called at various points in the code. not used.
   // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
   init({ source, device, host, port, cache, inputs, types, advice }) {
     console.log('MQTT Initializing mqtt-json driver for', device.id)
@@ -88,8 +84,9 @@ export class AdapterDriver {
         payload = message
       }
 
-      //.................. temporary stopgap - won't scale ...................
-      //. better to have payload.id as part of the message topic so can route messages better
+      //.................. temporary fix - won't scale ...................
+      //. better to have payload.id as part of the message topic so can route messages better.
+      //. will be merging with develop branch, which fixes this.
       if (
         typeof payload === 'object' &&
         payload.id &&
