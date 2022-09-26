@@ -25,7 +25,8 @@ if [ $SERVICES = "all" ]; then
   # --force = no confirmation
   # docker system prune --force \
   # && docker rm --force --volumes $(docker ps -q -a)
-  docker rm --force --volumes $(docker ps -q)
+  # docker rm --force --volumes $(docker ps -q)
+  docker stop $(docker ps -q)
 else
   docker stop $SERVICES
 fi
