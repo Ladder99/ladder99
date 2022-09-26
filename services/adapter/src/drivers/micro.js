@@ -47,6 +47,7 @@ export class AdapterDriver {
 
         // get total disk space as { size, used, use }
         // data.fsSize is sthing like this - reduce to single object - or just use drvfs?
+        console.log('fsSize', data.fsSize)
         // [
         //   { fs: 'overlay', size: 269490393088, used: 26778972160, use: 10.47 },
         //   { fs: 'drvfs', size: 489472126976, used: 420276023296, use: 85.86 },
