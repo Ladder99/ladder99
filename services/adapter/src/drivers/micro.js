@@ -46,7 +46,7 @@ export class AdapterDriver {
         // console.log(data) // too much info
 
         // get total disk space as { size, used, use }
-        console.log('Micro fsSize', data.fsSize)
+        // console.log('Micro fsSize', data.fsSize)
         // console.log(data.fsSize.map(d => d.fs))
         // data.fsSize is sthing like this - reduce to single object - or just use drvfs?
         // windows:
@@ -67,8 +67,8 @@ export class AdapterDriver {
         //   { size: 0, used: 0, available: 0 }
         // )
         // disk.use = (disk.used / (disk.size || 1)) * 100
-        // const disk = data.fsSize.find(fs => fs.fs === 'drvfs') || {}
-        const disk = data.fsSize.find(fs => fs.fs === 'overlay') || {}
+        // const disk = data.fsSize.find(o => o.fs === 'drvfs') || {}
+        const disk = data.fsSize.find(o => o.fs === 'overlay') || {}
 
         // write values to cache
         setValue('availability', 'AVAILABLE')
