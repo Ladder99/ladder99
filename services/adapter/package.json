@@ -1,7 +1,7 @@
 {
   "name": "ladder99-adapter",
   "version": "0.8.0",
-  "description": "Ladder99 Adapter",
+  "description": "Ladder99 Adapter - transfers data from devices to Agent",
   "type": "module",
   "target": "es2017",
   "author": "Brian Burns <bburns.km@gmail.com>",
@@ -19,7 +19,6 @@
     "node-opcua-client": "^2.50.0",
     "systeminformation": "^5.9.8",
     "usb": "^1.8.0",
-    "uuid": "^8.3.2",
-    "xml-js": "^1.6.11"
+    "uuid": "^8.3.2"
   }
 }
