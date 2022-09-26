@@ -13,7 +13,7 @@ const when = {
   // hour: 0, // must specify 0, as unspecified/null means every hour
   // minute: 0, // must specify 0, as unspecified/null means every minute
   // dayOfWeek: 0, // 0=sunday
-  minute: 25,
+  minute: 30,
   // this will get overridden by setup.client.timezone value
   tz: 'America/Chicago', // https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 }
