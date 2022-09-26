@@ -11,7 +11,7 @@ const pollInterval = 5000 // msec //. get from setup
 
 export class AdapterDriver {
   init({ device, cache }) {
-    console.log(`Initialize microcontroller driver...`)
+    console.log(`Micro - initialize driver...`)
 
     setUnavailable()
     setInterval(readData, pollInterval)
@@ -46,9 +46,9 @@ export class AdapterDriver {
         // console.log(data) // too much info
 
         // get total disk space as { size, used, use }
-        // data.fsSize is sthing like this - reduce to single object - or just use drvfs?
-        // console.log('fsSize', data.fsSize)
+        console.log('Micro fsSize', data.fsSize)
         // console.log(data.fsSize.map(d => d.fs))
+        // data.fsSize is sthing like this - reduce to single object - or just use drvfs?
         // windows:
         // [
         //   { fs: 'overlay', size: 269490393088, used: 26778972160, use: 10.47 },
@@ -86,9 +86,9 @@ export class AdapterDriver {
         setValue('disk-available', rounded(disk.available, -6)) // bytes rounded to mb
         setValue('os', getDataSet(data.osInfo))
         //
-      } catch (e) {
+      } catch (error) {
+        console.log(error.message)
         setUnavailable()
-        console.error(e)
       }
     }
 
