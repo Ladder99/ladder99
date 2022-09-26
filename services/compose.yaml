@@ -15,13 +15,20 @@ services:
   # convert machine data to shdr and send to agent
   adapter:
     container_name: adapter
+
+    # for now, don't include build or image props here - specify in compose-overrides.yaml.
+    # but figure out how to alternate between them using envars.
+    # build: ./adapter # see Dockerfile in this folder
+    # build: ${L99_ADAPTER_BUILD} # see Dockerfile in this folder
     # image: ladder99/adapter:latest # use this if build docker image and push to hub
-    build: ./adapter # see Dockerfile in this folder
+
     # set this to give permission to access hardware (e.g. dymo scale in usb port).
     #. security hole - leave off for now, until need dymo driver.
     # privileged: true
+
     profiles:
       - adapter
+
     environment:
       # specify where code can find data.
       # can override at run time, eg to run service on windows with node.
