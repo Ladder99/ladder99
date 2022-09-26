@@ -65,6 +65,10 @@ services:
     command: agent run agent.cfg
     volumes:
       - ../$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
+      # what's point of these?
+      # i guess docker containers default to UTC, and our servers are set to UTC.
+      # - /etc/localtime:/etc/localtime:ro
+      # - /etc/timezone:/etc/timezone:ro
     ports:
       - 5000:5000
     restart: unless-stopped
