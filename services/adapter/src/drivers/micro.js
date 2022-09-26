@@ -47,12 +47,16 @@ export class AdapterDriver {
 
         // get total disk space as { size, used, use }
         // data.fsSize is sthing like this - reduce to single object - or just use drvfs?
-        console.log('fsSize', data.fsSize)
+        // console.log('fsSize', data.fsSize)
+        // console.log(data.fsSize.map(d => d.fs))
+        // windows:
         // [
         //   { fs: 'overlay', size: 269490393088, used: 26778972160, use: 10.47 },
         //   { fs: 'drvfs', size: 489472126976, used: 420276023296, use: 85.86 },
         //   { fs: '/dev/sdc', size: 269490393088, used: 26778972160, use: 10.47 }
         // ]
+        // linux: pi just has overlay
+        //
         // const disk = data.fsSize.reduce(
         //   (acc, fs) => {
         //     acc.size += fs.size
@@ -63,7 +67,8 @@ export class AdapterDriver {
         //   { size: 0, used: 0, available: 0 }
         // )
         // disk.use = (disk.used / (disk.size || 1)) * 100
-        const disk = data.fsSize.find(fs => fs.fs === 'drvfs') || {}
+        // const disk = data.fsSize.find(fs => fs.fs === 'drvfs') || {}
+        const disk = data.fsSize.find(fs => fs.fs === 'overlay') || {}
 
         // write values to cache
         setValue('availability', 'AVAILABLE')
