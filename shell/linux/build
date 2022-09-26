@@ -28,4 +28,5 @@ docker build --tag $USER/$SERVICE:$TAG .
 docker login --username=$USER
 docker push $USER/$SERVICE:$TAG # push image to docker hub
 docker logout
+docker image ls $USER/$SERVICE
 popd 
