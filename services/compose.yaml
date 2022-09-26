@@ -570,7 +570,8 @@ services:
   # fetch data from agent and send to db
   relay:
     container_name: relay
-    build: ./relay
+    # for now, specify build or image props in setup's compose-overrides.yaml.
+    # build: ./relay
     profiles:
       - relay
     # this runs a process manager that passes SIGTERM to your app gracefully
