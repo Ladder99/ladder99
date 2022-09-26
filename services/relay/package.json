@@ -1,6 +1,6 @@
 {
   "name": "ladder99-relay",
-  "version": "0.1.0",
+  "version": "0.8.0",
   "description": "Ladder99 Relay - transfers data from Agent to Database",
   "type": "module",
   "module": "esnext",
@@ -20,7 +20,6 @@
     "node-schedule": "^2.1.0",
     "pg": "^8.7.1",
     "pg-format": "^1.0.4",
-    "pg-hstore": "^2.3.4",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
