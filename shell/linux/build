@@ -1,0 +1,31 @@
+#!/bin/bash
+
+usage="
+Usage: ./l99 build SERVICE TAG
+
+Build a Docker image and push up to Docker hub.
+
+SERVICE   service name - adapter, meter, relay, etc.
+TAG       tag version - e.g. 0.8.0-arm, latest, etc.
+
+Example
+    ./l99 build adapter 0.8.0-arm
+    ./l99 build relay latest
+"
+
+# show help if count of params is zero
+if [ $# -eq 0 ]; then
+    echo "$usage"
+    exit 1
+fi
+
+SERVICE=$1
+TAG=$2
+USER=ladder99
+
+pushd ./services/$SERVICE
+docker build --tag $USER/$SERVICE:$TAG .
+docker login --username=$USER
+docker push $USER/$SERVICE:$TAG # push image to docker hub
+docker logout
+popd 
