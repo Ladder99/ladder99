@@ -23,10 +23,13 @@ SERVICE=$1
 TAG=$2
 USER=ladder99
 
+# note: turned off login/logout as need to be logged into docker hub to
+# pull images as when running 'l99 start' cmd.
+
 pushd ./services/$SERVICE
 docker build --tag $USER/$SERVICE:$TAG .
-docker login --username=$USER
+# docker login --username=$USER
 docker push $USER/$SERVICE:$TAG # push image to docker hub
-docker logout
+# docker logout
 docker image ls $USER/$SERVICE
 popd 
