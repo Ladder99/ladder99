@@ -20,6 +20,8 @@ fi
 
 SERVICES=$*
 
+# https://stackoverflow.com/questions/33362856/whats-the-difference-between-docker-stop-and-docker-rm
+
 if [ $SERVICES = "all" ]; then
   # CMD="docker stop $(docker ps -q)"
   # --force = no confirmation
