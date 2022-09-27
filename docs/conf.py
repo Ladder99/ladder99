@@ -117,3 +117,9 @@ myst_enable_extensions = [
     # "substitution",
     # "tasklist",
 ]
+
+# The MyST Parser can automatically generate label “slugs” for header anchors 
+# so that you can reference them from markdown links. For example, you can 
+# use header bookmark links, locally; [](#header-anchor), or 
+# cross-file [](path/to/file.md#header-anchor). 
+myst_heading_anchors = 3
