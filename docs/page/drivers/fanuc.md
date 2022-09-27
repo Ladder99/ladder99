@@ -3,6 +3,7 @@
 > WARNING:
 > Review [Fanuc Vulnerability Information](https://www.fanuc.co.jp/en/product/vulnerability/index.html) before proceeding.
 
+
 ## Overview
 
 Built on top of Fanuc Focas native libraries, [`Fanuc Driver`](https://github.com/Ladder99/fanuc-driver) transforms controller data to various protocols and formats.  Supported outputs include MQTT JSON, MQTT SparkplugB, InfluxDb Line Protocol, and MTConnect SHDR. Concepts in the [`base-driver`](https://github.com/Ladder99/base-driver) repository can be reused to create transofrmation logic to other transports and formats.
@@ -15,17 +16,15 @@ Below illustrates [Fanuc 0i-TF](https://www.fanucamerica.com/products/cnc/cnc-sy
 
 ![recording2](_images/recording2.gif)
 
+
 ## Videos
 
-[Setup - v0.1](https://www.youtube.com/watch?v=_sZ0qCVkTkM)
+- [Setup - v0.1](https://www.youtube.com/watch?v=_sZ0qCVkTkM)
+- [Setup / Changes - v0.2](https://www.youtube.com/watch?v=yhe_apuiJVY)
+- [InfluxDb Output](https://www.youtube.com/watch?v=gqfBj0ImMrw)
+- [MTConnect Output](https://www.youtube.com/watch?v=j1gXHXA2RW0)
+- [SparkplugB Output](https://www.youtube.com/watch?v=yw0TMXsLHro)
 
-[Setup / Changes - v0.2](https://www.youtube.com/watch?v=yhe_apuiJVY)
-
-[InfluxDb Output](https://www.youtube.com/watch?v=gqfBj0ImMrw)
-
-[MTConnect Output](https://www.youtube.com/watch?v=j1gXHXA2RW0)
-
-[SparkplugB Output](https://www.youtube.com/watch?v=yw0TMXsLHro)
 
 ## Focas Library Matrix
 
@@ -66,6 +65,7 @@ Below table outlines controller, operating system and architecture compatibility
 
 Instructions documented here are for non-Docker builds.
 
+
 ### ARMv7 Linux
 
 [Install .NET SDK](https://sukesh.me/2020/07/07/how-to-install-net-core-on-raspberry-pi/)
@@ -103,6 +103,7 @@ dotnet publish "fanuc.csproj" \
 	--nlog ../examples/fanuc-driver/nlog-example-nlog.config \
   --config ../examples/fanuc-driver/config-example.yml
 ```
+
 
 ### x86 Linux
 

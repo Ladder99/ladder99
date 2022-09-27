@@ -11,7 +11,7 @@ You can install it from https://git-scm.com/downloads.
 
 Open a terminal window - if on Windows, run **Git Bash** -
 
-![](_images/git-bash.jpg)
+![](../_images/git-bash.jpg)
 
 then go to a good working directory and make a folder for Ladder99 and any custom setups - e.g.
 

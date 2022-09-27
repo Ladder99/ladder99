@@ -17,12 +17,12 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
    :maxdepth: 1
    :caption: Running
 
-   page/quickstart
-   page/installation
-   page/running-ladder99
-   page/viewing-dashboard
-   page/viewing-agent
-   page/viewing-services
+   page/running/quickstart
+   page/running/installation
+   page/running/running-ladder99
+   page/running/viewing-dashboard
+   page/running/viewing-agent
+   page/running/viewing-services
    
 .. toctree::
    :maxdepth: 1

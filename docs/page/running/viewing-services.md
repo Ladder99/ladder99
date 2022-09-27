@@ -3,7 +3,7 @@
 
 ## List Services
 
-First let's make sure all the services are running okay - 
+First let's make sure all the services are running alright - 
 
 ```bash
 $ ./l99 list  # or just 'l99 list' on Windows
