@@ -34,6 +34,12 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
 
 .. toctree::
    :maxdepth: 1
+   :caption: Drivers
+
+   page/drivers/fanuc
+
+.. toctree::
+   :maxdepth: 1
    :caption: Reference
 
    page/commands

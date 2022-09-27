@@ -19,11 +19,11 @@ Built on top of Fanuc Focas native libraries, [`Fanuc Driver`](https://github.co
 
 Below illustrates [Fanuc NC Guide](https://www.fanucamerica.com/products/cnc/software/cnc-guide-simulation-software) output visualized with [MQTT Explorer](http://mqtt-explorer.com/).
 
-![recording1](/drivers/fanuc-driver/recording1.gif)
+![recording1](_images/recording1.gif)
 
 Below illustrates [Fanuc 0i-TF](https://www.fanucamerica.com/products/cnc/cnc-systems/series-0if) production output.
 
-![recording2](/drivers/fanuc-driver/recording2.gif)
+![recording2](_images/recording2.gif)
 
 ## Focas Library Matrix
 
