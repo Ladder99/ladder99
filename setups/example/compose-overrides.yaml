@@ -13,6 +13,7 @@ services:
   adapter:
     profiles:
       - base
+    build: ./adapter # use Dockerfile in ladder99/services/adapter
   agent:
     profiles:
       - base
@@ -37,3 +38,4 @@ services:
   relay:
     profiles:
       - base
+    build: ./relay # use Dockerfile in ladder99/services/relay
