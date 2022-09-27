@@ -2,7 +2,7 @@
 
 Data flows from **Devices** through the **Adapter**, **Agent**, and **Relay** to the **Database**, **Meter**, **Dashboard**, and other applications.
 
-![](_images/ladder99-arch-oxbox-2022-06.png)
+![](../_images/ladder99-arch-oxbox-2022-06.png)
 
 The **Adapter** polls or subscribes to messages from **Devices**, and translates the data to a simple text format, which it sends on to the **Agent**.
 
