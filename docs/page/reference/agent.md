@@ -17,7 +17,7 @@ docker run -it --rm --init --name agent -p5000:5000 ladder99/agent
 
 View the output in your browser at http://localhost:5000 -
 
-![](_images/agent-html_1200.jpg)
+![](../_images/agent-html_1200.jpg)
 
 The Agent starts in the **Probe** tab, which shows the data items available - first for the Agent itself, then the CNC machine. 
 
@@ -27,7 +27,7 @@ The **Sample** tab shows a series of recent data values. The Agent comes with a 
 
 For example, to see the last 10 values for the x-axis position, visit http://localhost:5000/sample?path=//Linear[@name=%22X%22]//DataItem[@type=%22POSITION%22%20and%20@subType=%22ACTUAL%22]&count=10
 
-![](_images/ladder99-agent-sample.png)
+![](../_images/ladder99-agent-sample.png)
 
 Click the question mark to see more help. 
 
@@ -52,7 +52,7 @@ Now try http://mtconnect.mazakcorp.com:5701/current - this shows the current val
 
 Click **XML** to see the underlying XML data -
 
-![](_images/agent-xml.jpg)
+![](../_images/agent-xml.jpg)
 
 
 ## Exit Agent
@@ -76,7 +76,7 @@ To run with your own custom setup, point the Agent to a folder containing your a
 
 To see the original XML output, you can omit or comment out the files sections of the agent.cfg file -
 
-![](_images/agent-xml.jpg) -->
+![](../_images/agent-xml.jpg) -->
 
 
 <!-- ## HTML Styles

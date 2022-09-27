@@ -16,7 +16,7 @@ then visit http://localhost:5000/current.
 
 <!-- ## Diagram
 
-![](_images/adapter.png) -->
+![](../_images/adapter.png) -->
 
 ## How it works
 
