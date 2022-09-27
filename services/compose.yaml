@@ -19,8 +19,8 @@ services:
     # for now, don't include build or image props here - specify in compose-overrides.yaml.
     # but figure out how to alternate between them using envars.
     # build: ./adapter # see Dockerfile in this folder
-    # build: ${L99_ADAPTER_BUILD} # see Dockerfile in this folder
-    # image: ladder99/adapter:latest # use this if build docker image and push to hub
+    # build: ${L99_ADAPTER_BUILD} # see Dockerfile in this folder # not implemented yet
+    # image: ladder99/adapter:0.8.0-arm # an alternative to the build process
 
     # set this to give permission to access hardware (e.g. dymo scale in usb port).
     #. security hole - leave off for now, until need dymo driver.
@@ -59,8 +59,8 @@ services:
     profiles:
       - agent
     working_dir: /data/agent
-    command: agent debug agent.cfg
-    # command: agent run agent.cfg
+    command: agent run agent.cfg
+    # command: agent debug agent.cfg
     volumes:
       - ../$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
       # what's point of these?
