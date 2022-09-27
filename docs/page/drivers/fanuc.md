@@ -1,19 +1,13 @@
-> Review [Fanuc Vulnerability Information](https://www.fanuc.co.jp/en/product/vulnerability/index.html) before proceeding.
-> {.is-danger}
+# Fanuc
 
-# Videos
+<!-- > Review [Fanuc Vulnerability Information](https://www.fanuc.co.jp/en/product/vulnerability/index.html) before proceeding.
+> {.is-danger} -->
 
-[Setup - v0.1](https://www.youtube.com/watch?v=_sZ0qCVkTkM)
+:::{warning}
+Review [Fanuc Vulnerability Information](https://www.fanuc.co.jp/en/product/vulnerability/index.html) before proceeding.
+:::
 
-[Setup / Changes - v0.2](https://www.youtube.com/watch?v=yhe_apuiJVY)
-
-[InfluxDb Output](https://www.youtube.com/watch?v=gqfBj0ImMrw)
-
-[MTConnect Output](https://www.youtube.com/watch?v=j1gXHXA2RW0)
-
-[SparkplugB Output](https://www.youtube.com/watch?v=yw0TMXsLHro)
-
-# Overview
+## Overview
 
 Built on top of Fanuc Focas native libraries, [`Fanuc Driver`](https://github.com/Ladder99/fanuc-driver) transforms controller data to various protocols and formats.  Supported outputs include MQTT JSON, MQTT SparkplugB, InfluxDb Line Protocol, and MTConnect SHDR. Concepts in the [`base-driver`](https://github.com/Ladder99/base-driver) repository can be reused to create transofrmation logic to other transports and formats.
 
@@ -24,6 +18,18 @@ Below illustrates [Fanuc NC Guide](https://www.fanucamerica.com/products/cnc/sof
 Below illustrates [Fanuc 0i-TF](https://www.fanucamerica.com/products/cnc/cnc-systems/series-0if) production output.
 
 ![recording2](_images/recording2.gif)
+
+## Videos
+
+[Setup - v0.1](https://www.youtube.com/watch?v=_sZ0qCVkTkM)
+
+[Setup / Changes - v0.2](https://www.youtube.com/watch?v=yhe_apuiJVY)
+
+[InfluxDb Output](https://www.youtube.com/watch?v=gqfBj0ImMrw)
+
+[MTConnect Output](https://www.youtube.com/watch?v=j1gXHXA2RW0)
+
+[SparkplugB Output](https://www.youtube.com/watch?v=yw0TMXsLHro)
 
 ## Focas Library Matrix
 
