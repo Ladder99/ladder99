@@ -9,7 +9,8 @@
 # docker container ls --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}' | (read -r; printf "%s\n" "$REPLY"; sort -k 1 )
 
 # include project
-COLUMNS='{{.Label "com.docker.compose.project"}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}'
+# COLUMNS='{{.Label "com.docker.compose.project"}}\t{{.Label "com.docker.compose.service"}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}'
+COLUMNS='{{.Label "com.docker.compose.project"}}\t{{.Label "com.docker.compose.service"}}\t{{.Status}}\t{{.Ports}}'
 docker container ls --all \
   --filter label=com.docker.compose.project \
   --format "table $COLUMNS" \
