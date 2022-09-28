@@ -203,6 +203,8 @@ services:
     restart: unless-stopped
     networks:
       - ladder99
+    labels:
+      foo: bar
     logging:
       options:
         max-size: '20m'

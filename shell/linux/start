@@ -85,9 +85,9 @@ else
     echo No .env file found - copying from default...
     cp $ENVFILE_EXAMPLE $ENVFILE
     echo
-    echo PLEASE SET INITIAL PASSWORDS IN .env FILE, eg run
-    echo $ nano $ENVFILE
-    echo and edit file, then re-run the start command. 
+    echo PLEASE SET INITIAL PASSWORDS IN .env FILE -
+    echo For example, run 'nano $ENVFILE', set the Grafana and Postgres passwords,
+    echo then re-run the l99 start command. 
     echo
     exit 1
 fi
@@ -110,3 +110,6 @@ $BASE_CMD up --build $MODE"
 
 echo $CMD
 bash -c "export SETUP=$SETUP && $CMD"
+
+echo
+echo Run './l99 list' to check status of services.

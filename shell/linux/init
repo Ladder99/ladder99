@@ -62,6 +62,7 @@ mkdir $DEST \
 && cp -R setups/example/volumes/agent $DEST/volumes/agent/ \
 && cp -R setups/example/volumes/grafana/etc $DEST/volumes/grafana/etc/ \
 && cp setups/example/.gitignore $DEST \
+&& cp setups/example/.env-example $DEST \
 && cp setups/example/compose-overrides.yaml $DEST \
 && cp setups/example/README.md $DEST \
 && cp setups/example/setup.yaml $DEST \
