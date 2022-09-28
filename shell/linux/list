@@ -2,8 +2,15 @@
 
 # list docker containers, to fit narrow screen
 
+# docker container ls --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}\t{{.Image}}\t{{.Command}}'
+
 # also sorts alpha
 # see https://stackoverflow.com/questions/46173298/how-to-sort-or-order-results-docker-ps-format/49973096#49973096
+# docker container ls --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}' | (read -r; printf "%s\n" "$REPLY"; sort -k 1 )
 
-# docker container ls --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}\t{{.Image}}\t{{.Command}}'
-docker container ls --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}' | (read -r; printf "%s\n" "$REPLY"; sort -k 1 )
+# include project
+COLUMNS='{{.Label "com.docker.compose.project"}}\t{{.Names}}\t{{.Status}}\t{{.Ports}}'
+docker container ls --all \
+  --filter label=com.docker.compose.project \
+  --format "table $COLUMNS" \
+ | (read -r; printf "%s\n" "$REPLY"; sort -k 1 )
