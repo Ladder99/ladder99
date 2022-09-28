@@ -55,16 +55,31 @@ bash -c "$cmd"
 
 # get setup folder
 # if starts with '.' treat as a setup folder, else a client name
-# if [[ $1 = \.* ]]; then
-# if [[ $1 == ./* ]]; then
-# if [[ "$1" == "."* ]]; then
-# if [[ $1 =~ ^\. ]]; then    # works on zsh not encab?
-# shopt -s extglob  # not avail on encab?
-# if [[ $1 = \.* ]]; then
 if [[ $1 = .* ]]; then
     setup=$1
 else
     setup=../client-$1
 fi
 shift
+
+
+# get options/arguments
+# MODE=--detach
+# while [[ $1 = \-* ]] # while $1 starts with '-'
+# do
+#     if [ $1 = "-c" ] || [ $1 = "--console" ]; then
+#         shift
+#         MODE=
+#     fi
+# done
+
+
+
+# SERVICES=${*:-"base"} # eg 'agent', defaults to 'base'
+
+
+# # build command and call it
+# CMD="export SETUP=$SETUP && shell/linux/pipeline $MODE $SETUP $SERVICES"
+# echo $CMD
+# bash -c "$CMD"
 

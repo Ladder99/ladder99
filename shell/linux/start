@@ -2,6 +2,9 @@
 
 # run ladder99 pipeline with docker compose.
 
+#. keep SETUP the base setup name, and use SETUP_FOLDER for the path -
+# change in compose.yaml etc.
+
 usage="
 Usage: ./l99 start SETUP [SERVICES]
 
@@ -19,7 +22,7 @@ Examples
     ./l99 start demo relay
 "
 
-# note: this needs to run as /bin/bash, NOT /bin/sh - led to bug on encabulator
+# bug: needed to run this as /bin/bash, NOT /bin/sh - led to bug on encabulator
 # where it wasn't parsing [[ $setup = .* ]] correctly.
 # some discussion here
 # https://unix.stackexchange.com/questions/379464/why-does-this-script-work-in-the-terminal-but-not-from-a-file
@@ -30,30 +33,13 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-# get options/arguments
-
 # get mode - detached or console
-# removed console mode because hitting ctrl-c would stop ALL other services!
+# removed console mode because hitting ctrl-c stopped ALL other services
 MODE=--detach
-# while [[ $1 = \-* ]] # while $1 starts with '-'
-# do
-#     if [ $1 = "-c" ] || [ $1 = "--console" ]; then
-#         shift
-#         MODE=
-#     fi
-# done
 
 # get setup folder
-
-# # if starts with '.' treat as relative to main dir, else it's a ../setup- folder
-# if [[ $1 = .* ]]; then
-#     SETUP=$1
-# else
-#     SETUP=../setup-$1
-# fi
-# shift
-
 # handle example setup specially
+#. SETUP=$1
 if [ $1 = example ]; then
     SETUP=setups/example
 else
@@ -61,49 +47,47 @@ else
 fi
 shift
 
-# SETUP=../setup-$1
-# shift
-
+# missing setup folder
 if [ ! -e $SETUP ]; then
     echo Setup folder $SETUP does not exist. Did you forget the setup name?
     echo
-    # echo "$usage"
     exit 1
 fi
 
-# if no services specified, default to 'base'
+# if no services specified, default to 'base', which should run the main services
 if [ $# -eq 0 ]; then
-    # echo Missing services/profiles to start.
-    # exit 1
     SERVICES=base
 else
     SERVICES=$* # eg 'agent adapter'
 fi
-# SERVICES=$* # eg 'agent'
-# SERVICES=${*:-"base"} # eg 'agent', defaults to 'base'
 
 # file paths
-PIPELINE="services/compose.yaml"
+COMPOSE="services/compose.yaml"
 OVERRIDES="$SETUP/compose-overrides.yaml"
 ENVFILE="$SETUP/.env"
+ENVFILE_EXAMPLE="$SETUP/.env-example"
 
-# add main docker compose file for pipeline
-ARGS="--file $PIPELINE"
-# add docker compose file for overrides, if exists
+# specify docker compose files
+ARGS="--file $COMPOSE"
 if [ -e $OVERRIDES ]; then
     ARGS="$ARGS --file $OVERRIDES"
 fi
 
 # add .env file if there
 if [ -e $ENVFILE ]; then
+    # use .env file if there
     ARGS="$ARGS --env-file $ENVFILE"
+elif [ $SETUP = "setups/example" ]; then
+    # for the example setup just use the .env-example file directly
+    ARGS="$ARGS --env-file $ENVFILE_EXAMPLE"
 else
+    # otherwise create a new .env file and stop
     echo No .env file found - copying from default...
-    cp ./setups/.env-default $ENVFILE
+    cp $ENVFILE_EXAMPLE $ENVFILE
     echo
-    echo PLEASE SET INITIAL PASSWORDS IN .env FILE - unless this is just for testing.
+    echo PLEASE SET INITIAL PASSWORDS IN .env FILE, eg run
     echo $ nano $ENVFILE
-    echo Then re-run the command. 
+    echo and edit file, then re-run the start command. 
     echo
     exit 1
 fi
@@ -114,14 +98,9 @@ for PROFILE in $SERVICES; do
     PROFILE_FLAGS="$PROFILE_FLAGS --profile $PROFILE"
 done
 
-# # build command and call it
-# CMD="export SETUP=$SETUP && shell/linux/pipeline $MODE $SETUP $SERVICES"
-# echo $CMD
-# bash -c "$CMD"
-
 # get command and run it
 # -p specifies project name, as shown in docker management consoles - 
-# otherwise it uses the parent folder name.
+# otherwise it uses the parent folder name (ie 'services').
 BASE_CMD="docker-compose -p ladder99 $ARGS $PROFILE_FLAGS"
 
 # pull any required images in the docker-compose files and start services.
