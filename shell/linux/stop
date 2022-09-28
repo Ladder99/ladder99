@@ -28,7 +28,10 @@ if [ $SERVICES = "all" ]; then
   # docker system prune --force \
   # && docker rm --force --volumes $(docker ps -q -a)
   # docker rm --force --volumes $(docker ps -q)
-  docker stop $(docker ps -q)
+  # docker stop $(docker ps -q)
+  # stop services from the ladder99 compose yaml
+  IDS=$(docker ps -q --filter label=com.docker.compose.project=ladder99)
+  docker stop $IDS
 else
   docker stop $SERVICES
 fi
