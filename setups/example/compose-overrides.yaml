@@ -39,3 +39,6 @@ services:
     profiles:
       - base
     build: ./relay # use Dockerfile in ladder99/services/relay
+  simulation:
+    profiles:
+      - base

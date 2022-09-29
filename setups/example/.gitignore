@@ -11,6 +11,7 @@ pi.sh
 .venv
 _old
 
+agent.log*
 
 volumes/adapter/cookies
 volumes/backups
