@@ -73,13 +73,19 @@ if [ -e $OVERRIDES ]; then
     ARGS="$ARGS --file $OVERRIDES"
 fi
 
-# add .env file if there
+# add environment variable file
+# if [ $SETUP = "setups/example" ]; then
+#     # for the example setup just use the .env-example file directly
+#     # ARGS="$ARGS --env-file $ENVFILE_EXAMPLE"
+#     cp $ENVFILE_EXAMPLE $ENVFILE
+# fi
 if [ -e $ENVFILE ]; then
     # use .env file if there
     ARGS="$ARGS --env-file $ENVFILE"
 elif [ $SETUP = "setups/example" ]; then
-    # for the example setup just use the .env-example file directly
-    ARGS="$ARGS --env-file $ENVFILE_EXAMPLE"
+    # copy the example .env file and use that
+    cp $ENVFILE_EXAMPLE $ENVFILE
+    ARGS="$ARGS --env-file $ENVFILE"
 else
     # otherwise create a new .env file and stop
     echo No .env file found - copying from default...
@@ -98,7 +104,7 @@ for PROFILE in $SERVICES; do
     PROFILE_FLAGS="$PROFILE_FLAGS --profile $PROFILE"
 done
 
-# get command and run it
+# make command and run it
 # -p specifies project name, as shown in docker management consoles - 
 # otherwise it uses the parent folder name (ie 'services').
 BASE_CMD="docker-compose -p ladder99 $ARGS $PROFILE_FLAGS"

@@ -7,7 +7,7 @@ Usage: ./l99 COMMAND [PARAMS]
 
 Run a Ladder99 command.
 
-COMMAND      
+COMMAND
   disk      show disk usage for a setup
   init      create a new setup folder
   list      list running services
