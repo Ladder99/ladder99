@@ -23,6 +23,7 @@ fi
 SERVICES=$*
 
 if [ $SERVICES = "all" ]; then
+  echo Stopping all ladder99 services...
   # CMD="docker stop $(docker ps -q)"
   # --force = no confirmation
   # docker system prune --force \
