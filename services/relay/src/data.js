@@ -41,9 +41,12 @@ export class Data {
 
     // get Header attributes for probe, current, or sample xmls.
     // includes { instanceId, firstSequence, nextSequence, lastSequence, bufferSize, ... }
-    this.header = this.jsTree.MTConnectDevices
-      ? this.jsTree.MTConnectDevices.Header._
-      : this.jsTree.MTConnectStreams.Header._
+    // this.header = this.jsTree.MTConnectDevices
+    //   ? this.jsTree.MTConnectDevices.Header._
+    //   : this.jsTree.MTConnectStreams.Header._
+    this.header =
+      (this.jsTree.MTConnectDevices || this.jsTree.MTConnectStreams || {})
+        .Header._ || {}
 
     // get .instanceId
     this.instanceId = this.header.instanceId

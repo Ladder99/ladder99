@@ -28,7 +28,7 @@ export class Endpoint {
   }
 
   // get data from agent rest endpoint as js object tree.
-  // later agents can provide json, but best to always get xml and
+  // latest agents can provide json, but best to always get xml and
   // transform to js, so don't need to know agent version.
   // type is 'probe', 'current', or 'sample'.
   // called by data.js
@@ -57,12 +57,18 @@ export class Endpoint {
       }
     } while (!response)
 
-    // parse response as xml, convert to a js tree
-    const xml = await response.text()
-    const jsTree = convert.xml2js(xml, convertOptions)
-    // console.dir(jsTree, { depth: 5 })
-    // process.exit(0)
-    return jsTree
+    // try to parse response as xml, convert to a js tree
+    try {
+      const xml = await response.text()
+      const jsTree = convert.xml2js(xml, convertOptions)
+      // console.dir(jsTree, { depth: 5 })
+      // process.exit(0)
+      return jsTree
+    } catch (error) {
+      console.error('Relay error', error.message)
+    }
+    //. ?
+    return {}
   }
 
   // get url
