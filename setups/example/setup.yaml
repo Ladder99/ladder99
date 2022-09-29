@@ -21,8 +21,9 @@ adapter:
 
 # relay service reads this section to know what agents and devices to read data from.
 # can specify retention periods for data for agent, device, or dataitems - 1w minimum.
-# would clear all unneeded data weekly - then vacuum analyze db.
-# warning: don't change the agent aliases (eg main) as they are used to synch data with db.
+# will clear all unneeded data saturdays at midnight - then vacuum analyze db.
+# warning: don't change the agent aliases once set (eg Main) as they are used
+# to synch data with db.
 relay:
   # retention: 1w # can specify data retention period for ALL agents here
   agents:
@@ -30,6 +31,7 @@ relay:
       url: http://agent:5000 # url to the agent
       # retention: 1w # agent data retention period - overrides relay retention value
       # ignore: true # can specify this to turn agent recording on/off for all devices.
+      # the devices sections is optional, but lets you assign a friendly alias and retention period, etc.
       devices:
         - id: m # device id - must match id in agent.xml
           alias: Micro # device alias is used in path expressions - no spaces
@@ -46,6 +48,7 @@ relay:
       url: http://mtconnect.mazakcorp.com:5701 # url to the agent
       # retention: 1y # agent retention - overrides relay retention value
       # ignore: true # ignore this agent - overrides relay ignore value
+      # the devices sections is optional, but lets you assign a friendly alias and retention period, etc.
       devices:
         - id: d1 # must match id in agent.xml
           alias: Mill-12345 # used in path expressions - no spaces!
