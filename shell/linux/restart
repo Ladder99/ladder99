@@ -1,0 +1,28 @@
+#!/bin/bash
+
+# restart services
+
+usage="
+Usage: ./l99 restart SETUP [SERVICES]
+
+Stop and start the specified Ladder99 services.
+
+See './l99 start' for help.
+"
+
+# bug: needed to run this as /bin/bash, NOT /bin/sh - led to bug on encabulator
+# where it wasn't parsing [[ $setup = .* ]] correctly.
+# some discussion here
+# https://unix.stackexchange.com/questions/379464/why-does-this-script-work-in-the-terminal-but-not-from-a-file
+
+# show help if count of params is zero
+if [ $# -eq 0 ]; then
+    echo "$usage"
+    exit 1
+fi
+
+SETUP=$1
+shift
+SERVICES=$*
+
+/bin/bash -c "shell/linux/stop $SERVICES && shell/linux/start $SETUP $SERVICES"
