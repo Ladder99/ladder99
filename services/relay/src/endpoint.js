@@ -52,8 +52,9 @@ export class Endpoint {
         }
       } catch (error) {
         // error.code could be ENOTFOUND, ECONNREFUSED, EHOSTUNREACH, etc
-        console.error('Relay error', error)
+        // console.error('Relay error', error)
         console.log(`Relay error reading`, url)
+        console.log(`Relay error`, error.message)
         console.log(`Relay jsTree:`)
         console.dir(jsTree, { depth: 3 })
         console.log(`Relay error retrying in ${waitTryAgain} ms...`)
