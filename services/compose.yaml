@@ -239,7 +239,9 @@ services:
       # INFLUXDB_PASSWORD:
       # grafana will download and install these automatically
       # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
-      GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel,philipsgis-phlowchart-panel
+      # note: phlowchart takes a long time to download dependencies, so skipping for now
+      # GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel,philipsgis-phlowchart-panel
+      GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel
       # these will get used the first time grafana is run
       GF_SECURITY_ADMIN_USER: null
       GF_SECURITY_ADMIN_PASSWORD: null
