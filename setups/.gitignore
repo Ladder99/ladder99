@@ -1,9 +1,0 @@
-.env
-
-**/grafana/var
-**/mosquitto/data
-**/mosquitto/log
-**/portainer/data
-**/postgres/data
-
-agent.log*

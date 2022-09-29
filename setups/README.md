@@ -9,4 +9,3 @@ Subfolders
 - common/dashboards - generic dashboard definitions, usable by any client
 - common/modules - dataitem definitions - input/output yamls, recordings for playback
 - example - an example setup with live microcontroller and mazak cnc stats
-- template - a template setup for use with `./l99 init SETUP`
