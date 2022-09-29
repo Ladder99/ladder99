@@ -33,42 +33,35 @@ export class Endpoint {
   // type is 'probe', 'current', or 'sample'.
   // called by data.js
   async fetchJsTree(type, from, count) {
-    // get raw text response from endpoint - repeat until no error
-    let response
+    const url = this.getUrl(type, from, count)
+    let jsTree
     do {
-      const url = this.getUrl(type, from, count)
       try {
-        response = await fetch(url)
-      } catch (error) {
-        if (error.code === 'ENOTFOUND') {
-          console.log(`Relay error - Agent not found at ${url}...`)
-        } else if (error.code === 'ECONNREFUSED') {
-          console.log(`Relay error - Connection refused at ${url}...`)
-        } else if (error.code === 'EHOSTUNREACH') {
-          console.log(`Relay error - Host unreachable at ${url}...`)
-        } else {
-          // throw error // don't throw error - would kill relay
-          console.error('Relay error', error.message)
+        const response = await fetch(url)
+        const xml = await response.text() // try to parse response as xml
+        jsTree = convert.xml2js(xml, convertOptions) // try to convert to js tree
+        // make sure we have a valid agent response
+        if (
+          !jsTree.MTConnectDevices &&
+          !jsTree.MTConnectStreams &&
+          !jsTree.MTConnectError
+        ) {
+          throw new Error(
+            'Invalid agent response - should have MTConnectDevices, MTConnectStreams, or MTConnectError.'
+          )
         }
-        console.log(`Relay error - fetch response`, response)
-        console.log(`Relay error - retrying in ${waitTryAgain} ms...`)
+      } catch (error) {
+        // error.code could be ENOTFOUND, ECONNREFUSED, EHOSTUNREACH, etc
+        console.error('Relay error', error)
+        console.log(`Relay error reading`, url)
+        console.log(`Relay jsTree:`)
+        console.dir(jsTree, { depth: 3 })
+        console.log(`Relay error retrying in ${waitTryAgain} ms...`)
         await lib.sleep(waitTryAgain)
-        response = null // so loop again
+        jsTree = null // so loop again
       }
-    } while (!response)
-
-    // try to parse response as xml, convert to a js tree
-    try {
-      const xml = await response.text()
-      const jsTree = convert.xml2js(xml, convertOptions)
-      // console.dir(jsTree, { depth: 5 })
-      // process.exit(0)
-      return jsTree
-    } catch (error) {
-      console.error('Relay error', error.message)
-    }
-    //. ?
-    return {}
+    } while (!jsTree)
+    return jsTree
   }
 
   // get url
