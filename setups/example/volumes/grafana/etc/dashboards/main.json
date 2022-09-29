@@ -23,8 +23,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 1,
-  "id": 7,
-  "iteration": 1664132534953,
+  "id": 6,
+  "iteration": 1664452559560,
   "links": [
     {
       "asDropdown": false,
@@ -1169,7 +1169,7 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "Mazak5701/Mill-12345",
           "value": "Mazak5701/Mill-12345"
         },
@@ -1220,7 +1220,7 @@
     ]
   },
   "time": {
-    "from": "now-3h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
