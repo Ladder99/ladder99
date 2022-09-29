@@ -118,4 +118,4 @@ echo $CMD
 bash -c "export SETUP=$SETUP && $CMD"
 
 echo
-echo Run './l99 list' to check status of services.
+echo Run \'./l99 list\' to check status of services.
