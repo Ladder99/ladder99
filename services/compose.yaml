@@ -17,9 +17,9 @@ services:
     container_name: adapter
 
     # for now, don't include build or image props here - specify in compose-overrides.yaml.
-    # but figure out how to alternate between them using envars.
+    # but figure out how to alternate between them using envars?
+    # eg like build: ${L99_ADAPTER_BUILD} # see Dockerfile in this folder # not implemented yet
     # build: ./adapter # see Dockerfile in this folder
-    # build: ${L99_ADAPTER_BUILD} # see Dockerfile in this folder # not implemented yet
     # image: ladder99/adapter:0.8.0-arm # an alternative to the build process
 
     # set this to give permission to access hardware (e.g. dymo scale in usb port).
