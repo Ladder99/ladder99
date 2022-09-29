@@ -3,6 +3,10 @@
 # can't use profiles with this, because docker-compose doesn't handle them
 # with stop, only services!
 
+# https://stackoverflow.com/questions/33362856/whats-the-difference-between-docker-stop-and-docker-rm
+
+#. add prune option to clear up space?
+
 usage="
 Usage: ./l99 stop SERVICES
 
@@ -16,11 +20,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-#. add prune option to clear up space?
-
 SERVICES=$*
-
-# https://stackoverflow.com/questions/33362856/whats-the-difference-between-docker-stop-and-docker-rm
 
 if [ $SERVICES = "all" ]; then
   # CMD="docker stop $(docker ps -q)"
@@ -31,7 +31,11 @@ if [ $SERVICES = "all" ]; then
   # docker stop $(docker ps -q)
   # stop services from the ladder99 compose yaml
   IDS=$(docker ps -q --filter label=com.docker.compose.project=ladder99)
-  docker stop $IDS
+  if [ "$IDS" = "" ]; then
+    echo All ladder99 services already stopped.
+  else
+    docker stop $IDS
+  fi
 else
   docker stop $SERVICES
 fi
