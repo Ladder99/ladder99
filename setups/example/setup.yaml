@@ -1,25 +1,38 @@
 # client setup
 
 client:
-  name: Example # not used yet
+  name: Example # eg company name - not used yet
   timezone: America/Chicago # used by autoprune, adapter jobboss driver, and meter availability.js
 
-# adapter service reads this section to know what devices to poll/subscribe to.
+# the Ladder99 Adapter service reads this section to know what devices to poll/subscribe to.
+# each device driver polls or subscribes to data from a device, then sends the
+# data to the Agent via SHDR (a simple key-value text format).
+# the Agent then fits that data into an XML structure as defined by the corresponding
+# agent.xml and agent.cfg files.
 adapter:
   devices:
+    # the micro device polls the cpu for load, temperature, disk for free space, etc.
     - id: m # must match id in agent.xml
       name: Micro # this must match name in agent.cfg and agent.xml
-      # see also device alias in relay section
-      # sources define the inputs to the cache.
+      # see also device alias in the relay section.
+
+      # each device has one or more "sources", which use drivers that feed data to
+      # a key-value cache - when a key's value changes, the cache sends the new value
+      # to the Agent via SHDR.
       sources:
+        # the micro device driver defines a set of cache outputs in an outputs.yaml file.
+        # these map from the cache keys to the SHDR keys.
+        # it also defines a set of cache inputs in an inputs.yaml file.
+        # the driver itself is a node.js module that polls the microcontroller data.
         - module: micro # module defines inputs and outputs with yaml files
           driver: micro # adapter plugin - manages protocol and payload
-      # where agent will connect to adapter
+      # each device the adapter connects to has its own tcp port to an agent,
+      # and the agent is configured to listen to that port in agent.cfg.
       connection:
-        host: adapter # must match agent.cfg value
+        host: adapter # must match agent.cfg value. 'adapter' here refers to the adapter Docker service.
         port: 7890 # must match agent.cfg value
 
-# relay service reads this section to know what agents and devices to read data from.
+# the relay service reads this section to know what agents and devices to read data from.
 # can specify retention periods for data for agent, device, or dataitems - 1w minimum.
 # will clear all unneeded data saturdays at midnight - then vacuum analyze db.
 # warning: don't change the agent aliases once set (eg Main) as they are used
@@ -27,6 +40,8 @@ adapter:
 relay:
   # retention: 1w # can specify data retention period for ALL agents here
   agents:
+    # this is our main agent, as set up in compose.yaml and compose-overrides.yaml.
+    # currently it is just fed data from the Micro adapter, which reports cpu, temp, disk space, etc.
     - alias: Main # this is an identifier for the agent, used by the db - don't change once set!
       url: http://agent:5000 # url to the agent
       # retention: 1w # agent data retention period - overrides relay retention value
@@ -70,6 +85,11 @@ relay:
           #     ignore: true
           #   - id: d1-total_auto_cut_time
           #     ignore: true
+
+    - alias: Simulation # this is an identifier for the agent, used by the db - don't change once set!
+      url: http://simulation:5000 # url to the agent
+      retention: 1d # agent retention - overrides relay retention value
+      # ignore: true # ignore this agent - overrides relay ignore value
 #
 # # meter service reads this section, AND the relay section for list of agents and devices.
 # meter:
