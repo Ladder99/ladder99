@@ -23,7 +23,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 3,
-  "iteration": 1664129764505,
+  "iteration": 1664526267045,
   "links": [
     {
       "asDropdown": false,
@@ -80,12 +80,12 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 3,
+        "w": 6,
         "x": 0,
         "y": 0
       },
       "id": 2,
-      "maxPerRow": 8,
+      "maxPerRow": 4,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
