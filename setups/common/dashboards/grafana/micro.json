@@ -24,7 +24,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 4,
-  "iteration": 1664176092560,
+  "iteration": 1664526453277,
   "links": [
     {
       "asDropdown": false,
@@ -717,10 +717,12 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
+          "selected": true,
           "text": "Main/Micro",
           "value": "Main/Micro"
         },
+        "datasource": null,
+        "definition": "select path from devices where path like '%/Micro' order by path",
         "description": null,
         "error": null,
         "hide": 0,
@@ -728,17 +730,13 @@
         "label": null,
         "multi": false,
         "name": "device",
-        "options": [
-          {
-            "selected": true,
-            "text": "Main/Micro",
-            "value": "Main/Micro"
-          }
-        ],
-        "query": "Main/Micro",
-        "queryValue": "",
+        "options": [],
+        "query": "select path from devices where path like '%/Micro' order by path",
+        "refresh": 1,
+        "regex": "",
         "skipUrlSync": false,
-        "type": "custom"
+        "sort": 0,
+        "type": "query"
       }
     ]
   },
@@ -763,5 +761,5 @@
   "timezone": "",
   "title": "Microcontroller",
   "uid": "micro",
-  "version": 3
+  "version": 2
 }
