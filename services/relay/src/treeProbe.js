@@ -61,7 +61,6 @@ export async function getNodes(tree, agent) {
   // console.log('getNodes', nodes)
   // process.exit(0)
   nodes = filterList(nodes) // only include nodes that have id
-  // nodes = nodes.filter(el => el.node_type !== 'Composition') //. better way?
   // check for path collisions and resolve by adding name in brackets
   let collisions = await getPathCollisions(nodes)
   await resolveCollisions(collisions) // add [name] to path where needed
