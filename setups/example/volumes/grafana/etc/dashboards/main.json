@@ -24,7 +24,7 @@
   "gnetId": null,
   "graphTooltip": 1,
   "id": 6,
-  "iteration": 1664452559560,
+  "iteration": 1664528723951,
   "links": [
     {
       "asDropdown": false,
@@ -1169,12 +1169,12 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "text": "Mazak5701/Mill-12345",
-          "value": "Mazak5701/Mill-12345"
+          "selected": false,
+          "text": "Fanuc/Sim",
+          "value": "Fanuc/Sim"
         },
         "datasource": null,
-        "definition": "select path from devices where path <> 'Main/Micro'",
+        "definition": "select path from devices where path not like '%/Micro'",
         "description": "Device Name",
         "error": null,
         "hide": 0,
@@ -1183,7 +1183,7 @@
         "multi": false,
         "name": "device",
         "options": [],
-        "query": "select path from devices where path <> 'Main/Micro'",
+        "query": "select path from devices where path not like '%/Micro'",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -1240,5 +1240,5 @@
   "timezone": "",
   "title": "Main",
   "uid": "main",
-  "version": 2
+  "version": 4
 }
