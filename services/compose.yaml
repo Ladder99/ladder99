@@ -215,7 +215,7 @@ services:
   # grafana
   # ---------------------------------------------------------------------------
   # show real-time data from the database, handle notifications
-  #. can't upgrade beyond 8.3.5 yet - get Origin not allowed error on dash
+  #. can't upgrade beyond 8.3.5 yet - get Origin not allowed error on dash - how fix?
   # see https://github.com/grafana/grafana/issues/45117
   # see https://grafana.com/tutorials/run-grafana-behind-a-proxy/#configure-traefik
   # see https://goteleport.com/docs/application-access/getting-started/
@@ -228,25 +228,27 @@ services:
     ports:
       - '$GRAFANA_PORT:3000/tcp'
     environment:
-      # need these for provisioning datasources.
-      # null is a docker convention for passing values in through envars.
+      # need these for provisioning datasource.
+      # null is a docker convention for passing values in through envars -
       PGHOST: null
       PGPORT: null
       PGDATABASE: null
       PGUSER: null
       PGPASSWORD: null
+      # # grafana will download and install these plugins automatically
+      # # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
+      # # can turn this off in client override yaml with an empty string "" if device won't have internet -
+      # # note: phlowchart takes a long time to download dependencies, so skipping for now
+      # # GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel,philipsgis-phlowchart-panel
+      GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel
+      # provision password - these will get used the first time grafana is run - 
+      # can pass in through environment variables -
+      GF_SECURITY_ADMIN_USER: null
+      GF_SECURITY_ADMIN_PASSWORD: null
       # not used
       # INFLUXDB_DB:
       # INFLUXDB_USER:
       # INFLUXDB_PASSWORD:
-      # grafana will download and install these automatically
-      # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
-      # note: phlowchart takes a long time to download dependencies, so skipping for now
-      # GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel,philipsgis-phlowchart-panel
-      GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel
-      # these will get used the first time grafana is run
-      GF_SECURITY_ADMIN_USER: null
-      GF_SECURITY_ADMIN_PASSWORD: null
     volumes:
       # note: grafana.ini is located in /etc/grafana by default -
       # other folders are specified there.
