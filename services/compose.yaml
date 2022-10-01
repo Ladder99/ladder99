@@ -235,11 +235,11 @@ services:
       PGDATABASE: null
       PGUSER: null
       PGPASSWORD: null
-      # # grafana will download and install these plugins automatically
-      # # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
-      # # can turn this off in client override yaml with an empty string "" if device won't have internet -
-      # # note: phlowchart takes a long time to download dependencies, so skipping for now
-      # # GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel,philipsgis-phlowchart-panel
+      # grafana will download and install these plugins automatically
+      # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
+      # can turn this off in client override yaml with an empty string "" if device won't have internet -
+      # note: phlowchart takes a long time to download dependencies, so skipping for now
+      # GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel,philipsgis-phlowchart-panel
       GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel
       # provision password - these will get used the first time grafana is run - 
       # can pass in through environment variables -
@@ -430,9 +430,9 @@ services:
       - '5050:5050/tcp' # for biarms/pgadmin4
       # - '5050:80' # for dpage/pgadmin4
     volumes:
-      # for dpage/pgadmin4
+      # for biarms/pgadmin4
       - ../$SETUP/volumes/pgadmin:/pgadmin
-      # - ../$SETUP/volumes/pgadmin/config:/pgadmin/config
+      - ../$SETUP/volumes/pgadmin/config:/pgadmin/config
       # for dpage/pgadmin4
       # - ../$SETUP/volumes/pgadmin:/var/lib/pgadmin
     environment:
