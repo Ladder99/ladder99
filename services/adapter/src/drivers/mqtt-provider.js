@@ -27,14 +27,18 @@ export class AdapterDriver {
     this.mqtt = libmqtt.connect(this.url)
 
     // handle events from the proxied object
-    this.mqtt.on('message', onMessage.bind(this))
     this.mqtt.on('connect', onConnect.bind(this))
+    this.mqtt.on('message', onMessage.bind(this))
 
+    // handle the initial connect event from the mqtt broker.
+    // note: we bound onConnect to `this`, above.
     function onConnect() {
       this.connected = true // set flag
       console.log(`MQTT-provider connected to shared broker on`, this.url)
-      console.log(`MQTT-provider calling connect handlers`)
-      for (let handler of this.handlers.connect) {
+      const handlers = this.handlers?.connect || []
+      console.log(`MQTT-provider calling connect handlers`, handlers)
+      for (let handler of handlers) {
+        // check if handler has been called - flag is set in the on() method, and here.
         if (!handler.called) {
           handler() // eg onConnect(topic, payload) in mqtt-subscriber - subscribes to topics
           handler.called = true
@@ -73,14 +77,16 @@ export class AdapterDriver {
     }
   }
 
-  // register event handlers, eg 'connect', 'message'
-  // calls connect handler if provider is already connected, else waits for onConnect fn
+  // register event handlers, eg 'connect', 'message'.
+  // calls connect handler if provider is already connected, else waits for onConnect fn.
   on(event, handler) {
+    this.handlers[event] = this.handlers[event] || [] // make sure we have an array
     this.handlers[event].push(handler)
-    // call the handler if we're already connected
+    // call the connect handler if we're already connected
     if (event === 'connect' && this.connected) {
-      handler()
-      handler.called = true
+      console.log(`MQTT-provider calling connect handler`, handler)
+      handler() // eg onConnect(topic, payload) in mqtt-subscriber - subscribes to topics
+      handler.called = true // mark handler as called
     }
   }
 
@@ -93,10 +99,10 @@ export class AdapterDriver {
     this.subscribers[topic] = this.subscribers[topic] || []
     this.subscribers[topic].push(subscriber)
     // console.log(`MQTT-provider subscribers`, this.subscribers)
-    this.mqtt.subscribe(topic) // idempotent - ie okay to subscribe to same topic multiple times?
+    this.mqtt.subscribe(topic) // idempotent - ie okay to subscribe to same topic multiple times (?)
   }
 
-  // pass callback here to distinguish subscribers
+  // pass callback here so can distinguish subscribers
   unsubscribe(topic, callback) {
     console.log(`MQTT-provider unsubscribe`, topic)
     const subscribers = this.subscribers[topic] || [] // eg [{ callback, selector }, ...]
@@ -104,7 +110,7 @@ export class AdapterDriver {
       subscriber => subscriber.callback === callback
     )
     if (i !== -1) {
-      // remove subscriber from list
+      // if found, remove subscriber from list
       console.log(`MQTT-provider found subscriber - removing...`)
       this.subscribers[topic] = [
         ...subscribers.slice(0, i),
