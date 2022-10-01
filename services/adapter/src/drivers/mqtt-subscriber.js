@@ -206,7 +206,7 @@ export class AdapterDriver {
 
 function getSelectors(source) {
   const topics = source.topics || {} // eg { controller, 'l99/B01000/evt/io' }
-  console.log(this.me, `get selectors from`, topics)
+  console.log(`MQTT subscriber - get selectors from`, topics)
   const selectors = {} // key is topic, value will be selector fn
   for (let topic of Object.keys(topics)) {
     const value = topics[topic] // eg { id: 513241 }, or true, or false
@@ -219,7 +219,7 @@ function getSelectors(source) {
       selector = payload => payload.id == value.id
     }
     // selector can be t/f or a function of the message payload
-    console.log(this.me, `selector`, topic, String(selector), value)
+    console.log(`MQTT subscriber - selector`, topic, String(selector), value)
     selectors[topic] = selector
   }
   return selectors
