@@ -46,6 +46,7 @@ export class AdapterDriver {
     // }
 
     // register connection handler
+    //. move onConnect to a method
     const that = this
     provider.on('connect', function onConnect() {
       console.log(that.me, `connected to MQTT-provider`)

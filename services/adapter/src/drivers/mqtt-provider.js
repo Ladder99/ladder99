@@ -59,18 +59,20 @@ export class AdapterDriver {
       }
       // not sure how we can get around having a trycatch block and json parse,
       // as payload might be a plain string.
+      //. check if payload starts with '{' ?
       try {
         payload = JSON.parse(payload)
       } catch (e) {}
       // peek inside the payload if needed to see who to dispatch this message to.
-      //. make a dict for dispatching instead of linear search, ie on id? but would need array of callbacks for plain text msgs
-      // for now we just filter on eg payload.id == some value
+      //. make a dict for dispatching instead of linear search, ie on id?
+      //. but would need array of callbacks for plain text msgs
+      //. for now we just filter on eg payload.id == some value
       for (let subscriber of this.subscribers[topic]) {
         const { callback, selector } = subscriber
         // selector can be a boolean or a fn of the message payload
         if (selector === false) continue
         if (selector === true || selector(payload)) {
-          // console.log(`MQTT-provider calling subscriber with`, topic)
+          console.log(`MQTT-provider calling subscriber with`, topic)
           callback(topic, message) // note: we pass the original byte array message
         }
       }
