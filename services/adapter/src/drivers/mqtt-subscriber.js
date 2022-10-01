@@ -3,8 +3,8 @@
 // subscribes to mqtt topics through shared mqtt-provider, receives messages,
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
-//. chop this code up into smaller fns - hard to read
-// be careful with types and keyvalues, and other closure vars
+//. refactor/chop this code up into smaller fns - hard to read.
+// be careful with types and keyvalues, closure vars, and this vs that.
 
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../common/lib.js'
@@ -32,8 +32,9 @@ export class AdapterDriver {
     // -> selectors = { controller: true, 'l99...': payload.id==535172 }
     // this acts as a filter/dispatch mechanism for the topics defined in the inputs.yaml.
     // important: if topic is not included in this section it won't be subscribed to!
-    //. note: for now we assume selection is done by id - expand to arbitrary objects later!
-    const selectors = getSelectors(source)
+    //. note: for now we assume selection is done by id - expand to arbitrary objects later.
+    // const selectors = getSelectors(source)
+    const selectors = this.getSelectors()
 
     // save topic handlers
     // iterate over message handlers - array of [topic, handler]
@@ -55,8 +56,9 @@ export class AdapterDriver {
     }
 
     // register connection handler
+    const that = this
     provider.on('connect', function onConnect() {
-      console.log(this.me, `connected to MQTT-provider`)
+      console.log(that.me, `connected to MQTT-provider`)
 
       // subscribe to any topics defined in inputs.yaml
       const subscribe = module?.inputs?.connect?.subscribe || []
@@ -65,7 +67,7 @@ export class AdapterDriver {
         // can set a topic to false in setup.yaml to not subscribe to it
         const selector = selectors[topic]
         if (selector && selector !== false) {
-          console.log(this.me, `subscribing to ${topic}`)
+          console.log(that.me, `subscribing to ${topic}`)
           // mqtt.subscribe(topic) // old code
           // we extend the mqtt api to add callback and optional selector for dispatcher to filter on.
           // we need the callback because otherwise the provider wouldn't know where to send msg,
@@ -79,20 +81,20 @@ export class AdapterDriver {
       const publish = module?.inputs?.connect?.publish || [] // list of { topic, message }
       for (const entry of publish) {
         const topic = replaceDeviceId(entry.topic)
-        console.log(this.me, `publishing to ${topic}`)
+        console.log(that.me, `publishing to ${topic}`)
         provider.publish(topic, entry.message)
       }
 
       // do any static inits
       const inits = module?.inputs?.connect?.static || {} // eg { procname: KITTING }
-      console.log(this.me, 'static inits:', inits)
+      console.log(that.me, 'static inits:', inits)
       for (const key of Object.keys(inits)) {
         const cacheId = `${device.id}-${key}`
         const value = inits[key]
         cache.set(cacheId, value)
       }
 
-      console.log(this.me, `listening for messages...`)
+      console.log(that.me, `listening for messages...`)
     })
 
     // handle incoming messages.
@@ -102,7 +104,7 @@ export class AdapterDriver {
     function onMessage(topic, payload) {
       const handler = topicHandlers[topic]
       if (!handler) {
-        console.log(this.me, `warning: no handler for topic`, topic)
+        console.log(that.me, `warning: no handler for topic`, topic)
       } else {
         payload = payload.toString()
         // console.log(`MQTT-subscriber msg ${topic}: ${payload.slice(0, 140)}`)
@@ -113,7 +115,7 @@ export class AdapterDriver {
         // unsubscribe from topics as needed
         for (const entry of handler.unsubscribe || []) {
           const topic = replaceDeviceId(entry.topic)
-          console.log(this.me, `unsubscribe from ${topic}`)
+          console.log(that.me, `unsubscribe from ${topic}`)
           provider.unsubscribe(topic, onMessage)
         }
 
@@ -122,7 +124,7 @@ export class AdapterDriver {
         // eg initialize: 'payload.forEach(item => $[item.address] = item)'
         // eg initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
         //. parameterize this so don't need to put code in the yaml
-        // console.log(this.me,`run initialize handler`)
+        // console.log(that.me,`run initialize handler`)
         let $ = {} // a variable representing payload data - must be let not const
         eval(handler.initialize)
 
@@ -181,16 +183,16 @@ export class AdapterDriver {
           } while (equationKeys.size > 0 && depth < 6) // prevent endless loops
           //
         } else if (handler.algorithm) {
-          console.log(this.me, `error unknown algorithm ${handler.algorithm}`)
+          console.log(that.me, `error unknown algorithm ${handler.algorithm}`)
           //
         } else {
-          console.log(this.me, `error no algorithm set for ${topic}`)
+          console.log(that.me, `error no algorithm set for ${topic}`)
         }
 
         // subscribe to any topics
         for (const entry of handler.subscribe || []) {
           const topic = replaceDeviceId(entry.topic)
-          console.log(this.me, `subscribe to ${topic}`)
+          console.log(that.me, `subscribe to ${topic}`)
           provider.subscribe(topic, onMessage, selectors[topic])
         }
       }
@@ -200,27 +202,26 @@ export class AdapterDriver {
       return str.replace('${deviceId}', device.id)
     }
   }
-}
 
-// helpers
-
-function getSelectors(source) {
-  const topics = source.topics || {} // eg { controller, 'l99/B01000/evt/io' }
-  console.log(`MQTT subscriber - get selectors from`, topics)
-  const selectors = {} // key is topic, value will be selector fn
-  for (let topic of Object.keys(topics)) {
-    const value = topics[topic] // eg { id: 513241 }, or true, or false
-    let selector = true // if setup lists a topic, assume it's to be included
-    if (typeof value === 'boolean') {
-      selector = value // true or false
-    } else if (value.id !== undefined) {
-      //. for now assume selection is done by id - expand to arbitrary objects later!
-      // NOTE: we use == instead of ===, because payload.id may be a string
-      selector = payload => payload.id == value.id
+  // get a dictionary of selectors for each topic
+  getSelectors() {
+    const topics = this.source?.topics || {} // eg { controller, 'l99/B01000/evt/io' }
+    console.log(this.me, `get selectors from`, topics)
+    const selectors = {} // key is topic, value will be selector fn
+    for (let topic of Object.keys(topics)) {
+      const value = topics[topic] // eg { id: 513241 }, or true, or false
+      let selector = true // if setup lists a topic, assume it's to be included
+      if (typeof value === 'boolean') {
+        selector = value // true or false
+      } else if (value.id !== undefined) {
+        //.. for now assume selection is done by id - expand to arbitrary objects later!
+        // NOTE: we use == instead of ===, in case payload.id is a string
+        selector = payload => payload.id == value.id
+      }
+      // selector can be t/f or a function of the message payload
+      console.log(this.me, `selector`, topic, String(selector), value)
+      selectors[topic] = selector
     }
-    // selector can be t/f or a function of the message payload
-    console.log(`MQTT subscriber - selector`, topic, String(selector), value)
-    selectors[topic] = selector
+    return selectors
   }
-  return selectors
 }
