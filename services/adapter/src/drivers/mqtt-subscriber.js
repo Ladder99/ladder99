@@ -4,7 +4,7 @@
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
 //. refactor/chop this code up into smaller fns - hard to read.
-// be careful with types and keyvalues, closure vars, and this vs that.
+// be careful with types, keyvalues, closure vars, and this vs that.
 
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../common/lib.js'
@@ -14,7 +14,6 @@ export class AdapterDriver {
   // initialize the client plugin
   // queries the device for address space definitions, subscribes to topics.
   init({ source, device, cache, module, provider }) {
-    // console.log('MQTT-subscriber initializing driver for', device.name)
     this.me = `MQTT-subscriber ${device.name}:`
     console.log(this.me, 'initializing driver')
 
@@ -24,16 +23,7 @@ export class AdapterDriver {
     // keyvalue store for yaml code to use
     const keyvalues = {}
 
-    // get selector fns for each topic - eg from setup.yaml -
-    // topics:
-    //   controller: true
-    //   l99/B01000/evt/io:
-    //     id: 535172
-    // -> selectors = { controller: true, 'l99...': payload.id==535172 }
-    // this acts as a filter/dispatch mechanism for the topics defined in the inputs.yaml.
-    // important: if topic is not included in this section it won't be subscribed to!
-    //. note: for now we assume selection is done by id - expand to arbitrary objects later.
-    // const selectors = getSelectors(source)
+    // get dict of selector fns for each topic
     const selectors = this.getSelectors()
 
     // save topic handlers
@@ -46,14 +36,14 @@ export class AdapterDriver {
       topicHandlers[topic] = handler
     }
 
-    // pre-evaluate expressions from yaml code
-    // eg handler.lookup could be '($, js) => eval(js)' // woo double eval
-    //. is it okay to do this here? issues with closure?
-    for (let handler of Object.values(handlers)) {
-      const lookup = handler.lookup || (() => {})
-      // console.log(this.me, `lookup fn`, lookup.toString())
-      handler.lookupFn = eval(lookup)
-    }
+    // // pre-evaluate expressions from yaml code
+    // // eg handler.lookup could be '($, js) => eval(js)' // woo double eval
+    // //. is it okay to do this here? no - closure messed it up
+    // for (let handler of Object.values(handlers)) {
+    //   const lookup = handler.lookup || (() => {})
+    //   // console.log(this.me, `lookup fn`, lookup.toString())
+    //   handler.lookupFn = eval(lookup)
+    // }
 
     // register connection handler
     const that = this
@@ -68,11 +58,11 @@ export class AdapterDriver {
         const selector = selectors[topic]
         if (selector && selector !== false) {
           console.log(that.me, `subscribing to ${topic}`)
-          // mqtt.subscribe(topic) // old code
           // we extend the mqtt api to add callback and optional selector for dispatcher to filter on.
           // we need the callback because otherwise the provider wouldn't know where to send msg,
           // ie which of the many mqtt-subscriber instances to send to.
           // onMessage is defined below.
+          // mqtt.subscribe(topic) // old code
           provider.subscribe(topic, onMessage, selector)
         }
       }
@@ -203,7 +193,15 @@ export class AdapterDriver {
     }
   }
 
-  // get a dictionary of selectors for each topic
+  // get a dictionary of selectors for each topic - eg from setup.yaml -
+  // topics:
+  //   controller: true
+  //   l99/B01000/evt/io:
+  //     id: 535172
+  // -> selectors = { controller: true, 'l99...': payload.id==535172 }
+  // this acts as a filter/dispatch mechanism for the topics defined in the inputs.yaml.
+  // important: if topic is not included in this section it won't be subscribed to!
+  //. note: for now we assume selection is done by id - expand to arbitrary objects later.
   getSelectors() {
     const topics = this.source?.topics || {} // eg { controller, 'l99/B01000/evt/io' }
     console.log(this.me, `get selectors from`, topics)
