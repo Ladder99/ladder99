@@ -184,6 +184,7 @@ services:
   # ui for docker logs
   dozzle:
     container_name: dozzle
+    #. add a version tag
     image: amir20/dozzle:latest
     profiles:
       - dozzle
@@ -292,6 +293,7 @@ services:
   # monitor docker logs with logz.io
   logzio-logs:
     container_name: logzio-logs
+    #. add a version tag
     image: logzio/docker-collector-logs
     profiles:
       - logzio-logs
@@ -349,6 +351,7 @@ services:
   # the image defines three directories in /mosquitto - config, data, log
   mosquitto:
     container_name: mosquitto
+    #. add a version tag
     image: eclipse-mosquitto
     profiles:
       - mosquitto
@@ -459,6 +462,7 @@ services:
   # docker container viewer/management
   portainer:
     container_name: portainer
+    #. add a version tag
     image: portainer/portainer-ce
     profiles:
       - portainer
@@ -606,6 +610,7 @@ services:
   # ---------------------------------------------------------------------------
   # send logs to sematext.com for monitoring
   sematext:
+    #. add a version tag
     image: sematext/agent:latest
     container_name: sematext
     profiles:
