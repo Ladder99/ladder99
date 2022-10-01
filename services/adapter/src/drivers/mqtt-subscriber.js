@@ -14,7 +14,9 @@ export class AdapterDriver {
   // initialize the client plugin
   // queries the device for address space definitions, subscribes to topics.
   init({ source, device, cache, module, provider }) {
-    console.log('MQTT-subscriber initializing driver for', device.name)
+    // console.log('MQTT-subscriber initializing driver for', device.name)
+    this.me = `MQTT-subscriber ${device.name}:`
+    console.log(this.me, 'initializing driver')
 
     // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
     const { types } = module // module is { inputs, outputs, types }, from yaml files
@@ -48,13 +50,13 @@ export class AdapterDriver {
     //. is it okay to do this here? issues with closure?
     for (let handler of Object.values(handlers)) {
       const lookup = handler.lookup || (() => {})
-      // console.log(`MQTT-subscriber lookup fn`, lookup.toString())
+      // console.log(this.me, `lookup fn`, lookup.toString())
       handler.lookupFn = eval(lookup)
     }
 
     // register connection handler
     provider.on('connect', function onConnect() {
-      console.log(`MQTT-subscriber connected to MQTT-provider`)
+      console.log(this.me, `connected to MQTT-provider`)
 
       // subscribe to any topics defined in inputs.yaml
       const subscribe = module?.inputs?.connect?.subscribe || []
@@ -63,7 +65,7 @@ export class AdapterDriver {
         // can set a topic to false in setup.yaml to not subscribe to it
         const selector = selectors[topic]
         if (selector && selector !== false) {
-          console.log(`MQTT-subscriber subscribing to ${topic}`)
+          console.log(this.me, `subscribing to ${topic}`)
           // mqtt.subscribe(topic) // old code
           // we extend the mqtt api to add callback and optional selector for dispatcher to filter on.
           // we need the callback because otherwise the provider wouldn't know where to send msg,
@@ -77,20 +79,20 @@ export class AdapterDriver {
       const publish = module?.inputs?.connect?.publish || [] // list of { topic, message }
       for (const entry of publish) {
         const topic = replaceDeviceId(entry.topic)
-        console.log(`MQTT-subscriber publishing to ${topic}`)
+        console.log(this.me, `publishing to ${topic}`)
         provider.publish(topic, entry.message)
       }
 
       // do any static inits
       const inits = module?.inputs?.connect?.static || {} // eg { procname: KITTING }
-      console.log('MQTT-subscriber static inits:', inits)
+      console.log(this.me, 'static inits:', inits)
       for (const key of Object.keys(inits)) {
         const cacheId = `${device.id}-${key}`
         const value = inits[key]
         cache.set(cacheId, value)
       }
 
-      console.log(`MQTT-subscriber listening for messages...`)
+      console.log(this.me, `listening for messages...`)
     })
 
     // handle incoming messages.
@@ -100,7 +102,7 @@ export class AdapterDriver {
     function onMessage(topic, payload) {
       const handler = topicHandlers[topic]
       if (!handler) {
-        console.log(`MQTT-subscriber warning: no handler for topic`, topic)
+        console.log(this.me, `warning: no handler for topic`, topic)
       } else {
         payload = payload.toString()
         // console.log(`MQTT-subscriber msg ${topic}: ${payload.slice(0, 140)}`)
@@ -111,7 +113,7 @@ export class AdapterDriver {
         // unsubscribe from topics as needed
         for (const entry of handler.unsubscribe || []) {
           const topic = replaceDeviceId(entry.topic)
-          console.log(`MQTT-subscriber unsubscribe from ${topic}`)
+          console.log(this.me, `unsubscribe from ${topic}`)
           provider.unsubscribe(topic, onMessage)
         }
 
@@ -120,7 +122,7 @@ export class AdapterDriver {
         // eg initialize: 'payload.forEach(item => $[item.address] = item)'
         // eg initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
         //. parameterize this so don't need to put code in the yaml
-        // console.log(`MQTT-subscriber run initialize handler`)
+        // console.log(this.me,`run initialize handler`)
         let $ = {} // a variable representing payload data - must be let not const
         eval(handler.initialize)
 
@@ -179,18 +181,16 @@ export class AdapterDriver {
           } while (equationKeys.size > 0 && depth < 6) // prevent endless loops
           //
         } else if (handler.algorithm) {
-          console.log(
-            `MQTT-subscriber error unknown algorithm ${handler.algorithm}`
-          )
+          console.log(this.me, `error unknown algorithm ${handler.algorithm}`)
           //
         } else {
-          console.log(`MQTT-subscriber error no algorithm set for ${topic}`)
+          console.log(this.me, `error no algorithm set for ${topic}`)
         }
 
         // subscribe to any topics
         for (const entry of handler.subscribe || []) {
           const topic = replaceDeviceId(entry.topic)
-          console.log(`MQTT-subscriber subscribe to ${topic}`)
+          console.log(this.me, `subscribe to ${topic}`)
           provider.subscribe(topic, onMessage, selectors[topic])
         }
       }
@@ -206,7 +206,7 @@ export class AdapterDriver {
 
 function getSelectors(source) {
   const topics = source.topics || {} // eg { controller, 'l99/B01000/evt/io' }
-  console.log(`MQTT-subscriber get selectors from`, topics)
+  console.log(this.me, `get selectors from`, topics)
   const selectors = {} // key is topic, value will be selector fn
   for (let topic of Object.keys(topics)) {
     const value = topics[topic] // eg { id: 513241 }, or true, or false
@@ -219,7 +219,7 @@ function getSelectors(source) {
       selector = payload => payload.id == value.id
     }
     // selector can be t/f or a function of the message payload
-    console.log(`MQTT-subscriber selector`, topic, String(selector), value)
+    console.log(this.me, `selector`, topic, String(selector), value)
     selectors[topic] = selector
   }
   return selectors

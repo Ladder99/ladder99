@@ -82,6 +82,7 @@ export class AdapterDriver {
 
   // subscribe to a topic with an optional selector fn.
   // add a callback here, store in the subscriber object with selector.
+  // selector can be a function of the payload, or a plain boolean.
   subscribe(topic, callback, selector = payload => true) {
     console.log(`MQTT-provider subscribe`, topic, selector.toString())
     const subscriber = { callback, selector }
