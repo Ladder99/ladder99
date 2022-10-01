@@ -48,7 +48,7 @@ export class AdapterDriver {
     function onMessage(topic, message) {
       if (!this.subscribers[topic]) return // quit if no subscribers
       let payload = message.toString() // must be let!
-      // console.log(`MQTT-provider got ${topic}: ${payload.slice(0, 140)}`)
+      console.log(`MQTT-provider got ${topic}: ${payload.slice(0, 140)}`)
       // not sure how we can get around having a trycatch block and json parse,
       // as payload might be a plain string.
       try {

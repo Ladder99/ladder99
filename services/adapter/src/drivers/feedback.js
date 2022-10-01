@@ -13,6 +13,8 @@ export class AdapterDriver {
   //
   init({ setup, source, device, cache, provider }) {
     this.me = `Feedback ${device.name}:`
+
+    //. use L99_FEEDBACK=true instead of OFF
     // console.log(`Feedback - L99_FEEDBACK_OFF =`, feedbackOff)
     console.log(this.me, `L99_FEEDBACK_OFF =`, feedbackOff)
     if (feedbackOff) return
