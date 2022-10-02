@@ -53,7 +53,8 @@ export class AdapterDriver {
     provider.on('connect', function onConnect() {
       console.log(that.me, `connected to MQTT-provider`)
 
-      // subscribe to any topics defined in inputs.yaml
+      // subscribe to any topics defined in inputs.yaml,
+      // eg [{topic:'controller'}, {topic:'l99/B01000/evt/io'}, ...]
       const subscriptions = module?.inputs?.connect?.subscribe || []
       for (const subscription of subscriptions) {
         const topic = replaceDeviceId(subscription.topic)
@@ -197,11 +198,11 @@ export class AdapterDriver {
   }
 
   // get a dictionary of selectors for each topic - eg from setup.yaml -
-  // topics:
-  //   controller: true
-  //   l99/B01000/evt/io:
-  //     id: 535172
-  // -> selectors = { controller: true, 'l99...': payload.id==535172 }
+  //   topics:
+  //     controller: true
+  //     l99/B01000/evt/io:
+  //       id: 535172
+  // -> selectors = { controller: true, 'l99...': payload=>payload.id==535172 }
   // this acts as a filter/dispatch mechanism for the topics defined in the inputs.yaml.
   // important: if topic is not included in this section it won't be subscribed to!
   //. note: for now we assume selection is done by id - expand to arbitrary objects later.
@@ -220,7 +221,12 @@ export class AdapterDriver {
         selector = payload => payload.id == value.id
       }
       // selector can be t/f or a function of the message payload
-      console.log(this.me, `selector`, topic, String(selector), value)
+      console.log(
+        this.me,
+        `got selector for topic ${topic}, ${String(
+          selector
+        )}, with value=${value}`
+      )
       selectors[topic] = selector
     }
     return selectors
