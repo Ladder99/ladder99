@@ -100,11 +100,12 @@ export class AdapterDriver {
       if (!handler) {
         console.log(that.me, `warning: no handler for topic`, topic)
       } else {
-        payload = payload.toString()
-        // console.log(`MQTT-subscriber msg ${topic}: ${payload.slice(0, 140)}`)
+        payload = payload.toString() // bytes to string
+
+        console.log(`MQTT-subscriber msg ${topic}: ${payload.slice(0, 140)}`)
 
         // if payload is plain text, set handler.text true in inputs.yaml - else parse as json
-        if (!handler.text) payload = JSON.parse(payload)
+        if (!handler.text) payload = JSON.parse(payload) // string to js object
 
         // unsubscribe from topics as needed
         for (const entry of handler.unsubscribe || []) {
@@ -120,7 +121,7 @@ export class AdapterDriver {
         //. parameterize this so don't need to put code in the yaml
         // console.log(that.me,`run initialize handler`)
         let $ = {} // a variable representing payload data - must be let not const
-        eval(handler.initialize)
+        eval(handler.initialize) // eg '$ = payload'
 
         // this algorithm iterates over expressions, evaluates each, and adds value to cache.
         // expressions is an array of [key, expression] - eg [['fault_count', '%M55.2'], ...].
@@ -131,11 +132,9 @@ export class AdapterDriver {
           const expressions = handler.expressions || {}
           for (const [key, expression] of Object.entries(expressions)) {
             // use the lookup function to get value from payload
-            // eg handler.lookupFn could be ($, js) => eval(js), ie just evaluate the js expression
-            // const value = handler.lookupFn($, expression)
-            const lookupFn = eval(handler.lookup) //. need to do this here because of closure crap?
-            const value = lookupFn($, expression)
-            // note guard for undefined value -
+            const lookupFn = eval(handler.lookup) // eg '($, js) => eval(js)' - convert string to a fn
+            const value = lookupFn($, expression) // eg expression=`dxm: $==='birth'` -> value=true
+            // note guard for undefined value.
             // if need to reset a cache value, must pass value 'UNAVAILABLE' explicitly.
             if (value !== undefined) {
               const cacheId = device.id + '-' + key // eg 'pa1-fault_count'
