@@ -2,11 +2,13 @@
 
 // currently used for watching changes to jobboss job number,
 // sending a part count reset to a marumatsu cutter via mqtt.
-// this will be replaced by MTConnect Interfaces eventually?
+
+//. will this be replaced by MTConnect Interfaces eventually?
 
 // optional flag defined in .env
 // lets you turn off the feedback mechanism from oxbox 004,
 // but leave it on for 001. otherwise they might interfere with each other.
+//. do reverse, feedbackOn = L99_FEEDBACK=true
 const feedbackOff = process.env.L99_FEEDBACK_OFF
 
 export class AdapterDriver {

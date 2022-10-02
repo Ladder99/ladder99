@@ -20,7 +20,8 @@ export async function setupSource({
   inputs, // shared connections
 }) {
   //
-  console.log(`Adapter setup source`, device.name, source.module, source.driver) // don't print full source - might have db password!
+  // don't print full source - might have db password!
+  console.log(`Adapter setup source`, device.name, source.module, source.driver)
   const { driver, connection } = source
   const moduleName = source.module
 
@@ -78,7 +79,7 @@ export async function setupSource({
   for (let handlerKey of Object.keys(handlers)) {
     console.log(`Adapter processing inputs for`, handlerKey) // eg 'l99/B01000/evt/io'
 
-    const handler = module.inputs.handlers[handlerKey] // eg { initialize, process, lookup, expressions }
+    const handler = handlers[handlerKey] // eg { initialize, process, lookup, expressions }
 
     // get macros (regexs to extract references from code)
     const prefix = device.id + '-'

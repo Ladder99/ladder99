@@ -36,7 +36,7 @@ async function start(params) {
   // define cache shared across all devices and sources
   const cache = new Cache()
 
-  // setup any shared inputs
+  // setup any shared inputs, eg MqttProvider
   const inputs = setup?.adapter?.inputs || {}
   for (const input of Object.values(inputs)) {
     console.log(`Adapter setup shared input`, input)
