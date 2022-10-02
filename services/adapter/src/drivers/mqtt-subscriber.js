@@ -17,6 +17,8 @@ export class AdapterDriver {
     this.me = `MQTT-subscriber ${device.name}:`
     console.log(this.me, 'initializing driver')
 
+    this.source = source
+
     // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
     const { types } = module // module is { inputs, outputs, types }, from yaml files
 
@@ -52,9 +54,9 @@ export class AdapterDriver {
       console.log(that.me, `connected to MQTT-provider`)
 
       // subscribe to any topics defined in inputs.yaml
-      const subscribe = module?.inputs?.connect?.subscribe || []
-      for (const entry of subscribe) {
-        const topic = replaceDeviceId(entry.topic)
+      const subscriptions = module?.inputs?.connect?.subscribe || []
+      for (const subscription of subscriptions) {
+        const topic = replaceDeviceId(subscription.topic)
         // can set a topic to false in setup.yaml to not subscribe to it
         const selector = selectors[topic]
         if (selector && selector !== false) {
