@@ -10,32 +10,30 @@ export class AdapterDriver {
   init({ url }) {
     console.log(`MQTT-provider init`, url)
     this.url = url
-    this.mqtt = null
-    this.connected = false // set flag
+    this.connected = false
+
     // instead of a single handler for each event, we need several, eg one for each device
     this.handlers = {
       connect: [],
       message: [],
     }
-    this.subscribers = {} // key is topic, value is { callback, selector }
-    this.start()
-  }
 
-  // start the underlying mqtt connection
-  start() {
+    this.subscribers = {} // key is topic, value is { callback, selector }
+
+    // start the underlying mqtt connection
     console.log(`MQTT-provider connecting to url`, this.url)
     this.mqtt = libmqtt.connect(this.url)
 
     // handle events from the proxied object
-    this.mqtt.on('connect', onConnect.bind(this))
-    this.mqtt.on('message', onMessage.bind(this))
+    this.mqtt.on('connect', _onConnect.bind(this))
+    this.mqtt.on('message', _onMessage.bind(this))
 
     // handle the initial connect event from the mqtt broker.
     // note: we bound onConnect to `this`, above.
-    function onConnect() {
+    function _onConnect() {
       this.connected = true // set flag
       console.log(`MQTT-provider connected to shared broker on`, this.url)
-      const handlers = this.handlers?.connect || []
+      const handlers = this.handlers.connect
       console.log(`MQTT-provider calling connect handlers`, handlers)
       for (let handler of handlers) {
         // check if handler has been called - flag is set in the on() method, and here.
@@ -49,7 +47,7 @@ export class AdapterDriver {
     // handle incoming messages and dispatch them to subscribers
     // topic - eg 'l99/pa1/evt/query'
     // message - array of bytes (assumed to be a string or json string)
-    function onMessage(topic, message) {
+    function _onMessage(topic, message) {
       // if (!this.subscribers[topic]) return // quit if no subscribers
       let payload = message.toString() // must be let!
       console.log(`MQTT-provider got ${topic}: ${payload.slice(0, 140)}`)
@@ -59,7 +57,7 @@ export class AdapterDriver {
       }
       // not sure how we can get around having a trycatch block and json parse,
       // as payload might be a plain string.
-      //. check if payload starts with '{' ?
+      //. check if payload starts with '{' or '[' or digit?
       try {
         payload = JSON.parse(payload)
       } catch (e) {}
@@ -96,7 +94,9 @@ export class AdapterDriver {
   // add a callback here, store in the subscriber object with selector.
   // selector can be a function of the payload, or a plain boolean.
   subscribe(topic, callback, selector = payload => true) {
-    console.log(`MQTT-provider subscribe`, topic, selector.toString())
+    console.log(
+      `MQTT-provider subscribe to topic ${topic} with selector ${selector.toString()}`
+    )
     const subscriber = { callback, selector }
     this.subscribers[topic] = this.subscribers[topic] || []
     this.subscribers[topic].push(subscriber)
