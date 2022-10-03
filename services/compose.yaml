@@ -28,9 +28,9 @@ services:
       L99_SETUP_FOLDER: /data/setup
       L99_MODULES_FOLDER: /data/modules
       L99_ADAPTER_FOLDER: /data/adapter
-      # turn feedback driver off if needed - eg for development machine.
+      # turn on feedback driver - eg for production machine only.
       # null means pass-through from environment.
-      L99_FEEDBACK_OFF: null
+      L99_FEEDBACK: null
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml etc
       - ../modules:/data/modules # has module yamls

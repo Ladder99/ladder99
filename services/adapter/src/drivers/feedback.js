@@ -6,20 +6,17 @@
 //. will this be replaced by MTConnect Interfaces eventually?
 
 // optional flag defined in .env
-// lets you turn off the feedback mechanism from oxbox 004,
-// but leave it on for 001. otherwise they might interfere with each other.
-//. do reverse, feedbackOn = L99_FEEDBACK=true
-const feedbackOff = process.env.L99_FEEDBACK_OFF
+// lets you turn on the feedback mechanism for oxbox 001,
+// but leave it off for 004. otherwise they would interfere with each other.
+const feedbackOn = process.env.L99_FEEDBACK
 
 export class AdapterDriver {
   //
   start({ setup, source, device, cache, provider }) {
     this.me = `Feedback ${device.name}:`
 
-    //. use L99_FEEDBACK=true instead of OFF
-    // console.log(`Feedback - L99_FEEDBACK_OFF =`, feedbackOff)
-    console.log(this.me, `L99_FEEDBACK_OFF =`, feedbackOff)
-    if (feedbackOff) return
+    console.log(this.me, `L99_FEEDBACK =`, feedbackOn)
+    if (!feedbackOn) return
 
     console.log(this.me, `start driver, source`, source)
 
