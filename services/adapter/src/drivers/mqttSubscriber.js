@@ -130,12 +130,13 @@ export class AdapterDriver {
     // run algorithm handler on the payload
     const algorithm = handler.algorithm || 'none'
     const algorithmHandlers = {
-      //. call this 'eval_expressions'
-      iterate_expressions: iterateExpressions,
+      iterate_expressions: iterateExpressions, //. call this 'eval_expressions'
       iterate_message_contents: iteratePayloadContents,
       none: noAlgorithm,
     }
-    const algorithmHandler = algorithmHandlers[algorithm] || unknownAlgorithm
+    const algorithmHandler = (
+      algorithmHandlers[algorithm] || unknownAlgorithm
+    ).bind(this)
     algorithmHandler() // call the algorithm handler - local functions defined below
 
     // // subscribe to any additional topics as specified
