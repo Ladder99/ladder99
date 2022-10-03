@@ -39,7 +39,7 @@ export class AdapterDriver {
       for (let handler of handlers) {
         // check if handler has been called - flag is set in the on() method, and here.
         if (!handler.called) {
-          handler() // eg onConnect(topic, payload) in mqtt-subscriber - subscribes to topics
+          handler() // eg onConnect() in mqttSubscriber - subscribes to topics
           handler.called = true
         }
       }
@@ -86,7 +86,7 @@ export class AdapterDriver {
     // call the connect handler if we're already connected
     if (event === 'connect' && this.connected) {
       console.log(`MqttProvider calling connect handler`, handler)
-      handler() // eg onConnect() in mqtt-subscriber, which subscribes to topics
+      handler() // eg onConnect() in mqttSubscriber, which subscribes to topics
       handler.called = true // mark handler as called
     }
   }

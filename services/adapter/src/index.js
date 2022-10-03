@@ -19,7 +19,7 @@ const params = {
   // default tcp server for agent if none provided in setup.yaml
   defaultAgent: { protocol: 'shdr', host: 'adapter', port: 7878 },
   // file system inputs
-  driversFolder: './drivers', // eg for mqtt-subscriber.js - must start with '.'
+  driversFolder: './drivers', // eg for mqttSubscriber.js - must start with '.'
   // these folders may be defined in compose.yaml with docker volume mappings.
   // when adapter.js is run, it expects config in /data/setup and /data/models.
   // so /data/setup includes setup.yaml, which includes a list of devices to setup.

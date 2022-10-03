@@ -24,8 +24,8 @@ broker -->> provider: onConnect
 provider -->> subscriber: onConnect
 subscriber -->> provider: subscribe
 provider -->> broker: subscribe
-broker -->> provider: MQTT msg
 device -->> broker: msg
+broker -->> provider: MQTT msg
 provider -->> subscriber: MQTT msg
 subscriber -->> cache: set(key, value)
 cache -->> agent: SHDR string

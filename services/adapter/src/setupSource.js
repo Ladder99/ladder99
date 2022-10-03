@@ -28,7 +28,7 @@ export async function setupSource({
   // module could be eg 'cutter' for box cutters
   //. allow custom modules per setup, eg add module to setup-oxbox folder
 
-  // import driver plugin, eg micro.js or mqtt-subscriber.js.
+  // import driver plugin, eg micro.js or mqttSubscriber.js.
   // this instantiates a new instance of the AdapterDriver class.
   // but doesn't start the plugin - that's at the end of this code.
   const plugin = await getPlugin(params.driversFolder, driver)
@@ -139,7 +139,7 @@ export async function setupSource({
 
     client, // eg { name, timezone } defined at top of setup.yaml
     device, // eg { id, name, sources, ... }
-    driver, // eg 'mqtt-subscriber' - maps to 'drivers/mqtt-subscriber.js'
+    driver, // eg 'mqttSubscriber' - maps to 'drivers/mqttSubscriber.js'
 
     // pass whole drivers array here, in case driver needs to know other devices.
     // eg jobboss driver needs to know what workcenters/devices to look for.
