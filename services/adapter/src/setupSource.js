@@ -118,7 +118,7 @@ export async function setupSource({
   let provider
   if (typeof connection === 'string') {
     console.log('Adapter getting provider for', device.name, connection)
-    provider = inputs[connection]?.plugin // get shared connection - eg an MqttProvider instance
+    provider = providers[connection]?.plugin // get shared connection - eg an MqttProvider instance
     if (!provider) {
       console.log(`Error unknown provider connection`, device.name, connection)
       process.exit(1)
