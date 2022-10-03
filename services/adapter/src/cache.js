@@ -114,7 +114,7 @@ export class Cache {
         }
       }
     } else {
-      console.log(`Cache no outputs for ${key}`)
+      console.log(`Cache warning no outputs for key ${key}`)
     }
   }
 
