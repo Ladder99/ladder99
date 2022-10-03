@@ -17,7 +17,7 @@ export async function setupSource({
   client,
   devices,
   device,
-  inputs, // shared connections
+  inputs, // shared connections, eg mqtt provider
 }) {
   //
   // don't print full source - might have db password!
@@ -74,12 +74,14 @@ export async function setupSource({
     cache.addOutputs(source.outputs)
   }
 
-  // iterate over input handlers, if any
+  // iterate over input handlers in inputs.yaml, if any -
+  // handlers is eg { controller: { text, initialize, lookup, algorithm, expressions, accessor }, ... }
+  // where the key is the message topic, eg 'controller'.
   const handlers = module?.inputs?.handlers || {}
   for (let handlerKey of Object.keys(handlers)) {
-    console.log(`Adapter processing inputs for`, handlerKey) // eg 'l99/B01000/evt/io'
+    console.log(`Adapter processing inputs for`, handlerKey) // eg 'controller'
 
-    const handler = handlers[handlerKey] // eg { initialize, process, lookup, expressions }
+    const handler = handlers[handlerKey] // eg { initialize, algorithm, lookup, expressions }
 
     // get macros (regexs to extract references from code)
     const prefix = device.id + '-'
@@ -107,7 +109,8 @@ export async function setupSource({
     }
   }
 
-  // get any shared provider here and pass down.
+  // get any shared provider here and pass down - eg an mqtt provider
+  // that dispatches to mqtt subscribers.
   // connection could be a string for a shared connection or an object { host, port } etc.
   // currently just handles string.
   // note: the mqtt-provider object has same api as libmqtt's object, just extended a little bit.

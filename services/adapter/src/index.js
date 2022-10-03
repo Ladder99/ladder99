@@ -36,22 +36,22 @@ async function start(params) {
   // define cache shared across all devices and sources
   const cache = new Cache()
 
-  // setup any shared inputs, eg MqttProvider
-  const inputs = setup?.adapter?.inputs || {}
-  for (const input of Object.values(inputs)) {
-    console.log(`Adapter setup shared input`, input)
+  // setup any shared providers, eg MqttProvider
+  const providers = setup?.adapter?.providers || {}
+  for (const provider of Object.values(providers)) {
+    console.log(`Adapter setup shared provider`, provider)
     // import driver plugin - instantiates a new instance of the AdapterDriver class
-    const plugin = await getPlugin(params.driversFolder, input.driver) // eg 'mqtt-provider'
-    const { url } = input // eg 'mqtt://mosquitto:1883'
-    plugin.init({ url }) // this connects to the mqtt broker
-    input.plugin = plugin
+    const plugin = await getPlugin(params.driversFolder, provider.driver) // eg 'mqtt-provider'
+    const { url } = provider // eg 'mqtt://mosquitto:1883'
+    plugin.init({ url }) // this connects to the mqtt broker //. bug - no cache keys yet?
+    provider.plugin = plugin // save plugin to the provider object
   }
 
   // iterate over device definitions from setup.yaml file and do setup for each
   const client = setup?.client || {}
   const devices = setup?.devices || []
   for (const device of devices) {
-    setupDevice({ setup, params, device, cache, client, devices, inputs })
+    setupDevice({ setup, params, device, cache, client, devices, providers })
   }
 }
 

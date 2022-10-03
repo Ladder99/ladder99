@@ -18,13 +18,14 @@ export class AdapterDriver {
       message: [],
     }
 
+    // topic subsribers, coming from mqtt-subscriber
     this.subscribers = {} // key is topic, value is { callback, selector }
 
     // start the underlying mqtt connection
     console.log(`MQTT-provider connecting to url`, this.url)
     this.mqtt = libmqtt.connect(this.url)
 
-    // handle events from the proxied object
+    // register handlers for events from the proxied object
     this.mqtt.on('connect', _onConnect.bind(this))
     this.mqtt.on('message', _onMessage.bind(this))
 

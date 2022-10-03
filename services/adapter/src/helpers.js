@@ -8,23 +8,23 @@ let keyvalues = {}
 
 // load the plugin specified by the drivers folder and driver name.
 // the driver can be at eg ./drivers/foo.js or ./drivers/foo/index.js.
+// the plugin must export a class named AdapterDriver.
+// this code will instantiate the driver and return it.
+// the AdapterDriver class must have an init({}) method to start it up.
 export async function getPlugin(driversFolder, driver) {
-  const path1 = `${driversFolder}/${driver}.js`
-  const path2 = `${driversFolder}/${driver}/index.js`
   let code
   try {
-    console.log(`Adapter importing driver code: ${path1}...`)
-    code = await import(path1) // load the code
+    const path = `${driversFolder}/${driver}.js`
+    console.log(`Adapter importing driver code: ${path}...`)
+    code = await import(path) // load the code
   } catch (error) {
-    // console.log('Error', error.message)
-    console.log(`Adapter importing driver code: ${path2}...`)
-    code = await import(path2) // load the code
+    const path = `${driversFolder}/${driver}/index.js`
+    console.log(`Adapter importing driver code: ${path}...`)
+    code = await import(path) // load the code
   }
   const { AdapterDriver } = code
   const plugin = new AdapterDriver() // instantiate the driver
   return plugin
-  // const path = fs.existsSync(path1) ? path1 : path2 // this didn't work
-  // console.log(`Importing driver code: ${path}...`)
 }
 
 // get cache outputs from from outputs.yaml templates - do substitutions etc.

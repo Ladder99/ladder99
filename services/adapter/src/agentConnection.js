@@ -1,9 +1,14 @@
 import net from 'net' // node lib for tcp
 
-export class Agent {
+// make a tcp server and listen for Agent connections.
+// address is eg { host: 'adapter', port: 7878 }.
+// onConnect and onError are callbacks for when a connection is made or an error occurs.
+export class AgentConnection {
+  //
   start({ address, onConnect, onError }) {
-    console.log(`Adapter - creating TCP server for Agent to connect to...`)
+    console.log(`AgentConnection creating TCP server for Agent to connect to`)
 
+    // save callbacks
     this.onConnect = onConnect
     this.onError = onError
 
@@ -13,22 +18,22 @@ export class Agent {
     // start tcp server for Agent to listen to, eg at adapter:7878
     // begin accepting connections on the specified port and host from agent.
     // see handleConnection for next step.
-    console.log(`Adapter - listen for Agent on TCP socket at`, address)
+    console.log(`AgentConnection listen for Agent on TCP socket at`, address)
     tcp.listen(address.port, address.host)
   }
 
   handleConnection(socket) {
     this.socket = socket
     const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
-    console.log('Adapter - new connection from Agent', remoteAddress)
+    console.log('AgentConnection new connection from Agent', remoteAddress)
     socket.on('error', this.handleError.bind(this))
     socket.on('data', this.handleData.bind(this))
-    this.onConnect(socket) // callback
+    this.onConnect(socket) // call the callback
   }
 
   handleError(error) {
-    console.log('Adapter agent connection error', error)
-    this.onError(error) // callback
+    console.log('AgentConnectiongent connection error', error)
+    this.onError(error) // call the callback
   }
 
   // handle ping/pong messages to/from agent, so it knows we're alive.
@@ -38,7 +43,7 @@ export class Agent {
       const response = '* PONG 5000' //. msec - where from?
       this.socket.write(response + '\n')
     } else {
-      console.log('Adapter received data:', str.slice(0, 20), '...')
+      console.log('AgentConnectioneceived data:', str.slice(0, 20), '...')
     }
   }
 }
