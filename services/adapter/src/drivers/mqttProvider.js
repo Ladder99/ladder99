@@ -21,7 +21,10 @@ export class AdapterDriver {
     }
 
     // topic subscribers, coming from mqttSubscriber
-    this.subscribers = {} // eg { controller: [{ callback, selector }, ...], ... }
+    this.subscribers = {} // eg { 'controller': [{ callback, selector, lastMessage }, ...], ... }
+
+    // save last messages for each topic seen
+    this.lastMessages = {} // eg { 'controller': 'birth', ... }
 
     // start the underlying libmqtt connection
     console.log(`MqttProvider connecting to url`, this.url)
@@ -31,19 +34,13 @@ export class AdapterDriver {
     this.mqtt.on('connect', _onConnect.bind(this))
     this.mqtt.on('message', _onMessage.bind(this))
 
-    // // wait for connection to complete
-    // // add another connect handler that will only resolve when the connection is complete
-    // // thank you, github copilot...
-    // await new Promise((resolve, reject) => {
-    //   this.handlers.connect.push(resolve)
-    // })
-
     // handle the initial connect event from the mqtt broker.
-    // note: we bound onConnect to `this`, above.
+    // note: we bound _onConnect to `this`, above.
     function _onConnect() {
       this.connected = true // set flag
       console.log(`MqttProvider connected to shared broker on`, this.url)
-      const connectHandlers = this.handlers.connect // a list of onConnect handlers - could be empty
+      const connectHandlers = this.handlers.connect // a list of onConnect handlers - could be empty.
+      // note: if the connect handlers haven't been set up yet, they will be called in the on('connect') method.
       console.log(`MqttProvider calling connect handlers`, connectHandlers)
       for (let handler of connectHandlers) {
         // check if handler has been called - flag is set in the on() method, and here.
@@ -57,7 +54,9 @@ export class AdapterDriver {
     // handle incoming messages and dispatch them to subscribers
     // topic - eg 'l99/pa1/evt/query'
     // message - array of bytes (assumed to be a string or json string)
+    // note: we bound _onMessage to `this`, above.
     function _onMessage(topic, message) {
+      this.lastMessages[topic] = message // save last message so can dispatch to new subscribers
       // if (!this.subscribers[topic]) return // quit if no subscribers
       let payload = message.toString() // must be let!
       console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
@@ -103,8 +102,21 @@ export class AdapterDriver {
     //. don't want to call this until all the subscribers are ready!
     if (event === 'connect' && this.connected) {
       console.log(`MqttProvider calling connect handler`, handler)
-      handler() // eg onConnect() in mqttSubscriber, which subscribes to topics
+      handler() // eg onConnect() in mqttSubscriber
       handler.called = true // mark handler as called
+    }
+    if (event === 'message' && this.connected) {
+      console.log(`MqttProvider calling message handler`, handler)
+      // call handler with last message for all topics we've seen
+      // this.subscribers = {} // eg { 'controller': [{ callback, selector }, ...], ... }
+      for (let [topic, handlers] of Object.entries(this.subscribers)) {
+        const lastMessage = this.lastMessages[topic]
+        if (lastMessage) {
+          for (let handler of handlers) {
+            handler(topic, lastMessage) // eg onMessage(topic, payload) in mqttSubscriber
+          }
+        }
+      }
     }
   }
 
