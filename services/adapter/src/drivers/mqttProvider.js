@@ -36,6 +36,7 @@ export class AdapterDriver {
 
     // handle the initial connect event from the mqtt broker.
     // note: we bound onConnect to `this`, above.
+    //. make this a method
     function onConnect() {
       this.connected = true // set flag
       console.log(`MqttProvider connected to shared broker on`, this.url)
@@ -55,6 +56,7 @@ export class AdapterDriver {
     // topic - eg 'l99/pa1/evt/query'
     // message - array of bytes (assumed to be a string or json string)
     // note: we bound onMessage to `this`, above.
+    //. make this a method
     function onMessage(topic, message) {
       this.lastMessages[topic] = message // save last message so can dispatch to new subscribers
       // if (!this.subscribers[topic]) return // quit if no subscribers
@@ -95,7 +97,7 @@ export class AdapterDriver {
         }
       }
     } // end of onMessage
-  } // end of this.start
+  } // end of start
 
   // register event handlers, eg 'connect', 'message'.
   // calls connect handler if provider is already connected, else waits for onConnect fn.

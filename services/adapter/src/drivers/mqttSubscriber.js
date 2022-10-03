@@ -41,6 +41,7 @@ export class AdapterDriver {
     this.provider.on('connect', this.onConnect.bind(this))
   }
 
+  // provider connected to broker
   onConnect() {
     console.log(this.me, `connected to MqttProvider`)
     this.subscribeTopics() // subscribe to any topics defined in inputs.yaml
@@ -53,6 +54,8 @@ export class AdapterDriver {
   // eg [{topic:'controller'}, {topic:'l99/B01000/evt/io'}, ...]
   subscribeTopics() {
     const subscriptions = this.module.inputs?.connect?.subscribe || []
+    const topics = subscriptions.map(subscription => subscription.topic)
+    console.log(this.me, 'subscribe', topics)
     for (const subscription of subscriptions) {
       const topic = this.replaceDeviceId(subscription.topic)
       // can set a topic to false in setup.yaml to not subscribe to it
@@ -64,9 +67,7 @@ export class AdapterDriver {
         // ie which of the many MqttSubscriber instances to send to.
         // onMessage is defined below.
         // mqtt.subscribe(topic) // old code using libmqtt
-        //. this will be provider.subscribe(topic, this.onMessage.bind(this), selector) //. will this work with unsubscribe?
-        // provider.subscribe(topic, onMessage, selector)
-        this.provider.subscribe(topic, this.onMessage.bind(this), selector)
+        this.provider.subscribe(topic, this.onMessage.bind(this), selector) //. ok with unsubscribe?
       }
     }
   }
@@ -139,8 +140,8 @@ export class AdapterDriver {
     ).bind(this)
     algorithmHandler() // call the algorithm handler - local functions defined below
 
-    // // subscribe to any additional topics as specified
-    // this.subscribeTopics2(handler)
+    // subscribe to any additional topics as specified
+    this.subscribeTopics2(handler)
 
     // this algorithm iterates over expressions, evaluates each, and adds value to cache.
     // expressions is an array of [key, expression] - eg [['fault_count', '%M55.2'], ...].
@@ -200,18 +201,18 @@ export class AdapterDriver {
     }
   } // end of onMessage fn
 
-  // // subscribe to any topics as specified in inputs.yaml
-  // subscribeTopics2(handler) {
-  //   for (const entry of handler.subscribe || []) {
-  //     const topic = this.replaceDeviceId(entry.topic)
-  //     console.log(this.me, `subscribe to ${topic}`)
-  //     this.provider.subscribe(
-  //       topic,
-  //       this.onMessage.bind(this),
-  //       selectors[topic]
-  //     )
-  //   }
-  // }
+  // subscribe to any topics as specified in inputs.yaml
+  subscribeTopics2(handler) {
+    for (const entry of handler.subscribe || []) {
+      const topic = this.replaceDeviceId(entry.topic)
+      console.log(this.me, `subscribe to ${topic}`)
+      this.provider.subscribe(
+        topic,
+        this.onMessage.bind(this),
+        selectors[topic]
+      )
+    }
+  }
 
   // unsubscribe from any topics as specified in inputs.yaml
   unsubscribeTopics(handler) {
