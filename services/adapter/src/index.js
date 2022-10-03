@@ -45,7 +45,7 @@ async function start(params) {
     const plugin = await getPlugin(params.driversFolder, provider.driver) // eg 'mqttProvider'
     // AWAIT here until provider is connected?
     // plugin.start({ provider }) // start driver - eg this connects to the mqtt broker
-    await plugin.start({ provider }) // start driver - eg this connects to the mqtt broker
+    // await plugin.start({ provider }) // start driver - eg this connects to the mqtt broker
     provider.plugin = plugin // save plugin to this provider object, eg { driver, url, plugin }
   }
 
@@ -56,11 +56,11 @@ async function start(params) {
     setupDevice({ setup, params, device, cache, client, devices, providers })
   }
 
-  // // start the shared providers
-  // for (const provider of Object.values(providers)) {
-  //   console.log(`Adapter start shared provider`, provider)
-  //   provider.plugin?.start({ provider }) // start driver - eg this connects to the mqtt broker
-  // }
+  // start the shared providers
+  for (const provider of Object.values(providers)) {
+    console.log(`Adapter start shared provider`, provider)
+    provider.plugin?.start({ provider }) // start driver - eg this connects to the mqtt broker
+  }
 }
 
 start(params)

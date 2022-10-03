@@ -31,12 +31,12 @@ export class AdapterDriver {
     this.mqtt.on('connect', _onConnect.bind(this))
     this.mqtt.on('message', _onMessage.bind(this))
 
-    // wait for connection to complete
-    // add another connect handler that will only resolve when the connection is complete
-    // thank you, github copilot...
-    await new Promise((resolve, reject) => {
-      this.handlers.connect.push(resolve)
-    })
+    // // wait for connection to complete
+    // // add another connect handler that will only resolve when the connection is complete
+    // // thank you, github copilot...
+    // await new Promise((resolve, reject) => {
+    //   this.handlers.connect.push(resolve)
+    // })
 
     // handle the initial connect event from the mqtt broker.
     // note: we bound onConnect to `this`, above.
@@ -52,7 +52,7 @@ export class AdapterDriver {
           handler.called = true
         }
       }
-    }
+    } // end of _onConnect
 
     // handle incoming messages and dispatch them to subscribers
     // topic - eg 'l99/pa1/evt/query'
@@ -61,10 +61,16 @@ export class AdapterDriver {
       // if (!this.subscribers[topic]) return // quit if no subscribers
       let payload = message.toString() // must be let!
       console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
-      if (!this.subscribers[topic]) {
-        console.log(`MqttProvider no subscribers for ${topic}`)
+
+      // an empty array is truthy, so check for undefined first
+      if (
+        this.subscribers[topic] === undefined ||
+        this.subscribers[topic].length === 0
+      ) {
+        console.log(`MqttProvider warning no subscribers for ${topic}`)
         return // quit if no subscribers
       }
+
       // not sure how we can get around having a trycatch block and json parse,
       // as payload might be a plain string.
       //. check if payload starts with '{' or '[' or digit?
@@ -84,8 +90,8 @@ export class AdapterDriver {
           callback(topic, message) // note: we pass the original byte array message
         }
       }
-    }
-  }
+    } // end of _onMessage
+  } // end of this.start
 
   // register event handlers, eg 'connect', 'message'.
   // calls connect handler if provider is already connected, else waits for onConnect fn.
@@ -94,6 +100,7 @@ export class AdapterDriver {
     this.handlers[event].push(handler)
     // call the connect handler if we're already connected -
     // otherwise, will call these in _onConnect.
+    //. don't want to call this until all the subscribers are ready!
     if (event === 'connect' && this.connected) {
       console.log(`MqttProvider calling connect handler`, handler)
       handler() // eg onConnect() in mqttSubscriber, which subscribes to topics
