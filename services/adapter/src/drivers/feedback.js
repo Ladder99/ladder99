@@ -103,8 +103,8 @@ export class AdapterDriver {
           console.log(this.me, `publish 2nd command`, this.command, payload)
           this.provider.publish(this.command, JSON.toString(payload))
           // unsubscribe from the wait topic
-          console.log(this.me, `unsubscribe`, topic)
-          this.provider.unsubscribe(topic, callback) //. does this work?
+          console.log(this.me, `unsubscribe`, this.wait.topic)
+          this.provider.unsubscribe(this.wait.topic, callback) //. does this work?
         }
       }
     }
