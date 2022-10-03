@@ -96,7 +96,7 @@ export class AdapterDriver {
   // handle incoming messages
   // eg for ccs-pa have query, status, and read messages.
   // topic - mqtt topic, eg 'l99/pa1/evt/query'
-  // message - array of bytes (assumed to be a string or json string)
+  // payload - array of bytes (assumed to be a string or json string)
   onMessage(topic, payload) {
     const handler = this.topicHandlers[topic]
     if (!handler) {
@@ -116,7 +116,7 @@ export class AdapterDriver {
     this.unsubscribeTopics(handler)
 
     // make these available to yaml code
-    const types = this.types
+    const types = this.types // this IS used by yaml code - don't remove
     const keyvalues = this.keyvalues
 
     // run initialize handler

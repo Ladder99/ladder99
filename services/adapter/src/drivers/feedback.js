@@ -11,7 +11,8 @@
 //       dataitem: job # this will be prefixed with deviceId, eg to 'm1-job' - reset partcount when changes
 //       interval: 2000 # ms to wait between polls
 //       driver: sharedMqtt
-//       command: l99/B01000/cmd/modbus # mqtt topic to send commands to
+//       command:
+//         topic: l99/B01000/cmd/modbus # mqtt topic to send commands to
 //       payload:
 //         address: null # varies by device - eg 142
 //         value: null # send values[0], wait, then values[1]
@@ -47,7 +48,7 @@ export class AdapterDriver {
 
     // get base data, if there
     const feedback = setup.adapter?.drivers?.feedback || {}
-    this.command = feedback.command || 'missing-command-topic' // topic for commands
+    this.command = feedback.command || {} // { topic } for commands
     this.payload = feedback.payload || {} // defaults for command payload, if any
     this.values = feedback.values // array of the two values to send with commands
     this.wait = feedback.wait || {} // { topic, attribute, value } topic to wait on etc
@@ -72,19 +73,20 @@ export class AdapterDriver {
 
       // subscribe to response topic
       // will subscribe to mqttProvider with dispatch based on payload.id
-      const topic = this.wait.topic
-      const callback = waitForSignal.bind(this)
+      const waitTopic = this.wait.topic
+      const waitCallback = waitForSignal.bind(this)
       const selector = payload => payload.id == this.source.id // eg id=535172 - use == in case string/number
-      console.log(this.me, `subscribing to`, topic, selector)
-      this.provider.subscribe(topic, callback, selector)
+      console.log(this.me, `subscribing to`, waitTopic, selector)
+      this.provider.subscribe(waitTopic, waitCallback, selector)
 
-      // publish to reset topic
+      // publish to command topic
       const { address } = this.source // { driver, connection, address, id }
       const values = this.values // eg [5392, 0]
+      const commandTopic = this.command.topic
       const payload = { ...this.payload, address, value: values[0] } // { address, value, unitid, quantity, fc }
-      console.log(this.me, `publishing command`, this.command, payload)
+      console.log(this.me, `publishing command`, commandTopic, payload)
       console.log(this.me, `waiting for response...`)
-      this.provider.publish(this.command, JSON.toString(payload))
+      this.provider.publish(commandTopic, JSON.toString(payload))
       this.oldValue = newValue
 
       //. what if the response never comes? need a timeout after a minute?
@@ -93,18 +95,18 @@ export class AdapterDriver {
       function waitForSignal(topic, payload) {
         payload = payload.toString()
         payload = JSON.parse(payload)
-        console.log(this.me, `got response`, payload)
-        // eg this.wait.attribute is 'a15', values[0] is 5392
+        const waitValue = payload[this.wait.attribute] // eg payload.a15
+        console.log(this.me, `got response`, payload, waitValue)
+        // eg this.values[0] is 5392
         // note: we use == because either might be a string, not number
-        if (payload[this.wait.attribute] == this.values[0]) {
+        if (waitValue == values[0]) {
           // publish second command
-          // console.log(this.me, `got response`)
-          const payload = { ...this.payload, address, value: this.values[1] }
-          console.log(this.me, `publish 2nd command`, this.command, payload)
-          this.provider.publish(this.command, JSON.toString(payload))
+          const payload = { ...this.payload, address, value: values[1] }
+          console.log(this.me, `publish 2nd command`, commandTopic, payload)
+          this.provider.publish(commandTopic, JSON.toString(payload))
           // unsubscribe from the wait topic
-          console.log(this.me, `unsubscribe`, this.wait.topic)
-          this.provider.unsubscribe(this.wait.topic, callback) //. does this work?
+          console.log(this.me, `unsubscribe`, waitTopic)
+          this.provider.unsubscribe(waitTopic, waitCallback) //. does this work?
         }
       }
     }

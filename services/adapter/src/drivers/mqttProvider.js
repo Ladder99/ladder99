@@ -129,6 +129,7 @@ export class AdapterDriver {
 
   // subscribe to a topic with an optional selector fn.
   // add a callback here, store in the subscriber object with selector.
+  // callback is a function of (topic, message) - eg onMessage(topic, payload) in mqttSubscriber.
   // selector can be a function of the payload, or a plain boolean.
   subscribe(topic, callback, selector = payload => true) {
     console.log(`MqttProvider subscribe ${topic} when ${selector.toString()}`)
