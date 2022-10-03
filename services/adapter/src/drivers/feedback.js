@@ -77,7 +77,8 @@ export class AdapterDriver {
       const waitCallback = waitForSignal.bind(this)
       const selector = payload => payload.id == this.source.id // eg id=535172 - use == in case string/number
       console.log(this.me, `subscribing to`, waitTopic, selector)
-      this.provider.subscribe(waitTopic, waitCallback, selector)
+      // pass sendLastMessage=false so doesn't call the callback if topic already registered
+      this.provider.subscribe(waitTopic, waitCallback, selector, false)
 
       // publish to command topic
       const { address } = this.source // { driver, connection, address, id }
