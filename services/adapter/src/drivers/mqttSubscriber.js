@@ -261,9 +261,8 @@ export class AdapterDriver {
       // selector can be boolean or a function of the mqtt message payload
       console.log(
         this.me,
-        `got selector for topic ${topic}, ${String(
-          selector
-        )}, with value=${value}`
+        `got selector for topic ${topic}, ${String(selector)}, with value`,
+        value
       )
       selectors[topic] = selector
     }

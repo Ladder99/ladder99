@@ -70,11 +70,12 @@ export class AdapterDriver {
 
       function waitForSignal(topic, payload) {
         payload = JSON.parse(payload)
+        console.log(this.me, `got response`, payload)
         // eg this.wait.attribute is 'a15', values[0] is 5392
         // note: we use == because either might be a string, not number
         if (payload[this.wait.attribute] == this.values[0]) {
           // publish second command
-          console.log(this.me, `got response`)
+          // console.log(this.me, `got response`)
           const payload = { ...this.payload, address, value: this.values[1] }
           console.log(this.me, `publish 2nd command`, this.command, payload)
           this.provider.publish(this.command, JSON.toString(payload))
