@@ -31,7 +31,7 @@ export class AdapterDriver {
     this.mqtt = libmqtt.connect(this.url)
 
     // register handlers for events from the libmqtt object
-    this.mqtt.on('message', _onMessage.bind(this)) // put this first
+    this.mqtt.on('message', _onMessage.bind(this)) // put this first?
     this.mqtt.on('connect', _onConnect.bind(this))
 
     // handle the initial connect event from the mqtt broker.

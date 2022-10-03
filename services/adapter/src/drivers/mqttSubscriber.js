@@ -116,7 +116,9 @@ export class AdapterDriver {
       } else {
         payload = payload.toString() // bytes to string
 
-        console.log(`MqttSubscriber msg ${topic}: ${payload.slice(0, 140)}`)
+        if (topic === 'controller') {
+          console.log(`MqttSubscriber msg ${topic}: ${payload.slice(0, 140)}`)
+        }
 
         // if payload is plain text, set handler.text true in inputs.yaml - else parse as json
         if (!handler.text) payload = JSON.parse(payload) // string to js object
