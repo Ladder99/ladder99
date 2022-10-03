@@ -68,14 +68,14 @@ export async function setupSource({
       deviceId: device.id,
     })
 
-    // add outputs for each source to cache.
+    // for each source we need to add the outputs to cache.
     // these are not fully functional until we call cache.setSocket.
-    // used to pass socket in here, but need to handle agent reconnection.
+    // used to pass socket in here, but need to handle agent reconnection also.
     cache.addOutputs(source.outputs)
   }
 
   // iterate over input handlers in inputs.yaml, if any -
-  // handlers is eg { controller: { text, initialize, lookup, algorithm, expressions, accessor }, ... }
+  // handlers is eg { 'controller': { text, initialize, lookup, algorithm, expressions, accessor }, ... }
   // the key is the message topic, eg 'controller'.
   const handlers = module.inputs?.handlers || {}
   for (let handlerKey of Object.keys(handlers)) {

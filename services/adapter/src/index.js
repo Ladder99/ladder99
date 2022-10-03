@@ -36,14 +36,14 @@ async function start(params) {
   // define cache shared across all devices and sources
   const cache = new Cache()
 
-  // start any shared providers
+  // load any shared providers
   // eg setup.yaml/adapter/providers = { sharedMqtt: { driver, url }, ... }
   const providers = setup.adapter?.providers || {}
   for (const provider of Object.values(providers)) {
-    console.log(`Adapter setup shared provider`, provider)
+    console.log(`Adapter get shared provider`, provider)
     // import driver plugin - instantiates a new instance of the AdapterDriver class
     const plugin = await getPlugin(params.driversFolder, provider.driver) // eg 'mqttProvider'
-    plugin.start({ provider }) // start driver - eg this connects to the mqtt broker
+    // plugin.start({ provider }) // start driver - eg this connects to the mqtt broker
     provider.plugin = plugin // save plugin to this provider object, eg { driver, url, plugin }
   }
 
@@ -52,6 +52,12 @@ async function start(params) {
   const devices = setup.devices || []
   for (const device of devices) {
     setupDevice({ setup, params, device, cache, client, devices, providers })
+  }
+
+  // start the shared providers
+  for (const provider of Object.values(providers)) {
+    console.log(`Adapter start shared provider`, provider)
+    provider.plugin?.start({ provider }) // start driver - eg this connects to the mqtt broker
   }
 }
 

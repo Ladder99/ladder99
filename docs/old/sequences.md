@@ -19,8 +19,9 @@ participant agent as Agent
 device -->> broker: register
 adapter -->> provider: start
 provider -->> broker: connect
-adapter -->> subscriber: start
 broker -->> provider: onConnect
+adapter -->> cache: setup
+adapter -->> subscriber: start
 provider -->> subscriber: onConnect
 subscriber -->> provider: subscribe
 provider -->> broker: subscribe

@@ -89,10 +89,8 @@ function getValueFn(deviceId, code = '', types = {}) {
   // should be okay to ditch replaceAll because we have /g for the regexp
   // valueStr = valueStr.replaceAll( // needs node15
   //. test this with two cache refs in a string "<foo> + <bar>" etc
-  code = code.replace(
-    regexp1,
-    `cache.get('${deviceId}-$2')` // $2 is the matched substring
-  )
+  // $2 is the matched substring
+  code = code.replace(regexp1, `cache.get('${deviceId}-$2')`)
   if (code.includes('\n')) {
     code = '{\n' + code + '\n}'
   }

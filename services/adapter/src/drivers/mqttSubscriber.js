@@ -47,6 +47,8 @@ export class AdapterDriver {
     //   handler.lookupFn = eval(lookup)
     // }
 
+    // WAIT here until provider is connected?
+
     // register connection handler
     //. move onConnect to a method, but be careful with closure vars!
     // provider.on('connect', this.onConnect.bind(this))
