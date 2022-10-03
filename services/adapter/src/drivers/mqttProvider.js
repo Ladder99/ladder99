@@ -88,7 +88,9 @@ export class AdapterDriver {
         // selector can be a boolean or a fn of the message payload
         if (selector === false) continue
         if (selector === true || selector(payload)) {
-          console.log(`MqttProvider calling subscriber with`, topic)
+          if (topic === 'controller') {
+            console.log(`MqttProvider calling subscriber with`, topic)
+          }
           callback(topic, message) // note: we pass the original byte array message
         }
       }
