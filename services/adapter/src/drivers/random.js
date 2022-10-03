@@ -6,8 +6,8 @@
 const pollInterval = 1000 // msec
 
 export class AdapterDriver {
-  init({ device }) {
-    console.log(`Random - initialize driver...`)
+  start({ device }) {
+    console.log(`Random - start driver...`)
 
     setInterval(poll.bind(this), pollInterval)
 

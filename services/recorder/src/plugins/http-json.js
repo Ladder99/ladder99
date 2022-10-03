@@ -9,8 +9,8 @@ import parse from 'csv-parse/lib/sync.js' // see https://github.com/adaltas/node
 import * as lib from '../common/lib.js'
 
 export class RecorderPlugin {
-  async init({ deviceId, mode, host, port, loop, folder, csvfiles }) {
-    console.log(`Initializing http-json plugin, mode ${mode}...`)
+  async start({ deviceId, mode, host, port, loop, folder, csvfiles }) {
+    console.log(`Starting http-json plugin, mode ${mode}...`)
 
     console.log(`Create http server, listen on port ${port}...`)
     const server = http.createServer(requestListener)

@@ -9,8 +9,8 @@ import si from 'systeminformation' // see https://github.com/sebhildebrandt/syst
 const pollInterval = 5000 // msec //. get from setup
 
 export class AdapterDriver {
-  init({ device, cache }) {
-    console.log(`Micro initialize driver...`)
+  start({ device, cache }) {
+    console.log(`Micro start driver...`)
 
     setUnavailable()
     setInterval(readData, pollInterval)

@@ -15,8 +15,8 @@ const dataModeGrams = 2
 const dataModeOunces = 11
 
 export class AdapterDriver {
-  init({ device, protocol, host, port, cache, inputs, socket }) {
-    console.log(`Dymo - initialize Dymo M10 driver...`)
+  start({ device, protocol, host, port, cache, inputs, socket }) {
+    console.log(`Dymo - start Dymo M10 driver...`)
 
     // const devices = usb.getDeviceList()
     // console.log('USB devices attached:', devices.length)

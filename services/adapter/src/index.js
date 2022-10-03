@@ -43,7 +43,7 @@ async function start(params) {
     // import driver plugin - instantiates a new instance of the AdapterDriver class
     const plugin = await getPlugin(params.driversFolder, provider.driver) // eg 'mqtt-provider'
     const { url } = provider // eg 'mqtt://mosquitto:1883'
-    plugin.init({ url }) // this connects to the mqtt broker //. bug - no cache keys yet?
+    plugin.start({ url }) // this connects to the mqtt broker //. bug - no cache keys yet?
     provider.plugin = plugin // save plugin to the provider object
   }
 

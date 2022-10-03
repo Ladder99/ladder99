@@ -125,12 +125,12 @@ export async function setupSource({
     }
   }
 
-  // initialize driver plugin
+  // start driver plugin
   // note: this must be done AFTER getOutputs and addOutputs,
   // as that is where the dependsOn values are set, and this needs those.
   //. add example for each param
   console.log(`Adapter starting driver for`, device.name, driver)
-  plugin.init({
+  plugin.start({
     setup, // the main setup.yaml file contents
 
     //. simpler/better to pass the whole source object here, in case has weird stuff in it.

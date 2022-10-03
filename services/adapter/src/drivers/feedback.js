@@ -13,7 +13,7 @@ const feedbackOff = process.env.L99_FEEDBACK_OFF
 
 export class AdapterDriver {
   //
-  init({ setup, source, device, cache, provider }) {
+  start({ setup, source, device, cache, provider }) {
     this.me = `Feedback ${device.name}:`
 
     //. use L99_FEEDBACK=true instead of OFF
@@ -21,7 +21,7 @@ export class AdapterDriver {
     console.log(this.me, `L99_FEEDBACK_OFF =`, feedbackOff)
     if (feedbackOff) return
 
-    console.log(this.me, `initialize driver, source`, source)
+    console.log(this.me, `start driver, source`, source)
 
     this.cache = cache // need for monitoring a value
     this.source = source // { driver, connection, address, id }

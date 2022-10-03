@@ -77,7 +77,7 @@ async function main() {
         // instantiate a plugin for the source driver
         const plugin = new RecorderPlugin()
         //. should we just pass the whole source to the plugin?
-        plugin.init({
+        plugin.start({
           deviceId,
           mode,
           host,

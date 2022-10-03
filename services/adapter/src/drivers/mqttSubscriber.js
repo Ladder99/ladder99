@@ -1,4 +1,4 @@
-// mqtt-subscriber driver
+// MqttSubscriber driver
 
 // subscribes to mqtt topics through shared mqtt-provider, receives messages,
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
@@ -13,9 +13,9 @@ export class AdapterDriver {
   //
   // initialize the client plugin
   // queries the device for address space definitions, subscribes to topics.
-  init({ source, device, cache, module, provider }) {
-    this.me = `MQTT-subscriber ${device.name}:`
-    console.log(this.me, 'initializing driver')
+  start({ source, device, cache, module, provider }) {
+    this.me = `MqttSubscriber ${device.name}:`
+    console.log(this.me, 'starting driver')
 
     this.source = source
 
@@ -64,7 +64,7 @@ export class AdapterDriver {
           console.log(that.me, `subscribing to ${topic}`)
           // we extend the mqtt api to add callback and optional selector for dispatcher to filter on.
           // we need the callback because otherwise the provider wouldn't know where to send msg,
-          // ie which of the many mqtt-subscriber instances to send to.
+          // ie which of the many MqttSubscriber instances to send to.
           // onMessage is defined below.
           // mqtt.subscribe(topic) // old code
           provider.subscribe(topic, onMessage, selector)
@@ -102,7 +102,7 @@ export class AdapterDriver {
       } else {
         payload = payload.toString() // bytes to string
 
-        console.log(`MQTT-subscriber msg ${topic}: ${payload.slice(0, 140)}`)
+        console.log(`MqttSubscriber msg ${topic}: ${payload.slice(0, 140)}`)
 
         // if payload is plain text, set handler.text true in inputs.yaml - else parse as json
         if (!handler.text) payload = JSON.parse(payload) // string to js object

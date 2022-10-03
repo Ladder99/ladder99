@@ -25,23 +25,21 @@ const errorMessages = {
 
 export class AdapterDriver {
   //
-  // note - device here is the jobboss object from setup yaml -
+  // note - device here is the jobboss object from setup.yaml -
   // this code will iterate over all devices in setup yaml to find ones with
   // jobbossId values and check their schedules and jobnums.
-  async init({
+  async start({
     client, // { name, timezone }
     device, // { id }
     source, // { module, driver, connection, ... }
     devices, // [{ module, driver, connection, ...}, ...]
     cache,
   }) {
-    console.log(`JobBoss - initialize driver...`)
+    console.log(`JobBoss - start driver...`)
     setUnavailable()
 
     if (!source.connection?.server || !source.connection?.port) {
-      console.log(
-        `JobBoss error - missing connection info - check setup.yaml and envars.`
-      )
+      console.log(`JobBoss error no connection info. check setup.yaml, envars.`)
       return
     }
 

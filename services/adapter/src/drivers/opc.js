@@ -16,9 +16,9 @@ const {
 
 //. convert to class
 
-// initialize the client plugin
-export async function init({ url, cache, device }) {
-  console.log('OPC init', device.id)
+// start the client plugin
+export async function start({ url, cache, device }) {
+  console.log('OPC start', device.id)
 
   console.log(`OPC create client...`)
   const connectionStrategy = {

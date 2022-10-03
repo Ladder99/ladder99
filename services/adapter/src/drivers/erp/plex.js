@@ -6,11 +6,11 @@ const pollInterval = 1000 // msec
 const reconnectInterval = 5000 // msec
 
 export class AdapterDriver {
-  init({ device, protocol, host, port }) {
-    console.log(`Adapter initialize Plex ERP driver...`)
+  start({ device, protocol, host, port }) {
+    console.log(`Plex ERP start driver...`)
 
     const url = `${protocol}://${host}:${port}` // eg http://play:8080
-    console.log('Adapter init test plugin', device.id, url)
+    console.log('Plex start test plugin', device.id, url)
 
     const timer = setInterval(poll, pollInterval)
 

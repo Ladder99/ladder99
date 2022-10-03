@@ -25,8 +25,8 @@ export class AdapterDriver {
   // advice is a dict of optional fns that are called at various points in the code.
   //. is advice used also?
   // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
-  init({ source, device, host, port, cache, inputs, types, advice }) {
-    console.log('MQTT Initializing mqtt-json driver for', device.id)
+  start({ source, device, host, port, cache, inputs, types, advice }) {
+    console.log('MQTT starting mqtt-json driver for', device.id)
     const url = `mqtt://${host}:${port}`
 
     // connect to mqtt broker/server

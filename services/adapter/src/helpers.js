@@ -10,7 +10,7 @@ let keyvalues = {}
 // the driver can be at eg ./drivers/foo.js or ./drivers/foo/index.js.
 // the plugin must export a class named AdapterDriver.
 // this code will instantiate the driver and return it.
-// the AdapterDriver class must have an init({}) method to start it up.
+// the AdapterDriver class must have a start({}) method to start it up.
 export async function getPlugin(driversFolder, driver) {
   let code
   try {
