@@ -59,7 +59,10 @@ export class AdapterDriver {
       this.lastMessages[topic] = message // save last message so can dispatch to new subscribers
       // if (!this.subscribers[topic]) return // quit if no subscribers
       let payload = message.toString() // must be let!
-      console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
+
+      if (topic === 'controller') {
+        console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
+      }
 
       // an empty array is truthy, so check for undefined first
       if (
