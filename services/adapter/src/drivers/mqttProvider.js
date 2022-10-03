@@ -50,7 +50,7 @@ export class AdapterDriver {
           handler.called = true
         }
       }
-    } // end of onConnect
+    }
 
     // handle incoming messages and dispatch them to subscribers
     // topic - eg 'l99/pa1/evt/query'

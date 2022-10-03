@@ -61,7 +61,7 @@ handlers:
   # handle io messages
   # ----------------------------------------------------------------------------
   # a message on this topic might look like this -
-  #   {"id":"535172","a1":0.021972991531242846,"a2":0.013122758831158923,"a3":0.007629510948348211,"a4":0.021972991531242846,"a5":0,"a6":0,"a8":128}
+  #   {"id":"535172","a1":0.02197,"a2":0.01312,"a3":0.007629,"a4":0.0219,"a5":0,"a6":0,"a8":128}
   # where id is the device to dispatch the message to and a5 is the partcount
   l99/B01000/evt/io:
     # make '$' the message payload dictionary
