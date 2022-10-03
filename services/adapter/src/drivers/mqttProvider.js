@@ -105,19 +105,19 @@ export class AdapterDriver {
       handler() // eg onConnect() in mqttSubscriber
       handler.called = true // mark handler as called
     }
-    if (event === 'message' && this.connected) {
-      console.log(`MqttProvider calling message handler`, handler)
-      // call handler with last message for all topics we've seen
-      // this.subscribers = {} // eg { 'controller': [{ callback, selector }, ...], ... }
-      for (let [topic, handlers] of Object.entries(this.subscribers)) {
-        const lastMessage = this.lastMessages[topic]
-        if (lastMessage) {
-          for (let handler of handlers) {
-            handler(topic, lastMessage) // eg onMessage(topic, payload) in mqttSubscriber
-          }
-        }
-      }
-    }
+    // if (event === 'message' && this.connected) {
+    //   console.log(`MqttProvider calling message handler`, handler)
+    //   // call handler with last message for all topics we've seen
+    //   // this.subscribers = {} // eg { 'controller': [{ callback, selector }, ...], ... }
+    //   for (let [topic, handlers] of Object.entries(this.subscribers)) {
+    //     const lastMessage = this.lastMessages[topic]
+    //     if (lastMessage) {
+    //       for (let handler of handlers) {
+    //         handler(topic, lastMessage) // eg onMessage(topic, payload) in mqttSubscriber
+    //       }
+    //     }
+    //   }
+    // }
   }
 
   // subscribe to a topic with an optional selector fn.
@@ -127,6 +127,16 @@ export class AdapterDriver {
     console.log(
       `MqttProvider subscribe to topic ${topic} with selector ${selector.toString()}`
     )
+    if (this.connected) {
+      console.log(`MqttProvider already connected - call with last message`)
+      // call handler with last message for all topics we've seen
+      // this.subscribers = {} // eg { 'controller': [{ callback, selector }, ...], ... }
+      // for (let [topic, handlers] of Object.entries(this.subscribers)) {
+      const lastMessage = this.lastMessages[topic]
+      if (lastMessage) {
+        callback(topic, lastMessage) // eg onMessage(topic, payload) in mqttSubscriber
+      }
+    }
     const subscriber = { callback, selector }
     this.subscribers[topic] = this.subscribers[topic] || []
     this.subscribers[topic].push(subscriber)
