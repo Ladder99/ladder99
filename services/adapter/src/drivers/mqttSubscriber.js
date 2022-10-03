@@ -151,12 +151,11 @@ export class AdapterDriver {
         // use the lookup function to get value from payload
         const lookupFn = eval(handler.lookup) // eg '($, js) => eval(js)' - convert string to a fn
         const value = lookupFn($, expression) // eg expression=`dxm: $==='birth'` -> value=true
-
         // note guard for undefined value.
         // if need to reset a cache value, must pass value 'UNAVAILABLE' explicitly.
         if (value !== undefined) {
-          const cacheId = device.id + '-' + key // eg 'pa1-fault_count'
-          cache.set(cacheId, value)
+          const cacheId = this.device.id + '-' + key // eg 'pa1-fault_count'
+          this.cache.set(cacheId, value)
         }
       }
     }
@@ -180,8 +179,8 @@ export class AdapterDriver {
           //. should we be passing keyvalues here? does it get stuck in the closure?
           const value = expression.fn(cache, $, keyvalues) // run the expression fn
           if (value !== undefined) {
-            const cacheId = device.id + '-' + equationKey // eg 'pa1-fault_count'
-            cache.set(cacheId, value) // save to the cache - may send shdr to tcp
+            const cacheId = this.device.id + '-' + equationKey // eg 'pa1-fault_count'
+            this.cache.set(cacheId, value) // save to the cache - may send shdr to tcp
             equationKeys2.add(cacheId)
           }
         }
