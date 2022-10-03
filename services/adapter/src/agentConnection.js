@@ -2,15 +2,15 @@ import net from 'net' // node lib for tcp
 
 // make a tcp server and listen for Agent connections.
 // address is eg { host: 'adapter', port: 7878 }.
-// onConnect and onError are callbacks for when a connection is made or an error occurs.
+// onAgentConnect and onAgentError are callbacks for when a connection is made or an error occurs.
 export class AgentConnection {
   //
-  start({ address, onConnect, onError }) {
+  start({ address, onAgentConnect, onAgentError }) {
     console.log(`AgentConnection creating TCP server for Agent to connect to`)
 
     // save callbacks
-    this.onConnect = onConnect
-    this.onError = onError
+    this.onAgentConnect = onAgentConnect
+    this.onAgentError = onAgentError
 
     const tcp = net.createServer()
     tcp.on('connection', this.handleConnection.bind(this))
@@ -28,12 +28,12 @@ export class AgentConnection {
     console.log('AgentConnection new connection from Agent', remoteAddress)
     socket.on('error', this.handleError.bind(this))
     socket.on('data', this.handleData.bind(this))
-    this.onConnect(socket) // call the callback
+    this.onAgentConnect(socket) // call the callback
   }
 
   handleError(error) {
     console.log('AgentConnectiongent connection error', error)
-    this.onError(error) // call the callback
+    this.onAgentError(error) // call the callback
   }
 
   // handle ping/pong messages to/from agent, so it knows we're alive.

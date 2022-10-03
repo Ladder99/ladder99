@@ -18,7 +18,7 @@ export function setupDevice({
   // setup sources
   // each device can have multiple sources.
   // saves plugin (the driver instance) to the source object.
-  for (const source of device?.sources || []) {
+  for (const source of device.sources || []) {
     setupSource({
       setup,
       params,
@@ -31,14 +31,14 @@ export function setupDevice({
     })
   }
 
-  // get host and port, eg { host: adapter, port: 7878 }
+  // get host and port to talk to agent on, eg { host: adapter, port: 7878 }.
   // this works even if no outputs or agent are specified.
   // eg in setup.yaml,
   //   # define any outputs for this device
   //   outputs:
   //     agent:
-  //       port: 7878 # differs by device - must match value in agent.cfg
-  const address = { ...params.agent, ...device?.outputs?.agent }
+  //       port: 7880 # differs by device - must match value in agent.cfg
+  const address = { ...params.defaultAgent, ...device.outputs?.agent }
 
   // start tcp server for Agent to listen to, eg at adapter:7878.
   // each device gets a separate tcp connection to the agent - same host, diff port.
@@ -47,10 +47,10 @@ export function setupDevice({
 
   // callback to handle tcp connection
   function onAgentConnect(socket) {
-    console.log(`AgentConnection connected`, device.name, socket.remoteAddress)
+    console.log(`AgentConnection connected to Agent for`, device.name)
     // tell cache and plugins about the tcp socket
     for (let source of device.sources) {
-      console.log(`AgentConnection set socket ${device.name}, ${source.driver}`)
+      console.log(`AgentConnection set socket for`, device.name, source.driver)
       cache.setSocket(source.outputs, socket) // this should trigger sending all cache values
       // note: source.plugin is the instantiated driver object for the source,
       // which may not have a setSocket fn.

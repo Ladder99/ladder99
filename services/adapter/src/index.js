@@ -17,7 +17,7 @@ console.log(`----------------------------------------------------------------`)
 // get params - typically set in compose.yaml and compose-overrides.yaml files
 const params = {
   // default tcp server for agent if none provided in setup.yaml
-  agent: { protocol: 'shdr', host: 'adapter', port: 7878 },
+  defaultAgent: { protocol: 'shdr', host: 'adapter', port: 7878 },
   // file system inputs
   driversFolder: './drivers', // eg for mqtt-subscriber.js - must start with '.'
   // these folders may be defined in compose.yaml with docker volume mappings.
@@ -38,18 +38,18 @@ async function start(params) {
 
   // start any shared providers
   // eg setup.yaml/adapter/providers = { sharedMqtt: { driver, url }, ... }
-  const providers = setup?.adapter?.providers || {}
+  const providers = setup.adapter?.providers || {}
   for (const provider of Object.values(providers)) {
     console.log(`Adapter setup shared provider`, provider)
     // import driver plugin - instantiates a new instance of the AdapterDriver class
     const plugin = await getPlugin(params.driversFolder, provider.driver) // eg 'mqttProvider'
     plugin.start({ provider }) // this connects to the mqtt broker
-    provider.plugin = plugin // save plugin to the provider object, eg { driver, url, plugin }
+    provider.plugin = plugin // save plugin to this provider object, eg { driver, url, plugin }
   }
 
   // iterate over device definitions from setup.yaml file and do setup for each
-  const client = setup?.client || {}
-  const devices = setup?.devices || []
+  const client = setup.client || {}
+  const devices = setup.devices || []
   for (const device of devices) {
     setupDevice({ setup, params, device, cache, client, devices, providers })
   }
