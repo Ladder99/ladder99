@@ -4,7 +4,7 @@
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
 //. refactor/chop this code up into smaller fns - hard to read.
-// be careful with types, keyvalues, closure vars, and this vs that.
+// be careful with types, keyvalues, closure vars, and this vs this.
 
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../common/lib.js'
@@ -56,22 +56,22 @@ export class AdapterDriver {
     // register connection handler
     //. move onConnect to a method, but be careful with closure vars!
     // provider.on('connect', this.onConnect.bind(this))
-    const that = this //. ditch
-    provider.on('connect', onConnect.bind(this)) // end of onConnect
+    // const that = this //. ditch
+    provider.on('connect', onConnect.bind(this))
 
     function onConnect() {
-      console.log(that.me, `connected to MQTT-provider`)
+      console.log(this.me, `connected to MQTT-provider`)
 
       // subscribe to any topics defined in inputs.yaml,
       // eg [{topic:'controller'}, {topic:'l99/B01000/evt/io'}, ...]
       //. this will be const subscriptions = module.inputs?.handlers?.connect?.subscribe || []
       const subscriptions = module.inputs?.connect?.subscribe || []
       for (const subscription of subscriptions) {
-        const topic = replaceDeviceId(subscription.topic, that.device)
+        const topic = this.replaceDeviceId(subscription.topic)
         // can set a topic to false in setup.yaml to not subscribe to it
         const selector = selectors[topic]
         if (selector && selector !== false) {
-          console.log(that.me, `subscribing to ${topic}`)
+          console.log(this.me, `subscribing to ${topic}`)
           // we extend the mqtt api to add callback and optional selector for dispatcher to filter on.
           // we need the callback because otherwise the provider wouldn't know where to send msg,
           // ie which of the many MqttSubscriber instances to send to.
@@ -87,22 +87,22 @@ export class AdapterDriver {
       const publish = module.inputs?.connect?.publish || [] // list of { topic, message }
       // const publish = module.inputs?.handlers?.connect?.publish || [] // list of { topic, message }
       for (const entry of publish) {
-        const topic = replaceDeviceId(entry.topic, that.device)
-        console.log(that.me, `publishing to ${topic}`)
+        const topic = this.replaceDeviceId(entry.topic)
+        console.log(this.me, `publishing to ${topic}`)
         provider.publish(topic, entry.message)
       }
 
       // do any static inits
       const inits = module.inputs?.connect?.static || {} // eg { procname: KITTING }
       // const inits = module.inputs?.handlers?.connect?.static || {} // eg { procname: KITTING }
-      console.log(that.me, 'static inits:', inits)
+      console.log(this.me, 'static inits:', inits)
       for (const key of Object.keys(inits)) {
         const cacheId = `${device.id}-${key}`
         const value = inits[key]
         cache.set(cacheId, value)
       }
 
-      console.log(that.me, `listening for messages...`)
+      console.log(this.me, `listening for messages...`)
     } // end of onConnect
 
     // handle incoming messages.
@@ -112,12 +112,12 @@ export class AdapterDriver {
     function onMessage(topic, payload) {
       const handler = topicHandlers[topic]
       if (!handler) {
-        console.log(that.me, `warning: no handler for topic`, topic)
+        console.log(this.me, `warning: no handler for topic`, topic)
       } else {
         payload = payload.toString() // bytes to string
 
         if (topic === 'controller') {
-          console.log(that.me, `msg ${topic}: ${payload.slice(0, 140)}`)
+          console.log(this.me, `msg ${topic}: ${payload.slice(0, 140)}`)
         }
 
         // if payload is plain text, set handler.text true in inputs.yaml - else parse as json
@@ -125,8 +125,8 @@ export class AdapterDriver {
 
         // unsubscribe from topics as needed
         for (const entry of handler.unsubscribe || []) {
-          const topic = replaceDeviceId(entry.topic, that.device)
-          console.log(that.me, `unsubscribe from ${topic}`)
+          const topic = this.replaceDeviceId(entry.topic)
+          console.log(this.me, `unsubscribe from ${topic}`)
           provider.unsubscribe(topic, onMessage) //. bind to this
         }
 
@@ -135,7 +135,7 @@ export class AdapterDriver {
         // eg initialize: 'payload.forEach(item => $[item.address] = item)'
         // eg initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
         //. parameterize this so don't need to put code in the yaml
-        // console.log(that.me,`run initialize handler`)
+        // console.log(this.me,`run initialize handler`)
         let $ = {} // a variable representing payload data - must be let not const
         eval(handler.initialize) // eg '$ = payload'
 
@@ -192,16 +192,16 @@ export class AdapterDriver {
           } while (equationKeys.size > 0 && depth < 6) // prevent endless loops
           //
         } else if (handler.algorithm) {
-          console.log(that.me, `error unknown algorithm ${handler.algorithm}`)
+          console.log(this.me, `error unknown algorithm ${handler.algorithm}`)
           //
         } else {
-          console.log(that.me, `error no algorithm set for ${topic}`)
+          console.log(this.me, `error no algorithm set for ${topic}`)
         }
 
         // subscribe to any topics
         for (const entry of handler.subscribe || []) {
-          const topic = replaceDeviceId(entry.topic, that.device)
-          console.log(that.me, `subscribe to ${topic}`)
+          const topic = this.replaceDeviceId(entry.topic)
+          console.log(this.me, `subscribe to ${topic}`)
           provider.subscribe(topic, onMessage, selectors[topic])
           //. provider.subscribe(topic, this.onMessage.bind(this), selectors[topic])
         }
@@ -214,7 +214,7 @@ export class AdapterDriver {
     const topicHandlers = {}
     const handlers = this.module.inputs?.handlers || {}
     for (let [topic, handler] of Object.entries(handlers)) {
-      topic = replaceDeviceId(topic, this.device)
+      topic = this.replaceDeviceId(topic)
       topicHandlers[topic] = handler
     }
     return topicHandlers
@@ -255,8 +255,8 @@ export class AdapterDriver {
     }
     return selectors
   }
-}
 
-function replaceDeviceId(str, device) {
-  return str.replace('${deviceId}', device.id)
+  replaceDeviceId(str) {
+    return str.replace('${deviceId}', this.device.id)
+  }
 }
