@@ -205,8 +205,11 @@ export class AdapterDriver {
     for (const entry of handler.subscribe || []) {
       const topic = this.replaceDeviceId(entry.topic)
       console.log(this.me, `subscribe to ${topic}`)
-      provider.subscribe(topic, onMessage, selectors[topic])
-      //. provider.subscribe(topic, this.onMessage.bind(this), selectors[topic])
+      this.provider.subscribe(
+        topic,
+        this.onMessage.bind(this),
+        selectors[topic]
+      )
     }
   }
 
@@ -215,7 +218,7 @@ export class AdapterDriver {
     for (const entry of handler.unsubscribe || []) {
       const topic = this.replaceDeviceId(entry.topic)
       console.log(this.me, `unsubscribe from ${topic}`)
-      provider.unsubscribe(topic, onMessage.bind(this))
+      this.provider.unsubscribe(topic, this.onMessage.bind(this))
     }
   }
 
