@@ -139,7 +139,7 @@ export class AdapterDriver {
     algorithmHandler() // call the algorithm handler - local functions defined below
 
     // subscribe to any topics as specified
-    this.subscribeTopics(handler)
+    this.subscribeTopics2(handler)
 
     // this algorithm iterates over expressions, evaluates each, and adds value to cache.
     // expressions is an array of [key, expression] - eg [['fault_count', '%M55.2'], ...].
@@ -201,7 +201,7 @@ export class AdapterDriver {
   } // end of onMessage fn
 
   // subscribe to any topics as specified in inputs.yaml
-  subscribeTopics(handler) {
+  subscribeTopics2(handler) {
     for (const entry of handler.subscribe || []) {
       const topic = this.replaceDeviceId(entry.topic)
       console.log(this.me, `subscribe to ${topic}`)
