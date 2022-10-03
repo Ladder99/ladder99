@@ -19,197 +19,205 @@ export class AdapterDriver {
 
     this.source = source
     this.device = device
+    this.cache = cache
     this.module = module // { inputs, outputs, types }
+    this.provider = provider
 
     // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
-    const { types } = module // module is { inputs, outputs, types }, from yaml files
+    this.types = module.types // module is { inputs, outputs, types }, from yaml files
 
     // keyvalue store for yaml code to use
-    const keyvalues = {}
+    this.keyvalues = {}
 
     // get dict of selector fns for each topic
     // eg { 'controller': true, 'l99...': payload=>payload.id==535172, ... }
-    const selectors = this.getSelectors()
+    this.selectors = this.getSelectors()
 
     // get topic handlers from inputs.yaml
     // eg { 'controller': { unsubscribe, initialize, definitions, inputs, ... }, ... }
-    const topicHandlers = this.getTopicHandlers()
-
-    // // pre-evaluate expressions from yaml code
-    // // eg handler.lookup could be '($, js) => eval(js)' // woo double eval
-    // //. is it okay to do this here? no - closure messed it up
-    // for (let handler of Object.values(handlers)) {
-    //   const lookup = handler.lookup || (() => {})
-    //   // console.log(this.me, `lookup fn`, lookup.toString())
-    //   handler.lookupFn = eval(lookup)
-    // }
-
-    // // AWAIT here until provider is connected?
-    // await untilProviderConnected(provider)
-    // async function untilProviderConnected(provider) {
-    //   while (!provider.connected) {
-    //     console.log(this.me, `waiting for provider to connect...`)
-    //     await lib.sleep(2000)
-    //   }
-    // }
+    this.topicHandlers = this.getTopicHandlers()
 
     // register connection handler
-    provider.on('connect', onConnect.bind(this))
+    this.provider.on('connect', this.onConnect.bind(this))
+  }
 
-    // // register message handler
-    // // instead of doing this, we can just call provider.subscribe(topic, onMessage, selector)
-    // provider.on('message', onMessage.bind(this))
+  onConnect() {
+    console.log(this.me, `connected to MqttProvider`)
+    this.subscribeTopics() // subscribe to any topics defined in inputs.yaml
+    this.publishTopics() // publish to any topics defined
+    this.doStaticInits() // do any static inits
+    console.log(this.me, `listening for messages...`)
+  }
 
-    //. make this a method, but be careful of closure vars
-    function onConnect() {
-      console.log(this.me, `connected to MQTT-provider`)
+  // subscribe to topics as defined in inputs.yaml
+  // eg [{topic:'controller'}, {topic:'l99/B01000/evt/io'}, ...]
+  subscribeTopics() {
+    const subscriptions = this.module.inputs?.connect?.subscribe || []
+    for (const subscription of subscriptions) {
+      const topic = this.replaceDeviceId(subscription.topic)
+      // can set a topic to false in setup.yaml to not subscribe to it
+      const selector = this.selectors[topic]
+      if (selector && selector !== false) {
+        console.log(this.me, `subscribing to ${topic}`)
+        // we extend the mqtt api to add callback and optional selector for dispatcher to filter on.
+        // we need the callback because otherwise the provider wouldn't know where to send msg,
+        // ie which of the many MqttSubscriber instances to send to.
+        // onMessage is defined below.
+        // mqtt.subscribe(topic) // old code using libmqtt
+        //. this will be provider.subscribe(topic, this.onMessage.bind(this), selector) //. will this work with unsubscribe?
+        // provider.subscribe(topic, onMessage, selector)
+        this.provider.subscribe(topic, this.onMessage.bind(this), selector)
+      }
+    }
+  }
 
-      // subscribe to any topics defined in inputs.yaml,
-      // eg [{topic:'controller'}, {topic:'l99/B01000/evt/io'}, ...]
-      //. this will be const subscriptions = module.inputs?.handlers?.connect?.subscribe || []
-      const subscriptions = module.inputs?.connect?.subscribe || []
-      for (const subscription of subscriptions) {
-        const topic = this.replaceDeviceId(subscription.topic)
-        // can set a topic to false in setup.yaml to not subscribe to it
-        const selector = selectors[topic]
-        if (selector && selector !== false) {
-          console.log(this.me, `subscribing to ${topic}`)
-          // we extend the mqtt api to add callback and optional selector for dispatcher to filter on.
-          // we need the callback because otherwise the provider wouldn't know where to send msg,
-          // ie which of the many MqttSubscriber instances to send to.
-          // onMessage is defined below.
-          // mqtt.subscribe(topic) // old code using libmqtt
-          //. this will be provider.subscribe(topic, this.onMessage.bind(this), selector) //. will this work with unsubscribe?
-          // provider.subscribe(topic, onMessage, selector)
-          provider.subscribe(topic, onMessage.bind(this), selector) //. ok with unsubscribe?
+  // publish to topics as defined in inputs.yaml
+  publishTopics() {
+    const publish = this.module.inputs?.connect?.publish || [] // list of { topic, message }
+    for (const entry of publish) {
+      const topic = this.replaceDeviceId(entry.topic)
+      console.log(this.me, `publishing to ${topic}`)
+      this.provider.publish(topic, entry.message)
+    }
+  }
+
+  // do any static inits as defined in inputs.yaml
+  doStaticInits() {
+    const inits = this.module.inputs?.connect?.static || {} // eg { procname: KITTING }
+    console.log(this.me, 'static inits:', inits)
+    for (const key of Object.keys(inits)) {
+      const cacheId = `${device.id}-${key}`
+      const value = inits[key]
+      this.cache.set(cacheId, value)
+    }
+  }
+
+  // handle incoming messages
+  // eg for ccs-pa have query, status, and read messages.
+  // topic - mqtt topic, eg 'l99/pa1/evt/query'
+  // message - array of bytes (assumed to be a string or json string)
+  onMessage(topic, payload) {
+    const handler = this.topicHandlers[topic]
+    if (!handler) {
+      console.log(this.me, `warning: no handler for topic`, topic)
+      return
+    }
+    payload = payload.toString() // bytes to string
+    //.
+    if (topic === 'controller') {
+      console.log(this.me, `msg ${topic}: ${payload.slice(0, 140)}`)
+    }
+
+    // if payload is plain text, set handler.text true in inputs.yaml - else parse as json
+    if (!handler.text) payload = JSON.parse(payload) // string to js object
+
+    // unsubscribe from any topics specified
+    this.unsubscribeTopics(handler)
+
+    // make these available to yaml code
+    const types = this.types
+    const keyvalues = this.keyvalues
+
+    // run initialize handler
+    // eg can assign payload values to a dictionary $ here for fast lookups.
+    // eg initialize: 'payload.forEach(item => $[item.address] = item)'
+    // eg initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
+    //. parameterize this so don't need to put code in the yaml
+    // console.log(this.me,`run initialize handler`)
+    let $ = {} // a variable representing payload data - must be let not const
+    eval(handler.initialize) // eg '$ = payload' - ie sets the variable `$` to message payload (string or js object)
+
+    // run algorithm handler on the payload
+    const algorithm = handler.algorithm || 'none'
+    const algorithmHandlers = {
+      //. call this 'eval_expressions'
+      iterate_expressions: iterateExpressions,
+      iterate_message_contents: iteratePayloadContents,
+      none: noAlgorithm,
+    }
+    const algorithmHandler = algorithmHandlers[algorithm] || unknownAlgorithm
+    algorithmHandler() // call the algorithm handler - local functions defined below
+
+    // subscribe to any topics as specified
+    this.subscribeTopics(handler)
+
+    // this algorithm iterates over expressions, evaluates each, and adds value to cache.
+    // expressions is an array of [key, expression] - eg [['fault_count', '%M55.2'], ...].
+    //. this could be like the other algorithm - use msg('foo'), calculations -
+    // then would be reactive instead of evaluating each expression, and unifies code!
+    function iterateExpressions() {
+      const expressions = handler.expressions || {}
+      for (const [key, expression] of Object.entries(expressions)) {
+        // use the lookup function to get value from payload
+        const lookupFn = eval(handler.lookup) // eg '($, js) => eval(js)' - convert string to a fn
+        const value = lookupFn($, expression) // eg expression=`dxm: $==='birth'` -> value=true
+
+        // note guard for undefined value.
+        // if need to reset a cache value, must pass value 'UNAVAILABLE' explicitly.
+        if (value !== undefined) {
+          const cacheId = device.id + '-' + key // eg 'pa1-fault_count'
+          cache.set(cacheId, value)
         }
       }
+    }
 
-      // publish to any topics defined
-      const publish = module.inputs?.connect?.publish || [] // list of { topic, message }
-      // const publish = module.inputs?.handlers?.connect?.publish || [] // list of { topic, message }
-      for (const entry of publish) {
-        const topic = this.replaceDeviceId(entry.topic)
-        console.log(this.me, `publishing to ${topic}`)
-        provider.publish(topic, entry.message)
-      }
+    // get set of keys for eqns we need to execute based on the payload
+    // eg set{'has_current_job', 'job_meta', ...}
+    function iteratePayloadContents() {
+      //. call this dependencies = getDependencies?
+      //  or references = getReferences ?
+      let equationKeys = getEquationKeys(payload, handler.maps)
 
-      // do any static inits
-      const inits = module.inputs?.connect?.static || {} // eg { procname: KITTING }
-      // const inits = module.inputs?.handlers?.connect?.static || {} // eg { procname: KITTING }
-      console.log(this.me, 'static inits:', inits)
-      for (const key of Object.keys(inits)) {
-        const cacheId = `${device.id}-${key}`
-        const value = inits[key]
-        cache.set(cacheId, value)
-      }
+      // make sure all '=' expressions will be evaluated
+      lib.mergeIntoSet(equationKeys, handler.alwaysRun)
 
-      console.log(this.me, `listening for messages...`)
-    } // end of onConnect fn
-
-    // handle incoming messages.
-    // eg for ccs-pa have query, status, and read messages.
-    // topic - mqtt topic, eg 'l99/pa1/evt/query'
-    // message - array of bytes (assumed to be a string or json string)
-    function onMessage(topic, payload) {
-      const handler = topicHandlers[topic]
-      if (!handler) {
-        console.log(this.me, `warning: no handler for topic`, topic)
-      } else {
-        payload = payload.toString() // bytes to string
-
-        if (topic === 'controller') {
-          console.log(this.me, `msg ${topic}: ${payload.slice(0, 140)}`)
-        }
-
-        // if payload is plain text, set handler.text true in inputs.yaml - else parse as json
-        if (!handler.text) payload = JSON.parse(payload) // string to js object
-
-        // unsubscribe from topics as needed
-        for (const entry of handler.unsubscribe || []) {
-          const topic = this.replaceDeviceId(entry.topic)
-          console.log(this.me, `unsubscribe from ${topic}`)
-          provider.unsubscribe(topic, onMessage.bind(this))
-        }
-
-        // run initialize handler
-        // eg can assign payload values to a dictionary $ here for fast lookups.
-        // eg initialize: 'payload.forEach(item => $[item.address] = item)'
-        // eg initialize: '$ = payload; $.faultKeys=Object.keys(payload.faults);'
-        //. parameterize this so don't need to put code in the yaml
-        // console.log(this.me,`run initialize handler`)
-        let $ = {} // a variable representing payload data - must be let not const
-        eval(handler.initialize) // eg '$ = payload'
-
-        // this algorithm iterates over expressions, evaluates each, and adds value to cache.
-        // expressions is an array of [key, expression] - eg [['fault_count', '%M55.2'], ...].
-        //. this could be like the other algorithm - use msg('foo'), calculations -
-        // then would be reactive instead of evaluating each expression, and unifies code!
-        //. call this 'eval_expressions'
-        if (handler.algorithm === 'iterate_expressions') {
-          const expressions = handler.expressions || {}
-          for (const [key, expression] of Object.entries(expressions)) {
-            // use the lookup function to get value from payload
-            const lookupFn = eval(handler.lookup) // eg '($, js) => eval(js)' - convert string to a fn
-            const value = lookupFn($, expression) // eg expression=`dxm: $==='birth'` -> value=true
-            // note guard for undefined value.
-            // if need to reset a cache value, must pass value 'UNAVAILABLE' explicitly.
-            if (value !== undefined) {
-              const cacheId = device.id + '-' + key // eg 'pa1-fault_count'
-              cache.set(cacheId, value) // save to the cache - may send shdr to agent
-            }
+      let depth = 0
+      do {
+        const equationKeys2 = new Set()
+        // evaluate each eqn once, and put the results in the cache.
+        for (let equationKey of equationKeys) {
+          const expression = handler.augmentedExpressions[equationKey]
+          //. should we be passing keyvalues here? does it get stuck in the closure?
+          const value = expression.fn(cache, $, keyvalues) // run the expression fn
+          if (value !== undefined) {
+            const cacheId = device.id + '-' + equationKey // eg 'pa1-fault_count'
+            cache.set(cacheId, value) // save to the cache - may send shdr to tcp
+            equationKeys2.add(cacheId)
           }
-          //
-          //. call this iterate_payload_contents
-        } else if (handler.algorithm === 'iterate_message_contents') {
-          //
-          // get set of keys for eqns we need to execute based on the payload
-          // eg set{'has_current_job', 'job_meta', ...}
-          //. call this dependencies = getDependencies?
-          //  or references = getReferences ?
-          // yeah
-          let equationKeys = getEquationKeys(payload, handler.maps)
-
-          // make sure all '=' expressions will be evaluated
-          lib.mergeIntoSet(equationKeys, handler.alwaysRun)
-
-          let depth = 0
-
-          do {
-            const equationKeys2 = new Set()
-            // evaluate each eqn once, and put the results in the cache.
-            for (let equationKey of equationKeys) {
-              const expression = handler.augmentedExpressions[equationKey]
-              //. should we be passing keyvalues here? does it get stuck in the closure?
-              const value = expression.fn(cache, $, keyvalues) // run the expression fn
-              if (value !== undefined) {
-                const cacheId = device.id + '-' + equationKey // eg 'pa1-fault_count'
-                cache.set(cacheId, value) // save to the cache - may send shdr to tcp
-                equationKeys2.add(cacheId)
-              }
-            }
-            //. merge this algorithm with getEquationKeys
-            equationKeys = getEquationKeys2(equationKeys2, handler.maps)
-            depth += 1
-          } while (equationKeys.size > 0 && depth < 6) // prevent endless loops
-          //
-        } else if (handler.algorithm) {
-          console.log(this.me, `error unknown algorithm ${handler.algorithm}`)
-          //
-        } else {
-          console.log(this.me, `error no algorithm set for ${topic}`)
         }
+        //. merge this algorithm with getEquationKeys
+        equationKeys = getEquationKeys2(equationKeys2, handler.maps)
+        depth += 1
+      } while (equationKeys.size > 0 && depth < 6)
+    }
 
-        // subscribe to any topics
-        for (const entry of handler.subscribe || []) {
-          const topic = this.replaceDeviceId(entry.topic)
-          console.log(this.me, `subscribe to ${topic}`)
-          provider.subscribe(topic, onMessage, selectors[topic])
-          //. provider.subscribe(topic, this.onMessage.bind(this), selectors[topic])
-        }
-      }
-    } // end of onMessage fn
-  } // end of start method
+    function unknownAlgorithm() {
+      console.log(this.me, `error unknown algorithm ${handler.algorithm}`)
+    }
+
+    function noAlgorithm() {
+      console.log(this.me, `error no algorithm set for ${topic}`)
+    }
+  } // end of onMessage fn
+
+  // subscribe to any topics as specified in inputs.yaml
+  subscribeTopics(handler) {
+    for (const entry of handler.subscribe || []) {
+      const topic = this.replaceDeviceId(entry.topic)
+      console.log(this.me, `subscribe to ${topic}`)
+      provider.subscribe(topic, onMessage, selectors[topic])
+      //. provider.subscribe(topic, this.onMessage.bind(this), selectors[topic])
+    }
+  }
+
+  // unsubscribe from any topics as specified in inputs.yaml
+  unsubscribeTopics(handler) {
+    for (const entry of handler.unsubscribe || []) {
+      const topic = this.replaceDeviceId(entry.topic)
+      console.log(this.me, `unsubscribe from ${topic}`)
+      provider.unsubscribe(topic, onMessage.bind(this))
+    }
+  }
 
   // get dict of topic handlers - one handler per topic
   getTopicHandlers() {
