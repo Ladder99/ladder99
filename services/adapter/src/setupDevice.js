@@ -4,6 +4,7 @@
 import { setupSource } from './setupSource.js'
 import { AgentConnection } from './agentConnection.js'
 
+// export async function setupDevice({
 export function setupDevice({
   setup,
   params,
@@ -19,6 +20,7 @@ export function setupDevice({
   // each device can have multiple sources.
   // saves plugin (the driver instance) to the source object.
   for (const source of device.sources || []) {
+    // await setupSource({
     setupSource({
       setup,
       params,

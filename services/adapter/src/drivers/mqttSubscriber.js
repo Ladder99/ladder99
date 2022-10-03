@@ -47,7 +47,14 @@ export class AdapterDriver {
     //   handler.lookupFn = eval(lookup)
     // }
 
-    // WAIT here until provider is connected?
+    // AWAIT here until provider is connected?
+    await untilProviderConnected(provider)
+    async function untilProviderConnected(provider) {
+      while (!provider.connected) {
+        console.log(this.me, `waiting for provider to connect...`)
+        await lib.sleep(2000)
+      }
+    }
 
     // register connection handler
     //. move onConnect to a method, but be careful with closure vars!
@@ -58,9 +65,8 @@ export class AdapterDriver {
 
       // subscribe to any topics defined in inputs.yaml,
       // eg [{topic:'controller'}, {topic:'l99/B01000/evt/io'}, ...]
+      //. this will be const subscriptions = module.inputs?.handlers?.connect?.subscribe || []
       const subscriptions = module.inputs?.connect?.subscribe || []
-      //. this will be
-      // const subscriptions = module.inputs?.handlers?.connect?.subscribe || []
       for (const subscription of subscriptions) {
         const topic = replaceDeviceId(subscription.topic)
         // can set a topic to false in setup.yaml to not subscribe to it
@@ -72,9 +78,8 @@ export class AdapterDriver {
           // ie which of the many MqttSubscriber instances to send to.
           // onMessage is defined below.
           // mqtt.subscribe(topic) // old code using libmqtt
+          //. this will be provider.subscribe(topic, this.onMessage.bind(this), selector) //. will this work with unsubscribe?
           provider.subscribe(topic, onMessage, selector)
-          //. this will be
-          // provider.subscribe(topic, this.onMessage.bind(this), selector) //. will this work with unsubscribe?
         }
       }
 
