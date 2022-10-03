@@ -126,15 +126,15 @@ export class AdapterDriver {
   subscribe(topic, callback, selector = payload => true) {
     console.log(`MqttProvider subscribe ${topic} when ${selector.toString()}`)
     // if we're already connected to the broker, call callback with last message received.
-    if (this.connected) {
-      const lastMessage = this.lastMessages[topic]
-      if (lastMessage) {
-        console.log(
-          `MqttProvider already connected - call with ${topic}: ${lastMessage}`
-        )
-        callback(topic, lastMessage) // eg onMessage(topic, payload) in mqttSubscriber
-      }
+    // if (this.connected) {
+    const lastMessage = this.lastMessages[topic]
+    if (lastMessage) {
+      console.log(
+        `MqttProvider already connected - call with ${topic}: ${lastMessage}`
+      )
+      callback(topic, lastMessage) // eg onMessage(topic, payload) in mqttSubscriber
     }
+    // }
     const subscriber = { callback, selector }
     this.subscribers[topic] = this.subscribers[topic] || []
     this.subscribers[topic].push(subscriber)
