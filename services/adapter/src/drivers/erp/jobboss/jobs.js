@@ -45,7 +45,7 @@ export class Jobs {
           //. if job changed, could query db for estqty,runqty also, set the cache values
           //
         } catch (error) {
-          console.log(`JobBoss jobs ${device.name} error`, error)
+          console.log(`JobBoss jobs ${device.name} error`, error.message)
         }
       }
     }
