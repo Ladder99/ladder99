@@ -47,14 +47,14 @@ export class AdapterDriver {
     //   handler.lookupFn = eval(lookup)
     // }
 
-    // AWAIT here until provider is connected?
-    await untilProviderConnected(provider)
-    async function untilProviderConnected(provider) {
-      while (!provider.connected) {
-        console.log(this.me, `waiting for provider to connect...`)
-        await lib.sleep(2000)
-      }
-    }
+    // // AWAIT here until provider is connected?
+    // await untilProviderConnected(provider)
+    // async function untilProviderConnected(provider) {
+    //   while (!provider.connected) {
+    //     console.log(this.me, `waiting for provider to connect...`)
+    //     await lib.sleep(2000)
+    //   }
+    // }
 
     // register connection handler
     //. move onConnect to a method, but be careful with closure vars!

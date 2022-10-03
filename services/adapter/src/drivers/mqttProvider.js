@@ -31,6 +31,13 @@ export class AdapterDriver {
     this.mqtt.on('connect', _onConnect.bind(this))
     this.mqtt.on('message', _onMessage.bind(this))
 
+    // wait for connection to complete
+    // add another connect handler that will only resolve when the connection is complete
+    // thank you, github copilot...
+    await new Promise((resolve, reject) => {
+      this.handlers.connect.push(resolve)
+    })
+
     // handle the initial connect event from the mqtt broker.
     // note: we bound onConnect to `this`, above.
     function _onConnect() {
