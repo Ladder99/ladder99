@@ -30,7 +30,7 @@ export async function setupSource({
 
   // import driver plugin, eg micro.js or mqttSubscriber.js.
   // this instantiates a new instance of the AdapterDriver class.
-  // but doesn't start the plugin - that's at the end of this code.
+  // but doesn't start the plugin! that's at the end of this code.
   const plugin = await getPlugin(params.driversFolder, driver)
   source.plugin = plugin // save to source so on agent connection can tell it socket
 
@@ -125,7 +125,7 @@ export async function setupSource({
     }
   }
 
-  // start driver plugin
+  // finally, start the driver plugin.
   // note: this must be done AFTER getOutputs and addOutputs,
   // as that is where the dependsOn values are set, and this needs those.
   //. add example for each param

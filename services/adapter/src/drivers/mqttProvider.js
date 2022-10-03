@@ -4,10 +4,12 @@
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
 // this class wraps the libmqtt object, adding additional dispatch capabilities.
+
 export class AdapterDriver {
   //
   // provider is something like { url: 'mqtt://localhost:1883', ... }
   async start({ provider }) {
+    //
     console.log(`MqttProvider start`, provider)
     this.url = provider.url
     this.connected = false
@@ -21,7 +23,7 @@ export class AdapterDriver {
     // topic subscribers, coming from mqttSubscriber
     this.subscribers = {} // eg { controller: [{ callback, selector }, ...], ... }
 
-    // start the underlying mqtt connection
+    // start the underlying libmqtt connection
     console.log(`MqttProvider connecting to url`, this.url)
     this.mqtt = libmqtt.connect(this.url)
 
@@ -34,9 +36,9 @@ export class AdapterDriver {
     function _onConnect() {
       this.connected = true // set flag
       console.log(`MqttProvider connected to shared broker on`, this.url)
-      const handlers = this.handlers.connect
-      console.log(`MqttProvider calling connect handlers`, handlers)
-      for (let handler of handlers) {
+      const connectHandlers = this.handlers.connect // a list of onConnect handlers - could be empty
+      console.log(`MqttProvider calling connect handlers`, connectHandlers)
+      for (let handler of connectHandlers) {
         // check if handler has been called - flag is set in the on() method, and here.
         if (!handler.called) {
           handler() // eg onConnect() in mqttSubscriber - subscribes to topics

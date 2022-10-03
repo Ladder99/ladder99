@@ -43,7 +43,7 @@ async function start(params) {
     console.log(`Adapter setup shared provider`, provider)
     // import driver plugin - instantiates a new instance of the AdapterDriver class
     const plugin = await getPlugin(params.driversFolder, provider.driver) // eg 'mqttProvider'
-    plugin.start({ provider }) // this connects to the mqtt broker
+    plugin.start({ provider }) // start driver - eg this connects to the mqtt broker
     provider.plugin = plugin // save plugin to this provider object, eg { driver, url, plugin }
   }
 
