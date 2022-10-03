@@ -31,12 +31,12 @@ export class AdapterDriver {
     this.mqtt = libmqtt.connect(this.url)
 
     // register handlers for events from the libmqtt object
-    this.mqtt.on('connect', _onConnect.bind(this))
-    this.mqtt.on('message', _onMessage.bind(this))
+    this.mqtt.on('connect', onConnect.bind(this))
+    this.mqtt.on('message', onMessage.bind(this))
 
     // handle the initial connect event from the mqtt broker.
-    // note: we bound _onConnect to `this`, above.
-    function _onConnect() {
+    // note: we bound onConnect to `this`, above.
+    function onConnect() {
       this.connected = true // set flag
       console.log(`MqttProvider connected to shared broker on`, this.url)
       const connectHandlers = this.handlers.connect // a list of onConnect handlers - could be empty.
@@ -49,13 +49,13 @@ export class AdapterDriver {
           handler.called = true
         }
       }
-    } // end of _onConnect
+    } // end of onConnect
 
     // handle incoming messages and dispatch them to subscribers
     // topic - eg 'l99/pa1/evt/query'
     // message - array of bytes (assumed to be a string or json string)
-    // note: we bound _onMessage to `this`, above.
-    function _onMessage(topic, message) {
+    // note: we bound onMessage to `this`, above.
+    function onMessage(topic, message) {
       this.lastMessages[topic] = message // save last message so can dispatch to new subscribers
       // if (!this.subscribers[topic]) return // quit if no subscribers
       let payload = message.toString() // must be let!
@@ -94,7 +94,7 @@ export class AdapterDriver {
           callback(topic, message) // note: we pass the original byte array message
         }
       }
-    } // end of _onMessage
+    } // end of onMessage
   } // end of this.start
 
   // register event handlers, eg 'connect', 'message'.
@@ -103,7 +103,7 @@ export class AdapterDriver {
     this.handlers[event] = this.handlers[event] || [] // make sure we have an array
     this.handlers[event].push(handler)
     // call the connect handler if we're already connected -
-    // otherwise, will call these in _onConnect.
+    // otherwise, will call these in onConnect.
     //. don't want to call this until all the subscribers are ready!
     if (event === 'connect' && this.connected) {
       console.log(`MqttProvider calling connect handler`, handler)

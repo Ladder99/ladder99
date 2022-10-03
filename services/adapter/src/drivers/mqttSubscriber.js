@@ -32,7 +32,7 @@ export class AdapterDriver {
     const selectors = this.getSelectors()
 
     // get topic handlers from inputs.yaml
-    // eg { 'l99/ccs/evt/query': { unsubscribe, initialize, definitions, inputs, ... }, ... }
+    // eg { 'controller': { unsubscribe, initialize, definitions, inputs, ... }, ... }
     const topicHandlers = this.getTopicHandlers()
 
     // // pre-evaluate expressions from yaml code
@@ -54,11 +54,13 @@ export class AdapterDriver {
     // }
 
     // register connection handler
-    //. move onConnect to a method, but be careful with closure vars!
-    // provider.on('connect', this.onConnect.bind(this))
-    // const that = this //. ditch
     provider.on('connect', onConnect.bind(this))
 
+    // // register message handler
+    // // instead of doing this, we can just call provider.subscribe(topic, onMessage, selector)
+    // provider.on('message', onMessage.bind(this))
+
+    //. make this a method, but be careful of closure vars
     function onConnect() {
       console.log(this.me, `connected to MQTT-provider`)
 
@@ -103,7 +105,7 @@ export class AdapterDriver {
       }
 
       console.log(this.me, `listening for messages...`)
-    } // end of onConnect
+    } // end of onConnect fn
 
     // handle incoming messages.
     // eg for ccs-pa have query, status, and read messages.
@@ -127,7 +129,7 @@ export class AdapterDriver {
         for (const entry of handler.unsubscribe || []) {
           const topic = this.replaceDeviceId(entry.topic)
           console.log(this.me, `unsubscribe from ${topic}`)
-          provider.unsubscribe(topic, onMessage) //. bind to this
+          provider.unsubscribe(topic, onMessage.bind(this))
         }
 
         // run initialize handler
