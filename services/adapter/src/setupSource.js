@@ -17,7 +17,7 @@ export async function setupSource({
   client,
   devices,
   device,
-  inputs, // shared connections, eg mqtt provider
+  providers, // shared connections, eg an MqttProvider
 }) {
   //
   // don't print full source - might have db password!
@@ -76,7 +76,7 @@ export async function setupSource({
 
   // iterate over input handlers in inputs.yaml, if any -
   // handlers is eg { controller: { text, initialize, lookup, algorithm, expressions, accessor }, ... }
-  // where the key is the message topic, eg 'controller'.
+  // the key is the message topic, eg 'controller'.
   const handlers = module?.inputs?.handlers || {}
   for (let handlerKey of Object.keys(handlers)) {
     console.log(`Adapter processing inputs for`, handlerKey) // eg 'controller'
@@ -109,16 +109,16 @@ export async function setupSource({
     }
   }
 
-  // get any shared provider here and pass down - eg an mqtt provider
-  // that dispatches to mqtt subscribers.
-  // connection could be a string for a shared connection or an object { host, port } etc.
-  // currently just handles string.
-  // note: the mqtt-provider object has same api as libmqtt's object, just extended a little bit.
+  // get any shared provider here and pass down -
+  // eg an mqtt provider that dispatches to mqtt subscribers.
+  // connection could be a string for a shared provider name or an object { host, port } etc.
+  //. currently just handles string.
   //. if connection is an object eg { host, port }, just pass that to the driver and let it handle it.
+  // note: the mqtt-provider object has same api as libmqtt's object, just extended a little bit.
   let provider
   if (typeof connection === 'string') {
     console.log('Adapter getting provider for', device.name, connection)
-    provider = inputs[connection]?.plugin // get shared connection - eg mqtt-provider.js
+    provider = inputs[connection]?.plugin // get shared connection - eg an MqttProvider instance
     if (!provider) {
       console.log(`Error unknown provider connection`, device.name, connection)
       process.exit(1)
@@ -150,7 +150,7 @@ export async function setupSource({
     moduleName, // eg 'cutter', 'feedback'
     module, // { inputs, outputs, types }
 
-    inputs, // shared input connections defined at top of setup.yaml, if any
+    providers, // shared input connections defined at top of setup.yaml, if any
     connection, // a shared connection name, or { host, port }, etc
     provider, // a shared provider, if any
   })

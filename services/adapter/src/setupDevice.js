@@ -47,8 +47,10 @@ export function setupDevice({
 
   // callback to handle tcp connection
   function onAgentConnect(socket) {
+    console.log(`AgentConnection connected`, device.name, socket.remoteAddress)
     // tell cache and plugins about the tcp socket
     for (let source of device.sources) {
+      console.log(`AgentConnection set socket ${device.name}, ${source.driver}`)
       cache.setSocket(source.outputs, socket) // this should trigger sending all cache values
       // note: source.plugin is the instantiated driver object for the source,
       // which may not have a setSocket fn.
@@ -62,6 +64,7 @@ export function setupDevice({
   // note: reconnection will automatically be handled by tcp.on connection and
   // onAgentConnect, then new socket will be set on cache and plugins.
   function onAgentError(error) {
+    console.log(`AgentConnection error`, device.name, error.message)
     // tell cache and plugins so they don't try to write to old socket
     for (let source of device.sources) {
       cache.setSocket(source.outputs, undefined)

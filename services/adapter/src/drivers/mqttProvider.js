@@ -3,13 +3,13 @@
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
-// this class wraps the original mqtt object, adding additional dispatch capabilities.
+// this class wraps the libmqtt object, adding additional dispatch capabilities.
 export class AdapterDriver {
   //
-  // url is sthing like 'mqtt://localhost:1883'
-  start({ url }) {
-    console.log(`MqttProvider start`, url)
-    this.url = url
+  // provider is something like { url: 'mqtt://localhost:1883', ... }
+  async start({ provider }) {
+    console.log(`MqttProvider start`, provider)
+    this.url = provider.url
     this.connected = false
 
     // instead of a single handler for each event, we need several, eg one for each device
@@ -18,14 +18,14 @@ export class AdapterDriver {
       message: [],
     }
 
-    // topic subsribers, coming from mqtt-subscriber
-    this.subscribers = {} // key is topic, value is { callback, selector }
+    // topic subscribers, coming from mqttSubscriber
+    this.subscribers = {} // eg { controller: [{ callback, selector }, ...], ... }
 
     // start the underlying mqtt connection
     console.log(`MqttProvider connecting to url`, this.url)
     this.mqtt = libmqtt.connect(this.url)
 
-    // register handlers for events from the proxied object
+    // register handlers for events from the libmqtt object
     this.mqtt.on('connect', _onConnect.bind(this))
     this.mqtt.on('message', _onMessage.bind(this))
 
