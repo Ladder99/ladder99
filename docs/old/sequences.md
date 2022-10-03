@@ -20,11 +20,12 @@ device -->> broker: register
 adapter -->> provider: start
 provider -->> broker: connect
 adapter -->> subscriber: start
-subscriber -->> provider: subscribe
 broker -->> provider: onConnect
+provider -->> subscriber: onConnect
+subscriber -->> provider: subscribe
 provider -->> broker: subscribe
-device -->> broker: msg
 broker -->> provider: MQTT msg
+device -->> broker: msg
 provider -->> subscriber: MQTT msg
 subscriber -->> cache: set(key, value)
 cache -->> agent: SHDR string

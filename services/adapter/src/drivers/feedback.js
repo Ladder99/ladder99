@@ -25,7 +25,7 @@ export class AdapterDriver {
 
     this.cache = cache // need for monitoring a value
     this.source = source // { driver, connection, address, id }
-    this.provider = provider // eg the mqtt-provider.js object
+    this.provider = provider // eg the mqttProvider.js object
 
     // get base data, if there
     const feedback = setup?.adapter?.drivers?.feedback || {}
@@ -52,7 +52,7 @@ export class AdapterDriver {
       console.log(this.me, `value changed from ${this.oldValue} to ${newValue}`)
 
       // subscribe to response topic
-      // will subscribe to mqtt-provider with dispatch based on payload.id
+      // will subscribe to mqttProvider with dispatch based on payload.id
       const topic = this.wait.topic
       const callback = waitForSignal.bind(this)
       const selector = payload => payload.id == this.source.id // eg id=535172

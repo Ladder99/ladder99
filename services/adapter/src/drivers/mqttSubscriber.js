@@ -1,6 +1,6 @@
 // MqttSubscriber driver
 
-// subscribes to mqtt topics through shared mqtt-provider, receives messages,
+// subscribes to mqtt topics through shared mqttProvider, receives messages,
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
 //. refactor/chop this code up into smaller fns - hard to read.
@@ -11,9 +11,9 @@ import * as lib from '../common/lib.js'
 
 export class AdapterDriver {
   //
-  // initialize the client plugin
-  // queries the device for address space definitions, subscribes to topics.
-  start({ source, device, cache, module, provider }) {
+  // start the MqttSubscriber driver - subscribes to topics from the MqttProvider.
+  async start({ source, device, cache, module, provider }) {
+    //
     this.me = `MqttSubscriber ${device.name}:`
     console.log(this.me, 'starting driver')
 
@@ -48,14 +48,17 @@ export class AdapterDriver {
     // }
 
     // register connection handler
-    //. move onConnect to a method
+    //. move onConnect to a method, but be careful with closure vars!
+    // provider.on('connect', this.onConnect.bind(this))
     const that = this
     provider.on('connect', function onConnect() {
       console.log(that.me, `connected to MQTT-provider`)
 
       // subscribe to any topics defined in inputs.yaml,
       // eg [{topic:'controller'}, {topic:'l99/B01000/evt/io'}, ...]
-      const subscriptions = module?.inputs?.connect?.subscribe || []
+      const subscriptions = module.inputs?.connect?.subscribe || []
+      //. this will be
+      // const subscriptions = module.inputs?.handlers?.connect?.subscribe || []
       for (const subscription of subscriptions) {
         const topic = replaceDeviceId(subscription.topic)
         // can set a topic to false in setup.yaml to not subscribe to it
@@ -66,13 +69,16 @@ export class AdapterDriver {
           // we need the callback because otherwise the provider wouldn't know where to send msg,
           // ie which of the many MqttSubscriber instances to send to.
           // onMessage is defined below.
-          // mqtt.subscribe(topic) // old code
+          // mqtt.subscribe(topic) // old code using libmqtt
           provider.subscribe(topic, onMessage, selector)
+          //. this will be
+          // provider.subscribe(topic, this.onMessage.bind(this), selector) //. will this work with unsubscribe?
         }
       }
 
       // publish to any topics defined
-      const publish = module?.inputs?.connect?.publish || [] // list of { topic, message }
+      const publish = module.inputs?.connect?.publish || [] // list of { topic, message }
+      // const publish = module.inputs?.handlers?.connect?.publish || [] // list of { topic, message }
       for (const entry of publish) {
         const topic = replaceDeviceId(entry.topic)
         console.log(that.me, `publishing to ${topic}`)
@@ -80,7 +86,8 @@ export class AdapterDriver {
       }
 
       // do any static inits
-      const inits = module?.inputs?.connect?.static || {} // eg { procname: KITTING }
+      const inits = module.inputs?.connect?.static || {} // eg { procname: KITTING }
+      // const inits = module.inputs?.handlers?.connect?.static || {} // eg { procname: KITTING }
       console.log(that.me, 'static inits:', inits)
       for (const key of Object.keys(inits)) {
         const cacheId = `${device.id}-${key}`
@@ -89,7 +96,7 @@ export class AdapterDriver {
       }
 
       console.log(that.me, `listening for messages...`)
-    })
+    }) // end of onConnect
 
     // handle incoming messages.
     // eg for ccs-pa have query, status, and read messages.
@@ -111,7 +118,7 @@ export class AdapterDriver {
         for (const entry of handler.unsubscribe || []) {
           const topic = replaceDeviceId(entry.topic)
           console.log(that.me, `unsubscribe from ${topic}`)
-          provider.unsubscribe(topic, onMessage)
+          provider.unsubscribe(topic, onMessage) //. bind to this
         }
 
         // run initialize handler
@@ -187,9 +194,10 @@ export class AdapterDriver {
           const topic = replaceDeviceId(entry.topic)
           console.log(that.me, `subscribe to ${topic}`)
           provider.subscribe(topic, onMessage, selectors[topic])
+          //. provider.subscribe(topic, this.onMessage.bind(this), selectors[topic])
         }
       }
-    }
+    } // end of onMessage
 
     function replaceDeviceId(str) {
       return str.replace('${deviceId}', device.id)
@@ -201,14 +209,15 @@ export class AdapterDriver {
   //     controller: true
   //     l99/B01000/evt/io:
   //       id: 535172
-  // -> selectors = { controller: true, 'l99...': payload=>payload.id==535172 }
+  // this will return selectors = { 'controller': true, 'l99...': payload=>payload.id==535172, ... }
+  // where key is the mqtt message topic.
   // this acts as a filter/dispatch mechanism for the topics defined in the inputs.yaml.
   // important: if topic is not included in this section it won't be subscribed to!
   //. note: for now we assume selection is done by id - expand to arbitrary objects later.
   getSelectors() {
-    const topics = this.source?.topics || {} // eg { controller, 'l99/B01000/evt/io' }
+    const topics = this.source?.topics || {} // eg { 'controller', 'l99/B01000/evt/io' }
     console.log(this.me, `get selectors from`, topics)
-    const selectors = {} // key is topic, value will be selector fn
+    const selectors = {} // key is topic, value will be selector - boolean or function of payload
     for (let topic of Object.keys(topics)) {
       const value = topics[topic] // eg { id: 513241 }, or true, or false
       let selector = true // if setup lists a topic, assume it's to be included
@@ -219,7 +228,7 @@ export class AdapterDriver {
         // NOTE: we use == instead of ===, in case payload.id is a string
         selector = payload => payload.id == value.id
       }
-      // selector can be t/f or a function of the message payload
+      // selector can be boolean or a function of the mqtt message payload
       console.log(
         this.me,
         `got selector for topic ${topic}, ${String(

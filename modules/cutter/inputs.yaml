@@ -20,6 +20,7 @@
 # while the dataitem name can be more descriptive.
 
 # define connect handler
+#. move into handlers, below
 connect:
   # subscribe to these topics
   # can use ${deviceId} in topic names

@@ -25,8 +25,8 @@ export async function setupSource({
   const { driver, connection } = source
   const moduleName = source.module
 
-  // module can be eg 'cutter' for box cutters
-  //. allow custom modules per setup, eg oxbox - ie add to setup-oxbox folder
+  // module could be eg 'cutter' for box cutters
+  //. allow custom modules per setup, eg add module to setup-oxbox folder
 
   // import driver plugin, eg micro.js or mqtt-subscriber.js.
   // this instantiates a new instance of the AdapterDriver class.
@@ -77,11 +77,11 @@ export async function setupSource({
   // iterate over input handlers in inputs.yaml, if any -
   // handlers is eg { controller: { text, initialize, lookup, algorithm, expressions, accessor }, ... }
   // the key is the message topic, eg 'controller'.
-  const handlers = module?.inputs?.handlers || {}
+  const handlers = module.inputs?.handlers || {}
   for (let handlerKey of Object.keys(handlers)) {
     console.log(`Adapter processing inputs for`, handlerKey) // eg 'controller'
 
-    const handler = handlers[handlerKey] // eg { initialize, algorithm, lookup, expressions }
+    const handler = handlers[handlerKey] // eg { initialize, algorithm, lookup, expressions, accessor, ... }
 
     // get macros (regexs to extract references from code)
     const prefix = device.id + '-'
@@ -109,12 +109,12 @@ export async function setupSource({
     }
   }
 
-  // get any shared provider here and pass down -
+  // get any shared provider here and pass down.
   // eg an mqtt provider that dispatches to mqtt subscribers.
   // connection could be a string for a shared provider name or an object { host, port } etc.
   //. currently just handles string.
   //. if connection is an object eg { host, port }, just pass that to the driver and let it handle it.
-  // note: the mqtt-provider object has same api as libmqtt's object, just extended a little bit.
+  // note: the mqttProvider object has same api as libmqtt's object, just extended a little bit.
   let provider
   if (typeof connection === 'string') {
     console.log('Adapter getting provider for', device.name, connection)
