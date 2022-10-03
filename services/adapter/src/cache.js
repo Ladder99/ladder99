@@ -89,7 +89,7 @@ export class Cache {
     // get list of outputs associated with this key
     // eg ['ac1-power_condition']
     const outputs = this._mapKeyToOutputs[key]
-    if (outputs) {
+    if (outputs && outputs.length > 0) {
       // calculate outputs and send changed shdr values to tcp
       for (const output of outputs) {
         // calculate value of this cache output
