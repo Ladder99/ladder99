@@ -18,6 +18,8 @@ export class AdapterDriver {
     console.log(this.me, 'starting driver')
 
     this.source = source
+    this.device = device
+    this.module = module // { inputs, outputs, types }
 
     // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
     const { types } = module // module is { inputs, outputs, types }, from yaml files
@@ -26,17 +28,12 @@ export class AdapterDriver {
     const keyvalues = {}
 
     // get dict of selector fns for each topic
+    // eg { 'controller': true, 'l99...': payload=>payload.id==535172, ... }
     const selectors = this.getSelectors()
 
-    // save topic handlers
-    // iterate over message handlers - array of [topic, handler]
-    // eg [['l99/ccs/evt/query', { unsubscribe, initialize, definitions, inputs, ... }], ...]
-    const topicHandlers = {}
-    const handlers = module.inputs?.handlers || {}
-    for (let [topic, handler] of Object.entries(handlers)) {
-      topic = replaceDeviceId(topic)
-      topicHandlers[topic] = handler
-    }
+    // get topic handlers from inputs.yaml
+    // eg { 'l99/ccs/evt/query': { unsubscribe, initialize, definitions, inputs, ... }, ... }
+    const topicHandlers = this.getTopicHandlers()
 
     // // pre-evaluate expressions from yaml code
     // // eg handler.lookup could be '($, js) => eval(js)' // woo double eval
@@ -59,8 +56,10 @@ export class AdapterDriver {
     // register connection handler
     //. move onConnect to a method, but be careful with closure vars!
     // provider.on('connect', this.onConnect.bind(this))
-    const that = this
-    provider.on('connect', function onConnect() {
+    const that = this //. ditch
+    provider.on('connect', onConnect.bind(this)) // end of onConnect
+
+    function onConnect() {
       console.log(that.me, `connected to MQTT-provider`)
 
       // subscribe to any topics defined in inputs.yaml,
@@ -68,7 +67,7 @@ export class AdapterDriver {
       //. this will be const subscriptions = module.inputs?.handlers?.connect?.subscribe || []
       const subscriptions = module.inputs?.connect?.subscribe || []
       for (const subscription of subscriptions) {
-        const topic = replaceDeviceId(subscription.topic)
+        const topic = replaceDeviceId(subscription.topic, that.device)
         // can set a topic to false in setup.yaml to not subscribe to it
         const selector = selectors[topic]
         if (selector && selector !== false) {
@@ -79,7 +78,8 @@ export class AdapterDriver {
           // onMessage is defined below.
           // mqtt.subscribe(topic) // old code using libmqtt
           //. this will be provider.subscribe(topic, this.onMessage.bind(this), selector) //. will this work with unsubscribe?
-          provider.subscribe(topic, onMessage, selector)
+          // provider.subscribe(topic, onMessage, selector)
+          provider.subscribe(topic, onMessage.bind(this), selector) //. ok with unsubscribe?
         }
       }
 
@@ -87,7 +87,7 @@ export class AdapterDriver {
       const publish = module.inputs?.connect?.publish || [] // list of { topic, message }
       // const publish = module.inputs?.handlers?.connect?.publish || [] // list of { topic, message }
       for (const entry of publish) {
-        const topic = replaceDeviceId(entry.topic)
+        const topic = replaceDeviceId(entry.topic, that.device)
         console.log(that.me, `publishing to ${topic}`)
         provider.publish(topic, entry.message)
       }
@@ -103,7 +103,7 @@ export class AdapterDriver {
       }
 
       console.log(that.me, `listening for messages...`)
-    }) // end of onConnect
+    } // end of onConnect
 
     // handle incoming messages.
     // eg for ccs-pa have query, status, and read messages.
@@ -117,7 +117,7 @@ export class AdapterDriver {
         payload = payload.toString() // bytes to string
 
         if (topic === 'controller') {
-          console.log(`MqttSubscriber msg ${topic}: ${payload.slice(0, 140)}`)
+          console.log(that.me, `msg ${topic}: ${payload.slice(0, 140)}`)
         }
 
         // if payload is plain text, set handler.text true in inputs.yaml - else parse as json
@@ -125,7 +125,7 @@ export class AdapterDriver {
 
         // unsubscribe from topics as needed
         for (const entry of handler.unsubscribe || []) {
-          const topic = replaceDeviceId(entry.topic)
+          const topic = replaceDeviceId(entry.topic, that.device)
           console.log(that.me, `unsubscribe from ${topic}`)
           provider.unsubscribe(topic, onMessage) //. bind to this
         }
@@ -200,17 +200,24 @@ export class AdapterDriver {
 
         // subscribe to any topics
         for (const entry of handler.subscribe || []) {
-          const topic = replaceDeviceId(entry.topic)
+          const topic = replaceDeviceId(entry.topic, that.device)
           console.log(that.me, `subscribe to ${topic}`)
           provider.subscribe(topic, onMessage, selectors[topic])
           //. provider.subscribe(topic, this.onMessage.bind(this), selectors[topic])
         }
       }
-    } // end of onMessage
+    } // end of onMessage fn
+  } // end of start method
 
-    function replaceDeviceId(str) {
-      return str.replace('${deviceId}', device.id)
+  // get dict of topic handlers - one handler per topic
+  getTopicHandlers() {
+    const topicHandlers = {}
+    const handlers = this.module.inputs?.handlers || {}
+    for (let [topic, handler] of Object.entries(handlers)) {
+      topic = replaceDeviceId(topic, this.device)
+      topicHandlers[topic] = handler
     }
+    return topicHandlers
   }
 
   // get a dictionary of selectors for each topic - eg from setup.yaml -
@@ -248,4 +255,8 @@ export class AdapterDriver {
     }
     return selectors
   }
+}
+
+function replaceDeviceId(str, device) {
+  return str.replace('${deviceId}', device.id)
 }
