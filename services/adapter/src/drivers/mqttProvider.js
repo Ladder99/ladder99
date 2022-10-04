@@ -84,11 +84,7 @@ export class AdapterDriver {
       // peek inside the payload if needed to see who to dispatch this message to.
       for (let subscriber of this.subscribers[topic]) {
         const { callback, selector } = subscriber
-        console.log(
-          `MqttProvider checking subscriber`,
-          callback.name,
-          selector.toString()
-        )
+        console.log(`MqttProvider checking subscriber`, callback.name, selector)
         // selector can be a boolean or a fn of the message payload
         // if (selector === false) continue // skip this subscriber
         // if (selector === true || selector(payload)) {
@@ -232,16 +228,11 @@ export class AdapterDriver {
 // check if the given payload matches the selector.
 // eg payload = { id: 15, name: 'foo' }, selector = { id: 15 } would return true.
 function selectorMatch(payload, selector) {
-  if (typeof selector === 'object') {
-    for (let [key, value] of Object.entries(selector)) {
-      if (payload[key] !== value) return false
-    }
-    return true
+  if (selector === true || selector === false) return selector
+  for (let [key, value] of Object.entries(selector)) {
+    if (payload[key] !== value) return false
   }
-  if (typeof selector === 'boolean') {
-    return selector
-  }
-  return false
+  return true
 }
 
 // check if the given selectors are the same,
