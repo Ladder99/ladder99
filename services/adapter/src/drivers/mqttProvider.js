@@ -74,7 +74,7 @@ export class AdapterDriver {
 
       let payload = message.toString() // must be let - don't overwrite message
 
-      console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
+      // console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
 
       // not sure how we can get around having a trycatch block and json parse,
       // as payload might be a plain string.
@@ -87,7 +87,7 @@ export class AdapterDriver {
       // peek inside the payload if needed to see who to dispatch this message to.
       for (let subscriber of this.subscribers[topic]) {
         const { callback, selector } = subscriber
-        console.log(`MqttProvider checking subscriber`, callback.name, selector)
+        // console.log(`MqttProvider checking subscriber`, callback.name, selector)
         // selector can be a boolean or a fn of the message payload
         // if (selector === false) continue // skip this subscriber
         // if (selector === true || selector(payload)) {
