@@ -20,7 +20,8 @@ export class Jobs {
     //
     // iterate over all devices, check if has a jobbossId
     for (let device of this.devices) {
-      if (device.jobbossId) {
+      const jobbossId = device.custom?.jobbossId
+      if (jobbossId) {
         // get the most recently started job for this workcenter/device.
         // could also use where work_center='MARUMATSU', but not guaranteed unique.
         //. check status for completion? (S=started, C=complete?)
@@ -31,7 +32,7 @@ export class Jobs {
           from
             Job_Operation
           where
-            WorkCenter_OID = '${device.jobbossId}'
+            WorkCenter_OID = '${jobbossId}'
           order by
             Actual_Start desc
         `

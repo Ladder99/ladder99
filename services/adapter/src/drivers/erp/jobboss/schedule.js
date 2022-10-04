@@ -49,8 +49,9 @@ export class Schedule {
     // loop over devices from setup.yaml
     for (let device of this.devices) {
       //
-      // just want those with a jobboss id (ie workcenter object uuid)
-      if (device.jobbossId) {
+      // just want those with a jobbossId (ie workcenter object uuid)
+      const jobbossId = device.custom?.jobbossId
+      if (jobbossId) {
         //
         // get last date from cookie file
         const { lastRead } = cookie[device.name] || {} // eg '2022-01-11T01:21:00'
@@ -108,7 +109,8 @@ export class Schedule {
     console.log(`JobBoss schedule - datetime`, datetime)
 
     for (let device of this.devices) {
-      if (device.jobbossId) {
+      const jobbossId = device.custom?.jobbossId
+      if (jobbossId) {
         const schedule = await this.getSchedule(device, datetime) // get { start, stop }
         console.log('JobBoss schedule', schedule)
         // write start/stop times to cache for this device -
@@ -128,7 +130,7 @@ export class Schedule {
   async getSchedule(device, datetime) {
     console.log(`JobBoss schedule - get for`, device.name, datetime)
 
-    const workcenter = device.jobbossId // eg '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' for Marumatsu
+    const jobbossId = device.custom?.jobbossId // eg '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' for Marumatsu
     const sequence = datetime.getDay() // day of week with 0=sunday, 1=monday. this works even if Z time is next day.
     const dateString = getLocalDateFromDateTime(datetime) // eg '2022-01-18' - works even if Z time is next day.
 
@@ -139,28 +141,28 @@ export class Schedule {
     // lookup workcenter and date in wc shift override table
     let result1
     try {
-      // select Shift_ID, Is_Work_Day from WCShift_Override where WorkCenter_OID=${workcenter} and cast(Date as date)=${dateString}
+      // select Shift_ID, Is_Work_Day from WCShift_Override where WorkCenter_OID=${jobbossId} and cast(Date as date)=${dateString}
       result1 = await this.pool.query`
         select Shift_ID, Is_Work_Day 
         from WCShift_Override
-        where WorkCenter_OID=${workcenter} and cast(Date as date)=${dateString}
+        where WorkCenter_OID=${jobbossId} and cast(Date as date)=${dateString}
       `
-    } catch (e) {
-      console.log('JobBoss schedule error', e)
+    } catch (error) {
+      console.log('JobBoss schedule error', error.message)
       return { start, stop }
     }
 
     if (result1.recordset.length === 0) {
       //
-      console.log(`JobBoss schedule - no override, so get standard schedule`)
-      // if no record then lookup workcenter in WCShift_Standard
+      // console.log(`JobBoss schedule - no override, so get standard schedule`)
+      // if no record then lookup jobbossId in WCShift_Standard
       //   get shift_id, look that up with sequencenum in shift_day table for start/end
       // (or do a join query)
       const result2 = await this.pool.query`
         select cast(Start_Time as time) start, cast(End_Time as time) stop
         from WCShift_Standard wss
           join Shift_Day sd on wss.Shift_ID=sd.Shift
-        where WorkCenter_OID=${workcenter} and Sequence=${sequence}
+        where WorkCenter_OID=${jobbossId} and Sequence=${sequence}
       `
       if (result2.recordset.length > 0) {
         // note: start stop are Date objects
@@ -171,7 +173,7 @@ export class Schedule {
         stop = getTimeAsLocalDateTimeString(stop, datetime, dateString)
         console.log(`JobBoss schedule - start, stop`, start, stop)
       } else {
-        console.log(`JobBoss schedule - no results`)
+        // console.log(`JobBoss schedule - no results`)
       }
     } else if (result1.recordset[0].Is_Work_Day) {
       //
@@ -183,7 +185,7 @@ export class Schedule {
         select cast(Start_Time as time) start, cast(End_Time as time) stop
         from WCShift_Override wso
           join Shift_Day sd on wso.Shift_ID = sd.Shift
-        where WorkCenter_OID=${workcenter} 
+        where WorkCenter_OID=${jobbossId} 
           and Date=${dateString} and Sequence=${sequence}
       `
       if (result3.recordset.length > 0) {
@@ -195,7 +197,7 @@ export class Schedule {
         stop = getTimeAsLocalDateTimeString(stop, datetime, dateString)
         console.log(`JobBoss schedule - start, stop`, start, stop)
       } else {
-        console.log(`JobBoss schedule - no results`)
+        // console.log(`JobBoss schedule - no results`)
       }
     } else {
       //
@@ -209,7 +211,7 @@ export class Schedule {
   }
 }
 
-//. move to common library
+//. move these to common library
 
 // get a date string from a datetime value,
 // eg 2022-01-18T14:24:00 -> '2022-01-18'
