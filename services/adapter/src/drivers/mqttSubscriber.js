@@ -238,31 +238,32 @@ export class AdapterDriver {
   //     controller: true
   //     l99/B01000/evt/io:
   //       id: 535172
-  // // this will return selectors = { 'controller': true, 'l99...': payload=>payload.id==535172, ... }
   // this will return selectors = { 'controller': true, 'l99...': { id:535172 }, ... }
   // where key is the mqtt message topic.
   // this acts as a filter/dispatch mechanism for the topics defined in the inputs.yaml.
-  // important: if topic is not included in this section it won't be subscribed to!
+  // important: if topic is not included in this yaml section it won't be subscribed to.
   getSelectors() {
     const topics = this.source?.topics || {} // eg { 'controller', 'l99/B01000/evt/io' }
-    console.log(this.me, `get selectors from`, topics)
+    // console.log(this.me, `get selectors from`, topics)
     const selectors = {} // key is topic, value will be selector - boolean or function of payload
-    for (let topic of Object.keys(topics)) {
-      const value = topics[topic] // eg { id: 513241 }, or true, or false
-      let selector = true // if setup lists a topic, assume it's to be included
-      if (typeof value === 'boolean') {
-        selector = value // true or false
-      } else if (value.id !== undefined) {
-        // NOTE: we will use == instead of ===, in case payload.id is a string.
-        // selector = payload => payload.id == value.id
-        selector = value
-      }
-      // selector can be boolean or a function of the mqtt message payload
-      console.log(
-        this.me,
-        `got selector for topic ${topic}, ${String(selector)}, with value`,
-        value
-      )
+    // for (let topic of Object.keys(topics)) {
+    for (let [topic, selector] of Object.entries(topics)) {
+      // const value = topics[topic] // eg { id: 513241 }, or true, or false
+      // let selector = true // if setup lists a topic, assume it's to be included
+      // if (typeof value === 'boolean') {
+      //   selector = value // true or false
+      // } else if (value.id !== undefined) {
+      //   // NOTE: we will use == instead of ===, in case payload.id is a string.
+      //   // selector = payload => payload.id == value.id
+      //   selector = value
+      // }
+      // // selector can be boolean or a function of the mqtt message payload
+      // console.log(
+      //   this.me,
+      //   `got selector for topic ${topic}, ${String(selector)}, with value`,
+      //   value
+      // )
+      // selectors[topic] = selector
       selectors[topic] = selector
     }
     return selectors
