@@ -3,13 +3,14 @@
 // currently used for watching changes to jobboss job number,
 // sending a part count reset to a marumatsu cutter via mqtt.
 
-// see client-oxbox/setup.yaml for an example of using this
+// see client-oxbox/setup.yaml for an example of using this.
 
 //. will this be replaced by MTConnect Interfaces eventually?
 
-// optional flag defined in .env
-// lets you turn on the feedback mechanism for oxbox 001,
-// but leave it off for 004. otherwise they would interfere with each other.
+// optional flag defined in .env.
+// lets you turn on the feedback mechanism for a live/production device,
+// but leave it off for a backup/development machine - otherwise they
+// may interfere with each other.
 const feedbackOn = process.env.L99_FEEDBACK
 
 export class AdapterDriver {
