@@ -28,22 +28,21 @@ export class AdapterDriver {
 
     // get base data, if there
     const feedback = setup.adapter?.drivers?.feedback || {}
-    this.command = feedback.command || {} // { topic } for commands
-    this.payload = feedback.payload || {} // defaults for command payload, if any
-    this.values = feedback.values // array of the two values to send with commands
+    this.command = feedback.command || {} // { topic, payload, values } for commands
+    this.payload = this.command.payload || {} // eg { address, value, unitid, quantity, fc }
+    this.values = this.command.values || [] // eg [5392, 0] the two values to send with commands
     this.wait = feedback.wait || {} // { topic, attribute, value } topic to wait on etc
-    this.dataitem = device.id + '-' + feedback.dataitem // eg 'm1-job'
+    // this.wait = feedback.wait || {} // { topic, payload } topic and payload filter to wait on
+    this.dataitem = device.id + '-' + feedback.dataitem // dataitem to watch - eg 'm1-job'
 
-    const interval = feedback.interval // poll interval, ms
-
-    // check jobnum - when changes, send reset cmd, wait for response, send 2nd cmd
+    // check dataitem value - when changes, send reset cmd, wait for response, send 2nd cmd
     this.oldValue = null
     this.poll()
-    setInterval(this.poll.bind(this), interval)
+    setInterval(this.poll.bind(this), feedback.interval || 2000) // interval in ms
   }
 
   poll() {
-    // check if value changed, then send reset commands - unless just starting up
+    // check if dataitem value changed, then send reset commands - unless just starting up
     const newValue = this.cache.get(this.dataitem) // eg 'm1-job'
     this.oldValue = this.oldValue || newValue // this will avoid firing all this off if just starting up, when oldValue=null
     if (newValue !== this.oldValue) {
@@ -58,12 +57,21 @@ export class AdapterDriver {
       // will subscribe to mqttProvider with dispatch based on payload.id
       const waitTopic = this.wait.topic
       const waitCallback = waitForSignal.bind(this)
-      // make selector - use == in case string/number, eg id==535172 && a15==5392
-      // const waitSelector = payload =>
-      //   payload.id == this.source.id &&
-      //   payload[this.wait.attribute] == values[0]
+
       const waitSelector = { id: this.source.id, [waitAttribute]: values[0] }
+
+      // //. or a selector could be an object with filter and equal - would be faster.
+      // // one for dispatch on payload, one for comparing subscriptions.
+      // // make selector - use == not === in case string/number, eg id==535172 && a15==5392
+      // const waitSelector = {
+      //   filter: payload =>
+      //     payload.id == this.source.id && payload[waitAttribute] == values[0],
+      //   equal: (payload1, payload2) =>
+      //     JSON.stringify(payload1) === JSON.stringify(payload2),
+      // }
+
       console.log(this.me, `subscribe`, waitTopic, waitSelector)
+
       // note: we pass sendLastMessage=false so doesn't call the callback if topic already registered
       this.provider.subscribe(waitTopic, waitCallback, waitSelector, false)
 
@@ -81,6 +89,7 @@ export class AdapterDriver {
       function waitForSignal(topic, payload) {
         payload = payload.toString()
         payload = JSON.parse(payload)
+
         const sentValue = payload[waitAttribute] // eg payload.a15
         console.log(this.me, `waitForSignal got response`, payload, sentValue)
 

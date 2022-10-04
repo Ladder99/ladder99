@@ -29,9 +29,8 @@ export class AdapterDriver {
     // keyvalue store for yaml code to use
     this.keyvalues = {}
 
-    // get dict of selector fns for each topic
-    // // eg { 'controller': true, 'l99...': payload=>payload.id==535172, ... }
-    // eg { 'controller': true, 'l99...': {id:535172}, ... }
+    // get dict of selector objects for each topic
+    // eg { 'controller': true, 'l99...': { id:535172 }, ... }
     this.selectors = this.getSelectors()
 
     // get topic handlers from inputs.yaml
@@ -40,6 +39,41 @@ export class AdapterDriver {
 
     // register connection handler
     this.provider.on('connect', this.onConnect.bind(this))
+  }
+
+  // get a dictionary of selectors for each topic - eg from setup.yaml -
+  //   topics:
+  //     controller: true
+  //     l99/B01000/evt/io:
+  //       id: 535172
+  // this will return selectors = { 'controller': true, 'l99...': { id:535172 }, ... }
+  // where key is the mqtt message topic.
+  // this acts as a filter/dispatch mechanism for the topics defined in the inputs.yaml.
+  // important: if topic is not included in this yaml section it won't be subscribed to.
+  getSelectors() {
+    const topics = this.source?.topics || {} // eg { 'controller', 'l99/B01000/evt/io' }
+    // console.log(this.me, `get selectors from`, topics)
+    const selectors = {} // key is topic, value will be selector - boolean or function of payload
+    // for (let topic of Object.keys(topics)) {
+    for (let [topic, selector] of Object.entries(topics)) {
+      // const value = topics[topic] // eg { id: 513241 }, or true, or false
+      // let selector = true // if setup lists a topic, assume it's to be included
+      // if (typeof value === 'boolean') {
+      //   selector = value // true or false
+      // } else if (value.id !== undefined) {
+      //   // NOTE: we will use == instead of ===, in case payload.id is a string.
+      //   // selector = payload => payload.id == value.id
+      //   selector = value
+      // }
+      // // selector can be boolean or a function of the mqtt message payload
+      // console.log(
+      //   this.me,
+      //   `got selector for topic ${topic}, ${String(selector)}, with value`,
+      //   value
+      // )
+      selectors[topic] = selector
+    }
+    return selectors
   }
 
   // provider connected to broker
@@ -60,7 +94,7 @@ export class AdapterDriver {
     for (const subscription of subscriptions) {
       const topic = this.replaceDeviceId(subscription.topic)
       // can set a topic to false in setup.yaml to not subscribe to it
-      const selector = this.selectors[topic]
+      const selector = this.selectors[topic] // eg { id:535172 }
       if (selector && selector !== false) {
         console.log(this.me, `subscribing to ${topic}`)
         // we extend the mqtt api to add callback and selector for dispatcher to filter on.
@@ -68,7 +102,7 @@ export class AdapterDriver {
         // eg which of the many MqttSubscriber instances to send to.
         // onMessage is defined below.
         // mqtt.subscribe(topic) // old code using libmqtt
-        this.provider.subscribe(topic, this.onMessage.bind(this), selector) //. ok with unsubscribe?
+        this.provider.subscribe(topic, this.onMessage.bind(this), selector)
       }
     }
   }
@@ -206,7 +240,7 @@ export class AdapterDriver {
   subscribeTopics2(handler) {
     for (const entry of handler.subscribe || []) {
       const topic = this.replaceDeviceId(entry.topic)
-      const selector = selectors[topic]
+      const selector = this.selectors[topic]
       console.log(this.me, `subscribe to ${topic}, ${selector}`)
       this.provider.subscribe(topic, this.onMessage.bind(this), selector)
     }
@@ -216,13 +250,14 @@ export class AdapterDriver {
   unsubscribeTopics(handler) {
     for (const entry of handler.unsubscribe || []) {
       const topic = this.replaceDeviceId(entry.topic)
-      const selector = selectors[topic]
+      const selector = this.selectors[topic]
       console.log(this.me, `unsubscribe from ${topic}, ${selector}`)
       this.provider.unsubscribe(topic, this.onMessage.bind(this), selector)
     }
   }
 
   // get dict of topic handlers - one handler per topic
+  // a handler is like {algorithm: 'iterate_expressions', expressions: {...}}
   getTopicHandlers() {
     const topicHandlers = {}
     const handlers = this.module.inputs?.handlers || {}
@@ -231,42 +266,6 @@ export class AdapterDriver {
       topicHandlers[topic] = handler
     }
     return topicHandlers
-  }
-
-  // get a dictionary of selectors for each topic - eg from setup.yaml -
-  //   topics:
-  //     controller: true
-  //     l99/B01000/evt/io:
-  //       id: 535172
-  // this will return selectors = { 'controller': true, 'l99...': { id:535172 }, ... }
-  // where key is the mqtt message topic.
-  // this acts as a filter/dispatch mechanism for the topics defined in the inputs.yaml.
-  // important: if topic is not included in this yaml section it won't be subscribed to.
-  getSelectors() {
-    const topics = this.source?.topics || {} // eg { 'controller', 'l99/B01000/evt/io' }
-    // console.log(this.me, `get selectors from`, topics)
-    const selectors = {} // key is topic, value will be selector - boolean or function of payload
-    // for (let topic of Object.keys(topics)) {
-    for (let [topic, selector] of Object.entries(topics)) {
-      // const value = topics[topic] // eg { id: 513241 }, or true, or false
-      // let selector = true // if setup lists a topic, assume it's to be included
-      // if (typeof value === 'boolean') {
-      //   selector = value // true or false
-      // } else if (value.id !== undefined) {
-      //   // NOTE: we will use == instead of ===, in case payload.id is a string.
-      //   // selector = payload => payload.id == value.id
-      //   selector = value
-      // }
-      // // selector can be boolean or a function of the mqtt message payload
-      // console.log(
-      //   this.me,
-      //   `got selector for topic ${topic}, ${String(selector)}, with value`,
-      //   value
-      // )
-      // selectors[topic] = selector
-      selectors[topic] = selector
-    }
-    return selectors
   }
 
   replaceDeviceId(str) {

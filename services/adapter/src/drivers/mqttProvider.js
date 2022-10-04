@@ -58,20 +58,23 @@ export class AdapterDriver {
     // note: we bound onMessage to `this`, above.
     //. make this a method
     function onMessage(topic, message) {
-      this.lastMessages[topic] = message // save last message so can dispatch to new subscribers
-      // if (!this.subscribers[topic]) return // quit if no subscribers
-      let payload = message.toString() // must be let - don't overwrite message
-
-      console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
-
-      // an empty array is truthy, so check for undefined first
+      //
+      // quit if no subscribers to topic
       if (
+        // an empty array is truthy, so check for undefined first
         this.subscribers[topic] === undefined ||
         this.subscribers[topic].length === 0
       ) {
         console.log(`MqttProvider warning no subscribers for ${topic}`)
-        return // quit if no subscribers
+        return
       }
+
+      // save last message so can dispatch to new subscribers
+      this.lastMessages[topic] = message
+
+      let payload = message.toString() // must be let - don't overwrite message
+
+      console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
 
       // not sure how we can get around having a trycatch block and json parse,
       // as payload might be a plain string.
@@ -88,14 +91,14 @@ export class AdapterDriver {
         // selector can be a boolean or a fn of the message payload
         // if (selector === false) continue // skip this subscriber
         // if (selector === true || selector(payload)) {
-        // if (selector === true || selectorMatch(payload, selector)) {
-        if (selectorMatch(payload, selector)) {
+        // if (selector === true || selectorFilter(payload, selector)) {
+        if (selectorFilter(payload, selector)) {
           console.log(
             `MqttProvider call`,
             callback.name,
-            selector.toString(),
+            selector,
             topic,
-            message.toString()
+            payload
           )
           callback(topic, message) // note: we pass the original byte array message
         }
@@ -149,7 +152,7 @@ export class AdapterDriver {
     }
 
     // add to subscriber list if not already there
-    const subscriber = { callback, selector }
+    const newSubscriber = { callback, selector }
     this.subscribers[topic] = this.subscribers[topic] || [] // initialize array
     for (let subscriber of this.subscribers[topic]) {
       if (
@@ -165,6 +168,8 @@ export class AdapterDriver {
         // subscriber.selector.toString() === selector.toString()
         subscriber.callback.name === callback.name &&
         selectorEqual(subscriber.selector, selector)
+
+        //. or subscriber.equal(newSubscriber)
       ) {
         console.log(
           `MqttProvider already subscribed to ${topic} with same callback and selector`
@@ -172,7 +177,7 @@ export class AdapterDriver {
         return
       }
     }
-    this.subscribers[topic].push(subscriber)
+    this.subscribers[topic].push(newSubscriber)
 
     // print subscribers
     console.log(`MqttProvider subscribers:`)
@@ -193,11 +198,14 @@ export class AdapterDriver {
     //     ]),
     //   }))
     // )
+
+    // now actually subscribe to the mqtt broker
     this.mqtt.subscribe(topic) // idempotent - ie okay to subscribe to same topic multiple times (?)
   }
 
   // unsubscribe from a topic.
   // pass callback and selector here so can distinguish subscribers.
+  //. better to pass an equal fn, so can compare subscribers.
   unsubscribe(topic, callback, selector) {
     console.log(`MqttProvider unsubscribe`, topic, callback.name, selector)
     const subscribers = this.subscribers[topic] || [] // eg [{ callback, selector }, ...]
@@ -211,7 +219,8 @@ export class AdapterDriver {
       this.subscribers[topic].splice(i, 1) // modifies in place
       console.log(`MqttProvider unsubscribed`, topic, callback.name, selector)
       console.log(`MqttProvider ${topic} down to`, this.subscribers[topic])
-      //. if none left, could do this.mqtt.unsubscribe(topic)
+      //. if none left, could unsubscribe from the broker -
+      // this.mqtt.unsubscribe(topic)
     } else {
       console.log(
         `MqttProvider warning ${callback.name} with selector ${selector} not subscribed to ${topic}`
@@ -225,9 +234,11 @@ export class AdapterDriver {
   }
 }
 
+//. these are not ideal, might be slow - but running out of time
+
 // check if the given payload matches the selector.
 // eg payload = { id: 15, name: 'foo' }, selector = { id: 15 } would return true.
-function selectorMatch(payload, selector) {
+function selectorFilter(payload, selector) {
   if (selector === true || selector === false) return selector
   for (let [key, value] of Object.entries(selector)) {
     if (payload[key] !== value) return false
