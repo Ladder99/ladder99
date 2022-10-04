@@ -1,16 +1,18 @@
 // mqtt provider
 // subscribes to mqtt topics, receives messages, dispatches them to subscribers.
 
-import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
-
 // this class wraps the libmqtt object, adding additional dispatch capabilities.
+// allows us to have a single libmqtt connection that can dispatch to multiple drivers.
+
+import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
 export class AdapterDriver {
   //
-  // provider is something like { url: 'mqtt://localhost:1883', ... }
+  // provider is a shared connection definition, like { url: 'mqtt://localhost:1883', ... }
   async start({ provider }) {
     //
-    console.log(`MqttProvider start`, provider)
+    this.me = 'MqttProvider'
+    console.log(this.me, `start`, provider)
     this.url = provider.url
     this.connected = false
 
@@ -20,14 +22,14 @@ export class AdapterDriver {
       message: [],
     }
 
-    // topic subscribers, coming from mqttSubscriber
+    // topic subscriptions, coming from mqttSubscriber
     this.subscribers = {} // eg { 'controller': [{ callback, selector, lastMessage }, ...], ... }
 
     // save last messages for each topic seen
     this.lastMessages = {} // eg { 'controller': 'birth', ... }
 
     // start the underlying libmqtt connection
-    console.log(`MqttProvider connecting to url`, this.url)
+    console.log(this.me, `connecting to shared broker at url`, this.url)
     this.mqtt = libmqtt.connect(this.url)
 
     // register handlers for events from the libmqtt object
@@ -38,11 +40,11 @@ export class AdapterDriver {
     // note: we bound onConnect to `this`, above.
     //. make this a method
     function onConnect() {
+      console.log(this.me, `connected to shared broker on`, this.url)
       this.connected = true // set flag
-      console.log(`MqttProvider connected to shared broker on`, this.url)
       const connectHandlers = this.handlers.connect // a list of onConnect handlers - could be empty.
       // note: if the connect handlers haven't been set up yet, they will be called in the on('connect') method.
-      console.log(`MqttProvider calling connect handlers`, connectHandlers)
+      console.log(this.me, `calling connect handlers`, connectHandlers)
       for (let handler of connectHandlers) {
         // check if handler has been called - flag is set in the on() method, and here.
         if (!handler.called) {
@@ -65,44 +67,40 @@ export class AdapterDriver {
         this.subscribers[topic] === undefined ||
         this.subscribers[topic].length === 0
       ) {
-        console.log(`MqttProvider warning no subscribers for ${topic}`)
+        console.log(this.me, `warning no subscribers for ${topic}`)
         return
       }
 
       // save last message so can dispatch to new subscribers
-      this.lastMessages[topic] = message
+      this.lastMessages[topic] = message // byte array
 
-      let payload = message.toString() // must be let - don't overwrite message
+      // must be let - and don't overwrite message variable
+      let payload = message.toString()
 
-      // if (topic === 'l99/B01000/evt/io') {
-      //   console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
-      // }
+      // console.log(this.me, `got ${topic}: ${payload.slice(0, 140)}`)
 
+      // convert to js object, else leave as string
       // not sure how we can get around having a trycatch block and json parse,
       // as payload might be a plain string.
       //. check if payload starts with '{' or '[' or digit?
       try {
         payload = JSON.parse(payload)
-        // console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
       } catch (e) {}
 
       // loop over subscribers to this topic - linear search.
+      // can match more than one subscriber.
       // peek inside the payload if needed to see who to dispatch this message to.
       for (let subscriber of this.subscribers[topic]) {
-        const { callback, selector } = subscriber
-        // console.log(`MqttProvider checking subscriber`, callback.name, selector)
+        // const { callback, selector } = subscriber
+        const { callback, filterFn } = subscriber
+        // console.log(this.me, `checking subscriber`, callback.name, selector)
         // selector can be a boolean or a fn of the message payload
         // if (selector === false) continue // skip this subscriber
         // if (selector === true || selector(payload)) {
         // if (selector === true || selectorFilter(payload, selector)) {
-        if (selectorFilter(payload, selector)) {
-          // console.log(
-          //   `MqttProvider call`,
-          //   callback.name,
-          //   selector,
-          //   topic,
-          //   payload
-          // )
+        // if (selectorFilter(payload, selector)) {
+        if (filterFn(payload)) {
+          console.log(this.me, `call`, callback.name, topic, payload)
           callback(topic, message) // note: we pass the original byte array message
         }
       }
@@ -118,44 +116,43 @@ export class AdapterDriver {
     // otherwise, will call these in onConnect.
     //. don't want to call this until all the subscribers are ready!
     if (event === 'connect' && this.connected) {
-      console.log(`MqttProvider calling connect handler`, handler)
+      console.log(this.me, `calling connect handler`, handler)
       handler() // eg onConnect() in mqttSubscriber
       handler.called = true // mark handler as called
     }
-    // if (event === 'message' && this.connected) {
-    //   console.log(`MqttProvider calling message handler`, handler)
-    //   // call handler with last message for all topics we've seen
-    //   // this.subscribers = {} // eg { 'controller': [{ callback, selector }, ...], ... }
-    //   for (let [topic, handlers] of Object.entries(this.subscribers)) {
-    //     const lastMessage = this.lastMessages[topic]
-    //     if (lastMessage) {
-    //       for (let handler of handlers) {
-    //         handler(topic, lastMessage) // eg onMessage(topic, payload) in mqttSubscriber
-    //       }
-    //     }
-    //   }
-    // }
   }
 
-  // subscribe to a topic with an optional selector fn.
-  // add a callback here, store in the subscriber object with selector.
-  // callback is a function of (topic, message) - eg onMessage(topic, payload) in mqttSubscriber.
-  // selector can be a function of the payload, or a plain boolean.
+  // subscribe to a topic with callback, filter, and equal fns.
+  // callback is a function of (topic, message) - eg onMessage(topic, message) in mqttSubscriber,
+  // where message is a byte array.
+  // filterFn is a function of the payload (message as js object or string), that returns true
+  // if the message should be dispatched to the callback.
+  // equalFn is a function of two subscribers with { callback, filterFn, equalFn },
+  // that checks for equality.
   // sendLastMessage - if true, send the last message seen on this topic to the callback.
-  subscribe(topic, callback, selector = true, sendLastMessage = true) {
-    console.log(`MqttProvider subscribe ${topic} when`, selector)
+  // subscribe(topic, callback, selector = true, sendLastMessage = true) {
+  subscribe(
+    topic,
+    callback,
+    filterFn = payload => true,
+    equalFn = (subscriber1, subscriber2) => true,
+    sendLastMessage = true
+  ) {
+    console.log(this.me, `subscribe ${topic} when`, filterFn.toString())
 
-    // if we're already connected to the broker, call callback with last message received.
+    // if we're already connected to the broker, call callback with last message received,
+    // then continue.
     if (this.connected && sendLastMessage) {
       const lastMessage = this.lastMessages[topic]
       if (lastMessage) {
-        console.log(`MqttProvider send lastMessage ${topic}: ${lastMessage}`)
+        console.log(this.me, `send last msg ${topic}:`, lastMessage.toString())
         callback(topic, lastMessage) // eg onMessage(topic, payload) in mqttSubscriber
       }
     }
 
     // add to subscriber list if not already there
-    const newSubscriber = { callback, selector }
+    // const newSubscriber = { callback, selector }
+    const newSubscriber = { callback, filterFn, equalFn }
     this.subscribers[topic] = this.subscribers[topic] || [] // initialize array
     for (let subscriber of this.subscribers[topic]) {
       if (
@@ -169,38 +166,25 @@ export class AdapterDriver {
         // somehow need to look inside the closure - how do?
         // subscriber.callback.name === callback.name &&
         // subscriber.selector.toString() === selector.toString()
-        subscriber.callback.name === callback.name &&
-        selectorEqual(subscriber.selector, selector)
-
-        //. or subscriber.equal(newSubscriber)
+        // subscriber.callback.name === callback.name &&
+        // selectorEqual(subscriber.selector, selector)
+        equalFn(subscriber, newSubscriber)
       ) {
-        console.log(
-          `MqttProvider already subscribed to ${topic} with same callback and selector`
-        )
+        console.log(this.me, `already subscribed ${topic} with same props`)
         return
       }
     }
     this.subscribers[topic].push(newSubscriber)
 
     // print subscribers
-    console.log(`MqttProvider subscribers:`)
+    console.log(this.me, `subscribers:`)
     for (let [topic, subscribers] of Object.entries(this.subscribers)) {
       console.log(`  ${topic}:`)
       for (let subscriber of subscribers) {
-        console.log(`    ${subscriber.callback.name}:`, subscriber.selector)
+        // console.log(`    ${subscriber.callback.name}:`, subscriber.selector)
+        console.log(`    ${subscriber.callback.name}:`, subscriber.filterFn)
       }
     }
-
-    // // console.log(`MqttProvider subscribers`, this.subscribers)
-    // console.log(
-    //   `MqttProvider subscribers`,
-    //   Object.entries(this.subscribers).map(([topic, handlers]) => ({
-    //     [topic]: handlers.map(handler => [
-    //       handler.callback.name,
-    //       handler.selector,
-    //     ]),
-    //   }))
-    // )
 
     // now actually subscribe to the mqtt broker
     this.mqtt.subscribe(topic) // idempotent - ie okay to subscribe to same topic multiple times (?)
@@ -210,7 +194,7 @@ export class AdapterDriver {
   // pass callback and selector here so can distinguish subscribers.
   //. better to pass an equal fn, so can compare subscribers.
   unsubscribe(topic, callback, selector) {
-    console.log(`MqttProvider unsubscribe`, topic, callback.name, selector)
+    console.log(this.me, `unsubscribe`, topic, callback.name, selector)
     const subscribers = this.subscribers[topic] || [] // eg [{ callback, selector }, ...]
     const i = subscribers.findIndex(
       subscriber =>
@@ -220,13 +204,14 @@ export class AdapterDriver {
     // if found, remove subscriber from list
     if (i >= 0) {
       this.subscribers[topic].splice(i, 1) // modifies in place
-      console.log(`MqttProvider unsubscribed`, topic, callback.name, selector)
-      console.log(`MqttProvider ${topic} down to`, this.subscribers[topic])
+      console.log(this.me, `unsubscribed`, topic, callback.name, selector)
+      console.log(this.me, `${topic} down to`, this.subscribers[topic])
       //. if none left, could unsubscribe from the broker -
       // this.mqtt.unsubscribe(topic)
     } else {
       console.log(
-        `MqttProvider warning ${callback.name} with selector ${selector} not subscribed to ${topic}`
+        this.me,
+        `warning ${callback.name} with selector ${selector} not subscribed to ${topic}`
       )
     }
   }
@@ -237,22 +222,22 @@ export class AdapterDriver {
   }
 }
 
-//. these are not ideal, might be slow - but running out of time
+// //. these are not ideal, might be slow - but running out of time
 
-// check if the given payload matches the selector.
-// eg payload = { id: 15, name: 'foo' }, selector = { id: 15 } would return true.
-function selectorFilter(payload, selector) {
-  if (selector === true || selector === false) return selector
-  for (let [key, value] of Object.entries(selector)) {
-    // bug: need !=, not !== for string/number coercion!
-    if (payload[key] != value) return false
-  }
-  return true
-}
+// // check if the given payload matches the selector.
+// // eg payload = { id: 15, name: 'foo' }, selector = { id: 15 } would return true.
+// function selectorFilter(payload, selector) {
+//   if (selector === true || selector === false) return selector
+//   for (let [key, value] of Object.entries(selector)) {
+//     // bug: need !=, not !== for string/number coercion!
+//     if (payload[key] != value) return false
+//   }
+//   return true
+// }
 
-// check if the given selectors are the same,
-// eg selector1 = { id: 15 }, selector2 = { id: 15 } returns true.
-// important: order of attributes must be the same!
-function selectorEqual(selector1, selector2) {
-  return JSON.stringify(selector1) === JSON.stringify(selector2)
-}
+// // check if the given selectors are the same,
+// // eg selector1 = { id: 15 }, selector2 = { id: 15 } returns true.
+// // important: order of attributes must be the same!
+// function selectorEqual(selector1, selector2) {
+//   return JSON.stringify(selector1) === JSON.stringify(selector2)
+// }

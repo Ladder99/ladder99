@@ -27,14 +27,13 @@ export class AdapterDriver {
     this.source = source // { driver, connection, address, id }
     this.provider = provider // eg the mqttProvider.js object
 
-    // get base data, if there
+    // get base config, if there
     const feedback = setup.adapter?.drivers?.feedback || {}
+    this.dataitem = device.id + '-' + feedback.dataitem // dataitem to watch - eg 'm1-job'
     this.command = feedback.command || {} // { topic, payload, values } for commands
     this.payload = this.command.payload || {} // eg { address, value, unitid, quantity, fc }
     this.values = this.command.values || [] // eg [5392, 0] the two values to send with commands
     this.wait = feedback.wait || {} // { topic, attribute, value } topic to wait on etc
-    // this.wait = feedback.wait || {} // { topic, payload } topic and payload filter to wait on
-    this.dataitem = device.id + '-' + feedback.dataitem // dataitem to watch - eg 'm1-job'
 
     // check dataitem value - when changes, send reset cmd, wait for response, send 2nd cmd
     this.oldValue = null
@@ -55,11 +54,10 @@ export class AdapterDriver {
       const values = this.values // eg [5392, 0]
 
       // subscribe to response topic
-      // will subscribe to mqttProvider with dispatch based on payload.id
+      // will subscribe to mqttProvider with dispatch based on payload.id and waitAttribute value
       const waitTopic = this.wait.topic
-      const waitCallback = waitForSignal.bind(this)
-
-      const waitSelector = { id: this.source.id, [waitAttribute]: values[0] }
+      const waitCallback = feedbackWaitCallback.bind(this)
+      const waitSelector = { id: this.source.id, [waitAttribute]: values[0] } // filter by example
 
       // //. or a selector could be an object with filter and equal - would be faster.
       // // one for dispatch on payload, one for comparing subscriptions.
@@ -70,43 +68,80 @@ export class AdapterDriver {
       //   equal: (payload1, payload2) =>
       //     JSON.stringify(payload1) === JSON.stringify(payload2),
       // }
+      // const waitSelector = {
+      //   filter: payload =>
+      //     payload.id == this.source.id && payload[waitAttribute] == values[0],
+      //   equal: payload => this.filter(payload) && payload.length === 2,
+      // }
 
-      console.log(this.me, `subscribe`, waitTopic, waitSelector)
+      // filter by fn - faster
+      const waitFilter = payload =>
+        payload.id == this.source.id && payload[waitAttribute] == values[0]
 
+      // mqttProvider will use this to prevent duplicate subscriptions, and for unsubscribing
+      // const waitEqual = payload => waitFilter(payload) && payload.length === 2
+      const waitEqual = (subscriber1, subscriber2) =>
+        waitFilter(payload) && payload.length === 2
+
+      // subscribe to wait topic
       // note: we pass sendLastMessage=false so doesn't call the callback if topic already registered
-      this.provider.subscribe(waitTopic, waitCallback, waitSelector, false)
+      // console.log(this.me, `subscribe`, waitTopic, waitSelector)
+      // this.provider.subscribe(waitTopic, waitCallback, waitSelector, false)
+      this.provider.subscribe(
+        waitTopic,
+        waitCallback,
+        waitFilter,
+        waitEqual,
+        false
+      )
 
       // publish to command topic
       const { address } = this.source // { driver, connection, address, id }
       const commandTopic = this.command.topic
       const commandPayload = { ...this.payload, address, value: values[0] } // { address, value, unitid, quantity, fc }
-      console.log(this.me, `publish`, commandTopic, commandPayload)
+      // console.log(this.me, `publish`, commandTopic, commandPayload)
       this.provider.publish(commandTopic, JSON.toString(commandPayload))
       this.oldValue = newValue
 
-      //. what if the response never comes? need a timeout after a minute?
-      // then cancel the subscription, and send the second command anyway?
+      // q. what if a response never comes? timeout after a minute?
+      // well, it's okay - we check for duplicate subscriptions, so they won't clog the system.
 
-      function waitForSignal(topic, payload) {
+      // callback for wait topic
+      function feedbackWaitCallback(topic, payload) {
         payload = payload.toString()
         payload = JSON.parse(payload)
 
         const sentValue = payload[waitAttribute] // eg payload.a15
-        console.log(this.me, `waitForSignal got response`, payload, sentValue)
+        console.log(
+          this.me,
+          `feedbackWaitCallback got response`,
+          payload,
+          sentValue
+        )
 
         // note: we use == because either might be a string, not number.
         // selector should have checked this already, but just in case.
         if (sentValue == values[0]) {
           // publish the second command
           const commandPayload = { ...this.payload, address, value: values[1] }
-          console.log(this.me, `publish`, commandTopic, commandPayload)
+          // console.log(this.me, `publish`, commandTopic, commandPayload)
           this.provider.publish(commandTopic, JSON.toString(commandPayload))
 
           // unsubscribe from the wait topic
-          console.log(this.me, `unsubscribe`, waitTopic, waitCallback.name)
-          this.provider.unsubscribe(waitTopic, waitCallback, waitSelector)
+          // console.log(this.me, `unsubscribe`, waitTopic, waitCallback.name)
+          // this.provider.unsubscribe(waitTopic, waitCallback, waitSelector)
+          this.provider.unsubscribe(
+            waitTopic,
+            waitCallback,
+            waitFilter,
+            waitEqual
+          )
         } else {
-          console.log(this.me, `error waitForSignal got wrong value`, sentValue)
+          console.log(
+            this.me,
+            `error feedbackWaitCallback got wrong value`,
+            sentValue
+          )
         }
       }
     }
