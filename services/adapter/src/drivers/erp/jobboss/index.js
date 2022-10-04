@@ -38,6 +38,12 @@ export class AdapterDriver {
     console.log(`JobBoss - start driver...`)
     setUnavailable()
 
+    if (source.simulate) {
+      console.log(`JobBoss - simulation mode on`)
+      simulate()
+      return
+    }
+
     if (!source.connection?.server || !source.connection?.port) {
       console.log(`JobBoss error no connection info. check setup.yaml, envars.`)
       return
@@ -117,6 +123,24 @@ export class AdapterDriver {
         }
       }
       console.log(`JobBoss - all cache dataitems populated.`)
+    }
+
+    async function simulate() {
+      setAvailable()
+      await waitForCacheItems()
+      for (let jobnum = 1000; true; jobnum++) {
+        for (let device of devices) {
+          if (device.jobbossId) {
+            // const start = new Date()
+            // const end = new Date(start.getTime() + 1000 * 60 * 60 * 8)
+            // cache.set(`${device.id}-start`, start)
+            // cache.set(`${device.id}-end`, end)
+            cache.set(`${device.id}-jobnum`, jobnum)
+          }
+        }
+        // pause 2secs
+        await new Promise(resolve => setTimeout(resolve, 2000))
+      }
     }
   }
 }

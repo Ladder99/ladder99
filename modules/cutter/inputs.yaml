@@ -55,6 +55,7 @@ handlers:
     # 'key' is mapped to a cache id, eg 'dxm' => 'm1-dxm'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
+      #. call this controller
       dxm: $==='birth'
 
   # ----------------------------------------------------------------------------
@@ -75,6 +76,7 @@ handlers:
     # 'key' is mapped to a cache id, eg 'connection' => 's1-connection'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
+      #. call this dxm
       controller: $.a8===128 # 128=controller node is connected to DXM (which is connected to 001)
       part_count: $.a5
 
