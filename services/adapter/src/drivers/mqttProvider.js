@@ -74,13 +74,16 @@ export class AdapterDriver {
 
       let payload = message.toString() // must be let - don't overwrite message
 
-      // console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
+      // if (topic === 'l99/B01000/evt/io') {
+      //   console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
+      // }
 
       // not sure how we can get around having a trycatch block and json parse,
       // as payload might be a plain string.
       //. check if payload starts with '{' or '[' or digit?
       try {
         payload = JSON.parse(payload)
+        // console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
       } catch (e) {}
 
       // loop over subscribers to this topic - linear search.
