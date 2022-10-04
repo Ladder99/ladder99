@@ -74,7 +74,7 @@ export class AdapterDriver {
 
       let payload = message.toString() // must be let - don't overwrite message
 
-      console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
+      // console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
 
       // not sure how we can get around having a trycatch block and json parse,
       // as payload might be a plain string.
@@ -93,13 +93,13 @@ export class AdapterDriver {
         // if (selector === true || selector(payload)) {
         // if (selector === true || selectorFilter(payload, selector)) {
         if (selectorFilter(payload, selector)) {
-          console.log(
-            `MqttProvider call`,
-            callback.name,
-            selector,
-            topic,
-            payload
-          )
+          // console.log(
+          //   `MqttProvider call`,
+          //   callback.name,
+          //   selector,
+          //   topic,
+          //   payload
+          // )
           callback(topic, message) // note: we pass the original byte array message
         }
       }
@@ -241,6 +241,7 @@ export class AdapterDriver {
 function selectorFilter(payload, selector) {
   if (selector === true || selector === false) return selector
   for (let [key, value] of Object.entries(selector)) {
+    // bug: need !=, not !== for string/number coercion!
     if (payload[key] != value) return false
   }
   return true
