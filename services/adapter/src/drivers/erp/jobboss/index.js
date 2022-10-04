@@ -39,7 +39,7 @@ export class AdapterDriver {
     setUnavailable()
 
     if (source.simulate) {
-      console.log(`JobBoss - simulation mode on`)
+      console.log(`JobBoss - start simulator...`)
       simulate()
       return
     }
@@ -125,21 +125,23 @@ export class AdapterDriver {
       console.log(`JobBoss - all cache dataitems populated.`)
     }
 
+    // simulate a jobboss connection
     async function simulate() {
       setAvailable()
       await waitForCacheItems()
-      for (let jobnum = 1000; true; jobnum++) {
-        for (let device of devices) {
-          if (device.jobbossId) {
-            // const start = new Date()
-            // const end = new Date(start.getTime() + 1000 * 60 * 60 * 8)
-            // cache.set(`${device.id}-start`, start)
-            // cache.set(`${device.id}-end`, end)
-            cache.set(`${device.id}-jobnum`, jobnum)
-          }
-        }
-        // pause 2secs
-        await new Promise(resolve => setTimeout(resolve, 2000))
+      for (let job = 1000; true; job++) {
+        // for (let device of devices) {
+        //   if (device.jobbossId) {
+        //     // const start = new Date()
+        //     // const end = new Date(start.getTime() + 1000 * 60 * 60 * 8)
+        //     // cache.set(`${device.id}-start`, start)
+        //     // cache.set(`${device.id}-end`, end)
+        //     cache.set(`${device.id}-job`, job)
+        //   }
+        // }
+        cache.set(`m1-job`, job)
+        // pause between jobs
+        await new Promise(resolve => setTimeout(resolve, 10000))
       }
     }
   }
