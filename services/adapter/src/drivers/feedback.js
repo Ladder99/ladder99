@@ -74,17 +74,23 @@ export class AdapterDriver {
       //   equal: payload => this.filter(payload) && payload.length === 2,
       // }
 
-      // filter by fn - faster
+      // const waitFilter = { id: this.source.id, [waitAttribute]: values[0] } // filter by example
+
+      // filter by fn - faster than generic object comparison
+      //. can we just wrap selector in the closure?
       const waitFilter = payload =>
-        payload.id == this.source.id && payload[waitAttribute] == values[0]
+        payload.id == selector.id &&
+        payload[waitAttribute] == selector[waitAttribute]
 
       // mqttProvider will use this to prevent duplicate subscriptions, and for unsubscribing
       // const waitEqual = payload => waitFilter(payload) && payload.length === 2
       const waitEqual = (subscriber1, subscriber2) =>
-        waitFilter(payload) && payload.length === 2
+        subscriber1.callback.name === subscriber2.callback.name &&
+        subscriber1.selector.id === subscriber2.selector.id &&
+        subscriber1.selector[waitAttribute] ===
+          subscriber2.selector[waitAttribute]
 
       // subscribe to wait topic
-      // note: we pass sendLastMessage=false so doesn't call the callback if topic already registered
       // console.log(this.me, `subscribe`, waitTopic, waitSelector)
       // this.provider.subscribe(waitTopic, waitCallback, waitSelector, false)
       this.provider.subscribe(
@@ -92,14 +98,14 @@ export class AdapterDriver {
         waitCallback,
         waitFilter,
         waitEqual,
-        false
+        false // sendLastMessage false so doesn't call the callback if topic already registered
       )
 
       // publish to command topic
       const { address } = this.source // { driver, connection, address, id }
       const commandTopic = this.command.topic
       const commandPayload = { ...this.payload, address, value: values[0] } // { address, value, unitid, quantity, fc }
-      // console.log(this.me, `publish`, commandTopic, commandPayload)
+      console.log(this.me, `publish`, commandTopic, commandPayload)
       this.provider.publish(commandTopic, JSON.toString(commandPayload))
       this.oldValue = newValue
 
