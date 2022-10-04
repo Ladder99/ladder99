@@ -141,7 +141,7 @@ export class AdapterDriver {
   // selector can be a function of the payload, or a plain boolean.
   // sendLastMessage - if true, send the last message seen on this topic to the callback.
   subscribe(topic, callback, selector = true, sendLastMessage = true) {
-    console.log(`MqttProvider subscribe ${topic} when ${selector.toString()}`)
+    console.log(`MqttProvider subscribe ${topic} when`, selector)
 
     // if we're already connected to the broker, call callback with last message received.
     if (this.connected && sendLastMessage) {
@@ -178,7 +178,25 @@ export class AdapterDriver {
     }
     this.subscribers[topic].push(subscriber)
 
-    console.log(`MqttProvider subscribers`, this.subscribers)
+    // print subscribers
+    console.log(`MqttProvider subscribers:`)
+    for (let [topic, subscribers] of Object.entries(this.subscribers)) {
+      console.log(`  ${topic}:`)
+      for (let subscriber of subscribers) {
+        console.log(`    ${subscriber.callback.name}:`, subscriber.selector)
+      }
+    }
+
+    // // console.log(`MqttProvider subscribers`, this.subscribers)
+    // console.log(
+    //   `MqttProvider subscribers`,
+    //   Object.entries(this.subscribers).map(([topic, handlers]) => ({
+    //     [topic]: handlers.map(handler => [
+    //       handler.callback.name,
+    //       handler.selector,
+    //     ]),
+    //   }))
+    // )
     this.mqtt.subscribe(topic) // idempotent - ie okay to subscribe to same topic multiple times (?)
   }
 
@@ -196,7 +214,7 @@ export class AdapterDriver {
     if (i >= 0) {
       this.subscribers[topic].splice(i, 1) // modifies in place
       console.log(`MqttProvider unsubscribed`, topic, callback.name, selector)
-      console.log(`MqttProvider down to`, this.subscribers[topic])
+      console.log(`MqttProvider ${topic} down to`, this.subscribers[topic])
       //. if none left, could do this.mqtt.unsubscribe(topic)
     } else {
       console.log(
