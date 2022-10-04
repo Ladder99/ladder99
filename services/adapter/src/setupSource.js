@@ -151,7 +151,7 @@ export async function setupSource({
     module, // { inputs, outputs, types }
 
     providers, // shared input connections defined at top of setup.yaml, if any
-    connection, // a shared connection name, or { host, port }, etc
-    provider, // a shared provider, if any
+    connection, // a shared connection name, or { host, port }, etc - eg 'mqttProvider'
+    provider, // a shared provider object, if any
   })
 }

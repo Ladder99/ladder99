@@ -93,6 +93,7 @@ export class AdapterDriver {
     const topics = subscriptions.map(subscription => subscription.topic)
     console.log(this.me, 'subscribe', topics)
     for (const subscription of subscriptions) {
+      //. make a generic ${foo.bar} evaluator
       const topic = this.replaceDeviceId(subscription.topic)
       // can set a topic to false in setup.yaml to not subscribe to it
       const selector = this.selectors[topic] // eg { id:535172 }
