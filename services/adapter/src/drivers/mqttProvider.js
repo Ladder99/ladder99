@@ -241,7 +241,7 @@ export class AdapterDriver {
 function selectorFilter(payload, selector) {
   if (selector === true || selector === false) return selector
   for (let [key, value] of Object.entries(selector)) {
-    if (payload[key] !== value) return false
+    if (payload[key] != value) return false
   }
   return true
 }
