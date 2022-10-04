@@ -3,7 +3,7 @@
 // there's only one jobboss driver - it iterates over all devices and checks for jobbossId,
 // then queries the jobboss mssql db for the most recent job for that workcenter,
 // and the schedule start and stop times.
-// writes to cache, which writes shdr to agent.
+// writes values to cache, which writes shdr to agent.
 
 // each device/workcenter that you want to query should have a custom
 // section in the setup.yaml with the jobbossId, which is the ObjectId from

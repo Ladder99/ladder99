@@ -1,7 +1,7 @@
-// feedback driver
+// feedback driver - watch for changes to a dataitem and send commands to device.
 
-// currently used for watching changes to jobboss job number,
-// sending a part count reset to a marumatsu cutter via mqtt.
+// currently used for monitoring jobboss job number and
+// sending a part count reset to a device via mqtt.
 
 // see client-oxbox/setup.yaml for an example of using this.
 
@@ -24,7 +24,8 @@ export class AdapterDriver {
     console.log(this.me, `start driver, source`, source)
 
     this.cache = cache // need for monitoring a value
-    this.source = source // { driver, connection, address, id }
+    // this.source = source // { driver, connection, address, id }
+    this.source = source // { driver }
     this.provider = provider // eg the mqttProvider.js object
 
     // get base config, if there
@@ -42,13 +43,13 @@ export class AdapterDriver {
   }
 
   poll() {
-    // check if dataitem value changed, then send reset commands - unless just starting up
+    // check if dataitem value changed, then send reset commands (unless just starting up)
     const newValue = this.cache.get(this.dataitem) // eg 'm1-job'
     this.oldValue = this.oldValue || newValue // this will avoid firing all this off if just starting up, when oldValue=null
     if (newValue !== this.oldValue) {
-      //
-      // send msg, wait for response, send second
       console.log(this.me, `value changed from ${this.oldValue} to ${newValue}`)
+
+      // send command, wait for response, send second command
 
       const waitAttribute = this.wait.attribute // eg 'a15'
       const values = this.values // eg [5392, 0]
@@ -57,7 +58,7 @@ export class AdapterDriver {
       // will subscribe to mqttProvider with dispatch based on payload.id and waitAttribute value
       const waitTopic = this.wait.topic
       const waitCallback = feedbackWaitCallback.bind(this)
-      const waitSelector = { id: this.source.id, [waitAttribute]: values[0] } // filter by example
+      // const waitSelector = { id: this.source.id, [waitAttribute]: values[0] } // filter by example
 
       // //. or a selector could be an object with filter and equal - would be faster.
       // // one for dispatch on payload, one for comparing subscriptions.
