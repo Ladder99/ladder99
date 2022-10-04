@@ -30,7 +30,8 @@ export class AdapterDriver {
     this.keyvalues = {}
 
     // get dict of selector fns for each topic
-    // eg { 'controller': true, 'l99...': payload=>payload.id==535172, ... }
+    // // eg { 'controller': true, 'l99...': payload=>payload.id==535172, ... }
+    // eg { 'controller': true, 'l99...': {id:535172}, ... }
     this.selectors = this.getSelectors()
 
     // get topic handlers from inputs.yaml
@@ -62,9 +63,9 @@ export class AdapterDriver {
       const selector = this.selectors[topic]
       if (selector && selector !== false) {
         console.log(this.me, `subscribing to ${topic}`)
-        // we extend the mqtt api to add callback and optional selector for dispatcher to filter on.
+        // we extend the mqtt api to add callback and selector for dispatcher to filter on.
         // we need the callback because otherwise the provider wouldn't know where to send msg,
-        // ie which of the many MqttSubscriber instances to send to.
+        // eg which of the many MqttSubscriber instances to send to.
         // onMessage is defined below.
         // mqtt.subscribe(topic) // old code using libmqtt
         this.provider.subscribe(topic, this.onMessage.bind(this), selector) //. ok with unsubscribe?
@@ -205,12 +206,9 @@ export class AdapterDriver {
   subscribeTopics2(handler) {
     for (const entry of handler.subscribe || []) {
       const topic = this.replaceDeviceId(entry.topic)
-      console.log(this.me, `subscribe to ${topic}`)
-      this.provider.subscribe(
-        topic,
-        this.onMessage.bind(this),
-        selectors[topic]
-      )
+      const selector = selectors[topic]
+      console.log(this.me, `subscribe to ${topic}, ${selector}`)
+      this.provider.subscribe(topic, this.onMessage.bind(this), selector)
     }
   }
 
@@ -218,8 +216,9 @@ export class AdapterDriver {
   unsubscribeTopics(handler) {
     for (const entry of handler.unsubscribe || []) {
       const topic = this.replaceDeviceId(entry.topic)
-      console.log(this.me, `unsubscribe from ${topic}`)
-      this.provider.unsubscribe(topic, this.onMessage.bind(this))
+      const selector = selectors[topic]
+      console.log(this.me, `unsubscribe from ${topic}, ${selector}`)
+      this.provider.unsubscribe(topic, this.onMessage.bind(this), selector)
     }
   }
 
@@ -239,11 +238,11 @@ export class AdapterDriver {
   //     controller: true
   //     l99/B01000/evt/io:
   //       id: 535172
-  // this will return selectors = { 'controller': true, 'l99...': payload=>payload.id==535172, ... }
+  // // this will return selectors = { 'controller': true, 'l99...': payload=>payload.id==535172, ... }
+  // this will return selectors = { 'controller': true, 'l99...': { id:535172 }, ... }
   // where key is the mqtt message topic.
   // this acts as a filter/dispatch mechanism for the topics defined in the inputs.yaml.
   // important: if topic is not included in this section it won't be subscribed to!
-  //. note: for now we assume selection is done by id - expand to arbitrary objects later.
   getSelectors() {
     const topics = this.source?.topics || {} // eg { 'controller', 'l99/B01000/evt/io' }
     console.log(this.me, `get selectors from`, topics)
@@ -254,9 +253,9 @@ export class AdapterDriver {
       if (typeof value === 'boolean') {
         selector = value // true or false
       } else if (value.id !== undefined) {
-        //.. for now assume selection is done by id - expand to arbitrary objects later!
-        // NOTE: we use == instead of ===, in case payload.id is a string
-        selector = payload => payload.id == value.id
+        // NOTE: we will use == instead of ===, in case payload.id is a string.
+        // selector = payload => payload.id == value.id
+        selector = value
       }
       // selector can be boolean or a function of the mqtt message payload
       console.log(

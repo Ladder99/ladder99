@@ -51,21 +51,24 @@ export class AdapterDriver {
       // send msg, wait for response, send second
       console.log(this.me, `value changed from ${this.oldValue} to ${newValue}`)
 
+      const waitAttribute = this.wait.attribute // eg 'a15'
+      const values = this.values // eg [5392, 0]
+
       // subscribe to response topic
       // will subscribe to mqttProvider with dispatch based on payload.id
       const waitTopic = this.wait.topic
       const waitCallback = waitForSignal.bind(this)
       // make selector - use == in case string/number, eg id==535172 && a15==5392
-      const waitSelector = payload =>
-        payload.id == this.source.id &&
-        payload[this.wait.attribute] == values[0]
-      console.log(this.me, `subscribe`, waitTopic, waitSelector.toString())
+      // const waitSelector = payload =>
+      //   payload.id == this.source.id &&
+      //   payload[this.wait.attribute] == values[0]
+      const waitSelector = { id: this.source.id, [waitAttribute]: values[0] }
+      console.log(this.me, `subscribe`, waitTopic, waitSelector)
       // note: we pass sendLastMessage=false so doesn't call the callback if topic already registered
       this.provider.subscribe(waitTopic, waitCallback, waitSelector, false)
 
       // publish to command topic
       const { address } = this.source // { driver, connection, address, id }
-      const values = this.values // eg [5392, 0]
       const commandTopic = this.command.topic
       const commandPayload = { ...this.payload, address, value: values[0] } // { address, value, unitid, quantity, fc }
       console.log(this.me, `publish`, commandTopic, commandPayload)
@@ -78,15 +81,17 @@ export class AdapterDriver {
       function waitForSignal(topic, payload) {
         payload = payload.toString()
         payload = JSON.parse(payload)
-        const sentValue = payload[this.wait.attribute] // eg payload.a15
+        const sentValue = payload[waitAttribute] // eg payload.a15
         console.log(this.me, `waitForSignal got response`, payload, sentValue)
-        // note: we use == because either might be a string, not number
-        // selector should have checked this already, but just in case
+
+        // note: we use == because either might be a string, not number.
+        // selector should have checked this already, but just in case.
         if (sentValue == values[0]) {
           // publish the second command
           const commandPayload = { ...this.payload, address, value: values[1] }
           console.log(this.me, `publish`, commandTopic, commandPayload)
           this.provider.publish(commandTopic, JSON.toString(commandPayload))
+
           // unsubscribe from the wait topic
           console.log(this.me, `unsubscribe`, waitTopic, waitCallback.name)
           this.provider.unsubscribe(waitTopic, waitCallback, waitSelector)

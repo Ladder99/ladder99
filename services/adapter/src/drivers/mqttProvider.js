@@ -90,8 +90,10 @@ export class AdapterDriver {
           selector.toString()
         )
         // selector can be a boolean or a fn of the message payload
-        if (selector === false) continue
-        if (selector === true || selector(payload)) {
+        // if (selector === false) continue // skip this subscriber
+        // if (selector === true || selector(payload)) {
+        // if (selector === true || selectorMatch(payload, selector)) {
+        if (selectorMatch(payload, selector)) {
           console.log(
             `MqttProvider call`,
             callback.name,
@@ -159,8 +161,14 @@ export class AdapterDriver {
         // subscriber.callback === callback &&
         // subscriber.selector === selector
         // so use strings
+        //. this fails because strings are the same even if selector encloses different data (eg id)
+        // eg callback.name='onMessage' and selector.toString()='payload=>payload.id===foo.id'
+        // then only one device would get a subscription to the topic.
+        // somehow need to look inside the closure - how do?
+        // subscriber.callback.name === callback.name &&
+        // subscriber.selector.toString() === selector.toString()
         subscriber.callback.name === callback.name &&
-        subscriber.selector.toString() === selector.toString()
+        selectorEqual(subscriber.selector, selector)
       ) {
         console.log(
           `MqttProvider already subscribed to ${topic} with same callback and selector`
@@ -174,35 +182,53 @@ export class AdapterDriver {
     this.mqtt.subscribe(topic) // idempotent - ie okay to subscribe to same topic multiple times (?)
   }
 
-  // pass callback here so can distinguish subscribers
-  //. check selector also
+  // unsubscribe from a topic.
+  // pass callback and selector here so can distinguish subscribers.
   unsubscribe(topic, callback, selector) {
-    console.log(`MqttProvider unsubscribe`, topic)
+    console.log(`MqttProvider unsubscribe`, topic, callback.name, selector)
     const subscribers = this.subscribers[topic] || [] // eg [{ callback, selector }, ...]
     const i = subscribers.findIndex(
       subscriber =>
-        subscriber.callback === callback && subscriber.selector === selector
+        subscriber.callback.name === callback.name &&
+        selectorEqual(subscriber.selector, selector)
     )
     // if found, remove subscriber from list
-    if (i !== -1) {
-      console.log(`MqttProvider found subscriber - removing...`)
-      this.subscribers[topic] = [
-        ...subscribers.slice(0, i),
-        ...subscribers.slice(i + 1),
-      ]
+    if (i >= 0) {
+      this.subscribers[topic].splice(i, 1) // modifies in place
+      console.log(`MqttProvider unsubscribed`, topic, callback.name, selector)
       console.log(`MqttProvider down to`, this.subscribers[topic])
       //. if none left, could do this.mqtt.unsubscribe(topic)
     } else {
       console.log(
-        `MqttProvider warning - subscriber not found:`,
-        topic,
-        callback.toString(),
-        selector.toString()
+        `MqttProvider warning ${callback.name} with selector ${selector} not subscribed to ${topic}`
       )
     }
   }
 
+  // publish a message on a topic - message is a string or byte array.
   publish(topic, message) {
     this.mqtt.publish(topic, message)
   }
+}
+
+// check if the given payload matches the selector.
+// eg payload = { id: 15, name: 'foo' }, selector = { id: 15 } would return true.
+function selectorMatch(payload, selector) {
+  if (typeof selector === 'object') {
+    for (let [key, value] of Object.entries(selector)) {
+      if (payload[key] !== value) return false
+    }
+    return true
+  }
+  if (typeof selector === 'boolean') {
+    return selector
+  }
+  return false
+}
+
+// check if the given selectors are the same,
+// eg selector1 = { id: 15 }, selector2 = { id: 15 } returns true.
+// important: order of attributes must be the same!
+function selectorEqual(selector1, selector2) {
+  return JSON.stringify(selector1) === JSON.stringify(selector2)
 }
