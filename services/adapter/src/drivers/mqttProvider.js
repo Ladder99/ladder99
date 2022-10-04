@@ -60,11 +60,9 @@ export class AdapterDriver {
     function onMessage(topic, message) {
       this.lastMessages[topic] = message // save last message so can dispatch to new subscribers
       // if (!this.subscribers[topic]) return // quit if no subscribers
-      let payload = message.toString() // must be let!
+      let payload = message.toString() // must be let - don't overwrite message
 
-      if (topic === 'controller') {
-        console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
-      }
+      console.log(`MqttProvider got ${topic}: ${payload.slice(0, 140)}`)
 
       // an empty array is truthy, so check for undefined first
       if (
@@ -81,18 +79,25 @@ export class AdapterDriver {
       try {
         payload = JSON.parse(payload)
       } catch (e) {}
+      // loop over subscribers to this topic.
       // peek inside the payload if needed to see who to dispatch this message to.
-      //. make a dict for dispatching instead of linear search, ie on id?
-      //. but would need array of callbacks for plain text msgs
-      //. for now we just filter on eg payload.id == some value
       for (let subscriber of this.subscribers[topic]) {
         const { callback, selector } = subscriber
+        console.log(
+          `MqttProvider checking subscriber`,
+          callback.name,
+          selector.toString()
+        )
         // selector can be a boolean or a fn of the message payload
         if (selector === false) continue
         if (selector === true || selector(payload)) {
-          if (topic === 'controller') {
-            console.log(`MqttProvider calling subscriber with`, topic)
-          }
+          console.log(
+            `MqttProvider call`,
+            callback.name,
+            selector.toString(),
+            topic,
+            message.toString()
+          )
           callback(topic, message) // note: we pass the original byte array message
         }
       }
@@ -134,6 +139,7 @@ export class AdapterDriver {
   // sendLastMessage - if true, send the last message seen on this topic to the callback.
   subscribe(topic, callback, selector = true, sendLastMessage = true) {
     console.log(`MqttProvider subscribe ${topic} when ${selector.toString()}`)
+
     // if we're already connected to the broker, call callback with last message received.
     if (this.connected && sendLastMessage) {
       const lastMessage = this.lastMessages[topic]
@@ -142,22 +148,42 @@ export class AdapterDriver {
         callback(topic, lastMessage) // eg onMessage(topic, payload) in mqttSubscriber
       }
     }
+
+    // add to subscriber list if not already there
     const subscriber = { callback, selector }
     this.subscribers[topic] = this.subscribers[topic] || []
+    for (let subscriber of this.subscribers[topic]) {
+      if (
+        //. these don't work? maybe the callback.bind(this) makes a new fn each time?
+        subscriber.callback === callback &&
+        subscriber.selector === selector
+        // so use strings
+        // subscriber.callback.name === callback.name &&
+        // subscriber.selector.toString() === selector.toString()
+      ) {
+        console.log(
+          `MqttProvider already subscribed to ${topic} with same callback and selector`
+        )
+        return
+      }
+    }
     this.subscribers[topic].push(subscriber)
-    // console.log(`MqttProvider subscribers`, this.subscribers)
+
+    console.log(`MqttProvider subscribers`, this.subscribers)
     this.mqtt.subscribe(topic) // idempotent - ie okay to subscribe to same topic multiple times (?)
   }
 
   // pass callback here so can distinguish subscribers
-  unsubscribe(topic, callback) {
+  //. check selector also
+  unsubscribe(topic, callback, selector) {
     console.log(`MqttProvider unsubscribe`, topic)
     const subscribers = this.subscribers[topic] || [] // eg [{ callback, selector }, ...]
     const i = subscribers.findIndex(
-      subscriber => subscriber.callback === callback
+      subscriber =>
+        subscriber.callback === callback && subscriber.selector === selector
     )
+    // if found, remove subscriber from list
     if (i !== -1) {
-      // if found, remove subscriber from list
       console.log(`MqttProvider found subscriber - removing...`)
       this.subscribers[topic] = [
         ...subscribers.slice(0, i),
@@ -166,7 +192,12 @@ export class AdapterDriver {
       console.log(`MqttProvider down to`, this.subscribers[topic])
       //. if none left, could do this.mqtt.unsubscribe(topic)
     } else {
-      console.log(`MqttProvider error - subscriber not found`)
+      console.log(
+        `MqttProvider warning - subscriber not found:`,
+        topic,
+        callback.toString(),
+        selector.toString()
+      )
     }
   }
 

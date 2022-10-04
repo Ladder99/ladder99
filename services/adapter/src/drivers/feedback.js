@@ -3,27 +3,7 @@
 // currently used for watching changes to jobboss job number,
 // sending a part count reset to a marumatsu cutter via mqtt.
 
-// in setup.yaml, do sthing like this -
-//
-// adapter:
-//   drivers:
-//     feedback:
-//       dataitem: job # this will be prefixed with deviceId, eg to 'm1-job' - reset partcount when changes
-//       interval: 2000 # ms to wait between polls
-//       driver: sharedMqtt
-//       command:
-//         topic: l99/B01000/cmd/modbus # mqtt topic to send commands to
-//       payload:
-//         address: null # varies by device - eg 142
-//         value: null # send values[0], wait, then values[1]
-//         unitid: 199
-//         quantity: 1
-//         fc: 6
-//       values: [5392, 0] # values for payload
-//       wait:
-//         topic: l99/B01000/evt/io # mqtt topic to watch after posting command
-//         attribute: a15 # watch this payload attribute
-//         value: 5392 # wait for it to get this value before sending second command
+// see client-oxbox/setup.yaml for an example of using this
 
 //. will this be replaced by MTConnect Interfaces eventually?
 
@@ -75,19 +55,21 @@ export class AdapterDriver {
       // will subscribe to mqttProvider with dispatch based on payload.id
       const waitTopic = this.wait.topic
       const waitCallback = waitForSignal.bind(this)
-      const selector = payload => payload.id == this.source.id // eg id=535172 - use == in case string/number
-      console.log(this.me, `subscribing to`, waitTopic, selector)
+      // make selector - use == in case string/number, eg id==535172 && a15==5392
+      const waitSelector = payload =>
+        payload.id == this.source.id &&
+        payload[this.wait.attribute] == values[0]
+      console.log(this.me, `subscribe`, waitTopic, waitSelector.toString())
       // pass sendLastMessage=false so doesn't call the callback if topic already registered
-      this.provider.subscribe(waitTopic, waitCallback, selector, false)
+      this.provider.subscribe(waitTopic, waitCallback, waitSelector, false)
 
       // publish to command topic
       const { address } = this.source // { driver, connection, address, id }
       const values = this.values // eg [5392, 0]
       const commandTopic = this.command.topic
-      const payload = { ...this.payload, address, value: values[0] } // { address, value, unitid, quantity, fc }
-      console.log(this.me, `publishing command`, commandTopic, payload)
-      console.log(this.me, `waiting for response...`)
-      this.provider.publish(commandTopic, JSON.toString(payload))
+      const commandPayload = { ...this.payload, address, value: values[0] } // { address, value, unitid, quantity, fc }
+      console.log(this.me, `publish`, commandTopic, commandPayload)
+      this.provider.publish(commandTopic, JSON.toString(commandPayload))
       this.oldValue = newValue
 
       //. what if the response never comes? need a timeout after a minute?
@@ -96,18 +78,20 @@ export class AdapterDriver {
       function waitForSignal(topic, payload) {
         payload = payload.toString()
         payload = JSON.parse(payload)
-        const waitValue = payload[this.wait.attribute] // eg payload.a15
-        console.log(this.me, `got response`, payload, waitValue)
-        // eg this.values[0] is 5392
+        const sentValue = payload[this.wait.attribute] // eg payload.a15
+        console.log(this.me, `waitForSignal got response`, payload, sentValue)
         // note: we use == because either might be a string, not number
-        if (waitValue == values[0]) {
-          // publish second command
-          const payload = { ...this.payload, address, value: values[1] }
-          console.log(this.me, `publish 2nd command`, commandTopic, payload)
-          this.provider.publish(commandTopic, JSON.toString(payload))
+        // selector should have checked this already, but just in case
+        if (sentValue == values[0]) {
+          // publish the second command
+          const commandPayload = { ...this.payload, address, value: values[1] }
+          console.log(this.me, `publish`, commandTopic, commandPayload)
+          this.provider.publish(commandTopic, JSON.toString(commandPayload))
           // unsubscribe from the wait topic
-          console.log(this.me, `unsubscribe`, waitTopic)
-          this.provider.unsubscribe(waitTopic, waitCallback) //. does this work?
+          console.log(this.me, `unsubscribe`, waitTopic, waitCallback.name)
+          this.provider.unsubscribe(waitTopic, waitCallback, waitSelector)
+        } else {
+          console.log(this.me, `error waitForSignal got wrong value`, sentValue)
         }
       }
     }
