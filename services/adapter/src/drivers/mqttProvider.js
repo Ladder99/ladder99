@@ -79,7 +79,8 @@ export class AdapterDriver {
       try {
         payload = JSON.parse(payload)
       } catch (e) {}
-      // loop over subscribers to this topic.
+
+      // loop over subscribers to this topic - linear search.
       // peek inside the payload if needed to see who to dispatch this message to.
       for (let subscriber of this.subscribers[topic]) {
         const { callback, selector } = subscriber
@@ -151,15 +152,15 @@ export class AdapterDriver {
 
     // add to subscriber list if not already there
     const subscriber = { callback, selector }
-    this.subscribers[topic] = this.subscribers[topic] || []
+    this.subscribers[topic] = this.subscribers[topic] || [] // initialize array
     for (let subscriber of this.subscribers[topic]) {
       if (
         //. these don't work? maybe the callback.bind(this) makes a new fn each time?
-        subscriber.callback === callback &&
-        subscriber.selector === selector
+        // subscriber.callback === callback &&
+        // subscriber.selector === selector
         // so use strings
-        // subscriber.callback.name === callback.name &&
-        // subscriber.selector.toString() === selector.toString()
+        subscriber.callback.name === callback.name &&
+        subscriber.selector.toString() === selector.toString()
       ) {
         console.log(
           `MqttProvider already subscribed to ${topic} with same callback and selector`

@@ -60,7 +60,7 @@ export class AdapterDriver {
         payload.id == this.source.id &&
         payload[this.wait.attribute] == values[0]
       console.log(this.me, `subscribe`, waitTopic, waitSelector.toString())
-      // pass sendLastMessage=false so doesn't call the callback if topic already registered
+      // note: we pass sendLastMessage=false so doesn't call the callback if topic already registered
       this.provider.subscribe(waitTopic, waitCallback, waitSelector, false)
 
       // publish to command topic
