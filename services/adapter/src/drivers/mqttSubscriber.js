@@ -73,6 +73,7 @@ export class AdapterDriver {
       // )
       selectors[topic] = selector
     }
+    console.log(this.me, `selectors`, selectors)
     return selectors
   }
 
