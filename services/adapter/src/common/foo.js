@@ -53,3 +53,6 @@ export function lookup(ref, tree) {
   }
   return tree
 }
+
+export function getSelector()
+

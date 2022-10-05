@@ -7,6 +7,9 @@
 
 //. will this be replaced by MTConnect Interfaces eventually?
 
+// import * as lib from '../common/lib.js'
+import * as foo from '../common/foo.js'
+
 // optional flag defined in .env.
 // lets you turn on the feedback mechanism for a live/production device,
 // but leave it off for a backup/development machine - otherwise they
@@ -37,6 +40,8 @@ export class AdapterDriver {
     this.values = this.publish.values || [] // eg [5392, 0] the two values to send with commands
     this.wait = feedback.wait || {} // { topic, payload } topic and payload filter to wait on
 
+    // const waitAttribute = this.wait.attribute // eg 'a15'
+
     // this.waitSelector = {
     //   filter: payload =>
     //     payload.id == source.id && payload.a15 == this.values[0],
@@ -60,7 +65,21 @@ export class AdapterDriver {
     // const waitEqual = getEqualFn(this.wait.payload)
     //.
 
-    const waitSelector = getSelector(this.wait.payload)
+    // // filter by fn - faster than generic object comparison
+    // //. could wrap selector in the closure
+    // const waitFilter = payload =>
+    //   payload.id == selector.id &&
+    //   payload[waitAttribute] == selector[waitAttribute]
+
+    // // mqttProvider will use this to prevent duplicate subscriptions, and for unsubscribing the right fn instance.
+    // const waitEqual = (subscriber1, subscriber2) =>
+    //   subscriber1.callback.name === subscriber2.callback.name &&
+    //   subscriber1.selector.id === subscriber2.selector.id &&
+    //   subscriber1.selector[waitAttribute] ===
+    //     subscriber2.selector[waitAttribute]
+
+    // get a wait selector { filter, equal } for the payload we're going to wait for
+    this.waitSelector = foo.getSelector(this.wait.payload)
 
     // check dataitem value - when changes, send reset cmd, wait for response, send 2nd cmd
     this.oldValue = null
@@ -77,58 +96,20 @@ export class AdapterDriver {
 
       // send command, wait for response, send second command
 
-      // const waitAttribute = this.wait.attribute // eg 'a15'
       const values = this.values // eg [5392, 0]
 
       // subscribe to response topic
       // will subscribe to mqttProvider with dispatch based on payload.id and waitAttribute value
       const waitTopic = this.wait.topic
       const waitCallback = feedbackWaitCallback.bind(this)
+
+      // this worked, but was too slow
       // const waitSelector = { id: this.source.id, [waitAttribute]: values[0] } // filter by example
 
-      //. selector could be an object with filter and equal.
-      // one for dispatch on payload, one for comparing subscriptions.
-      // or better as separate parameters?
-
-      // // make selector - use == not === in case string/number, eg id==535172 && a15==5392
-      // const waitSelector = {
-      //   filter: payload =>
-      //     payload.id == this.source.id && payload[waitAttribute] == values[0],
-      //   equal: (payload1, payload2) =>
-      //     JSON.stringify(payload1) === JSON.stringify(payload2),
-      // }
-      // const waitSelector = {
-      //   filter: payload =>
-      //     payload.id == this.source.id && payload[waitAttribute] == values[0],
-      //   equal: payload => this.filter(payload) && payload.length === 2,
-      // }
-
-      // const waitFilter = { id: this.source.id, [waitAttribute]: values[0] } // filter by example
-
-      // filter by fn - faster than generic object comparison
-      //. wrap selector in the closure?
-      const waitFilter = payload =>
-        payload.id == selector.id &&
-        payload[waitAttribute] == selector[waitAttribute]
-
-      // mqttProvider will use this to prevent duplicate subscriptions, and for unsubscribing
-      // const waitEqual = payload => waitFilter(payload) && payload.length === 2
-      const waitEqual = (subscriber1, subscriber2) =>
-        subscriber1.callback.name === subscriber2.callback.name &&
-        subscriber1.selector.id === subscriber2.selector.id &&
-        subscriber1.selector[waitAttribute] ===
-          subscriber2.selector[waitAttribute]
-
       // subscribe to wait topic
-      // console.log(this.me, `subscribe`, waitTopic, waitSelector)
       // this.provider.subscribe(waitTopic, waitCallback, waitSelector, false)
-      this.provider.subscribe(
-        waitTopic,
-        waitCallback,
-        waitFilter,
-        waitEqual,
-        false // sendLastMessage false so doesn't call the callback if topic already registered
-      )
+      // sendLastMessage false so doesn't call the callback if topic already registered
+      this.provider.subscribe(waitTopic, waitCallback, this.waitSelector, false)
 
       // publish to command topic
       const { address } = this.source // { driver, connection, address, id }
