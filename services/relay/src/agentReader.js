@@ -6,6 +6,8 @@ import { Probe } from './dataProbe.js'
 import { Observations } from './dataObservations.js'
 import * as lib from './common/lib.js'
 
+const increaseCount = 100
+
 export class AgentReader {
   //
   // params includes { fetchInterval, fetchCount }
@@ -79,12 +81,10 @@ export class AgentReader {
           // }
           if (instanceIdChanged(sample, probe)) break probe // go back and read probe again
           if (!status) {
+            console.log(`Relay increasing throughput by`, increaseCount)
             // handle out of range error during read by increasing throughput
-            this.count += 100 // the number of observations to read next time
+            this.count += increaseCount // the number of observations to read next time
             // this.interval -= 100 // and/or decrease interval
-            console.log(
-              `Relay got error during read - increasing throughput: count=${this.count}.`
-            )
             break current
           }
           await sample.write(this.db, probe.indexes) // write this.observations to db
