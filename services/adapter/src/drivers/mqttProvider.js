@@ -151,8 +151,8 @@ export class AdapterDriver {
     }
 
     // add to subscriber list if not already there
-    // const newSubscriber = { callback, selector }
-    const newSubscriber = { callback, filterFn, equalFn }
+    const newSubscriber = { callback, selector }
+    // const newSubscriber = { callback, filterFn, equalFn }
     this.subscribers[topic] = this.subscribers[topic] || [] // initialize array
     for (let subscriber of this.subscribers[topic]) {
       if (
@@ -168,7 +168,8 @@ export class AdapterDriver {
         // subscriber.selector.toString() === selector.toString()
         // subscriber.callback.name === callback.name &&
         // selectorEqual(subscriber.selector, selector)
-        equalFn(subscriber, newSubscriber)
+        // equalFn(subscriber, newSubscriber)
+        subscriberEqual(subscriber, newSubscriber)
       ) {
         console.log(this.me, `already subscribed ${topic} with same props`)
         return
@@ -241,3 +242,9 @@ export class AdapterDriver {
 // function selectorEqual(selector1, selector2) {
 //   return JSON.stringify(selector1) === JSON.stringify(selector2)
 // }
+
+// subscribers are like { callback, selector: { filter, equal } }
+function subscriberEqual(sub1, sub2) {
+  const equal = sub1.callback === sub2.callback && false
+  return equal
+}

@@ -81,7 +81,20 @@ export class AdapterDriver {
     // get a wait selector { filter, equal } for the payload object we're going to wait for
     this.waitSelector = foo.getSelector(this.wait.payload)
 
+    // publish:
+    // topic: l99/B01000/cmd/modbus # mqtt topic to send commands to
+    // payload:
+    //   address: null # varies by device, eg 142
+    //   value: null # will send values[0], wait, then values[1]
+    //   unitid: 199
+    //   quantity: 1
+    //   fc: 6
+    // values: [5392, 0] # values for payload.value - matches wait.payload.a15 below
+
+    this.publish = 0
+
     // check dataitem value - when changes, send reset cmd, wait for response, send 2nd cmd
+
     this.oldValue = null
     this.poll()
     setInterval(this.poll.bind(this), feedback.interval || 2000) // interval in ms
@@ -101,7 +114,7 @@ export class AdapterDriver {
       // subscribe to response topic
       // will subscribe to mqttProvider with dispatch based on payload.id and waitAttribute value
       const waitTopic = this.wait.topic
-      const waitCallback = feedbackWaitCallback.bind(this)
+      const waitCallback = feedbackCallback.bind(this)
 
       // this worked, but was too slow
       // const waitSelector = { id: this.source.id, [waitAttribute]: values[0] } // filter by example
@@ -123,28 +136,21 @@ export class AdapterDriver {
       // well, it's okay - we check for duplicate subscriptions, so they won't clog the system.
 
       // callback for wait topic
-      function feedbackWaitCallback(topic, payload) {
+      function feedbackCallback(topic, payload) {
         payload = payload.toString()
         payload = JSON.parse(payload)
 
         const sentValue = payload[waitAttribute] // eg payload.a15
-        console.log(
-          this.me,
-          `feedbackWaitCallback got response`,
-          payload,
-          sentValue
-        )
+        console.log(this.me, `feedbackCallback response`, payload, sentValue)
 
         // note: we use == because either might be a string, not number.
         // selector should have checked this already, but just in case.
         if (sentValue == values[0]) {
           // publish the second command
           const commandPayload = { ...this.payload, address, value: values[1] }
-          // console.log(this.me, `publish`, commandTopic, commandPayload)
           this.provider.publish(commandTopic, JSON.toString(commandPayload))
 
           // unsubscribe from the wait topic
-          // console.log(this.me, `unsubscribe`, waitTopic, waitCallback.name)
           // this.provider.unsubscribe(waitTopic, waitCallback, waitSelector)
           this.provider.unsubscribe(
             waitTopic,
@@ -155,7 +161,7 @@ export class AdapterDriver {
         } else {
           console.log(
             this.me,
-            `error feedbackWaitCallback got wrong value`,
+            `error feedbackCallback got wrong value`,
             sentValue
           )
         }
