@@ -16,7 +16,7 @@ const feedbackOn = process.env.L99_FEEDBACK
 export class AdapterDriver {
   //
   // setup is the parsed setup.yaml tree
-  // source is the source tree from the setup.yaml
+  // source is the source tree from the setup.yaml for this device
   start({ setup, source, device, cache, provider }) {
     this.me = `Feedback ${device.name}:`
 
@@ -36,6 +36,31 @@ export class AdapterDriver {
     this.payload = this.publish.payload || {} // eg { address, value, unitid, quantity, fc }
     this.values = this.publish.values || [] // eg [5392, 0] the two values to send with commands
     this.wait = feedback.wait || {} // { topic, payload } topic and payload filter to wait on
+
+    // this.waitSelector = {
+    //   filter: payload =>
+    //     payload.id == source.id && payload.a15 == this.values[0],
+    //   equal: payload => this.filter(payload) && payload.length === 2,
+    // }
+
+    // // filter by fn - faster than generic object comparison
+    // //. wrap selector in the closure?
+    // const waitFilter = payload =>
+    //   payload.id == selector.id &&
+    //   payload[waitAttribute] == selector[waitAttribute]
+    // // mqttProvider will use this to prevent duplicate subscriptions, and for unsubscribing
+    // // const waitEqual = payload => waitFilter(payload) && payload.length === 2
+    // const waitEqual = (subscriber1, subscriber2) =>
+    //   subscriber1.callback.name === subscriber2.callback.name &&
+    //   subscriber1.selector.id === subscriber2.selector.id &&
+    //   subscriber1.selector[waitAttribute] ===
+    //     subscriber2.selector[waitAttribute]
+
+    // const waitFilter = getFilterFn(this.wait.payload)
+    // const waitEqual = getEqualFn(this.wait.payload)
+    //.
+
+    const waitSelector = getSelector(this.wait.payload)
 
     // check dataitem value - when changes, send reset cmd, wait for response, send 2nd cmd
     this.oldValue = null
