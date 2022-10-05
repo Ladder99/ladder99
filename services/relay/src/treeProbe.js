@@ -47,7 +47,7 @@ export async function getNodes(tree, agent) {
   const devices = getDevices(agent) // maps device id->device node, if any
   let nodes = getList(tree) // flatten the tree
   addAgent(nodes, agent) // add agentAlias from setup to each element
-  addDevice(nodes, devices) // add deviceId and deviceAlias to each element
+  addDevice(nodes, devices, agent) // add deviceId and deviceAlias to each element, report missing
   addContext(nodes) // contextId = agentAlias[/deviceId], eg 'Main/d1' - use this to lookup device in db
   addUid(nodes, agent) // uid = agentAlias[/dataitemId], eg 'Main/d1-avail'
   addStep(nodes, translationIndex) // eg 'System'
@@ -98,8 +98,10 @@ function getDevices(agent) {
   return devices
 }
 
-// add device/agent id and alias to elements
-function addDevice(nodes, devices) {
+// add device/agent id and alias to elements.
+// this walks through the node list and adds the agent or device id
+// to all elements that are children of the agent or device.
+function addDevice(nodes, devices, agent) {
   let deviceId
   let deviceAlias
   const missing = [] // list of deviceIds
@@ -130,7 +132,9 @@ Relay warning: the following devices have no alias - could add in setup.yaml.
 `)
     // console.log(missing.join('\n'))
     for (let deviceId of missing) {
-      console.log(`Alias missing for ${deviceId}`)
+      console.log(
+        `Alias missing for device ${deviceId} in agent ${agent.alias}.`
+      )
     }
     console.log()
   }
