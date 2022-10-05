@@ -8,9 +8,9 @@ import * as lib from './common/lib.js'
 
 export class AgentReader {
   //
-  // db is a Db instance - db.js
-  // endpoint is an Endpoint instance - endpoint.js - to poll agent
   // params includes { fetchInterval, fetchCount }
+  // db is a Db instance - see common/db.js
+  // endpoint is an Endpoint instance - see endpoint.js - polls agent
   // setup is client's setup.yaml
   // agent is a single agent from setup.yaml
   // called by index.js
@@ -20,12 +20,10 @@ export class AgentReader {
     this.endpoint = endpoint
     this.setup = setup
     this.agent = agent
-    // this.autoprune = null
+    this.instanceId = null // as reported by agent
 
-    this.instanceId = null
-
+    // fetch sequence parameters
     this.from = null
-
     // these are dynamic - optimized on the fly for each agent.
     //. or later use streaming instead of polling
     this.interval = params.fetchInterval
@@ -43,6 +41,7 @@ export class AgentReader {
 
     // probe - get agent data structures and write to db
     probe: do {
+      console.log(`Relay starting probe loop`)
       // we pass this.setup also so probe can use translations for dataitem paths
       const probe = new Probe(this.setup, this.agent) // see dataProbe.js
       await probe.read(this.endpoint) // read xml into probe.jsTree, probe.nodes, check for path collisions - exit if unresolved
@@ -51,6 +50,7 @@ export class AgentReader {
 
       // current - get last known values of all dataitems and write to db
       current: do {
+        console.log(`Relay starting current loop`)
         const current = new Observations('current', this.agent)
         await current.read(this.endpoint) // get observations and this.sequence numbers
         if (instanceIdChanged(current, probe)) break probe
@@ -65,6 +65,7 @@ export class AgentReader {
         // sample - get sequence of dataitem values, write to db
         const sample = new Observations('sample', this.agent)
         sample: do {
+          console.log(`Relay starting sample loop`)
           // get observations
           const status = await sample.read(this.endpoint, this.from, this.count)
           // if (!(await sample.read(this.endpoint, this.from, this.count))) {
@@ -76,11 +77,11 @@ export class AgentReader {
           //   )
           //   break current
           // }
-          if (instanceIdChanged(sample, probe)) break probe
+          if (instanceIdChanged(sample, probe)) break probe // go back and read probe again
           if (!status) {
             // handle out of range error during read by increasing throughput
             this.count += 100 // the number of observations to read next time
-            // this.interval -= 100
+            // this.interval -= 100 // and/or decrease interval
             console.log(
               `Relay got error during read - increasing throughput: count=${this.count}.`
             )
@@ -99,11 +100,11 @@ export class AgentReader {
   }
 }
 
-//
+// helpers
 
 function instanceIdChanged(data1, data2) {
   if (data1.instanceId !== data2.instanceId) {
-    console.log(`Relay - instanceId changed - falling back to probe...`)
+    console.log(`Relay Agent's instanceId changed - falling back to probe...`)
     return true
   }
   return false
