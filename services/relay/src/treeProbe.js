@@ -133,7 +133,7 @@ Relay warning: the following devices have no alias - could add in setup.yaml.
     // console.log(missing.join('\n'))
     for (let deviceId of missing) {
       console.log(
-        `Alias missing for device ${deviceId} in agent ${agent.alias}.`
+        `Relay warning: alias missing for device ${deviceId} in agent ${agent.alias}.`
       )
     }
     console.log()
