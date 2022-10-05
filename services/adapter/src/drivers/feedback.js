@@ -15,6 +15,8 @@ const feedbackOn = process.env.L99_FEEDBACK
 
 export class AdapterDriver {
   //
+  // setup is the parsed setup.yaml tree
+  // source is the source tree from the setup.yaml
   start({ setup, source, device, cache, provider }) {
     this.me = `Feedback ${device.name}:`
 
@@ -24,17 +26,16 @@ export class AdapterDriver {
     console.log(this.me, `start driver, source`, source)
 
     this.cache = cache // need for monitoring a value
-    // this.source = source // { driver, connection, address, id }
     this.source = source // { driver }
     this.provider = provider // eg the mqttProvider.js object
 
     // get base config, if there
     const feedback = setup.adapter?.drivers?.feedback || {}
     this.dataitem = device.id + '-' + feedback.dataitem // dataitem to watch - eg 'm1-job'
-    this.command = feedback.command || {} // { topic, payload, values } for commands
-    this.payload = this.command.payload || {} // eg { address, value, unitid, quantity, fc }
-    this.values = this.command.values || [] // eg [5392, 0] the two values to send with commands
-    this.wait = feedback.wait || {} // { topic, attribute, value } topic to wait on etc
+    this.publish = feedback.publish || {} // { topic, payload, values } for commands
+    this.payload = this.publish.payload || {} // eg { address, value, unitid, quantity, fc }
+    this.values = this.publish.values || [] // eg [5392, 0] the two values to send with commands
+    this.wait = feedback.wait || {} // { topic, payload } topic and payload filter to wait on
 
     // check dataitem value - when changes, send reset cmd, wait for response, send 2nd cmd
     this.oldValue = null
@@ -51,7 +52,7 @@ export class AdapterDriver {
 
       // send command, wait for response, send second command
 
-      const waitAttribute = this.wait.attribute // eg 'a15'
+      // const waitAttribute = this.wait.attribute // eg 'a15'
       const values = this.values // eg [5392, 0]
 
       // subscribe to response topic
