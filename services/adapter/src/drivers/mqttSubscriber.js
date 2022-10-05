@@ -21,7 +21,7 @@ export class AdapterDriver {
     this.device = device
     this.cache = cache
     this.module = module // { inputs, outputs, types }
-    this.provider = provider
+    this.provider = provider // the MqttProvider instance
 
     // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
     this.types = module.types // module is { inputs, outputs, types }, from yaml files
@@ -97,7 +97,8 @@ export class AdapterDriver {
       //. make a generic ${foo.bar} evaluator
       const topic = this.replaceDeviceId(subscription.topic)
       // can set a topic to false in setup.yaml to not subscribe to it
-      const selector = this.selectors[topic] // eg { id:535172 }
+      // const selector = this.selectors[topic] // eg { id:535172 }
+      const selector = this.selectors[topic] // eg { filter: payload=>payload.id=12, equal: ... }
       if (selector && selector !== false) {
         console.log(this.me, `subscribing to ${topic}`)
         // we extend the mqtt api to add callback and selector for dispatcher to filter on.

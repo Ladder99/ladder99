@@ -8,7 +8,8 @@ import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 
 export class AdapterDriver {
   //
-  // provider is a shared connection definition, like { url: 'mqtt://localhost:1883', ... }
+  // provider is a shared connection definition from setup.yaml,
+  // like { driver: 'mqttProvider', url: 'mqtt://localhost:1883', ... }
   async start({ provider }) {
     //
     this.me = 'MqttProvider'
@@ -22,7 +23,7 @@ export class AdapterDriver {
       message: [],
     }
 
-    // topic subscriptions, coming from mqttSubscriber
+    // topic subscribers, coming from mqttSubscriber
     this.subscribers = {} // eg { 'controller': [{ callback, selector, lastMessage }, ...], ... }
 
     // save last messages for each topic seen
@@ -87,19 +88,20 @@ export class AdapterDriver {
         payload = JSON.parse(payload)
       } catch (e) {}
 
-      // loop over subscribers to this topic - linear search.
-      // can match more than one subscriber.
-      // peek inside the payload if needed to see who to dispatch this message to.
+      // loop over subscribers to this topic - linear search,
+      // as can match more than one subscriber.
+      // use fn to peek inside the payload to see who to dispatch this message to.
       for (let subscriber of this.subscribers[topic]) {
-        // const { callback, selector } = subscriber
-        const { callback, filterFn } = subscriber
+        const { callback, selector } = subscriber
+        // const { callback, filterFn } = subscriber
         // console.log(this.me, `checking subscriber`, callback.name, selector)
         // selector can be a boolean or a fn of the message payload
         // if (selector === false) continue // skip this subscriber
         // if (selector === true || selector(payload)) {
         // if (selector === true || selectorFilter(payload, selector)) {
         // if (selectorFilter(payload, selector)) {
-        if (filterFn(payload)) {
+        // if (filterFn(payload)) {
+        if (selector.filter(payload)) {
           console.log(this.me, `call`, callback.name, topic, payload)
           callback(topic, message) // note: we pass the original byte array message
         }
@@ -107,7 +109,7 @@ export class AdapterDriver {
     } // end of onMessage
   } // end of start
 
-  // register event handlers, eg 'connect', 'message'.
+  // register event handlers for 'connect', 'message'.
   // calls connect handler if provider is already connected, else waits for onConnect fn.
   on(event, handler) {
     this.handlers[event] = this.handlers[event] || [] // make sure we have an array
@@ -134,11 +136,13 @@ export class AdapterDriver {
   subscribe(
     topic,
     callback,
-    filterFn = payload => true,
-    equalFn = (subscriber1, subscriber2) => true,
+    // filterFn = payload => true,
+    // equalFn = (subscriber1, subscriber2) => true,
+    selector = { filter: payload => true, equal: (sub1, sub2) => true },
     sendLastMessage = true
   ) {
-    console.log(this.me, `subscribe ${topic} when`, filterFn.toString())
+    // console.log(this.me, `subscribe ${topic} when`, filterFn.toString())
+    console.log(this.me, `subscribe ${topic} when`, selector.filter.toString())
 
     // if we're already connected to the broker, call callback with last message received,
     // then continue.
@@ -151,7 +155,8 @@ export class AdapterDriver {
     }
 
     // add to subscriber list if not already there
-    const newSubscriber = { callback, selector }
+    // const newSubscriber = { callback, selector }
+    const newSubscriber = { callback, ...selector } //. get { callback, filter, equal } ?
     // const newSubscriber = { callback, filterFn, equalFn }
     this.subscribers[topic] = this.subscribers[topic] || [] // initialize array
     for (let subscriber of this.subscribers[topic]) {
@@ -169,7 +174,7 @@ export class AdapterDriver {
         // subscriber.callback.name === callback.name &&
         // selectorEqual(subscriber.selector, selector)
         // equalFn(subscriber, newSubscriber)
-        subscriberEqual(subscriber, newSubscriber)
+        subscriberEqual(subscriber, newSubscriber) //. this fn would compare { callback, filter, equal }
       ) {
         console.log(this.me, `already subscribed ${topic} with same props`)
         return
@@ -182,8 +187,8 @@ export class AdapterDriver {
     for (let [topic, subscribers] of Object.entries(this.subscribers)) {
       console.log(`  ${topic}:`)
       for (let subscriber of subscribers) {
-        // console.log(`    ${subscriber.callback.name}:`, subscriber.selector)
-        console.log(`    ${subscriber.callback.name}:`, subscriber.filterFn)
+        console.log(`    ${subscriber.callback.name}:`, subscriber.selector)
+        // console.log(`    ${subscriber.callback.name}:`, subscriber.filterFn)
       }
     }
 
