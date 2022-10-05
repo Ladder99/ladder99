@@ -78,7 +78,7 @@ export class AdapterDriver {
     //   subscriber1.selector[waitAttribute] ===
     //     subscriber2.selector[waitAttribute]
 
-    // get a wait selector { filter, equal } for the payload we're going to wait for
+    // get a wait selector { filter, equal } for the payload object we're going to wait for
     this.waitSelector = foo.getSelector(this.wait.payload)
 
     // check dataitem value - when changes, send reset cmd, wait for response, send 2nd cmd

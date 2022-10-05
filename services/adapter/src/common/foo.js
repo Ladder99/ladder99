@@ -54,5 +54,9 @@ export function lookup(ref, tree) {
   return tree
 }
 
-export function getSelector()
-
+export function getSelector(filterObj) {
+  const filter = getFilterFn(filterObj)
+  const equal = 0 //getEqualFn()
+  const selector = { filter, equal }
+  return selector
+}
