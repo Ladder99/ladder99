@@ -25,7 +25,7 @@ export class AgentReader {
     // fetch sequence parameters
     this.from = null
     // these are dynamic - optimized on the fly for each agent.
-    //. or later use streaming instead of polling
+    //. later will use streaming instead of polling
     this.interval = params.fetchInterval
     this.count = params.fetchCount
   }
@@ -104,7 +104,9 @@ export class AgentReader {
 
 function instanceIdChanged(data1, data2) {
   if (data1.instanceId !== data2.instanceId) {
-    console.log(`Relay Agent's instanceId changed - falling back to probe...`)
+    console.log(
+      `Relay Agent's instanceId changed - falling back to probe loop...`
+    )
     return true
   }
   return false
