@@ -54,8 +54,7 @@ export class AdapterDriver {
     const topics = this.source?.topics || {} // eg { 'controller', 'l99/B01000/evt/io' }
     // console.log(this.me, `get selectors from`, topics)
     const selectors = {} // key is topic, value will be selector - boolean or function of payload
-    // for (let topic of Object.keys(topics)) {
-    for (let [topic, selector] of Object.entries(topics)) {
+    for (let [topic, payload] of Object.entries(topics)) {
       // const value = topics[topic] // eg { id: 513241 }, or true, or false
       // let selector = true // if setup lists a topic, assume it's to be included
       // if (typeof value === 'boolean') {
@@ -71,7 +70,9 @@ export class AdapterDriver {
       //   `got selector for topic ${topic}, ${String(selector)}, with value`,
       //   value
       // )
-      selectors[topic] = selector
+      //. convert selector into a filter fn and equal fn?
+      // selectors[topic] = selector
+      selectors[topic] = getSelector(payload)
     }
     console.log(this.me, `selectors`, selectors)
     return selectors

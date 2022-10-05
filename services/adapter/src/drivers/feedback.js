@@ -91,10 +91,9 @@ export class AdapterDriver {
     //   fc: 6
     // values: [5392, 0] # values for payload.value - matches wait.payload.a15 below
 
-    this.publish = 0
+    this.publish = {}
 
     // check dataitem value - when changes, send reset cmd, wait for response, send 2nd cmd
-
     this.oldValue = null
     this.poll()
     setInterval(this.poll.bind(this), feedback.interval || 2000) // interval in ms
@@ -151,13 +150,13 @@ export class AdapterDriver {
           this.provider.publish(commandTopic, JSON.toString(commandPayload))
 
           // unsubscribe from the wait topic
-          // this.provider.unsubscribe(waitTopic, waitCallback, waitSelector)
-          this.provider.unsubscribe(
-            waitTopic,
-            waitCallback,
-            waitFilter,
-            waitEqual
-          )
+          this.provider.unsubscribe(waitTopic, waitCallback, waitSelector)
+          // this.provider.unsubscribe(
+          //   waitTopic,
+          //   waitCallback,
+          //   waitFilter,
+          //   waitEqual
+          // )
         } else {
           console.log(
             this.me,
