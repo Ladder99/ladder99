@@ -60,8 +60,10 @@ export class AdapterDriver {
       const waitCallback = feedbackWaitCallback.bind(this)
       // const waitSelector = { id: this.source.id, [waitAttribute]: values[0] } // filter by example
 
-      // //. or a selector could be an object with filter and equal - would be faster.
-      // // one for dispatch on payload, one for comparing subscriptions.
+      //. selector could be an object with filter and equal.
+      // one for dispatch on payload, one for comparing subscriptions.
+      // or better as separate parameters?
+
       // // make selector - use == not === in case string/number, eg id==535172 && a15==5392
       // const waitSelector = {
       //   filter: payload =>
@@ -78,7 +80,7 @@ export class AdapterDriver {
       // const waitFilter = { id: this.source.id, [waitAttribute]: values[0] } // filter by example
 
       // filter by fn - faster than generic object comparison
-      //. can we just wrap selector in the closure?
+      //. wrap selector in the closure?
       const waitFilter = payload =>
         payload.id == selector.id &&
         payload[waitAttribute] == selector[waitAttribute]
