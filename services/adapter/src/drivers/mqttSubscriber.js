@@ -6,7 +6,7 @@
 //. refactor/chop this code up into smaller fns - hard to read.
 // be careful with types, keyvalues, closure vars, and this vs this.
 
-import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
+import { getSelector, getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../common/lib.js'
 
 export class AdapterDriver {
@@ -30,8 +30,9 @@ export class AdapterDriver {
     this.keyvalues = {}
 
     // get dict of selector objects for each topic
-    // eg { 'controller': true, 'l99...': { id:535172 }, ... }
+    // eg { 'controller': payload=>true, 'l99...': payload=>payload.id==535172, ... }
     this.selectors = this.getSelectors()
+    console.log(this.me, `selectors`, this.selectors)
 
     // get topic handlers from inputs.yaml
     // eg { 'controller': { unsubscribe, initialize, definitions, inputs, ... }, ... }
@@ -41,40 +42,20 @@ export class AdapterDriver {
     this.provider.on('connect', this.onConnect.bind(this))
   }
 
-  // get a dictionary of selectors for each topic - eg from setup.yaml -
+  // get a dictionary of selector fns for each topic - eg from setup.yaml -
   //   topics:
   //     controller: true
   //     l99/B01000/evt/io:
   //       id: 535172
-  // this will return selectors = { 'controller': true, 'l99...': { id:535172 }, ... }
-  // where key is the mqtt message topic.
-  // this acts as a filter/dispatch mechanism for the topics defined in the inputs.yaml.
-  // important: if a topic is not included in this yaml section it won't be subscribed to.
+  // this will return selectors = { 'controller': payload=>true, 'l99...': payload=>payload.id==535172, ... }
+  // this will be used as a filter/dispatch for the topics defined in the inputs.yaml.
+  // important: if a topic is not included in this yaml section it won't be subscribed to!
   getSelectors() {
-    const topics = this.source?.topics || {} // eg { 'controller':true, 'l99/B01000/evt/io':..., }
-    // console.log(this.me, `get selectors from`, topics)
-    const selectors = {} // key is topic, value will be selector - boolean or function of payload
-    for (let [topic, payload] of Object.entries(topics)) {
-      // const payload = topics[topic] // eg { id: 513241 }, or true, or false
-      // let selector = true // if setup lists a topic, assume it's to be included
-      // if (typeof payload === 'boolean') {
-      //   selector = payload // true or false
-      // } else if (payload.id !== undefined) {
-      //   // NOTE: we will use == instead of ===, in case payload.id is a string.
-      //   // selector = payload => payload.id == payload.id
-      //   selector = payload
-      // }
-      // // selector can be boolean or a function of the mqtt message payload
-      // console.log(
-      //   this.me,
-      //   `got selector for topic ${topic}, ${String(selector)}, with payload`,
-      //   payload
-      // )
-      //. convert selector into a filter fn and equal fn?
-      // selectors[topic] = selector
-      selectors[topic] = getSelector(payload)
+    const selectors = {} // eg { 'controller': payload=>true, ... }
+    const topics = this.source?.topics || {} // eg { 'controller':true, 'l99/B01000/evt/io':{}, ...}
+    for (let [topic, selectorObj] of Object.entries(topics)) {
+      selectors[topic] = getSelector(selectorObj)
     }
-    console.log(this.me, `selectors`, selectors)
     return selectors
   }
 
@@ -88,17 +69,16 @@ export class AdapterDriver {
   }
 
   // subscribe to topics as defined in inputs.yaml
-  // eg [{topic:'controller'}, {topic:'l99/B01000/evt/io'}, ...]
   subscribeTopics() {
+    // subscriptions is an array like [{topic:'controller'}, {topic:'l99/B01000/evt/io'}, ...]
     const subscriptions = this.module.inputs?.connect?.subscribe || []
+    // get list like ['controller', 'l99/B01000/evt/io', ...]
     const topics = subscriptions.map(subscription => subscription.topic)
-    console.log(this.me, 'subscribe', topics)
+    console.log(this.me, 'subscribe to', topics)
     for (const subscription of subscriptions) {
-      //. make a generic ${foo.bar} evaluator
       const topic = this.replaceDeviceId(subscription.topic)
       // can set a topic to false in setup.yaml to not subscribe to it
-      // const selector = this.selectors[topic] // eg { id:535172 }
-      const selector = this.selectors[topic] // eg { filter: payload=>payload.id=12, equal: ... }
+      const selector = this.selectors[topic] // eg payload=>payload.id=12
       if (selector && selector !== false) {
         console.log(this.me, `subscribing to ${topic}`)
         // we extend the mqtt api to add callback and selector for dispatcher to filter on.
@@ -275,13 +255,4 @@ export class AdapterDriver {
   replaceDeviceId(str) {
     return str.replace('${deviceId}', this.device.id)
   }
-}
-
-// get a selector fn for a payload, eg { a:5,b:4 }, which would give
-// selector = (payload) => payload.a === 5 && payload.b === 4
-function getSelector(payload) {
-  if (typeof payload === 'object') {
-    // return payload.id
-  }
-  return () => payload
 }
