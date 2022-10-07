@@ -1,17 +1,18 @@
-// get a filter function from a filter object.
-// eg {id:3,foo:5} gives
+// get a selector function from a selector object.
+// eg {id:3,foo:5} gives a function
 //   payload => payload.id == 3 && payload.foo == 5
 // note: we use == instead of === to account for numbers and strings.
 // also: since we're building the fn with a string, we can use
-//   fn.toString() to compare fns for equality, as long as keys are sorted the same.
+//   selector.toString() to compare fns for equality, as long as keys are sorted the same.
 //   this will be used in subscribing and unsubscribing to topics/payloads.
-export function getFilterFn(filterObj) {
+export function getSelector(selectorObj) {
   // build a fn string
   let str = 'payload => '
-  if (typeof filterObj === 'object') {
+  if (typeof selectorObj === 'object') {
     const lst = []
-    for (let key of Object.keys(filterObj)) {
-      lst.push('payload.' + key + ' == ' + filterObj[key])
+    for (let key of Object.keys(selectorObj)) {
+      //. handle if value is a string
+      lst.push('payload.' + key + ' == ' + selectorObj[key])
     }
     str += lst.join(' && ')
   } else {
