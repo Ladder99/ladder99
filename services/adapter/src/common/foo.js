@@ -1,20 +1,29 @@
-// get a filter fn from an object, eg {id:3,foo:5}
-export function getFilterFn(obj) {
-  // return obj => obj.id == 3 && obj.foo == 5
-  // build a fn string, eval it
-  let str = 'obj => '
-  let lst = []
-  for (let key of Object.keys(obj)) {
-    lst.push('obj.' + key + ' == ' + obj[key])
+// get a filter function from a filter object.
+// eg {id:3,foo:5} gives
+//   payload => payload.id == 3 && payload.foo == 5
+// note: we use == instead of === to account for numbers and strings.
+// also: since we're building the fn with a string, we can use
+//   fn.toString() to compare fns for equality, as long as keys are sorted the same.
+//   this will be used in subscribing and unsubscribing to topics/payloads.
+export function getFilterFn(filterObj) {
+  // build a fn string
+  let str = 'payload => '
+  if (typeof filterObj === 'object') {
+    const lst = []
+    for (let key of Object.keys(filterObj)) {
+      lst.push('payload.' + key + ' == ' + filterObj[key])
+    }
+    str += lst.join(' && ')
+  } else {
+    str += String(filterObj) // eg 'true' or 'false'
   }
-  str += lst.join(' && ')
+  // eval the fn string
   let fn
   try {
     fn = eval(str)
   } catch (e) {
+    console.log('error evaluating filter fn', e.message)
     console.log(str)
-    console.log('error', e.message)
-    return
   }
   return fn
 }
@@ -56,7 +65,7 @@ export function lookup(ref, tree) {
 
 export function getSelector(filterObj) {
   const filter = getFilterFn(filterObj)
-  const equal = 0 //getEqualFn()
+  const equal = 0 //getEqualFn() //.?
   const selector = { filter, equal }
   return selector
 }
