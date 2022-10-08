@@ -101,7 +101,9 @@ export class AdapterDriver {
         // if (selector === true || selectorFilter(payload, selector)) {
         // if (selectorFilter(payload, selector)) {
         // if (filterFn(payload)) {
-        if (selector.filter(payload)) {
+        // if (selector.filter(payload)) {
+        if (selector === false) continue // skip this subscriber
+        if (selector === true || selector.filter(payload)) {
           console.log(this.me, `call`, callback.name, topic, payload)
           callback(topic, message) // note: we pass the original byte array message
         }
@@ -138,11 +140,14 @@ export class AdapterDriver {
     callback,
     // filterFn = payload => true,
     // equalFn = (subscriber1, subscriber2) => true,
-    selector = { filter: payload => true, equal: (sub1, sub2) => true },
+    // selector = { filter: payload => true, equal: (sub1, sub2) => true },
+    selector = true,
     sendLastMessage = true
   ) {
     // console.log(this.me, `subscribe ${topic} when`, filterFn.toString())
-    console.log(this.me, `subscribe ${topic} when`, selector.filter.toString())
+    // console.log(this.me, `subscribe ${topic} when`, selector.filter.toString())
+    // console.log(this.me, `subscribe ${topic} when`, selector.filter.toString())
+    console.log(this.me, `subscribe ${topic} when`, String(selector))
 
     // if we're already connected to the broker, call callback with last message received,
     // then continue.
@@ -156,25 +161,19 @@ export class AdapterDriver {
 
     // add to subscriber list if not already there
     // const newSubscriber = { callback, selector }
-    const newSubscriber = { callback, ...selector } //. get { callback, filter, equal } ?
+    // const newSubscriber = { callback, ...selector } //. get { callback, filter, equal } ?
+    const newSubscriber = { callback, selector }
     // const newSubscriber = { callback, filterFn, equalFn }
     this.subscribers[topic] = this.subscribers[topic] || [] // initialize array
     for (let subscriber of this.subscribers[topic]) {
       if (
         //. these don't work? maybe the callback.bind(this) makes a new fn each time?
+        // so use strings
         // subscriber.callback === callback &&
         // subscriber.selector === selector
-        // so use strings
-        //. this fails because strings are the same even if selector encloses different data (eg id)
-        // eg callback.name='onMessage' and selector.toString()='payload=>payload.id===foo.id'
-        // then only one device would get a subscription to the topic.
-        // somehow need to look inside the closure - how do?
-        // subscriber.callback.name === callback.name &&
-        // subscriber.selector.toString() === selector.toString()
-        // subscriber.callback.name === callback.name &&
-        // selectorEqual(subscriber.selector, selector)
-        // equalFn(subscriber, newSubscriber)
-        subscriberEqual(subscriber, newSubscriber) //. this fn would compare { callback, filter, equal }
+        //. handle case where these match but diff devices - how?
+        subscriber.callback.name === callback.name &&
+        String(subscriber.selector) === String(selector)
       ) {
         console.log(this.me, `already subscribed ${topic} with same props`)
         return
@@ -198,26 +197,35 @@ export class AdapterDriver {
 
   // unsubscribe from a topic.
   // pass callback and selector here so can distinguish subscribers.
-  //. better to pass an equal fn, so can compare subscribers.
   unsubscribe(topic, callback, selector) {
-    console.log(this.me, `unsubscribe`, topic, callback.name, selector)
+    console.log(this.me, `unsubscribe`, topic, callback.name, String(selector))
     const subscribers = this.subscribers[topic] || [] // eg [{ callback, selector }, ...]
+    //. handle case where these match but diff devices - how?
     const i = subscribers.findIndex(
       subscriber =>
         subscriber.callback.name === callback.name &&
-        selectorEqual(subscriber.selector, selector)
+        // selectorEqual(subscriber.selector, selector)
+        String(subscriber.selector) === String(selector)
     )
     // if found, remove subscriber from list
     if (i >= 0) {
       this.subscribers[topic].splice(i, 1) // modifies in place
-      console.log(this.me, `unsubscribed`, topic, callback.name, selector)
+      console.log(
+        this.me,
+        `unsubscribed`,
+        topic,
+        callback.name,
+        String(selector)
+      )
       console.log(this.me, `${topic} down to`, this.subscribers[topic])
       //. if none left, could unsubscribe from the broker -
       // this.mqtt.unsubscribe(topic)
     } else {
       console.log(
         this.me,
-        `warning ${callback.name} with selector ${selector} not subscribed to ${topic}`
+        `warning ${callback.name} with selector ${String(
+          selector
+        )} not subscribed to ${topic}`
       )
     }
   }
@@ -247,9 +255,3 @@ export class AdapterDriver {
 // function selectorEqual(selector1, selector2) {
 //   return JSON.stringify(selector1) === JSON.stringify(selector2)
 // }
-
-// subscribers are like { callback, selector: { filter, equal } }
-function subscriberEqual(sub1, sub2) {
-  const equal = sub1.callback === sub2.callback && false
-  return equal
-}
