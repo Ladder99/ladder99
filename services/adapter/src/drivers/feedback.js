@@ -37,7 +37,6 @@ export class AdapterDriver {
     const feedback = setup.adapter?.drivers?.feedback || {}
     this.dataitem = device.id + '-' + feedback.dataitem // dataitem to watch - eg 'm1-job'
     this.command = feedback.command || {} // { topic, payload, values } for commands
-    // this.payload = this.command.payload || {} // eg { address, value, unitid, quantity, fc }
     // the feedback command has null for address, so need to fill it in based on that specified in the source.
     this.payload = this.command.payload || { address: this.source.address } // eg { address, value, unitid, quantity, fc }
     this.values = this.command.values || [] // eg [5392, 0] the two values to send with commands
@@ -93,28 +92,30 @@ export class AdapterDriver {
   }
 
   // callback for wait topic
+  // payload is eg { id: 535172, a15: 5392, ... }
   feedbackCallback(topic, payload) {
     payload = payload.toString()
     payload = JSON.parse(payload)
 
-    const sentValue = payload[waitAttribute] // eg payload.a15
-    console.log(this.me, `feedbackCallback response`, payload, sentValue)
+    // const sentValue = payload[waitAttribute] // eg payload.a15
+    console.log(this.me, `feedbackCallback response`, payload)
 
     // note: we use == because either might be a string, not number.
     // selector should have checked this already, but just in case.
-    if (sentValue == values[0]) {
-      // publish the second command
-      const commandPayload = { ...this.payload, address, value: this.values[1] }
-      this.provider.publish(commandTopic, JSON.toString(commandPayload))
+    // if (sentValue == values[0]) {
+    // publish the second command
+    // const commandPayload = { ...this.payload, address, value: this.values[1] }
+    const commandPayload = { ...this.payload, value: this.values[1] }
+    this.provider.publish(commandTopic, JSON.toString(commandPayload))
 
-      // unsubscribe from the wait topic
-      this.provider.unsubscribe(
-        this.waitTopic,
-        this.waitCallback,
-        this.waitSelector
-      )
-    } else {
-      console.log(this.me, `error feedbackCallback got wrong value`, sentValue)
-    }
+    // unsubscribe from the wait topic
+    this.provider.unsubscribe(
+      this.waitTopic,
+      this.waitCallback,
+      this.waitSelector
+    )
+    // } else {
+    //   console.log(this.me, `error feedbackCallback got wrong value`, sentValue)
+    // }
   }
 }
