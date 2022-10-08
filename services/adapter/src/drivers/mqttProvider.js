@@ -93,15 +93,8 @@ export class AdapterDriver {
       // use fn to peek inside the payload to see who to dispatch this message to.
       for (let subscriber of this.subscribers[topic]) {
         const { callback, selector } = subscriber
-        // const { callback, filterFn } = subscriber
         // console.log(this.me, `checking subscriber`, callback.name, selector)
         // selector can be a boolean or a fn of the message payload
-        // if (selector === false) continue // skip this subscriber
-        // if (selector === true || selector(payload)) {
-        // if (selector === true || selectorFilter(payload, selector)) {
-        // if (selectorFilter(payload, selector)) {
-        // if (filterFn(payload)) {
-        // if (selector.filter(payload)) {
         if (selector === false) continue // skip this subscriber
         if (selector === true || selector(payload)) {
           console.log(this.me, `call`, callback.name, topic, payload)
@@ -117,8 +110,7 @@ export class AdapterDriver {
     this.handlers[event] = this.handlers[event] || [] // make sure we have an array
     this.handlers[event].push(handler)
     // call the connect handler if we're already connected -
-    // otherwise, will call these in onConnect.
-    //. don't want to call this until all the subscribers are ready!
+    // otherwise, will call these in onConnect as handlers are added.
     if (event === 'connect' && this.connected) {
       console.log(this.me, `calling connect handler`, handler)
       handler() // eg onConnect() in mqttSubscriber
@@ -127,26 +119,12 @@ export class AdapterDriver {
   }
 
   // subscribe to a topic with callback, filter, and equal fns.
-  // callback is a function of (topic, message) - eg onMessage(topic, message) in mqttSubscriber,
-  // where message is a byte array.
-  // filterFn is a function of the payload (message as js object or string), that returns true
-  // if the message should be dispatched to the callback.
-  // equalFn is a function of two subscribers with { callback, filterFn, equalFn },
-  // that checks for equality.
+  // callback is a function of (topic, message), where message is a byte array.
+  // eg onMessage(topic, message) in mqttSubscriber,
+  // selector is a boolean, or function of the payload (message as js object or string),
+  // that returns true if the message should be dispatched to the callback.
   // sendLastMessage - if true, send the last message seen on this topic to the callback.
-  // subscribe(topic, callback, selector = true, sendLastMessage = true) {
-  subscribe(
-    topic,
-    callback,
-    // filterFn = payload => true,
-    // equalFn = (subscriber1, subscriber2) => true,
-    // selector = { filter: payload => true, equal: (sub1, sub2) => true },
-    selector = true,
-    sendLastMessage = true
-  ) {
-    // console.log(this.me, `subscribe ${topic} when`, filterFn.toString())
-    // console.log(this.me, `subscribe ${topic} when`, selector.filter.toString())
-    // console.log(this.me, `subscribe ${topic} when`, selector.filter.toString())
+  subscribe(topic, callback, selector = true, sendLastMessage = true) {
     console.log(this.me, `subscribe ${topic} when`, String(selector))
 
     // if we're already connected to the broker, call callback with last message received,
@@ -160,19 +138,14 @@ export class AdapterDriver {
     }
 
     // add to subscriber list if not already there
-    // const newSubscriber = { callback, selector }
-    // const newSubscriber = { callback, ...selector } //. get { callback, filter, equal } ?
     const newSubscriber = { callback, selector }
-    // const newSubscriber = { callback, filterFn, equalFn }
     this.subscribers[topic] = this.subscribers[topic] || [] // initialize array
     for (let subscriber of this.subscribers[topic]) {
       if (
-        //. these don't work? maybe the callback.bind(this) makes a new fn each time?
-        // so use strings
-        // subscriber.callback === callback &&
-        // subscriber.selector === selector
-        //. handle case where these match but diff devices - how?
-        subscriber.callback.name === callback.name &&
+        //. handle case where these match but diff devices -
+        // eg maybe we SHOULD use direct callback comparison?
+        // subscriber.callback.name === callback.name &&
+        subscriber.callback === callback &&
         String(subscriber.selector) === String(selector)
       ) {
         console.log(this.me, `already subscribed ${topic} with same props`)
@@ -203,8 +176,9 @@ export class AdapterDriver {
     //. handle case where these match but diff devices - how?
     const i = subscribers.findIndex(
       subscriber =>
-        subscriber.callback.name === callback.name &&
+        // subscriber.callback.name === callback.name &&
         // selectorEqual(subscriber.selector, selector)
+        subscriber.callback === callback &&
         String(subscriber.selector) === String(selector)
     )
     // if found, remove subscriber from list
