@@ -36,9 +36,9 @@ export class AdapterDriver {
     // get base config, if there
     const feedback = setup.adapter?.drivers?.feedback || {}
     this.dataitem = device.id + '-' + feedback.dataitem // dataitem to watch - eg 'm1-job'
-    this.publish = feedback.publish || {} // { topic, payload, values } for commands
-    this.payload = this.publish.payload || {} // eg { address, value, unitid, quantity, fc }
-    this.values = this.publish.values || [] // eg [5392, 0] the two values to send with commands
+    this.command = feedback.command || {} // { topic, payload, values } for commands
+    this.payload = this.command.payload || {} // eg { address, value, unitid, quantity, fc }
+    this.values = this.command.values || [] // eg [5392, 0] the two values to send with commands
     this.wait = feedback.wait || {} // { topic, payload } topic and payload filter to wait on
 
     // topic to wait on
@@ -49,16 +49,6 @@ export class AdapterDriver {
 
     // bind callback to this instance so will always have same address for subscribing and unsubscribing
     this.waitCallback = this.feedbackCallback.bind(this)
-
-    // publish:
-    // topic: l99/B01000/cmd/modbus # mqtt topic to send commands to
-    // payload:
-    //   address: null # varies by device, eg 142
-    //   value: null # will send values[0], wait, then values[1]
-    //   unitid: 199
-    //   quantity: 1
-    //   fc: 6
-    // values: [5392, 0] # values for payload.value - matches wait.payload.a15 below
 
     // check dataitem value - when changes, send reset cmd, wait for response, send 2nd cmd
     this.oldValue = null
@@ -75,16 +65,8 @@ export class AdapterDriver {
 
       // send command, wait for response, send second command
 
-      // const values = this.values // eg [5392, 0]
-
-      // subscribe to response topic
-      // will subscribe to mqttProvider with dispatch based on payload.id and waitAttribute value
-
-      // this worked, but was too slow
-      // const waitSelector = { id: this.source.id, [waitAttribute]: values[0] } // filter by example
-
       // subscribe to wait topic
-      // this.provider.subscribe(waitTopic, waitCallback, waitSelector, false)
+      // will subscribe to mqttProvider with dispatch based on payload.id and waitAttribute value
       // sendLastMessage false so doesn't call the callback if topic already registered
       this.provider.subscribe(
         this.waitTopic,
