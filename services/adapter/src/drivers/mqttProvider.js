@@ -103,7 +103,7 @@ export class AdapterDriver {
         // if (filterFn(payload)) {
         // if (selector.filter(payload)) {
         if (selector === false) continue // skip this subscriber
-        if (selector === true || selector.filter(payload)) {
+        if (selector === true || selector(payload)) {
           console.log(this.me, `call`, callback.name, topic, payload)
           callback(topic, message) // note: we pass the original byte array message
         }
