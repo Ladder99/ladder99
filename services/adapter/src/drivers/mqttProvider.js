@@ -97,7 +97,7 @@ export class AdapterDriver {
         // selector can be a boolean or a fn of the message payload
         if (selector === false) continue // skip this subscriber
         if (selector === true || selector(payload)) {
-          console.log(this.me, `call`, callback.name, topic, payload)
+          // console.log(this.me, `call`, callback.name, topic, payload) // very verbose
           callback(topic, message) // note: we pass the original byte array message
         }
       }
@@ -159,8 +159,10 @@ export class AdapterDriver {
     for (let [topic, subscribers] of Object.entries(this.subscribers)) {
       console.log(`  ${topic}:`)
       for (let subscriber of subscribers) {
-        console.log(`    ${subscriber.callback.name}:`, subscriber.selector)
-        // console.log(`    ${subscriber.callback.name}:`, subscriber.filterFn)
+        console.log(
+          `    ${subscriber.callback.name}:`,
+          String(subscriber.selector)
+        )
       }
     }
 
