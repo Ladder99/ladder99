@@ -284,15 +284,20 @@ export function getSelector(selectorObj) {
     let str = 'payload => '
     const lst = []
     for (let key of Object.keys(selectorObj)) {
-      //. handle if value is a string
-      lst.push('payload.' + key + ' == ' + selectorObj[key])
+      //. handle if value is a string - need quotes
+      const value = selectorObj[key]
+      if (typeof value === 'string') {
+        lst.push(`payload.${key} == '${value}'`)
+      } else {
+        lst.push(`payload.${key} == ${value}`)
+      }
     }
     str += lst.join(' && ')
     // eval the string
     try {
       selector = eval(str)
     } catch (e) {
-      console.log('error evaluating filter selector', e.message)
+      console.log('getSelector error evaluating selector', str, e.message)
       console.log(str)
     }
   } else {

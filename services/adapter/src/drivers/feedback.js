@@ -37,9 +37,13 @@ export class AdapterDriver {
     const feedback = setup.adapter?.drivers?.feedback || {}
     this.dataitem = device.id + '-' + feedback.dataitem // dataitem to watch - eg 'm1-job'
     this.command = feedback.command || {} // { topic, payload, values } for commands
-    this.payload = this.command.payload || {} // eg { address, value, unitid, quantity, fc }
+    // this.payload = this.command.payload || {} // eg { address, value, unitid, quantity, fc }
+    // the feedback command has null for address, so need to fill it in based on that specified in the source.
+    this.payload = this.command.payload || { address: this.source.address } // eg { address, value, unitid, quantity, fc }
     this.values = this.command.values || [] // eg [5392, 0] the two values to send with commands
     this.wait = feedback.wait || {} // { topic, payload } topic and payload filter to wait on
+    // the feedback wait payload has null for id, so need to fill it in based on that specified in the source.
+    this.wait.payload = { ...this.wait.payload, id: this.source.id }
 
     // topic to wait on
     this.waitTopic = this.wait.topic
