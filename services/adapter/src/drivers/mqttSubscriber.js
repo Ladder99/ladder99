@@ -162,18 +162,12 @@ export class AdapterDriver {
     const algorithmHandler = (
       this.algorithmHandlers[algorithm] || this.algorithmHandlers.unknown
     ).bind(this)
-
-    // // pass values to handlers - //. pass directly, incl keyvalues and types?
-    // this.handler = handler
-    // this.$ = $
-    // this.lookupFn = lookupFn
-
-    // algorithmHandler() // call the algorithm handler method - defined below
-    algorithmHandler({ topic, handler, $, lookupFn, keyvalues, types }) // call the algorithm handler method - defined below
+    // call method, eg algorithmIterateExpressions, algorithmEvaluateExpressions
+    algorithmHandler({ topic, handler, $, keyvalues, types })
 
     // subscribe to any additional topics as specified (optional section in inputs.yaml)
     this.subscribeTopics2(handler)
-  } // end of onMessage fn
+  } // end of onMessage method
 
   // define algorithm handlers
 
@@ -181,7 +175,7 @@ export class AdapterDriver {
   // expressions is an array of [key, expression] - eg [['fault_count', '%M55.2'], ...].
   //. this could be like the other algorithm - use msg('foo'), calculations -
   // then would be reactive instead of evaluating each expression, and unifies code!
-  algorithmIterateExpressions({ handler, $, lookupFn, keyvalues, types }) {
+  algorithmIterateExpressions({ handler, $, keyvalues, types }) {
     const expressions = handler.expressions || {}
     for (const [key, expression] of Object.entries(expressions)) {
       // use the lookup function to get value from payload
@@ -198,7 +192,7 @@ export class AdapterDriver {
 
   // get set of keys for eqns we need to execute based on the payload
   // eg set{'has_current_job', 'job_meta', ...}
-  algorithmIteratePayloadContents({ handler, $, lookupFn, keyvalues, types }) {
+  algorithmIteratePayloadContents({ handler, $, keyvalues, types }) {
     //. call this dependencies = getDependencies?
     //  or references = getReferences ?
     let equationKeys = getEquationKeys(payload, handler.maps) // from helpers.js
