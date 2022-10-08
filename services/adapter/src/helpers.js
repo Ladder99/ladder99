@@ -296,7 +296,7 @@ export function getSelector(selectorObj) {
       console.log(str)
     }
   } else {
-    selector = filterObj // eg true
+    selector = selectorObj // eg true
   }
   return selector
 }
