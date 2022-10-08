@@ -4,10 +4,10 @@
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
 //. refactor/chop this code up into smaller fns - hard to read.
-// be careful with types, keyvalues, closure vars, and this vs this.
+// be careful with types, keyvalues, closure vars, and this vs that.
 
-import { getSelector, getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../common/lib.js'
+import { getSelector, getEquationKeys, getEquationKeys2 } from '../helpers.js'
 
 export class AdapterDriver {
   //
