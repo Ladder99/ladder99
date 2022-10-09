@@ -1,4 +1,4 @@
-# Fanuc
+# Fanuc Driver
 
 > WARNING:
 > Review [Fanuc Vulnerability Information](https://www.fanuc.co.jp/en/product/vulnerability/index.html) before proceeding.
