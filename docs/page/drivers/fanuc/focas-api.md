@@ -8,7 +8,9 @@ editor: markdown
 dateCreated: 2021-08-16T00:10:08.402Z
 --- -->
 
-# CNC: Handle
+# Focas API
+
+## CNC: Handle
 
 ## cnc_rdnodenum
 
@@ -726,7 +728,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-X">0i-D</button><button class="focas-support-X">0i-F</button><button class="focas-support-X">0i-D(P)</button><button class="focas-support-X">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-X">16i-A</button><button class="focas-support-O">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-X">30i-A</button><button class="focas-support-O">30i-B</button><button class="focas-support-X">30i(P)</button><button class="focas-support-X">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-X">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-X">PMi-A</button>
 
-# CNC: Program
+## CNC: Program
 
 ## cnc_dwnstart
 
@@ -2198,7 +2200,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-O">0i-D</button><button class="focas-support-O">0i-F</button><button class="focas-support-X">0i-D(P)</button><button class="focas-support-O">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-X">16i-A</button><button class="focas-support-X">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-O">30i-A</button><button class="focas-support-O">30i-B</button><button class="focas-support-O">30i(P)</button><button class="focas-support-O">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-O">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-X">PMi-A</button>
 
-# CNC: File Data
+## CNC: File Data
 
 ## cnc_rdtofs
 
@@ -3418,7 +3420,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-X">0i-D</button><button class="focas-support-X">0i-F</button><button class="focas-support-X">0i-D(P)</button><button class="focas-support-X">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-O">16i-A</button><button class="focas-support-O">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-X">30i-A</button><button class="focas-support-X">30i-B</button><button class="focas-support-X">30i(P)</button><button class="focas-support-X">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-X">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-X">PMi-A</button>
 
-# CNC: Tool Life Mgmt
+## CNC: Tool Life Mgmt
 
 ## cnc_rdgrpid
 
@@ -4008,7 +4010,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-O">0i-D</button><button class="focas-support-O">0i-F</button><button class="focas-support-X">0i-D(P)</button><button class="focas-support-X">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-X">16i-A</button><button class="focas-support-X">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-O">30i-A</button><button class="focas-support-O">30i-B</button><button class="focas-support-X">30i(P)</button><button class="focas-support-X">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-X">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-X">PMi-A</button>
 
-# CNC: Tool Mgmt
+## CNC: Tool Mgmt
 
 ## cnc_regtool
 
@@ -4332,7 +4334,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-X">0i-D</button><button class="focas-support-X">0i-F</button><button class="focas-support-X">0i-D(P)</button><button class="focas-support-X">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-X">16i-A</button><button class="focas-support-X">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-X">30i-A</button><button class="focas-support-X">30i-B</button><button class="focas-support-X">30i(P)</button><button class="focas-support-X">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-X">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-X">PMi-A</button>
 
-# CNC: Tool Geometry
+## CNC: Tool Geometry
 
 ## cnc_rdtlgeomsize_ext
 
@@ -4362,7 +4364,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-X">0i-D</button><button class="focas-support-O">0i-F</button><button class="focas-support-X">0i-D(P)</button><button class="focas-support-X">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-X">16i-A</button><button class="focas-support-X">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-O">30i-A</button><button class="focas-support-O">30i-B</button><button class="focas-support-X">30i(P)</button><button class="focas-support-X">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-X">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-X">PMi-A</button>
 
-# CNC: History
+## CNC: History
 
 ## cnc_stopophis
 
@@ -4714,7 +4716,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-O">0i-B</button><button class="focas-support-O">0i-D</button><button class="focas-support-O">0i-F</button><button class="focas-support-O">0i-D(P)</button><button class="focas-support-O">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-O">16i-A</button><button class="focas-support-O">16i-B</button><button class="focas-support-O">16i(P)</button><button class="focas-support-O">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-O">30i-A</button><button class="focas-support-O">30i-B</button><button class="focas-support-O">30i(P)</button><button class="focas-support-O">30i(L)</button><button class="focas-support-O">30i-A(W)</button><button class="focas-support-O">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-O">PMi-A</button>
 
-# CNC: Servo/Spindle
+## CNC: Servo/Spindle
 
 ## cnc_rdloopgain
 
@@ -4996,7 +4998,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-X">0i-D</button><button class="focas-support-X">0i-F</button><button class="focas-support-X">0i-D(P)</button><button class="focas-support-X">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-X">16i-A</button><button class="focas-support-X">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-X">30i-A</button><button class="focas-support-X">30i-B</button><button class="focas-support-X">30i(P)</button><button class="focas-support-X">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-X">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-O">PMi-A</button>
 
-# CNC: Waveform Diag
+## CNC: Waveform Diag
 
 ## cnc_rdwaveprm
 
@@ -5110,7 +5112,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-O">0i-B</button><button class="focas-support-X">0i-D</button><button class="focas-support-X">0i-F</button><button class="focas-support-X">0i-D(P)</button><button class="focas-support-X">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-O">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-O">16i-A</button><button class="focas-support-O">16i-B</button><button class="focas-support-O">16i(P)</button><button class="focas-support-O">16i(L)</button><button class="focas-support-O">16i(W)</button><button class="focas-support-X">30i-A</button><button class="focas-support-X">30i-B</button><button class="focas-support-X">30i(P)</button><button class="focas-support-X">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-X">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-X">PMi-A</button>
 
-# CNC: Punch Press
+## CNC: Punch Press
 
 ## cnc_rdtlctldata
 
@@ -5350,7 +5352,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-X">0i-D</button><button class="focas-support-X">0i-F</button><button class="focas-support-X">0i-D(P)</button><button class="focas-support-X">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-X">16i-A</button><button class="focas-support-X">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-X">30i-A</button><button class="focas-support-X">30i-B</button><button class="focas-support-X">30i(P)</button><button class="focas-support-X">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-X">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-X">PMi-A</button>
 
-# CNC: Laser
+## CNC: Laser
 
 ## cnc_rdpscdproc
 
@@ -5968,7 +5970,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-X">0i-D</button><button class="focas-support-X">0i-F</button><button class="focas-support-X">0i-D(P)</button><button class="focas-support-X">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-X">16i-A</button><button class="focas-support-X">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-X">30i-A</button><button class="focas-support-X">30i-B</button><button class="focas-support-X">30i(P)</button><button class="focas-support-O">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-X">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-X">PMi-A</button>
 
-# CNC: Wire Cut
+## CNC: Wire Cut
 
 ## cnc_setvrtclpos
 
@@ -6012,7 +6014,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-X">0i-D</button><button class="focas-support-X">0i-F</button><button class="focas-support-X">0i-D(P)</button><button class="focas-support-X">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-X">16i-A</button><button class="focas-support-X">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-O">16i(W)</button><button class="focas-support-X">30i-A</button><button class="focas-support-X">30i-B</button><button class="focas-support-X">30i(P)</button><button class="focas-support-X">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-X">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-X">PMi-A</button>
 
-# CNC: Data Server
+## CNC: Data Server
 
 ## cnc_dtsvftpget
 
@@ -7652,7 +7654,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-O">0i-D</button><button class="focas-support-O">0i-F</button><button class="focas-support-X">0i-D(P)</button><button class="focas-support-X">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-X">16i-A</button><button class="focas-support-X">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-X">30i-A</button><button class="focas-support-O">30i-B</button><button class="focas-support-X">30i(P)</button><button class="focas-support-X">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-X">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-X">PMi-A</button>
 
-# CNC: Servo Learning
+## CNC: Servo Learning
 
 ## cnc_svdtstartrd
 
@@ -7752,7 +7754,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-X">0i-D</button><button class="focas-support-X">0i-F</button><button class="focas-support-X">0i-D(P)</button><button class="focas-support-X">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-X">16i-A</button><button class="focas-support-X">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-X">30i-A</button><button class="focas-support-X">30i-B</button><button class="focas-support-X">30i(P)</button><button class="focas-support-X">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-X">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-X">PMi-A</button>
 
-# CNC: Unsolicited
+## CNC: Unsolicited
 
 ## cnc_wrunsolicprm
 
@@ -7866,7 +7868,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-O">0i-D</button><button class="focas-support-O">0i-F</button><button class="focas-support-O">0i-D(P)</button><button class="focas-support-O">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-X">16i-A</button><button class="focas-support-X">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-O">30i-A</button><button class="focas-support-O">30i-B</button><button class="focas-support-O">30i(P)</button><button class="focas-support-O">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-X">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-O">PMi-A</button>
 
-# PMC: PMC
+## PMC: PMC
 
 ## pmc_rdmsg
 
@@ -8302,7 +8304,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-O">0i-D</button><button class="focas-support-O">0i-F</button><button class="focas-support-O">0i-D(P)</button><button class="focas-support-O">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-X">16i-A</button><button class="focas-support-X">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-O">30i-A</button><button class="focas-support-O">30i-B</button><button class="focas-support-O">30i(P)</button><button class="focas-support-O">30i(L)</button><button class="focas-support-O">30i-A(W)</button><button class="focas-support-O">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-O">PMi-A</button>
 
-# PMC: PROFIBUS-DP
+## PMC: PROFIBUS-DP
 
 ## pmc_prfrdconfig
 
@@ -8864,7 +8866,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-X">0i-D</button><button class="focas-support-X">0i-F</button><button class="focas-support-X">0i-D(P)</button><button class="focas-support-X">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-X">16i-A</button><button class="focas-support-X">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-X">30i-A</button><button class="focas-support-X">30i-B</button><button class="focas-support-X">30i(P)</button><button class="focas-support-X">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-X">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-X">PMi-A</button>
 
-# CNC: Other
+## CNC: Other
 
 ## cnc_sysinfo
 

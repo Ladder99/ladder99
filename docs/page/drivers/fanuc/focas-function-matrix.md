@@ -9,19 +9,23 @@ dateCreated: 2021-08-15T23:33:28.468Z
 --- 
 -->
 
-# Controller Model Legend
+# Focas Function Matrix
+
+Focas function controller support
+
+## Controller Model Legend
 
 | (M) | (T) | (LC) | (P) | (L) | (W) |
 |---|---|---|---|---|---|
 | Machining | Turning | Loader | Punch Press | Laser | Wire |  
 
-# Function Support Legend
+## Function Support Legend
 
 | O | E | H | X | - |
 |---|---|---|---|---|
 | Ethernet+HSSB | Ethernet | HSSB | Cannot be used | None | 
 
-# Functions 
+## Functions 
 
 [Download CSV](/drivers/fanuc-driver/focas_function_matrix.csv)
 
