@@ -38,7 +38,8 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
 
    page/drivers/base
    page/drivers/factoryio
-   page/drivers/fanuc
+   .. page/drivers/fanuc/overview
+   page/drivers/fanuc/index
    page/drivers/opcxmlda
 
 .. toctree::
