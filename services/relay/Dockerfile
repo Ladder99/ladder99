@@ -33,6 +33,7 @@ COPY package.json /usr/app/
 
 # install javascript dependencies
 
+# first increase the timeout from 30 secs to 2mins to handle slow connections.
 # generate package-lock from package.json, but don't create node_modules
 # note: With the --only=production flag (or when the NODE_ENV environment 
 # variable is set to production), npm will not install modules listed in 
@@ -42,7 +43,8 @@ COPY package.json /usr/app/
 # install deterministically from package-lock.json to node_modules.
 # audit=false means don't submit packages to registry.
 # see https://docs.npmjs.com/cli/v8/commands/npm-ci
-RUN npm install --package-lock-only --only=production \
+RUN npm config set fetch-retry-maxtimeout 120000 \
+  && npm install --package-lock-only --only=production \
   && npm audit fix --package-lock-only --only=production \
   && npm clean-install --audit=false --only=production
 
