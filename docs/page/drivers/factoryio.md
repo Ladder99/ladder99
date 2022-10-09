@@ -26,7 +26,8 @@ Fully configurable Factory I/O driver built on top of [base-driver](https://gith
 
 Handler `l99.driver.factoryio.handlers.SplunkMetric, factoryio` outputs data in Splunk metric format to an MQTT broker.
 
-![factoryio_mqtt_splunk.gif](/drivers/factoryio-driver/factoryio_mqtt_splunk.gif)
+<!-- ![factoryio_mqtt_splunk.gif](/drivers/factoryio-driver/factoryio_mqtt_splunk.gif) -->
+![factoryio_mqtt_splunk.gif](_images/factoryio_mqtt_splunk.gif)
 
 # Configuration
 

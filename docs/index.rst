@@ -39,6 +39,7 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
    page/drivers/base
    page/drivers/factoryio
    page/drivers/fanuc
+   page/drivers/opcxmlda
 
 .. toctree::
    :maxdepth: 1

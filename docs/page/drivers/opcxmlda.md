@@ -14,9 +14,11 @@ dateCreated: 2021-08-15T02:46:54.526Z
 ## Overview
 
 Fully configurable OPC XML-DA driver built on top of [base-driver](https://github.com/Ladder99/base-driver), [QuickOPC](https://www.opclabs.com/products/picoopc/227-products/quickopc), and [MTConnect .NET SDK](https://github.com/mtconnect/dot_net_sdk) libraries.  
+
 Perfect for pulling data from Simotion drives running on Simatic Step 7 before OPC-UA was made available.
 
 ## Source
+
 [Github Repository](https://github.com/Ladder99/opcxmlda-driver)
 
 # Output
@@ -25,15 +27,15 @@ Perfect for pulling data from Simotion drives running on Simatic Step 7 before O
 
 Handler `l99.driver.opcxmlda.handlers.SHDR, opcxmlda` outputs data in SHDR format to an MQTT broker and also is available at the TCP port defined in configuration (default: 7878).
 
-![SHDR MQTT](/drivers/opcxmlda-driver/shdr_mqtt.gif)
+<!-- ![SHDR MQTT](_images/shdr_mqtt.gif) -->
 
-![SHDR TCP](/drivers/opcxmlda-driver/shdr_tcp.gif)
+![SHDR TCP](_images/shdr_tcp.gif)
 
 ## Splunk Metric
 
 Handler `l99.driver.opcxmlda.handlers.SplunkMetric, opcxmlda` outputs data in Splunk metric format to an MQTT broker.
 
-![SPLUNK MQTT](/drivers/opcxmlda-driver/splunk_mqtt.gif)
+![SPLUNK MQTT](_images/splunk_mqtt.gif)
 
 # Configuration
   
