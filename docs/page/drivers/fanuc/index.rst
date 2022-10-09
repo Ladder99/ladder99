@@ -3,7 +3,7 @@ Fanuc Driver
 ==============
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 0
 
    overview
    installation-docker
