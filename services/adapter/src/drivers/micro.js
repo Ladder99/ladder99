@@ -118,18 +118,20 @@ export class AdapterDriver {
 }
 
 // get object in DATA_SET format for shdr,
-// eg "free=48237472 used=12387743 total=38828348"
+// will return something like "free=48237472 used=12387743 total=38828348"
 //. this should be part of cache.js
 function getDataSet(obj) {
-  const regexp = new RegExp('[ ]')
+  // sanitize the keys as well as the values
   const str = Object.keys(obj)
-    // .map(key => `${key}=${obj[key]}`)
-    .map(key => {
-      const value = String(obj[key] || '').replace(regexp, '_')
-      return `${key}=${value}`
-    })
+    .map(key => `${sanitize(key)}=${sanitize(obj[key])}`)
     .join(' ')
   return str
+  function sanitize(value) {
+    return String(value || '')
+      .replaceAll(' ', '_')
+      .replaceAll('|', '-')
+      .replaceAll('=', '-')
+  }
 }
 
 //. to libjs
@@ -140,7 +142,7 @@ function rounded(value, decimals = 0) {
         Math.round(value * Math.pow(10, decimals)) * Math.pow(10, -decimals)
       ).toFixed(0)
     }
-    return Number(value).toFixed(decimals)
+    return Number(value).toFixed(decimals) // if value is a string like 'xxx', will return NaN
   }
   return null
 }
