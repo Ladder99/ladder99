@@ -166,7 +166,7 @@ dateCreated: 2021-08-16T00:10:08.402Z
 
 <button class="focas-support-X">0i-A</button><button class="focas-support-X">0i-B</button><button class="focas-support-X">0i-D</button><button class="focas-support-X">0i-F</button><button class="focas-support-X">0i-D(P)</button><button class="focas-support-X">0i-F(P)</button><button class="focas-support-X">15-B</button><button class="focas-support-X">15i-A/B</button><button class="focas-support-X">16-B/C</button><button class="focas-support-X">16i-A</button><button class="focas-support-X">16i-B</button><button class="focas-support-X">16i(P)</button><button class="focas-support-X">16i(L)</button><button class="focas-support-X">16i(W)</button><button class="focas-support-X">30i-A</button><button class="focas-support-X">30i-B</button><button class="focas-support-X">30i(P)</button><button class="focas-support-X">30i(L)</button><button class="focas-support-X">30i-A(W)</button><button class="focas-support-X">30i-B(W)</button><button class="focas-support-X">PMi-H</button><button class="focas-support-X">PMi-D</button><button class="focas-support-X">PMi-A</button>
 
-# CNC: Axis/Spindle
+## CNC: Axis/Spindle
 
 ## cnc_actf
 
