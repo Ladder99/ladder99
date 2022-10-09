@@ -21,9 +21,9 @@ Perfect for pulling data from Simotion drives running on Simatic Step 7 before O
 
 [Github Repository](https://github.com/Ladder99/opcxmlda-driver)
 
-# Output
+## Output
 
-## SHDR
+### SHDR
 
 Handler `l99.driver.opcxmlda.handlers.SHDR, opcxmlda` outputs data in SHDR format to an MQTT broker and also is available at the TCP port defined in configuration (default: 7878).
 
@@ -31,13 +31,13 @@ Handler `l99.driver.opcxmlda.handlers.SHDR, opcxmlda` outputs data in SHDR forma
 
 ![SHDR TCP](_images/shdr_tcp.gif)
 
-## Splunk Metric
+### Splunk Metric
 
 Handler `l99.driver.opcxmlda.handlers.SplunkMetric, opcxmlda` outputs data in Splunk metric format to an MQTT broker.
 
 ![SPLUNK MQTT](_images/splunk_mqtt.gif)
 
-# Configuration
+## Configuration
   
 ```yml
 machines:
@@ -133,11 +133,11 @@ Handler sections provide additional configuration.  In this case the SHDR handle
                 return "AVAILABLE";
 ```
 
-# Lua Evaluation Context
+## Lua Evaluation Context
 
 The Lua script generated from the `config.yml` file is shown below.  A function is defined for every MTConnect DataItem.  
 
-## Function Signature
+### Function Signature
 
 `this` - Lua table  
 `name` - DataItem name  

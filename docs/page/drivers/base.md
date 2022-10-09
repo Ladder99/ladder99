@@ -20,9 +20,9 @@ dateCreated: 2021-08-15T02:36:09.751Z
 
 [Github Repository](https://github.com/Ladder99/base-driver)
 
-# Concepts
+## Concepts
 
-## Platform
+### Platform
 
 `Platform` is not part of the `base-driver` package, but is rather implemented as part of individual drivers to support communication with the native data source.  
 
@@ -31,7 +31,7 @@ dateCreated: 2021-08-15T02:36:09.751Z
 * No data source transformation logic should occur inside the `Platform` implementation.
 * `Veneer` classes are responsible for transformation logic.
 
-### Example: factoryio-driver
+#### Example: factoryio-driver
 
 Retrieve all tags from FactoryIO instance.
 
@@ -58,7 +58,7 @@ public async Task<dynamic> WriteTagsByNameAsync(string tag_array)
 }
 ```
 
-### Example: opcxmlda-driver
+#### Example: opcxmlda-driver
 
 Retrieve multiple items from an OPC XML-DA server.
 
@@ -92,7 +92,7 @@ public dynamic ReadMultipleTags(List<dynamic> descriptors)
 }
 ```
 
-### Example: fanuc-driver
+#### Example: fanuc-driver
 
 Retrieve machine identifier from Fanuc controller.
 
@@ -123,7 +123,7 @@ public dynamic CNCId()
 }
 ```
 
-## Machine
+### Machine
 
 A `Machine` instance includes:  
 
@@ -137,7 +137,7 @@ Drivers extend the `Machine` class to provide functionality unique to the data s
 
 A concrete `Machine` type, including assembly name, is referenced in the configuration at path `machines[id].type`.  Example: `l99.driver.fanuc.FanucMachine, fanuc`.
 
-### Example: factoryio-driver
+#### Example: factoryio-driver
 
 Communication protocol configuration and HTTP client are managed by the `Machine` instance.
 
@@ -156,7 +156,7 @@ public FactoryioRemoteMachine(Machines machines, bool enabled, string id, object
 }
 ```
 
-### Example: opcxmlda-driver
+#### Example: opcxmlda-driver
 
 Communication protocol configuration and [QuickOPC](https://www.opclabs.com/products/quickopc) DA client are managed by the `Machine` instance.
 
@@ -175,7 +175,7 @@ public OpcxmldaMachine(Machines machines, bool enabled, string id, object config
 }
 ```
 
-### Example: fanuc-driver
+#### Example: fanuc-driver
 
 Communciation protocol configuration is managed by the `Machine` instance.
 
@@ -188,7 +188,7 @@ public FanucMachine(Machines machines, bool enabled, string id, object config) :
 }
 ```
 
-## Veneer
+### Veneer
 
 > *veneer* : to overlay or plate (a surface, as of a common sort of wood) with a thin layer of finer wood for outer finish or decoration
 <!-- {.is-info} -->
@@ -210,7 +210,7 @@ Collected data requires processing before it can be relayed to another system. `
 
 Veneers can be applied/peeled as a whole.  Veneers can be sliced and applied/peeled across logical boundaries (e.g. path, axis, spindle).  Atomic values should be used for slicing veneers.  Sliced veneers must be marked before peeling in order to convey the logical hierarchy of the observation to downstream systems.
 
-### Example: opcxmlda-driver | intermediate format
+#### Example: opcxmlda-driver | intermediate format
 
 Transformation into an intermediate format.
 
@@ -236,7 +236,7 @@ protected override async Task<dynamic> AnyAsync(dynamic input, params dynamic?[]
 }
 ```
 
-### Example: fanuc-driver | human readable
+#### Example: fanuc-driver | human readable
 
 Transformation into an human readable format.
 
@@ -266,7 +266,7 @@ protected override async Task<dynamic> AnyAsync(dynamic input, params dynamic?[]
 }
 ```
 
-### Example: fanuc-driver | enriched
+#### Example: fanuc-driver | enriched
 
 Tracking executed G-code blocks.
 
@@ -303,7 +303,7 @@ protected override async Task<dynamic> AnyAsync(dynamic input, params dynamic?[]
 }
 ```
 
-### Example: fanuc-driver | performance tracking
+#### Example: fanuc-driver | performance tracking
 
 Tracking driver performance.
 
@@ -339,7 +339,7 @@ protected override async Task<dynamic> AnyAsync(dynamic input, params dynamic?[]
 }
 ```
 
-### Example: fanuc-driver | boundary marker
+#### Example: fanuc-driver | boundary marker
 
 Example of a generated observation marker for spindle 'S' on execution path '1'.
 
@@ -356,7 +356,7 @@ Example of a generated observation marker for spindle 'S' on execution path '1'.
     ]
 ```
 
-## Collector
+### Collector
 
 `Collector` is a data collection strategy and an interface to the data source.  The `Collector` is responsible for:
 
@@ -367,7 +367,7 @@ Example of a generated observation marker for spindle 'S' on execution path '1'.
 
 A concrete `Collector` type, including assembly name, is referenced in the configuration at path `machines[id].strategy`.  Example: `l99.driver.fanuc.BlockTracker, fanuc`.
 
-### Example: opcxmlda-driver
+#### Example: opcxmlda-driver
 
 Initialization, "applying veneers".
 
@@ -419,7 +419,7 @@ public override async Task<dynamic?> CollectAsync()
 }
 ```
 
-### Example: fanuc-driver
+#### Example: fanuc-driver
 
 Initialization, "applying veneers".
 
@@ -497,7 +497,7 @@ public override async Task<dynamic?> CollectAsync()
 }
 ```
 
-## Handler
+### Handler
 
 `Handler` is an observation post-processor and interface to target systems.  Data gathered via a `Collector` is transformed through a `Veneer` and acted upon the processing stages of:
 
@@ -508,7 +508,7 @@ public override async Task<dynamic?> CollectAsync()
 
 A concrete `Handler` type, including assembly name, is referenced in the configuration at path `machines[id].handler`.  Example: `l99.driver.fanuc.handlers.SparkplugB, fanuc`.
 
-### Example: opcxmlda-driver
+#### Example: opcxmlda-driver
 
 The handler prepares changed data into Splunk metric format.
 
@@ -547,7 +547,7 @@ protected override async Task afterDataChangeAsync(Veneers veneers, Veneer venee
 }
 ```
 
-### Example: fanuc-driver
+#### Example: fanuc-driver
 
 The handler prepares changed data into InfluxDb line format.
 
@@ -588,9 +588,9 @@ protected override async Task afterDataChangeAsync(Veneers veneers, Veneer venee
 }
 ```
 
-# Lifecycle
+## Lifecycle
 
-## Overview
+### Overview
 
 ```mermaid
 graph LR
@@ -615,11 +615,11 @@ static async Task Main(string[] args)
 }
 ```
 
-## Arguments
+### Arguments
 
 <!-- ### Tabs {.tabset} -->
 <!-- # -->
-### Logging
+#### Logging
 
 Relative or absolute path to logging configuration file.  
 
@@ -637,7 +637,7 @@ Example: `nlog.config`, `/etc/fanuc/nlog.config`
 
 
 <!-- # -->
-### Configuration
+#### Configuration
 
 Relative or absolute path to driver configuration file.  
 
@@ -647,17 +647,17 @@ Default: `config.yml`
 
 Example: `config.yml`, `/etc/fanuc/config.yml`  
 
-## Terminating
+### Terminating
 
 Data collection will continue to run until the application is stopped or `Shutdown()` is invoked on all `Machine` instances. 
 
-# Configuration
+## Configuration
 
 Driver configuration is maintained in the `config.yml` file.  You can read more about YAML structure [here](https://www.cloudbees.com/blog/yaml-tutorial-everything-you-need-get-started).  Multiple machines can be added and are differentiated by their `id` key.
 
 <!-- ## Tabs {.tabset} -->
 <!-- # -->
-## Machine
+### Machine
 
 Parameters relevant to driver initialization.
 
@@ -692,7 +692,7 @@ machines:
 ```
 
 <!-- # -->
-## Broker
+### Broker
 
 Parameters relevant to built-in MQTT client.
 
@@ -743,7 +743,7 @@ machines:
 ```
 
 <!-- # -->
-## type
+### type
 
 `machine[id].type` specific configuration.
 
@@ -807,7 +807,7 @@ machines:
 ```
 
 <!-- # -->
-## strategy
+### strategy
 
 `machine[id].strategy` specific configuration.
 
@@ -832,7 +832,7 @@ machines:
 ```
 
 <!-- # -->
-## handler
+### handler
 
 `machine[id].handler` specific configuration.
 

@@ -20,18 +20,18 @@ Fully configurable Factory I/O driver built on top of [base-driver](https://gith
 
 [Github Repository](https://github.com/Ladder99/factoryio-driver)
 
-# Output
+## Output
 
-## Splunk Metric
+### Splunk Metric
 
 Handler `l99.driver.factoryio.handlers.SplunkMetric, factoryio` outputs data in Splunk metric format to an MQTT broker.
 
 <!-- ![factoryio_mqtt_splunk.gif](/drivers/factoryio-driver/factoryio_mqtt_splunk.gif) -->
 ![factoryio_mqtt_splunk.gif](_images/factoryio_mqtt_splunk.gif)
 
-# Configuration
+## Configuration
 
-## Local
+### Local
 
 ```yaml
 type: l99.driver.factoryio.FactoryioLocalMachine, factoryio
@@ -40,7 +40,7 @@ strategy: l99.driver.factoryio.collectors.BasicLocal01, factoryio
 
 Driver accesses Factory I/O memory mapped file and must be run locally.
 
-## Remote
+### Remote
 
 ```yaml
 type: l99.driver.factoryio.FactoryioRemoteMachine, factoryio
@@ -48,3 +48,4 @@ strategy: l99.driver.factoryio.collectors.BasicRemote01, factoryio
 ```
 
 Driver accesses Factory I/O Web API and can be run remotely.
+
