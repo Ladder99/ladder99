@@ -6,6 +6,8 @@
 // https://github.com/sebhildebrandt/systeminformation/issues/626
 import si from 'systeminformation' // see https://github.com/sebhildebrandt/systeminformation
 
+import * as lib from './lib.js' // for lib.rounded()
+
 const pollInterval = 5000 // msec //. get from setup
 
 export class AdapterDriver {
@@ -35,13 +37,16 @@ export class AdapterDriver {
         // write values to cache
         setValue('availability', 'AVAILABLE')
         setValue('condition', 'NORMAL')
-        setValue('temperature', rounded(data.cpuTemperature.main, 1))
-        setValue('memory-total', rounded(data.mem.total, -6))
-        setValue('memory-free', rounded(data.mem.free, -6))
-        setValue('memory-used', rounded(data.mem.used, -6))
-        setValue('cpu-total', rounded(data.currentLoad.currentLoad, 1))
-        setValue('cpu-user', rounded(data.currentLoad.currentLoadUser, 1))
-        setValue('cpu-system', rounded(data.currentLoad.currentLoadSystem, 1))
+        setValue('temperature', lib.rounded(data.cpuTemperature.main, 1))
+        setValue('memory-total', lib.rounded(data.mem.total, -6))
+        setValue('memory-free', lib.rounded(data.mem.free, -6))
+        setValue('memory-used', lib.rounded(data.mem.used, -6))
+        setValue('cpu-total', lib.rounded(data.currentLoad.currentLoad, 1))
+        setValue('cpu-user', lib.rounded(data.currentLoad.currentLoadUser, 1))
+        setValue(
+          'cpu-system',
+          lib.rounded(data.currentLoad.currentLoadSystem, 1)
+        )
         setValue('os', getDataSet(data.osInfo))
         //
       } catch (e) {
@@ -83,16 +88,4 @@ function getDataSet(obj) {
     })
     .join(' ')
   return str
-}
-
-function rounded(value, decimals = 0) {
-  if (value !== null && value !== undefined) {
-    if (decimals < 0) {
-      return Number(
-        Math.round(value * Math.pow(10, decimals)) * Math.pow(10, -decimals)
-      ).toFixed(0)
-    }
-    return Number(value).toFixed(decimals)
-  }
-  return null
 }
