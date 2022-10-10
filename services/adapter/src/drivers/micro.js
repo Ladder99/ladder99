@@ -8,6 +8,8 @@
 // seems to be fixed, or works from git bash - 2022-09-26.
 import si from 'systeminformation' // see https://github.com/sebhildebrandt/systeminformation
 
+import * as lib from '../common/lib.js' // for lib.rounded
+
 const pollInterval = 5000 // msec //. could get from setup
 
 export class AdapterDriver {
@@ -74,17 +76,20 @@ export class AdapterDriver {
         // write values to cache
         setValue('availability', 'AVAILABLE')
         setValue('condition', 'NORMAL')
-        setValue('temperature', rounded(data.cpuTemperature.main, 1))
-        setValue('memory-total', rounded(data.mem.total, -6))
-        setValue('memory-free', rounded(data.mem.free, -6))
-        setValue('memory-used', rounded(data.mem.used, -6))
-        setValue('cpu-total', rounded(data.currentLoad.currentLoad, 1))
-        setValue('cpu-user', rounded(data.currentLoad.currentLoadUser, 1))
-        setValue('cpu-system', rounded(data.currentLoad.currentLoadSystem, 1))
+        setValue('temperature', lib.rounded(data.cpuTemperature.main, 1))
+        setValue('memory-total', lib.rounded(data.mem.total, -6))
+        setValue('memory-free', lib.rounded(data.mem.free, -6))
+        setValue('memory-used', lib.rounded(data.mem.used, -6))
+        setValue('cpu-total', lib.rounded(data.currentLoad.currentLoad, 1))
+        setValue('cpu-user', lib.rounded(data.currentLoad.currentLoadUser, 1))
+        setValue(
+          'cpu-system',
+          lib.rounded(data.currentLoad.currentLoadSystem, 1)
+        )
         setValue('disk-size', disk.size) // bytes
-        setValue('disk-used', rounded(disk.used, -6)) // bytes rounded to mb
-        setValue('disk-use', rounded(disk.use, 0)) // percent
-        setValue('disk-available', rounded(disk.available, -6)) // bytes rounded to mb
+        setValue('disk-used', lib.rounded(disk.used, -6)) // bytes rounded to mb
+        setValue('disk-use', lib.rounded(disk.use, 0)) // percent
+        setValue('disk-available', lib.rounded(disk.available, -6)) // bytes rounded to mb
         setValue('os', getDataSet(data.osInfo))
         //
       } catch (error) {
@@ -133,17 +138,4 @@ function getDataSet(obj) {
       .replaceAll('|', '-')
       .replaceAll('=', '-')
   }
-}
-
-//. to libjs
-function rounded(value, decimals = 0) {
-  if (value !== null && value !== undefined) {
-    if (decimals < 0) {
-      return Number(
-        Math.round(value * Math.pow(10, decimals)) * Math.pow(10, -decimals)
-      ).toFixed(0)
-    }
-    return Number(value).toFixed(decimals) // if value is a string like 'xxx', will return NaN
-  }
-  return null
 }

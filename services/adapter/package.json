@@ -7,7 +7,8 @@
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "Apache2.0",
   "scripts": {
-    "test": "node src/test.js"
+    "test1": "node src/test.js",
+    "test": "node src/common/lib-test.js"
   },
   "dependencies": {
     "js-yaml": "^4.0.0",

@@ -103,3 +103,19 @@ export function mergeIntoSet(setBase, setExtra) {
     }
   }
 }
+
+// round a number to a given number of decimals.
+// use negative num to round to a power of 10.
+// handles 'unavailable'.
+export function rounded(value, decimals = 0) {
+  if (typeof value !== 'number') return value //?
+  if (value !== null && value !== undefined) {
+    if (decimals < 0) {
+      return Number(
+        Math.round(value * Math.pow(10, decimals)) * Math.pow(10, -decimals)
+      ).toFixed(0)
+    }
+    return Number(value).toFixed(decimals) // if value is a string like 'xxx', will return NaN
+  }
+  return null
+}

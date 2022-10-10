@@ -4,7 +4,7 @@
 
 import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
-import * as lib from '../common/lib.js'
+import * as lib from '../common/lib.js' // note: so input.yaml can use lib.rounded(), etc
 
 //. move this into class
 //. and make it a const
