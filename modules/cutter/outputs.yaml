@@ -34,14 +34,14 @@ outputs:
   # ------------------------------------------------------------------
 
   # displayed in Devices and Graphs pages as ON/OFF.
-  # this had been just using <dxm>, but decided to split the dxm out
+  # this had been just using <controller>, but decided to split the controller out
   # to a separate device, and use dxm && controller here. 2022-07-19
-  #. switch these around
-  # <dxm> comes from the controller birth/death messages
-  # <controller> comes from io.a5===128
+  # <controller> comes from the controller birth/death messages
+  # <dxm> comes from io.a5===128
   - key: avail # availability
     value: types.AVAILABILITY[<dxm> && <controller>]
 
+  #?
   # # displayed in Graphs page as Machine Status ON/OFF
   # - key: ctl-avail # controller/availability
   #   value: types.AVAILABILITY[<dxm> && <controller>]
