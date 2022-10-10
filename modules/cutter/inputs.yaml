@@ -127,4 +127,5 @@ handlers:
     # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
-      sp: $.a2
+      # sp: $.a2
+      sp: lib.rounded($.a2)
