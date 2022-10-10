@@ -6,7 +6,7 @@
 //. refactor/chop this code up into smaller fns - hard to read.
 // be careful with types, keyvalues, closure vars, and this vs that.
 
-import * as lib from '../common/lib.js'
+import * as lib from '../common/lib.js' // note: input.yamls can use this eg lib.rounded($.sp, 0)
 import { getSelector, getEquationKeys, getEquationKeys2 } from '../helpers.js'
 
 export class AdapterDriver {
