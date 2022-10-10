@@ -1,4 +1,4 @@
-// check for jobnum changes from jobboss db
+// get jobnum from jobboss db
 
 const pollInterval = 5000 // ms - ie poll for job num change every 5 secs
 
@@ -20,12 +20,11 @@ export class Jobs {
     //
     // iterate over all devices, check if has a jobbossId
     for (let device of this.devices) {
-      const deviceName = device.name
       const jobbossId = device.custom?.jobbossId
       if (jobbossId) {
         // get the most recently started job for this workcenter/device.
         // could also use where work_center='MARUMATSU', but not guaranteed unique.
-        //. check status for completion? (S=started, C=complete?)
+        //. check status for completion? (S=started? C=complete? O=ongoing?)
         // "select top 1 Job from Job_Operation where WorkCenter_OID=foofoo order by Actual_Start desc"
         const sql = `
           select top 1
@@ -47,7 +46,7 @@ export class Jobs {
           //. if job changed, query db for estqty,runqty also, set the cache values
           //
         } catch (error) {
-          console.log(`JobBoss jobs ${deviceName} error`, error)
+          console.log(`JobBoss jobs ${device.name} error`, error)
         }
       }
     }
