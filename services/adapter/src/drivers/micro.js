@@ -129,6 +129,7 @@ function getDataSet(obj) {
   function sanitize(value) {
     return String(value || '')
       .replaceAll(' ', '_')
+      .replaceAll('\n', ' ')
       .replaceAll('|', '-')
       .replaceAll('=', '-')
   }
