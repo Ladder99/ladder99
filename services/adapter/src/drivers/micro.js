@@ -37,16 +37,13 @@ export class AdapterDriver {
         // write values to cache
         setValue('availability', 'AVAILABLE')
         setValue('condition', 'NORMAL')
-        setValue('temperature', lib.rounded(data.cpuTemperature.main, 1))
-        setValue('memory-total', lib.rounded(data.mem.total, -6))
-        setValue('memory-free', lib.rounded(data.mem.free, -6))
-        setValue('memory-used', lib.rounded(data.mem.used, -6))
-        setValue('cpu-total', lib.rounded(data.currentLoad.currentLoad, 1))
-        setValue('cpu-user', lib.rounded(data.currentLoad.currentLoadUser, 1))
-        setValue(
-          'cpu-system',
-          lib.rounded(data.currentLoad.currentLoadSystem, 1)
-        )
+        setValue('temperature', lib.rounded(data.cpuTemperature.main))
+        setValue('memory-total', lib.rounded(data.mem.total, -7))
+        setValue('memory-free', lib.rounded(data.mem.free, -7))
+        setValue('memory-used', lib.rounded(data.mem.used, -7))
+        setValue('cpu-total', lib.rounded(data.currentLoad.currentLoad))
+        setValue('cpu-user', lib.rounded(data.currentLoad.currentLoadUser))
+        setValue('cpu-system', lib.rounded(data.currentLoad.currentLoadSystem))
         setValue('os', getDataSet(data.osInfo))
         //
       } catch (e) {
