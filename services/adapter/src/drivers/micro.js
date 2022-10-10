@@ -6,7 +6,7 @@
 // https://github.com/sebhildebrandt/systeminformation/issues/626
 import si from 'systeminformation' // see https://github.com/sebhildebrandt/systeminformation
 
-import * as lib from './lib.js' // for lib.rounded()
+import * as lib from '../common/lib.js' // for lib.rounded()
 
 const pollInterval = 5000 // msec //. get from setup
 
