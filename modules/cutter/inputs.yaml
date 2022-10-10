@@ -103,11 +103,12 @@ handlers:
     # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
-      xvelz: $.a22
-      xaccz: $.a25
-      xtemp: $.a192
       xvelx: $.a70
+      xvelz: $.a22
       xaccx: $.a73
+      xaccz: $.a25
+      # xtemp: $.a192
+      xtemp: lib.rounded($.a192)
 
   # ----------------------------------------------------------------------------
   # handle pressure
