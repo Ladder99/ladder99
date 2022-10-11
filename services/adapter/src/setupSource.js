@@ -1,5 +1,6 @@
 // setup a device source
 // load and initialize any plugin/driver code
+// this includes the reactive cache calculations //. move that code to cache.js
 
 import * as lib from './common/lib.js'
 import {

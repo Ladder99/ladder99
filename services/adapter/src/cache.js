@@ -7,7 +7,7 @@
 // calculations and send shdr output to attached tcp socket, IF value changed.
 
 // see setupSource.js and helpers.js for code that sets up the reactive cache calculations.
-//. bring that into here
+//. bring that code in here
 
 //. eg ___
 

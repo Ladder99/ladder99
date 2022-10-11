@@ -19,9 +19,9 @@ outputs:
     value: <job>
 
   - key: start # processes/shift/process_time-start
-    device: c
+    # device: c
     value: <start>
 
   - key: complete # processes/shift/process_time-complete
-    device: c
+    # device: c
     value: <complete>
