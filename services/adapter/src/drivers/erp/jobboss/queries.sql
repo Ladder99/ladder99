@@ -2,6 +2,11 @@
 -- sample queries
 ------------------------------------------------------------------
 
+-- can run these in jobboss by going to grafana, datasources,
+-- jobboss, explore, then format as table, and enter a query. 
+-- eg https://grafana-004-oxbox.teleport.ladder99.com/explore
+
+
 -- get latest jobnums for a workcenter
 select top 100
   actual_start as time,
