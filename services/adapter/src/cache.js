@@ -164,7 +164,8 @@ function getShdr(output, value, timestamp = '') {
       // native_code, which needs to be included:
       // 2014-09-29T23:59:33.460470Z|message|CHG_INSRT|Change Inserts
       // From https://github.com/mtconnect/cppagent#adapter-agent-protocol-version-17 -
-      shdr = `${timestamp}|${key}|${nativeCode}|${value}`
+      // shdr = `${timestamp}|${key}|${nativeCode}|${value}`
+      shdr = `${timestamp}|${key}|${nativeCode}|${sanitize(value)}` // escape pipes
     } else {
       shdr = `${timestamp}|${key}|${value}`
     }
@@ -175,15 +176,26 @@ function getShdr(output, value, timestamp = '') {
     if (!value || value === 'UNAVAILABLE') {
       shdr = `${timestamp}|${key}|${value}||||${value}`
     } else {
-      const level = value // eg 'WARNING' -> element 'Warning'
+      const sanitized = sanitize(value) // escape pipes - gets sent as CDATA in agent output
+      const level = sanitized // eg 'WARNING' -> element 'Warning'
       const nativeCode = 'nativeCode'
       const nativeSeverity = 'nativeSeverity'
       const qualifier = 'qualifier'
-      const message = value //. need to escape spaces and pipes - gets sent as CDATA in agent output, yes?
+      const message = sanitized
       shdr = `${timestamp}|${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
     }
   } else {
     console.warn(`Cache warning: unknown category '${category}'`)
   }
   return shdr
+}
+
+// sanitize a value by escaping or removing pipes
+// from cppagent readme -
+// If the value itself contains a pipe character | the pipe must be escaped using a
+// leading backslash \. In addition the entire value has to be wrapped in quotes:
+//   2009-06-15T00:00:00.000000|description|"Text with \| (pipe) character."
+function sanitize(value) {
+  //. simplest to just convert to slash for now
+  return String(value || '').replaceAll('|', '/')
 }
