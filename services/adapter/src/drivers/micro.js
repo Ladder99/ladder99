@@ -131,6 +131,7 @@ function getDataSet(obj) {
     .map(key => `${sanitize(key)}=${sanitize(obj[key])}`)
     .join(' ')
   return str
+  // a local fn
   function sanitize(value) {
     return String(value || '')
       .replaceAll(' ', '_')
