@@ -1,5 +1,5 @@
 import libyaml from 'js-yaml' // see https://github.com/nodeca/js-yaml
-import * as foo from './foo.js'
+import * as refs from './refs.js'
 
 // let str = `
 // payload:
@@ -24,13 +24,13 @@ import * as foo from './foo.js'
 // // convert all filter attribute values,
 // // given some tree of reference data
 // // eg gives { id: 421, a15: 5392 }
-// let filterObj2 = foo.convert(filterObj, tree)
+// let filterObj2 = refs.convert(filterObj, tree)
 // console.log(filterObj2)
 
 // // get a filter fn from a filter object,
-// // eg { id:3, foo:5 }
-// // to obj => obj.id==3 && obj.foo==5
-// let fn = foo.getFilterFn(filterObj2)
+// // eg { id:3, refs:5 }
+// // to obj => obj.id==3 && obj.refs==5
+// let fn = refs.getFilterFn(filterObj2)
 // // console.log(fn)
 // console.log(fn.toString())
 
@@ -39,11 +39,11 @@ import * as foo from './foo.js'
 // console.log(testValue)
 
 // // let pokoij = { pok: { oij: 3 } }
-// // let val = foo.lookup('pok.oij', pokoij)
+// // let val = refs.lookup('pok.oij', pokoij)
 // // console.log(val)
 
 let filterObj = { id: 421, a15: 5392 }
-let selector = foo.getSelector(filterObj)
+let selector = refs.getSelector(filterObj)
 console.log(selector)
 console.log(selector.filter.toString())
 // console.dir(selector, { depth: null })

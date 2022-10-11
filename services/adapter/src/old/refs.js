@@ -1,3 +1,16 @@
+// this code was going to handle yaml like this -
+
+// payload:
+//   id: ${device.custom.plc.ids.io} # varies by device, eg 535172
+//   a15: 5392 # same as publish.values[0]
+// device:
+//   custom:
+//     plc:
+//       ids:
+//         io: 421
+
+// where ${device.custom.plc.ids.io} is a reference to some value in the device object.
+
 // convert all filter attribute values,
 // given some tree of reference data
 export function convert(obj, tree) {

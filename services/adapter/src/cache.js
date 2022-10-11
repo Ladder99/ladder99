@@ -6,6 +6,9 @@
 // when a key-item value is set, the cache will perform any associated output
 // calculations and send shdr output to attached tcp socket, IF value changed.
 
+// see setupSource.js and helpers.js for code that sets up the reactive cache calculations.
+//. bring that into here
+
 //. eg ___
 
 export class Cache {
