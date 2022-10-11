@@ -8,7 +8,6 @@
 //. will this be replaced by MTConnect Interfaces eventually?
 
 // import * as lib from '../common/lib.js'
-// import * as foo from '../common/foo.js'
 import { getSelector } from '../helpers.js'
 
 // optional flag defined in .env.
