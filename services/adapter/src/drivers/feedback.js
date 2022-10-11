@@ -76,7 +76,7 @@ export class AdapterDriver {
       // publish to command topic
       const commandPayload = { ...this.payload, value: this.values[0] } // { address, value, unitid, quantity, fc }
       console.log(this.me, `publish`, this.command.topic, commandPayload)
-      this.provider.publish(this.command.topic, JSON.toString(commandPayload))
+      this.provider.publish(this.command.topic, JSON.stringify(commandPayload)) // bug: had JSON.toString(), which makes '[object Object]'
       this.oldValue = newValue
 
       // q. what if a response never comes? timeout after a minute?
@@ -99,7 +99,7 @@ export class AdapterDriver {
     // publish the second command
     const commandPayload = { ...this.payload, value: this.values[1] }
     console.log(this.me, `publish`, this.command.topic, commandPayload)
-    this.provider.publish(this.command.topic, JSON.toString(commandPayload))
+    this.provider.publish(this.command.topic, JSON.stringify(commandPayload)) // bug: had JSON.toString(), which makes '[object Object]'
 
     // unsubscribe from the wait topic
     this.provider.unsubscribe(
