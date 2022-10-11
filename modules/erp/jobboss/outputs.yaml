@@ -11,17 +11,44 @@
 # value is javascript, evaluated by the cache in calculating the shdr output.
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo')
 
+# note: cache keys are ARBITRARY,
+# ie not necessarily the same as dataitem id OR name.
+# eg <status_step> references the cache value at 'kl1-status_step',
+# which was set in inputs.yaml, while the output key here is 'step',
+# which becomes eg 'kl1-step' for the SHDR id.
+# the idea is to keep the SHDR id's as short as possible, to reduce network bandwidth,
+# while the dataitem name can be more descriptive.
+
+# note: category is used to determine shdr representation.
+# only need to specify category if CONDITION.
+# only need to specify type if is MESSAGE.
+# see end of services/adapter/src/cache.js for details.
+
+# note: can just specify the key - value will be inferred to be <key>.
+
 outputs:
   - key: avail
     value: <availability>
 
+  #. when this value transitions to another job, OR to NONE,
+  # we want to increment the lifetime job counter for this machine, eg m1-jclife.
+  # how do?
   - key: job # processes/job/process_aggregate_id-order_number
     value: <job>
+    #. something like this -
+    # value: |
+    #   var job = <job>;
+    #   if (job != cache.get('${deviceId}-job')) {
+    #     var jclife = cache.get('${deviceId}-jclife');
+    #     if (jclife) {
+    #       jclife++;
+    #       cache.set('${deviceId}-jclife', jclife);
+    #     }
+    #   }
+    #   return job;
 
   - key: start # processes/shift/process_time-start
-    # device: c
     value: <start>
 
   - key: complete # processes/shift/process_time-complete
-    # device: c
     value: <complete>
