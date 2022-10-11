@@ -37,12 +37,8 @@ export async function getPlugin(driversFolder, driver) {
 export function getOutputs({ templates, types, deviceId }) {
   // console.log('getOutputs - iterate over output templates')
   const outputs = templates.map(template => {
-    // const { value, dependsOn } = getValueFn(deviceId, template.value, types)
-    const { value, dependsOn } = getValueFn(
-      deviceId,
-      template.value || `<${template.key}>`, // if value not specified, use <key>
-      types
-    )
+    const code = template.value || `<${template.key}>` // if value not specified, use '<key>'
+    const { value, dependsOn } = getValueFn(deviceId, code, types)
     // get output object
     // eg {
     //   key: 'ac1-power_condition',
@@ -61,7 +57,7 @@ export function getOutputs({ templates, types, deviceId }) {
       // in place of the default?
       // key: `${deviceId}-${template.key}`,
       key: `${template.deviceId || deviceId}-${template.key}`,
-      value, //. getValue or valueFn
+      value, //. call this getValue or valueFn
       dependsOn,
       //. currently these need to be defined in the outputs.yaml file,
       // instead of using the types in the module.xml file -
@@ -89,26 +85,37 @@ function getValueFn(deviceId, code = '', types = {}) {
   // should be okay to ditch replaceAll because we have /g for the regexp
   // valueStr = valueStr.replaceAll( // needs node15
   //. test this with two cache refs in a string "<foo> + <bar>" etc
-  // $2 is the matched substring
-  code = code.replace(regexp1, `cache.get('${deviceId}-$2')`)
+  code = code.replace(regexp1, `cache.get('${deviceId}-$2')`) // $2 is the matched substring
+
+  // if code is multiline, wrap it in braces - in which case, the value of the block is
+  // the value of the last line.
+  // eg in javascript, { 1;2;3; } evaluates to 3
+  // and { let job=1;2;3;job } evaluates to 1
   if (code.includes('\n')) {
     code = '{\n' + code + '\n}'
   }
 
-  // define the value function //. call it valueFn?
+  // define the value function //. call it valueFn or getValue
+  // $ is ...? not used?
+  //. don't want to break this now, but in getValue in cache.js,
+  // this fn is only called with the cache param. fix/clarify later.
+  // and see compile fn below, which prepends (cache, $, keyvalues) to fn string,
+  // but just for inputs.yaml code (?).
   const value = (cache, $, keyvalues) => eval(code)
+  // const value = cache => eval(code)
 
   // get list of cache ids this calculation depends on.
   // get AFTER transforms, because user could specify a cache get manually.
   // eg dependsOn = ['ac1-power_fault', 'ac1-power_warning']
-  const dependsOn = []
+  //. sort/uniquify dependsOn array
+  const dependsOn = [] //. call this references?
   const regexp2 = /cache\.get\('(.*?)'\)/gm
   let match
   while ((match = regexp2.exec(code)) !== null) {
     const key = match[1]
     dependsOn.push(key)
   }
-  //. sort/uniquify dependsOn array
+
   return { value, dependsOn }
 }
 
