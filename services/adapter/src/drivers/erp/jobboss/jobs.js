@@ -42,10 +42,16 @@ export class Jobs {
         // pool error handler should catch any errors, but add try/catch in case not
         try {
           const result = await this.pool.query(sql)
-          const job = result.recordset.length > 0 && result.recordset[0].Job // must match case of sql
+          const job = result.recordset.length > 0 && result.recordset[0].Job // 'Job' must match case of sql
+
           // console.log('device', device.name, 'job', job)
-          // use NONE here to indicate no job
-          this.cache.set(`${device.id}-job`, job || 'NONE') // will send shdr to agent IF cache value changed
+
+          //. what if could pass an optional code block here to run if cache value changed?
+          //. eg it could increment the lifetime job count.
+          //. and/or reset the part count by sending a message to the device.
+
+          // will send shdr to agent IF cache value changed
+          this.cache.set(`${device.id}-job`, job || 'NONE') // use NONE to indicate no job
 
           //. if job changed, could query db for estqty,runqty also, set the cache values
           //
