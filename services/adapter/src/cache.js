@@ -88,6 +88,10 @@ export class Cache {
     // }
     // //. don't allow undefined as a value? not in vocabulary of mtc
     // if (value === undefined) return
+
+    //. what if want to check if a value changed?
+    //. eg if (this._map.get(key) !== value) { ... }
+
     // update the cache value
     this._map.set(key, value)
     // get list of outputs associated with this key
@@ -142,8 +146,8 @@ export class Cache {
 // calculate value for the given cache output (can use other cache keyvalues)
 function getValue(cache, output) {
   //. rename .value to .getValue or .valueFn
-  const { value: getValue } = output
-  const value = getValue(cache) // do calculation
+  const { value: valueFn } = output
+  const value = valueFn(cache) // do calculation
   return value
 }
 
