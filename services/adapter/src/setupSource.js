@@ -37,7 +37,6 @@ export async function setupSource({
 
   // create a module object for the yaml file contents - inputs.yaml, outputs.yaml, types.yaml
   const module = {}
-
   if (moduleName) {
     // get input handlers, if any for this source
     // these are interpreted by the driver
