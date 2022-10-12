@@ -7,7 +7,6 @@
 
 //. will this be replaced by MTConnect Interfaces eventually?
 
-// import * as lib from '../common/lib.js'
 import { getSelector } from '../helpers.js'
 
 // optional flag defined in .env.
@@ -90,12 +89,13 @@ export class AdapterDriver {
     payload = payload.toString()
     payload = JSON.parse(payload)
 
-    // const sentValue = payload[waitAttribute] // eg payload.a15
     console.log(this.me, `feedbackCallback response`, payload)
 
-    // note: we use == because either might be a string, not number.
+    // note: we use == because either might be a string or number.
     // selector should have checked this already, but just in case.
+    // const sentValue = payload[waitAttribute] // eg payload.a15
     // if (sentValue == values[0]) {
+
     // publish the second command
     const commandPayload = { ...this.payload, value: this.values[1] }
     console.log(this.me, `publish`, this.command.topic, commandPayload)
@@ -107,6 +107,7 @@ export class AdapterDriver {
       this.waitCallback,
       this.waitSelector
     )
+
     // } else {
     //   console.log(this.me, `error feedbackCallback got wrong value`, sentValue)
     // }
