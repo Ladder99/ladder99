@@ -308,6 +308,24 @@ export class Db {
     const result = await this.query(sql)
     return result.rows
   }
+  //. new
+  async getHistoryNonUnavailable(table, device, path, start, stop) {
+    const sql = `
+      select 
+        time, value
+      from 
+        ${table}
+      where
+        device = '${device}'
+        and path = '${path}'
+        and time >= '${start}' and time < '${stop}'
+        and value->0 <> 'UNAVAILABLE' --. is this correct?
+      order by 
+        time asc;
+    `
+    const result = await this.query(sql)
+    return result.rows
+  }
 
   async getMetaValue(key) {
     // get value of key-value pair from meta table

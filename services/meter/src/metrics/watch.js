@@ -92,14 +92,23 @@ export class Metric {
     //   stopTime
     // )
 
-    // getHistory3 gets records where start>=time<stop, no unions
-    const rows = await this.db.getHistory3(
-      'history_all',
+    // // getHistory3 gets records where start>=time<stop, no unions
+    // const rows = await this.db.getHistory3(
+    //   'history_all',
+    //   this.device.name,
+    //   this.metric.watchPath,
+    //   startTime,
+    //   stopTime
+    // )
+
+    // get records from history_all where start<=time<stop and value not 'UNAVAILABLE'
+    const rows = await this.db.getHistoryNonUnavailable(
       this.device.name,
       this.metric.watchPath,
       startTime,
       stopTime
     )
+
     if (rows && rows.length > 0) {
       // const record = { time: this.lastStopTime, value: this.lastLifetimeCount }
       // rows.splice(0, 0, record) // add record before start time to front of array
@@ -121,20 +130,38 @@ export class Metric {
       // with { device, dataitem, time, value }
       let previousRow = rows[0] // { time, value }
       const lifetimeRows = []
-      for (let row of rows.slice(1)) {
-        // get delta from previous value
-        const deltaCount = row.value - previousRow.value
-        if (deltaCount > 0) {
-          lifetimeCount += deltaCount
-          const lifetimeRow = {
-            node_id: this.device_id,
-            dataitem_id: this.update_id,
-            time: row.time.toISOString(),
-            value: lifetimeCount,
+      if (this.metric.operation === 'accumulate') {
+        for (let row of rows.slice(1)) {
+          // get delta from previous value
+          const deltaCount = row.value - previousRow.value
+          if (deltaCount > 0) {
+            lifetimeCount += deltaCount
+            const lifetimeRow = {
+              node_id: this.device_id,
+              dataitem_id: this.update_id,
+              time: row.time.toISOString(),
+              value: lifetimeCount,
+            }
+            lifetimeRows.push(lifetimeRow)
           }
-          lifetimeRows.push(lifetimeRow)
+          previousRow = row
         }
-        previousRow = row
+      } else if (this.metric.operation === 'count') {
+        for (let row of rows.slice(1)) {
+          // check if value changed from previous row
+          // const deltaCount = row.value - previousRow.value
+          if (row.value !== previousRow.value) {
+            lifetimeCount += 1
+            const lifetimeRow = {
+              node_id: this.device_id,
+              dataitem_id: this.update_id,
+              time: row.time.toISOString(),
+              value: lifetimeCount,
+            }
+            lifetimeRows.push(lifetimeRow)
+          }
+          previousRow = row
+        }
       }
       console.log(this.me, `writing lifetime rows`, lifetimeRows)
       await this.db.addHistory(lifetimeRows)
