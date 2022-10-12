@@ -211,11 +211,15 @@ export class Db {
   //. use get_last_value db fn if possible, for speed
   //. note: device here is device.name!
   async getLastRecord(device, path, start) {
+    return await getLastRecord2('history_float', device, path, start)
+  }
+  //. same as above but add table param
+  async getLastRecord2(table, device, path, start) {
     const sql = `
       select 
         time, value
       from 
-        history_float
+        ${table}
       where
         device = '${device}' 
         and path = '${path}'
@@ -226,7 +230,7 @@ export class Db {
     `
     const result = await this.query(sql)
     const record = result.rows.length > 0 && result.rows[0]
-    return record // false/null or { time, value }
+    return record // false or { time, value }
   }
 
   // get first value of a path from history_float view.
@@ -255,11 +259,15 @@ export class Db {
   // includes previous value before start time.
   //. pass table also, ie history_float vs history_text
   async getHistory(device, path, start, stop) {
+    return await getHistory2('history_float', device, path, start, stop)
+  }
+  //. same as above but add table param
+  async getHistory2(table, device, path, start, stop) {
     const sql = `
       select 
         time, value
       from 
-        history_float
+        ${table}
       where
         device = '${device}'
         and path = '${path}'
@@ -268,7 +276,7 @@ export class Db {
         select 
           time, value
         from 
-          history_float
+          ${table}
         where
           device = '${device}'
           and path = '${path}'
@@ -277,6 +285,23 @@ export class Db {
           time desc
         limit 1
       )
+      order by 
+        time asc;
+    `
+    const result = await this.query(sql)
+    return result.rows
+  }
+  //. same as above but don't do the union
+  async getHistory3(table, device, path, start, stop) {
+    const sql = `
+      select 
+        time, value
+      from 
+        ${table}
+      where
+        device = '${device}'
+        and path = '${path}'
+        and time >= '${start}' and time < '${stop}'
       order by 
         time asc;
     `

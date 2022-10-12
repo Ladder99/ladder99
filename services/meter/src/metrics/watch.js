@@ -45,8 +45,9 @@ export class Metric {
 
     // due to nature of js event loop, poll won't be called exactly every this.interval ms.
     // that means we could miss job count records in the gaps, causing 'misses'.
-    // so keep track of lastStopTime.
-    // well even that didn't help.
+    // // so keep track of lastStopTime.
+    // so keep track of lastRecord = { time, value }.
+    // well even that didn't help...
     // need an offset to give adapter time to write data also.
     const now = new Date()
     const stopMs = now.getTime() - this.offset // ms
@@ -54,36 +55,70 @@ export class Metric {
     const startTime =
       this.lastStopTime ?? new Date(stopMs - this.interval).toISOString()
 
-    const updatePath = this.metric.updatePath
+    // //. merge these operations
+    // if (this.metric.operation === 'accumulate') {
+    //   // get values and accumulate deltas since last poll
+    //   await this.accumulate()
+    // } else if (this.metric.operation === 'count') {
+    //   // get count of non-unavailable transitions since last poll
+    //   await this.count()
+    // }
+    await this.accumulate()
 
-    // get last lifetime count, before start time
-    const record = await this.db.getLastRecord(
-      deviceName,
-      updatePath,
-      startTime
-    )
-    let lifetimeCount = record ? record.value : 0
+    // save time for next poll
+    // this.lastStopTime = stopTime
+  }
 
-    // get job counts
-    //. currently gets from history_float view
-    const rows = await this.db.getHistory(
-      deviceName,
+  async accumulate() {
+    //
+    // // get last lifetime count, before start time
+    // const record = await this.db.getLastRecord2(
+    //   'history_float',
+    //   this.device.name,
+    //   this.metric.updatePath,
+    //   startTime
+    // )
+    // let lifetimeCount = record ? record.value : 0
+    // console.log(this.me, `last lifetime count`, lifetimeCount)
+
+    // get counts
+    // note that the function is a union that includes the record before start time.
+    //. could save the trouble of the union and just keep a record of the last value - less work for db.
+    // const rows = await this.db.getHistory2(
+    //   'history_all',
+    //   this.device.name,
+    //   this.metric.watchPath,
+    //   startTime,
+    //   stopTime
+    // )
+
+    // getHistory3 gets records where start>=time<stop, no unions
+    const rows = await this.db.getHistory3(
+      'history_all',
+      this.device.name,
       this.metric.watchPath,
       startTime,
       stopTime
     )
-    // console.log(this.me, `job count rows`, rows)
-    // rows will be like (for start=10:00:00am, stop=10:00:05am)
-    // time, value
-    // 9:59:59am, 99
-    // 10:00:00am, 100
-    // 10:00:01am, 101
-    // 10:00:02am, 102
-    // 10:00:03am, 0
-    // 10:00:04am, 1
-    // 10:00:05am, 2
-    //. what if just one row? compare with last seen value eh?
-    if (rows && rows.length > 1) {
+    if (rows && rows.length > 0) {
+      // const record = { time: this.lastStopTime, value: this.lastLifetimeCount }
+      // rows.splice(0, 0, record) // add record before start time to front of array
+      rows.splice(0, 0, this.lastRecord) // add previous record to front of array
+      console.log(this.me, `watch rows`, rows)
+
+      // rows will be like (for start=10:00:00am, stop=10:00:06am)
+      // time, value
+      // 9:59:59am, 99
+      // 10:00:00am, 100
+      // 10:00:01am, 101
+      // 10:00:02am, 102
+      // 10:00:03am, 'UNAVAILABLE'
+      // 10:00:04am, 0
+      // 10:00:05am, 1
+      // 10:00:06am, 2
+
+      // build up an array of rows to write to history table
+      // with { device, dataitem, time, value }
       let previousRow = rows[0] // { time, value }
       const lifetimeRows = []
       for (let row of rows.slice(1)) {
@@ -91,14 +126,6 @@ export class Metric {
         const deltaCount = row.value - previousRow.value
         if (deltaCount > 0) {
           lifetimeCount += deltaCount
-          // write time, lifetime
-          // better to save these up in an array and write all at once, for speed
-          // await this.db.writeHistory(
-          //   this.device_id,
-          //   this.update_id,
-          //   row.time.toISOString(),
-          //   lifetimeCount
-          // )
           const lifetimeRow = {
             node_id: this.device_id,
             dataitem_id: this.update_id,
@@ -109,11 +136,11 @@ export class Metric {
         }
         previousRow = row
       }
-      // console.log(this.me, `writing lifetime rows`, lifetimeRows)
+      console.log(this.me, `writing lifetime rows`, lifetimeRows)
       await this.db.addHistory(lifetimeRows)
+
+      this.lastRecord = rows[rows.length - 1]
     }
-    // save time for next poll
-    this.lastStopTime = stopTime
   }
 
   //   // backfill missing partcount records
