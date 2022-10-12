@@ -24,28 +24,32 @@ async function start() {
   const setup = lib.readSetup(setupFolder)
   const client = setup.client || {} // has { name, timezone }
 
-  const defaultMetrics = setup?.adapter?.metrics || {} // eg { availability, count, ... }
+  // const defaultMetrics = setup?.adapter?.metrics || {} // eg { availability, count, ... }
+  // const defaultMetrics = setup?.adapter?.metrics || [] // eg [{ driver:'availability', ... }, ...]
+  const defaultMetrics = setup?.meter || [] // eg [{ driver:'availability', ... }, ...]
   console.log(`Meter - default metrics`, defaultMetrics)
 
   // iterate over devices, check what metrics they want, if any,
   // load those metric plugins, start them up - let them poll db as needed etc.
   for (let device of setup.devices || []) {
-    // in setup.yaml can specify metrics:false for a device
+    // in setup.yaml can specify metrics:false for a device.
+    // if don't specify metrics then will use defaults.
     if (device.metrics !== false) {
-      const metrics = { ...defaultMetrics, ...device.metrics }
+      // const metrics = { ...defaultMetrics, ...device.metrics }
+      const metrics = defaultMetrics //. could merge with device.metrics, override defaults
       console.log(`Meter - device metrics`, device.id, metrics)
-      for (let name of Object.keys(metrics)) {
-        const metric = metrics[name] // eg name='availability', metric={ activePath, startPath, stopPath }
-        // in setup.yaml can specify metrics:availability:false etc to turn off specific metrics
+      for (let metric of metrics) {
+        const driver = metric.driver // eg 'availability'
         if (metric !== false) {
+          console.log(`Meter - loading meter`, meter)
           // import metric plugin
-          const pathMetric = `${metricsFolder}/${name}.js` // eg './metrics/availability.js'
+          const pathMetric = `${metricsFolder}/${driver}.js` // eg './metrics/availability.js'
           console.log(`Meter - importing ${pathMetric}...`)
           const { Metric } = await import(pathMetric)
           const plugin = new Metric()
 
           // start it
-          console.log(`Meter - starting ${device.name} ${name}...`)
+          console.log(`Meter - starting ${device.name} ${driver}...`)
           plugin.start({ client, db, device, metric })
         }
       }

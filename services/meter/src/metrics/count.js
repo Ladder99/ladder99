@@ -12,16 +12,18 @@ export class Metric {
     this.db = db
     this.device = device
     this.metric = metric
+
     this.lastStop = null
+    this.lastWatchValue = undefined
 
-    const deviceName = this.device.name
-    console.log(`Count ${deviceName} - start metric...`)
+    this.me = `Count ${device.name}:`
+    console.log(this.metric, `start metric, watch`, metric.deltaPath)
 
-    console.log(`Count ${deviceName} - get device node_id...`)
+    console.log(this.metric, `get device node_id...`)
     this.device_id = await this.db.getDeviceId(device.name) // repeats until device is there
 
     // need this dataitemId as we'll be writing directly to the history table
-    console.log(`Count ${deviceName} - get dataitem_id...`)
+    console.log(this.metric, `get dataitem_id...`)
     this.lifetime_id = await this.db.getDataItemId(metric.lifetimePath) // repeat until dataitem there
 
     // get polling interval - either from metric in setup yaml or default value
@@ -36,8 +38,9 @@ export class Metric {
 
   // poll db and update lifetime count - called by timer
   async poll() {
+    //
     const deviceName = this.device.name
-    // console.log(`Count ${deviceName} - poll db, write lifetime count`)
+    // console.log(this.metric, `poll db, write lifetime count`)
 
     // due to nature of js event loop, poll is not gonna be called exactly every this.interval ms.
     // that means we could miss job count records, causing 'misses'.
@@ -47,15 +50,14 @@ export class Metric {
     const start =
       this.lastStop ||
       new Date(now.getTime() - this.offset - this.interval).toISOString()
-    // const stop = now.toISOString()
     const stop = new Date(now.getTime() - this.offset).toISOString()
     const lifetimePath = this.metric.lifetimePath
-    // console.log(`Count ${deviceName} - start,stop`, start, stop)
+    // console.log(this.metric, `start,stop`, start, stop)
 
     // get last lifetime count, before start time
     const record = await this.db.getLastRecord(deviceName, lifetimePath, start)
     let lifetimeCount = record ? record.value : 0
-    // console.log(`Count ${deviceName} - lifetimeCount`, lifetimeCount)
+    // console.log(this.metric, `lifetimeCount`, lifetimeCount)
 
     // get job counts
     //. currently gets from history_float view
@@ -65,7 +67,7 @@ export class Metric {
       start,
       stop
     )
-    // console.log(`Count ${deviceName} - job count rows`, rows)
+    // console.log(this.metric, `job count rows`, rows)
     // rows will be like (for start=10:00:00am, stop=10:00:05am)
     // time, value
     // 9:59:59am, 99
@@ -75,6 +77,7 @@ export class Metric {
     // 10:00:03am, 0
     // 10:00:04am, 1
     // 10:00:05am, 2
+    //. what if just one row? compare with last seen value eh?
     if (rows && rows.length > 1) {
       let previousRow = rows[0] // { time, value }
       const lifetimeRows = []
@@ -101,7 +104,7 @@ export class Metric {
         }
         previousRow = row
       }
-      // console.log(`Count ${deviceName} - writing lifetime rows`, lifetimeRows)
+      // console.log(this.metric, `writing lifetime rows`, lifetimeRows)
       await this.db.addHistory(lifetimeRows)
     }
     // save time for next poll
@@ -111,7 +114,7 @@ export class Metric {
   // backfill missing partcount records
   async backfill() {
     const deviceName = this.device.name
-    console.log(`Count ${deviceName} - backfill any missed partcounts`)
+    console.log(this.metric, `backfill any missed partcounts`)
 
     const now = new Date()
 
@@ -121,7 +124,7 @@ export class Metric {
       this.metric.lifetimePath,
       now.toISOString()
     )
-    console.log(`Count ${deviceName} - last record`, record)
+    console.log(this.metric, `last record`, record)
 
     // if no lifetime record, start from the beginning
     if (!record) {
@@ -129,7 +132,7 @@ export class Metric {
         deviceName,
         this.metric.deltaPath
       )
-      console.log(`Count ${deviceName} - first record`, record2)
+      console.log(this.metric, `first record`, record2)
       // no delta data either, so exit
       if (!record2) {
         return
@@ -163,6 +166,6 @@ export class Metric {
       }
       previous = row
     }
-    console.log(`Count ${deviceName} - backfill done`)
+    console.log(this.metric, `backfill done`)
   }
 }

@@ -17,6 +17,7 @@ export class Metric {
     this.db = db
     this.device = device
     this.metric = metric
+
     this.lastWatchValue = undefined
 
     this.me = `Watch ${this.device.name}:`
