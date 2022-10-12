@@ -17,7 +17,7 @@ export class Metric {
     this.db = db
     this.device = device
     this.metric = metric
-    this.lastWatchValue = null
+    this.lastWatchValue = undefined
 
     this.me = `Watch ${this.device.name}:`
     console.log(this.me, `path is ${this.metric.watchPath}`)
@@ -39,35 +39,36 @@ export class Metric {
 
   async poll() {
     //
-    //. could be watching a number, or string - this returns a json object?
+    //. could be watching a number, or string - this returns a json object? check
     const currentWatchValue = await this.db.getLatestValue(
       'history_all',
       this.device, // has { name }
       this.metric.watchPath
     )
+    console.log(this.me, `currentWatchValue`, currentWatchValue)
 
     // initialize saved watch value if needed - prevents immediate action on startup
-    this.lastWatchValue = this.lastWatchValue || currentWatchValue
+    this.lastWatchValue = this.lastWatchValue ?? currentWatchValue
 
     // check if watch value changed - if so, do action
     if (currentWatchValue !== this.lastWatchValue) {
       if (this.metric.operation === 'increment') {
-        const value =
+        const countValue =
           (await this.db.getLatestValue(
             'history_float',
             this.device, // has { name }
             this.metric.updatePath
           )) || 0
-        const newValue = value + 1
+        const newCountValue = countValue + 1
         console.log(
           this.me,
-          `incrementing ${this.metric.updatePath} to ${newValue}`
+          `incrementing ${this.metric.updatePath} to ${newCountValue}`
         )
         await this.db.writeHistory(
           this.device_id,
           this.update_id,
           new Date().toISOString(),
-          newValue
+          newCountValue
         )
       }
       // save watch value
