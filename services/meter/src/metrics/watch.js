@@ -53,6 +53,13 @@ export class Metric {
     const startTime =
       this.lastStopTime ?? new Date(stopMs - this.interval).toISOString()
 
+    console.log(this.me, `polling from ${startTime} to ${stopTime}`)
+
+    let previousRow = this.lastRecord // { time, value }
+    console.log(this.me, `previousRow`, previousRow)
+
+    let lifetimeCount = this.lastRecord.value || 0
+
     // get records from history_all where start<=time<stop and value not 'UNAVAILABLE'
     const rows =
       (await this.db.getHistoryNonUnavailable(
@@ -62,28 +69,23 @@ export class Metric {
         stopTime
       )) || []
 
-    // if (rows && rows.length > 0) {
-    // rows.splice(0, 0, this.lastRecord) // add previous record to front of array
     console.log(this.me, `watch rows`, rows)
 
-    // rows will be like (for start=10:00:00am, stop=10:00:06am)
+    // rows will be like this (for start=10:00:00am, stop=10:00:06am)
     // time, value
-    // 9:59:59am, 99
     // 10:00:00am, 100
     // 10:00:01am, 101
     // 10:00:02am, 102
     // 10:00:03am, 'UNAVAILABLE'
     // 10:00:04am, 0
     // 10:00:05am, 1
-    // 10:00:06am, 2
 
     // build up an array of rows to write to history table
     // with { device, dataitem, time, value }
-    // let previousRow = rows[0] // { time, value }
-    let previousRow = this.lastRecord // { time, value }
     const lifetimeRows = []
     if (this.metric.operation === 'accumulate') {
-      for (let row of rows.slice(1)) {
+      // accumulate delta values between rows
+      for (let row of rows) {
         // get delta from previous value
         const deltaCount = row.value - previousRow.value
         if (deltaCount > 0) {
@@ -99,10 +101,9 @@ export class Metric {
         previousRow = row
       }
     } else if (this.metric.operation === 'count') {
-      // for (let row of rows.slice(1)) {
+      // count number of non-unavailable transitions
       for (let row of rows) {
         // check if value changed from previous row
-        // const deltaCount = row.value - previousRow.value
         if (row.value !== previousRow.value) {
           lifetimeCount += 1
           const lifetimeRow = {
@@ -116,6 +117,7 @@ export class Metric {
         previousRow = row
       }
     }
+
     console.log(this.me, `writing lifetime rows`, lifetimeRows)
     await this.db.addHistory(lifetimeRows)
 

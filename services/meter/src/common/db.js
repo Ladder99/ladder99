@@ -309,17 +309,18 @@ export class Db {
     return result.rows
   }
   //. new
-  async getHistoryNonUnavailable(table, device, path, start, stop) {
+  // this returns a list of records with { time, value }, where value is a number or string
+  async getHistoryNonUnavailable(device, path, start, stop) {
     const sql = `
       select 
         time, value
       from 
-        ${table}
+        history_all
       where
         device = '${device}'
         and path = '${path}'
         and time >= '${start}' and time < '${stop}'
-        and value->0 <> 'UNAVAILABLE' --. is this correct?
+        and value->>0 <> 'UNAVAILABLE'
       order by 
         time asc;
     `
