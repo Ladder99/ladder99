@@ -148,7 +148,7 @@ export class Db {
 
   // write a single record to the history table.
   // time should be an ISO datetime string, value a number or string.
-  //. merge with addHistory, or rename to writeHistoryRecord?
+  //. merge with addHistory, or rename to writeHistoryRecord
   async writeHistory(device_id, dataitem_id, time, value) {
     const sql = `
       insert into history (node_id, dataitem_id, time, value)
@@ -186,6 +186,9 @@ export class Db {
   }
 
   // get latest value of a device's property path
+  // device has { name }
+  //. currently only used by availability and watch metrics - merge into getLastRecord
+  //. merge with getLastRecord below
   async getLatestValue(table, device, path) {
     const sql = `
       select value
@@ -194,9 +197,7 @@ export class Db {
       order by time desc
       limit 1;
     `
-    // console.log(sql)
     const result = await this.query(sql)
-    // console.log(result)
     const value = result.rowCount > 0 && result.rows[0]['value'] // colname must match case
     return value
   }
@@ -205,7 +206,10 @@ export class Db {
   // start should be an ISO datetimestring
   // returns null or { time, value }
   //. pass table also
-  //. merge with getLatestValue
+  //. merge with getLatestValue above
+  //. add time limit for search
+  //. use get_last_value db fn if possible, for speed
+  //. note: device here is device.name!
   async getLastRecord(device, path, start) {
     const sql = `
       select 
@@ -222,7 +226,7 @@ export class Db {
     `
     const result = await this.query(sql)
     const record = result.rows.length > 0 && result.rows[0]
-    return record // null or { time, value }
+    return record // false/null or { time, value }
   }
 
   // get first value of a path from history_float view.
