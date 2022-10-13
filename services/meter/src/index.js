@@ -25,7 +25,7 @@ async function start() {
   const client = setup.client || {} // has { name, timezone }
 
   const defaultMetrics = setup?.meter || [] // eg [{ driver:'availability', ... }, ...]
-  console.log(`Meter - default metrics`, defaultMetrics)
+  // console.log(`Meter - default metrics`, defaultMetrics)
 
   // iterate over devices, check what metrics they want, if any,
   // load those metric plugins, start them up - let them poll db as needed etc.
@@ -33,13 +33,13 @@ async function start() {
     // in setup.yaml can specify metrics:false for a device.
     // if don't specify metrics then will use defaults.
     if (device.metrics !== false) {
-      // const metrics = { ...defaultMetrics, ...device.metrics }
-      const metrics = defaultMetrics //. could merge with device.metrics, override defaults
+      const metrics = defaultMetrics //. could merge default with device.metrics
       console.log(`Meter - device metrics`, device.name, metrics)
       for (let metric of metrics) {
         const driver = metric.driver // eg 'availability'
         if (metric !== false) {
           console.log(`Meter - loading metric`, metric)
+
           // import metric plugin
           const pathMetric = `${metricsFolder}/${driver}.js` // eg './metrics/availability.js'
           console.log(`Meter - importing ${pathMetric}...`)

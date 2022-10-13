@@ -38,6 +38,8 @@ export class Metric {
     this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
 
+  //
+
   // poll db and update lifetime count - called by timer
   async poll() {
     //
@@ -46,17 +48,13 @@ export class Metric {
     // so keep track of lastRecord = { time, value }
     // well even that didn't help - still had gaps.
     // so need an offset to give adapter time to write data also.
-    const now = new Date()
+    const now = new Date() // current time
     const stopMs = now.getTime() - this.offset // ms
     const stopTime = new Date(stopMs).toISOString()
     const startTime =
       this.lastStopTime ?? new Date(stopMs - this.interval).toISOString() // initialize if undefined
 
-    // console.log(this.me, `polling from ${startTime} to ${stopTime}`)
-
     let previousRow = this.lastRecord // { time, value }
-    // console.log(this.me, `previousRow`, previousRow)
-
     let lifetimeCount = this.lastRecord.value || 0
 
     // get records from history_all where start<=time<stop and value not 'UNAVAILABLE'
@@ -123,10 +121,14 @@ export class Metric {
       // save last record for next poll
       this.lastRecord = rows[rows.length - 1]
     } else {
-      // console.log(this.me, `no lifetime rows to write`)
-      // leave lastRecord unchanged
+      // leave lastRecord as-is
     }
+
+    // save last stop time for next poll
+    this.lastStopTime = stopTime
   }
+
+  //
 
   //   // backfill missing partcount records
   //   async backfill() {
