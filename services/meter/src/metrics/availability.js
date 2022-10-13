@@ -192,7 +192,7 @@ export class Metric {
   async poll() {
     const deviceName = this.device.name
 
-    console.log(`Availability ${deviceName} - poll db and update bins`)
+    // console.log(`Availability ${deviceName} - poll db and update bins`)
     const now = new Date()
 
     // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ..., holiday }
