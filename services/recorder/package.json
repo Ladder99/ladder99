@@ -8,7 +8,7 @@
   "license": "Apache2.0",
   "dependencies": {
     "commander": "^8.3.0",
-    "csv": "^5.5.3",
+    "csv": "^6.2.1",
     "js-yaml": "^4.1.0",
     "mqtt": "^4.2.6"
   }
