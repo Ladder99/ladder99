@@ -140,7 +140,7 @@ export class Metric {
         startStopTimes[minute] = row.path
       }
     }
-    console.log(`Availability ${deviceName} - dict`, startStopTimes)
+    console.log(`Availability ${deviceName} - backfill dict`, startStopTimes)
 
     const minToDate = min => new Date(min * minutes).toISOString()
 

@@ -16,8 +16,8 @@ export class Metric {
     this.lastStopTime = undefined
     this.lastRecord = { time: undefined, value: undefined }
 
-    this.me = `Watch ${device.name}:`
-    console.log(this.me, 'start metric', metric.watchPath, metric.updatePath)
+    this.me = `Watch ${device.name} ${metric.operation}:`
+    console.log(this.me, 'start metric, watch', metric.watchPath)
 
     console.log(this.me, `get device node_id...`)
     this.device_id = await this.db.getDeviceId(device.name) // repeats until device is there
