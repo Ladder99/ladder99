@@ -13,8 +13,7 @@ export class Metric {
     this.device = device
     this.metric = metric
 
-    // this.lastStopTime = undefined
-    // this.lastWatchValue = undefined
+    this.lastStopTime = undefined
     this.lastRecord = { time: undefined, value: undefined }
 
     this.me = `Watch ${device.name}:`
@@ -51,7 +50,7 @@ export class Metric {
     const stopMs = now.getTime() - this.offset // ms
     const stopTime = new Date(stopMs).toISOString()
     const startTime =
-      this.lastStopTime ?? new Date(stopMs - this.interval).toISOString()
+      this.lastStopTime ?? new Date(stopMs - this.interval).toISOString() // initialize if undefined
 
     console.log(this.me, `polling from ${startTime} to ${stopTime}`)
 
@@ -118,11 +117,15 @@ export class Metric {
       }
     }
 
-    console.log(this.me, `writing lifetime rows`, lifetimeRows)
-    await this.db.addHistory(lifetimeRows)
-
-    // save record for next poll
-    this.lastRecord = rows[rows.length - 1]
+    if (lifetimeRows.length > 0) {
+      console.log(this.me, `writing lifetime rows`, lifetimeRows)
+      await this.db.addHistory(lifetimeRows)
+      // save last record for next poll
+      this.lastRecord = rows[rows.length - 1]
+    } else {
+      console.log(this.me, `no lifetime rows to write`)
+      // leave lastRecord unchanged
+    }
   }
 
   //   // backfill missing partcount records
