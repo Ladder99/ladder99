@@ -24,8 +24,6 @@ async function start() {
   const setup = lib.readSetup(setupFolder)
   const client = setup.client || {} // has { name, timezone }
 
-  // const defaultMetrics = setup?.adapter?.metrics || {} // eg { availability, count, ... }
-  // const defaultMetrics = setup?.adapter?.metrics || [] // eg [{ driver:'availability', ... }, ...]
   const defaultMetrics = setup?.meter || [] // eg [{ driver:'availability', ... }, ...]
   console.log(`Meter - default metrics`, defaultMetrics)
 
@@ -37,11 +35,11 @@ async function start() {
     if (device.metrics !== false) {
       // const metrics = { ...defaultMetrics, ...device.metrics }
       const metrics = defaultMetrics //. could merge with device.metrics, override defaults
-      console.log(`Meter - device metrics`, device.id, metrics)
+      console.log(`Meter - device metrics`, device.name, metrics)
       for (let metric of metrics) {
         const driver = metric.driver // eg 'availability'
         if (metric !== false) {
-          console.log(`Meter - loading meter`, meter)
+          console.log(`Meter - loading metric`, metric)
           // import metric plugin
           const pathMetric = `${metricsFolder}/${driver}.js` // eg './metrics/availability.js'
           console.log(`Meter - importing ${pathMetric}...`)

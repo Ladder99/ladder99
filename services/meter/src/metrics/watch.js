@@ -52,10 +52,10 @@ export class Metric {
     const startTime =
       this.lastStopTime ?? new Date(stopMs - this.interval).toISOString() // initialize if undefined
 
-    console.log(this.me, `polling from ${startTime} to ${stopTime}`)
+    // console.log(this.me, `polling from ${startTime} to ${stopTime}`)
 
     let previousRow = this.lastRecord // { time, value }
-    console.log(this.me, `previousRow`, previousRow)
+    // console.log(this.me, `previousRow`, previousRow)
 
     let lifetimeCount = this.lastRecord.value || 0
 
@@ -68,7 +68,7 @@ export class Metric {
         stopTime
       )) || []
 
-    console.log(this.me, `watch rows`, rows)
+    // console.log(this.me, `watch rows`, rows)
 
     // rows will be like this (for start=10:00:00am, stop=10:00:06am)
     // time, value
@@ -123,7 +123,7 @@ export class Metric {
       // save last record for next poll
       this.lastRecord = rows[rows.length - 1]
     } else {
-      console.log(this.me, `no lifetime rows to write`)
+      // console.log(this.me, `no lifetime rows to write`)
       // leave lastRecord unchanged
     }
   }
