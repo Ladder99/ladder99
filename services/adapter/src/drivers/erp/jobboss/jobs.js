@@ -44,12 +44,15 @@ export class Jobs {
         // pool error handler should catch any errors, but add try/catch in case not
         try {
           const result = await this.pool.query(sql)
-          const job = result?.recordset[0]?.Job || 'NONE' // 'Job' must match case of sql. use NONE to indicate no job
+
+          // 'Job' must match case of sql. use NONE to indicate no job
+          const job = result?.recordset[0]?.Job || 'NONE'
 
           //. what if could pass an optional code block here to run if cache value changed?
           // eg reset the part count by sending a message to the device
 
           // send shdr to agent IF cache value changed
+          // note: this key corresponds to the path 'processes/job/process_aggregate_id-order_number'
           this.cache.set(`${device.id}-job`, job)
 
           // if job changed, record time completed
@@ -58,6 +61,7 @@ export class Jobs {
           if (job !== this.lastJob) {
             console.log('JobBoss jobs - new job', job)
             const now = new Date().toISOString()
+            // this key corresponds to the path 'processes/job/process_time-complete'
             this.cache.set(`${device.id}-jcomplete`, now)
             this.lastJob = job
           }
