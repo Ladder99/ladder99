@@ -31,7 +31,6 @@ outputs:
     value: <availability>
 
   - key: job # processes/job/process_aggregate_id-order_number
-  - key: jcomplete # processes/job/process_time-complete
 
   - key: start # processes/shift/process_time-start
   - key: complete # processes/shift/process_time-complete
