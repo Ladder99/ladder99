@@ -14,10 +14,11 @@ export class Metric {
     this.device = device
     this.metric = metric
 
-    this.interval = metric.interval || metricIntervalDefault // ms
-    this.offset = metric.offset || metricOffsetDefault // ms
+    this.interval = metric.interval ?? metricIntervalDefault // ms
+    this.offset = metric.offset ?? metricOffsetDefault // ms
+    // this.lastRecord = { time: undefined, value: undefined }
     this.lastStopTime = undefined
-    this.lastRecord = { time: undefined, value: undefined }
+    this.lastLifetimeCount = undefined
 
     this.me = `Watch ${device.name} ${metric.operation}:`
     console.log(this.me, 'start metric, watch', metric.watchPath)
@@ -51,7 +52,8 @@ export class Metric {
       this.lastStopTime ?? new Date(stopMs - this.interval).toISOString() // initialize if undefined
 
     let previousRow = this.lastRecord // { time, value }
-    let lifetimeCount = this.lastRecord.value || 0
+    // let lifetimeCount = this.lastRecord.value || 0
+    let lifetimeCount = this.lastLifetimeCount ?? 0
 
     // get records from history_all where start<=time<stop and value not 'UNAVAILABLE'
     const rows =
@@ -93,31 +95,35 @@ export class Metric {
         }
         previousRow = row
       }
-    } else if (this.metric.operation === 'count') {
-      // count number of non-unavailable transitions
-      for (let row of rows) {
-        // check if value changed from previous row
-        if (row.value !== previousRow.value) {
-          lifetimeCount += 1
-          const lifetimeRow = {
-            node_id: this.device_id,
-            dataitem_id: this.update_id,
-            time: row.time.toISOString(),
-            value: lifetimeCount,
-          }
-          lifetimeRows.push(lifetimeRow)
-        }
-        previousRow = row
-      }
+      // } else if (this.metric.operation === 'count') {
+      //   // count number of non-unavailable transitions
+      //   for (let row of rows) {
+      //     // check if value changed from previous row
+      //     if (row.value !== previousRow.value) {
+      //       lifetimeCount += 1
+      //       const lifetimeRow = {
+      //         node_id: this.device_id,
+      //         dataitem_id: this.update_id,
+      //         time: row.time.toISOString(),
+      //         value: lifetimeCount,
+      //       }
+      //       lifetimeRows.push(lifetimeRow)
+      //     }
+      //     previousRow = row
+      //   }
     }
 
     if (lifetimeRows.length > 0) {
-      console.log(this.me, `writing lifetime rows`, lifetimeRows)
+      console.log(
+        this.me,
+        `writing lifetime row values`,
+        lifetimeRows.map(r => r.value)
+      )
       await this.db.addHistory(lifetimeRows)
-      // save last record for next poll
-      this.lastRecord = rows[rows.length - 1]
+      // save last lifetime count for next poll
+      this.lastLifetimeCount = lifetimeCount
     } else {
-      // leave lastRecord as-is
+      // leave last lifetime count as-is
     }
 
     // save last stop time for next poll
