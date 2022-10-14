@@ -11,7 +11,7 @@ export class Jobs {
     this.cache = cache
     this.pool = pool
     this.devices = devices
-    this.lastJob = null
+    this.lastJobs = {}
 
     // await this.backfill()
     await this.poll() // do initial poll
@@ -58,12 +58,12 @@ export class Jobs {
           // if job changed, record time completed
           //. could also query db for estqty,runqty also?
           //. but this is recording a time that's not connected to a jobnum - what do?
-          if (job !== this.lastJob) {
-            console.log('JobBoss jobs - new job', job)
+          if (job !== this.lastJobs[device.id]) {
+            console.log(`JobBoss jobs ${device.name} - new job`, job)
             const now = new Date().toISOString()
             // this key corresponds to the path 'processes/job/process_time-complete'
             this.cache.set(`${device.id}-jcomplete`, now)
-            this.lastJob = job
+            this.lastJobs[device.id] = job
           }
         } catch (error) {
           console.log(`JobBoss jobs ${device.name} error`, error.message)
