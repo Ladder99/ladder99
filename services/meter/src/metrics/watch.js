@@ -3,7 +3,8 @@
 // if operation is 'accumulate', will keep a running total count, eg for lifetime part counts.
 // if operation is 'count', will count number of non-unavailable transitions, eg for lifetime job counts.
 
-const metricIntervalDefault = 5 // seconds
+const metricIntervalDefault = 5000 // ms
+const metricOffsetDefault = 3000 // ms
 
 export class Metric {
   //
@@ -13,6 +14,8 @@ export class Metric {
     this.device = device
     this.metric = metric
 
+    this.interval = metric.interval || metricIntervalDefault // ms
+    this.offset = metric.offset || metricOffsetDefault // ms
     this.lastStopTime = undefined
     this.lastRecord = { time: undefined, value: undefined }
 
@@ -25,13 +28,6 @@ export class Metric {
     // need this dataitemId as we'll be writing directly to the history table
     console.log(this.me, `get update dataitem_id...`)
     this.update_id = await this.db.getDataItemId(metric.updatePath) // repeat until dataitem there
-
-    // get polling interval - either from metric in setup yaml or default value
-    this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
-
-    // look this far back in time for raw count values so adapter has time to write data.
-    // this avoided a problem with missing data.
-    this.offset = 3000 // ms
 
     // await this.backfill() // backfill any missing values
     await this.poll() // do first poll

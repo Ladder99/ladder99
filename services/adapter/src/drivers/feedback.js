@@ -1,4 +1,5 @@
-// feedback driver - watch for changes to a dataitem and send commands to device.
+// feedback driver - watch for changes to a dataitem in the cache,
+// and send commands to device.
 
 // currently used for monitoring jobboss job number and
 // sending a part count reset to a device via mqtt.
@@ -14,6 +15,8 @@ import { getSelector } from '../helpers.js'
 // but leave it off for a backup/development machine - otherwise they
 // may interfere with each other.
 const feedbackOn = process.env.L99_FEEDBACK
+
+const feedbackIntervalDefault = 2000 // ms
 
 export class AdapterDriver {
   //
@@ -34,7 +37,7 @@ export class AdapterDriver {
     // get base config, if there
     const feedback = setup.adapter?.drivers?.feedback || {}
     this.dataitem = device.id + '-' + feedback.dataitem // dataitem to watch - eg 'm1-job'
-    const interval = feedback.interval || 2000 // ms
+    const interval = feedback.interval || feedbackIntervalDefault // ms
 
     // command params
     this.command = feedback.command || {} // { topic, payload, values } for commands
@@ -58,7 +61,7 @@ export class AdapterDriver {
     // check if dataitem value changed, then send reset commands
     // (unless just starting up, or changing from NONE)
     const newValue = this.cache.get(this.dataitem) // eg 'm1-job'
-    this.oldValue = this.oldValue || newValue // this will avoid firing all this off if just starting up, when oldValue=null
+    this.oldValue = this.oldValue ?? newValue // this will avoid firing all this off if just starting up, when oldValue=null
     if (newValue !== this.oldValue && this.oldValue !== 'NONE') {
       console.log(this.me, `value changed from ${this.oldValue} to ${newValue}`)
 
