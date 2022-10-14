@@ -19,7 +19,7 @@ export class Observations extends Data {
   // parameters are (endpoint) or (endpoint, from, count)
   async read() {
     // super.read will return false if gets an xml error message
-    if (!await super.read(...arguments)) return false // see base class in data.js
+    if (!(await super.read(...arguments))) return false // see base class in data.js
 
     // get flat list of observations from xml tree
     // observations is [{ tag, dataItemId, name, timestamp, value }, ...]
@@ -36,7 +36,7 @@ export class Observations extends Data {
     // sort observations by timestamp asc, for correct state machine transitions.
     // because sequence nums could be out of order, depending on network.
     this.observations.sort((a, b) => a.timestampSecs - b.timestampSecs)
-    
+
     return true
   }
 
@@ -69,7 +69,10 @@ function getHistoryRecords(observations) {
       //  ie SAMPLES are numeric, EVENTS are strings
       //.. convert UNAVAILABLEs to null?
       //. keep in mind that conditions can have >1 value also
-      const value = Number(obs.value) || JSON.stringify(obs.value)
+      // const value = Number(obs.value) || JSON.stringify(obs.value) // bug: this converted 0's to "0"
+      // try to convert to number - if not, convert to a json string, eg 'AVAILABLE' -> '"AVAILABLE"'
+      const nval = Number(obs.value)
+      const value = Number.isNaN(nval) ? JSON.stringify(obs.value) : nval
       const record = {
         node_id: obs.device_id,
         dataitem_id: obs.dataitem_id,
