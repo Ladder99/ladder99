@@ -34,6 +34,7 @@ export class AdapterDriver {
     // get base config, if there
     const feedback = setup.adapter?.drivers?.feedback || {}
     this.dataitem = device.id + '-' + feedback.dataitem // dataitem to watch - eg 'm1-job'
+    const interval = feedback.interval || 2000 // ms
 
     // command params
     this.command = feedback.command || {} // { topic, payload, values } for commands
@@ -50,14 +51,15 @@ export class AdapterDriver {
     // check dataitem value - when changes, send reset cmd, wait for response, send 2nd cmd
     this.oldValue = null
     this.poll()
-    setInterval(this.poll.bind(this), feedback.interval || 2000) // interval in ms
+    setInterval(this.poll.bind(this), interval)
   }
 
   poll() {
-    // check if dataitem value changed, then send reset commands (unless just starting up)
+    // check if dataitem value changed, then send reset commands
+    // (unless just starting up, or changing from NONE)
     const newValue = this.cache.get(this.dataitem) // eg 'm1-job'
     this.oldValue = this.oldValue || newValue // this will avoid firing all this off if just starting up, when oldValue=null
-    if (newValue !== this.oldValue) {
+    if (newValue !== this.oldValue && this.oldValue !== 'NONE') {
       console.log(this.me, `value changed from ${this.oldValue} to ${newValue}`)
 
       // send command, wait for response, send second command
