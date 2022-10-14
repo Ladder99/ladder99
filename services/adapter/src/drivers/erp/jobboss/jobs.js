@@ -11,11 +11,14 @@ export class Jobs {
     this.cache = cache
     this.pool = pool
     this.devices = devices
+    this.lastJob = null
 
     // await this.backfill()
     await this.poll() // do initial poll
     setInterval(this.poll.bind(this), pollInterval) // start poll timer
   }
+
+  //
 
   async poll() {
     //
@@ -25,8 +28,7 @@ export class Jobs {
       if (jobbossId) {
         // get the most recently started job for this workcenter/device.
         // could also use where work_center='MARUMATSU', but not guaranteed unique.
-        //. check status for completion (S=started?, C=complete, O=ongoing?)
-        // "select top 1 Job from Job_Operation where WorkCenter_OID=foofoo order by Actual_Start desc"
+        // status is C=complete, S=started?, O=ongoing?
         const sql = `
           select top 1
             Job --, Est_Required_Qty, Act_Run_Qty
@@ -34,7 +36,7 @@ export class Jobs {
             Job_Operation
           where
             WorkCenter_OID = '${jobbossId}'
-            and Status <> 'C' -- ie job is not complete
+            and Status <> 'C'
             and Actual_Start is not null -- ie job has started
           order by
             Actual_Start desc
@@ -42,19 +44,23 @@ export class Jobs {
         // pool error handler should catch any errors, but add try/catch in case not
         try {
           const result = await this.pool.query(sql)
-          const job = result.recordset.length > 0 && result.recordset[0].Job // 'Job' must match case of sql
-
-          // console.log('device', device.name, 'job', job)
+          const job = result?.recordset[0]?.Job || 'NONE' // 'Job' must match case of sql. use NONE to indicate no job
 
           //. what if could pass an optional code block here to run if cache value changed?
-          //. eg it could increment the lifetime job count.
-          //. and/or reset the part count by sending a message to the device.
+          // eg reset the part count by sending a message to the device
 
-          // will send shdr to agent IF cache value changed
-          this.cache.set(`${device.id}-job`, job || 'NONE') // use NONE to indicate no job
+          // send shdr to agent IF cache value changed
+          this.cache.set(`${device.id}-job`, job)
 
-          //. if job changed, could query db for estqty,runqty also, set the cache values
-          //
+          // if job changed, record time completed
+          //. could also query db for estqty,runqty also?
+          //. but this is recording a time that's not connected to a jobnum - what do?
+          if (job !== this.lastJob) {
+            console.log('JobBoss jobs - new job', job)
+            const now = new Date().toISOString()
+            this.cache.set(`${device.id}-jcomplete`, now)
+            this.lastJob = job
+          }
         } catch (error) {
           console.log(`JobBoss jobs ${device.name} error`, error.message)
         }
