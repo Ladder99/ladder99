@@ -93,6 +93,8 @@ export class Metric {
     this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
 
+  //
+
   async backfill() {
     const deviceName = this.device.name
 
@@ -186,7 +188,7 @@ export class Metric {
     console.log(`Availability ${deviceName} - backfill done`)
   }
 
-  // ----------------------------
+  //
 
   // poll db and update bins - called by timer
   async poll() {
