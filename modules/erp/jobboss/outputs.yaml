@@ -31,41 +31,7 @@ outputs:
     value: <availability>
 
   - key: job # processes/job/process_aggregate_id-order_number
-    value: <job>
-
-  #. when this value transitions to another job, OR to NONE,
-  # we want to increment the lifetime job counter for this machine, eg m1-jclife.
-  # how do?
-  #. or do something like this -
-  # if new job value is UNAVAILABLE, ignore
-  # otherwise if job value changed, increment jclife for the device.
-  # this code gets evaluated like this,
-  # where $ is ...?
-  #   value = (cache, $, keyvalues) => { ... }
-  # deviceId is in scope also
-  # value: |
-  #   let job = newvalue;
-  #   if (job === 'UNAVAILABLE') return job;
-  #   if (job != cache.get(`${deviceId}-job`)) {
-  #     let key = `${deviceId}-jclife`;
-  #     let jclife = cache.get(key) || 0;
-  #     jclife++;
-  #     cache.set(key, jclife);
-  #   }
-  #   return job;
-  # #. or what if you had this -
-  # value: <job>
-  # # if job changed to NONE or a new value, increment jclife for the device.
-  # onChange: |
-  #   if (value === 'UNAVAILABLE') return;
-  #   let key = `${deviceId}-jclife`;
-  #   let jclife = cache.get(key) || 0;
-  #   jclife++;
-  #   cache.set(key, jclife);
-  #   // <jclife>++
+  - key: jcomplete # processes/job/process_time-complete
 
   - key: start # processes/shift/process_time-start
-    value: <start>
-
   - key: complete # processes/shift/process_time-complete
-    value: <complete>
