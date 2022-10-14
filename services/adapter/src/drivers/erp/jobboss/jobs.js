@@ -58,6 +58,7 @@ export class Jobs {
           // if job changed, record time completed
           //. could also query db for estqty,runqty also?
           //. but this is recording a time that's not connected to a jobnum - what do?
+          this.lastJobs[device.id] = this.lastJobs[device.id] ?? job // initialize if not set
           if (job !== this.lastJobs[device.id]) {
             console.log(`JobBoss jobs ${device.name} - new job`, job)
             const now = new Date().toISOString()
