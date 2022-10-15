@@ -59,7 +59,8 @@ export class Jobs {
           //. could also query db for estqty,runqty also?
           //. but this is recording a time that's not connected to a jobnum - what do?
           this.lastJobs[device.id] = this.lastJobs[device.id] ?? job // initialize if not set
-          if (job !== this.lastJobs[device.id]) {
+          const oldJob = this.lastJobs[device.id]
+          if (job !== oldJob && oldJob !== 'NONE') {
             console.log(`JobBoss jobs ${device.name} - new job`, job)
             const now = new Date().toISOString()
             // this key corresponds to the path 'processes/job/process_time-complete'
