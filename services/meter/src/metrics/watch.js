@@ -30,6 +30,7 @@ export class Metric {
     console.log(this.me, `get update dataitem_id...`)
     this.update_id = await this.db.getDataItemId(metric.updatePath) // repeat until dataitem there
 
+    //. finish backfill and turn back on
     // await this.backfill() // backfill any missing values
     await this.poll() // do first poll
     this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
@@ -43,7 +44,8 @@ export class Metric {
     // note: due to nature of js event loop, poll won't be called exactly every this.interval ms,
     // which means we could miss job count records in the gaps, causing 'misses'.
     // so keep track of lastRecord = { time, value }
-    // well even that didn't help - still had gaps. so use offset to give adapter time to write data also.
+    // well even that didn't help - still had gaps.
+    // so use offset to give adapter time to write data also.
     const now = new Date() // current time
     const stopMs = now.getTime() - this.offset // ms
     const stopTime = new Date(stopMs).toISOString()
@@ -51,7 +53,9 @@ export class Metric {
       this.lastStopTime ?? new Date(stopMs - this.interval).toISOString() // initialize if undefined
 
     let previousRow = this.lastRecord // { time, value }
-    // let lifetimeCount = this.lastRecord.value || 0
+
+    //. instead of 0, should get last value from db before startTime
+    // let lifetimeCount = this.lastRecord.value ?? 0
     let lifetimeCount = this.lastLifetimeCount ?? 0
 
     // get records from history_all where start<=time<stop and value not 'UNAVAILABLE'
