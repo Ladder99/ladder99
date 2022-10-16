@@ -1,5 +1,8 @@
 // watch a dataitem and perform an action when value changes
 
+//. this is a work in progress - it's intended to replace count.js.
+// will be a little more generic and more efficient.
+
 // if operation is 'accumulate', will keep a running total count, eg for lifetime part counts.
 // if operation is 'count', will count number of non-unavailable transitions, eg for lifetime job counts.
 
