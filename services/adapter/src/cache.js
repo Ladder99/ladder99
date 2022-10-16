@@ -158,6 +158,9 @@ function getValue(cache, output) {
 // can save some time/space by not including it.
 // eg SHDR could be '|m1-avail|AVAILABLE'
 function getShdr(output, value, timestamp = '') {
+  if (typeof value === 'string') {
+    value = sanitize(value)
+  }
   const { key, category, type, subType, representation, nativeCode } = output
   let shdr = ''
   // handle different shdr types and representations
@@ -168,24 +171,23 @@ function getShdr(output, value, timestamp = '') {
       // native_code, which needs to be included:
       // 2014-09-29T23:59:33.460470Z|message|CHG_INSRT|Change Inserts
       // From https://github.com/mtconnect/cppagent#adapter-agent-protocol-version-17 -
-      // shdr = `${timestamp}|${key}|${nativeCode}|${value}`
-      shdr = `${timestamp}|${key}|${nativeCode}|${sanitize(value)}` // escape pipes
+      shdr = `${timestamp}|${key}|${sanitize(nativeCode)}|${value}`
     } else {
       shdr = `${timestamp}|${key}|${value}`
     }
   } else if (category === 'CONDITION') {
-    //. pick these values out of the value, which should be an object
-    //. also, can have >1 value for a condition - how handle?
+    //. can have >1 value for a condition - how handle?
     //. see https://github.com/Ladder99/ladder99-ce/issues/130
     if (!value || value === 'UNAVAILABLE') {
       shdr = `${timestamp}|${key}|${value}||||${value}`
     } else {
-      const sanitized = sanitize(value) // escape pipes - gets sent as CDATA in agent output
-      const level = sanitized // eg 'WARNING' -> element 'Warning'
+      //. pick these values out of the value, which should be an object
+      //. and sanitize them
+      const level = value // eg 'WARNING' -> element 'Warning'
       const nativeCode = 'nativeCode'
       const nativeSeverity = 'nativeSeverity'
       const qualifier = 'qualifier'
-      const message = sanitized
+      const message = value
       shdr = `${timestamp}|${key}|${level}|${nativeCode}|${nativeSeverity}|${qualifier}|${message}`
     }
   } else {
@@ -194,12 +196,11 @@ function getShdr(output, value, timestamp = '') {
   return shdr
 }
 
-// sanitize a value by escaping or removing pipes
+// sanitize a string by escaping or removing pipes.
 // from cppagent readme -
 // If the value itself contains a pipe character | the pipe must be escaped using a
 // leading backslash \. In addition the entire value has to be wrapped in quotes:
 //   2009-06-15T00:00:00.000000|description|"Text with \| (pipe) character."
-function sanitize(value) {
-  //. simplest to just convert to slash for now
-  return String(value || '').replaceAll('|', '/')
+function sanitize(str) {
+  return str.replaceAll('|', '/') //. just convert pipes to a slash for now
 }
