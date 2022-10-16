@@ -18,6 +18,9 @@ const feedbackOn = process.env.L99_FEEDBACK
 
 const feedbackIntervalDefault = 2000 // ms
 
+// ignore transitions from these values
+const ignoreValuesDefault = ['NONE', 'UNAVAILABLE']
+
 export class AdapterDriver {
   //
   // setup is the parsed setup.yaml tree
@@ -43,6 +46,7 @@ export class AdapterDriver {
     this.command = feedback.command || {} // { topic, payload, values } for commands
     this.payload = { ...this.command.payload, address: this.source.address } // eg { address, value, unitid, quantity, fc }
     this.values = this.command.values || [] // eg [5392, 0] the two values to send with commands
+    this.ignoreValues = feedback.ignoreValues ?? ignoreValuesDefault // eg ['NONE', 'UNAVAILABLE']
 
     // wait params
     this.wait = feedback.wait || {} // { topic, payload } topic and payload filter to wait on
@@ -62,7 +66,8 @@ export class AdapterDriver {
     // (unless just starting up, or changing from NONE)
     const newValue = this.cache.get(this.dataitem) // eg 'm1-job'
     this.oldValue = this.oldValue ?? newValue // this will avoid firing all this off if just starting up, when oldValue=null
-    if (newValue !== this.oldValue && this.oldValue !== 'NONE') {
+    // if (newValue !== this.oldValue && this.oldValue !== 'NONE') {
+    if (newValue !== this.oldValue && !this.ignoreValues.includes(oldValue)) {
       console.log(this.me, `value changed from ${this.oldValue} to ${newValue}`)
 
       // send command, wait for response, send second command
