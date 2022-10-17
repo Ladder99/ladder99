@@ -26,6 +26,9 @@
 
 # note: can just specify the key - value will be inferred to be <key>.
 
+#. wait, the only outputs in the jobboss xml are avail and cond.
+#. job, start, complete are part of each device, not jobboss.
+
 outputs:
   - key: avail
     value: <availability>

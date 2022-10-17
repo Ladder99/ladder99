@@ -52,7 +52,8 @@ export class Jobs {
           // eg reset the part count by sending a message to the device
 
           // send shdr to agent IF cache value changed
-          // note: this key corresponds to the path 'processes/job/process_aggregate_id-order_number'
+          // note: this key corresponds to the path:
+          // 'processes/job/process_aggregate_id-order_number'
           this.cache.set(`${device.id}-job`, job)
 
           // if job changed, record time completed
@@ -63,7 +64,8 @@ export class Jobs {
           if (job !== oldJob && oldJob !== 'NONE') {
             console.log(`JobBoss jobs ${device.name} - new job`, job)
             const now = new Date().toISOString()
-            // this key corresponds to the path 'processes/job/process_time-complete'
+            // this key corresponds to the path:
+            // 'processes/job/process_time-complete'
             this.cache.set(`${device.id}-jcomplete`, now)
             this.lastJobs[device.id] = job
           }
