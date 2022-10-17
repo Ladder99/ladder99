@@ -67,7 +67,10 @@ export class AdapterDriver {
     const newValue = this.cache.get(this.dataitem) // eg 'm1-job'
     this.oldValue = this.oldValue ?? newValue // this will avoid firing all this off if just starting up, when oldValue=null
     // if (newValue !== this.oldValue && this.oldValue !== 'NONE') {
-    if (newValue !== this.oldValue && !this.ignoreValues.includes(oldValue)) {
+    if (
+      newValue !== this.oldValue &&
+      !this.ignoreValues.includes(this.oldValue)
+    ) {
       console.log(this.me, `value changed from ${this.oldValue} to ${newValue}`)
 
       // send command, wait for response, send second command
