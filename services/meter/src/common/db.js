@@ -211,7 +211,7 @@ export class Db {
   //. use get_last_value db fn if possible, for speed
   //. note: device here is device.name!
   async getLastRecord(device, path, start) {
-    return await getLastRecord2('history_float', device, path, start)
+    return await this.getLastRecord2('history_float', device, path, start)
   }
   //. same as above but add table param
   async getLastRecord2(table, device, path, start) {
@@ -259,7 +259,7 @@ export class Db {
   // includes previous value before start time.
   //. pass table also, ie history_float vs history_text
   async getHistory(device, path, start, stop) {
-    return await getHistory2('history_float', device, path, start, stop)
+    return await this.getHistory2('history_float', device, path, start, stop)
   }
   //. same as above but add table param
   async getHistory2(table, device, path, start, stop) {
