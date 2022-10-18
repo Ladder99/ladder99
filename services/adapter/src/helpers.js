@@ -1,9 +1,11 @@
 // helper fns for different drivers
 
-// import { v4 as uuid } from 'uuid' // see https://github.com/uuidjs/uuid - may be used by inputs/outputs yaml js
+//. move these to drivers folder?
+// a lot of these are used by the mqtt driver for processing input calcs
+
 import * as lib from './common/lib.js'
 
-//. is this used? by the eval fns? should it not be instantiated in a class for each device?
+//. used by the eval fns? check if still needed
 let keyvalues = {}
 
 // load the plugin specified by the drivers folder and driver name.

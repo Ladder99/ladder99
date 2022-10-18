@@ -4,18 +4,16 @@
 // this is an intermediary between the raw device data and the shdr output.
 
 // when a key-item value is set, the cache will perform any associated output
-// calculations and send shdr output to attached tcp socket, IF value changed.
+// calculations and send shdr output to attached tcp socket, IF the value changed.
 
 // see setupSource.js and helpers.js for code that sets up the reactive cache calculations.
-//. bring that code in here
-
-//. eg ___
+//. bring relevant code in here
 
 export class Cache {
   //
   constructor() {
     this._map = new Map() // key-item pairs //. why not just {} ?
-    this._mapKeyToOutputs = {} // list of outputs assoc with each key, //. eg ?
+    this._mapKeyToOutputs = {} // list of outputs assoc with each key, eg {} //. ?
   }
 
   // addOutputs
@@ -29,10 +27,8 @@ export class Cache {
   // eg { 'ac1-power_fault': [{ key:'ac1-power_condition', value: (fn), ...}], ... }
   addOutputs(outputs) {
     if (outputs) {
-      console.log(
-        `Cache addOutputs`,
-        outputs.map(o => o.key)
-      )
+      const outputKeys = outputs.map(o => o.key).join(',')
+      console.log(`Cache addOutputs`, outputKeys)
       for (const output of outputs) {
         // console.log(output.key, output.dependsOn)
         // output.socket = socket // attach tcp socket to each output also
@@ -52,10 +48,8 @@ export class Cache {
   setSocket(outputs, socket) {
     // can ignore if no outputs
     if (outputs) {
-      console.log(
-        `Cache setSocket`,
-        outputs.map(o => o.key)
-      )
+      const outputKeys = outputs.map(o => o.key).join(',')
+      console.log(`Cache setSocket`, outputKeys)
       if (socket) {
         console.log(`Cache send last known data values to agent...`)
       }
@@ -86,7 +80,8 @@ export class Cache {
     // const s = typeof value === 'string' ? `"${value.slice(0, 99)}..."` : value
     // console.log(`Cache - set ${key}: ${s}`)
     // }
-    // //. don't allow undefined as a value? not in vocabulary of mtc
+
+    // //. don't allow undefined as a value? not in vocabulary of mtc. translate to UNAVAILABLE?
     // if (value === undefined) return
 
     //. what if want to check if a value changed?
@@ -94,8 +89,8 @@ export class Cache {
 
     // update the cache value
     this._map.set(key, value)
-    // get list of outputs associated with this key
-    // eg ['ac1-power_condition']
+
+    // get list of outputs associated with this key, eg ['ac1-power_condition']
     const outputs = this._mapKeyToOutputs[key]
     if (outputs && outputs.length > 0) {
       // calculate outputs and send changed shdr values to tcp
@@ -145,7 +140,7 @@ export class Cache {
 
 // calculate value for the given cache output (can use other cache keyvalues)
 function getValue(cache, output) {
-  //. rename .value to .getValue or .valueFn
+  //. rename output.value to .getValue or .valueFn
   const { value: valueFn } = output
   const value = valueFn(cache) // do calculation
   return value
@@ -157,6 +152,7 @@ function getValue(cache, output) {
 // timestamp is an optional STRING that goes at the front of the shdr.
 // can save some time/space by not including it.
 // eg SHDR could be '|m1-avail|AVAILABLE'
+//. bring in DATA_SET handler and sanitizer from drivers/micro.js
 function getShdr(output, value, timestamp = '') {
   if (typeof value === 'string') {
     value = sanitize(value)

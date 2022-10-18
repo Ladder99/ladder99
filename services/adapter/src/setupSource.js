@@ -32,6 +32,7 @@ export async function setupSource({
   // import driver plugin, eg micro.js or mqttSubscriber.js.
   // this instantiates a new instance of the AdapterDriver class.
   // but doesn't start the plugin! that's at the end of this code.
+  //. allow custom drivers per setup also - eg include drivers in setup-oxbox folder
   const plugin = await getPlugin(params.driversFolder, driver)
   source.plugin = plugin // save to source so on agent connection can tell it socket
 
@@ -40,6 +41,7 @@ export async function setupSource({
   if (moduleName) {
     // get input handlers, if any for this source
     // these are interpreted by the driver
+    //. maybe should let the driver read these in
     const pathInputs = `${params.modulesFolder}/${moduleName}/inputs.yaml`
     console.log(`Adapter reading ${pathInputs}...`)
     module.inputs = lib.importYaml(pathInputs) || {}

@@ -55,12 +55,6 @@ async function start(params) {
   for (const device of devices) {
     setupDevice({ setup, params, device, cache, client, devices, providers })
   }
-
-  // // start the shared providers
-  // for (const provider of Object.values(providers)) {
-  //   console.log(`Adapter start shared provider`, provider)
-  //   provider.plugin?.start({ provider }) // start driver - eg this connects to the mqtt broker
-  // }
 }
 
 start(params)
