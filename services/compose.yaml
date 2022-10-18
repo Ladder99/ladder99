@@ -703,6 +703,8 @@ services:
       - simulator
     # ports:
     #   - 4334:4334
+    # volumes:
+    #   - ../$SETUP/volumes/simulator/node:/home/node
     restart: unless-stopped
     networks:
       - ladder99

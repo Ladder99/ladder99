@@ -31,6 +31,10 @@ WORKDIR /usr/app
 ENV NODE_ENV production
 COPY package.json /usr/app/
 
+# nowork
+# RUN apt-get install libssl-dev
+RUN apt-get install -y openssl=1.1.0l-1~deb9u6
+
 # install javascript dependencies
 
 # first increase the timeout from 30 secs to 2mins to handle slow connections.

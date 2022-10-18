@@ -7,7 +7,8 @@
   },
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "Apache2.0",
+  "comment": "v2.28 and below don't require ssl certificates",
   "dependencies": {
-    "node-opcua": "^2.36.0"
+    "node-opcua": "^2.81.0"
   }
 }
