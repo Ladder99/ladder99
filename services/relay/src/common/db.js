@@ -34,7 +34,8 @@ export class Db {
       } catch (error) {
         console.log(`db error ${error.code} - will sleep before retrying...`)
         console.log('db', error.message)
-        await new Promise(resolve => setTimeout(resolve, 4000)) // sleep 4secs
+        console.log('db is password correct? check .env file')
+        await new Promise(resolve => setTimeout(resolve, 5000)) // sleep 5secs
       }
     } while (!client)
     this.client = client
