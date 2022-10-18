@@ -118,7 +118,7 @@ done
 # base cmd
 # note: -p specifies project name, as shown in docker management consoles - 
 # otherwise it uses the parent folder name (ie 'services').
-BASE_CMD="docker-compose -p ladder99 $ARGS $PROFILE_FLAGS"
+BASE_CMD="docker-compose --project-name ladder99 $ARGS $PROFILE_FLAGS"
 
 # pull cmd
 PULL_CMD="$BASE_CMD pull"
@@ -139,7 +139,7 @@ fi
 
 FULL_CMD="export SETUP=$SETUP && 
 $CMD"
-echo $FULL_CMD
+echo "$FULL_CMD"
 bash -c "$FULL_CMD"
 
 echo
