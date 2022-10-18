@@ -14,32 +14,33 @@ const {
   // ClientMonitoredItem,
 } = pkg
 
-//. convert to class
+export class AdapterDriver {
+  // initialize the client plugin
+  async init({ device, cache, source }) {
+    console.log('OPC init', device.path)
 
-// initialize the client plugin
-export async function init({ url, cache, device }) {
-  console.log('OPC init', device.id)
+    console.log(`OPC create client...`)
+    const connectionStrategy = {
+      initialDelay: 1000,
+      maxRetry: 10, // default is infinite
+    }
+    const client = OPCUAClient.create({
+      applicationName: 'MyClient',
+      connectionStrategy: connectionStrategy,
+      securityMode: MessageSecurityMode.None,
+      securityPolicy: SecurityPolicy.None,
+      endpoint_must_exist: false,
+    })
+    console.log(`OPC client`, client)
 
-  console.log(`OPC create client...`)
-  const connectionStrategy = {
-    initialDelay: 1000,
-    maxRetry: 1, // default is infinite
-  }
-  const client = OPCUAClient.create({
-    applicationName: 'MyClient',
-    connectionStrategy: connectionStrategy,
-    securityMode: MessageSecurityMode.None,
-    securityPolicy: SecurityPolicy.None,
-    endpoint_must_exist: false,
-  })
-  // const endpointUrl = "opc.tcp://opcuademo.sterfive.com:26543";
-  // const endpointUrl = 'opc.tcp://' + os.hostname() + ':4334/UA/LittleServer'
-  // const endpointUrl = 'opc.tcp://simulator-opc:4334/UA/LittleServer'
-  // const endpointUrl = url
+    // const endpointUrl = "opc.tcp://opcuademo.sterfive.com:26543";
+    // const endpointUrl = 'opc.tcp://' + os.hostname() + ':4334/UA/LittleServer'
+    // const endpointUrl = 'opc.tcp://simulator-opc:4334/UA/LittleServer'
+    // const endpointUrl = url
+    const url = source?.connect?.url || 'opc.tcp://localhost:4840'
 
-  try {
-    //. better to check if up every n secs
-    await timeout(10000) // let server get started (slowish)
+    //. check for connection every n secs
+    // await timeout(2000) // let server get started (slowish)
 
     console.log(`OPC connecting to server at ${url}...`)
     await client.connect(url)
@@ -117,8 +118,6 @@ export async function init({ url, cache, device }) {
     await client.disconnect()
 
     console.log('OPC done')
-  } catch (err) {
-    console.log('OPC an error has occured:', err)
   }
 }
 
