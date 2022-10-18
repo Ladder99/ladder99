@@ -149,7 +149,7 @@ function getValue(cache, output) {
 // calculate SHDR using the given output object.
 // cache is the Cache object.
 // output has { key, category, type, representation, value, shdr, ... }.
-// timestamp is an optional STRING that goes at the front of the shdr.
+// timestamp is an optional ISO datetime STRING that goes at the front of the shdr.
 // can save some time/space by not including it.
 // eg SHDR could be '|m1-avail|AVAILABLE'
 //. bring in DATA_SET handler and sanitizer from drivers/micro.js
@@ -194,8 +194,8 @@ function getShdr(output, value, timestamp = '') {
 
 // sanitize a string by escaping or removing pipes.
 // from cppagent readme -
-// If the value itself contains a pipe character | the pipe must be escaped using a
-// leading backslash \. In addition the entire value has to be wrapped in quotes:
+//   If the value itself contains a pipe character | the pipe must be escaped using a
+//   leading backslash \. In addition the entire value has to be wrapped in quotes:
 //   2009-06-15T00:00:00.000000|description|"Text with \| (pipe) character."
 function sanitize(str) {
   return str.replaceAll('|', '/') //. just convert pipes to a slash for now
