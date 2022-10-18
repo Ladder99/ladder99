@@ -661,6 +661,8 @@ services:
   # ---------------------------------------------------------------------------
   # simulation
   # ---------------------------------------------------------------------------
+  # the built-in mtconnect agent simulation
+  # cf simulator service
   simulation:
     container_name: simulation
     #. use mtconnect/agent once mtconnect publishes theirs to docker hub
@@ -682,6 +684,25 @@ services:
     #   # - /etc/timezone:/etc/timezone:ro
     ports:
       - 5001:5000
+    restart: unless-stopped
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '20m'
+
+  # ---------------------------------------------------------------------------
+  # simulator
+  # ---------------------------------------------------------------------------
+  # simulate a device, eg an opc-ua server
+  # cf simulation service
+  simulator:
+    container_name: simulator
+    build: ./simulator
+    profiles:
+      - simulator
+    # ports:
+    #   - 4334:4334
     restart: unless-stopped
     networks:
       - ladder99
