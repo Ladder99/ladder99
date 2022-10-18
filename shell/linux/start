@@ -133,11 +133,14 @@ RUN_CMD="$BASE_CMD up --build $MODE"
 if [ "$OFFLINE" = "true" ]; then
     CMD="$RUN_CMD"
 else
-    CMD="$PULL_CMD && $RUN_CMD"
+    CMD="$PULL_CMD && 
+$RUN_CMD"
 fi
 
-echo $CMD
-bash -c "export SETUP=$SETUP && $CMD"
+FULL_CMD="export SETUP=$SETUP && 
+$CMD"
+echo $FULL_CMD
+bash -c "$FULL_CMD"
 
 echo
 echo Run \'./l99 list\' to check status of services.
