@@ -134,10 +134,10 @@ export class AdapterDriver {
     }
     payload = payload.toString() // bytes to string
 
-    //.
-    // if (topic === 'controller') {
-    // console.log(this.me, `msg ${topic}: ${payload.slice(0, 140)}`)
-    // }
+    //. for debugging
+    if (topic === 'controller' || topic === 'l99/B01000/evt/io') {
+      console.log(this.me, `msg ${topic}: ${payload.slice(0, 255)}`)
+    }
 
     // if payload is plain text, set handler.text true in inputs.yaml - else parse as json
     if (!handler.text) payload = JSON.parse(payload) // string to js object

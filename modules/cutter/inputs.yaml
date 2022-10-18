@@ -75,7 +75,8 @@ handlers:
     # 'key' is mapped to a cache id, eg 'connection' => 's1-connection'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
-      dxm: $.a8===128 # 128 means node is connected to DXM (which is connected to 001)
+      # dxm: $.a8===128 # 128 means node is connected to DXM (which is connected to 001)
+      dxm: $.a8!==undefined && $.a8===128 # 128 means node is connected to DXM (which is connected to 001)
       part_count: $.a5
 
   # ----------------------------------------------------------------------------
