@@ -4,16 +4,18 @@
 # see other client repos for ideas for adding information to services.
 # typically, would add 'profiles: - base' to each service used.
 # that way, we know what is needed, and can start them all with
-#   ./l99 start <setup> base
+#   ./l99 start <setup>
+# which runs the 'base' profile by default.
 
 # version must be a string - need 3.8 for profiles
 version: '3.8'
 
 services:
   adapter:
+    # note: must specify build OR image here.
+    build: ./adapter # use ladder99/services/adapter/Dockerfile
     profiles:
       - base
-    build: ./adapter # use Dockerfile in ladder99/services/adapter
   agent:
     profiles:
       - base
@@ -36,9 +38,10 @@ services:
     profiles:
       - base
   relay:
+    # note: must specify build OR image here.
+    build: ./relay # use ladder99/services/relay/Dockerfile
     profiles:
       - base
-    build: ./relay # use Dockerfile in ladder99/services/relay
   simulation:
     profiles:
       - base
