@@ -29,7 +29,7 @@ export class AdapterDriver {
       connectionStrategy: connectionStrategy,
       securityMode: MessageSecurityMode.None,
       securityPolicy: SecurityPolicy.None,
-      endpoint_must_exist: false,
+      endpointMustExist: false,
     })
     console.log(`OPC client`, client)
 
