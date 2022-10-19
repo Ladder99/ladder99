@@ -63,36 +63,38 @@ export class AdapterDriver {
 
   poll() {
     // check if dataitem value changed, then send reset commands
-    // (unless just starting up, or changing from NONE)
-    const newValue = this.cache.get(this.dataitem) // eg 'm1-job'
+    const newValue = this.cache.get(this.dataitem) // eg 'm1-job' -> '123456'
     this.oldValue = this.oldValue ?? newValue // this will avoid firing all this off if just starting up, when oldValue=null
-    // if (newValue !== this.oldValue && this.oldValue !== 'NONE') {
-    if (
-      newValue !== this.oldValue &&
-      !this.ignoreValues.includes(this.oldValue)
-    ) {
+    if (newValue !== this.oldValue) {
       console.log(this.me, `value changed from ${this.oldValue} to ${newValue}`)
 
-      // send command, wait for response, send second command
+      // ignore transitions from NONE, UNAVAILABLE
+      if (!this.ignoreValues.includes(this.oldValue)) {
+        // send command, wait for response, send second command
 
-      // subscribe to wait topic
-      // will subscribe to mqttProvider with dispatch based on payload.id and waitAttribute value
-      // sendLastMessage false so doesn't call the callback if topic already registered
-      this.provider.subscribe(
-        this.waitTopic,
-        this.waitCallback,
-        this.waitSelector,
-        false
-      )
+        // subscribe to wait topic
+        // will subscribe to mqttProvider with dispatch based on payload.id and waitAttribute value
+        // sendLastMessage false so doesn't call the callback if topic already registered
+        // q. what if a response never comes? timeout after a minute?
+        // well, it's okay - we check for duplicate subscriptions, so they won't clog the system.
+        this.provider.subscribe(
+          this.waitTopic,
+          this.waitCallback,
+          this.waitSelector,
+          false
+        )
 
-      // publish to command topic
-      const commandPayload = { ...this.payload, value: this.values[0] } // { address, value, unitid, quantity, fc }
-      console.log(this.me, `publish`, this.command.topic, commandPayload)
-      this.provider.publish(this.command.topic, JSON.stringify(commandPayload)) // bug: had JSON.toString(), which makes '[object Object]'
+        // publish to command topic
+        const commandPayload = { ...this.payload, value: this.values[0] } // { address, value, unitid, quantity, fc }
+        console.log(this.me, `publish`, this.command.topic, commandPayload)
+        this.provider.publish(
+          this.command.topic,
+          JSON.stringify(commandPayload)
+        ) // bug: had JSON.toString(), which makes '[object Object]'
+      }
+
+      // save value
       this.oldValue = newValue
-
-      // q. what if a response never comes? timeout after a minute?
-      // well, it's okay - we check for duplicate subscriptions, so they won't clog the system.
     }
   }
 
