@@ -90,7 +90,9 @@ export class Cache {
   // options is { timestamp, quiet }
   // timestamp is an optional STRING that is used in the SHDR
   //. explain distinction between value param and value variable below, with examples
-  //. instead of fixed code here for output, could have custom code - set other cache values, etc
+  //. instead of fixed code here for output, could have custom code -
+  // set other cache values, send partcount reset commands, etc.
+  // ie you could attach multiple handlers to a cache key.
   set(key, value, options = {}) {
     // if (!options.quiet) {
     // const s = typeof value === 'string' ? `"${value.slice(0, 99)}..."` : value
