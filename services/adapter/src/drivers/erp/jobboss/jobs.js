@@ -64,6 +64,8 @@ export class Jobs {
         // note: this key corresponds to path 'processes/job/process_aggregate_id-order_number'
         //. what if could pass an optional code block here to run if cache value changed?
         // eg reset the part count by sending a message to the device
+        //. or, attach some code to that cache value? ie you'd have some code that would output shdr,
+        // and some code that would set the jcomplete time on change.
         this.cache.set(`${device.id}-job`, job)
 
         // initialize last job if not set
