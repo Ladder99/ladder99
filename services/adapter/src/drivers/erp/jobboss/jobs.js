@@ -48,32 +48,34 @@ export class Jobs {
             Actual_Start desc
         `
         // pool error handler should catch any errors, but add try/catch in case not
+        let job
         try {
           const result = await this.pool.query(sql)
-
           // 'Job' must match case of sql. use NONE to indicate no job
-          const job = result?.recordset[0]?.Job || 'NONE'
-
-          // send shdr to agent IF cache value changed
-          // note: this key corresponds to path 'processes/job/process_aggregate_id-order_number'
-          //. what if could pass an optional code block here to run if cache value changed?
-          // eg reset the part count by sending a message to the device
-          this.cache.set(`${device.id}-job`, job)
-
-          // if job changed, record time completed
-          //. could also query db for estqty,runqty here?
-          this.lastJobs[device.id] = this.lastJobs[device.id] ?? job // initialize if not set
-          const oldJob = this.lastJobs[device.id]
-          if (job !== oldJob && oldJob !== 'NONE') {
-            console.log(`JobBoss jobs ${device.name} - new job`, job)
-            const now = new Date().toISOString()
-            // this key corresponds to path 'processes/job/process_time-complete'
-            this.cache.set(`${device.id}-jcomplete`, now)
-          }
-          this.lastJobs[device.id] = job
+          job = result?.recordset[0]?.Job || 'NONE'
         } catch (error) {
           console.log(`JobBoss jobs ${device.name} error`, error.message)
         }
+
+        // send shdr to agent IF cache value changed
+        // note: this key corresponds to path 'processes/job/process_aggregate_id-order_number'
+        //. what if could pass an optional code block here to run if cache value changed?
+        // eg reset the part count by sending a message to the device
+        this.cache.set(`${device.id}-job`, job)
+
+        // initialize last job if not set
+        this.lastJobs[device.id] = this.lastJobs[device.id] ?? job
+
+        // if job changed, record time completed
+        //. could also query db for estqty,runqty here?
+        const oldJob = this.lastJobs[device.id]
+        if (job !== oldJob && oldJob !== 'NONE') {
+          console.log(`JobBoss jobs ${device.name} - new job`, job)
+          const now = new Date().toISOString()
+          // this key corresponds to path 'processes/job/process_time-complete'
+          this.cache.set(`${device.id}-jcomplete`, now)
+        }
+        this.lastJobs[device.id] = job // bug: had this inside the if block, so was never set
       }
     }
   }
