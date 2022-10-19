@@ -51,10 +51,13 @@ export class Jobs {
         let job
         try {
           const result = await this.pool.query(sql)
-          // 'Job' must match case of sql. use NONE to indicate no job
+          // 'Job' must match case of sql
+          // use NONE to indicate no job
           job = result?.recordset[0]?.Job || 'NONE'
         } catch (error) {
           console.log(`JobBoss jobs ${device.name} error`, error.message)
+          console.log(`JobBoss jobs sql`, sql)
+          continue
         }
 
         // send shdr to agent IF cache value changed
@@ -66,7 +69,8 @@ export class Jobs {
         // initialize last job if not set
         this.lastJobs[device.id] = this.lastJobs[device.id] ?? job
 
-        // if job changed, record time completed
+        // if job changed, and not transitioning from NONE, record time completed.
+        // if a job changes TO NONE though, it will be recorded.
         //. could also query db for estqty,runqty here?
         const oldJob = this.lastJobs[device.id]
         if (job !== oldJob && oldJob !== 'NONE') {
@@ -75,7 +79,8 @@ export class Jobs {
           // this key corresponds to path 'processes/job/process_time-complete'
           this.cache.set(`${device.id}-jcomplete`, now)
         }
-        this.lastJobs[device.id] = job // bug: had this inside the if block, so was never set
+        // bug: had this inside the if block, so was never set, because of oldJob!=='NONE'
+        this.lastJobs[device.id] = job
       }
     }
   }
