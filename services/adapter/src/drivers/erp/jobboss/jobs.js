@@ -1,5 +1,10 @@
 // get jobnum from jobboss
-// see also feedback.js driver, which checks jobnum changes and resets partcount.
+
+// if jobnum changes, writes jcomplete timestamp to database.
+// grafana can then count the number of jcomplete occurrences in a timerange
+// to get total jobcount.
+
+// see also feedback.js driver, which checks jobnum changes and resets partcounts.
 
 const pollInterval = 5000 // ms - ie poll for job num change every 5 secs
 
@@ -29,6 +34,7 @@ export class Jobs {
         // get the most recently started job for this workcenter/device.
         // could also use where work_center='MARUMATSU', but not guaranteed unique.
         // status is C=complete, S=started?, O=ongoing?
+        // make sure status is not complete, ie C.
         const sql = `
           select top 1
             Job --, Est_Required_Qty, Act_Run_Qty
@@ -37,7 +43,7 @@ export class Jobs {
           where
             WorkCenter_OID = '${jobbossId}'
             and Status <> 'C'
-            and Actual_Start is not null -- ie job has started
+            and Actual_Start is not null
           order by
             Actual_Start desc
         `
@@ -48,27 +54,23 @@ export class Jobs {
           // 'Job' must match case of sql. use NONE to indicate no job
           const job = result?.recordset[0]?.Job || 'NONE'
 
+          // send shdr to agent IF cache value changed
+          // note: this key corresponds to path 'processes/job/process_aggregate_id-order_number'
           //. what if could pass an optional code block here to run if cache value changed?
           // eg reset the part count by sending a message to the device
-
-          // send shdr to agent IF cache value changed
-          // note: this key corresponds to the path:
-          // 'processes/job/process_aggregate_id-order_number'
           this.cache.set(`${device.id}-job`, job)
 
           // if job changed, record time completed
-          //. could also query db for estqty,runqty also?
-          //. but this is recording a time that's not connected to a jobnum - what do?
+          //. could also query db for estqty,runqty here?
           this.lastJobs[device.id] = this.lastJobs[device.id] ?? job // initialize if not set
           const oldJob = this.lastJobs[device.id]
           if (job !== oldJob && oldJob !== 'NONE') {
             console.log(`JobBoss jobs ${device.name} - new job`, job)
             const now = new Date().toISOString()
-            // this key corresponds to the path:
-            // 'processes/job/process_time-complete'
+            // this key corresponds to path 'processes/job/process_time-complete'
             this.cache.set(`${device.id}-jcomplete`, now)
-            this.lastJobs[device.id] = job
           }
+          this.lastJobs[device.id] = job
         } catch (error) {
           console.log(`JobBoss jobs ${device.name} error`, error.message)
         }
