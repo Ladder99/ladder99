@@ -73,16 +73,17 @@ export class Jobs {
 
         // if job changed, and not transitioning from NONE, record time completed.
         // if a job changes TO NONE though, it will be recorded.
-        //. could also query db for estqty,runqty here?
+        //. could also query db for estqty,runqty here and update those?
         const oldJob = this.lastJobs[device.id]
-        if (job !== oldJob && oldJob !== 'NONE') {
-          console.log(`JobBoss jobs ${device.name} - new job`, job)
-          const now = new Date().toISOString()
-          // this key corresponds to path 'processes/job/process_time-complete'
-          this.cache.set(`${device.id}-jcomplete`, now)
+        if (job !== oldJob) {
+          console.log(`JobBoss jobs ${device.name} job ${oldJob} to ${job}`)
+          if (oldJob !== 'NONE') {
+            const now = new Date().toISOString()
+            // this key corresponds to path 'processes/job/process_time-complete'
+            this.cache.set(`${device.id}-jcomplete`, now)
+          }
+          this.lastJobs[device.id] = job // bug: had this inside the oldJob !== 'NONE' block, so didn't update
         }
-        // bug: had this inside the if block, so was never set, because of oldJob!=='NONE'
-        this.lastJobs[device.id] = job
       }
     }
   }
