@@ -57,12 +57,28 @@ export class Cache {
         output.socket = socket
         if (output.socket) {
           // send last known data value to agent
-          const shdr = getShdr(output, output.lastValue || 'UNAVAILABLE')
-          // console.log(`Cache - send ${shdr.slice(0, 60)}...`)
-          try {
-            output.socket.write(shdr + '\n')
-          } catch (error) {
-            console.log(error)
+
+          // //. send unavailable if no value saved yet?
+          // // const shdr = getShdr(output, output.lastValue || 'UNAVAILABLE')
+          // const shdr = getShdr(output, output.lastValue ?? 'UNAVAILABLE')
+          // console.log(`Cache send "${truncate(shdr)}"`)
+          // try {
+          //   output.socket.write(shdr + '\n')
+          // } catch (error) {
+          //   console.log(error)
+          // }
+
+          //. only send shdr if lastValue exists?
+          // i think this makes more sense.
+          // next time the value is updated, it'll send the shdr.
+          if (output.lastValue !== undefined) {
+            const shdr = getShdr(output, output.lastValue)
+            console.log(`Cache send "${truncate(shdr)}"`)
+            try {
+              output.socket.write(shdr + '\n')
+            } catch (error) {
+              console.log(error)
+            }
           }
         }
       }
@@ -104,7 +120,7 @@ export class Cache {
           if (output.socket) {
             const shdr = getShdr(output, value, options.timestamp) // timestamp can be ''
             if (!options.quiet) {
-              console.log(`Cache value changed, send "${shdr.slice(0, 60)}..."`)
+              console.log(`Cache value changed, send "${truncate(shdr)}"`)
             }
             try {
               output.socket.write(shdr + '\n')
@@ -112,7 +128,9 @@ export class Cache {
               console.log(error)
             }
           } else {
-            console.log(`Cache no socket to write to`)
+            console.log(
+              `Cache value changed, but no socket to write to yet - saved for later.`
+            )
           }
         }
       }
@@ -192,6 +210,8 @@ function getShdr(output, value, timestamp = '') {
   return shdr
 }
 
+// helpers
+
 // sanitize a string by escaping or removing pipes.
 // from cppagent readme -
 //   If the value itself contains a pipe character | the pipe must be escaped using a
@@ -199,4 +219,9 @@ function getShdr(output, value, timestamp = '') {
 //   2009-06-15T00:00:00.000000|description|"Text with \| (pipe) character."
 function sanitize(str) {
   return str.replaceAll('|', '/') //. just convert pipes to a slash for now
+}
+
+// truncate a string to some length, adding ellipsis if truncated
+function truncate(str, len = 60) {
+  return str.length > len ? str.slice(0, len) + '...' : str
 }
