@@ -93,7 +93,7 @@ export class Schedule {
   // poll the jobboss schedule information for current day,
   // and write to the cache
   async poll() {
-    console.log(`Jobboss schedule - poll`)
+    // console.log(`Jobboss schedule - poll`)
 
     // since the server is set to Z/GMT time, need to 'trick' it to thinking it's 5 or 6 hrs earlier
     // const datetime = new Date(
@@ -104,15 +104,20 @@ export class Schedule {
     // ie instead of hardcoding it to -5 hours or something.
     // there's probably a better way to do this with luxon, but this is the simplest change.
     const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
-    console.log(`JobBoss schedule - offsetMinutes`, offsetMinutes)
+    // console.log(`JobBoss schedule - offsetMinutes`, offsetMinutes)
     const datetime = new Date(new Date().getTime() + offsetMinutes * 60 * 1000) // ms
-    console.log(`JobBoss schedule - datetime`, datetime)
+    // console.log(`JobBoss schedule - datetime`, datetime)
 
     for (let device of this.devices) {
       const jobbossId = device.custom?.jobbossId
       if (jobbossId) {
         const schedule = await this.getSchedule(device, datetime) // get { start, stop }
-        console.log('JobBoss schedule', schedule)
+        console.log(
+          'JobBoss schedule',
+          device.name,
+          schedule.start,
+          schedule.stop
+        )
         // write start/stop times to cache for this device -
         // start/stop are STRINGS like 'UNAVAILABLE', or 'HOLIDAY', or
         // '2022-01-23T05:00:00' with NO Z!
@@ -128,7 +133,7 @@ export class Schedule {
   // '2022-01-23 05:00:00' (with no Z! it's local time), or 'HOLIDAY',
   // or 'UNAVAILABLE'.
   async getSchedule(device, datetime) {
-    console.log(`JobBoss schedule - get for`, device.name, datetime)
+    // console.log(`JobBoss schedule - get for`, device.name, datetime)
 
     const jobbossId = device.custom?.jobbossId // eg '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' for Marumatsu
     const sequence = datetime.getDay() // day of week with 0=sunday, 1=monday. this works even if Z time is next day.
@@ -171,13 +176,13 @@ export class Schedule {
         // convert to strings
         start = getTimeAsLocalDateTimeString(start, datetime, dateString) // no Z!
         stop = getTimeAsLocalDateTimeString(stop, datetime, dateString)
-        console.log(`JobBoss schedule - start, stop`, start, stop)
+        // console.log(`JobBoss schedule - start, stop`, start, stop)
       } else {
         // console.log(`JobBoss schedule - no results`)
       }
     } else if (result1.recordset[0].Is_Work_Day) {
       //
-      console.log(`JobBoss schedule - work day override - get schedule...`)
+      // console.log(`JobBoss schedule - work day override - get schedule...`)
       // if isworkday then lookup hours in shift_day table -
       //   get shift_id, lookup in shift_day table with dayofweek for sequencenum
       //   get start/end times from record
@@ -195,7 +200,7 @@ export class Schedule {
         // convert to strings
         start = getTimeAsLocalDateTimeString(start, datetime, dateString) // no Z!
         stop = getTimeAsLocalDateTimeString(stop, datetime, dateString)
-        console.log(`JobBoss schedule - start, stop`, start, stop)
+        // console.log(`JobBoss schedule - start, stop`, start, stop)
       } else {
         // console.log(`JobBoss schedule - no results`)
       }
@@ -203,7 +208,7 @@ export class Schedule {
       //
       // if isworkday=0 then not a workday - might have 2 records, one for each shift
       //. for now just say the whole day is a holiday - no start/end times
-      console.log(`JobBoss schedule - day is holiday (isworkday=0)...`)
+      // console.log(`JobBoss schedule - day is holiday (isworkday=0)...`)
       start = 'HOLIDAY'
       stop = 'HOLIDAY'
     }
