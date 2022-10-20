@@ -1,12 +1,18 @@
 #!/bin/bash
 
+#. get service version from package.json - use jq to extract?
+
 usage="
-Usage: ./l99 build SERVICE TAG
+Usage: ./l99 build SERVICE VERSION
 
 Build a Docker image and push up to Docker hub.
 
 SERVICE   service name - adapter, meter, relay, etc.
-TAG       tag version - e.g. 0.8.0-arm, latest, etc.
+VERSION   service version - e.g. 0.8.1-arm, latest, etc.
+
+Might need to login to Docker Hub first, in order to push image there -
+
+    docker login --username ladder99
 
 Example
     ./l99 build adapter 0.8.0-arm
@@ -20,16 +26,14 @@ if [ $# -eq 0 ]; then
 fi
 
 SERVICE=$1
-TAG=$2
-USER=ladder99
-
-# note: turned off login/logout as need to be logged into docker hub to
-# pull images as when running 'l99 start' cmd.
+VERSION=$2
+USERNAME=ladder99
+TAG=$USERNAME/$SERVICE:$VERSION
 
 pushd ./services/$SERVICE
-docker build --tag $USER/$SERVICE:$TAG .
-# docker login --username=$USER
-docker push $USER/$SERVICE:$TAG # push image to docker hub
-# docker logout
-docker image ls $USER/$SERVICE
+docker build --tag $TAG .
 popd 
+docker image ls $USERNAME/$SERVICE
+
+# push image to docker hub
+docker push $TAG
