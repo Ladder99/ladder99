@@ -1,9 +1,8 @@
 # docker image build instructions
 #
-# to build image,
-#   docker build --tag imagefoo .
-# to run image as a container,
-#   docker run -it --init --rm --name containerfoo imagefoo
+# ./l99 build adapter 0.8.1-arm
+#
+# keep in synch with all Dockerfiles - adapter, meter, recorder, relay.
 #
 # see https://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
 # and https://snyk.io/blog/10-best-practices-to-containerize-nodejs-web-applications-with-docker/
