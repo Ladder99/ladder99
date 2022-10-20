@@ -1,17 +1,6 @@
 # docker image build instructions
 #
-# to build image, eg
-#   export SERVICE=relay
-#   export VERSION=0.8.1-arm
-#   export TAG=ladder99/$SERVICE:$VERSION
-#   docker build --tag $TAG .
-#
-# to run image as a container,
-#   docker run -it --init --rm --name $SERVICE $TAG
-#
-# to publish to docker hub,
-#   docker login --username=ladder99 --email=yourname@mriiot.com   # and enter password
-#   docker push $TAG
+# ./l99 build relay 0.8.1-arm
 #
 # keep in synch with all Dockerfiles - adapter, meter, recorder, relay.
 #
