@@ -196,11 +196,12 @@ function getShdr(output, value, timestamp = '') {
   return shdr
 }
 
-// sanitize a string by escaping or removing pipes.
+// sanitize a string by escaping or removing pipes and newlines
 // from cppagent readme -
-// If the value itself contains a pipe character | the pipe must be escaped using a
-// leading backslash \. In addition the entire value has to be wrapped in quotes:
+//   If the value itself contains a pipe character | the pipe must be escaped using a
+//   leading backslash \. In addition the entire value has to be wrapped in quotes:
 //   2009-06-15T00:00:00.000000|description|"Text with \| (pipe) character."
+// and newlines are used to separate shdrs
 function sanitize(str) {
-  return str.replaceAll('|', '/') //. just convert pipes to a slash for now
+  return str.replaceAll('|', '/').replaceAll('\n', '_')
 }
