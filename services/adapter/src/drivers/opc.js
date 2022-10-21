@@ -51,11 +51,28 @@ export class AdapterDriver {
     //. check for connection every n secs
     // await timeout(2000) // let server get started (slowish)
 
-    console.log(`OPC connecting to server at ${url}...`)
-    await client.connect(url)
+    let connected = false
+    while (!connected) {
+      try {
+        console.log(`OPC connecting to server at ${url}...`)
+        await client.connect(url) // returns void
+        connected = true
+      } catch (e) {
+        console.log('OPC error - waiting a bit', e.message)
+        await timeout(2000)
+      }
+    }
 
-    console.log('OPC creating session...')
-    const session = await client.createSession()
+    let session = null
+    while (!session) {
+      try {
+        console.log('OPC creating session...')
+        session = await client.createSession()
+      } catch (e) {
+        console.log('OPC error - waiting a bit', e.message)
+        await timeout(2000)
+      }
+    }
 
     // connected - set avail
     cache.set('opc-avail', 'AVAILABLE')
