@@ -27,6 +27,7 @@ services:
     profiles:
       - adapter
     # try this to access kepware opcua on windows using host.docker.internal to reach localhost?
+    # nowork?
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:

@@ -40,18 +40,16 @@ export class AdapterDriver {
       securityPolicy: SecurityPolicy.None,
       endpointMustExist: false,
     })
-    // console.log(`OPC client`, client)
-
-    // const url = "opc.tcp://opcuademo.sterfive.com:26543";
     // const url = 'opc.tcp://simulator:4334/UA/LittleServer'
     // const url = source?.connect?.url || 'opc.tcp://localhost:4840' // default is kepware url
     const url = source?.connect?.url || 'opc.tcp://host.docker.internal:4840' // default is kepware url
 
+    // get connection
     let connected = false
     while (!connected) {
       try {
         console.log(`OPC connecting to server at ${url}...`)
-        await client.connect(url) // returns Promise void
+        await client.connect(url) // returns Promise void, or throws error if fails
         connected = true
         console.log(`OPC connected to server`)
       } catch (e) {
@@ -60,6 +58,7 @@ export class AdapterDriver {
       }
     }
 
+    // get session
     let session = null
     while (!session) {
       try {
