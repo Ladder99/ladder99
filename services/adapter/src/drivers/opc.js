@@ -45,7 +45,8 @@ export class AdapterDriver {
     // const endpointUrl = "opc.tcp://opcuademo.sterfive.com:26543";
     // const endpointUrl = 'opc.tcp://simulator:4334/UA/LittleServer'
     // const endpointUrl = url
-    const url = source?.connect?.url || 'opc.tcp://localhost:4840' // default is kepware url
+    // const url = source?.connect?.url || 'opc.tcp://localhost:4840' // default is kepware url
+    const url = source?.connect?.url || 'opc.tcp://host.docker.internal:4840' // default is kepware url
 
     //. check for connection every n secs
     // await timeout(2000) // let server get started (slowish)
