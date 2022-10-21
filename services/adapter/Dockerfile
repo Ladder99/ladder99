@@ -15,6 +15,13 @@
 # ------------------------------------------------------------------------
 
 # start with an os image
+
+# node
+# always use even numbers with Node because those are the 
+# long-term support (LTS) versions
+# pinning all the way to the patch level of the version ensures consistent, 
+# reproducible builds and tests.
+# The slim versions are generally just a good way to reduce bloat.
 # Users should look to upgrade to v16 as soon as possible. The currently active 
 # LTS branch, v14, will be maintained through the end of April 2023.
 # The current Node.js v15 release will remain supported until June 1st, 2021. 
@@ -54,9 +61,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 #   sudo apt update
 #   sudo apt install -t buster-backports libseccomp2
 # see https://www.reddit.com/r/Readarr/comments/ixajkk/working_docker_image_for_raspberry_pi_os_buster/glh774f/
+# add openssl
 RUN apt-get update -y && apt-get install --fix-missing -y nodejs npm libudev-dev \
   libusb-1.0-0 libusb-1.0-0-dev pkg-config
-
 
 WORKDIR /usr/app
 ENV NODE_ENV production
@@ -83,20 +90,28 @@ RUN npm config set fetch-retry-maxtimeout 120000 \
 # second stage - copy over node_modules and source code
 # ------------------------------------------------------------------------
 
-FROM node:lts-slim
+# FROM node:lts-slim
+FROM node:lts
 ENV NODE_ENV production
+# # need for node-opc package
+# RUN apt-get install -y openssl
+
 #. um, getting read/write errors on cookie files because they're already there as root
 # USER node
+
 WORKDIR /usr/app
 
 # need package.json so node will know we're using modules
 # COPY --chown=node:node package.json /usr/app/package.json
 # COPY --chown=node:node --from=build /usr/app/node_modules /usr/app/node_modules
 # COPY --chown=node:node src /usr/app/src
-COPY package.json /usr/app/package.json
-COPY --from=build /usr/app/node_modules /usr/app/node_modules
-COPY src /usr/app/src
 # COPY package.json src/** /usr/app/ # how do this?
+
+
+COPY package.json /usr/app/package.json
+COPY src /usr/app/src
+COPY --from=build /usr/app/node_modules /usr/app/node_modules
+
 
 # base command - can pass params with CMD [?]
 # note: When you run an image that uses the exec form (ie an array), 

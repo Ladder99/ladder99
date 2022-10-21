@@ -22,8 +22,10 @@ export class AdapterDriver {
   //
   // initialize the client plugin
   async init({ device, cache, source }) {
-    console.log('OPC init', device.path)
+    console.log('OPC init', device.id)
 
+    // note: if agent has not connected yet, this will save the last value and send it on connection.
+    //. should it save array of values and send them all? mebbe
     cache.set('opc-avail', 'UNAVAILABLE')
 
     console.log(`OPC create client...`)
@@ -38,13 +40,12 @@ export class AdapterDriver {
       securityPolicy: SecurityPolicy.None,
       endpointMustExist: false,
     })
-    console.log(`OPC client`, client)
+    // console.log(`OPC client`, client)
 
     // const endpointUrl = "opc.tcp://opcuademo.sterfive.com:26543";
-    // const endpointUrl = 'opc.tcp://' + os.hostname() + ':4334/UA/LittleServer'
-    // const endpointUrl = 'opc.tcp://simulator-opc:4334/UA/LittleServer'
+    // const endpointUrl = 'opc.tcp://simulator:4334/UA/LittleServer'
     // const endpointUrl = url
-    const url = source?.connect?.url || 'opc.tcp://localhost:4840'
+    const url = source?.connect?.url || 'opc.tcp://localhost:4840' // default is kepware url
 
     //. check for connection every n secs
     // await timeout(2000) // let server get started (slowish)
@@ -55,6 +56,7 @@ export class AdapterDriver {
     console.log('OPC creating session...')
     const session = await client.createSession()
 
+    // connected - set avail
     cache.set('opc-avail', 'AVAILABLE')
 
     //. here we'll iterate over inputs, fetch or subscribe to them,
