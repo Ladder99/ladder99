@@ -1,6 +1,10 @@
 // opc driver
 // client for opc server
 
+// adapted from
+// https://github.com/node-opcua/node-opcua/blob/master/documentation/creating_a_client_typescript.md
+
+// see https://github.com/node-opcua/node-opcua/tree/master/packages/node-opcua-client
 // note: multiline named import fails so must do this
 import pkg from 'node-opcua-client'
 const {
@@ -15,9 +19,12 @@ const {
 } = pkg
 
 export class AdapterDriver {
+  //
   // initialize the client plugin
   async init({ device, cache, source }) {
     console.log('OPC init', device.path)
+
+    cache.set('opc-avail', 'UNAVAILABLE')
 
     console.log(`OPC create client...`)
     const connectionStrategy = {
@@ -47,6 +54,8 @@ export class AdapterDriver {
 
     console.log('OPC creating session...')
     const session = await client.createSession()
+
+    cache.set('opc-avail', 'AVAILABLE')
 
     //. here we'll iterate over inputs, fetch or subscribe to them,
     // and set the cache key-value pairs.
