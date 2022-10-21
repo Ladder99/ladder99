@@ -40,8 +40,9 @@ export class AdapterDriver {
       securityPolicy: SecurityPolicy.None,
       endpointMustExist: false,
     })
+    // the simulator service runs an opc server on this port
     // const url = 'opc.tcp://simulator:4334/UA/LittleServer'
-    // const url = source?.connect?.url || 'opc.tcp://localhost:4840' // default is kepware url
+    // host.docker.internal lets you access localhost on the host computer, which is running kepware
     const url = source?.connect?.url || 'opc.tcp://host.docker.internal:4840' // default is kepware url
 
     // get connection

@@ -4,6 +4,5 @@ const driver = new AdapterDriver()
 driver.init({
   device: {},
   cache: { set: () => {} },
-  // source: { connect: { url: 'opc.tcp://localhost:4840' } },
-  source: { connect: { url: 'opc.tcp://localhost:49320' } },
+  source: { connect: { url: 'opc.tcp://127.0.0.1:49320' } },
 })
