@@ -5,6 +5,9 @@
 
 // adapted from https://github.com/node-opcua/node-opcua
 
+// originally made this when was using mac, and didn't have access to kepware.
+// now on windows, so will try using kepware demo server.
+
 const os = require('os')
 const { OPCUAServer, Variant, DataType, StatusCodes } = require('node-opcua') // https://github.com/node-opcua/node-opcua
 
