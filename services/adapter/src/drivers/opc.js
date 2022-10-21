@@ -42,21 +42,18 @@ export class AdapterDriver {
     })
     // console.log(`OPC client`, client)
 
-    // const endpointUrl = "opc.tcp://opcuademo.sterfive.com:26543";
-    // const endpointUrl = 'opc.tcp://simulator:4334/UA/LittleServer'
-    // const endpointUrl = url
+    // const url = "opc.tcp://opcuademo.sterfive.com:26543";
+    // const url = 'opc.tcp://simulator:4334/UA/LittleServer'
     // const url = source?.connect?.url || 'opc.tcp://localhost:4840' // default is kepware url
     const url = source?.connect?.url || 'opc.tcp://host.docker.internal:4840' // default is kepware url
-
-    //. check for connection every n secs
-    // await timeout(2000) // let server get started (slowish)
 
     let connected = false
     while (!connected) {
       try {
         console.log(`OPC connecting to server at ${url}...`)
-        await client.connect(url) // returns void
+        await client.connect(url) // returns Promise void
         connected = true
+        console.log(`OPC connected to server`)
       } catch (e) {
         console.log('OPC error - waiting a bit', e.message)
         await timeout(2000)
@@ -68,6 +65,7 @@ export class AdapterDriver {
       try {
         console.log('OPC creating session...')
         session = await client.createSession()
+        console.log(`OPC created session`)
       } catch (e) {
         console.log('OPC error - waiting a bit', e.message)
         await timeout(2000)
