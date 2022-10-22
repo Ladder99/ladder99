@@ -6,7 +6,7 @@
 
 // see also feedback.js driver, which checks jobnum changes and resets partcounts.
 
-const pollInterval = 5000 // ms - ie poll for job num change every 5 secs
+const pollInterval = 5000 // ms - ie poll for job num change every 5 secs. keep largish to avoid db hits
 
 export class Jobs {
   //
@@ -17,6 +17,8 @@ export class Jobs {
     this.pool = pool
     this.devices = devices
     this.lastJobs = {}
+    this.completed = {} // job -> timestamp
+    this.lastDate = null
 
     // await this.backfill()
     await this.poll() // do initial poll
@@ -27,15 +29,43 @@ export class Jobs {
 
   async poll() {
     //
+
+    // first check if date changed - if so, reset the completed cache
+    if (this.dateChanged()) {
+      console.log('JobBoss jobs - date changed, reset completed cache')
+      this.completed = {}
+    }
+
     // iterate over all devices, check if has a jobbossId
     for (let device of this.devices) {
       const jobbossId = device.custom?.jobbossId
       if (jobbossId) {
-        // get the most recently started job for this workcenter/device.
-        // could also use where work_center='MARUMATSU', but not guaranteed unique.
-        // status is C=complete, S=started?, O=ongoing?
-        // make sure status is not complete, ie C.
-        const sql = `
+        const job = await this.getJob(jobbossId)
+        if (job === undefined) continue // skip this device
+
+        this.handleJob(device, job)
+      }
+    }
+  }
+
+  // helper methods
+
+  dateChanged() {
+    const date = new Date()
+    const dateStr = date.toISOString().slice(0, 10)
+    if (this.lastDate !== dateStr) {
+      this.lastDate = dateStr
+      return true
+    }
+    return false
+  }
+
+  async getJob(jobbossId) {
+    // get the most recently started job for this workcenter/device.
+    // could also use where work_center='MARUMATSU', but not guaranteed unique.
+    // status is C=complete, S=started?, O=ongoing?
+    // make sure status is not complete, ie C.
+    const sql = `
           select top 1
             Job --, Est_Required_Qty, Act_Run_Qty
           from
@@ -47,44 +77,47 @@ export class Jobs {
           order by
             Actual_Start desc
         `
-        // pool error handler should catch any errors, but add try/catch in case not
-        let job
-        try {
-          const result = await this.pool.query(sql)
-          // 'Job' must match case of sql
-          // use NONE to indicate no job
-          job = result?.recordset[0]?.Job || 'NONE'
-        } catch (error) {
-          console.log(`JobBoss jobs ${device.name} error`, error.message)
-          console.log(`JobBoss jobs sql`, sql)
-          continue
-        }
+    // pool error handler should catch any errors, but add try/catch in case not
+    let job
+    try {
+      const result = await this.pool.query(sql)
+      // 'Job' must match case of sql
+      // use NONE to indicate no job
+      job = result?.recordset[0]?.Job || 'NONE'
+    } catch (error) {
+      console.log(`JobBoss jobs ${device.name} error`, error.message)
+      console.log(`JobBoss jobs sql`, sql)
+    }
+    return job
+  }
 
-        // send shdr to agent IF cache value changed
-        // note: this key corresponds to path 'processes/job/process_aggregate_id-order_number'
-        //. what if could pass an optional code block here to run if cache value changed?
-        // eg reset the part count by sending a message to the device
-        //. or, attach some code to that cache value? ie you'd have some code that would output shdr,
-        // and some code that would set the jcomplete time on change.
-        this.cache.set(`${device.id}-job`, job)
+  // handle jobnum for this device
+  handleJob(device, job) {
+    // set cache value
+    // sends shdr to agent IF cache value changed
+    // note: this key corresponds to path 'processes/job/process_aggregate_id-order_number'
+    //. what if could pass an optional code block here to run if cache value changed?
+    // eg reset the part count by sending a message to the device
+    //. or, attach some code to that cache value? ie you'd have some code that would output shdr,
+    // and some code that would set the jcomplete time on change.
+    this.cache.set(`${device.id}-job`, job)
 
-        // initialize last job if not set
-        this.lastJobs[device.id] = this.lastJobs[device.id] ?? job
+    // initialize last job if not set
+    this.lastJobs[device.id] = this.lastJobs[device.id] ?? job
 
-        // if job changed, and not transitioning from NONE, record time completed.
-        // if a job changes TO NONE though, it will be recorded.
-        //. could also query db for estqty,runqty here and update those?
-        const oldJob = this.lastJobs[device.id]
-        if (job !== oldJob) {
-          console.log(`JobBoss jobs ${device.name} job ${oldJob} to ${job}`)
-          if (oldJob !== 'NONE') {
-            const now = new Date().toISOString()
-            // this key corresponds to path 'processes/job/process_time-complete'
-            this.cache.set(`${device.id}-jcomplete`, now)
-          }
-          this.lastJobs[device.id] = job // bug: had this inside the oldJob !== 'NONE' block, so didn't update
-        }
+    // if job changed, and not transitioning from NONE, record time completed.
+    // if a job changes TO NONE though, it will be recorded.
+    //. what about UNAVAILABLE? or do we ever get that?
+    //. could also query db for estqty,runqty here and update those?
+    const oldJob = this.lastJobs[device.id]
+    if (job !== oldJob) {
+      console.log(`JobBoss jobs ${device.name} job ${oldJob} to ${job}`)
+      if (oldJob !== 'NONE') {
+        const now = new Date().toISOString()
+        // this key corresponds to path 'processes/job/process_time-complete'
+        this.cache.set(`${device.id}-jcomplete`, now)
       }
+      this.lastJobs[device.id] = job // bug: had this inside the oldJob !== 'NONE' block, so didn't update
     }
   }
 }
