@@ -14,15 +14,20 @@ console.log(new Date().toISOString())
 console.log(`----------------------------------------------------------------`)
 
 const params = {
+  // file system inputs
   // when adapter.js is run, it expects config in /data/setup and /data/models.
-  // /data/setup includes setup.yaml, which includes a list of devices to setup.
+  // data/setup includes setup.yaml, which includes a list of devices to setup.
   // these folders may be defined in compose.yaml with docker volume mappings,
   // or overridden in compose-overrides.yaml.
   setupFolder: process.env.L99_SETUP_FOLDER || `/data/setup`,
-  modulesFolder: process.env.L99_MODULES_FOLDER || `/data/modules`, // incls print-apply/module.xml etc
 
-  // file system inputs
-  driversFolder: './drivers', // eg mqtt-json - must start with '.'
+  modulesFolder: process.env.L99_MODULES_FOLDER || `/data/modules`, // incls print-apply/module.xml etc
+  // commonModulesFolder:
+  //   process.env.L99_COMMON_MODULES_FOLDER || `/data/modules/common`,
+  // setupModulesFolder:
+  //   process.env.L99_SETUP_MODULES_FOLDER || `/data/modules/setup`,
+
+  driversFolder: './drivers', // eg for micro.js - must start with '.'
 
   // default tcp server for agent to connect to - used if none provided in setup.yaml
   defaultServer: { protocol: 'shdr', host: 'adapter', port: 7878 },
