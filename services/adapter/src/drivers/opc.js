@@ -34,6 +34,8 @@ export class AdapterDriver {
   async init({ device, cache, source, inputs }) {
     console.log('OPC init', device.id)
 
+    console.log('OPC inputs', inputs)
+
     const url = source?.connect?.url ?? defaultUrl
 
     // helper fn
@@ -115,19 +117,31 @@ export class AdapterDriver {
     // // console.log('OPC Product Name nodeId', productNameNodeId)
     // console.log()
 
-    // read operator
-    // let nodeId = productNameNodeId
-    let nodeId = 'ns=2;s=Simulation Examples.Functions.User1'
-    const dataValue = await session.read({
-      nodeId,
-      attributeId: AttributeIds.Value,
-    })
-    console.log(`OPC read`, nodeId.toString(), dataValue.value.value) // a variant
-    // const operator = dataValue.value.value //. better way?
-    // const key = `${device.id}-`
-    // console.log(`OPC setting cache ${key}:`, operator)
-    // cache.set(key, operator)
-    console.log()
+    // // read operator
+    // // let nodeId = productNameNodeId
+    // let nodeId = 'ns=2;s=Simulation Examples.Functions.User1'
+    // const dataValue = await session.read({
+    //   nodeId,
+    //   attributeId: AttributeIds.Value,
+    // })
+    // console.log(`OPC read`, nodeId.toString(), dataValue.value.value) // a variant
+    // // const operator = dataValue.value.value //. better way?
+    // // const key = `${device.id}-`
+    // // console.log(`OPC setting cache ${key}:`, operator)
+    // // cache.set(key, operator)
+    // console.log()
+
+    // iterate over inputs, fetch latest values, write to cache
+    for (let input of inputs) {
+      const { nodeId } = input
+      const dataValue = await session.read({
+        nodeId,
+        attributeId: AttributeIds.Value,
+      })
+      console.log(`OPC read`, nodeId.toString(), dataValue.value.value) // a variant
+      const value = dataValue.value.value
+      setValue(input.key, value)
+    }
 
     // // read operator
     // let nodeId = 'ns=1;s=Operator'
