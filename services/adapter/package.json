@@ -17,7 +17,7 @@
     "mssql": "^7.3.0",
     "node-fetch": "^3.0.0",
     "node-hid": "^2.1.1",
-    "node-opcua-client": "^2.50.0",
+    "node-opcua-client": "^2.81.0",
     "systeminformation": "^5.9.8",
     "usb": "^1.8.0",
     "uuid": "^8.3.2"
