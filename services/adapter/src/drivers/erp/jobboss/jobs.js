@@ -17,7 +17,7 @@ export class Jobs {
     this.pool = pool
     this.devices = devices
     this.lastJobs = {}
-    this.completed = {} // job -> timestamp
+    this.deviceJobCompleted = {} // device -> { job -> timestamp } - cache of completed jobs for each device
     this.lastDate = null
 
     // await this.backfill()
@@ -40,10 +40,12 @@ export class Jobs {
     for (let device of this.devices) {
       const jobbossId = device.custom?.jobbossId
       if (jobbossId) {
-        const job = await this.getJob(jobbossId)
-        if (job === undefined) continue // skip this device
-
-        this.handleJob(device, job)
+        // const job = await this.getJob(jobbossId)
+        // if (job === undefined) continue // skip this device
+        // this.handleJob(device, job)
+        const jobs = await this.getJobs(jobbossId)
+        if (jobs === undefined) continue // skip this device
+        this.handleJobs(device, jobs)
       }
     }
   }
@@ -66,17 +68,17 @@ export class Jobs {
     // status is C=complete, S=started?, O=ongoing?
     // make sure status is not complete, ie C.
     const sql = `
-          select top 1
-            Job --, Est_Required_Qty, Act_Run_Qty
-          from
-            Job_Operation
-          where
-            WorkCenter_OID = '${jobbossId}'
-            and Status <> 'C'
-            and Actual_Start is not null
-          order by
-            Actual_Start desc
-        `
+      select top 1
+        Job --, Est_Required_Qty, Act_Run_Qty
+      from
+        Job_Operation
+      where
+        WorkCenter_OID = '${jobbossId}'
+        and Status <> 'C'
+        and Actual_Start is not null
+      order by
+        Actual_Start desc
+    `
     // pool error handler should catch any errors, but add try/catch in case not
     let job
     try {
@@ -109,6 +111,7 @@ export class Jobs {
     // if a job changes TO NONE though, it will be recorded.
     //. what about UNAVAILABLE? or do we ever get that?
     //. could also query db for estqty,runqty here and update those?
+    // ie Est_Required_Qty, Act_Run_Qty
     const oldJob = this.lastJobs[device.id]
     if (job !== oldJob) {
       console.log(`JobBoss jobs ${device.name} job ${oldJob} to ${job}`)
@@ -119,5 +122,40 @@ export class Jobs {
       }
       this.lastJobs[device.id] = job // bug: had this inside the oldJob !== 'NONE' block, so didn't update
     }
+  }
+
+  async getJobs(jobbossId) {
+    // get the most recently started jobs for this workcenter/device.
+    // could also use where work_center='MARUMATSU', but not guaranteed unique.
+    // status is C=complete, S=started?, O=ongoing?
+    // make sure status is not complete, ie C.
+    const sql = `
+      select top 5
+        Job
+      from
+        Job_Operation
+      where
+        WorkCenter_OID = '${jobbossId}'
+        and Status <> 'C'
+        and Actual_Start is not null
+      order by
+        Actual_Start desc
+    `
+    // pool error handler should catch any errors, but add try/catch in case not
+    let jobs
+    try {
+      const result = await this.pool.query(sql)
+      // 'Job' must match case of sql
+      // use NONE to indicate no job
+      jobs = result?.recordset?.map(record => record.Job) || ['NONE']
+    } catch (error) {
+      console.log(`JobBoss jobs ${device.name} error`, error.message)
+      console.log(`JobBoss jobs sql`, sql)
+    }
+    return jobs
+  }
+
+  handleJobs(device, jobs) {
+    this.deviceJobCompleted
   }
 }
