@@ -31,14 +31,20 @@ const defaultUrl = 'opc.tcp://host.docker.internal:49320'
 export class AdapterDriver {
   //
   // initialize the client plugin
-  async init({ device, cache, source }) {
+  async init({ device, cache, source, inputs }) {
     console.log('OPC init', device.id)
 
     const url = source?.connect?.url ?? defaultUrl
 
+    // helper fn
+    function setValue(key, value) {
+      const id = device.id + '-' + key
+      cache.set(id, value)
+    }
+
     // note: if agent has not connected yet,
     // this will save the last value and send it on connection.
-    cache.set('opc-avail', 'UNAVAILABLE')
+    setValue('avail', 'UNAVAILABLE')
 
     // create client
     console.log(`OPC create client...`)
@@ -82,7 +88,7 @@ export class AdapterDriver {
     }
 
     // connected
-    cache.set('opc-avail', 'AVAILABLE')
+    setValue('avail', 'AVAILABLE')
 
     //. here we can iterate over inputs, fetch or subscribe to them,
     // and set the cache key-value pairs.
@@ -110,8 +116,6 @@ export class AdapterDriver {
     // console.log()
 
     // read operator
-    // let nodeId =
-    // 'ns=1;s=Kepware.KEPServerEX.V6.Simulation Examples.Function.User1'
     // let nodeId = productNameNodeId
     let nodeId = 'ns=2;s=Simulation Examples.Functions.User1'
     const dataValue = await session.read({
@@ -194,6 +198,8 @@ export class AdapterDriver {
     console.log('OPC done')
   }
 }
+
+// helpers
 
 async function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
