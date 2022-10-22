@@ -18,11 +18,15 @@ const {
   // ClientMonitoredItem,
 } = pkg
 
+//
+
 // host.docker.internal lets you access localhost on the host computer, which is running kepware
 const defaultUrl = 'opc.tcp://host.docker.internal:49320'
 
 // the simulator service runs an opc server on this port
 // const defaultUrl = 'opc.tcp://simulator:4334/UA/LittleServer'
+
+//
 
 export class AdapterDriver {
   //
@@ -32,8 +36,8 @@ export class AdapterDriver {
 
     const url = source?.connect?.url ?? defaultUrl
 
-    // note: if agent has not connected yet, this will save the last value and send it on connection.
-    //. should it save array of values and send them all? mebbe
+    // note: if agent has not connected yet,
+    // this will save the last value and send it on connection.
     cache.set('opc-avail', 'UNAVAILABLE')
 
     // create client
@@ -77,39 +81,49 @@ export class AdapterDriver {
       }
     }
 
-    // connected - set avail
+    // connected
     cache.set('opc-avail', 'AVAILABLE')
 
-    //. here we'll iterate over inputs, fetch or subscribe to them,
+    //. here we can iterate over inputs, fetch or subscribe to them,
     // and set the cache key-value pairs.
 
-    const browseResult = await session.browse('RootFolder')
-    console.log('OPC references of RootFolder :')
-    for (const reference of browseResult.references) {
-      console.log('   -> ', reference.browseName.toString())
-    }
+    // // browse names
+    // //. just gives 'Objects', 'Types', 'Values' - how recurse?
+    // const browseResult = await session.browse('RootFolder')
+    // console.log('OPC references of RootFolder :')
+    // for (const reference of browseResult.references) {
+    //   console.log('   -> ', reference.browseName.toString())
+    // }
 
-    const browsePath = makeBrowsePath(
-      'RootFolder',
-      '/Objects/Server.ServerStatus.BuildInfo.ProductName'
-    )
-    const result = await session.translateBrowsePath(browsePath)
-    const productNameNodeId = result.targets[0].targetId
-    console.log('OPC Product Name nodeId = ', productNameNodeId.toString())
+    // const browsePath = makeBrowsePath('RootFolder', '/Objects/2:MyObject/2:MyVariable')
+
+    // const browsePath =
+    //   makeBrowsePath()
+    //   // 'RootFolder',
+    //   // '/Objects/Server.ServerStatus.BuildInfo.ProductName'
+    //   // '/Objects/Simulation Examples/Functions/User1'
+    //   // '2:User1'
+    // const result = await session.translateBrowsePath(browsePath)
+    // const productNameNodeId = result.targets[0]?.targetId
+    // console.log('OPC Product Name nodeId', productNameNodeId.toString())
+    // // console.log('OPC Product Name nodeId', productNameNodeId)
+    // console.log()
 
     // read operator
     // let nodeId =
     // 'ns=1;s=Kepware.KEPServerEX.V6.Simulation Examples.Function.User1'
-    let nodeId = productNameNodeId
+    // let nodeId = productNameNodeId
+    let nodeId = 'ns=2;s=Simulation Examples.Functions.User1'
     const dataValue = await session.read({
       nodeId,
       attributeId: AttributeIds.Value,
     })
-    console.log(`OPC read ${nodeId}:`, dataValue) //.value) // a variant
+    console.log(`OPC read`, nodeId.toString(), dataValue.value.value) // a variant
     // const operator = dataValue.value.value //. better way?
     // const key = `${device.id}-`
     // console.log(`OPC setting cache ${key}:`, operator)
     // cache.set(key, operator)
+    console.log()
 
     // // read operator
     // let nodeId = 'ns=1;s=Operator'
