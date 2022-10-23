@@ -95,7 +95,7 @@ async function setupSource({ params, source, cache, client, devices, device }) {
   // these are interpreted by the driver
   const pathInputs = `${params.modulesFolder}/${module}/inputs.yaml`
   console.log(`Adapter reading ${pathInputs}...`)
-  const inputs = lib.importYaml(pathInputs) || {}
+  const inputs = lib.importYaml(pathInputs) || {} //. why not (...).inputs, as with outputs and types?
 
   // get output handlers
   // output yamls should all follow the same format, unlike input yamls.
