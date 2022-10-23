@@ -224,6 +224,7 @@ function sanitize(str) {
 }
 
 // truncate a string to some length, adding ellipsis if truncated
+//. to lib
 function truncate(str, len = 60) {
   return str.length > len ? str.slice(0, len) + '...' : str
 }
