@@ -27,7 +27,7 @@ const messagePauseTime = 500 // ms
 
 export class AdapterDriver {
   //. use connect obj
-  init({ device, host, port, cache }) {
+  start({ device, host, port, cache }) {
     console.log(`Initialize Zebra driver...`)
 
     let client // tcp connection

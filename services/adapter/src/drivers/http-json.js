@@ -5,7 +5,7 @@
 import fetch from 'node-fetch' // https://github.com/node-fetch/node-fetch
 
 export class AdapterDriver {
-  init({ device, protocol, host, port }) {
+  start({ device, protocol, host, port }) {
     const url = `${protocol}://${host}:${port}` // eg http://play:8080
     console.log('init test plugin', device.id, url)
 

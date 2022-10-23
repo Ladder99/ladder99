@@ -28,7 +28,7 @@ export class AdapterDriver {
   // note - device here is the jobboss object from setup yaml -
   // this code will iterate over all devices in setup yaml to find ones with
   // jobbossId values and check their schedules and jobnums.
-  async init({
+  async start({
     client,
     device,
     cache,

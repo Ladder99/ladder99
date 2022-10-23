@@ -1,7 +1,7 @@
 import { AdapterDriver } from './opc.js'
 
 const driver = new AdapterDriver()
-driver.init({
+driver.start({
   device: { id: 'opc' },
   cache: {
     set: (key, value) => {

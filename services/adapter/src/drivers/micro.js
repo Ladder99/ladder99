@@ -13,7 +13,7 @@ import * as lib from '../common/lib.js' // for lib.rounded
 const pollInterval = 5000 // msec //. could get from setup
 
 export class AdapterDriver {
-  init({ device, cache }) {
+  start({ device, cache }) {
     console.log(`Micro - initialize driver...`)
 
     setUnavailable()

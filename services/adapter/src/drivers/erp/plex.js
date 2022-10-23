@@ -6,7 +6,7 @@ const pollInterval = 1000 // msec
 const reconnectInterval = 5000 // msec
 
 export class AdapterDriver {
-  init({ device, protocol, host, port }) {
+  start({ device, protocol, host, port }) {
     console.log(`Adapter initialize Plex ERP driver...`)
 
     const url = `${protocol}://${host}:${port}` // eg http://play:8080

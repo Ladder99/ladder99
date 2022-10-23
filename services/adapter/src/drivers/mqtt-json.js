@@ -19,7 +19,7 @@ export class AdapterDriver {
   // inputs is the inputs.yaml file parsed to a js tree.
   // advice is a dict of optional fns that are called at various points in the code. not used.
   // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
-  init({ source, device, host, port, cache, inputs, types, advice }) {
+  start({ source, device, host, port, cache, inputs, types, advice }) {
     console.log('MQTT Initializing mqtt-json driver for', device.id)
     const url = `mqtt://${host}:${port}`
 
