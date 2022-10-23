@@ -1,2 +1,8 @@
+#. most outputs could be pass-through, and wouldn't need to be specified here
+# eg key=avail, value: <avail>
+
 outputs:
   - key: avail
+  - key: cond
+  - key: user1
+  - key: user2

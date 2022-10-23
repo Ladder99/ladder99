@@ -1,6 +1,6 @@
 inputs:
-  - key: words
+  - key: user1
     nodeId: ns=2;s=Simulation Examples.Functions.User1
 
-  - key: values
+  - key: user2
     nodeId: ns=2;s=Simulation Examples.Functions.User2
