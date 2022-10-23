@@ -8,9 +8,11 @@ driver.start({
       console.log('cache.set', key, value)
     },
   },
-  source: { connect: { url: 'opc.tcp://127.0.0.1:49320' } },
-  inputs: [
-    { key: 'words', nodeId: 'ns=2;s=Simulation Examples.Functions.User1' },
-    { key: 'values', nodeId: 'ns=2;s=Simulation Examples.Functions.User2' },
-  ],
+  source: { outputs: { agent: { url: 'opc.tcp://127.0.0.1:49320' } } },
+  module: {
+    inputs: [
+      { key: 'words', nodeId: 'ns=2;s=Simulation Examples.Functions.User1' },
+      { key: 'values', nodeId: 'ns=2;s=Simulation Examples.Functions.User2' },
+    ],
+  },
 })

@@ -26,7 +26,7 @@ const typeFns = {
 
 export class AdapterDriver {
   //
-  async start({ device, host, port, cache, inputs }) {
+  async start({ device, host, port, cache, module }) {
     console.log(`CPC initialize driver...`)
     cache.set(`${device.id}-avail`, 'UNAVAILABLE')
 
@@ -35,6 +35,9 @@ export class AdapterDriver {
     this.host = host
     this.port = port
     this.cache = cache
+    this.module = module
+
+    const { inputs } = module
 
     // get ids and query string
     this.ids = inputs.inputs.map(input => `${device.id}-${input.key}`) // eg ['ac1-operator_name', 'ac1-recipe_description', ...]

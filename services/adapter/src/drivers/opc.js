@@ -31,12 +31,14 @@ const defaultUrl = 'opc.tcp://host.docker.internal:49320'
 export class AdapterDriver {
   //
   // initialize the client plugin
-  async start({ device, cache, source, inputs }) {
+  async start({ device, cache, source, module }) {
     console.log('OPC init', device.id)
 
     this.device = device
     this.cache = cache
     this.source = source
+    this.module = module
+    const { inputs } = module
     this.inputs = inputs.inputs //. bleh don't like
 
     console.log('OPC inputs', this.inputs)

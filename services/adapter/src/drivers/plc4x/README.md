@@ -7,7 +7,7 @@
 - cd into it
 - run docker:
 
-  docker build -t plc4x .
+    docker build -t plc4x .
 
 get build errors
 
