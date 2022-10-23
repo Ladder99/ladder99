@@ -37,9 +37,9 @@ export class AdapterDriver {
     this.device = device
     this.cache = cache
     this.source = source
-    this.inputs = inputs
+    this.inputs = inputs.inputs //. bleh don't like
 
-    console.log('OPC inputs', inputs)
+    console.log('OPC inputs', this.inputs)
 
     const url = source?.connect?.url ?? defaultUrl
 
@@ -132,15 +132,15 @@ export class AdapterDriver {
     // console.log()
 
     // iterate over inputs, fetch latest values, write to cache
-    for (let input of inputs) {
-      const { nodeId } = input
+    for (let input of this.inputs) {
+      const { key, nodeId } = input
       const dataValue = await session.read({
         nodeId,
         attributeId: AttributeIds.Value,
       })
       console.log(`OPC read`, nodeId.toString(), dataValue.value.value) // a variant
       const value = dataValue.value.value
-      this.setValue(input.key, value)
+      this.setValue(key, value)
     }
 
     // // read operator
