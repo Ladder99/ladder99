@@ -34,19 +34,19 @@ export class AdapterDriver {
   async init({ device, cache, source, inputs }) {
     console.log('OPC init', device.id)
 
+    this.device = device
+    this.cache = cache
+    this.source = source
+    this.inputs = inputs
+
     console.log('OPC inputs', inputs)
 
     const url = source?.connect?.url ?? defaultUrl
 
-    // helper fn
-    function setValue(key, value) {
-      const id = device.id + '-' + key
-      cache.set(id, value)
-    }
-
+    // set cache value
     // note: if agent has not connected yet,
     // this will save the last value and send it on connection.
-    setValue('avail', 'UNAVAILABLE')
+    this.setValue('avail', 'UNAVAILABLE')
 
     // create client
     console.log(`OPC create client...`)
@@ -90,7 +90,7 @@ export class AdapterDriver {
     }
 
     // connected
-    setValue('avail', 'AVAILABLE')
+    this.setValue('avail', 'AVAILABLE')
 
     //. here we can iterate over inputs, fetch or subscribe to them,
     // and set the cache key-value pairs.
@@ -140,7 +140,7 @@ export class AdapterDriver {
       })
       console.log(`OPC read`, nodeId.toString(), dataValue.value.value) // a variant
       const value = dataValue.value.value
-      setValue(input.key, value)
+      this.setValue(input.key, value)
     }
 
     // // read operator
@@ -211,9 +211,16 @@ export class AdapterDriver {
 
     console.log('OPC done')
   }
+
+  // helper methods
+
+  setValue(key, value) {
+    const id = this.device.id + '-' + key
+    this.cache.set(id, value)
+  }
 }
 
-// helpers
+// helper fns
 
 async function timeout(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
