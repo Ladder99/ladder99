@@ -4,35 +4,31 @@
 // this is an intermediary between the raw device data and the shdr output.
 
 // when a key-item value is set, the cache will perform any associated output
-// calculations and send shdr output to attached tcp socket, IF value changed.
+// calculations and send shdr output to attached tcp socket, IF the value changed.
 
 // see setupSource.js and helpers.js for code that sets up the reactive cache calculations.
-//. bring that code in here
-
-//. eg ___
+//. bring relevant code in here
 
 export class Cache {
   //
   constructor() {
     this._map = new Map() // key-item pairs //. why not just {} ?
-    this._mapKeyToOutputs = {} // list of outputs assoc with each key, //. eg ?
+    this._mapKeyToOutputs = {} // list of outputs assoc with each key, eg {} //. ?
   }
 
   // addOutputs
   // each cache key can have multiple output calculations associated with it.
   // this builds a map from a key to a list of outputs.
   // each output goes to the same tcp socket.
-  // called from adapter.js for each device source.
+  // called for each device source.
   // outputs is [{ key, category, type, representation, socket, dependsOn, value }, ...]
   // eg [{ key: 'ac1-power_condition', value: (fn), dependsOn: ['ac1-power_fault', 'ac1-power_warning'] }, ...]
   // so this builds a map from those dependsOn values to the output object.
   // eg { 'ac1-power_fault': [{ key:'ac1-power_condition', value: (fn), ...}], ... }
   addOutputs(outputs) {
     if (outputs) {
-      console.log(
-        `Cache addOutputs`,
-        outputs.map(o => o.key)
-      )
+      const outputKeys = outputs.map(o => o.key).join(',')
+      console.log(`Cache addOutputs`, outputKeys)
       for (const output of outputs) {
         // console.log(output.key, output.dependsOn)
         // output.socket = socket // attach tcp socket to each output also
@@ -52,10 +48,8 @@ export class Cache {
   setSocket(outputs, socket) {
     // can ignore if no outputs
     if (outputs) {
-      console.log(
-        `Cache setSocket`,
-        outputs.map(o => o.key)
-      )
+      const outputKeys = outputs.map(o => o.key).join(',')
+      console.log(`Cache setSocket`, outputKeys)
       if (socket) {
         console.log(`Cache send last known data values to agent...`)
       }
@@ -63,12 +57,28 @@ export class Cache {
         output.socket = socket
         if (output.socket) {
           // send last known data value to agent
-          const shdr = getShdr(output, output.lastValue || 'UNAVAILABLE')
-          // console.log(`Cache - send ${shdr.slice(0, 60)}...`)
-          try {
-            output.socket.write(shdr + '\n')
-          } catch (error) {
-            console.log(error)
+
+          // //. send unavailable if no value saved yet?
+          // // const shdr = getShdr(output, output.lastValue || 'UNAVAILABLE')
+          // const shdr = getShdr(output, output.lastValue ?? 'UNAVAILABLE')
+          // console.log(`Cache send "${truncate(shdr)}"`)
+          // try {
+          //   output.socket.write(shdr + '\n')
+          // } catch (error) {
+          //   console.log(error)
+          // }
+
+          //. only send shdr if lastValue exists?
+          // i think this makes more sense.
+          // next time the value is updated, it'll send the shdr.
+          if (output.lastValue !== undefined) {
+            const shdr = getShdr(output, output.lastValue)
+            console.log(`Cache send "${truncate(shdr)}"`)
+            try {
+              output.socket.write(shdr + '\n')
+            } catch (error) {
+              console.log(error)
+            }
           }
         }
       }
@@ -80,13 +90,16 @@ export class Cache {
   // options is { timestamp, quiet }
   // timestamp is an optional STRING that is used in the SHDR
   //. explain distinction between value param and value variable below, with examples
-  //. instead of fixed code here for output, could have custom code - set other cache values, etc
+  //. instead of fixed code here for output, could have custom code -
+  // set other cache values, send partcount reset commands, etc.
+  // ie you could attach multiple handlers to a cache key.
   set(key, value, options = {}) {
     // if (!options.quiet) {
     // const s = typeof value === 'string' ? `"${value.slice(0, 99)}..."` : value
     // console.log(`Cache - set ${key}: ${s}`)
     // }
-    // //. don't allow undefined as a value? not in vocabulary of mtc
+
+    // //. don't allow undefined as a value? not in vocabulary of mtc. translate to UNAVAILABLE?
     // if (value === undefined) return
 
     //. what if want to check if a value changed?
@@ -94,8 +107,8 @@ export class Cache {
 
     // update the cache value
     this._map.set(key, value)
-    // get list of outputs associated with this key
-    // eg ['ac1-power_condition']
+
+    // get list of outputs associated with this key, eg ['ac1-power_condition']
     const outputs = this._mapKeyToOutputs[key]
     if (outputs && outputs.length > 0) {
       // calculate outputs and send changed shdr values to tcp
@@ -109,7 +122,7 @@ export class Cache {
           if (output.socket) {
             const shdr = getShdr(output, value, options.timestamp) // timestamp can be ''
             if (!options.quiet) {
-              console.log(`Cache value changed, send "${shdr.slice(0, 60)}..."`)
+              console.log(`Cache value changed, send "${truncate(shdr)}"`)
             }
             try {
               output.socket.write(shdr + '\n')
@@ -117,7 +130,9 @@ export class Cache {
               console.log(error)
             }
           } else {
-            console.log(`Cache no socket to write to`)
+            console.log(
+              `Cache value changed, but no socket to write to yet - saved for later.`
+            )
           }
         }
       }
@@ -145,7 +160,7 @@ export class Cache {
 
 // calculate value for the given cache output (can use other cache keyvalues)
 function getValue(cache, output) {
-  //. rename .value to .getValue or .valueFn
+  //. rename output.value to .getValue or .valueFn
   const { value: valueFn } = output
   const value = valueFn(cache) // do calculation
   return value
@@ -154,9 +169,10 @@ function getValue(cache, output) {
 // calculate SHDR using the given output object.
 // cache is the Cache object.
 // output has { key, category, type, representation, value, shdr, ... }.
-// timestamp is an optional STRING that goes at the front of the shdr.
+// timestamp is an optional ISO datetime STRING that goes at the front of the shdr.
 // can save some time/space by not including it.
 // eg SHDR could be '|m1-avail|AVAILABLE'
+//. bring in DATA_SET handler and sanitizer from drivers/micro.js
 function getShdr(output, value, timestamp = '') {
   if (typeof value === 'string') {
     value = sanitize(value)
@@ -196,12 +212,18 @@ function getShdr(output, value, timestamp = '') {
   return shdr
 }
 
-// sanitize a string by escaping or removing pipes and newlines
+// helpers
+
+// sanitize a string by escaping or removing pipes.
 // from cppagent readme -
 //   If the value itself contains a pipe character | the pipe must be escaped using a
 //   leading backslash \. In addition the entire value has to be wrapped in quotes:
 //   2009-06-15T00:00:00.000000|description|"Text with \| (pipe) character."
-// and newlines are used to separate shdrs
 function sanitize(str) {
-  return str.replaceAll('|', '/').replaceAll('\n', '_')
+  return str.replaceAll('|', '/') //. just convert pipes to a slash for now
+}
+
+// truncate a string to some length, adding ellipsis if truncated
+function truncate(str, len = 60) {
+  return str.length > len ? str.slice(0, len) + '...' : str
 }
