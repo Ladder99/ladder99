@@ -30,8 +30,8 @@ export class AdapterDriver {
     //   osInfo: 'platform, distro, release, codename, arch, hostname',
     // }
     this.query = {}
-    Object.keys(inputs).forEach(item => {
-      this.query[item] = Object.keys(inputs[item]).join(',')
+    Object.keys(this.inputs).forEach(item => {
+      this.query[item] = Object.keys(this.inputs[item]).join(',')
     })
 
     this.setUnavailable()
