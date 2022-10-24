@@ -1,3 +1,5 @@
+# define inputs to cache from opc server
+
 inputs:
   - key: user1
     nodeId: ns=2;s=Simulation Examples.Functions.User1
