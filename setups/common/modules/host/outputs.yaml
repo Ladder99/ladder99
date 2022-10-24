@@ -51,8 +51,8 @@ outputs:
   - key: diskavail
 
   - key: os
+    value: <os>
+    representation: DATA_SET
     category: EVENT
     type: VARIABLE
     subType: x:OS
-    representation: DATA_SET
-    value: <os>

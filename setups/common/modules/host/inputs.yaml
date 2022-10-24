@@ -52,23 +52,24 @@ inputs:
       name: memused
       decimals: -6
 
-  # disk
-  fsSize:
-    # supply some code to host.js?
-    _: pokpok
-    fs:
-    size:
-      name: disksize
-      decimals: -6
-    used:
-      name: diskused
-      decimals: -6
-    use:
-      name: diskuse
-      decimals: -6
-    available:
-      name: diskavail
-      decimals: -6
+  # # disk
+  # fsSize:
+  #   # supply some code to host.js?
+  #   # either pick one value out, or sum up all, etc
+  #   _: {}
+  #   fs: {}
+  #   size:
+  #     name: disksize
+  #     decimals: -6
+  #   used:
+  #     name: diskused
+  #     decimals: -6
+  #   use:
+  #     name: diskuse
+  #     decimals: -6
+  #   available:
+  #     name: diskavail
+  #     decimals: -6
 
   # os
   # osInfo:
