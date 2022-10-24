@@ -41,18 +41,34 @@ inputs:
       decimals: 1
 
   # memory
-  # mem:
-  #   total:
-  #   free:
-  #   used:
+  mem:
+    total:
+      name: memtot
+      decimals: -6
+    free:
+      name: memfree
+      decimals: -6
+    used:
+      name: memused
+      decimals: -6
 
   # disk
-  # fsSize:
-  #   fs
-  #   size
-  #   used
-  #   use
-  #   available
+  fsSize:
+    # supply some code to host.js?
+    _: pokpok
+    fs:
+    size:
+      name: disksize
+      decimals: -6
+    used:
+      name: diskused
+      decimals: -6
+    use:
+      name: diskuse
+      decimals: -6
+    available:
+      name: diskavail
+      decimals: -6
 
   # os
   # osInfo:
@@ -62,44 +78,8 @@ inputs:
   #   codename
   #   arch
   #   hostname
-# -------------
 
-# - name: memtot
-#   item: mem
-#   subitem: total
-#   decimals: -6 # ie round to MB
-
-# - name: memfree
-#   item: mem
-#   subitem: free
-#   decimals: -6
-
-# - name: memused
-#   item: mem
-#   subitem: used
-#   decimals: -6
-
-# - name: disksize
-#   item: fsSize
-#   subitem: total
-#   decimals: 0
-
-# - name: diskused
-#   item: fsSize
-#   subitem: free
-#   decimals: -6
-
-# - name: diskuse
-#   item: fsSize
-#   subitem: used
-#   decimals: 0
-
-# - name: diskavail
-#   item: fsSize
-#   subitem: used
-#   decimals: -6
-
-# - name: os
-#   item: osInfo
-#   subitems: platform, distro, release, codename, arch, hostname
-#   representation: dataset
+  # - name: os
+  #   item: osInfo
+  #   subitems: platform, distro, release, codename, arch, hostname
+  #   representation: dataset

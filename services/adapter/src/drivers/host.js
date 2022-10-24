@@ -19,37 +19,58 @@ export class AdapterDriver {
     this.device = device
     this.cache = cache
     this.module = module
-
     this.inputs = module?.inputs?.inputs || {}
-    this.query = this.getQuery(this.inputs)
-    console.log(this.query)
+
+    // get a systeminformation query, eg
+    // {
+    //   cpuTemperature: 'main',
+    //   currentLoad: 'currentLoad, currentLoadUser, currentLoadSystem',
+    //   mem: 'total, free, used',
+    //   fsSize: 'fs, size, used, use, available', // gives an array
+    //   osInfo: 'platform, distro, release, codename, arch, hostname',
+    // }
+    this.query = {}
+    Object.keys(inputs).forEach(item => {
+      this.query[item] = Object.keys(inputs[item]).join(',')
+    })
 
     this.setUnavailable()
     this.poll() // first poll
     setInterval(this.poll.bind(this), pollInterval)
   }
 
-  // get a systeminformation query, eg
-  // {
-  //   cpuTemperature: 'main',
-  //   currentLoad: 'currentLoad, currentLoadUser, currentLoadSystem',
-  //   mem: 'total, free, used',
-  //   fsSize: 'fs, size, used, use, available', // gives an array
-  //   osInfo: 'platform, distro, release, codename, arch, hostname',
-  // }
-  getQuery(inputs) {
-    const query = {}
-    Object.keys(inputs).forEach(item => {
-      query[item] = Object.keys(inputs[item]).join(',')
-    })
-    return query
-  }
-
   async poll() {
     try {
+      // get data, eg
+      // {
+      //   cpuTemperature: { main: 50.5 },
+      //   currentLoad: {
+      //     currentLoad: 0.01,
+      //     currentLoadUser: 0.01,
+      //     currentLoadSystem: 0
+      //   },
+      //   mem: { total: 16777216, free: 16777216, used: 0 },
+      //   fsSize: [
+      //     {
+      //       fs: 'C:\\',
+      //       size: 16777216,
+      //       used: 0,
+      //       use: 0,
+      //       available: 16777216
+      //     }
+      //   ],
+      //   osInfo: {
+      //     platform: 'win32',
+      //     distro: 'Windows 10',
+      //     release: '10.0.19043',
+      //     codename: 'Windows 10',
+      //     arch: 'x64',
+      //     hostname: 'DESKTOP-1'
+      //   }
+      // }
       const data = await si.get(this.query)
 
-      // write values to cache
+      // write to cache
       this.setValue('avail', 'AVAILABLE')
       this.setValue('cond', 'NORMAL')
 
@@ -67,70 +88,6 @@ export class AdapterDriver {
           this.setValue(subitem.name, lib.rounded(value, subitem.decimals))
         }
       }
-
-      //   // console.log(itemKey, subitemDict)
-      //   if (Array.isArray(subitemDict)) {
-      //     // eg fsSize is an array
-      //     subitemDict.forEach(subitem => {
-      //       for (let [subitemKey, subitemValue] of Object.entries(subitem)) {
-      //         // console.log(subitemKey, subitemValue)
-      //         this.setValue(subitemKey, subitemValue)
-      //       }
-      //     })
-      //   } else {
-      //     // all other items are objects
-      //     for (let [subitemKey, subitemValue] of Object.entries(subitemDict)) {
-      //       // console.log(subitemKey, subitemValue)
-      //       this.setValue(subitemKey, subitemValue)
-      //     }
-      //   }
-      // }
-
-      // get total disk space as { size, used, use }
-
-      //. a single fn could check for existence of overlay key, use that or a sum reduction.
-      //. could store the fn in the inputs.yaml, or just use a fn name like 'sum' or 'overlay'.
-
-      // console.log('Host fsSize', data.fsSize)
-      // console.log(data.fsSize.map(d => d.fs))
-      // data.fsSize is sthing like this - reduce to single object - or just use drvfs?
-      // windows:
-      // [
-      //   { fs: 'overlay', size: 269490393088, used: 26778972160, use: 10.47 },
-      //   { fs: 'drvfs', size: 489472126976, used: 420276023296, use: 85.86 },
-      //   { fs: '/dev/sdc', size: 269490393088, used: 26778972160, use: 10.47 }
-      // ]
-      // linux: pi just has overlay
-      //
-      // const disk = data.fsSize.reduce(
-      //   (acc, fs) => {
-      //     acc.size += fs.size
-      //     acc.used += fs.used
-      //     acc.available += fs.available
-      //     return acc
-      //   },
-      //   { size: 0, used: 0, available: 0 }
-      // )
-      // disk.use = (disk.used / (disk.size || 1)) * 100
-      // const disk = data.fsSize?.find(o => o.fs === 'drvfs') || {}
-      // const disk = data.fsSize?.find(o => o.fs === 'overlay') || {}
-
-      // this.setValue('temp', lib.rounded(data.cpuTemperature.main, 1))
-      // this.setValue('cputot', lib.rounded(data.currentLoad.currentLoad, 1))
-      // this.setValue('cpuuser', lib.rounded(data.currentLoad.currentLoadUser, 1))
-      // this.setValue(
-      //   'cpusys',
-      //   lib.rounded(data.currentLoad.currentLoadSystem, 1)
-      // )
-      // this.setValue('memtot', lib.rounded(data.mem.total, -6))
-      // this.setValue('memfree', lib.rounded(data.mem.free, -6))
-      // this.setValue('memused', lib.rounded(data.mem.used, -6))
-      // this.setValue('disksize', disk.size) // bytes
-      // this.setValue('diskused', lib.rounded(disk.used, -6)) // bytes rounded to mb
-      // this.setValue('diskuse', lib.rounded(disk.use, 0)) // percent
-      // this.setValue('diskavail', lib.rounded(disk.available, -6)) // bytes rounded to mb
-      // this.setValue('os', getDataSet(data.osInfo))
-      // //
     } catch (error) {
       console.log(error.message)
       this.setUnavailable()

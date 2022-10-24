@@ -108,7 +108,7 @@ export function mergeIntoSet(setBase, setExtra) {
 // use negative num to round to a power of 10.
 // handles 'unavailable'.
 export function rounded(value, decimals = 0) {
-  if (typeof value !== 'number') return value //?
+  if (typeof value !== 'number') return value // in case get passed a string
   if (value !== null && value !== undefined) {
     if (decimals < 0) {
       return Number(
