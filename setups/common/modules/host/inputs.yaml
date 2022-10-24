@@ -9,6 +9,18 @@
 
 # for available item and subitem names see https://github.com/sebhildebrandt/systeminformation
 
+# some interesting ones -
+# battery: hasBattery, currentCapacity, maxCapacity, capacityUnit, percent mWh
+# cpu: manufacturer, brand, speed, cores
+# cpuTemperature: main, cores
+# currentLoad: currentLoad, currentLoadUser, currentLoadSystem
+# disksIO: rIO, wIO
+# dockerContainers: name, createdAt, state
+# fsSize: fs, type, size, available
+# mem: total, free, used
+# osInfo: platform, distro, release, codename, arch, hostname
+# wifiInterfaces: id, model, vendor
+
 inputs:
   # temperature
   cpuTemperature: # systeminformation item

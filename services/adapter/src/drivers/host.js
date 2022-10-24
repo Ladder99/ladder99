@@ -1,6 +1,6 @@
 // host driver
-// fetches systeminfo from host system
-// see modules/host folder.
+// fetches systeminfo from host system.
+// see setups/common/modules/host folder.
 
 // this library causes highcpu on windows - 2022-02
 // seems to be fixed, or at least works when run from git bash - 2022-09-26.
@@ -11,8 +11,6 @@ import * as lib from '../common/lib.js' // for lib.rounded
 
 const pollInterval = 5000 // msec //. get from base setup
 
-//
-
 export class AdapterDriver {
   //
   start({ device, cache, module }) {
@@ -22,49 +20,23 @@ export class AdapterDriver {
     this.cache = cache
     this.module = module
 
-    // get specs object like { mem: 'total, free, used' }, as expected by si module
-
-    // most interesting ones avail in si.get() -
-    // battery: hasBattery, currentCapacity, maxCapacity, capacityUnit, percent mWh
-    // cpu: manufacturer, brand, speed, cores
-    // cpuTemperature: main, cores
-    // currentLoad: currentLoad, currentLoadUser, currentLoadSystem
-    // disksIO: rIO, wIO
-    // dockerContainers: name, createdAt, state
-    // fsSize: fs, type, size, available
-    // mem: total, free, used
-    // osInfo: platform, distro, release, codename, arch, hostname
-    // wifiInterfaces: id, model, vendor
-
-    // this.specs = {
-    //   cpuTemperature: 'main',
-    //   currentLoad: 'currentLoad, currentLoadUser, currentLoadSystem',
-    //   mem: 'total, free, used',
-    //   fsSize: 'fs, size, used, use, available', // gives an array
-    //   osInfo: 'platform, distro, release, codename, arch, hostname',
-    // }
-
     this.inputs = module?.inputs?.inputs || {}
     this.query = this.getQuery(this.inputs)
     console.log(this.query)
 
     this.setUnavailable()
-    // this.poll() // first poll
-    // setInterval(this.poll.bind(this), pollInterval)
+    this.poll() // first poll
+    setInterval(this.poll.bind(this), pollInterval)
   }
 
-  // get a systeminformation query - eg for inputs like
-  //   currentLoad:
-  //     currentLoad:
-  //       name: cputot
-  //       decimals: 1
-  //     currentLoadUser:
-  //       name: cpuuser
-  //       decimals: 1
-  // query will be like
-  //   {
-  //     currentLoad: 'currentLoad, currentLoadUser',
-  //   }
+  // get a systeminformation query, eg
+  // {
+  //   cpuTemperature: 'main',
+  //   currentLoad: 'currentLoad, currentLoadUser, currentLoadSystem',
+  //   mem: 'total, free, used',
+  //   fsSize: 'fs, size, used, use, available', // gives an array
+  //   osInfo: 'platform, distro, release, codename, arch, hostname',
+  // }
   getQuery(inputs) {
     const query = {}
     Object.keys(inputs).forEach(item => {
@@ -72,8 +44,6 @@ export class AdapterDriver {
     })
     return query
   }
-
-  //
 
   async poll() {
     try {
@@ -83,25 +53,38 @@ export class AdapterDriver {
       this.setValue('avail', 'AVAILABLE')
       this.setValue('cond', 'NORMAL')
 
-      const items = Object.keys(this.query)
-      items.forEach(item => {
-        const value = data[item]
-        if (value) {
-          if (Array.isArray(value)) {
-            // eg fsSize
-            value.forEach((v, i) => {
-              Object.keys(v).forEach(key => {
-                this.setValue(`${item}_${i}_${key}`, v[key])
-              })
-            })
-          } else {
-            // eg cpuTemperature
-            Object.keys(value).forEach(key => {
-              this.setValue(`${item}_${key}`, value[key])
-            })
-          }
+      // iterate over query inputs, extract info from data, write to cache
+      // eg this.setValue('temp', lib.rounded(data.cpuTemperature.main, 1))
+      // eg itemKey = 'cpuTemperature', subitemDict = {main: { name, decimals }}
+      for (let [itemKey, subitemDict] of Object.entries(this.inputs)) {
+        // console.log(itemKey, subitemDict)
+        // eg subitemKey = 'main'
+        for (let subitemKey of Object.keys(subitemDict)) {
+          // eg subitem = { name, decimals }
+          const subitem = subitemDict[subitemKey]
+          const value = data[itemKey][subitemKey]
+          // console.log(subitemKey, subitem, value)
+          this.setValue(subitem.name, lib.rounded(value, subitem.decimals))
         }
-      })
+      }
+
+      //   // console.log(itemKey, subitemDict)
+      //   if (Array.isArray(subitemDict)) {
+      //     // eg fsSize is an array
+      //     subitemDict.forEach(subitem => {
+      //       for (let [subitemKey, subitemValue] of Object.entries(subitem)) {
+      //         // console.log(subitemKey, subitemValue)
+      //         this.setValue(subitemKey, subitemValue)
+      //       }
+      //     })
+      //   } else {
+      //     // all other items are objects
+      //     for (let [subitemKey, subitemValue] of Object.entries(subitemDict)) {
+      //       // console.log(subitemKey, subitemValue)
+      //       this.setValue(subitemKey, subitemValue)
+      //     }
+      //   }
+      // }
 
       // get total disk space as { size, used, use }
 
@@ -132,61 +115,48 @@ export class AdapterDriver {
       // const disk = data.fsSize?.find(o => o.fs === 'drvfs') || {}
       // const disk = data.fsSize?.find(o => o.fs === 'overlay') || {}
 
-      this.setValue('temp', lib.rounded(data.cpuTemperature.main, 1))
-      this.setValue('cputot', lib.rounded(data.currentLoad.currentLoad, 1))
-      this.setValue('cpuuser', lib.rounded(data.currentLoad.currentLoadUser, 1))
-      this.setValue(
-        'cpusys',
-        lib.rounded(data.currentLoad.currentLoadSystem, 1)
-      )
-      this.setValue('memtot', lib.rounded(data.mem.total, -6))
-      this.setValue('memfree', lib.rounded(data.mem.free, -6))
-      this.setValue('memused', lib.rounded(data.mem.used, -6))
-      this.setValue('disksize', disk.size) // bytes
-      this.setValue('diskused', lib.rounded(disk.used, -6)) // bytes rounded to mb
-      this.setValue('diskuse', lib.rounded(disk.use, 0)) // percent
-      this.setValue('diskavail', lib.rounded(disk.available, -6)) // bytes rounded to mb
-      this.setValue('os', getDataSet(data.osInfo))
-      //
+      // this.setValue('temp', lib.rounded(data.cpuTemperature.main, 1))
+      // this.setValue('cputot', lib.rounded(data.currentLoad.currentLoad, 1))
+      // this.setValue('cpuuser', lib.rounded(data.currentLoad.currentLoadUser, 1))
+      // this.setValue(
+      //   'cpusys',
+      //   lib.rounded(data.currentLoad.currentLoadSystem, 1)
+      // )
+      // this.setValue('memtot', lib.rounded(data.mem.total, -6))
+      // this.setValue('memfree', lib.rounded(data.mem.free, -6))
+      // this.setValue('memused', lib.rounded(data.mem.used, -6))
+      // this.setValue('disksize', disk.size) // bytes
+      // this.setValue('diskused', lib.rounded(disk.used, -6)) // bytes rounded to mb
+      // this.setValue('diskuse', lib.rounded(disk.use, 0)) // percent
+      // this.setValue('diskavail', lib.rounded(disk.available, -6)) // bytes rounded to mb
+      // this.setValue('os', getDataSet(data.osInfo))
+      // //
     } catch (error) {
       console.log(error.message)
       this.setUnavailable()
     }
   }
 
-  //. get this list from inputs also
+  // set all keys to unavailable
   setUnavailable() {
     this.setValue('avail', 'UNAVAILABLE')
     this.setValue('cond', 'UNAVAILABLE')
-
-    // for each key in inputs, set each subitem.name to unavailable
+    // for each input item, set each subitem.name to unavailable
     Object.values(this.inputs).forEach(item => {
       Object.values(item).forEach(subitem => {
         this.setValue(subitem.name, 'UNAVAILABLE')
       })
     })
-
-    // this.setValue('temp', 'UNAVAILABLE')
-    // this.setValue('cputot', 'UNAVAILABLE')
-    // this.setValue('cpuuser', 'UNAVAILABLE')
-    // this.setValue('cpusys', 'UNAVAILABLE')
-    // this.setValue('memtot', 'UNAVAILABLE')
-    // this.setValue('memfree', 'UNAVAILABLE')
-    // this.setValue('memused', 'UNAVAILABLE')
-    // this.setValue('disksize', 'UNAVAILABLE')
-    // this.setValue('diskused', 'UNAVAILABLE')
-    // this.setValue('diskuse', 'UNAVAILABLE')
-    // this.setValue('diskavail', 'UNAVAILABLE')
-    // this.setValue('os', 'UNAVAILABLE')
   }
 
+  // set a cache value
   setValue(key, value) {
     console.log('setValue', key, value)
     this.cache.set(`${this.device.id}-${key}`, value)
   }
 }
 
-//. move into cache
+//. move into cache.js
 
 // get object in DATA_SET format for shdr.
 // will return something like "free=48237472 used=12387743 total=38828348"
