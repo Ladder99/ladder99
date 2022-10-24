@@ -12,19 +12,16 @@ const {
   MessageSecurityMode,
   SecurityPolicy,
   AttributeIds,
-  makeBrowsePath,
-  // ClientSubscription,
-  // TimestampsToReturn,
-  // ClientMonitoredItem,
+  // makeBrowsePath,
+  ClientSubscription,
+  TimestampsToReturn,
+  ClientMonitoredItem,
 } = pkg
 
 //
 
-// host.docker.internal lets you access localhost on the host computer, which is running kepware
-const defaultUrl = 'opc.tcp://host.docker.internal:49320'
-
-// the simulator service runs an opc server on this port
-// const defaultUrl = 'opc.tcp://simulator:4334/UA/LittleServer'
+// const defaultUrl = 'opc.tcp://simulator:4334/UA/LittleServer' // for simulator service
+const defaultUrl = 'opc.tcp://host.docker.internal:49320' // for kepware via localhost
 
 //
 
@@ -38,8 +35,9 @@ export class AdapterDriver {
     this.cache = cache
     this.source = source
     this.module = module
+
     const { inputs } = module
-    this.inputs = inputs.inputs //. bleh don't like
+    this.inputs = inputs.inputs //. bleh, will fix
 
     console.log('OPC inputs', this.inputs)
 
@@ -157,53 +155,53 @@ export class AdapterDriver {
     // console.log(`OPC setting cache ${key}:`, operator)
     // cache.set(key, operator)
 
-    // // subscribe and monitor item for n seconds
-    // const subscription = ClientSubscription.create(session, {
-    //   requestedPublishingInterval: 1000,
-    //   requestedLifetimeCount: 100,
-    //   requestedMaxKeepAliveCount: 10,
-    //   maxNotificationsPerPublish: 100,
-    //   publishingEnabled: true,
-    //   priority: 10,
-    // })
-    // subscription
-    //   .on('started', function () {
-    //     console.log(
-    //       'OPC subscription started for 2 seconds - subscriptionId=',
-    //       subscription.subscriptionId
-    //     )
-    //   })
-    //   .on('keepalive', function () {
-    //     console.log('OPC subscription keepalive')
-    //   })
-    //   .on('terminated', function () {
-    //     console.log('OPC subscription terminated')
-    //   })
-    // // install monitored item
-    // const itemToMonitor = {
-    //   nodeId: 'ns=1;s=free_memory',
-    //   attributeId: AttributeIds.Value,
-    // }
-    // const parameters = {
-    //   samplingInterval: 100,
-    //   discardOldest: true,
-    //   queueSize: 10,
-    // }
-    // const monitoredItem = ClientMonitoredItem.create(
-    //   subscription,
-    //   itemToMonitor,
-    //   parameters,
-    //   TimestampsToReturn.Both
-    // )
-    // monitoredItem.on('changed', dataValue => {
-    //   console.log(
-    //     'OPC free_memory value has changed:',
-    //     dataValue.value.toString()
-    //   )
-    // })
-    // await timeout(4000)
-    // console.log('OPC now terminating subscription')
-    // await subscription.terminate()
+    // subscribe and monitor item for n seconds
+    const subscription = ClientSubscription.create(session, {
+      requestedPublishingInterval: 1000,
+      requestedLifetimeCount: 10,
+      requestedMaxKeepAliveCount: 10,
+      maxNotificationsPerPublish: 100,
+      publishingEnabled: true,
+      priority: 10,
+    })
+    subscription
+      .on('started', function () {
+        console.log(
+          'OPC subscription started for 2 seconds - subscriptionId=',
+          subscription.subscriptionId
+        )
+      })
+      .on('keepalive', function () {
+        console.log('OPC subscription keepalive')
+      })
+      .on('terminated', function () {
+        console.log('OPC subscription terminated')
+      })
+    // install monitored item
+    const itemToMonitor = {
+      // nodeId: 'ns=1;s=free_memory',
+      nodeId: 'ns=2;s=Simulation Examples.Functions.User1',
+      attributeId: AttributeIds.Value,
+    }
+    const parameters = {
+      samplingInterval: 100,
+      discardOldest: true,
+      queueSize: 10,
+    }
+    const monitoredItem = ClientMonitoredItem.create(
+      subscription,
+      itemToMonitor,
+      parameters,
+      TimestampsToReturn.Both
+    )
+    monitoredItem.on('changed', dataValue => {
+      console.log('OPC user1 value has changed:', dataValue.value.toString())
+    })
+
+    await timeout(4000)
+
+    console.log('OPC now terminating subscription')
+    await subscription.terminate()
 
     console.log(`OPC closing session...`)
     await session.close()
