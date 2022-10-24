@@ -10,62 +10,84 @@
 # for available item and subitem names see https://github.com/sebhildebrandt/systeminformation
 
 inputs:
-  - name: temp
-    item: cpuTemperature
-    subitem: main
-    decimals: 1
+  # temperature
+  cpuTemperature: # systeminformation item
+    main: # systeminformation subitem
+      name: temp # cache name, part of cache key
+      decimals: 1 # optional for rounding floats
 
-  - name: cputot
-    item: currentLoad
-    subitem: currentLoad
-    decimals: 1
+  # cpu
+  currentLoad:
+    currentLoad:
+      name: cputot
+      decimals: 1
+    currentLoadUser:
+      name: cpuuser
+      decimals: 1
+    currentLoadSystem:
+      name: cpusys
+      decimals: 1
 
-  - name: cpuuser
-    item: currentLoad
-    subitem: currentLoadUser
-    decimals: 1
+  # memory
+  # mem:
+  #   total:
+  #   free:
+  #   used:
 
-  - name: cpusys
-    item: currentLoad
-    subitem: currentLoadSystem
-    decimals: 1
+  # disk
+  # fsSize:
+  #   fs
+  #   size
+  #   used
+  #   use
+  #   available
 
-  - name: memtot
-    item: mem
-    subitem: total
-    decimals: -6 # ie round to MB
+  # os
+  # osInfo:
+  #   platform
+  #   distro
+  #   release
+  #   codename
+  #   arch
+  #   hostname
+# -------------
 
-  - name: memfree
-    item: mem
-    subitem: free
-    decimals: -6
+# - name: memtot
+#   item: mem
+#   subitem: total
+#   decimals: -6 # ie round to MB
 
-  - name: memused
-    item: mem
-    subitem: used
-    decimals: -6
+# - name: memfree
+#   item: mem
+#   subitem: free
+#   decimals: -6
 
-  - name: disksize
-    item: fsSize
-    subitem: total
-    decimals: 0
+# - name: memused
+#   item: mem
+#   subitem: used
+#   decimals: -6
 
-  - name: diskused
-    item: fsSize
-    subitem: free
-    decimals: -6
+# - name: disksize
+#   item: fsSize
+#   subitem: total
+#   decimals: 0
 
-  - name: diskuse
-    item: fsSize
-    subitem: used
-    decimals: 0
+# - name: diskused
+#   item: fsSize
+#   subitem: free
+#   decimals: -6
 
-  - name: diskavail
-    item: fsSize
-    subitem: used
-    decimals: -6
+# - name: diskuse
+#   item: fsSize
+#   subitem: used
+#   decimals: 0
 
-  - name: os
-    item: osInfo
-    subitems: platform, distro, release, codename, arch, hostname
-    representation: dataset
+# - name: diskavail
+#   item: fsSize
+#   subitem: used
+#   decimals: -6
+
+# - name: os
+#   item: osInfo
+#   subitems: platform, distro, release, codename, arch, hostname
+#   representation: dataset
