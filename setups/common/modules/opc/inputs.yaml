@@ -1,8 +1,6 @@
 inputs:
   - key: user1
     nodeId: ns=2;s=Simulation Examples.Functions.User1
-    subscribe: true
 
   - key: user2
     nodeId: ns=2;s=Simulation Examples.Functions.User2
-    subscribe: true

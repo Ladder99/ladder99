@@ -5,184 +5,117 @@
 // https://github.com/node-opcua/node-opcua/blob/master/documentation/creating_a_client_typescript.md
 
 // see https://github.com/node-opcua/node-opcua/tree/master/packages/node-opcua-client
-// note: multiline named import fails so must do this
 import pkg from 'node-opcua-client'
+// note: multiline named import fails so must do this
 const {
   OPCUAClient,
   MessageSecurityMode,
   SecurityPolicy,
   AttributeIds,
-  // makeBrowsePath,
   ClientSubscription,
   TimestampsToReturn,
   ClientMonitoredItem,
 } = pkg
 
-//
-
-// const defaultUrl = 'opc.tcp://simulator:4334/UA/LittleServer' // for simulator service
+//. specify these in base setup yaml
 const defaultUrl = 'opc.tcp://host.docker.internal:49320' // for kepware via localhost
-
-//
+// const defaultUrl = 'opc.tcp://simulator:4334/UA/LittleServer' // for simulator service
 
 export class AdapterDriver {
   //
-  // initialize the client plugin
   async start({ device, cache, source, module }) {
+    //
     console.log('OPC init', device.id)
-
     this.device = device
     this.cache = cache
     this.source = source
     this.module = module
-
-    const { inputs } = module
-    this.inputs = inputs.inputs //. bleh, will fix
-
+    this.inputs = module?.inputs?.inputs || [] // array of { key, nodeId }
+    this.url = source?.connect?.url ?? defaultUrl
     console.log('OPC inputs', this.inputs)
+    this.subscriptions = []
 
-    const url = source?.connect?.url ?? defaultUrl
+    this.setValue('avail', 'UNAVAILABLE') // write to cache
+    this.session = await this.getOPCSession() // connect to opc server
+    this.setValue('avail', 'AVAILABLE') // connected successfully
 
-    // set cache value
-    // note: if agent has not connected yet,
-    // this will save the last value and send it on connection.
-    this.setValue('avail', 'UNAVAILABLE')
+    // iterate over inputs, fetch latest values, write to cache
+    for (let input of this.inputs) {
+      const subscription = this.subscribe(input)
+      this.subscriptions.push(subscription)
+    }
+  }
 
-    // create client
-    console.log(`OPC create client...`)
+  async getOPCSession() {
+    //
+    console.log(`OPC getting client...`)
     const connectionStrategy = {
       initialDelay: 1000,
-      maxRetry: 10, // default is infinite
     }
-    const client = OPCUAClient.create({
-      applicationName: 'MyClient',
+    this.client = OPCUAClient.create({
+      applicationName: 'Ladder99',
       connectionStrategy: connectionStrategy,
       securityMode: MessageSecurityMode.None,
       securityPolicy: SecurityPolicy.None,
       endpointMustExist: false,
     })
 
-    // get connection
+    console.log(`OPC connecting to server at ${this.url}...`)
     let connected = false
     while (!connected) {
       try {
-        console.log(`OPC connecting to server at ${url}...`)
-        await client.connect(url) // returns Promise void, or throws error if fails
+        await this.client.connect(this.url) // returns Promise void, or throws error if fails
         connected = true
         console.log(`OPC connected to server`)
       } catch (e) {
-        console.log('OPC error - waiting a bit', e.message)
+        console.log('OPC error connecting to server:', e.message)
+        console.log('OPC waiting a bit...')
         await timeout(2000)
       }
     }
 
-    // get session
+    console.log('OPC creating session...')
     let session = null
     while (!session) {
       try {
-        console.log('OPC creating session...')
-        session = await client.createSession()
+        session = await this.client.createSession()
         console.log(`OPC created session`)
       } catch (e) {
-        console.log('OPC error - waiting a bit', e.message)
+        console.log('OPC error creating session:', e.message)
+        console.log('OPC waiting a bit...')
         await timeout(2000)
       }
     }
+    return session
+  }
 
-    // connected
-    this.setValue('avail', 'AVAILABLE')
+  // subscribe and monitor an input item, write changes to cache
+  subscribe(input) {
+    //
+    console.log('OPC subscribing to', input.key, input.nodeId)
+    const { key, nodeId } = input
 
-    //. here we can iterate over inputs, fetch or subscribe to them,
-    // and set the cache key-value pairs.
-
-    // // browse names
-    // //. just gives 'Objects', 'Types', 'Values' - how recurse?
-    // const browseResult = await session.browse('RootFolder')
-    // console.log('OPC references of RootFolder :')
-    // for (const reference of browseResult.references) {
-    //   console.log('   -> ', reference.browseName.toString())
-    // }
-
-    // const browsePath = makeBrowsePath('RootFolder', '/Objects/2:MyObject/2:MyVariable')
-
-    // const browsePath =
-    //   makeBrowsePath()
-    //   // 'RootFolder',
-    //   // '/Objects/Server.ServerStatus.BuildInfo.ProductName'
-    //   // '/Objects/Simulation Examples/Functions/User1'
-    //   // '2:User1'
-    // const result = await session.translateBrowsePath(browsePath)
-    // const productNameNodeId = result.targets[0]?.targetId
-    // console.log('OPC Product Name nodeId', productNameNodeId.toString())
-    // // console.log('OPC Product Name nodeId', productNameNodeId)
-    // console.log()
-
-    // // read operator
-    // // let nodeId = productNameNodeId
-    // let nodeId = 'ns=2;s=Simulation Examples.Functions.User1'
-    // const dataValue = await session.read({
-    //   nodeId,
-    //   attributeId: AttributeIds.Value,
-    // })
-    // console.log(`OPC read`, nodeId.toString(), dataValue.value.value) // a variant
-    // // const operator = dataValue.value.value //. better way?
-    // // const key = `${device.id}-`
-    // // console.log(`OPC setting cache ${key}:`, operator)
-    // // cache.set(key, operator)
-    // console.log()
-
-    // iterate over inputs, fetch latest values, write to cache
-    for (let input of this.inputs) {
-      const { key, nodeId } = input
-      const dataValue = await session.read({
-        nodeId,
-        attributeId: AttributeIds.Value,
-      })
-      console.log(`OPC read`, nodeId.toString(), dataValue.value.value) // a variant
-      const value = dataValue.value.value
-      this.setValue(key, value)
-    }
-
-    // // read operator
-    // let nodeId = 'ns=1;s=Operator'
-    // const dataValue3 = await session.read({
-    //   nodeId,
-    //   attributeId: AttributeIds.Value,
-    // })
-    // console.log(`OPC read ${nodeId}:`, dataValue3.value) // a variant
-    // const operator = dataValue3.value.value //. better way?
-    // const key = `${device.id}-operator`
-    // console.log(`OPC setting cache ${key}:`, operator)
-    // cache.set(key, operator)
-
-    // subscribe and monitor item for n seconds
-    const subscription = ClientSubscription.create(session, {
+    // create subscription
+    const subscription = ClientSubscription.create(this.session, {
       requestedPublishingInterval: 1000,
-      requestedLifetimeCount: 10,
-      requestedMaxKeepAliveCount: 10,
       maxNotificationsPerPublish: 100,
       publishingEnabled: true,
       priority: 10,
+      // requestedLifetimeCount: 10,
+      // requestedMaxKeepAliveCount: 10,
     })
+
+    // attach listeners
     subscription
-      .on('started', function () {
-        console.log(
-          'OPC subscription started for 2 seconds - subscriptionId=',
-          subscription.subscriptionId
-        )
+      .on('started', () => {
+        console.log('OPC subscription started')
+        console.log('OPC subscriptionId', subscription.subscriptionId)
       })
-      .on('keepalive', function () {
-        console.log('OPC subscription keepalive')
-      })
-      .on('terminated', function () {
-        console.log('OPC subscription terminated')
-      })
-    // install monitored item
-    const itemToMonitor = {
-      // nodeId: 'ns=1;s=free_memory',
-      nodeId: 'ns=2;s=Simulation Examples.Functions.User1',
-      attributeId: AttributeIds.Value,
-    }
+      .on('keepalive', () => console.log('OPC subscription keepalive'))
+      .on('terminated', () => console.log('OPC subscription terminated'))
+
+    // create monitored item
+    const itemToMonitor = { nodeId, attributeId: AttributeIds.Value }
     const parameters = {
       samplingInterval: 100,
       discardOldest: true,
@@ -194,22 +127,31 @@ export class AdapterDriver {
       parameters,
       TimestampsToReturn.Both
     )
+
+    // attach listener
+    const that = this
     monitoredItem.on('changed', dataValue => {
-      console.log('OPC user1 value has changed:', dataValue.value.toString())
+      const value = dataValue.value.value
+      console.log(`OPC ${key} value has changed:`, value)
+      that.setValue(key, value)
     })
 
-    await timeout(4000)
+    return subscription
+  }
 
-    console.log('OPC now terminating subscription')
-    await subscription.terminate()
+  async stop() {
+    console.log('OPC terminating subscriptions...')
+    for (let subscription of this.subscriptions) {
+      await subscription.terminate()
+    }
 
     console.log(`OPC closing session...`)
-    await session.close()
+    await this.session.close()
 
     console.log(`OPC disconnecting...`)
-    await client.disconnect()
+    await this.client.disconnect()
 
-    console.log('OPC done')
+    console.log('OPC stopped')
   }
 
   // helper methods
