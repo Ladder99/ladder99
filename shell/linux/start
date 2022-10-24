@@ -71,7 +71,8 @@ else
 fi
 
 # file paths
-COMPOSE="services/compose.yaml"
+# COMPOSE="services/compose.yaml"
+COMPOSE="setups/base/compose.yaml"
 OVERRIDES="$SETUP/compose-overrides.yaml"
 ENVFILE="$SETUP/.env"
 ENVFILE_EXAMPLE="$SETUP/.env-example"
