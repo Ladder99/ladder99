@@ -3,24 +3,24 @@
 
 # we need this detailed structure so know what to read,
 # where to write it, and what representation to use for writing to the agent.
-# this yaml format is specific to the host.js adapter driver.
-# the item and subitem names are defined by https://github.com/sebhildebrandt/systeminformation
-inputs:
-  #. currently just hardcoded in host.js driver for now
 
-  # - name: temperature
-  #   item: cpuTemperature
-  #   subitems: main, cores
-  #   representation: dataset
+# this yaml format is specific to the host.js adapter driver.
+# it interprets name as part of the cache key (eg 'host-temp').
+
+# for available item and subitem names see https://github.com/sebhildebrandt/systeminformation
+
+inputs:
+  - name: temp
+    item: cpuTemperature
+    subitem: main
+
+  - name: cpu
+    item: currentLoad
+    subitems: currentLoad, currentLoadUser, currentLoadSystem
 
   # - name: memory
   #   item: mem
   #   subitems: total, free, used
-  #   representation: dataset
-
-  # - name: cpu
-  #   item: currentLoad
-  #   subitems: currentLoad, currentLoadUser, currentLoadSystem
   #   representation: dataset
 
   # - name: os

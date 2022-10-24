@@ -1,100 +1,54 @@
 # outputs
 
-# these outputs are placed in the model.yaml tree and define the
+# these outputs are placed in the module.xml tree and define the
 # shdr strings that are calculated from the cache and sent to the agent.
+
+# this file is processed by adapter/index.js
+
+# the item's id in the xml and the shdr key is `${deviceId}-${key}`
+# the shdr value is defined with the item value code.
 
 # value is javascript, evaluated by the cache in calculating the shdr output.
 # <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo')
 
+# note: cache keys are ARBITRARY,
+# ie not necessarily the same as dataitem id OR name.
+# eg <status_step> references the cache value at 'kl1-status_step',
+# which was set in inputs.yaml, while the output key here is 'step',
+# which becomes eg 'kl1-step' for the SHDR id.
+
+# the idea is to keep the SHDR ids as short as possible, to reduce network bandwidth,
+# while the dataitem name can be more descriptive.
+
+# note: category is used to determine shdr representation.
+# only need to specify category if CONDITION.
+# only need to specify type if is MESSAGE.
+# don't need to specify subType.
+# see end of services/adapter/src/cache.js for details.
+
+# note: as a shortcut, can just specify the key -
+# value will be inferred to be <key>.
+
 outputs:
   - key: avail
-    category: EVENT
-    type: AVAILABILITY
-    value: <availability>
 
   - key: cond
     category: CONDITION
-    type: SYSTEM
-    value: <condition>
 
   - key: temp
-    category: SAMPLE
-    type: TEMPERATURE
-    value: <temperature>
-
-  # - key: memory
-  #   category: EVENT
-  #   type: VARIABLE
-  #   subType: x:MEMORY
-  #   representation: DATA_SET
-  #   value: <memory>
-
-  - key: memtot
-    category: SAMPLE
-    type: x:MEMORY
-    subType: x:TOTAL
-    value: <memory-total>
-
-  - key: memfree
-    category: SAMPLE
-    type: x:MEMORY
-    subType: x:FREE
-    value: <memory-free>
-
-  - key: memused
-    category: SAMPLE
-    type: x:MEMORY
-    subType: x:USED
-    value: <memory-used>
-
-  # - key: cpu
-  #   category: EVENT
-  #   type: VARIABLE
-  #   subType: x:CPU
-  #   representation: DATA_SET
-  #   value: <cpu>
 
   - key: cputot
-    category: SAMPLE
-    type: x:CPU
-    subType: x:TOTAL
-    value: <cpu-total>
-
   - key: cpuuser
-    category: SAMPLE
-    type: x:CPU
-    subType: x:USER
-    value: <cpu-user>
-
   - key: cpusys
-    category: SAMPLE
-    type: x:CPU
-    subType: x:SYSTEM
-    value: <cpu-system>
+
+  - key: memtot
+  - key: memfree
+  - key: memused
 
   - key: disksize
-    category: SAMPLE
-    type: x:DISK
-    subType: x:SIZE
-    value: <disk-size>
-
   - key: diskused
-    category: SAMPLE
-    type: x:DISK
-    subType: x:USED
-    value: <disk-used>
-
   - key: diskuse
-    category: SAMPLE
-    type: x:DISK
-    subType: x:USE
-    value: <disk-use>
-
   - key: diskavail
-    category: SAMPLE
-    type: x:DISK
-    subType: x:AVAILABLE
-    value: <disk-available>
 
   - key: os
     category: EVENT
