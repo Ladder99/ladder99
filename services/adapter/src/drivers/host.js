@@ -65,7 +65,7 @@ export class AdapterDriver {
       //     release: '10.0.19043',
       //     codename: 'Windows 10',
       //     arch: 'x64',
-      //     hostname: 'DESKTOP-1'
+      //     hostname: 'DESKTOP'
       //   }
       // }
       const data = await si.get(this.query)
