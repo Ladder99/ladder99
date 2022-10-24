@@ -668,7 +668,7 @@
           },
           "id": 26,
           "options": {
-            "content": "## Microcontroller\n\nThe microcontroller consolidates data from factory devices, \nstores it in a database, and provides it to the dashboard here.\n\nThese charts show the status of the microcontroller itself - \nmemory free and used, CPU usage, and temperature. \n\nTemperature is typically around 40 degrees Celsius - the max is around 80. \n",
+            "content": "## Host\n\nThe host driver consolidates data from factory devices, \nstores it in a database, and provides it to the dashboard here.\n\nThese charts show the status of the host itself - \nmemory free and used, CPU usage, and temperature. \n\nTemperature is typically around 40 degrees Celsius - the max is around 80. \n",
             "mode": "markdown"
           },
           "pluginVersion": "8.2.2",
@@ -718,11 +718,11 @@
         "allValue": null,
         "current": {
           "selected": true,
-          "text": "Main/Micro",
-          "value": "Main/Micro"
+          "text": "Main/Host",
+          "value": "Main/Host"
         },
         "datasource": null,
-        "definition": "select path from devices where path like '%/Micro' order by path",
+        "definition": "select path from devices where path like '%/Host' order by path",
         "description": null,
         "error": null,
         "hide": 0,
@@ -731,7 +731,7 @@
         "multi": false,
         "name": "device",
         "options": [],
-        "query": "select path from devices where path like '%/Micro' order by path",
+        "query": "select path from devices where path like '%/Host' order by path",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -759,7 +759,7 @@
     ]
   },
   "timezone": "",
-  "title": "Microcontroller",
-  "uid": "micro",
+  "title": "Host",
+  "uid": "host",
   "version": 2
 }

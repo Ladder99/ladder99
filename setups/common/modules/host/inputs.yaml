@@ -1,12 +1,12 @@
 # inputs
-# define values to be read by micro.js driver and how to write to cache
+# define values to be read by host.js driver and how to write to cache
 
 # we need this detailed structure so know what to read,
 # where to write it, and what representation to use for writing to the agent.
-# this yaml format is specific to the micro.js adapter driver.
+# this yaml format is specific to the host.js adapter driver.
 # the item and subitem names are defined by https://github.com/sebhildebrandt/systeminformation
 inputs:
-  #. currently just hardcoded in micro.js driver
+  #. currently just hardcoded in host.js driver for now
 
   # - name: temperature
   #   item: cpuTemperature

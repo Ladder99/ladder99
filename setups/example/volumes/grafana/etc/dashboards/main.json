@@ -1174,7 +1174,7 @@
           "value": "Fanuc/Sim"
         },
         "datasource": null,
-        "definition": "select path from devices where path not like '%/Micro'",
+        "definition": "select path from devices where path not like '%/Host'",
         "description": "Device Name",
         "error": null,
         "hide": 0,
@@ -1183,7 +1183,7 @@
         "multi": false,
         "name": "device",
         "options": [],
-        "query": "select path from devices where path not like '%/Micro'",
+        "query": "select path from devices where path not like '%/Host'",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,

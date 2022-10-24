@@ -26,10 +26,6 @@ const params = {
   //. could also contain custom adapter drivers and modules, eg for oxbox.
   setupFolder: process.env.L99_SETUP_FOLDER || `/data/setup`,
   modulesFolder: process.env.L99_MODULES_FOLDER || `/data/modules`, // incls print-apply/module.xml etc
-  // commonModulesFolder:
-  //   process.env.L99_COMMON_MODULES_FOLDER || `/data/modules/common`,
-  // setupModulesFolder:
-  //   process.env.L99_SETUP_MODULES_FOLDER || `/data/modules/setup`,
 }
 
 async function start(params) {

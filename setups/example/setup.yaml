@@ -11,21 +11,21 @@ client:
 # agent.xml and agent.cfg files.
 adapter:
   devices:
-    # the micro device polls the cpu for load, temperature, disk for free space, etc.
-    - id: m # must match id in agent.xml
-      name: Micro # this must match name in agent.cfg and agent.xml
+    # the host device polls the host os/cpu for load, temperature, disk for free space, etc.
+    - id: host # must match id in agent.xml
+      name: Host # this must match name in agent.cfg and agent.xml
       # see also device alias in the relay section.
 
       # each device has one or more "sources", which use drivers that feed data to
       # a key-value cache - when a key's value changes, the cache sends the new value
       # to the Agent via SHDR.
       sources:
-        # the micro device driver defines a set of cache outputs in an outputs.yaml file.
+        # the host device driver defines a set of cache outputs in an outputs.yaml file.
         # these map from the cache keys to the SHDR keys.
         # it also defines a set of cache inputs in an inputs.yaml file.
-        # the driver itself is a node.js module that polls the microcontroller data.
-        - module: micro # module defines inputs and outputs with yaml files
-          driver: micro # adapter plugin - manages protocol and payload
+        # the driver itself is a node.js module that polls the host os data.
+        - module: host # module defines inputs and outputs with yaml files
+          driver: host # adapter plugin - manages protocol and payload
       # each device the adapter connects to has its own tcp port to an agent,
       # and the agent is configured to listen to that port in agent.cfg.
       outputs:
@@ -49,13 +49,14 @@ relay:
       # ignore: true # can specify this to turn agent recording on/off for all devices.
       # the devices sections is optional, but lets you assign a friendly alias and retention period, etc.
       devices:
-        - id: m # device id - must match id in agent.xml
-          alias: Micro # device alias is used in path expressions - no spaces
+        - id: host # device id - must match id in agent.xml
+          alias: Host # device alias is used in path expressions - no spaces
           retention: 1w # device data retention period - overrides agent retention value
           # ignore: true # specify this to turn device recording on/off
           # # can translate, ignore, or set retention for individual dataitems
+          #. better to set here, or in module config?
           dataitems:
-            - id: m-temp # this is 'deviceId-dataitemId', where dataitemId is defined in agent.xml.
+            - id: host-temp # this is 'deviceId-dataitemId', where dataitemId is defined in agent.xml.
               retention: 1d # dataitem retention period - overrides device retention value
               # ignore: true # ignore this dataitem - overrides device ignore value
               # pathstep: AvailFoo # optional path step translation for this dataitem
@@ -125,6 +126,6 @@ relay:
 
 #   # set overrides per agentAlias/deviceAlias/meter here
 #   overrides:
-#     Main/Micro:
+#     Main/Host:
 #       availability:
 #         ignore: true

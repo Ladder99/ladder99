@@ -1,6 +1,6 @@
 # Ladder99 Example Setup
 
-This is an example Ladder99 setup, with live microcontroller and CNC machine connections. 
+This is an example Ladder99 setup, with live CNC machine connections. 
 
 ## Running
 

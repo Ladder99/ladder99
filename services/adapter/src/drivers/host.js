@@ -1,6 +1,6 @@
-// microcontroller driver
-// fetches data from microcontroller/pc etc
-// see modules/micro folder.
+// host driver
+// fetches systeminfo from host system
+// see modules/host folder.
 
 // this library causes highcpu on windows - 2022-02
 // https://github.com/sebhildebrandt/systeminformation/issues/626
@@ -10,11 +10,11 @@ import si from 'systeminformation' // see https://github.com/sebhildebrandt/syst
 
 import * as lib from '../common/lib.js' // for lib.rounded
 
-const pollInterval = 5000 // msec //. could get from setup
+const pollInterval = 5000 // msec //. get from base setup
 
 export class AdapterDriver {
-  start({ device, cache }) {
-    console.log(`Micro - initialize driver...`)
+  start({ device, cache, module }) {
+    console.log(`Host start driver...`)
 
     setUnavailable()
     setInterval(readData, pollInterval)
@@ -49,7 +49,7 @@ export class AdapterDriver {
         // console.log(data) // too much info
 
         // get total disk space as { size, used, use }
-        // console.log('Micro fsSize', data.fsSize)
+        // console.log('Host fsSize', data.fsSize)
         // console.log(data.fsSize.map(d => d.fs))
         // data.fsSize is sthing like this - reduce to single object - or just use drvfs?
         // windows:
@@ -122,9 +122,10 @@ export class AdapterDriver {
   }
 }
 
+//. move into cache
+
 // get object in DATA_SET format for shdr,
 // will return something like "free=48237472 used=12387743 total=38828348"
-//. this should be part of cache.js
 function getDataSet(obj) {
   // sanitize the keys as well as the values
   const str = Object.keys(obj)
@@ -132,7 +133,6 @@ function getDataSet(obj) {
     .join(' ')
   return str
 }
-
 // a local fn
 function sanitize(value) {
   return String(value || '')
