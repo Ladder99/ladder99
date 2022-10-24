@@ -52,7 +52,7 @@ inputs:
       name: memused
       decimals: -6
 
-  # # disk
+  # # disk - returns an array
   # fsSize:
   #   # supply some code to host.js?
   #   # either pick one value out, or sum up all, etc
