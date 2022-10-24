@@ -13,17 +13,59 @@ inputs:
   - name: temp
     item: cpuTemperature
     subitem: main
+    decimals: 1
 
-  - name: cpu
+  - name: cputot
     item: currentLoad
-    subitems: currentLoad, currentLoadUser, currentLoadSystem
+    subitem: currentLoad
+    decimals: 1
 
-  # - name: memory
-  #   item: mem
-  #   subitems: total, free, used
-  #   representation: dataset
+  - name: cpuuser
+    item: currentLoad
+    subitem: currentLoadUser
+    decimals: 1
 
-  # - name: os
-  #   item: osInfo
-  #   subitems: platform, distro, release, codename, arch, hostname
-  #   representation: dataset
+  - name: cpusys
+    item: currentLoad
+    subitem: currentLoadSystem
+    decimals: 1
+
+  - name: memtot
+    item: mem
+    subitem: total
+    decimals: -6 # ie round to MB
+
+  - name: memfree
+    item: mem
+    subitem: free
+    decimals: -6
+
+  - name: memused
+    item: mem
+    subitem: used
+    decimals: -6
+
+  - name: disksize
+    item: fsSize
+    subitem: total
+    decimals: 0
+
+  - name: diskused
+    item: fsSize
+    subitem: free
+    decimals: -6
+
+  - name: diskuse
+    item: fsSize
+    subitem: used
+    decimals: 0
+
+  - name: diskavail
+    item: fsSize
+    subitem: used
+    decimals: -6
+
+  - name: os
+    item: osInfo
+    subitems: platform, distro, release, codename, arch, hostname
+    representation: dataset

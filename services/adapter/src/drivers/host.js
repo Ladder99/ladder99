@@ -11,6 +11,8 @@ import * as lib from '../common/lib.js' // for lib.rounded
 
 const pollInterval = 5000 // msec //. get from base setup
 
+//
+
 export class AdapterDriver {
   //
   start({ device, cache, module }) {
@@ -20,7 +22,29 @@ export class AdapterDriver {
     this.cache = cache
     this.module = module
 
-    //. gather items by grouping items together
+    //. gather query by grouping items together
+    // get specs object like { mem: 'total, free, used' }, as expected by si module
+    // const specs = {}
+    // inputs.inputs.forEach(input => (specs[input.item] = input.subitems))
+
+    // most interesting ones avail ---
+    // battery: hasBattery, currentCapacity, maxCapacity, capacityUnit, percent mWh
+    // cpu: manufacturer, brand, speed, cores
+    // cpuTemperature: main, cores
+    // currentLoad: currentLoad, currentLoadUser, currentLoadSystem
+    // disksIO: rIO, wIO
+    // dockerContainers: name, createdAt, state
+    // fsSize: fs, type, size, available
+    // mem: total, free, used
+    // osInfo: platform, distro, release, codename, arch, hostname
+    // wifiInterfaces: id, model, vendor
+    this.specs = {
+      cpuTemperature: 'main',
+      currentLoad: 'currentLoad, currentLoadUser, currentLoadSystem',
+      mem: 'total, free, used',
+      fsSize: 'fs, size, used, use, available', // gives an array
+      osInfo: 'platform, distro, release, codename, arch, hostname',
+    }
 
     // setUnavailable() //. do we need this? on agent disconnect, agent outputs unavailable.
     setInterval(this.poll.bind(this), pollInterval)
@@ -28,32 +52,7 @@ export class AdapterDriver {
 
   async poll() {
     try {
-      // get specs object like { mem: 'total, free, used' }, as expected by si module
-      // const specs = {}
-      // inputs.inputs.forEach(input => (specs[input.item] = input.subitems))
-
-      // most interesting ones avail ---
-      // battery: hasBattery, currentCapacity, maxCapacity, capacityUnit, percent mWh
-      // cpu: manufacturer, brand, speed, cores
-      // cpuTemperature: main, cores
-      // currentLoad: currentLoad, currentLoadUser, currentLoadSystem
-      // disksIO: rIO, wIO
-      // dockerContainers: name, createdAt, state
-      // fsSize: fs, type, size, available
-      // mem: total, free, used
-      // osInfo: platform, distro, release, codename, arch, hostname
-      // wifiInterfaces: id, model, vendor
-      const specs = {
-        cpuTemperature: 'main',
-        currentLoad: 'currentLoad, currentLoadUser, currentLoadSystem',
-        mem: 'total, free, used',
-        fsSize: 'fs, size, used, use, available', // gives an array
-        osInfo: 'platform, distro, release, codename, arch, hostname',
-      }
-
-      // read the specs data
-      const data = await si.get(specs)
-      // console.log(data) // too much info
+      const data = await si.get(this.specs)
 
       // get total disk space as { size, used, use }
       // console.log('Host fsSize', data.fsSize)
@@ -81,44 +80,47 @@ export class AdapterDriver {
       const disk = data.fsSize.find(o => o.fs === 'overlay') || {}
 
       // write values to cache
-      setValue('avail', 'AVAILABLE')
-      setValue('cond', 'NORMAL')
-      setValue('temp', lib.rounded(data.cpuTemperature.main, 1))
-      setValue('cputot', lib.rounded(data.currentLoad.currentLoad, 1))
-      setValue('cpuuser', lib.rounded(data.currentLoad.currentLoadUser, 1))
-      setValue('cpusys', lib.rounded(data.currentLoad.currentLoadSystem, 1))
-      setValue('memtot', lib.rounded(data.mem.total, -6))
-      setValue('memfree', lib.rounded(data.mem.free, -6))
-      setValue('memused', lib.rounded(data.mem.used, -6))
-      setValue('disksize', disk.size) // bytes
-      setValue('diskused', lib.rounded(disk.used, -6)) // bytes rounded to mb
-      setValue('diskuse', lib.rounded(disk.use, 0)) // percent
-      setValue('diskavail', lib.rounded(disk.available, -6)) // bytes rounded to mb
-      setValue('os', getDataSet(data.osInfo))
+      this.setValue('avail', 'AVAILABLE')
+      this.setValue('cond', 'NORMAL')
+      this.setValue('temp', lib.rounded(data.cpuTemperature.main, 1))
+      this.setValue('cputot', lib.rounded(data.currentLoad.currentLoad, 1))
+      this.setValue('cpuuser', lib.rounded(data.currentLoad.currentLoadUser, 1))
+      this.setValue(
+        'cpusys',
+        lib.rounded(data.currentLoad.currentLoadSystem, 1)
+      )
+      this.setValue('memtot', lib.rounded(data.mem.total, -6))
+      this.setValue('memfree', lib.rounded(data.mem.free, -6))
+      this.setValue('memused', lib.rounded(data.mem.used, -6))
+      this.setValue('disksize', disk.size) // bytes
+      this.setValue('diskused', lib.rounded(disk.used, -6)) // bytes rounded to mb
+      this.setValue('diskuse', lib.rounded(disk.use, 0)) // percent
+      this.setValue('diskavail', lib.rounded(disk.available, -6)) // bytes rounded to mb
+      this.setValue('os', getDataSet(data.osInfo))
       //
     } catch (error) {
       console.log(error.message)
-      setUnavailable()
+      this.setUnavailable()
     }
   }
 
-  // //. get this list from inputs also
-  // setUnavailable() {
-  //   setValue('avail', 'UNAVAILABLE')
-  //   setValue('cond', 'UNAVAILABLE')
-  //   setValue('temp', 'UNAVAILABLE')
-  //   setValue('cputot', 'UNAVAILABLE')
-  //   setValue('cpuuser', 'UNAVAILABLE')
-  //   setValue('cpusys', 'UNAVAILABLE')
-  //   setValue('memtot', 'UNAVAILABLE')
-  //   setValue('memfree', 'UNAVAILABLE')
-  //   setValue('memused', 'UNAVAILABLE')
-  //   setValue('disksize', 'UNAVAILABLE')
-  //   setValue('diskused', 'UNAVAILABLE')
-  //   setValue('diskuse', 'UNAVAILABLE')
-  //   setValue('diskavail', 'UNAVAILABLE')
-  //   setValue('os', 'UNAVAILABLE')
-  // }
+  //. get this list from inputs also
+  setUnavailable() {
+    this.setValue('avail', 'UNAVAILABLE')
+    this.setValue('cond', 'UNAVAILABLE')
+    this.setValue('temp', 'UNAVAILABLE')
+    this.setValue('cputot', 'UNAVAILABLE')
+    this.setValue('cpuuser', 'UNAVAILABLE')
+    this.setValue('cpusys', 'UNAVAILABLE')
+    this.setValue('memtot', 'UNAVAILABLE')
+    this.setValue('memfree', 'UNAVAILABLE')
+    this.setValue('memused', 'UNAVAILABLE')
+    this.setValue('disksize', 'UNAVAILABLE')
+    this.setValue('diskused', 'UNAVAILABLE')
+    this.setValue('diskuse', 'UNAVAILABLE')
+    this.setValue('diskavail', 'UNAVAILABLE')
+    this.setValue('os', 'UNAVAILABLE')
+  }
 
   setValue(key, value) {
     cache.set(`${this.device.id}-${key}`, value, { quiet: true })
