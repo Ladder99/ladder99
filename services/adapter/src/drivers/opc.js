@@ -16,8 +16,9 @@ const {
   TimestampsToReturn,
   ClientMonitoredItem,
 } = pkg
+import * as lib from '../common/lib.js'
 
-//. specify these in base setup yaml
+//. move these to base setup yaml
 const defaultUrl = 'opc.tcp://host.docker.internal:49320' // for kepware via localhost
 // const defaultUrl = 'opc.tcp://simulator:4334/UA/LittleServer' // for simulator service
 
@@ -93,7 +94,7 @@ export class AdapterDriver {
   subscribe(input) {
     //
     console.log('OPC subscribing to', input.key, input.nodeId)
-    const { key, nodeId } = input
+    // const { key, nodeId } = input
 
     // create subscription
     const subscription = ClientSubscription.create(this.session, {
@@ -115,7 +116,10 @@ export class AdapterDriver {
       .on('terminated', () => console.log('OPC subscription terminated'))
 
     // create monitored item
-    const itemToMonitor = { nodeId, attributeId: AttributeIds.Value }
+    const itemToMonitor = {
+      nodeId: input.nodeId,
+      attributeId: AttributeIds.Value,
+    }
     const parameters = {
       samplingInterval: 100,
       discardOldest: true,
@@ -128,12 +132,14 @@ export class AdapterDriver {
       TimestampsToReturn.Both
     )
 
-    // attach listener
+    // attach listener to write value to cache
     const that = this
     monitoredItem.on('changed', dataValue => {
-      const value = dataValue.value.value
-      console.log(`OPC ${key} value has changed:`, value)
-      that.setValue(key, value)
+      const raw = dataValue.value.value // dataValue is a variant
+      const value =
+        input.decimals === undefined ? raw : lib.rounded(raw, input.decimals)
+      console.log(`OPC ${input.key} value has changed:`, value)
+      that.setValue(input.key, value)
     })
 
     return subscription

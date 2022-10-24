@@ -4,3 +4,4 @@ inputs:
 
   - key: user2
     nodeId: ns=2;s=Simulation Examples.Functions.User2
+    decimals: 2
