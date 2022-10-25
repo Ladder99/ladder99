@@ -19,7 +19,7 @@ export function getShdr(output, value, timestamp = '') {
   // this first is the default representation, so don't require category to be defined in outputs.yaml
   if (category === 'EVENT' || category === 'SAMPLE' || category === undefined) {
     if (type === 'MESSAGE') {
-      // From https://github.com/mtconnect/cppagent#adapter-agent-protocol-version-17
+      // From https://github.com/mtconnect/cppagent -
       //   The next special format is the Message. There is one additional field,
       //   native_code, which needs to be included, eg:
       //   2014-09-29T23:59:33.460470Z|message|CHG_INSRT|Change Inserts
@@ -33,6 +33,11 @@ export function getShdr(output, value, timestamp = '') {
     if (!value || value === 'UNAVAILABLE') {
       shdr = `${timestamp}|${key}|${value}||||${value}`
     } else {
+      // From https://github.com/mtconnect/cppagent -
+      //   Conditions require six fields as follows:
+      //   <timestamp>|<data_item_name>|<level>|<native_code>|<native_severity>|<qualifier>|<message>
+      //   An example line will look like this:
+      //   2014-09-29T23:59:33.460470Z|htemp|WARNING|HTEMP|1|HIGH|Oil Temperature High
       //. pick these values out of the value, which should be an object
       //. and sanitize them
       const level = value // eg 'WARNING' -> element 'Warning'

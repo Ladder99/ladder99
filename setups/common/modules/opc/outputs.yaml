@@ -5,6 +5,8 @@
 
 outputs:
   - key: avail
-  - key: cond
   - key: user1
   - key: user2
+
+  - key: cond
+    value: "<user1>==='HELLO' && <user2>>10 ? 'ERROR' : 'NORMAL'"
