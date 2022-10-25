@@ -10,5 +10,5 @@ The nodes table is just an integer id field with a jsonb props field. The advant
 
 The advantage of a more conventional table structure like devices, dataitems, history_text, history_number would be that you could use the db to enforce consistency, rather than relying on code to do so in the graph structures, and it should be more efficient to store data in conventional fields than jsonb. 
 
-We'll be doing some profiling to compare the approaches in 0.9, and decide what to do from there. 
+We'll be doing some profiling to compare the approaches, then decide what to do from there. 
 
