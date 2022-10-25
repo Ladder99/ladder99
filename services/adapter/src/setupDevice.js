@@ -4,7 +4,6 @@
 import { setupSource } from './setupSource.js'
 import { AgentConnection } from './agentConnection.js'
 
-// export async function setupDevice({
 export function setupDevice({
   setup,
   params,
