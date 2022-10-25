@@ -35,14 +35,8 @@ export class Cache {
       const outputKeys = outputs.map(o => o.key).join(',') // just for logging
       console.log(`Cache addOutputs`, outputKeys)
       for (const output of outputs) {
-        // add dependsOn eg ['ac1-power_fault', 'ac1-power_warning']
+        // add output to map, eg ['ac1-power_fault', 'ac1-power_warning']
         for (const key of output.dependsOn) {
-          //. test change
-          // if (this.mapKeyToOutputs[key]) {
-          //   this.mapKeyToOutputs[key].push(output)
-          // } else {
-          //   this.mapKeyToOutputs[key] = [output]
-          // }
           this.mapKeyToOutputs[key] = this.mapKeyToOutputs[key] || []
           this.mapKeyToOutputs[key].push(output)
         }
@@ -112,7 +106,6 @@ export class Cache {
     //. eg if (this.map[key] !== value) { ... }
 
     // update the cache value
-    // this.map.set(key, value)
     this.map[key] = value
 
     // get list of outputs associated with this key, eg ['ac1-power_condition']
@@ -151,13 +144,11 @@ export class Cache {
   // get a value from cache
   // eg get('pr1-avail')
   get(key) {
-    // return this.map.get(key)
     return this.map[key]
   }
 
   // check if cache has a key
   has(key) {
-    // return this.map.has(key)
     return this.map[key] !== undefined
   }
 
@@ -169,7 +160,7 @@ export class Cache {
 
 // calculate value for the given cache output (can use other cache keyvalues)
 function getValue(cache, output) {
-  //. rename output.value to .getValue or .valueFn
+  //. rename output.value to .getValue or .valueFn or .code or .calc
   const { value: valueFn } = output
   const value = valueFn(cache) // do calculation
   return value
