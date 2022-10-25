@@ -72,7 +72,8 @@ export async function setupSource({
 
     // for each source we need to add the outputs to cache.
     // these are not fully functional until we call cache.setSocket.
-    // used to pass socket in here, but need to handle agent reconnection also.
+    // we used to pass socket in here, but need to handle agent reconnection also,
+    // so saved for later.
     cache.addOutputs(source.outputs)
   }
 

@@ -19,17 +19,17 @@ export function getShdr(output, value, timestamp = '') {
   // this first is the default representation, so don't require category to be defined in outputs.yaml
   if (category === 'EVENT' || category === 'SAMPLE' || category === undefined) {
     if (type === 'MESSAGE') {
-      // The next special format is the Message. There is one additional field,
-      // native_code, which needs to be included:
-      // 2014-09-29T23:59:33.460470Z|message|CHG_INSRT|Change Inserts
-      // From https://github.com/mtconnect/cppagent#adapter-agent-protocol-version-17 -
+      // From https://github.com/mtconnect/cppagent#adapter-agent-protocol-version-17
+      //   The next special format is the Message. There is one additional field,
+      //   native_code, which needs to be included, eg:
+      //   2014-09-29T23:59:33.460470Z|message|CHG_INSRT|Change Inserts
       shdr = `${timestamp}|${key}|${sanitize(nativeCode)}|${value}`
     } else {
       shdr = `${timestamp}|${key}|${value}`
     }
   } else if (category === 'CONDITION') {
     //. can have >1 value for a condition - how handle?
-    //. see https://github.com/Ladder99/ladder99-ce/issues/130
+    //. see https://github.com/Ladder99/ladder99/issues/130
     if (!value || value === 'UNAVAILABLE') {
       shdr = `${timestamp}|${key}|${value}||||${value}`
     } else {
