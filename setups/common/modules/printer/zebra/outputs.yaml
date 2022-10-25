@@ -18,38 +18,16 @@
 
 outputs:
   - key: avail
-    value: <avail>
-
   - key: emp
-    value: <emp>
-
   - key: msg
-    value: <msg>
     type: MESSAGE
-
   - key: cond
-    value: <cond>
     category: CONDITION
-
   - key: state
-    value: <state>
-
-  # total output
-  - key: uc
-    value: <uc>
-
-  # total length
-  - key: tl
-    value: <tl>
-
+  - key: uc # total output
+  - key: tl # total length
   - key: lr
     value: <labels_remaining>
-
   - key: fr
-    value: <fr>
-
   - key: dark
-    value: <dark>
-
   - key: ht
-    value: <ht>
