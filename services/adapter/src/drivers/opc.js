@@ -123,7 +123,7 @@ export class AdapterDriver {
       attributeId: AttributeIds.Value,
     }
     const parameters = {
-      samplingInterval: 100,
+      samplingInterval: 500, // ms
       discardOldest: true,
       queueSize: 10,
     }
