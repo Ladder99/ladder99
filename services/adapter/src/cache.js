@@ -1,5 +1,6 @@
 // cache
-// manages a set of key-item pairs.
+// manage a set of key-item pairs.
+// where key is a string, and item is an object with { value, timestamp, shdr, ... }.
 
 // this is an intermediary between the raw device data and the shdr output.
 
@@ -12,7 +13,7 @@
 export class Cache {
   //
   constructor() {
-    this._map = new Map() // key-item pairs //. why not just {} ?
+    this._map = {} // key-item pairs
     this._mapKeyToOutputs = {} // list of outputs assoc with each key, eg {} //. ?
   }
 
@@ -103,10 +104,11 @@ export class Cache {
     // if (value === undefined) return
 
     //. what if want to check if a value changed?
-    //. eg if (this._map.get(key) !== value) { ... }
+    //. eg if (this._map[key] !== value) { ... }
 
     // update the cache value
-    this._map.set(key, value)
+    // this._map.set(key, value)
+    this._map[key] = value
 
     // get list of outputs associated with this key, eg ['ac1-power_condition']
     const outputs = this._mapKeyToOutputs[key]
@@ -144,12 +146,14 @@ export class Cache {
   // get a value from cache
   // eg get('pr1-avail')
   get(key) {
-    return this._map.get(key)
+    // return this._map.get(key)
+    return this._map[key]
   }
 
   // check if cache has a key
   has(key) {
-    return this._map.has(key)
+    // return this._map.has(key)
+    return this._map[key] !== undefined
   }
 
   // check if key has a shdr output associated with it
