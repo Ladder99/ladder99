@@ -1,5 +1,18 @@
 # define inputs to cache from opc server
 
+# this file is parsed by the adapter driver services/adapter/src/drivers/opc.js.
+
+# see outputs.yaml for outputs from cache to mtconnect agent.
+
+# the ladder99 opc driver subscribes to nodes from an opc server,
+# parses messages, and writes values to cache, which outputs shdr
+# to the mtconnect agent when the values change.
+
+# for each input below,
+# key forms the cache id, eg 'user1' => 'opc-user1', where opc is deviceId.
+# nodeId is the opc node id to subscribe to.
+# decimals is the number of decimal places to round the value to. optional.
+
 inputs:
   - key: user1
     nodeId: ns=2;s=Simulation Examples.Functions.User1

@@ -1,7 +1,30 @@
 # define outputs from cache to agent
 
-#. note: most outputs could be pass-through, and wouldn't need to be specified here
-# eg key=avail, value: <avail>
+# this file is processed by ladder99/services/adapter/src/index.js etc.
+
+# these outputs are placed in the agent.xml tree and define the
+# shdr strings that are calculated from the cache and sent to the agent.
+
+# the item's id in the xml and the shdr key is `${deviceId}-${key}`, eg 'opc-user1'.
+# the shdr value is defined with the item value code.
+# value is javascript, evaluated by the cache in calculating the shdr output.
+# <foo> is a cache lookup, shorthand for cache.get('${deviceId}-foo')
+
+# note: cache keys are ARBITRARY,
+# ie not necessarily the same as dataitem id OR name.
+# the idea is to keep the SHDR id's as short as possible, to reduce network bandwidth,
+# while the dataitem name can be more descriptive.
+
+# note: category is used to determine shdr representation.
+# only need to specify category if CONDITION.
+# only need to specify type if is MESSAGE.
+# see end of ladder99/services/adapter/src/cache.js for details.
+
+# note: as a shortcut, can just specify the key -
+# value will be inferred to be <key>.
+
+#. most outputs could be pass-through, and wouldn't need to be specified here
+# eg key=avail, value: <avail>. then could get away without an outputs.yaml file.
 
 outputs:
   - key: avail
