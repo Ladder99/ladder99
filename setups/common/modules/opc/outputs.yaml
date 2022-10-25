@@ -1,6 +1,6 @@
 # define outputs from cache to agent
 
-#. most outputs could be pass-through, and wouldn't need to be specified here
+#. note: most outputs could be pass-through, and wouldn't need to be specified here
 # eg key=avail, value: <avail>
 
 outputs:
@@ -9,5 +9,5 @@ outputs:
   - key: user2
 
   - key: cond
-    category: CONDITION
-    value: "<user1>==='HELLO' && <user2> > 10 ? 'ERROR' : 'NORMAL'"
+    category: CONDITION # value should be NORMAL, WARNING, or FAULT
+    value: "<user1>==='HELLO' && <user2> > 10 ? 'FAULT' : 'NORMAL'"
