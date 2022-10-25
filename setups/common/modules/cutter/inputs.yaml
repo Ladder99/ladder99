@@ -2,13 +2,12 @@
 
 # define inputs to cache
 # see outputs.yaml for cache outputs to mtconnect agent.
+# this file is parsed by the adapter driver services/adapter/src/drivers/mqttSubscriber.js.
 
 # the ladder99 adapter subscribes to topics from an mqtt broker,
 # the mqtt broker sends data from the device(s) to adapter,
 # and adapter parses messages, writes values to cache, which outputs shdr
 # to the mtconnect agent when the values change.
-
-# this file is parsed by the adapter driver services/adapter/src/drivers/mqtt-json.js.
 
 # note: cache keys are ARBITRARY,
 # ie not necessarily the same as dataitem id OR name.
