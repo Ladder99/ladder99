@@ -2,13 +2,12 @@ export class Device {
   start(stream) {
     console.log(`Console - initialize device...`)
     this.stream = stream
+    this.cache = {} //. make this a reactive cache
   }
 
-  // admit an event and print it to the console
-  admit(event) {
-    console.log(event)
-  }
+  // admit an event and write it to the cache, which can trigger an action
+  admit(event) {}
 
-  // ignore emit events
+  // emit an event
   emit() {}
 }

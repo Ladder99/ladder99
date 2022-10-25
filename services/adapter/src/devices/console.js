@@ -1,3 +1,5 @@
+// a console device that can be printed to and read from.
+
 export class Device {
   start(stream) {
     console.log(`Console - initialize device...`)

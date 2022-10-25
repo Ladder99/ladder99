@@ -14,7 +14,7 @@ export class Device {
   // emit a random number event
   emit() {
     const path = 'random'
-    const time = Date.now() // ms since epoch
+    const time = Date.now() // ms since epoch - lighter weight than an iso string
     const value = Math.random()
     const event = { path, time, value }
     this.stream.push(event) //?
