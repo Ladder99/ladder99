@@ -17,6 +17,7 @@ console.log(`----------------------------------------------------------------`)
 // get params - typically set in compose.yaml and compose-overrides.yaml files
 const params = {
   // default tcp server for agent if none provided in setup.yaml
+  //. move to base setup
   defaultAgent: { protocol: 'shdr', host: 'adapter', port: 7878 },
   // file system inputs
   driversFolder: './drivers', // eg for mqttSubscriber.js - must start with '.'
