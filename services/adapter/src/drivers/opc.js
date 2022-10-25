@@ -96,7 +96,6 @@ export class AdapterDriver {
   subscribe(input) {
     //
     console.log('OPC subscribing to', input.key, input.nodeId)
-    // const { key, nodeId } = input
 
     // create subscription
     const subscription = ClientSubscription.create(this.session, {
@@ -141,7 +140,7 @@ export class AdapterDriver {
       const value =
         input.decimals === undefined ? raw : lib.rounded(raw, input.decimals)
       console.log(`OPC ${input.key} value has changed:`, value)
-      that.setValue(input.key, value)
+      that.setValue(input.key, value) // write to cache
     })
 
     return subscription
