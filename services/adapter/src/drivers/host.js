@@ -79,9 +79,9 @@ export class AdapterDriver {
       // eg itemKey = 'cpuTemperature', subitemDict = {main: { name, decimals }}
       for (let [itemKey, subitemDict] of Object.entries(this.inputs)) {
         // console.log(itemKey, subitemDict)
-        // eg subitemKey = 'main'
+        // subitemKey is eg 'main'
         for (let subitemKey of Object.keys(subitemDict)) {
-          // eg subitem = { name, decimals }
+          // subitem is like { name, decimals }
           const subitem = subitemDict[subitemKey]
           const value = data[itemKey][subitemKey]
           // console.log(subitemKey, subitem, value)
