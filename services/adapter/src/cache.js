@@ -13,8 +13,12 @@
 export class Cache {
   //
   constructor() {
-    this._map = {} // key-item pairs
-    this._mapKeyToOutputs = {} // list of outputs assoc with each key, eg {} //. ?
+    // key-item pairs
+    this.map = {}
+
+    // list of outputs associated with each key
+    // eg { 'm1-power_fault': [{ key:'m1-power_condition', value: (fn), ...}], ... }
+    this.mapKeyToOutputs = {}
   }
 
   // addOutputs
@@ -28,18 +32,19 @@ export class Cache {
   // eg { 'ac1-power_fault': [{ key:'ac1-power_condition', value: (fn), ...}], ... }
   addOutputs(outputs) {
     if (outputs) {
-      const outputKeys = outputs.map(o => o.key).join(',')
+      const outputKeys = outputs.map(o => o.key).join(',') // just for logging
       console.log(`Cache addOutputs`, outputKeys)
       for (const output of outputs) {
-        // console.log(output.key, output.dependsOn)
-        // output.socket = socket // attach tcp socket to each output also
         // add dependsOn eg ['ac1-power_fault', 'ac1-power_warning']
         for (const key of output.dependsOn) {
-          if (this._mapKeyToOutputs[key]) {
-            this._mapKeyToOutputs[key].push(output)
-          } else {
-            this._mapKeyToOutputs[key] = [output]
-          }
+          //. test change
+          // if (this.mapKeyToOutputs[key]) {
+          //   this.mapKeyToOutputs[key].push(output)
+          // } else {
+          //   this.mapKeyToOutputs[key] = [output]
+          // }
+          this.mapKeyToOutputs[key] = this.mapKeyToOutputs[key] || []
+          this.mapKeyToOutputs[key].push(output)
         }
       }
     }
@@ -104,14 +109,14 @@ export class Cache {
     // if (value === undefined) return
 
     //. what if want to check if a value changed?
-    //. eg if (this._map[key] !== value) { ... }
+    //. eg if (this.map[key] !== value) { ... }
 
     // update the cache value
-    // this._map.set(key, value)
-    this._map[key] = value
+    // this.map.set(key, value)
+    this.map[key] = value
 
     // get list of outputs associated with this key, eg ['ac1-power_condition']
-    const outputs = this._mapKeyToOutputs[key]
+    const outputs = this.mapKeyToOutputs[key]
     if (outputs && outputs.length > 0) {
       // calculate outputs and send changed shdr values to tcp
       for (const output of outputs) {
@@ -146,19 +151,19 @@ export class Cache {
   // get a value from cache
   // eg get('pr1-avail')
   get(key) {
-    // return this._map.get(key)
-    return this._map[key]
+    // return this.map.get(key)
+    return this.map[key]
   }
 
   // check if cache has a key
   has(key) {
-    // return this._map.has(key)
-    return this._map[key] !== undefined
+    // return this.map.has(key)
+    return this.map[key] !== undefined
   }
 
   // check if key has a shdr output associated with it
   hasOutput(key) {
-    return this._mapKeyToOutputs[key] !== undefined
+    return this.mapKeyToOutputs[key] !== undefined
   }
 }
 
