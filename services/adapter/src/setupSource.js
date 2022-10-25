@@ -41,7 +41,7 @@ export async function setupSource({
   if (moduleName) {
     // get input handlers, if any for this source
     // these are interpreted by the driver
-    //. maybe should let the driver read these in
+    //. could let the driver read these in
     const pathInputs = `${params.modulesFolder}/${moduleName}/inputs.yaml`
     console.log(`Adapter reading ${pathInputs}...`)
     module.inputs = lib.importYaml(pathInputs) || {}
@@ -134,12 +134,11 @@ export async function setupSource({
   // finally, start the driver plugin.
   // note: this must be done AFTER getOutputs and addOutputs,
   // as that is where the dependsOn values are set, and this needs those.
-  //. add example for each param
   console.log(`Adapter starting driver for`, device.name, driver)
   plugin.start({
     setup, // the main setup.yaml file contents
 
-    //. simpler/better to pass the whole source object here, in case has weird stuff in it.
+    //. simpler to pass the whole source object here.
     //. so - remove all the source subobjects below, and update all the drivers.
     source, // the whole source tree, eg { module, driver, connection, ... }
 
