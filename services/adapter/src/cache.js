@@ -10,6 +10,7 @@
 // see setupSource.js and helpers.js for code that sets up the reactive cache calculations.
 //. bring relevant code in here
 
+import * as lib from './common/lib.js'
 import { getShdr } from './drivers/egress/shdr.js'
 
 export class Cache {
@@ -63,7 +64,7 @@ export class Cache {
           // //. send unavailable if no value saved yet?
           // // const shdr = getShdr(output, output.lastValue || 'UNAVAILABLE')
           // const shdr = getShdr(output, output.lastValue ?? 'UNAVAILABLE')
-          // console.log(`Cache send "${truncate(shdr)}"`)
+          // console.log(`Cache send "${lib.truncate(shdr)}"`)
           // try {
           //   output.socket.write(shdr + '\n')
           // } catch (error) {
@@ -75,7 +76,7 @@ export class Cache {
           // next time the value is updated, it'll send the shdr.
           if (output.lastValue !== undefined) {
             const shdr = getShdr(output, output.lastValue)
-            console.log(`Cache send "${truncate(shdr)}"`)
+            console.log(`Cache send "${lib.truncate(shdr)}"`)
             try {
               output.socket.write(shdr + '\n')
             } catch (error) {
@@ -124,7 +125,7 @@ export class Cache {
           if (output.socket) {
             const shdr = getShdr(output, value, options.timestamp) // timestamp can be ''
             if (!options.quiet) {
-              console.log(`Cache value changed, send "${truncate(shdr)}"`)
+              console.log(`Cache value changed, send "${lib.truncate(shdr)}"`)
             }
             try {
               output.socket.write(shdr + '\n')
@@ -168,10 +169,4 @@ function getValue(cache, output) {
   const { value: valueFn } = output
   const value = valueFn(cache) // do calculation
   return value
-}
-
-// truncate a string to some length, adding ellipsis if truncated
-//. to lib
-function truncate(str, len = 60) {
-  return str.length > len ? str.slice(0, len) + '...' : str
 }

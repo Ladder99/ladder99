@@ -107,6 +107,7 @@ export function mergeIntoSet(setBase, setExtra) {
 // round a number to a given number of decimals.
 // use negative num to round to a power of 10.
 // handles 'unavailable'.
+//. rename to round, to match truncate fn
 export function rounded(value, decimals = 0) {
   if (typeof value !== 'number') return value // in case get passed a string
   if (value !== null && value !== undefined) {
@@ -118,4 +119,9 @@ export function rounded(value, decimals = 0) {
     return Number(value).toFixed(decimals) // if value is a string like 'xxx', will return NaN
   }
   return null
+}
+
+// truncate a string to some length, adding ellipsis if truncated
+export function truncate(str, len = 60) {
+  return str.length > len ? str.slice(0, len) + '...' : str
 }
