@@ -55,18 +55,10 @@ export class Jobs {
         // unlike for the partcount. except ignore them on datechange.
 
         // this.handleJob(device, job)
+
+        // get the most recently started jobs for this workcenter/device.
         const jobs = await this.getJobs(jobbossId)
         if (jobs === undefined) continue // skip this device
-
-        //. also skip if jobs is empty?
-
-        // // set cache value
-        // //. what if could attach some code to this cache key?
-        // // eg you'd have some code that would output shdr,
-        // // and some code that would set the jcomplete time on change.
-        // // note: this key corresponds to path 'processes/job/process_aggregate_id-order_number'
-        // const job = jobs[0]
-        // this.setValue('job', job)
 
         this.handleJobs(device, jobs)
       }
@@ -176,11 +168,12 @@ export class Jobs {
   }
 
   handleJobs(device, jobs) {
-    //. what if jobs is []? fix
+    //. what if jobs is [] on accident? fix
     const activeJob = jobs[0] // assume this is the active job, others are inactive
+
     const jobsCompleted = this.deviceJobsCompleted[device.id] ?? {}
+    // if active job changed, reset completed cache
     if (activeJob !== this.lastActiveJobs[device.id]) {
-      // active job changed, so reset completed cache
     }
 
     // this.deviceJobsCompleted[device.id] = this.deviceJobsCompleted[device.id] ?? {}
