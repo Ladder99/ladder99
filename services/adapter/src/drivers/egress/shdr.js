@@ -63,3 +63,21 @@ export function getShdr(output, value, timestamp = '') {
 function sanitize(str) {
   return str.replaceAll('|', '/') //. just convert pipes to a slash for now
 }
+
+// // get object in DATA_SET format for shdr.
+// // will return something like "free=48237472 used=12387743 total=38828348"
+// // need to sanitize the keys as well as the values.
+// function getDataSet(obj) {
+//   const str = Object.keys(obj)
+//     .map(key => `${sanitize(key)}=${sanitize(obj[key])}`)
+//     .join(' ')
+//   return str
+// // a local fn
+// function sanitize(value) {
+//   return String(value || '')
+//     .replaceAll(' ', '_')
+//     .replaceAll('\n', '_')
+//     .replaceAll('|', '-')
+//     .replaceAll('=', '-')
+// }
+// }

@@ -22,6 +22,7 @@
 # wifiInterfaces: id, model, vendor
 
 inputs:
+  #
   # temperature
   cpuTemperature: # systeminformation item
     main: # systeminformation subitem
@@ -52,35 +53,46 @@ inputs:
       name: memused
       decimals: -6
 
-  # # disk - returns an array
+  # os
+  # important: this must come before fsSize so that will have the os info available
+  osInfo:
+    platform:
+      name: osplatform
+    # distro:
+    #   name: osdistro
+    # release:
+    #   name: osrelease
+    # codename:
+    #   name: oscodename
+    # arch:
+    #   name: osarch
+    # hostname:
+    #   name: oshostname
+
+  # - name: os
+  #   item: osInfo
+  #   subitems: platform, distro, release, codename, arch, hostname
+  #   representation: dataset
+
+  # # disk
+  # # this returns an array, which requires some special processing.
+  # # can either pick one value out, or sum up some or all, etc.
+  # # so simplest to give a list of values to sum up.
+  # # but the list depends on which os you are running on.
+  # # then calculate the use %.
+  # # see host.js driver for details.
   # fsSize:
-  #   # supply some code to host.js?
-  #   # either pick one value out, or sum up all, etc
-  #   _: {}
-  #   fs: {}
+  #   _:
+  #   fs: {} # this gives the name of the drive/partition, eg 'overlay', 'C:\', etc
   #   size:
   #     name: disksize
   #     decimals: -6
   #   used:
   #     name: diskused
   #     decimals: -6
-  #   use:
-  #     name: diskuse
-  #     decimals: -6
   #   available:
   #     name: diskavail
   #     decimals: -6
-
-  # os
-  # osInfo:
-  #   platform
-  #   distro
-  #   release
-  #   codename
-  #   arch
-  #   hostname
-
-  # - name: os
-  #   item: osInfo
-  #   subitems: platform, distro, release, codename, arch, hostname
-  #   representation: dataset
+  #   # use:
+  #   #   name: diskuse
+  #   #   decimals: 0

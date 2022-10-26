@@ -50,9 +50,11 @@ outputs:
   - key: diskuse
   - key: diskavail
 
-  - key: os
-    value: <os>
-    representation: DATA_SET
-    category: EVENT
-    type: VARIABLE
-    subType: x:OS
+  # - key: os
+  #   value: <os>
+  #   representation: DATA_SET
+  #   category: EVENT
+  #   type: VARIABLE
+  #   subType: x:OS
+
+  - key: osplatform

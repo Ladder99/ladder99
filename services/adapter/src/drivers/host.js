@@ -9,7 +9,11 @@ import si from 'systeminformation' // see https://github.com/sebhildebrandt/syst
 
 import * as lib from '../common/lib.js' // for lib.round
 
+//
+
 const pollInterval = 5000 // msec //. get from base setup
+
+//
 
 export class AdapterDriver {
   //
@@ -21,18 +25,19 @@ export class AdapterDriver {
     this.module = module
     this.inputs = module?.inputs?.inputs || {}
 
-    // get a systeminformation query, eg
+    // build up a systeminformation query from inputs.yaml, like
     // {
     //   cpuTemperature: 'main',
     //   currentLoad: 'currentLoad, currentLoadUser, currentLoadSystem',
     //   mem: 'total, free, used',
-    //   fsSize: 'fs, size, used, use, available', // gives an array
+    //   fsSize: 'fs, size, used, available', // gives an array
     //   osInfo: 'platform, distro, release, codename, arch, hostname',
     // }
     this.query = {}
     Object.keys(this.inputs).forEach(item => {
       this.query[item] = Object.keys(this.inputs[item]).join(',')
     })
+    console.log('Host query', this.query)
 
     this.setUnavailable()
     this.poll() // first poll
@@ -77,13 +82,22 @@ export class AdapterDriver {
       // iterate over query inputs, extract info from data, write to cache
       // eg this.setValue('temp', lib.round(data.cpuTemperature.main, 1))
       // eg itemKey = 'cpuTemperature', subitemDict = {main: { name, decimals }}
+      // fsSize returns an array though - see https://systeminformation.io/filesystem.html
       for (let [itemKey, subitemDict] of Object.entries(this.inputs)) {
         // console.log(itemKey, subitemDict)
         // subitemKey is eg 'main'
         for (let subitemKey of Object.keys(subitemDict)) {
           // subitem is like { name, decimals }
           const subitem = subitemDict[subitemKey]
-          const value = data[itemKey][subitemKey]
+          // const value = data[itemKey][subitemKey] // pick value out of query response - won't work for fsSize
+          const itemData = data[itemKey]
+          let value
+          // check if array, eg for fsSize
+          if (Array.isArray(itemData)) {
+            //. pick out relevant drives and sum up values
+          } else {
+            value = itemData[subitemKey]
+          }
           // console.log(subitemKey, subitem, value)
           this.setValue(subitem.name, lib.round(value, subitem.decimals))
         }
@@ -111,24 +125,4 @@ export class AdapterDriver {
     console.log('setValue', key, value)
     this.cache.set(`${this.device.id}-${key}`, value)
   }
-}
-
-//. move into cache.js
-
-// get object in DATA_SET format for shdr.
-// will return something like "free=48237472 used=12387743 total=38828348"
-// need to sanitize the keys as well as the values.
-function getDataSet(obj) {
-  const str = Object.keys(obj)
-    .map(key => `${sanitize(key)}=${sanitize(obj[key])}`)
-    .join(' ')
-  return str
-}
-// a local fn
-function sanitize(value) {
-  return String(value || '')
-    .replaceAll(' ', '_')
-    .replaceAll('\n', '_')
-    .replaceAll('|', '-')
-    .replaceAll('=', '-')
 }
