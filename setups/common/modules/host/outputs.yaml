@@ -50,11 +50,13 @@ outputs:
   - key: diskuse
   - key: diskavail
 
+  # should be one of LINUX, MACOS, WINDOWS, UNKNOWN
+  - key: osplatform
+    value: (<osplatform> || 'UNKNOWN').toUpperCase()
+
   # - key: os
   #   value: <os>
   #   representation: DATA_SET
   #   category: EVENT
   #   type: VARIABLE
   #   subType: x:OS
-
-  - key: osplatform

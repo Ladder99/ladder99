@@ -54,7 +54,6 @@ inputs:
       decimals: -6
 
   # os
-  # important: this must come before fsSize so that will have the os info available
   osInfo:
     platform:
       name: osplatform

@@ -9,11 +9,7 @@ import si from 'systeminformation' // see https://github.com/sebhildebrandt/syst
 
 import * as lib from '../common/lib.js' // for lib.round
 
-//
-
 const pollInterval = 5000 // msec //. get from base setup
-
-//
 
 export class AdapterDriver {
   //
