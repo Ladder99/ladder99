@@ -21,14 +21,14 @@ export class AdapterDriver {
     // get queries from inputs.yaml and start polling data
     const itemKeys = Object.keys(this.inputs) // eg ['cpuTemperature', 'currentLoad', 'mem', 'fsSize']
     for (let itemKey of itemKeys) {
-      const item = this.inputs[itemKey] // eg { main: { name, decimals }}
-      const subitemString = Object.keys(item).join(',') // eg 'main'
+      const { interval, subitems } = this.inputs[itemKey] // eg { interval, subitems }
+      const subitemString = Object.keys(subitems).join(',') // eg 'main'
       const query = { [itemKey]: subitemString } // eg { cpuTemperature: 'main' }
       // query data
       this.poll(query)
       // start polling data also, unless interval is null
-      if (item._interval !== null) {
-        const pollInterval = item.pollInterval ?? defaultPollInterval
+      if (interval !== null) {
+        const pollInterval = interval ?? defaultPollInterval
         setInterval(this.poll.bind(this, query), pollInterval)
       }
     }
@@ -64,16 +64,16 @@ export class AdapterDriver {
     // extract data and write all values to cache
     const itemKey = Object.keys(data)[0] // eg 'cpuTemperature'
     const itemData = data[itemKey] // eg { main: 50.5 }, or [ { fs: 'C:\\', size: 16777216, used: 0, use: 0, available: 16777216 } ]
+    const inputData = this.inputs[itemKey] // eg { interval, drives, subitems } - interval and drives are optional
+    const { interval, drives, subitems } = inputData
     // fsSize returns an array, so handle specially
     if (itemKey === 'fsSize') {
-      platform = process.platform
+      // const platform = process.platform
     } else {
       const subitemKeys = Object.keys(itemData) // eg ['main']
       for (let subitemKey of subitemKeys) {
-        const subitemData = itemData[subitemKey] // eg 50.5
-        const inputOptions = this.inputs[itemKey][subitemKey] // eg { name, decimals }
-        const name = inputOptions.name // eg 'temp'
-        const decimals = inputOptions.decimals // eg 1
+        const subitemData = itemData[subitemKey] // eg 50.51
+        const { name, decimals } = subitems[subitemKey] // eg { name: 'temp', decimals: 1 }
         const value = lib.round(subitemData, decimals) // eg 50.5
         this.setValue(name, value)
       }
