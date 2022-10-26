@@ -1,17 +1,17 @@
-// this.setValue('temp', lib.rounded(data.cpuTemperature.main, 1))
-// this.setValue('cputot', lib.rounded(data.currentLoad.currentLoad, 1))
-// this.setValue('cpuuser', lib.rounded(data.currentLoad.currentLoadUser, 1))
+// this.setValue('temp', lib.round(data.cpuTemperature.main, 1))
+// this.setValue('cputot', lib.round(data.currentLoad.currentLoad, 1))
+// this.setValue('cpuuser', lib.round(data.currentLoad.currentLoadUser, 1))
 // this.setValue(
 //   'cpusys',
-//   lib.rounded(data.currentLoad.currentLoadSystem, 1)
+//   lib.round(data.currentLoad.currentLoadSystem, 1)
 // )
-// this.setValue('memtot', lib.rounded(data.mem.total, -6))
-// this.setValue('memfree', lib.rounded(data.mem.free, -6))
-// this.setValue('memused', lib.rounded(data.mem.used, -6))
+// this.setValue('memtot', lib.round(data.mem.total, -6))
+// this.setValue('memfree', lib.round(data.mem.free, -6))
+// this.setValue('memused', lib.round(data.mem.used, -6))
 // this.setValue('disksize', disk.size) // bytes
-// this.setValue('diskused', lib.rounded(disk.used, -6)) // bytes rounded to mb
-// this.setValue('diskuse', lib.rounded(disk.use, 0)) // percent
-// this.setValue('diskavail', lib.rounded(disk.available, -6)) // bytes rounded to mb
+// this.setValue('diskused', lib.round(disk.used, -6)) // bytes round to mb
+// this.setValue('diskuse', lib.round(disk.use, 0)) // percent
+// this.setValue('diskavail', lib.round(disk.available, -6)) // bytes round to mb
 // this.setValue('os', getDataSet(data.osInfo))
 // //
 

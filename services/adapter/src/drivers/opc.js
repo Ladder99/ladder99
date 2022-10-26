@@ -138,7 +138,7 @@ export class AdapterDriver {
     monitoredItem.on('changed', dataValue => {
       const raw = dataValue.value.value // dataValue is a variant
       const value =
-        input.decimals === undefined ? raw : lib.rounded(raw, input.decimals)
+        input.decimals === undefined ? raw : lib.round(raw, input.decimals)
       console.log(`OPC ${input.key} value has changed:`, value)
       that.setValue(input.key, value) // write to cache
     })

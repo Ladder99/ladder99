@@ -7,7 +7,7 @@
 // see https://github.com/sebhildebrandt/systeminformation/issues/626
 import si from 'systeminformation' // see https://github.com/sebhildebrandt/systeminformation
 
-import * as lib from '../common/lib.js' // for lib.rounded
+import * as lib from '../common/lib.js' // for lib.round
 
 const pollInterval = 5000 // msec //. get from base setup
 
@@ -75,7 +75,7 @@ export class AdapterDriver {
       this.setValue('cond', 'NORMAL')
 
       // iterate over query inputs, extract info from data, write to cache
-      // eg this.setValue('temp', lib.rounded(data.cpuTemperature.main, 1))
+      // eg this.setValue('temp', lib.round(data.cpuTemperature.main, 1))
       // eg itemKey = 'cpuTemperature', subitemDict = {main: { name, decimals }}
       for (let [itemKey, subitemDict] of Object.entries(this.inputs)) {
         // console.log(itemKey, subitemDict)
@@ -85,7 +85,7 @@ export class AdapterDriver {
           const subitem = subitemDict[subitemKey]
           const value = data[itemKey][subitemKey]
           // console.log(subitemKey, subitem, value)
-          this.setValue(subitem.name, lib.rounded(value, subitem.decimals))
+          this.setValue(subitem.name, lib.round(value, subitem.decimals))
         }
       }
     } catch (error) {

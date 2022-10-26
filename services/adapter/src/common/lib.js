@@ -105,18 +105,16 @@ export function mergeIntoSet(setBase, setExtra) {
 }
 
 // round a number to a given number of decimals.
-// use negative num to round to a power of 10.
-// handles 'unavailable'.
-//. rename to round, to match truncate fn
-export function rounded(value, decimals = 0) {
+// use negative num to round to a power of 10, eg -6 would round to 1 million.
+// passes strings through unmodified.
+export function round(value, decimals = 0) {
   if (typeof value !== 'number') return value // in case get passed a string
   if (value !== null && value !== undefined) {
     if (decimals < 0) {
-      return Number(
-        Math.round(value * Math.pow(10, decimals)) * Math.pow(10, -decimals)
-      ).toFixed(0)
+      const factor = Math.pow(10, decimals)
+      return Number(Math.round(value * factor) / factor).toFixed(0)
     }
-    return Number(value).toFixed(decimals) // if value is a string like 'xxx', will return NaN
+    return Number(value).toFixed(decimals)
   }
   return null
 }
