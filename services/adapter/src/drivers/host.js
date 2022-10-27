@@ -38,41 +38,76 @@ export class AdapterDriver {
     this.setValue('cond', 'NORMAL')
   }
 
+  //
+
   async poll(query) {
     // get data from systeminformation
-    // eg if query is { cpuTemperature: 'main' }
-    // data will be { cpuTemperature: { main: 50.5 }}
-    // other examples:
-    // { currentLoad: {
-    //     currentLoad: 0.01,
-    //     currentLoadUser: 0.01,
-    //     currentLoadSystem: 0
-    //   } }
-    // { mem: { total: 16777216, free: 16777216, used: 0 } }
-    const data = await si.get(query)
+    // eg if query is { cpuTemperature: 'main' }, data will be { cpuTemperature: { main: 50.5 }}.
+    let data
+    try {
+      data = await si.get(query)
+    } catch (error) {
+      console.log(error.message)
+      //. set keys to unavailable
+      return
+    }
 
     // extract data and write all values to cache
     const itemKey = Object.keys(data)[0] // eg 'cpuTemperature'
     const itemData = data[itemKey] // eg { main: 50.5 }, or [ { fs: 'C:\\', size: 16777216, used: 0, use: 0, available: 16777216 }, ... ]
     const inputData = this.inputs[itemKey] // eg { platforms, subitems }
 
+    if (itemKey === 'fsSize') {
+      handleDrives()
+    } else {
+      handleOther()
+    }
+
     // fsSize returns an array, so handle specially -
     // eg itemData = [ { fs: 'C:\\', size: 16777216, used: 0, available: 16777216 }, { fs: 'D:\\', ...} ]
-    if (itemKey === 'fsSize') {
+    function handleDrives() {
       const { platforms, subitems } = inputData
+      const subitemKeys = Object.keys(subitems) // eg ['fs', 'size', 'used', 'available']
       const platform = process.platform // eg aix darwin freebsd linux openbsd sunos win32 android
       const drivesStr = platforms[platform] || '' // eg 'C,D'
       const drives = drivesStr.split(',') // eg ['C', 'D']
+
       // sum up specified drives data
+      const sum = { size: 0, used: 0, available: 0 }
       for (let driveData of itemData) {
-        const { fs } = driveData
+        const { fs } = driveData // eg 'C'
         if (drives.includes(fs)) {
-          for (let subitemKey of Object.keys(subitems)) {
-            const value = driveData[subitemKey]
+          for (let subitemKey of subitemKeys) {
+            if (subitemKey !== 'fs') {
+              const value = driveData[subitemKey]
+              sum[subitemKey] += value
+            }
           }
         }
       }
-    } else {
+
+      // calculate use percentage
+      const use = lib.round((sum.used / sum.size) * 100, 0)
+
+      // write to cache
+      this.setValue('use', use)
+      for (let subitemKey of subitemKeys) {
+        if (subitemKey !== 'fs') {
+          const { name, decimals } = subitems[subitemKey] // eg { name: 'temp', decimals: 1 }
+          const value = lib.round(sum[subitemKey], decimals) // eg 50.5
+          this.setValue(name, value)
+        }
+      }
+    }
+
+    // handle other items, eg
+    // { currentLoad: {
+    //     currentLoad: 0.01,
+    //     currentLoadUser: 0.01,
+    //     currentLoadSystem: 0
+    //   } }
+    // { mem: { total: 16777216, free: 16777216, used: 0 } }
+    function handleOther() {
       const { subitems } = inputData
       const subitemKeys = Object.keys(itemData) // eg ['main']
       for (let subitemKey of subitemKeys) {
