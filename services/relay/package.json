@@ -1,6 +1,6 @@
 {
   "name": "ladder99-relay",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Ladder99 Relay - transfers data from Agent to Database",
   "type": "module",
   "module": "esnext",
