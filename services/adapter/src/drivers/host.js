@@ -57,15 +57,16 @@ export class AdapterDriver {
     const itemData = data[itemKey] // eg { main: 50.5 }, or [ { fs: 'C:\\', size: 16777216, used: 0, use: 0, available: 16777216 }, ... ]
     const inputData = this.inputs[itemKey] // eg { platforms, subitems }
 
+    const that = this
     if (itemKey === 'fsSize') {
-      handleDrives()
+      handleDriveData()
     } else {
-      handleOther()
+      handleOtherData()
     }
 
     // fsSize returns an array, so handle specially -
     // eg itemData = [ { fs: 'C:\\', size: 16777216, used: 0, available: 16777216 }, { fs: 'D:\\', ...} ]
-    function handleDrives() {
+    function handleDriveData() {
       const { platforms, subitems } = inputData
       const subitemKeys = Object.keys(subitems) // eg ['fs', 'size', 'used', 'available']
       const platform = process.platform // eg aix darwin freebsd linux openbsd sunos win32 android
@@ -90,12 +91,12 @@ export class AdapterDriver {
       const use = lib.round((sum.used / sum.size) * 100, 0)
 
       // write to cache
-      this.setValue('use', use)
+      that.setValue('use', use)
       for (let subitemKey of subitemKeys) {
         if (subitemKey !== 'fs') {
           const { name, decimals } = subitems[subitemKey] // eg { name: 'temp', decimals: 1 }
           const value = lib.round(sum[subitemKey], decimals) // eg 50.5
-          this.setValue(name, value)
+          that.setValue(name, value)
         }
       }
     }
@@ -107,14 +108,14 @@ export class AdapterDriver {
     //     currentLoadSystem: 0
     //   } }
     // { mem: { total: 16777216, free: 16777216, used: 0 } }
-    function handleOther() {
+    function handleOtherData() {
       const { subitems } = inputData
       const subitemKeys = Object.keys(itemData) // eg ['main']
       for (let subitemKey of subitemKeys) {
         const subitemData = itemData[subitemKey] // eg 50.51
         const { name, decimals } = subitems[subitemKey] // eg { name: 'temp', decimals: 1 }
         const value = lib.round(subitemData, decimals) // eg 50.5
-        this.setValue(name, value)
+        that.setValue(name, value)
       }
     }
   }
