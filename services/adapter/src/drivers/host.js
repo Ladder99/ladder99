@@ -49,35 +49,29 @@ export class AdapterDriver {
     //     currentLoadSystem: 0
     //   } }
     // { mem: { total: 16777216, free: 16777216, used: 0 } }
-    // fsSize returns an array -
-    // { fsSize: [
-    //   {
-    //      fs: 'C:\\',
-    //      size: 16777216,
-    //      used: 0,
-    //      use: 0,
-    //      available: 16777216
-    //   }
-    // ] }
     const data = await si.get(query)
 
     // extract data and write all values to cache
     const itemKey = Object.keys(data)[0] // eg 'cpuTemperature'
-    const itemData = data[itemKey] // eg { main: 50.5 }, or [ { fs: 'C:\\', size: 16777216, used: 0, use: 0, available: 16777216 } ]
+    const itemData = data[itemKey] // eg { main: 50.5 }, or [ { fs: 'C:\\', size: 16777216, used: 0, use: 0, available: 16777216 }, ... ]
     const inputData = this.inputs[itemKey] // eg { platforms, subitems }
-    // fsSize returns an array, so handle specially
+
+    // fsSize returns an array, so handle specially -
+    // eg itemData = [ { fs: 'C:\\', size: 16777216, used: 0, available: 16777216 }, { fs: 'D:\\', ...} ]
     if (itemKey === 'fsSize') {
       const { platforms, subitems } = inputData
       const platform = process.platform // eg aix darwin freebsd linux openbsd sunos win32 android
-      const drives = platforms[platform] // eg ['C:\\', 'D:\\']
-      // for (let drive of drives) {
-      //   const driveData = itemData.find(d => d.fs === drive) // eg { fs: 'C:\\', size: 16777216, used: 0, use: 0, available: 16777216 }
-      //   for (let subitemKey of Object.keys(subitems)) {
-      //     const value = driveData[subitemKey] // eg 16777216
-      //     this.setValue(`${itemKey}-${subitemKey}`, value)
-      //   }
-      // }
+      const drivesStr = platforms[platform] || '' // eg 'C,D'
+      const drives = drivesStr.split(',') // eg ['C', 'D']
       // sum up specified drives data
+      for (let driveData of itemData) {
+        const { fs } = driveData
+        if (drives.includes(fs)) {
+          for (let subitemKey of Object.keys(subitems)) {
+            const value = driveData[subitemKey]
+          }
+        }
+      }
     } else {
       const { subitems } = inputData
       const subitemKeys = Object.keys(itemData) // eg ['main']
