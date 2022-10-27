@@ -22,7 +22,8 @@
         <DataItem id="host-diskused" name="disk-used" category="SAMPLE" type="x:DISK" subType="x:USED" units="x:BYTES" />
         <DataItem id="host-diskuse" name="disk-use" category="SAMPLE" type="x:DISK" subType="x:USE" units="x:PERCENTAGE" />
         <DataItem id="host-diskavail" name="disk-available" category="SAMPLE" type="x:DISK" subType="x:AVAILABLE" units="x:BYTES" />
-        <DataItem id="host-os" name="os" category="EVENT" type="VARIABLE" subType="x:OS" representation="DATA_SET" />
+        <!-- <DataItem id="host-os" name="os" category="EVENT" type="VARIABLE" subType="x:OS" representation="DATA_SET" /> -->
+        <DataItem id="host-osplatform" name="os-platform" category="EVENT" type="OPERATING_SYSTEM" />
       </DataItems>
     </Device>
 

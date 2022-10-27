@@ -91,7 +91,7 @@ export class AdapterDriver {
       const use = lib.round((sum.used / sum.size) * 100, 0)
 
       // write to cache
-      that.setValue('use', use)
+      that.setValue('diskuse', use) //. oh, get name from inputs.yaml
       for (let subitemKey of subitemKeys) {
         if (subitemKey !== 'fs') {
           const { name, decimals } = subitems[subitemKey] // eg { name: 'temp', decimals: 1 }
