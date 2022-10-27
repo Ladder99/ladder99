@@ -64,12 +64,22 @@ export class AdapterDriver {
     // extract data and write all values to cache
     const itemKey = Object.keys(data)[0] // eg 'cpuTemperature'
     const itemData = data[itemKey] // eg { main: 50.5 }, or [ { fs: 'C:\\', size: 16777216, used: 0, use: 0, available: 16777216 } ]
-    const inputData = this.inputs[itemKey] // eg { interval, drives, subitems } - interval and drives are optional
-    const { interval, drives, subitems } = inputData
+    const inputData = this.inputs[itemKey] // eg { platforms, subitems }
     // fsSize returns an array, so handle specially
     if (itemKey === 'fsSize') {
-      // const platform = process.platform
+      const { platforms, subitems } = inputData
+      const platform = process.platform // eg aix darwin freebsd linux openbsd sunos win32 android
+      const drives = platforms[platform] // eg ['C:\\', 'D:\\']
+      // for (let drive of drives) {
+      //   const driveData = itemData.find(d => d.fs === drive) // eg { fs: 'C:\\', size: 16777216, used: 0, use: 0, available: 16777216 }
+      //   for (let subitemKey of Object.keys(subitems)) {
+      //     const value = driveData[subitemKey] // eg 16777216
+      //     this.setValue(`${itemKey}-${subitemKey}`, value)
+      //   }
+      // }
+      // sum up specified drives data
     } else {
+      const { subitems } = inputData
       const subitemKeys = Object.keys(itemData) // eg ['main']
       for (let subitemKey of subitemKeys) {
         const subitemData = itemData[subitemKey] // eg 50.51

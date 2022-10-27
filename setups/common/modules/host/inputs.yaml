@@ -91,7 +91,7 @@ inputs:
   # see host.js driver for details.
   fsSize:
     interval: 30000
-    drives:
+    platforms:
       linux: overlay # comma-separated list of drives to pick out
       win32: 'C:'
       darwin: disk1s1

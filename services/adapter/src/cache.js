@@ -134,10 +134,7 @@ export class Cache {
             }
           } else {
             console.log(
-              `Cache value changed - ${key} to ${lib.truncate(
-                value,
-                20
-              )}. no socket to write to - saving for later.`
+              `Cache set ${key} ${value}, but no socket to write to - saving for later.`
             )
           }
         }
