@@ -39,20 +39,20 @@ inputs:
       currentLoad:
         name: cputot
         decimals: 1
-      currentLoadUser:
-        name: cpuuser
-        decimals: 1
-      currentLoadSystem:
-        name: cpusys
-        decimals: 1
+      # currentLoadUser:
+      #   name: cpuuser
+      #   decimals: 1
+      # currentLoadSystem:
+      #   name: cpusys
+      #   decimals: 1
 
   # memory
   mem:
     interval: 20000 # override default interval
     subitems:
-      total:
-        name: memtot
-        decimals: -6
+      # total:
+      #   name: memtot
+      #   decimals: -6
       free:
         name: memfree
         decimals: -6
