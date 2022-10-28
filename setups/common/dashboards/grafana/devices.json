@@ -23,7 +23,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 3,
-  "iteration": 1664526267045,
+  "iteration": 1666946244211,
   "links": [
     {
       "asDropdown": false,
@@ -80,7 +80,7 @@
       },
       "gridPos": {
         "h": 4,
-        "w": 6,
+        "w": 12,
         "x": 0,
         "y": 0
       },
@@ -150,7 +150,7 @@
           "value": "$__all"
         },
         "datasource": null,
-        "definition": "select path from devices order by path",
+        "definition": "select path from devices where path not like '%/Micro' order by path",
         "description": null,
         "error": null,
         "hide": 2,
@@ -159,7 +159,7 @@
         "multi": false,
         "name": "device",
         "options": [],
-        "query": "select path from devices order by path",
+        "query": "select path from devices where path not like '%/Micro' order by path",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -176,5 +176,5 @@
   "timezone": "",
   "title": "Devices",
   "uid": "devices",
-  "version": 3
+  "version": 4
 }
