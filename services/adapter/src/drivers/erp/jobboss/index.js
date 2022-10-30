@@ -22,6 +22,7 @@ import { Schedule } from './schedule.js'
 const initialDelay = 5000 // ms
 const waitForDb = 15000 // ms - because db timeout is 15secs
 
+// jobboss db error codes
 // const errorMessages = {
 //   ELOGIN: 'Login failed (locked out)',
 //   ETIMEOUT: 'Connection timeout',
