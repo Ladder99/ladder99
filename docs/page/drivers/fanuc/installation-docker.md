@@ -48,7 +48,7 @@ export FOCAS_TGT=linux64-886a5a3
 For ARM Linux architecture use:
 
 ```bash
-export FOCAS_TGT=arm-886a5a3
+export FOCAS_TGT=arm-de0e822
 ```
 
 ## Clone Repository
@@ -79,7 +79,9 @@ cd ~/fanuc/fanuc-driver/examples
 
 mkdir -p ../../volumes/fanuc-driver
 cp fanuc-driver/nlog-example-linux.config ../../volumes/fanuc-driver/nlog.config
-cp fanuc-driver/config-example.yml ../../volumes/fanuc-driver/config.yml
+cp fanuc-driver/config-example.system.yml ../../volumes/fanuc-driver/config.system.yml
+cp fanuc-driver/config-example.user.yml ../../volumes/fanuc-driver/config.user.yml
+cp fanuc-driver/config-example.machines.yml ../../volumes/fanuc-driver/config.machines.yml
 
 mkdir -p ../../volumes/mosquitto/config
 mkdir -p ../../volumes/mosquitto/data

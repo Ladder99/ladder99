@@ -51,7 +51,7 @@ dotnet publish "fanuc.csproj" \
 
 ./bin/Release/netcoreapp3.1/fanuc \
 	--nlog ../examples/fanuc-driver/nlog-example-nlog.config \
-  --config ../examples/fanuc-driver/config-example.yml
+  --config ../examples/fanuc-driver/config-example.system.yml,../examples/fanuc-driver/config-example.user.yml,../examples/fanuc-driver/config-example.machines.yml
 ```
 
 ## x86 Linux
@@ -79,6 +79,6 @@ dotnet publish "$fanuc_driver_folder/fanuc/fanuc.csproj" --self-contained true -
 # Start an MQTT broker (outside `fanuc-driver`)
 
 # Start `fanuc-driver`
-"$fanuc_driver_folder/fanuc/bin/Debug/netcoreapp3.1/linux-x64/publish/fanuc" --nlog "$fanuc_driver_folder/fanuc/nlog.config" --config "$fanuc_driver_folder/fanuc/config.yml"
+"$fanuc_driver_folder/fanuc/bin/Debug/netcoreapp3.1/linux-x64/publish/fanuc" --nlog "$fanuc_driver_folder/fanuc/nlog.config" --config "$fanuc_driver_folder/fanuc/config.system.yml,$fanuc_driver_folder/fanuc/config.user.yml,$fanuc_driver_folder/fanuc/config.machines.yml"
 ```
 

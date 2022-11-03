@@ -10,7 +10,7 @@ dateCreated: 2022-09-23T18:09:06.220Z
 
 # Configuration Layout
 
-The YAML configuration example is [here](https://raw.githubusercontent.com/Ladder99/fanuc-driver/main/examples/fanuc-driver/config-example.yml) and is best viewed using https://jsonformatter.org/yaml-parser because it dereferences nodes to give you a complete view.
+The YAML configuration example is composed of three parts: [system](https://raw.githubusercontent.com/Ladder99/fanuc-driver/main/examples/fanuc-driver/config-example.system.yml), [user](https://raw.githubusercontent.com/Ladder99/fanuc-driver/main/examples/fanuc-driver/config-example.user.yml), [machines](https://raw.githubusercontent.com/Ladder99/fanuc-driver/main/examples/fanuc-driver/config-example.machines.yml). The examples are best viewed using https://jsonformatter.org/yaml-parser because it dereferences nodes to give you a complete view.
 
 ## Major Sections
 
