@@ -21,7 +21,7 @@
     "node-opcua-client": "^2.50.0",
     "nodemon": "^2.0.14",
     "systeminformation": "^5.9.8",
-    "usb": "^1.8.0",
+    "usb": "^2.5.2",
     "uuid": "^8.3.2",
     "xml-js": "^1.6.11"
   }
