@@ -55,9 +55,3 @@ cd ladder99
 ```
 
 Note that we will end up in a directory like `~/ladder99/ladder99`.
-
-Then check out the latest branch with -
-
-```bash
-git checkout historian
-```
