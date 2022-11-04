@@ -28,6 +28,9 @@ services:
       L99_SETUP_FOLDER: /data/setup
       L99_MODULES_FOLDER: /data/modules
       L99_ADAPTER_FOLDER: /data/adapter
+      # turn on feedback driver - eg for production machine only.
+      # null means pass-through from environment.
+      L99_FEEDBACK: null
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml etc
       - ../modules:/data/modules # has module yamls
@@ -48,7 +51,6 @@ services:
     #. use mtconnect/agent once mtconnect publishes theirs to docker hub
     # see https://hub.docker.com/repository/docker/ladder99/agent for ours
     image: ladder99/agent:1.7.0.3-0.1.2
-    # for testing - see https://hub.docker.com/repository/docker/ladder99/agent2
     # image: ladder99/agent:latest # this will be agent2.0 soon
     # image: ladder99/agent:2.0.0.7
     profiles:
@@ -182,6 +184,7 @@ services:
   # ui for docker logs
   dozzle:
     container_name: dozzle
+    #. add a version tag
     image: amir20/dozzle:latest
     profiles:
       - dozzle
@@ -290,6 +293,7 @@ services:
   # monitor docker logs with logz.io
   logzio-logs:
     container_name: logzio-logs
+    #. add a version tag
     image: logzio/docker-collector-logs
     profiles:
       - logzio-logs
@@ -347,6 +351,7 @@ services:
   # the image defines three directories in /mosquitto - config, data, log
   mosquitto:
     container_name: mosquitto
+    #. add a version tag
     image: eclipse-mosquitto
     profiles:
       - mosquitto
@@ -457,6 +462,7 @@ services:
   # docker container viewer/management
   portainer:
     container_name: portainer
+    #. add a version tag
     image: portainer/portainer-ce
     profiles:
       - portainer
@@ -568,9 +574,6 @@ services:
       # specify where code can find data.
       # can override at run time, eg to run service on windows with node.
       L99_SETUP_FOLDER: /data/setup
-      # turn relay feedback off if needed - eg for development machine
-      # null means pass-through from environment
-      RELAY_FEEDBACK_OFF: null
       # this can be an agent url, a comma-separated (no spaces) list of urls,
       # or a .txt file with a url per line.
       # NO TRAILING SLASHES
@@ -607,6 +610,7 @@ services:
   # ---------------------------------------------------------------------------
   # send logs to sematext.com for monitoring
   sematext:
+    #. add a version tag
     image: sematext/agent:latest
     container_name: sematext
     profiles:

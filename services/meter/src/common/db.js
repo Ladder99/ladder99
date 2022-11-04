@@ -148,13 +148,13 @@ export class Db {
 
   // write a single record to the history table.
   // time should be an ISO datetime string, value a number or string.
-  //. merge with addHistory, or rename to writeHistoryRecord?
+  //. merge with addHistory, or rename to writeHistoryRecord
   async writeHistory(device_id, dataitem_id, time, value) {
     const sql = `
       insert into history (node_id, dataitem_id, time, value)
       values (${device_id}, ${dataitem_id}, '${time}', '${value}'::jsonb);
     `
-    console.log('db - write', device_id, dataitem_id, time, value)
+    // console.log('db - write', device_id, dataitem_id, time, value)
     const result = await this.query(sql)
     return result
   }
@@ -186,6 +186,9 @@ export class Db {
   }
 
   // get latest value of a device's property path
+  // device has { name }
+  //. currently only used by availability and watch metrics - merge into getLastRecord
+  //. merge with getLastRecord below
   async getLatestValue(table, device, path) {
     const sql = `
       select value
@@ -194,9 +197,7 @@ export class Db {
       order by time desc
       limit 1;
     `
-    // console.log(sql)
     const result = await this.query(sql)
-    // console.log(result)
     const value = result.rowCount > 0 && result.rows[0]['value'] // colname must match case
     return value
   }
@@ -205,13 +206,20 @@ export class Db {
   // start should be an ISO datetimestring
   // returns null or { time, value }
   //. pass table also
-  //. merge with getLatestValue
+  //. merge with getLatestValue above
+  //. add time limit for search
+  //. use get_last_value db fn if possible, for speed
+  //. note: device here is device.name!
   async getLastRecord(device, path, start) {
+    return await this.getLastRecord2('history_float', device, path, start)
+  }
+  //. same as above but add table param
+  async getLastRecord2(table, device, path, start) {
     const sql = `
       select 
         time, value
       from 
-        history_float
+        ${table}
       where
         device = '${device}' 
         and path = '${path}'
@@ -222,7 +230,7 @@ export class Db {
     `
     const result = await this.query(sql)
     const record = result.rows.length > 0 && result.rows[0]
-    return record // null or { time, value }
+    return record // false or { time, value }
   }
 
   // get first value of a path from history_float view.
@@ -251,11 +259,15 @@ export class Db {
   // includes previous value before start time.
   //. pass table also, ie history_float vs history_text
   async getHistory(device, path, start, stop) {
+    return await this.getHistory2('history_float', device, path, start, stop)
+  }
+  //. same as above but add table param
+  async getHistory2(table, device, path, start, stop) {
     const sql = `
       select 
         time, value
       from 
-        history_float
+        ${table}
       where
         device = '${device}'
         and path = '${path}'
@@ -264,7 +276,7 @@ export class Db {
         select 
           time, value
         from 
-          history_float
+          ${table}
         where
           device = '${device}'
           and path = '${path}'
@@ -273,6 +285,42 @@ export class Db {
           time desc
         limit 1
       )
+      order by 
+        time asc;
+    `
+    const result = await this.query(sql)
+    return result.rows
+  }
+  //. same as above but don't do the union
+  async getHistory3(table, device, path, start, stop) {
+    const sql = `
+      select 
+        time, value
+      from 
+        ${table}
+      where
+        device = '${device}'
+        and path = '${path}'
+        and time >= '${start}' and time < '${stop}'
+      order by 
+        time asc;
+    `
+    const result = await this.query(sql)
+    return result.rows
+  }
+  //. new
+  // this returns a list of records with { time, value }, where value is a number or string
+  async getHistoryNonUnavailable(device, path, start, stop) {
+    const sql = `
+      select 
+        time, value
+      from 
+        history_all
+      where
+        device = '${device}'
+        and path = '${path}'
+        and time >= '${start}' and time < '${stop}'
+        and value->>0 <> 'UNAVAILABLE'
       order by 
         time asc;
     `

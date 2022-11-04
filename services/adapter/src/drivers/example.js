@@ -1,7 +1,7 @@
 // example driver
 
 export class AdapterDriver {
-  init({ device, connect, cache }) {
+  start({ device, connect, cache }) {
     console.log(`Initialize example driver...`)
 
     function setAvailable() {

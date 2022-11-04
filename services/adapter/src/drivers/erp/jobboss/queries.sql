@@ -2,18 +2,27 @@
 -- sample queries
 ------------------------------------------------------------------
 
+-- can run these in jobboss by going to grafana, datasources,
+-- jobboss, explore, then format as table, and enter a query. 
+-- eg https://grafana-004-oxbox.teleport.ladder99.com/explore
+
+
 -- get latest jobnums for a workcenter
-select top 10
+select top 20
   actual_start as time,
   job,
-  status, -- S started, C completed?
+  status, -- C completed O ongoing? S started?
+  work_center,
   *
 from
   job_operation
 where
   workcenter_oid = '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' -- marumatsu
+  and status <> 'C'
+  and actual_start is not null
 order by
   actual_start desc
+;
 
 
 -- check if workcenter has a schedule override for a certain date.

@@ -4,7 +4,7 @@
 
 import { Probe } from './dataProbe.js'
 import { Observations } from './dataObservations.js'
-import { Feedback } from './feedback.js'
+// import { Feedback } from './feedback.js'
 import * as lib from './common/lib.js'
 
 export class AgentReader {
@@ -31,11 +31,11 @@ export class AgentReader {
 
   // start fetching and processing data
   async start() {
-    // make feedback object to track data and feedback to devices as needed.
-    // used to track jobnum change to reset marumatsu counter.
-    //. this will be replaced by MTConnect Interfaces.
-    this.feedback = new Feedback(this.setup)
-    this.feedback.start() // get mqtt connection, start check timer
+    // // make feedback object to track data and feedback to devices as needed.
+    // // used to track jobnum change to reset marumatsu counter.
+    // //. this will be replaced by MTConnect Interfaces.
+    // this.feedback = new Feedback(this.setup)
+    // this.feedback.start() // get mqtt connection, start check timer
 
     // probe - get agent data structures and write to db
     probe: do {
@@ -51,7 +51,7 @@ export class AgentReader {
         await current.read(this.endpoint) // get observations and this.sequence numbers
         if (instanceIdChanged(current, probe)) break probe
         await current.write(this.db, probe.indexes) // write this.observations to db
-        await this.feedback.set(current) // set current monitored values
+        // await this.feedback.set(current) // set current monitored values
         this.from = current.sequence.next
         // make sure our count value is not over the agent buffer size,
         // else next sample read would get an error.
@@ -84,7 +84,7 @@ export class AgentReader {
             break current
           }
           await sample.write(this.db, probe.indexes) // write this.observations to db
-          await this.feedback.check(sample) // check for changes, write feedback to devices
+          // await this.feedback.check(sample) // check for changes, write feedback to devices
           this.from = sample.sequence.next // make sure our 'from' value is ok
           // too many observations might come in during this interval,
           // so next read could get an xml error message.

@@ -1,8 +1,10 @@
-// mqtt subscriber
-// subscribes to mqtt topics from provider, receives messages,
+// mqtt-json driver
+// subscribes to mqtt topics, receives messages,
 // parses them out as JSON, updates cache values, which sends SHDR to agent.
 
-// import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
+//. this is gonna be obsolete - replaced by mqttSubscriber.js
+
+import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 import { getEquationKeys, getEquationKeys2 } from '../helpers.js'
 import * as lib from '../common/lib.js'
 
@@ -23,50 +25,45 @@ export class AdapterDriver {
   // advice is a dict of optional fns that are called at various points in the code.
   //. is advice used also?
   // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
-  init({ source, device, host, port, cache, inputs, types, advice }) {
-    // console.log('MQTT-subscriber Initializing mqtt-json driver for', device.id)
-    // const url = `mqtt://${host}:${port}`
+  start({ source, device, host, port, cache, inputs, types, advice }) {
+    console.log('MQTT starting mqtt-json driver for', device.id)
+    const url = `mqtt://${host}:${port}`
 
-    // // connect to mqtt broker/server
-    // console.log(`MQTT-subscriber connecting to broker on ${url}...`)
-    // const mqtt = libmqtt.connect(url)
-
-    //. wait until provider is connected
+    // connect to mqtt broker/server
+    console.log(`MQTT connecting to broker on ${url}...`)
+    const mqtt = libmqtt.connect(url)
 
     // handle connection
-    // mqtt.on('connect', function onConnect() {
-    provider.on('connect', function onConnect() {
-      console.log(`MQTT-subscriber connected to broker on ${url}`)
+    mqtt.on('connect', function onConnect() {
+      console.log(`MQTT connected to broker on ${url}`)
 
       // register message handler
-      console.log(`MQTT-subscriber registering message handler`)
-      // mqtt.on('message', onMessage)
-      provider.on('message', onMessage)
+      console.log(`MQTT registering message handler`)
+      mqtt.on('message', onMessage)
 
       // subscribe to any topics defined
       for (const entry of inputs.connect.subscribe) {
         const topic = replaceDeviceId(entry.topic)
-        console.log(`MQTT-subscriber subscribing to ${topic}`)
-        // mqtt.subscribe(topic)
-        provider.subscribe(topic, _) //. add selector
+        console.log(`MQTT subscribing to ${topic}`)
+        mqtt.subscribe(topic)
       }
 
-      // // publish to any topics defined
-      // for (const entry of inputs.connect.publish || []) {
-      //   const topic = replaceDeviceId(entry.topic)
-      //   console.log(`MQTT-subscriber publishing to ${topic}`)
-      //   mqtt.publish(topic, entry.message)
-      // }
+      // publish to any topics defined
+      for (const entry of inputs.connect.publish || []) {
+        const topic = replaceDeviceId(entry.topic)
+        console.log(`MQTT publishing to ${topic}`)
+        mqtt.publish(topic, entry.message)
+      }
 
-      // // do any static inits
-      // console.log('MQTT-subscriber static inits:', inputs.connect.static)
-      // for (const key of Object.keys(inputs.connect.static || {})) {
-      //   const cacheId = `${device.id}-${key}`
-      //   const value = inputs.connect.static[key]
-      //   cache.set(cacheId, value)
-      // }
+      // do any static inits
+      console.log('MQTT static inits:', inputs.connect.static)
+      for (const key of Object.keys(inputs.connect.static || {})) {
+        const cacheId = `${device.id}-${key}`
+        const value = inputs.connect.static[key]
+        cache.set(cacheId, value)
+      }
 
-      console.log(`MQTT-subscriber listening for messages...`)
+      console.log(`MQTT listening for messages...`)
     })
 
     // handle incoming messages.
@@ -76,16 +73,15 @@ export class AdapterDriver {
     function onMessage(msgTopic, message) {
       message = message.toString()
 
-      // //. temporary guard
-      // if (msgTopic === 'controller')
-      //   console.log(
-      //     `MQTT-subscriber got message ${msgTopic}: ${message.slice(0, 140)}`
-      //   )
-      // // console.log(`Got message on topic ${msgTopic}: ${message}`)
+      //. temporary guard
+      if (msgTopic === 'controller')
+        console.log(`MQTT got message ${msgTopic}: ${message.slice(0, 140)}`)
+      // console.log(`Got message on topic ${msgTopic}: ${message}`)
+
+      // const receivedTime = new Date()
 
       // unpack the mqtt json payload, assuming it's a JSON string -
       // if not, just pass as string to handler.
-      //. let input.yaml do this if needed
       let payload
       try {
         payload = JSON.parse(message)
@@ -94,15 +90,15 @@ export class AdapterDriver {
         payload = message
       }
 
-      // //.................. temporary stopgap - won't scale ...................
-      // //. better to have payload.id as part of the message topic so can route messages better
-      // if (
-      //   typeof payload === 'object' &&
-      //   payload.id &&
-      //   source.messageIds &&
-      //   !source.messageIds[payload.id]
-      // )
-      //   return
+      //.................. temporary stopgap - won't scale ...................
+      //. better to have payload.id as part of the message topic so can route messages better
+      if (
+        typeof payload === 'object' &&
+        payload.id &&
+        source.messageIds &&
+        !source.messageIds[payload.id]
+      )
+        return
 
       // iterate over message handlers - array of [topic, handler]
       // eg [['l99/ccs/evt/query', { unsubscribe, initialize, definitions, inputs, ... }], ...]
@@ -117,12 +113,12 @@ export class AdapterDriver {
           //
           // console.log(`MQTT handle topic ${topic}`)
 
-          // // unsubscribe from topics as needed
-          // for (const entry of handler.unsubscribe || []) {
-          //   const topic = replaceDeviceId(entry.topic)
-          //   console.log(`MQTT-subscriber unsubscribe from ${topic}`)
-          //   mqtt.unsubscribe(topic)
-          // }
+          // unsubscribe from topics as needed
+          for (const entry of handler.unsubscribe || []) {
+            const topic = replaceDeviceId(entry.topic)
+            console.log(`MQTT unsubscribe from ${topic}`)
+            mqtt.unsubscribe(topic)
+          }
 
           // run initialize handler
           // eg can assign payload values to a dictionary $ here for fast lookups.
@@ -134,9 +130,9 @@ export class AdapterDriver {
 
           //. call this handler.algorithm, update all modules
           //. call this iterate_expressions, update all module inputs.yaml
-          if (handler.process === 'iterate_inputs') {
+          if (handler.process === 'iterate_expressions') {
             //
-            // console.log(`MQTT handle iterate_inputs`)
+            // console.log(`MQTT handle iterate_expressions`)
             //
             // define lookup function
             // eg lookup: '($, js) => eval(js)'
@@ -216,18 +212,14 @@ export class AdapterDriver {
             //   }
             //   //
           } else {
-            console.log(
-              `MQTT-subscriber Error - missing handler.process`,
-              handler.process
-            )
+            console.log(`MQTT Error - missing handler.process`, handler.process)
           }
 
           // subscribe to any topics
           for (const entry of handler.subscribe || []) {
             const topic = replaceDeviceId(entry.topic)
-            console.log(`MQTT-subscriber subscribe to ${topic}`)
-            // mqtt.subscribe(topic)
-            provider.subscribe(topic, _) //. add selector
+            console.log(`MQTT subscribe to ${topic}`)
+            mqtt.subscribe(topic)
           }
 
           msgHandled = true
@@ -235,7 +227,7 @@ export class AdapterDriver {
       }
 
       if (!msgHandled) {
-        console.log(`MQTT-subscriber WARNING: no handler for topic`, msgTopic)
+        console.log(`MQTT WARNING: no handler for topic`, msgTopic)
       }
     }
 

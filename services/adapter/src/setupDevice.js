@@ -1,74 +1,78 @@
 // setup a device by connecting to agent, initializing cache dataitems,
 // and setting up each device source (loading plugins etc).
 
-import net from 'net' // node lib for tcp
 import { setupSource } from './setupSource.js'
+import { AgentConnection } from './agentConnection.js'
 
-export async function setupDevice({ params, device, cache, client, devices }) {
-  // console.log(`Device`, device) // don't print - might have passwords
+// export async function setupDevice({
+export function setupDevice({
+  setup,
+  params,
+  device,
+  cache,
+  client,
+  devices,
+  providers,
+}) {
+  console.log(`Adapter setup device`, device.name) // don't print device obj - might have passwords
 
-  // each device gets a separate tcp connection to the agent
-  console.log(`Adapter - creating TCP server for Agent to connect to...`)
-  const tcp = net.createServer()
-  tcp.on('connection', onConnection) // handle connection from agent
-
+  // setup sources
   // each device can have multiple sources.
-  // iterate over sources, load driver for that source, call init on it,
-  // save plugin (the driver instance) to source.
-  for (const source of device.sources) {
-    setupSource({ params, source, cache, client, devices, device })
+  // saves plugin (the driver instance) to the source object.
+  for (const source of device.sources || []) {
+    // await setupSource({
+    setupSource({
+      setup,
+      params,
+      source,
+      cache,
+      client,
+      devices,
+      device,
+      providers,
+    })
   }
 
-  // start tcp server for Agent to listen to, eg at adapter:7878
-  const destinations = device.destinations || []
-  //. just handle one server/destination for now
-  const server = destinations[0] || params.defaultServer
+  // get host and port to talk to agent on, eg { host: adapter, port: 7878 }.
+  // this works even if no outputs or agent are specified.
+  // eg in setup.yaml,
+  //   # define any outputs for this device
+  //   outputs:
+  //     agent:
+  //       port: 7880 # differs by device - must match value in agent.cfg
+  const address = { ...params.defaultAgent, ...device.outputs?.agent }
 
-  console.log(`Adapter - listen for Agent on TCP socket at`, server, `...`)
+  // start tcp server for Agent to listen to, eg at adapter:7878.
+  // each device gets a separate tcp connection to the agent - same host, diff port.
+  const agentConnection = new AgentConnection()
+  agentConnection.start({ address, onAgentConnect, onAgentError }) // pass in callbacks
 
-  // begin accepting connections on the specified port and host from agent.
-  // see onConnection for next step.
-  tcp.listen(server.port, server.host)
-
-  // handle connection from agent
-  async function onConnection(socket) {
-    const remoteAddress = `${socket.remoteAddress}:${socket.remotePort}`
-    console.log('Adapter - new connection from Agent', remoteAddress)
-
+  // callback to handle tcp connection
+  function onAgentConnect(socket) {
+    console.log(`AgentConnection connected to Agent for`, device.name)
     // tell cache and plugins about the tcp socket
     for (let source of device.sources) {
-      cache.setSocket(source.outputs, socket) //. this should trigger sending all cache values
-      if (source.plugin && source.plugin.setSocket) {
+      console.log(`AgentConnection set socket for`, device.name, source.driver)
+      cache.setSocket(source.outputs, socket) // this should trigger sending all cache values
+      // note: source.plugin is the instantiated driver object for the source,
+      // which may not have a setSocket fn.
+      if (source.plugin?.setSocket) {
         source.plugin.setSocket(socket) // some drivers/plugins need direct socket connection, eg random.js
       }
     }
+  }
 
-    // handle errors
-    // eg "This socket has been ended by the other party"
-    socket.on('error', onError)
-    function onError(error) {
-      console.log(error)
-      // tell cache and plugins so they don't try to write to old socket
-      for (let source of device.sources) {
-        cache.setSocket(source.outputs, undefined)
-        if (source.plugin && source.plugin.setSocket) {
-          source.plugin.setSocket(undefined)
-        }
+  // callback to handle tcp errors
+  // note: reconnection will automatically be handled by tcp.on connection and
+  // onAgentConnect, then new socket will be set on cache and plugins.
+  function onAgentError(error) {
+    console.log(`AgentConnection error`, device.name, error.message)
+    // tell cache and plugins so they don't try to write to old socket
+    for (let source of device.sources) {
+      cache.setSocket(source.outputs, undefined)
+      if (source.plugin && source.plugin.setSocket) {
+        source.plugin.setSocket(undefined) // clear socket
       }
-      // reconnection will automatically be handled by tcp.on connection
-      // and onConnection, then new socket will be set on cache and plugins.
     }
-
-    // handle ping/pong messages to/from agent, so it knows we're alive.
-    socket.on('data', function onData(buffer) {
-      const str = buffer.toString().trim()
-      if (str === '* PING') {
-        // received PING from Agent - send PONG
-        const response = '* PONG 5000' //. msec - where from?
-        socket.write(response + '\n')
-      } else {
-        console.log('Adapter received data:', str.slice(0, 20), '...')
-      }
-    })
   }
 }

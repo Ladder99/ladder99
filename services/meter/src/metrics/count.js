@@ -1,9 +1,12 @@
 // read a counter and write the lifetime count
 
-// ie the counter can be reset any time, but the lifetime count
+// the counter can be reset any time, but the lifetime count
 // will keep increasing.
 
-const metricIntervalDefault = 5 // seconds
+//. this will be replaced by watch.js, which is a little more generic and efficient.
+
+const metricIntervalDefault = 5000 // ms
+const metricOffsetDefault = 3000 // ms
 
 export class Metric {
   //
@@ -12,32 +15,34 @@ export class Metric {
     this.db = db
     this.device = device
     this.metric = metric
+
+    this.interval = metric.interval ?? metricIntervalDefault // ms
+    this.offset = metric.offset ?? metricOffsetDefault // ms
     this.lastStop = null
+    this.lastWatchValue = undefined
 
-    const deviceName = this.device.name
-    console.log(`Count ${deviceName} - start metric...`)
+    this.me = `Count ${device.name}:`
+    console.log(this.me, `start metric, watch`, metric.deltaPath)
 
-    console.log(`Count ${deviceName} - get device node_id...`)
+    console.log(this.me, `get device node_id...`)
     this.device_id = await this.db.getDeviceId(device.name) // repeats until device is there
 
     // need this dataitemId as we'll be writing directly to the history table
-    console.log(`Count ${deviceName} - get dataitem_id...`)
+    console.log(this.me, `get dataitem_id...`)
     this.lifetime_id = await this.db.getDataItemId(metric.lifetimePath) // repeat until dataitem there
-
-    // get polling interval - either from metric in setup yaml or default value
-    this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
-
-    this.offset = 3000 // ms - look this far back in time for raw count values so adapter has time to write data
 
     await this.backfill() // backfill any missing values
     await this.poll() // do first poll
     this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
 
+  //
+
   // poll db and update lifetime count - called by timer
   async poll() {
+    //
     const deviceName = this.device.name
-    // console.log(`Count ${deviceName} - poll db, write lifetime count`)
+    // console.log(this.me, `poll db, write lifetime count`)
 
     // due to nature of js event loop, poll is not gonna be called exactly every this.interval ms.
     // that means we could miss job count records, causing 'misses'.
@@ -47,17 +52,16 @@ export class Metric {
     const start =
       this.lastStop ||
       new Date(now.getTime() - this.offset - this.interval).toISOString()
-    // const stop = now.toISOString()
     const stop = new Date(now.getTime() - this.offset).toISOString()
     const lifetimePath = this.metric.lifetimePath
-    // console.log(`Count ${deviceName} - start,stop`, start, stop)
+    // console.log(this.me, `start,stop`, start, stop)
 
     // get last lifetime count, before start time
     const record = await this.db.getLastRecord(deviceName, lifetimePath, start)
     let lifetimeCount = record ? record.value : 0
-    // console.log(`Count ${deviceName} - lifetimeCount`, lifetimeCount)
+    // console.log(this.me, `lifetimeCount`, lifetimeCount)
 
-    // get job counts
+    // get job counts - includes last one before start time, if any, using a UNION query.
     //. currently gets from history_float view
     const rows = await this.db.getHistory(
       deviceName,
@@ -65,7 +69,7 @@ export class Metric {
       start,
       stop
     )
-    // console.log(`Count ${deviceName} - job count rows`, rows)
+    // console.log(this.me, `job count rows`, rows)
     // rows will be like (for start=10:00:00am, stop=10:00:05am)
     // time, value
     // 9:59:59am, 99
@@ -75,6 +79,8 @@ export class Metric {
     // 10:00:03am, 0
     // 10:00:04am, 1
     // 10:00:05am, 2
+    // note: if we only got 1 row, it would be the last one before start time,
+    // ie no new counts since last poll - because getHistory gets last one before start time also.
     if (rows && rows.length > 1) {
       let previousRow = rows[0] // { time, value }
       const lifetimeRows = []
@@ -83,14 +89,6 @@ export class Metric {
         const deltaCount = row.value - previousRow.value
         if (deltaCount > 0) {
           lifetimeCount += deltaCount
-          // write time, lifetime
-          // better to save these up in an array and write all at once, for speed
-          // await this.db.writeHistory(
-          //   this.device_id,
-          //   this.lifetime_id,
-          //   row.time.toISOString(),
-          //   lifetimeCount
-          // )
           const lifetimeRow = {
             node_id: this.device_id,
             dataitem_id: this.lifetime_id,
@@ -101,17 +99,19 @@ export class Metric {
         }
         previousRow = row
       }
-      // console.log(`Count ${deviceName} - writing lifetime rows`, lifetimeRows)
+      // console.log(this.me, `writing lifetime rows`, lifetimeRows)
       await this.db.addHistory(lifetimeRows)
     }
     // save time for next poll
     this.lastStop = stop
   }
 
+  //
+
   // backfill missing partcount records
   async backfill() {
     const deviceName = this.device.name
-    console.log(`Count ${deviceName} - backfill any missed partcounts`)
+    console.log(this.me, `backfill any missed partcounts`)
 
     const now = new Date()
 
@@ -121,7 +121,7 @@ export class Metric {
       this.metric.lifetimePath,
       now.toISOString()
     )
-    console.log(`Count ${deviceName} - last record`, record)
+    console.log(this.me, `last record`, record)
 
     // if no lifetime record, start from the beginning
     if (!record) {
@@ -129,7 +129,7 @@ export class Metric {
         deviceName,
         this.metric.deltaPath
       )
-      console.log(`Count ${deviceName} - first record`, record2)
+      console.log(this.me, `first record`, record2)
       // no delta data either, so exit
       if (!record2) {
         return
@@ -163,6 +163,6 @@ export class Metric {
       }
       previous = row
     }
-    console.log(`Count ${deviceName} - backfill done`)
+    console.log(this.me, `backfill done`)
   }
 }

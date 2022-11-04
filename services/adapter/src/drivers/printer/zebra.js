@@ -26,9 +26,10 @@ const pollInterval = 3000 // ms
 const messagePauseTime = 500 // ms
 
 export class AdapterDriver {
+  //
   //. use connect obj
-  init({ device, host, port, cache }) {
-    console.log(`Initialize Zebra driver...`)
+  start({ device, host, port, cache }) {
+    console.log(`Zebra start driver...`)
 
     let client // tcp connection
     let handler // current message handler
@@ -45,7 +46,7 @@ export class AdapterDriver {
         console.log(err)
         setAllUnavailable()
         // keep trying
-        console.log(`Sleeping - will try to connect again...`)
+        console.log(`Zebra sleeping - will try to connect again...`)
         lib.sleep(1000)
       }
     }

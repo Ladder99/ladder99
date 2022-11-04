@@ -1,12 +1,13 @@
 // random data driver - for testing
+
 // run with
 //   ./start ./setups/random adapter agent
 
 const pollInterval = 1000 // msec
 
 export class AdapterDriver {
-  init({ device }) {
-    console.log(`Random - initialize driver...`)
+  start({ device }) {
+    console.log(`Random - start driver...`)
 
     setInterval(poll.bind(this), pollInterval)
 
@@ -16,6 +17,7 @@ export class AdapterDriver {
     // these should only send something if value CHANGED.
     async function poll() {
       console.log(`Random poll - send data to agent if have socket...`)
+
       // only do once socket is available - see setSocket below
       if (this.socket) {
         const availability = Math.random() > 0.5 ? 'AVAILABLE' : 'UNAVAILABLE'

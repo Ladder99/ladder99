@@ -8,7 +8,7 @@
 # and adapter parses messages, writes values to cache, which may output shdr
 # to the mtconnect agent.
 
-# this file is parsed by the adapter driver services/adapter/src/drivers/mqtt-json.js.
+# this file is parsed by the adapter driver services/adapter/src/drivers/mqtt-subscriber.js.
 
 # note: cache keys are ARBITRARY,
 # ie not necessarily the same as dataitem id OR name.
@@ -17,6 +17,11 @@
 # which becomes eg 'kl1-step' for the SHDR id.
 # the idea is to keep the SHDR id's as short as possible, to reduce network bandwidth,
 # while the dataitem name can be more descriptive.
+
+#. the intention is to parameterize these yaml files to reduce the amount of js code in them.
+# eg
+# initialize: '$ = JSON.parse(payload); $.faultKeys=Object.keys($.faults || {});'
+# well, the first part would be easy, but how would handle second?
 
 # define connect handler
 connect:
@@ -48,7 +53,7 @@ handlers:
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
     #. explain
-    process: iterate_inputs
+    algorithm: iterate_expressions
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
     # 'js' is some javascript calculation code to determine its value.
@@ -86,7 +91,7 @@ handlers:
 
     # algorithm to process inputs
     #. explain
-    process: iterate_message_contents
+    algorithm: iterate_message_contents
 
     # define key-code pairs
     # 'key' defines the cache id, with id = {deviceId}-{key}, eg 'pa1-availability'.
@@ -321,6 +326,6 @@ handlers:
     accessor: value
     # how to process inputs
     #. explain
-    process: iterate_message_contents
+    algorithm: iterate_message_contents
     # reuse the query expression list here with *, as the key-part pairs are the same
     expressions: *queryExpressions

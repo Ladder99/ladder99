@@ -2,6 +2,39 @@
 
 Lifecycles of Adapter plugins
 
+## MQTT Provider and Subscriber
+
+```mermaid
+sequenceDiagram
+
+participant device as Device
+participant broker as MQTT Broker
+participant adapter as Adapter
+participant provider as MQTT Provider
+participant subscriber as MQTT Subscriber
+participant cache as Cache
+participant agent as Agent
+#participant user as User
+
+device -->> broker: register
+adapter -->> provider: start
+provider -->> broker: connect
+broker -->> provider: onConnect
+adapter -->> cache: setup
+adapter -->> subscriber: start
+provider -->> subscriber: onConnect
+subscriber -->> provider: subscribe
+provider -->> broker: subscribe
+device -->> broker: msg
+broker -->> provider: MQTT msg
+provider -->> subscriber: MQTT msg
+subscriber -->> cache: set(key, value)
+cache -->> agent: SHDR string
+#agent -->> user: XML <DataItems />
+
+```
+
+
 ## MQTT Plugin
 
 ```mermaid

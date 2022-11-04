@@ -55,9 +55,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 #   sudo apt update
 #   sudo apt install -t buster-backports libseccomp2
 # see https://www.reddit.com/r/Readarr/comments/ixajkk/working_docker_image_for_raspberry_pi_os_buster/glh774f/
-RUN apt-get update -y && apt-get install --fix-missing -y nodejs npm libudev-dev \
+RUN apt-get update -y \
+  && apt-get install --fix-missing -y nodejs npm libudev-dev \
   libusb-1.0-0 libusb-1.0-0-dev pkg-config
-
 
 WORKDIR /usr/app
 ENV NODE_ENV production
@@ -65,20 +65,18 @@ COPY package.json /usr/app/
 
 # install javascript dependencies
 
-# generate package-lock from package.json, but don't create node_modules
+# 1. generate package-lock from package.json, but don't create node_modules
 # note: With the --only=production flag (or when the NODE_ENV environment 
 # variable is set to production), npm will not install modules listed in 
 # devDependencies.
-RUN npm install --package-lock-only --only=production
-
-# fix vulnerabilities where able and update package-lock.json.
+# 2. fix vulnerabilities where able and update package-lock.json.
 # normally audit fix runs a full install under the hood, but we don't want that yet.
-RUN npm audit fix --package-lock-only --only=production
-
-# install deterministically from package-lock.json to node_modules.
+# 3. install deterministically from package-lock.json to node_modules.
 # audit=false means don't submit packages to registry.
 # see https://docs.npmjs.com/cli/v8/commands/npm-ci
-RUN npm clean-install --audit=false --only=production
+RUN npm install --package-lock-only --only=production \
+  && npm audit fix --package-lock-only --only=production \
+  && npm clean-install --audit=false --only=production
 
 
 # ------------------------------------------------------------------------
@@ -98,6 +96,9 @@ WORKDIR /usr/app
 COPY package.json /usr/app/package.json
 COPY --from=build /usr/app/node_modules /usr/app/node_modules
 COPY src /usr/app/src
+#. nowork
+# COPY package.json src /usr/app/
+# COPY --from=build /usr/app/node_modules /usr/app/node_modules
 
 # base command - can pass params with CMD [?]
 # note: When you run an image that uses the exec form (ie an array), 

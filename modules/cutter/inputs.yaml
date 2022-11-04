@@ -20,9 +20,11 @@
 # while the dataitem name can be more descriptive.
 
 # define connect handler
+#. move into handlers, below
 connect:
   # subscribe to these topics
   # can use ${deviceId} in topic names
+  # note: a device will only subscribe to those it has defined in setup.yaml source.topics!
   subscribe:
     - topic: controller
     - topic: l99/B01000/evt/io
@@ -33,55 +35,48 @@ connect:
     # - topic: l99/B01000/evt/gateway
     # - topic: l99/B01000/evt/current
 
-  # # publish an empty message to receive the query response
-  # publish:
-  #   - topic: l99/B01000/cmd/query
-  #     message: '{}'
-  # # define any one-time cache values to set
-  # static:
-  #   # this sets the cache value at eg 'kl1-procname' to 'KITTING'
-  #   procname: KITTING
-
-# define message topic handlers
+# define message topic handlers - if add new ones be sure to subscribe above!
 handlers:
   # ----------------------------------------------------------------------------
   # handle controller messages
   # ----------------------------------------------------------------------------
-  # payload is just a string - birth, sleep, or death
   controller:
-    # make '$' the payload value - 'birth', 'sleep', or 'death'
+    # make '$' the payload value
+    text: true # payload is a plain string - 'birth', 'sleep', 'death'
+    #. parameterize this fn to eg 'initialize:text'
     initialize: '$ = payload'
     # define lookup function, which returns a value given some js code.
+    #. parameterize this fn to eg 'lookup:eval' ?
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
-    process: iterate_inputs
+    # this algorithm iterates over expressions, evaluates each, and adds value to cache.
+    algorithm: iterate_expressions
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'dxm' => 'm1-dxm'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
-      dxm: $==='birth'
+      controller: $==='birth' # ie on birth message set controller to true
 
   # ----------------------------------------------------------------------------
   # handle io messages
   # ----------------------------------------------------------------------------
   # a message on this topic might look like this -
-  #   {"id":"535172","a1":0.021972991531242846,"a2":0.013122758831158923,"a3":0.007629510948348211,"a4":0.021972991531242846,"a5":0,"a6":0,"a8":128}
+  #   {"id":"535172","a1":0.02197,"a2":0.01312,"a3":0.007629,"a4":0.0219,"a5":0,"a6":0,"a8":128}
   # where id is the device to dispatch the message to and a5 is the partcount
   l99/B01000/evt/io:
     # make '$' the message payload dictionary
-    #. JSON.parse the string explicitly here! otherwise, have to do try/catch for plain string handling
     initialize: '$ = payload'
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
-    #. explain
-    #. call it iterate-expressions
-    process: iterate_inputs
+    # this algorithm iterates over expressions, evaluates each, and adds value to cache.
+    algorithm: iterate_expressions
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'connection' => 's1-connection'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
-      controller: $.a8===128 # 128=controller node is connected to DXM (which is connected to 001)
+      # dxm: $.a8===128 # 128 means node is connected to DXM (which is connected to 001)
+      dxm: $.a8!==undefined && $.a8===128 # 128 means node is connected to DXM (which is connected to 001)
       part_count: $.a5
 
   # ----------------------------------------------------------------------------
@@ -102,17 +97,17 @@ handlers:
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
     #. explain
-    #. call it 'algorithm: iterate-expressions'
-    process: iterate_inputs
+    algorithm: iterate_expressions
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
-      xvelz: $.a22
-      xaccz: $.a25
-      xtemp: $.a192
       xvelx: $.a70
+      xvelz: $.a22
       xaccx: $.a73
+      xaccz: $.a25
+      # xtemp: $.a192
+      xtemp: lib.rounded($.a192)
 
   # ----------------------------------------------------------------------------
   # handle pressure
@@ -121,17 +116,16 @@ handlers:
   # <!-- agent.cfg conversionRequired: yes -->
   # <DataItem category="SAMPLE" id="m1-sp" name="stacker_pressure" type="PRESSURE" units="PASCAL" nativeUnits="POUND/INCH^2" />
   l99/B01000/evt/pressure:
-    # make '$' the message payload dictionary and add faultKeys for quick
-    # lookups of faults - payload.faults is a dictionary of faults.
+    # make '$' the message payload dictionary
     initialize: '$ = payload'
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
     #. explain
-    #. call it iterate-expressions
-    process: iterate_inputs
+    algorithm: iterate_expressions
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
-      sp: $.a2
+      # sp: $.a2
+      sp: lib.rounded($.a2)

@@ -27,7 +27,6 @@ export function readSetup(setupFolder) {
 
 // import a yaml file and parse to js struct.
 // returns the js struct or null if file not avail.
-/** @returns {object} */
 export function importYaml(path) {
   try {
     const yaml = fs.readFileSync(path, 'utf8')
@@ -40,6 +39,7 @@ export function importYaml(path) {
 }
 
 // recurse over values, replacing eg $FOO with process.env['FOO']
+//. couldn't we just replaceAll on the file string?
 export function replaceEnvars(setup) {
   for (let key of Object.keys(setup)) {
     const value = setup[key]
@@ -50,7 +50,7 @@ export function replaceEnvars(setup) {
       const envarValue = process.env[envarName]
       // console.log(`replacing ${value} with ${envarValue}`)
       setup[key] = envarValue
-    } else if (typeof value === 'object') {
+    } else if (value && typeof value === 'object') {
       replaceEnvars(value)
     }
   }
@@ -102,4 +102,20 @@ export function mergeIntoSet(setBase, setExtra) {
       setBase.add(key)
     }
   }
+}
+
+// round a number to a given number of decimals.
+// use negative num to round to a power of 10.
+// handles 'unavailable'.
+export function rounded(value, decimals = 0) {
+  if (typeof value !== 'number') return value //?
+  if (value !== null && value !== undefined) {
+    if (decimals < 0) {
+      return Number(
+        Math.round(value * Math.pow(10, decimals)) * Math.pow(10, -decimals)
+      ).toFixed(0)
+    }
+    return Number(value).toFixed(decimals) // if value is a string like 'xxx', will return NaN
+  }
+  return null
 }

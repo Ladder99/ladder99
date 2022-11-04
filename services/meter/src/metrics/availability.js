@@ -38,7 +38,7 @@ const minutes = 60 * 1000 // 60 ms
 const hours = 60 * minutes
 const days = 24 * hours
 
-const backfillDefaultStart = 60 * days // ie look this far back for first backfill date, by default
+const backfillDefaultStart = 30 * days // ie look this far back for first backfill date, by default
 const metricIntervalDefault = 60 // seconds
 const resolutions = 'minute,hour,day,week,month,year'.split(',') //. 5min? 15min?
 
@@ -53,6 +53,7 @@ export class Metric {
 
   async start({ client, db, device, metric }) {
     console.log(`Availability - initialize availability metric...`)
+    console.log(`Availability - time resolutions`, resolutions)
     this.client = client
     this.db = db
     this.device = device
@@ -67,14 +68,14 @@ export class Metric {
     this.timezoneOffset = offsetMinutes * 60 * 1000 // ms
     console.log(
       `Availability tz, offset`,
-      this.device.name,
+      device.name,
       client.timezone,
       offsetMinutes
     )
 
     console.log(`Availability - get device node_id...`)
     this.device.node_id = await this.db.getDeviceId(device.name) // repeats until device is there
-    console.log(this.device)
+    console.log(`Availability ${device.name} node_id`, this.device.node_id)
 
     //. poll for schedule info, save to this - set up timer for every 10mins?
     // pollSchedule vs pollMetrics?
@@ -86,9 +87,13 @@ export class Metric {
     // this.overtimeActiveInterval = 5 * minutes // ms //. pass through the metric as above
 
     await this.backfill() // backfill missing values
+
+    console.log(`Availability ${device.name} poll with interval`, this.interval)
     await this.poll() // do first poll
     this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
+
+  //
 
   async backfill() {
     const deviceName = this.device.name
@@ -137,17 +142,26 @@ export class Metric {
         startStopTimes[minute] = row.path
       }
     }
-    console.log(`Availability ${deviceName} - dict`, startStopTimes)
+    console.log(`Availability ${deviceName} - backfill dict`, startStopTimes)
+
+    const minToDate = min => new Date(min * minutes).toISOString()
 
     // loop from startstart to now, interval 1 min
     // check for active and available
     // write to bins table those values
     const startMinute = Math.floor(startBackfill.getTime() / minutes)
     const nowMinute = Math.floor(now.getTime() / minutes)
-    console.log(`Availability ${deviceName} start, now`, startMinute, nowMinute)
+    console.log(
+      `Availability ${deviceName} start, now`,
+      minToDate(startMinute),
+      minToDate(nowMinute)
+    )
     let state = null
     for (let minute = startMinute; minute < nowMinute; minute++) {
-      // console.log(`Availability - backfill minute`, minute)
+      // console.log(
+      //   `Availability ${deviceName} backfill minute`,
+      //   minToDate(minute)
+      // )
       const path = startStopTimes[minute]
       if (path === this.metric.startPath) {
         state = 1
@@ -174,13 +188,13 @@ export class Metric {
     console.log(`Availability ${deviceName} - backfill done`)
   }
 
-  // ----------------------------
+  //
 
   // poll db and update bins - called by timer
   async poll() {
     const deviceName = this.device.name
 
-    console.log(`Availability ${deviceName} - poll db and update bins`)
+    // console.log(`Availability ${deviceName} - poll db and update bins`)
     const now = new Date()
 
     // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ..., holiday }
