@@ -13,8 +13,8 @@ providers:
       path: /etc/dashboards
       # foldersFromFilesStructure: true
 
-  - name: Example
-    folder: Example
+  - name: Client
+    folder: Client
     type: file
     allowUiUpdates: true
     options:
