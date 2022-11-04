@@ -39,37 +39,37 @@ adapter:
 # warning: don't change the agent aliases once set (eg Main) as they are used
 # to synch data with db.
 relay:
-  # retention: 1w # can specify data retention period for ALL agents here
+  # retention: 1week # can specify data retention period for ALL agents here
   agents:
     # this is our main agent, as set up in compose.yaml and compose-overrides.yaml.
     # currently it is just fed data from the Micro adapter, which reports cpu, temp, disk space, etc.
     - alias: Main # this is an identifier for the agent, used by the db - don't change once set!
       url: http://agent:5000 # url to the agent
-      # retention: 1w # agent data retention period - overrides relay retention value
+      # retention: 1week # agent data retention period - overrides relay retention value
       # ignore: true # can specify this to turn agent recording on/off for all devices.
       # the devices sections is optional, but lets you assign a friendly alias and retention period, etc.
       devices:
         - id: host # device id - must match id in agent.xml
           alias: Host # device alias is used in path expressions - no spaces
-          retention: 1w # device data retention period - overrides agent retention value
+          retention: 1week # device data retention period - overrides agent retention value
           # ignore: true # specify this to turn device recording on/off
           # # can translate, ignore, or set retention for individual dataitems
           #. better to set here, or in module config?
           # dataitems:
           #   - id: host-temp # this is 'deviceId-dataitemId', where dataitemId is defined in agent.xml.
-          #     retention: 1d # dataitem retention period - overrides device retention value
+          #     retention: 1day # dataitem retention period - overrides device retention value
           #     # ignore: true # ignore this dataitem - overrides device ignore value
           #     # pathstep: AvailFoo # optional path step translation for this dataitem
 
     - alias: Mazak5701 # this is an identifier for the agent, used by the db - don't change once set!
       url: http://mtconnect.mazakcorp.com:5701 # url to the agent
-      # retention: 1y # agent retention - overrides relay retention value
+      retention: 1week # agent retention - overrides relay retention value
       # ignore: true # ignore this agent - overrides relay ignore value
       # the devices sections is optional, but lets you assign a friendly alias and retention period, etc.
       devices:
         - id: d1 # must match id in agent.xml
           alias: Mill-12345 # used in path expressions - no spaces!
-          # retention: 1y # device retention - overrides agent retention value
+          # retention: 1week # device retention - overrides agent retention value
           # ignore: true # ignore this device - overrides agent ignore value - not yet implemented
           # dataitems:
           #   # note: the d1-Cload and d1-Sload dataitems have the same type signature, hence path.
@@ -90,7 +90,7 @@ relay:
 
     - alias: Simulation # this is an identifier for the agent, used by the db - don't change once set!
       url: http://simulation:5000 # url to the agent
-      retention: 1d # agent retention - overrides relay retention value
+      retention: 1day # agent retention - overrides relay retention value
       # ignore: true # ignore this agent - overrides relay ignore value
 #
 # # meter service reads this section, AND the relay section for list of agents and devices.
