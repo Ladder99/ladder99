@@ -7,7 +7,7 @@
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "Apache2.0",
   "dependencies": {
-    "commander": "^8.3.0",
+    "commander": "^9.4.1",
     "csv": "^6.2.1",
     "js-yaml": "^4.1.0",
     "mqtt": "^4.2.6"
