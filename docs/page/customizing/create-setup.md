@@ -5,7 +5,7 @@ Now let's create a new setup so we can hook it up to another machine - which cou
 
 ## Clone Example Setup
 
-Clone the example setup with this command - you can use your company name here, with NO spaces -
+Clone the example setup with this command - you can use your company name here, for example, with NO spaces -
 
     ./l99 init <your-company-name>
 

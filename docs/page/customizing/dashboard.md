@@ -1,6 +1,6 @@
 # Dashboard
 
-Open up Grafana at http://localhost/d/micro - note the header has a time range of 3 hours, and a refresh rate of 5 seconds. 
+Open up Grafana at http://localhost/d/host - note the header has a time range of 3 hours, and a refresh rate of 5 seconds. 
 
 
 ## Queries
@@ -11,14 +11,14 @@ Now let's look at a query. Click on the CPU header and select 'Edit', then look 
 SELECT time, value as total
 FROM history_float
 WHERE
-  path='$device/cpu-total'
+  path='$device/CpuTotal'
   and $__timeFilter("time")
 ORDER BY time
 ```
 
 This is a SQL query, fetching data from the local Postgres database, which is running in Docker. 
 
-`$device` is a variable, which can be specified in the Grafana page settings. In this case, it's equivalent to 'Main/m', so the complete path is 'Main/m/cpu-total'. 
+`$device` is a variable, which can be specified in the Grafana page settings. In this case, it's equivalent to 'Main/Host', so the complete path is 'Main/Host/cpu-total'. 
 
 `$__timeFilter("time")` is a Grafana maco, which expands to something like *"time" BETWEEN '2022-08-22T12:03:25.593Z' AND '2022-08-22T15:03:25.593Z'* in the final query. 
 
@@ -35,7 +35,7 @@ Click on 'Timeline', and 'Edit'. This has a series of queries, starting with
 
 ```sql
 SELECT time, value as "Availability"
-FROM get_timeline('$device', '$device/availability', $__from, $__to, true, '1d')
+FROM get_timeline('$device', '$device/Availability', $__from, $__to, true, '1d')
 ```
 
 In this case, we're calling a function defined in the database that can be used for timeline graphs. It's basically a wrapper around this -

@@ -7,21 +7,8 @@ The main configuration file is `setup.yaml`, located in the project setup folder
 
 YAML stands for "yet another markup language", and is a way of providing structured data to applications, often for configuration. 
 
-<!-- For example, a yaml file might look like the following - 
 
-```yaml
-lotr:
-  title: Lord of the Rings  # this is a comment, which is ignored
-  type: series
-  author: tolkien
-  books:
-    - The Fellowship of the Rings
-    - The Two Towers
-    - The Return of the King
-``` -->
-
-
-## Setup.yaml
+## setup.yaml
 
 First note the **adapter** section - this specifies the device drivers to feed to our Agent. In this case, we have a microcontroller driver, which reads some stats of the local/host computer. 
 
@@ -89,7 +76,7 @@ relay:
 Link to the full setup.yaml for the example setup [here](../../setups/example/setup.yaml).
 
 
-## Compose-overrides.yaml
+## compose-overrides.yaml
 
 Another file with configuration settings is `../setup-test/compose-overrides.yaml`. This contains extra configuration for Docker - in this case, mostly just telling it to run all services with a profile name of 'base'. 
 
