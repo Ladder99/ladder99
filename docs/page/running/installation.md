@@ -6,19 +6,9 @@
 
 You can install it from https://git-scm.com/downloads.
 
-
-## Open Terminal
-
-Open a terminal window - if on Windows, run **Git Bash** -
+Open a terminal window - if on Windows, run **Git Bash** to get a more Linux-like environment -
 
 ![](../_images/git-bash.jpg)
-
-then go to a good working directory and make a folder for Ladder99 and any custom setups - e.g.
-
-```bash
-cd ~
-mkdir ladder99 && cd ladder99
-```
 
 
 ## Install Docker
@@ -46,6 +36,13 @@ Install or upgrade it at https://docs.docker.com/compose/install/.
 
 
 ## Install Ladder99
+
+First, go to a good working directory and make a folder for Ladder99 and any custom setups - e.g.
+
+```bash
+cd ~
+mkdir ladder99 && cd ladder99
+```
 
 Next, install the Ladder99 pipeline source code by cloning the code from GitHub -
 

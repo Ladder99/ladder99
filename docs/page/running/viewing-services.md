@@ -6,7 +6,7 @@
 First let's make sure all the services are running alright - 
 
 ```bash
-$ ./l99 list  # or just 'l99 list' on Windows
+$ ./l99 list
 NAMES       STATUS                         PORTS
 adapter     Up 34 seconds
 agent       Up 32 seconds                  0.0.0.0:5000->5000/tcp
@@ -28,5 +28,5 @@ If you see any services are marked as 'stopped' or 'restarting', see the [Troubl
 When you're done, you can stop all the Ladder99 services with
 
 ```bash
-./l99 stop all  # or just 'l99 stop all' on Windows
+./l99 stop all
 ```
