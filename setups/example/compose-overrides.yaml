@@ -42,6 +42,6 @@ services:
     build: ./relay # use ladder99/services/relay/Dockerfile
     profiles:
       - base
-  simulation:
-    profiles:
-      - base
+  # simulation:
+  #   profiles:
+  #     - base
