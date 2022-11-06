@@ -19,6 +19,7 @@ volumes/grafana/var
 volumes/mosquitto/data
 volumes/mosquitto/log
 volumes/nodered
+volumes/pgadmin
 volumes/portainer/data
 volumes/postgres/data
 volumes/traefik/acme.json

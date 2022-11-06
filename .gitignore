@@ -18,6 +18,7 @@ desktop.ini
 **/grafana/var
 **/mosquitto/data
 **/mosquitto/log
+**/pgadmin
 **/portainer/data
 **/postgres/data
 **/volumes/traefik/acme.json
