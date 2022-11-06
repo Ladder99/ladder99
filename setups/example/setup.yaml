@@ -88,10 +88,10 @@ relay:
           #   - id: d1-total_auto_cut_time
           #     ignore: true
 
-    - alias: Simulation # this is an identifier for the agent, used by the db - don't change once set!
-      url: http://simulation:5000 # url to the agent
-      retention: 1day # agent retention - overrides relay retention value
-      # ignore: true # ignore this agent - overrides relay ignore value
+    #- alias: Simulation # this is an identifier for the agent, used by the db - don't change once set!
+    #  url: http://simulation:5000 # url to the agent
+    #  retention: 1day # agent retention - overrides relay retention value
+    #  # ignore: true # ignore this agent - overrides relay ignore value
 #
 # # meter service reads this section, AND the relay section for list of agents and devices.
 # meter:
