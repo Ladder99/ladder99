@@ -8,12 +8,12 @@
 
     <!-- Host -->
     <!-- id and name must match that in setup.yaml -->
+    <!-- the uuid was generated from https://www.uuidgenerator.net/ -->
     <Device id="host" name="Host" uuid="cb149555-2aaf-45f5-8381-1a11c6edbcdb">
       <DataItems>
         <DataItem id="host-avail" name="availability" category="EVENT" type="AVAILABILITY" />
         <DataItem id="host-cond" name="condition" category="CONDITION" type="SYSTEM" />
         <DataItem id="host-temp" name="temperature" category="SAMPLE" type="TEMPERATURE" units="CELSIUS" />
-        <!-- <DataItem id="host-memtot" name="memory-total" category="SAMPLE" type="x:MEMORY" subType="x:TOTAL" units="x:BYTES" /> -->
         <!-- . use memavail instead? -->
         <DataItem id="host-memfree" name="memory-free" category="SAMPLE" type="x:MEMORY" subType="x:FREE" units="x:BYTES" />
         <DataItem id="host-memused" name="memory-used" category="SAMPLE" type="x:MEMORY" subType="x:USED" units="x:BYTES" />
@@ -22,7 +22,6 @@
         <DataItem id="host-diskused" name="disk-used" category="SAMPLE" type="x:DISK" subType="x:USED" units="x:BYTES" />
         <DataItem id="host-diskuse" name="disk-use" category="SAMPLE" type="x:DISK" subType="x:USE" units="x:PERCENTAGE" />
         <DataItem id="host-diskavail" name="disk-available" category="SAMPLE" type="x:DISK" subType="x:AVAILABLE" units="x:BYTES" />
-        <!-- <DataItem id="host-os" name="os" category="EVENT" type="VARIABLE" subType="x:OS" representation="DATA_SET" /> -->
         <DataItem id="host-osplatform" name="os-platform" category="EVENT" type="OPERATING_SYSTEM" />
       </DataItems>
     </Device>
