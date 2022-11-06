@@ -28,9 +28,9 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
    :maxdepth: 1
    :caption: Customizing
 
-   page/create-setup
-   page/dashboard
-   page/configuration
+   page/customizing/create-setup
+   page/customizing/dashboard
+   page/customizing/configuration
 
 .. toctree::
    :maxdepth: 1
@@ -51,6 +51,7 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
    page/reference/adapter
    page/reference/agent
    page/reference/database
+   page/reference/troubleshooting
 
 .. toctree::
    :maxdepth: 1

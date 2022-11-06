@@ -3,7 +3,7 @@
 Ladder99 comes with an example setup that displays data from a **LIVE** Mazak CNC machine. 
 
 
-## Run Pipeline
+## Run Example
 
 From your `ladder99/ladder99` folder, run the 'example' setup with
 
