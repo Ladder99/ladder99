@@ -33,7 +33,7 @@ Scroll down to the 'relay:agents:' section where it says
           alias: Mill-12345 # used in path expressions - no spaces!
 ```
 
-You can replace this with your agent info and comment out the devices listed - i.e.
+Replace this with your agent info and comment out the devices listed - i.e.
 
 ```yaml
     - alias: <your-company-name> # don't change once set!
