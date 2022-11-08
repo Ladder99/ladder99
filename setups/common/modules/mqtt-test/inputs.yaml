@@ -23,14 +23,8 @@ connect:
   # subscribe to these topics
   # can use ${deviceId} in topic names
   subscribe:
-    - topic: controller
-    - topic: l99/B01000/evt/io
-    - topic: l99/B01000/evt/vibration
+    - topic: iotgateway
     - topic: l99/B01000/evt/pressure
-    # - topic: l99/B01000/evt/ident
-    # - topic: l99/B01000/evt/agent
-    # - topic: l99/B01000/evt/gateway
-    # - topic: l99/B01000/evt/current
 
   # # publish an empty message to receive the query response
   # publish:
@@ -43,7 +37,7 @@ connect:
 
 # define message topic handlers
 handlers:
-  controller:
+  iotgateway:
     # make '$' the payload value - 'birth', 'sleep', or 'death'
     initialize: '$ = payload'
     # define lookup function, which returns a value given some js code.
@@ -54,7 +48,7 @@ handlers:
     # 'key' is mapped to a cache id, eg 'controller' => 's1-controller'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
-      dxm: $==='birth'
+      foo: $.v
 
   # ----------------------------------------------------------------------------
   # handle pressure
