@@ -7,7 +7,8 @@
   <Devices>
 
     <!-- Host -->
-    <!-- id and name must match that in setup.yaml -->
+    <!-- id must match that in setup.yaml -->
+    <!-- name must match that in setup.yaml and agent.cfg -->
     <!-- the uuid was generated from https://www.uuidgenerator.net/ -->
     <Device id="host" name="Host" uuid="cb149555-2aaf-45f5-8381-1a11c6edbcdb">
       <DataItems>
