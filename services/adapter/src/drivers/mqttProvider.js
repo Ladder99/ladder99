@@ -78,7 +78,7 @@ export class AdapterDriver {
       // must be let - and don't overwrite message variable
       let payload = message.toString()
 
-      // console.log(this.me, `got ${topic}: ${payload.slice(0, 140)}`)
+      console.log(this.me, `got ${topic}: ${payload.slice(0, 140)}`) //..
 
       // convert to js object, else leave as string
       // not sure how we can get around having a trycatch block and json parse,
