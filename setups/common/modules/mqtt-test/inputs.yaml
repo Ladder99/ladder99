@@ -1,0 +1,79 @@
+# inputs
+
+# define inputs to cache
+# see outputs.yaml for cache outputs to mtconnect agent.
+# this file is parsed by the adapter driver services/adapter/src/drivers/mqttSubscriber.js.
+
+# the ladder99 adapter subscribes to topics from an mqtt broker,
+# the mqtt broker sends data from the device(s) to adapter,
+# and adapter parses messages, writes values to cache, which outputs shdr
+# to the mtconnect agent when the values change.
+
+# note: cache keys are ARBITRARY,
+# ie not necessarily the same as dataitem id OR name.
+# eg the 'status_step' key references the cache value at 'kl1-status_step',
+# which is set below, while the output key in outputs.yaml is 'step',
+# which becomes eg 'kl1-step' for the SHDR id.
+
+# the idea is to keep the SHDR id's as short as possible, to reduce network bandwidth,
+# while the dataitem name can be more descriptive.
+
+# define connect handler
+connect:
+  # subscribe to these topics
+  # can use ${deviceId} in topic names
+  subscribe:
+    - topic: controller
+    - topic: l99/B01000/evt/io
+    - topic: l99/B01000/evt/vibration
+    - topic: l99/B01000/evt/pressure
+    # - topic: l99/B01000/evt/ident
+    # - topic: l99/B01000/evt/agent
+    # - topic: l99/B01000/evt/gateway
+    # - topic: l99/B01000/evt/current
+
+  # # publish an empty message to receive the query response
+  # publish:
+  #   - topic: l99/B01000/cmd/query
+  #     message: '{}'
+  # # define any one-time cache values to set
+  # static:
+  #   # this sets the cache value at eg 'kl1-procname' to 'KITTING'
+  #   procname: KITTING
+
+# define message topic handlers
+handlers:
+  controller:
+    # make '$' the payload value - 'birth', 'sleep', or 'death'
+    initialize: '$ = payload'
+    # define lookup function, which returns a value given some js code.
+    lookup: '($, js) => eval(js)'
+    # define algorithm to process inputs
+    process: iterate_inputs
+    # define key-js pairs
+    # 'key' is mapped to a cache id, eg 'controller' => 's1-controller'.
+    # 'js' is some javascript calculation code to determine its value.
+    expressions:
+      dxm: $==='birth'
+
+  # ----------------------------------------------------------------------------
+  # handle pressure
+  # ----------------------------------------------------------------------------
+  # <!-- l99/B01000/evt/pressure { "id": "479055" "a2": c-stacker_pressure } -->
+  # <!-- agent.cfg conversionRequired: yes -->
+  # <DataItem category="SAMPLE" id="m1-sp" name="stacker_pressure" type="PRESSURE" units="PASCAL" nativeUnits="POUND/INCH^2" />
+  l99/B01000/evt/pressure:
+    # make '$' the message payload dictionary and add faultKeys for quick
+    # lookups of faults - payload.faults is a dictionary of faults.
+    initialize: '$ = payload'
+    # define lookup function, which returns a value given some js code.
+    lookup: '($, js) => eval(js)'
+    # define algorithm to process inputs
+    #. explain
+    #. call it iterate-expressions
+    process: iterate_inputs
+    # define key-js pairs
+    # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
+    # 'js' is some javascript calculation code to determine its value.
+    expressions:
+      sp: lib.round($.a2)

@@ -1,0 +1,54 @@
+# cache types
+
+# these types can be used in output expressions
+
+types:
+  AVAILABILITY:
+    true: AVAILABLE
+    false: UNAVAILABLE
+#
+#   ACTUATOR_STATE:
+#     0: INACTIVE
+#     1: ACTIVE
+
+#   POWER:
+#     online: ON
+#     offline: OFF
+
+#   # EMERGENCY_STOP:
+#   #   false: ARMED
+#   #   true: TRIGGERED
+
+#   # FUNCTIONAL_MODE:
+#   #   false: MAINTENANCE
+#   #   true: PRODUCTION
+
+#   EXECUTION:
+#     50: WAIT
+#     100: WAIT
+#     200: PROGRAM_STOPPED
+#     250: WAIT
+#     300: WAIT
+#     400: ACTIVE
+
+#   # An indication of the reason that EXECUTION is reporting a value of WAIT.
+#   # The Valid Data Value MUST be POWERING_UP, POWERING_DOWN,
+#   # PART_LOAD, PART_UNLOAD, TOOL_LOAD, TOOL_UNLOAD, MATERIAL_LOAD,
+#   # MATERIAL_UNLOAD, SECONDARY_PROCESS, PAUSING, or RESUMING.
+#   # see pt3 pg138 for details on values.
+#   #. what is wait_state if execution is not wait?
+#   WAIT_STATE:
+#     50: PAUSING
+#     100: PAUSING
+#     200: UNAVAILABLE
+#     250: RESUMING
+#     300: RESUMING
+#     400: UNAVAILABLE
+
+#   WARN_CONDITION:
+#     false: NORMAL
+#     true: WARNING
+
+#   PART_DETECT:
+#     0: NOT_PRESENT
+#     1: PRESENT
