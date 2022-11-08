@@ -445,9 +445,10 @@ services:
     restart: unless-stopped
     networks:
       - ladder99
-    deploy:
-      restart_policy:
-        condition: on-failure
+    #. where did this come from?
+    # deploy:
+    #   restart_policy:
+    #     condition: on-failure
     logging:
       options:
         max-size: '20m'
