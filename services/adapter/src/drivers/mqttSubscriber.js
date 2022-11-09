@@ -140,6 +140,7 @@ export class AdapterDriver {
     // }
 
     // if payload is plain text, set handler.text true in inputs.yaml - else parse as json
+    //. this is error prone
     if (!handler.text) payload = JSON.parse(payload) // string to js object
 
     // unsubscribe from any topics specified (optional section in inputs.yaml)
