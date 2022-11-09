@@ -33,31 +33,33 @@ outputs:
   # device
   # ------------------------------------------------------------------
 
-  # displayed in Devices and Graphs pages as ON/OFF.
-  - key: avail # availability
-    value: types.AVAILABILITY[<dxm> && <controller>]
+  - key: foo
 
-  # current job number
-  - key: job # processes/job/process_aggregate_id/order_number
+  # # displayed in Devices and Graphs pages as ON/OFF.
+  # - key: avail # availability
+  #   value: types.AVAILABILITY[<dxm> && <controller>]
 
-  # current job current part count
-  - key: pcjob # processes/job/part_count-all
-    value: <part_count>
+  # # current job number
+  # - key: job # processes/job/process_aggregate_id/order_number
 
-  # current lifetime part count
-  # - key: pclife # processes/life/part_count-all
-  #   value: <pclife> + <delta pcjob>
+  # # current job current part count
+  # - key: pcjob # processes/job/part_count-all
+  #   value: <part_count>
 
-  # shift start/stop
-  - key: start # processes/shift/process_time-start
-  - key: complete # processes/shift/process_time-complete
+  # # current lifetime part count
+  # # - key: pclife # processes/life/part_count-all
+  # #   value: <pclife> + <delta pcjob>
 
-  # motor
-  - key: xtemp # axes/x/motor/temperature
-  - key: xvelx
-  - key: xvelz
-  - key: xaccx
-  - key: xaccz
+  # # shift start/stop
+  # - key: start # processes/shift/process_time-start
+  # - key: complete # processes/shift/process_time-complete
 
-  # pressure
-  - key: sp
+  # # motor
+  # - key: xtemp # axes/x/motor/temperature
+  # - key: xvelx
+  # - key: xvelz
+  # - key: xaccx
+  # - key: xaccz
+
+  # # pressure
+  # - key: sp

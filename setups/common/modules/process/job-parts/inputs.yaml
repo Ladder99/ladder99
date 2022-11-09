@@ -48,7 +48,7 @@ handlers:
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
     #. explain
-    process: iterate_inputs
+    algorithm: iterate_expressions
     # define key-js pairs
     # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
     # 'js' is some javascript calculation code to determine its value.
@@ -86,7 +86,7 @@ handlers:
 
     # algorithm to process inputs
     #. explain
-    process: iterate_message_contents
+    algorithm: iterate_message_contents
 
     # define key-code pairs
     # 'key' defines the cache id, with id = {deviceId}-{key}, eg 'pa1-availability'.
@@ -122,7 +122,7 @@ handlers:
       # hence the accessor definition above.
       job_meta: msg('%Z61.0')
 
-      # NEW-PROCESS: data from skid zpl
+      # NEW-algorithm: data from skid zpl
       skid_meta: msg('%Z61.17')
 
       # current job done flag, pieces remaining reached zero
@@ -321,6 +321,6 @@ handlers:
     accessor: value
     # how to process inputs
     #. explain
-    process: iterate_message_contents
+    algorithm: iterate_message_contents
     # reuse the query expression list here with *, as the key-part pairs are the same
     expressions: *queryExpressions
