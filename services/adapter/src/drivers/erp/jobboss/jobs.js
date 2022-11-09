@@ -52,9 +52,8 @@ export class Jobs {
   // eg ['123','456','789']
   async getJobs(jobbossId) {
     // could also use where work_center='MARUMATSU', but not guaranteed unique.
-    // status is C=complete, S=started?, O=ongoing?
-    // make sure status is not complete, ie <>'C'.
-    // order by start date desc, so most recent is first.
+    // status is O=open, S=started, C=complete
+    // make sure status is <> 'C'.
     // inside_oper is 1 if inside operation, 0 if not.
     const sql = `
         select top 5

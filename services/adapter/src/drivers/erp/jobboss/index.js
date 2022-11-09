@@ -19,18 +19,9 @@ import mssql from 'mssql' // ms sql server driver https://github.com/tediousjs/n
 import { Jobs } from './jobs.js'
 import { Schedule } from './schedule.js'
 
+//. make params object
 const initialDelay = 5000 // ms
 const waitForDb = 15000 // ms - because db timeout is 15secs
-
-// jobboss db error codes
-// const errorMessages = {
-//   ELOGIN: 'Login failed (locked out)',
-//   ETIMEOUT: 'Connection timeout',
-//   EALREADYCONNECTED: 'Database is already connected',
-//   EALREADYCONNECTING: 'Already connecting to database',
-//   EINSTLOOKUP: 'Instance lookup failed',
-//   ESOCKET: 'Socket error (could not connect to db url)',
-// }
 
 export class AdapterDriver {
   //

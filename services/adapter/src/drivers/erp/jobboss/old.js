@@ -80,3 +80,13 @@
 //. or, attach some code to that cache value? ie you'd have some code that would output shdr,
 // and some code that would set the jcomplete time on change.
 // this.cache.set(`${device.id}-${jobKey}`, activeJob)
+
+// jobboss db error codes
+// const errorMessages = {
+//   ELOGIN: 'Login failed (locked out)',
+//   ETIMEOUT: 'Connection timeout',
+//   EALREADYCONNECTED: 'Database is already connected',
+//   EALREADYCONNECTING: 'Already connecting to database',
+//   EINSTLOOKUP: 'Instance lookup failed',
+//   ESOCKET: 'Socket error (could not connect to db url)',
+// }
