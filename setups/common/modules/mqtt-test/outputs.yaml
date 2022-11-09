@@ -33,7 +33,8 @@ outputs:
   # device
   # ------------------------------------------------------------------
 
-  - key: foo
+  - key: user1
+  - key: user2
 
   # # displayed in Devices and Graphs pages as ON/OFF.
   # - key: avail # availability

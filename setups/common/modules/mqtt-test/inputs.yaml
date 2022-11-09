@@ -39,7 +39,7 @@ connect:
 handlers:
   iotgateway:
     # make '$' the payload value - 'birth', 'sleep', or 'death'
-    initialize: '$ = payload'
+    initialize: '$ = payload.VALUES' # get array of VALUE objects
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
@@ -49,8 +49,8 @@ handlers:
     # 'js' is some javascript calculation code to determine its value.
     text: true
     expressions:
-      # foo: $.v
-      foo: $
+      user1: $[0].V
+      user2: $[1].V
 
   # ----------------------------------------------------------------------------
   # handle pressure
