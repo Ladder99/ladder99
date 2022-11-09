@@ -7,11 +7,24 @@
 -- eg https://grafana-004-oxbox.teleport.ladder99.com/explore
 
 
+-- get currently active jobs for each workcenter
+select
+  Work_Center, Job, Note_Text, Last_Updated, Actual_Start, Act_Run_Labor_Hrs, Run_Qty
+from
+  Job_Operation
+where
+  Work_Center in ('MARUMATSU', 'JUMBO', 'SOLARCO', 'GAZZELLA', 'BAHMULLER', 'PAC48')
+  and Status = 'S' -- started
+  and Actual_Start is not null
+  and Inside_Oper = 1
+;
+
+
 -- get latest jobnums for a workcenter
 select top 20
   actual_start as time,
   job,
-  status, -- C completed O ongoing? S started?
+  status, -- O open, S started, C completed
   work_center,
   *
 from
