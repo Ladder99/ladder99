@@ -56,8 +56,8 @@ services:
     profiles:
       - agent
     working_dir: /data/agent
-    command: agent debug agent.cfg
-    # command: agent run agent.cfg
+    command: agent run agent.cfg
+    # command: agent debug agent.cfg
     volumes:
       - ../$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
     ports:
