@@ -38,7 +38,6 @@ connect:
 # define message topic handlers
 handlers:
   iotgateway:
-    # make '$' the payload value - 'birth', 'sleep', or 'death'
     initialize: '$ = payload.VALUES' # get array of VALUE objects
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
