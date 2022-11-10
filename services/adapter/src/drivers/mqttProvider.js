@@ -9,7 +9,7 @@ import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
 export class AdapterDriver {
   //
   // provider is a shared connection definition from setup.yaml,
-  // like { driver: 'mqttProvider', url: 'mqtt://localhost:1883', ... }
+  // like { driver: 'mqttProvider', url: 'mqtt://localhost:1883', array: 'payload.VALUES', ... }
   async start({ provider }) {
     //
     this.me = 'MqttProvider'
@@ -87,6 +87,13 @@ export class AdapterDriver {
       try {
         payload = JSON.parse(payload)
       } catch (e) {}
+
+      //.. at this point will want to wrap the payload in an array, eg array = [payload]
+      // OR extract an array from the payload, eg array = payload.VALUES
+      // then iterate over the array of elements, and do the below for each element.
+      // this would let you handle single object payloads, or payloads with array of objects.
+      // default is to say array = [payload]
+      // if setup.yaml specifies, could use sthing like array = payload.VALUES
 
       // loop over subscribers to this topic - linear search,
       // as can match more than one subscriber.
