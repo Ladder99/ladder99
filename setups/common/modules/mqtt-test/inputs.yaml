@@ -38,18 +38,26 @@ connect:
 # define message topic handlers
 handlers:
   iotgateway:
-    initialize: '$ = payload.VALUES' # get array of VALUE objects
+    initialize: '$ = payload'
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
-    # define algorithm to process inputs
-    algorithm: iterate_expressions
-    # define key-js pairs
-    # 'key' is mapped to a cache id, eg 'controller' => 's1-controller'.
-    # 'js' is some javascript calculation code to determine its value.
-    text: true
-    expressions:
-      user1: $[0].V
-      user2: $[1].V
+    # # define algorithm to process inputs
+    # algorithm: iterate_expressions
+    # # define key-js pairs
+    # # 'key' is mapped to a cache id, eg 'controller' => 's1-controller'.
+    # # 'js' is some javascript calculation code to determine its value.
+    # expressions:
+    #   user1: $.V
+    #   user2: $.V
+
+    # # define algorithm to process inputs
+    # algorithm: iterate_array
+    # # define key-js pairs
+    # # 'key' is mapped to a cache id, eg 'controller' => 's1-controller'.
+    # # 'js' is some javascript calculation code to determine its value.
+    # expressions:
+    #   user1:
+    #   user2: $.V
 
   # ----------------------------------------------------------------------------
   # handle pressure
