@@ -135,7 +135,7 @@ export class Schedule {
   // '2022-01-23 05:00:00' (with no Z! it's local time), or 'HOLIDAY',
   // or 'UNAVAILABLE'.
   async getSchedule(device, datetime) {
-    // console.log(`JobBoss schedule - get for`, device.name, datetime)
+    console.log(`JobBoss schedule - get for`, device.name, datetime)
 
     const jobbossId = device.custom?.jobbossId // eg '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' for Marumatsu
     const sequence = datetime.getDay() // day of week with 0=sunday, 1=monday. this works even if Z time is next day.
@@ -178,9 +178,9 @@ export class Schedule {
         // convert to strings
         start = getTimeAsLocalDateTimeString(start, datetime, dateString) // no Z!
         stop = getTimeAsLocalDateTimeString(stop, datetime, dateString)
-        // console.log(`JobBoss schedule - start, stop`, start, stop)
+        console.log(`JobBoss schedule - start, stop`, start, stop)
       } else {
-        // console.log(`JobBoss schedule - no results`)
+        console.log(`JobBoss schedule - no results`)
       }
     } else if (result1.recordset[0].Is_Work_Day) {
       //
@@ -202,15 +202,15 @@ export class Schedule {
         // convert to strings
         start = getTimeAsLocalDateTimeString(start, datetime, dateString) // no Z!
         stop = getTimeAsLocalDateTimeString(stop, datetime, dateString)
-        // console.log(`JobBoss schedule - start, stop`, start, stop)
+        console.log(`JobBoss schedule - start, stop`, start, stop)
       } else {
-        // console.log(`JobBoss schedule - no results`)
+        console.log(`JobBoss schedule - no results`)
       }
     } else {
       //
       // if isworkday=0 then not a workday - might have 2 records, one for each shift
       //. for now just say the whole day is a holiday - no start/end times
-      // console.log(`JobBoss schedule - day is holiday (isworkday=0)...`)
+      console.log(`JobBoss schedule - day is holiday (isworkday=0)...`)
       start = 'HOLIDAY'
       stop = 'HOLIDAY'
     }
@@ -224,7 +224,8 @@ export class Schedule {
 // eg 2022-01-18T14:24:00 -> '2022-01-18'
 // accounts for timezone offset, which is in minutes
 function getLocalDateFromDateTime(dt) {
-  const tz = dt.getTimezoneOffset() * 60 * 1000
+  // const tz = dt.getTimezoneOffset() * 60 * 1000
+  const tz = 0 // don't worry about timezone offset, since encab's are in local time now 2022-11-12
   const date = new Date(dt.getTime() - tz).toISOString().split('T')[0]
   return date
 }
