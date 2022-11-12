@@ -35,6 +35,8 @@ services:
       - ../$SETUP:/data/setup # has setup.yaml etc
       - ../modules:/data/modules # has module yamls
       - ../$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: always
     networks:
       - ladder99
@@ -60,6 +62,8 @@ services:
     # command: agent debug agent.cfg
     volumes:
       - ../$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     ports:
       - 5000:5000
     restart: always
@@ -86,7 +90,6 @@ services:
       # By default a container based on this image will run in the UTC timezone. 
       # In case you want to run your cron rules in your local timezone (respecting DST), 
       # you can mount your Docker host's /etc/timezone and /etc/localtime:
-      # (doesn't really matter, as servers are set to UTC anyway)
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       #
@@ -164,13 +167,15 @@ services:
     volumes:
       # - ../$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
       - ../$SETUP/volumes/cloudbeaver/workspace:/var/cloudbeaver/workspace
-    # need to leave this unspecified here, because clients that use traefik
-    # need it that way, and there's no way to remove a port through 
-    # overrides yet.
-    # see https://github.com/docker/compose/issues/3729
-    # IMPORTANT: might need to turn this on for a client.
-    # ports:
-    #   - 8978:8978
+      # need to leave this unspecified here, because clients that use traefik
+      # need it that way, and there's no way to remove a port through 
+      # overrides yet.
+      # see https://github.com/docker/compose/issues/3729
+      # IMPORTANT: might need to turn this on for a client.
+      # ports:
+      #   - 8978:8978
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: always
     networks:
       - ladder99
@@ -242,18 +247,20 @@ services:
       - ../$SETUP/volumes/grafana/etc:/etc/grafana
       - ../$SETUP/volumes/grafana/var:/var/lib/grafana
       - ../dashboards/grafana:/etc/dashboards
-    # as of v7.3, the Grafana Docker image runs with the root group (id 0) instead
-    # of the grafana group (id 472), for better compatibility with OpenShift.
-    # grafana gives permission error without user:root - not on mac. only on arm?
-    # get this error when don't set user -
-    # https://community.grafana.com/t/new-docker-install-with-persistent-storage-permission-problem/10896/13
-    # setting this gives same error - why? `id -a` shows 1000
-    # user: '1000:1000'
-    # setting this gives error - UID and GID not set, but grafana works - why?
-    # are blanks equivalent to root user?
-    #. these could be set by ./start script?
-    # user: '$UID:$GID'
-    #. don't use this? how?
+      # as of v7.3, the Grafana Docker image runs with the root group (id 0) instead
+      # of the grafana group (id 472), for better compatibility with OpenShift.
+      # grafana gives permission error without user:root - not on mac. only on arm?
+      # get this error when don't set user -
+      # https://community.grafana.com/t/new-docker-install-with-persistent-storage-permission-problem/10896/13
+      # setting this gives same error - why? `id -a` shows 1000
+      # user: '1000:1000'
+      # setting this gives error - UID and GID not set, but grafana works - why?
+      # are blanks equivalent to root user?
+      #. these could be set by ./start script?
+      # user: '$UID:$GID'
+      #. don't use this? how?
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     user: root
     restart: always
     networks:
@@ -280,6 +287,8 @@ services:
       #. why z-hue.ini? is it an arbitrary name for hue-overrides.ini?
       # https://stackoverflow.com/questions/57116402/hue-access-to-hdfs-bypass-default-hue-ini
       - ../$SETUP/volumes/hue/hue.ini:/usr/share/hue/desktop/conf/z-hue.ini
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: always
     networks:
       - ladder99
@@ -305,6 +314,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /var/run/docker/containers:/var/lib/docker/containers
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: always
     networks:
       - ladder99
@@ -335,6 +346,8 @@ services:
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml
       # - ../modules:/data/modules # has module-specific folders
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: always
     networks:
       - ladder99
@@ -361,6 +374,8 @@ services:
       - ../$SETUP/volumes/mosquitto/config:/mosquitto/config # has mosquitto.conf
       - ../$SETUP/volumes/mosquitto/data:/mosquitto/data
       - ../$SETUP/volumes/mosquitto/log:/mosquitto/log
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: always
     networks:
       - ladder99
@@ -422,6 +437,8 @@ services:
       # - ../$SETUP/volumes/pgadmin/config:/pgadmin/config
       # for dpage/pgadmin4
       # - ../$SETUP/volumes/pgadmin:/var/lib/pgadmin
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     environment:
       # for dpage/pgadmin4
       PGADMIN_DEFAULT_EMAIL: null
@@ -449,6 +466,8 @@ services:
     volumes:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
       - ../modules:/data/modules # has module-specific recordings folder
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: always
     networks:
       - ladder99
@@ -521,6 +540,8 @@ services:
     volumes:
       - ../$SETUP/volumes/postgres/data:/var/lib/postgresql/data
       - backup:/backup # a docker volume - see backup service and end of this file
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     labels:
       # see backup service for more settings
       # - 'docker-volume-backup.stop-during-backup=false'
@@ -551,6 +572,8 @@ services:
     volumes:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
       - ../modules:/data/modules # has module-specific recordings folder
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: always
     networks:
       - ladder99
@@ -601,6 +624,8 @@ services:
       - ladder99
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml etc
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     logging:
       options:
         max-size: '20m'
@@ -691,6 +716,8 @@ services:
       # - ../$SETUP/volumes/traefik/acme.json:/acme.json
       # so need to mount the directory?
       - ../$SETUP/volumes/traefik/:/etc/traefik/
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     networks:
       - ladder99
     logging:
