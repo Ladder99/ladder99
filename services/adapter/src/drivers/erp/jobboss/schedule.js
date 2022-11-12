@@ -103,7 +103,9 @@ export class Schedule {
     // we can use Luxon to get offset for a particular timezone, eg 'America/Chicago'.
     // ie instead of hardcoding it to -5 hours or something.
     // there's probably a better way to do this with luxon, but this is the simplest change.
-    const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
+    // const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
+    // now that encabulator is in client's timezone, we don't need an offset. 2022-11-12
+    const offsetMinutes = 0
     // console.log(`JobBoss schedule - offsetMinutes`, offsetMinutes)
     const datetime = new Date(new Date().getTime() + offsetMinutes * 60 * 1000) // ms
     // console.log(`JobBoss schedule - datetime`, datetime)
