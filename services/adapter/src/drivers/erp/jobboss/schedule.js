@@ -141,6 +141,13 @@ export class Schedule {
     const sequence = datetime.getDay() // day of week with 0=sunday, 1=monday. this works even if Z time is next day.
     const dateString = getLocalDateFromDateTime(datetime) // eg '2022-01-18' - works even if Z time is next day.
 
+    console.log(
+      `JobBoss schedule - jobbossId, sequence, dateString`,
+      jobbossId,
+      sequence,
+      dateString
+    )
+
     // default values
     let start = 'UNAVAILABLE'
     let stop = 'UNAVAILABLE'
