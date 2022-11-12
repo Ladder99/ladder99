@@ -187,7 +187,7 @@ export class Schedule {
         stop = getTimeAsLocalDateTimeString(stop, datetime, dateString)
         console.log(`JobBoss schedule - start, stop`, start, stop)
       } else {
-        console.log(`JobBoss schedule - no results`)
+        console.log(`JobBoss schedule - no results for wcshift_standard`)
       }
     } else if (result1.recordset[0].Is_Work_Day) {
       //
@@ -211,7 +211,7 @@ export class Schedule {
         stop = getTimeAsLocalDateTimeString(stop, datetime, dateString)
         console.log(`JobBoss schedule - start, stop`, start, stop)
       } else {
-        console.log(`JobBoss schedule - no results`)
+        console.log(`JobBoss schedule - no results from wcshift_override`)
       }
     } else {
       //
