@@ -5,7 +5,7 @@ const url = 'mqtt://mosquitto:1883'
 export class Simulator {
   //
   async start() {
-    console.log(`mqtt create...`)
+    console.log(`mqtt start...`)
 
     this.mqtt = libmqtt.connect(url)
 
