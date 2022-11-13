@@ -29,38 +29,5 @@
 # value will be inferred to be <key>.
 
 outputs:
-  # ------------------------------------------------------------------
-  # device
-  # ------------------------------------------------------------------
-
   - key: user1
   - key: user2
-
-  # # displayed in Devices and Graphs pages as ON/OFF.
-  # - key: avail # availability
-  #   value: types.AVAILABILITY[<dxm> && <controller>]
-
-  # # current job number
-  # - key: job # processes/job/process_aggregate_id/order_number
-
-  # # current job current part count
-  # - key: pcjob # processes/job/part_count-all
-  #   value: <part_count>
-
-  # # current lifetime part count
-  # # - key: pclife # processes/life/part_count-all
-  # #   value: <pclife> + <delta pcjob>
-
-  # # shift start/stop
-  # - key: start # processes/shift/process_time-start
-  # - key: complete # processes/shift/process_time-complete
-
-  # # motor
-  # - key: xtemp # axes/x/motor/temperature
-  # - key: xvelx
-  # - key: xvelz
-  # - key: xaccx
-  # - key: xaccz
-
-  # # pressure
-  # - key: sp

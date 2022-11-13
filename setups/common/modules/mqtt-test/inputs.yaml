@@ -37,46 +37,15 @@ connect:
 
 # define message topic handlers
 handlers:
-  iotgateway:
-    initialize: '$ = payload'
-    # define lookup function, which returns a value given some js code.
-    lookup: '($, js) => eval(js)'
-    # # define algorithm to process inputs
-    # algorithm: iterate_expressions
-    # # define key-js pairs
-    # # 'key' is mapped to a cache id, eg 'controller' => 's1-controller'.
-    # # 'js' is some javascript calculation code to determine its value.
-    # expressions:
-    #   user1: $.V
-    #   user2: $.V
-
-    # # define algorithm to process inputs
-    # algorithm: iterate_array
-    # # define key-js pairs
-    # # 'key' is mapped to a cache id, eg 'controller' => 's1-controller'.
-    # # 'js' is some javascript calculation code to determine its value.
-    # expressions:
-    #   user1:
-    #   user2: $.V
-
-  # ----------------------------------------------------------------------------
-  # handle pressure
-  # ----------------------------------------------------------------------------
-  # <!-- l99/B01000/evt/pressure { "id": "479055" "a2": c-stacker_pressure } -->
-  # <!-- agent.cfg conversionRequired: yes -->
-  # <DataItem category="SAMPLE" id="m1-sp" name="stacker_pressure" type="PRESSURE" units="PASCAL" nativeUnits="POUND/INCH^2" />
-  l99/B01000/evt/pressure:
-    # make '$' the message payload dictionary and add faultKeys for quick
-    # lookups of faults - payload.faults is a dictionary of faults.
+  l99/test:
     initialize: '$ = payload'
     # define lookup function, which returns a value given some js code.
     lookup: '($, js) => eval(js)'
     # define algorithm to process inputs
-    #. explain
-    #. call it iterate-expressions
     algorithm: iterate_expressions
     # define key-js pairs
-    # 'key' is mapped to a cache id, eg 'status_connection' => 'pa1-status_connection'.
+    # 'key' is mapped to a cache id, eg 'controller' => 's1-controller'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
-      sp: lib.round($.a2)
+      user1: $.V
+      user2: lib.roun($.V)
