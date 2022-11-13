@@ -23,7 +23,7 @@ connect:
   # subscribe to these topics
   # can use ${deviceId} in topic names
   subscribe:
-    - topic: iotgateway
+    - topic: l99/test
     - topic: l99/B01000/evt/pressure
 
   # # publish an empty message to receive the query response
