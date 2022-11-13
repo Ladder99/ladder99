@@ -11,8 +11,14 @@ export class Simulator {
 
     this.mqtt.on('connect', () => {
       console.log(`mqtt connected`)
-      const payload = { id: 1, name: 'foo', value: 123 }
-      this.mqtt.publish('l99/test', JSON.stringify(payload))
+      // loop and publish random values with id=1 or 2, delay 1sec
+      setInterval(() => {
+        const id = Math.floor(Math.random() * 2) + 1
+        const user1 = Math.random() > 0.5 ? 'jon' : 'alice'
+        const user2 = Math.random() * 100
+        const payload = { id, user1, user2 }
+        this.mqtt.publish('l99/test', JSON.stringify(payload))
+      }, 1000)
     })
   }
 }

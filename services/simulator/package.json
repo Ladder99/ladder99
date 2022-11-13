@@ -1,6 +1,7 @@
 {
   "name": "ladder99-simulator",
   "version": "0.1.0",
+  "type": "module",
   "description": "wip - send test device messages to opc client",
   "scripts": {
     "start": "node src/simulator.js"
@@ -9,6 +10,7 @@
   "license": "Apache2.0",
   "comment": "v2.28 and below don't require ssl certificates",
   "dependencies": {
+    "mqtt": "^4.3.7",
     "node-opcua": "^2.81.0"
   }
 }
