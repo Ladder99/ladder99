@@ -168,7 +168,7 @@ export class Schedule {
 
     if (result1.recordset.length === 0) {
       //
-      // console.log(`JobBoss schedule - no override, so get standard schedule`)
+      console.log(`JobBoss schedule - no override, so get standard schedule`)
       // if no record then lookup jobbossId in WCShift_Standard
       //   get shift_id, look that up with sequencenum in shift_day table for start/end
       // (or do a join query)
