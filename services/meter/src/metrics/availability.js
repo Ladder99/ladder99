@@ -196,34 +196,18 @@ export class Metric {
   async poll() {
     const deviceName = this.device.name
 
-    // console.log(`Availability ${deviceName} - poll db and update bins`)
+    console.log(`Availability ${deviceName} - poll db and update bins`)
     const now = new Date()
+    console.log(`Availability ${deviceName} - now`, now)
 
-    // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ..., holiday }
-    //. do this every 10mins or so on separate timer, save to this.schedule
+    // get schedule for device, eg { start: Date<2022-01-13T05:00:00>, stop: ..., holiday }
+    //. could do this every 10mins or so on separate timer, save to this.schedule
     const schedule = await this.getSchedule()
 
     // update active and available bins as needed
     const isDuringShift =
       !schedule.holiday && now >= schedule.start && now <= schedule.stop
-    // if (isDuringShift) {
-    //   await this.updateBins(now, this.interval)
-    // }
-    // else {
-    //   // check for events in previous n mins, eg 5.
-    //   // this accounts for workers working outside of normal shift times,
-    //   // giving an approximate availability value without them having
-    //   // to punch in/out.
-    //   const start = new Date(now.getTime() - this.overtimeActiveInterval)
-    //   const stop = now
-    //   const hasBeenActiveRecently = await this.getActive(start, stop)
-    //   if (hasBeenActiveRecently) {
-    //     await this.updateBins(now, this.interval)
-    //   }
-    // }
     // 2022-08-03 handle overtime by allowing active minutes outside of shift hours
-    // const start = new Date(now.getTime() - interval)
-    //.
     const start =
       this.previousStopTime || new Date(now.getTime() - this.interval)
     const stop = now
@@ -259,8 +243,9 @@ export class Metric {
   async getSchedule() {
     const getHoliday = text =>
       text === 'UNAVAILABLE' || text === 'HOLIDAY' ? 'HOLIDAY' : undefined
+    // fn to shift date by client timezoneOffset, as need for comparisons.
+    // currently timezoneOffset is zero.
     const getDate = text =>
-      // shift date by client timezoneOffset, as need for comparisons
       new Date(new Date(text).getTime() - this.timezoneOffset)
     const table = 'history_text'
     const device = this.device
@@ -275,12 +260,12 @@ export class Metric {
     const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
     const stop = holiday || getDate(stopText)
     const schedule = { start, stop, holiday }
-    // console.log(
-    //   'Availability - ${this.device.name} start, stop, holiday',
-    //   schedule.start,
-    //   schedule.stop,
-    //   schedule.holiday
-    // )
+    console.log(
+      'Availability - ${this.device.name} start, stop, holiday',
+      schedule.start,
+      schedule.stop,
+      schedule.holiday
+    )
     return schedule
   }
 
