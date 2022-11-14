@@ -64,9 +64,9 @@ export class Metric {
     // use timezone string like 'America/Chicago' instead of a hardcoded offset like -5.
     // we can use Luxon to get offset for a particular timezone.
     // there's probably a better way to do this with luxon, but this is the simplest change.
-    // const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
+    const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
     // now that encabulator is set to the user's timezone, we don't need an offset. 2022-11-12
-    const offsetMinutes = 0
+    // const offsetMinutes = 0
     this.timezoneOffset = offsetMinutes * 60 * 1000 // ms
     // console.log(
     //   `Availability tz, offset`,
@@ -244,7 +244,6 @@ export class Metric {
     const getHoliday = text =>
       text === 'UNAVAILABLE' || text === 'HOLIDAY' ? 'HOLIDAY' : undefined
     // fn to shift date by client timezoneOffset, as need for comparisons.
-    // currently timezoneOffset is zero.
     const getDate = text =>
       new Date(new Date(text).getTime() - this.timezoneOffset)
     const table = 'history_text'
@@ -261,7 +260,7 @@ export class Metric {
     const stop = holiday || getDate(stopText)
     const schedule = { start, stop, holiday }
     console.log(
-      'Availability - ${this.device.name} start, stop, holiday',
+      `Availability - ${this.device.name} start, stop, holiday`,
       schedule.start,
       schedule.stop,
       schedule.holiday
