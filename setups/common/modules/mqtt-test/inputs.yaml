@@ -37,5 +37,7 @@ handlers:
     # 'key' is mapped to a cache id, eg 'controller' => 's1-controller'.
     # 'js' is some javascript calculation code to determine its value.
     expressions:
-      user1: $.user1
-      user2: lib.round($.user2, 1)
+      # user1: $.user1
+      # user2: lib.round($.user2, 1)
+      user1: '$.Q ? $.user1 : null'
+      user2: '$.Q ? lib.round($.user2, 1) : null'
