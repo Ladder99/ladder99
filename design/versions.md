@@ -9,7 +9,7 @@ Previous versions - see roadmap.md for plans.
 | 0.9.x | merge 0.7 into 0.8, keep both working |
 | 0.9.1 | work on opc-ua driver, rename micro driver to host |
 | 0.9.2 | minor patch for host driver |
-| 0.9.3 | update example setup |
+| 0.9.3 | update example setup, markdown docs |
 
 We're currently (November 2022) working on 0.9
 
