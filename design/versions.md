@@ -5,6 +5,7 @@ Previous versions - see roadmap.md for plans.
 | version | description |
 | --- | --- |
 | v0.7.x | partcount reset in adapter. work in progress, used by one client. old lower-case path syntax. |
+| v0.7.2 | server set to the local timezone, adjusted code and grafana queries |
 | 0.8.x | multiple agents. refactored db so can point at multiple agents better. new path syntax like 'Mazak/Mill123/Axes/Linear[X]/...' |
 | 0.9.x | merge 0.7 into 0.8, keep both working |
 | 0.9.1 | work on opc-ua driver, rename micro driver to host |
