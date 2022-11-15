@@ -85,9 +85,6 @@ export class Metric {
     // get polling interval - either from metric in setup yaml or default value
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
 
-    // // get overtime active interval
-    // this.overtimeActiveInterval = 5 * minutes // ms //. pass through the metric as above
-
     await this.backfill() // backfill missing values
 
     console.log(`Availability ${device.name} poll with interval`, this.interval)
@@ -195,10 +192,9 @@ export class Metric {
   // poll db and update bins - called by timer
   async poll() {
     const deviceName = this.device.name
-
-    console.log(`Availability ${deviceName} - poll db and update bins`)
     const now = new Date()
-    console.log(`Availability ${deviceName} - now`, now)
+
+    console.log(`Availability ${deviceName} - poll db and update bins`, now)
 
     // get schedule for device, eg { start: Date<2022-01-13T05:00:00>, stop: ..., holiday }
     //. could do this every 10mins or so on separate timer, save to this.schedule
@@ -259,12 +255,12 @@ export class Metric {
     const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
     const stop = holiday || getDate(stopText)
     const schedule = { start, stop, holiday }
-    console.log(
-      `Availability - ${this.device.name} start, stop, holiday`,
-      schedule.start,
-      schedule.stop,
-      schedule.holiday
-    )
+    // console.log(
+    //   `Availability - ${this.device.name} start, stop, holiday`,
+    //   schedule.start,
+    //   schedule.stop,
+    //   schedule.holiday
+    // )
     return schedule
   }
 

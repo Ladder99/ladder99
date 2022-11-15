@@ -114,12 +114,12 @@ export class Schedule {
       const jobbossId = device.custom?.jobbossId
       if (jobbossId) {
         const schedule = await this.getSchedule(device, datetime) // get { start, stop }
-        console.log(
-          'JobBoss schedule',
-          device.name,
-          schedule.start,
-          schedule.stop
-        )
+        // console.log(
+        //   'JobBoss schedule',
+        //   device.name,
+        //   schedule.start,
+        //   schedule.stop
+        // )
         // write start/stop times to cache for this device -
         // start/stop are STRINGS like 'UNAVAILABLE', or 'HOLIDAY', or
         // '2022-01-23T05:00:00' with NO Z!
@@ -135,18 +135,18 @@ export class Schedule {
   // '2022-01-23 05:00:00' (with no Z! it's local time), or 'HOLIDAY',
   // or 'UNAVAILABLE'.
   async getSchedule(device, datetime) {
-    console.log(`JobBoss schedule - get for`, device.name, datetime)
+    // console.log(`JobBoss schedule - get for`, device.name, datetime)
 
     const jobbossId = device.custom?.jobbossId // eg '8EE4B90E-7224-4A71-BE5E-C6A713AECF59' for Marumatsu
     const sequence = datetime.getDay() // day of week with 0=sunday, 1=monday. this works even if Z time is next day.
     const dateString = getLocalDateFromDateTime(datetime) // eg '2022-01-18' - works even if Z time is next day.
 
-    console.log(
-      `JobBoss schedule - jobbossId, sequence, dateString`,
-      jobbossId,
-      sequence,
-      dateString
-    )
+    // console.log(
+    //   `JobBoss schedule - jobbossId, sequence, dateString`,
+    //   jobbossId,
+    //   sequence,
+    //   dateString
+    // )
 
     // default values
     let start = 'UNAVAILABLE'
@@ -168,7 +168,7 @@ export class Schedule {
 
     if (result1.recordset.length === 0) {
       //
-      console.log(`JobBoss schedule - no override, so get standard schedule`)
+      // console.log(`JobBoss schedule - no override, so get standard schedule`)
       // if no record then lookup jobbossId in WCShift_Standard
       //   get shift_id, look that up with sequencenum in shift_day table for start/end
       // (or do a join query)
@@ -185,9 +185,9 @@ export class Schedule {
         // convert to strings
         start = getTimeAsLocalDateTimeString(start, datetime, dateString) // no Z!
         stop = getTimeAsLocalDateTimeString(stop, datetime, dateString)
-        console.log(`JobBoss schedule - start, stop`, start, stop)
+        // console.log(`JobBoss schedule - start, stop`, start, stop)
       } else {
-        console.log(`JobBoss schedule - no results for wcshift_standard`)
+        // console.log(`JobBoss schedule - no results for wcshift_standard`)
       }
     } else if (result1.recordset[0].Is_Work_Day) {
       //
@@ -209,15 +209,15 @@ export class Schedule {
         // convert to strings
         start = getTimeAsLocalDateTimeString(start, datetime, dateString) // no Z!
         stop = getTimeAsLocalDateTimeString(stop, datetime, dateString)
-        console.log(`JobBoss schedule - start, stop`, start, stop)
+        // console.log(`JobBoss schedule - start, stop`, start, stop)
       } else {
-        console.log(`JobBoss schedule - no results from wcshift_override`)
+        // console.log(`JobBoss schedule - no results from wcshift_override`)
       }
     } else {
       //
       // if isworkday=0 then not a workday - might have 2 records, one for each shift
       //. for now just say the whole day is a holiday - no start/end times
-      console.log(`JobBoss schedule - day is holiday (isworkday=0)...`)
+      // console.log(`JobBoss schedule - day is holiday (isworkday=0)...`)
       start = 'HOLIDAY'
       stop = 'HOLIDAY'
     }
