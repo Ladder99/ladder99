@@ -232,7 +232,7 @@ export class Schedule {
 // accounts for timezone offset, which is in minutes
 function getLocalDateFromDateTime(dt) {
   // const tz = dt.getTimezoneOffset() * 60 * 1000
-  const tz = 0 // don't worry about timezone offset, since encab's are in local time now 2022-11-12
+  const tz = 0 // don't worry about timezone offset, since encabs are in local time now 2022-11-12
   const date = new Date(dt.getTime() - tz).toISOString().split('T')[0]
   return date
 }
