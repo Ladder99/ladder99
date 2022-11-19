@@ -27,7 +27,7 @@ export async function setupSource({
   const moduleName = source.module
 
   // module could be eg 'cutter' for box cutters
-  //. allow custom modules per setup, eg add module to setup-oxbox folder
+  //. allow custom schemas per setup, eg add schema to setup-oxbox folder
 
   // import driver plugin, eg micro.js or mqttSubscriber.js.
   // this instantiates a new instance of the AdapterDriver class.
@@ -42,18 +42,18 @@ export async function setupSource({
     // get input handlers, if any for this source
     // these are interpreted by the driver
     //. could let the driver read these in
-    const pathInputs = `${params.modulesFolder}/${moduleName}/inputs.yaml`
+    const pathInputs = `${params.schemasFolder}/${moduleName}/inputs.yaml`
     console.log(`Adapter reading ${pathInputs}...`)
     module.inputs = lib.importYaml(pathInputs) || {}
 
     // get output handlers
     // output yamls should all follow the same format, unlike input yamls.
-    const pathOutputs = `${params.modulesFolder}/${moduleName}/outputs.yaml`
+    const pathOutputs = `${params.schemasFolder}/${moduleName}/outputs.yaml`
     console.log(`Adapter reading ${pathOutputs}...`)
     module.outputs = (lib.importYaml(pathOutputs) || {}).outputs
 
     // get types, if any
-    const pathTypes = `${params.modulesFolder}/${moduleName}/types.yaml`
+    const pathTypes = `${params.schemasFolder}/${moduleName}/types.yaml`
     console.log(`Adapter reading ${pathTypes}...`)
     module.types = (lib.importYaml(pathTypes) || {}).types
   }

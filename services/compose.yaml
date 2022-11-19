@@ -34,11 +34,13 @@ services:
       # specify where code can find data.
       # can override at run time, eg to run service on windows with node.
       L99_SETUP_FOLDER: /data/setup
-      L99_MODULES_FOLDER: /data/modules
+      # L99_MODULES_FOLDER: /data/modules
+      L99_SCHEMAS_FOLDER: /data/schemas
       L99_ADAPTER_FOLDER: /data/adapter
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml etc
-      - ../setups/common/modules:/data/modules # has module yamls
+      # - ../setups/common/modules:/data/modules # has module yamls
+      - ../setups/common/schemas:/data/schemas # has schema yamls
       - ../$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
     restart: unless-stopped
     networks:
@@ -348,7 +350,7 @@ services:
       PGPASSWORD: null
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml
-      # - ../setups/common/modules:/data/modules # has module-specific folders
+      # - ../setups/common/schemas:/data/schemas # has schema-specific folders
     restart: unless-stopped
     networks:
       - ladder99
@@ -464,8 +466,7 @@ services:
     command: recorder --mode play
     volumes:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
-      # - ../modules:/data/modules # has module-specific recordings folder
-      - ../setups/common/modules:/data/modules # has module-specific recordings folder
+      - ../setups/common/schemas:/data/schemas # has schema-specific recordings folder
     restart: unless-stopped
     networks:
       - ladder99
@@ -564,11 +565,11 @@ services:
       # specify where code can find data.
       # can override at run time, eg to run service on windows with node.
       L99_SETUP_FOLDER: /data/setup
-      L99_MODULES_FOLDER: /data/modules
+      # L99_MODULES_FOLDER: /data/modules
+      L99_SCHEMAS_FOLDER: /data/schemas
     volumes:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
-      # - ../modules:/data/modules # has module-specific recordings folder
-      - ../setups/common/modules:/data/modules # has module-specific recordings folder
+      - ../setups/common/schemas:/data/schemas # has schema-specific recordings folder
     restart: unless-stopped
     networks:
       - ladder99

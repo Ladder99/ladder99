@@ -17,7 +17,7 @@ const pollInterval = 2000 // msec
 const reconnectInterval = 5000 // msec
 
 // these functions transform values received from cpc depending on
-// the type specified in eg modules/autoclave/asc/inputs.yaml.
+// the type specified in eg schemas/autoclave/asc/inputs.yaml.
 const typeFns = {
   undefined: value => value,
   boolean: value => value === 'True',

@@ -24,9 +24,9 @@ const params = {
   // these folders may be defined in compose.yaml with docker volume mappings.
   // when adapter.js is run, it expects config in /data/setup and /data/models.
   // so /data/setup includes setup.yaml, which includes a list of devices to setup.
-  //. could also contain custom adapter drivers and modules, eg for oxbox.
+  //. could also contain custom adapter drivers and schemas, eg for oxbox.
   setupFolder: process.env.L99_SETUP_FOLDER || `/data/setup`,
-  modulesFolder: process.env.L99_MODULES_FOLDER || `/data/modules`, // incls print-apply/module.xml etc
+  schemasFolder: process.env.L99_SCHEMAS_FOLDER || `/data/schemas`, // incls print-apply/module.xml etc
 }
 
 async function start(params) {

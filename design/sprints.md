@@ -11,7 +11,7 @@ Current and past sprints. See versions.md for version numbers.
 | historian | separate historian and adapter repos? | nov 4 |
 | devops | add structured logging, loki, ci/cd, tracking versions, push changes || 
 | optimize | optimize for security, traffic, size, cpu | |
-| client-specific drivers | refactor folder structure to allow client-specific drivers, modules, settings | |
+| client-specific drivers | refactor folder structure to allow client-specific drivers, schemas, settings | |
 | multi-output adapter | refactor adapter to accommodate different output formats. clean up cache code | |
 | scale | scale horizontally to consolidate data from multiple encabulators ||
 | metrics / continuous aggregates | expand metrics - use continuous aggregates to roll up events from history table, instead of bins table (?) ||

@@ -17,7 +17,7 @@ const { mode = 'play' } = options
 const pluginsFolder = './plugins'
 // defined in compose.yaml with docker volume mappings
 const setupFolder = process.env.L99_SETUP_FOLDER || '/data/setup'
-const modulesFolder = process.env.L99_MODULES_FOLDER || '/data/modules' // incls print-apply/recordings, etc
+const schemasFolder = process.env.L99_SCHEMAS_FOLDER || '/data/schemas' // incls print-apply/recordings, etc
 
 console.log()
 console.log(`Recorder`)
@@ -53,7 +53,7 @@ async function main() {
 
         // get list of recorded csv files for the source module.
         // do this here instead of in each plugin
-        const folder = `${modulesFolder}/${module}/recordings`
+        const folder = `${schemasFolder}/${module}/recordings`
         let csvfiles = []
         if (mode === 'play') {
           console.log(`Reading list of files in folder '${folder}'...`)

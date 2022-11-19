@@ -29,7 +29,7 @@ On Mac or Linux Terminal, or with Git Bash on Windows -
 - design - design notes, diagrams
 - docs - website walkthrough and documentation
 - services - source code for different sections of the pipeline - adapter, relay, etc.
-- setups - setups to demonstrate different modules
+- setups - setups to demonstrate different drivers
 - shell - shell scripts
 
 Adapter plugins are defined in `services/adapter/src/drivers`.

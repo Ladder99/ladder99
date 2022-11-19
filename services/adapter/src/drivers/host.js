@@ -1,6 +1,6 @@
 // host driver
 // fetches data from host system, writes to cache.
-// see setups/common/modules/host folder.
+// see setups/common/schemas/host folder.
 
 import si from 'systeminformation' // see https://github.com/sebhildebrandt/systeminformation
 

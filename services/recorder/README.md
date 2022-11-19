@@ -16,7 +16,7 @@ To record data from devices, eg
 
 It may show errors due to missing plugins, but this is okay.
 
-The recordings are files like `modules/<module>/recordings/<datetime>.csv`, with structure:
+The recordings are files like `schemas/<schema>/recordings/<datetime>.csv`, with structure:
 
     [msg.topic, payload, msg.qos, msg.retain, time_now, time_delta]
 

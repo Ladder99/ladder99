@@ -1,4 +1,4 @@
-# Host modules
+# Host schemas
 
 eg for host OS - Windows, Linux, ...
 

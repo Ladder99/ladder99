@@ -7,5 +7,5 @@ The pipeline service defaults are set in `services/compose.yaml` - each setup sh
 Subfolders
 
 - common/dashboards - generic dashboard definitions, usable by any client
-- common/modules - dataitem definitions - input/output yamls, recordings for playback
+- common/schemas - dataitem definitions - input/output yamls, recordings for playback
 - example - an example setup with live microcontroller and mazak cnc stats

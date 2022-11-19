@@ -17,7 +17,7 @@
 SETUP=setups/print-apply
 NETWORK=host
 SERVICES=portainer mosquitto adapter agent
-MODULE=print-apply
+SCHEMA=print-apply
 MODE=play
 
 RUN="docker run -dit --init --rm --log-opt max-size=1m --log-opt max-file=5"
@@ -43,7 +43,7 @@ do
     #docker build --tag ladder99/adapter:latest services/adapter
     $RUN --name adapter --network $NETWORK \
       -v $(pwd)/$SETUP:/data/setup \
-      -v $(pwd)/modules:/data/modules \
+      -v $(pwd)/schemas:/data/schemas \
       --pull always \
       ladder99/adapter:latest
   fi
@@ -59,9 +59,9 @@ do
   if [ $service = "recorder" ]; then
     docker build --tag ladder99/recorder:latest services/recorder
     $RUN --name recorder --network $NETWORK \
-      -v $(pwd)/modules:/data/modules \
+      -v $(pwd)/schemas:/data/schemas \
       ladder99/recorder:latest \
-      recorder --mode $MODE --host localhost --folder /data/modules/$MODULE/recordings
+      recorder --mode $MODE --host localhost --folder /data/schemas/$SCHEMA/recordings
   fi
 
   echo ""

@@ -73,11 +73,9 @@ services:
       # specify where code can find data.
       # can override at run time, eg to run service on windows with node.
       L99_SETUP_FOLDER: /data/setup
-      L99_MODULES_FOLDER: /data/modules
       L99_ADAPTER_FOLDER: /data/adapter
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml etc
-      - ../setups/common/modules:/data/modules # has module yamls
       - ../$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
     restart: always
     networks:
