@@ -39,11 +39,21 @@ export class AdapterDriver {
 
     const { inputs } = module
 
-    // get ids and query string
-    this.ids = inputs.inputs.map(input => `${device.id}-${input.key}`) // eg ['ac1-operator_name', 'ac1-recipe_description', ...]
-    this.paths = inputs.inputs.map(input => input.path).join(',') // the cpc property path string, eg '.Autoclave.Alarms.ControlPower...,...'
-    this.types = inputs.inputs.map(input => input.type) // eg [undefined, undefined, boolean, ...]
-    this.query = `PathListGet:ReadValues:${this.paths}` // eg 'PathListGet:ReadValues:.Autoclave.Alarms.ControlPower\Condition,...'
+    // get ids and query string.
+    // this query string is sent to the device each poll interval to get the values.
+    // see onData method for how the values are parsed from the response.
+
+    // get array of ids, eg ['ac1-operator_name', 'ac1-recipe_description', ...]
+    this.ids = inputs.inputs.map(input => `${device.id}-${input.key}`)
+
+    // get array of types, eg [undefined, undefined, boolean, ...]
+    this.types = inputs.inputs.map(input => input.type)
+
+    // get the cpc property path string, eg '.Autoclave.Alarms.ControlPower\Condition,...'
+    this.paths = inputs.inputs.map(input => input.path).join(',')
+
+    // get query string, eg 'PathListGet:ReadValues:.Autoclave.Alarms.ControlPower\Condition,...'
+    this.query = `PathListGet:ReadValues:${this.paths}`
 
     console.log('CPC ids', this.ids)
     console.log('CPC query', this.query)
@@ -80,11 +90,12 @@ export class AdapterDriver {
     this.client.write(this.query + '\r\n')
   }
 
-  // receive data from device, write to cache, output shdr to agent
+  // receive data from device, parse to items, write to cache, outputs shdr to agent
   onData(data) {
-    const str = data.toString() // eg 'PathListGet:ReadValues:=,True,Joshau Schneider,254.280816,,0'
+    // get response string, eg 'PathListGet:ReadValues:=,True,Joshau Schneider,254.280816,,0'
+    const str = data.toString()
     console.log(`CPC driver received "${str.slice(0, 255)}..."`)
-    const valuesStr = str.split(':=')[1]
+    const valuesStr = str.split(':=')[1] // eg ',True,Joshau Schneider,254.280816,,0'
     // note: for the list of 'messages', it sends one after the other -
     // after the first one it doesn't include the :=, so this will return null.
     // so can ignore those, since we just want the first line.
