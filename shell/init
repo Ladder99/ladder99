@@ -1,12 +1,12 @@
 #!/bin/bash
 
 usage="
-Usage: ./l99 init SETUP
+Usage: l99 init SETUP
 
 Initialize a new setup in ../setup-SETUP.
 
 Example
-    ./l99 init my-company
+    l99 init my-company
 "
 
 # show help if count of params is zero
@@ -19,7 +19,8 @@ fi
 SETUP=$1
 shift
 
-DEST=../setup-$SETUP
+# DEST=../setup-$SETUP
+DEST=$L99_HOME/setup-$SETUP
 
 # check if destination already exists
 if [ -d "$DEST" ]; then
@@ -56,16 +57,19 @@ echo Copying from setups/example...
 # && cp setups/example/* $DEST \
 # && rm $ENVFILE \
 
+# EXAMPLE=setups/example
+EXAMPLE=$L99_HOME/setups/example
+
 mkdir $DEST \
 && mkdir $DEST/volumes \
 && mkdir $DEST/volumes/grafana \
-&& cp -R setups/example/volumes/agent $DEST/volumes/agent/ \
-&& cp -R setups/example/volumes/grafana/etc $DEST/volumes/grafana/etc/ \
-&& cp setups/example/.gitignore $DEST \
-&& cp setups/example/.env-example $DEST \
-&& cp setups/example/compose-overrides.yaml $DEST \
-&& cp setups/example/README.md $DEST \
-&& cp setups/example/setup.yaml $DEST \
-&& echo Done. Try ./l99 start $SETUP \
+&& cp -R $EXAMPLE/volumes/agent $DEST/volumes/agent/ \
+&& cp -R $EXAMPLE/volumes/grafana/etc $DEST/volumes/grafana/etc/ \
+&& cp $EXAMPLE/.gitignore $DEST \
+&& cp $EXAMPLE/.env-example $DEST \
+&& cp $EXAMPLE/compose-overrides.yaml $DEST \
+&& cp $EXAMPLE/README.md $DEST \
+&& cp $EXAMPLE/setup.yaml $DEST \
+&& echo Done. Try 'l99 start $SETUP' \
 && echo
 

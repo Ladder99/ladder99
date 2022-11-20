@@ -6,7 +6,7 @@
 # need to change in compose.yaml, possibly adapter or relay js code.
 
 usage="
-Usage: ./l99 start [OPTIONS] SETUP [SERVICES]
+Usage: l99 start [OPTIONS] SETUP [SERVICES]
 
 Run the Ladder99 pipeline with a list of services/profiles to include.
 
@@ -19,10 +19,10 @@ SERVICES      space-delim list of services or profiles to start
               this is the default.
 
 Examples
-    ./l99 start example
-    ./l99 start example agent grafana
-    ./l99 start demo relay
-    ./l99 start --offline mycompany
+    l99 start example
+    l99 start example agent grafana
+    l99 start demo relay
+    l99 start --offline mycompany
 "
 
 # bug: needed to run this as /bin/bash, NOT /bin/sh - led to bug on encabulator
@@ -48,11 +48,13 @@ fi
 
 # get setup folder
 # handle example setup specially
-#. or SETUP=$1, shift, then make SETUP_FOLDER
+#.. or better, SETUP=$1, shift, then make SETUP_FOLDER
 if [ $1 = example ]; then
-    SETUP=setups/example
+    # SETUP=setups/example
+    SETUP=$L99_HOME/setups/example
 else
-    SETUP=../setup-$1
+    # SETUP=../setup-$1
+    SETUP=$L99_HOME/../setup-$1
 fi
 shift
 
@@ -71,10 +73,10 @@ else
 fi
 
 # file paths
-COMPOSE="services/compose.yaml"
-OVERRIDES="$SETUP/compose-overrides.yaml"
-ENVFILE="$SETUP/.env"
-ENVFILE_EXAMPLE="$SETUP/.env-example"
+COMPOSE=$L99_HOME/services/compose.yaml
+OVERRIDES=$SETUP/compose-overrides.yaml
+ENVFILE=$SETUP/.env
+ENVFILE_EXAMPLE=$SETUP/.env-example
 
 # specify docker compose files
 ARGS="--file $COMPOSE"
@@ -91,7 +93,7 @@ fi
 if [ -e $ENVFILE ]; then
     # use .env file if there
     ARGS="$ARGS --env-file $ENVFILE"
-elif [ $SETUP = "setups/example" ]; then
+elif [ $SETUP = "$L99_HOME/setups/example" ]; then
     # copy the example .env file and use that
     cp $ENVFILE_EXAMPLE $ENVFILE
     ARGS="$ARGS --env-file $ENVFILE"
@@ -143,4 +145,4 @@ echo "$FULL_CMD"
 bash -c "$FULL_CMD"
 
 echo
-echo Run \'./l99 list\' to check status of services.
+echo Run \'l99 list\' to check status of services.

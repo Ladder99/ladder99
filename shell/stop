@@ -8,11 +8,11 @@
 #. add prune option to clear up space?
 
 usage="
-Usage: ./l99 stop SERVICES
+Usage: l99 stop SERVICES
 
 Stop Ladder99 services.
 
-To stop all running services, use ./l99 stop all
+To stop all running services, use 'l99 stop all'
 "
 
 if [ $# -eq 0 ]; then

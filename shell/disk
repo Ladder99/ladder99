@@ -1,14 +1,14 @@
 #!/bin/bash
 
 usage="
-Usage: ./l99 disk SETUP
+Usage: l99 disk SETUP
 
 Print disk usage for a given setup.
 
 SETUP is a client name or setup folder.
 
 Example
-    ./l99 disk demo
+    l99 disk demo
 "
 
 # show help if count of params is zero
@@ -29,9 +29,9 @@ fi
 
 # handle example setup specially
 if [ $1 = example ]; then
-    SETUP=setups/example
+    SETUP=$L99_HOME/setups/example
 else
-    SETUP=../setup-$1
+    SETUP=$L99_HOME/../setup-$1
 fi
 shift
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 usage="
-Usage: ./l99 update SETUP
+Usage: l99 update SETUP
 
 Update Ladder99 pipeline and client code.
 
@@ -25,9 +25,11 @@ fi
 
 # handle example setup specially
 if [ $1 = example ]; then
-    SETUP=setups/example
+    # SETUP=setups/example
+    SETUP=$L99_HOME/setups/example
 else
-    SETUP=../setup-$1
+    # SETUP=../setup-$1
+    SETUP=$L99_HOME/../setup-$1
 fi
 shift
 

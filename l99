@@ -34,16 +34,19 @@ Examples
 # some discussion here
 # https://unix.stackexchange.com/questions/379464/why-does-this-script-work-in-the-terminal-but-not-from-a-file
 
+# if [ "$L99_HOME" = "" ]; then
+#   echo Please
+# fi
+
 # show help if count of params is zero
 if [ $# -eq 0 ]; then
-    echo "$usage"
-    exit 1
+  echo "$usage"
+  exit 1
 fi
 
 CMD=$1
-CMD_PATH=shell/$CMD
-
+# CMD_PATH=shell/$CMD
+CMD_PATH=$L99_HOME/shell/$CMD
 shift
 PARAMS=$*
-
 "$CMD_PATH" $PARAMS

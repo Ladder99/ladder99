@@ -3,7 +3,7 @@
 #. get service version from package.json - use jq to extract?
 
 usage="
-Usage: ./l99 build SERVICE VERSION
+Usage: l99 build SERVICE VERSION
 
 Build a Docker image and push up to Docker hub.
 
@@ -15,8 +15,8 @@ Might need to login to Docker Hub first, in order to push image there -
     docker login --username ladder99
 
 Example
-    ./l99 build adapter 0.8.0-arm
-    ./l99 build relay latest
+    l99 build adapter 0.8.0-arm
+    l99 build relay latest
 "
 
 # show help if count of params is zero
@@ -30,7 +30,8 @@ VERSION=$2
 USERNAME=ladder99
 TAG=$USERNAME/$SERVICE:$VERSION
 
-pushd ./services/$SERVICE
+# pushd ./services/$SERVICE
+pushd $L99_HOME/services/$SERVICE
 docker build --tag $TAG .
 popd 
 docker image ls $USERNAME/$SERVICE
