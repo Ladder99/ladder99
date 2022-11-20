@@ -20,13 +20,13 @@ COMMAND
 Run the command or with -h for help on that command.
 
 Examples
-    l99 list
-    l99 logs adapter error
-    l99 disk demo
-    l99 start demo agent
-    l99 stop demo relay
-    l99 update demo
-    l99 init my-company
+  l99 list
+  l99 logs adapter error
+  l99 disk demo
+  l99 start demo agent
+  l99 stop demo relay
+  l99 update demo
+  l99 init my-company
 "
 
 # note: this needs to run as /bin/bash, NOT /bin/sh - led to bug on encabulator
@@ -34,9 +34,10 @@ Examples
 # some discussion here
 # https://unix.stackexchange.com/questions/379464/why-does-this-script-work-in-the-terminal-but-not-from-a-file
 
-# if [ "$L99_HOME" = "" ]; then
-#   echo Please
-# fi
+if [ "$L99_HOME" = "" ]; then
+  echo Please install the Ladder99 cli using the install script, ie run \'install\'.
+  exit 1
+fi
 
 # show help if count of params is zero
 if [ $# -eq 0 ]; then
@@ -45,7 +46,6 @@ if [ $# -eq 0 ]; then
 fi
 
 CMD=$1
-# CMD_PATH=shell/$CMD
 CMD_PATH=$L99_HOME/shell/$CMD
 shift
 PARAMS=$*
