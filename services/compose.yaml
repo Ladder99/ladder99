@@ -34,13 +34,13 @@ services:
       # specify where code can find data.
       # can override at run time, eg to run service on windows with node.
       L99_SETUP_FOLDER: /data/setup
-      # L99_MODULES_FOLDER: /data/modules
       L99_SCHEMAS_FOLDER: /data/schemas
       L99_ADAPTER_FOLDER: /data/adapter
     volumes:
       - ../$SETUP:/data/setup # has setup.yaml etc
       # - ../setups/common/modules:/data/modules # has module yamls
-      - ../setups/common/schemas:/data/schemas # has schema yamls
+      # - ../setups/common/schemas:/data/schemas # has schema yamls
+      - ../volumes/adapter/schemas:/data/schemas # has schema yamls
       - ../$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
     restart: unless-stopped
     networks:
@@ -466,7 +466,8 @@ services:
     command: recorder --mode play
     volumes:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
-      - ../setups/common/schemas:/data/schemas # has schema-specific recordings folder
+      # - ../setups/common/schemas:/data/schemas # has schema-specific recordings folder
+      - ../volumes/adapter/schemas:/data/schemas # has schema-specific recordings folder
     restart: unless-stopped
     networks:
       - ladder99
@@ -569,7 +570,8 @@ services:
       L99_SCHEMAS_FOLDER: /data/schemas
     volumes:
       - ../$SETUP:/data/setup # has setup-specific recordings folder
-      - ../setups/common/schemas:/data/schemas # has schema-specific recordings folder
+      # - ../setups/common/schemas:/data/schemas # has schema-specific recordings folder
+      - ../volumes/adapter/schemas:/data/schemas # has schema-specific recordings folder
     restart: unless-stopped
     networks:
       - ladder99

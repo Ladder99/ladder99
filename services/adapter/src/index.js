@@ -22,9 +22,9 @@ const params = {
   // file system inputs
   driversFolder: './drivers', // eg for mqttSubscriber.js - must start with '.'
   // these folders may be defined in compose.yaml with docker volume mappings.
-  // when adapter.js is run, it expects config in /data/setup and /data/models.
+  // when adapter.js is run, it expects config in /data/setup and /data/schemas.
   // so /data/setup includes setup.yaml, which includes a list of devices to setup.
-  //. could also contain custom adapter drivers and schemas, eg for oxbox.
+  //. could also contain custom adapter drivers and schemas, eg for oxbox - how do?
   setupFolder: process.env.L99_SETUP_FOLDER || `/data/setup`,
   schemasFolder: process.env.L99_SCHEMAS_FOLDER || `/data/schemas`, // incls print-apply/module.xml etc
 }
