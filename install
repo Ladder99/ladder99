@@ -10,3 +10,4 @@ echo 'export PATH=$PATH:'`pwd` >> ~/.bashrc
 echo 'export L99_HOME='`pwd` >> ~/.bashrc
 echo Done.
 echo "Please source the file by typing in 'source ~/.bashrc', or logout and log back in."
+echo "Then try 'l99'."
