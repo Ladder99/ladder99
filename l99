@@ -41,7 +41,7 @@ if [ $# -eq 0 ]; then
 fi
 
 CMD=$1
-CMD_PATH=shell/linux/$CMD
+CMD_PATH=shell/$CMD
 
 shift
 PARAMS=$*
