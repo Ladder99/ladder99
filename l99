@@ -3,7 +3,7 @@
 # run a ladder99 shell command
 
 usage="
-Usage: ./l99 COMMAND [PARAMS]
+Usage: l99 COMMAND [PARAMS]
 
 Run a Ladder99 command.
 
@@ -20,13 +20,13 @@ COMMAND
 Run the command or with -h for help on that command.
 
 Examples
-    ./l99 list
-    ./l99 logs adapter error
-    ./l99 disk demo
-    ./l99 start demo agent
-    ./l99 stop demo relay
-    ./l99 update demo
-    ./l99 init my-company
+    l99 list
+    l99 logs adapter error
+    l99 disk demo
+    l99 start demo agent
+    l99 stop demo relay
+    l99 update demo
+    l99 init my-company
 "
 
 # note: this needs to run as /bin/bash, NOT /bin/sh - led to bug on encabulator
