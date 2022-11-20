@@ -1,4 +1,5 @@
 // companion functions for dataProbe.js
+//. move into that file
 
 import * as lib from './common/lib.js'
 
