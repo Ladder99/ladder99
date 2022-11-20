@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# install ladder99 cli (l99)
+
+# eg `pwd` could be '/c/users/bburns/workspace/@ladder99/ladder99'
+echo 'Adding PATH extension to ~/.bashrc...'
+echo '# added by ladder99' >> ~/.bashrc
+echo 'PATH=$PATH:'`pwd` >> ~/.bashrc
+echo Done.
