@@ -257,7 +257,8 @@ services:
       # other folders are specified there.
       - ../$SETUP/volumes/grafana/etc:/etc/grafana
       - ../$SETUP/volumes/grafana/var:/var/lib/grafana
-      - ../setups/common/dashboards/grafana:/etc/dashboards
+      # - ../setups/common/dashboards/grafana:/etc/dashboards
+      - ../volumes/grafana/dashboards:/etc/dashboards
     # as of v7.3, the Grafana Docker image runs with the root group (id 0) instead
     # of the grafana group (id 472), for better compatibility with OpenShift. [?]
     # grafana gives permission error without user:root - not on mac tho. only on arm?
