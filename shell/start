@@ -68,7 +68,8 @@ fi
 
 # file paths
 # COMPOSE=$L99_HOME/services/compose.yaml
-COMPOSE=services/compose.yaml
+# COMPOSE=services/compose.yaml
+COMPOSE=docker-compose.yaml
 OVERRIDES=$SETUP/compose-overrides.yaml
 ENVFILE=$SETUP/.env
 ENVFILE_EXAMPLE=$SETUP/.env-example

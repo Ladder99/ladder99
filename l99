@@ -49,8 +49,8 @@ if [ $# -eq 0 ]; then
 fi
 
 cd $L99_HOME
+
 CMD=$1 # eg 'start'
-# CMD_PATH=$L99_HOME/shell/$CMD # eg '/c/users/bburns/.../ladder99/shell/start'
 CMD_PATH=shell/$CMD # eg 'shell/start'
 shift
 PARAMS=$*
