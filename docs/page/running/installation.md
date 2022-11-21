@@ -37,18 +37,11 @@ Install or upgrade it at https://docs.docker.com/compose/install/.
 
 ## Install Ladder99
 
-First, go to a good working directory and make a folder for Ladder99 and any custom setups - e.g.
+First, go to a good working directory and install the Ladder99 pipeline source code by cloning the code from GitHub and running the install script -
 
 ```bash
 cd ~
-mkdir ladder99 && cd ladder99
-```
-
-Next, install the Ladder99 pipeline source code by cloning the code from GitHub -
-
-```bash
 git clone https://github.com/Ladder99/ladder99
 cd ladder99
+./install
 ```
-
-Note that we will end up in a directory like `~/ladder99/ladder99`.

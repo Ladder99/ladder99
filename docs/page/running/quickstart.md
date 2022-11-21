@@ -4,10 +4,11 @@ For tech-savy users who want to get the pipeline up and running quickly, you can
 
 ```bash
 cd ~
-mkdir ladder99 && cd ladder99
 git clone https://github.com/Ladder99/ladder99
 cd ladder99
-./l99 start example
+./install
+l99 use example
+l99 start
 ```
 
 This will take several minutes to build the pipeline.

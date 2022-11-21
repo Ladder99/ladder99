@@ -5,10 +5,11 @@ Ladder99 comes with an example setup that displays data from a **LIVE** Mazak CN
 
 ## Run Example
 
-From your `ladder99/ladder99` folder, run the 'example' setup with
+From your `ladder99` folder, run the 'example' setup with
 
 ```bash
-./l99 start example
+l99 use example
+l99 start base
 ```
 
 The first time you run this it will download and build all the different services. 
