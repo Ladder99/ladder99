@@ -8,7 +8,7 @@ git clone https://github.com/Ladder99/ladder99
 cd ladder99
 ./install
 l99 use example
-l99 start
+l99 start base
 ```
 
 This will take several minutes to build the pipeline.
