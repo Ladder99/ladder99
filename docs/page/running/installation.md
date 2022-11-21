@@ -45,3 +45,58 @@ git clone https://github.com/Ladder99/ladder99
 cd ladder99
 ./install
 ```
+
+e.g.
+
+```
+$ ./install
+Adding PATH extension and L99 variables to ~/.bashrc...
+Done.
+Please source the file by typing in 'source ~/.bashrc', or logout and log back in.
+Then try 'l99'.
+```
+
+
+## Finish the Installation
+
+This will load the Ladder99 environment variables into your shell -
+
+```bash
+source ~/.bashrc
+```
+
+
+## Run the Ladder99 CLI
+
+The Ladder99 console interface is a script named 'l99' (that's a small L, not a one). You can run it to see a list of available commands -
+
+```
+$ l99
+
+Usage: l99 COMMAND [PARAMS]
+
+Run a Ladder99 command.
+
+COMMAND
+    disk      show disk usage for a setup
+    init      create a new setup folder
+    list      list running services
+    logs      follow and search logs of a running or stopped service
+    restart   restart services
+    start     start services
+    stop      stop running services
+    update    update source code for ladder99 and a given setup
+    use       specify setup to use with l99 commands
+
+Run the command or with -h for help on that command.
+
+Examples
+    l99 list
+    l99 use example
+    l99 disk
+    l99 start agent
+    l99 logs agent error
+    l99 stop agent
+    l99 update
+    l99 init my-company
+```

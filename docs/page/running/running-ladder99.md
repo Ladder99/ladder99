@@ -1,14 +1,19 @@
 # Running Ladder99
 
-Ladder99 comes with an example setup that displays data from a **LIVE** Mazak CNC machine. 
+Ladder99 consists of a set of services that run according to the directions in a 'setup' folder. 
 
 
 ## Run Example
 
-From your `ladder99` folder, run the 'example' setup with
+Ladder99 comes with an example setup that displays data from a **LIVE** Mazak CNC machine. From your `ladder99` folder, first select the setup with
 
 ```bash
 l99 use example
+```
+
+then run it with
+
+```bash
 l99 start base
 ```
 
