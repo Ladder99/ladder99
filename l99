@@ -45,8 +45,10 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-CMD=$1
-CMD_PATH=$L99_HOME/shell/$CMD
+pushd $L99_HOME > /dev/null
+CMD=$1 # eg 'start'
+# CMD_PATH=$L99_HOME/shell/$CMD # eg '/c/users/bburns/.../ladder99/shell/start'
+CMD_PATH=shell/$CMD # eg '/c/users/bburns/.../ladder99/shell/start'
 shift
 PARAMS=$*
 "$CMD_PATH" $PARAMS

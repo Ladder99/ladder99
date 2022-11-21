@@ -37,7 +37,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # get mode - detached or console
-# removed console mode because hitting ctrl-c stopped ALL other services
+# removed console mode option because hitting ctrl-c stopped ALL other services
 MODE=--detach
 
 # handle options
@@ -48,13 +48,15 @@ fi
 
 # get setup folder
 # handle example setup specially
-#.. or better, SETUP=$1, shift, then make SETUP_FOLDER
+SETUP_NAME=$1
 if [ $1 = example ]; then
-    # SETUP=setups/example
-    SETUP=$L99_HOME/setups/example
+    SETUP=setups/example
+    # export SETUP=setups/example
+    # export SETUP=$L99_HOME/setups/example
 else
-    # SETUP=../setup-$1
-    SETUP=$L99_HOME/../setup-$1
+    SETUP=../setup-$1
+    # export SETUP=../setup-$1
+    # export SETUP=$L99_HOME/../setup-$SETUP_NAME
 fi
 shift
 
@@ -73,7 +75,8 @@ else
 fi
 
 # file paths
-COMPOSE=$L99_HOME/services/compose.yaml
+# COMPOSE=$L99_HOME/services/compose.yaml
+COMPOSE=services/compose.yaml
 OVERRIDES=$SETUP/compose-overrides.yaml
 ENVFILE=$SETUP/.env
 ENVFILE_EXAMPLE=$SETUP/.env-example
@@ -93,7 +96,7 @@ fi
 if [ -e $ENVFILE ]; then
     # use .env file if there
     ARGS="$ARGS --env-file $ENVFILE"
-elif [ $SETUP = "$L99_HOME/setups/example" ]; then
+elif [ $SETUP_NAME = "example" ]; then
     # copy the example .env file and use that
     cp $ENVFILE_EXAMPLE $ENVFILE
     ARGS="$ARGS --env-file $ENVFILE"
@@ -121,6 +124,7 @@ done
 # note: -p specifies project name, as shown in docker management consoles - 
 # otherwise it uses the parent folder name (ie 'services').
 BASE_CMD="docker-compose --project-name ladder99 $ARGS $PROFILE_FLAGS"
+# BASE_CMD="MSYS_NO_PATHCONV=1 docker-compose --project-name ladder99 $ARGS $PROFILE_FLAGS"
 
 # pull cmd
 PULL_CMD="$BASE_CMD pull"
@@ -129,15 +133,15 @@ PULL_CMD="$BASE_CMD pull"
 RUN_CMD="$BASE_CMD up --build $MODE"
 
 # pull any required images in the docker-compose files and start services.
-# CMD="$BASE_CMD pull && $BASE_CMD up --build $MODE"
-# CMD="$BASE_CMD up --build $MODE"
-
 if [ "$OFFLINE" = "true" ]; then
     CMD="$RUN_CMD"
 else
     CMD="$PULL_CMD && 
 $RUN_CMD"
 fi
+
+# echo "$CMD"
+# bash -c "$CMD"
 
 FULL_CMD="export SETUP=$SETUP && 
 $CMD"
