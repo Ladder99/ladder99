@@ -1,3 +1,6 @@
 [submodule "setups/test"]
 	path = setups/test
 	url = https://github.com/Ladder99/setup-test
+[submodule "setups/demo"]
+	path = setups/demo
+	url = https://github.com/Ladder99/setup-demo
