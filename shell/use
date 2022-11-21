@@ -7,6 +7,7 @@ Specify a setup to use for all following l99 commands.
 
 Example:
     l99 use example
+    l99 use my-company
 "
 
 if [ $# -eq 0 ]; then
