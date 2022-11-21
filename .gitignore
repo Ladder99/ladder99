@@ -23,4 +23,7 @@ desktop.ini
 **/postgres/data
 **/volumes/traefik/acme.json
 
+setups/**
+!setups/example/**
+
 .l99_setup
