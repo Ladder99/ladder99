@@ -17,7 +17,7 @@ services:
     container_name: adapter
 
     # note: must specify build OR image in setup's compose-overrides.yaml.
-    # build: ./adapter # see Dockerfile in this folder
+    # build: ./services/adapter # see Dockerfile in this folder
     # image: ladder99/adapter:0.8.0-arm # an alternative to the build process
 
     # set this to give permission to access hardware (e.g. dymo scale in usb port).
@@ -577,7 +577,7 @@ services:
   relay:
     container_name: relay
     # note: must specify build OR image in setup's compose-overrides.yaml.
-    # build: ./relay
+    # build: ./services/relay
     profiles:
       - relay
     # this runs a process manager that passes SIGTERM to your app gracefully
