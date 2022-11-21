@@ -8,27 +8,27 @@ Usage: l99 COMMAND [PARAMS]
 Run a Ladder99 command.
 
 COMMAND
-  disk      show disk usage for a setup
-  init      create a new setup folder
-  list      list running services
-  logs      follow and search logs of a running or stopped service
-  restart   restart services
-  start     start services
-  stop      stop running services
-  update    update source code for ladder99 and a given setup
-  use       specify setup to use with l99 commands
+    disk      show disk usage for a setup
+    init      create a new setup folder
+    list      list running services
+    logs      follow and search logs of a running or stopped service
+    restart   restart services
+    start     start services
+    stop      stop running services
+    update    update source code for ladder99 and a given setup
+    use       specify setup to use with l99 commands
 
 Run the command or with -h for help on that command.
 
 Examples
-  l99 list
-  l99 logs adapter error
-  l99 use demo
-  l99 disk
-  l99 start agent
-  l99 stop relay
-  l99 update
-  l99 init my-company
+    l99 list
+    l99 use example
+    l99 disk
+    l99 start agent
+    l99 logs agent error
+    l99 stop agent
+    l99 update
+    l99 init my-company
 "
 
 # note: this needs to run as /bin/bash, NOT /bin/sh - led to bug on encabulator
@@ -37,14 +37,15 @@ Examples
 # https://unix.stackexchange.com/questions/379464/why-does-this-script-work-in-the-terminal-but-not-from-a-file
 
 if [ "$L99_HOME" = "" ]; then
-  echo Please install the Ladder99 cli using the install script, ie run \'install\'.
-  exit 1
+    echo Please install the Ladder99 cli using the install script, ie run \'install\'.
+    exit 1
 fi
 
 # show help if count of params is zero
 if [ $# -eq 0 ]; then
-  echo "$usage"
-  exit 1
+    echo "$usage"
+    echo Current Ladder99 setup folder is \'$(cat .l99_setup)\'.
+    exit 1
 fi
 
 cd $L99_HOME
@@ -54,13 +55,3 @@ CMD_PATH=shell/$CMD # eg 'shell/start'
 shift
 PARAMS=$*
 "$CMD_PATH" $PARAMS
-
-SETUP=$(cat .l99_setup)
-
-# handle missing setup folder
-if [ ! -e $SETUP ]; then
-    echo No setup specified - please run the \'l99 use SETUP\' command.
-    echo
-    exit 1
-fi
-
