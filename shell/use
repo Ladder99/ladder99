@@ -15,12 +15,13 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-# handle example setup specially
-if [ $1 = example ]; then
-    SETUP=setups/example
-else
-    SETUP=../setup-$1
-fi
+# # handle example setup specially
+# if [ $1 = example ]; then
+#     SETUP=setups/example
+# else
+#     SETUP=../setup-$1
+# fi
+SETUP=setups/$1
 shift
 
 # handle missing setup folder
