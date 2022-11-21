@@ -3,9 +3,9 @@
 # restart services
 
 usage="
-Usage: l99 restart SETUP [SERVICES]
+Usage: l99 restart [SERVICES]
 
-Stop and start the specified Ladder99 services.
+Stop and start the specified Ladder99 services for the current setup.
 
 See 'l99 start' for help.
 "
@@ -16,9 +16,6 @@ if [ $# -le 1 ]; then
     exit 1
 fi
 
-SETUP=$1
-shift
 SERVICES=$*
 
-# /bin/bash -c "shell/linux/stop $SERVICES && shell/linux/start $SETUP $SERVICES"
-/bin/bash -c "l99 stop $SERVICES && l99 start $SETUP $SERVICES"
+/bin/bash -c "l99 stop $SERVICES && l99 start $SERVICES"

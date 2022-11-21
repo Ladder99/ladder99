@@ -1,18 +1,6 @@
 #!/bin/bash
 
-usage="
-Usage: l99 update SETUP
-
-Update Ladder99 pipeline and client code.
-
-SETUP        name of client or setup folder, eg demo
-"
-
-# show help
-if [ $# -eq 0 ]; then
-    echo "$usage"
-    exit 1
-fi
+# update Ladder99 pipeline and client code
 
 # get setup folder
 
@@ -23,21 +11,25 @@ fi
 #     SETUP=../client-$1
 # fi
 
-# handle example setup specially
-if [ $1 = example ]; then
-    # SETUP=setups/example
-    SETUP=$L99_HOME/setups/example
-else
-    # SETUP=../setup-$1
-    SETUP=$L99_HOME/../setup-$1
-fi
-shift
-
-# SETUP=../setup-$1
+# # handle example setup specially
+# if [ $1 = example ]; then
+#     SETUP=setups/example
+# else
+#     SETUP=../setup-$1
+# fi
 # shift
 
+SETUP=$(cat .l99_setup)
 
-# pull ladder99-ce repo then client repo
+# handle missing setup folder
+if [ ! -e $SETUP ]; then
+    echo No setup specified - please run the \'l99 use SETUP\' command.
+    echo
+    exit 1
+fi
+
+
+# pull ladder99 repo then client repo
 # set credential cache while we're at it so user doesn't have to
 # keep entering passcode - 360000=100h.
 # do both pulls in same command so if first fails, won't do second - 

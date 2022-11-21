@@ -1,21 +1,6 @@
 #!/bin/bash
 
-usage="
-Usage: l99 disk SETUP
-
-Print disk usage for a given setup.
-
-SETUP is a client name or setup folder.
-
-Example
-    l99 disk demo
-"
-
-# show help if count of params is zero
-if [ $# -eq 0 ]; then
-    echo "$usage"
-    exit 1
-fi
+# Print disk usage for current setup.
 
 # get setup folder
 
@@ -27,16 +12,18 @@ fi
 # fi
 # shift
 
-# handle example setup specially
-if [ $1 = example ]; then
-    SETUP=$L99_HOME/setups/example
-else
-    SETUP=$L99_HOME/../setup-$1
-fi
-shift
+# # handle example setup specially
+# if [ $1 = example ]; then
+#     SETUP=$L99_HOME/setups/example
+# else
+#     SETUP=$L99_HOME/../setup-$1
+# fi
+# shift
 
 # SETUP=../setup-$1
 # shift
+
+SETUP=$(cat .l99_setup)
 
 # show all disk usage
 echo

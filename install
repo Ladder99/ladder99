@@ -3,11 +3,12 @@
 # install ladder99 cli (l99)
 
 # eg `pwd` could be '/c/users/bburns/workspace/@ladder99/ladder99'
-echo 'Adding PATH extension and L99_HOME variable to ~/.bashrc...'
+echo 'Adding PATH extension and L99 variables to ~/.bashrc...'
 echo >> ~/.bashrc
 echo '# added by ladder99' >> ~/.bashrc
 echo 'export PATH=$PATH:'`pwd` >> ~/.bashrc
 echo 'export L99_HOME='`pwd` >> ~/.bashrc
+echo 'export L99_SETUP' >> ~/.bashrc
 echo Done.
 echo "Please source the file by typing in 'source ~/.bashrc', or logout and log back in."
 echo "Then try 'l99'."

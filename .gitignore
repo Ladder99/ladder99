@@ -22,3 +22,5 @@ desktop.ini
 **/portainer/data
 **/postgres/data
 **/volumes/traefik/acme.json
+
+.l99_setup

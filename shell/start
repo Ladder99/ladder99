@@ -2,27 +2,21 @@
 
 # run ladder99 pipeline with docker compose.
 
-#. keep SETUP the base setup name, and use SETUP_FOLDER for the path -
-# need to change in compose.yaml, possibly adapter or relay js code.
-
 usage="
-Usage: l99 start [OPTIONS] SETUP [SERVICES]
+Usage: l99 start [OPTIONS] [SERVICES]
 
 Run the Ladder99 pipeline with a list of services/profiles to include.
 
 OPTIONS is '--offline' to run without trying to pull Docker images.
-
-SETUP is 'example', or a setup name, which maps to a directory ../setup-SETUP
 
 SERVICES      space-delim list of services or profiles to start
   base        run all relevant services for a setup - eg adapter, agent, etc.
               this is the default.
 
 Examples
-    l99 start example
-    l99 start example agent grafana
-    l99 start demo relay
-    l99 start --offline mycompany
+    l99 start agent
+    l99 start --offline
+    l99 start
 "
 
 # bug: needed to run this as /bin/bash, NOT /bin/sh - led to bug on encabulator
@@ -46,23 +40,21 @@ if [ "$1" = "--offline" ]; then
     shift
 fi
 
-# get setup folder
-# handle example setup specially
-SETUP_NAME=$1
-if [ $1 = example ]; then
-    SETUP=setups/example
-    # export SETUP=setups/example
-    # export SETUP=$L99_HOME/setups/example
-else
-    SETUP=../setup-$1
-    # export SETUP=../setup-$1
-    # export SETUP=$L99_HOME/../setup-$SETUP_NAME
-fi
-shift
+# # get setup folder
+# # handle example setup specially
+# SETUP_NAME=$1
+# if [ $1 = example ]; then
+#     SETUP=setups/example
+# else
+#     SETUP=../setup-$1
+# fi
+# shift
+SETUP=$(cat .l99_setup)
 
-# missing setup folder
+# handle missing setup folder
 if [ ! -e $SETUP ]; then
     echo Setup folder $SETUP does not exist. Did you forget the setup name?
+    echo No setup specified - please run the \'l99 use SETUP\' command.
     echo
     exit 1
 fi

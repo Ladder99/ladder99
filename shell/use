@@ -1,0 +1,34 @@
+#!/bin/bash
+
+usage="
+Usage: l99 use SETUP
+
+Specify a setup to use for all following l99 commands.
+
+Example:
+    l99 use example
+"
+
+if [ $# -eq 0 ]; then
+    echo "$usage"
+    exit 1
+fi
+
+# handle example setup specially
+if [ $1 = example ]; then
+    SETUP=setups/example
+else
+    SETUP=../setup-$1
+fi
+shift
+
+# handle missing setup folder
+if [ ! -e $SETUP ]; then
+    echo Setup folder $SETUP does not exist. Please try again.
+    exit 1
+fi
+
+# save setup folder to a file
+echo $SETUP > .l99_setup
+
+echo Using \'$SETUP\' for Ladder99 setup folder.

@@ -16,16 +16,18 @@ COMMAND
   start     start services
   stop      stop running services
   update    update source code for ladder99 and a given setup
+  use       specify setup to use with l99 commands
 
 Run the command or with -h for help on that command.
 
 Examples
   l99 list
   l99 logs adapter error
-  l99 disk demo
-  l99 start demo agent
-  l99 stop demo relay
-  l99 update demo
+  l99 use demo
+  l99 disk
+  l99 start agent
+  l99 stop relay
+  l99 update
   l99 init my-company
 "
 
@@ -45,10 +47,20 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-pushd $L99_HOME > /dev/null
+cd $L99_HOME
 CMD=$1 # eg 'start'
 # CMD_PATH=$L99_HOME/shell/$CMD # eg '/c/users/bburns/.../ladder99/shell/start'
-CMD_PATH=shell/$CMD # eg '/c/users/bburns/.../ladder99/shell/start'
+CMD_PATH=shell/$CMD # eg 'shell/start'
 shift
 PARAMS=$*
 "$CMD_PATH" $PARAMS
+
+SETUP=$(cat .l99_setup)
+
+# handle missing setup folder
+if [ ! -e $SETUP ]; then
+    echo No setup specified - please run the \'l99 use SETUP\' command.
+    echo
+    exit 1
+fi
+
