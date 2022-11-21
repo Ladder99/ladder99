@@ -4,3 +4,6 @@
 [submodule "setups/demo"]
 	path = setups/demo
 	url = https://github.com/Ladder99/setup-demo
+[submodule "setups/lockheed"]
+	path = setups/lockheed
+	url = https://github.com/Ladder99/setup-lockheed
