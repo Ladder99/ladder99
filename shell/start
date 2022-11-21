@@ -90,7 +90,7 @@ fi
 if [ -e $ENVFILE ]; then
     # use .env file if there
     ARGS="$ARGS --env-file $ENVFILE"
-elif [ $SETUP_NAME = "example" ]; then
+elif [ "$SETUP_NAME" = "example" ]; then
     # copy the example .env file and use that
     cp $ENVFILE_EXAMPLE $ENVFILE
     ARGS="$ARGS --env-file $ENVFILE"

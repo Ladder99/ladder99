@@ -29,10 +29,10 @@ if [ -d "$SETUP" ]; then
   exit 1
 fi
 
-# save setup folder to file
+# save setup folder to file also
 echo $SETUP > .l99_setup
 
-ENVFILE=$SETUP/.env
+# ENVFILE=$SETUP/.env
 
 # copy setup
 echo
