@@ -11,7 +11,7 @@ Ladder99 comes with an example setup that displays data from a **LIVE** Mazak CN
 l99 use example
 ```
 
-then run it with
+then run the base services with
 
 ```bash
 l99 start base
