@@ -19,7 +19,8 @@ fi
 SETUP_NAME=$1
 shift
 
-SETUP=../setup-$SETUP_NAME
+# SETUP=../setup-$SETUP_NAME
+SETUP=setups/$SETUP_NAME
 
 # check if setup dir already exists
 if [ -d "$SETUP" ]; then
@@ -69,7 +70,7 @@ mkdir $SETUP \
 && cp -R $EXAMPLE/volumes/grafana/etc $SETUP/volumes/grafana/etc/ \
 && cp $EXAMPLE/.gitignore $SETUP \
 && cp $EXAMPLE/.env-example $SETUP \
-&& cp $EXAMPLE/compose-overrides.yaml $SETUP \
+&& cp $EXAMPLE/docker-compose.yaml $SETUP \
 && cp $EXAMPLE/README.md $SETUP \
 && cp $EXAMPLE/setup.yaml $SETUP \
 && echo Done. Try \'l99 start\' \

@@ -11,8 +11,9 @@ Previous versions - see roadmap.md for plans.
 | 0.9.1 | work on opc-ua driver, rename micro driver to host |
 | 0.9.2 | minor patch for host driver - exclude Micro from Grafana, turn off cpuuser etc |
 | 0.9.3 | update example setup, markdown docs |
+| 0.10.0 | new folder structure and l99 command |
 
-We're currently (November 2022) working on 0.9
+We're currently (November 2022) working on 0.10
 
 Beyond these, we'll work on a compiler for device schemas and a visual data builder. 
 
