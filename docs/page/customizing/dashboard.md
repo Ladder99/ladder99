@@ -56,4 +56,3 @@ We're selecting time and value from the history_all view for a given device, pat
 ## DataItems
 
 You can see the available dataitems in the 'DataItems' page.
-

@@ -1,27 +1,26 @@
 # Configuration
 
-The main configuration file is `setup.yaml`, located in the project setup folder, e.g. `../setup-demo`.
+The main configuration file is `setup.yaml`, located in the project setup folder, e.g. `ladder99/setups/example`.
+
+Note: YAML stands for "yet another markup language", and is a way of providing structured data to applications in text files. 
 
 
-## YAML
+## Setup's setup.yaml
 
-YAML stands for "yet another markup language", and is a way of providing structured data to applications, often for configuration. 
+First note the **adapter** section - this specifies the device drivers to feed to our Agent. 
 
-
-## setup.yaml
-
-First note the **adapter** section - this specifies the device drivers to feed to our Agent. In this case, we have a microcontroller driver, which reads some stats of the local/host computer. 
+In this case, we have a **host** driver, which reads some stats of the local/host computer. 
 
 ```yaml
 # ladder99 adapter reads this section to know what devices to poll/subscribe to.
 adapter:
   devices:
-    - id: m # must match id in agent.xml
-      name: Micro # this must match name in agent.cfg and agent.xml
+    - id: host # must match id in agent.xml
+      name: Host # this must match name in agent.cfg and agent.xml
       # sources define the inputs to the cache.
       sources:
-        - module: micro # module defines inputs and outputs with yaml files
-          driver: micro # adapter plugin - manages protocol and payload
+        - module: host # module defines inputs and outputs with yaml files
+          driver: host # adapter plugin - manages protocol and payload
       # where agent will connect to adapter
       connection:
         host: adapter # must match agent.cfg value
@@ -42,12 +41,12 @@ relay:
       # retention: 2d # could clear all unneeded data at midnight - then vacuum analyze db?
       # without a list of devices here, relay would read all available in agent
       devices:
-        - id: m # must match id in agent.xml
-          alias: Microcontroller # as displayed in grafana - can change. without this, just use device name?
+        - id: host # must match id in agent.xml
+          alias: Host # as displayed in grafana - can change. without this, just use device name?
           # ignore: true # can specify this to turn device recording on/off
           # could override settings per dataitem -
           # dataitems:
-          #   - id: m-os
+          #   - id: host-os
           #     retention: 1d
 
     - alias: Mazak5701 # assigned agent alias - don't change!
@@ -76,18 +75,18 @@ relay:
 Link to the full setup.yaml for the example setup [here](../../setups/example/setup.yaml).
 
 
-## compose-overrides.yaml
+## Setup's docker-compose.yaml
 
-Another file with configuration settings is `../setup-test/compose-overrides.yaml`. This contains extra configuration for Docker - in this case, mostly just telling it to run all services with a profile name of 'base'. 
+Another file with configuration settings is `docker-compose.yaml`. This contains extra configuration for Docker - in this case, mostly just telling it to run all services with a profile name of 'base'. 
 
 ```yaml
 # docker-compose overrides
-# overrides and extends the values in ladder99/services/compose.yaml
+# overrides and extends the values in ladder99/docker-compose.yaml
 
 # see other client repos for ideas for adding information to services.
 # typically, would add 'profiles: - base' to each service used.
 # that way, we know what is needed, and can start them all with
-#   ./l99 start <setup> base
+#   l99 start base
 
 # version must be a string - need 3.8 for profiles
 version: '3.8'
@@ -96,33 +95,41 @@ services:
   adapter:
     profiles:
       - base
+
   agent:
     profiles:
       - base
+
   dozzle:
     profiles:
       - base
+
   grafana:
     profiles:
       - base
+
   # meter:
   #   profiles:
   #     - base
+
   portainer:
     profiles:
       - base
+
   postgres:
     profiles:
       - base
+
   pgadmin:
     profiles:
       - base
+
   relay:
     profiles:
       - base
 ```
 
-This lets us run `./l99 start example`, which by default runs the profile 'base' - though you can also say `./l99 start example agent`, to run only the agent service, for example.
+This lets us run `l99 start base` to run all the base services.
 
-Link to the full compose-overrides.yaml for the example setup [here](../../setups/example/compose-overrides.yaml).
+Link to the full file [here](../../setups/example/docker-compose.yaml).
 

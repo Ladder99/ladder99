@@ -7,9 +7,9 @@ Now let's create a new setup so we can hook it up to another machine - which cou
 
 Clone the example setup with this command - you can use your company name here, for example, with NO spaces -
 
-    ./l99 init <your-company-name>
+    l99 init <your-company-name>
 
-This will create a directory at `../setup-<your-company-name>` for the configuration and data for your setup.
+This will create a directory at `setups/<your-company-name>` for the configuration and data for your setup.
 
 
 ## Add Agent / Machine
@@ -17,7 +17,7 @@ This will create a directory at `../setup-<your-company-name>` for the configura
 Now add an MTConnect Agent to the setup - edit the `setup.yaml` file -
 
 ```bash
-nano ../setup-<your-company-name>/setup.yaml
+nano setups/<your-company-name>/setup.yaml
 ```
 
 Scroll down to the 'relay:agents:' section where it says
@@ -44,20 +44,21 @@ Replace this with your agent info and comment out the devices listed - i.e.
       #    alias: Mill-12345 # used in path expressions - no spaces!
 ```
 
+
 ## Start Pipeline / Edit Passwords
 
 Then you can start the pipeline with
 
-    ./l99 start <your-company-name>
+    l99 start base
 
 Ladder99 will first ask you to edit a `.env` file to set the initial passwords -
 
-    nano ../setup-<your-company-name>/.env
+    nano setups/<your-company-name>/.env
 
 Edit the Grafana and Postgres passwords, save the file, and run again -
 
-    ./l99 start <your-company-name>
-
+    l99 start base
+    
 
 ## Check Dashboard
 
