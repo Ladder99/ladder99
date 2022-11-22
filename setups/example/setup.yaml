@@ -24,8 +24,8 @@ adapter:
         # these map from the cache keys to the SHDR keys.
         # it also defines a set of cache inputs in an inputs.yaml file.
         # the driver itself is a node.js module that polls the host os data.
-        - module: host # module defines inputs and outputs with yaml files
-          driver: host # adapter plugin - manages protocol and payload
+        - driver: host # adapter plugin - manages protocol and payload
+          schema: host # schema defines inputs and outputs with yaml files
       # each device the adapter connects to has its own tcp port to an agent,
       # and the agent is configured to listen to that port in agent.cfg.
       outputs:
