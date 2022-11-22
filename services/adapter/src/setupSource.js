@@ -22,12 +22,13 @@ export async function setupSource({
 }) {
   //
   // don't print full source - might have db password!
-  console.log(`Adapter setup source`, device.name, source.module, source.driver)
+  console.log(`Adapter setup source`, device.name, source.driver, source.schema)
   const { driver, connection } = source
-  const moduleName = source.module
 
-  // module could be eg 'cutter' for box cutters
-  //. allow custom schemas per setup, eg add schema to setup-oxbox folder
+  // schemaName could be eg 'cutter' for box cutters
+  const schemaName = source.schema || source.module // allow 'module' for backward compatibility
+
+  //. allow custom schemas per setup, eg add schema to setup-oxbox folder - how do?
 
   // import driver plugin, eg micro.js or mqttSubscriber.js.
   // this instantiates a new instance of the AdapterDriver class.
@@ -36,37 +37,37 @@ export async function setupSource({
   const plugin = await getPlugin(params.driversFolder, driver)
   source.plugin = plugin // save to source so on agent connection can tell it socket
 
-  // create a module object for the yaml file contents - inputs.yaml, outputs.yaml, types.yaml
-  const module = {}
-  if (moduleName) {
+  // create a schema object for the yaml file contents - inputs.yaml, outputs.yaml, types.yaml
+  const schema = {}
+  if (schemaName) {
     // get input handlers, if any for this source
     // these are interpreted by the driver
     //. could let the driver read these in
-    const pathInputs = `${params.schemasFolder}/${moduleName}/inputs.yaml`
+    const pathInputs = `${params.schemasFolder}/${schemaName}/inputs.yaml`
     console.log(`Adapter reading ${pathInputs}...`)
-    module.inputs = lib.importYaml(pathInputs) || {}
+    schema.inputs = lib.importYaml(pathInputs) || {}
 
     // get output handlers
     // output yamls should all follow the same format, unlike input yamls.
-    const pathOutputs = `${params.schemasFolder}/${moduleName}/outputs.yaml`
+    const pathOutputs = `${params.schemasFolder}/${schemaName}/outputs.yaml`
     console.log(`Adapter reading ${pathOutputs}...`)
-    module.outputs = (lib.importYaml(pathOutputs) || {}).outputs
+    schema.outputs = (lib.importYaml(pathOutputs) || {}).outputs
 
     // get types, if any
-    const pathTypes = `${params.schemasFolder}/${moduleName}/types.yaml`
+    const pathTypes = `${params.schemasFolder}/${schemaName}/types.yaml`
     console.log(`Adapter reading ${pathTypes}...`)
-    module.types = (lib.importYaml(pathTypes) || {}).types
+    schema.types = (lib.importYaml(pathTypes) || {}).types
   }
 
-  if (module.outputs) {
+  if (schema.outputs) {
     console.log(`Adapter adding outputs to cache for ${device.name}...`)
     // compile value js strings from outputs.yaml.
     // source.outputs is array of {key: string, value: function, dependsOn: string[]}.
     // eg [{ key: 'ac1-power_condition', value: 'FAULT', dependsOn: ['ac1-power_fault', 'ac1-power_warning'] }, ...]
     // save those outputs onto the source object, so can call setSocket later.
     source.outputs = getOutputs({
-      templates: module.outputs,
-      types: module.types,
+      templates: schema.outputs,
+      types: schema.types,
       deviceId: device.id,
     })
 
@@ -80,7 +81,7 @@ export async function setupSource({
   // iterate over input handlers in inputs.yaml, if any -
   // handlers is eg { 'controller': { text, initialize, lookup, algorithm, expressions, accessor }, ... }
   // the key is the message topic, eg 'controller'.
-  const handlers = module.inputs?.handlers || {}
+  const handlers = schema.inputs?.handlers || {}
   for (let handlerKey of Object.keys(handlers)) {
     console.log(`Adapter processing inputs for`, handlerKey) // eg 'controller'
 
@@ -141,7 +142,7 @@ export async function setupSource({
 
     //. simpler to pass the whole source object here.
     //. so - remove all the source subobjects below, and update all the drivers.
-    source, // the whole source tree, eg { module, driver, connection, ... }
+    source, // the whole source tree, eg { schema, driver, connection, ... }
 
     client, // eg { name, timezone } defined at top of setup.yaml
     device, // eg { id, name, sources, ... }
@@ -153,11 +154,10 @@ export async function setupSource({
 
     cache, // the shared cache object
 
-    moduleName, // eg 'cutter', 'feedback'
-    module, // { inputs, outputs, types }
+    schema, // { inputs, outputs, types }
 
     providers, // shared input connections defined at top of setup.yaml, if any
-    connection, // a shared connection name, or { host, port }, etc - eg 'mqttProvider'
+    connection, // a shared connection name or { host, port }, etc - eg 'mqttProvider'
     provider, // a shared provider object, if any
   })
 }

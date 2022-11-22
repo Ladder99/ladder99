@@ -26,18 +26,18 @@ const typeFns = {
 
 export class AdapterDriver {
   //
-  async start({ device, host, port, cache, module }) {
+  async start({ device, connection, cache, schema }) {
     console.log(`CPC initialize driver...`)
+
     cache.set(`${device.id}-avail`, 'UNAVAILABLE')
 
     // save params
     this.deviceId = device.id
-    this.host = host
-    this.port = port
+    this.connection = connection
     this.cache = cache
-    this.module = module
+    this.schema = schema
 
-    const { inputs } = module
+    const { inputs } = schema
 
     // get ids and query string.
     // this query string is sent to the device each poll interval to get the values.
@@ -64,8 +64,8 @@ export class AdapterDriver {
 
   // connect to device and attach event handlers
   connect() {
-    console.log(`CPC connect to TCP ${this.host}:${this.port}...`)
-    this.client = net.connect(this.port, this.host) // this waits here?
+    console.log(`CPC connect to TCP ${this.connection}...`)
+    this.client = net.connect(this.connection.port, this.connection.host)
     console.log(`CPC attaching listeners...`)
     // attach event handlers
     this.client.on('connect', this.onConnect.bind(this))
