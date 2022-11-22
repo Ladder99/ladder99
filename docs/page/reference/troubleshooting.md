@@ -2,10 +2,10 @@
 
 ## Check Status
 
-You can check the status of the Ladder99 services with `./l99 list`, e.g. -
+You can check the status of the Ladder99 services with `l99 list`, e.g. -
 
 ```bash
-$ ./l99 list
+$ l99 list
 NAMES       STATUS                         PORTS
 adapter     Up 34 seconds
 agent       Up 32 seconds                  0.0.0.0:5000->5000/tcp
@@ -22,7 +22,7 @@ relay       Up 44 seconds
 If any of these say 'restarting', you can stop the service with e.g. 
 
 ```bash
-./l99 stop adapter
+l99 stop adapter
 ```
 
 ## Check Output
@@ -30,7 +30,7 @@ If any of these say 'restarting', you can stop the service with e.g.
 You can check the output of a service with the `l99 logs` command - e.g. 
 
 ```bash
-$ ./l99 logs adapter
+$ l99 logs adapter
 2022-09-17T01:04:04.252494579Z
 2022-09-17T01:04:04.252710485Z Ladder99 Adapter
 2022-09-17T01:04:04.252756783Z Polls/subscribes to data, writes to cache, transforms to SHDR,
@@ -44,12 +44,13 @@ $ ./l99 logs adapter
 2022-09-17T01:04:04.336763934Z MQTT-provider connecting to url mqtt://mosquitto:1883
 ```
 
-This will 'follow' the output - to exit hit Ctrl+C. 
+This will 'follow' the output and print the service's output as it runs - to exit hit Ctrl+C. 
+
 
 ## Search Output
 
 You can also search the output for text like 'error' with 
 
 ```bash
-./l99 logs adapter error
+l99 logs adapter error
 ```

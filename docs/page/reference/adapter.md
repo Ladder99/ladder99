@@ -8,9 +8,12 @@ The Adapter reads data from a device and translates it into SHDR, a simple key-v
 
 You can run some sample data with
 
-    cd ladder99
-    git clone https://github.com/Ladder99/setup-development ..
-    ./l99 start development/ccs-pa adapter agent mosquitto play
+```bash
+cd ladder99
+git clone https://github.com/Ladder99/setup-development setups/development
+l99 use development/ccs-pa
+l99 start adapter agent mosquitto play
+```
 
 then visit http://localhost:5000/current.
 
@@ -30,7 +33,7 @@ The Adapter reads the setup.yaml, iterates over the device configs, each of whic
 
 ### Driver
 
-A Driver reads data from a device, by either subscribing to it, polling it, or communicating with it in some way - then adds that data to a cache. 
+A Driver reads data from a device, by either subscribing to it, polling it, or communicating with it in some way - then adds that data to a key-value cache. 
 
 <!-- The data to read and where to put it in the cache comes from the device.xml template.  -->
 

@@ -12,7 +12,7 @@ Ladder99 is made up of several services that work together to form a data pipeli
 | Grafana | dashboard that queries data in database and displays graphs | http://localhost:80 |
 | Dozzle | shows logs for the different services | http://localhost:8080 |
 | Portainer | manages services - start/stop etc | http://localhost:9000 |
-| Pgadmin | manages database | http://localhost:5050 |
+| pgAdmin | manages postgres database | http://localhost:5050 |
 
 
 <!-- ## List Services
@@ -20,13 +20,13 @@ Ladder99 is made up of several services that work together to form a data pipeli
 To see the list of running services and their status,
 
 ```
-./l99 list
+l99 list
 ```
 
 e.g.
 
 ```
-$ ./l99 list
+$ l99 list
 NAMES      STATUS        PORTS
 adapter    Up 16 hours
 agent      Up 12 hours   0.0.0.0:5000->5000/tcp
@@ -40,15 +40,15 @@ relay      Up 16 hours
 The url and port listed on the left is what you would enter in the browser to access that service - e.g. for Dozzle it's http://localhost:8080. -->
 
 
-## Compose.yaml
+## docker-compose.yaml
 
-The main configuration file for Ladder99 is in `ladder99/services/compose.yaml` - this tells Docker how to run the different services. 
+The main configuration file for Ladder99 is in `ladder99/docker-compose.yaml` - this tells Docker how to run the different services. Each service has a section, and they are listed alphabetically in the file - 
 
 ```yaml
 # docker compose file for the complete ladder99 pipeline.
-# can override these settings in setup-specific compose-overrides.yaml files.
+# can override these settings in setup-specific docker-compose.yaml files.
 
-# see ./l99 start for how to run
+# see 'l99 start' for how to run
 
 # docker compose yaml version - must be a string
 # see https://docs.docker.com/compose/compose-file/compose-file-v3
@@ -75,8 +75,8 @@ services:
       L99_SETUP_FOLDER: /data/setup
       L99_ADAPTER_FOLDER: /data/adapter
     volumes:
-      - ../$SETUP:/data/setup # has setup.yaml etc
-      - ../$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
+      - ./$SETUP:/data/setup # has setup.yaml etc
+      - ./$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
     restart: always
     networks:
       - ladder99
@@ -85,7 +85,5 @@ services:
         max-size: '20m'
 ```
 
-with one section for each service. 
-
-Link to the full compose.yaml for Ladder99 [here](../../services/compose.yaml).
+Link to the full file [here](../../docker-compose.yaml).
 
