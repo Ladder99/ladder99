@@ -3,26 +3,6 @@
 # Print disk usage for current setup.
 
 # get setup folder
-
-# # if starts with '.' treat as a setup folder, else a client name
-# if [[ $1 = .* ]]; then
-#     SETUP=$1
-# else
-#     SETUP=../setup-$1
-# fi
-# shift
-
-# # handle example setup specially
-# if [ $1 = example ]; then
-#     SETUP=$L99_HOME/setups/example
-# else
-#     SETUP=$L99_HOME/../setup-$1
-# fi
-# shift
-
-# SETUP=../setup-$1
-# shift
-
 SETUP=$(cat .l99_setup)
 
 # show all disk usage
@@ -34,7 +14,7 @@ df -h /
 echo
 echo Setup usage
 CMD="du -d1 -h $SETUP/volumes/"
-# sudo isn't always available, eg in git bash environment
+# note: sudo isn't always available, eg in git bash environment
 if hash sudo 2>/dev/null; then
     sudo $CMD
 else

@@ -25,9 +25,13 @@ Examples
 # https://unix.stackexchange.com/questions/379464/why-does-this-script-work-in-the-terminal-but-not-from-a-file
 
 # show help if count of params is zero
-if [ $# -eq 0 ]; then
+# if [ $# -eq 0 ]; then
+#     echo "$usage"
+#     exit 1
+# fi
+if [ "$1" = "-h" ]; then
     echo "$usage"
-    exit 1
+    exit
 fi
 
 # get mode - detached or console
@@ -40,21 +44,12 @@ if [ "$1" = "--offline" ]; then
     shift
 fi
 
-# # get setup folder
-# # handle example setup specially
-# SETUP_NAME=$1
-# if [ $1 = example ]; then
-#     SETUP=setups/example
-# else
-#     SETUP=../setup-$1
-# fi
-# shift
+# get setup folder
 SETUP=$(cat .l99_setup)
 
 # handle missing setup folder
 if [ ! -e $SETUP ]; then
-    echo Setup folder $SETUP does not exist. Did you forget the setup name?
-    echo No setup specified - please run the \'l99 use SETUP\' command.
+    echo Setup folder $SETUP does not exist - please run the \'l99 use SETUP\' command.
     echo
     exit 1
 fi
@@ -67,9 +62,6 @@ else
 fi
 
 # file paths
-# COMPOSE=$L99_HOME/services/compose.yaml
-# COMPOSE=services/compose.yaml
-# OVERRIDES=$SETUP/compose-overrides.yaml
 COMPOSE=docker-compose.yaml
 OVERRIDES=$SETUP/docker-compose.yaml
 ENVFILE=$SETUP/.env
@@ -82,11 +74,6 @@ if [ -e $OVERRIDES ]; then
 fi
 
 # add environment variable file
-# if [ $SETUP = "setups/example" ]; then
-#     # for the example setup just use the .env-example file directly
-#     # ARGS="$ARGS --env-file $ENVFILE_EXAMPLE"
-#     cp $ENVFILE_EXAMPLE $ENVFILE
-# fi
 if [ -e $ENVFILE ]; then
     # use .env file if there
     ARGS="$ARGS --env-file $ENVFILE"
@@ -133,9 +120,6 @@ else
     CMD="$PULL_CMD && 
 $RUN_CMD"
 fi
-
-# echo "$CMD"
-# bash -c "$CMD"
 
 FULL_CMD="export SETUP=$SETUP && 
 $CMD"

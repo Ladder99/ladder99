@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# can't use profiles with this, because docker-compose doesn't handle them
+# note: we can't use profiles with this, because docker-compose doesn't handle them
 # with stop, only services!
+# ie you can't say 'docker stop base' and have it stop all the base profile services.
 
 # https://stackoverflow.com/questions/33362856/whats-the-difference-between-docker-stop-and-docker-rm
 
@@ -11,6 +12,9 @@ usage="
 Usage: l99 stop SERVICES
 
 Stop Ladder99 services.
+
+Note: services must be listed explicitly - eg 'l99 stop adapter agent' -
+profile names can't be given here.
 
 To stop all running services, use 'l99 stop all'
 "
@@ -22,7 +26,7 @@ fi
 
 SERVICES=$*
 
-if [ $SERVICES = "all" ]; then
+if [ "$SERVICES" = "all" ]; then
   echo Stopping all ladder99 services...
   # CMD="docker stop $(docker ps -q)"
   # --force = no confirmation

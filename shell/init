@@ -3,7 +3,7 @@
 usage="
 Usage: l99 init SETUP
 
-Initialize a new setup in ../setup-SETUP.
+Initialize a new setup in setups/SETUP, and make it the current setup.
 
 Example
     l99 init my-company
@@ -19,7 +19,7 @@ fi
 SETUP_NAME=$1
 shift
 
-# SETUP=../setup-$SETUP_NAME
+# get setup folder
 SETUP=setups/$SETUP_NAME
 
 # check if setup dir already exists
@@ -32,11 +32,14 @@ fi
 # save setup folder to file also
 echo $SETUP > .l99_setup
 
-# ENVFILE=$SETUP/.env
-
 # copy setup
 echo
 echo Copying from setups/example...
+
+# need to specify everything explicitly here - 
+# alternative is installing rsync on gitbash, or ignoring cp errors, 
+# or using sudo to cp everything including potentially large pg folders.
+# so, will need to keep this up-to-date if add more to the example folder!
 
 # need `2>/dev/null || :` to suppress the error msgs and errors in cp,
 # see https://serverfault.com/a/153893/211025.
@@ -51,17 +54,11 @@ echo Copying from setups/example...
 # && rm -rf $SETUP/volumes/postgres \
 # && rm -rf $SETUP/volumes/portainer \
 
-# need to specify everything explicitly here - 
-# alternative is installing rsync on gitbash, or ignoring cp errors, 
-# or using sudo to cp everything including potentially large pg folders.
-# so, will need to keep this up-to-date if add more to the example folder!
-
-# this gives a warning message
-# && cp setups/example/* $SETUP \
-# && rm $ENVFILE \
-
-# EXAMPLE=setups/example
 EXAMPLE=$L99_HOME/setups/example
+
+# note:
+# we copy agent folder for simple agent.cfg and agent.xml files
+# we copy grafana/etc for some dashboard pages
 
 mkdir $SETUP \
 && mkdir $SETUP/volumes \
@@ -75,4 +72,3 @@ mkdir $SETUP \
 && cp $EXAMPLE/setup.yaml $SETUP \
 && echo Done. Try \'l99 start\' \
 && echo
-

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# tail/search docker logs
+# follow/search docker logs
 
 # see https://stackoverflow.com/questions/34724980/finding-a-string-in-docker-logs-of-container
 
