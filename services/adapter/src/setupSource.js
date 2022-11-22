@@ -13,7 +13,7 @@ import {
 export async function setupSource({
   setup,
   params,
-  source, // eg { module, driver, connection } - connection could be a string for a shared connection name, or { host, port }, or { url }
+  source, // eg { schema, driver, connection } - connection could be a string for a shared connection name, or { host, port }, or { url }
   cache,
   client,
   devices,

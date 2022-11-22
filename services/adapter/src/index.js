@@ -26,7 +26,7 @@ const params = {
   // so /data/setup includes setup.yaml, which includes a list of devices to setup.
   //. could also contain custom adapter drivers and schemas, eg for oxbox - how do?
   setupFolder: process.env.L99_SETUP_FOLDER || `/data/setup`,
-  schemasFolder: process.env.L99_SCHEMAS_FOLDER || `/data/schemas`, // incls print-apply/module.xml etc
+  schemasFolder: process.env.L99_SCHEMAS_FOLDER || `/data/schemas`, // incls print-apply/mtconnect.xml etc
 }
 
 async function start(params) {
