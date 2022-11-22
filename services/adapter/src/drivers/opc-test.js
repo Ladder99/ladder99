@@ -14,7 +14,7 @@ driver.start({
     },
   },
   source: { connect: { url: 'opc.tcp://127.0.0.1:49320' } },
-  module: {
+  schema: {
     inputs: {
       inputs: [
         { key: 'words', nodeId: 'ns=2;s=Simulation Examples.Functions.User1' },

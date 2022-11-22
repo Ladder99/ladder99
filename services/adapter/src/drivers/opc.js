@@ -24,14 +24,14 @@ const defaultUrl = 'opc.tcp://host.docker.internal:49320' // for kepware via loc
 
 export class AdapterDriver {
   //
-  async start({ device, cache, source, module }) {
+  async start({ device, cache, source, schema }) {
     //
     console.log('OPC init', device.id)
     this.device = device
     this.cache = cache
     this.source = source
-    this.module = module
-    this.inputs = module?.inputs?.inputs || [] // array of { key, nodeId }
+    this.schema = schema
+    this.inputs = schema?.inputs?.inputs || [] // array of { key, nodeId }
     this.url = source?.connect?.url ?? defaultUrl
     console.log('OPC inputs', this.inputs)
     this.subscriptions = []

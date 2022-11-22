@@ -12,7 +12,7 @@ import { getSelector, getEquationKeys, getEquationKeys2 } from '../helpers.js'
 export class AdapterDriver {
   //
   // start the MqttSubscriber driver - subscribes to topics from the MqttProvider.
-  async start({ source, device, cache, module, provider }) {
+  async start({ source, device, cache, schema, provider }) {
     //
     this.me = `MqttSubscriber ${device.name}:`
     console.log(this.me, 'starting driver')
@@ -20,11 +20,11 @@ export class AdapterDriver {
     this.source = source
     this.device = device
     this.cache = cache
-    this.module = module // { inputs, outputs, types }
+    this.schema = schema // { inputs, outputs, types }
     this.provider = provider // the MqttProvider instance
 
     // IMPORTANT: types IS used - by the part(cache, $) fn evaluation
-    this.types = module.types // module is { inputs, outputs, types }, from yaml files
+    this.types = schema.types // schema is { inputs, outputs, types }, from yaml files
 
     // keyvalue store for yaml code to use
     this.keyvalues = {}
@@ -79,7 +79,7 @@ export class AdapterDriver {
   // subscribe to topics as defined in inputs.yaml
   subscribeTopics() {
     // subscriptions is an array like [{topic:'controller'}, {topic:'l99/B01000/evt/io'}, ...]
-    const subscriptions = this.module.inputs?.connect?.subscribe || []
+    const subscriptions = this.schema.inputs?.connect?.subscribe || []
     // get list like ['controller', 'l99/B01000/evt/io', ...]
     const topics = subscriptions.map(subscription => subscription.topic)
     console.log(this.me, 'subscribe to', topics)
@@ -102,7 +102,7 @@ export class AdapterDriver {
   // publish to topics as defined in inputs.yaml
   // this is an optional section
   publishTopics() {
-    const publish = this.module.inputs?.connect?.publish || [] // list of { topic, message }
+    const publish = this.schema.inputs?.connect?.publish || [] // list of { topic, message }
     for (const entry of publish) {
       const topic = this.replaceDeviceId(entry.topic)
       console.log(this.me, `publishing to ${topic}`)
@@ -113,7 +113,7 @@ export class AdapterDriver {
   // do any static inits as defined in inputs.yaml
   // this is an optional section
   doStaticInits() {
-    const inits = this.module.inputs?.connect?.static || {} // eg { procname: KITTING }
+    const inits = this.schema.inputs?.connect?.static || {} // eg { procname: KITTING }
     console.log(this.me, 'static inits:', inits)
     for (const key of Object.keys(inits)) {
       const cacheId = `${device.id}-${key}`
@@ -254,7 +254,7 @@ export class AdapterDriver {
   // a handler is like {algorithm: 'iterate_expressions', expressions: {...}}
   getTopicHandlers() {
     const topicHandlers = {}
-    const handlers = this.module.inputs?.handlers || {}
+    const handlers = this.schema.inputs?.handlers || {}
     for (let [topic, handler] of Object.entries(handlers)) {
       topic = this.replaceDeviceId(topic)
       topicHandlers[topic] = handler

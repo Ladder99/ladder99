@@ -10,13 +10,13 @@ const defaultPollInterval = 5000 // ms
 
 export class AdapterDriver {
   //
-  start({ device, cache, module }) {
+  start({ device, cache, schema }) {
     //
     console.log(`Host start driver...`)
     this.device = device
     this.cache = cache
-    this.module = module
-    this.inputs = module?.inputs?.inputs || {}
+    this.schema = schema
+    this.inputs = schema?.inputs?.inputs || {}
 
     // get queries from inputs.yaml and start polling data
     const itemKeys = Object.keys(this.inputs) // eg ['cpuTemperature', 'currentLoad', 'mem', 'fsSize']

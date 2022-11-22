@@ -39,7 +39,7 @@ export class AdapterDriver {
     setUnavailable()
 
     // need to wait a bit to make sure the cutter cache items are setup before
-    // writing to them. they're setup via the cutter module.
+    // writing to them. they're setup via the cutter schema.
     //. why? which items?
     //. better - check they are there in a loop with delay...
     //  ieg check cache.get('m1-start') etc for existence?
