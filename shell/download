@@ -1,0 +1,35 @@
+#!/bin/bash
+
+usage="
+Usage: l99 download SETUP
+
+Download a setup from the Ladder99 repository and make it the current setup.
+
+Example:
+    l99 download demo
+    l99 download my-company
+"
+
+if [ $# -eq 0 ]; then
+    echo "$usage"
+    exit 1
+fi
+
+SETUP_NAME=$1
+shift
+
+# get setup folder
+SETUP=setups/$SETUP_NAME
+
+if [ -e $SETUP ]; then
+    echo Setup folder $SETUP already exists. Please try again.
+    exit 1
+fi
+
+git clone https://github.com/Ladder99/setup-$SETUP_NAME $SETUP
+
+# save setup folder to a file
+echo $SETUP > .l99_setup
+
+echo
+echo Using \'$SETUP\' for Ladder99 setup folder.
