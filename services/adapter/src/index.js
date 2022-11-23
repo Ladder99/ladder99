@@ -17,14 +17,16 @@ console.log(`----------------------------------------------------------------`)
 const params = {
   // default tcp server for agent if none provided in setup.yaml //. move to base setup
   defaultAgent: { protocol: 'shdr', host: 'adapter', port: 7878 },
-  driversFolder: './drivers', // eg for mqttSubscriber.js - must start with '.'
+  driversFolder: './drivers', // eg for mqttSubscriber.js - must start with '.' - relative to src dir
   // these folders may be defined in compose.yaml with docker volume mappings.
   // when adapter.js is run, it expects config in /data/setup and /data/schemas.
   // so /data/setup includes setup.yaml, which includes a list of devices to setup.
   //. could also contain custom adapter drivers and schemas, eg for oxbox - how do?
   setupFolder: process.env.L99_SETUP_FOLDER || `/data/setup`,
-  // schemasFolder: process.env.L99_SCHEMAS_FOLDER || `/data/schemas`, // incls print-apply/mtconnect.xml etc
-  schemasFolder: 'src/schemas', // incls host/inputs.yaml etc
+  schemasFolder: process.env.L99_SCHEMAS_FOLDER || `/data/schemas`, // incls hosts/inputs.yaml etc
+  // schemasFolder: 'src/schemas', // incls host/inputs.yaml etc - relative to services/adapter dir
+  // schemasFolder:
+  //   process.env.L99_ADAPTER_FOLDER + '/schemas' || `/data/adapter/schemas`, // incls host/inputs.yaml etc
 }
 
 async function start(params) {

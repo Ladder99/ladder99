@@ -34,12 +34,14 @@ services:
       # specify where code can find data.
       # can override at run time, eg to run service on windows with node.
       L99_SETUP_FOLDER: /data/setup
-      L99_SCHEMAS_FOLDER: /data/schemas
       L99_ADAPTER_FOLDER: /data/adapter
+      L99_SCHEMAS_FOLDER: /data/schemas
+      #. add one for DRIVERS_FOLDER?
     volumes:
       - ./$SETUP:/data/setup # has setup.yaml etc
-      - ./volumes/adapter/schemas:/data/schemas # has schema yamls
       - ./$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
+      # - ./volumes/adapter/schemas:/data/schemas # has schema yamls
+      - ./$SETUP/volumes/adapter/schemas:/data/schemas # has schema yamls
     restart: unless-stopped
     networks:
       - ladder99

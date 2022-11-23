@@ -37,27 +37,27 @@ export async function setupSource({
   const plugin = await getPlugin(params.driversFolder, driver)
   source.plugin = plugin // save to source so on agent connection can tell it socket
 
-  // create a schema object for the yaml file contents - inputs.yaml, outputs.yaml, types.yaml
-  const schema = {}
-  if (schemaName) {
-    // get input handlers, if any for this source
-    // these are interpreted by the driver
-    //. could let the driver read these in
-    const pathInputs = `${params.schemasFolder}/${schemaName}/inputs.yaml`
-    console.log(`Adapter reading ${pathInputs}...`)
-    schema.inputs = lib.importYaml(pathInputs) || {}
+  const schema = getSchema(params, schemaName)
+  // const schema = {}
+  // if (schemaName) {
+  //   // get input handlers, if any for this source
+  //   // these are interpreted by the driver
+  //   //. could let the driver read these in
+  //   const pathInputs = `${params.schemasFolder}/${schemaName}/inputs.yaml`
+  //   console.log(`Adapter reading ${pathInputs}...`)
+  //   schema.inputs = lib.importYaml(pathInputs) || {}
 
-    // get output handlers
-    // output yamls should all follow the same format, unlike input yamls.
-    const pathOutputs = `${params.schemasFolder}/${schemaName}/outputs.yaml`
-    console.log(`Adapter reading ${pathOutputs}...`)
-    schema.outputs = (lib.importYaml(pathOutputs) || {}).outputs
+  //   // get output handlers
+  //   // output yamls should all follow the same format, unlike input yamls.
+  //   const pathOutputs = `${params.schemasFolder}/${schemaName}/outputs.yaml`
+  //   console.log(`Adapter reading ${pathOutputs}...`)
+  //   schema.outputs = (lib.importYaml(pathOutputs) || {}).outputs
 
-    // get types, if any
-    const pathTypes = `${params.schemasFolder}/${schemaName}/types.yaml`
-    console.log(`Adapter reading ${pathTypes}...`)
-    schema.types = (lib.importYaml(pathTypes) || {}).types
-  }
+  //   // get types, if any
+  //   const pathTypes = `${params.schemasFolder}/${schemaName}/types.yaml`
+  //   console.log(`Adapter reading ${pathTypes}...`)
+  //   schema.types = (lib.importYaml(pathTypes) || {}).types
+  // }
 
   if (schema.outputs) {
     console.log(`Adapter adding outputs to cache for ${device.name}...`)
@@ -160,4 +160,32 @@ export async function setupSource({
     connection, // a shared connection name or { host, port }, etc - eg 'mqttProvider'
     provider, // a shared provider object, if any
   })
+}
+
+// helpers
+
+// get schema information from yaml files.
+function getSchema(params, schemaName) {
+  const schema = {}
+  if (schemaName) {
+    // get input handlers, if any for this source
+    // these are interpreted by the driver
+    //. could let the driver read these in
+    const pathInputs = `${params.schemasFolder}/${schemaName}/inputs.yaml`
+    console.log(`Adapter reading ${pathInputs}...`)
+    schema.inputs = lib.importYaml(pathInputs) || {}
+
+    // get output handlers
+    // output yamls should all follow the same format, unlike input yamls.
+    const pathOutputs = `${params.schemasFolder}/${schemaName}/outputs.yaml`
+    console.log(`Adapter reading ${pathOutputs}...`)
+    schema.outputs = (lib.importYaml(pathOutputs) || {}).outputs
+
+    // get types, if any
+    const pathTypes = `${params.schemasFolder}/${schemaName}/types.yaml`
+    console.log(`Adapter reading ${pathTypes}...`)
+    schema.types = (lib.importYaml(pathTypes) || {}).types
+  }
+
+  return schema
 }
