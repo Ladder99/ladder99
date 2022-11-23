@@ -26,8 +26,8 @@ services:
 
     profiles:
       - adapter
-    #. try this to access kepware opcua on windows using host.docker.internal to reach localhost?
-    # nowork?
+    # use this to access kepware opcua on windows using host.docker.internal to reach localhost?
+    #. is this actually needed?
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
@@ -38,8 +38,6 @@ services:
       L99_ADAPTER_FOLDER: /data/adapter
     volumes:
       - ./$SETUP:/data/setup # has setup.yaml etc
-      # - ../setups/common/modules:/data/modules # has module yamls
-      # - ../setups/common/schemas:/data/schemas # has schema yamls
       - ./volumes/adapter/schemas:/data/schemas # has schema yamls
       - ./$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
     restart: unless-stopped
