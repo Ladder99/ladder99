@@ -25,11 +25,6 @@ export async function setupSource({
   console.log(`Adapter setup source`, device.name, source.driver, source.schema)
   const { driver, connection } = source
 
-  // schemaName could be eg 'cutter' for box cutters
-  const schemaName = source.schema || source.module // allow 'module' for backward compatibility
-
-  //. allow custom schemas per setup, eg add schema to setup-oxbox folder - how do?
-
   // import driver plugin, eg micro.js or mqttSubscriber.js.
   // this instantiates a new instance of the AdapterDriver class.
   // but doesn't start the plugin! that's at the end of this code.
@@ -37,27 +32,11 @@ export async function setupSource({
   const plugin = await getPlugin(params.driversFolder, driver)
   source.plugin = plugin // save to source so on agent connection can tell it socket
 
+  // get schema information from yaml files - { inputs, outputs, types }
+  //. allow custom schemas per setup, eg add schema to setup-oxbox folder - how do?
+  // schemaName could be eg 'cutter' for box cutters
+  const schemaName = source.schema || source.module // allow 'module' for backward compatibility
   const schema = getSchema(params, schemaName)
-  // const schema = {}
-  // if (schemaName) {
-  //   // get input handlers, if any for this source
-  //   // these are interpreted by the driver
-  //   //. could let the driver read these in
-  //   const pathInputs = `${params.schemasFolder}/${schemaName}/inputs.yaml`
-  //   console.log(`Adapter reading ${pathInputs}...`)
-  //   schema.inputs = lib.importYaml(pathInputs) || {}
-
-  //   // get output handlers
-  //   // output yamls should all follow the same format, unlike input yamls.
-  //   const pathOutputs = `${params.schemasFolder}/${schemaName}/outputs.yaml`
-  //   console.log(`Adapter reading ${pathOutputs}...`)
-  //   schema.outputs = (lib.importYaml(pathOutputs) || {}).outputs
-
-  //   // get types, if any
-  //   const pathTypes = `${params.schemasFolder}/${schemaName}/types.yaml`
-  //   console.log(`Adapter reading ${pathTypes}...`)
-  //   schema.types = (lib.importYaml(pathTypes) || {}).types
-  // }
 
   if (schema.outputs) {
     console.log(`Adapter adding outputs to cache for ${device.name}...`)
