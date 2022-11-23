@@ -25,7 +25,6 @@ export function readSetup(setupFolder) {
 
 // import a yaml file and parse to js struct.
 // returns the js struct or null if file not avail.
-/** @returns {object} */
 export function importYaml(path) {
   try {
     const yaml = fs.readFileSync(path, 'utf8')

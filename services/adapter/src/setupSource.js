@@ -21,7 +21,7 @@ export async function setupSource({
   providers, // shared connections, eg an MqttProvider
 }) {
   //
-  // don't print full source - might have db password!
+  // don't print full source object - might have db password!
   console.log(`Adapter setup source`, device.name, source.driver, source.schema)
   const { driver, connection } = source
 
