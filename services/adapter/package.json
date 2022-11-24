@@ -13,6 +13,7 @@
   "dependencies": {
     "js-yaml": "^4.0.0",
     "luxon": "^2.4.0",
+    "modbus-serial": "^8.0.6",
     "mqtt": "^4.2.6",
     "mssql": "^7.3.0",
     "node-fetch": "^3.0.0",
