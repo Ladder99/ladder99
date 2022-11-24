@@ -2,6 +2,7 @@
 // load and initialize any plugin/driver code
 // this includes the reactive cache calculations //. move that code to cache.js
 
+import fs from 'fs'
 import * as lib from './common/lib.js'
 import {
   getOutputs,
@@ -36,7 +37,7 @@ export async function setupSource({
   //. allow custom schemas per setup, eg add schema to setup-oxbox folder - how do?
   // schemaName could be eg 'cutter' for box cutters
   const schemaName = source.schema || source.module // allow 'module' for backward compatibility
-  const schema = getSchema(params.schemasFolder, schemaName)
+  const schema = getSchema(params.schemaFolders, schemaName)
 
   if (schema.outputs) {
     console.log(`Adapter adding outputs to cache for ${device.name}...`)
@@ -144,26 +145,27 @@ export async function setupSource({
 // helper fns
 
 // get schema information from yaml files
-function getSchema(folder, schemaName) {
+function getSchema(folders, schemaName) {
   const schema = {}
   if (schemaName) {
-    // get input handlers, if any for this source
-    // these are interpreted by the driver
-    //. could let the driver read these in, since some drivers don't need them?
-    const pathInputs = `${folder}/${schemaName}/inputs.yaml`
-    console.log(`Adapter reading ${pathInputs}...`)
-    schema.inputs = lib.importYaml(pathInputs) || {}
+    for (let folder of folders) {
+      const path = `${folder}/${schemaName}` // eg /data/schemas/host
+      if (fs.existsSync(path)) {
+        // get input handlers, if any for this source
+        // these are interpreted by the driver
+        //. could let the driver read these in, since some drivers don't need them?
+        schema.inputs = lib.importYaml(`${path}/inputs.yaml`) || {}
 
-    // get output handlers
-    // output yamls should all follow the same format, unlike input yamls.
-    const pathOutputs = `${folder}/${schemaName}/outputs.yaml`
-    console.log(`Adapter reading ${pathOutputs}...`)
-    schema.outputs = (lib.importYaml(pathOutputs) || {}).outputs
+        // get output handlers
+        // should all follow the same format, unlike input yamls.
+        schema.outputs = (lib.importYaml(`${path}/outputs.yaml`) || {}).outputs
 
-    // get types, if any
-    const pathTypes = `${folder}/${schemaName}/types.yaml`
-    console.log(`Adapter reading ${pathTypes}...`)
-    schema.types = (lib.importYaml(pathTypes) || {}).types
+        // get types, if any
+        schema.types = (lib.importYaml(`${path}/types.yaml`) || {}).types
+
+        break
+      }
+    }
   }
 
   return schema
