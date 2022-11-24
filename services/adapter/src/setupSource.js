@@ -36,7 +36,7 @@ export async function setupSource({
   //. allow custom schemas per setup, eg add schema to setup-oxbox folder - how do?
   // schemaName could be eg 'cutter' for box cutters
   const schemaName = source.schema || source.module // allow 'module' for backward compatibility
-  const schema = getSchema(params, schemaName)
+  const schema = getSchema(params.schemasFolder, schemaName)
 
   if (schema.outputs) {
     console.log(`Adapter adding outputs to cache for ${device.name}...`)
@@ -141,27 +141,27 @@ export async function setupSource({
   })
 }
 
-// helpers
+// helper fns
 
-// get schema information from yaml files.
-function getSchema(params, schemaName) {
+// get schema information from yaml files
+function getSchema(folder, schemaName) {
   const schema = {}
   if (schemaName) {
     // get input handlers, if any for this source
     // these are interpreted by the driver
-    //. could let the driver read these in
-    const pathInputs = `${params.schemasFolder}/${schemaName}/inputs.yaml`
+    //. could let the driver read these in, since some drivers don't need them?
+    const pathInputs = `${folder}/${schemaName}/inputs.yaml`
     console.log(`Adapter reading ${pathInputs}...`)
     schema.inputs = lib.importYaml(pathInputs) || {}
 
     // get output handlers
     // output yamls should all follow the same format, unlike input yamls.
-    const pathOutputs = `${params.schemasFolder}/${schemaName}/outputs.yaml`
+    const pathOutputs = `${folder}/${schemaName}/outputs.yaml`
     console.log(`Adapter reading ${pathOutputs}...`)
     schema.outputs = (lib.importYaml(pathOutputs) || {}).outputs
 
     // get types, if any
-    const pathTypes = `${params.schemasFolder}/${schemaName}/types.yaml`
+    const pathTypes = `${folder}/${schemaName}/types.yaml`
     console.log(`Adapter reading ${pathTypes}...`)
     schema.types = (lib.importYaml(pathTypes) || {}).types
   }
