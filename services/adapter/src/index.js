@@ -17,21 +17,22 @@ console.log(`----------------------------------------------------------------`)
 const params = {
   // default tcp server for agent if none provided in setup.yaml
   defaultAgent: { protocol: 'shdr', host: 'adapter', port: 7878 },
+  // folders like /data/schemas are defined in docker-compose.yaml with docker volume mappings.
   driversFolder: './drivers', // eg for mqttSubscriber.js - must start with '.' - relative to src dir
+  //. do this for custom drivers
   // driverFolders: [
   //   process.env.L99_DRIVER_FOLDER || `/data/drivers`,
-  //   './drivers',
+  //   './drivers', // relative to src dir
   // ],
-  // these folders may be defined in compose.yaml with docker volume mappings.
-  // when adapter.js is run, it expects config in /data/setup and /data/schemas.
   setupFolder: process.env.L99_SETUP_FOLDER || `/data/setup`, // includes setup.yaml
   // schemasFolder: process.env.L99_SCHEMA_FOLDER || `/data/schemas`, // incls hosts/inputs.yaml etc
   // schemasFolder: 'src/schemas', // incls host/inputs.yaml etc - relative to services/adapter dir
   // schemasFolder:
   //   process.env.L99_ADAPTER_FOLDER + '/schemas' || `/data/adapter/schemas`, // incls host/inputs.yaml etc
+  // folders to search for schemas, in order. eg includes hosts/inputs.yaml etc
   schemaFolders: [
     process.env.L99_SCHEMA_FOLDER || `/data/schemas`,
-    'src/schemas',
+    'src/schemas', // relative to ladder99/services/adapter dir
   ],
 }
 

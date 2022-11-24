@@ -31,6 +31,7 @@ export async function setupSource({
   // but doesn't start the plugin! that's at the end of this code.
   //. allow custom drivers per setup also - eg include drivers in setup-oxbox folder
   const plugin = await getPlugin(params.driversFolder, driver)
+  // const plugin = await getPlugin(params.driverFolders, driver) //. do this
   source.plugin = plugin // save to source so on agent connection can tell it socket
 
   // get schema information from yaml files - { inputs, outputs, types }

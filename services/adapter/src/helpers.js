@@ -13,6 +13,7 @@ let keyvalues = {}
 // the plugin must export a class named AdapterDriver.
 // this code will instantiate the driver and return it.
 // the AdapterDriver class must have a start({}) method to start it up.
+//. pass in driverFolders, iterate through list till find driver
 export async function getPlugin(driversFolder, driver) {
   let code
   try {

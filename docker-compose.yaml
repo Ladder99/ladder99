@@ -35,12 +35,12 @@ services:
       # can override at run time, eg to run service on windows with node.
       L99_SETUP_FOLDER: /data/setup
       L99_ADAPTER_FOLDER: /data/adapter
-      L99_DRIVER_FOLDER: /data/drivers
+      # L99_DRIVER_FOLDER: /data/drivers
       L99_SCHEMA_FOLDER: /data/schemas
     volumes:
       - ./$SETUP:/data/setup # has setup.yaml etc
       - ./$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
-      - ./$SETUP/volumes/adapter/drivers:/data/drivers # has custom js drivers
+      # - ./$SETUP/volumes/adapter/drivers:/data/drivers # has custom js drivers
       - ./$SETUP/volumes/adapter/schemas:/data/schemas # has custom schema yamls
     restart: unless-stopped
     networks:
