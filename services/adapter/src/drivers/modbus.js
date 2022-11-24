@@ -12,10 +12,10 @@ export class AdapterDriver {
     this.source = source
     this.schema = schema
 
-    // this.inputs = schema?.inputs?.inputs || [] // array of { key, nodeId }
-    this.url = source?.connect?.url
+    this.host = source?.connect?.host
     this.port = source?.connect?.port || 502
 
+    // this.inputs = schema?.inputs?.inputs || [] // array of { key, nodeId }
     // console.log('Modbus inputs', this.inputs)
     // this.subscriptions = []
 
@@ -30,17 +30,13 @@ export class AdapterDriver {
   }
 
   async getSession() {
+    console.log(`Modbus connecting to`, this.host, this.port)
     return new Promise((resolve, reject) => {
       const session = new ModbusRTU()
       session
-        // .connectTCP(this.url, { port: this.port })
-        .connectTCP(this.url)
-        .then(function () {
-          resolve(session)
-        })
-        .catch(function (e) {
-          reject(e)
-        })
+        .connectTCP(this.host, { port: this.port })
+        .then(() => resolve(session))
+        .catch(error => reject(error))
     })
   }
 

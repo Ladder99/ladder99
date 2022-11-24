@@ -11,6 +11,6 @@ driver.start({
       console.log('cache.set', key, value)
     },
   },
-  source: { connect: { url: '10.1.10.130' } },
+  source: { connect: { host: '10.1.10.130' } },
   schema: {},
 })
