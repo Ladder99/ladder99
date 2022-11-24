@@ -13,13 +13,20 @@ export class AdapterDriver {
     this.schema = schema
 
     this.host = source?.connect?.host
-    this.port = source?.connect?.port || 502
+    this.port = source?.connect?.port ?? 502
 
     // this.inputs = schema?.inputs?.inputs || [] // array of { key, nodeId }
     // console.log('Modbus inputs', this.inputs)
     // this.subscriptions = []
 
-    this.session = await this.getSession() // connect to server
+    try {
+      this.session = await this.getSession() // connect to server
+    } catch (error) {
+      console.error('Modbus connection error', error)
+      return
+    }
+
+    console.log(`Modbus connected`, this.session)
     this.setValue('avail', 'AVAILABLE') // connected successfully
 
     // // iterate over inputs, fetch latest values, write to cache
