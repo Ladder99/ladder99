@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # list docker containers - fits narrow screen
-# use `./l99 list -a` to show all services, including exited
+# use `l99 list -a` to show all services, including exited
 
 # get options, eg -a
 OPTIONS=$*

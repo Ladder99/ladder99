@@ -16,25 +16,25 @@ if [ $# -eq 0 ]; then
 fi
 
 # get setup name
-SETUP_NAME=$1
+SETUP=$1
 shift
 
 # get setup folder
-SETUP=setups/$SETUP_NAME
+SETUP_FOLDER=setups/$SETUP
 
 # check if setup dir already exists
-if [ -d "$SETUP" ]; then
-  echo Error: a folder for $SETUP_NAME already exists at $SETUP. 
+if [ -d "$SETUP_FOLDER" ]; then
+  echo Error: a folder for $SETUP already exists at $SETUP_FOLDER. 
   echo Please try a different setup name.
   exit 1
 fi
 
-# save setup folder to file also
+# save setup to file also
 echo $SETUP > .l99_setup
 
-# copy setup
+# copy setup folder
 echo
-echo Copying from setups/example...
+echo Copying from \'setups/example\'...
 
 # need to specify everything explicitly here - 
 # alternative is installing rsync on gitbash, or ignoring cp errors, 
@@ -46,13 +46,13 @@ echo Copying from setups/example...
 # but
 # rsync has an --exclude param, but installing rsync on git bash for windows is complex - 
 #  https://superuser.com/questions/701141/how-to-add-more-commands-to-git-bash
-# sudo cp -R setups/example $SETUP \
-# cp -R setups/example $SETUP 2>/dev/null || : \
+# sudo cp -R setups/example $SETUP_FOLDER \
+# cp -R setups/example $SETUP_FOLDER 2>/dev/null || : \
 # && rm $ENVFILE \
-# && rm -rf $SETUP/volumes/grafana/var \
-# && rm -rf $SETUP/volumes/pgadmin \
-# && rm -rf $SETUP/volumes/postgres \
-# && rm -rf $SETUP/volumes/portainer \
+# && rm -rf $SETUP_FOLDER/volumes/grafana/var \
+# && rm -rf $SETUP_FOLDER/volumes/pgadmin \
+# && rm -rf $SETUP_FOLDER/volumes/postgres \
+# && rm -rf $SETUP_FOLDER/volumes/portainer \
 
 EXAMPLE=$L99_HOME/setups/example
 
@@ -60,15 +60,15 @@ EXAMPLE=$L99_HOME/setups/example
 # we copy agent folder for simple agent.cfg and agent.xml files
 # we copy grafana/etc for some dashboard pages
 
-mkdir $SETUP \
-&& mkdir $SETUP/volumes \
-&& mkdir $SETUP/volumes/grafana \
-&& cp -R $EXAMPLE/volumes/agent $SETUP/volumes/agent/ \
-&& cp -R $EXAMPLE/volumes/grafana/etc $SETUP/volumes/grafana/etc/ \
-&& cp $EXAMPLE/.gitignore $SETUP \
-&& cp $EXAMPLE/.env-example $SETUP \
-&& cp $EXAMPLE/docker-compose.yaml $SETUP \
-&& cp $EXAMPLE/README.md $SETUP \
-&& cp $EXAMPLE/setup.yaml $SETUP \
+mkdir $SETUP_FOLDER \
+&& mkdir $SETUP_FOLDER/volumes \
+&& mkdir $SETUP_FOLDER/volumes/grafana \
+&& cp -R $EXAMPLE/volumes/agent $SETUP_FOLDER/volumes/agent/ \
+&& cp -R $EXAMPLE/volumes/grafana/etc $SETUP_FOLDER/volumes/grafana/etc/ \
+&& cp $EXAMPLE/.gitignore $SETUP_FOLDER \
+&& cp $EXAMPLE/.env-example $SETUP_FOLDER \
+&& cp $EXAMPLE/docker-compose.yaml $SETUP_FOLDER \
+&& cp $EXAMPLE/README.md $SETUP_FOLDER \
+&& cp $EXAMPLE/setup.yaml $SETUP_FOLDER \
 && echo Done. Try \'l99 start\' \
 && echo

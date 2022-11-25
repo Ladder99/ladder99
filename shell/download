@@ -15,21 +15,22 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-SETUP_NAME=$1
+# get setup, eg 'test'
+SETUP=$1
 shift
 
-# get setup folder
-SETUP=setups/$SETUP_NAME
+# get setup folder, eg 'setups/test'
+SETUP_FOLDER=setups/$SETUP
 
-if [ -e $SETUP ]; then
-    echo Setup folder $SETUP already exists. Please try again.
+if [ -e $SETUP_FOLDER ]; then
+    echo Setup folder \'$SETUP_FOLDER\' already exists. Please try again.
     exit 1
 fi
 
-git clone https://github.com/Ladder99/setup-$SETUP_NAME $SETUP
+git clone https://github.com/Ladder99/setup-$SETUP $SETUP_FOLDER
 
-# save setup folder to a file
+# save setup to a file
 echo $SETUP > .l99_setup
 
 echo
-echo Using \'$SETUP\' for Ladder99 setup folder.
+echo Using \'$SETUP\' for Ladder99 setup.

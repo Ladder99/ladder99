@@ -50,8 +50,13 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
+# get command
 CMD=$1 # eg 'start'
 CMD_PATH=shell/$CMD # eg 'shell/start'
 shift
-PARAMS=$*
-"$CMD_PATH" $PARAMS
+
+# get paramters
+PARAMS=$* # eg '--offline agent'
+
+# run command with parameters
+"$CMD_PATH" $PARAMS # eg 'shell/start --offline agent'

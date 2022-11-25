@@ -46,10 +46,11 @@ fi
 
 # get setup folder
 SETUP=$(cat .l99_setup)
+SETUP_FOLDER=setups/$SETUP
 
 # handle missing setup folder
-if [ ! -e $SETUP ]; then
-    echo Setup folder $SETUP does not exist - please run the \'l99 use SETUP\' command.
+if [ ! -e $SETUP_FOLDER ]; then
+    echo Setup folder $SETUP_FOLDER does not exist - please run the \'l99 use SETUP\' command.
     echo
     exit 1
 fi
@@ -63,9 +64,9 @@ fi
 
 # file paths
 COMPOSE=docker-compose.yaml
-OVERRIDES=$SETUP/docker-compose.yaml
-ENVFILE=$SETUP/.env
-ENVFILE_EXAMPLE=$SETUP/.env-example
+OVERRIDES=$SETUP_FOLDER/docker-compose.yaml
+ENVFILE=$SETUP_FOLDER/.env
+ENVFILE_EXAMPLE=$SETUP_FOLDER/.env-example
 
 # specify docker compose files
 ARGS="--file $COMPOSE"

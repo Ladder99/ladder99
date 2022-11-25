@@ -4,6 +4,7 @@
 
 # get setup folder
 SETUP=$(cat .l99_setup)
+SETUP_FOLDER=setups/$SETUP
 
 # show all disk usage
 echo
@@ -13,7 +14,7 @@ df -h /
 # show usage for the setup volumes
 echo
 echo Setup usage
-CMD="du -d1 -h $SETUP/volumes/"
+CMD="du -d1 -h $SETUP_FOLDER/volumes/"
 # note: sudo isn't always available, eg in git bash environment
 if hash sudo 2>/dev/null; then
     sudo $CMD

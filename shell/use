@@ -15,17 +15,19 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-# get setup folder
-SETUP=setups/$1
+SETUP=$1
 shift
 
+# get setup folder
+SETUP_FOLDER=setups/$SETUP
+
 # handle missing setup folder
-if [ ! -e $SETUP ]; then
-    echo Setup folder $SETUP does not exist. Please try again.
+if [ ! -e $SETUP_FOLDER ]; then
+    echo Setup folder \'$SETUP_FOLDER\' does not exist. Please try again.
     exit 1
 fi
 
-# save setup folder to a file
+# save setup to a file
 echo $SETUP > .l99_setup
 
-echo Using \'$SETUP\' for Ladder99 setup folder.
+echo Using \'$SETUP\' for Ladder99 setup.
