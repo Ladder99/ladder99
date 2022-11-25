@@ -50,16 +50,22 @@ export class AdapterDriver {
   }
 
   poll() {
+    console.log('Modbus poll')
+
     // // set the client's unit id
     // // set a timout for requests default is null (no timeout)
     // this.client.setID(1)
     // this.client.setTimeout(1000)
-    console.log('Modbus poll')
 
-    console.log('Modbus reading holding registers')
+    // // read the values of 10 registers starting at address 0
+    // // on device number 1. and log the values to the console.
+    // this.client.readHoldingRegisters(0, 10, function (err, data) {
+    //   console.log(data.data)
+    // })
+    console.log('Modbus reading holding registers 0-9')
     this.client
-      .readHoldingRegisters(5, 4)
-      .then(d => console.log('Receive:', d.data))
+      .readHoldingRegisters(0, 10)
+      .then(d => console.log('Modbus received', d.data))
       .catch(error => console.log(error.message))
   }
 
