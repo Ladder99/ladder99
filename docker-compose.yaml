@@ -166,7 +166,7 @@ services:
     # see client-mazak for example of running cloudbeaver on x86.
     # see https://hub.docker.com/r/dbeaver/cloudbeaver/tags
     image: dbeaver/cloudbeaver:21.3.5 # use this for x86 etc
-    # build: ./cloudbeaver # use this for ARM processors - need to build with Dockerfile
+    # build: ./services/cloudbeaver # use this for ARM processors - need to build with Dockerfile
     profiles:
       - cloudbeaver
     volumes:
@@ -330,7 +330,7 @@ services:
   # note: set PGHOST, PGPORT, etc before running
   meter:
     container_name: meter
-    build: ./meter
+    build: ./services/meter
     profiles:
       - meter
     environment:
@@ -451,7 +451,7 @@ services:
   # playback device recordings - uses the recorder service
   play:
     container_name: play
-    build: ./recorder
+    build: ./services/recorder
     profiles:
       - play
     command: recorder --mode play
@@ -549,7 +549,7 @@ services:
   # record device messages for future playback
   record:
     container_name: record
-    build: ./recorder
+    build: ./services/recorder
     profiles:
       - record
     command: recorder --mode record
@@ -693,7 +693,7 @@ services:
   # cf simulation service
   simulator:
     container_name: simulator
-    build: ./simulator
+    build: ./services/simulator
     profiles:
       - simulator
     # ports:
