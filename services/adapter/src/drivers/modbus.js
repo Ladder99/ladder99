@@ -1,6 +1,6 @@
 // modbus driver
 
-import ModbusRTU from 'modbus-serial'
+import ModbusRTU from 'modbus-serial' // see https://github.com/yaacov/node-modbus-serial
 
 export class AdapterDriver {
   //
@@ -15,9 +15,8 @@ export class AdapterDriver {
     this.host = source?.connect?.host
     this.port = source?.connect?.port ?? 502
 
-    // this.inputs = schema?.inputs?.inputs || [] // array of { key, nodeId }
-    // console.log('Modbus inputs', this.inputs)
-    // this.subscriptions = []
+    this.inputs = schema?.inputs?.inputs || [] // array of { key, address }
+    console.log('Modbus inputs', this.inputs)
 
     try {
       this.client = await this.getClient() // connect to server
@@ -29,13 +28,14 @@ export class AdapterDriver {
     console.log(`Modbus connected`)
     this.setValue('avail', 'AVAILABLE') // connected successfully
 
-    this.poll()
+    // set the client's unit id [?]
+    // this.client.setID(1)
 
-    // // iterate over inputs, fetch latest values, write to cache
-    // for (let input of this.inputs) {
-    //   const subscription = this.subscribe(input)
-    //   this.subscriptions.push(subscription)
-    // }
+    // set a timout for requests - default is null (no timeout)
+    this.client.setTimeout(1000)
+
+    //. note: can't do a plain setInterval poll - need to wait for the previous one to finish
+    this.poll()
   }
 
   async getClient() {
@@ -49,24 +49,25 @@ export class AdapterDriver {
     })
   }
 
-  poll() {
+  async poll() {
     console.log('Modbus poll')
+    for (let input of this.inputs) {
+      const { key, address, count } = input
+      const data = await this.getHoldingRegisters(address, count)
+      console.log('Modbus values', data)
+      const value = data[0] | (data[1] << 16)
+      this.setValue(key, value)
+    }
+  }
 
-    // // set the client's unit id
-    // // set a timout for requests default is null (no timeout)
-    // this.client.setID(1)
-    // this.client.setTimeout(1000)
-
-    // // read the values of 10 registers starting at address 0
-    // // on device number 1. and log the values to the console.
-    // this.client.readHoldingRegisters(0, 10, function (err, data) {
-    //   console.log(data.data)
-    // })
-    console.log('Modbus reading holding registers 0-9')
-    this.client
-      .readHoldingRegisters(0, 10)
-      .then(d => console.log('Modbus received', d.data))
-      .catch(error => console.log(error.message))
+  async getHoldingRegisters(address, count) {
+    console.log(`Modbus read holding registers at ${address}, count ${count}`)
+    return new Promise((resolve, reject) => {
+      this.client
+        .readHoldingRegisters(address, count)
+        .then(response => resolve(response.data))
+        .catch(error => reject(error))
+    })
   }
 
   // helper methods
