@@ -18,7 +18,6 @@ const {
 } = pkg
 import * as lib from '../common/lib.js'
 
-//. move these to base setup yaml
 const defaultUrl = 'opc.tcp://host.docker.internal:49320' // for kepware via localhost
 // const defaultUrl = 'opc.tcp://simulator:4334/UA/LittleServer' // for simulator service
 
@@ -26,17 +25,21 @@ export class AdapterDriver {
   //
   async start({ device, cache, source, schema }) {
     //
-    console.log('OPC init', device.id)
+    console.log('OPC start', device.id)
+
     this.device = device
     this.cache = cache
     this.source = source
     this.schema = schema
+
     this.inputs = schema?.inputs?.inputs || [] // array of { key, nodeId }
     this.url = source?.connect?.url ?? defaultUrl
     console.log('OPC inputs', this.inputs)
+
     this.subscriptions = []
 
     //. handle wait, connect, disconnect, reconnect, errors
+
     this.setValue('avail', 'UNAVAILABLE') // write to cache
     this.session = await this.getOPCSession() // connect to opc server
     this.setValue('avail', 'AVAILABLE') // connected successfully
