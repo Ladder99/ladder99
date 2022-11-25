@@ -42,7 +42,7 @@
 # FROM ubuntu:21.04 AS build
 # 22.04 is current lts release
 # FROM ubuntu:22.04 AS build
-# 22.10 has node v18.12
+# but 22.04 only has package for node v12.22, so switch to 22.10 which has v18.7
 FROM ubuntu:22.10 AS build
 
 # prevent apt install from getting stuck at timezone info
@@ -92,6 +92,7 @@ RUN npm config set fetch-retry-maxtimeout 120000 \
 # second stage - copy over node_modules and source code
 # ------------------------------------------------------------------------
 
+# as of 2022-11 lts has node v16.17
 # FROM node:lts-slim
 FROM node:lts
 ENV NODE_ENV production
