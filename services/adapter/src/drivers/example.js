@@ -5,11 +5,11 @@ export class AdapterDriver {
     console.log(`Initialize example driver...`)
 
     function setAvailable() {
-      cache.set(`${device.id}-availability`, 'AVAILABLE')
+      cache.set(`${device.id}-avail`, 'AVAILABLE')
     }
 
     function setUnavailable() {
-      cache.set(`${device.id}-availability`, 'UNAVAILABLE')
+      cache.set(`${device.id}-avail`, 'UNAVAILABLE')
       cache.set(`${device.id}-mass`, 'UNAVAILABLE')
     }
   }

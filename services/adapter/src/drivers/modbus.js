@@ -18,6 +18,8 @@ export class AdapterDriver {
     this.inputs = schema?.inputs?.inputs || [] // array of { key, address }
     console.log('Modbus inputs', this.inputs)
 
+    //. wait here until get connection
+    //. handle disconnect, reconnect
     try {
       this.client = await this.getClient() // connect to server
     } catch (error) {

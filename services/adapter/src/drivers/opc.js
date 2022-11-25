@@ -36,6 +36,7 @@ export class AdapterDriver {
     console.log('OPC inputs', this.inputs)
     this.subscriptions = []
 
+    //. handle wait, connect, disconnect, reconnect, errors
     this.setValue('avail', 'UNAVAILABLE') // write to cache
     this.session = await this.getOPCSession() // connect to opc server
     this.setValue('avail', 'AVAILABLE') // connected successfully

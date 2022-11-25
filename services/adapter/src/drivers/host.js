@@ -13,10 +13,11 @@ export class AdapterDriver {
   start({ device, cache, schema }) {
     //
     console.log(`Host start driver...`)
+
     this.device = device
     this.cache = cache
     this.schema = schema
-    this.inputs = schema?.inputs?.inputs || {}
+    this.inputs = schema?.inputs?.inputs ?? {}
 
     // get queries from inputs.yaml and start polling data
     const itemKeys = Object.keys(this.inputs) // eg ['cpuTemperature', 'currentLoad', 'mem', 'fsSize']
