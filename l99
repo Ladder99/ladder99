@@ -41,14 +41,14 @@ if [ "$L99_HOME" = "" ]; then
     exit 1
 fi
 
+cd $L99_HOME
+
 # show help if count of params is zero
 if [ $# -eq 0 ]; then
     echo "$usage"
     echo Current Ladder99 setup folder is \'$(cat .l99_setup)\'.
     exit 1
 fi
-
-cd $L99_HOME
 
 CMD=$1 # eg 'start'
 CMD_PATH=shell/$CMD # eg 'shell/start'
