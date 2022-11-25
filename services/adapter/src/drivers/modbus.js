@@ -1,6 +1,23 @@
 // modbus driver
 
+// state machine skeleton borrowed from
+// https://github.com/yaacov/node-modbus-serial/blob/master/examples/polling_TCP.js
+
 import ModbusRTU from 'modbus-serial' // see https://github.com/yaacov/node-modbus-serial
+
+// Modbus 'state' constants
+const MBS_STATE_INIT = 'State init'
+const MBS_STATE_IDLE = 'State idle'
+const MBS_STATE_NEXT = 'State next'
+const MBS_STATE_GOOD_READ = 'State good (read)'
+const MBS_STATE_FAIL_READ = 'State fail (read)'
+const MBS_STATE_GOOD_CONNECT = 'State good (port)'
+const MBS_STATE_FAIL_CONNECT = 'State fail (port)'
+
+// Modbus TCP configuration values
+const mbsId = 1
+const mbsScan = 1000
+const mbsTimeout = 5000
 
 export class AdapterDriver {
   //
@@ -19,20 +36,102 @@ export class AdapterDriver {
     this.inputs = schema?.inputs?.inputs ?? [] // array of { key, address, count }
     console.log('Modbus inputs', this.inputs)
 
-    //. wait here until get connection
-    //. handle disconnect, reconnect
-    // this.client = await this.getClient() // connect to server
-    console.log(`Modbus connected`)
-    this.setValue('avail', 'AVAILABLE') // connected successfully
+    //. start a state machine
+    //. handle disconnect, reconnect, error, polling
 
-    // // set the client's unit id [?]
-    // // this.client.setID(1)
+    let mbsStatus = 'Initializing...' // holds a status of Modbus
+    let mbsState = MBS_STATE_INIT
 
-    // // set a timout for requests - default is null (no timeout)
-    // this.client.setTimeout(1000)
+    function runModbus() {
+      let nextAction
 
-    // //. note: can't do a plain setInterval poll - need to wait for the previous one to finish
-    // this.poll()
+      switch (mbsState) {
+        case MBS_STATE_INIT:
+          nextAction = connectClient
+          break
+
+        case MBS_STATE_NEXT:
+          nextAction = readModbusData
+          break
+
+        case MBS_STATE_GOOD_CONNECT:
+          nextAction = readModbusData
+          break
+
+        case MBS_STATE_FAIL_CONNECT:
+          nextAction = connectClient
+          break
+
+        case MBS_STATE_GOOD_READ:
+          nextAction = readModbusData
+          break
+
+        case MBS_STATE_FAIL_READ:
+          if (client.isOpen) {
+            mbsState = MBS_STATE_NEXT
+          } else {
+            nextAction = connectClient
+          }
+          break
+
+        default:
+        // nothing to do, keep scanning until actionable case
+      }
+
+      console.log()
+      console.log(nextAction)
+
+      // execute "next action" function if defined
+      if (nextAction !== undefined) {
+        nextAction()
+        mbsState = MBS_STATE_IDLE
+      }
+
+      // set for next run
+      //. this is a polling loop, but do differently?
+      setTimeout(runModbus, mbsScan)
+    }
+
+    // this.setValue('avail', 'AVAILABLE') // connected successfully
+
+    function connectClient() {
+      // close port (NOTE: important in order not to create multiple connections)
+      client.close()
+
+      // set requests parameters
+      client.setID(mbsId)
+      client.setTimeout(mbsTimeout) // default is null (no timeout)
+
+      // try to connect
+      client
+        .connectTCP(mbsHost, { port: mbsPort })
+        .then(function () {
+          mbsState = MBS_STATE_GOOD_CONNECT
+          mbsStatus = 'Connected, wait for reading...'
+          console.log(mbsStatus)
+        })
+        .catch(function (e) {
+          mbsState = MBS_STATE_FAIL_CONNECT
+          mbsStatus = e.message
+          console.log(e)
+        })
+    }
+
+    function readModbusData() {
+      // try to read data
+      client
+        .readHoldingRegisters(0, 18) //.
+        .then(function (data) {
+          mbsState = MBS_STATE_GOOD_READ
+          mbsStatus = 'success'
+          console.log(data.buffer)
+        })
+        .catch(function (e) {
+          mbsState = MBS_STATE_FAIL_READ
+          mbsStatus = e.message
+          console.log(e)
+        })
+    }
   }
 
   // async getClient() {
