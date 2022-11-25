@@ -8,14 +8,14 @@ Usage: l99 COMMAND [PARAMS]
 Run a Ladder99 command.
 
 COMMAND
-    disk      show disk usage for a setup
+    disk      show disk usage for current setup
     init      create a new setup folder
     list      list running services
     logs      follow and search logs of a running or stopped service
     restart   restart services
     start     start services
     stop      stop running services
-    update    update source code for ladder99 and a given setup
+    update    update source code for ladder99 and current setup
     use       specify setup to use with l99 commands
 
 Run the command or with -h for help on that command.
@@ -46,7 +46,7 @@ cd $L99_HOME
 # show help if count of params is zero
 if [ $# -eq 0 ]; then
     echo "$usage"
-    echo Current Ladder99 setup folder is \'$(cat .l99_setup)\'.
+    echo Current Ladder99 setup is \'$(cat .l99_setup)\'.
     exit 1
 fi
 
