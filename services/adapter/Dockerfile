@@ -41,7 +41,9 @@
 # see https://hub.docker.com/_/ubuntu
 # FROM ubuntu:21.04 AS build
 # 22.04 is current lts release
-FROM ubuntu:22.04 AS build
+# FROM ubuntu:22.04 AS build
+# 22.10 has node v18.12
+FROM ubuntu:22.10 AS build
 
 # prevent apt install from getting stuck at timezone info
 # see https://askubuntu.com/questions/909277/avoiding-user-interaction-with-tzdata-when-installing-certbot-in-a-docker-contai
