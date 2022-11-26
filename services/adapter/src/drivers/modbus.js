@@ -35,11 +35,10 @@ export class AdapterDriver {
     // create modbus client
     const client = new ModbusRTU()
 
+    // start state machine
+    //. handle disconnect, interrupt (sigint etc), reconnect, errors, polling
     let mbStatus = 'Initializing...'
     let mbState = STATE_INIT
-
-    // start state machine
-    // handle disconnect, reconnect, errors, polling
     await runStateMachine()
 
     // define functions here so they can access variables in scope
