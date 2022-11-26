@@ -5,23 +5,23 @@
 
 import ModbusRTU from 'modbus-serial' // see https://github.com/yaacov/node-modbus-serial
 
-// Modbus 'state' constants
-const MBS_STATE_INIT = 'State init'
-const MBS_STATE_IDLE = 'State idle'
-const MBS_STATE_NEXT = 'State next'
-const MBS_STATE_GOOD_READ = 'State good (read)'
-const MBS_STATE_FAIL_READ = 'State fail (read)'
-const MBS_STATE_GOOD_CONNECT = 'State good (port)'
-const MBS_STATE_FAIL_CONNECT = 'State fail (port)'
+// Modbus state constants
+const STATE_INIT = 'State init'
+const STATE_IDLE = 'State idle'
+const STATE_NEXT = 'State next' //.?
+const STATE_GOOD_READ = 'State good (read)'
+const STATE_FAIL_READ = 'State fail (read)'
+const STATE_GOOD_CONNECT = 'State good (port)'
+const STATE_FAIL_CONNECT = 'State fail (port)'
 
 // Modbus TCP configuration values
-const mbsId = 1
-const mbsScan = 1000
-const mbsTimeout = 5000
+const mbId = 1
+const mbPollingInterval = 1000
+const mbTimeout = 5000
 
 export class AdapterDriver {
   //
-  start({ device, cache, source, schema }) {
+  async start({ device, cache, source, schema }) {
     //
     console.log('Modbus start', device.id)
 
@@ -33,86 +33,90 @@ export class AdapterDriver {
     this.host = source?.connect?.host
     this.port = source?.connect?.port ?? 502
 
-    this.inputs = schema?.inputs?.inputs ?? [] // array of { key, address, count }
+    // get array of { key, address, count } - eg { key: 'pcgood', address: 5008, count: 2 }
+    this.inputs = schema?.inputs?.inputs ?? []
     console.log('Modbus inputs', this.inputs)
 
-    //. start a state machine
-    //. handle disconnect, reconnect, error, polling
+    // create modbus client
+    const client = new ModbusRTU()
 
-    let mbsStatus = 'Initializing...' // holds a status of Modbus
-    let mbsState = MBS_STATE_INIT
+    // start state machine
+    // handle disconnect, reconnect, error, polling
+    let mbStatus = 'Initializing...'
+    let mbState = STATE_INIT
+    await runStateMachine()
 
-    function runModbus() {
+    async function runStateMachine() {
       let nextAction
 
-      switch (mbsState) {
-        case MBS_STATE_INIT:
-          nextAction = connectClient
-          break
-
-        case MBS_STATE_NEXT:
-          nextAction = readModbusData
-          break
-
-        case MBS_STATE_GOOD_CONNECT:
-          nextAction = readModbusData
-          break
-
-        case MBS_STATE_FAIL_CONNECT:
-          nextAction = connectClient
-          break
-
-        case MBS_STATE_GOOD_READ:
-          nextAction = readModbusData
-          break
-
-        case MBS_STATE_FAIL_READ:
-          if (client.isOpen) {
-            mbsState = MBS_STATE_NEXT
-          } else {
+      while (true) {
+        switch (mbState) {
+          case STATE_INIT:
             nextAction = connectClient
-          }
-          break
+            break
 
-        default:
-        // nothing to do, keep scanning until actionable case
+          case STATE_NEXT:
+            nextAction = readModbusData
+            break
+
+          case STATE_GOOD_CONNECT:
+            nextAction = readModbusData
+            break
+
+          case STATE_FAIL_CONNECT:
+            nextAction = connectClient
+            break
+
+          case STATE_GOOD_READ:
+            nextAction = readModbusData
+            break
+
+          case STATE_FAIL_READ:
+            if (client.isOpen) {
+              mbState = STATE_NEXT
+            } else {
+              nextAction = connectClient
+            }
+            break
+
+          default:
+          // nothing to do, keep polling until actionable case
+        }
+
+        console.log()
+        console.log(nextAction)
+
+        // execute "next action" function, if defined
+        if (nextAction !== undefined) {
+          nextAction()
+          mbState = STATE_IDLE
+        }
+
+        // wait a bit before polling again
+        await new Promise(resolve => setTimeout(resolve, mbPollingInterval)) // ms
       }
-
-      console.log()
-      console.log(nextAction)
-
-      // execute "next action" function if defined
-      if (nextAction !== undefined) {
-        nextAction()
-        mbsState = MBS_STATE_IDLE
-      }
-
-      // set for next run
-      //. this is a polling loop, but do differently?
-      setTimeout(runModbus, mbsScan)
     }
-
-    // this.setValue('avail', 'AVAILABLE') // connected successfully
 
     function connectClient() {
       // close port (NOTE: important in order not to create multiple connections)
       client.close()
 
-      // set requests parameters
-      client.setID(mbsId)
-      client.setTimeout(mbsTimeout) // default is null (no timeout)
+      // set request parameters
+      client.setID(mbId)
+      client.setTimeout(mbTimeout) // default is null (no timeout)
 
       // try to connect
       client
-        .connectTCP(mbsHost, { port: mbsPort })
+        .connectTCP(mbHost, { port: mbPort })
         .then(function () {
-          mbsState = MBS_STATE_GOOD_CONNECT
-          mbsStatus = 'Connected, wait for reading...'
-          console.log(mbsStatus)
+          mbState = STATE_GOOD_CONNECT
+          mbStatus = 'Connected, wait for reading...'
+          console.log(mbStatus)
+          this.setValue('avail', 'AVAILABLE') // connected successfully
         })
         .catch(function (e) {
-          mbsState = MBS_STATE_FAIL_CONNECT
-          mbsStatus = e.message
+          mbState = STATE_FAIL_CONNECT
+          mbStatus = e.message
           console.log(e)
         })
     }
@@ -122,49 +126,17 @@ export class AdapterDriver {
       client
         .readHoldingRegisters(0, 18) //.
         .then(function (data) {
-          mbsState = MBS_STATE_GOOD_READ
-          mbsStatus = 'success'
+          mbState = STATE_GOOD_READ
+          mbStatus = 'success'
           console.log(data.buffer)
         })
         .catch(function (e) {
-          mbsState = MBS_STATE_FAIL_READ
-          mbsStatus = e.message
+          mbState = STATE_FAIL_READ
+          mbStatus = e.message
           console.log(e)
         })
     }
   }
-
-  // async getClient() {
-  //   console.log(`Modbus connecting to`, this.host, this.port)
-  //   return new Promise((resolve, reject) => {
-  //     const client = new ModbusRTU()
-  //     client
-  //       .connectTCP(this.host, { port: this.port })
-  //       .then(() => resolve(client))
-  //       .catch(error => reject(error))
-  //   })
-  // }
-
-  // async poll() {
-  //   console.log('Modbus poll')
-  //   for (let input of this.inputs) {
-  //     const { key, address, count } = input
-  //     const data = await this.getHoldingRegisters(address, count)
-  //     console.log('Modbus values', data)
-  //     const value = data[0] | (data[1] << 16)
-  //     this.setValue(key, value)
-  //   }
-  // }
-
-  // async getHoldingRegisters(address, count) {
-  //   console.log(`Modbus read holding registers at ${address}, count ${count}`)
-  //   return new Promise((resolve, reject) => {
-  //     this.client
-  //       .readHoldingRegisters(address, count)
-  //       .then(response => resolve(response.data))
-  //       .catch(error => reject(error))
-  //   })
-  // }
 
   // helper methods
 
