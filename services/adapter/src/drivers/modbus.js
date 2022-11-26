@@ -17,7 +17,7 @@ const STATE_FAIL_CONNECT = 'State fail (port)'
 // Modbus TCP configuration values
 const mbId = 1 //. ?
 const mbPollingInterval = 1000
-const mbTimeout = 5000
+const mbTimeout = 1000
 
 export class AdapterDriver {
   //
