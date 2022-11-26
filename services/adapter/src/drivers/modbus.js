@@ -125,7 +125,7 @@ export class AdapterDriver {
     // try to read data
     function readData() {
       client
-        .readHoldingRegisters(0, 18) //.
+        .readHoldingRegisters(0, 10) //.
         .then(function (data) {
           mbState = STATE_GOOD_READ
           mbStatus = 'success'
