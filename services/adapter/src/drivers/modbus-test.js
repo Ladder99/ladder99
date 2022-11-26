@@ -5,7 +5,7 @@ import { AdapterDriver } from './modbus.js'
 const driver = new AdapterDriver()
 
 driver.start({
-  device: { id: 'modbus' },
+  device: { id: 'mb' },
   cache: {
     set: (key, value) => {
       console.log('cache.set', key, value)

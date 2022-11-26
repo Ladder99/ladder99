@@ -8,14 +8,14 @@ import ModbusRTU from 'modbus-serial' // see https://github.com/yaacov/node-modb
 // Modbus state constants
 const STATE_INIT = 'State init'
 const STATE_IDLE = 'State idle'
-const STATE_NEXT = 'State next' //.?
+const STATE_NEXT = 'State next' //. ?
 const STATE_GOOD_READ = 'State good (read)'
 const STATE_FAIL_READ = 'State fail (read)'
 const STATE_GOOD_CONNECT = 'State good (port)'
 const STATE_FAIL_CONNECT = 'State fail (port)'
 
 // Modbus TCP configuration values
-const mbId = 1
+const mbId = 1 //. ?
 const mbPollingInterval = 1000
 const mbTimeout = 5000
 
@@ -25,26 +25,24 @@ export class AdapterDriver {
     //
     console.log('Modbus start', device.id)
 
-    this.device = device
-    this.cache = cache
-    this.source = source
-    this.schema = schema
+    const mbHost = source?.connect?.host
+    const mbPort = source?.connect?.port ?? 502
 
-    this.host = source?.connect?.host
-    this.port = source?.connect?.port ?? 502
-
-    // get array of { key, address, count } - eg { key: 'pcgood', address: 5008, count: 2 }
-    this.inputs = schema?.inputs?.inputs ?? []
-    console.log('Modbus inputs', this.inputs)
+    // // get array of { key, address, count } - eg { key: 'pcgood', address: 5008, count: 2 }
+    // const inputs = schema?.inputs?.inputs ?? []
+    // console.log('Modbus inputs', inputs)
 
     // create modbus client
     const client = new ModbusRTU()
 
-    // start state machine
-    // handle disconnect, reconnect, error, polling
     let mbStatus = 'Initializing...'
     let mbState = STATE_INIT
+
+    // start state machine
+    // handle disconnect, reconnect, errors, polling
     await runStateMachine()
+
+    // define functions here so they can access variables in scope
 
     async function runStateMachine() {
       let nextAction
@@ -56,11 +54,11 @@ export class AdapterDriver {
             break
 
           case STATE_NEXT:
-            nextAction = readModbusData
+            nextAction = readData
             break
 
           case STATE_GOOD_CONNECT:
-            nextAction = readModbusData
+            nextAction = readData
             break
 
           case STATE_FAIL_CONNECT:
@@ -68,7 +66,7 @@ export class AdapterDriver {
             break
 
           case STATE_GOOD_READ:
-            nextAction = readModbusData
+            nextAction = readData
             break
 
           case STATE_FAIL_READ:
@@ -97,9 +95,12 @@ export class AdapterDriver {
       }
     }
 
+    // try to connect to server
     function connectClient() {
       // close port (NOTE: important in order not to create multiple connections)
-      client.close()
+      if (mbState !== STATE_INIT) {
+        client.close()
+      }
 
       // set request parameters
       client.setID(mbId)
@@ -112,7 +113,7 @@ export class AdapterDriver {
           mbState = STATE_GOOD_CONNECT
           mbStatus = 'Connected, wait for reading...'
           console.log(mbStatus)
-          this.setValue('avail', 'AVAILABLE') // connected successfully
+          setValue('avail', 'AVAILABLE') // connected successfully
         })
         .catch(function (e) {
           mbState = STATE_FAIL_CONNECT
@@ -121,8 +122,8 @@ export class AdapterDriver {
         })
     }
 
-    function readModbusData() {
-      // try to read data
+    // try to read data
+    function readData() {
       client
         .readHoldingRegisters(0, 18) //.
         .then(function (data) {
@@ -136,12 +137,11 @@ export class AdapterDriver {
           console.log(e)
         })
     }
-  }
 
-  // helper methods
-
-  setValue(key, value) {
-    const id = this.device.id + '-' + key
-    this.cache.set(id, value)
+    // update cache, which will publish shdr on change
+    function setValue(key, value) {
+      const id = device.id + '-' + key
+      cache.set(id, value)
+    }
   }
 }
