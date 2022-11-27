@@ -26,8 +26,8 @@ services:
       - adapter
     # use this to access kepware opcua on windows using host.docker.internal to reach localhost?
     #. is this actually needed?
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
     environment:
       # specify where code can find data.
       # can override at run time, eg to run service on windows with node.
