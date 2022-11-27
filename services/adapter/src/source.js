@@ -36,9 +36,9 @@ export class Source {
     // import driver plugin, eg micro.js or mqttSubscriber.js.
     // this instantiates a new instance of the AdapterDriver class.
     // but doesn't start the plugin! that's at the end of this code.
-    //. allow custom drivers per setup also - eg include drivers in setup-oxbox folder
     const plugin = await getPlugin(params.driversFolder, driver)
-    // const plugin = await getPlugin(params.driverFolders, driver) //. do this
+    //. allow custom drivers per setup also - eg include drivers in setup-oxbox folder
+    // const plugin = await getPlugin(params.driverFolders, driver) //. do this - note plural
     source.plugin = plugin // save to source so on agent connection can tell it socket
 
     // get schema information from yaml files - { inputs, outputs, types }
@@ -148,6 +148,13 @@ export class Source {
       connection, // a shared connection name or { host, port }, etc - eg 'mqttProvider'
       provider, // a shared provider object, if any
     })
+  }
+
+  stop() {
+    console.log(`Adapter stopping...`)
+    for (let source of this.sources) {
+      source.plugin?.stop()
+    }
   }
 }
 

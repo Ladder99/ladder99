@@ -37,7 +37,7 @@ const adapter = new Adapter()
 adapter.start(params)
 
 function signalHandler() {
-  adapter.stop()
+  adapter.stop() //. do await?
   process.exit()
 }
 

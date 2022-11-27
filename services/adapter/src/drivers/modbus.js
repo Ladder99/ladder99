@@ -143,4 +143,8 @@ export class AdapterDriver {
       cache.set(id, value)
     }
   }
+
+  stop() {
+    console.log('Modbus stop')
+  }
 }
