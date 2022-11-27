@@ -64,8 +64,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 #   sudo apt install -t buster-backports libseccomp2
 # see https://www.reddit.com/r/Readarr/comments/ixajkk/working_docker_image_for_raspberry_pi_os_buster/glh774f/
 # add openssl
+# added iputils-ping so can use ping from within container for testing
 RUN apt-get update -y && apt-get install --fix-missing -y nodejs npm libudev-dev \
-  libusb-1.0-0 libusb-1.0-0-dev pkg-config
+  libusb-1.0-0 libusb-1.0-0-dev pkg-config iputils-ping
 
 WORKDIR /usr/app
 ENV NODE_ENV production
@@ -94,15 +95,17 @@ RUN npm config set fetch-retry-maxtimeout 120000 \
 
 # as of 2022-11 lts has node v16.17
 # FROM node:lts-slim
-FROM node:lts
+# FROM node:lts
+
 ENV NODE_ENV production
+
 # # need for node-opc package
 # RUN apt-get install -y openssl
 
 #. um, getting read/write errors on cookie files because they're already there as root
 # USER node
 
-WORKDIR /usr/app
+# WORKDIR /usr/app
 
 # need package.json so node will know we're using modules
 # COPY --chown=node:node package.json /usr/app/package.json
@@ -111,10 +114,11 @@ WORKDIR /usr/app
 # COPY package.json src/** /usr/app/ # how do this?
 
 
-COPY package.json /usr/app/package.json
-COPY src /usr/app/src
-COPY --from=build /usr/app/node_modules /usr/app/node_modules
+# COPY package.json /usr/app/package.json
+# COPY src /usr/app/src
+# COPY --from=build /usr/app/node_modules /usr/app/node_modules
 
+COPY src /usr/app/src
 
 # base command - can pass params with CMD [?]
 # note: When you run an image that uses the exec form (ie an array), 
