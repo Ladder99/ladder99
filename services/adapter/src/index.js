@@ -36,11 +36,11 @@ const params = {
 const adapter = new Adapter()
 adapter.start(params)
 
-function signalHandler() {
-  adapter.stop() //. do await?
-  process.exit()
-}
+// function signalHandler() {
+//   adapter.stop() //. do await?
+//   process.exit()
+// }
 
-process.on('SIGINT', signalHandler)
-process.on('SIGTERM', signalHandler)
-process.on('SIGQUIT', signalHandler)
+// process.on('SIGINT', signalHandler)
+// process.on('SIGTERM', signalHandler)
+// process.on('SIGQUIT', signalHandler)

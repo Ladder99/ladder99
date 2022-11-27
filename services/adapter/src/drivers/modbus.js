@@ -3,16 +3,18 @@
 // state machine skeleton borrowed from
 // https://github.com/yaacov/node-modbus-serial/blob/master/examples/polling_TCP.js
 
+//. handle disconnect, interrupt (sigint etc), reconnect, errors, polling
+
 import ModbusRTU from 'modbus-serial' // see https://github.com/yaacov/node-modbus-serial
 
 // Modbus state constants
-const STATE_INIT = 'State init'
-const STATE_IDLE = 'State idle'
-const STATE_NEXT = 'State next' //. ?
-const STATE_GOOD_READ = 'State good (read)'
-const STATE_FAIL_READ = 'State fail (read)'
-const STATE_GOOD_CONNECT = 'State good (port)'
-const STATE_FAIL_CONNECT = 'State fail (port)'
+const STATE_INIT = 'Init'
+const STATE_IDLE = 'Idle'
+const STATE_NEXT = 'Next' //. ?
+const STATE_GOOD_READ = 'Good (read)'
+const STATE_FAIL_READ = 'Fail (read)'
+const STATE_GOOD_CONNECT = 'Good (connect)'
+const STATE_FAIL_CONNECT = 'Fail (connect)'
 
 // Modbus TCP configuration values
 const mbId = 1 //. ?
@@ -23,21 +25,24 @@ export class AdapterDriver {
   //
   async start({ device, cache, source, schema }) {
     //
-    console.log('Modbus start', device.id)
+    console.log('Modbus start', device.id, device.name, source.schema)
 
     const mbHost = source?.connect?.host
     const mbPort = source?.connect?.port ?? 502
 
-    // // get array of { key, address, count } - eg { key: 'pcgood', address: 5008, count: 2 }
+    // // get array of inputs { key, address, count } - eg { key: 'pcgood', address: 5008, count: 2 }
     // const inputs = schema?.inputs?.inputs ?? []
     // console.log('Modbus inputs', inputs)
 
     // create modbus client
     const client = new ModbusRTU()
 
+    // set request parameters
+    client.setID(mbId)
+    client.setTimeout(mbTimeout) // default is null (no timeout)
+
     // start state machine
-    //. handle disconnect, interrupt (sigint etc), reconnect, errors, polling
-    let mbStatus = 'Initializing...'
+    let mbStatus = 'Modbus initializing...'
     let mbState = STATE_INIT
     await runStateMachine()
 
@@ -47,6 +52,7 @@ export class AdapterDriver {
       let nextAction
 
       while (true) {
+        console.log('Modbus state', mbState)
         switch (mbState) {
           case STATE_INIT:
             nextAction = connectClient
@@ -80,16 +86,14 @@ export class AdapterDriver {
           // nothing to do, keep polling until actionable case
         }
 
-        console.log()
-        console.log(nextAction)
-
         // execute "next action" function, if defined
         if (nextAction !== undefined) {
-          nextAction()
+          console.log(`Modbus running`, nextAction.name)
+          nextAction() // execute function - this sets mbState, mbStatus
           mbState = STATE_IDLE
         }
 
-        // wait a bit before polling again
+        // wait before connecting or polling again
         await new Promise(resolve => setTimeout(resolve, mbPollingInterval)) // ms
       }
     }
@@ -101,23 +105,20 @@ export class AdapterDriver {
         client.close()
       }
 
-      // set request parameters
-      client.setID(mbId)
-      client.setTimeout(mbTimeout) // default is null (no timeout)
-
-      // try to connect
+      console.log(`Modbus connecting to ${mbHost}:${mbPort}...`)
       client
         .connectTCP(mbHost, { port: mbPort })
-        .then(function () {
+        .then(() => {
           mbState = STATE_GOOD_CONNECT
-          mbStatus = 'Connected, wait for reading...'
+          mbStatus = 'Modbus connect success'
           console.log(mbStatus)
           setValue('avail', 'AVAILABLE') // connected successfully
         })
-        .catch(function (e) {
+        .catch(error => {
           mbState = STATE_FAIL_CONNECT
-          mbStatus = e.message
-          console.log(e)
+          mbStatus = 'Modbus connect error ' + error.message
+          console.log(mbStatus)
+          setValue('avail', 'UNAVAILABLE') //. set other dataitems also?
         })
     }
 
@@ -125,15 +126,15 @@ export class AdapterDriver {
     function readData() {
       client
         .readHoldingRegisters(0, 10) //.
-        .then(function (data) {
+        .then(data => {
           mbState = STATE_GOOD_READ
-          mbStatus = 'success'
-          console.log(data.buffer)
+          mbStatus = 'Modbus read success'
+          console.log(mbStatus, data.buffer)
         })
-        .catch(function (e) {
+        .catch(error => {
           mbState = STATE_FAIL_READ
-          mbStatus = e.message
-          console.log(e)
+          mbStatus = 'Modbus read error ' + error.message
+          console.log(mbStatus)
         })
     }
 
