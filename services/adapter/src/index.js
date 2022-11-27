@@ -2,10 +2,7 @@
 // poll or subscribe to data via plugins, update cache,
 // update shdr strings, pass them to agent via tcp.
 
-import * as lib from './common/lib.js'
-import { Cache } from './cache.js'
-import { setupDevice } from './setupDevice.js'
-import { getPlugin } from './helpers.js'
+import { Adapter } from './adapter.js'
 
 console.log()
 console.log(`Ladder99 Adapter`)
@@ -36,34 +33,14 @@ const params = {
   ],
 }
 
-async function start(params) {
-  //
-  // read client setup.yaml file
-  const setup = lib.readSetup(params.setupFolder)
+const adapter = new Adapter()
+adapter.start(params)
 
-  // define cache shared across all devices and sources
-  const cache = new Cache()
-
-  // load any shared providers
-  // eg setup.yaml/adapter/providers = { sharedMqtt: { driver, url }, ... }
-  const providers = setup.adapter?.providers || {}
-  for (const provider of Object.values(providers)) {
-    console.log(`Adapter get shared provider`, provider)
-    // import driver plugin - instantiates a new instance of the AdapterDriver class
-    const plugin = await getPlugin(params.driversFolder, provider.driver) // eg 'mqttProvider'
-    // AWAIT here until provider is connected?
-    plugin.start({ provider }) // start driver - eg this connects to the mqtt broker
-    // await plugin.start({ provider }) // start driver - eg this connects to the mqtt broker
-    provider.plugin = plugin // save plugin to this provider object, eg { driver, url, plugin }
-  }
-
-  // iterate over device definitions from setup.yaml file and do setup for each
-  const client = setup.client || {}
-  // const devices = setup.devices || [] //. develop branch
-  const devices = setup?.adapter?.devices || [] //. historian branch - careful with merge here
-  for (const device of devices) {
-    setupDevice({ setup, params, device, cache, client, devices, providers })
-  }
+function signalHandler() {
+  adapter.stop()
+  process.exit()
 }
 
-start(params)
+process.on('SIGINT', signalHandler)
+process.on('SIGTERM', signalHandler)
+process.on('SIGQUIT', signalHandler)
