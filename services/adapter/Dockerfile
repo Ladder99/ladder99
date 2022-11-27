@@ -1,20 +1,13 @@
 # docker image build instructions
 #
-# ./l99 build adapter 0.8.1-arm
+# l99 build adapter 0.8.1-arm
 #
 # keep in synch with all Dockerfiles - adapter, meter, recorder, relay.
 #
 # see https://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
 # and https://snyk.io/blog/10-best-practices-to-containerize-nodejs-web-applications-with-docker/
 
-# not sure we need two stages, but it works
-
-
 # ------------------------------------------------------------------------
-# first stage - get dependencies
-# ------------------------------------------------------------------------
-
-# start with an os image
 
 # node
 # always use even numbers with Node because those are the 
@@ -63,17 +56,17 @@ ENV DEBIAN_FRONTEND=noninteractive
 #   sudo apt update
 #   sudo apt install -t buster-backports libseccomp2
 # see https://www.reddit.com/r/Readarr/comments/ixajkk/working_docker_image_for_raspberry_pi_os_buster/glh774f/
-# add openssl
 # added iputils-ping so can use ping from within container for testing
+# added net-tools so can use route for testing
+# added openssl for node-opc package
 RUN apt-get update -y && apt-get install --fix-missing -y nodejs npm libudev-dev \
-  libusb-1.0-0 libusb-1.0-0-dev pkg-config iputils-ping
+  libusb-1.0-0 libusb-1.0-0-dev pkg-config iputils-ping net-tools openssl 
 
 WORKDIR /usr/app
 ENV NODE_ENV production
 COPY package.json /usr/app/
 
 # install javascript dependencies
-
 # first increase the timeout from 30 secs to 2mins to handle slow connections.
 # generate package-lock from package.json, but don't create node_modules
 # note: With the --only=production flag (or when the NODE_ENV environment 
@@ -89,36 +82,10 @@ RUN npm config set fetch-retry-maxtimeout 120000 \
   && npm audit fix --package-lock-only --only=production \
   && npm clean-install --audit=false --only=production
 
-# ------------------------------------------------------------------------
-# second stage - copy over node_modules and source code
-# ------------------------------------------------------------------------
-
-# as of 2022-11 lts has node v16.17
-# FROM node:lts-slim
-# FROM node:lts
-
-ENV NODE_ENV production
-
-# # need for node-opc package
-# RUN apt-get install -y openssl
-
-#. um, getting read/write errors on cookie files because they're already there as root
-# USER node
-
-# WORKDIR /usr/app
-
-# need package.json so node will know we're using modules
-# COPY --chown=node:node package.json /usr/app/package.json
-# COPY --chown=node:node --from=build /usr/app/node_modules /usr/app/node_modules
-# COPY --chown=node:node src /usr/app/src
-# COPY package.json src/** /usr/app/ # how do this?
-
-
-# COPY package.json /usr/app/package.json
-# COPY src /usr/app/src
-# COPY --from=build /usr/app/node_modules /usr/app/node_modules
-
 COPY src /usr/app/src
+
+#. this causes read/write errors on cookie files because they're already there as root
+# USER node
 
 # base command - can pass params with CMD [?]
 # note: When you run an image that uses the exec form (ie an array), 
