@@ -125,19 +125,24 @@ export class AdapterDriver {
     }
 
     function readData() {
-      client
-        .readHoldingRegisters(0, 10) //.
-        .then(data => {
-          mbState = STATE_GOOD_READ
-          mbStatus = 'Modbus read success'
-          const arr = [...data.buffer] // convert buffer to array
-          console.log(mbStatus, arr)
-        })
-        .catch(error => {
-          mbState = STATE_FAIL_READ
-          mbStatus = 'Modbus read error ' + error.message
-          console.log(mbStatus)
-        })
+      for (let input of inputs) {
+        const { key, address, count } = input // eg { key: 'pcgood', address: 5008, count: 2 }
+        client
+          .readHoldingRegisters(address, count)
+          .then(data => {
+            mbState = STATE_GOOD_READ
+            mbStatus = 'Modbus read success'
+            const arr = [...data.buffer] // convert buffer to array
+            console.log(mbStatus, arr)
+            //. handle different data types, eg uint16, uint32, float etc
+            setValue(key, arr[0]) // just use first value for now
+          })
+          .catch(error => {
+            mbState = STATE_FAIL_READ
+            mbStatus = 'Modbus read error ' + error.message
+            console.log(mbStatus)
+          })
+      }
     }
 
     // update cache, which will publish shdr on change
