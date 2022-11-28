@@ -17,10 +17,10 @@ COMMAND
     disk      show disk usage for current setup
     download  clone a git repo to use as current setup
     init      create a new setup folder
-    list      list running services
     logs      follow and search logs of a running or stopped service
     restart   restart services
     start     start services
+    status    show status of running services
     stop      stop running services
     update    update source code for ladder99 and current setup
     use       specify setup to use with l99 commands
@@ -28,7 +28,7 @@ COMMAND
 Run the command with -h for help on that command.
 
 Examples
-    l99 list
+    l99 status
     l99 use example
     l99 disk
     l99 start agent
@@ -39,7 +39,7 @@ Examples
 "
 
 if [ "$L99_HOME" = "" ]; then
-    echo "Please install the Ladder99 cli using the install script, i.e. run 'install'."
+    echo "Please install the Ladder99 cli using the install script, i.e. run 'shell/install'."
     exit 1
 fi
 

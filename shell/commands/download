@@ -12,7 +12,7 @@ Example:
 
 if [ $# -eq 0 ]; then
     echo "$usage"
-    exit 1
+    exit
 fi
 
 # get setup, eg 'test'
@@ -27,10 +27,6 @@ if [ -e $SETUP_FOLDER ]; then
     exit 1
 fi
 
-git clone https://github.com/Ladder99/setup-$SETUP $SETUP_FOLDER
-
-# save setup to a file
-echo $SETUP > .l99_setup
-
-echo
-echo Using \'$SETUP\' for Ladder99 setup.
+git clone https://github.com/Ladder99/setup-$SETUP $SETUP_FOLDER \
+&& echo $SETUP > .l99_setup \
+&& shell/commands/using
