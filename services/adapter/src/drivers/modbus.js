@@ -4,10 +4,13 @@
 // https://github.com/yaacov/node-modbus-serial/blob/master/examples/polling_TCP.js
 
 //. handle disconnect, interrupt (sigint etc), reconnect, errors, polling
+//. handle different polling intervals for different addresses?
+//. handle stop method
 
 import ModbusRTU from 'modbus-serial' // see https://github.com/yaacov/node-modbus-serial
 
 // Modbus state constants
+//. use ints
 const STATE_INIT = 'Init'
 const STATE_IDLE = 'Idle'
 const STATE_NEXT = 'Next' //. ?
@@ -30,9 +33,9 @@ export class AdapterDriver {
     const mbHost = source?.connect?.host
     const mbPort = source?.connect?.port ?? 502
 
-    // // get array of inputs { key, address, count } - eg { key: 'pcgood', address: 5008, count: 2 }
-    // const inputs = schema?.inputs?.inputs ?? []
-    // console.log('Modbus inputs', inputs)
+    // get array of inputs { key, address, count } - eg { key: 'pcgood', address: 5008, count: 2 }
+    const inputs = schema?.inputs?.inputs ?? []
+    console.log('Modbus inputs', inputs)
 
     // create modbus client
     const client = new ModbusRTU()
@@ -98,7 +101,6 @@ export class AdapterDriver {
       }
     }
 
-    // try to connect to server
     function connectClient() {
       // close port (NOTE: important in order not to create multiple connections)
       if (mbState !== STATE_INIT) {
@@ -122,14 +124,14 @@ export class AdapterDriver {
         })
     }
 
-    // try to read data
     function readData() {
       client
         .readHoldingRegisters(0, 10) //.
         .then(data => {
           mbState = STATE_GOOD_READ
           mbStatus = 'Modbus read success'
-          console.log(mbStatus, data.buffer)
+          const arr = [...data.buffer] // convert buffer to array
+          console.log(mbStatus, arr)
         })
         .catch(error => {
           mbState = STATE_FAIL_READ
