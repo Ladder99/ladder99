@@ -2,19 +2,19 @@
 
 ## Check Status
 
-You can check the status of the Ladder99 services with `l99 list`, e.g. -
+You can check the status of the Ladder99 services with `l99 status`, e.g. -
 
 ```bash
-$ l99 list
-NAMES       STATUS                         PORTS
-adapter     Up 34 seconds
-agent       Up 32 seconds                  0.0.0.0:5000->5000/tcp
-dozzle      Up 5 hours                     0.0.0.0:8080->8080/tcp
-grafana     Up 42 seconds                  0.0.0.0:80->3000/tcp
-pgadmin     Up 44 seconds                  0.0.0.0:5050->5050/tcp
-portainer   Up 43 seconds                  8000/tcp, 9443/tcp, 0.0.0.0:9000->9000/tcp
-postgres    Up 42 seconds                  0.0.0.0:5432->5432/tcp
-relay       Up 44 seconds
+$ l99 status
+project    service     STATUS          PORTS
+ladder99   adapter     Up 25 seconds
+ladder99   agent       Up 25 seconds   0.0.0.0:5000->5000/tcp
+ladder99   dozzle      Up 24 seconds   0.0.0.0:8080->8080/tcp
+ladder99   grafana     Up 23 seconds   0.0.0.0:80->3000/tcp
+ladder99   pgadmin     Up 22 seconds   0.0.0.0:5050->5050/tcp
+ladder99   portainer   Up 23 seconds   8000/tcp, 9443/tcp, 0.0.0.0:9000->9000/tcp
+ladder99   postgres    Up 22 seconds   127.0.0.1:5432->5432/tcp
+ladder99   relay       Up 25 seconds
 ```
 
 ## Stop Service
@@ -27,10 +27,10 @@ l99 stop adapter
 
 ## Check Output
 
-You can check the output of a service with the `l99 logs` command - e.g. 
+You can check the output of a service with the `l99 logs` command, with an optional '-t' flag to show timestamps - e.g. 
 
 ```bash
-$ l99 logs adapter
+$ l99 logs -t adapter
 2022-09-17T01:04:04.252494579Z
 2022-09-17T01:04:04.252710485Z Ladder99 Adapter
 2022-09-17T01:04:04.252756783Z Polls/subscribes to data, writes to cache, transforms to SHDR,
