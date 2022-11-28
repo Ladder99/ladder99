@@ -15,7 +15,7 @@ services:
     container_name: adapter
 
     # note: must specify build OR image in setup's compose-overrides.yaml.
-    # build: ./services/adapter # see Dockerfile in this folder
+    # build: ./adapter # see Dockerfile in this folder
     # image: ladder99/adapter:0.8.0-arm # an alternative to the build process
 
     # set this to give permission to access hardware (e.g. dymo scale in usb port).
@@ -36,10 +36,10 @@ services:
       # L99_DRIVER_FOLDER: /data/drivers
       L99_SCHEMA_FOLDER: /data/schemas
     volumes:
-      - ./setups/$SETUP:/data/setup # has setup.yaml etc
-      - ./setups/$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
-      # - ./setups/$SETUP/volumes/adapter/drivers:/data/drivers # has custom js drivers
-      - ./setups/$SETUP/volumes/adapter/schemas:/data/schemas # has custom schema yamls
+      - ../setups/$SETUP:/data/setup # has setup.yaml etc
+      - ../setups/$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
+      # - ../setups/$SETUP/volumes/adapter/drivers:/data/drivers # has custom js drivers
+      - ../setups/$SETUP/volumes/adapter/schemas:/data/schemas # has custom schema yamls
     restart: unless-stopped
     networks:
       - ladder99
@@ -65,9 +65,9 @@ services:
     command: agent run agent.cfg
     # command: agent debug agent.cfg
     volumes:
-      - ./setups/$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
+      - ../setups/$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
     ports:
-      - 5000:5000
+      - '5000:5000'
     restart: unless-stopped
     networks:
       - ladder99
@@ -105,7 +105,7 @@ services:
       #
       # If you mount a local directory or volume to `/archive`, a local
       # copy of the backup will be stored there.
-      - ./setups/$SETUP/volumes/backup:/archive:rw
+      - ../setups/$SETUP/volumes/backup:/archive:rw
       #
       # NOTE: see postgres service labels for pre and post commands etc
       #
@@ -164,12 +164,12 @@ services:
     # see client-mazak for example of running cloudbeaver on x86.
     # see https://hub.docker.com/r/dbeaver/cloudbeaver/tags
     image: dbeaver/cloudbeaver:21.3.5 # use this for x86 etc
-    # build: ./services/cloudbeaver # use this for ARM processors - need to build with Dockerfile
+    # build: ./cloudbeaver # use this for ARM processors - need to build with Dockerfile
     profiles:
       - cloudbeaver
     volumes:
-      # - ./setups/$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
-      - ./setups/$SETUP/volumes/cloudbeaver/workspace:/var/cloudbeaver/workspace
+      # - ../setups/$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
+      - ../setups/$SETUP/volumes/cloudbeaver/workspace:/var/cloudbeaver/workspace
     # need to leave this unspecified here, because clients that use traefik
     # need it that way, and there's no way to remove a port through 
     # overrides yet.
@@ -247,10 +247,10 @@ services:
     volumes:
       # note: grafana.ini is located in /etc/grafana by default -
       # other folders are specified there.
-      - ./setups/$SETUP/volumes/grafana/etc:/etc/grafana
-      - ./setups/$SETUP/volumes/grafana/var:/var/lib/grafana
-      # - ./setups/common/dashboards/grafana:/etc/dashboards
-      - ./volumes/grafana/dashboards:/etc/dashboards
+      - ../setups/$SETUP/volumes/grafana/etc:/etc/grafana
+      - ../setups/$SETUP/volumes/grafana/var:/var/lib/grafana
+      # - ../setups/common/dashboards/grafana:/etc/dashboards
+      - ../volumes/grafana/dashboards:/etc/dashboards
     # as of v7.3, the Grafana Docker image runs with the root group (id 0) instead
     # of the grafana group (id 472), for better compatibility with OpenShift. [?]
     # grafana gives permission error without user:root - not on mac tho. only on arm?
@@ -289,7 +289,7 @@ services:
     volumes:
       #. why z-hue.ini? is it an arbitrary name for hue-overrides.ini?
       # https://stackoverflow.com/questions/57116402/hue-access-to-hdfs-bypass-default-hue-ini
-      - ./setups/$SETUP/volumes/hue/hue.ini:/usr/share/hue/desktop/conf/z-hue.ini
+      - ../setups/$SETUP/volumes/hue/hue.ini:/usr/share/hue/desktop/conf/z-hue.ini
     restart: unless-stopped
     networks:
       - ladder99
@@ -328,7 +328,7 @@ services:
   # note: set PGHOST, PGPORT, etc before running
   meter:
     container_name: meter
-    build: ./services/meter
+    build: ./meter
     profiles:
       - meter
     environment:
@@ -342,8 +342,8 @@ services:
       PGUSER: null
       PGPASSWORD: null
     volumes:
-      - ./setups/$SETUP:/data/setup # has setup.yaml
-      # - ./setups/common/schemas:/data/schemas # has schema-specific folders
+      - ../setups/$SETUP:/data/setup # has setup.yaml
+      # - ../setups/common/schemas:/data/schemas # has schema-specific folders
     restart: unless-stopped
     networks:
       - ladder99
@@ -367,9 +367,9 @@ services:
       - 1883:1883
     command: mosquitto -c /mosquitto/config/mosquitto.conf -v # run in verbose mode
     volumes:
-      - ./setups/$SETUP/volumes/mosquitto/config:/mosquitto/config # has mosquitto.conf
-      - ./setups/$SETUP/volumes/mosquitto/data:/mosquitto/data
-      - ./setups/$SETUP/volumes/mosquitto/log:/mosquitto/log
+      - ../setups/$SETUP/volumes/mosquitto/config:/mosquitto/config # has mosquitto.conf
+      - ../setups/$SETUP/volumes/mosquitto/data:/mosquitto/data
+      - ../setups/$SETUP/volumes/mosquitto/log:/mosquitto/log
     restart: unless-stopped
     networks:
       - ladder99
@@ -400,7 +400,7 @@ services:
       # for nodered to work. if don't, nodered will keep resetting and sending
       # messages over and over, flooding the mqtt adapter.
       #. any better way?
-      - ./setups/$SETUP/volumes/nodered/data:/data:rw
+      - ../setups/$SETUP/volumes/nodered/data:/data:rw
     logging:
       driver: 'json-file'
       options:
@@ -428,10 +428,10 @@ services:
       # - '5050:80' # for dpage/pgadmin4
     volumes:
       # for biarms/pgadmin4
-      - ./setups/$SETUP/volumes/pgadmin:/pgadmin
-      - ./setups/$SETUP/volumes/pgadmin/config:/pgadmin/config
+      - ../setups/$SETUP/volumes/pgadmin:/pgadmin
+      - ../setups/$SETUP/volumes/pgadmin/config:/pgadmin/config
       # for dpage/pgadmin4
-      # - ./setups/$SETUP/volumes/pgadmin:/var/lib/pgadmin
+      # - ../setups/$SETUP/volumes/pgadmin:/var/lib/pgadmin
     environment:
       # for dpage/pgadmin4
       PGADMIN_DEFAULT_EMAIL: null
@@ -449,14 +449,14 @@ services:
   # playback device recordings - uses the recorder service
   play:
     container_name: play
-    build: ./services/recorder
+    build: ./recorder
     profiles:
       - play
     command: recorder --mode play
     volumes:
-      - ./setups/$SETUP:/data/setup # has setup-specific recordings folder
-      # - ./setups/common/schemas:/data/schemas # has schema-specific recordings folder
-      - ./volumes/adapter/schemas:/data/schemas # has schema-specific recordings folder
+      - ../setups/$SETUP:/data/setup # has setup-specific recordings folder
+      # - ../setups/common/schemas:/data/schemas # has schema-specific recordings folder
+      - ../volumes/adapter/schemas:/data/schemas # has schema-specific recordings folder
     restart: unless-stopped
     networks:
       - ladder99
@@ -479,7 +479,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./setups/$SETUP/volumes/portainer/data:/data
+      - ../setups/$SETUP/volumes/portainer/data:/data
     restart: unless-stopped
     networks:
       - ladder99
@@ -522,12 +522,12 @@ services:
       # # put here so it's consistent across platforms.
       # # see https://lifesaver.codes/answer/chmod-changing-permissions-of-var-lib-postgresql-data-permission-denied-116
       # PGDATA: /var/lib/postgresql/data/pgdata
-      # that didn't work. but can use wsl terminal to run ./start ?
+      # that didn't work. but can use wsl terminal to run l99 start ?
       # see https://github.com/bitnami/bitnami-docker-postgresql/issues/237#issuecomment-672249407
       # and https://stackoverflow.com/questions/66753829/how-to-move-workspacea-simple-project-from-windows-file-system-mnt-to-linu
       # this seems to work, to use a subdir
     volumes:
-      - ./setups/$SETUP/volumes/postgres/data:/var/lib/postgresql/data
+      - ../setups/$SETUP/volumes/postgres/data:/var/lib/postgresql/data
       - backup:/backup # a docker volume - see backup service and end of this file
     labels:
       # see backup service for more settings
@@ -547,7 +547,7 @@ services:
   # record device messages for future playback
   record:
     container_name: record
-    build: ./services/recorder
+    build: ./recorder
     profiles:
       - record
     command: recorder --mode record
@@ -558,9 +558,9 @@ services:
       # L99_MODULES_FOLDER: /data/modules
       L99_SCHEMAS_FOLDER: /data/schemas
     volumes:
-      - ./setups/$SETUP:/data/setup # has setup-specific recordings folder
-      # - ./setups/common/schemas:/data/schemas # has schema-specific recordings folder
-      - ./volumes/adapter/schemas:/data/schemas # has schema-specific recordings folder
+      - ../setups/$SETUP:/data/setup # has setup-specific recordings folder
+      # - ../setups/common/schemas:/data/schemas # has schema-specific recordings folder
+      - ../volumes/adapter/schemas:/data/schemas # has schema-specific recordings folder
     restart: unless-stopped
     networks:
       - ladder99
@@ -575,7 +575,7 @@ services:
   relay:
     container_name: relay
     # note: must specify build OR image in setup's compose-overrides.yaml.
-    # build: ./services/relay
+    # build: ./relay
     profiles:
       - relay
     # this runs a process manager that passes SIGTERM to your app gracefully
@@ -606,7 +606,7 @@ services:
     networks:
       - ladder99
     volumes:
-      - ./setups/$SETUP:/data/setup # has setup.yaml etc
+      - ../setups/$SETUP:/data/setup # has setup.yaml etc
     logging:
       options:
         max-size: '20m'
@@ -674,7 +674,7 @@ services:
     # command: agent run agent.cfg
     # command: agent debug agent.cfg
     # volumes:
-    #   - ./setups/$SETUP/volumes/simulation:/data/agent # should have agent.cfg, agent.xml
+    #   - ../setups/$SETUP/volumes/simulation:/data/agent # should have agent.cfg, agent.xml
     ports:
       - 5001:5000
     restart: unless-stopped
@@ -691,13 +691,13 @@ services:
   # cf simulation service
   simulator:
     container_name: simulator
-    build: ./services/simulator
+    build: ./simulator
     profiles:
       - simulator
     # ports:
     #   - 4334:4334
     # volumes:
-    #   - ./setups/$SETUP/volumes/simulator/node:/home/node
+    #   - ../setups/$SETUP/volumes/simulator/node:/home/node
     restart: unless-stopped
     networks:
       - ladder99
@@ -734,10 +734,10 @@ services:
       #   chmod 600 ../client-oxbox/volumes/traefik/acme.json
       #. is that correct?
       - /var/run/docker.sock:/var/run/docker.sock
-      # - ./setups/$SETUP/volumes/traefik/traefik.toml:/traefik.toml
-      # - ./setups/$SETUP/volumes/traefik/traefik_dynamic.toml:/traefik_dynamic.toml
-      # - ./setups/$SETUP/volumes/traefik/traefik.toml:/shared/traefik.toml
-      # - ./setups/$SETUP/volumes/traefik/traefik_dynamic.toml:/shared/traefik_dynamic.toml
+      # - ../setups/$SETUP/volumes/traefik/traefik.toml:/traefik.toml
+      # - ../setups/$SETUP/volumes/traefik/traefik_dynamic.toml:/traefik_dynamic.toml
+      # - ../setups/$SETUP/volumes/traefik/traefik.toml:/shared/traefik.toml
+      # - ../setups/$SETUP/volumes/traefik/traefik_dynamic.toml:/shared/traefik_dynamic.toml
       # can't do this as docker-compose will create acme.json as a directory - 
       # "docker-compose only creates folders, acme.json can be a folder name, 
       # it's impossible for it to know you want it to be a file. So if that file isn't 
@@ -745,9 +745,9 @@ services:
       # and if you try manually creating a blank file and set chmod 600 on it, 
       # traefik will complain.
       # https://williamhayes.medium.com/traefik-letsencrypt-and-acme-json-configuration-problems-5780c914351d
-      # - ./setups/$SETUP/volumes/traefik/acme.json:/acme.json
+      # - ../setups/$SETUP/volumes/traefik/acme.json:/acme.json
       # so need to mount the directory?
-      - ./setups/$SETUP/volumes/traefik/:/etc/traefik/
+      - ../setups/$SETUP/volumes/traefik/:/etc/traefik/
     networks:
       - ladder99
     logging:
