@@ -14,11 +14,9 @@ newgrp $USER # go back to original group
 
 # start docker service
 
-# Docker Engine starts automatically on DEB-based distributions. 
-#. On RPM-based distributions, you need to start it manually using 
-# the appropriate systemctl or service command.
-# On Debian and Ubuntu, the Docker service is configured to start on 
-# boot by default. To automatically start Docker and Containerd on boot 
-# for other distros, use the commands below:
+# On Debian and Ubuntu, the Docker service is configured to start on boot by default. 
+# To automatically start Docker and Containerd on boot for other distros 
+# (eg RPM-based), use the commands below:
+
 # sudo systemctl enable docker.service
 # sudo systemctl enable containerd.service

@@ -1,9 +1,7 @@
 #!/bin/bash
-# install linux applications
 
 # upgrade all packages
-sudo apt update
-sudo apt -y full-upgrade
+sudo apt update && sudo apt -y full-upgrade
 
 # install mosquitto and mosquitto_pub and _sub
 sudo apt install mosquitto

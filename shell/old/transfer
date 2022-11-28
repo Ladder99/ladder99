@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 usage="
 Usage: ./transfer FILE USER HOST
 

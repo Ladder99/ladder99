@@ -1,7 +1,8 @@
 #!/bin/bash
 # install node and dependencies
 
-# install node v15 - includes replaceAll method
+# install node 
+# v15 includes replaceAll method
 curl -sL https://deb.nodesource.com/setup_15.x | sudo -E bash -
 sudo apt install -y nodejs
 sudo npm install -g npm@latest
