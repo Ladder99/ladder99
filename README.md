@@ -20,15 +20,15 @@ Ladder99 is developed by MRIIOT, your agile digital transformation partners.
 
 ## Quick Start
 
-In a terminal (or use Git Bash for Windows),
+Install Docker, then in a terminal (or use Git Bash for Windows),
 
 ```bash
-shell/install
+shell/install/cli
 source ~/.bashrc
 l99 start
 ```
 
-Then goto http://localhost:5000 for MTConnect Agent and http://localhost for Grafana dashboard.
+Then goto http://localhost:5000/current for MTConnect Agent and http://localhost for Grafana dashboard.
 
 ## Folders
 
@@ -37,6 +37,7 @@ Then goto http://localhost:5000 for MTConnect Agent and http://localhost for Gra
 - services - source code for different sections of the pipeline - adapter, relay, etc.
 - setups - configuration settings
 - shell - shell scripts
+- volumes - data for the services
 
 Adapter plugins are defined in `services/adapter/src/drivers`.
 
