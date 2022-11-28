@@ -126,6 +126,7 @@ export class AdapterDriver {
 
     function readData() {
       for (let input of inputs) {
+        console.log(`Modbus reading`, input)
         const { key, address, count } = input // eg { key: 'pcgood', address: 5008, count: 2 }
         client
           .readHoldingRegisters(address, count)
