@@ -3,19 +3,19 @@
 # install ladder99 cli (l99) by amending the ~/.bashrc file.
 # works on linux bash and git bash for windows.
 
-echo 'Adding PATH extension and L99 variables to ~/.bashrc...'
+echo "Adding PATH extension and L99 variables to ~/.bashrc..."
 
 # amend the .bashrc file
 echo >> ~/.bashrc
 echo "# added by ladder99 $(date -Iseconds)" >> ~/.bashrc
-echo 'export PATH=$PATH:'`pwd` >> ~/.bashrc
-echo 'export L99_HOME='`pwd` >> ~/.bashrc
-echo 'export L99_SETUP' >> ~/.bashrc
+echo "export PATH=\$PATH:`pwd`/shell" >> ~/.bashrc
+echo "export L99_HOME=`pwd`" >> ~/.bashrc
+echo "export L99_SETUP" >> ~/.bashrc
 
 # use the configuration in the setups/example folder
 # (writes to .l99_setup file)
 shell/use example
 
-echo Done.
+echo "Done."
 echo "Please run the file by typing in 'source ~/.bashrc', or logout and log back in."
 echo "Then try 'l99'."

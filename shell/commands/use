@@ -23,11 +23,11 @@ SETUP_FOLDER=setups/$SETUP
 
 # handle missing setup folder
 if [ ! -e $SETUP_FOLDER ]; then
-    echo Setup folder \'$SETUP_FOLDER\' does not exist. Please try again.
+    echo "Setup folder '$SETUP_FOLDER' does not exist. Please try again."
     exit 1
 fi
 
 # save setup to a file
 echo $SETUP > .l99_setup
 
-echo Using \'$SETUP\' for Ladder99 setup.
+echo "Using '$SETUP' for Ladder99 setup, as found in the 'setups' folder."

@@ -15,6 +15,9 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
+# source folder
+EXAMPLE=setups/example
+
 # get setup name
 SETUP=$1
 shift
@@ -24,17 +27,14 @@ SETUP_FOLDER=setups/$SETUP
 
 # check if setup dir already exists
 if [ -d "$SETUP_FOLDER" ]; then
-  echo Error: a folder for $SETUP already exists at $SETUP_FOLDER. 
-  echo Please try a different setup name.
+  echo "Error: a folder for $SETUP already exists at $SETUP_FOLDER."
+  echo "Please try a different setup name."
   exit 1
 fi
 
-# save setup to file also
-echo $SETUP > .l99_setup
-
 # copy setup folder
 echo
-echo Copying from \'setups/example\'...
+echo "Copying from '$EXAMPLE'..."
 
 # need to specify everything explicitly here - 
 # alternative is installing rsync on gitbash, or ignoring cp errors, 
@@ -54,10 +54,8 @@ echo Copying from \'setups/example\'...
 # && rm -rf $SETUP_FOLDER/volumes/postgres \
 # && rm -rf $SETUP_FOLDER/volumes/portainer \
 
-EXAMPLE=$L99_HOME/setups/example
-
 # note:
-# we copy agent folder for simple agent.cfg and agent.xml files
+# we copy agent folder for the agent.cfg and agent.xml files
 # we copy grafana/etc for some dashboard pages
 
 mkdir $SETUP_FOLDER \
@@ -70,5 +68,5 @@ mkdir $SETUP_FOLDER \
 && cp $EXAMPLE/docker-compose.yaml $SETUP_FOLDER \
 && cp $EXAMPLE/README.md $SETUP_FOLDER \
 && cp $EXAMPLE/setup.yaml $SETUP_FOLDER \
-&& echo Done. Try \'l99 start\' \
-&& echo
+&& shell/commands/use $SETUP \
+&& echo "Done. Try 'l99 start'"

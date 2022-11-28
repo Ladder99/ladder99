@@ -6,7 +6,9 @@
 
 You can install it from https://git-scm.com/downloads.
 
-Open a terminal window - if on Windows, run **Git Bash** to get a more Linux-like environment -
+Open a terminal window -
+
+If on Windows, run **Git Bash** to get a more Linux-like environment -
 
 ![](../_images/git-bash.jpg)
 
@@ -43,16 +45,17 @@ First, go to a good working directory and install the Ladder99 pipeline source c
 cd ~
 git clone https://github.com/Ladder99/ladder99
 cd ladder99
-./install
+shell/install
 ```
 
 e.g.
 
 ```
-$ ./install
+$ shell/install
 Adding PATH extension and L99 variables to ~/.bashrc...
+Using 'example' for Ladder99 setup.
 Done.
-Please source the file by typing in 'source ~/.bashrc', or logout and log back in.
+Please run the file by typing in 'source ~/.bashrc', or logout and log back in.
 Then try 'l99'.
 ```
 
@@ -68,7 +71,7 @@ source ~/.bashrc
 
 ## Run the Ladder99 CLI
 
-The Ladder99 console interface is a script named 'l99' (that's a small L, not a one). You can run it to see a list of available commands -
+The Ladder99 console interface is a script named 'l99' (that's a small 'L' not the number '1'). You can run it to see a list of available commands, and the setup you are currently using -
 
 ```
 $ l99
@@ -99,4 +102,6 @@ Examples
     l99 stop agent
     l99 update
     l99 init my-company
+
+Current Ladder99 setup is 'example', as found in the 'setups' folder. 
 ```

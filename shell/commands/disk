@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Print disk usage for current setup.
+
+# get setup folder
+SETUP=$(cat .l99_setup)
+SETUP_DIR=setups/$SETUP
+
+# note: sudo isn't always available, eg in git bash environment, so test
+if hash sudo 2>/dev/null; then
+    SUDO=sudo
+else
+    SUDO=
+fi
+
+# show all disk usage
+echo
+echo "Total disk usage"
+df -h /
+
+# show usage for all setup dirs
+echo
+echo "Space used by different Ladder99 setups"
+CMD="$SUDO du -d1 -h setups"
+$CMD
+
+# show usage for the setup volumes
+echo
+echo "Space used by '$SETUP' setup"
+CMD="$SUDO du -d1 -h $SETUP_DIR/volumes/"
+$CMD

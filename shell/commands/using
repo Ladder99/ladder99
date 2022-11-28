@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# report the currently used setup
+
+SETUP=$(cat .l99_setup)
+echo "Using '$SETUP' for Ladder99 setup, as found in the 'setups' folder."

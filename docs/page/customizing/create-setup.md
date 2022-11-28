@@ -9,7 +9,15 @@ Clone the example setup with this command - you can use your company name here, 
 
     l99 init <your-company-name>
 
-This will create a directory at `setups/<your-company-name>` for the configuration and data for your setup.
+This will create a directory at `setups/<your-company-name>` for the configuration and data for your setup - e.g.
+
+```bash
+$ l99 init my-company
+
+Copying from 'setups/example'...
+Using 'my-company' for Ladder99 setup.
+Done. Try 'l99 start'
+```
 
 
 ## Add Agent / Machine

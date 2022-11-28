@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#. get service version from package.json - use jq to extract?
+#. get default service version from package.json - use jq to extract
 
 usage="
 Usage: l99 build SERVICE VERSION
@@ -22,19 +22,22 @@ Example
 # show help if count of params is zero
 if [ $# -eq 0 ]; then
     echo "$usage"
-    exit 1
+    exit
 fi
 
+# define variables
 SERVICE=$1
 VERSION=$2
 USERNAME=ladder99
 TAG=$USERNAME/$SERVICE:$VERSION
+SERVICE_DIR=services/$SERVICE
 
-# pushd ./services/$SERVICE
-pushd $L99_HOME/services/$SERVICE
+echo "Building an image as specified by the Dockerfile in '$SERVICE_DIR'..."
+pushd $SERVICE_DIR
 docker build --tag $TAG .
 popd 
+
 docker image ls $USERNAME/$SERVICE
 
-# push image to docker hub
+echo "Pushing the image to Docker Hub..."
 docker push $TAG
