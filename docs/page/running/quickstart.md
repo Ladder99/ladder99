@@ -6,9 +6,8 @@ For tech-savy users who want to get the pipeline up and running quickly, you can
 cd ~
 git clone https://github.com/Ladder99/ladder99
 cd ladder99
-./install
-l99 use example
-l99 start base
+shell/install
+l99 start
 ```
 
 This will take several minutes to build the pipeline.
