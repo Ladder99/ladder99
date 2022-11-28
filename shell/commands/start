@@ -73,7 +73,7 @@ fi
 if [ -e $ENVFILE ]; then
     # use .env file if there
     ARGS="$ARGS --env-file $ENVFILE"
-elif [ "$SETUP_NAME" = "example" ]; then
+elif [ "$SETUP" = "example" ]; then
     # copy the example .env file and use that
     cp $ENVFILE_EXAMPLE $ENVFILE
     ARGS="$ARGS --env-file $ENVFILE"
@@ -100,7 +100,6 @@ done
 # base cmd
 # note: -p specifies project name, as shown in docker management consoles - 
 # otherwise it uses the parent folder name (ie 'services').
-# BASE_CMD="docker-compose --project-name ladder99 $ARGS $PROFILE_FLAGS"
 BASE_CMD="docker compose --project-name ladder99 $ARGS $PROFILE_FLAGS"
 
 # pull cmd
