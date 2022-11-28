@@ -126,13 +126,12 @@ export class AdapterDriver {
 
     function readData() {
       for (let input of inputs) {
-        console.log(`Modbus reading`, input)
         const { key, address, count } = input // eg { key: 'pcgood', address: 5008, count: 2 }
         client
           .readHoldingRegisters(address, count)
           .then(data => {
             mbState = STATE_GOOD_READ
-            mbStatus = 'Modbus read success'
+            mbStatus = `Modbus read ${address} success`
             const arr = [...data.buffer] // convert buffer to array
             console.log(mbStatus, arr)
             //. handle different data types, eg uint16, uint32, float etc
@@ -140,7 +139,7 @@ export class AdapterDriver {
           })
           .catch(error => {
             mbState = STATE_FAIL_READ
-            mbStatus = 'Modbus read error ' + error.message
+            mbStatus = `Modbus read ${address} error ` + error.message
             console.log(mbStatus)
           })
       }
