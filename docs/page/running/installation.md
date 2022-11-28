@@ -6,9 +6,10 @@
 
 You can install it from https://git-scm.com/downloads.
 
-Open a terminal window -
 
-If on Windows, run **Git Bash** to get a more Linux-like environment -
+## Open Terminal
+
+Open a terminal window - if on Windows, run **Git Bash** to get a more Linux-like environment -
 
 ![](../_images/git-bash.jpg)
 
@@ -26,17 +27,6 @@ docker version
 If not there, install it - https://docs.docker.com/get-docker/.
 
 
-## Install Docker Compose
-
-Ladder99 uses **Docker Compose** to orchestrate the different services - check if you have it with
-
-```bash
-docker-compose version
-```
-
-Install or upgrade it at https://docs.docker.com/compose/install/.
-
-
 ## Install Ladder99
 
 First, go to a good working directory and install the Ladder99 pipeline source code by cloning the code from GitHub and running the install script -
@@ -45,15 +35,15 @@ First, go to a good working directory and install the Ladder99 pipeline source c
 cd ~
 git clone https://github.com/Ladder99/ladder99
 cd ladder99
-shell/install
+shell/install/cli
 ```
 
 e.g.
 
 ```
-$ shell/install
+$ shell/install/cli
 Adding PATH extension and L99 variables to ~/.bashrc...
-Using 'example' for Ladder99 setup.
+Using 'example' for Ladder99 setup, as found in the 'setups' folder.
 Done.
 Please run the file by typing in 'source ~/.bashrc', or logout and log back in.
 Then try 'l99'.
@@ -71,7 +61,7 @@ source ~/.bashrc
 
 ## Run the Ladder99 CLI
 
-The Ladder99 console interface is a script named 'l99' (that's a small 'L' not the number '1'). You can run it to see a list of available commands, and the setup you are currently using -
+The Ladder99 console interface is a script named 'l99' (with a small 'L' not the number '1'). You can run it to see a list of available commands, and the setup you are currently using -
 
 ```
 $ l99
