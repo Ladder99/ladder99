@@ -8,18 +8,19 @@ SETUP_FOLDER=setups/$SETUP
 
 # handle missing setup folder
 if [ ! -e $SETUP_FOLDER ]; then
-    echo No setup specified - please run the \'l99 use SETUP\' command.
+    echo "No setup specified - please run the 'l99 use SETUP' command."
     echo
     exit 1
 fi
 
-# pull ladder99 repo then setup repo
+# git pull ladder99 repo then setup repo
 # set credential cache while we're at it so user doesn't have to
 # keep entering passcode - 360000=100h.
-# do both pulls in same command so if first fails, won't do second - 
+# note: we do both pulls in same command so if first fails, won't do second - 
 # because it was easy to miss the failed first command.
-CMD="git pull && (cd $SETUP_FOLDER && git config credential.helper 'cache --timeout=360000' && git pull)"
-echo $CMD
-bash -c "$CMD"
-
-echo Done.
+echo "Updating ladder99 repo..."
+git pull \
+&& echo \
+&& echo "Updating '$SETUP' repo (and setting credential cache timeout while we're at it)..." \
+&& (cd $SETUP_FOLDER && git config credential.helper 'cache --timeout=360000') \
+&& (cd $SETUP_FOLDER && git pull)

@@ -21,13 +21,13 @@ To stop all running services, use 'l99 stop all'
 
 if [ $# -eq 0 ]; then
     echo "$usage"
-    exit 1
+    exit
 fi
 
 SERVICES=$*
 
 if [ "$SERVICES" = "all" ]; then
-  echo Stopping all ladder99 services...
+  echo "Stopping all ladder99 services..."
   # CMD="docker stop $(docker ps -q)"
   # --force = no confirmation
   # docker system prune --force \
@@ -37,7 +37,7 @@ if [ "$SERVICES" = "all" ]; then
   # stop services from the ladder99 compose yaml
   IDS=$(docker ps -q --filter label=com.docker.compose.project=ladder99)
   if [ "$IDS" = "" ]; then
-    echo All ladder99 services already stopped.
+    echo "All ladder99 services already stopped."
   else
     docker stop $IDS
   fi

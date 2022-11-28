@@ -11,7 +11,7 @@ OPTIONS is '--offline' to run without trying to pull Docker images.
 
 SERVICES      space-delim list of services or profiles to start
   base        run all relevant services for a setup - eg adapter, agent, etc.
-              this is the default.
+              (this is the default)
 
 Examples
     l99 start agent
@@ -19,15 +19,10 @@ Examples
     l99 start
 "
 
-# bug: needed to run this as /bin/bash, NOT /bin/sh - led to bug on encabulator
-# where it wasn't parsing [[ $setup = .* ]] correctly.
-# some discussion here
-# https://unix.stackexchange.com/questions/379464/why-does-this-script-work-in-the-terminal-but-not-from-a-file
-
 # show help if count of params is zero
 # if [ $# -eq 0 ]; then
 #     echo "$usage"
-#     exit 1
+#     exit
 # fi
 if [ "$1" = "-h" ]; then
     echo "$usage"
@@ -35,7 +30,7 @@ if [ "$1" = "-h" ]; then
 fi
 
 # get mode - detached or console
-# removed console mode option because hitting ctrl-c stopped ALL other services
+# removed console mode option because hitting ctrl-c stops ALL other services!
 MODE=--detach
 
 # handle options
@@ -50,7 +45,7 @@ SETUP_FOLDER=setups/$SETUP
 
 # handle missing setup folder
 if [ ! -e $SETUP_FOLDER ]; then
-    echo Setup folder $SETUP_FOLDER does not exist - please run the \'l99 use SETUP\' command.
+    echo "Setup folder $SETUP_FOLDER does not exist - please run the 'l99 use SETUP' command."
     echo
     exit 1
 fi
@@ -84,12 +79,12 @@ elif [ "$SETUP_NAME" = "example" ]; then
     ARGS="$ARGS --env-file $ENVFILE"
 else
     # otherwise create a new .env file and stop
-    echo No .env file found - copying from default...
+    echo "No .env file found - copying from default..."
     cp $ENVFILE_EXAMPLE $ENVFILE
     echo
-    echo PLEASE SET INITIAL PASSWORDS IN .env FILE -
-    echo For example, run \'nano $ENVFILE\', set the Grafana and Postgres passwords,
-    echo then re-run the \'l99 start\' command. 
+    echo "PLEASE SET INITIAL PASSWORDS IN .env FILE -"
+    echo "For example, run 'nano $ENVFILE', set the Grafana and Postgres passwords,"
+    echo "then re-run the 'l99 start' command."
     echo
     exit 1
 fi
@@ -128,4 +123,4 @@ echo "$FULL_CMD"
 bash -c "$FULL_CMD"
 
 echo
-echo Run \'l99 list\' to check status of services.
+echo "Run 'l99 status' to check status of services."
