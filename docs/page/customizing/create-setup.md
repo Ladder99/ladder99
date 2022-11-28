@@ -16,7 +16,7 @@ $ l99 init my-company
 
 Copying from 'setups/example'...
 Using 'my-company' for Ladder99 setup.
-Done. Try 'l99 start'
+Done. Try 'l99 start'.
 ```
 
 
