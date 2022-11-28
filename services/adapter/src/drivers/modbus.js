@@ -132,7 +132,7 @@ export class AdapterDriver {
           .then(data => {
             mbState = STATE_GOOD_READ
             mbStatus = `Modbus read ${address} success`
-            const arr = [...data.buffer] // convert buffer to array
+            const arr = [...data.buffer] // convert buffer to array //. is this a buffer of bytes? in which case need to convert to int16 array - how?
             console.log(mbStatus, arr)
             //. handle different data types, eg uint16, uint32, float etc
             setValue(key, arr[0]) // just use first value for now
