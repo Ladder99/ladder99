@@ -7,28 +7,29 @@ The Ladder99 console interface is a script named 'l99' (with a small 'L' not the
 
 You can run it to see a list of available commands, and the setup you are currently using -
 
-```
+```plain
 $ l99
-
 Usage: l99 COMMAND [PARAMS]
 
 Run a Ladder99 command.
 
 COMMAND
-    disk      show disk usage for a setup
+    build     build a Docker image for a ladder99 service
+    disk      show disk usage for current setup
+    download  clone a git repo to use as current setup
     init      create a new setup folder
-    list      list running services
     logs      follow and search logs of a running or stopped service
     restart   restart services
     start     start services
+    status    show status of running services
     stop      stop running services
-    update    update source code for ladder99 and a given setup
+    update    update source code for ladder99 and current setup
     use       specify setup to use with l99 commands
 
-Run the command or with -h for help on that command.
+Run the command with -h for help on that command.
 
 Examples
-    l99 list
+    l99 status
     l99 use example
     l99 disk
     l99 start agent
@@ -37,7 +38,7 @@ Examples
     l99 update
     l99 init my-company
 
-Current Ladder99 setup is 'example', as found in the 'setups' folder. 
+Using 'example' for Ladder99 setup, as found in the 'setups' folder.
 ```
 
 
@@ -55,7 +56,7 @@ l99 start
 
 You'll see output like the following when the services are started - 
 
-```
+```plain
 Recreating adapter   ... done
 Recreating agent     ... done
 Recreating grafana   ... done

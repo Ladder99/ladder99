@@ -11,7 +11,7 @@ Clone the example setup with this command - you can use your company name here, 
 
 This will create a directory at `setups/<your-company-name>` for the configuration and data for your setup - e.g.
 
-```bash
+```plain
 $ l99 init my-company
 
 Copying from 'setups/example'...
@@ -65,7 +65,7 @@ Ladder99 will first ask you to edit a `.env` file to set the initial passwords -
 
 Edit the Grafana and Postgres passwords, save the file, and run again -
 
-    l99 start base
+    l99 start
     
 
 ## Check Dashboard

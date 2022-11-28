@@ -29,7 +29,7 @@ If not there, install it - https://docs.docker.com/get-docker/.
 
 ## Install Ladder99
 
-First, go to a good working directory and install the Ladder99 pipeline source code by cloning the code from GitHub and running the install script -
+Now go to a good working directory and install the Ladder99 pipeline source code by cloning the code from GitHub and running the install script -
 
 ```bash
 cd ~
@@ -40,7 +40,7 @@ shell/install/cli
 
 This should show output like so -
 
-```
+```plain
 Adding PATH extension and L99 variables to ~/.bashrc...
 Using 'example' for Ladder99 setup, as found in the 'setups' folder.
 Done.
@@ -51,9 +51,11 @@ Then try 'l99'.
 
 ## Finish the Installation
 
-Now to load the Ladder99 environment variables into your shell,
+Now load the Ladder99 environment variables into your shell,
 
 ```bash
 source ~/.bashrc
 ```
+
+and that's it - the next page shows how to run Ladder99. 
 
