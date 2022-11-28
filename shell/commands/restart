@@ -13,10 +13,12 @@ See 'l99 start' for help.
 # show help if count of params is zero
 if [ $# -eq 0 ]; then
     echo "$usage"
-    exit 1
+    exit
 fi
 
 SERVICES=$*
 
-echo Stopping services...
-l99 stop $SERVICES && l99 start $SERVICES
+echo "Stopping services..." \
+&& l99 stop $SERVICES \
+&& echo "Starting services..." \
+&& l99 start $SERVICES

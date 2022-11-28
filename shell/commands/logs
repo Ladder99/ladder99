@@ -15,7 +15,7 @@ Follow Docker service logs, and optionally search for a pattern using grep.
 # show help if count of params is zero
 if [ $# -eq 0 ]; then
     echo "$usage"
-    exit 1
+    exit
 fi
 
 # handle options
@@ -26,17 +26,19 @@ do
     shift
 done
 
-SERVICE=$1
-PATTERN=$2
+SERVICE=$1 # eg 'adapter'
+PATTERN=$2 # eg 'error'
 
 # docker logs -t $SERVICE &2>1 | grep $PATTERN
 
-# check if PATTERN is empty
+# if PATTERN is empty then show all output, else grep it case insensitively
 if [ -z "$PATTERN" ]; then
     docker logs $OPTIONS --follow $SERVICE
 else
     docker logs $OPTIONS --follow $SERVICE | grep -i $PATTERN
 fi
+
+#. find all log files -
 
 # find docker service id
 # ID=`docker inspect --format={{.Id}} $SERVICE`
