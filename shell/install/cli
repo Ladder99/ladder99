@@ -14,7 +14,7 @@ echo "export L99_SETUP" >> ~/.bashrc
 
 # use the configuration in the setups/example folder
 # (writes to .l99_setup file)
-shell/use example
+shell/commands/use example
 
 echo "Done."
 echo "Please run the file by typing in 'source ~/.bashrc', or logout and log back in."
