@@ -31,20 +31,19 @@ if [ $# -eq 0 ]; then
     exit
 fi
 
-# define variables
 SERVICE=$1
 VERSION=$2
+PLATFORMS=${3:-"linux/amd64,linux/arm64,linux/arm/v7"}
+
 USERNAME=ladder99
 TAG=$USERNAME/$SERVICE:$VERSION
 SERVICE_DIR=services/$SERVICE
 
-PLATFORMS=${3:-"linux/amd64,linux/arm64,linux/arm/v7"}
-
 echo "Building an image as specified by the Dockerfile in '$SERVICE_DIR'..."
-echo "Platforms is " $PLATFORMS
-docker buildx build --tag $TAG --platform $PLATFORMS --load $SERVICE_DIR
-
-docker image ls $USERNAME/$SERVICE
-
-echo "Pushing the image to Docker Hub..."
-docker push $TAG
+echo "Platform is" $PLATFORMS
+docker buildx build --tag $TAG --platform $PLATFORMS $SERVICE_DIR \
+&& echo \
+&& echo "Listing $USERNAME/$SERVICE images..." \
+&& docker image ls $USERNAME/$SERVICE \
+&& echo "Pushing the image to Docker Hub..." \
+&& docker push $TAG
