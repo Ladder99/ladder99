@@ -1,7 +1,7 @@
 # Create Setup
 
 Now let's create a new setup so we can hook it up to another machine - which could be one of your own, if you have an MTConnect-compatible device. If you have not already make sure all L99 services have been stopped before continuing with
-```
+```bash
 l99 stop all
 ```
 
