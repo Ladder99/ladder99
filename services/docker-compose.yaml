@@ -14,9 +14,11 @@ services:
   adapter:
     container_name: adapter
 
-    # note: must specify build OR image in setup's compose-overrides.yaml.
-    # build: ./adapter # see Dockerfile in this folder
-    # image: ladder99/adapter:0.8.0-arm # an alternative to the build process
+    # note: to build from source, use the 'build' directive instead of 'image',
+    # and run 'l99 start --offline' to avoid pulling image
+    # see https://hub.docker.com/repository/docker/ladder99/adapter
+    image: ladder99/adapter:0.10.1
+    # build: ./adapter # see services/adapter/Dockerfile
 
     # set this to give permission to access hardware (e.g. dymo scale in usb port).
     #. security hole - leave off for now, until need dymo driver - or do per setup.
@@ -41,6 +43,9 @@ services:
       # - ../setups/$SETUP/volumes/adapter/drivers:/data/drivers # has custom js drivers
       - ../setups/$SETUP/volumes/adapter/schemas:/data/schemas # has custom schema yamls
     restart: unless-stopped
+    # this runs a process manager that passes SIGTERM to your app gracefully
+    # see https://maximorlov.com/process-signals-inside-docker-containers/
+    init: true
     networks:
       - ladder99
     logging:
@@ -69,6 +74,9 @@ services:
     ports:
       - '5000:5000'
     restart: unless-stopped
+    # this runs a process manager that passes SIGTERM to your app gracefully
+    # see https://maximorlov.com/process-signals-inside-docker-containers/
+    init: true
     networks:
       - ladder99
     logging:
@@ -574,8 +582,14 @@ services:
   # fetch data from agent and send to db
   relay:
     container_name: relay
-    # note: must specify build OR image in setup's compose-overrides.yaml.
-    # build: ./relay
+
+    # note: to build from source, use the 'build' directive instead of 'image', 
+    # and run 'l99 start --offline' to avoid pulling image
+    # see https://hub.docker.com/repository/docker/ladder99/relay
+    image: ladder99/relay:0.10.1
+    # image: $RELAY_IMAGE
+    # build: ./relay # see services/relay/Dockerfile
+
     profiles:
       - relay
     # this runs a process manager that passes SIGTERM to your app gracefully
