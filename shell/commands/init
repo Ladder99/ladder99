@@ -45,13 +45,14 @@ echo "Copying from '$EXAMPLE'..."
 # we copy grafana/etc for some dashboard pages
 
 mkdir $SETUP_FOLDER \
+&& mkdir $SETUP_FOLDER/services \
 && mkdir $SETUP_FOLDER/volumes \
 && mkdir $SETUP_FOLDER/volumes/grafana \
 && cp -R $EXAMPLE/volumes/agent $SETUP_FOLDER/volumes/agent/ \
 && cp -R $EXAMPLE/volumes/grafana/etc $SETUP_FOLDER/volumes/grafana/etc/ \
 && cp $EXAMPLE/.gitignore $SETUP_FOLDER \
 && cp $EXAMPLE/.env-example $SETUP_FOLDER \
-&& cp $EXAMPLE/docker-compose.yaml $SETUP_FOLDER \
+&& cp $EXAMPLE/services/docker-compose.yaml $SETUP_FOLDER/services \
 && cp $EXAMPLE/README.md $SETUP_FOLDER \
 && cp $EXAMPLE/setup.yaml $SETUP_FOLDER \
 && shell/commands/use $SETUP \
