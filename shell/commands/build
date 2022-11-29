@@ -41,6 +41,13 @@ USERNAME=ladder99
 TAG=$USERNAME/$SERVICE:$VERSION
 SERVICE_DIR=services/$SERVICE
 
+# create a multiplatform buildx builder
+# see https://stackoverflow.com/questions/60080264/docker-cannot-build-multi-platform-images-with-docker-buildx
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+docker buildx rm l99builder
+docker buildx create --name l99builder --driver docker-container --use
+docker buildx inspect --bootstrap
+
 echo "Building an image as specified by the Dockerfile in '$SERVICE_DIR'..."
 echo "Platform is" $PLATFORMS
 docker buildx build --tag $TAG --platform $PLATFORMS --push $SERVICE_DIR \
