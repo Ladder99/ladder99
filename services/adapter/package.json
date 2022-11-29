@@ -1,6 +1,6 @@
 {
   "name": "ladder99-adapter",
-  "version": "0.9.1",
+  "version": "0.10.1",
   "description": "Ladder99 Adapter - transfers data from devices to Agent",
   "type": "module",
   "target": "es2017",
