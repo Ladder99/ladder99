@@ -1,6 +1,9 @@
 # Create Setup
 
-Now let's create a new setup so we can hook it up to another machine - which could be one of your own, if you have an MTConnect-compatible device. 
+Now let's create a new setup so we can hook it up to another machine - which could be one of your own, if you have an MTConnect-compatible device. If you have not already make sure all L99 services have been stopped before continuing with
+```
+l99 stop all
+```
 
 
 ## Clone Example Setup
@@ -59,7 +62,7 @@ Then you can start the pipeline with
 
     l99 start base
 
-Ladder99 will first ask you to edit a `.env` file to set the initial passwords -
+Ladder99 will first ask you to edit a `.env` file to set the initial passwords. You can skip this command and start again to use default passwords -
 
     nano setups/<your-company-name>/.env
 
