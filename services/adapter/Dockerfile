@@ -58,9 +58,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 # see https://www.reddit.com/r/Readarr/comments/ixajkk/working_docker_image_for_raspberry_pi_os_buster/glh774f/
 # added iputils-ping so can use ping from within container for testing
 # added net-tools so can use route for testing
-# added openssl for node-opc package
+#. add openssl for node-opc package?
 RUN apt-get update -y && apt-get install --fix-missing -y nodejs npm libudev-dev \
-  libusb-1.0-0 libusb-1.0-0-dev pkg-config iputils-ping net-tools openssl 
+  libusb-1.0-0 libusb-1.0-0-dev pkg-config iputils-ping net-tools
 
 WORKDIR /usr/app
 ENV NODE_ENV production

@@ -41,9 +41,9 @@ SERVICE_DIR=services/$SERVICE
 
 echo "Building an image as specified by the Dockerfile in '$SERVICE_DIR'..."
 echo "Platform is" $PLATFORMS
-docker buildx build --tag $TAG --platform $PLATFORMS $SERVICE_DIR \
+docker buildx build --tag $TAG --platform $PLATFORMS --push $SERVICE_DIR \
 && echo \
 && echo "Listing $USERNAME/$SERVICE images..." \
-&& docker image ls $USERNAME/$SERVICE \
-&& echo "Pushing the image to Docker Hub..." \
-&& docker push $TAG
+&& docker image ls $USERNAME/$SERVICE
+# && echo "Pushing the image to Docker Hub..." \
+# && docker push $TAG
