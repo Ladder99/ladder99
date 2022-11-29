@@ -33,7 +33,9 @@ fi
 
 SERVICE=$1
 VERSION=$2
-PLATFORMS=${3:-"linux/amd64,linux/arm64,linux/arm/v7"}
+# arm/v7 is 32bit for older pi's
+# PLATFORMS=${3:-"linux/amd64,linux/arm64,linux/arm/v7"}
+PLATFORMS=${3:-"linux/amd64,linux/arm64"}
 
 USERNAME=ladder99
 TAG=$USERNAME/$SERVICE:$VERSION
