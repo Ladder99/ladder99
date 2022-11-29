@@ -1,21 +1,27 @@
 #!/bin/bash
 
-#. get default service version from package.json - use jq to extract
+# note: it's best to build each arch image separately, then combine them,
+# because had problems with builds crashing.
+#. better now?
+
+#. get default service version from package.json - use jq to extract?
+# but if package.json out of date
 
 usage="
-Usage: l99 build SERVICE VERSION
+Usage: l99 build SERVICE VERSION [PLATFORMS]
 
-Build a Docker image and push up to Docker hub.
+Build a multiplatform Docker image and push up to Docker hub.
 
-SERVICE   service name - adapter, meter, relay, etc.
-VERSION   service version - e.g. 0.8.1-arm, latest, etc.
+SERVICE     service name - adapter, meter, relay, etc.
+VERSION     service version - e.g. 0.10.1, latest, etc.
+PLATFORMS   platforms to build - leave off for default
 
 Might need to login to Docker Hub first, in order to push image there -
 
     docker login --username ladder99
 
 Example
-    l99 build adapter 0.8.0-arm
+    l99 build adapter 0.10.1
     l99 build relay latest
 "
 
@@ -32,10 +38,11 @@ USERNAME=ladder99
 TAG=$USERNAME/$SERVICE:$VERSION
 SERVICE_DIR=services/$SERVICE
 
+PLATFORMS=${3:-"linux/amd64,linux/arm64,linux/arm/v7"}
+
 echo "Building an image as specified by the Dockerfile in '$SERVICE_DIR'..."
-pushd $SERVICE_DIR
-docker build --tag $TAG .
-popd 
+echo "Platforms is " $PLATFORMS
+docker buildx build --tag $TAG --platform $PLATFORMS --load $SERVICE_DIR
 
 docker image ls $USERNAME/$SERVICE
 
