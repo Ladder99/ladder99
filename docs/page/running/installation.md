@@ -1,11 +1,15 @@
 # Installation
+</br>
+</br>
 
 ## Assumptions
-<pre>
-Debian/Ubuntu Linux
-ARM based processor
-</pre>
 
+Debian/Ubuntu Linux
+
+ARM based processor
+
+</br>
+</br>
 
 ## Step 1: Install Docker & Docker Compose
 
