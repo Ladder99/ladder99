@@ -57,7 +57,7 @@ Replace this with your agent info and comment out the devices listed - i.e.
 
 Then you can start the pipeline with
 
-    l99 start base
+    l99 start
 
 Ladder99 will first ask you to edit a `.env` file to set the initial passwords -
 

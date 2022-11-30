@@ -5,7 +5,7 @@ The main configuration file is `setup.yaml`, located in the project setup folder
 Note: YAML stands for "yet another markup language", and is a way of providing structured data to applications in text files. 
 
 
-## Setup's setup.yaml
+## setup.yaml
 
 First note the **adapter** section - this specifies the device drivers to feed to our Agent. 
 
@@ -44,10 +44,6 @@ relay:
         - id: host # must match id in agent.xml
           alias: Host # as displayed in grafana - can change. without this, just use device name?
           # ignore: true # can specify this to turn device recording on/off
-          # could override settings per dataitem -
-          # dataitems:
-          #   - id: host-os
-          #     retention: 1d
 
     - alias: Mazak5701 # assigned agent alias - don't change!
       url: http://mtconnect.mazakcorp.com:5701
@@ -55,27 +51,12 @@ relay:
         - id: d1 # must match id in agent.xml
           alias: MazakMill12345 # used in path expressions - no spaces!
           # ignore: true # set true to hide device in dashboards, pause recording, etc
-          # dataitem step translations
-          translations:
-            base: axes
-            Cload: load-index
-            Sload: load-spindle
-          # ignore or set retention for individual dataitems
-          dataitems:
-            - id: d1-auto_time
-              ignore: true
-            - id: d1-total_time
-              ignore: true
-            - id: d1-cut_time
-              ignore: true
-            - id: d1-total_auto_cut_time
-              ignore: true
 ```
 
-Link to the full setup.yaml for the example setup [here](../../setups/example/setup.yaml).
+Link to the full setup.yaml for the example setup [here](../../../setups/example/setup.yaml).
 
 
-## Setup's docker-compose.yaml
+## docker-compose.yaml
 
 Another file with configuration settings is `docker-compose.yaml`. This contains extra configuration for Docker - in this case, mostly just telling it to run all services with a profile name of 'base'. 
 
@@ -129,7 +110,7 @@ services:
       - base
 ```
 
-This lets us run `l99 start base` to run all the base services.
+This lets us run `l99 start` or `l99 start base` to run all the base services.
 
-Link to the full file [here](../../setups/example/docker-compose.yaml).
+Link to the full file [here](../../../setups/example/docker-compose.yaml).
 

@@ -47,7 +47,6 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
    :maxdepth: 1
    :caption: Reference
 
-   page/reference/commands
    page/reference/services
    page/reference/adapter
    page/reference/agent
