@@ -26,8 +26,7 @@ If not there, install it - https://docs.docker.com/get-docker/.
 
 ## Docker Compose
 
-**Docker Compose** allows us to run several Docker services at once. Docker Desktop now comes with Docker Compose, so you may already have it on your system - check with
-
+**Docker Compose** allows us to run several Docker services at once.
 ```bash
 docker compose version
 ```
