@@ -62,7 +62,7 @@ Another file with configuration settings is `docker-compose.yaml`. This contains
 
 ```yaml
 # docker-compose overrides
-# overrides and extends the values in ladder99/docker-compose.yaml
+# overrides and extends the values in ladder99/services/docker-compose.yaml
 
 # see other client repos for ideas for adding information to services.
 # typically, would add 'profiles: - base' to each service used.
@@ -112,5 +112,5 @@ services:
 
 This lets us run `l99 start` or `l99 start base` to run all the base services.
 
-Link to the full file [here](../../../setups/example/docker-compose.yaml).
+Link to the full file [here](../../../setups/example/services/docker-compose.yaml).
 
