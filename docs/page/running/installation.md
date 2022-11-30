@@ -29,6 +29,12 @@ If not there, install it - https://docs.docker.com/get-docker/.
 
 ## Install Ladder99
 
+If you dont already have a user created on the system do so now. We suggest naming the user after the client/company.
+```bash
+sudo adduser {customer-name}
+```
+Logout and login to the new user for the L99 install.
+
 Now go to a good working directory and install the Ladder99 pipeline source code by cloning the code from GitHub and running the install script -
 
 ```bash
