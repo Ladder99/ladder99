@@ -1,6 +1,6 @@
 # Services
 
-Ladder99 is made up of several services that work together to form a data pipeline. Some have user-facing web pages, which can be accessed through the URLs below-
+Ladder99 is made up of several services that work together to form a data pipeline. Some have user-facing web pages, which can be accessed through the URLs below -
 
 | Service | Description | URL |
 |---------|------------|---------|
@@ -15,34 +15,9 @@ Ladder99 is made up of several services that work together to form a data pipeli
 | pgAdmin | manages postgres database | http://localhost:5050 |
 
 
-<!-- ## List Services
-
-To see the list of running services and their status,
-
-```
-l99 list
-```
-
-e.g.
-
-```
-$ l99 list
-NAMES      STATUS        PORTS
-adapter    Up 16 hours
-agent      Up 12 hours   0.0.0.0:5000->5000/tcp
-dozzle     Up 16 hours   0.0.0.0:8080->8080/tcp
-grafana    Up 16 hours   0.0.0.0:80->3000/tcp
-pgadmin    Up 16 hours   0.0.0.0:5050->5050/tcp
-postgres   Up 16 hours   0.0.0.0:5432->5432/tcp
-relay      Up 16 hours
-```
-
-The url and port listed on the left is what you would enter in the browser to access that service - e.g. for Dozzle it's http://localhost:8080. -->
-
-
 ## docker-compose.yaml
 
-The main configuration file for Ladder99 is in `ladder99/docker-compose.yaml` - this tells Docker how to run the different services. Each service has a section, and they are listed alphabetically in the file - 
+The main configuration file for Ladder99 is in `ladder99/services/docker-compose.yaml` - this tells Docker how to run the different services. Each service has a section, and they are listed alphabetically in the file - 
 
 ```yaml
 # docker compose file for the complete ladder99 pipeline.
@@ -62,11 +37,7 @@ services:
   # convert machine data to shdr and send to agent
   adapter:
     container_name: adapter
-    # image: ladder99/adapter:latest # use this if build docker image and push to hub
-    build: ./adapter # see Dockerfile in this folder
-    # set this to give permission to access hardware (e.g. dymo scale in usb port).
-    #. security hole - leave off for now, until need dymo driver.
-    # privileged: true
+    image: ladder99/adapter:0.10.1
     profiles:
       - adapter
     environment:
@@ -85,5 +56,7 @@ services:
         max-size: '20m'
 ```
 
-Link to the full file [here](../../docker-compose.yaml).
+Note that each Ladder99 setup also has a `docker-compose.yaml` file, which overrides any settings in this main `docker-compose.yaml` file. 
+
+Link to the full file [here](../../../services/docker-compose.yaml).
 

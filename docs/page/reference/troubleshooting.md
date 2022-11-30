@@ -4,7 +4,7 @@
 
 You can check the status of the Ladder99 services with `l99 status`, e.g. -
 
-```bash
+```plain
 $ l99 status
 project    service     STATUS          PORTS
 ladder99   adapter     Up 25 seconds
@@ -29,7 +29,7 @@ l99 stop adapter
 
 You can check the output of a service with the `l99 logs` command, with an optional '-t' flag to show timestamps - e.g. 
 
-```bash
+```plain
 $ l99 logs -t adapter
 2022-09-17T01:04:04.252494579Z
 2022-09-17T01:04:04.252710485Z Ladder99 Adapter
