@@ -60,31 +60,6 @@ Click **XML** to see the underlying XML data -
 When you're done, hit Ctrl+C in the terminal window.
 
 
-<!-- ## Custom Setup
-
-To run with your own custom setup, point the Agent to a folder containing your agent.cfg configuration file, e.g.
-
-    docker run -it --init --rm -p 5000:5000 \
-        -v $(pwd)/setups/test/print-apply/volumes/agent:/data/agent \
-        --workdir /data/agent \
-        ladder99/agent:latest agent debug 
-        
--->
-
-
-<!-- ## XML Output
-
-To see the original XML output, you can omit or comment out the files sections of the agent.cfg file -
-
-![](../_images/agent-xml.jpg) -->
-
-
-<!-- ## HTML Styles
-
-The HTML output is defined by the XSL and CSS in the [pipeline/agent/styles folder](https://github.com/Ladder99/ladder99/tree/main/pipeline/agent/styles), which transforms the default XML output. -->
-
-
 ## Source Code
 
 The MTConnect Agent is an open source C++ application. To learn more about it, see https://github.com/mtconnect/cppagent.
-

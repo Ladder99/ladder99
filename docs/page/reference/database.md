@@ -2,7 +2,7 @@
 
 ## Data Model
 
-The database is made up of user-facing views and their underlying tables -
+The database is made up of user-facing **views** and their underlying **tables** -
 
 Views (in the **public** schema):
 - **devices** - a list of available devices
