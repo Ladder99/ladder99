@@ -38,8 +38,7 @@ This diagram shows the sequence of operations for data going from a device throu
 
 Device schemas are defined in the `schemas` folder, and typically contain:
 
-<!-- - model.yaml - defines the structure of the xml that is included in devices.xml, which is fed to the mtconnect agent -->
-- inputs.yaml - defines how to parse mqtt messages using the mqtt-json plugin, which writes values to a key-value cache
-- outputs.yaml - defines the shdr strings that are calculated from the cache and sent on to the agent
+- inputs.yaml - specifies what values to read from the device - the format of this file is driver-specific
+- outputs.yaml - defines the shdr strings that are calculated from the cache and sent on to the Agent
 - types.yaml - (optional) used by inputs and outputs.yaml
 
