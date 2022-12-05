@@ -6,6 +6,8 @@ The Adapter reads data from a device and translates it into SHDR, a simple key-v
 
 ## How it works
 
+![img](../_images/adapter-driver.png)
+
 ### Adapter
 
 The Adapter reads the setup.yaml, iterates over the device configs, each of which includes one or more sources. Each source can use a different driver to read data from a device.
@@ -27,18 +29,12 @@ Each Adapter has a TCP server which talks to the Agent. It sends SHDR data which
 For MQTT, an MqttProvider can subscribe to an external MQTT Broker, then an MqttSubscriber can subscribe to certain messages from it. 
 
 
-## Diagram
-
-This diagram shows the sequence of operations for data going from a device through the adapter and driver to the agent -
-
-![img](../_images/adapter-driver.png)
-
-
 ## Defining Schemas
 
-Device schemas are defined in the `schemas` folder, and typically contain:
+Device schemas are defined in a `schemas` folder, and typically contain:
 
 - inputs.yaml - specifies what values to read from the device - the format of this file is driver-specific
 - outputs.yaml - defines the shdr strings that are calculated from the cache and sent on to the Agent
 - types.yaml - (optional) used by inputs and outputs.yaml
 
+The Adapter first looks for these files in `setups/<SETUP>/volumes/adapter/schemas/<SCHEMA>`, then in `services/adapter/src/schemas/<SCHEMA>`. This way, setups can direct drivers as needed, or default to a base schema.
