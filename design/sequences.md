@@ -2,6 +2,27 @@
 
 Lifecycles of Adapter plugins
 
+## General
+
+```mermaid
+sequenceDiagram
+
+participant device as Device
+participant adapter as Adapter
+participant driver as Driver
+participant cache as Cache
+participant agent as Agent
+participant user as User
+
+adapter -->> driver: start
+driver -->> device: subscribe/poll
+device -->> driver: msg
+driver -->> cache: set(key, value)
+cache -->> agent: SHDR string
+agent -->> user: XML <DataItems />
+
+```
+
 ## MQTT Plugin
 
 ```mermaid
@@ -16,7 +37,7 @@ participant agent as Agent
 participant user as User
 
 device -->> server: register
-adapter -->> plugin: init
+adapter -->> plugin: start
 plugin -->> server: connect
 server -->> plugin: acknowledge
 plugin -->> server: subscribe
@@ -42,7 +63,7 @@ participant agent as Agent
 participant user as User
 
 device -->> server: register
-adapter -->> plugin: init
+adapter -->> plugin: start
 plugin -->> server: query
 server -->> plugin: OPC msg
 plugin -->> cache: set(key, value)
@@ -65,7 +86,7 @@ participant agent as Agent
 participant user as User
 
 device -->> server: register
-adapter -->> plugin: init
+adapter -->> plugin: start
 plugin -->> server: query
 server -->> plugin: CPC msg
 plugin -->> cache: set(key, value)
