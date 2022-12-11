@@ -10,14 +10,13 @@
 import ModbusRTU from 'modbus-serial' // see https://github.com/yaacov/node-modbus-serial
 
 // Modbus state constants
-//. use ints
-const STATE_INIT = 'Init'
-const STATE_IDLE = 'Idle'
-const STATE_NEXT = 'Next' //. ?
-const STATE_GOOD_READ = 'Good (read)'
-const STATE_FAIL_READ = 'Fail (read)'
-const STATE_GOOD_CONNECT = 'Good (connect)'
-const STATE_FAIL_CONNECT = 'Fail (connect)'
+const STATE_INIT = 1
+const STATE_IDLE = 2
+const STATE_NEXT = 3
+const STATE_GOOD_READ = 4
+const STATE_FAIL_READ = 5
+const STATE_GOOD_CONNECT = 6
+const STATE_FAIL_CONNECT = 7
 
 // Modbus TCP configuration values
 const mbId = 1 //. ?
