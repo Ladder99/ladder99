@@ -125,25 +125,30 @@ export class AdapterDriver {
 
     function readData() {
       for (let input of inputs) {
-        const { key, address, count } = input // eg { key: 'pcgood', address: 5008, count: 2 }
-        client
-          .readHoldingRegisters(address, count)
-          .then(data => {
-            mbState = STATE_GOOD_READ
-            mbStatus = `Modbus read ${address} success`
-            const arr = [...data.buffer] // convert buffer to array of bytes?
-            //. handle different data types, eg uint16, int32, float etc
-            // const arr = new Uint16Array(data.buffer) // convert buffer to array
-            console.log(mbStatus, arr)
-            const value = arr[0] | (arr[1] << 8) //. try convert to 16-bit int
-            console.log('Modbus value', value)
-            setValue(key, value)
-          })
-          .catch(error => {
-            mbState = STATE_FAIL_READ
-            mbStatus = `Modbus read ${address} error ` + error.message
-            console.log(mbStatus)
-          })
+        // extract input properties, with default values
+        // eg { key: 'l1-pcall', address: 5000, type: 'holding', datatype: 'uint32' }
+        const { key, address, type = 'holding', datatype = 'uint16' } = input
+        if (type === 'holding') {
+          const count = datatype === 'uint32' ? 2 : 1
+          client
+            .readHoldingRegisters(address, count)
+            .then(data => {
+              mbState = STATE_GOOD_READ
+              mbStatus = `Modbus read ${address} success`
+              const arr = [...data.buffer] // convert buffer to array of bytes?
+              //. handle different data types, eg uint16, int32, float etc
+              // const arr = new Uint16Array(data.buffer) // convert buffer to array
+              console.log(mbStatus, arr)
+              const value = arr[0] | (arr[1] << 8) //. try convert to 16-bit int
+              console.log('Modbus value', value)
+              setValue(key, value)
+            })
+            .catch(error => {
+              mbState = STATE_FAIL_READ
+              mbStatus = `Modbus read ${address} error ` + error.message
+              console.log(mbStatus)
+            })
+        }
       }
     }
 
