@@ -1,5 +1,8 @@
 #!/bin/bash
 
+#. this is not tested yet, but is the preferred approach for building x-platform
+# images, over the `build` script, which builds all platforms at same time.
+
 # note: it's best to build each arch image separately, then combine them,
 # because had problems with builds crashing.
 # it's still an issue 2022-11 because one build crashing causes others to stop midway,
