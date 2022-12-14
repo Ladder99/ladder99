@@ -1,6 +1,11 @@
 # Adapter Driver
 
-To develop a new adapter driver, eg for a device named 'foo', first we'll need a new setup to do some development with - 
+Say we have a device named 'foo' and want to develop an Adapter driver for it. 
+
+
+## Make Setup and Files
+
+First we'll need a new setup to do some development with - 
 
 ```
 l99 init test-foo
@@ -55,7 +60,7 @@ outputs:
 The driver will read the inputs.yaml file to know what to read, will write the values to the Adapter cache, and the cache will output the value as SHDR to the Agent. 
 
 
-In `setup.yaml`, add
+In `setup.yaml`, add the following, with the host value pointing to the device -
 
 ```
     - id: f1 # must match id in agent.xml
@@ -78,5 +83,43 @@ In `agent.cfg`, add
     Host = adapter
     Port = 7910
   }
+```
+
+
+## Driver Code
+
+For an example driver to borrow from, see `services/adapter/src/drivers/modbus.js` - note how it sets the 'avail' dataitem when it connects successfully - 
+
+```
+          setValue('avail', 'AVAILABLE') // connected successfully
+```
+
+This writes 'AVAILABLE' to the cache at 'f1-avail', which then writes the output value for 'f1-avail' to the Agent. 
+
+
+## Running the Pipeline
+
+To run the pipeline, 
+
+```
+l99 start
+```
+
+To watch the output, 
+
+```
+l99 logs adapter
+```
+
+To restart the adapter,
+
+```
+l99 restart adapter
+```
+
+To stop the adapter,
+
+```
+l99 stop adapter
 ```
 
