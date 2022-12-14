@@ -502,14 +502,11 @@ services:
   # store structure and time-series data
   postgres:
     container_name: postgres
-    # image: timescale/timescaledb:2.3.0-pg13
     image: timescale/timescaledb:2.7.0-pg13
     command: postgres -c 'max_connections=50' # need for grafana pages with lots of queries
     profiles:
       - postgres
-    # need this - commented it out and relay no longer worked.
     ports:
-      # - $PGPORT:5432/tcp # turn this on in setup compose-overrides.yaml if needed
       - 127.0.0.1:$PGPORT:5432/tcp # this way, only localhost can access the port
     environment:
       # the PostgreSQL image uses these environment variables.
