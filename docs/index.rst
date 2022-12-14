@@ -47,6 +47,7 @@ Welcome to the documentation for **Ladder99** - an open-source data pipeline con
    :maxdepth: 1
    :caption: Developing
 
+   page/developing/adapters
    page/developing/remote-setup
 
 .. toctree::
