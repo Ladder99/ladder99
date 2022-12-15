@@ -1,4 +1,8 @@
-// run this with `node modbus-test.js`
+// run this with
+//   cd ladder99/services/adapter
+//   npm install
+//   cd src/drivers
+//   node modbus-test.js
 
 import { AdapterDriver } from './modbus.js'
 
