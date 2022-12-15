@@ -137,8 +137,8 @@ export class AdapterDriver {
               mbStatus = `Modbus read ${address} success`
               const value = datatype === 'uint32'
                 ? +data.buffer.readUInt32BE(0).toString()
-                // FIXME: What is the type of `status`, `fault`, `warn`, `nlanes`? Chris says `16-bit WORD`. `data.buffer.toString()` does not work (obviously).
-                : data.buffer.toString()
+                // TODO: We might want to set `datatype` of `status`, `fault`, `warn`, `nlanes` to `hex`.
+                : +`0x${data.buffer.toString('hex')}`
 
               console.log('Modbus value', value)
               setValue(key, value)
