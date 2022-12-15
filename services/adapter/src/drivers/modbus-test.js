@@ -24,7 +24,13 @@ driver.start({
   source: { connect: { host: '192.168.2.249', port: 502 } }, // for cct test
   schema: {
     inputs: {
-      inputs: [{ key: 'status', address: 2100 }],
+      inputs: [
+        { key: 'status', address: 2100 },
+        { key: 'fault', address: 2101 },
+        { key: 'warn', address: 2102 },
+        { key: 'nlanes', address: 3000 },
+        { key: 'l1-pcall', address: 5000, datatype: 'uint32' },
+      ],
     },
   },
 })
