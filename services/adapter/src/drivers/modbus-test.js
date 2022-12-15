@@ -22,5 +22,9 @@ driver.start({
   // source: { connect: { host: '10.1.10.250', port: 502 } }, // no such host
   // source: { connect: { host: '192.168.2.250', port: 502 } }, // for cct test
   source: { connect: { host: '192.168.2.249', port: 502 } }, // for cct test
-  schema: {},
+  schema: {
+    inputs: {
+      inputs: [{ key: 'status', address: 2100 }],
+    },
+  },
 })
