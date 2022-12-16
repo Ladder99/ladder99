@@ -29,17 +29,31 @@ const datatypeCounts = {
   int16be: 1,
   uint32be: 2,
   int32be: 2,
+  uint16le: 1,
+  int16le: 1,
+  uint32le: 2,
+  int32le: 2,
   floatbe: 2,
   floatle: 2,
   doublebe: 4,
   doublele: 4,
 }
 
+// Buffer methods to use for diff datatypes
+// in node,
+// Buffer.from([1,2]) // <Buffer 01 02>
+// Buffer.from([1,2]).readUInt16BE(0) // 258
+// Buffer.from([1,2]).readUInt16BE(0).toString() // '258'
+// Buffer.from([1,2])['readUInt16BE'](0) // 258
 const datatypeMethods = {
   uint32be: 'readUInt32BE',
   uint16be: 'readUInt16BE',
   int16be: 'readInt16BE',
   int32be: 'readInt32BE',
+  uint32le: 'readUInt32LE',
+  uint16le: 'readUInt16LE',
+  int16le: 'readInt16LE',
+  int32le: 'readInt32LE',
   floatbe: 'readFloatBE',
   floatle: 'readFloatLE',
   doublebe: 'readDoubleBE',
