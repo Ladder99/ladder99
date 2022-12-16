@@ -124,12 +124,14 @@ export class AdapterDriver {
     }
 
     function readData() {
+      console.log('Modbus reading data...')
       for (let input of inputs) {
         // extract input properties, with default values
         // eg { key: 'l1-pcall', address: 5000, type: 'holding', datatype: 'uint32' }
         const { key, address, type = 'holding', datatype = 'uint16' } = input
         if (type === 'holding') {
           const count = datatype === 'uint32' ? 2 : 1
+          console.log(`Modbus reading ${address} (${count} registers)...`)
           client
             .readHoldingRegisters(address, count)
             .then(data => {
