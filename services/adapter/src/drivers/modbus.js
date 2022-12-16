@@ -137,17 +137,11 @@ export class AdapterDriver {
             .then(data => {
               mbState = STATE_GOOD_READ
               mbStatus = `Modbus read ${address} success`
-              const arr = [...data.buffer] // convert buffer to array of bytes?
-              //. handle different data types, eg uint16, int32, float etc
-              // const arr = new Uint16Array(data.buffer) // convert buffer to array - nowork?
-              console.log(mbStatus, arr)
-              // const value = arr[0] | (arr[1] << 8) //. try convert to 16-bit int
-              // const value =
-              //   arr[0] | (arr[1] << 8) | (arr[2] << 16) | (arr[3] << 24) //. try convert to 32-bit int
-              const value =
-                count === 1
-                  ? arr[0] | (arr[1] << 8) //. convert to 16-bit int
-                  : arr[0] | (arr[1] << 8) | (arr[2] << 16) | (arr[3] << 24) //. convert to 32-bit int
+              const value = datatype === 'uint32'
+                ? +data.buffer.readUInt32BE(0).toString()
+                // TODO: We might want to set `datatype` of `status`, `fault`, `warn`, `nlanes` to `hex`.
+                : +`0x${data.buffer.toString('hex')}`
+
               console.log('Modbus value', value)
               setValue(key, value)
             })
