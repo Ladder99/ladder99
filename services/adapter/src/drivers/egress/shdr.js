@@ -13,7 +13,14 @@ export function getShdr(output, value, timestamp = '') {
   if (typeof value === 'string') {
     value = sanitize(value)
   }
-  const { key, category, type, subType, representation, nativeCode } = output
+  const {
+    key,
+    category,
+    type,
+    subType,
+    representation,
+    nativeCode = '',
+  } = output
   let shdr = ''
   // handle different shdr types and representations
   // this first is the default representation, so don't require category to be defined in outputs.yaml
