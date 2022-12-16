@@ -23,6 +23,29 @@ const mbId = 1 //. ?
 const mbPollingInterval = 1000
 const mbTimeout = 1000
 
+// number of registers to read for diff datatypes
+const datatypeCounts = {
+  uint16be: 1,
+  int16be: 1,
+  uint32be: 2,
+  int32be: 2,
+  floatbe: 2,
+  floatle: 2,
+  doublebe: 4,
+  doublele: 4,
+}
+
+const datatypeMethods = {
+  uint32be: 'readUInt32BE',
+  uint16be: 'readUInt16BE',
+  int16be: 'readInt16BE',
+  int32be: 'readInt32BE',
+  floatbe: 'readFloatBE',
+  floatle: 'readFloatLE',
+  doublebe: 'readDoubleBE',
+  doublele: 'readDoubleLE',
+}
+
 export class AdapterDriver {
   //
   async start({ device, cache, source, schema }) {
@@ -127,21 +150,25 @@ export class AdapterDriver {
       console.log('Modbus reading data...')
       for (let input of inputs) {
         // extract input properties, with default values
-        // eg { key: 'l1-pcall', address: 5000, type: 'holding', datatype: 'uint32' }
-        const { key, address, type = 'holding', datatype = 'uint16' } = input
+        // eg { key: 'l1-pcall', address: 5000, type: 'holding', datatype: 'uint32be' }
+        const { key, address, type = 'holding', datatype = 'uint16be' } = input
         if (type === 'holding') {
-          const count = datatype === 'uint32' ? 2 : 1
-          console.log(`Modbus reading ${address} (${count} registers)...`)
+          const count = datatypeCounts[datatype] // eg 2 for 'uint32be'
+          console.log(
+            `Modbus reading ${address} (${count} registers, datatype ${datatype})...`
+          )
           client
             .readHoldingRegisters(address, count)
             .then(data => {
               mbState = STATE_GOOD_READ
               mbStatus = `Modbus read ${address} success`
-              const value = datatype === 'uint32'
-                ? +data.buffer.readUInt32BE(0).toString()
-                // TODO: We might want to set `datatype` of `status`, `fault`, `warn`, `nlanes` to `hex`.
-                : +`0x${data.buffer.toString('hex')}`
-
+              // const value =
+              //   datatype === 'uint32be'
+              //     ? +data.buffer.readUInt32BE(0).toString()
+              //     : // TODO: We might want to set `datatype` of `status`, `fault`, `warn`, `nlanes` to `hex`.
+              //       +`0x${data.buffer.toString('hex')}`
+              const method = datatypeMethods[datatype] // eg 'readUInt32BE' for 'uint32be'
+              const value = data.buffer[method](0) // eg data.buffer.readUInt32BE(0)
               console.log('Modbus value', value)
               setValue(key, value)
             })
