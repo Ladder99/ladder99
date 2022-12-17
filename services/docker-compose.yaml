@@ -102,7 +102,6 @@ services:
       # By default a container based on this image will run in the UTC timezone. 
       # In case you want to run your cron rules in your local timezone (respecting DST), 
       # you can mount your Docker host's /etc/timezone and /etc/localtime:
-      # (doesn't really matter, as servers are set to UTC anyway)
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       #
@@ -145,7 +144,8 @@ services:
       # unrelated files are not affected by the rotation mechanism.
       # (ie it'll prune only file starting with this prefix)
       BACKUP_RETENTION_DAYS: 7
-      BACKUP_CRON_EXPRESSION: '0 7 * * *' # 7am gmt ~ 1am cst
+      # BACKUP_CRON_EXPRESSION: '0 7 * * *' # 7am gmt ~ 1am cst
+      BACKUP_CRON_EXPRESSION: '0 0 * * *' # 12am local time (cst)
       #
       # cloud backup
       AWS_ENDPOINT: nyc3.digitaloceanspaces.com
