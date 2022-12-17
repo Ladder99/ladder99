@@ -13,7 +13,7 @@ Note: normally the initial password for the admin account is 'admin', but for th
 
 ## Main Page
 
-The dashboard will show the LIVE status of a Mazak CNC machine, as provided by Mazak -
+The dashboard will show the LIVE status of a Mazak CNC machine, as provided by Mazak (note: the machine may be OFF at certain times of the day) -
 
 ![](../_images/grafana-demo.png)
 
