@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# test ladder99 agent paths
-
-CMD="node services/relay/src/test/test.js $*"
-bash -c "$CMD"

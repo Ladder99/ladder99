@@ -1,7 +1,0 @@
-#!/bin/sh
-
-# stop pipeline
-# use when docker-compose is not available, as used in shell/pipeline.
-
-docker stop mosquitto adapter agent recorder
-docker container prune -f
