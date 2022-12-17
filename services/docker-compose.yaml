@@ -145,7 +145,7 @@ services:
       # (ie it'll prune only file starting with this prefix)
       BACKUP_RETENTION_DAYS: 7
       # BACKUP_CRON_EXPRESSION: '0 7 * * *' # 7am gmt ~ 1am cst
-      BACKUP_CRON_EXPRESSION: '0 0 * * *' # 12am local time (cst)
+      BACKUP_CRON_EXPRESSION: '0 1 * * *' # 1am local time (cst)
       #
       # cloud backup
       AWS_ENDPOINT: nyc3.digitaloceanspaces.com
