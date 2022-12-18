@@ -1,6 +1,6 @@
 import fs from 'fs' // node lib
 
-//. make subfolders for idempotent, versions, etc
+//. clean these up
 
 // a migration has key=current version, and a list of files to execute.
 // the current version will be incremented by 1 after the migration is done.
