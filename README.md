@@ -32,7 +32,6 @@ Then goto http://localhost:5000/current for MTConnect Agent and http://localhost
 
 ## Folders
 
-- design - design notes, diagrams
 - docs - website walkthrough and documentation
 - services - source code for different sections of the pipeline - adapter, relay, etc.
 - setups - configuration settings
