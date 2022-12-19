@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:1.7"
+<MTConnectDevices xmlns:m="urn:mtconnect.org:MTConnectDevices:2.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="urn:mtconnect.org:MTConnectDevices:1.7" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:1.7 https://schemas.mtconnect.org/schemas/MTConnectDevices_1.7.xsd">
-  <Header creationTime="2021-09-20T00:00:00+00:00" deviceModelChangeTime="2021-09-20T00:00:00+00:00" sender="localhost" instanceId="12345678" bufferSize="131072" assetBufferSize="1000" assetCount="0" version="1.7.0.3" />
+  xmlns="urn:mtconnect.org:MTConnectDevices:2.0" xsi:schemaLocation="urn:mtconnect.org:MTConnectDevices:2.0 https://schemas.mtconnect.org/schemas/MTConnectDevices_2.0.xsd">
+  <Header creationTime="2021-09-20T00:00:00+00:00" deviceModelChangeTime="2021-09-20T00:00:00+00:00" sender="localhost" instanceId="12345678" bufferSize="131072" assetBufferSize="1000" assetCount="0" version="2.0.0.1" />
   <Devices>
 
     <!-- Host -->

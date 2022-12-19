@@ -16,10 +16,6 @@ services:
       - base
 
   agent:
-    # see https://hub.docker.com/repository/docker/ladder99/agent
-    # note: default image is specified in ladder99/services/docker-compose.yaml -
-    # currently it's a cross-platform image for agent 1.7.
-    # image: ladder99/agent:2.0.0.12_RC23-arm # for arm processors
     profiles:
       - base
 
