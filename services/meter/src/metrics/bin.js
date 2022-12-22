@@ -1,6 +1,8 @@
 // update bins records based on values in history table.
 // eg keep track of total part counts over different time intervals - minute, hour, day.
 
+import * as bins from '../bins.js'
+
 const metricIntervalDefault = 5 // seconds
 
 export class Metric {
@@ -12,6 +14,7 @@ export class Metric {
     this.metric = metric
 
     this.lastStop = null
+    this.lastCount = null
 
     this.me = `Bin ${device.name} -`
     console.log(this.me, `start`)
@@ -48,119 +51,26 @@ export class Metric {
 
     const { countPath, binColumn } = this.metric
 
-    //. we're not trying to replicate the count records here - just updating bin totals via a delta.
-
-    // get last lifetime count, before start time
+    // get latest count value
+    //. bad - if count hasn't been updated in a long time, this could be slow!
     const record = await this.db.getLastRecord(
       this.device.name,
       countPath,
-      start
+      stop
     )
-    // let lifetimeCount = record ? record.value : 0
-    // // console.log(this.me, `lifetimeCount`, lifetimeCount)
-    // // get job counts
-    // //. currently gets from history_float view
-    // const rows = await this.db.getHistory(
-    //   deviceName,
-    //   this.metric.deltaPath,
-    //   start,
-    //   stop
-    // )
+    let latestCount = record ? record.value : 0
 
-    // // console.log(this.me, `job count rows`, rows)
-    // // rows will be like (for start=10:00:00am, stop=10:00:05am)
-    // // time, value
-    // // 9:59:59am, 99
-    // // 10:00:00am, 100
-    // // 10:00:01am, 101
-    // // 10:00:02am, 102
-    // // 10:00:03am, 0
-    // // 10:00:04am, 1
-    // // 10:00:05am, 2
-    // if (rows && rows.length > 1) {
-    //   let previousRow = rows[0] // { time, value }
-    //   const lifetimeRows = []
-    //   for (let row of rows.slice(1)) {
-    //     // get delta from previous value
-    //     const deltaCount = row.value - previousRow.value
-    //     if (deltaCount > 0) {
-    //       lifetimeCount += deltaCount
-    //       // write time, lifetime
-    //       // better to save these up in an array and write all at once, for speed
-    //       // await this.db.writeHistory(
-    //       //   this.device_id,
-    //       //   this.lifetime_id,
-    //       //   row.time.toISOString(),
-    //       //   lifetimeCount
-    //       // )
-    //       const lifetimeRow = {
-    //         node_id: this.device_id,
-    //         dataitem_id: this.lifetime_id,
-    //         time: row.time.toISOString(),
-    //         value: lifetimeCount,
-    //       }
-    //       lifetimeRows.push(lifetimeRow)
-    //     }
-    //     previousRow = row
-    //   }
-    //   // console.log(this.me, `writing lifetime rows`, lifetimeRows)
-    //   await this.db.addHistory(lifetimeRows)
-    // }
-    // // save time for next poll
-    // this.lastStop = stop
+    // get delta
+    const deltaCount = latestCount - this.lastCount
+
+    if (deltaCount > 0) {
+      await bins.add(this.db, this.device.node_id, now, binColumn, deltaCount)
+    }
+
+    // save time for next poll
+    this.lastStop = stop
   }
 
-  // backfill missing partcount records
-  async backfill() {
-    // const deviceName = this.device.name
-    // console.log(this.me, `backfill any missed partcounts`)
-    // const now = new Date()
-    // // get latest lifetime count record
-    // let record = await this.db.getLastRecord(
-    //   deviceName,
-    //   this.metric.lifetimePath,
-    //   now.toISOString()
-    // )
-    // console.log(this.me, `last record`, record)
-    // // if no lifetime record, start from the beginning
-    // if (!record) {
-    //   const record2 = await this.db.getFirstRecord(
-    //     deviceName,
-    //     this.metric.deltaPath
-    //   )
-    //   console.log(this.me, `first record`, record2)
-    //   // no delta data either, so exit
-    //   if (!record2) {
-    //     return
-    //   }
-    //   // record = { time: record2.time, value: 0}
-    //   record = {}
-    //   record.time = record2.time
-    //   record.value = 0
-    // }
-    // const start = record.time.toISOString()
-    // const stop = now.toISOString()
-    // let lifetime = record.value
-    // const rows = await this.db.getHistory(
-    //   deviceName,
-    //   this.metric.deltaPath,
-    //   start,
-    //   stop
-    // ) // gets last one before start also, if any
-    // let previous = rows[0]
-    // for (let row of rows.slice(1)) {
-    //   const delta = row.value - previous.value
-    //   if (delta > 0) {
-    //     lifetime += delta
-    //     await this.db.writeHistory(
-    //       this.device_id,
-    //       this.lifetime_id,
-    //       row.time.toISOString(),
-    //       lifetime
-    //     )
-    //   }
-    //   previous = row
-    // }
-    // console.log(this.me, `backfill done`)
-  }
+  // backfill missing bin records
+  async backfill() {}
 }

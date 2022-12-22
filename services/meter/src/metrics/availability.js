@@ -33,6 +33,7 @@
 // does 'active' / 'available'.
 
 import { DateTime } from 'luxon' // for timezones - see https://moment.github.io/luxon/
+import * as bins from '../bins.js'
 
 const minutes = 60 * 1000 // 60 ms
 const hours = 60 * minutes
@@ -41,7 +42,7 @@ const days = 24 * hours
 // const backfillDefaultStart = 60 * days // ie look this far back for first backfill date, by default
 const backfillDefaultStart = 2 * days // ie look this far back for first backfill date, by default
 const metricIntervalDefault = 60 // seconds
-const resolutions = 'minute,hour,day,week,month,year'.split(',') //. 5min? 15min?
+// const resolutions = 'minute,hour,day,week,month,year'.split(',') //. 5min? 15min?
 
 export class Metric {
   //
@@ -194,11 +195,13 @@ export class Metric {
     const deviceWasActive = await this.getActive(start, stop)
     if (deviceWasActive) {
       console.log(this.me, `increasing active bin`)
-      await this.incrementBins(now, 'active')
+      // await this.incrementBins(now, 'active')
+      await bins.add(this.db, this.device.node_id, now, 'active')
     }
     if (isDuringShift) {
       console.log(this.me, `increasing available bin`)
-      await this.incrementBins(now, 'available')
+      // await this.incrementBins(now, 'available')
+      await bins.add(this.db, this.device.node_id, now, 'available')
     }
     this.previousStopTime = stop
   }
@@ -289,29 +292,30 @@ export class Metric {
     return deviceWasActive
   }
 
-  // increment values in the bins table.
-  // rounds the given time down to nearest min, hour, day, week etc,
-  // and increments the given field for each.
-  // field is eg 'active', 'available'.
-  //. what timezone is time in? what about timeISO?
-  async incrementBins(time, field, delta = 1) {
-    const timeISO = time.toISOString()
-    // rollup counts for different time-scales.
-    // this is an alternative to aggregated queries, which might use in future.
-    for (let resolution of resolutions) {
-      // upsert/increment the given field by delta
-      const sql = `
-        insert into raw.bins (device_id, resolution, time, ${field})
-          values (
-            ${this.device.node_id},
-            ('1 '||'${resolution}')::interval,
-            date_trunc('${resolution}', '${timeISO}'::timestamptz),
-            ${delta}
-          )
-            on conflict (device_id, resolution, time) do
-              update set ${field} = coalesce(raw.bins.${field}, 0) + ${delta};
-      `
-      await this.db.query(sql)
-    }
-  }
+  // //. moving this to bins.js:add
+  // // increment values in the bins table.
+  // // rounds the given time down to nearest min, hour, day, week etc,
+  // // and increments the given field for each.
+  // // field is eg 'active', 'available'.
+  // //. what timezone is time in? what about timeISO?
+  // async incrementBins(time, field, delta = 1) {
+  //   const timeISO = time.toISOString()
+  //   // rollup counts for different time-scales.
+  //   // this is an alternative to aggregated queries, which might use in future.
+  //   for (let resolution of resolutions) {
+  //     // upsert/increment the given field by delta
+  //     const sql = `
+  //       insert into raw.bins (device_id, resolution, time, ${field})
+  //         values (
+  //           ${this.device.node_id},
+  //           ('1 '||'${resolution}')::interval,
+  //           date_trunc('${resolution}', '${timeISO}'::timestamptz),
+  //           ${delta}
+  //         )
+  //           on conflict (device_id, resolution, time) do
+  //             update set ${field} = coalesce(raw.bins.${field}, 0) + ${delta};
+  //     `
+  //     await this.db.query(sql)
+  //   }
+  // }
 }
