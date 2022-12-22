@@ -42,12 +42,22 @@ select
   bins.good_count,
   bins.total_count,
   bins.reject_count,
-  coalesce(bins.good_count::float,0) / nullif(bins.total_count::float,0.0) as quality
+  coalesce(bins.good_count::float,0) / nullif(bins.total_count::float,0.0) as quality,
+
+  total_count / least(
+    extract(epoch from now() - time), 
+    extract(epoch from resolution)
+  ) * 60 as actual_rate, -- ppm
+  reject_count / least(
+    extract(epoch from now() - time), 
+    extract(epoch from resolution)
+  ) * 60 as reject_rate -- ppm
 
   -- bins.actual_rate,
   -- bins.ideal_rate,
   -- coalesce(bins.actual_rate::float,0) / nullif(bins.ideal_rate::float,0.0) as performance
   --. add reject_rate, reject_performance ?
+  --. add performance as secondary metric?
 
 from raw.bins
 join raw.nodes as devices on raw.bins.device_id = devices.node_id;
@@ -59,6 +69,7 @@ join raw.nodes as devices on raw.bins.device_id = devices.node_id;
 
 drop view if exists metrics_secondary;
 
+--. add performance as secondary metric?
 create or replace view metrics_secondary as
 select 
   device,
@@ -67,3 +78,8 @@ select
   availability * quality * performance as oee
 from metrics;
 
+
+--. add OEE as a tertiary metric?
+
+--. maybe have metrics_primary, metrics_secondary, metrics_tertiary views,
+--. and then have a metrics view that combines all three?
