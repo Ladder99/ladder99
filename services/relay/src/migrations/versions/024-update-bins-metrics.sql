@@ -13,12 +13,11 @@
 --   primary key (device_id, resolution, time) -- need this so can find right record quickly for updating
 -- );
 
--- alter table raw.bins add column clock_secs int; --. to calc rates
 alter table raw.bins add column good_count int;
 alter table raw.bins add column total_count int;
-alter table raw.bins add column reject_count int;
-alter table raw.bins add column actual_rate int; --. not needed?
-alter table raw.bins add column ideal_rate int;
+alter table raw.bins add column reject_count int; -- client wants this to track rejects per shift
+alter table raw.bins add column actual_rate int; --. not needed? ie view can calc rate=count/timerangefn?
+alter table raw.bins add column ideal_rate int; --. better place for this?
 
 
 ------------------------------------------------------------
