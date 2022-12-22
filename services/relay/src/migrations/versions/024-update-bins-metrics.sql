@@ -16,8 +16,8 @@
 alter table raw.bins add column good_count int;
 alter table raw.bins add column total_count int;
 alter table raw.bins add column reject_count int; -- client wants this to track rejects per shift
-alter table raw.bins add column actual_rate int; --. not needed? ie view can calc rate=count/timerangefn?
-alter table raw.bins add column ideal_rate int; --. better place for this?
+-- alter table raw.bins add column actual_rate int; --. not needed? ie view can calc rate=count/timerangefn?
+-- alter table raw.bins add column ideal_rate int; --. better place for this?
 
 
 ------------------------------------------------------------
@@ -26,24 +26,29 @@ alter table raw.bins add column ideal_rate int; --. better place for this?
 -- drop view if exists metrics_secondary; -- depends on metrics view
 drop view if exists metrics;
 
+-- note: coalesce returns the first non-null value (works like an or operator),
+-- and nullif returns the first value, unless it equals 0.0, when it returns null -
+-- then the whole expression is null. avoids div by zero error.
 create or replace view metrics as
 select 
   devices.props->>'path' as device,
   bins.resolution,
   bins.time,
+
   bins.active, --. rename to active_mins
   bins.available, --. rename to available_mins
-  -- note: coalesce returns the first non-null value (works like an or operator),
-  -- and nullif returns the first value, unless it equals 0.0, when it returns null -
-  -- then the whole expression is null. avoids div by zero error.
   coalesce(bins.active::float,0) / nullif(bins.available::float,0.0) as availability,
+
   bins.good_count,
   bins.total_count,
   bins.reject_count,
-  coalesce(bins.good_count::float,0) / nullif(bins.total_count::float,0.0) as quality,
-  bins.actual_rate,
-  bins.ideal_rate,
-  coalesce(bins.actual_rate::float,0) / nullif(bins.ideal_rate::float,0.0) as performance
+  coalesce(bins.good_count::float,0) / nullif(bins.total_count::float,0.0) as quality
+
+  -- bins.actual_rate,
+  -- bins.ideal_rate,
+  -- coalesce(bins.actual_rate::float,0) / nullif(bins.ideal_rate::float,0.0) as performance
+  --. add reject_rate, reject_performance ?
+
 from raw.bins
 join raw.nodes as devices on raw.bins.device_id = devices.node_id;
 
