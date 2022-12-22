@@ -6,7 +6,7 @@
 
 // availability is also called utilization in some client setups
 
-// in client's setup.yaml, need something like this (eg see client-oxbox) -
+// in client's setup.yaml, need something like this -
 // metrics:
 // - name: availability
 //   activePath: controller/partOccurrence/part_count-all
@@ -56,8 +56,10 @@ export class Metric {
     this.activeFullPath = `${device.path}/${settings.activePath}`
     this.startFullPath = `${device.path}/${settings.startPath}`
     this.stopFullPath = `${device.path}/${settings.stopPath}`
-    this.startTime = settings.startTime
-    this.stopTime = settings.stopTime
+
+    // instead of start/stop paths, can optionally specify a schedule for the machine in setup.yaml
+    this.startTime = settings.startTime // eg '08:00'
+    this.stopTime = settings.stopTime // eg '17:00'
 
     // get timezone offset from Zulu in milliseconds
     // this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
@@ -81,7 +83,7 @@ export class Metric {
     // // get overtime active interval
     // this.overtimeActiveInterval = 5 * minutes // ms //. pass through the metric as above
 
-    //.. await this.backfill() // backfill missing values
+    //. await this.backfill() // backfill missing values
     await this.poll() // do first poll
     this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
@@ -175,9 +177,10 @@ export class Metric {
   // poll db and update bins - called by timer
   async poll() {
     console.log(this.me, `poll db and update bins`)
-    const now = new Date()
 
-    // get schedule for device, eg { start: '2022-01-13 05:00:00', stop: ..., holiday }
+    const now = new Date() // eg 2022-01-13T12:00:00.000Z - js dates are in UTC
+
+    // get schedule for device, eg { start: 2022-01-13T11:00:00Z, stop: ..., holiday }
     //. do this every 10mins or so on separate timer, save to this.schedule
     const schedule = await this.getSchedule()
 
@@ -218,24 +221,25 @@ export class Metric {
   // query db for start and stop datetime dataitems.
   // converts the timestrings to local time for the client.
   //. will want to pass an optional datetime for the date to search for.
+  //. instrument this fn for testing.
   async getSchedule() {
-    // startTime is like '05:00:00', so need to tack on current date
+    // get date from text, eg '2022-01-13T05:00:00' -> 2022-01-13T11:00:00.000Z.
+    // shifts date by client timezoneOffset, as need for comparisons.
+    const getDate = text =>
+      new Date(new Date(text).getTime() - this.timezoneOffset)
+
+    // handle start/stop times set in setup.yaml.
+    // startTime is like '05:00:00', so need to tack it onto current date + 'T'.
+    //. make sure this handles timezones alright
     if (this.startTime) {
-      const today = new Date().toISOString().slice(0, 11)
-      const start = new Date(
-        today + this.startTime + this.offsetMinutes * minutes
-      )
-      const stop = new Date(
-        today + this.stopTime + this.offsetMinutes * minutes
-      )
-      const holiday = null //. this.holiday
+      const today = new Date().toISOString().slice(0, 11) // eg '2022-01-13T' //. shift tz?
+      const start = getDate(today + this.startTime)
+      const stop = getDate(today + this.stopTime)
+      const holiday = null //. for now
       return { start, stop, holiday }
     }
-    const getHoliday = text =>
-      text === 'UNAVAILABLE' || text === 'HOLIDAY' ? 'HOLIDAY' : undefined
-    const getDate = text =>
-      // shift date by client timezoneOffset, as need for comparisons
-      new Date(new Date(text).getTime() - this.timezoneOffset)
+
+    // handle start/stop times in database
     const table = 'history_text'
     const device = this.device
     // const { startPath, stopPath } = this.settings
@@ -253,6 +257,8 @@ export class Metric {
       device,
       this.stopFullPath
     )
+    const getHoliday = text =>
+      text === 'UNAVAILABLE' || text === 'HOLIDAY' ? 'HOLIDAY' : undefined
     const holiday = getHoliday(startText) || getHoliday(stopText) // 'HOLIDAY' or undefined
     const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
     const stop = holiday || getDate(stopText)
