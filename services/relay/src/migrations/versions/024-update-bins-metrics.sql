@@ -19,6 +19,9 @@ alter table raw.bins add column reject_count int; -- client wants this to track 
 -- alter table raw.bins add column ideal_rate int; --. better place for this?
 
 
+--. customers might want to track stats for different products also, 
+-- so could add another column to the bins primary key for product - 
+-- but will leave that out for now. 
 
 
 ------------------------------------------------------------
