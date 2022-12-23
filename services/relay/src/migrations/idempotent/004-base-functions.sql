@@ -77,3 +77,25 @@ CREATE OR REPLACE FUNCTION ms2timestamptz(p_ms bigint)
 -- select timestamptz2ms(now()); -- 1130pm
 -- select ms2timestamptz(1638941547739); -- 1130pm
 
+
+
+--------------------------------------------------------------------
+
+-- handle nulls and divbyzero
+--. why should numer treat nulls as zero?
+create or replace function divide(numer float, denom float)
+  returns float language sql immutable parallel safe as
+  'select coalesce(numer,0) / nullif(denom,0.0)';
+
+-- select divide(null, 1);
+-- select divide(1, null);
+-- select divide(1, 0);
+
+
+create or replace function get_rate(ct int, t timestamptz, resolution interval)
+  returns float language sql immutable parallel safe as
+  'select divide(ct, least(extract(epoch from now() - t), extract(epoch from resolution))) * 60';
+
+-- select get_rate(100, now() - '5 sec'::interval, '1 min');
+
+

@@ -16,70 +16,54 @@
 alter table raw.bins add column good_count int;
 alter table raw.bins add column total_count int;
 alter table raw.bins add column reject_count int; -- client wants this to track rejects per shift
--- alter table raw.bins add column actual_rate int; --. not needed? ie view can calc rate=count/timerangefn?
 -- alter table raw.bins add column ideal_rate int; --. better place for this?
+
+
 
 
 ------------------------------------------------------------
 -- metrics view
 ------------------------------------------------------------
--- drop view if exists metrics_secondary; -- depends on metrics view
-drop view if exists metrics;
 
--- note: coalesce returns the first non-null value (works like an or operator),
--- and nullif returns the first value, unless it equals 0.0, when it returns null -
--- then the whole expression is null. avoids div by zero error.
+-- see https://blog.jooq.org/lateral-is-your-friend-to-create-local-column-variables-in-sql/
+
+drop view if exists metrics;
 create or replace view metrics as
 select 
-  devices.props->>'path' as device,
-  bins.resolution,
+  devices.props->>'path' as device, -- eg 'Main/Sencon'
+  bins.resolution, -- eg '1 minute'::interval
   bins.time,
-
+  
+  -- counts
   bins.active, --. rename to active_mins
   bins.available, --. rename to available_mins
-  coalesce(bins.active::float,0) / nullif(bins.available::float,0.0) as availability,
-
   bins.good_count,
   bins.total_count,
   bins.reject_count,
-  coalesce(bins.good_count::float,0) / nullif(bins.total_count::float,0.0) as quality,
+  
+  -- rates
+  actual_rate,
+  reject_rate,
+  
+  -- components
+  availability,
+  quality,
+  performance,
+  reject_performance,
 
-  total_count / least(
-    extract(epoch from now() - time), 
-    extract(epoch from resolution)
-  ) * 60 as actual_rate, -- ppm
-  reject_count / least(
-    extract(epoch from now() - time), 
-    extract(epoch from resolution)
-  ) * 60 as reject_rate -- ppm
-
-  -- bins.actual_rate,
-  -- bins.ideal_rate,
-  -- coalesce(bins.actual_rate::float,0) / nullif(bins.ideal_rate::float,0.0) as performance
-  --. add reject_rate, reject_performance ?
-  --. add performance as secondary metric?
+  -- operations
+  oee
 
 from raw.bins
+
+cross join lateral (select get_rate(total_count, time, resolution) as actual_rate) as r1
+cross join lateral (select get_rate(reject_count, time, resolution) as reject_rate) as r2
+
+cross join lateral (select divide(active, available) as availability) as c1
+cross join lateral (select divide(good_count, total_count) as quality) as c2
+cross join lateral (select divide(actual_rate, 200) as performance) as c3
+cross join lateral (select divide(reject_rate, 200) as reject_performance) as c4
+
+cross join lateral (select availability * quality * performance as oee) as o1
+
 join raw.nodes as devices on raw.bins.device_id = devices.node_id;
-
-
-------------------------------------------------------------
--- metrics_secondary view
-------------------------------------------------------------
-
-drop view if exists metrics_secondary;
-
---. add performance as secondary metric?
-create or replace view metrics_secondary as
-select 
-  device,
-  resolution,
-  time,
-  availability * quality * performance as oee
-from metrics;
-
-
---. add OEE as a tertiary metric?
-
---. maybe have metrics_primary, metrics_secondary, metrics_tertiary views,
---. and then have a metrics view that combines all three?
