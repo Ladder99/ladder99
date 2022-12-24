@@ -13,11 +13,10 @@
 --   primary key (device_id, resolution, time) -- need this so can find right record quickly for updating
 -- );
 
-alter table raw.bins add column good_count int;
-alter table raw.bins add column total_count int;
-alter table raw.bins add column reject_count int; -- client wants this to track rejects per shift
+alter table raw.bins add column if not exists good_count int;
+alter table raw.bins add column if not exists total_count int;
+alter table raw.bins add column if not exists reject_count int; -- client wants this to track rejects per shift
 -- alter table raw.bins add column ideal_rate int; --. better place for this?
-
 
 --. customers might want to track stats for different products also, 
 -- so could add another column to the bins primary key for product - 
