@@ -22,3 +22,6 @@ docs/build
 **/portainer/data
 **/postgres/data
 **/volumes/traefik/acme.json
+
+setups/**
+.l99_setup
