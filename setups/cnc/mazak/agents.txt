@@ -1,6 +1,0 @@
-http://mtconnect.mazakcorp.com:5609
-http://mtconnect.mazakcorp.com:5610
-http://mtconnect.mazakcorp.com:5611
-http://mtconnect.mazakcorp.com:5612
-http://mtconnect.mazakcorp.com:5701
-http://mtconnect.mazakcorp.com:5717
