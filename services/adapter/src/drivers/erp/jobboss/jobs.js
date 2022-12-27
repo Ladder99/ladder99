@@ -65,7 +65,6 @@ export class Jobs {
     } catch (error) {
       console.log(`JobBoss jobs error`, error.message)
       console.log(`JobBoss jobs sql`, sql)
-      job = NONE
     }
     return job
   }
