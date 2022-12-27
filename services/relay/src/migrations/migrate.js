@@ -17,6 +17,7 @@ const migrations = {
     '011-get_last_value',
   ],
   1: ['012-bins-hypertable'],
+  // 2: ['020-setup'],
 }
 
 // handle migrations - use meta table
