@@ -109,17 +109,15 @@ returns table ("time" timestamptz, "availability" float)
 language plpgsql
 as
 $body$
-declare
-  v_utilization_factor float := get_utilization_factor(p_device);
 begin
   return query
     select
       min(bins.time) as time,
       case 
         when count(*) = 0 then -1
-        else sum(active)::float / sum(available)::float
+        else sum(active)::float / sum(available)::float * get_utilization_factor(p_device)
       end
-        * v_utilization_factor as availability
+        as availability
     from 
       bins
       join nodes on nodes.node_id = bins.device_id
