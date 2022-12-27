@@ -44,7 +44,7 @@ join nodes as devices on bins.device_id = devices.node_id;
 -- get percent of time a device is active vs available.
 -- chooses a resolution (hour, day, etc) based on time range.
 
---. call this get_availability - replace other version
+--. call this get_availability_table - replace other version
 
 -- call it from grafana like so - 
 --   set timezone to 'America/Chicago';
@@ -134,6 +134,8 @@ $body$;
 -- corrugated department. 
 -- will need a better soln when go beyond ONE department.
 -- but didn't want to spend forever working on this for one feature. 
+
+--. this is not used anywhere
 
 drop function if exists get_availability_from_metrics_view2(bigint, bigint, text);
 
