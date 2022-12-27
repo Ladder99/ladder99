@@ -7,12 +7,14 @@
 --. hardcode values for now.
 ---------------------------------------------------------------------
 
+-- these values come from a spreadsheet, Grafana Allowance Calculation.xlsx.
+
 create or replace function get_utilization_factor(device text)
 returns float language sql immutable parallel safe as
 $$
   select case 
     when device='Marumatsu' then 1.33
-    when device='Jumbo' then 1.2
+    when device='Jumbo' then 1.21
     else 1.0 
   end
 $$;
@@ -29,8 +31,8 @@ $$;
 ---------------------------------------------------------------------
 -- see 009-metrics.sql for the original version of this fn
 -- this adds in the utilization factor
--- works
---. call this get_availability_table
+
+--. call this get_availability_table?
 
 drop function if exists get_availability_from_metrics_view(text, bigint, bigint, text);
 
