@@ -1,20 +1,28 @@
 ---------------------------------------------------------------------
--- setup
+-- utiliz factors
 ---------------------------------------------------------------------
 
+--. this splits from the 'main' branch - will want to bring there also
+
 ---------------------------------------------------------------------
---. make a fn to return the utilization factor for each machine.
---. hardcode values for now.
+-- get the utilization factor for each machine.
 ---------------------------------------------------------------------
 
 -- these values come from a spreadsheet, Grafana Allowance Calculation.xlsx.
+--. hardcode values here for now.
+
+--. next step is to fetch these from a table that guy can update via a ui.
 
 create or replace function get_utilization_factor(device text)
 returns float language sql immutable parallel safe as
 $$
   select case 
-    when device='Marumatsu' then 1.33
     when device='Jumbo' then 1.21
+    when device='Marumatsu' then 1.33
+    -- when device='Solarco' then 1.0
+    -- when device='PAC48' then 1.0
+    -- when device='Bahmuller' then 1.0
+    -- when device='Gazzella' then 1.0
     else 1.0 
   end
 $$;
@@ -22,17 +30,15 @@ $$;
 -- select get_utilization_factor('Marumatsu')
 
 
----------------------------------------------------------------------
---. make fns to use the utilization factors
----------------------------------------------------------------------
-
+-- now make fns to use the utilization factors
 
 ---------------------------------------------------------------------
+-- get_availability_from_metrics_view
 ---------------------------------------------------------------------
 -- see 009-metrics.sql for the original version of this fn
 -- this adds in the utilization factor
 
---. call this get_availability_table?
+--. call this get_availability_timeline?
 
 drop function if exists get_availability_from_metrics_view(text, bigint, bigint, text);
 
@@ -90,8 +96,8 @@ $body$;
 
 
 
-
 ---------------------------------------------------------------------
+-- get_availability_value
 ---------------------------------------------------------------------
 -- get a single record with time, avg availability over the current time range.
 -- availability will be an average between 0 and 1, or -1 if no records for the day.
@@ -137,10 +143,13 @@ $body$;
 
 
 ---------------------------------------------------------------------
---. get availability for all machines in a department
+-- get_department_availability
 ---------------------------------------------------------------------
--- need to scale each machine by its utilization factor
---. this will be used by selected and today's utilization dials
+-- get availability for all machines in a department.
+-- need to scale each machine by its utilization factor.
+-- this will be used by selected and today's utilization dials at top of main page.
+
+--. pass in department name, eg 'Corrugated' - currently we assume all devices are in that dept.
 
 -- drop function if exists get_department_availability(text, bigint, bigint);
 drop function if exists get_department_availability(bigint, bigint);
@@ -179,8 +188,5 @@ $body$;
 
 
 
----------------------------------------------------------------------
---. make a table to mirror the setup.yaml configuration file.
----------------------------------------------------------------------
 
 
