@@ -6,12 +6,13 @@
 
 // availability is also called utilization in some client setups
 
-// in client's setup.yaml, need something like this (eg see client-oxbox) -
+// in client's setup.yaml, need something like this -
 // metrics:
 // - name: availability
 //   activePath: controller/partOccurrence/part_count-all
 //   startPath: processes/process_time-start
 //   stopPath: processes/process_time-complete
+//   jobPath: processes/job/process_aggregate_id-order_number
 
 // name = availability will cause this js plugin to be loaded.
 // then this code uses the given paths to look in the database for
@@ -29,6 +30,11 @@
 // if the current time is within the machine's schedule, it will similarly
 // increment the minute, hour, day, etc bins for 'available'.
 
+// however, different machines may have different setup times, which we
+// don't want to count as 'available' time, so we check the 'jobPath' for the
+// current job and track time spent in 'setup' mode, when we don't increment
+// the 'available' bins.
+
 // to calculate the 'availability' percentage, the metrics view in the db
 // does 'active' / 'available'.
 
@@ -42,6 +48,16 @@ const backfillDefaultStart = 30 * days // ie look this far back for first backfi
 const metricIntervalDefault = 60 // seconds
 const resolutions = 'minute,hour,day,week,month,year'.split(',') //. 5min? 15min?
 
+//. move into db setup table
+const deviceSetupTimes = {
+  Jumbo: 0.5 * hours,
+  Marumatsu: 0.5 * hours,
+  Solarco: 0,
+  PAC48: 0,
+  Bahmuller: 0,
+  Gazzella: 0,
+}
+
 export class Metric {
   constructor() {
     this.device = null
@@ -49,6 +65,7 @@ export class Metric {
     this.db = null
     this.interval = null
     this.timer = null
+    this.setupTimes = {}
   }
 
   async start({ client, db, device, metric }) {
@@ -56,8 +73,8 @@ export class Metric {
     console.log(`Availability - time resolutions`, resolutions)
     this.client = client
     this.db = db
-    this.device = device
-    this.metric = metric
+    this.device = device // eg { id, name, custom, sources, ... }
+    this.metric = metric // eg { driver, activePath, startPath, stopPath, jobPath, interval, ... }
 
     // get timezone offset from Zulu in milliseconds
     // this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
@@ -213,7 +230,15 @@ export class Metric {
       await this.incrementBins(now, 'active')
     }
     if (isDuringShift) {
-      await this.incrementBins(now, 'available')
+      const job = await this.getJob() // eg '123456'
+      // get setup time remaining for this job
+      const setupTime =
+        setupTimes[job] ?? deviceSetupTimes[this.device.name] - this.interval
+      // only increment the 'available' bins if we're NOT in setup time
+      if (setupTime <= 0) {
+        await this.incrementBins(now, 'available')
+      }
+      setupTimes[job] = setupTime < 0 ? 0 : setupTime
     }
     this.previousStopTime = stop
   }
@@ -279,6 +304,15 @@ export class Metric {
     const result = await this.db.query(sql)
     const deviceWasActive = result.rows[0].active // t/f - column name must match case
     return deviceWasActive
+  }
+
+  async getJob() {
+    const job = await this.db.getLatestValue(
+      'history_text',
+      this.device.name,
+      this.metric.jobPath
+    )
+    return job
   }
 
   // increment values in the bins table.
