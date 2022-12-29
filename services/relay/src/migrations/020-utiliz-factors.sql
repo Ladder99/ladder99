@@ -10,15 +10,16 @@
 
 -- these values come from a spreadsheet, Grafana Allowance Calculation.xlsx.
 --. hardcode values here for now.
-
 --. next step is to fetch these from a table that guy can update via a ui.
+--. turning these off for now (setting to 1.0) - will develop setup allowance instead.
 
 create or replace function get_utilization_factor(device text)
 returns float language sql immutable parallel safe as
 $$
   select case 
-    when device='Jumbo' then 1.21
-    when device='Marumatsu' then 1.33
+    when device='Jumbo' then 1.0
+    -- when device='Jumbo' then 1.21
+    -- when device='Marumatsu' then 1.33
     -- when device='Solarco' then 1.0
     -- when device='PAC48' then 1.0
     -- when device='Bahmuller' then 1.0
