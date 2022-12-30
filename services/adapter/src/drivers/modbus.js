@@ -20,7 +20,7 @@ const STATE_FAIL_CONNECT = 7
 
 // Modbus TCP configuration values
 const mbId = 1 //. ?
-const mbPollingInterval = 1000
+const mbPollingInterval = 2000
 const mbTimeout = 1000
 
 // number of registers to read for diff datatypes
@@ -165,7 +165,7 @@ export class AdapterDriver {
         // extract input properties, with default values
         // eg { key: 'l1-pcall', address: 5000, type: 'holding', datatype: 'uint32be' }
         const { key, address, type = 'holding', datatype = 'uint16be' } = input
-        console.log(`Modbus reading ${key} ${address} ${type} ${datatype}...`)
+        // console.log(`Modbus reading ${key} ${address} ${type} ${datatype}...`)
         if (type === 'holding') {
           const count = datatypeCounts[datatype] // eg 2 for 'uint32be'
           client
@@ -175,6 +175,7 @@ export class AdapterDriver {
               mbStatus = `Modbus read ${address} success`
               const method = datatypeMethods[datatype] // eg 'readUInt32BE' for 'uint32be'
               const value = data.buffer[method](0) // eg data.buffer.readUInt32BE(0)
+              console.log(mbStatus, value)
               setValue(key, value)
             })
             .catch(error => {

@@ -27,7 +27,12 @@ export class Simulator {
         //   // callback = function(err, value)
         //   callback(null, addr + 8000)
         // }, 10)
-        callback(null, counter)
+        // callback(null, counter)
+        if (addr === 5000) {
+          callback(null, counter)
+        } else {
+          callback()
+        }
       },
       getCoil: function (addr, unitID) {
         // Asynchronous handling (with Promises, async/await supported)
@@ -72,7 +77,7 @@ export class Simulator {
     })
 
     let counter = 0
-    const counterMax = 100
+    const counterMax = 99
 
     // loop and 'publish' incrementing and looping counter
     setInterval(() => {
