@@ -1,26 +1,42 @@
-// import libmqtt from 'mqtt' // see https://www.npmjs.com/package/mqtt
+// simulate some modbus counters
 
-// const url = 'mqtt://mosquitto:1883'
+import ModbusRTU from 'modbus-serial' // see https://github.com/yaacov/node-modbus-serial
+
+const mbHost = 'localhost'
+const mbPort = 502
+const mbId = 1 //. ?
+const mbTimeout = 1000
 
 export class Simulator {
   //
   async start() {
-    console.log(`Modbus start...`)
+    console.log('Modbus start', url)
 
-    // this.mqtt = libmqtt.connect(url)
+    const client = new ModbusRTU()
 
-    // this.mqtt.on('connect', () => {
-    //   console.log(`mqtt connected`)
-    //   // loop and publish random values with id=1 or 2, delay 1sec
-    //   setInterval(() => {
-    //     const topic = 'l99/test'
-    //     const id = Math.floor(Math.random() * 2) + 1
-    //     const user1 = Math.random() > 0.5 ? 'jon' : 'alice'
-    //     const user2 = Math.random() * 100
-    //     const payload = JSON.stringify({ id, user1, user2 })
-    //     console.log(`mqtt publish ${topic}: ${payload}`)
-    //     this.mqtt.publish(topic, payload)
-    //   }, 1000)
-    // })
+    // set request parameters
+    client.setID(mbId)
+    client.setTimeout(mbTimeout) // default is null (no timeout)
+
+    let counter = 0
+    const counterMax = 100
+
+    console.log(`Modbus connecting to ${mbHost}:${mbPort}...`)
+    client
+      .connectTCP(mbHost, { port: mbPort })
+      .then(() => {
+        console.log('Modbus connect success')
+        // loop and publish incrementing and looping counter
+        setInterval(() => {
+          const delta = Math.floor(Math.random() * 2)
+          counter += delta
+          if (counter > counterMax) counter = 0 // loop around
+          console.log('Modbus write', counter)
+          client.writeRegister(5000, counter) //.
+        }, 1000)
+      })
+      .catch(error => {
+        console.log('Modbus connect error ' + error.message)
+      })
   }
 }

@@ -43,17 +43,17 @@ select
   bins.total_count,
   bins.reject_count,
   
-  -- rates
+  -- rates (ppm)
   actual_rate,
   reject_rate,
   
-  -- components
+  -- components (percent)
   availability,
   quality,
   performance,
   reject_performance,
 
-  -- operations
+  -- operations (percent)
   oee
 
 from raw.bins
@@ -63,8 +63,8 @@ cross join lateral (select get_rate(reject_count, time, resolution) as reject_ra
 
 cross join lateral (select divide(active, available) as availability) as c1
 cross join lateral (select divide(good_count, total_count) as quality) as c2
-cross join lateral (select divide(actual_rate, 200) as performance) as c3
-cross join lateral (select divide(reject_rate, 200) as reject_performance) as c4
+cross join lateral (select divide(actual_rate, 200) as performance) as c3 --. fix
+cross join lateral (select divide(reject_rate, 200) as reject_performance) as c4 --. fix
 
 cross join lateral (select availability * quality * performance as oee) as o1
 
