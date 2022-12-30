@@ -14,22 +14,15 @@ export class Simulator {
   async start() {
     console.log('Modbus start')
 
-    let low = false // ie start off with high word
-
     const vector = {
       getInputRegister: function (addr, unitID) {
         // Synchronous handling
         return addr
       },
+      // callback is function(err, value)
       getHoldingRegister: function (addr, unitID, callback) {
         // handle uint32be
-        //. how distinguish low and high word?
-        //. this gives eg <Buffer 00 00 00 00> and <Buffer 00 n 00 00>
         if (addr === 5000) {
-          // const value = low ? counter : 0
-          // console.log('Modbus getHoldingRegister', addr, low, value)
-          // low = !low // switch between low and high word
-          // callback(null, value) // write error, value
           callback(null, counter) //. this seems to only handle 16bit values, so changed setup.yaml to uint16be
         } else {
           callback(null, 0)
