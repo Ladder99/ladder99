@@ -4,12 +4,13 @@
   "type": "module",
   "description": "wip - send test device messages to opc client",
   "scripts": {
-    "start": "node src/simulator.js"
+    "start": "node src/index.js"
   },
   "author": "Brian Burns <bburns.km@gmail.com>",
   "license": "Apache2.0",
   "comment": "v2.28 and below don't require ssl certificates",
   "dependencies": {
+    "modbus-serial": "^8.0.8",
     "mqtt": "^4.3.7",
     "node-opcua": "^2.81.0"
   }

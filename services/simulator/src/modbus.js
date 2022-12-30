@@ -10,7 +10,7 @@ const mbTimeout = 1000
 export class Simulator {
   //
   async start() {
-    console.log('Modbus start', url)
+    console.log('Modbus start')
 
     const client = new ModbusRTU()
 
@@ -21,22 +21,27 @@ export class Simulator {
     let counter = 0
     const counterMax = 100
 
-    console.log(`Modbus connecting to ${mbHost}:${mbPort}...`)
-    client
-      .connectTCP(mbHost, { port: mbPort })
-      .then(() => {
-        console.log('Modbus connect success')
-        // loop and publish incrementing and looping counter
-        setInterval(() => {
-          const delta = Math.floor(Math.random() * 2)
-          counter += delta
-          if (counter > counterMax) counter = 0 // loop around
-          console.log('Modbus write', counter)
-          client.writeRegister(5000, counter) //.
-        }, 1000)
-      })
-      .catch(error => {
-        console.log('Modbus connect error ' + error.message)
-      })
+    let connected = false
+    while (!connected) {
+      console.log(`Modbus connecting to ${mbHost}:${mbPort}...`)
+      client
+        .connectTCP(mbHost, { port: mbPort })
+        .then(() => {
+          console.log('Modbus connect success')
+          // loop and publish incrementing and looping counter
+          setInterval(() => {
+            const delta = Math.floor(Math.random() * 2)
+            counter += delta
+            if (counter > counterMax) counter = 0 // loop around
+            console.log('Modbus write', counter)
+            client.writeRegister(5000, counter) //.
+          }, 1000)
+          connected = true
+        })
+        .catch(error => {
+          console.log('Modbus connect error ' + error.message)
+        })
+      await new Promise(resolve => setTimeout(resolve, 1000))
+    }
   }
 }
