@@ -15,19 +15,19 @@ export class Simulator {
   async start() {
     console.log('Modbus start')
 
-    // const client = new ModbusRTU()
-
     const vector = {
       getInputRegister: function (addr, unitID) {
         // Synchronous handling
         return addr
       },
       getHoldingRegister: function (addr, unitID, callback) {
+        console.log('Modbus getHoldingRegister', addr, unitID)
         // Asynchronous handling (with callback)
-        setTimeout(function () {
-          // callback = function(err, value)
-          callback(null, addr + 8000)
-        }, 10)
+        // setTimeout(function () {
+        //   // callback = function(err, value)
+        //   callback(null, addr + 8000)
+        // }, 10)
+        callback(null, counter)
       },
       getCoil: function (addr, unitID) {
         // Asynchronous handling (with Promises, async/await supported)
@@ -58,6 +58,7 @@ export class Simulator {
         }
       },
     }
+
     const serverTCP = new ModbusRTU.ServerTCP(vector, {
       host: mbHost,
       port: mbPort,
@@ -70,34 +71,15 @@ export class Simulator {
       console.log(err)
     })
 
-    // // set request parameters
-    // client.setID(mbId)
-    // client.setTimeout(mbTimeout) // default is null (no timeout)
+    let counter = 0
+    const counterMax = 100
 
-    // let counter = 0
-    // const counterMax = 100
-
-    // let connected = false
-    // while (!connected) {
-    //   console.log(`Modbus connecting to ${mbHost}:${mbPort}...`)
-    //   client
-    //     .connectTCP(mbHost, { port: mbPort })
-    //     .then(() => {
-    //       console.log('Modbus connect success')
-    //       // loop and publish incrementing and looping counter
-    //       setInterval(() => {
-    //         const delta = Math.floor(Math.random() * 2)
-    //         counter += delta
-    //         if (counter > counterMax) counter = 0 // loop around
-    //         console.log('Modbus write', counter)
-    //         client.writeRegister(5000, counter) //.
-    //       }, 1000)
-    //       connected = true
-    //     })
-    //     .catch(error => {
-    //       console.log('Modbus connect error ' + error.message)
-    //     })
-    //   await new Promise(resolve => setTimeout(resolve, 1000))
-    // }
+    // loop and 'publish' incrementing and looping counter
+    setInterval(() => {
+      const delta = Math.floor(Math.random() * 3)
+      counter += delta
+      if (counter > counterMax) counter = 0 // loop around
+      console.log('Modbus counter', counter)
+    }, 1000)
   }
 }

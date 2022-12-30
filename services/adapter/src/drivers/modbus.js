@@ -165,6 +165,7 @@ export class AdapterDriver {
         // extract input properties, with default values
         // eg { key: 'l1-pcall', address: 5000, type: 'holding', datatype: 'uint32be' }
         const { key, address, type = 'holding', datatype = 'uint16be' } = input
+        console.log(`Modbus reading ${key} ${address} ${type} ${datatype}...`)
         if (type === 'holding') {
           const count = datatypeCounts[datatype] // eg 2 for 'uint32be'
           client
