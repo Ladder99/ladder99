@@ -7,13 +7,14 @@ import ModbusRTU from 'modbus-serial' // see https://github.com/yaacov/node-modb
 // const mbHost = 'localhost'
 const mbHost = '0.0.0.0'
 const mbPort = 502
-const mbId = 1 //. ?
-const mbTimeout = 1000
+const mbId = 1
 
 export class Simulator {
   //
   async start() {
     console.log('Modbus start')
+
+    let low = false // ie start off with high word
 
     const vector = {
       getInputRegister: function (addr, unitID) {
@@ -21,17 +22,17 @@ export class Simulator {
         return addr
       },
       getHoldingRegister: function (addr, unitID, callback) {
-        console.log('Modbus getHoldingRegister', addr, unitID)
-        // Asynchronous handling (with callback)
-        // setTimeout(function () {
-        //   // callback = function(err, value)
-        //   callback(null, addr + 8000)
-        // }, 10)
-        // callback(null, counter)
+        // handle uint32be
+        //. how distinguish low and high word?
+        //. this gives eg <Buffer 00 00 00 00> and <Buffer 00 n 00 00>
         if (addr === 5000) {
-          callback(null, counter)
+          // const value = low ? counter : 0
+          // console.log('Modbus getHoldingRegister', addr, low, value)
+          // low = !low // switch between low and high word
+          // callback(null, value) // write error, value
+          callback(null, counter) //. this seems to only handle 16bit values, so changed setup.yaml to uint16be
         } else {
-          callback()
+          callback(null, 0)
         }
       },
       getCoil: function (addr, unitID) {
@@ -76,10 +77,9 @@ export class Simulator {
       console.log(err)
     })
 
+    // loop and 'publish' incrementing and looping counter
     let counter = 0
     const counterMax = 99
-
-    // loop and 'publish' incrementing and looping counter
     setInterval(() => {
       const delta = Math.floor(Math.random() * 3)
       counter += delta
