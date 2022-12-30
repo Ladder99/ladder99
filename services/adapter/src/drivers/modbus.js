@@ -20,7 +20,7 @@ const STATE_FAIL_CONNECT = 7
 
 // Modbus TCP configuration values
 const mbId = 1 //. ?
-const mbPollingInterval = 3000 //. 1000 seems to really bog down the cpu
+const mbPollingInterval = 5000 //. 1000 seems to really bog down the cpu - why?
 const mbTimeout = 1000
 
 // number of registers to read for diff datatypes
