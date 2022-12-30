@@ -3,28 +3,28 @@
 
 import * as bins from '../bins.js'
 
-const metricIntervalDefault = 5 // seconds
+const meterIntervalDefault = 5 // seconds
 
 export class Metric {
   //
-  async start({ client, db, device, metric }) {
+  async start({ client, db, device, meter }) {
+    this.me = `Bin ${device.name} -`
+    console.log(this.me, `start`)
+
     this.client = client
     this.db = db
     this.device = device
-    this.metric = metric
+    this.meter = meter
 
     this.lastStop = null
     this.lastCount = null
-
-    this.me = `Bin ${device.name} -`
-    console.log(this.me, `start`)
 
     // get this so can write to raw.bin table
     console.log(this.me, `get device node_id...`)
     this.device_id = await this.db.getNodeId(device.path) // repeats until device is there
 
-    // get polling interval - either from metric in setup yaml or default value
-    this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
+    // get polling interval - either from meter in setup yaml or default value
+    this.interval = (meter.interval || meterIntervalDefault) * 1000 // ms
 
     // look this far back in time for raw count values so adapter has time to write data
     this.offset = 3000 // ms
@@ -49,7 +49,7 @@ export class Metric {
     const stop = new Date(now.getTime() - this.offset).toISOString()
     console.log(this.me, `start,stop`, start, stop)
 
-    const { countPath, binColumn } = this.metric
+    const { countPath, binColumn } = this.meter
 
     // get latest count value
     //. bad - if count hasn't been updated in a long time, this could be slow!
