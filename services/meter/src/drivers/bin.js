@@ -8,13 +8,15 @@ const meterIntervalDefault = 5 // seconds
 export class Metric {
   //
   async start({ client, db, device, meter }) {
-    this.me = `Bin ${device.name} -`
+    this.me = `Bin ${device.path} -`
     console.log(this.me, `start`)
 
     this.client = client
     this.db = db
     this.device = device
     this.meter = meter
+
+    this.countPath = `${device.path}/${meter.countPath}`
 
     this.lastStop = null
     this.lastCount = null
@@ -49,13 +51,13 @@ export class Metric {
     const stop = new Date(now.getTime() - this.offset).toISOString()
     console.log(this.me, `start,stop`, start, stop)
 
-    const { countPath, binColumn } = this.meter
+    const binColumn = this.meter.binColumn
 
     // get latest count value
     //. bad - if count hasn't been updated in a long time, this could be slow!
     const record = await this.db.getLastRecord(
       this.device.name,
-      countPath,
+      this.countPath,
       stop
     )
     let latestCount = record ? record.value : 0
@@ -63,11 +65,16 @@ export class Metric {
     // get delta
     const deltaCount = latestCount - this.lastCount
 
+    //. handle flipping over to 0
+    if (deltaCount < 0) {
+    }
+
     if (deltaCount > 0) {
       await bins.add(this.db, this.device.node_id, now, binColumn, deltaCount)
     }
 
-    // save time for next poll
+    // save for next poll
+    this.lastCount = latestCount
     this.lastStop = stop
   }
 

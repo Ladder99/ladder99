@@ -46,21 +46,21 @@ const metricIntervalDefault = 60 // seconds
 
 export class Metric {
   //
-  async start({ client, db, device, settings }) {
+  async start({ client, db, device, meter }) {
     this.me = `Availability ${device.path}:`
-    console.log(this.me, `initialize`, settings)
+    console.log(this.me, `initialize`, meter)
     this.client = client
     this.db = db
     this.device = device
-    this.settings = settings
+    this.meter = meter
 
-    this.activeFullPath = `${device.path}/${settings.activePath}`
-    this.startFullPath = `${device.path}/${settings.startPath}`
-    this.stopFullPath = `${device.path}/${settings.stopPath}`
+    this.activeFullPath = `${device.path}/${meter.activePath}`
+    this.startFullPath = `${device.path}/${meter.startPath}`
+    this.stopFullPath = `${device.path}/${meter.stopPath}`
 
     // instead of start/stop paths, can optionally specify a schedule for the machine in setup.yaml
-    this.startTime = settings.startTime // eg '08:00'
-    this.stopTime = settings.stopTime // eg '17:00'
+    this.startTime = meter.startTime // eg '08:00'
+    this.stopTime = meter.stopTime // eg '17:00'
 
     // get timezone offset from Zulu in milliseconds
     // this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
@@ -79,7 +79,7 @@ export class Metric {
     // pollSchedule vs pollMetrics?
 
     // get polling interval - either from metric in setup yaml or default value
-    this.interval = (settings.interval || metricIntervalDefault) * 1000 // ms
+    this.interval = (meter.interval || metricIntervalDefault) * 1000 // ms
 
     // // get overtime active interval
     // this.overtimeActiveInterval = 5 * minutes // ms //. pass through the metric as above
@@ -249,7 +249,7 @@ export class Metric {
     // handle start/stop times in database
     const table = 'history_text'
     const device = this.device
-    // const { startPath, stopPath } = this.settings
+    // const { startPath, stopPath } = this.meter
     // note: these can return 'UNAVAILABLE' or 'HOLIDAY', in which case,
     // schedule.start etc will be 'Invalid Date'.
     // any comparison with those will yield false.
