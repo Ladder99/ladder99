@@ -50,7 +50,7 @@ export class Metric {
       this.lastStop ||
       new Date(now.getTime() - this.offset - this.interval).toISOString()
     const stop = new Date(now.getTime() - this.offset).toISOString()
-    console.log(this.me, `start,stop`, start, stop)
+    // console.log(this.me, `start,stop`, start, stop)
 
     const binColumn = this.meter.binColumn
 
@@ -58,20 +58,29 @@ export class Metric {
     //. bad - if count hasn't been updated in a long time, this could be slow,
     // unless we get the index working better.
     const record = await this.db.getLastRecord(
-      this.device.name,
+      this.device.path,
       this.countPath,
       stop
     )
     let latestCount = record ? record.value : 0
 
     // get delta
-    const deltaCount = latestCount - this.lastCount
+    let deltaCount = latestCount - this.lastCount
 
-    //. handle flipping over to 0
+    //. handle flipping over to 0 - eg if latestCount=2, lastCount=97, deltaCount=-95, but delta should be 5
+    // so if deltaCount is negative, add max value to it.
+    //. actual value depends on the max value of the counter - 100, 1000, 10000?
+    //. estimate it from lastCount value?
+    // eg if lastCount=97, then max value is 100, so add 100 to deltaCount
+    // how get that?
+    const maxCount = 100 //. hard code for now - get from meter config
     if (deltaCount < 0) {
+      console.log(this.me, `count reset to 0`)
+      deltaCount = maxCount - deltaCount
     }
 
     if (deltaCount > 0) {
+      console.log(this.me, `add to bins`, binColumn, deltaCount)
       await bins.add(this.db, this.device.node_id, now, binColumn, deltaCount)
     }
 
