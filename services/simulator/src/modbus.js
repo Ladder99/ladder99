@@ -23,7 +23,13 @@ export class Simulator {
       getHoldingRegister: function (addr, unitID, callback) {
         // handle uint32be
         if (addr === 5000) {
-          callback(null, counter) //. this seems to only handle 16bit values, so changed setup.yaml to uint16be
+          callback(null, totalCount) //. this seems to only handle 16bit values, so changed setup.yaml to uint16be
+        } else if (addr === 5008) {
+          callback(null, goodCount) //. this seems to only handle 16bit values, so changed setup.yaml to uint16be
+        } else if (addr === 5016) {
+          callback(null, badCount) //. this seems to only handle 16bit values, so changed setup.yaml to uint16be
+        } else if (addr === 5024) {
+          callback(null, rejectCount) //. this seems to only handle 16bit values, so changed setup.yaml to uint16be
         } else {
           callback(null, 0)
         }
@@ -70,14 +76,27 @@ export class Simulator {
       console.log(err)
     })
 
-    // loop and 'publish' incrementing and looping counter
-    let counter = 0
+    // update counts randomly, which are 'published' above
+    let totalCount = 0
+    let goodCount = 0
+    let badCount = 0
+    let rejectCount = 0
     const counterMax = 99
     setInterval(() => {
-      const delta = Math.floor(Math.random() * 3)
-      counter += delta
-      if (counter > counterMax) counter = 0 // loop around
-      console.log('Modbus counter', counter)
+      const delta = Math.floor(Math.random() * 3) // some random number of parts have passed by
+      totalCount += delta
+      const rejectDelta = Math.random() > 0.9 ? 1 : 0
+      const badDelta = Math.floor(Math.random() * delta)
+      badCount += badDelta
+      goodCount += delta - badDelta
+      rejectCount += rejectDelta //. does this add into totalCount also?
+      if (totalCount > counterMax) {
+        totalCount = 0
+        goodCount = 0
+        badCount = 0
+        rejectCount = 0
+      }
+      console.log('Modbus counts', totalCount, goodCount, badCount, rejectCount)
     }, 1000)
   }
 }

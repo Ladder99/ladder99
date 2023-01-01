@@ -44,6 +44,7 @@ export class Metric {
     // that means we could miss job count records, causing 'misses'.
     // so keep track of lastStop.
     // well that didn't help. so use this.offset to give adapter time to write data.
+    //. lame that there's such a delay - need to move all this into the adapter.
     const now = new Date()
     const start =
       this.lastStop ||
@@ -54,7 +55,8 @@ export class Metric {
     const binColumn = this.meter.binColumn
 
     // get latest count value
-    //. bad - if count hasn't been updated in a long time, this could be slow!
+    //. bad - if count hasn't been updated in a long time, this could be slow,
+    // unless we get the index working better.
     const record = await this.db.getLastRecord(
       this.device.name,
       this.countPath,
