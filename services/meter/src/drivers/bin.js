@@ -69,15 +69,16 @@ export class Metric {
 
     //. handle flipping over to 0 - eg if latestCount=2, lastCount=97, deltaCount=-95, but delta should be 5
     // so if deltaCount is negative, add max value to it.
+    //. but we're also handling good/bad/reject counts, which MAY reset when total resets?
     //. actual value depends on the max value of the counter - 100, 1000, 10000?
     //. estimate it from lastCount value?
     // eg if lastCount=97, then max value is 100, so add 100 to deltaCount
     // how get that?
-    const maxCount = 100 //. hard code for now - get from meter config
-    if (deltaCount < 0) {
-      console.log(this.me, `count reset to 0`)
-      deltaCount = maxCount - deltaCount
-    }
+    // const maxCount = 100 //. hard code for now - get from meter config
+    // if (deltaCount < 0) {
+    //   console.log(this.me, `count reset to 0`)
+    //   deltaCount = maxCount - deltaCount
+    // }
 
     if (deltaCount > 0) {
       console.log(this.me, `add to bins`, binColumn, deltaCount)
