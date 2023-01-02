@@ -83,10 +83,13 @@ export class Simulator {
     let rejectCount = 0
     const counterMax = 99
     setInterval(() => {
-      const delta = Math.floor(Math.random() * 3) // some random number of parts have passed by
+      // const delta = Math.floor(Math.random() * 3) // some random number of parts have passed by
+      const delta = 4
       totalCount += delta
-      const rejectDelta = Math.random() > 0.9 ? 1 : 0
-      const badDelta = Math.floor(Math.random() * delta)
+      // const rejectDelta = Math.random() > 0.9 ? 1 : 0
+      const rejectDelta = 0
+      // const badDelta = Math.floor(Math.random() * delta)
+      const badDelta = 1
       badCount += badDelta
       goodCount += delta - badDelta
       rejectCount += rejectDelta //. does this add into totalCount also?
