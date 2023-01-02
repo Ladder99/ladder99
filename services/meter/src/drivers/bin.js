@@ -82,7 +82,7 @@ export class Metric {
 
     if (deltaCount > 0) {
       console.log(this.me, `add to bins`, binColumn, deltaCount)
-      await bins.add(this.db, this.device.node_id, now, binColumn, deltaCount)
+      await bins.add(this.db, this.device_id, now, binColumn, deltaCount)
     }
 
     // save for next poll
