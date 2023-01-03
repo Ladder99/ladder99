@@ -233,12 +233,13 @@ export class Metric {
       const job = await this.getJob() // eg '123456'
       // get setup time remaining for this job
       const setupTime =
-        setupTimes[job] ?? deviceSetupTimes[this.device.name] - this.interval
+        this.setupTimes[job] ??
+        deviceSetupTimes[this.device.name] - this.interval
       // only increment the 'available' bins if we're NOT in setup time
       if (setupTime <= 0) {
         await this.incrementBins(now, 'available')
       }
-      setupTimes[job] = setupTime < 0 ? 0 : setupTime
+      this.setupTimes[job] = setupTime < 0 ? 0 : setupTime
     }
     this.previousStopTime = stop
   }
