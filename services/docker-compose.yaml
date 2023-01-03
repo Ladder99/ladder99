@@ -42,6 +42,8 @@ services:
       - ../setups/$SETUP/volumes/adapter:/data/adapter # has json cookies for backfilling
       # - ../setups/$SETUP/volumes/adapter/drivers:/data/drivers # has custom js drivers
       - ../setups/$SETUP/volumes/adapter/schemas:/data/schemas # has custom schema yamls
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: unless-stopped
     # this runs a process manager that passes SIGTERM to your app gracefully
     # see https://maximorlov.com/process-signals-inside-docker-containers/
@@ -73,6 +75,8 @@ services:
     # command: agent debug agent.cfg
     volumes:
       - ../setups/$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     ports:
       - '5000:5000'
     restart: unless-stopped
@@ -179,6 +183,8 @@ services:
     volumes:
       # - ../setups/$SETUP/volumes/cloudbeaver/workspace:/opt/cloudbeaver/workspace
       - ../setups/$SETUP/volumes/cloudbeaver/workspace:/var/cloudbeaver/workspace
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     # need to leave this unspecified here, because clients that use traefik
     # need it that way, and there's no way to remove a port through 
     # overrides yet.
@@ -254,6 +260,8 @@ services:
       # INFLUXDB_USER:
       # INFLUXDB_PASSWORD:
     volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       # note: grafana.ini is located in /etc/grafana by default -
       # other folders are specified there.
       - ../setups/$SETUP/volumes/grafana/etc:/etc/grafana
@@ -299,6 +307,8 @@ services:
       #. why z-hue.ini? is it an arbitrary name for hue-overrides.ini?
       # https://stackoverflow.com/questions/57116402/hue-access-to-hdfs-bypass-default-hue-ini
       - ../setups/$SETUP/volumes/hue/hue.ini:/usr/share/hue/desktop/conf/z-hue.ini
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: unless-stopped
     networks:
       - ladder99
@@ -323,6 +333,8 @@ services:
   #   volumes:
   #     - /var/run/docker.sock:/var/run/docker.sock:ro
   #     - /var/run/docker/containers:/var/lib/docker/containers
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /etc/timezone:/etc/timezone:ro
   #   restart: unless-stopped
   #   networks:
   #     - ladder99
@@ -353,6 +365,8 @@ services:
     volumes:
       - ../setups/$SETUP:/data/setup # has setup.yaml
       # - ../setups/common/schemas:/data/schemas # has schema-specific folders
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: unless-stopped
     networks:
       - ladder99
@@ -379,6 +393,8 @@ services:
       - ../setups/$SETUP/volumes/mosquitto/config:/mosquitto/config # has mosquitto.conf
       - ../setups/$SETUP/volumes/mosquitto/data:/mosquitto/data
       - ../setups/$SETUP/volumes/mosquitto/log:/mosquitto/log
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: unless-stopped
     networks:
       - ladder99
@@ -436,6 +452,8 @@ services:
       - '5050:5050/tcp' # for biarms/pgadmin4
       # - '5050:80' # for dpage/pgadmin4
     volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       # for biarms/pgadmin4
       - ../setups/$SETUP/volumes/pgadmin:/pgadmin
       - ../setups/$SETUP/volumes/pgadmin/config:/pgadmin/config
@@ -466,6 +484,8 @@ services:
       - ../setups/$SETUP:/data/setup # has setup-specific recordings folder
       # - ../setups/common/schemas:/data/schemas # has schema-specific recordings folder
       - ../volumes/adapter/schemas:/data/schemas # has schema-specific recordings folder
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: unless-stopped
     networks:
       - ladder99
@@ -535,6 +555,8 @@ services:
     volumes:
       - ../setups/$SETUP/volumes/postgres/data:/var/lib/postgresql/data
       - backup:/backup # a docker volume - see backup service and end of this file
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     labels:
       # see backup service for more settings
       # - 'docker-volume-backup.stop-during-backup=false'
@@ -567,6 +589,8 @@ services:
       - ../setups/$SETUP:/data/setup # has setup-specific recordings folder
       # - ../setups/common/schemas:/data/schemas # has schema-specific recordings folder
       - ../volumes/adapter/schemas:/data/schemas # has schema-specific recordings folder
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: unless-stopped
     networks:
       - ladder99
@@ -619,6 +643,8 @@ services:
       - ladder99
     volumes:
       - ../setups/$SETUP:/data/setup # has setup.yaml etc
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     logging:
       options:
         max-size: '20m'
@@ -651,6 +677,8 @@ services:
   #     - /sys:/host/sys:ro
   #     - /dev:/hostfs/dev:ro
   #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /etc/timezone:/etc/timezone:ro
 
   # sematext-logs:
   #   image: sematext/logagent:latest
@@ -666,6 +694,8 @@ services:
   #   restart: unless-stopped
   #   volumes:
   #     - '/var/run/docker.sock:/var/run/docker.sock'
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /etc/timezone:/etc/timezone:ro
 
   # ---------------------------------------------------------------------------
   # simulation
@@ -685,8 +715,10 @@ services:
     # note: without this command, agent image runs a simulator of a cnc machine.
     # command: agent run agent.cfg
     # command: agent debug agent.cfg
-    # volumes:
-    #   - ../setups/$SETUP/volumes/simulation:/data/agent # should have agent.cfg, agent.xml
+    volumes:
+      # - ../setups/$SETUP/volumes/simulation:/data/agent # should have agent.cfg, agent.xml
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     ports:
       - 5001:5000
     restart: unless-stopped
@@ -708,8 +740,10 @@ services:
       - simulator
     # ports:
     #   - 4334:4334
-    # volumes:
-    #   - ../setups/$SETUP/volumes/simulator/node:/home/node
+    volumes:
+      # - ../setups/$SETUP/volumes/simulator/node:/home/node
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
     restart: unless-stopped
     networks:
       - ladder99
@@ -740,6 +774,8 @@ services:
       - --certresolv.myresolver.acme.storage=/etc/traefik/acme.json
     restart: unless-stopped
     volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       # will need to do this before starting traefik -
       #   mkdir ../client-oxbox/volumes/traefik
       #   touch ../client-oxbox/volumes/traefik/acme.json
