@@ -23,8 +23,8 @@
   "fiscalYearStartMonth": 0,
   "gnetId": null,
   "graphTooltip": 0,
-  "id": 8,
-  "iteration": 1663842358213,
+  "id": 7,
+  "iteration": 1672674495638,
   "links": [
     {
       "asDropdown": false,
@@ -60,7 +60,7 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "percentunit"
         },
         "overrides": []
       },
@@ -74,7 +74,7 @@
       "options": {
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": ["mean"],
           "fields": "",
           "values": false
         },
@@ -89,7 +89,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "select \n  time, availability -- , active, available\nfrom \n  metrics\nwhere \n  device = $device -- eg 'Cutter'\n  and resolution = '1h' -- eg '1 day'\n  and time > now() - '1h'::interval\norder by \n  time\nlimit 1\n;\n\n-- select * \n-- from get_availability_from_metrics_view($device, $__from, $__to, '1h')\n-- order by time desc\n-- limit 1\n",
+          "rawSql": "select time, availability\nfrom metrics\nwhere \n  device = $device -- eg 'Main/Sencon'\n  and resolution = '1min'\n  and time >= ms2timestamptz($__from) and time < ms2timestamptz($__to)\n",
           "refId": "A",
           "select": [
             [
@@ -149,7 +149,7 @@
       "options": {
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": ["mean"],
           "fields": "",
           "values": false
         },
@@ -164,7 +164,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "with \n  max_rate as (values (1200)), -- maximum production rate in parts per hour (pph)\n  now as (values (now())),\n  midnight as (values (date_trunc('day', (table now))))\nselect \n  (table now) as time, \n  (max(value)-min(value)) / \n  (max(extract(epoch from time))-min(extract(epoch from time))) / \n  (table max_rate) \n  as speed\nfrom history_float\nwhere path = concat($device, '/controller/path/part_count')\nand time >= (table midnight) and time < (table now)\n\n",
+          "rawSql": "select time, performance\nfrom metrics\nwhere \n  device = $device -- eg 'Main/Sencon'\n  and resolution = '1min'\n  and time >= ms2timestamptz($__from) and time < ms2timestamptz($__to)\n",
           "refId": "A",
           "select": [
             [
@@ -186,7 +186,7 @@
           ]
         }
       ],
-      "title": "Speed",
+      "title": "Performance",
       "type": "gauge"
     },
     {
@@ -224,7 +224,7 @@
       "options": {
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": ["mean"],
           "fields": "",
           "values": false
         },
@@ -239,7 +239,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "with \n  now as (values (now())),\n  midnight as (values (date_trunc('day', (table now)))),\n  good_path as (values (concat($device, '/controller/path/part_count-good'))),\n  total_path as (values (concat($device, '/controller/path/part_count'))), -- or with '-all'?\n  good_parts as (\n    select value from history_float \n    where path=(table good_path) \n    and time>=(table midnight) and time<(table now)\n  ),\n  total_parts as (\n    select value from history_float \n    where path=(table total_path) \n    and time>=(table midnight) and time<(table now)\n  )\nselect \n  (table now) as time, \n  (table good_parts) / (table total_parts) as quality\n",
+          "rawSql": "select time, quality\nfrom metrics\nwhere \n  device = $device -- eg 'Main/Sencon'\n  and resolution = '1min'\n  and time >= ms2timestamptz($__from) and time < ms2timestamptz($__to)\n",
           "refId": "A",
           "select": [
             [
@@ -280,7 +280,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "orange",
+                "color": "blue",
                 "value": null
               }
             ]
@@ -299,7 +299,7 @@
       "options": {
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": ["mean"],
           "fields": "",
           "values": false
         },
@@ -314,7 +314,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "-- select now() as time, 0.5 as value\n\nselect now() as time, .5 as oee\n-- from history_float\n-- where path = concat($device, '/controller/path/part_count')\n-- and time > '2022-08-27'\n\n",
+          "rawSql": "select time, oee\nfrom metrics\nwhere \n  device = $device -- eg 'Main/Sencon'\n  and resolution = '1min'\n  and time >= ms2timestamptz($__from) and time < ms2timestamptz($__to)\n",
           "refId": "A",
           "select": [
             [
@@ -338,202 +338,9 @@
       ],
       "title": "OEE",
       "type": "gauge"
-    },
-    {
-      "datasource": null,
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 7,
-        "w": 15,
-        "x": 0,
-        "y": 5
-      },
-      "id": 2,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom"
-        },
-        "tooltip": {
-          "mode": "single"
-        }
-      },
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "select *\nfrom get_availability_from_metrics_view($device, $__from, $__to)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "OEE Factors",
-      "type": "timeseries"
-    },
-    {
-      "datasource": null,
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "thresholds"
-          },
-          "mappings": [
-            {
-              "options": {
-                "AVAILABLE": {
-                  "color": "green",
-                  "index": 1,
-                  "text": "ON"
-                },
-                "UNAVAILABLE": {
-                  "color": "red",
-                  "index": 0,
-                  "text": "OFF"
-                }
-              },
-              "type": "value"
-            }
-          ],
-          "noValue": "Unknown",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#6f6f6f",
-                "value": null
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 3,
-        "w": 5,
-        "x": 15,
-        "y": 5
-      },
-      "id": 6,
-      "options": {
-        "colorMode": "background",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["last"],
-          "fields": "/^value$/",
-          "values": false
-        },
-        "text": {
-          "valueSize": 20
-        },
-        "textMode": "auto"
-      },
-      "pluginVersion": "8.2.2",
-      "repeat": null,
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "--select time, value from get_last_value($device, 'availability', '1w');\n\n-- this will be the new get_last_value fn\n-- select time, value as value from history_text\n-- where node_id=(select node_id from nodes where props->>'uid'=$device)\n--   and dataitem_id=(select node_id from nodes where props->>'shortPath'='availability')\n-- order by time desc\n-- limit 1;\n\nselect time, value as value from history_text\nwhere path = concat($device, '/Availability')\norder by time desc\nlimit 1;\n\n",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": ["value"],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "history_float",
-          "timeColumn": "\"time\"",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "$device",
-      "type": "stat"
     }
   ],
+  "refresh": "10s",
   "schemaVersion": 31,
   "style": "dark",
   "tags": ["client"],
@@ -543,8 +350,8 @@
         "allValue": null,
         "current": {
           "selected": false,
-          "text": "Mazak5701/Mill12345",
-          "value": "Mazak5701/Mill12345"
+          "text": "Main/Sencon",
+          "value": "Main/Sencon"
         },
         "datasource": null,
         "definition": "select path from devices order by path",
@@ -566,12 +373,12 @@
     ]
   },
   "time": {
-    "from": "now-7d",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Metrics",
   "uid": "metrics",
-  "version": 6
+  "version": 9
 }
