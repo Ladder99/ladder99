@@ -44,49 +44,45 @@ export class Metric {
     // that means we could miss job count records, causing 'misses'.
     // so keep track of lastStop.
     // well that didn't help. so use this.offset to give adapter time to write data.
-    //. lame that there's such a delay - need to move all this into the adapter.
+    //. lame that there's such a delay - need to move all this into more reactive adapter.
     const now = new Date()
-    const start =
-      this.lastStop ||
-      new Date(now.getTime() - this.offset - this.interval).toISOString()
     const stop = new Date(now.getTime() - this.offset).toISOString()
-    // console.log(this.me, `start,stop`, start, stop)
 
-    const binColumn = this.meter.binColumn
+    const binColumn = this.meter.binColumn // eg 'total_count'
 
     // get latest count value
-    //. bad - if count hasn't been updated in a long time, this could be slow,
+    //. if count hasn't been updated in a long time, this could be slow,
     // unless we get the index working better.
     const record = await this.db.getLastRecord(
       this.device.path,
       this.countPath,
       stop
     )
-    let latestCount = record ? record.value : 0
 
-    // get delta
-    let deltaCount = latestCount - this.lastCount
+    if (record) {
+      let currentCount = record.value
 
-    //. handle flipping over to 0 - eg if latestCount=2, lastCount=97, deltaCount=-95, but delta should be 5
-    // so if deltaCount is negative, add max value to it.
-    //. but we're also handling good/bad/reject counts, which MAY reset when total resets?
-    //. actual value depends on the max value of the counter - 100, 1000, 10000?
-    //. estimate it from lastCount value?
-    // eg if lastCount=97, then max value is 100, so add 100 to deltaCount
-    // how get that?
-    // const maxCount = 100 //. hard code for now - get from meter config
-    // if (deltaCount < 0) {
-    //   console.log(this.me, `count reset to 0`)
-    //   deltaCount = maxCount - deltaCount
-    // }
+      // get delta (zero for first encounter)
+      let deltaCount = currentCount - (this.lastCount ?? currentCount)
 
-    if (deltaCount > 0) {
-      console.log(this.me, `add to bins`, binColumn, deltaCount)
-      await bins.add(this.db, this.device_id, now, binColumn, deltaCount)
+      //. handle flipping over to 0 - eg if currentCount=2, lastCount=97, deltaCount=-95, but delta should be 5
+      // so if deltaCount is negative, add max value to it.
+      //. but we're also handling good/bad/reject counts, which might reset when total resets also.
+      //. actual value depends on the max value of the counter - 100, 1000, 10000?
+      // const maxCount = 100 //. hard code for now - get from meter config
+      // if (deltaCount < 0) {
+      //   console.log(this.me, `count reset to 0`)
+      //   deltaCount = maxCount - deltaCount
+      // }
+
+      if (deltaCount > 0) {
+        console.log(this.me, `add to bins`, binColumn, deltaCount)
+        await bins.add(this.db, this.device_id, now, binColumn, deltaCount)
+      }
+
+      this.lastCount = currentCount
     }
 
-    // save for next poll
-    this.lastCount = latestCount
     this.lastStop = stop
   }
 
