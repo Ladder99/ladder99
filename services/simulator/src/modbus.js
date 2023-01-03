@@ -84,7 +84,7 @@ export class Simulator {
     const counterMax = 9999
     setInterval(() => {
       // const delta = Math.floor(Math.random() * 3) // some random number of parts have passed by
-      const delta = 4
+      const delta = 3
       totalCount += delta
       // const rejectDelta = Math.random() > 0.9 ? 1 : 0
       const rejectDelta = 0
