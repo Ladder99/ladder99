@@ -505,7 +505,6 @@ services:
   # store structure and time-series data
   postgres:
     container_name: postgres
-    # image: timescale/timescaledb:2.3.0-pg13
     image: timescale/timescaledb:2.7.0-pg13
     command: postgres -c 'max_connections=50' # need for grafana pages with lots of queries
     profiles:
