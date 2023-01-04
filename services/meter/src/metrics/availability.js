@@ -83,9 +83,12 @@ export class Metric {
     // use timezone string like 'America/Chicago' instead of a hardcoded offset like -5.
     // we can use Luxon to get offset for a particular timezone.
     // there's probably a better way to do this with luxon, but this is the simplest change.
-    // const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
+    const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
     // now that encabulator is set to the user's timezone, we don't need an offset. 2022-11-12
-    const offsetMinutes = 0
+    // well apparently we do - new Date('2021-11-12T00:00:00-05:00') seems to assume Zulu timezone
+    // when run on encab, even though server is set to America/Chicago. but on windows it works. wth?
+    // const offsetMinutes = 0
+    console.log(this.me, `offsetMinutes`, offsetMinutes)
     this.timezoneOffset = offsetMinutes * 60 * 1000 // ms
 
     console.log(this.me, `get device node_id...`)
