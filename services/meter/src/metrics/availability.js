@@ -275,6 +275,7 @@ export class Metric {
     const startText = await this.db.getLatestValue(table, device, startPath) // eg '2022-01-13T05:00:00' with NO Z!
     const stopText = await this.db.getLatestValue(table, device, stopPath)
     const holiday = getHoliday(startText) || getHoliday(stopText) // 'HOLIDAY' or undefined
+    console.log(this.me, `start, stop`, startText, stopText)
     const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
     const stop = holiday || getDate(stopText)
     const schedule = { start, stop, holiday }
