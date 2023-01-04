@@ -306,7 +306,7 @@ export class Metric {
   async getJob() {
     const job =
       (await this.db.getLatestValue(
-        'history_text',
+        'history_all', // bug - had history_text here, but job could be a plain number
         this.device,
         this.metric.jobPath
       )) ?? 'NONE'
