@@ -227,10 +227,10 @@ export class Metric {
     }
     if (isDuringShift) {
       const job = await this.getJob() // eg '123456' or 'NONE'
-      // get setup time remaining for this job - subtracts poll interval (msec)
+      // get setup time remaining for this job
       let setupTime =
-        this.setupTimes[job] ??
-        (deviceSetupTimes[this.device.name] ?? 0) - this.interval
+        this.setupTimes[job] ?? deviceSetupTimes[this.device.name] ?? 0
+      setupTime -= this.interval
       if (setupTime < 0) setupTime = 0
       console.log(this.me, `setupTime remaining for job`, job, setupTime)
       // only increment the 'available' bins if we're NOT in setup time
