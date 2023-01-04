@@ -56,6 +56,7 @@ export class Jobs {
         and Status = 'S'
         and Actual_Start is not null
         and Inside_Oper = 1
+        and Sched_Start < getdate()
       `
     // pool error handler should catch any errors, but add try/catch in case not
     let job
