@@ -272,18 +272,13 @@ export class Metric {
     // schedule.start etc will be 'Invalid Date'.
     // any comparison with those will yield false.
     //. search for a given date, not latest value [why?]
-    const startText = await this.db.getLatestValue(table, device, startPath)
+    const startText = await this.db.getLatestValue(table, device, startPath) // eg '2022-01-13T05:00:00' with NO Z!
     const stopText = await this.db.getLatestValue(table, device, stopPath)
     const holiday = getHoliday(startText) || getHoliday(stopText) // 'HOLIDAY' or undefined
     const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
     const stop = holiday || getDate(stopText)
     const schedule = { start, stop, holiday }
-    // console.log(
-    //   this.me, `${this.device.name} start, stop, holiday`,
-    //   schedule.start,
-    //   schedule.stop,
-    //   schedule.holiday
-    // )
+    console.log(this.me, `schedule`, schedule)
     return schedule
   }
 
