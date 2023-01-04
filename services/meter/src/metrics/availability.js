@@ -223,7 +223,7 @@ export class Metric {
       await this.incrementBins(now, 'active')
     }
     if (isDuringShift) {
-      const job = (await this.getJob()) ?? 'NONE' // eg '123456'
+      const job = await this.getJob() // eg '123456' or 'NONE'
       // get setup time remaining for this job - subtracts poll interval (msec)
       let setupTime =
         this.setupTimes[job] ??
@@ -305,11 +305,12 @@ export class Metric {
   }
 
   async getJob() {
-    const job = await this.db.getLatestValue(
-      'history_text',
-      this.device.name,
-      this.metric.jobPath
-    )
+    const job =
+      (await this.db.getLatestValue(
+        'history_text',
+        this.device,
+        this.metric.jobPath
+      )) ?? 'NONE'
     return job
   }
 
