@@ -81,9 +81,9 @@ export class Metric {
     // use timezone string like 'America/Chicago' instead of a hardcoded offset like -5.
     // we can use Luxon to get offset for a particular timezone.
     // there's probably a better way to do this with luxon, but this is the simplest change.
-    const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
+    // const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
     // now that encabulator is set to the user's timezone, we don't need an offset. 2022-11-12
-    // const offsetMinutes = 0
+    const offsetMinutes = 0
     this.timezoneOffset = offsetMinutes * 60 * 1000 // ms
     // console.log(
     //   `Availability tz, offset`,
