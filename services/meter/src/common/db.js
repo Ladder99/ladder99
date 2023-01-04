@@ -187,7 +187,7 @@ export class Db {
 
   // get latest value of a device's property path
   // device has { name }
-  //. currently only used by availability and watch metrics - merge into getLastRecord
+  //. currently only used by availability and watch metrics
   //. merge with getLastRecord below
   async getLatestValue(table, device, path) {
     const sql = `
