@@ -28,8 +28,10 @@ export class Jobs {
     for (let device of this.devices) {
       const jobbossId = device.custom?.jobbossId // eg '8EE4B90E-7224-4A71-BE5E-C6A713AECF59'
       if (jobbossId) {
-        const job = await this.getJob(jobbossId) // jobnum or 'NONE'
-        this.cache.set(`${device.id}-${jobKey}`, job) // write to cache - will output shdr IF job changed
+        const job = await this.getJob(jobbossId) // jobnum or 'NONE' (or undefined if error)
+        if (job) {
+          this.cache.set(`${device.id}-${jobKey}`, job) // write to cache - will output shdr IF job changed
+        }
       }
     }
   }
@@ -65,6 +67,8 @@ export class Jobs {
     } catch (error) {
       console.log(`JobBoss jobs error`, error.message)
       console.log(`JobBoss jobs sql`, sql)
+      // job = NONE // don't do this - leave job as undefined in case of error (mostly timeout errors),
+      // so we don't overwrite the cache with 'NONE' and lose the previous jobnum.
     }
     return job
   }
