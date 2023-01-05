@@ -557,6 +557,38 @@ services:
         max-size: '20m'
 
   # ---------------------------------------------------------------------------
+  # postgrest
+  # ---------------------------------------------------------------------------
+  # expose postgres data via REST API
+  postgrest:
+    container_name: postgrest
+    image: postgrest/postgrest:v10.1.1
+    ports:
+      - '3010:3000'
+    profiles:
+      - postgrest
+    environment:
+      # PGRST_DB_URI: postgres://app_user:password@db:5432/app_db
+      PGRST_DB_URI: postgres://$PGUSER:$PGPASSWORD@postgres:$PGPORT/$PGDATABASE
+      PGRST_OPENAPI_SERVER_PROXY_URI: http://127.0.0.1:3000
+      # The database role to use when no client authentication is provided. Should differ from authenticator
+      # PGRST_DB_ANON_ROLE: anon
+      # The secret to verify the JWT for authenticated requests with.
+      # Needs to be 32 characters minimum.
+      # jwt-secret           = "reallyreallyreallyreallyverysafe"
+      # jwt-secret-is-base64 = False
+      # PGRST_JWT_SECRET: $JWT_SECRET
+      # PGRST_SECRET_IS_BASE64: False
+    depends_on:
+      - postgres
+    restart: always
+    networks:
+      - ladder99
+    logging:
+      options:
+        max-size: '20m'
+
+  # ---------------------------------------------------------------------------
   # record
   # ---------------------------------------------------------------------------
   # record device messages for future playback
