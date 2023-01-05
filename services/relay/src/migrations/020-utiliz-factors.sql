@@ -166,7 +166,7 @@ as
 $body$
 begin
   return query
-    select time_bin as time, foo.availability * get_utilization_factor(device) as availability from (
+    select time_bin as time, avg(foo.availability * get_utilization_factor(device)) as availability from (
       select
         nodes.props->>'name' as device, -- eg 'Marumatsu'
         date_trunc('day', bins.time) as time_bin, -- binsize=day
@@ -179,13 +179,16 @@ begin
         and bins.time < ms2timestamptz(p_stop)
       group by device, time_bin
       order by device, time_bin
-    ) as foo;
+    ) as foo
+  group by time_bin;
 end;
 $body$;
 
+
 -- test
--- select * from get_department_availability('Corrugated', timestamptz2ms('2022-12-20'), timestamptz2ms('2022-12-27'))
+-- -- select * from get_department_availability('Corrugated', timestamptz2ms('2022-12-20'), timestamptz2ms('2022-12-27'))
 -- select * from get_department_availability(timestamptz2ms('2022-12-20'), timestamptz2ms('2022-12-27'))
+-- select * from get_department_availability(timestamptz2ms('2023-01-01'), timestamptz2ms('2023-01-05'))
 
 
 
