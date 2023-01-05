@@ -45,6 +45,7 @@ export class Jobs {
     // make sure status is S=started
     // we ASSUME there is only one job started per workcenter at a time.
     // inside_oper is 1 if inside operation, 0 if not.
+    // and sched_start < getdate() to make sure we don't get a job that hasn't started yet.
     const sql = `
       select
         Job
