@@ -506,6 +506,8 @@ services:
   postgres:
     container_name: postgres
     image: timescale/timescaledb:2.7.0-pg13
+    #. still not sure tz is needed - see https://stackoverflow.com/a/38503436/243392
+    # command: postgres -c 'max_connections=50' -c 'timezone=America/Chicago'
     command: postgres -c 'max_connections=50' # need for grafana pages with lots of queries
     profiles:
       - postgres
