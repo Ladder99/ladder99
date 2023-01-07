@@ -97,6 +97,12 @@ done
 
 # make command and run it
 
+# use default builder, not multiplatform builder
+# avoids problem with sending tarball to docker which can get stuck
+# see https://github.com/docker/buildx/issues/107
+# and build command in this folder
+docker buildx use --default default
+
 # base cmd
 # note: -p specifies project name, as shown in docker management consoles - 
 # otherwise it uses the parent folder name (ie 'services').
