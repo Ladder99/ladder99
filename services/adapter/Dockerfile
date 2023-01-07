@@ -67,20 +67,28 @@ ENV NODE_ENV production
 COPY package.json /usr/app/
 
 # install javascript dependencies
-# first increase the timeout from 30 secs to 2mins to handle slow connections.
-# generate package-lock from package.json, but don't create node_modules
-# note: With the --only=production flag (or when the NODE_ENV environment 
-# variable is set to production), npm will not install modules listed in 
-# devDependencies.
-# fix vulnerabilities where able and update package-lock.json.
-# normally audit fix runs a full install under the hood, but we don't want that yet.
-# install deterministically from package-lock.json to node_modules.
-# audit=false means don't submit packages to registry.
-# see https://docs.npmjs.com/cli/v8/commands/npm-ci
+
+# # first increase the timeout from 30 secs to 2mins to handle slow connections.
+# RUN npm config set fetch-retry-maxtimeout 120000
+
+# # generate package-lock from package.json, but don't create node_modules.
+# RUN npm install --package-lock-only --omit=dev
+
+# # fix vulnerabilities where able and update package-lock.json.
+# # normally audit fix runs a full install under the hood, but we don't want that yet.
+# #. 2023-01-06 this fails for mssql package both with and without '--force' - comment out.
+# # RUN npm audit fix --force --package-lock-only --omit=dev
+
+# # install deterministically from package-lock.json to node_modules.
+# # audit=false means don't submit packages to registry.
+# # see https://docs.npmjs.com/cli/v8/commands/npm-ci
+# RUN npm clean-install --audit=false --omit=dev
+
+# combine above commands to make smaller image.
+#. note that we're leaving out npm audit because can't get past the mssql package audit.
 RUN npm config set fetch-retry-maxtimeout 120000 \
-  && npm install --package-lock-only --only=production \
-  && npm audit fix --package-lock-only --only=production \
-  && npm clean-install --audit=false --only=production
+  && npm install --package-lock-only --omit=dev \
+  && npm clean-install --audit=false --omit=dev
 
 COPY src /usr/app/src
 
