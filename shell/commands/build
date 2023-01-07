@@ -7,6 +7,8 @@
 #. get default service version from package.json - use jq to extract?
 # but if package.json out of date
 
+#. build2 is the new version of this file - a wip
+
 usage="
 Usage: l99 build SERVICE VERSION [PLATFORMS]
 
