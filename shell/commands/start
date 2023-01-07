@@ -104,7 +104,7 @@ done
 docker buildx use --default default
 
 # base cmd
-# note: -p specifies project name, as shown in docker management consoles - 
+# note: --project-name specifies project name, as shown in docker management consoles - 
 # otherwise it uses the parent folder name (ie 'services').
 BASE_CMD="docker compose --project-name ladder99 $ARGS $PROFILE_FLAGS"
 
