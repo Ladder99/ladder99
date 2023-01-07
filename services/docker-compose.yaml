@@ -233,6 +233,7 @@ services:
     container_name: grafana
     image: grafana/grafana:8.2.2
     # image: grafana/grafana-oss:9.1.0
+    # build: ./grafana
     profiles:
       - grafana
     ports:
@@ -255,10 +256,6 @@ services:
       # can pass in through environment variables -
       GF_SECURITY_ADMIN_USER: null
       GF_SECURITY_ADMIN_PASSWORD: null
-      # not used
-      # INFLUXDB_DB:
-      # INFLUXDB_USER:
-      # INFLUXDB_PASSWORD:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
