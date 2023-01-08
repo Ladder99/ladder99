@@ -217,8 +217,9 @@ services:
   # see https://goteleport.com/docs/application-access/getting-started/
   grafana:
     container_name: grafana
-    image: grafana/grafana:8.2.2
+    # image: grafana/grafana:8.2.2
     # image: grafana/grafana:9.0.2 #. get Origin not allowed error on dash
+    image: grafana/grafana:9.3.2
     profiles:
       - grafana
     # IMPORTANT: might need to turn this on for a client - have to comment it
@@ -241,8 +242,8 @@ services:
       # INFLUXDB_PASSWORD:
       # grafana will download and install these automatically
       # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
-      # GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel
-      GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel,volkovlabs-form-panel
+      GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel
+      # GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel,volkovlabs-form-panel
     volumes:
       # note: grafana.ini is located in /etc/grafana by default -
       # other folders are specified there.
