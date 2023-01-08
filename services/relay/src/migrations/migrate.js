@@ -18,7 +18,7 @@ const migrations = {
   ],
   1: ['012-bins-hypertable'],
   2: ['020-utiliz-factors'],
-  // 3: ['021-setup'],
+  3: ['030-setup', '031-postgrest'],
 }
 
 // handle migrations - use meta table
