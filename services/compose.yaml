@@ -579,7 +579,7 @@ services:
       # The secret to verify the JWT for authenticated requests with.
       # Needs to be at least 32 characters minimum.
       PGRST_JWT_SECRET: null
-      PGRST_SECRET_IS_BASE64: False
+      # PGRST_SECRET_IS_BASE64: 'False' # must be string, number, or null
     depends_on:
       - postgres
     restart: always
