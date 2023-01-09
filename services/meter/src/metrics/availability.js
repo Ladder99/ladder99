@@ -48,16 +48,6 @@ const backfillDefaultStart = 30 * days // ie look this far back for first backfi
 const metricIntervalDefault = 60 // seconds
 const resolutions = 'minute,hour,day,week,month,year'.split(',') //. 5min? 15min?
 
-//. move into db setup table
-const deviceSetupTimes = {
-  Jumbo: 0.5 * hours,
-  Marumatsu: 0.5 * hours,
-  Solarco: 0,
-  PAC48: 0,
-  Bahmuller: 0,
-  Gazzella: 0,
-}
-
 export class Metric {
   constructor() {
     this.device = null
@@ -101,7 +91,7 @@ export class Metric {
     // get polling interval - either from metric in setup yaml or default value
     this.interval = (metric.interval || metricIntervalDefault) * 1000 // ms
 
-    await this.backfill() // backfill missing values
+    // await this.backfill() // backfill missing values
 
     console.log(this.me, `poll with interval`, this.interval)
     await this.poll() // do first poll
@@ -111,8 +101,6 @@ export class Metric {
   //
 
   async backfill() {
-    const deviceName = this.device.name
-
     console.log(this.me, `backfilling missed dates...`)
 
     const now = new Date()
@@ -214,8 +202,9 @@ export class Metric {
     const schedule = await this.getSchedule()
 
     // update active and available bins as needed
-    const isDuringShift =
-      !schedule.holiday && now >= schedule.start && now <= schedule.stop
+    // const isDuringShift =
+    // !schedule.holiday && now >= schedule.start && now <= schedule.stop
+    const isDuringShift = true
     // 2022-08-03 handle overtime by allowing active minutes outside of shift hours
     const start =
       this.previousStopTime || new Date(now.getTime() - this.interval)
@@ -228,8 +217,9 @@ export class Metric {
     if (isDuringShift) {
       const job = await this.getJob() // eg '123456' or 'NONE'
       // get setup time remaining for this job
-      let setupTime =
-        this.setupTimes[job] ?? deviceSetupTimes[this.device.name] ?? 0
+      // const deviceSetupTime = deviceSetupTimes[this.device.name] ?? 0
+      const deviceSetupTime = await this.getDeviceSetupTime()
+      let setupTime = this.setupTimes[job] ?? deviceSetupTime
       setupTime -= this.interval
       if (setupTime < 0) setupTime = 0
       console.log(this.me, `setupTime remaining for job`, job, setupTime)
@@ -242,6 +232,15 @@ export class Metric {
       this.setupTimes[job] = setupTime
     }
     this.previousStopTime = stop
+  }
+
+  // get device setup time in milliseconds
+  async getDeviceSetupTime() {
+    const result = await this.db.query(
+      `select setup_allowance_mins from setup.devices where name = '${this.device.name}'`
+    )
+    const setupTime = result?.rows[0]?.setup_allowance_mins * minutes ?? 0
+    return setupTime
   }
 
   // async updateBins(now, interval) {
