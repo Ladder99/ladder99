@@ -1,8 +1,85 @@
 <script>
+  import { onMount } from 'svelte'
   import { Client } from 'pg'
+  // import { env } from '$env/dynamic/private'
+  // console.log(env)
+
+  // const password = process.env.POSTGRES_PASSWORD
+  const password = 'postgres'
+
+  let data = []
+
+  async function fetchData() {
+    // fetch data from database or API and store in `data` variable
+    // data = [{ name: 'Jumbo', setup_allowance_mins: 30 }]
+    const client = new Client({
+      host: 'localhost',
+      port: 5432,
+      user: 'postgres',
+      password,
+      database: 'postgres',
+    })
+    await client.connect()
+    const res = await client.query('SELECT * FROM setup.devices')
+    data = res.rows
+    await client.end()
+  }
+
+  onMount(fetchData)
 </script>
 
-<h1>Welcome to SvelteKit</h1>
-<p>
-  Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation
-</p>
+<main>
+  <h1>Setup Allowances</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Setup Allowance (minutes)</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {#each data as item}
+        <tr>
+          <td>
+            {item.name}
+            <!-- <input type="text" bind:value={item.name} /> -->
+          </td>
+          <td>
+            <input type="text" bind:value={item.setup_allowance_mins} />
+          </td>
+          <td>
+            <!-- <button on:click={updateItem(item)}>Save</button> -->
+          </td>
+        </tr>
+      {/each}
+    </tbody>
+  </table>
+</main>
+
+<style>
+  :global(body) {
+    background: black;
+    color: #555;
+  }
+  main {
+    text-align: center;
+    padding: 1em;
+    max-width: 240px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    color: #ff3e00;
+    text-transform: uppercase;
+    font-size: 4em;
+    font-weight: 100;
+  }
+
+  @media (min-width: 640px) {
+    main {
+      max-width: none;
+    }
+  }
+</style>
