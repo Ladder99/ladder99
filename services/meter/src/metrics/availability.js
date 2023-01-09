@@ -217,8 +217,7 @@ export class Metric {
     if (isDuringShift) {
       const job = await this.getJob() // eg '123456' or 'NONE'
       // get setup time remaining for this job
-      // const deviceSetupTime = deviceSetupTimes[this.device.name] ?? 0
-      const deviceSetupTime = await this.getDeviceSetupTime()
+      const deviceSetupTime = await this.getDeviceSetupTime() // get setup allowance for this device
       let setupTime = this.setupTimes[job] ?? deviceSetupTime
       setupTime -= this.interval
       if (setupTime < 0) setupTime = 0
