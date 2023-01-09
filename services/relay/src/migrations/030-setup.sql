@@ -10,7 +10,7 @@ create table if not exists setup.devices (
 );
 
 insert into setup.devices (name, setup_allowance_mins) values 
-  ('Jumbo', 30)
+  ('Jumbo', 30),
   ('Marumatsu', 30),
   ('Solarco', 0),
   ('PAC48', 0),
