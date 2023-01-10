@@ -718,6 +718,9 @@ services:
   # a reverse proxy
   # will need to add labels to grafana or other service you want to expose -
   # see client-demo/compose-overrides.yaml or client-oxbox for examples.
+  # Traefik will connect to the hosting Docker daemon to retrieve the 
+  # needed metadata. It will scan for Docker containers that are marked with 
+  # labels and will publish the services accordingly. 
   traefik:
     image: traefik:v2.5.3
     container_name: traefik
@@ -730,12 +733,12 @@ services:
       - --certresolv.myresolver.acme.storage=/etc/traefik/acme.json
     restart: always
     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
       # will need to do this before starting traefik -
       #   mkdir ../client-oxbox/volumes/traefik
       #   touch ../client-oxbox/volumes/traefik/acme.json
       #   chmod 600 ../client-oxbox/volumes/traefik/acme.json
       #. is that correct?
-      - /var/run/docker.sock:/var/run/docker.sock
       # can't do this as docker-compose will create acme.json as a directory - 
       # "docker-compose only creates folders, acme.json can be a folder name, 
       # it's impossible for it to know you want it to be a file. So if that file isn't 
