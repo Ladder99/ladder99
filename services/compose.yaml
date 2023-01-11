@@ -302,12 +302,12 @@ services:
   # logzio-logs
   # ---------------------------------------------------------------------------
   # monitor docker logs with logz.io
-  logzio-logs:
-    container_name: logzio-logs
+  logzio:
+    container_name: logzio
     #. add a version tag
     image: logzio/docker-collector-logs:0.4.0
     profiles:
-      - logzio-logs
+      - logzio
     environment:
       LOGZIO_TOKEN: $LOGZIO_TOKEN
       LOGZIO_URL: $LOGZIO_URL:5015
