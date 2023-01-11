@@ -299,7 +299,7 @@ services:
         max-size: '20m'
 
   # ---------------------------------------------------------------------------
-  # logzio-logs
+  # logzio
   # ---------------------------------------------------------------------------
   # monitor docker logs with logz.io
   logzio:
@@ -313,7 +313,7 @@ services:
       LOGZIO_URL: $LOGZIO_URL:5015
       LOGZIO_TYPE: docker_logs
       LOGZIO_CODEC: plain
-      skipContainerName: cloudbeaver,dozzle,hue,logzio-logs,pgadmin,portainer
+      skipContainerName: cloudbeaver,dozzle,hue,logzio,pgadmin,portainer
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /var/run/docker/containers:/var/lib/docker/containers
