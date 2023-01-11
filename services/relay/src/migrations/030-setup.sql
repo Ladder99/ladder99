@@ -9,11 +9,11 @@ create table if not exists setup.devices (
   setup_allowance_mins float default 0.0
 );
 
-insert into setup.devices (name, setup_allowance_mins) values 
-  ('Jumbo', 30),
-  ('Marumatsu', 30),
-  ('Solarco', 0),
-  ('PAC48', 0),
-  ('Bahmuller', 0),
-  ('Gazzella', 0)
-;
+-- insert into setup.devices (name, setup_allowance_mins) values 
+--   ('Jumbo', 30),
+--   ('Marumatsu', 30),
+--   ('Solarco', 0),
+--   ('PAC48', 0),
+--   ('Bahmuller', 0),
+--   ('Gazzella', 0)
+-- ;
