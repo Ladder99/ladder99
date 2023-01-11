@@ -305,14 +305,15 @@ services:
   logzio-logs:
     container_name: logzio-logs
     #. add a version tag
-    image: logzio/docker-collector-logs
+    image: logzio/docker-collector-logs:0.4.0
     profiles:
       - logzio-logs
     environment:
       LOGZIO_TOKEN: $LOGZIO_TOKEN
+      LOGZIO_URL: $LOGZIO_URL:5015
       LOGZIO_TYPE: docker_logs
-      LOGZIO_CODEC: json
-      skipContainerName: cloudbeaver,dozzle,hue,logzio-logs,pgadmin,portainer,traefik
+      LOGZIO_CODEC: plain
+      skipContainerName: cloudbeaver,dozzle,hue,logzio-logs,pgadmin,portainer
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /var/run/docker/containers:/var/lib/docker/containers
