@@ -197,14 +197,13 @@ export class Metric {
 
     console.log(this.me, `poll db and update bins`, now)
 
-    // get schedule for device, eg { start: Date<2022-01-13T05:00:00>, stop: ..., holiday }
+    // get schedule for device, eg { start: 2022-01-13T11:00:00Z, stop: ..., holiday }
     //. could do this every 10mins or so on separate timer, save to this.schedule
     const schedule = await this.getSchedule()
 
     // update active and available bins as needed
-    // const isDuringShift =
-    // !schedule.holiday && now >= schedule.start && now <= schedule.stop
-    const isDuringShift = true
+    const isDuringShift =
+      !schedule.holiday && now >= schedule.start && now <= schedule.stop
     // 2022-08-03 handle overtime by allowing active minutes outside of shift hours
     const start =
       this.previousStopTime || new Date(now.getTime() - this.interval)
