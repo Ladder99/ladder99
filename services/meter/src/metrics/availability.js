@@ -220,7 +220,7 @@ export class Metric {
       let setupTime = this.setupTimes[job] ?? deviceSetupTime
       setupTime -= this.interval
       if (setupTime < 0) setupTime = 0
-      console.log(this.me, `setupTime remaining for job`, job, setupTime)
+      console.log(this.me, `setup mins remaining`, job, setupTime / minutes)
       // only increment the 'available' bins if we're NOT in setup time
       if (job === 'NONE' || setupTime <= 0) {
         console.log(this.me, `increasing available bin`)
