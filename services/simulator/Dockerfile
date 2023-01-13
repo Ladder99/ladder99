@@ -63,8 +63,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 #   sudo apt install -t buster-backports libseccomp2
 # see https://www.reddit.com/r/Readarr/comments/ixajkk/working_docker_image_for_raspberry_pi_os_buster/glh774f/
 # add openssl
+# RUN apt-get update -y && apt-get install --fix-missing -y nodejs npm libudev-dev \
+# libusb-1.0-0 libusb-1.0-0-dev pkg-config
 RUN apt-get update -y && apt-get install --fix-missing -y nodejs npm libudev-dev \
-  libusb-1.0-0 libusb-1.0-0-dev pkg-config
+  libusb-1.0-0 libusb-1.0-0-dev pkg-config iputils-ping net-tools
 
 WORKDIR /usr/app
 ENV NODE_ENV production
