@@ -30,7 +30,9 @@ export function getShdr(output, value, timestamp = '') {
       //   The next special format is the Message. There is one additional field,
       //   native_code, which needs to be included, eg:
       //   2014-09-29T23:59:33.460470Z|message|CHG_INSRT|Change Inserts
-      shdr = `${timestamp}|${key}|${sanitize(nativeCode)}|${value}`
+      const nativeCode = value
+      const message = value
+      shdr = `${timestamp}|${key}|${nativeCode}|${message}`
     } else {
       shdr = `${timestamp}|${key}|${value}`
     }
@@ -48,7 +50,7 @@ export function getShdr(output, value, timestamp = '') {
       //. pick these values out of the value, which should be an object
       //. and sanitize them
       const level = value // eg 'WARNING' -> element 'Warning'
-      const nativeCode = 'nativeCode'
+      // const nativeCode = 'nativeCode'
       const nativeSeverity = 'nativeSeverity'
       const qualifier = 'qualifier'
       const message = value
