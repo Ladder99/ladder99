@@ -65,9 +65,12 @@ function getHistoryRecords(observations) {
   const records = []
   for (let obs of observations) {
     if (obs.dataitem_id) {
-      // obs.value is always string, due to the way the xml is stored, like <value>10</value>
-      //. better to use dataitem category to convert to number?
-      //  ie SAMPLES are numeric, EVENTS are strings
+      // obs.value is always string, due to the way the xml is stored, like <value>10</value>,
+      // so need to handle writing as number or string here.
+      //. use dataitem category to convert to number?
+      // ie SAMPLES are numeric, EVENTS are strings
+      // yes, because eg jobs could be 12345 or 12345-A
+      // and messages could be 100 or OK
       //. convert UNAVAILABLEs to null?
       //. keep in mind that conditions can have >1 value also
       const value = Number(obs.value) || JSON.stringify(obs.value)
