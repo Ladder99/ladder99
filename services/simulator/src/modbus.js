@@ -26,8 +26,8 @@ export class Simulator {
     const fault = 100
     const warn = 100
     const nlanes = 1
-    // const rollover = 100
-    const rollover = 1e7
+    const rollover = 1000
+    // const rollover = 1e7
 
     // define counters
     let totalCount = 0
@@ -47,15 +47,19 @@ export class Simulator {
           2101: fault,
           2102: warn,
           3000: nlanes,
-          5000: totalCount,
-          5008: goodCount,
-          5016: badCount,
-          5024: rejectCount,
-          // 5064: rollover,
-          5064: lower(rollover),
-          5066: upper(rollover),
+          5000: upper(totalCount),
+          5001: lower(totalCount),
+          5008: upper(goodCount),
+          5009: lower(goodCount),
+          5016: upper(badCount),
+          5017: lower(badCount),
+          5024: upper(rejectCount),
+          5025: lower(rejectCount),
+          5064: upper(rollover),
+          5065: lower(rollover),
         }
         const value = lookup[addr]
+        console.log('get register', addr, '=', value)
         if (value === undefined) {
           callback(new Error('Invalid register address'), null)
         } else {
@@ -104,7 +108,7 @@ export class Simulator {
     // update counts randomly, which are 'published' above
     setInterval(() => {
       // const delta = Math.floor(Math.random() * 3) // some random number of parts have passed by
-      const delta = 3
+      const delta = 4
       totalCount += delta
       // const rejectDelta = Math.random() > 0.9 ? 1 : 0
       // const badDelta = Math.floor(Math.random() * delta)
