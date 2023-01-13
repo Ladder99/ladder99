@@ -14,6 +14,18 @@ export class Simulator {
   async start() {
     console.log('Modbus start')
 
+    // define counters and constants
+    const status = 1
+    const fault = 100
+    const warn = 100
+    const nlanes = 1
+    const rollover = 1e7
+    let totalCount = 0
+    let goodCount = 0
+    let badCount = 0
+    let rejectCount = 0
+    const counterMax = 999
+
     const vector = {
       getInputRegister: function (addr, unitID) {
         // Synchronous handling
@@ -21,17 +33,25 @@ export class Simulator {
       },
       // callback is function(err, value)
       getHoldingRegister: function (addr, unitID, callback) {
-        // handle uint32be
-        if (addr === 5000) {
-          callback(null, totalCount) //. this seems to only handle 16bit values, so changed setup.yaml to uint16be
-        } else if (addr === 5008) {
-          callback(null, goodCount) //. this seems to only handle 16bit values, so changed setup.yaml to uint16be
-        } else if (addr === 5016) {
-          callback(null, badCount) //. this seems to only handle 16bit values, so changed setup.yaml to uint16be
-        } else if (addr === 5024) {
-          callback(null, rejectCount) //. this seems to only handle 16bit values, so changed setup.yaml to uint16be
+        //. handle uint32be - split into two callbacks?
+        const lookup = {
+          2100: status,
+          2101: fault,
+          2102: warn,
+          3000: nlanes,
+          5000: totalCount,
+          5008: goodCount,
+          5016: badCount,
+          5024: rejectCount,
+          5064: rollover,
+          // 5064: lower(rollover),
+          // 5066: upper(rollover),
+        }
+        const value = lookup[addr]
+        if (value === undefined) {
+          callback(new Error('Invalid register address'), null)
         } else {
-          callback(null, 0)
+          callback(null, value) //. this seems to only handle 16bit values, so changed setup.yaml to uint16be
         }
       },
       getCoil: function (addr, unitID) {
@@ -77,11 +97,6 @@ export class Simulator {
     })
 
     // update counts randomly, which are 'published' above
-    let totalCount = 0
-    let goodCount = 0
-    let badCount = 0
-    let rejectCount = 0
-    const counterMax = 9999
     setInterval(() => {
       // const delta = Math.floor(Math.random() * 3) // some random number of parts have passed by
       const delta = 3
