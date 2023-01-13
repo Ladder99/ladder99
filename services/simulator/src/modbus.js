@@ -19,12 +19,11 @@ export class Simulator {
     const fault = 100
     const warn = 100
     const nlanes = 1
-    const rollover = 1e7
+    const rollover = 100
     let totalCount = 0
     let goodCount = 0
     let badCount = 0
     let rejectCount = 0
-    const counterMax = 999
 
     const vector = {
       getInputRegister: function (addr, unitID) {
@@ -102,14 +101,16 @@ export class Simulator {
       const delta = 3
       totalCount += delta
       // const rejectDelta = Math.random() > 0.9 ? 1 : 0
-      const rejectDelta = 0
       // const badDelta = Math.floor(Math.random() * delta)
+      const rejectDelta = 0
       const badDelta = 1
       badCount += badDelta
       goodCount += delta - badDelta
       rejectCount += rejectDelta //. does this add into totalCount also?
-      if (totalCount > counterMax) {
-        totalCount = 0
+
+      //. assume these all rollover?
+      if (totalCount >= rollover) {
+        totalCount -= rollover
         goodCount = 0
         badCount = 0
         rejectCount = 0
