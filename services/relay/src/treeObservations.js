@@ -85,11 +85,13 @@ function recurse(element, elements, tag = '', parents = []) {
   }
 }
 
-// assign device node_id and dataitem node_id to observation objects
-export function assignNodeIds(observations, indexes) {
+// add device node_id, dataitem node_id, category to observation objects
+// export function assignNodeIds(observations, indexes) {
+export function addElementInfo(observations, indexes) {
   for (let obs of observations) {
     const node = indexes.nodeByUid[obs.uid]
     if (node) {
+      obs.category = node.category // 'SAMPLE', 'EVENT', 'CONDITION'
       // note: these had been tacked onto the node objects during index creation.
       obs.device_id = node.device_id
       obs.dataitem_id = node.dataitem_id

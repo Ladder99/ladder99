@@ -45,7 +45,8 @@ export class Observations extends Data {
   async write(db, indexes) {
     //
     // assign device_id and dataitem_id's to observations
-    treeObservations.assignNodeIds(this.observations, indexes)
+    // treeObservations.assignNodeIds(this.observations, indexes)
+    treeObservations.addElementInfo(this.observations, indexes)
 
     // get history records to write to db
     // observations is now [{ device_id, dataitem_id, tag, dataItemId, name, timestamp, value }, ...]
@@ -65,20 +66,22 @@ function getHistoryRecords(observations) {
   const records = []
   for (let obs of observations) {
     if (obs.dataitem_id) {
-      // obs.value is always string, due to the way the xml is stored, like <value>10</value>,
-      // so need to handle writing as number or string here.
-      //. use dataitem category to convert to number?
+      // obs.value is always string, due to the way the xml is stored, like <value>10</value>
+      // use dataitem category to convert to number
       // ie SAMPLES are numeric, EVENTS are strings
-      // yes, because eg jobs could be 12345 or 12345-A
-      // and messages could be 100 or OK
-      //. convert UNAVAILABLEs to null?
+      //. convert 'UNAVAILABLE' samples to null?
       //. keep in mind that conditions can have >1 value also
-      const value = Number(obs.value) || JSON.stringify(obs.value)
+      // const value = Number(obs.value) || JSON.stringify(obs.value) // bug: this converted 0's to "0" - should have used ?? operator
+      // try to convert to number - if not, convert to a json string, eg 'AVAILABLE' -> '"AVAILABLE"'
+      const nval = Number(obs.value) // try convert to number //. what if value is 'UNAVAILABLE' or null? then get NaN or 0 (!)
+      // const value = Number.isNaN(nval) ? JSON.stringify(obs.value) : nval
+      const useNumber = obs.category === 'SAMPLE' && !Number.isNaN(nval)
+      const value = useNumber ? nval : JSON.stringify(obs.value)
       const record = {
         node_id: obs.device_id,
         dataitem_id: obs.dataitem_id,
         time: obs.timestamp,
-        value,
+        value, // number or string - written as jsonb value
       }
       records.push(record)
     }
