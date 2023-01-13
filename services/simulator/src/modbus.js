@@ -9,17 +9,27 @@ const mbHost = '0.0.0.0'
 const mbPort = 502
 const mbId = 1
 
+function lower(value) {
+  return value & 0xffff
+}
+function upper(value) {
+  return (value >> 16) & 0xffff
+}
+
 export class Simulator {
   //
   async start() {
     console.log('Modbus start')
 
-    // define counters and constants
+    // define constants
     const status = 1
     const fault = 100
     const warn = 100
     const nlanes = 1
-    const rollover = 100
+    // const rollover = 100
+    const rollover = 1e7
+
+    // define counters
     let totalCount = 0
     let goodCount = 0
     let badCount = 0
@@ -27,7 +37,6 @@ export class Simulator {
 
     const vector = {
       getInputRegister: function (addr, unitID) {
-        // Synchronous handling
         return addr
       },
       // callback is function(err, value)
@@ -42,9 +51,9 @@ export class Simulator {
           5008: goodCount,
           5016: badCount,
           5024: rejectCount,
-          5064: rollover,
-          // 5064: lower(rollover),
-          // 5066: upper(rollover),
+          // 5064: rollover,
+          5064: lower(rollover),
+          5066: upper(rollover),
         }
         const value = lookup[addr]
         if (value === undefined) {
@@ -54,7 +63,6 @@ export class Simulator {
         }
       },
       getCoil: function (addr, unitID) {
-        // Asynchronous handling (with Promises, async/await supported)
         return new Promise(function (resolve) {
           setTimeout(function () {
             resolve(addr % 2 === 0)
@@ -62,12 +70,10 @@ export class Simulator {
         })
       },
       setRegister: function (addr, value, unitID) {
-        // Asynchronous handling supported also here
         console.log('set register', addr, value, unitID)
         return
       },
       setCoil: function (addr, value, unitID) {
-        // Asynchronous handling supported also here
         console.log('set coil', addr, value, unitID)
         return
       },
