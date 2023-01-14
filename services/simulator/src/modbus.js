@@ -22,18 +22,18 @@ export class Simulator {
     console.log('Modbus start')
 
     // define constants
-    const status = 1
-    const fault = 100
-    const warn = 100
     const nlanes = 1
     const rollover = 1000
     // const rollover = 1e7
 
-    // define counters
+    // define counters and other
     let totalCount = 0
     let goodCount = 0
     let badCount = 0
     let rejectCount = 0
+    let status = 1
+    let fault = 0
+    let warn = 0
 
     const vector = {
       getInputRegister: function (addr, unitID) {
@@ -126,6 +126,9 @@ export class Simulator {
         rejectCount = 0
       }
       console.log('Modbus counts', totalCount, goodCount, badCount, rejectCount)
+      status = Math.random() > 0.9 ? Math.floor(Math.random() * 4) : status // 0 to 3
+      fault = Math.random() > 0.9 ? Math.floor(Math.random() * 5) : fault
+      warn = Math.random() > 0.9 ? Math.floor(Math.random() * 5) : warn
     }, 1000)
   }
 }
