@@ -69,11 +69,17 @@ export class Metric {
       // so if deltaCount is negative, add max value to it.
       //. but we're also handling good/bad/reject counts, which might reset when total resets also.
       //. actual value depends on the max value of the counter - 100, 1000, 10000?
-      // const maxCount = 100 //. hard code for now - get from meter config
       // if (deltaCount < 0) {
       //   console.log(this.me, `count reset to 0`)
-      //   deltaCount = maxCount - deltaCount
+      //   deltaCount = rollover - deltaCount
       // }
+
+      // handle rollover and counter resets
+      // might lose some counts if counter resets to 0 before we get a chance to read it
+      if (deltaCount < 0) {
+        console.log(this.me, `count reset (delta < 0)`)
+        deltaCount = currentCount
+      }
 
       if (deltaCount > 0) {
         console.log(this.me, `add to bins`, binColumn, deltaCount)
