@@ -38,13 +38,9 @@ async function start() {
     for (let device of devices) {
       device.path = `${agent.alias}/${device.alias}` // eg 'Mazak5701/Mill12345
       //
-      for (let meter of meters) {
-        //.
-        // const defaultSettings = defaults[meterKey] ?? {} // eg { activePath, ... }
-        // const overrideSettings = overrideMeters[meterKey] ?? {} // eg { activePath, ... }
-        // const settings = { ...defaultSettings, ...overrideSettings }
-        // if (settings.ignore) continue // don't run this meter for this device
-
+      for (let meterKey of device.meters ?? []) {
+        const meter = meters[meterKey]
+        console.log(`Meter ${device.path} loading ${meterKey}...`)
         const { driver } = meter
 
         // import and instantiate driver
