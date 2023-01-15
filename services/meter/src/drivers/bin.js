@@ -8,7 +8,7 @@ const meterIntervalDefault = 5 // seconds
 export class Metric {
   //
   async start({ client, db, device, meter }) {
-    this.me = `Bin ${device.path} -`
+    this.me = `Bin ${device.path} ${meter.name} -`
     console.log(this.me, `start`)
 
     this.client = client
@@ -38,7 +38,7 @@ export class Metric {
 
   // poll db and update part count bins - called by timer
   async poll() {
-    console.log(this.me, `poll db, write count bins`)
+    // console.log(this.me, `poll db, write count bins`)
 
     // due to nature of js event loop, poll is not gonna be called exactly every this.interval ms.
     // that means we could miss job count records, causing 'misses'.
@@ -64,15 +64,6 @@ export class Metric {
 
       // get delta (zero for first encounter)
       let deltaCount = currentCount - (this.lastCount ?? currentCount)
-
-      //. handle flipping over to 0 - eg if currentCount=2, lastCount=97, deltaCount=-95, but delta should be 5
-      // so if deltaCount is negative, add max value to it.
-      //. but we're also handling good/bad/reject counts, which might reset when total resets also.
-      //. actual value depends on the max value of the counter - 100, 1000, 10000?
-      // if (deltaCount < 0) {
-      //   console.log(this.me, `count reset to 0`)
-      //   deltaCount = rollover - deltaCount
-      // }
 
       // handle rollover and counter resets
       // might lose some counts if counter resets to 0 before we get a chance to read it

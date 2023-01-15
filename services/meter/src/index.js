@@ -51,6 +51,7 @@ async function start() {
 
         // start it up - poll db as needed
         console.log(`Meter ${device.path} starting ${driver} driver...`)
+        meter.name = meterKey
         plugin.start({ client, db, device, meter })
       }
     }
