@@ -15,7 +15,8 @@ const timeDelta = 1000 // msec between updates
 const totalDelta = 4 // so in each minute, totalCount should increase by 240 - which should give a Performance value of 240/200=120%
 const badDelta = 1 // and badCount by 60, and goodCount by 180
 const rejectDelta = 0
-const rollover = 1000 // default is 1e7
+const rollover = 1e7
+// const rollover = 1000 // actual is 1e7
 const nlanes = 1
 
 function lower(value) {
