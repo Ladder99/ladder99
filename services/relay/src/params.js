@@ -6,6 +6,7 @@ export const params = {
   // hardcoded default folder is defined in compose.yaml with docker volume mappings
   setupFolder: process.env.L99_SETUP_FOLDER || '/data/setup',
   // these are dynamic - adjusted on the fly
-  fetchInterval: Number(process.env.FETCH_INTERVAL || 2000), // how often to fetch sample data, msec
-  fetchCount: Number(process.env.FETCH_COUNT || 800), // how many samples to fetch each time
+  // these were 2000 and 800 for ox, ie 400 per second
+  fetchInterval: Number(process.env.FETCH_INTERVAL || 1000), // how often to fetch sample data, msec
+  fetchCount: Number(process.env.FETCH_COUNT || 1000), // how many samples to fetch each time
 }
