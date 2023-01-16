@@ -623,7 +623,8 @@ services:
       RELAY_FEEDBACK_OFF: null
       # these are initial values - will update as needed
       #. set these in setup.yaml instead
-      FETCH_INTERVAL: 1000 # msec
+      # FETCH_INTERVAL: 1000 # msec
+      FETCH_INTERVAL: 2000 # msec
       FETCH_COUNT: 1000 # number of records to fetch
       # null means pass-through from environment
       PGHOST: null
