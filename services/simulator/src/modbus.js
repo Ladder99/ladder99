@@ -105,15 +105,12 @@ export class Simulator {
       console.log(err)
     })
 
-    // update counts randomly, which are 'published' above
+    // update counts, which are 'published' above
     setInterval(() => {
-      // const delta = Math.floor(Math.random() * 3) // some random number of parts have passed by
       const delta = 4
-      totalCount += delta
-      // const rejectDelta = Math.random() > 0.9 ? 1 : 0
-      // const badDelta = Math.floor(Math.random() * delta)
-      const rejectDelta = 0
       const badDelta = 1
+      const rejectDelta = 0
+      totalCount += delta
       badCount += badDelta
       goodCount += delta - badDelta
       rejectCount += rejectDelta //. does this add into totalCount also?
@@ -125,7 +122,10 @@ export class Simulator {
         badCount = 0
         rejectCount = 0
       }
+
       console.log('Modbus counts', totalCount, goodCount, badCount, rejectCount)
+
+      // update other values
       status = Math.random() > 0.9 ? Math.floor(Math.random() * 4) : status // 0 to 3
       fault = Math.random() > 0.9 ? Math.floor(Math.random() * 5) : fault
       warn = Math.random() > 0.9 ? Math.floor(Math.random() * 5) : warn
