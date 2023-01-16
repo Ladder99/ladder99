@@ -3,9 +3,13 @@
 
 import * as bins from '../bins.js'
 
+// poll db every this many seconds
 const meterIntervalDefault = 5 // seconds
+
+// look this far back in time for raw count values so adapter has time to write data
 // const offset = 3000 // ms
-const offset = 0 // ms
+const offset = 1000 // ms
+// const offset = 0 // ms
 
 export class Metric {
   //
