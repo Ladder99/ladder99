@@ -162,6 +162,7 @@ export class Db {
   // get node_id associated with a path, eg 'Main/Micro/availability'.
   // waits until it's there, in case this is run during setup.
   async getNodeId(path) {
+    console.log(`db getNodeId for`, path)
     let result
     const sql = `select node_id from raw.nodes where props->>'path'='${path}'`
     while (true) {
@@ -174,6 +175,7 @@ export class Db {
       if (result?.rows?.length > 0) break
       await new Promise(resolve => setTimeout(resolve, 5000)) // wait 5 secs
     }
+    console.log(result.rows)
     return result.rows[0].node_id
   }
 
