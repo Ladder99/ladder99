@@ -82,7 +82,8 @@ export class Metric {
       // might lose some counts if counter resets to 0 before we get a chance to read it
       if (deltaCount < 0) {
         console.log(this.me, `count reset (delta < 0)`)
-        deltaCount = currentCount
+        // deltaCount = currentCount // problem -
+        deltaCount = 0
       }
 
       if (deltaCount > 0) {
