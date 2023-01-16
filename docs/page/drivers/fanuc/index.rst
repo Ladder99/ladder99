@@ -8,6 +8,6 @@ Fanuc Driver
    overview
    installation-docker
    installation-linux
+   installation-windows
    configuration-layout
    focas-function-matrix
-   focas-api

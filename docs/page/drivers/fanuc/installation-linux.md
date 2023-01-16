@@ -11,7 +11,7 @@ dateCreated: 2022-09-23T02:21:38.712Z
 
 # Linux Installation
 
-> WARNING: Instructions need to be upgraded to .NET6
+> WARNING: Instructions need to be updated.
 <!-- {.is-warning} -->
 
 Instructions documented here are for non-Docker builds.

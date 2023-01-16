@@ -85,6 +85,7 @@ machines:
           port:	8193
           timeout_s:	3
 	  l99.driver.fanuc.strategies.FanucMultiStrategy, fanuc:
+      collectors:
       - l99.driver.fanuc.collectors.MachineInfo, fanuc
       - l99.driver.fanuc.collectors.Alarms, fanuc
       - l99.driver.fanuc.collectors.Messages, fanuc
@@ -119,6 +120,7 @@ machines:
     enabled:	true
     ...
 	  l99.driver.fanuc.strategies.FanucMultiStrategy, fanuc:
+      collectors:
       - l99.driver.fanuc.collectors.MachineInfo, fanuc
       #- l99.driver.fanuc.collectors.Alarms, fanuc
       #- l99.driver.fanuc.collectors.Messages, fanuc
