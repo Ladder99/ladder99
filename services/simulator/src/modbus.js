@@ -18,6 +18,7 @@ const rejectDelta = 0
 const rollover = 1e7
 // const rollover = 1000 // actual is 1e7
 const nlanes = 1
+const changeRate = 0.01 // chance of change
 
 function lower(value) {
   return value & 0xffff
@@ -132,9 +133,10 @@ export class Simulator {
       console.log('Modbus counts', totalCount, goodCount, badCount, rejectCount)
 
       // update other values
-      status = Math.random() > 0.9 ? Math.floor(Math.random() * 4) : status // 0 to 3
-      fault = Math.random() > 0.9 ? Math.floor(Math.random() * 5) : fault
-      warn = Math.random() > 0.9 ? Math.floor(Math.random() * 5) : warn
+      status =
+        Math.random() < changeRate ? Math.floor(Math.random() * 4) : status // 0 to 3
+      fault = Math.random() < changeRate ? Math.floor(Math.random() * 5) : fault
+      warn = Math.random() < changeRate ? Math.floor(Math.random() * 5) : warn
       console.log('Modbus status, fault, warn', status, fault, warn)
       //
     }, timeDelta)
