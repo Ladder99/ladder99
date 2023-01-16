@@ -27,7 +27,7 @@ sudo systemctl enable docker
 sudo systemctl start docker
 docker run hello-world
 
-sudo curl -L "https://github.com/docker/compose/releases/download/v2.3.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.15.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 docker-compose --version
 ```
@@ -78,10 +78,10 @@ Below commands copy the basic configuration files for Fanuc Driver, Mosquitto, a
 cd ~/fanuc/fanuc-driver/examples
 
 mkdir -p ../../volumes/fanuc-driver
-cp fanuc-driver/nlog-example-linux.config ../../volumes/fanuc-driver/nlog.config
-cp fanuc-driver/config-example.system.yml ../../volumes/fanuc-driver/config.system.yml
-cp fanuc-driver/config-example.user.yml ../../volumes/fanuc-driver/config.user.yml
-cp fanuc-driver/config-example.machines.yml ../../volumes/fanuc-driver/config.machines.yml
+cp docker/nlog.config ../../volumes/fanuc-driver/nlog.config
+cp docker/config.system.yml ../../volumes/fanuc-driver/config.system.yml
+cp docker/config.user.yml ../../volumes/fanuc-driver/config.user.yml
+cp docker/config.machines.yml ../../volumes/fanuc-driver/config.machines.yml
 
 mkdir -p ../../volumes/mosquitto/config
 mkdir -p ../../volumes/mosquitto/data
@@ -89,8 +89,8 @@ mkdir -p ../../volumes/mosquitto/log
 cp mosquitto.conf ../../volumes/mosquitto/config/mosquitto.conf
 
 mkdir -p ../../volumes/agent
-cp mtconnect/agent.cfg ../../volumes/agent/agent.cfg
-cp mtconnect/devices_example.xml ../../volumes/agent/devices.xml
+cp docker/agent.cfg ../../volumes/agent/agent.cfg
+cp docker/devices_template.xml ../../volumes/agent/devices.xml
 ```
 
 ## Start Profile
