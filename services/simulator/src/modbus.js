@@ -14,11 +14,12 @@ const mbId = 1
 const timeDelta = 1000 // msec between updates
 const totalDelta = 4 // so in each minute, totalCount should increase by 240 - which should give a Performance value of 240/200=120%
 const badDelta = 1 // and badCount by 60, and goodCount by 180
-const rejectDelta = 0
+// const rejectDelta = 0
 const rollover = 1e7
 // const rollover = 1000 // actual is 1e7
 const nlanes = 1
 const changeRate = 0.01 // chance of change
+const rejectRate = 0.01 // chance of reject
 
 function lower(value) {
   return value & 0xffff
@@ -121,6 +122,7 @@ export class Simulator {
       totalCount += totalDelta
       badCount += badDelta
       goodCount += totalDelta - badDelta
+      const rejectDelta = Math.random() < rejectRate ? 1 : 0
       rejectCount += rejectDelta //. does this add into totalCount also?
 
       // reset counts when totalCount rolls over
