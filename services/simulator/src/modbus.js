@@ -6,8 +6,17 @@ import ModbusRTU from 'modbus-serial' // see https://github.com/yaacov/node-modb
 // const mbHost = 'host.docker.internal' // access host from docker container
 // const mbHost = 'localhost'
 const mbHost = '0.0.0.0'
+
 const mbPort = 502
 const mbId = 1
+
+// constants
+const timeDelta = 1000 // msec between updates
+const totalDelta = 4 // so in each minute, totalCount should increase by 240 - which should give a Performance value of 240/200=120%
+const badDelta = 1 // and badCount by 60, and goodCount by 180
+const rejectDelta = 0
+const rollover = 1000 // default is 1e7
+const nlanes = 1
 
 function lower(value) {
   return value & 0xffff
@@ -21,12 +30,7 @@ export class Simulator {
   async start() {
     console.log('Modbus start')
 
-    // define constants
-    const nlanes = 1
-    const rollover = 1000
-    // const rollover = 1e7
-
-    // define counters and other
+    // define values
     let totalCount = 0
     let goodCount = 0
     let badCount = 0
@@ -35,6 +39,7 @@ export class Simulator {
     let fault = 0
     let warn = 0
 
+    // define get/update fns
     const vector = {
       getInputRegister: function (addr, unitID) {
         return addr
@@ -63,7 +68,7 @@ export class Simulator {
         if (value === undefined) {
           callback(new Error('Invalid register address'), null)
         } else {
-          callback(null, value) //. this seems to only handle 16bit values, so changed setup.yaml to uint16be
+          callback(null, value)
         }
       },
       getCoil: function (addr, unitID) {
@@ -93,6 +98,7 @@ export class Simulator {
       },
     }
 
+    // create modbus server
     const serverTCP = new ModbusRTU.ServerTCP(vector, {
       host: mbHost,
       port: mbPort,
@@ -100,35 +106,36 @@ export class Simulator {
       debug: true,
     })
 
+    // handle errors
     serverTCP.on('socketError', function (err) {
       // Handle socket error if needed, can be ignored
       console.log(err)
     })
 
-    // update counts, which are 'published' above
+    // update values, which are 'published' above in the vector fns
     setInterval(() => {
-      const delta = 4
-      const badDelta = 1
-      const rejectDelta = 0
-      totalCount += delta
+      //
+      // update counters
+      totalCount += totalDelta
       badCount += badDelta
-      goodCount += delta - badDelta
+      goodCount += totalDelta - badDelta
       rejectCount += rejectDelta //. does this add into totalCount also?
 
-      //. assume these all rollover?
+      // reset counts when totalCount rolls over
       if (totalCount >= rollover) {
         totalCount -= rollover
         goodCount = 0
         badCount = 0
         rejectCount = 0
       }
-
       console.log('Modbus counts', totalCount, goodCount, badCount, rejectCount)
 
       // update other values
       status = Math.random() > 0.9 ? Math.floor(Math.random() * 4) : status // 0 to 3
       fault = Math.random() > 0.9 ? Math.floor(Math.random() * 5) : fault
       warn = Math.random() > 0.9 ? Math.floor(Math.random() * 5) : warn
-    }, 1000)
+      console.log('Modbus status, fault, warn', status, fault, warn)
+      //
+    }, timeDelta)
   }
 }
