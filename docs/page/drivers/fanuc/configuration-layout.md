@@ -74,38 +74,38 @@ At run time the machine is expanded as shown below.  Note that we are not derefe
 ```yaml
 machines:
   - id:	my_fanuc
-    enabled:	true
-    type:	l99.driver.fanuc.FanucMachine, fanuc
-    strategy:	l99.driver.fanuc.strategies.FanucMultiStrategy, fanuc
-    handler:	l99.driver.fanuc.handlers.FanucOne, fanuc
-	  l99.driver.fanuc.FanucMachine, fanuc:
-      sweep_ms:	1000
-	      net:
-          ip:	10.1.10.211
-          port:	8193
-          timeout_s:	3
-	  l99.driver.fanuc.strategies.FanucMultiStrategy, fanuc:
-      collectors:
-      - l99.driver.fanuc.collectors.MachineInfo, fanuc
-      - l99.driver.fanuc.collectors.Alarms, fanuc
-      - l99.driver.fanuc.collectors.Messages, fanuc
-      - l99.driver.fanuc.collectors.StateData, fanuc
-      - l99.driver.fanuc.collectors.ToolData, fanuc
-      - l99.driver.fanuc.collectors.ProductionData, fanuc
-      - l99.driver.fanuc.collectors.GCodeData, fanuc
-      - l99.driver.fanuc.collectors.AxisData, fanuc
-      - l99.driver.fanuc.collectors.SpindleData, fanuc
-    l99.driver.fanuc.transports.SHDR, fanuc:
-	    << : *default-shdr-transformers
-      << : *default-shdr-model-genny
-      device_name	:	f_sim
-	    net:
-        port:	7878
-        heartbeat_ms:	10000
-        interval_ms:	1000
-	  l99.driver.fanuc.handlers.FanucOne, fanuc:
-      change_only:	true
-      skip_internal:	true
+  enabled: !!bool true
+  type: l99.driver.fanuc.FanucMachine, fanuc
+  strategy: l99.driver.fanuc.strategies.FanucMultiStrategy, fanuc
+  handler: l99.driver.fanuc.handlers.FanucOne, fanuc
+  l99.driver.fanuc.FanucMachine, fanuc:
+    sweep_ms: !!int 1000
+    net:
+      ip:	10.1.10.211
+      port: !!int 8193
+      timeout_s: !!int 3
+  l99.driver.fanuc.strategies.FanucMultiStrategy, fanuc:
+    collectors:
+    - l99.driver.fanuc.collectors.MachineInfo, fanuc
+    - l99.driver.fanuc.collectors.Alarms, fanuc
+    - l99.driver.fanuc.collectors.Messages, fanuc
+    - l99.driver.fanuc.collectors.StateData, fanuc
+    - l99.driver.fanuc.collectors.ToolData, fanuc
+    - l99.driver.fanuc.collectors.ProductionData, fanuc
+    - l99.driver.fanuc.collectors.GCodeData, fanuc
+    - l99.driver.fanuc.collectors.AxisData, fanuc
+    - l99.driver.fanuc.collectors.SpindleData, fanuc
+  l99.driver.fanuc.transports.SHDR, fanuc:
+    << : *default-shdr-transformers
+    << : *default-shdr-model-genny
+    device_name: f_sim
+      net:
+        port: !!int 7878
+        heartbeat_ms: !!int 10000
+        interval_ms: !!int 1000
+  l99.driver.fanuc.handlers.FanucOne, fanuc:
+    change_only: !!bool true
+    skip_internal: !!bool true
 ```
 
 Long form is completely acceptable and typically more readable.
@@ -117,18 +117,18 @@ The default data collectors have been tested against a wide range of Fanuc contr
 ```yaml
 machines:
   - id:	my_fanuc
-    enabled:	true
-    ...
-	  l99.driver.fanuc.strategies.FanucMultiStrategy, fanuc:
-      collectors:
-      - l99.driver.fanuc.collectors.MachineInfo, fanuc
-      #- l99.driver.fanuc.collectors.Alarms, fanuc
-      #- l99.driver.fanuc.collectors.Messages, fanuc
-      - l99.driver.fanuc.collectors.StateData, fanuc
-      #- l99.driver.fanuc.collectors.ToolData, fanuc
-      #- l99.driver.fanuc.collectors.ProductionData, fanuc
-      #- l99.driver.fanuc.collectors.GCodeData, fanuc
-      #- l99.driver.fanuc.collectors.AxisData, fanuc
-      #- l99.driver.fanuc.collectors.SpindleData, fanuc
-    ...
+  enabled: !!bool true
+  ...
+  l99.driver.fanuc.strategies.FanucMultiStrategy, fanuc:
+    collectors:
+    - l99.driver.fanuc.collectors.MachineInfo, fanuc
+    #- l99.driver.fanuc.collectors.Alarms, fanuc
+    #- l99.driver.fanuc.collectors.Messages, fanuc
+    - l99.driver.fanuc.collectors.StateData, fanuc
+    #- l99.driver.fanuc.collectors.ToolData, fanuc
+    #- l99.driver.fanuc.collectors.ProductionData, fanuc
+    #- l99.driver.fanuc.collectors.GCodeData, fanuc
+    #- l99.driver.fanuc.collectors.AxisData, fanuc
+    #- l99.driver.fanuc.collectors.SpindleData, fanuc
+  ...
 ```
