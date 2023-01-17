@@ -62,7 +62,7 @@ from raw.bins
 
 -- epoch is seconds, so divide by 60 to get minutes
 cross join lateral (select extract(epoch from resolution)/60.0 as time_mins) as e1
-cross join lateral (select time_mins - coalesce(active,0) as downtime) as e2
+cross join lateral (select time_mins - coalesce(active,0) as downtime_mins) as e2
 
 cross join lateral (select get_rate(total_count, time, resolution) as actual_rate) as r1
 cross join lateral (select get_rate(reject_count, time, resolution) as reject_rate) as r2
