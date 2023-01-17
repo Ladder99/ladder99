@@ -32,7 +32,7 @@ alter table raw.bins add column if not exists reject_count int; -- client wants 
 drop view if exists metrics;
 create or replace view metrics as
 select 
-  devices.props->>'path' as device, -- eg 'Main/Sencon'
+  devices.props->>'path' as device, -- eg 'Main/ConversionPress'
   bins.resolution, -- eg '1 minute'::interval
   bins.time,
   
