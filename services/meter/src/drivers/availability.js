@@ -184,7 +184,7 @@ export class Metric {
     // get schedule for device, eg { start: 2022-01-13T11:00:00Z, stop: ..., holiday: undefined }
     //. do this every 10mins or so on separate timer, save to this.schedule
     const schedule = await this.getSchedule()
-    console.log(this.me, `schedule`, schedule, 'now', now)
+    // console.log(this.me, `schedule`, schedule, 'now', now)
 
     // update active and available bins as needed
     const isDuringShift =
