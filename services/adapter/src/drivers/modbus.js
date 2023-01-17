@@ -19,8 +19,8 @@ const STATE_GOOD_CONNECT = 6
 const STATE_FAIL_CONNECT = 7
 
 // Modbus TCP configuration values
-const mbId = 1 //. ?
-const mbPollingInterval = 5000 //. 1000 seems to really bog down the cpu - why?
+const mbId = 1
+const mbPollingInterval = 1000
 const mbTimeout = 4000
 
 // number of registers to read for diff datatypes
@@ -91,7 +91,6 @@ export class AdapterDriver {
       let nextAction
 
       while (true) {
-        console.log('Modbus state', mbState)
         switch (mbState) {
           case STATE_INIT:
             nextAction = connectClient
@@ -127,7 +126,7 @@ export class AdapterDriver {
 
         // execute "next action" function, if defined
         if (nextAction !== undefined) {
-          console.log(`Modbus running`, nextAction.name)
+          // console.log(`Modbus running`, nextAction.name)
           nextAction() // execute function - this sets mbState, mbStatus
           mbState = STATE_IDLE
         }
@@ -173,7 +172,7 @@ export class AdapterDriver {
             .then(data => {
               mbState = STATE_GOOD_READ
               mbStatus = `Modbus read ${address} success`
-              console.log(mbStatus, data.buffer)
+              // console.log(mbStatus, data.buffer)
               const method = datatypeMethods[datatype] // eg 'readUInt32BE' for 'uint32be'
               const value = data.buffer[method](0) // eg data.buffer.readUInt32BE(0)
               setValue(key, value)
