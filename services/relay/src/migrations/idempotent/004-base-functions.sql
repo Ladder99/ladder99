@@ -87,9 +87,9 @@ create or replace function divide(numer float, denom float)
   returns float language sql immutable parallel safe as
   'select coalesce(numer,0) / nullif(denom,0.0)';
 
--- select divide(null, 1);
--- select divide(1, null);
--- select divide(1, 0);
+-- select divide(null, 1); -- 0
+-- select divide(1, null); -- null
+-- select divide(1, 0); -- null
 
 
 create or replace function get_rate(ct int, t timestamptz, resolution interval)
