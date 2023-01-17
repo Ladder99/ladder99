@@ -41,7 +41,7 @@ VERSION=$2
 # arm/v7 is 32bit for older pi's
 # PLATFORMS=${3:-"linux/amd64,linux/arm64,linux/arm/v7"}
 # PLATFORMS=${3:-"linux/amd64,linux/arm64"}
-PLATFORMS=amd64 arm64 arm
+# PLATFORMS=amd64 arm64 arm
 
 USERNAME=ladder99
 # TAG=$USERNAME/$SERVICE:$VERSION
@@ -69,7 +69,7 @@ docker buildx inspect --bootstrap
 # # && echo "Pushing the image to Docker Hub..." \
 # # && docker push $TAG
 
-for arch in amd64 arm64 arm ; do 
+for arch in amd64 arm64 ; do 
     docker buildx build \
     --platform $arch \
     --output type=docker \
@@ -78,7 +78,7 @@ for arch in amd64 arm64 arm ; do
 done
 
 docker buildx build \
---platform amd64,arm64,arm \
+--platform amd64,arm64 \
 --tag $USERNAME/$SERVICE:$VERSION \
 --push \
 services/$SERVICE/

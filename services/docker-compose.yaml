@@ -17,7 +17,7 @@ services:
     # note: to build from source, use the 'build' directive instead of 'image',
     # and run 'l99 start --offline' to avoid pulling image
     # see https://hub.docker.com/repository/docker/ladder99/adapter
-    image: ladder99/adapter:0.10.1
+    image: ladder99/adapter:0.11.0
     # build: ./adapter # see services/adapter/Dockerfile
 
     # set this to give permission to access hardware (e.g. dymo scale in usb port).
@@ -346,7 +346,8 @@ services:
   # note: set PGHOST, PGPORT, etc before running
   meter:
     container_name: meter
-    build: ./meter
+    image: ladder99/meter:0.11.0
+    # build: ./meter
     profiles:
       - meter
     environment:
@@ -605,7 +606,7 @@ services:
     # note: to build from source, use the 'build' directive instead of 'image', 
     # and run 'l99 start --offline' to avoid pulling image
     # see https://hub.docker.com/repository/docker/ladder99/relay
-    image: ladder99/relay:0.10.1
+    image: ladder99/relay:0.11.0
     # image: $RELAY_IMAGE
     # build: ./relay # see services/relay/Dockerfile
 
@@ -735,7 +736,8 @@ services:
   # cf simulation service
   simulator:
     container_name: simulator
-    build: ./simulator
+    # build: ./simulator
+    image: ladder99/simulator:0.11.0
     profiles:
       - simulator
     # ports:
