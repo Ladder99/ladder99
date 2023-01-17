@@ -17,7 +17,7 @@ const badDelta = 1 // and badCount by 60, and goodCount by 180
 const rollover = 1e7
 const nlanes = 1
 const changeRate = 0.01 // chance of change
-const rejectRate = 0.02 // chance of reject
+const rejectRate = 0.02 // chance of reject - 0.02*60=1.2 rejects per minute -> 1.2/200=0.006 reject rate
 
 function lower(value) {
   return value & 0xffff
