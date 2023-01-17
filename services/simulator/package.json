@@ -1,6 +1,6 @@
 {
   "name": "ladder99-simulator",
-  "version": "0.1.0",
+  "version": "0.11.0",
   "type": "module",
   "description": "wip - send test device messages to opc client",
   "scripts": {
