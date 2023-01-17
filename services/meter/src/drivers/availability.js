@@ -184,6 +184,7 @@ export class Metric {
     // get schedule for device, eg { start: 2022-01-13T11:00:00Z, stop: ..., holiday: undefined }
     //. do this every 10mins or so on separate timer, save to this.schedule
     const schedule = await this.getSchedule()
+    console.log(this.me, `schedule`, schedule, 'now', now)
 
     // update active and available bins as needed
     const isDuringShift =
@@ -196,12 +197,10 @@ export class Metric {
     const deviceWasActive = await this.getActive(start, stop)
     if (deviceWasActive) {
       console.log(this.me, `increasing active bin`)
-      // await this.incrementBins(now, 'active')
       await bins.add(this.db, this.device.node_id, now, 'active')
     }
     if (isDuringShift) {
       console.log(this.me, `increasing available bin`)
-      // await this.incrementBins(now, 'available')
       await bins.add(this.db, this.device.node_id, now, 'available')
     }
     this.previousStopTime = stop
@@ -237,12 +236,13 @@ export class Metric {
 
     // handle start/stop times set in setup.yaml.
     // startTime is like '05:00:00', so need to tack it onto current date + 'T'.
-    //. make sure this handles timezones alright
     if (this.startTime) {
-      const today = new Date().toISOString().slice(0, 11) // eg '2022-01-13T' //. shift tz?
+      const today = new Date(new Date().getTime() + this.timezoneOffset)
+        .toISOString()
+        .slice(0, 11) // eg '2022-01-16T'
       const start = getDate(today + this.startTime)
       const stop = getDate(today + this.stopTime)
-      const holiday = undefined //. for now
+      const holiday = undefined // for now
       return { start, stop, holiday }
     }
 
@@ -270,12 +270,6 @@ export class Metric {
     const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
     const stop = holiday || getDate(stopText)
     const schedule = { start, stop, holiday }
-    // console.log(
-    //   'Availability - ${this.device.name} start, stop, holiday',
-    //   schedule.start,
-    //   schedule.stop,
-    //   schedule.holiday
-    // )
     return schedule
   }
 
