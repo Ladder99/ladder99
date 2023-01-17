@@ -1,0 +1,131 @@
+#!/bin/bash
+
+# run ladder99 pipeline with docker compose.
+
+usage="
+Usage: l99 start [SERVICES]
+
+Run the Ladder99 pipeline with a list of services/profiles to include.
+
+SERVICES      space-delim list of services or profiles to start
+  base        run all relevant services for a setup - eg adapter, agent, etc.
+              (this is the default)
+
+Examples
+    l99 start agent
+    l99 start
+"
+
+# show help if count of params is zero
+# if [ $# -eq 0 ]; then
+#     echo "$usage"
+#     exit
+# fi
+if [ "$1" = "-h" ]; then
+    echo "$usage"
+    exit
+fi
+
+# get mode - detached or console
+# removed console mode option because hitting ctrl-c stops ALL other services!
+MODE=--detach
+
+# # handle options
+# if [ "$1" = "--offline" ]; then
+#     OFFLINE=true
+#     shift
+# fi
+
+# get setup folder
+SETUP=$(cat .l99_setup)
+SETUP_FOLDER=setups/$SETUP
+
+# handle missing setup folder
+if [ ! -e $SETUP_FOLDER ]; then
+    echo "Setup folder '$SETUP_FOLDER' does not exist - please run the 'l99 use SETUP' command."
+    echo
+    exit 1
+fi
+
+# if no services specified, default to 'base', which should run the main services
+if [ $# -eq 0 ]; then
+    SERVICES=base
+else
+    SERVICES=$* # eg 'agent adapter'
+fi
+
+# file paths
+COMPOSE=services/docker-compose.yaml
+OVERRIDES=$SETUP_FOLDER/services/docker-compose.yaml
+ENVFILE=$SETUP_FOLDER/.env
+ENVFILE_EXAMPLE=$SETUP_FOLDER/.env-example
+
+# specify docker compose files
+ARGS="--file $COMPOSE"
+if [ -e $OVERRIDES ]; then
+    ARGS="$ARGS --file $OVERRIDES"
+fi
+
+# add environment variable file
+if [ -e $ENVFILE ]; then
+    # use .env file if there
+    ARGS="$ARGS --env-file $ENVFILE"
+elif [ "$SETUP" = "example" ]; then
+    # copy the example .env file and use that
+    cp $ENVFILE_EXAMPLE $ENVFILE
+    ARGS="$ARGS --env-file $ENVFILE"
+else
+    # otherwise create a new .env file and stop
+    echo "No .env file found - copying from default..."
+    cp $ENVFILE_EXAMPLE $ENVFILE
+    echo
+    echo "PLEASE SET INITIAL PASSWORDS IN .env FILE -"
+    echo "For example, run 'nano $ENVFILE', set the Grafana and Postgres passwords,"
+    echo "then re-run the 'l99 start' command."
+    echo
+    exit 1
+fi
+
+# get profile flags - one per service/profile specified
+PROFILE_FLAGS=""
+for PROFILE in $SERVICES; do
+    PROFILE_FLAGS="$PROFILE_FLAGS --profile $PROFILE"
+done
+
+# make command and run it
+
+# use default builder, not multiplatform builder
+# avoids problem with sending tarball to docker which can get stuck
+# see https://github.com/docker/buildx/issues/107
+# and build command in this folder
+docker buildx use --default default
+
+# base cmd
+# note: --project-name specifies project name, as shown in docker management consoles - 
+# otherwise it uses the parent folder name (ie 'services').
+BASE_CMD="docker compose --project-name ladder99 $ARGS $PROFILE_FLAGS"
+
+# # pull cmd
+# PULL_CMD="$BASE_CMD pull"
+
+# run cmd
+# RUN_CMD="$BASE_CMD up --build $MODE"
+RUN_CMD="$BASE_CMD up $MODE"
+
+# # pull any required images in the docker-compose files and start services.
+# if [ "$OFFLINE" = "true" ]; then
+#     CMD="$RUN_CMD"
+# else
+#     CMD="$PULL_CMD && 
+# $RUN_CMD"
+# fi
+
+CMD="$RUN_CMD"
+
+FULL_CMD="export SETUP=$SETUP && 
+$CMD"
+echo "$FULL_CMD"
+bash -c "$FULL_CMD"
+
+echo
+echo "Run 'l99 status' to check status of services."
