@@ -48,12 +48,13 @@ elif [ "$COMMAND" = "logs" ]; then
     OPTIONS="--timestamps --follow"
 fi
 
-# if no services specified, default to 'base', which should run the main services
-if [ $# -eq 0 ]; then
-    SERVICES=base
-else
-    SERVICES=$* # eg 'agent adapter'
-fi
+# # if no services specified, default to 'base', which should run the main services
+# if [ $# -eq 0 ]; then
+#     SERVICES=base
+# else
+#     SERVICES=$* # eg 'agent adapter'
+# fi
+SERVICES=$* # eg 'agent adapter'
 
 # file paths
 COMPOSE=services/docker-compose.yaml
@@ -108,14 +109,12 @@ docker buildx use --default default
 BASE_CMD="docker compose --project-name ladder99 $ARGS"
 
 # run cmd
-# RUN_CMD="$BASE_CMD up --build $OPTIONS"
-RUN_CMD="$BASE_CMD $COMMAND $OPTIONS $SERVICES"
+RUN_CMD="export SETUP=$SETUP &&
+$BASE_CMD $COMMAND $OPTIONS $SERVICES"
 
-FULL_CMD="export SETUP=$SETUP && 
-$RUN_CMD"
+echo "$RUN_CMD"
+# bash -c "$RUN_CMD"
+"$RUN_CMD"
 
-echo "$FULL_CMD"
-bash -c "$FULL_CMD"
-
-echo
-echo "Run 'l99 status' to check status of services."
+# echo
+# echo "Run 'l99 status' to check status of services."
