@@ -2,7 +2,10 @@
 
 # list local ladder99 images
 
-TAG=${*:-ladder99/*}
+SERVICE=${*:-*} # eg *, grafana
+USERNAME=ladder99
 
-docker image ls $TAG \
+echo "Listing $USERNAME/$SERVICE images..."
+
+docker image ls $USERNAME/$SERVICE \
  | (read -r; printf "%s\n" "$REPLY"; sort -k 1 )
