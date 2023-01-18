@@ -23,7 +23,6 @@ Might need to login to Docker Hub first, in order to push image there -
 
 Example
     l99 build adapter 0.10.1
-    l99 build relay latest
 "
 
 # show help if count of params is zero
@@ -52,7 +51,6 @@ docker buildx rm l99builder
 docker buildx create --name l99builder --driver docker-container --use
 docker buildx inspect --bootstrap
 
-# for arch in amd64 arm64 ; do 
 for arch in $PLATFORMS ; do 
     echo "Building image for" $arch
     docker buildx build \

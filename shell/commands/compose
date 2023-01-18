@@ -1,40 +1,29 @@
 #!/bin/bash
 
-# run ladder99 pipeline with docker compose.
+# run docker compose command
 
 usage="
-Usage: l99 start [SERVICES]
+Usage: l99 compose COMMAND [OPTIONS] [SERVICES]
 
 Run the Ladder99 pipeline with a list of services/profiles to include.
 
+COMMAND       docker compose command (up, down, logs)
+OPTIONS       space-delim options for command, starting with - (eg -t)
 SERVICES      space-delim list of services or profiles to start
   base        run all relevant services for a setup - eg adapter, agent, etc.
               (this is the default)
 
 Examples
-    l99 start agent
-    l99 start
+    l99 compose up agent adapter
+    l99 compose logs
+    l99 compose down
 "
 
 # show help if count of params is zero
-# if [ $# -eq 0 ]; then
-#     echo "$usage"
-#     exit
-# fi
-if [ "$1" = "-h" ]; then
+if [ $# -eq 0 ]; then
     echo "$usage"
     exit
 fi
-
-# get mode - detached or console
-# removed console mode option because hitting ctrl-c stops ALL other services!
-MODE=--detach
-
-# # handle options
-# if [ "$1" = "--offline" ]; then
-#     OFFLINE=true
-#     shift
-# fi
 
 # get setup folder
 SETUP=$(cat .l99_setup)
@@ -45,6 +34,18 @@ if [ ! -e $SETUP_FOLDER ]; then
     echo "Setup folder '$SETUP_FOLDER' does not exist - please run the 'l99 use SETUP' command."
     echo
     exit 1
+fi
+
+# get command, eg 'up'
+COMMAND=$1
+shift
+
+# get command options
+# had a console mode option but removed it because hitting ctrl-c stops ALL other services!
+if [ "$COMMAND" = "up" ]; then
+    OPTIONS="--detach"
+elif [ "$COMMAND" = "logs" ]; then
+    OPTIONS="--timestamps --follow"
 fi
 
 # if no services specified, default to 'base', which should run the main services
@@ -97,33 +98,22 @@ done
 # use default builder, not multiplatform builder
 # avoids problem with sending tarball to docker which can get stuck
 # see https://github.com/docker/buildx/issues/107
-# and build command in this folder
+# and buildx command in this folder
 docker buildx use --default default
 
 # base cmd
 # note: --project-name specifies project name, as shown in docker management consoles - 
 # otherwise it uses the parent folder name (ie 'services').
-BASE_CMD="docker compose --project-name ladder99 $ARGS $PROFILE_FLAGS"
-
-# # pull cmd
-# PULL_CMD="$BASE_CMD pull"
+# BASE_CMD="docker compose --project-name ladder99 $ARGS $PROFILE_FLAGS"
+BASE_CMD="docker compose --project-name ladder99 $ARGS"
 
 # run cmd
-# RUN_CMD="$BASE_CMD up --build $MODE"
-RUN_CMD="$BASE_CMD up $MODE"
-
-# # pull any required images in the docker-compose files and start services.
-# if [ "$OFFLINE" = "true" ]; then
-#     CMD="$RUN_CMD"
-# else
-#     CMD="$PULL_CMD && 
-# $RUN_CMD"
-# fi
-
-CMD="$RUN_CMD"
+# RUN_CMD="$BASE_CMD up --build $OPTIONS"
+RUN_CMD="$BASE_CMD $COMMAND $OPTIONS $SERVICES"
 
 FULL_CMD="export SETUP=$SETUP && 
-$CMD"
+$RUN_CMD"
+
 echo "$FULL_CMD"
 bash -c "$FULL_CMD"
 
