@@ -231,9 +231,10 @@ services:
   # see https://goteleport.com/docs/application-access/getting-started/
   grafana:
     container_name: grafana
-    image: grafana/grafana:8.2.2
+    # image: grafana/grafana:8.2.2
     # image: grafana/grafana-oss:9.1.0
-    # build: ./grafana
+    build: ./grafana
+    image: ladder99/grafana:8.2.2
     profiles:
       - grafana
     ports:
