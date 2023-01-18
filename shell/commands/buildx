@@ -1,29 +1,25 @@
 #!/bin/bash
 
-#. this is not tested yet, but is the preferred approach for building x-platform
+#. this is the preferred approach for building cross-platform
 # images, over the `build` script, which builds all platforms at same time.
 
-# note: it's best to build each arch image separately, then combine them,
-# because had problems with builds crashing.
-# it's still an issue 2022-11 because one build crashing causes others to stop midway,
-# missing out on caching. so better to build one at a time, then combine.
+# it's best to build each arch image separately, then combine them,
+# because if a build crashes you lose the cached progress.
 
-#. could get default service version from package.json - use jq to extract?
-# but package.json could be out of date?
-# get from git tag?
+#. get default version from package.json? use jq to extract?
 
 usage="
-Usage: l99 build SERVICE VERSION [PLATFORMS]
+Usage: l99 buildx SERVICE VERSION [PLATFORMS]
 
 Build a multiplatform Docker image and push up to Docker hub.
 
 SERVICE     service name - adapter, meter, relay, etc.
 VERSION     service version - e.g. 0.10.1, latest, etc.
-PLATFORMS   platforms to build - leave off for default
+PLATFORMS   platforms to build - leave off for default (amd64 and arm64)
 
 Might need to login to Docker Hub first, in order to push image there -
 
-    docker login --username ladder99
+    docker login --username ladder99  # password as in bitlocker.com
 
 Example
     l99 build adapter 0.10.1
@@ -38,14 +34,10 @@ fi
 
 SERVICE=$1
 VERSION=$2
-# arm/v7 is 32bit for older pi's
-# PLATFORMS=${3:-"linux/amd64,linux/arm64,linux/arm/v7"}
-# PLATFORMS=${3:-"linux/amd64,linux/arm64"}
-# PLATFORMS=amd64 arm64 arm
+# note: arm/v7 is 32bit for older pi's
+PLATFORMS=${3:-"amd64 arm64"}
 
 USERNAME=ladder99
-# TAG=$USERNAME/$SERVICE:$VERSION
-# SERVICE_DIR=services/$SERVICE
 
 # create a multiplatform buildx builder
 # do this each time, per answer by guy with 200k rep in 2022-02 -
@@ -60,16 +52,9 @@ docker buildx rm l99builder
 docker buildx create --name l99builder --driver docker-container --use
 docker buildx inspect --bootstrap
 
-# echo "Building an image as specified by the Dockerfile in '$SERVICE_DIR'..."
-# echo "Platform is" $PLATFORMS
-# docker buildx build --tag $TAG --platform $PLATFORMS --push $SERVICE_DIR \
-# && echo \
-# && echo "Listing $USERNAME/$SERVICE images..." \
-# && docker image ls $USERNAME/$SERVICE
-# # && echo "Pushing the image to Docker Hub..." \
-# # && docker push $TAG
-
-for arch in amd64 arm64 ; do 
+# for arch in amd64 arm64 ; do 
+for arch in $PLATFORMS ; do 
+    echo "Building image for" $arch
     docker buildx build \
     --platform $arch \
     --output type=docker \
@@ -77,8 +62,13 @@ for arch in amd64 arm64 ; do
     services/$SERVICE/
 done
 
+echo "Combining images and pushing to Docker Hub..."
+#. replace space with comma in $PLATFORMS for --platform below, somehow
 docker buildx build \
 --platform amd64,arm64 \
 --tag $USERNAME/$SERVICE:$VERSION \
 --push \
 services/$SERVICE/
+
+echo "Listing $USERNAME/$SERVICE images..."
+docker image ls $USERNAME/$SERVICE
