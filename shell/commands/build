@@ -1,19 +1,16 @@
 #!/bin/bash
 
-#. get default service version from package.json - use jq to extract?
-# but if package.json out of date
-
 usage="
-Usage: l99 build SERVICE VERSION
+Usage: l99 build SERVICE
 
-Build a local Docker image
+Build a local Docker image as specified in services/docker-compose.yaml.
+See also 'l99 buildx' for cross-platform images.
 
 SERVICE     service name - adapter, meter, relay, etc.
-VERSION     service version - e.g. 0.10.1, latest, etc. (default is latest)
 
 Example
-    l99 build adapter 0.10.1
-    l99 build relay
+    l99 build adapter
+    l99 build grafana
 "
 
 # show help if count of params is zero
@@ -23,15 +20,10 @@ if [ $# -eq 0 ]; then
 fi
 
 SERVICE=$1
-VERSION=${2:-latest}
 
-USERNAME=ladder99
-TAG=$USERNAME/$SERVICE:$VERSION
-SERVICE_DIR=services/$SERVICE
+CMD="l99 compose build $SERVICE"
 
-CMD="docker build --tag $TAG $SERVICE_DIR"
-
-echo "Building an image as specified by the Dockerfile in '$SERVICE_DIR'..."
+echo "Building a local image as specified by the services/docker-compose.yaml file..."
 echo "$CMD"
 
 bash -c "$CMD" \
