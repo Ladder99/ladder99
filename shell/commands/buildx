@@ -1,7 +1,7 @@
 #!/bin/bash
 
-#. this is the preferred approach for building cross-platform
-# images, over the `build` script, which builds all platforms at same time.
+# this is the preferred approach for building cross-platform
+# images, over the `buildx-old` script, which builds all platforms at same time.
 
 # it's best to build each arch image separately, then combine them,
 # because if a build crashes you lose the cached progress.
@@ -15,7 +15,7 @@ Build a multiplatform Docker image and push up to Docker hub.
 
 SERVICE     service name - adapter, meter, relay, etc.
 VERSION     service version - e.g. 0.10.1, latest, etc.
-PLATFORMS   platforms to build - leave off for default (amd64 and arm64)
+PLATFORMS   platforms to build - leave off for default (amd64 arm64)
 
 Might need to login to Docker Hub first, in order to push image there -
 
@@ -34,6 +34,7 @@ fi
 SERVICE=$1
 VERSION=$2
 # note: arm/v7 is 32bit for older pi's
+# PLATFORMS=${3:-"linux/amd64 linux/arm64"}
 PLATFORMS=${3:-"amd64 arm64"}
 
 USERNAME=ladder99
@@ -54,7 +55,7 @@ docker buildx inspect --bootstrap
 for arch in $PLATFORMS ; do 
     echo "Building image for" $arch
     docker buildx build \
-    --platform $arch \
+    --platform linux/$arch \
     --output type=docker \
     --tag $USERNAME/$SERVICE:$VERSION-${arch} \
     services/$SERVICE/
@@ -63,7 +64,7 @@ done
 echo "Combining images and pushing to Docker Hub..."
 #. replace space with comma in $PLATFORMS for --platform below, somehow
 docker buildx build \
---platform amd64,arm64 \
+--platform linux/amd64,linux/arm64 \
 --tag $USERNAME/$SERVICE:$VERSION \
 --push \
 services/$SERVICE/
