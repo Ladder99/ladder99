@@ -102,19 +102,11 @@ done
 # and buildx command in this folder
 docker buildx use --default default
 
-# base cmd
+# make cmd
 # note: --project-name specifies project name, as shown in docker management consoles - 
 # otherwise it uses the parent folder name (ie 'services').
-# BASE_CMD="docker compose --project-name ladder99 $ARGS $PROFILE_FLAGS"
-BASE_CMD="docker compose --project-name ladder99 $ARGS"
+CMD="export SETUP=$SETUP &&
+docker compose --project-name ladder99 $ARGS $COMMAND $OPTIONS $SERVICES"
+echo "$CMD"
 
-# run cmd
-RUN_CMD="export SETUP=$SETUP &&
-$BASE_CMD $COMMAND $OPTIONS $SERVICES"
-
-echo "$RUN_CMD"
-# bash -c "$RUN_CMD"
-"$RUN_CMD"
-
-# echo
-# echo "Run 'l99 status' to check status of services."
+bash -c "$CMD"
