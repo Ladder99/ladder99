@@ -252,7 +252,8 @@ services:
       # can turn this off in client override yaml with an empty string "" if device won't have internet -
       # note: phlowchart takes a long time to download dependencies, so skipping for now
       # GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel,philipsgis-phlowchart-panel
-      GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel
+      # our grafana image includes these plugins, so no need to specify here
+      # GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel
       # provision password - these will get used the first time grafana is run - 
       # can pass in through environment variables -
       GF_SECURITY_ADMIN_USER: null
