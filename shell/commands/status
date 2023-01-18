@@ -6,7 +6,7 @@
 # get options, eg -a
 OPTIONS=$*
 
-COLUMNS='{{.Label "com.docker.compose.project"}}\t{{.Label "com.docker.compose.service"}}\t{{.Status}}\t{{.Ports}}'
+COLUMNS='{{.Label "com.docker.compose.project"}}\t{{.Label "com.docker.compose.service"}}\t{{.Status}}\t{{.Ports}}\t{{.Image}}'
 docker container ls \
   $OPTIONS \
   --format "table $COLUMNS" \
