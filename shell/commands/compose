@@ -94,8 +94,6 @@ for PROFILE in $SERVICES; do
     PROFILE_FLAGS="$PROFILE_FLAGS --profile $PROFILE"
 done
 
-# make command and run it
-
 # use default builder, not multiplatform builder
 # avoids problem with sending tarball to docker which can get stuck
 # see https://github.com/docker/buildx/issues/107
