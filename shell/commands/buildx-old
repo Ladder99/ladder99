@@ -1,0 +1,66 @@
+#!/bin/bash
+
+# note: it's best to build each arch image separately, then combine them,
+# because had problems with builds crashing.
+#. better now?
+
+#. get default service version from package.json - use jq to extract?
+# but if package.json out of date
+
+#. buildx is the new version of this file - a wip
+
+usage="
+Usage: l99 build SERVICE VERSION [PLATFORMS]
+
+Build a multiplatform Docker image and push up to Docker hub.
+
+SERVICE     service name - adapter, meter, relay, etc.
+VERSION     service version - e.g. 0.10.1, latest, etc.
+PLATFORMS   platforms to build - leave off for default
+
+Might need to login to Docker Hub first, in order to push image there -
+
+    docker login --username ladder99
+
+Example
+    l99 build adapter 0.10.1
+    l99 build relay latest
+"
+
+# show help if count of params is zero
+if [ $# -eq 0 ]; then
+    echo "$usage"
+    exit
+fi
+
+SERVICE=$1
+VERSION=$2
+# arm/v7 is 32bit for older pi's
+# PLATFORMS=${3:-"linux/amd64,linux/arm64,linux/arm/v7"}
+PLATFORMS=${3:-"linux/amd64,linux/arm64"}
+
+USERNAME=ladder99
+TAG=$USERNAME/$SERVICE:$VERSION
+SERVICE_DIR=services/$SERVICE
+
+# create a multiplatform buildx builder
+# see https://stackoverflow.com/questions/60080264/docker-cannot-build-multi-platform-images-with-docker-buildx
+# do this each time, per answer by guy with 200k rep in 2022-02 -
+# The easy button is to use the binaries from the multiarch image. This is good in 
+# CI if you have a dedicated VM (less ideal if you are modifying the host used by 
+# other builds). However if you reboot, it breaks until you run the container again. 
+# And it requires you to remember to update it for any upstream patches. 
+# So I wouldn't recommend it for a long running build host.
+docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+docker buildx rm l99builder
+docker buildx create --name l99builder --driver docker-container --use
+docker buildx inspect --bootstrap
+
+echo "Building an image as specified by the Dockerfile in '$SERVICE_DIR'..."
+echo "Platform is" $PLATFORMS
+docker buildx build --tag $TAG --platform $PLATFORMS --push $SERVICE_DIR \
+&& echo \
+&& echo "Listing $USERNAME/$SERVICE images..." \
+&& docker image ls $USERNAME/$SERVICE
+# && echo "Pushing the image to Docker Hub..." \
+# && docker push $TAG
