@@ -9,13 +9,12 @@
 #. get default version from package.json? use jq to extract?
 
 usage="
-Usage: l99 buildx SERVICE VERSION [PLATFORMS]
+Usage: l99 buildx SERVICE VERSION
 
 Build a multiplatform Docker image and push up to Docker hub.
 
 SERVICE     service name - adapter, meter, relay, etc.
 VERSION     service version - e.g. 0.10.1, latest, etc.
-PLATFORMS   platforms to build - leave off for default (amd64 arm64)
 
 Might need to login to Docker Hub first, in order to push image there -
 
@@ -34,8 +33,7 @@ fi
 SERVICE=$1
 VERSION=$2
 # note: arm/v7 is 32bit for older pi's
-# PLATFORMS=${3:-"linux/amd64 linux/arm64"}
-PLATFORMS=${3:-"amd64 arm64"}
+# PLATFORMS=${3:-"amd64 arm64"}
 
 USERNAME=ladder99
 
@@ -52,7 +50,7 @@ docker buildx rm l99builder
 docker buildx create --name l99builder --driver docker-container --use
 docker buildx inspect --bootstrap
 
-for arch in $PLATFORMS ; do 
+for arch in amd64 arm64 ; do 
     echo "Building image for" $arch
     docker buildx build \
     --platform linux/$arch \
@@ -62,7 +60,6 @@ for arch in $PLATFORMS ; do
 done
 
 echo "Combining images and pushing to Docker Hub..."
-#. replace space with comma in $PLATFORMS for --platform below, somehow
 docker buildx build \
 --platform linux/amd64,linux/arm64 \
 --tag $USERNAME/$SERVICE:$VERSION \
