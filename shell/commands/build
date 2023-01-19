@@ -21,6 +21,12 @@ fi
 
 SERVICE=$1
 
+# use default builder, not multiplatform builder
+# avoids problem with sending tarball to docker which can get stuck
+# see https://github.com/docker/buildx/issues/107
+# and build command in this folder
+docker buildx use --default default
+
 CMD="l99 compose build $SERVICE"
 
 echo "Building a local image as specified by the services/docker-compose.yaml file..."
