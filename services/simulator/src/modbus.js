@@ -12,8 +12,8 @@ const mbId = 1
 
 // constants
 const timeDelta = 1000 // msec between updates
-const totalDelta = 4 // so in each minute, totalCount should increase by 240 - which should give a Performance value of 240/200=120%
-const badDelta = 1 // and badCount by 60, and goodCount by 180
+const totalDelta = 3 // so in each minute, totalCount should increase by 3*60=180 - which should give a Performance value of 180/200=90%
+const badDelta = 1 // and badCount by 60, and goodCount by 120
 const rollover = 1e7
 const nlanes = 1
 const changeRate = 0.01 // chance of change
