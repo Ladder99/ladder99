@@ -337,7 +337,7 @@ services:
   meter:
     container_name: meter
     image: ladder99/meter:0.11.0
-    # build: ./meter
+    build: ./meter
     profiles:
       - meter
     environment:
