@@ -1,10 +1,12 @@
 #!/bin/bash
 
 # this is the preferred approach for building cross-platform
-# images, over the `buildx-old` script, which builds all platforms at same time.
+# images, over the `buildx2` script, which builds all platforms at same time.
 
 # it's best to build each arch image separately, then combine them,
 # because if a build crashes you lose the cached progress.
+
+# BUT this has been having problems with docker desktop crashing etc
 
 #. get default version from package.json? use jq to extract?
 

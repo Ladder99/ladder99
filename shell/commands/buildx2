@@ -1,16 +1,10 @@
 #!/bin/bash
 
-# note: it's best to build each arch image separately, then combine them,
-# because had problems with builds crashing.
-#. better now?
-
 #. get default service version from package.json - use jq to extract?
 # but if package.json out of date
 
-#. buildx is the new version of this file - a wip
-
 usage="
-Usage: l99 build SERVICE VERSION [PLATFORMS]
+Usage: l99 buildx2 SERVICE VERSION [PLATFORMS]
 
 Build a multiplatform Docker image and push up to Docker hub.
 
@@ -23,8 +17,8 @@ Might need to login to Docker Hub first, in order to push image there -
     docker login --username ladder99
 
 Example
-    l99 build adapter 0.10.1
-    l99 build relay latest
+    l99 buildx2 adapter 0.10.1
+    l99 buildx2 relay latest
 "
 
 # show help if count of params is zero
@@ -62,5 +56,3 @@ docker buildx build --tag $TAG --platform $PLATFORMS --push $SERVICE_DIR \
 && echo \
 && echo "Listing $USERNAME/$SERVICE images..." \
 && docker image ls $USERNAME/$SERVICE
-# && echo "Pushing the image to Docker Hub..." \
-# && docker push $TAG
