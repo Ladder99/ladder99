@@ -17,8 +17,8 @@ services:
     # note: to build from source, use the 'build' directive instead of 'image',
     # and run 'l99 start --offline' to avoid pulling image
     # see https://hub.docker.com/repository/docker/ladder99/adapter
-    image: ladder99/adapter:0.11.0
-    # build: ./adapter # see services/adapter/Dockerfile
+    # image: ladder99/adapter:0.11.0
+    build: ./adapter # see services/adapter/Dockerfile
 
     # set this to give permission to access hardware (e.g. dymo scale in usb port).
     #. security hole - leave off for now, until need dymo driver - or do per setup.
@@ -228,7 +228,7 @@ services:
   # see services/grafana/Dockerfile for plugins that are included in this image.
   grafana:
     container_name: grafana
-    build: ./grafana
+    # build: ./grafana
     image: ladder99/grafana:0.11.0
     profiles:
       - grafana
@@ -336,7 +336,7 @@ services:
   # note: set PGHOST, PGPORT, etc before running
   meter:
     container_name: meter
-    image: ladder99/meter:0.11.0
+    # image: ladder99/meter:0.11.0
     build: ./meter
     profiles:
       - meter
@@ -596,9 +596,9 @@ services:
     # note: to build from source, use the 'build' directive instead of 'image', 
     # and run 'l99 start --offline' to avoid pulling image
     # see https://hub.docker.com/repository/docker/ladder99/relay
-    image: ladder99/relay:0.11.0
+    # image: ladder99/relay:0.11.0
     # image: $RELAY_IMAGE
-    # build: ./relay # see services/relay/Dockerfile
+    build: ./relay # see services/relay/Dockerfile
 
     profiles:
       - relay
@@ -726,8 +726,8 @@ services:
   # cf simulation service
   simulator:
     container_name: simulator
-    # build: ./simulator
-    image: ladder99/simulator:0.11.0
+    # image: ladder99/simulator:0.11.0
+    build: ./simulator
     profiles:
       - simulator
     # ports:
