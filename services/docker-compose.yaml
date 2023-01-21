@@ -729,14 +729,11 @@ services:
   # cf simulation service
   simulator:
     container_name: simulator
-    # image: ladder99/simulator:0.11.0
+    image: ladder99/simulator:0.11.0
     build: ./simulator
     profiles:
       - simulator
-    # ports:
-    #   - 4334:4334
     volumes:
-      # - ../setups/$SETUP/volumes/simulator/node:/home/node
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     restart: unless-stopped
