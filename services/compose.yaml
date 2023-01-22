@@ -131,7 +131,6 @@ services:
       # you can set BACKUP_PRUNING_PREFIX to `db-backup-` and make sure
       # unrelated files are not affected by the rotation mechanism.
       # (ie it'll prune only file starting with this prefix)
-      # BACKUP_RETENTION_DAYS: 7
       BACKUP_RETENTION_DAYS: 3
       BACKUP_CRON_EXPRESSION: '0 1 * * *' # 1am local time (cst)
       #
@@ -144,7 +143,6 @@ services:
       #
       # slack notifications
       NOTIFICATION_URLS: null
-      # NOTIFICATION_LEVEL: info
       NOTIFICATION_LEVEL: error
 
     logging:
