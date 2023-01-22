@@ -131,8 +131,8 @@ services:
       # you can set BACKUP_PRUNING_PREFIX to `db-backup-` and make sure
       # unrelated files are not affected by the rotation mechanism.
       # (ie it'll prune only file starting with this prefix)
-      BACKUP_RETENTION_DAYS: 7
-      # BACKUP_CRON_EXPRESSION: '0 7 * * *' # 7am gmt ~ 1am cst
+      # BACKUP_RETENTION_DAYS: 7
+      BACKUP_RETENTION_DAYS: 3
       BACKUP_CRON_EXPRESSION: '0 1 * * *' # 1am local time (cst)
       #
       # cloud backup
@@ -144,7 +144,8 @@ services:
       #
       # slack notifications
       NOTIFICATION_URLS: null
-      NOTIFICATION_LEVEL: info
+      # NOTIFICATION_LEVEL: info
+      NOTIFICATION_LEVEL: error
 
     logging:
       options:
@@ -298,33 +299,33 @@ services:
       options:
         max-size: '20m'
 
-  # ---------------------------------------------------------------------------
-  # logzio
-  # ---------------------------------------------------------------------------
-  # monitor docker logs with logz.io
-  logzio:
-    container_name: logzio
-    #. add a version tag
-    image: logzio/docker-collector-logs:0.4.0
-    profiles:
-      - logzio
-    environment:
-      LOGZIO_TOKEN: $LOGZIO_TOKEN
-      LOGZIO_URL: $LOGZIO_URL:5015
-      LOGZIO_TYPE: docker_logs
-      LOGZIO_CODEC: plain
-      skipContainerName: cloudbeaver,dozzle,hue,logzio,pgadmin,portainer
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /var/run/docker/containers:/var/lib/docker/containers
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-    restart: always
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '20m'
+  # # ---------------------------------------------------------------------------
+  # # logzio
+  # # ---------------------------------------------------------------------------
+  # # monitor docker logs with logz.io
+  # logzio:
+  #   container_name: logzio
+  #   #. add a version tag
+  #   image: logzio/docker-collector-logs:0.4.0
+  #   profiles:
+  #     - logzio
+  #   environment:
+  #     LOGZIO_TOKEN: $LOGZIO_TOKEN
+  #     LOGZIO_URL: $LOGZIO_URL:5015
+  #     LOGZIO_TYPE: docker_logs
+  #     LOGZIO_CODEC: plain
+  #     skipContainerName: cloudbeaver,dozzle,hue,logzio,pgadmin,portainer
+  #   volumes:
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - /var/run/docker/containers:/var/lib/docker/containers
+  #     - /etc/localtime:/etc/localtime:ro
+  #     - /etc/timezone:/etc/timezone:ro
+  #   restart: always
+  #   networks:
+  #     - ladder99
+  #   logging:
+  #     options:
+  #       max-size: '20m'
 
   # ---------------------------------------------------------------------------
   # meter
