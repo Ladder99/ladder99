@@ -127,15 +127,15 @@ services:
       #
       # The name of the backup file including the `.tar.gz` extension.
       # IMPORTANT: override this in client's compose-overrides.yaml with client name!
+      #. or use BACKUP_FILENAME_EXPAND to expand env vars with $$SETUP - see below
       BACKUP_FILENAME: backup-CLIENT-%Y-%m-%dT%H-%M-%S.tar.gz
       BACKUP_PRUNING_PREFIX: backup-CLIENT-
-      #
       # Setting BACKUP_FILENAME_EXPAND to true allows for environment variable
       # placeholders in BACKUP_FILENAME, BACKUP_LATEST_SYMLINK and in
       # BACKUP_PRUNING_PREFIX that will get expanded at runtime,
       # Please note that you will need to escape the `$` when providing the value
       # in a docker-compose.yml file, i.e. using $$VAR instead of $VAR.
-      # note: the envar must be set BEFORE this compose yaml file is read. 
+      # note: the envar must be set BEFORE this compose yaml file is read.
       # note: must be 'true', not true
       # BACKUP_FILENAME_EXPAND: 'true'
       #
@@ -147,7 +147,7 @@ services:
       # you can set BACKUP_PRUNING_PREFIX to `db-backup-` and make sure
       # unrelated files are not affected by the rotation mechanism.
       # (ie it'll prune only file starting with this prefix)
-      BACKUP_RETENTION_DAYS: 7
+      BACKUP_RETENTION_DAYS: 3
       BACKUP_CRON_EXPRESSION: '0 1 * * *' # 1am local time (cst)
       #
       # cloud backup
@@ -157,9 +157,9 @@ services:
       AWS_SECRET_ACCESS_KEY: null
       # AWS_S3_PATH: backup/client # don't use this - causes probs with local backups
       #
-      # slack notifications
+      # slack notifications - only on error
       NOTIFICATION_URLS: null
-      NOTIFICATION_LEVEL: info
+      NOTIFICATION_LEVEL: error
 
     logging:
       options:
