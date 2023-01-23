@@ -15,25 +15,14 @@ SERVICES      space-delim list of services or profiles to start
 
 Examples
     l99 start agent
-    l99 start --offline
     l99 start
---no-build "
+"
 
 # show help
 # if [ $# -eq 0 ]; then
 if [ "$1" = "-h" ]; then
     echo "$usage"
     exit
-fi
---no-build 
-# get mode - detached or console
-# removed console mode option because hitting ctrl-c stops ALL other services!
-MODE=--detach
-
-# handle options
-if [ "$1" = "--offline" ]; then
-    OFFLINE=true
-    shift
 fi
 
 # get setup folder
@@ -48,32 +37,30 @@ if [ ! -e $SETUP_FOLDER ]; then
 fi
 
 # if no services specified, default to 'base', which should run the main services
-if [ $# -eq 0 ]; then
-    SERVICES=base
-else
-    SERVICES=$* # eg 'agent adapter'
-fi
+SERVICES=${*:-base}
 
 # file paths
 COMPOSE=services/docker-compose.yaml
+COMPOSE_PROD=services/docker-compose.prod.yaml
 OVERRIDES=$SETUP_FOLDER/services/docker-compose.yaml
 ENVFILE=$SETUP_FOLDER/.env
 ENVFILE_EXAMPLE=$SETUP_FOLDER/.env-example
 
 # specify docker compose files
-ARGS="--file $COMPOSE"
+FILES="--file $COMPOSE --file $COMPOSE_PROD"
 if [ -e $OVERRIDES ]; then
-    ARGS="$ARGS --file $OVERRIDES"
+    FILES="$FILES --file $OVERRIDES"
 fi
 
 # add environment variable file
+ENVFILES=""
 if [ -e $ENVFILE ]; then
     # use .env file if there
-    ARGS="$ARGS --env-file $ENVFILE"
+    ENVFILES="$ENVFILES --env-file $ENVFILE"
 elif [ "$SETUP" = "example" ]; then
     # copy the example .env file and use that
     cp $ENVFILE_EXAMPLE $ENVFILE
-    ARGS="$ARGS --env-file $ENVFILE"
+    ENVFILES="$ENVFILES --env-file $ENVFILE"
 else
     # otherwise create a new .env file and stop
     echo "No .env file found - copying from default..."
@@ -92,22 +79,17 @@ for PROFILE in $SERVICES; do
     PROFILE_FLAGS="$PROFILE_FLAGS --profile $PROFILE"
 done
 
-
-# # use default builder, not multiplatform builder
-# # avoids problem with sending tarball to docker which can get stuck
-# # see https://github.com/docker/buildx/issues/107
-# # and build command in this folder
-# docker buildx use --default default
-
 # make cmd and run it
 # note: --project-name specifies project name, as shown in docker management consoles - 
 # otherwise it uses the parent folder name (ie 'services').
-BASE_CMD="docker compose --project-name ladder99 $ARGS $PROFILE_FLAGS"
-# CMD="$BASE_CMD up --build $MODE"
-CMD="$BASE_CMD up --no-build $MODE"
-FULL_CMD="export SETUP=$SETUP && $CMD"
-echo "$FULL_CMD"
-bash -c "$FULL_CMD"
+CMD="export SETUP=$SETUP && \
+docker compose --project-name ladder99 \
+$FILES $ENVFILES $PROFILE_FLAGS \
+up --no-build --detach"
+# CMD="l99 compose $PROFILES up --build --detach"
+
+echo "$CMD"
+bash -c "$CMD"
 
 echo
 echo "Run 'l99 status' to check status of services."

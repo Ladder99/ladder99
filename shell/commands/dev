@@ -1,17 +1,19 @@
 #!/bin/bash
 
 usage="
-Usage: l99 up [SERVICES]
+Usage: l99 dev [SERVICES]
 
-Start a docker service or services using their profile name(s)
+Start a docker service or services using their profile name(s).
+Builds the image from the service Dockerfile.
+See also l99 start.
 
 SERVICES      space-delim list of services or profiles to start
   base        run all relevant services for a setup - eg adapter, agent, etc.
               (this is the default)
 
 Example
-    l99 up
-    l99 up grafana
+    l99 dev
+    l99 dev grafana
 "
 
 # show help
@@ -74,13 +76,16 @@ for PROFILE in $SERVICES; do
     PROFILES="$PROFILES --profile $PROFILE"
 done
 
+# use default builder, not multiplatform builder
+# avoids problem with sending tarball to docker which can get stuck
+# see https://github.com/docker/buildx/issues/107
+# and build command in this folder
+docker buildx use --default default
+
 # make cmd
 # note: --project-name specifies project name, as shown in docker management consoles - 
 # otherwise it uses the parent folder name (ie 'services').
-# BASE_CMD="docker compose --project-name ladder99 $FILES $ENVFILES $PROFILES"
-# CMD="export SETUP=$SETUP && $BASE_CMD up --build --detach"
-
-CMD="l99 compose $PROFILES up --detach"
+CMD="l99 compose $PROFILES up --build --detach"
 echo "$CMD"
 bash -c "$CMD"
 
