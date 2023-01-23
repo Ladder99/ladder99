@@ -85,7 +85,7 @@ echo $cmd
 bash -c "export SETUP=$setup && $cmd"
 
 # will end up with a command like
-# export SETUP=../client-nis \
+# export SETUP=../client-nis && \
 #   docker-compose \
 #   --file services/compose.yaml \
 #   --file ../client-nis/compose-overrides.yaml \
@@ -97,4 +97,4 @@ bash -c "export SETUP=$setup && $cmd"
 #   --file ../client-nis/compose-overrides.yaml \
 #   --env-file ../client-nis/.env \
 #   --profile dashboard \
-#   up --build
+#   up --build --detach
