@@ -17,7 +17,7 @@ services:
     # note: to build from source, use the 'build' directive instead of 'image',
     # and run 'l99 start --offline' to avoid pulling image
     # see https://hub.docker.com/repository/docker/ladder99/adapter
-    image: ladder99/adapter:0.11.0
+    # image: ladder99/adapter:0.11.0
     build: ./adapter # see services/adapter/Dockerfile
 
     # set this to give permission to access hardware (e.g. dymo scale in usb port).
@@ -228,7 +228,7 @@ services:
   # see services/grafana/Dockerfile for plugins that are included in this image.
   grafana:
     container_name: grafana
-    image: ladder99/grafana:0.11.0
+    # image: ladder99/grafana:0.11.0
     build: ./grafana
     profiles:
       - grafana
@@ -303,32 +303,6 @@ services:
       options:
         max-size: '20m'
 
-  # # ---------------------------------------------------------------------------
-  # # logzio-logs
-  # # ---------------------------------------------------------------------------
-  # # monitor docker logs with logz.io
-  # logzio-logs:
-  #   container_name: logzio-logs
-  #   image: logzio/docker-collector-logs
-  #   profiles:
-  #     - logzio-logs
-  #   environment:
-  #     LOGZIO_TOKEN: $LOGZIO_TOKEN
-  #     LOGZIO_TYPE: docker_logs
-  #     LOGZIO_CODEC: json
-  #     skipContainerName: cloudbeaver,dozzle,hue,logzio-logs,pgadmin,portainer,traefik
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock:ro
-  #     - /var/run/docker/containers:/var/lib/docker/containers
-  #     - /etc/localtime:/etc/localtime:ro
-  #     - /etc/timezone:/etc/timezone:ro
-  #   restart: unless-stopped
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '20m'
-
   # ---------------------------------------------------------------------------
   # meter
   # ---------------------------------------------------------------------------
@@ -336,7 +310,7 @@ services:
   # note: set PGHOST, PGPORT, etc before running
   meter:
     container_name: meter
-    image: ladder99/meter:0.11.0
+    # image: ladder99/meter:0.11.0
     build: ./meter
     profiles:
       - meter
@@ -599,7 +573,7 @@ services:
     # note: to build from source, use the 'build' directive instead of 'image', 
     # and run 'l99 start --offline' to avoid pulling image
     # see https://hub.docker.com/repository/docker/ladder99/relay
-    image: ladder99/relay:0.11.0
+    # image: ladder99/relay:0.11.0
     build: ./relay # see services/relay/Dockerfile
 
     profiles:
@@ -642,53 +616,51 @@ services:
       options:
         max-size: '20m'
 
-  # # ---------------------------------------------------------------------------
-  # # sematext
-  # # ---------------------------------------------------------------------------
-  # # send logs to sematext.com for monitoring
-  # sematext:
-  #   image: sematext/agent:latest
-  #   container_name: sematext
-  #   profiles:
-  #     - sematext
-  #   environment:
-  #     # - INFRA_TOKEN=$INFRA_TOKEN # set this in .env file
-  #     - INFRA_TOKEN # set this in .env file
-  #     - SERVER_BASE_URL=https://spm-receiver.sematext.com
-  #     - LOGS_RECEIVER_URL=https://logsene-receiver.sematext.com
-  #     - EVENT_RECEIVER_URL=https://event-receiver.sematext.com
-  #     - COMMAND_SERVER_URL=https://command.sematext.com
-  #   cap_add:
-  #     - SYS_ADMIN
-  #   restart: unless-stopped
-  #   volumes:
-  #     - /:/hostfs:ro
-  #     - /etc/passwd:/etc/passwd:ro
-  #     - /etc/group:/etc/group:ro
-  #     - /var/run/:/var/run
-  #     - /sys/kernel/debug:/sys/kernel/debug
-  #     - /sys:/host/sys:ro
-  #     - /dev:/hostfs/dev:ro
-  #     - /var/run/docker.sock:/var/run/docker.sock:ro
-  #     - /etc/localtime:/etc/localtime:ro
-  #     - /etc/timezone:/etc/timezone:ro
+  # ---------------------------------------------------------------------------
+  # sematext
+  # ---------------------------------------------------------------------------
+  # send logs to sematext.com for monitoring
+  sematext:
+    image: sematext/agent:latest
+    container_name: sematext
+    profiles:
+      - sematext
+    environment:
+      - INFRA_TOKEN # set this in .env file #. INFRA_TOKEN=${SEMATEXT_INFRA_TOKEN}
+      - SERVER_BASE_URL=https://spm-receiver.sematext.com
+      - LOGS_RECEIVER_URL=https://logsene-receiver.sematext.com
+      - EVENT_RECEIVER_URL=https://event-receiver.sematext.com
+      - COMMAND_SERVER_URL=https://command.sematext.com
+    cap_add:
+      - SYS_ADMIN
+    restart: unless-stopped
+    volumes:
+      - /:/hostfs:ro
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/group:/etc/group:ro
+      - /var/run/:/var/run
+      - /sys/kernel/debug:/sys/kernel/debug
+      - /sys:/host/sys:ro
+      - /dev:/hostfs/dev:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
 
-  # sematext-logs:
-  #   image: sematext/logagent:latest
-  #   container_name: sematext-logs
-  #   profiles:
-  #     - sematext-logs
-  #   environment:
-  #     # - LOGS_TOKEN=$LOGS_TOKEN # set this in .env file
-  #     - LOGS_TOKEN # set this in .env file
-  #     - REGION=US
-  #   cap_add:
-  #     - SYS_ADMIN
-  #   restart: unless-stopped
-  #   volumes:
-  #     - '/var/run/docker.sock:/var/run/docker.sock'
-  #     - /etc/localtime:/etc/localtime:ro
-  #     - /etc/timezone:/etc/timezone:ro
+  sematext-logs:
+    image: sematext/logagent:latest
+    container_name: sematext-logs
+    profiles:
+      - sematext-logs
+    environment:
+      - LOGS_TOKEN # set this in .env file #. LOGS_TOKEN=${SEMATEXT_LOGS_TOKEN}
+      - REGION=US
+    cap_add:
+      - SYS_ADMIN
+    restart: unless-stopped
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
 
   # ---------------------------------------------------------------------------
   # simulation
@@ -728,7 +700,7 @@ services:
   # cf simulation service
   simulator:
     container_name: simulator
-    image: ladder99/simulator:0.11.0
+    # image: ladder99/simulator:0.11.0
     build: ./simulator
     profiles:
       - simulator
@@ -741,11 +713,6 @@ services:
     logging:
       options:
         max-size: '20m'
-
-  # ---------------------------------------------------------------------------
-  # superset
-  # ---------------------------------------------------------------------------
-  # a sql-based dashboard application
 
   # ---------------------------------------------------------------------------
   # traefik
