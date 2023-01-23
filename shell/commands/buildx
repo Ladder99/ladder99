@@ -53,7 +53,7 @@ docker buildx rm l99builder
 docker buildx create --name l99builder --driver docker-container --use
 docker buildx inspect --bootstrap
 
-for arch in amd64 arm64 ; do 
+for arch in amd64 arm64 ; do
     echo "Building image for" $arch
     docker buildx build \
     --platform linux/$arch \
