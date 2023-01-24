@@ -68,7 +68,7 @@ done
 
 # make cmd and run it
 CMD="export SETUP=$SETUP && \
-docker compose \
+docker-compose \
 $FILES $ENVFILES $PROFILE_FLAGS \
 up --no-build --detach"
 
