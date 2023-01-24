@@ -3,7 +3,7 @@
 # run ladder99 pipeline using prebuilt images from docker hub.
 
 usage="
-Usage: l99 start [SERVICES]
+Usage: l99 start CLIENT [SERVICES]
 
 Run the Ladder99 pipeline with a list of services/profiles to include.
 
@@ -12,8 +12,8 @@ SERVICES      space-delim list of services or profiles to start
               (this is the default)
 
 Examples
-    l99 start agent
-    l99 start
+    l99 start oxbox agent
+    l99 start oxbox
 "
 
 # show help
@@ -24,7 +24,8 @@ if [ "$1" = "-h" ]; then
 fi
 
 # get setup folder
-SETUP=oxbox
+SETUP=$1
+shift
 SETUP_FOLDER=../client-$SETUP
 
 # if no services specified, default to 'base', which should run the main services
