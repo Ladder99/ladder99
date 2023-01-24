@@ -41,19 +41,13 @@ COMMAND=$1
 shift
 
 # get command options
-# had a console mode option but removed it because hitting ctrl-c stops ALL other services!
 if [ "$COMMAND" = "up" ]; then
     OPTIONS="--detach"
 elif [ "$COMMAND" = "logs" ]; then
     OPTIONS="--timestamps --follow"
 fi
 
-# # if no services specified, default to 'base', which should run the main services
-# if [ $# -eq 0 ]; then
-#     SERVICES=base
-# else
-#     SERVICES=$* # eg 'agent adapter'
-# fi
+# if no services specified, default to 'base', which should run the main services
 SERVICES=$* # eg 'agent adapter'
 
 # file paths
@@ -88,11 +82,11 @@ else
     exit 1
 fi
 
-# get profile flags - one per service/profile specified
-PROFILE_FLAGS=""
-for PROFILE in $SERVICES; do
-    PROFILE_FLAGS="$PROFILE_FLAGS --profile $PROFILE"
-done
+# # get profile flags - one per service/profile specified
+# PROFILE_FLAGS=""
+# for PROFILE in $SERVICES; do
+#     PROFILE_FLAGS="$PROFILE_FLAGS --profile $PROFILE"
+# done
 
 # use default builder, not multiplatform builder
 # avoids problem with sending tarball to docker which can get stuck

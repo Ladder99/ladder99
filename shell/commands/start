@@ -1,13 +1,11 @@
 #!/bin/bash
 
-# run ladder99 pipeline with docker compose.
+# run ladder99 pipeline using prebuilt images from docker hub.
 
 usage="
-Usage: l99 start [OPTIONS] [SERVICES]
+Usage: l99 start [SERVICES]
 
 Run the Ladder99 pipeline with a list of services/profiles to include.
-
-OPTIONS is '--offline' to run without trying to pull Docker images.
 
 SERVICES      space-delim list of services or profiles to start
   base        run all relevant services for a setup - eg adapter, agent, etc.
