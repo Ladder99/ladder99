@@ -64,7 +64,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     ports:
-      - 5000:5000
+      - '5000:5000'
     restart: always
     networks:
       - ladder99

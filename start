@@ -26,7 +26,8 @@ fi
 # get setup folder
 SETUP=$1
 shift
-SETUP_FOLDER=../client-$SETUP
+# SETUP_FOLDER=../client-$SETUP
+SETUP=../client-$SETUP
 
 # if no services specified, default to 'base', which should run the main services
 SERVICES=${*:-base}
