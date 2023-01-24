@@ -63,6 +63,7 @@ services:
       - ../$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    user: 'pi:pi'
     ports:
       - 5000:5000
     restart: always
