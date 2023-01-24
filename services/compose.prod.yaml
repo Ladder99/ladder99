@@ -1,3 +1,5 @@
+# set image versions here
+
 # docker compose yaml version - must be a string
 # see https://docs.docker.com/compose/compose-file/compose-file-v3
 # note: a '3' here means '3.0'

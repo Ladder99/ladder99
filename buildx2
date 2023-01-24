@@ -1,8 +1,5 @@
 #!/bin/bash
 
-#. get default service version from package.json - use jq to extract?
-# but if package.json out of date
-
 usage="
 Usage: l99 buildx2 SERVICE VERSION [PLATFORMS]
 
@@ -12,9 +9,9 @@ SERVICE     service name - adapter, meter, relay, etc.
 VERSION     service version - e.g. 0.10.1, latest, etc.
 PLATFORMS   platforms to build - leave off for default
 
-Might need to login to Docker Hub first, in order to push image there -
+Should login to Docker Hub first, in order to push image there -
 
-    docker login --username ladder99
+    docker login --username ladder99  # password as in bitwarden.com
 
 Example
     l99 buildx2 adapter 0.10.1

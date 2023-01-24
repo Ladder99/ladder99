@@ -6,10 +6,6 @@
 # it's best to build each arch image separately, then combine them,
 # because if a build crashes you lose the cached progress.
 
-# BUT this has been having problems with docker desktop crashing etc
-
-#. get default version from package.json? use jq to extract?
-
 usage="
 Usage: l99 buildx SERVICE VERSION
 
@@ -18,12 +14,12 @@ Build a multiplatform Docker image and push up to Docker hub.
 SERVICE     service name - adapter, meter, relay, etc.
 VERSION     service version - e.g. 0.10.1, latest, etc.
 
-Might need to login to Docker Hub first, in order to push image there -
+Should login to Docker Hub first, in order to push image there -
 
-    docker login --username ladder99  # password as in bitlocker.com
+    docker login --username ladder99  # password as in bitwarden.com
 
 Example
-    l99 build adapter 0.10.1
+    l99 buildx adapter 0.10.1
 "
 
 # show help if count of params is zero
@@ -68,6 +64,3 @@ docker buildx build \
 --tag $USERNAME/$SERVICE:$VERSION \
 --push \
 services/$SERVICE/
-
-# echo "Listing $USERNAME/$SERVICE images..."
-# docker image ls $USERNAME/$SERVICE
