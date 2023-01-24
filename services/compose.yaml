@@ -59,6 +59,7 @@ services:
     working_dir: /data/agent
     command: agent run agent.cfg
     # command: agent debug agent.cfg
+    user: root
     volumes:
       - ../$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
       - /etc/localtime:/etc/localtime:ro
@@ -242,20 +243,18 @@ services:
       - ../$SETUP/volumes/grafana/etc:/etc/grafana
       - ../$SETUP/volumes/grafana/var:/var/lib/grafana
       - ../dashboards/grafana:/etc/dashboards
-      # as of v7.3, the Grafana Docker image runs with the root group (id 0) instead
-      # of the grafana group (id 472), for better compatibility with OpenShift.
-      # grafana gives permission error without user:root - not on mac. only on arm?
-      # get this error when don't set user -
-      # https://community.grafana.com/t/new-docker-install-with-persistent-storage-permission-problem/10896/13
-      # setting this gives same error - why? `id -a` shows 1000
-      # user: '1000:1000'
-      # setting this gives error - UID and GID not set, but grafana works - why?
-      # are blanks equivalent to root user?
-      #. these could be set by ./start script?
-      # user: '$UID:$GID'
-      #. don't use this? how?
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+    # as of v7.3, the Grafana Docker image runs with the root group (id 0) instead
+    # of the grafana group (id 472), for better compatibility with OpenShift.
+    # grafana gives permission error without user:root - not on mac. only on arm?
+    # get this error when don't set user -
+    # https://community.grafana.com/t/new-docker-install-with-persistent-storage-permission-problem/10896/13
+    # setting this gives same error - why? `id -a` shows 1000
+    # user: '1000:1000'
+    # setting this gives error - UID and GID not set, but grafana works - why?
+    # are blanks equivalent to root user?
+    # user: '$UID:$GID'
     user: root
     restart: always
     networks:
