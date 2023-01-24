@@ -69,10 +69,10 @@ done
 
 # make cmd and run it
 CMD="export SETUP=$SETUP && \
-docker-compose \
+docker compose \
     $FILES $ENVFILES $PROFILE_FLAGS \
     pull && \
-docker-compose \
+docker compose \
     $FILES $ENVFILES $PROFILE_FLAGS \
     up --no-build --detach"
 
@@ -80,4 +80,4 @@ echo "$CMD"
 bash -c "$CMD"
 
 echo
-echo "Run 'l99 list' to check status of services."
+echo "Run './list' to check status of services."
