@@ -52,9 +52,7 @@ docker buildx inspect --bootstrap
 
 echo "Building an image as specified by the Dockerfile in '$SERVICE_DIR'..."
 echo "Platform is" $PLATFORMS
-docker buildx build --tag $TAG --platform $PLATFORMS --push $SERVICE_DIR
-
-#  \
-# && echo \
-# && echo "Listing $USERNAME/$SERVICE images..." \
-# && docker image ls $USERNAME/$SERVICE
+docker buildx build --tag $TAG --platform $PLATFORMS --push $SERVICE_DIR \
+&& echo \
+&& echo "Listing $USERNAME/$SERVICE images..." \
+&& docker image ls $USERNAME/$SERVICE
