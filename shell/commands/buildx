@@ -69,5 +69,5 @@ docker buildx build \
 --push \
 services/$SERVICE/
 
-echo "Listing $USERNAME/$SERVICE images..."
-docker image ls $USERNAME/$SERVICE
+# echo "Listing $USERNAME/$SERVICE images..."
+# docker image ls $USERNAME/$SERVICE
