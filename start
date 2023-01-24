@@ -70,8 +70,11 @@ done
 # make cmd and run it
 CMD="export SETUP=$SETUP && \
 docker-compose \
-$FILES $ENVFILES $PROFILE_FLAGS \
-up --no-build --detach"
+    $FILES $ENVFILES $PROFILE_FLAGS \
+    pull && \
+docker-compose \
+    $FILES $ENVFILES $PROFILE_FLAGS \
+    up --no-build --detach"
 
 echo "$CMD"
 bash -c "$CMD"
