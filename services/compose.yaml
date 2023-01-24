@@ -15,7 +15,6 @@ services:
   # convert machine data to shdr and send to agent
   adapter:
     container_name: adapter
-    # image: ladder99/adapter:latest # use this if build docker image and push to hub
     build: ./adapter # see Dockerfile in this folder
     # set this to give permission to access hardware (e.g. dymo scale in usb port).
     #. security hole - leave off for now, until need dymo driver.
@@ -80,7 +79,8 @@ services:
   # see https://github.com/offen/docker-volume-backup
   backup:
     container_name: backup
-    image: offen/docker-volume-backup:latest
+    # see https://hub.docker.com/r/offen/docker-volume-backup/tags
+    image: offen/docker-volume-backup:v2.25.1
     profiles:
       - backup
     restart: always
@@ -187,10 +187,11 @@ services:
   # dozzle
   # ---------------------------------------------------------------------------
   # ui for docker logs
+  # see https://github.com/amir20/dozzle
+  # and https://hub.docker.com/r/amir20/dozzle/tags
   dozzle:
     container_name: dozzle
-    #. add a version tag
-    image: amir20/dozzle:latest
+    image: amir20/dozzle:v4.6.3
     profiles:
       - dozzle
     volumes:
@@ -216,14 +217,11 @@ services:
   # see https://goteleport.com/docs/application-access/getting-started/
   grafana:
     container_name: grafana
-    image: grafana/grafana:8.2.2
+    # image: grafana/grafana:8.2.2
     # image: grafana/grafana:9.3.2 #. get 'Origin not allowed' error on dash
+    build: ./grafana
     profiles:
       - grafana
-    # IMPORTANT: might need to turn this on for a client - have to comment it
-    # out here because a client might need no ports exposed.
-    #. can you do that by setting grafana_port to nothing?
-    # see cloudbeaver comments.
     ports:
       - '$GRAFANA_PORT:3000/tcp'
     environment:
@@ -234,10 +232,6 @@ services:
       PGDATABASE: null
       PGUSER: null
       PGPASSWORD: null
-      # not used
-      # INFLUXDB_DB:
-      # INFLUXDB_USER:
-      # INFLUXDB_PASSWORD:
       # grafana will download and install these automatically
       # https://grafana.com/docs/grafana/latest/installation/docker/#install-plugins-in-the-docker-container
       GF_INSTALL_PLUGINS: natel-discrete-panel,natel-plotly-panel,michaeldmoore-scatter-panel,dalvany-image-panel
@@ -269,61 +263,6 @@ services:
     logging:
       options:
         max-size: '20m'
-
-  # ---------------------------------------------------------------------------
-  # hue
-  # ---------------------------------------------------------------------------
-  # sql database ui
-  hue:
-    container_name: hue
-    # https://hub.docker.com/r/gethue/hue
-    # image: gethue/hue:latest
-    image: gethue/hue:20220302-140101 # prefer a fixed version so doesn't keep downloading
-    profiles:
-      - hue
-    # ports:
-    #   - "8888:8888"
-    dns: 8.8.8.8
-    volumes:
-      #. why z-hue.ini? is it an arbitrary name for hue-overrides.ini?
-      # https://stackoverflow.com/questions/57116402/hue-access-to-hdfs-bypass-default-hue-ini
-      - ../$SETUP/volumes/hue/hue.ini:/usr/share/hue/desktop/conf/z-hue.ini
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-    restart: always
-    networks:
-      - ladder99
-    logging:
-      options:
-        max-size: '20m'
-
-  # # ---------------------------------------------------------------------------
-  # # logzio
-  # # ---------------------------------------------------------------------------
-  # # monitor docker logs with logz.io
-  # logzio:
-  #   container_name: logzio
-  #   #. add a version tag
-  #   image: logzio/docker-collector-logs:0.4.0
-  #   profiles:
-  #     - logzio
-  #   environment:
-  #     LOGZIO_TOKEN: $LOGZIO_TOKEN
-  #     LOGZIO_URL: $LOGZIO_URL:5015
-  #     LOGZIO_TYPE: docker_logs
-  #     LOGZIO_CODEC: plain
-  #     skipContainerName: cloudbeaver,dozzle,hue,logzio,pgadmin,portainer
-  #   volumes:
-  #     - /var/run/docker.sock:/var/run/docker.sock:ro
-  #     - /var/run/docker/containers:/var/lib/docker/containers
-  #     - /etc/localtime:/etc/localtime:ro
-  #     - /etc/timezone:/etc/timezone:ro
-  #   restart: always
-  #   networks:
-  #     - ladder99
-  #   logging:
-  #     options:
-  #       max-size: '20m'
 
   # ---------------------------------------------------------------------------
   # meter
@@ -361,13 +300,12 @@ services:
   # mosquitto
   # ---------------------------------------------------------------------------
   # get mqtt data from devices and publish to mtconnect adapter
-  # see https://hub.docker.com/_/eclipse-mosquitto
-  # and https://mosquitto.org/
+  # see https://mosquitto.org/
+  # and https://hub.docker.com/_/eclipse-mosquitto
   # the image defines three directories in /mosquitto - config, data, log
   mosquitto:
     container_name: mosquitto
-    #. add a version tag
-    image: eclipse-mosquitto
+    image: eclipse-mosquitto:2.0.15
     profiles:
       - mosquitto
     ports:
@@ -391,6 +329,7 @@ services:
   # nodered
   # ---------------------------------------------------------------------------
   # a visual programming environment
+  # see https://nodered.org/
   nodered:
     container_name: nodered
     image: nodered/node-red:2.1.6
@@ -481,10 +420,10 @@ services:
   # portainer
   # ---------------------------------------------------------------------------
   # docker container viewer/management
+  # see https://hub.docker.com/r/portainer/portainer-ce/tags
   portainer:
     container_name: portainer
-    #. add a version tag
-    image: portainer/portainer-ce
+    image: portainer/portainer-ce:2.16.2
     profiles:
       - portainer
     ports:
@@ -507,9 +446,9 @@ services:
   postgres:
     container_name: postgres
     image: timescale/timescaledb:2.7.0-pg13
-    #. still not sure tz is needed - see https://stackoverflow.com/a/38503436/243392
-    # command: postgres -c 'max_connections=50' -c 'timezone=America/Chicago'
     command: postgres -c 'max_connections=50' # need for grafana pages with lots of queries
+    #. in client compose-overrides.yaml set timezone like so -
+    # command: postgres -c 'max_connections=50' -c 'timezone=America/Chicago'
     profiles:
       - postgres
     ports:
@@ -579,8 +518,6 @@ services:
       # Needs to be at least 32 characters minimum.
       PGRST_JWT_SECRET: null
       # PGRST_SECRET_IS_BASE64: 'False' # must be string, number, or null
-      # depends_on:
-      #   - postgres
     restart: always
     networks:
       - ladder99
@@ -669,8 +606,7 @@ services:
   # ---------------------------------------------------------------------------
   # send logs to sematext.com for monitoring
   sematext:
-    #. add a version tag
-    image: sematext/agent:latest
+    image: sematext/agent:1.20.1
     container_name: sematext
     profiles:
       - sematext
@@ -692,9 +628,11 @@ services:
       - /sys:/host/sys:ro
       - /dev:/hostfs/dev:ro
       - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
 
   sematext-logs:
-    image: sematext/logagent:latest
+    image: sematext/logagent:3.1.3
     container_name: sematext-logs
     profiles:
       - sematext-logs
@@ -706,18 +644,14 @@ services:
     restart: always
     volumes:
       - '/var/run/docker.sock:/var/run/docker.sock'
-
-  # ---------------------------------------------------------------------------
-  # superset
-  # ---------------------------------------------------------------------------
-  # a sql-based dashboard application
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
 
   # ---------------------------------------------------------------------------
   # traefik
   # ---------------------------------------------------------------------------
   # a reverse proxy
-  # will need to add labels to grafana or other service you want to expose -
-  # see client-demo/compose-overrides.yaml or client-oxbox for examples.
+  # will need to add labels to grafana or other service you want to expose.
   # Traefik will connect to the hosting Docker daemon to retrieve the 
   # needed metadata. It will scan for Docker containers that are marked with 
   # labels and will publish the services accordingly. 
@@ -727,8 +661,8 @@ services:
     profiles:
       - traefik
     ports:
-      - 80:80/tcp
-      - 443:443/tcp
+      - '80:80/tcp'
+      - '443:443/tcp'
     command:
       - --certresolv.myresolver.acme.storage=/etc/traefik/acme.json
     restart: always
