@@ -6,4 +6,5 @@
 
 # docker container ls --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}\t{{.Image}}\t{{.Command}}'
 # docker container ls --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}' | (read -r; printf "%s\n" "$REPLY"; sort -k 1 )
-docker container ls --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}\t{{.Image}}' | (read -r; printf "%s\n" "$REPLY"; sort -k 1 )
+# docker container ls --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}\t{{.Image}}' | (read -r; printf "%s\n" "$REPLY"; sort -k 1 )
+docker container ls --format 'table {{.Names}}\t{{.Status}}\t{{.Image}}\t{{.Ports}}' | (read -r; printf "%s\n" "$REPLY"; sort -k 1 )
