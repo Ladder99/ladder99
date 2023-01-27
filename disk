@@ -27,9 +27,14 @@ shift
 # see https://stackoverflow.com/questions/46173298/how-to-sort-or-order-results-docker-ps-format/49973096#49973096
 # docker container ls --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}' | (read -r; printf "%s\n" "$REPLY"; sort -k 1 )
 echo
+
 echo Disk usage
 df -h /
 echo
-echo Setup usage
-sudo du -d1 -h $SETUP/volumes/
 
+echo Docker images
+sudo du -hs /var/lib/docker
+echo
+
+echo Docker volumes
+sudo du -d1 -h $SETUP/volumes/
