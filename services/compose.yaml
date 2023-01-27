@@ -435,7 +435,8 @@ services:
     networks:
       - ladder99
     logging:
-      driver: 'none'
+      options:
+        max-size: '20m'
 
   # ---------------------------------------------------------------------------
   # postgres
