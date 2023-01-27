@@ -13,19 +13,19 @@ else
     SUDO=
 fi
 
-# show all disk usage
 echo
 echo "Total disk usage"
 df -h /
-
-# show usage for all setup dirs
 echo
-echo "Space used by different Ladder99 setups"
-CMD="$SUDO du -d1 -h setups"
-$CMD
 
-# show usage for the setup volumes
+
+echo "Docker images"
+$SUDO du -hs /var/lib/docker
 echo
-echo "Space used by '$SETUP' setup"
-CMD="$SUDO du -d1 -h $SETUP_DIR/volumes/"
-$CMD
+
+echo "Docker volumes for different Ladder99 setups"
+$SUDO du -d1 -h setups
+echo
+
+echo "Docker volumes for '$SETUP' setup"
+$SUDO du -d1 -h $SETUP_DIR/volumes/
