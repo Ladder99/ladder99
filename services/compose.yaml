@@ -615,6 +615,8 @@ services:
       - LOGS_RECEIVER_URL=https://logsene-receiver.sematext.com
       - EVENT_RECEIVER_URL=https://event-receiver.sematext.com
       - COMMAND_SERVER_URL=https://command.sematext.com
+      # the free tier limits you to logs for 3 containers
+      - MATCH_BY_NAME=(adapter|meter|relay)
     cap_add:
       - SYS_ADMIN
     restart: always
