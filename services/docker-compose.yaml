@@ -649,9 +649,9 @@ services:
   # ---------------------------------------------------------------------------
   # sematext
   # ---------------------------------------------------------------------------
-  # send logs to sematext.com for monitoring
+  # send system and container metrics to sematext.com
   sematext:
-    image: sematext/agent:latest
+    image: sematext/agent:1.20.1 # 2023-01
     container_name: sematext
     profiles:
       - sematext
@@ -676,14 +676,17 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
 
+  # sends logs to sematext
   sematext-logs:
-    image: sematext/logagent:latest
+    image: sematext/logagent:3.1.3 # 2022-07
     container_name: sematext-logs
     profiles:
       - sematext-logs
     environment:
       - LOGS_TOKEN # set this in .env file #. LOGS_TOKEN=${SEMATEXT_LOGS_TOKEN}
       - REGION=US
+      # the free tier limits you to logs for 3 containers
+      - MATCH_BY_NAME=(adapter|meter|relay)
     cap_add:
       - SYS_ADMIN
     restart: unless-stopped
