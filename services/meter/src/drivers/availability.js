@@ -58,7 +58,10 @@ export class Metric {
     this.startFullPath = `${device.path}/${meter.startPath}`
     this.stopFullPath = `${device.path}/${meter.stopPath}`
 
-    // instead of start/stop paths, can optionally specify a schedule for the machine in setup.yaml
+    // can optionally get schedule from setup.devices table
+    this.useSetupDevicesTableTimes = meter.useSetupDevicesTableTimes // eg true
+
+    // can optionally specify a schedule for the machine in setup.yaml
     this.startTime = meter.startTime // eg '08:00'
     this.stopTime = meter.stopTime // eg '17:00'
 
@@ -206,27 +209,12 @@ export class Metric {
     this.previousStopTime = stop
   }
 
-  // async updateBins(now, interval) {
-  //   const deviceName = this.device.name
-  //   // check for events in previous n secs, eg 60
-  //   const start = new Date(now.getTime() - interval)
-  //   const stop = now
-  //   const deviceWasActive = await this.getActive(start, stop)
-  //   // if device was active, increment the 'active' bin
-  //   if (deviceWasActive) {
-  //     console.log(`Availability ${deviceName} was active, increase active bin`)
-  //     await this.incrementBins(now, 'active')
-  //   }
-  //   // always increment the 'available' bin
-  //   await this.incrementBins(now, 'available')
-  // }
-
   // query db for start and stop datetime dataitems.
   // converts the timestrings to local time for the client.
   // returns { start, stop, holiday }, where
   //   start is a Date object or 'HOLIDAY', stop is same, holiday is 'HOLIDAY' or undefined.
   //   eg { start: 2022-01-13T11:00:00Z, stop: ..., holiday: undefined }
-  //. will want to pass an optional datetime for the date to search for.
+  //. pass an optional datetime for the date to search for.
   //. instrument this fn for testing.
   async getSchedule() {
     // get date from text, eg '2022-01-13T05:00:00' -> 2022-01-13T11:00:00.000Z.
@@ -234,19 +222,42 @@ export class Metric {
     const getDate = text =>
       new Date(new Date(text).getTime() - this.timezoneOffset)
 
-    // handle start/stop times set in setup.yaml.
+    // get today's date in Z timezone, eg '2022-01-16'
+    const getToday = () =>
+      new Date(new Date().getTime() + this.timezoneOffset)
+        .toISOString()
+        .slice(0, 10)
+
+    // handle start/stop times if set in setup.devices table
+    if (this.useSetupDevicesTableTimes) {
+      const result = await this.db.query(
+        `SELECT shift_start, shift_stop FROM setup.devices WHERE name = $1`,
+        [this.device]
+      )
+      console.log('result', result)
+      if (result.rows.length > 0) {
+        const today = getToday() // eg '2022-01-16'
+        // times are like '05:00', so need to tack it onto current date + 'T'.
+        const { shift_start, shift_stop } = result.rows[0]
+        const start = getDate(today + 'T' + shift_start)
+        const stop = getDate(today + 'T' + shift_stop)
+        const holiday = undefined // for now
+        console.log('start', start, 'stop', stop, 'holiday', holiday)
+        return { start, stop, holiday }
+      }
+    }
+
+    // handle start/stop times if set in setup.yaml.
     // startTime is like '05:00:00', so need to tack it onto current date + 'T'.
     if (this.startTime) {
-      const today = new Date(new Date().getTime() + this.timezoneOffset)
-        .toISOString()
-        .slice(0, 11) // eg '2022-01-16T'
-      const start = getDate(today + this.startTime)
-      const stop = getDate(today + this.stopTime)
+      const today = getToday() // eg '2022-01-16'
+      const start = getDate(today + 'T' + this.startTime)
+      const stop = getDate(today + 'T' + this.stopTime)
       const holiday = undefined // for now
       return { start, stop, holiday }
     }
 
-    // handle start/stop times in database
+    // handle start/stop times as set from db, eg via jobboss driver.
     const table = 'history_text'
     const device = this.device
     // const { startPath, stopPath } = this.meter
