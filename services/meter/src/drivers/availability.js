@@ -215,84 +215,91 @@ export class Metric {
   //   start is a Date object or 'HOLIDAY', stop is same, holiday is 'HOLIDAY' or undefined.
   //   eg { start: 2022-01-13T11:00:00Z, stop: ..., holiday: undefined }
   //. pass an optional datetime for the date to search for.
-  //. instrument this fn for testing.
+  //. instrument this fn and subfns for testing.
   async getSchedule() {
+    let schedule = {}
+
     // get date from text, eg '2022-01-13T05:00:00' -> 2022-01-13T11:00:00.000Z.
     // shifts date by client timezoneOffset, as need for comparisons.
     const getDate = text =>
       new Date(new Date(text).getTime() - this.timezoneOffset)
 
-    // get today's date in Z timezone, eg '2022-01-16'
+    // get today's date in local (not Z) timezone, eg '2022-01-16'
     const getToday = () =>
       new Date(new Date().getTime() + this.timezoneOffset)
         .toISOString()
         .slice(0, 10)
 
-    // handle start/stop times if set in setup.devices table
+    // handle start/stop times as set in setup.devices table
     if (this.useSetupDevicesTableTimes) {
       const result = await this.db.query(
         `SELECT shift_start, shift_stop FROM setup.devices WHERE path = $1`,
         [this.device.path]
       )
-      // console.log(this.me, 'result', result)
       if (result.rows.length === 0) {
-        // the table has defaults for shift_start and shift_stop, but prefer using setup.yaml values.
-        // insert a new record for this device.
+        // add a new record to setup.devices, and use setup.yaml values for start/stop times.
         console.log(this.me, 'insert new record for device', this.device.path)
-        await this.db.query(`INSERT INTO setup.devices (path) VALUES ($1)`, [
-          this.device.path,
-        ])
-        // fall through to use setup.yaml values
-      } else {
-        console.log(this.me, 'get shift times from setup.devices table')
+        await this.db.query(
+          `INSERT INTO setup.devices (path, shift_start, shift_stop) VALUES ($1, $2, $3)`,
+          [this.device.path, this.startTime, this.stopTime]
+        )
+        // use setup.yaml values
+        // keep in synch with code below
+        console.log(this.me, 'get shift times from setup.yaml')
         const today = getToday() // eg '2022-01-16'
         // times are like '05:00', so need to tack it onto current date + 'T'.
+        const start = getDate(today + 'T' + this.startTime)
+        const stop = getDate(today + 'T' + this.stopTime)
+        const holiday = undefined // for now
+        schedule = { start, stop, holiday }
+      } else {
+        // use setup.devices table values
+        console.log(this.me, 'get shift times from setup.devices table')
+        const today = getToday() // eg '2022-01-16'
         const { shift_start, shift_stop } = result.rows[0]
+        // times are like '05:00', so need to tack it onto current date + 'T'.
         const start = getDate(today + 'T' + shift_start)
         const stop = getDate(today + 'T' + shift_stop)
         const holiday = undefined // for now
-        console.log(this.me, 'start', start, 'stop', stop, 'holiday', holiday)
-        return { start, stop, holiday }
+        schedule = { start, stop, holiday }
       }
-    }
-
-    // handle start/stop times if set in setup.yaml.
-    // startTime is like '05:00', so need to tack it onto current date + 'T'.
-    if (this.startTime) {
+    } else if (this.startTime) {
+      // use setup.yaml values
+      // keep in synch with code above
       console.log(this.me, 'get shift times from setup.yaml')
       const today = getToday() // eg '2022-01-16'
+      // times are like '05:00', so need to tack it onto current date + 'T'.
       const start = getDate(today + 'T' + this.startTime)
       const stop = getDate(today + 'T' + this.stopTime)
       const holiday = undefined // for now
-      console.log(this.me, 'start', start, 'stop', stop, 'holiday', holiday)
-      return { start, stop, holiday }
+      schedule = { start, stop, holiday }
+    } else {
+      // use history_text values, eg via jobboss driver.
+      console.log(this.me, 'get shift times from start/stop paths')
+      const table = 'history_text'
+      const device = this.device
+      // get start/stop datetimes, with no Z.
+      // device includes { path }
+      // note: these can return 'UNAVAILABLE' or 'HOLIDAY', in which case,
+      // schedule.start etc will be 'Invalid Date'.
+      // any comparison with those will yield false.
+      const startText = await this.db.getLatestValue(
+        table,
+        device,
+        this.startFullPath
+      )
+      const stopText = await this.db.getLatestValue(
+        table,
+        device,
+        this.stopFullPath
+      )
+      const getHoliday = text =>
+        text === 'UNAVAILABLE' || text === 'HOLIDAY' ? 'HOLIDAY' : undefined
+      const holiday = getHoliday(startText) || getHoliday(stopText) // 'HOLIDAY' or undefined
+      const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
+      const stop = holiday || getDate(stopText)
+      schedule = { start, stop, holiday }
     }
-
-    // handle start/stop times as set from db, eg via jobboss driver.
-    console.log(this.me, 'get shift times from start/stop paths')
-    const table = 'history_text'
-    const device = this.device
-    // const { startPath, stopPath } = this.meter
-    // note: these can return 'UNAVAILABLE' or 'HOLIDAY', in which case,
-    // schedule.start etc will be 'Invalid Date'.
-    // any comparison with those will yield false.
-    //. search for a given date, not latest value [why?]
-    const startText = await this.db.getLatestValue(
-      table,
-      device,
-      this.startFullPath
-    )
-    const stopText = await this.db.getLatestValue(
-      table,
-      device,
-      this.stopFullPath
-    )
-    const getHoliday = text =>
-      text === 'UNAVAILABLE' || text === 'HOLIDAY' ? 'HOLIDAY' : undefined
-    const holiday = getHoliday(startText) || getHoliday(stopText) // 'HOLIDAY' or undefined
-    const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
-    const stop = holiday || getDate(stopText)
-    const schedule = { start, stop, holiday }
     console.log(this.me, schedule)
     return schedule
   }
@@ -313,31 +320,4 @@ export class Metric {
     const deviceWasActive = result?.rows[0]?.active // t/f - column name must match case
     return deviceWasActive
   }
-
-  // //. moving this to bins.js:add
-  // // increment values in the bins table.
-  // // rounds the given time down to nearest min, hour, day, week etc,
-  // // and increments the given field for each.
-  // // field is eg 'active', 'available'.
-  // //. what timezone is time in? what about timeISO?
-  // async incrementBins(time, field, delta = 1) {
-  //   const timeISO = time.toISOString()
-  //   // rollup counts for different time-scales.
-  //   // this is an alternative to aggregated queries, which might use in future.
-  //   for (let resolution of resolutions) {
-  //     // upsert/increment the given field by delta
-  //     const sql = `
-  //       insert into raw.bins (device_id, resolution, time, ${field})
-  //         values (
-  //           ${this.device.node_id},
-  //           ('1 '||'${resolution}')::interval,
-  //           date_trunc('${resolution}', '${timeISO}'::timestamptz),
-  //           ${delta}
-  //         )
-  //           on conflict (device_id, resolution, time) do
-  //             update set ${field} = coalesce(raw.bins.${field}, 0) + ${delta};
-  //     `
-  //     await this.db.query(sql)
-  //   }
-  // }
 }
