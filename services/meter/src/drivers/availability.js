@@ -51,7 +51,7 @@ export class Metric {
     console.log(this.me, `initialize`, meter)
     this.client = client
     this.db = db
-    this.device = device
+    this.device = device // { path, ... }
     this.meter = meter
 
     this.activeFullPath = `${device.path}/${meter.activePath}`
@@ -231,33 +231,45 @@ export class Metric {
     // handle start/stop times if set in setup.devices table
     if (this.useSetupDevicesTableTimes) {
       const result = await this.db.query(
-        `SELECT shift_start, shift_stop FROM setup.devices WHERE name = $1`,
-        [this.device]
+        `SELECT shift_start, shift_stop FROM setup.devices WHERE path = $1`,
+        [this.device.path]
       )
-      console.log('result', result)
-      if (result.rows.length > 0) {
+      // console.log(this.me, 'result', result)
+      if (result.rows.length === 0) {
+        // the table has defaults for shift_start and shift_stop, but prefer using setup.yaml values.
+        // insert a new record for this device.
+        console.log(this.me, 'insert new record for device', this.device.path)
+        await this.db.query(`INSERT INTO setup.devices (path) VALUES ($1)`, [
+          this.device.path,
+        ])
+        // fall through to use setup.yaml values
+      } else {
+        console.log(this.me, 'get shift times from setup.devices table')
         const today = getToday() // eg '2022-01-16'
         // times are like '05:00', so need to tack it onto current date + 'T'.
         const { shift_start, shift_stop } = result.rows[0]
         const start = getDate(today + 'T' + shift_start)
         const stop = getDate(today + 'T' + shift_stop)
         const holiday = undefined // for now
-        console.log('start', start, 'stop', stop, 'holiday', holiday)
+        console.log(this.me, 'start', start, 'stop', stop, 'holiday', holiday)
         return { start, stop, holiday }
       }
     }
 
     // handle start/stop times if set in setup.yaml.
-    // startTime is like '05:00:00', so need to tack it onto current date + 'T'.
+    // startTime is like '05:00', so need to tack it onto current date + 'T'.
     if (this.startTime) {
+      console.log(this.me, 'get shift times from setup.yaml')
       const today = getToday() // eg '2022-01-16'
       const start = getDate(today + 'T' + this.startTime)
       const stop = getDate(today + 'T' + this.stopTime)
       const holiday = undefined // for now
+      console.log(this.me, 'start', start, 'stop', stop, 'holiday', holiday)
       return { start, stop, holiday }
     }
 
     // handle start/stop times as set from db, eg via jobboss driver.
+    console.log(this.me, 'get shift times from start/stop paths')
     const table = 'history_text'
     const device = this.device
     // const { startPath, stopPath } = this.meter
@@ -281,6 +293,7 @@ export class Metric {
     const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
     const stop = holiday || getDate(stopText)
     const schedule = { start, stop, holiday }
+    console.log(this.me, schedule)
     return schedule
   }
 
