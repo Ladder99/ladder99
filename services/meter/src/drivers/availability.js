@@ -201,7 +201,7 @@ export class Metric {
       await bins.add(this.db, this.device.node_id, now, 'active')
     }
     if (isDuringShift) {
-      console.log(this.me, 'time', now, `increasing available bin`)
+      console.log(this.me, now, `- increasing available bin`)
       await bins.add(this.db, this.device.node_id, now, 'available')
     }
     this.previousStopTime = stop
