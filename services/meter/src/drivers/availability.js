@@ -185,9 +185,7 @@ export class Metric {
     const now = new Date() // eg 2022-01-13T12:00:00.000Z - js dates are in UTC
 
     // get schedule for device, eg { start: 2022-01-13T11:00:00Z, stop: ..., holiday: undefined }
-    //. do this every 10mins or so on separate timer, save to this.schedule
     const schedule = await this.getSchedule()
-    // console.log(this.me, `schedule`, schedule, 'now', now)
 
     // update active and available bins as needed
     const isDuringShift =
@@ -203,18 +201,16 @@ export class Metric {
       await bins.add(this.db, this.device.node_id, now, 'active')
     }
     if (isDuringShift) {
-      console.log(this.me, `increasing available bin`)
+      console.log(this.me, 'time', now, `increasing available bin`)
       await bins.add(this.db, this.device.node_id, now, 'available')
     }
     this.previousStopTime = stop
   }
 
-  // query db for start and stop datetime dataitems.
-  // converts the timestrings to local time for the client.
+  // get start and stop datetimes - from setup.devices table, or setup.yaml, or history_text.
   // returns { start, stop, holiday }, where
   //   start is a Date object or 'HOLIDAY', stop is same, holiday is 'HOLIDAY' or undefined.
   //   eg { start: 2022-01-13T11:00:00Z, stop: ..., holiday: undefined }
-  //. pass an optional datetime for the date to search for.
   //. instrument this fn and subfns for testing.
   async getSchedule() {
     let schedule = {}
@@ -300,7 +296,7 @@ export class Metric {
       const stop = holiday || getDate(stopText)
       schedule = { start, stop, holiday }
     }
-    console.log(this.me, schedule)
+    console.log(this.me, schedule.start, 'to', schedule.stop)
     return schedule
   }
 
