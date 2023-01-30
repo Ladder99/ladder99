@@ -181,8 +181,8 @@ export class Db {
 
   // get latest value of a property path.
   // table should be one of 'history_all', _float, _text.
-  // device should include path property, eg 'Main/Micro'
-  // path should be the full path, eg 'Main/Micro/availability'
+  // device should include path property, eg 'Main/Host'
+  // path should be the full path, eg 'Main/Host/availability'
   async getLatestValue(table, device, path) {
     const sql = `
       select value
@@ -191,9 +191,7 @@ export class Db {
       order by time desc
       limit 1;
     `
-    // console.log(sql)
     const result = await this.query(sql)
-    // console.log(result)
     const value = result.rowCount > 0 && result.rows[0]['value'] // colname must match case
     return value
   }
