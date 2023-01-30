@@ -175,7 +175,7 @@ export class Db {
       if (result?.rows?.length > 0) break
       await new Promise(resolve => setTimeout(resolve, 5000)) // wait 5 secs
     }
-    console.log(result.rows)
+    // console.log(result.rows)
     return result.rows[0].node_id
   }
 
