@@ -1,12 +1,12 @@
 {
   "name": "ladder99-simulator",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "type": "module",
-  "description": "wip - send test device messages to opc client",
+  "description": "wip - simulate messages from different devices",
   "scripts": {
     "start": "node src/index.js"
   },
-  "author": "Brian Burns <bburns.km@gmail.com>",
+  "author": "MRIIOT <ladder99@mriiot.com>",
   "license": "Apache2.0",
   "comment": "v2.28 and below don't require ssl certificates",
   "dependencies": {

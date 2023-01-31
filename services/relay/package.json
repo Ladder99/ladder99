@@ -1,6 +1,6 @@
 {
   "name": "ladder99-relay",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "Ladder99 Relay - transfers data from Agent to Database",
   "type": "module",
   "module": "esnext",
@@ -10,7 +10,7 @@
     "test": "node src/test/test.js",
     "test-autoprune": "node src/test/test-autoprune.js"
   },
-  "author": "Brian Burns <bburns.km@gmail.com>",
+  "author": "MRIIOT <ladder99@mriiot.com>",
   "license": "Apache2.0",
   "dependencies": {
     "chalk": "^5.0.1",
