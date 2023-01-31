@@ -279,6 +279,7 @@ export class Metric {
       // note: these can return 'UNAVAILABLE' or 'HOLIDAY', in which case,
       // schedule.start etc will be 'Invalid Date'.
       // any comparison with those will yield false.
+      // these can also return false if no value found.
       const startText = await this.db.getLatestValue(
         table,
         device,
@@ -290,7 +291,9 @@ export class Metric {
         this.stopFullPath
       )
       const getHoliday = text =>
-        text === 'UNAVAILABLE' || text === 'HOLIDAY' ? 'HOLIDAY' : undefined
+        text === 'UNAVAILABLE' || text === 'HOLIDAY' || text === false
+          ? 'HOLIDAY'
+          : undefined
       const holiday = getHoliday(startText) || getHoliday(stopText) // 'HOLIDAY' or undefined
       const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
       const stop = holiday || getDate(stopText)
