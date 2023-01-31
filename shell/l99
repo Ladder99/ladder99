@@ -13,14 +13,16 @@ Usage: l99 COMMAND [PARAMS]
 Run a Ladder99 command.
 
 COMMAND
-    build     build a Docker image for a ladder99 service
+    build     build a cross-platform Docker image, push to Docker hub
+    dev       start services (builds images locally)
     disk      show disk usage for current setup
     download  clone a git repo to use as current setup
+    images    list downloaded Docker images
     init      create a new setup folder
+    list      list running services
     logs      follow and search logs of a running or stopped service
-    restart   restart services
-    start     start services
-    status    show status of running services
+    restart   restart services (stop then start)
+    start     start services (pulls images from Docker hub as needed)
     stop      stop running services
     update    update source code for ladder99 and current setup
     use       specify setup to use with l99 commands
@@ -28,10 +30,11 @@ COMMAND
 Run the command with -h for help on that command.
 
 Examples
-    l99 status
+    l99 list
     l99 use example
     l99 disk
     l99 start agent
+    l99 images
     l99 logs agent error
     l99 stop agent
     l99 update
