@@ -90,4 +90,4 @@ echo "$CMD"
 bash -c "$CMD"
 
 echo
-echo "Run 'l99 status' to check status of services."
+echo "Run 'l99 list' to check status of services."
