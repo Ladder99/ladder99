@@ -1,17 +1,17 @@
 #!/bin/bash
 
 # this is the preferred approach for building cross-platform
-# images, over the `buildx2` script, which builds all platforms at same time.
+# images, over the `build-parallel` script, which builds all platforms at same time.
 
 # it's best to build each arch image separately, then combine them,
 # because if a build crashes you lose the cached progress.
 
-# BUT this has been having problems with docker desktop crashing etc
+# BUT this has been having problems with docker desktop crashing etc on windows.
 
 #. get default version from package.json? use jq to extract?
 
 usage="
-Usage: l99 buildx SERVICE VERSION
+Usage: l99 build SERVICE VERSION
 
 Build a multiplatform Docker image and push up to Docker hub.
 
