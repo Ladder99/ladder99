@@ -8,13 +8,14 @@ Usage: l99 compose COMMAND [OPTIONS] [SERVICES]
 Run the Ladder99 pipeline with a list of services/profiles to include.
 
 COMMAND       docker compose command (up, down, logs)
-OPTIONS       space-delim options for command, starting with - (eg -t)
+OPTIONS       space-delim options for command - only --build available now
 SERVICES      space-delim list of services or profiles to start
   base        run all relevant services for a setup - eg adapter, agent, etc.
               (this is the default)
 
 Examples
-    l99 compose up agent adapter
+    l99 compose up  # runs with --no-build, ie pulls images from docker hub
+    l99 compose up --build agent adapter  # builds image locally
     l99 compose logs
     l99 compose down
 "
@@ -40,40 +41,62 @@ fi
 COMMAND=$1
 shift
 
-# get command options
-if [ "$COMMAND" = "up" ]; then
-    OPTIONS="--detach"
-elif [ "$COMMAND" = "logs" ]; then
-    OPTIONS="--timestamps --follow"
-fi
+# collect options and build flag
+# only --build is available now
+OPTIONS=""
+BUILD=""
+while [[ $1 = \-* ]] # while $1 starts with '-'
+do
+    if [[ $1 = "--build" ]]; then
+        BUILD=true
+    fi
+    OPTIONS="$OPTIONS $1"
+    shift
+done
 
 # if no services specified, default to 'base', which should run the main services
-SERVICES=$* # eg 'agent adapter'
+SERVICES=${*:-base} # eg 'agent adapter'
+
+# get command options
+if [ "$COMMAND" = "up" ]; then
+    COMMAND_OPTIONS="--detach"
+    if [[ $BUILD ]]; then
+        COMMAND_OPTIONS="$COMMAND_OPTIONS --build"
+    else
+        COMMAND_OPTIONS="$COMMAND_OPTIONS --no-build"
+    fi
+elif [ "$COMMAND" = "logs" ]; then
+    COMMAND_OPTIONS="--timestamps --follow"
+fi
 
 # file paths
 COMPOSE=services/docker-compose.yaml
+COMPOSE_PROD=services/docker-compose.prod.yaml
 OVERRIDES=$SETUP_FOLDER/services/docker-compose.yaml
 ENVFILE=$SETUP_FOLDER/.env
 ENVFILE_EXAMPLE=$SETUP_FOLDER/.env-example
 
 # specify docker compose files
-ARGS="--file $COMPOSE"
-if [ -e $OVERRIDES ]; then
-    ARGS="$ARGS --file $OVERRIDES"
+FILE_FLAGS="--file $COMPOSE"
+if [[ $BUILD = "" ]]; then
+    FILE_FLAGS="$FILE_FLAGS --file $COMPOSE_PROD"
+fi
+if [ -e "$OVERRIDES" ]; then
+    FILE_FLAGS="$FILE_FLAGS --file $OVERRIDES"
 fi
 
-# add environment variable file
-if [ -e $ENVFILE ]; then
+# get environment variable files
+if [ -e "$ENVFILE" ]; then
     # use .env file if there
-    ARGS="$ARGS --env-file $ENVFILE"
+    ENV_FLAGS="--env-file $ENVFILE"
 elif [ "$SETUP" = "example" ]; then
     # copy the example .env file and use that
-    cp $ENVFILE_EXAMPLE $ENVFILE
-    ARGS="$ARGS --env-file $ENVFILE"
+    cp "$ENVFILE_EXAMPLE" "$ENVFILE"
+    ENV_FLAGS="--env-file $ENVFILE"
 else
     # otherwise create a new .env file and stop
     echo "No .env file found - copying from default..."
-    cp $ENVFILE_EXAMPLE $ENVFILE
+    cp "$ENVFILE_EXAMPLE" "$ENVFILE"
     echo
     echo "PLEASE SET INITIAL PASSWORDS IN .env FILE -"
     echo "For example, run 'nano $ENVFILE', set the Grafana and Postgres passwords,"
@@ -82,23 +105,38 @@ else
     exit 1
 fi
 
-# # get profile flags - one per service/profile specified
-# PROFILE_FLAGS=""
-# for PROFILE in $SERVICES; do
-#     PROFILE_FLAGS="$PROFILE_FLAGS --profile $PROFILE"
-# done
+# get profile flags - one per service/profile specified
+PROFILE_FLAGS=""
+for PROFILE in $SERVICES; do
+    PROFILE_FLAGS="$PROFILE_FLAGS --profile $PROFILE"
+done
 
-# use default builder, not multiplatform builder
-# avoids problem with sending tarball to docker which can get stuck
-# see https://github.com/docker/buildx/issues/107
-# and buildx command in this folder
-docker buildx use --default default
+if [[ $BUILD ]]; then
+    # use default builder, not multiplatform builder
+    # avoids problem with sending tarball to docker which can get stuck
+    # see https://github.com/docker/buildx/issues/107
+    # and buildx command in this folder
+    docker buildx use --default default
+fi
 
-# make cmd
+# make and run cmd
 # note: --project-name specifies project name, as shown in docker management consoles - 
 # otherwise it uses the parent folder name (ie 'services').
-CMD="export SETUP=$SETUP &&
-docker compose --project-name ladder99 $ARGS $COMMAND $OPTIONS $SERVICES"
+CMD="
+export SETUP=$SETUP &&
+docker compose \
+  --project-name ladder99 \
+  $ENV_FLAGS \
+  $PROFILE_FLAGS \
+  $FILE_FLAGS \
+  $COMMAND \
+  $COMMAND_OPTIONS
+"
 echo "$CMD"
 
 bash -c "$CMD"
+
+if [ "$COMMAND" = "up" ]; then
+    echo
+    echo "Run 'l99 list' to check status of services."
+fi

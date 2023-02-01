@@ -6,6 +6,8 @@ usage="
 Usage: l99 start [SERVICES]
 
 Run the Ladder99 pipeline with a list of services/profiles to include.
+Pulls images from Docker hub as needed.
+See also l99 dev.
 
 SERVICES      space-delim list of services or profiles to start
   base        run all relevant services for a setup - eg adapter, agent, etc.
@@ -23,71 +25,12 @@ if [ "$1" = "-h" ]; then
     exit
 fi
 
-# get setup folder
-SETUP=$(cat .l99_setup)
-SETUP_FOLDER=setups/$SETUP
-
-# handle missing setup folder
-if [ ! -e $SETUP_FOLDER ]; then
-    echo "Setup folder '$SETUP_FOLDER' does not exist - please run the 'l99 use SETUP' command."
-    echo
-    exit 1
-fi
-
-# if no services specified, default to 'base', which should run the main services
+# if no services specified, default to 'base'
 SERVICES=${*:-base}
 
-# file paths
-COMPOSE=services/docker-compose.yaml
-COMPOSE_PROD=services/docker-compose.prod.yaml
-OVERRIDES=$SETUP_FOLDER/services/docker-compose.yaml
-ENVFILE=$SETUP_FOLDER/.env
-ENVFILE_EXAMPLE=$SETUP_FOLDER/.env-example
-
-# specify docker compose files
-FILES="--file $COMPOSE --file $COMPOSE_PROD"
-if [ -e $OVERRIDES ]; then
-    FILES="$FILES --file $OVERRIDES"
-fi
-
-# add environment variable file
-ENVFILES=""
-if [ -e $ENVFILE ]; then
-    # use .env file if there
-    ENVFILES="$ENVFILES --env-file $ENVFILE"
-elif [ "$SETUP" = "example" ]; then
-    # copy the example .env file and use that
-    cp $ENVFILE_EXAMPLE $ENVFILE
-    ENVFILES="$ENVFILES --env-file $ENVFILE"
-else
-    # otherwise create a new .env file and stop
-    echo "No .env file found - copying from default..."
-    cp $ENVFILE_EXAMPLE $ENVFILE
-    echo
-    echo "PLEASE SET INITIAL PASSWORDS IN .env FILE -"
-    echo "For example, run 'nano $ENVFILE', set the Grafana and Postgres passwords,"
-    echo "then re-run the 'l99 start' command."
-    echo
-    exit 1
-fi
-
-# get profile flags - one per service/profile specified
-PROFILE_FLAGS=""
-for PROFILE in $SERVICES; do
-    PROFILE_FLAGS="$PROFILE_FLAGS --profile $PROFILE"
-done
-
 # make cmd and run it
-# note: --project-name specifies project name, as shown in docker management consoles - 
-# otherwise it uses the parent folder name (ie 'services').
-CMD="export SETUP=$SETUP && \
-docker compose --project-name ladder99 \
-$FILES $ENVFILES $PROFILE_FLAGS \
-up --no-build --detach"
-# CMD="l99 compose $PROFILES up --build --detach"
+# 'l99 compose up' runs with --no-build by default
+CMD="l99 compose up $SERVICES"
 
 echo "$CMD"
 bash -c "$CMD"
-
-echo
-echo "Run 'l99 list' to check status of services."

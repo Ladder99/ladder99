@@ -4,7 +4,7 @@ usage="
 Usage: l99 dev [SERVICES]
 
 Start a docker service or services using their profile name(s).
-Builds the image from the service Dockerfile.
+Builds the image locally from the service Dockerfile.
 See also l99 start.
 
 SERVICES      space-delim list of services or profiles to start
@@ -12,8 +12,8 @@ SERVICES      space-delim list of services or profiles to start
               (this is the default)
 
 Example
+    l99 dev meter
     l99 dev
-    l99 dev grafana
 "
 
 # show help
@@ -23,71 +23,11 @@ if [ "$1" = "-h" ]; then
     exit
 fi
 
-# get setup folder
-SETUP=$(cat .l99_setup)
-SETUP_FOLDER=setups/$SETUP
-
-# handle missing setup folder
-if [ ! -e $SETUP_FOLDER ]; then
-    echo "Setup folder '$SETUP_FOLDER' does not exist - please run the 'l99 use SETUP' command."
-    echo
-    exit 1
-fi
-
-# if no services specified, default to 'base', which should run the main services
+# if no services specified, default to 'base'
 SERVICES=${*:-base}
 
-# file paths
-COMPOSE=services/docker-compose.yaml
-OVERRIDES=$SETUP_FOLDER/services/docker-compose.yaml
-ENVFILE=$SETUP_FOLDER/.env
-ENVFILE_EXAMPLE=$SETUP_FOLDER/.env-example
+# make cmd and run it
+CMD="l99 compose up --build $SERVICES"
 
-# specify docker compose files
-FILES="--file $COMPOSE"
-if [ -e $OVERRIDES ]; then
-    FILES="$FILES --file $OVERRIDES"
-fi
-
-# add environment variable files
-ENVFILES=""
-if [ -e $ENVFILE ]; then
-    # use .env file if there
-    ENVFILES="$ENVFILES --env-file $ENVFILE"
-elif [ "$SETUP" = "example" ]; then
-    # copy the example .env file and use that
-    cp $ENVFILE_EXAMPLE $ENVFILE
-    ENVFILES="$ENVFILES --env-file $ENVFILE"
-else
-    # otherwise create a new .env file and stop
-    echo "No .env file found - copying from default..."
-    cp $ENVFILE_EXAMPLE $ENVFILE
-    echo
-    echo "PLEASE SET INITIAL PASSWORDS IN .env FILE -"
-    echo "For example, run 'nano $ENVFILE', set the Grafana and Postgres passwords,"
-    echo "then re-run the 'l99 start' command."
-    echo
-    exit 1
-fi
-
-# get profile flags - one per service/profile specified
-PROFILES=""
-for PROFILE in $SERVICES; do
-    PROFILES="$PROFILES --profile $PROFILE"
-done
-
-# use default builder, not multiplatform builder
-# avoids problem with sending tarball to docker which can get stuck
-# see https://github.com/docker/buildx/issues/107
-# and build command in this folder
-docker buildx use --default default
-
-# make cmd
-# note: --project-name specifies project name, as shown in docker management consoles - 
-# otherwise it uses the parent folder name (ie 'services').
-CMD="l99 compose $PROFILES up --build --detach"
 echo "$CMD"
 bash -c "$CMD"
-
-echo
-echo "Run 'l99 list' to check status of services."
