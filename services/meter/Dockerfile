@@ -42,9 +42,9 @@ COPY package.json /usr/app/
 # install deterministically from package-lock.json to node_modules.
 # audit=false means don't submit packages to registry.
 # see https://docs.npmjs.com/cli/v8/commands/npm-ci
-RUN npm install --package-lock-only --only=production \
-  && npm audit fix --package-lock-only --only=production \
-  && npm clean-install --audit=false --only=production
+RUN npm install --package-lock-only --only=production --omit=dev \
+  && npm audit fix --package-lock-only --only=production --omit=dev \
+  && npm clean-install --audit=false --only=production --omit=dev
 
 
 
