@@ -92,6 +92,8 @@ create or replace function divide(numer float, denom float)
 -- select divide(1, 0); -- null
 
 
+-- get rate per minute
+-- look out for name conflict with 007-get_rate.sql (params are different)
 create or replace function get_rate(ct int, t timestamptz, resolution interval)
   returns float language sql immutable parallel safe as
   'select divide(ct, least(extract(epoch from now() - t), extract(epoch from resolution))) * 60';
