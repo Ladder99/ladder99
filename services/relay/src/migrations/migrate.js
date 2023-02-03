@@ -22,6 +22,7 @@ const migrations = {
     3: ['021-update-views', '022-get_timeline2', '023-get_last_value2'],
     4: ['024-update-bins-metrics'],
     5: ['030-setup', '031-postgrest'],
+    // 6: ['040-get_rate_pps'],
   },
 }
 
