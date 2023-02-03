@@ -36,14 +36,14 @@ $BODY$
 -- first define some SQL variables
 -- referenced below with eg '(TABLE _from_time)'
 WITH
-  --. use ms2timestamptz, right?
+  --. use ms2timestamptz, then change grafana query so doesn't set timezone
   _from_time AS (VALUES (to_timestamp(cast(p_from/1000 as bigint))::timestamp)),
   _to_time AS (VALUES (to_timestamp(cast(p_to/1000 as bigint))::timestamp)),
   -- cte is a common table expression, kind of a pre-query.
   cte1 AS (
     -- use LAG function to get previous values for time and value.
     --. would be more efficient to walk over the history values ONCE to calculate this.
-    -- 'extract epoch' gives seconds since 1970
+    -- note: 'extract(epoch ...)' gives seconds since 1970
     SELECT
       time,
       EXTRACT(epoch FROM time) AS time0,
@@ -59,16 +59,6 @@ WITH
       and time >= (TABLE _from_time)
       and time <= (TABLE _to_time)
   )
-  -- cte2 AS (
-  --   SELECT 
-  --     time,
-  --     case when time0 = time1 then
-  --       0.0::float
-  --     else
-  --       (value1 - value0) / (time1 - time0)
-  --     end AS rate0
-  --   FROM cte1
-  -- )
 SELECT 
   time,
   -- CASE WHEN rate0 < 0 THEN NULL ELSE rate0 END AS rate
