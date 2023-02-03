@@ -5,16 +5,16 @@ version: '3.8'
 
 services:
   adapter:
-    image: ladder99/adapter:0.11.0
+    image: ladder99/adapter:0.11.2
 
   grafana:
-    image: ladder99/grafana:0.11.0
+    image: ladder99/grafana:0.11.2
 
   meter:
-    image: ladder99/meter:0.11.0
+    image: ladder99/meter:0.11.2
 
   relay:
-    image: ladder99/relay:0.11.0
+    image: ladder99/relay:0.11.2
 
   simulator:
-    image: ladder99/simulator:0.11.0
+    image: ladder99/simulator:0.11.2
