@@ -11,19 +11,19 @@
 #. get default version from package.json? use jq to extract?
 
 usage="
-Usage: l99 build SERVICE VERSION
+Usage: l99 build SERVICE
 
 Build a multiplatform Docker image and push up to Docker hub.
+Version is set in .l99_version file.
 
 SERVICE     service name - adapter, meter, relay, etc.
-VERSION     service version - e.g. 0.10.1, latest, etc.
 
 Might need to login to Docker Hub first, in order to push image there -
 
     docker login --username ladder99  # password as in bitlocker.com
 
 Example
-    l99 build adapter 0.10.1
+    l99 build adapter
 "
 
 # show help if count of params is zero
@@ -33,7 +33,8 @@ if [ $# -eq 0 ]; then
 fi
 
 SERVICE=$1
-VERSION=$2
+# VERSION=$2
+VERSION=$(cat .l99_version)
 # note: arm/v7 is 32bit for older pi's
 # need arm64/v8 ?
 # PLATFORMS=${3:-"amd64 arm64"}
@@ -53,6 +54,8 @@ docker buildx rm l99builder
 docker buildx create --name l99builder --driver docker-container --use
 docker buildx inspect --bootstrap
 
+echo "Version is" $VERSION
+
 for arch in amd64 arm64 ; do
     echo "Building image for" $arch
     docker buildx build \
@@ -68,6 +71,3 @@ docker buildx build \
 --tag $USERNAME/$SERVICE:$VERSION \
 --push \
 services/$SERVICE/
-
-# echo "Listing $USERNAME/$SERVICE images..."
-# docker image ls $USERNAME/$SERVICE

@@ -1,12 +1,12 @@
 #!/bin/bash
 
 usage="
-Usage: l99 build-parallel SERVICE VERSION [PLATFORMS]
+Usage: l99 build-parallel SERVICE [PLATFORMS]
 
 Build a multiplatform Docker image and push up to Docker hub.
+Version is set in .l99_version file.
 
 SERVICE     service name - adapter, meter, relay, etc.
-VERSION     service version - e.g. 0.10.1, latest, etc.
 PLATFORMS   platforms to build - leave off for default
 
 Might need to login to Docker Hub first, in order to push image there -
@@ -14,8 +14,8 @@ Might need to login to Docker Hub first, in order to push image there -
     docker login --username ladder99
 
 Example
-    l99 build-parallel adapter 0.10.1
-    l99 build-parallel relay latest
+    l99 build-parallel adapter
+    l99 build-parallel relay
 "
 
 # show help if count of params is zero
@@ -25,7 +25,8 @@ if [ $# -eq 0 ]; then
 fi
 
 SERVICE=$1
-VERSION=$2
+# VERSION=$2
+VERSION=$(cat .l99_version)
 # arm/v7 is 32bit for older pi's
 # PLATFORMS=${3:-"linux/amd64,linux/arm64,linux/arm/v7"}
 PLATFORMS=${3:-"linux/amd64,linux/arm64"}
@@ -49,7 +50,5 @@ docker buildx inspect --bootstrap
 
 echo "Building an image as specified by the Dockerfile in '$SERVICE_DIR'..."
 echo "Platform is" $PLATFORMS
-docker buildx build --tag $TAG --platform $PLATFORMS --push $SERVICE_DIR \
-&& echo \
-&& echo "Listing $USERNAME/$SERVICE images..." \
-&& docker image ls $USERNAME/$SERVICE
+echo "Version is" $VERSION
+docker buildx build --tag $TAG --platform $PLATFORMS --push $SERVICE_DIR
