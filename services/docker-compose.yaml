@@ -755,6 +755,7 @@ services:
   # see client-demo/compose-overrides.yaml or client-oxbox for examples.
   traefik:
     image: traefik:v2.5.3
+    # image: traefik:v2.9.6 # 2022-12
     container_name: traefik
     profiles:
       - traefik
@@ -767,16 +768,11 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
-      # will need to do this before starting traefik -
+      # need to do this before starting traefik?
       #   mkdir ../client-oxbox/volumes/traefik
       #   touch ../client-oxbox/volumes/traefik/acme.json
       #   chmod 600 ../client-oxbox/volumes/traefik/acme.json
-      #. is that correct?
       - /var/run/docker.sock:/var/run/docker.sock
-      # - ../setups/$SETUP/volumes/traefik/traefik.toml:/traefik.toml
-      # - ../setups/$SETUP/volumes/traefik/traefik_dynamic.toml:/traefik_dynamic.toml
-      # - ../setups/$SETUP/volumes/traefik/traefik.toml:/shared/traefik.toml
-      # - ../setups/$SETUP/volumes/traefik/traefik_dynamic.toml:/shared/traefik_dynamic.toml
       # can't do this as docker-compose will create acme.json as a directory - 
       # "docker-compose only creates folders, acme.json can be a folder name, 
       # it's impossible for it to know you want it to be a file. So if that file isn't 
@@ -785,7 +781,7 @@ services:
       # traefik will complain.
       # https://williamhayes.medium.com/traefik-letsencrypt-and-acme-json-configuration-problems-5780c914351d
       # - ../setups/$SETUP/volumes/traefik/acme.json:/acme.json
-      # so need to mount the directory?
+      # so need to mount the directory
       - ../setups/$SETUP/volumes/traefik/:/etc/traefik/
     networks:
       - ladder99
