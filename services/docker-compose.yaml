@@ -752,7 +752,7 @@ services:
   # ---------------------------------------------------------------------------
   # a reverse proxy
   # will need to add labels to grafana or other service you want to expose -
-  # see client-demo/compose-overrides.yaml or client-oxbox for examples.
+  # see setups/demo/services/docker-compose.yaml for example.
   traefik:
     image: traefik:v2.5.3
     # image: traefik:v2.9.6 # 2022-12

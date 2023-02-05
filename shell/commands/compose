@@ -81,9 +81,7 @@ FILE_FLAGS="--file $COMPOSE"
 if [[ $BUILD = "" ]]; then
     FILE_FLAGS="$FILE_FLAGS --file $COMPOSE_PROD"
 fi
-if [ -e "$OVERRIDES" ]; then
-    FILE_FLAGS="$FILE_FLAGS --file $OVERRIDES"
-fi
+FILE_FLAGS="$FILE_FLAGS --file $OVERRIDES"
 
 # get environment variable files
 if [ -e "$ENVFILE" ]; then
