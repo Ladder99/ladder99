@@ -8,8 +8,7 @@ services:
     image: ladder99/adapter:0.11.2
 
   grafana:
-    # image: ladder99/grafana:0.11.2 # missing plugins?
-    image: ladder99/grafana:0.11.0
+    image: ladder99/grafana:0.11.2
 
   meter:
     image: ladder99/meter:0.11.2
