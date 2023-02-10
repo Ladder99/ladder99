@@ -70,15 +70,6 @@ export class AgentReader {
           // console.log(`Relay starting sample loop`)
           // get observations
           const status = await sample.read(this.endpoint, this.from, this.count)
-          // if (!(await sample.read(this.endpoint, this.from, this.count))) {
-          //   // handle out of range error during read by increasing throughput
-          //   this.count += 100 // the number of observations to read next time
-          //   // this.interval -= 100
-          //   console.log(
-          //     `Got error during read - increasing throughput: count=${this.count}.`
-          //   )
-          //   break current
-          // }
           if (instanceIdChanged(sample, probe)) break probe // go back and read probe again
           if (!status) {
             console.log(`Relay increasing throughput by`, increaseCount)
