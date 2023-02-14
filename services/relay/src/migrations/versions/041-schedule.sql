@@ -6,3 +6,9 @@ create table if not exists setup.schedule (
   downtimes text,
   primary key (path, date)
 );
+
+-- select localtime(0);
+-- select to_char(now()::time, 'HH:MI am');
+-- insert into setup.schedule (path, date) values ('foo', now()::date);
+-- select * from setup.schedule;
+-- select to_char(start, 'HH:MI am') from setup.schedule;
