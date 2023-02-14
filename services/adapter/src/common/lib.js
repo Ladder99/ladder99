@@ -38,6 +38,7 @@ export function importYaml(path) {
 
 // recurse over all values in a yaml,
 // replacing eg $FOO with process.env['FOO'].
+//. better - just replace all '${FOO}' with process.env['FOO'] etc
 export function replaceEnvars(setup) {
   if (setup === undefined || setup === null) return // in case of malformed file
   for (let key of Object.keys(setup)) {
