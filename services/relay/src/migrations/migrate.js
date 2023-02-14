@@ -1,9 +1,8 @@
 import fs from 'fs' // node lib
 
-//. clean these up
-
 // a migration has key=current version, and a list of files to execute.
 // the current version will be incremented by 1 after the migration is done.
+//. clean these up
 const migrations = {
   idempotent: ['001-extensions', '004-base-functions'],
   versions: {
@@ -34,7 +33,7 @@ export async function migrate(db) {
   console.log(`Migrate run idempotent sql...`)
   for (let migration of migrations.idempotent) {
     const path = `src/migrations/idempotent/${migration}.sql`
-    await readFile(db, path)
+    await runFile(db, path)
   }
 
   // run versioned sql
@@ -48,7 +47,7 @@ export async function migrate(db) {
       const filenames = migrations.versions[migrationVersion]
       for (let filename of filenames) {
         const path = `src/migrations/versions/${filename}.sql`
-        await readFile(db, path)
+        await runFile(db, path)
       }
       currentVersion += 1
     }
@@ -60,7 +59,25 @@ export async function migrate(db) {
   console.log(`Migrate done.`)
 }
 
-async function readFile(db, filename) {
+async function runFile(db, filename) {
   console.log(`Migrate loading ${filename}...`)
-  return await db.query(String(fs.readFileSync(filename))) // can be null
+  // read sql file
+  let str = String(fs.readFileSync(filename))
+  // replace ${...} references with envar value, eg '${PGHOST}' with 'postgres'
+  const refs = str.match(/\$\{(\w+)\}/g) // find all ${...} references
+  console.log(refs)
+  console.log(process.env)
+  if (refs) {
+    for (let ref of refs) {
+      console.log(`Migrate replace ${ref} with envar value`) // eg '${PGHOST}'
+      const key = ref.replace('${', '').replace('}', '') // eg 'PGHOST'
+      const value = process.env[key] ?? '' // eg 'postgres'
+      if (value === '') {
+        console.log(`Migrate warning: envar ${key} not found`)
+      }
+      str = str.replace(ref, value)
+    }
+  }
+  // run the sql query
+  return await db.query(str) // can be null
 }
