@@ -21,7 +21,7 @@ const migrations = {
     3: ['021-update-views', '022-get_timeline2', '023-get_last_value2'],
     4: ['024-update-bins-metrics'],
     5: ['030-setup', '031-postgrest'],
-    // 6: ['040-get_rate_pps'],
+    6: ['040-get_rate_pps'],
   },
 }
 
@@ -65,8 +65,6 @@ async function runFile(db, filename) {
   let str = String(fs.readFileSync(filename))
   // replace ${...} references with envar value, eg '${PGHOST}' with 'postgres'
   const refs = str.match(/\$\{(\w+)\}/g) // find all ${...} references
-  console.log(refs)
-  console.log(process.env)
   if (refs) {
     for (let ref of refs) {
       console.log(`Migrate replace ${ref} with envar value`) // eg '${PGHOST}'
