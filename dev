@@ -1,11 +1,11 @@
 #!/bin/bash
 
-# run ladder99 pipeline using prebuilt images from docker hub.
+# run ladder99 pipeline using locally build images.
 
-#. warning: copied code to dev cmd
+#. warning: copied code from start cmd
 
 usage="
-Usage: l99 start CLIENT [SERVICES]
+Usage: ./dev CLIENT [SERVICES]
 
 Run the Ladder99 pipeline with a list of services/profiles to include.
 
@@ -14,8 +14,8 @@ SERVICES      space-delim list of services or profiles to start
               (this is the default)
 
 Examples
-    l99 start oxbox agent
-    l99 start oxbox
+    ./dev oxbox agent
+    ./dev oxbox
 "
 
 # show help
@@ -74,10 +74,7 @@ done
 CMD="export SETUP=$SETUP && \
 docker compose \
     $FILES $ENVFILES $PROFILE_FLAGS \
-    pull && \
-docker compose \
-    $FILES $ENVFILES $PROFILE_FLAGS \
-    up --no-build --detach"
+    up --build --detach"
 
 echo "$CMD"
 bash -c "$CMD"
