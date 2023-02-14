@@ -7,6 +7,9 @@ create table if not exists setup.schedule (
   primary key (path, date)
 );
 
+-- allow anonymous user to read/write the schedule table
+grant all on setup.schedule to anon_user;
+
 -- select localtime(0);
 -- select to_char(now()::time, 'HH:MI am');
 -- insert into setup.schedule (path, date) values ('foo', now()::date);
