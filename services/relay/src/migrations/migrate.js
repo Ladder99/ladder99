@@ -34,7 +34,7 @@ export async function migrate(db) {
       const filenames = migrations[migrationVersion]
       for (let filename of filenames) {
         const path = `src/migrations/${filename}.sql`
-        await readFile(db, path)
+        await runFile(db, path)
       }
       currentVersion += 1
     }
@@ -46,7 +46,23 @@ export async function migrate(db) {
   console.log(`Done migrating.`)
 }
 
-async function readFile(db, filename) {
-  console.log(`Loading ${filename}...`)
-  return await db.query(String(fs.readFileSync(filename)))
+async function runFile(db, filename) {
+  console.log(`Migrate loading ${filename}...`)
+  // read sql file
+  let str = String(fs.readFileSync(filename))
+  // replace ${...} references with envar value, eg '${PGAUTHPASSWORD}' with value
+  const refs = str.match(/\$\{(\w+)\}/g) // find all ${...} references
+  if (refs) {
+    for (let ref of refs) {
+      console.log(`Migrate replace ${ref} with envar value`) // eg '${PGAUTHPASSWORD}'
+      const key = ref.replace('${', '').replace('}', '') // eg 'PGAUTHPASSWORD'
+      const value = process.env[key] ?? '' // eg a password
+      if (value === '') {
+        console.log(`Migrate warning: envar ${key} not found`)
+      }
+      str = str.replace(ref, value)
+    }
+  }
+  // run the sql query
+  return await db.query(str) // can be null
 }
