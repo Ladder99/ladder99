@@ -629,6 +629,7 @@ services:
       PGDATABASE: null
       PGUSER: null
       PGPASSWORD: null
+      PGAUTHPASSWORD: null
     # this fixes a problem on ubuntu - works on mac okay also
     #. but not on friendlywrt - host-gateway doesn't exist, or need docker>=20.10
     # see https://stackoverflow.com/a/67158212/243392
