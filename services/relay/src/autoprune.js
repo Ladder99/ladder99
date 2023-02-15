@@ -33,6 +33,7 @@ export class Autoprune {
     this.db = db
     this.setup = setup
     this.job = null
+    //. include rest of setup tz info
     this.when = { ...when, tz: this.setup.client?.timezone } // use setup.yaml timezone if specified
   }
 
@@ -178,6 +179,7 @@ export class Autoprune {
     console.log(`Autoprune vacuum analyze...`)
     const sql = `vacuum analyze`
     const result = await this.db.query(sql) // eg { command: 'VACUUM', rowCount: 0 } or null
+    console.log('Autoprune vacuum analyze result', result)
     console.log(`Autoprune vacuum analyze done`)
   }
 }
