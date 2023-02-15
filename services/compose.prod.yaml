@@ -7,13 +7,13 @@ version: '3.8'
 
 services:
   adapter:
-    image: ladder99/adapter:0.7.3
+    image: ladder99/adapter:0.7.5
 
   grafana:
-    image: ladder99/grafana:0.7.3
+    image: ladder99/grafana:0.7.5
 
   meter:
-    image: ladder99/meter:0.7.3
+    image: ladder99/meter:0.7.5
 
   relay:
-    image: ladder99/relay:0.7.3
+    image: ladder99/relay:0.7.5
