@@ -34,6 +34,7 @@
 
 import { DateTime } from 'luxon' // for timezones - see https://moment.github.io/luxon/
 import * as bins from '../bins.js'
+import * as helpers from './helpers.js'
 
 const minutes = 60 * 1000 // 60 ms
 const hours = 60 * minutes
@@ -186,10 +187,11 @@ export class Metric {
 
     // get schedule for device, eg { start: 2022-01-13T11:00:00Z, stop: ..., holiday: undefined }
     const schedule = await this.getSchedule()
+    // const isDuringShift =
+    //   !schedule.holiday && now >= schedule.start && now <= schedule.stop
+    const isDuringShift = getIsDuringShift(now, schedule)
 
     // update active and available bins as needed
-    const isDuringShift =
-      !schedule.holiday && now >= schedule.start && now <= schedule.stop
     // 2022-08-03 handle overtime by allowing active minutes outside of shift hours -
     // this means availability can theoretically be > 100%.
     const start =
@@ -207,27 +209,43 @@ export class Metric {
     this.previousStopTime = stop
   }
 
-  // get start and stop datetimes - from setup.devices table, or setup.yaml, or history_text.
-  // returns { start, stop, holiday }, where
-  //   start is a Date object or 'HOLIDAY', stop is same, holiday is 'HOLIDAY' or undefined.
-  //   eg { start: 2022-01-13T11:00:00Z, stop: ..., holiday: undefined }
+  // get schedule from setup.schedule table, setup.devices table,
+  // setup.yaml, or history_text dataitems.
+  // returns { start, stop, holiday, downtimes }, where
+  //   start is a Date object or 'HOLIDAY',
+  //   stop is same,
+  //   holiday is 'HOLIDAY' or undefined,
+  //   downtimes is an array of { start, stop } objects, or undefined.
+  //   eg { start: 2022-01-13T11:00:00Z, stop: ..., holiday, downtimes }
   //. instrument this fn and subfns for testing.
   async getSchedule() {
-    let schedule = {}
+    let schedule = {} // { start, stop, holiday, downtimes }
 
-    // get date from text, eg '2022-01-13T05:00:00' -> 2022-01-13T11:00:00.000Z.
-    // shifts date by client timezoneOffset, as need for comparisons.
-    const getDate = text =>
-      new Date(new Date(text).getTime() - this.timezoneOffset)
-
-    // get today's date in local (not Z) timezone, eg '2022-01-16'
-    const getToday = () =>
-      new Date(new Date().getTime() + this.timezoneOffset)
-        .toISOString()
-        .slice(0, 10)
-
-    // handle start/stop times as set in setup.devices table
-    if (this.useSetupDevicesTableTimes) {
+    // handle start/stop/downtimes as set in setup.schedule table
+    if (this.useSetupScheduleTableTimes) {
+      const today = this.getToday() // eg '2023-02-16'
+      const result = await this.db.query(
+        `SELECT start, stop, downtimes FROM setup.schedule WHERE path = $1 AND date = $2`,
+        [this.device.path, today]
+      )
+      console.log('rows', result.rows)
+      if (result.rows.length === 0) {
+        schedule = {
+          start: null,
+          stop: null,
+          holiday: undefined,
+          downtimes: null,
+        }
+      } else {
+        const row = result.rows[0]
+        const start = this.getDate(today + 'T' + row.start) // row.start and stop will be 24h format from db
+        const stop = this.getDate(today + 'T' + row.stop)
+        const holiday = undefined
+        const downtimes = this.getDowntimes(today, row.downtimes) // parse '10:00am,10\n2:00pm,10' into array of objects
+        schedule = { start, stop, holiday, downtimes }
+      }
+    } else if (this.useSetupDevicesTableTimes) {
+      // handle start/stop times as set in setup.devices table
       const result = await this.db.query(
         `SELECT shift_start, shift_stop FROM setup.devices WHERE path = $1`,
         [this.device.path]
@@ -242,20 +260,20 @@ export class Metric {
         // use setup.yaml values
         // keep in synch with code below
         console.log(this.me, 'get shift times from setup.yaml')
-        const today = getToday() // eg '2022-01-16'
+        const today = this.getToday() // eg '2022-01-16'
         // times are like '05:00', so need to tack it onto current date + 'T'.
-        const start = getDate(today + 'T' + this.startTime)
-        const stop = getDate(today + 'T' + this.stopTime)
+        const start = this.getDate(today + 'T' + this.startTime)
+        const stop = this.getDate(today + 'T' + this.stopTime)
         const holiday = undefined // for now
         schedule = { start, stop, holiday }
       } else {
         // use setup.devices table values
         console.log(this.me, 'get shift times from setup.devices table')
-        const today = getToday() // eg '2022-01-16'
+        const today = this.getToday() // eg '2022-01-16'
         const { shift_start, shift_stop } = result.rows[0]
         // times are like '05:00', so need to tack it onto current date + 'T'.
-        const start = getDate(today + 'T' + shift_start)
-        const stop = getDate(today + 'T' + shift_stop)
+        const start = this.getDate(today + 'T' + shift_start)
+        const stop = this.getDate(today + 'T' + shift_stop)
         const holiday = undefined // for now
         schedule = { start, stop, holiday }
       }
@@ -263,10 +281,10 @@ export class Metric {
       // use setup.yaml values
       // keep in synch with code above
       console.log(this.me, 'get shift times from setup.yaml')
-      const today = getToday() // eg '2022-01-16'
+      const today = this.getToday() // eg '2022-01-16'
       // times are like '05:00', so need to tack it onto current date + 'T'.
-      const start = getDate(today + 'T' + this.startTime)
-      const stop = getDate(today + 'T' + this.stopTime)
+      const start = this.getDate(today + 'T' + this.startTime)
+      const stop = this.getDate(today + 'T' + this.stopTime)
       const holiday = undefined // for now
       schedule = { start, stop, holiday }
     } else {
@@ -290,13 +308,9 @@ export class Metric {
         device,
         this.stopFullPath
       )
-      const getHoliday = text =>
-        text === 'UNAVAILABLE' || text === 'HOLIDAY' || text === false
-          ? 'HOLIDAY'
-          : undefined
       const holiday = getHoliday(startText) || getHoliday(stopText) // 'HOLIDAY' or undefined
-      const start = holiday || getDate(startText) // 'HOLIDAY' or a Date object
-      const stop = holiday || getDate(stopText)
+      const start = holiday || this.getDate(startText) // 'HOLIDAY' or a Date object
+      const stop = holiday || this.getDate(stopText)
       schedule = { start, stop, holiday }
     }
     console.log(this.me, schedule.start, 'to', schedule.stop)
@@ -319,4 +333,59 @@ export class Metric {
     const deviceWasActive = result?.rows[0]?.active // t/f - column name must match case
     return deviceWasActive
   }
+
+  // helper methods
+
+  // get date from text, eg '2022-01-13T05:00:00' -> 2022-01-13T11:00:00.000Z.
+  // shifts date by client timezoneOffset, as will be needed for comparisons.
+  getDate(text) {
+    return new Date(new Date(text).getTime() - this.timezoneOffset)
+  }
+
+  // get today's date in local (not Z) timezone, eg '2022-01-16'.
+  getToday() {
+    return new Date(new Date().getTime() + this.timezoneOffset)
+      .toISOString()
+      .slice(0, 10)
+  }
+
+  // get downtimes from text like '10:00am,10\n2:00pm,10'
+  // into array like [{ start, stop }, ...],
+  // where start and stop are Date objects.
+  getDowntimes(today, text) {
+    if (!text) return []
+    const lines = text.split('\n')
+    const downtimes = lines.map(line => {
+      let [startTime, mins] = line.split(',') // eg ['3:00pm', '10']
+      startTime = helpers.sanitizeTime(startTime) // eg '15:00'
+      const start = this.getDate(today + 'T' + startTime) // eg 2023-02-17T10:00:00Z
+      const stop = new Date(start.getTime() + Number(mins) * 60 * 1000) // eg 2023-02-17T10:10:00Z
+      return { start, stop }
+    })
+    return downtimes
+  }
+}
+
+// helper fns
+
+// is the current time during a shift, and not during a downtime or holiday?
+function getIsDuringShift(now, schedule) {
+  if (schedule.holiday) {
+    return false
+  }
+  for (let downtime of schedule.downtimes) {
+    const [start, stop] = downtime
+    if (now >= start && now <= stop) return false
+  }
+  const isDuringShift = now >= schedule.start && now <= schedule.stop
+  return isDuringShift
+}
+
+// get holiday status from a value
+function getHoliday(value) {
+  const holiday =
+    value === 'UNAVAILABLE' || value === 'HOLIDAY' || value === false
+      ? 'HOLIDAY'
+      : undefined
+  return holiday
 }
