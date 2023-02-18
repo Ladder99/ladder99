@@ -8,7 +8,6 @@
   "license": "Apache2.0",
   "dependencies": {
     "js-yaml": "^4.1.0",
-    "luxon": "^2.4.0",
     "pg": "^8.7.1",
     "pg-format": "^1.0.4"
   }
