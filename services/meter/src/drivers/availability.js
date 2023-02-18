@@ -106,7 +106,7 @@ export class Metric {
     const schedule = await this.getSchedule()
 
     // increment available bins if we're within the schedule for the device and not in a downtime.
-    const isDuringShift = getIsDuringShift(now, schedule)
+    const isDuringShift = helpers.getIsDuringShift(now, schedule)
     if (isDuringShift) {
       console.log(this.me, now, `- increasing available bin`)
       await bins.add(this.db, this.device.node_id, now, 'available')
@@ -128,7 +128,7 @@ export class Metric {
 
     // handle start/stop/downtimes as set in setup.schedule table
     if (this.meter.useSetupScheduleTableTimes) {
-      const today = helpers.getToday() // eg '2023-02-16'
+      const today = helpers.getTodayLocal() // eg '2023-02-16'
       const result = await this.db.query(
         `SELECT start, stop, downtimes FROM setup.schedule WHERE path = $1 AND date = $2`,
         [this.device.path, today]
@@ -144,6 +144,7 @@ export class Metric {
       } else {
         const row = result.rows[0]
         // row.start and stop will be in 24h format from db, eg '15:00', in local time (no Z).
+        //. handle start/stop = null?
         const start = new Date(today + 'T' + row.start)
         const stop = new Date(today + 'T' + row.stop)
         const holiday = null
@@ -166,7 +167,7 @@ export class Metric {
         // use setup.yaml values
         // keep in synch with code below
         console.log(this.me, 'get shift times from setup.yaml')
-        const today = helpers.getToday() // eg '2022-01-16'
+        const today = helpers.getTodayLocal() // eg '2022-01-16'
         // times are like '05:00', so need to tack it onto current date + 'T'.
         const start = new Date(today + 'T' + this.startTime)
         const stop = new Date(today + 'T' + this.stopTime)
@@ -175,7 +176,7 @@ export class Metric {
       } else {
         // use setup.devices table values
         console.log(this.me, 'get shift times from setup.devices table')
-        const today = helpers.getToday() // eg '2022-01-16'
+        const today = helpers.getTodayLocal() // eg '2022-01-16'
         // times are like '15:00', so need to tack it onto current date + 'T'.
         const { shift_start, shift_stop } = result.rows[0]
         const start = new Date(today + 'T' + shift_start)
@@ -187,7 +188,7 @@ export class Metric {
       // use setup.yaml values
       // keep in synch with code above
       console.log(this.me, 'get shift times from setup.yaml')
-      const today = helpers.getToday() // eg '2022-01-16'
+      const today = helpers.getTodayLocal() // eg '2022-01-16'
       // times are like '05:00', so need to tack it onto current date + 'T'.
       const start = new Date(today + 'T' + this.startTime)
       const stop = new Date(today + 'T' + this.stopTime)

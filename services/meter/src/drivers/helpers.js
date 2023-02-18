@@ -71,7 +71,7 @@ export function getIsDuringShift(now, schedule) {
   if (schedule.holiday) {
     return false
   }
-  for (let downtime of schedule.downtimes) {
+  for (let downtime of schedule.downtimes || []) {
     const { start, stop } = downtime
     if (now >= start && now <= stop) return false
   }
