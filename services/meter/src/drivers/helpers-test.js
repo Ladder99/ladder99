@@ -16,8 +16,8 @@ test(helpers.getTodayLocal(), '2023-02-18')
 
 // --------------
 
-//. what's the pt of this fn?
-test(helpers.getDate('2023-02-18T02:00'), new Date('2023-02-18T08:00:00Z'))
+// //. what's the pt of this fn?
+// test(helpers.getDate('2023-02-18T02:00'), new Date('2023-02-18T08:00:00Z'))
 
 // --------------
 

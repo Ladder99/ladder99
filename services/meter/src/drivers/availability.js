@@ -143,8 +143,9 @@ export class Metric {
         }
       } else {
         const row = result.rows[0]
-        const start = helpers.getDate(today + 'T' + row.start) // row.start and stop will be in 24h format from db
-        const stop = helpers.getDate(today + 'T' + row.stop)
+        // row.start and stop will be in 24h format from db, eg '15:00', in local time (no Z).
+        const start = new Date(today + 'T' + row.start)
+        const stop = new Date(today + 'T' + row.stop)
         const holiday = null
         const downtimes = helpers.getDowntimes(today, row.downtimes) // parse '10:00am,10\n2:00pm,10' into array of objects
         schedule = { start, stop, holiday, downtimes }
@@ -167,18 +168,18 @@ export class Metric {
         console.log(this.me, 'get shift times from setup.yaml')
         const today = helpers.getToday() // eg '2022-01-16'
         // times are like '05:00', so need to tack it onto current date + 'T'.
-        const start = helpers.getDate(today + 'T' + this.startTime)
-        const stop = helpers.getDate(today + 'T' + this.stopTime)
+        const start = new Date(today + 'T' + this.startTime)
+        const stop = new Date(today + 'T' + this.stopTime)
         const holiday = null // for now
         schedule = { start, stop, holiday }
       } else {
         // use setup.devices table values
         console.log(this.me, 'get shift times from setup.devices table')
         const today = helpers.getToday() // eg '2022-01-16'
+        // times are like '15:00', so need to tack it onto current date + 'T'.
         const { shift_start, shift_stop } = result.rows[0]
-        // times are like '05:00', so need to tack it onto current date + 'T'.
-        const start = helpers.getDate(today + 'T' + shift_start)
-        const stop = helpers.getDate(today + 'T' + shift_stop)
+        const start = new Date(today + 'T' + shift_start)
+        const stop = new Date(today + 'T' + shift_stop)
         const holiday = null // for now
         schedule = { start, stop, holiday }
       }
@@ -188,8 +189,8 @@ export class Metric {
       console.log(this.me, 'get shift times from setup.yaml')
       const today = helpers.getToday() // eg '2022-01-16'
       // times are like '05:00', so need to tack it onto current date + 'T'.
-      const start = helpers.getDate(today + 'T' + this.startTime)
-      const stop = helpers.getDate(today + 'T' + this.stopTime)
+      const start = new Date(today + 'T' + this.startTime)
+      const stop = new Date(today + 'T' + this.stopTime)
       const holiday = null // for now
       schedule = { start, stop, holiday }
     } else {
@@ -197,12 +198,11 @@ export class Metric {
       console.log(this.me, 'get shift times from start/stop paths')
       const table = 'history_text'
       const device = this.device
-      // get start/stop datetimes, with no Z.
+      // get start/stop datetimes, with no Z, eg '2022-01-16T15:00:00'
       // device includes { path }
       // note: these can return 'UNAVAILABLE' or 'HOLIDAY', in which case,
-      // schedule.start etc will be 'Invalid Date'.
-      // any comparison with those will yield false.
-      // these will return false if no value found.
+      // schedule.start etc will be 'Invalid Date' - any comparison with those will yield false.
+      // these fns will return false if no value found.
       const startText = await this.db.getLatestValue(
         table,
         device,
@@ -214,8 +214,8 @@ export class Metric {
         this.stopFullPath
       )
       const holiday = getHoliday(startText) || getHoliday(stopText) // 'HOLIDAY' or null
-      const start = holiday || helpers.getDate(startText) // 'HOLIDAY' or a Date object
-      const stop = holiday || helpers.getDate(stopText)
+      const start = holiday || new Date(startText) // 'HOLIDAY' or a Date object
+      const stop = holiday || new Date(stopText)
       schedule = { start, stop, holiday }
     }
     console.log(this.me, schedule.start, 'to', schedule.stop)

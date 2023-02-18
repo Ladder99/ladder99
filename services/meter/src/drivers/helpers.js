@@ -12,12 +12,12 @@ export function getTodayLocal() {
     .slice(0, 10)
 }
 
-// get date from text, eg '2022-01-13T05:00:00' -> 2022-01-13T11:00:00.000Z.
-// shifts date by client timezoneOffset, as will be needed for comparisons.
-export function getDate(text) {
-  const timezoneOffsetMs = new Date().getTimezoneOffset() * 60 * 1000 // minutes to msec
-  return new Date(new Date(text).getTime() - timezoneOffsetMs)
-}
+// // get date from text, eg '2022-01-13T05:00:00' -> 2022-01-13T11:00:00.000Z.
+// // shifts date by client timezoneOffset, as will be needed for comparisons.
+// export function getDate(text) {
+//   const timezoneOffsetMs = new Date().getTimezoneOffset() * 60 * 1000 // minutes to msec
+//   return new Date(new Date(text).getTime() - timezoneOffsetMs)
+// }
 
 // get downtimes from day like '2023-02-18' and text like '10:00am,10\n2:00pm,10'
 // into array like [{ start, stop }, ...],
