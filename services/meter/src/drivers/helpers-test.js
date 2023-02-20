@@ -31,6 +31,7 @@ test(helpers.getDowntimes('2023-02-17', '10:00am,10\n2pm,10'), [
     stop: new Date('2023-02-17T20:10:00Z'),
   },
 ])
+test(helpers.getDowntimes('2023-02-17', '10:00amx,10\n2pm,10'), null)
 
 // --------------
 

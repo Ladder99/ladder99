@@ -29,19 +29,22 @@ export function getDowntimes(day, text) {
   const downtimes = lines.map(line => {
     let [startTime, mins] = line.split(',') // eg ['3:00pm', '10']
     startTime = sanitizeTime(startTime) // eg '15:00'
+    if (startTime === null) {
+      return null
+    }
     const startDateTime = day + 'T' + startTime // eg '2023-02-17T15:00' // local time - no Z
     const start = new Date(startDateTime) // eg 2023-02-17T21:00:00Z - with Z
     const stop = new Date(start.getTime() + Number(mins) * 60 * 1000) // eg 2023-02-17T21:10:00Z
     return { start, stop }
   })
-  return downtimes
+  return downtimes.some(downtime => downtime === null) ? null : downtimes
 }
 
 // sanitize time - convert anything to 24h format
 // eg '1pm' -> '13:00', '9' -> '09:00', '15:00:00' -> '15:00'
 export function sanitizeTime(value) {
   const m = value.match(
-    /([0-9]?[0-9])(:([0-9][0-9]))?(:[0-9][0-9])?[ ]*(am|pm)?/i
+    /^([0-9]?[0-9])(:([0-9][0-9]))?(:[0-9][0-9])?[ ]*(am|pm)?[ ]*$/i
   )
   // m[0] // '1:30pm'
   // m[1] // '1'
@@ -70,12 +73,22 @@ export function sanitizeTime(value) {
 // where downtimes is an array of { start, stop } Date objects.
 export function getIsDuringShift(now, schedule) {
   if (schedule.holiday) {
+    console.log('on holiday')
     return false
   }
   for (let downtime of schedule.downtimes || []) {
     const { start, stop } = downtime
-    if (now >= start && now <= stop) return false
+    console.log('checking downtime', start, stop)
+    if (now >= start && now <= stop) {
+      console.log('in downtime')
+      return false
+    }
   }
-  const isDuringShift = now >= schedule.start && now <= schedule.stop
-  return isDuringShift
+  if (now >= schedule.start && now <= schedule.stop) {
+    console.log('in shift')
+    return true
+  }
+  // const isDuringShift = now >= schedule.start && now <= schedule.stop
+  // return isDuringShift
+  return false
 }
