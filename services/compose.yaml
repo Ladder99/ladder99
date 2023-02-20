@@ -479,7 +479,7 @@ services:
       # and https://stackoverflow.com/questions/66753829/how-to-move-workspacea-simple-project-from-windows-file-system-mnt-to-linu
       # this seems to work, to use a subdir
     volumes:
-      - ../$SETUP/volumes/postgres/etc/sysctl.conf:/etc/sysctl.conf
+      - ../$SETUP/volumes/postgres/etc/sysctl.conf:/etc/sysctl.conf.d/999-ladder99.conf
       - ../$SETUP/volumes/postgres/data:/var/lib/postgresql/data
       - backup:/backup # a docker volume - see backup service and end of this file
       - /etc/localtime:/etc/localtime:ro
