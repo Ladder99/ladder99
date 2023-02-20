@@ -7,6 +7,7 @@
 // which could be the following day - so need to offset with timezoneOffset.
 export function getTodayLocal() {
   const timezoneOffsetMs = new Date().getTimezoneOffset() * 60 * 1000 // minutes to msec
+  console.log('avail timezoneOffset hr', timezoneOffsetMs / 60 / 60 / 1000)
   return new Date(new Date().getTime() - timezoneOffsetMs)
     .toISOString()
     .slice(0, 10)

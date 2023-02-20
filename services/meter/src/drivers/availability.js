@@ -129,11 +129,12 @@ export class Metric {
     // handle start/stop/downtimes as set in setup.schedule table
     if (this.meter.useSetupScheduleTableTimes) {
       const today = helpers.getTodayLocal() // eg '2023-02-16'
+      console.log(this.me, 'today', today)
       const result = await this.db.query(
         `SELECT start, stop, downtimes FROM setup.schedule WHERE path = $1 AND date = $2`,
         [this.device.path, today]
       )
-      console.log('rows', result.rows)
+      console.log(this.me, 'rows', result.rows)
       if (result.rows.length === 0) {
         schedule = {
           start: null,
@@ -144,9 +145,8 @@ export class Metric {
       } else {
         const row = result.rows[0]
         // row.start and stop will be in 24h format from db, eg '15:00', in local time (no Z).
-        //. handle start/stop = null?
-        const start = new Date(today + 'T' + row.start)
-        const stop = new Date(today + 'T' + row.stop)
+        const start = row.start ? new Date(today + 'T' + row.start) : null
+        const stop = row.stop ? new Date(today + 'T' + row.stop) : null
         const holiday = null
         const downtimes = helpers.getDowntimes(today, row.downtimes) // parse '10:00am,10\n2:00pm,10' into array of objects
         schedule = { start, stop, holiday, downtimes }
@@ -169,6 +169,7 @@ export class Metric {
         console.log(this.me, 'get shift times from setup.yaml')
         const today = helpers.getTodayLocal() // eg '2022-01-16'
         // times are like '05:00', so need to tack it onto current date + 'T'.
+        //. handle invalid start/stop times - should be 24h format
         const start = new Date(today + 'T' + this.startTime)
         const stop = new Date(today + 'T' + this.stopTime)
         const holiday = null // for now
@@ -179,6 +180,7 @@ export class Metric {
         const today = helpers.getTodayLocal() // eg '2022-01-16'
         // times are like '15:00', so need to tack it onto current date + 'T'.
         const { shift_start, shift_stop } = result.rows[0]
+        //. handle invalid start/stop times - should be 24h format
         const start = new Date(today + 'T' + shift_start)
         const stop = new Date(today + 'T' + shift_stop)
         const holiday = null // for now

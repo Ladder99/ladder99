@@ -12,7 +12,7 @@ function test(actual, expected) {
 
 // --------------
 
-test(helpers.getTodayLocal(), '2023-02-18')
+// test(helpers.getTodayLocal(), '2023-02-18')
 
 // --------------
 
