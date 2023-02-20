@@ -60,6 +60,8 @@ export class Metric {
     this.device = device // { path, ... }
     this.meter = meter
 
+    this.timezone = client.timezone
+
     this.activeFullPath = `${device.path}/${meter.activePath}`
     this.startFullPath = `${device.path}/${meter.startPath}`
     this.stopFullPath = `${device.path}/${meter.stopPath}`
@@ -128,7 +130,7 @@ export class Metric {
 
     // handle start/stop/downtimes as set in setup.schedule table
     if (this.meter.useSetupScheduleTableTimes) {
-      const today = helpers.getTodayLocal() // eg '2023-02-16'
+      const today = helpers.getTodayLocal(this.timezone) // eg '2023-02-16'
       console.log(this.me, 'today', today)
       const result = await this.db.query(
         `SELECT start, stop, downtimes FROM setup.schedule WHERE path = $1 AND date = $2`,
@@ -167,7 +169,7 @@ export class Metric {
         // use setup.yaml values
         // keep in synch with code below
         console.log(this.me, 'get shift times from setup.yaml')
-        const today = helpers.getTodayLocal() // eg '2022-01-16'
+        const today = helpers.getTodayLocal(this.timezone) // eg '2022-01-16'
         // times are like '05:00', so need to tack it onto current date + 'T'.
         //. handle invalid start/stop times - should be 24h format
         const start = new Date(today + 'T' + this.startTime)
@@ -177,7 +179,7 @@ export class Metric {
       } else {
         // use setup.devices table values
         console.log(this.me, 'get shift times from setup.devices table')
-        const today = helpers.getTodayLocal() // eg '2022-01-16'
+        const today = helpers.getTodayLocal(this.timezone) // eg '2022-01-16'
         // times are like '15:00', so need to tack it onto current date + 'T'.
         const { shift_start, shift_stop } = result.rows[0]
         //. handle invalid start/stop times - should be 24h format
@@ -190,7 +192,7 @@ export class Metric {
       // use setup.yaml values
       // keep in synch with code above
       console.log(this.me, 'get shift times from setup.yaml')
-      const today = helpers.getTodayLocal() // eg '2022-01-16'
+      const today = helpers.getTodayLocal(this.timezone) // eg '2022-01-16'
       // times are like '05:00', so need to tack it onto current date + 'T'.
       const start = new Date(today + 'T' + this.startTime)
       const stop = new Date(today + 'T' + this.stopTime)

@@ -2,15 +2,28 @@
 // run 'node helpers-test.js' for tests
 //. move into common lib later
 
-// get today's date in local (not Z) timezone, eg '2022-01-16'.
-// normally, new Date() would return a date in UTC timezone,
-// which could be the following day - so need to offset with timezoneOffset.
-export function getTodayLocal() {
-  const timezoneOffsetMs = new Date().getTimezoneOffset() * 60 * 1000 // minutes to msec
-  console.log('avail timezoneOffset hr', timezoneOffsetMs / 60 / 60 / 1000)
-  return new Date(new Date().getTime() - timezoneOffsetMs)
-    .toISOString()
-    .slice(0, 10)
+// // get today's date in local (not Z) timezone, eg '2022-01-16'.
+// // normally, new Date() would return a date in UTC timezone,
+// // which could be the following day - so need to offset with timezoneOffset.
+// export function getTodayLocal() {
+//   const timezoneOffsetMs = new Date().getTimezoneOffset() * 60 * 1000 // minutes to msec
+//   console.log('avail timezoneOffset hr', timezoneOffsetMs / 60 / 60 / 1000)
+//   return new Date(new Date().getTime() - timezoneOffsetMs)
+//     .toISOString()
+//     .slice(0, 10)
+// }
+
+// get today's date as string
+// use timezone offset so we get the LOCAL day, not UTC day
+export function getTodayLocal(timeZone) {
+  // const timezoneOffsetMs = new Date().getTimezoneOffset() * 60 * 1000
+  // const today = new Date(new Date().getTime() - timezoneOffsetMs)
+  //   .toISOString()
+  //   .slice(0, 10) // eg '2023-02-15'
+  // this handles daylight savings, unlike above code
+  // swe is swedish - iso time format
+  const today = new Date().toLocaleString('swe', { timeZone }).slice(0, 10)
+  return today
 }
 
 // // get date from text, eg '2022-01-13T05:00:00' -> 2022-01-13T11:00:00.000Z.
