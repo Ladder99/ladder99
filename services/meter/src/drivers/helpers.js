@@ -2,18 +2,7 @@
 // run 'node helpers-test.js' for tests
 //. move into common lib later
 
-// // get today's date in local (not Z) timezone, eg '2022-01-16'.
-// // normally, new Date() would return a date in UTC timezone,
-// // which could be the following day - so need to offset with timezoneOffset.
-// export function getTodayLocal() {
-//   const timezoneOffsetMs = new Date().getTimezoneOffset() * 60 * 1000 // minutes to msec
-//   console.log('avail timezoneOffset hr', timezoneOffsetMs / 60 / 60 / 1000)
-//   return new Date(new Date().getTime() - timezoneOffsetMs)
-//     .toISOString()
-//     .slice(0, 10)
-// }
-
-// get today's date as string
+// get today's date as string, eg '2023-02-15'
 // use timezone offset so we get the LOCAL day, not UTC day
 export function getTodayLocal(timeZone) {
   // const timezoneOffsetMs = new Date().getTimezoneOffset() * 60 * 1000
@@ -21,9 +10,8 @@ export function getTodayLocal(timeZone) {
   //   .toISOString()
   //   .slice(0, 10) // eg '2023-02-15'
   // this handles daylight savings, unlike above code
-  // swe is swedish - iso time format
-  const today = new Date().toLocaleString('swe', { timeZone }).slice(0, 10)
-  return today
+  // swe is sweden - iso time format
+  return new Date().toLocaleDateString('swe', { timeZone })
 }
 
 // // get date from text, eg '2022-01-13T05:00:00' -> 2022-01-13T11:00:00.000Z.
@@ -34,8 +22,8 @@ export function getTodayLocal(timeZone) {
 // }
 
 // get downtimes from day like '2023-02-18' and text like '10:00am,10\n2:00pm,10'
-// into array like [{ start, stop }, ...],
-// where start and stop are Date objects with Z timezone.
+// into array like [{ start, stop }, ...], where start and stop are Date objects with Z timezone.
+// returns null if there are any syntax errors.
 export function getDowntimes(day, text) {
   if (!text) return []
   const lines = text.split('\n')
@@ -43,6 +31,9 @@ export function getDowntimes(day, text) {
     let [startTime, mins] = line.split(',') // eg ['3:00pm', '10']
     startTime = sanitizeTime(startTime) // eg '15:00'
     if (startTime === null) {
+      return null
+    }
+    if (!Number(mins)) {
       return null
     }
     const startDateTime = day + 'T' + startTime // eg '2023-02-17T15:00' // local time - no Z
