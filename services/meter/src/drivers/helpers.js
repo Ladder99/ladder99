@@ -5,21 +5,10 @@
 // get today's date as string, eg '2023-02-15'
 // use timezone offset so we get the LOCAL day, not UTC day
 export function getTodayLocal(timeZone) {
-  // const timezoneOffsetMs = new Date().getTimezoneOffset() * 60 * 1000
-  // const today = new Date(new Date().getTime() - timezoneOffsetMs)
-  //   .toISOString()
-  //   .slice(0, 10) // eg '2023-02-15'
-  // this handles daylight savings, unlike above code
+  // this handles daylight savings
   // swe is sweden - iso time format
   return new Date().toLocaleDateString('swe', { timeZone })
 }
-
-// // get date from text, eg '2022-01-13T05:00:00' -> 2022-01-13T11:00:00.000Z.
-// // shifts date by client timezoneOffset, as will be needed for comparisons.
-// export function getDate(text) {
-//   const timezoneOffsetMs = new Date().getTimezoneOffset() * 60 * 1000 // minutes to msec
-//   return new Date(new Date(text).getTime() - timezoneOffsetMs)
-// }
 
 // get downtimes from day like '2023-02-18' and text like '10:00am,10\n2:00pm,10'
 // into array like [{ start, stop }, ...], where start and stop are Date objects with Z timezone.
