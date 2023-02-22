@@ -2,18 +2,36 @@
 // run 'node helpers-test.js' for tests
 //. move into common lib later
 
+import { DateTime } from 'luxon'
+
+// get date from day like '2023-02-18' and local time like '10:00am'
+// eg would return a Date object 2023-02-18T16:00:00Z
+export function getDate(date, time, timezone) {
+  // this handles daylight savings
+  // swe is sweden - iso time format
+  const dateTime = time ? date + 'T' + time : date // eg '2023-02-17T15:00' // local time - no Z
+  // const dateObj = new Date(dateTime) // eg 2023-02-17T21:00:00Z - with Z - os dependent?
+  // const dateObj = new Date(
+  //   new Date(dateTime).toLocaleString('swe', { timeZone: timezone })
+  // )
+  // convert to udt
+  const dateObj = DateTime.fromISO(dateTime, { zone: timezone }).toJSDate()
+  return dateObj
+}
+
 // get today's date as string, eg '2023-02-15'
 // use timezone offset so we get the LOCAL day, not UTC day
 export function getTodayLocal(timeZone) {
   // this handles daylight savings
   // swe is sweden - iso time format
-  return new Date().toLocaleDateString('swe', { timeZone })
+  // return new Date().toLocaleDateString('swe', { timeZone })
+  return DateTime.local().toISODate()
 }
 
 // get downtimes from day like '2023-02-18' and text like '10:00am,10\n2:00pm,10'
 // into array like [{ start, stop }, ...], where start and stop are Date objects with Z timezone.
 // returns null if there are any syntax errors.
-export function getDowntimes(day, text) {
+export function getDowntimes(day, text, timezone) {
   if (!text) return []
   const lines = text.split('\n')
   const downtimes = lines.map(line => {
@@ -26,7 +44,8 @@ export function getDowntimes(day, text) {
       return null
     }
     const startDateTime = day + 'T' + startTime // eg '2023-02-17T15:00' // local time - no Z
-    const start = new Date(startDateTime) // eg 2023-02-17T21:00:00Z - with Z
+    // const start = new Date(startDateTime) // eg 2023-02-17T21:00:00Z - with Z
+    const start = getDate(startDateTime, null, timezone)
     const stop = new Date(start.getTime() + Number(mins) * 60 * 1000) // eg 2023-02-17T21:10:00Z
     return { start, stop }
   })

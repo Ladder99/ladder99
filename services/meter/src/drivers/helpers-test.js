@@ -14,6 +14,17 @@ function test(actual, expected) {
 
 // test(helpers.getTodayLocal(), '2023-02-18')
 
+console.log('getTodayLocal', helpers.getTodayLocal('America/Chicago'))
+
+test(
+  helpers.getDate('2023-02-18', '10:00', 'America/Chicago'),
+  new Date('2023-02-18T16:00:00Z')
+)
+test(
+  helpers.getDate('2023-02-18', null, 'America/Chicago'),
+  new Date('2023-02-18T06:00:00Z')
+)
+
 // --------------
 
 // //. what's the pt of this fn?
