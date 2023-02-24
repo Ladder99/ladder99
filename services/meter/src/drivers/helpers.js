@@ -37,11 +37,8 @@ export function getDowntimes(day, text, timezone) {
       return null
     }
     const startDateTime = day + 'T' + startTime // eg '2023-02-17T15:00' // local time - no Z
-    console.log('startDateTime', startDateTime)
     const start = getDate(startDateTime, null, timezone)
-    console.log('start', start)
     const stop = new Date(start.getTime() + Number(mins) * 60 * 1000) // eg 2023-02-17T21:10:00Z
-    console.log('stop', stop)
     return { start, stop }
   })
   return downtimes.some(downtime => downtime === null) ? null : downtimes

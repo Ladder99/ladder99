@@ -172,23 +172,23 @@ export class Schedule {
   isDuringShift() {
     const now = new Date() // eg 2022-01-13T12:00:00.000Z - js dates are stored in Z/UTC
     if (this.holiday) {
-      console.log(this.me, 'on holiday')
+      // console.log(this.me, 'on holiday')
       return false
     }
-    console.log(this.me, 'check downtimes', this.downtimes)
+    // console.log(this.me, 'check downtimes', this.downtimes)
     for (let downtime of this.downtimes || []) {
       const { start, stop } = downtime
       // console.log(this.me, 'checking downtime', start, stop)
       if (now >= start && now <= stop) {
-        console.log(this.me, 'in downtime')
+        // console.log(this.me, 'in downtime')
         return false
       }
     }
     if (now >= this.start && now <= this.stop) {
-      console.log(this.me, 'in shift')
+      // console.log(this.me, 'in shift')
       return true
     }
-    console.log(this.me, 'not in shift')
+    // console.log(this.me, 'not in shift')
     return false
   }
 }
