@@ -38,27 +38,33 @@ async function start() {
     for (let device of devices) {
       device.path = `${agent.alias}/${device.alias}` // eg 'Mazak5701/Mill12345
 
-      // get schedule for this device
-      //. handle no schedule info
-      const schedule = new Schedule({ db, meters, client, device })
-      await schedule.start()
+      // start getting schedule for this device -
+      // but only if schedule defined for meters,
+      // and if meters array defined for this device.
+      let schedule = {}
+      if (meters.schedule && device.meters) {
+        schedule = new Schedule()
+        await schedule.start({ db, meters, client, device }) // note await
+      }
 
       // iterate over meters for this device
+      // meterKey is eg 'availability', 'good'
+      // driver is eg 'availability', 'bin'
       for (let meterKey of device.meters ?? []) {
         const meter = meters[meterKey]
-        console.log(`Meter ${device.path} loading ${meterKey}...`)
         const { driver } = meter // eg 'availability'
+        const me = `Meter ${device.path} ${meterKey} ${driver}:`
 
         // import and instantiate driver
-        const pathDriver = `${driversFolder}/${driver}.js` // eg './metrics/availability.js'
-        console.log(`Meter ${device.path} importing ${pathDriver}...`)
+        const pathDriver = `${driversFolder}/${driver}.js` // eg './drivers/availability.js'
+        console.log(me, `importing ${pathDriver}...`)
         const { Metric } = await import(pathDriver)
         const plugin = new Metric()
 
         // start it up - poll db as needed
-        console.log(`Meter ${device.path} starting ${driver} driver...`)
-        meter.name = meterKey
-        plugin.start({ db, schedule, client, device, meter })
+        console.log(me, `starting driver...`)
+        meter.key = meterKey // eg 'availability', 'good'
+        plugin.start({ db, schedule, client, device, meter }) // don't await here
       }
     }
   }

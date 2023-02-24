@@ -2,7 +2,6 @@
 // eg keep track of total part counts over different time intervals - minute, hour, day.
 
 import * as bins from '../bins.js'
-// import * as helpers from './helpers.js'
 
 // poll db every this many seconds
 const meterIntervalDefault = 2 // seconds
@@ -13,7 +12,7 @@ const offset = 1000 // ms
 export class Metric {
   //
   async start({ db, schedule, client, device, meter }) {
-    this.me = `Bin ${device.path} ${meter.name} -`
+    this.me = `Bin ${device.path} for meter ${meter.key}:`
     console.log(this.me, `start`)
 
     this.db = db
@@ -28,7 +27,7 @@ export class Metric {
     this.lastCount = null
 
     // get this so can write to raw.bin table
-    console.log(this.me, `get device node_id...`)
+    console.log(this.me, `wait to get device node_id...`)
     this.device_id = await this.db.getNodeId(device.path) // repeats until device is there
 
     // get polling interval - either from meter in setup yaml or default value
@@ -43,7 +42,8 @@ export class Metric {
 
   // poll db and update part count bins - called by timer
   async poll() {
-    // console.log(this.me, `poll db, write count bins`)
+    const now = new Date()
+    console.log(this.me, `poll db, write count bins at`, now)
 
     // don't update part count bins if not in shift or on break
     if (!this.schedule.isDuringShift()) return
@@ -53,7 +53,6 @@ export class Metric {
     // so keep track of lastStop.
     // well that didn't help. so use this.offset to give adapter time to write data.
     //. lame that there's such a delay - need to move all this into more reactive adapter.
-    const now = new Date()
     const stop = new Date(now.getTime() - this.offset).toISOString()
     // console.log(this.me, 'now', now, `stop`, stop)
 

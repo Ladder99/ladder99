@@ -33,7 +33,7 @@ test(
 
 // --------------
 
-test(helpers.getDowntimes('2023-02-17', '10:00am,10\n2pm,10'), [
+test(helpers.getDowntimes('2023-02-17', '10:00am,10\n 2pm, 10 '), [
   {
     start: new Date('2023-02-17T16:00:00Z'),
     stop: new Date('2023-02-17T16:10:00Z'),

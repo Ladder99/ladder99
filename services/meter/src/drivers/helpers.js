@@ -21,15 +21,15 @@ export function getTodayLocal() {
   return DateTime.local().toISODate()
 }
 
-// get downtimes from day like '2023-02-18' and text like '10:00am,10\n2:00pm,10'
+// get downtimes from day like '2023-02-18' and text like '10:00am,10\n 2pm, 10 '
 // into array like [{ start, stop }, ...], where start and stop are Date objects with Z timezone.
 // returns null if there are any syntax errors.
 export function getDowntimes(day, text, timezone) {
   if (!text) return []
   const lines = text.split('\n')
   const downtimes = lines.map(line => {
-    let [startTime, mins] = line.split(',') // eg ['3:00pm', '10']
-    startTime = sanitizeTime(startTime) // eg '15:00'
+    let [startTime, mins] = line.split(',') // eg ['5am', '10']
+    startTime = sanitizeTime(startTime) // eg '05:00'
     if (startTime === null) {
       return null
     }
@@ -37,9 +37,11 @@ export function getDowntimes(day, text, timezone) {
       return null
     }
     const startDateTime = day + 'T' + startTime // eg '2023-02-17T15:00' // local time - no Z
-    // const start = new Date(startDateTime) // eg 2023-02-17T21:00:00Z - with Z
+    console.log('startDateTime', startDateTime)
     const start = getDate(startDateTime, null, timezone)
+    console.log('start', start)
     const stop = new Date(start.getTime() + Number(mins) * 60 * 1000) // eg 2023-02-17T21:10:00Z
+    console.log('stop', stop)
     return { start, stop }
   })
   return downtimes.some(downtime => downtime === null) ? null : downtimes
@@ -65,6 +67,9 @@ export function sanitizeTime(value) {
     if (m[5] === 'pm') {
       const hour = Number(m[1]) + 12
       m[1] = String(hour)
+    }
+    if (m[1].length === 1) {
+      m[1] = '0' + m[1]
     }
     value = `${m[1]}:${m[3] ?? '00'}`
     return value

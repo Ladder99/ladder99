@@ -7,7 +7,9 @@
 //     # startPath: Processes/ProcessTimeStart
 //     # stopPath: Processes/ProcessTimeComplete
 
-const intervalDefault = 5 * 60 // seconds
+import * as helpers from './drivers/helpers.js'
+
+const intervalDefault = 60 // seconds
 
 export class Schedule {
   //
@@ -52,14 +54,15 @@ export class Schedule {
     //
     const today = helpers.getTodayLocal(this.timezone) // eg '2023-02-16'
     console.log(this.me, 'poll - today', today)
+    console.log(this.me, 'source', this.source)
 
     // use setup.schedule table
     if (this.source === 'scheduleTable') {
-      const result = await db.query(
+      const result = await this.db.query(
         `SELECT start, stop, downtimes FROM setup.schedule WHERE path = $1 AND date = $2`,
         [this.device.path, today]
       )
-      console.log(this.me, 'rows', result.rows)
+      console.log(this.me, 'got setup.schedule rows', result.rows)
       if (result.rows.length === 0) {
         this.start = null
         this.stop = null
@@ -75,18 +78,18 @@ export class Schedule {
           today,
           row.downtimes,
           this.timezone
-        ) // parse '10:00am,10\n2:00pm,10' into array of objects
+        ) // parse '10:00am,10\n2pm,10' into array of objects
       }
     } else if (this.source === 'devicesTable') {
       // use setup.devices table
-      const result = await db.query(
+      const result = await this.db.query(
         `SELECT shift_start, shift_stop FROM setup.devices WHERE path = $1`,
         [this.device.path]
       )
       if (result.rows.length === 0) {
         // add a new record to setup.devices, and use setup.yaml values for start/stop times.
         console.log(this.me, 'insert new record for device', device.path)
-        await db.query(
+        await this.db.query(
           `INSERT INTO setup.devices (path, shift_start, shift_stop) VALUES ($1, $2, $3)`,
           [this.device.path, this.startTime, this.stopTime]
         )
@@ -126,12 +129,12 @@ export class Schedule {
       // schedule.start etc will be 'Invalid Date' - any comparison with those will yield false.
       // these fns will return false if no value found.
       const table = 'history_text'
-      const startText = await db.getLatestValue(
+      const startText = await this.db.getLatestValue(
         table,
         this.device,
         this.startFullPath
       ) // eg '2022-01-16T15:00:00' or false
-      const stopText = await db.getLatestValue(
+      const stopText = await this.db.getLatestValue(
         table,
         this.device,
         this.stopFullPath
@@ -145,7 +148,15 @@ export class Schedule {
       console.log(this.me, 'unknown source', this.source)
       return
     }
-    console.log(this.me, this.start, 'to', this.stop)
+    console.log(
+      this.me,
+      'got',
+      this.start,
+      'to',
+      this.stop,
+      'with downtimes',
+      this.downtimes
+    )
   }
 
   // is the current time during a shift, and not during a downtime or holiday?
@@ -154,21 +165,23 @@ export class Schedule {
   isDuringShift() {
     const now = new Date() // eg 2022-01-13T12:00:00.000Z - js dates are stored in Z/UTC
     if (this.holiday) {
-      console.log('on holiday')
+      console.log(this.me, 'on holiday')
       return false
     }
+    console.log(this.me, 'check downtimes', this.downtimes)
     for (let downtime of this.downtimes || []) {
       const { start, stop } = downtime
-      console.log('checking downtime', start, stop)
+      // console.log(this.me, 'checking downtime', start, stop)
       if (now >= start && now <= stop) {
-        console.log('in downtime')
+        console.log(this.me, 'in downtime')
         return false
       }
     }
     if (now >= this.start && now <= this.stop) {
-      console.log('in shift')
+      console.log(this.me, 'in shift')
       return true
     }
+    console.log(this.me, 'not in shift')
     return false
   }
 }

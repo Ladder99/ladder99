@@ -39,11 +39,12 @@ const metricIntervalDefault = 60 // seconds
 
 export class Metric {
   //
-  async start({ db, client, device, meter }) {
+  async start({ db, schedule, client, device, meter }) {
     this.me = `Availability ${device.path}:`
     console.log(this.me, `start`, meter)
 
     this.db = db
+    this.schedule = schedule
     this.client = client // { timezone, ... }
     this.device = device // { path, ... }
     this.meter = meter // { activePath, interval, ... }
@@ -52,7 +53,7 @@ export class Metric {
 
     this.activeFullPath = `${device.path}/${meter.activePath}`
 
-    console.log(this.me, `getting device node_id for ${device.path}...`)
+    console.log(this.me, `wait to get device node_id...`)
     this.device.node_id = await this.db.getNodeId(device.path) // repeats until device is there
     console.log(this.me, `node_id`, this.device.node_id)
 
@@ -66,9 +67,8 @@ export class Metric {
 
   // poll db and update bins
   async poll() {
-    console.log(this.me, `poll db and update bins`)
-
     const now = new Date() // eg 2022-01-13T12:00:00.000Z - js dates are stored in Z/UTC
+    console.log(this.me, `poll db and update bins at`, now)
 
     // increment active bins if device was active in previous time interval.
     // handle overtime by allowing active minutes outside of shift hours -
