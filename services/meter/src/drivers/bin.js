@@ -54,27 +54,27 @@ export class Metric {
     // well that didn't help. so use this.offset to give adapter time to write data.
     //. lame that there's such a delay - need to move all this into more reactive adapter.
     const stop = new Date(now.getTime() - this.offset).toISOString()
-    // console.log(this.me, 'now', now, `stop`, stop)
+    console.log(this.me, `stop`, stop)
 
     const binColumn = this.meter.binColumn // eg 'total_count'
 
     // get latest count value
     //. if count hasn't been updated in a long time, this could be slow,
     // unless we get the index working better.
-    // console.log(this.me, `get latest count value`)
+    console.log(this.me, `get latest count value`)
     const record = await this.db.getLastRecord(
       this.device.path,
       this.countPath,
       stop
     )
-    // console.log(this.me, `record`, record)
+    console.log(this.me, `got record`, record)
 
     if (record) {
       let currentCount = record.value
 
       // get delta (zero for first encounter)
       let deltaCount = currentCount - (this.lastCount ?? currentCount)
-      // console.log(this.me, `deltaCount`, deltaCount)
+      console.log(this.me, `deltaCount`, deltaCount)
 
       // bug - had this AFTER the await below, so if db was slow, deltaCount would keep increasing.
       this.lastCount = currentCount

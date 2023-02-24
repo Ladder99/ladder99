@@ -70,26 +70,30 @@ export class Metric {
     const now = new Date() // eg 2022-01-13T12:00:00.000Z - js dates are stored in Z/UTC
     console.log(this.me, `poll db and update bins at`, now)
 
+    // check if we're within the shift schedule for the device, and not in a downtime
+    const isDuringShift = this.schedule.isDuringShift()
+
     // increment active bins if device was active in previous time interval.
-    // handle overtime by allowing active minutes outside of shift hours -
-    // this means availability can theoretically be > 100%.
-    const start =
-      this.previousStopTime || new Date(now.getTime() - this.intervalMs)
-    const stop = now
-    const deviceWasActive = await this.getActive(start, stop)
-    if (deviceWasActive) {
-      console.log(this.me, `increasing active bin`)
-      await bins.add(this.db, this.device.node_id, now, 'active')
+    //. note: if want to allow active minutes outside of shift hours,
+    // which would allow availability to be > 100%,
+    // then don't check isDuringShift here. need a flag in setup.yaml
+    if (isDuringShift) {
+      const start =
+        this.previousStopTime || new Date(now.getTime() - this.intervalMs)
+      const stop = now
+      const deviceWasActive = await this.getActive(start, stop)
+      if (deviceWasActive) {
+        console.log(this.me, `increasing active bin`)
+        await bins.add(this.db, this.device.node_id, now, 'active')
+      }
+      this.previousStopTime = stop
     }
 
     // increment available bins if we're within the schedule for the device and not in a downtime.
-    const isDuringShift = this.schedule.isDuringShift()
     if (isDuringShift) {
-      console.log(this.me, now, `- increasing available bin`)
+      console.log(this.me, `increasing available bin`)
       await bins.add(this.db, this.device.node_id, now, 'available')
     }
-
-    this.previousStopTime = stop
   }
 
   // check if device was 'active' (ie has events on the active path), between two times.

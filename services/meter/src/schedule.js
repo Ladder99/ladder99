@@ -1,9 +1,14 @@
 // manage schedule (shift start, stop, downtimes) for a device
+
 // in setup.yaml need something like this -
 // meters:
 //   schedule:
-//     # startTime: '08:00'
-//     # stopTime: '17:00'
+//     source: scheduleTable # use setup.schedule table (keyed on device path, date, with start, stop, downtimes)
+//     # source: devicesTable # use setup.devices table (keyed on device path, with start, stop) - use startTime and stopTime as defaults for new devices
+//     # source: dataItems
+//     # source: fixedTimes
+//     # startTime: '08:00' # string in 24h format
+//     # stopTime: '17:00' # string in 24h format
 //     # startPath: Processes/ProcessTimeStart
 //     # stopPath: Processes/ProcessTimeComplete
 
@@ -54,7 +59,7 @@ export class Schedule {
     //
     const today = helpers.getTodayLocal(this.timezone) // eg '2023-02-16'
     console.log(this.me, 'poll - today', today)
-    console.log(this.me, 'source', this.source)
+    console.log(this.me, 'source', this.source) // eg 'scheduleTable'
 
     // use setup.schedule table
     if (this.source === 'scheduleTable') {
@@ -62,7 +67,7 @@ export class Schedule {
         `SELECT start, stop, downtimes FROM setup.schedule WHERE path = $1 AND date = $2`,
         [this.device.path, today]
       )
-      console.log(this.me, 'got setup.schedule rows', result.rows)
+      // console.log(this.me, 'got setup.schedule rows', result.rows)
       if (result.rows.length === 0) {
         this.start = null
         this.stop = null
@@ -95,7 +100,12 @@ export class Schedule {
         )
         // use setup.yaml values
         // keep in synch with code below
-        console.log(this.me, 'get shift times from setup.yaml')
+        console.log(
+          this.me,
+          'get shift times from setup.yaml',
+          this.startTime,
+          this.stopTime
+        )
         // times are like '05:00', so need to tack it onto current date + 'T'.
         //. handle invalid start/stop times - should be 24h format
         this.start = helpers.getDate(today, this.startTime, this.timezone)
@@ -105,9 +115,9 @@ export class Schedule {
         // use setup.devices table values
         console.log(this.me, 'get shift times from setup.devices table')
         // times are like '15:00', so need to tack it onto current date + 'T'.
+        //. handle invalid start/stop times - should be 24h format
         const shift_start = result.rows[0]?.shift_start
         const shift_stop = result.rows[0]?.shift_stop
-        //. handle invalid start/stop times or nulls - should be 24h format
         this.start = helpers.getDate(today, shift_start, this.timezone)
         this.stop = helpers.getDate(today, shift_stop, this.timezone)
         this.holiday = null // for now
@@ -115,7 +125,12 @@ export class Schedule {
     } else if (this.source === 'fixedTimes') {
       // use setup.yaml values
       // keep in synch with code above
-      console.log(this.me, 'get shift times from setup.yaml')
+      console.log(
+        this.me,
+        'get shift times from setup.yaml',
+        this.startTime,
+        this.stopTime
+      )
       // times are like '05:00', so need to tack it onto current date + 'T'.
       //. handle invalid start/stop times - should be 24h format
       this.start = helpers.getDate(today, this.startTime, this.timezone)
@@ -126,7 +141,7 @@ export class Schedule {
       console.log(this.me, 'get shift times from start/stop paths')
       // get start/stop datetimes, with no Z, eg '2022-01-16T15:00:00'
       // note: these can return 'UNAVAILABLE' or 'HOLIDAY', in which case,
-      // schedule.start etc will be 'Invalid Date' - any comparison with those will yield false.
+      // this.start etc will be 'Invalid Date' - any comparison with those will yield false.
       // these fns will return false if no value found.
       const table = 'history_text'
       const startText = await this.db.getLatestValue(
@@ -148,15 +163,7 @@ export class Schedule {
       console.log(this.me, 'unknown source', this.source)
       return
     }
-    console.log(
-      this.me,
-      'got',
-      this.start,
-      'to',
-      this.stop,
-      'with downtimes',
-      this.downtimes
-    )
+    console.log(this.me, 'got', this.start, this.stop, this.downtimes)
   }
 
   // is the current time during a shift, and not during a downtime or holiday?

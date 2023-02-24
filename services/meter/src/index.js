@@ -44,7 +44,7 @@ async function start() {
       let schedule = {}
       if (meters.schedule && device.meters) {
         schedule = new Schedule()
-        await schedule.start({ db, meters, client, device }) // note await
+        await schedule.start({ db, meters, client, device }) // note the await
       }
 
       // iterate over meters for this device
@@ -57,7 +57,7 @@ async function start() {
 
         // import and instantiate driver
         const pathDriver = `${driversFolder}/${driver}.js` // eg './drivers/availability.js'
-        console.log(me, `importing ${pathDriver}...`)
+        // console.log(me, `importing ${pathDriver}...`)
         const { Metric } = await import(pathDriver)
         const plugin = new Metric()
 
