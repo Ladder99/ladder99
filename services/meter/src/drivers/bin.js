@@ -2,9 +2,9 @@
 // eg keep track of total part counts over different time intervals - minute, hour, day.
 
 import * as bins from '../bins.js'
+// import * as helpers from './helpers.js'
 
 // poll db every this many seconds
-// const meterIntervalDefault = 5 // seconds
 const meterIntervalDefault = 2 // seconds
 
 // look this far back in time for raw count values so adapter has time to write data
@@ -12,16 +12,17 @@ const offset = 1000 // ms
 
 export class Metric {
   //
-  async start({ client, db, device, meter }) {
+  async start({ db, schedule, client, device, meter }) {
     this.me = `Bin ${device.path} ${meter.name} -`
     console.log(this.me, `start`)
 
-    this.client = client
     this.db = db
+    this.schedule = schedule
+    this.client = client
     this.device = device
     this.meter = meter
 
-    this.countPath = `${device.path}/${meter.countPath}`
+    this.countPath = `${device.path}/${meter.countPath}` // eg 'Main/ConversionPress/...'
 
     this.lastStop = null
     this.lastCount = null
@@ -36,7 +37,6 @@ export class Metric {
     // look this far back in time for raw count values so adapter has time to write data
     this.offset = offset // ms
 
-    // await this.backfill() // backfill any missing values
     await this.poll() // do first poll
     this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
   }
@@ -44,6 +44,9 @@ export class Metric {
   // poll db and update part count bins - called by timer
   async poll() {
     // console.log(this.me, `poll db, write count bins`)
+
+    // don't update part count bins if not in shift or on break
+    if (!this.schedule.isDuringShift()) return
 
     // due to nature of js event loop, poll is not gonna be called exactly every this.interval ms.
     // that means we could miss job count records, causing 'misses'.
@@ -94,7 +97,4 @@ export class Metric {
 
     this.lastStop = stop
   }
-
-  // backfill missing bin records
-  async backfill() {}
 }

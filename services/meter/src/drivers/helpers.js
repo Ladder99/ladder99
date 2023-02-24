@@ -1,30 +1,23 @@
 // helper fns for drivers
 // run 'node helpers-test.js' for tests
-//. move into common lib later
+//. could move into common lib later
 
 import { DateTime } from 'luxon'
 
 // get date from day like '2023-02-18' and local time like '10:00am'
 // eg would return a Date object 2023-02-18T16:00:00Z
+// can pass time=null to get just the day at midnight local time
+// this handles daylight savings
 export function getDate(date, time, timezone) {
-  // this handles daylight savings
-  // swe is sweden - iso time format
   const dateTime = time ? date + 'T' + time : date // eg '2023-02-17T15:00' // local time - no Z
-  // const dateObj = new Date(dateTime) // eg 2023-02-17T21:00:00Z - with Z - os dependent?
-  // const dateObj = new Date(
-  //   new Date(dateTime).toLocaleString('swe', { timeZone: timezone })
-  // )
-  // convert to udt
-  const dateObj = DateTime.fromISO(dateTime, { zone: timezone }).toJSDate()
-  return dateObj
+  //. handle errors
+  return DateTime.fromISO(dateTime, { zone: timezone }).toJSDate()
 }
 
 // get today's date as string, eg '2023-02-15'
 // use timezone offset so we get the LOCAL day, not UTC day
-export function getTodayLocal(timeZone) {
-  // this handles daylight savings
-  // swe is sweden - iso time format
-  // return new Date().toLocaleDateString('swe', { timeZone })
+// this should handle daylight savings
+export function getTodayLocal() {
   return DateTime.local().toISODate()
 }
 
@@ -56,7 +49,7 @@ export function getDowntimes(day, text, timezone) {
 // eg '1pm' -> '13:00', '9' -> '09:00', '15:00:00' -> '15:00'
 export function sanitizeTime(value) {
   const m = value.match(
-    /^([0-9]?[0-9])(:([0-9][0-9]))?(:[0-9][0-9])?[ ]*(am|pm)?[ ]*$/i
+    /^[ ]*([0-9]?[0-9])(:([0-9][0-9]))?(:[0-9][0-9])?[ ]*(am|pm)?[ ]*$/i
   )
   // m[0] // '1:30pm'
   // m[1] // '1'
@@ -76,31 +69,6 @@ export function sanitizeTime(value) {
     value = `${m[1]}:${m[3] ?? '00'}`
     return value
   }
-  //. no match - error
+  //. no match - error?
   return null
-}
-
-// is the current time during a shift, and not during a downtime or holiday?
-// now is a Date object, schedule is { start, stop, holiday, downtimes },
-// where downtimes is an array of { start, stop } Date objects.
-export function getIsDuringShift(now, schedule) {
-  if (schedule.holiday) {
-    console.log('on holiday')
-    return false
-  }
-  for (let downtime of schedule.downtimes || []) {
-    const { start, stop } = downtime
-    console.log('checking downtime', start, stop)
-    if (now >= start && now <= stop) {
-      console.log('in downtime')
-      return false
-    }
-  }
-  if (now >= schedule.start && now <= schedule.stop) {
-    console.log('in shift')
-    return true
-  }
-  // const isDuringShift = now >= schedule.start && now <= schedule.stop
-  // return isDuringShift
-  return false
 }

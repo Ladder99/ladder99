@@ -12,9 +12,10 @@ function test(actual, expected) {
 
 // --------------
 
-// test(helpers.getTodayLocal(), '2023-02-18')
-
-console.log('getTodayLocal', helpers.getTodayLocal('America/Chicago'))
+console.log(
+  'getTodayLocal - should be today',
+  helpers.getTodayLocal('America/Chicago')
+)
 
 test(
   helpers.getDate('2023-02-18', '10:00', 'America/Chicago'),
@@ -59,22 +60,22 @@ test(helpers.sanitizeTime('a'), null)
 
 // --------------
 
-let now1 = new Date('2023-02-17T20:05:00Z')
-let now2 = new Date('2023-02-17T18:00:00Z')
-let schedule = {
-  start: new Date('2023-02-17T11:00:00Z'),
-  stop: new Date('2023-02-17T21:00:00Z'),
-  holiday: false,
-  downtimes: [
-    {
-      start: new Date('2023-02-17T16:00:00Z'),
-      stop: new Date('2023-02-17T16:10:00Z'),
-    },
-    {
-      start: new Date('2023-02-17T20:00:00Z'),
-      stop: new Date('2023-02-17T20:10:00Z'),
-    },
-  ],
-}
-test(helpers.getIsDuringShift(now1, schedule), false)
-test(helpers.getIsDuringShift(now2, schedule), true)
+// let now1 = new Date('2023-02-17T20:05:00Z')
+// let now2 = new Date('2023-02-17T18:00:00Z')
+// let schedule = {
+//   start: new Date('2023-02-17T11:00:00Z'),
+//   stop: new Date('2023-02-17T21:00:00Z'),
+//   holiday: false,
+//   downtimes: [
+//     {
+//       start: new Date('2023-02-17T16:00:00Z'),
+//       stop: new Date('2023-02-17T16:10:00Z'),
+//     },
+//     {
+//       start: new Date('2023-02-17T20:00:00Z'),
+//       stop: new Date('2023-02-17T20:10:00Z'),
+//     },
+//   ],
+// }
+// test(helpers.getIsDuringShift(now1, schedule), false)
+// test(helpers.getIsDuringShift(now2, schedule), true)
