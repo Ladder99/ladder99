@@ -556,7 +556,7 @@ services:
       # Needs to be at least 32 characters minimum.
       PGRST_JWT_SECRET: null
       # PGRST_SECRET_IS_BASE64: 'False' # must be string, number, or null
-    restart: always
+    restart: unless-stopped
     networks:
       - ladder99
     logging:
