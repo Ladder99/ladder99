@@ -3,18 +3,19 @@
 # note: a '3' here means '3.0'
 version: '3.8'
 
+#. use a L99_VERSION envar here
 services:
   adapter:
-    image: ladder99/adapter:0.11.4
+    image: ladder99/adapter:0.11.5
 
   grafana:
-    image: ladder99/grafana:0.11.4
+    image: ladder99/grafana:0.11.5
 
   meter:
-    image: ladder99/meter:0.11.4
+    image: ladder99/meter:0.11.5
 
   relay:
-    image: ladder99/relay:0.11.4
+    image: ladder99/relay:0.11.5
 
   simulator:
-    image: ladder99/simulator:0.11.4
+    image: ladder99/simulator:0.11.5
