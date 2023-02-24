@@ -17,13 +17,23 @@ console.log(
   helpers.getTodayLocal('America/Chicago')
 )
 
+// --------------
+
 test(
   helpers.getDate('2023-02-18', '10:00', 'America/Chicago'),
   new Date('2023-02-18T16:00:00Z')
 )
 test(
+  helpers.getDate('2023-02-18', '3am', 'America/Chicago'),
+  new Date('2023-02-18T09:00:00Z')
+)
+test(
   helpers.getDate('2023-02-18', null, 'America/Chicago'),
   new Date('2023-02-18T06:00:00Z')
+)
+test(
+  helpers.getDate('2023-02-18T04:00', null, 'America/Chicago'),
+  new Date('2023-02-18T10:00:00Z')
 )
 
 // --------------
@@ -47,15 +57,16 @@ test(helpers.getDowntimes('2023-02-17', '10:00amx,10\n2pm,10'), null)
 
 // --------------
 
+// note: we need leading zeros for
 test(helpers.sanitizeTime('3pm'), '15:00')
-test(helpers.sanitizeTime('9'), '9:00')
+test(helpers.sanitizeTime('9'), '09:00')
 test(helpers.sanitizeTime('15:00:00'), '15:00')
-test(helpers.sanitizeTime('12:15am'), '0:15')
+test(helpers.sanitizeTime('12:15am'), '00:15')
 test(helpers.sanitizeTime('12:15'), '12:15')
 test(helpers.sanitizeTime('12:15pm'), '12:15')
 test(helpers.sanitizeTime('13:15'), '13:15')
-test(helpers.sanitizeTime('0'), '0:00')
-test(helpers.sanitizeTime('1'), '1:00')
+test(helpers.sanitizeTime('0'), '00:00')
+test(helpers.sanitizeTime('1'), '01:00')
 test(helpers.sanitizeTime('a'), null)
 
 // --------------

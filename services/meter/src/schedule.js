@@ -75,7 +75,8 @@ export class Schedule {
         this.downtimes = null
       } else {
         const row = result.rows[0]
-        // row.start and stop will be in 24h format from db, eg '15:00', in local time (no Z).
+        // row.start and stop will be in 24h format from db, eg '15:00', in local time (no Z),
+        // because they are postgres time columns.
         this.start = helpers.getDate(today, row.start, this.timezone)
         this.stop = helpers.getDate(today, row.stop, this.timezone)
         this.holiday = null
@@ -87,13 +88,15 @@ export class Schedule {
       }
     } else if (this.source === 'devicesTable') {
       // use setup.devices table
+      // shift_start and shift_stop are text columns, so might not be in 24h format.
+      // but we use helpers.getDate below, which sanitizes times.
       const result = await this.db.query(
         `SELECT shift_start, shift_stop FROM setup.devices WHERE path = $1`,
         [this.device.path]
       )
       if (result.rows.length === 0) {
         // add a new record to setup.devices, and use setup.yaml values for start/stop times.
-        console.log(this.me, 'insert new record for device', device.path)
+        console.log(this.me, 'insert new record for device', this.device.path)
         await this.db.query(
           `INSERT INTO setup.devices (path, shift_start, shift_stop) VALUES ($1, $2, $3)`,
           [this.device.path, this.startTime, this.stopTime]
@@ -106,16 +109,14 @@ export class Schedule {
           this.startTime,
           this.stopTime
         )
-        // times are like '05:00', so need to tack it onto current date + 'T'.
-        //. handle invalid start/stop times - should be 24h format
+        // times should be like '05:00', so need to tack it onto current date + 'T'.
         this.start = helpers.getDate(today, this.startTime, this.timezone)
         this.stop = helpers.getDate(today, this.stopTime, this.timezone)
         this.holiday = null // for now
       } else {
         // use setup.devices table values
         console.log(this.me, 'get shift times from setup.devices table')
-        // times are like '15:00', so need to tack it onto current date + 'T'.
-        //. handle invalid start/stop times - should be 24h format
+        // times should be like '15:00', so need to tack it onto current date + 'T'.
         const shift_start = result.rows[0]?.shift_start
         const shift_stop = result.rows[0]?.shift_stop
         this.start = helpers.getDate(today, shift_start, this.timezone)
@@ -131,8 +132,7 @@ export class Schedule {
         this.startTime,
         this.stopTime
       )
-      // times are like '05:00', so need to tack it onto current date + 'T'.
-      //. handle invalid start/stop times - should be 24h format
+      // times should be like '05:00', so need to tack it onto current date + 'T'.
       this.start = helpers.getDate(today, this.startTime, this.timezone)
       this.stop = helpers.getDate(today, this.stopTime, this.timezone)
       this.holiday = null // for now
@@ -155,7 +155,7 @@ export class Schedule {
         this.stopFullPath
       )
       this.holiday = getHoliday(startText) || getHoliday(stopText) // 'HOLIDAY' or null
-      //. handle null for time?
+      // note getDate allows null for time
       this.start =
         this.holiday || helpers.getDate(startText, null, this.timezone) // 'HOLIDAY' or a Date object
       this.stop = this.holiday || helpers.getDate(stopText, null, this.timezone)

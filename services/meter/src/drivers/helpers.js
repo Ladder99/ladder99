@@ -4,13 +4,13 @@
 
 import { DateTime } from 'luxon'
 
-// get date from day like '2023-02-18' and local time like '10:00am'
-// eg would return a Date object 2023-02-18T16:00:00Z
+// get date from day like '2023-02-18' and local time like '9am'
+// eg would return a Date object 2023-02-18T15:00:00Z
 // can pass time=null to get just the day at midnight local time
 // this handles daylight savings
 export function getDate(date, time, timezone) {
-  const dateTime = time ? date + 'T' + time : date // eg '2023-02-17T15:00' // local time - no Z
-  //. handle errors
+  const dateTime = time ? date + 'T' + sanitizeTime(time) : date // eg '2023-02-17T15:00' // local time - no Z
+  //. handle errors - try/catch?
   return DateTime.fromISO(dateTime, { zone: timezone }).toJSDate()
 }
 
@@ -46,6 +46,8 @@ export function getDowntimes(day, text, timezone) {
 
 // sanitize time - convert anything to 24h format
 // eg '1pm' -> '13:00', '9' -> '09:00', '15:00:00' -> '15:00'
+// note: this is slightly different from that in grafana schedule.json -
+// it includes a leading 0 in the hour, because it's used
 export function sanitizeTime(value) {
   const m = value.match(
     /^[ ]*([0-9]?[0-9])(:([0-9][0-9]))?(:[0-9][0-9])?[ ]*(am|pm)?[ ]*$/i
