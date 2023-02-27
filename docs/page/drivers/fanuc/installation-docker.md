@@ -11,7 +11,7 @@ dateCreated: 2022-09-23T01:58:36.483Z
 
 # Docker Installation
 
-## Install Docker and docker-compose
+## Install Docker and Compose
 
 ```bash
 cd ~
@@ -25,11 +25,12 @@ sudo usermod -aG docker $USER
 newgrp docker
 sudo systemctl enable docker
 sudo systemctl start docker
-docker run hello-world
+#docker run hello-world
 
-sudo curl -L "https://github.com/docker/compose/releases/download/v2.15.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-sudo chmod +x /usr/local/bin/docker-compose
-docker-compose --version
+# docker compose separate installation can be omitted
+#sudo curl -L "https://github.com/docker/compose/releases/download/v2.15.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+#sudo chmod +x /usr/local/bin/docker-compose
+#docker-compose --version
 ```
 
 ## Select Latest Image
@@ -42,13 +43,13 @@ Docker-compose will use this variable to pull the correct image.
 For x86 Linux architecture use:
 
 ```bash
-export FOCAS_TGT=linux64-886a5a3
+export FOCAS_TGT=linux64-9e55095
 ```
 
 For ARM Linux architecture use:
 
 ```bash
-export FOCAS_TGT=arm-de0e822
+export FOCAS_TGT=arm-9e55095
 ```
 
 ## Clone Repository
@@ -114,9 +115,9 @@ cd ~/fanuc/fanuc-driver/examples
 
 profile=fanuc
 
-docker-compose --project-name fanuc --file compose.yml --profile $profile --verbose pull
-docker-compose --project-name fanuc --file compose.yml --profile $profile --verbose create
-docker-compose --project-name fanuc --file compose.yml --profile $profile --verbose start
+docker compose --project-name fanuc --file compose.yml --profile $profile --verbose pull
+docker compose --project-name fanuc --file compose.yml --profile $profile --verbose create
+docker compose --project-name fanuc --file compose.yml --profile $profile --verbose start
 ```
 
 # Building an Image
