@@ -47,7 +47,7 @@ export class Metric {
 
     // don't update part count bins if not in shift or in downtime
     if (!this.schedule.isDuringShift()) {
-      // console.log(this.me, `not in shift`)
+      console.log(this.me, now, `not in shift`)
       return
     }
 
