@@ -58,7 +58,8 @@ export class Metric {
     console.log(this.me, `node_id`, this.device.node_id)
 
     // get polling interval - either from metric in setup yaml or default value
-    this.intervalMs = (meter.interval || metricIntervalDefault) * 1000 // ms
+    this.intervalMs = (meter.interval || metricIntervalDefault) * 1000 // seconds to ms
+    this.intervalMins = this.intervalMs / 1000 / 60 // minutes
 
     // do first poll and start timer
     await this.poll()
@@ -83,16 +84,28 @@ export class Metric {
       const stop = now
       const deviceWasActive = await this.getActive(start, stop)
       if (deviceWasActive) {
-        console.log(this.me, `increasing active bin`)
-        await bins.add(this.db, this.device.node_id, now, 'active')
+        console.log(this.me, `increasing active_mins bin`)
+        await bins.add(
+          this.db,
+          this.device.node_id,
+          now,
+          'active_mins',
+          this.intervalMins
+        )
       }
       this.previousStopTime = stop
     }
 
     // increment available bins if we're within the schedule for the device and not in a downtime.
     if (isDuringShift) {
-      console.log(this.me, `increasing available bin`)
-      await bins.add(this.db, this.device.node_id, now, 'available')
+      console.log(this.me, `increasing available_mins bin`)
+      await bins.add(
+        this.db,
+        this.device.node_id,
+        now,
+        'available_mins',
+        this.intervalMins
+      )
     }
   }
 
