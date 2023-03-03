@@ -484,6 +484,9 @@ services:
   postgres:
     container_name: postgres
     image: timescale/timescaledb:2.7.0-pg13
+    # timescaledb 2.8 added time_bucket timezone support - but upgrading timescaledb is a pain
+    # see https://docs.timescale.com/timescaledb/latest/how-to-guides/upgrades/upgrade-docker/
+    # image: timescale/timescaledb:2.10.0-pg13 
     # set max_connections high for grafana pages with lots of queries.
     # and set timezone to match the host - set in client's docker-compose.yaml file, eg
     # command: postgres -c 'max_connections=50' -c 'timezone=America/Chicago'
