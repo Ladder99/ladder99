@@ -14,6 +14,7 @@
 
 import * as helpers from './drivers/helpers.js'
 
+// how often to check schedule
 const intervalDefault = 60 // seconds
 
 export class Schedule {
@@ -31,6 +32,7 @@ export class Schedule {
     this.source = meters.schedule.source // scheduleTable, devicesTable, dataItems, fixedTimes
     this.startTime = meters.schedule.startTime // eg '08:00'
     this.stopTime = meters.schedule.stopTime // eg '17:00'
+    this.intervalSecs = meters.schedule.interval ?? intervalDefault // seconds
 
     // path to schedule dataitems
     this.startFullPath = `${device.path}/${meters.schedule.startPath}` // eg 'Main/ConversionPress/Controller/Path/ProcessTimeStart'
@@ -43,8 +45,9 @@ export class Schedule {
     this.downtimes = null // array of { start, stop } objects, or null
 
     // do first poll and start timer
+    console.log(this.me, `check schedule every ${this.intervalSecs} sec`)
     this.poll()
-    this.timer = setInterval(this.poll.bind(this), intervalDefault * 1000) // poll db
+    this.timer = setInterval(this.poll.bind(this), this.intervalSecs * 1000) // poll db
   }
 
   // get schedule from setup.schedule table, setup.devices table,
