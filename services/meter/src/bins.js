@@ -5,7 +5,9 @@
 // note: '15 secs' works with time_bucket, but not with date_trunc.
 // 'month' works with date_trunc but not time_bucket.
 // so, forget months.
-const resolutions = '15 seconds,1 minute,1 hour,1 day,1 week'.split(',') //. 5min? 15min?
+// const resolutions = '15 seconds,1 minute,1 hour,1 day,1 week'.split(',') //. 5min? 15min?
+// const resolutions = '1 second,1 minute'.split(',')
+const resolutions = '1 minute'.split(',')
 
 // increment values in the bins table.
 // rounds the given time down to nearest min, hour, day, week etc,
