@@ -7,7 +7,7 @@ import * as bins from '../bins.js'
 const meterIntervalDefault = 2 // seconds
 
 // look this far back in time for raw count values so adapter has time to write data
-const offset = 1000 // ms
+const delayMs = 2000
 
 export class Metric {
   //
@@ -23,7 +23,7 @@ export class Metric {
 
     this.countPath = `${device.path}/${meter.countPath}` // eg 'Main/ConversionPress/...'
 
-    this.lastStop = null
+    this.lastStopTime = null
     this.lastCount = null
 
     // get this so can write to raw.bin table
@@ -32,9 +32,6 @@ export class Metric {
 
     // get polling interval - either from meter in setup yaml or default value
     this.interval = (meter.interval || meterIntervalDefault) * 1000 // ms
-
-    // look this far back in time for raw count values so adapter has time to write data
-    this.offset = offset // ms
 
     await this.poll() // do first poll
     this.timer = setInterval(this.poll.bind(this), this.interval) // poll db
@@ -53,10 +50,10 @@ export class Metric {
 
     // due to nature of js event loop, poll is not gonna be called exactly every this.interval ms.
     // that means we could miss job count records, causing 'misses'.
-    // so keep track of lastStop.
-    // well that didn't help. so use this.offset to give adapter time to write data.
+    // so keep track of lastStopTime.
+    // well that didn't help. so use delayMs to give adapter time to write data.
     //. lame that there's such a delay - need to move all this into more reactive adapter.
-    const stop = new Date(now.getTime() - this.offset).toISOString()
+    const stopTime = new Date(now.getTime() - delayMs).toISOString()
     // console.log(this.me, `stop`, stop)
 
     // get latest count value
@@ -66,16 +63,17 @@ export class Metric {
     const record = await this.db.getLastRecord(
       this.device.path,
       this.countPath,
-      stop
+      stopTime
     )
     // console.log(this.me, `got record`, record)
 
     if (record) {
       let currentCount = record.value
+      console.log(this.me, `currentCount`, currentCount)
 
       // get delta (zero for first encounter)
       let deltaCount = currentCount - (this.lastCount ?? currentCount)
-      // console.log(this.me, `deltaCount`, deltaCount)
+      console.log(this.me, `deltaCount`, deltaCount)
 
       // bug - had this AFTER the await below, so if db was slow, deltaCount would keep increasing.
       this.lastCount = currentCount
@@ -96,6 +94,6 @@ export class Metric {
       }
     }
 
-    this.lastStop = stop
+    this.lastStopTime = stopTime
   }
 }

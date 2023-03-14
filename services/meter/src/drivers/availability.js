@@ -37,6 +37,10 @@ import * as bins from '../bins.js'
 
 const metricIntervalDefault = 60 // seconds
 
+// look this far back in time for count values so adapter has time to write data
+// const offset = 2000 // ms
+const delayMs = 2000 // ms
+
 export class Metric {
   //
   async start({ db, schedule, client, device, meter }) {
@@ -68,11 +72,13 @@ export class Metric {
 
   // poll db and update bins
   async poll() {
-    const now = new Date() // eg 2022-01-13T12:00:00.000Z - js dates are stored in Z/UTC
+    // const now = new Date() // eg 2022-01-13T12:00:00.000Z - js dates are stored in Z/UTC
+    // const now = new Date(new Date().getTime() - offset)
+    const now = new Date(new Date().getTime() - delayMs)
     console.log(this.me, `poll db and update bins at`, now)
 
     // check if we're within the shift schedule for the device, and not in a downtime
-    const isDuringShift = this.schedule.isDuringShift()
+    const isDuringShift = this.schedule.isDuringShift() //. add now
 
     // increment active bins if device was active in previous time interval.
     //. note: if want to allow active minutes outside of shift hours,

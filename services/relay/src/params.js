@@ -7,6 +7,7 @@ export const params = {
   setupFolder: process.env.L99_SETUP_FOLDER || '/data/setup',
   // these are dynamic - adjusted on the fly
   // these were 2000 and 800 for ox, ie 400 per second
+  //. get these from setup.yaml, not envars
   fetchInterval: Number(process.env.FETCH_INTERVAL || 1000), // how often to fetch sample data, msec
   fetchCount: Number(process.env.FETCH_COUNT || 1000), // how many samples to fetch each time
 }
