@@ -35,10 +35,9 @@
 
 import * as bins from '../bins.js'
 
-const metricIntervalDefault = 60 // seconds
+const metricIntervalDefault = 60 // seconds - can override in setup.yaml
 
 // look this far back in time for count values so adapter has time to write data
-// const offset = 2000 // ms
 const delayMs = 2000 // ms
 
 export class Metric {
@@ -57,6 +56,8 @@ export class Metric {
 
     this.activeFullPath = `${device.path}/${meter.activePath}`
 
+    this.lastStopTime = null
+
     console.log(this.me, `wait to get device node_id...`)
     this.device.node_id = await this.db.getNodeId(device.path) // repeats until device is there
     console.log(this.me, `node_id`, this.device.node_id)
@@ -72,34 +73,35 @@ export class Metric {
 
   // poll db and update bins
   async poll() {
-    // const now = new Date() // eg 2022-01-13T12:00:00.000Z - js dates are stored in Z/UTC
-    // const now = new Date(new Date().getTime() - offset)
-    const now = new Date(new Date().getTime() - delayMs)
+    const now = new Date() // eg 2022-01-13T12:00:00.000Z - js dates are stored in Z/UTC
     console.log(this.me, `poll db and update bins at`, now)
 
+    // look in past a bit so adapter has time to write data
+    // const stopTime = this.lastStopTime ?? new Date(now.getTime() - delayMs)
+    const stopTime = new Date(now.getTime() - delayMs)
+
     // check if we're within the shift schedule for the device, and not in a downtime
-    const isDuringShift = this.schedule.isDuringShift() //. add now
+    const isDuringShift = this.schedule.isDuringShift(stopTime)
 
     // increment active bins if device was active in previous time interval.
     //. note: if want to allow active minutes outside of shift hours,
     // which would allow availability to be > 100%,
-    // then don't check isDuringShift here. need a flag in setup.yaml
+    // then don't check isDuringShift here. would need a flag in setup.yaml
     if (isDuringShift) {
-      const start =
-        this.previousStopTime || new Date(now.getTime() - this.intervalMs)
-      const stop = now
-      const deviceWasActive = await this.getActive(start, stop)
+      // const startTime = new Date(stopTime.getTime() - this.intervalMs)
+      const startTime =
+        this.lastStopTime ?? new Date(stopTime.getTime() - this.intervalMs)
+      const deviceWasActive = await this.getActive(startTime, stopTime)
       if (deviceWasActive) {
         console.log(this.me, `increasing active_mins bin`)
         await bins.add(
           this.db,
           this.device.node_id,
-          now,
+          stopTime,
           'active_mins',
           this.intervalMins
         )
       }
-      this.previousStopTime = stop
     }
 
     // increment available bins if we're within the schedule for the device and not in a downtime.
@@ -108,16 +110,19 @@ export class Metric {
       await bins.add(
         this.db,
         this.device.node_id,
-        now,
+        stopTime,
         'available_mins',
         this.intervalMins
       )
     }
+
+    this.lastStopTime = stopTime
   }
 
   // check if device was 'active' (ie has events on the active path), between two times.
+  // startTime and stopTime are js Date objects.
   // returns true/false.
-  async getActive(start, stop) {
+  async getActive(startTime, stopTime) {
     //. use $1, $2 etc
     const sql = `
       select count(value) > 0 as active
@@ -125,7 +130,7 @@ export class Metric {
       where
         device = '${this.device.path}'
         and path = '${this.activeFullPath}'
-        and time between '${start.toISOString()}' and '${stop.toISOString()}'
+        and time between '${startTime.toISOString()}' and '${stopTime.toISOString()}'
       limit 1;
     `
     const result = await this.db.query(sql)

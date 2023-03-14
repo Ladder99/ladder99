@@ -197,11 +197,12 @@ export class Db {
   }
 
   // get last value of a path from history_float view, before a given time.
-  // start should be an ISO datetimestring
+  // time is a js Date object.
   // returns null or { time, value }
   //. pass table also
   //. merge with getLatestValue
-  async getLastRecord(device, path, start) {
+  async getLastRecord(device, path, time) {
+    //. use $1, $2 etc
     const sql = `
       select 
         time, value
@@ -210,7 +211,7 @@ export class Db {
       where
         device = '${device}' 
         and path = '${path}'
-        and time < '${start}'
+        and time < '${time.toISOString()}'
       order by 
         time desc
       limit 1;
@@ -242,10 +243,11 @@ export class Db {
   }
 
   // get records from history_float.
-  // start and stop should be ISO strings.
+  // start and stop should be js Date objects.
   // includes previous value before start time.
   //. pass table also, ie history_float vs history_text
   async getHistory(device, path, start, stop) {
+    //. use $1, $2 etc
     const sql = `
       select 
         time, value
@@ -254,7 +256,7 @@ export class Db {
       where
         device = '${device}'
         and path = '${path}'
-        and time >= '${start}' and time < '${stop}'
+        and time >= '${start.toISOString()}' and time < '${stop.toISOString()}'
       union (
         select 
           time, value
@@ -263,7 +265,7 @@ export class Db {
         where
           device = '${device}'
           and path = '${path}'
-          and time < '${start}'
+          and time < '${start.toISOString()}'
         order by 
           time desc
         limit 1

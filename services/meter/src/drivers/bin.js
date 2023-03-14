@@ -23,7 +23,7 @@ export class Metric {
 
     this.countPath = `${device.path}/${meter.countPath}` // eg 'Main/ConversionPress/...'
 
-    this.lastStopTime = null
+    // this.lastStopTime = null
     this.lastCount = null
 
     // get this so can write to raw.bin table
@@ -42,19 +42,17 @@ export class Metric {
     const now = new Date()
     // console.log(this.me, `poll db, write count bins at`, now)
 
+    // look in past a bit so adapter has time to write data
+    // const stopTime = this.lastStopTime ?? new Date(now.getTime() - delayMs)
+    const stopTime = new Date(now.getTime() - delayMs)
+    // const stopTime = this.lastStopTime ?? now
+    console.log(this.me, `stopTime`, stopTime)
+
     // don't update part count bins if not in shift or in downtime
-    if (!this.schedule.isDuringShift()) {
-      console.log(this.me, now, `not in shift`)
+    if (!this.schedule.isDuringShift(stopTime)) {
+      console.log(this.me, stopTime, `not in shift`)
       return
     }
-
-    // due to nature of js event loop, poll is not gonna be called exactly every this.interval ms.
-    // that means we could miss job count records, causing 'misses'.
-    // so keep track of lastStopTime.
-    // well that didn't help. so use delayMs to give adapter time to write data.
-    //. lame that there's such a delay - need to move all this into more reactive adapter.
-    const stopTime = new Date(now.getTime() - delayMs).toISOString()
-    // console.log(this.me, `stop`, stop)
 
     // get latest count value
     //. if count hasn't been updated in a long time, this could be slow,
@@ -65,7 +63,7 @@ export class Metric {
       this.countPath,
       stopTime
     )
-    // console.log(this.me, `got record`, record)
+    console.log(this.me, `got record`, record)
 
     if (record) {
       let currentCount = record.value
@@ -90,10 +88,10 @@ export class Metric {
       if (deltaCount > 0) {
         const binColumn = this.meter.binColumn // eg 'total_count'
         console.log(this.me, `add to bins col`, binColumn, 'delta', deltaCount)
-        await bins.add(this.db, this.device_id, now, binColumn, deltaCount)
+        await bins.add(this.db, this.device_id, stopTime, binColumn, deltaCount)
       }
     }
 
-    this.lastStopTime = stopTime
+    // this.lastStopTime = stopTime
   }
 }

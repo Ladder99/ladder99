@@ -120,7 +120,7 @@ export class Metric {
     let record = await this.db.getLastRecord(
       deviceName,
       this.metric.lifetimePath,
-      now.toISOString()
+      now
     )
     console.log(`Count ${deviceName} - last record`, record)
 
@@ -141,8 +141,8 @@ export class Metric {
       record.value = 0
     }
 
-    const start = record.time.toISOString()
-    const stop = now.toISOString()
+    const start = record.time
+    const stop = now
     let lifetime = record.value
     const rows = await this.db.getHistory(
       deviceName,
@@ -158,7 +158,7 @@ export class Metric {
         await this.db.writeHistory(
           this.device_id,
           this.lifetime_id,
-          row.time.toISOString(),
+          row.time,
           lifetime
         )
       }

@@ -15,7 +15,8 @@
 import * as helpers from './drivers/helpers.js'
 
 // how often to check schedule
-const intervalDefault = 60 // seconds
+// const intervalDefaultSecs = 60 // seconds
+const intervalDefaultSecs = 10 // seconds
 
 export class Schedule {
   //
@@ -32,7 +33,7 @@ export class Schedule {
     this.source = meters.schedule.source // scheduleTable, devicesTable, dataItems, fixedTimes
     this.startTime = meters.schedule.startTime // eg '08:00'
     this.stopTime = meters.schedule.stopTime // eg '17:00'
-    this.intervalSecs = meters.schedule.interval ?? intervalDefault // seconds
+    this.intervalSecs = meters.schedule?.interval ?? intervalDefaultSecs // seconds
 
     // path to schedule dataitems
     this.startFullPath = `${device.path}/${meters.schedule.startPath}` // eg 'Main/ConversionPress/Controller/Path/ProcessTimeStart'
@@ -80,7 +81,6 @@ export class Schedule {
         const row = result.rows[0]
         // row.start and stop will be in 24h format from db, eg '15:00', in local time (no Z),
         // because they are postgres time columns.
-        this.start = helpers.getDate(today, row.start, this.timezone)
         this.stop = helpers.getDate(today, row.stop, this.timezone)
         this.holiday = null
         this.downtimes = helpers.getDowntimes(
@@ -158,7 +158,7 @@ export class Schedule {
         this.stopFullPath
       )
       this.holiday = getHoliday(startText) || getHoliday(stopText) // 'HOLIDAY' or null
-      // note getDate allows null for time
+      // note getDate allows null for now
       this.start =
         this.holiday || helpers.getDate(startText, null, this.timezone) // 'HOLIDAY' or a Date object
       this.stop = this.holiday || helpers.getDate(stopText, null, this.timezone)
@@ -170,10 +170,10 @@ export class Schedule {
   }
 
   // is the current time during a shift, and not during a downtime or holiday?
-  // now is a Date object, schedule is { start, stop, holiday, downtimes },
+  // time is a Date object, schedule is { start, stop, holiday, downtimes },
   // where downtimes is an array of { start, stop } Date objects.
-  isDuringShift() {
-    const now = new Date() // eg 2022-01-13T12:00:00.000Z - js dates are stored in Z/UTC
+  // time is eg 2022-01-13T12:00:00.000Z - js dates are stored in Z/UTC
+  isDuringShift(time) {
     if (this.holiday) {
       // console.log(this.me, 'on holiday')
       return false
@@ -182,12 +182,12 @@ export class Schedule {
     for (let downtime of this.downtimes || []) {
       const { start, stop } = downtime
       // console.log(this.me, 'checking downtime', start, stop)
-      if (now >= start && now <= stop) {
+      if (time >= start && time <= stop) {
         // console.log(this.me, 'in downtime')
         return false
       }
     }
-    if (now >= this.start && now <= this.stop) {
+    if (time >= this.start && time <= this.stop) {
       // console.log(this.me, 'in shift')
       return true
     }

@@ -39,8 +39,8 @@ export class Metric {
     console.log('Rate - poll db and write rate')
 
     const now = new Date()
-    const start = new Date(now.getTime() - this.interval).toISOString()
-    const stop = now.toISOString()
+    const start = new Date(now.getTime() - this.interval)
+    const stop = now
     const device = this.device.name
     const path = this.metric.valuePath
 
