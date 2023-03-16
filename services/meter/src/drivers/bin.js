@@ -23,7 +23,6 @@ export class Metric {
 
     this.countPath = `${device.path}/${meter.countPath}` // eg 'Main/ConversionPress/...'
 
-    // this.lastStopTime = null
     this.lastCount = null
 
     // get this so can write to raw.bin table
@@ -43,55 +42,47 @@ export class Metric {
     // console.log(this.me, `poll db, write count bins at`, now)
 
     // look in past a bit so adapter has time to write data
-    // const stopTime = this.lastStopTime ?? new Date(now.getTime() - delayMs)
     const stopTime = new Date(now.getTime() - delayMs)
-    // const stopTime = this.lastStopTime ?? now
-    console.log(this.me, `stopTime`, stopTime)
 
-    // don't update part count bins if not in shift or in downtime
-    if (!this.schedule.isDuringShift(stopTime)) {
-      console.log(this.me, stopTime, `not in shift`)
-      return
-    }
+    // check if we're during the shift schedule
+    const isDuringShift = this.schedule.isDuringShift(stopTime)
 
     // get latest count value
     //. if count hasn't been updated in a long time, this could be slow,
     // unless we get the index working better.
-    // console.log(this.me, `get latest count value`)
     const record = await this.db.getLastRecord(
       this.device.path,
       this.countPath,
       stopTime
     )
-    console.log(this.me, `got record`, record)
+    if (!record) return
+    const currentCount = record.value
 
-    if (record) {
-      let currentCount = record.value
-      console.log(this.me, `currentCount`, currentCount)
+    // get delta (will be zero for first encounter)
+    let deltaCount = currentCount - (this.lastCount ?? currentCount)
 
-      // get delta (zero for first encounter)
-      let deltaCount = currentCount - (this.lastCount ?? currentCount)
-      console.log(this.me, `deltaCount`, deltaCount)
+    // bug - had this AFTER the await below, so if db was slow, deltaCount would keep increasing.
+    this.lastCount = currentCount
 
-      // bug - had this AFTER the await below, so if db was slow, deltaCount would keep increasing.
-      this.lastCount = currentCount
-
-      // handle rollover and counter resets
-      // might lose some counts if counter resets to 0 before we get a chance to read it
-      if (deltaCount < 0) {
-        console.log(this.me, `count reset (delta < 0)`)
-        //. problem - on first read, could dump thousands into minute bin - just use 0?
-        // deltaCount = currentCount
-        deltaCount = 0
-      }
-
-      if (deltaCount > 0) {
-        const binColumn = this.meter.binColumn // eg 'total_count'
-        console.log(this.me, `add to bins col`, binColumn, 'delta', deltaCount)
-        await bins.add(this.db, this.device_id, stopTime, binColumn, deltaCount)
-      }
+    // if not during shift, don't update bins
+    if (!isDuringShift) {
+      console.log(this.me, `not during shift, skip`)
+      return
     }
 
-    // this.lastStopTime = stopTime
+    // handle rollover and counter resets
+    // might lose some counts if counter resets to 0 before we get a chance to read it
+    if (deltaCount < 0) {
+      console.log(this.me, `count reset (delta < 0)`)
+      //. problem - on first read, could dump thousands into minute bin - just use 0?
+      // deltaCount = currentCount
+      deltaCount = 0
+    }
+
+    if (deltaCount > 0) {
+      const binColumn = this.meter.binColumn // eg 'total_count'
+      console.log(this.me, `add to bins col`, binColumn, 'delta', deltaCount)
+      await bins.add(this.db, this.device_id, stopTime, binColumn, deltaCount)
+    }
   }
 }

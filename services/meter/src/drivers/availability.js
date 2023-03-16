@@ -88,7 +88,6 @@ export class Metric {
     // which would allow availability to be > 100%,
     // then don't check isDuringShift here. would need a flag in setup.yaml
     if (isDuringShift) {
-      // const startTime = new Date(stopTime.getTime() - this.intervalMs)
       const startTime =
         this.lastStopTime ?? new Date(stopTime.getTime() - this.intervalMs)
       const deviceWasActive = await this.getActive(startTime, stopTime)
