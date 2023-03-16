@@ -30,6 +30,7 @@ export class Schedule {
     this.device = device // { path, ... }
 
     this.timezone = client.timezone // eg 'America/Chicago'
+
     this.source = meters.schedule.source // scheduleTable, devicesTable, dataItems, fixedTimes
     this.startTime = meters.schedule.startTime // eg '08:00'
     this.stopTime = meters.schedule.stopTime // eg '17:00'
@@ -81,6 +82,7 @@ export class Schedule {
         const row = result.rows[0]
         // row.start and stop will be in 24h format from db, eg '15:00', in local time (no Z),
         // because they are postgres time columns.
+        this.start = helpers.getDate(today, row.start, this.timezone)
         this.stop = helpers.getDate(today, row.stop, this.timezone)
         this.holiday = null
         this.downtimes = helpers.getDowntimes(
@@ -166,23 +168,24 @@ export class Schedule {
       console.log(this.me, 'unknown source', this.source)
       return
     }
-    console.log(this.me, 'got', this.start, this.stop, this.downtimes)
+    console.log(this.me, 'got start,stop', this.start, this.stop)
+    console.log(this.me, 'got downtimes', this.downtimes)
   }
 
-  // is the current time during a shift, and not during a downtime or holiday?
-  // time is a Date object, schedule is { start, stop, holiday, downtimes },
+  // is the given time during a shift, and not during a downtime or holiday?
+  // time is a Date object, schedule is this.{ start, stop, holiday, downtimes },
   // where downtimes is an array of { start, stop } Date objects.
   // time is eg 2022-01-13T12:00:00.000Z - js dates are stored in Z/UTC
   isDuringShift(time) {
+    // console.log(this.me, 'isDuringShift', time)
     if (this.holiday) {
       // console.log(this.me, 'on holiday')
       return false
     }
     // console.log(this.me, 'check downtimes', this.downtimes)
     for (let downtime of this.downtimes || []) {
-      const { start, stop } = downtime
-      // console.log(this.me, 'checking downtime', start, stop)
-      if (time >= start && time <= stop) {
+      // console.log(this.me, 'checking downtime', downtime)
+      if (time >= downtime.start && time <= downtime.stop) {
         // console.log(this.me, 'in downtime')
         return false
       }
