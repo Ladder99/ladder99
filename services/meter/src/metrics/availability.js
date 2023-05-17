@@ -66,20 +66,17 @@ export class Metric {
     this.device = device // eg { id, name, custom, sources, ... }
     this.metric = metric // eg { driver, activePath, startPath, stopPath, jobPath, interval, ... }
 
-    // Get timezone offset in milliseconds
-    const offsetMinutes = new Intl
-      .DateTimeFormat('en', {
+    // Get timezone offset
+    this.timezoneOffset = new Intl.DateTimeFormat('en', {
         timeZone: this.client.timezone,
         timeZoneName: 'longOffset'
       })
       .formatToParts()
       .find(i => i.type === 'timeZoneName')
       .value
-      .match(/[\d+:-]+$/)?.[0].split(':')
-      .reduce((a, c) => /^[+-]/.test(c) ? +c * 60 : a + +c, 0)
+      .match(/[\d+:-]+$/)?.[0]
 
-    console.log(this.me, `offsetMinutes`, offsetMinutes)
-    this.timezoneOffset = offsetMinutes * 60 * 1000 // ms
+    console.log(this.me, `timezoneOffset`, this.timezoneOffset)
 
     console.log(this.me, `get device node_id...`)
     this.device.node_id = await this.db.getDeviceId(device.name) // repeats until device is there
@@ -137,9 +134,11 @@ export class Metric {
     // ie it's 'local' time, which can only be interpreted correctly by
     // knowing the client's timezone. so need to subtract that offset
     const startStopTimes = {}
+
     for (let row of result2.rows) {
       const localTime = row.value
-      const time = new Date(localTime).getTime() - this.timezoneOffset
+      const time = new Date(`${localTime}${this.timezoneOffset}`).getTime()
+
       if (!isNaN(time)) {
         const minute = Math.floor(time / minutes)
         startStopTimes[minute] = row.path
@@ -263,8 +262,7 @@ export class Metric {
     const getHoliday = text =>
       text === 'UNAVAILABLE' || text === 'HOLIDAY' ? 'HOLIDAY' : undefined
     // fn to shift date by client timezoneOffset, as need for comparisons.
-    const getDate = text =>
-      new Date(new Date(text).getTime() - this.timezoneOffset)
+    const getDate = text => new Date(`${text}${this.timezoneOffset}`)
     const table = 'history_text'
     const device = this.device
     const { startPath, stopPath } = this.metric
