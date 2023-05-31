@@ -1,7 +1,6 @@
 // check schedule info from jobboss db
 
 import fs from 'fs' // node lib for filesys
-import { DateTime } from 'luxon' // see https://moment.github.io/luxon/
 
 const minutes = 60 * 1000 // 60 ms
 const hours = 60 * minutes
@@ -95,17 +94,18 @@ export class Schedule {
   async poll() {
     // console.log(`Jobboss schedule - poll`)
 
-    // since the server is set to Z/GMT time, need to 'trick' it to thinking it's 5 or 6 hrs earlier
-    // const datetime = new Date(
-    //   new Date().getTime() +
-    //     (this.client.timezoneOffsetHrs || 0) * 60 * 60 * 1000
-    // )
-    // we can use Luxon to get offset for a particular timezone, eg 'America/Chicago'.
-    // ie instead of hardcoding it to -5 hours or something.
-    // there's probably a better way to do this with luxon, but this is the simplest change.
-    // const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
-    // now that encabulator is in client's timezone, we don't need an offset. 2022-11-12
-    const offsetMinutes = 0
+    // Get timezone offset in milliseconds
+    const offsetMinutes = new Intl
+      .DateTimeFormat('en', {
+        timeZone: this.client.timezone,
+        timeZoneName: 'longOffset'
+      })
+      .formatToParts()
+      .find(i => i.type === 'timeZoneName')
+      .value
+      .match(/[\d+:-]+$/)?.[0].split(':')
+      .reduce((a, c) => /^[+-]/.test(c) ? +c * 60 : a + +c, 0)
+
     // console.log(`JobBoss schedule - offsetMinutes`, offsetMinutes)
     const datetime = new Date(new Date().getTime() + offsetMinutes * 60 * 1000) // ms
     // console.log(`JobBoss schedule - datetime`, datetime)

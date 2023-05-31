@@ -38,8 +38,6 @@
 // to calculate the 'availability' percentage, the metrics view in the db
 // does 'active' / 'available'.
 
-import { DateTime } from 'luxon' // for timezones - see https://moment.github.io/luxon/
-
 const minutes = 60 * 1000 // 60 ms
 const hours = 60 * minutes
 const days = 24 * hours
@@ -68,18 +66,17 @@ export class Metric {
     this.device = device // eg { id, name, custom, sources, ... }
     this.metric = metric // eg { driver, activePath, startPath, stopPath, jobPath, interval, ... }
 
-    // get timezone offset from Zulu in milliseconds
-    // this.timezoneOffset = client.timezoneOffsetHrs * hours // ms
-    // use timezone string like 'America/Chicago' instead of a hardcoded offset like -5.
-    // we can use Luxon to get offset for a particular timezone.
-    // there's probably a better way to do this with luxon, but this is the simplest change.
-    const offsetMinutes = DateTime.now().setZone(this.client.timezone).offset // eg -420
-    // now that encabulator is set to the user's timezone, we don't need an offset. 2022-11-12
-    // well apparently we do - new Date('2021-11-12T00:00:00-05:00') seems to assume Zulu timezone
-    // when run on encab, even though server is set to America/Chicago. but on windows it works. wth?
-    // const offsetMinutes = 0
-    console.log(this.me, `offsetMinutes`, offsetMinutes)
-    this.timezoneOffset = offsetMinutes * 60 * 1000 // ms
+    // Get timezone offset
+    this.timezoneOffset = new Intl.DateTimeFormat('en', {
+        timeZone: this.client.timezone,
+        timeZoneName: 'longOffset'
+      })
+      .formatToParts()
+      .find(i => i.type === 'timeZoneName')
+      .value
+      .match(/[\d+:-]+$/)?.[0]
+
+    console.log(this.me, `timezoneOffset`, this.timezoneOffset)
 
     console.log(this.me, `get device node_id...`)
     this.device.node_id = await this.db.getDeviceId(device.name) // repeats until device is there
@@ -137,9 +134,11 @@ export class Metric {
     // ie it's 'local' time, which can only be interpreted correctly by
     // knowing the client's timezone. so need to subtract that offset
     const startStopTimes = {}
+
     for (let row of result2.rows) {
       const localTime = row.value
-      const time = new Date(localTime).getTime() - this.timezoneOffset
+      const time = new Date(`${localTime}${this.timezoneOffset}`).getTime()
+
       if (!isNaN(time)) {
         const minute = Math.floor(time / minutes)
         startStopTimes[minute] = row.path
@@ -263,8 +262,7 @@ export class Metric {
     const getHoliday = text =>
       text === 'UNAVAILABLE' || text === 'HOLIDAY' ? 'HOLIDAY' : undefined
     // fn to shift date by client timezoneOffset, as need for comparisons.
-    const getDate = text =>
-      new Date(new Date(text).getTime() - this.timezoneOffset)
+    const getDate = text => new Date(`${text}${this.timezoneOffset}`)
     const table = 'history_text'
     const device = this.device
     const { startPath, stopPath } = this.metric
