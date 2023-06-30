@@ -665,8 +665,8 @@ services:
     profiles:
       - traefik
     ports:
-      - '80:80/tcp'
-      - '443:443/tcp'
+      - '0.0.0.0:80:80/tcp'
+      - '0.0.0.0:443:443/tcp'
     command:
       - --certresolv.myresolver.acme.storage=/etc/traefik/acme.json
     restart: always
