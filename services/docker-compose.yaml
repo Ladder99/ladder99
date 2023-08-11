@@ -349,6 +349,7 @@ services:
       - mosquitto
     ports:
       - 1883:1883
+      - 9001:9001
     command: mosquitto -c /mosquitto/config/mosquitto.conf -v # run in verbose mode
     volumes:
       - ../setups/$SETUP/volumes/mosquitto/config:/mosquitto/config # has mosquitto.conf
