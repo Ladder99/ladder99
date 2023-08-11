@@ -308,6 +308,7 @@ services:
       - mosquitto
     ports:
       - '1883:1883'
+      - '9001:9001'
     volumes:
       - ../$SETUP/volumes/mosquitto/config:/mosquitto/config # has mosquitto.conf
       - ../$SETUP/volumes/mosquitto/data:/mosquitto/data
