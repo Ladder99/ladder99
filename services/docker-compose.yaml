@@ -103,8 +103,8 @@ services:
     networks:
       - ladder99
     volumes:
-      # By default a container based on this image will run in the UTC timezone. 
-      # In case you want to run your cron rules in your local timezone (respecting DST), 
+      # By default a container based on this image will run in the UTC timezone.
+      # In case you want to run your cron rules in your local timezone (respecting DST),
       # you can mount your Docker host's /etc/timezone and /etc/localtime:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -186,7 +186,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     # need to leave this unspecified here, because clients that use traefik
-    # need it that way, and there's no way to remove a port through 
+    # need it that way, and there's no way to remove a port through
     # overrides yet.
     # see https://github.com/docker/compose/issues/3729
     # IMPORTANT: might need to turn this on for a client.
@@ -242,7 +242,7 @@ services:
       PGDATABASE: null
       PGUSER: null
       PGPASSWORD: null
-      # provision password - these will get used the first time grafana is run - 
+      # provision password - these will get used the first time grafana is run -
       # can pass in through environment variables -
       GF_SECURITY_ADMIN_USER: null
       GF_SECURITY_ADMIN_PASSWORD: null
@@ -259,13 +259,13 @@ services:
     # of the grafana group (id 472), for better compatibility with OpenShift. [?]
     # grafana gives permission error without user:root - not on mac tho. only on arm?
     # https://community.grafana.com/t/new-docker-install-with-persistent-storage-permission-problem/10896/13
-    # Speaking in generalities it is not a security problem to run a container as root. 
-    # If you run as a regular user and some hacker breaks your application they will 
-    # have access to whatever a regular user has access to. If you run as root and 
-    # some hacker breaks your application they will have access to the entire 
-    # container. It sounds like running as a regular user is safer; but in practice 
-    # there is nothing important on the container that the regular user does not 
-    # have access to. Hopefully the hacker does not figure out how to break out 
+    # Speaking in generalities it is not a security problem to run a container as root.
+    # If you run as a regular user and some hacker breaks your application they will
+    # have access to whatever a regular user has access to. If you run as root and
+    # some hacker breaks your application they will have access to the entire
+    # container. It sounds like running as a regular user is safer; but in practice
+    # there is nothing important on the container that the regular user does not
+    # have access to. Hopefully the hacker does not figure out how to break out
     # of the container. [?]
     # https://stackoverflow.com/questions/64271295/runnig-docker-as-nonroot-with-user-id-u-cant-create-var-lib#comment113675767_64272066
     user: root
@@ -486,7 +486,7 @@ services:
     image: timescale/timescaledb:2.7.0-pg13
     # timescaledb 2.8 added time_bucket timezone support - but upgrading timescaledb is a pain
     # see https://docs.timescale.com/timescaledb/latest/how-to-guides/upgrades/upgrade-docker/
-    # image: timescale/timescaledb:2.10.0-pg13 
+    # image: timescale/timescaledb:2.10.0-pg13
     # set max_connections high for grafana pages with lots of queries.
     # and set timezone to match the host - set in client's docker-compose.yaml file, eg
     # command: postgres -c 'max_connections=50' -c 'timezone=America/Chicago'
@@ -505,9 +505,9 @@ services:
       POSTGRES_DB: $PGDATABASE
       POSTGRES_USERNAME: $PGUSER
       # note: POSTGRES_PASSWORD is REQUIRED.
-      # the first time this is run (and the data directory is empty), it uses 
-      # these envars to initialize the database. 
-      # to change the db password would require an ALTER USER SQL statement, 
+      # the first time this is run (and the data directory is empty), it uses
+      # these envars to initialize the database.
+      # to change the db password would require an ALTER USER SQL statement,
       # or \password in psql.
       # see https://hub.docker.com/_/postgres
       POSTGRES_PASSWORD: $PGPASSWORD
@@ -602,7 +602,7 @@ services:
   relay:
     container_name: relay
 
-    # note: to build from source, use the 'build' directive instead of 'image', 
+    # note: to build from source, use the 'build' directive instead of 'image',
     # and run 'l99 start --offline' to avoid pulling image
     # see https://hub.docker.com/repository/docker/ladder99/relay
     # image: ladder99/relay:0.11.0
@@ -776,11 +776,11 @@ services:
       #   touch ../client-oxbox/volumes/traefik/acme.json
       #   chmod 600 ../client-oxbox/volumes/traefik/acme.json
       - /var/run/docker.sock:/var/run/docker.sock
-      # can't do this as docker-compose will create acme.json as a directory - 
-      # "docker-compose only creates folders, acme.json can be a folder name, 
-      # it's impossible for it to know you want it to be a file. So if that file isn't 
+      # can't do this as docker-compose will create acme.json as a directory -
+      # "docker-compose only creates folders, acme.json can be a folder name,
+      # it's impossible for it to know you want it to be a file. So if that file isn't
       # present at that path when you create the container, it will create a folder."
-      # and if you try manually creating a blank file and set chmod 600 on it, 
+      # and if you try manually creating a blank file and set chmod 600 on it,
       # traefik will complain.
       # https://williamhayes.medium.com/traefik-letsencrypt-and-acme-json-configuration-problems-5780c914351d
       # - ../setups/$SETUP/volumes/traefik/acme.json:/acme.json
