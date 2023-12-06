@@ -2,6 +2,8 @@
 
 # run docker compose command
 
+repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+
 usage="
 Usage: l99 compose COMMAND [OPTIONS] [SERVICES]
 
@@ -27,8 +29,8 @@ if [ $# -eq 0 ]; then
 fi
 
 # get setup folder
-SETUP=$(cat .l99_setup)
-SETUP_FOLDER=setups/$SETUP
+SETUP="$(cat "$repo_root/.l99_setup")"
+SETUP_FOLDER="$repo_root/setups/$SETUP"
 
 # handle missing setup folder
 if [ ! -e $SETUP_FOLDER ]; then
@@ -70,8 +72,8 @@ elif [ "$COMMAND" = "logs" ]; then
 fi
 
 # file paths
-COMPOSE=services/docker-compose.yaml
-COMPOSE_PROD=services/docker-compose.prod.yaml
+COMPOSE="$repo_root/services/docker-compose.yaml"
+COMPOSE_PROD="$repo_root/services/docker-compose.prod.yaml"
 OVERRIDES=$SETUP_FOLDER/services/docker-compose.yaml
 ENVFILE=$SETUP_FOLDER/.env
 ENVFILE_EXAMPLE=$SETUP_FOLDER/.env-example
@@ -118,7 +120,7 @@ if [[ $BUILD ]]; then
 fi
 
 # make and run cmd
-# note: --project-name specifies project name, as shown in docker management consoles - 
+# note: --project-name specifies project name, as shown in docker management consoles -
 # otherwise it uses the parent folder name (ie 'services').
 CMD="
 export SETUP=$SETUP &&

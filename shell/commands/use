@@ -1,5 +1,7 @@
 #!/bin/bash
 
+repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+
 usage="
 Usage: l99 use SETUP
 
@@ -19,15 +21,15 @@ SETUP=$1
 shift
 
 # get setup folder
-SETUP_FOLDER=setups/$SETUP
+SETUP_FOLDER="$repo_root/setups/$SETUP"
 
 # handle missing setup folder
-if [ ! -e $SETUP_FOLDER ]; then
+if [ ! -e "$SETUP_FOLDER" ]; then
     echo "Setup folder '$SETUP_FOLDER' does not exist. Please try again."
     exit 1
 fi
 
 # save setup to a file
-echo $SETUP > .l99_setup
+echo $SETUP > "$repo_root/.l99_setup"
 
-shell/commands/using
+"$repo_root/shell/commands/using"

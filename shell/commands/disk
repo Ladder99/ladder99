@@ -2,9 +2,11 @@
 
 # Print disk usage for current setup.
 
+repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+
 # get setup folder
-SETUP=$(cat .l99_setup)
-SETUP_DIR=setups/$SETUP
+SETUP="$(cat "$repo_root/.l99_setup")"
+SETUP_DIR="$repo_root/setups/$SETUP"
 
 # note: sudo isn't always available, eg in git bash environment, so test
 if hash sudo 2>/dev/null; then
@@ -28,4 +30,4 @@ $SUDO du -d1 -h setups
 echo
 
 echo "Docker volumes for '$SETUP' setup"
-$SUDO du -d1 -h $SETUP_DIR/volumes/
+$SUDO du -d1 -h "$SETUP_DIR/volumes"

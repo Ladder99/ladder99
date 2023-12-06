@@ -10,6 +10,8 @@
 
 #. get default version from package.json? use jq to extract?
 
+repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+
 usage="
 Usage: l99 build SERVICE
 
@@ -34,7 +36,7 @@ fi
 
 SERVICE=$1
 # VERSION=$2
-VERSION=$(cat .l99_version)
+VERSION="$(cat "$repo_root/.l99_version")"
 # note: arm/v7 is 32bit for older pi's
 # need arm64/v8 ?
 # PLATFORMS=${3:-"amd64 arm64"}
@@ -43,10 +45,10 @@ USERNAME=ladder99
 
 # create a multiplatform buildx builder
 # do this each time, per answer by guy with 200k rep in 2022-02 -
-# The easy button is to use the binaries from the multiarch image. This is good in 
-# CI if you have a dedicated VM (less ideal if you are modifying the host used by 
-# other builds). However if you reboot, it breaks until you run the container again. 
-# And it requires you to remember to update it for any upstream patches. 
+# The easy button is to use the binaries from the multiarch image. This is good in
+# CI if you have a dedicated VM (less ideal if you are modifying the host used by
+# other builds). However if you reboot, it breaks until you run the container again.
+# And it requires you to remember to update it for any upstream patches.
 # So I wouldn't recommend it for a long running build host.
 # from https://stackoverflow.com/questions/60080264/docker-cannot-build-multi-platform-images-with-docker-buildx
 docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
@@ -62,7 +64,7 @@ for arch in amd64 arm64 ; do
     --platform linux/$arch \
     --output type=docker \
     --tag $USERNAME/$SERVICE:$VERSION-${arch} \
-    services/$SERVICE/
+    "$repo_root/services/$SERVICE"
 done
 
 echo "Combining images and pushing to Docker Hub..."
@@ -70,4 +72,4 @@ docker buildx build \
 --platform linux/amd64,linux/arm64 \
 --tag $USERNAME/$SERVICE:$VERSION \
 --push \
-services/$SERVICE/
+"$repo_root/services/$SERVICE"

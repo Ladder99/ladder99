@@ -2,9 +2,11 @@
 
 # update Ladder99 pipeline and client code
 
+repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+
 # get setup folder
-SETUP=$(cat .l99_setup)
-SETUP_FOLDER=setups/$SETUP
+SETUP="$(cat "$repo_root/.l99_setup")"
+SETUP_FOLDER="$repo_root/setups/$SETUP"
 
 # handle missing setup folder
 if [ ! -e $SETUP_FOLDER ]; then
@@ -16,11 +18,11 @@ fi
 # git pull ladder99 repo then setup repo
 # set credential cache while we're at it so user doesn't have to
 # keep entering passcode - 360000=100h.
-# note: we do both pulls in same command so if first fails, won't do second - 
+# note: we do both pulls in same command so if first fails, won't do second -
 # because it was easy to miss the failed first command.
 echo "Updating ladder99 repo..."
 git pull \
 && echo \
 && echo "Updating '$SETUP' repo (and setting credential cache timeout while we're at it)..." \
-&& (cd $SETUP_FOLDER && git config credential.helper 'cache --timeout=360000') \
-&& (cd $SETUP_FOLDER && git pull)
+&& git -C "$SETUP_FOLDER" config credential.helper 'cache --timeout=360000' \
+&& git -C "$SETUP_FOLDER" pull

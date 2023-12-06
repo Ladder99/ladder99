@@ -2,6 +2,8 @@
 
 # run ladder99 pipeline using prebuilt images from docker hub.
 
+repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+
 usage="
 Usage: l99 start [SERVICES]
 
@@ -30,7 +32,7 @@ SERVICES=${*:-base}
 
 # make cmd and run it
 # 'l99 compose up' runs with --no-build by default
-CMD="l99 compose up $SERVICES"
+CMD="$repo_root/l99 compose up $SERVICES"
 
 echo "$CMD"
 bash -c "$CMD"

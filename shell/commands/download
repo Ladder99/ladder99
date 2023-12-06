@@ -1,5 +1,7 @@
 #!/bin/bash
 
+repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+
 usage="
 Usage: l99 download SETUP
 
@@ -20,13 +22,13 @@ SETUP=$1
 shift
 
 # get setup folder, eg 'setups/test'
-SETUP_FOLDER=setups/$SETUP
+SETUP_FOLDER="$repo_root/setups/$SETUP"
 
 if [ -e $SETUP_FOLDER ]; then
     echo Setup folder \'$SETUP_FOLDER\' already exists. Please try again.
     exit 1
 fi
 
-git clone https://github.com/Ladder99/setup-$SETUP $SETUP_FOLDER \
-&& echo $SETUP > .l99_setup \
-&& shell/commands/using
+git clone https://github.com/Ladder99/setup-$SETUP "$SETUP_FOLDER" \
+&& echo $SETUP > "$repo_root/.l99_setup" \
+&& "$repo_root/shell/commands/using"
