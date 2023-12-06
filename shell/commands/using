@@ -1,6 +1,8 @@
 #!/bin/bash
 
+repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+
 # report the currently used setup
 
-SETUP=$(cat .l99_setup)
+SETUP=$(cat "$repo_root/.l99_setup")
 echo "Using '$SETUP' for Ladder99 setup, as found in the 'setups' folder."

@@ -1,3 +1,5 @@
 #!/bin/bash
 
-l99 status $*
+repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+
+"$repo_root/l99" status "$@"

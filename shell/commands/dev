@@ -1,10 +1,12 @@
 #!/bin/bash
 
+repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+
 usage="
 Usage: l99 dev [SERVICES]
 
 Start a docker service or services using their profile name(s).
-Builds the image locally from the service Dockerfile.
+Builds the image locallzy from the service Dockerfile.
 See also l99 start.
 
 SERVICES      space-delim list of services or profiles to start
@@ -27,7 +29,7 @@ fi
 SERVICES=${*:-base}
 
 # make cmd and run it
-CMD="l99 compose up --build $SERVICES"
+CMD="$repo_root/l99 compose up --build $SERVICES"
 
 echo "$CMD"
 bash -c "$CMD"

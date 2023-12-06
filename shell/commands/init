@@ -1,5 +1,7 @@
 #!/bin/bash
 
+repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+
 usage="
 Usage: l99 init SETUP
 
@@ -16,14 +18,14 @@ if [ $# -eq 0 ]; then
 fi
 
 # source folder
-EXAMPLE=setups/example
+EXAMPLE="$repo_root/setups/example"
 
 # get setup name
 SETUP=$1
 shift
 
 # get setup folder
-SETUP_FOLDER=setups/$SETUP
+SETUP_FOLDER="$repo_root/setups/$SETUP"
 
 # check if setup dir already exists
 if [ -d "$SETUP_FOLDER" ]; then
@@ -36,8 +38,8 @@ fi
 echo
 echo "Copying from '$EXAMPLE'..."
 
-# need to specify everything explicitly here - 
-# alternative is installing rsync on gitbash, or ignoring cp errors, 
+# need to specify everything explicitly here -
+# alternative is installing rsync on gitbash, or ignoring cp errors,
 # or using sudo to cp everything including potentially large pg folders.
 # so, will need to keep this up-to-date if add more to the example folder!
 
@@ -55,14 +57,14 @@ mkdir $SETUP_FOLDER \
 && cp $EXAMPLE/services/docker-compose.yaml $SETUP_FOLDER/services \
 && cp $EXAMPLE/README.md $SETUP_FOLDER \
 && cp $EXAMPLE/setup.yaml $SETUP_FOLDER \
-&& shell/commands/use $SETUP \
+&& "$repo_root/shell/commands/use" $SETUP \
 && echo "Done. Try 'l99 start'"
 
 # old:
 # need `2>/dev/null || :` to suppress the error msgs and errors in cp,
 # see https://serverfault.com/a/153893/211025.
 # but
-# rsync has an --exclude param, but installing rsync on git bash for windows is complex - 
+# rsync has an --exclude param, but installing rsync on git bash for windows is complex -
 #  https://superuser.com/questions/701141/how-to-add-more-commands-to-git-bash
 # sudo cp -R setups/example $SETUP_FOLDER \
 # cp -R setups/example $SETUP_FOLDER 2>/dev/null || : \

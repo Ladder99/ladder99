@@ -7,6 +7,8 @@
 # some discussion here
 # https://unix.stackexchange.com/questions/379464/why-does-this-script-work-in-the-terminal-but-not-from-a-file
 
+repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+
 usage="
 Usage: l99 COMMAND [PARAMS]
 
@@ -41,23 +43,23 @@ Examples
     l99 init my-company
 "
 
+L99_HOME="${$L99_HOME:-$repo_root}"
+
 if [ "$L99_HOME" = "" ]; then
     echo "Please install the Ladder99 cli using the install script, i.e. run 'shell/install'."
     exit 1
 fi
 
-cd $L99_HOME
-
 # show help if count of params is zero
 if [ $# -eq 0 ]; then
     echo "$usage"
-    shell/commands/using
+    "$repo_root/shell/commands/using"
     exit
 fi
 
 # get command
 CMD=$1 # eg 'start'
-CMD_PATH=shell/commands/$CMD # eg 'shell/commands/start'
+CMD_PATH="$repo_root/shell/commands/$CMD" # eg 'shell/commands/start'
 shift
 
 # get paramters
