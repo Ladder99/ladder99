@@ -7,12 +7,16 @@ repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
 
 echo "Adding PATH extension and L99 variables to ~/.bashrc..."
 
-# amend the .bashrc file
-echo >> ~/.bashrc
-echo "# added by ladder99 $(date -Iseconds)" >> ~/.bashrc
-echo "export PATH=\"\$PATH:$repo_root/shell\"" >> ~/.bashrc
-echo "export L99_HOME='$repo_root'" >> ~/.bashrc
-echo "export L99_SETUP" >> ~/.bashrc
+# Remove existing configuration from `~/.bashrc`
+sed -zi 's/\n# added by ladder99 [0-9T:-]\+.*export L99_SETUP//' ~/.bashrc
+
+# Append Ladder99 configuration to `~/.bashrc`
+cat << EOF >> ~/.bashrc
+# added by ladder99 $(date -Is)
+export PATH="\$PATH:$repo_root/shell"
+export L99_HOME='$repo_root'
+export L99_SETUP
+EOF
 
 # use the configuration in the setups/example folder
 # (writes to .l99_setup file)
