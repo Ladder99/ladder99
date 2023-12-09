@@ -43,7 +43,7 @@ Examples
     l99 init my-company
 "
 
-L99_HOME="${$L99_HOME:-$repo_root}"
+L99_HOME="${L99_HOME:-$repo_root}"
 
 if [ "$L99_HOME" = "" ]; then
     echo "Please install the Ladder99 cli using the install script, i.e. run 'shell/install'."
@@ -53,13 +53,13 @@ fi
 # show help if count of params is zero
 if [ $# -eq 0 ]; then
     echo "$usage"
-    "$repo_root/shell/commands/using"
+    "$L99_HOME/shell/commands/using"
     exit
 fi
 
 # get command
 CMD=$1 # eg 'start'
-CMD_PATH="$repo_root/shell/commands/$CMD" # eg 'shell/commands/start'
+CMD_PATH="$L99_HOME/shell/commands/$CMD" # eg 'shell/commands/start'
 shift
 
 # get paramters

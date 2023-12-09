@@ -1,5 +1,5 @@
 #!/bin/bash
 
-repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+scripts_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")/shell"
 
-"$repo_root/l99" status "$@"
+"$scripts_root/l99" status "$@"
