@@ -1,6 +1,6 @@
 #!/bin/bash
 
-repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+scripts_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")/shell"
 
 usage="
 Usage: l99 dev [SERVICES]
@@ -29,7 +29,7 @@ fi
 SERVICES=${*:-base}
 
 # make cmd and run it
-CMD="$repo_root/l99 compose up --build $SERVICES"
+CMD="$scripts_root/l99 compose up --build $SERVICES"
 
 echo "$CMD"
 bash -c "$CMD"

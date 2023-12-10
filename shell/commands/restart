@@ -2,7 +2,7 @@
 
 # restart services
 
-repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+scripts_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")/shell"
 
 usage="
 Usage: l99 restart [SERVICES]
@@ -21,6 +21,6 @@ fi
 SERVICES=$*
 
 echo "Stopping services..." \
-&& "$repo_root/l99" stop $SERVICES \
+&& "$scripts_root/l99" stop $SERVICES \
 && echo "Starting services..." \
-&& "$repo_root/l99" start $SERVICES
+&& "$scripts_root/l99" start $SERVICES
