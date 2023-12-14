@@ -37,13 +37,13 @@ Docker-compose will use this variable to pull the correct image.
 For x86 Linux architecture use:
 
 ```bash
-export FOCAS_TGT=linux64-9e55095
+export FOCAS_TGT=linux64-d538eef
 ```
 
 For ARM Linux architecture use:
 
 ```bash
-export FOCAS_TGT=arm-9e55095
+export FOCAS_TGT=arm-d538eef
 ```
 
 ## Clone Repository
@@ -83,9 +83,11 @@ mkdir -p ../../volumes/mosquitto/data
 mkdir -p ../../volumes/mosquitto/log
 cp mosquitto.conf ../../volumes/mosquitto/config/mosquitto.conf
 
-mkdir -p ../../volumes/agent
-cp docker/agent.cfg ../../volumes/agent/agent.cfg
-cp docker/devices_template.xml ../../volumes/agent/devices.xml
+mkdir -p ../../volumes/agent/config
+mkdir -p ../../volumes/agent/data
+mkdir -p ../../volumes/agent/log
+cp docker/agent.cfg ../../volumes/agent/config/agent.cfg
+cp docker/devices_template.xml ../../volumes/agent/config/devices.xml
 ```
 
 ## Start Profile
@@ -98,11 +100,11 @@ Available profiles:
 | [Dozzle](https://hub.docker.com/r/amir20/dozzle/) | `all`, `admin` | Docker log concentrator. |
 | [Influx](https://hub.docker.com/_/influxdb) | `all`, `influx` | Time series database. |
 | [Agent](https://hub.docker.com/r/ladder99/agent) | `all`, `mtc` | MTConnect Agent. |
-| [Mosquitto](https://hub.docker.com/_/eclipse-mosquitto) | `all`, `mqtt` | MQTT broker. |
+| [Mosquitto](https://hub.docker.com/_/eclipse-mosquitto) | `all`, `mtc`, `mqtt` | MQTT broker. |
 | [Fanuc Driver](https://hub.docker.com/r/ladder99/fanuc-driver) | `all`, `influx`, `mqtt`, `spb`, `mtc`, `fanuc` | Fanuc Focas adapter. |
 
 If you are using the Fanuc Driver in combination with Ladder99 MTConnect Historian then stand up the `fanuc` profile.  
-If you want to output data to InfluxDb, MQTT, or as SparkplugB then select the appropriate profile, in addition to `admin`.
+If you want to output data to InfluxDb, MQTT, or as SparkplugB then select the appropriate profile, in [addition](https://docs.docker.com/compose/profiles/#start-multiple-profiles) to `admin`.
 
 ```bash
 cd ~/fanuc/fanuc-driver/examples
