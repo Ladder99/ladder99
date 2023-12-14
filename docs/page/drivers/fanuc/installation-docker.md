@@ -14,17 +14,14 @@ dateCreated: 2022-09-23T01:58:36.483Z
 ## Install Docker and Compose
 
 ```bash
-cd ~
-
-curl -fsSL https://get.docker.com -o get-docker.sh
-sudo sh ./get-docker.sh
+curl -fsSL https://get.docker.com -o ~/get-docker.sh
+sudo sh ~/get-docker.sh
 
 sudo groupadd docker
 
-sudo usermod -aG docker $USER
+sudo usermod -aG docker "$USER"
 newgrp docker
-sudo systemctl enable docker
-sudo systemctl start docker
+sudo systemctl enable --now docker
 ```
 
 ## Select Latest Image
