@@ -19,7 +19,7 @@ sudo sh ~/get-docker.sh
 
 sudo groupadd docker
 
-sudo usermod -aG docker $USER
+sudo usermod -aG docker "$USER"
 newgrp docker
 sudo systemctl enable docker
 sudo systemctl start docker
