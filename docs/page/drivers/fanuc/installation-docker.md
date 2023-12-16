@@ -96,7 +96,8 @@ Available profiles:
 | [Portainer](https://hub.docker.com/r/portainer/portainer-ce) | `all`, `admin` | Visual Docker management. |
 | [Dozzle](https://hub.docker.com/r/amir20/dozzle/) | `all`, `admin` | Docker log concentrator. |
 | [Influx](https://hub.docker.com/_/influxdb) | `all`, `influx` | Time series database. |
-| [Agent](https://hub.docker.com/r/ladder99/agent) | `all`, `mtc` | MTConnect Agent. |
+| [Agent Unoffical](https://hub.docker.com/r/ladder99/agent) | `all`, `mtc_2203` | Unnoficial MTConnect Agent v2.2.0.3. |
+| [Agent Official](https://hub.docker.com/r/mtconnect/agent) | `all`, `mtc` | Official MTConnect Agent latest. |
 | [Mosquitto](https://hub.docker.com/_/eclipse-mosquitto) | `all`, `mtc`, `mqtt` | MQTT broker. |
 | [Fanuc Driver](https://hub.docker.com/r/ladder99/fanuc-driver) | `all`, `influx`, `mqtt`, `spb`, `mtc`, `fanuc` | Fanuc Focas adapter. |
 
