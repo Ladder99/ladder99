@@ -99,7 +99,7 @@ Available profiles:
 | [Agent Unoffical](https://hub.docker.com/r/ladder99/agent) | `all`, `mtc_2203` | Unnoficial MTConnect Agent v2.2.0.3. |
 | [Agent Official](https://hub.docker.com/r/mtconnect/agent) | `all`, `mtc` | Official MTConnect Agent latest. |
 | [Mosquitto](https://hub.docker.com/_/eclipse-mosquitto) | `all`, `mtc`, `mqtt` | MQTT broker. |
-| [Fanuc Driver](https://hub.docker.com/r/ladder99/fanuc-driver) | `all`, `influx`, `mqtt`, `spb`, `mtc`, `fanuc` | Fanuc Focas adapter. |
+| [Fanuc Driver](https://hub.docker.com/r/ladder99/fanuc-driver) | `all`, `influx`, `mqtt`, `spb`, `mtc_2203`, `mtc`, `fanuc` | Fanuc Focas adapter. |
 
 If you are using the Fanuc Driver in combination with Ladder99 MTConnect Historian then stand up the `fanuc` profile.  
 If you want to output data to InfluxDb, MQTT, or as SparkplugB then select the appropriate profile, in [addition](https://docs.docker.com/compose/profiles/#start-multiple-profiles) to `admin`.
