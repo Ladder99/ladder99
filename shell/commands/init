@@ -46,30 +46,10 @@ echo "Copying from '$EXAMPLE'..."
 # we copy agent folder for the agent.cfg and agent.xml files
 # we copy grafana/etc for some dashboard pages
 
-mkdir $SETUP_FOLDER \
-&& mkdir $SETUP_FOLDER/services \
-&& mkdir $SETUP_FOLDER/volumes \
-&& mkdir $SETUP_FOLDER/volumes/grafana \
-&& cp -R $EXAMPLE/volumes/agent $SETUP_FOLDER/volumes/agent/ \
-&& cp -R $EXAMPLE/volumes/grafana/etc $SETUP_FOLDER/volumes/grafana/etc/ \
-&& cp $EXAMPLE/.gitignore $SETUP_FOLDER \
-&& cp $EXAMPLE/.env-example $SETUP_FOLDER \
-&& cp $EXAMPLE/services/docker-compose.yaml $SETUP_FOLDER/services \
-&& cp $EXAMPLE/README.md $SETUP_FOLDER \
-&& cp $EXAMPLE/setup.yaml $SETUP_FOLDER \
-&& "$repo_root/shell/commands/use" $SETUP \
+mkdir "$SETUP_FOLDER" "$SETUP_FOLDER"/{services,volumes,volumes/grafana} \
+&& cp -r "$EXAMPLE/volumes/agent" "$SETUP_FOLDER/volumes/agent" \
+&& cp -r "$EXAMPLE/volumes/grafana/etc" "$SETUP_FOLDER/volumes/grafana/etc" \
+&& cp "$EXAMPLE/services/docker-compose.yaml" "$SETUP_FOLDER/services" \
+&& cp "$EXAMPLE"/{.env-example,.gitignore,README.md,setup.yaml} "$SETUP_FOLDER" \
+&& "$repo_root/shell/commands/use" "$SETUP" \
 && echo "Done. Try 'l99 start'"
-
-# old:
-# need `2>/dev/null || :` to suppress the error msgs and errors in cp,
-# see https://serverfault.com/a/153893/211025.
-# but
-# rsync has an --exclude param, but installing rsync on git bash for windows is complex -
-#  https://superuser.com/questions/701141/how-to-add-more-commands-to-git-bash
-# sudo cp -R setups/example $SETUP_FOLDER \
-# cp -R setups/example $SETUP_FOLDER 2>/dev/null || : \
-# && rm $ENVFILE \
-# && rm -rf $SETUP_FOLDER/volumes/grafana/var \
-# && rm -rf $SETUP_FOLDER/volumes/pgadmin \
-# && rm -rf $SETUP_FOLDER/volumes/postgres \
-# && rm -rf $SETUP_FOLDER/volumes/portainer \
