@@ -60,21 +60,11 @@ services:
   # take in shdr and output xml/json/html
   agent:
     container_name: agent
-    #. use mtconnect/agent once mtconnect publishes theirs to docker hub
-    # see https://hub.docker.com/repository/docker/ladder99/agent for ours
-    # image: ladder99/agent:1.7.0.3-0.1.2
-    # image: ladder99/agent:2.0.0.11-arm
-    # image: ladder99/agent:2.0.0.12_RC23-arm
-    image: ladder99/agent:2.0.0.13_RC1
+    image: mtconnect/agent:2.2.0.16
     profiles:
       - agent
-    working_dir: /data/agent
-    # note: agent will optionally print to stdout and/or dump to /data/agent/agent.log* files.
-    # note: without this command, agent image runs a simulator of a cnc machine.
-    command: agent run agent.cfg
-    # command: agent debug agent.cfg
     volumes:
-      - ../setups/$SETUP/volumes/agent:/data/agent # should have agent.cfg, agent.xml
+      - ../setups/$SETUP/volumes/agent:/mtconnect/config # should have agent.cfg, agent.xml
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     ports:

@@ -9,8 +9,8 @@ The Agent comes with a recording of a CNC machine for playback.
 
 This command will download an image of the Agent from Docker Hub (a central repository for Docker services) and run the simulation -
 
-```
-docker run -it --rm --init --name agent -p5000:5000 ladder99/agent
+```bash
+docker run -it --rm --init --name agent -p5000:5000 mtconnect/agent
 ```
 
 ## View Output
