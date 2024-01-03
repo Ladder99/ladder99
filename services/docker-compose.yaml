@@ -93,8 +93,8 @@ services:
     networks:
       - ladder99
     volumes:
-      # By default a container based on this image will run in the UTC timezone. 
-      # In case you want to run your cron rules in your local timezone (respecting DST), 
+      # By default, a container based on this image will run in the UTC timezone.
+      # In case you want to run your cron rules in your local timezone (respecting DST),
       # you can mount your Docker host's /etc/timezone and /etc/localtime:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
@@ -176,7 +176,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     # need to leave this unspecified here, because clients that use traefik
-    # need it that way, and there's no way to remove a port through 
+    # need it that way, and there's no way to remove a port through
     # overrides yet.
     # see https://github.com/docker/compose/issues/3729
     # IMPORTANT: might need to turn this on for a client.
@@ -203,7 +203,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
-      - 8080:8080
+      - '8080:8080'
     restart: unless-stopped
     networks:
       - ladder99
@@ -232,7 +232,7 @@ services:
       PGDATABASE: null
       PGUSER: null
       PGPASSWORD: null
-      # provision password - these will get used the first time grafana is run - 
+      # provision password - these will get used the first time grafana is run -
       # can pass in through environment variables -
       GF_SECURITY_ADMIN_USER: null
       GF_SECURITY_ADMIN_PASSWORD: null
@@ -249,13 +249,13 @@ services:
     # of the grafana group (id 472), for better compatibility with OpenShift. [?]
     # grafana gives permission error without user:root - not on mac tho. only on arm?
     # https://community.grafana.com/t/new-docker-install-with-persistent-storage-permission-problem/10896/13
-    # Speaking in generalities it is not a security problem to run a container as root. 
-    # If you run as a regular user and some hacker breaks your application they will 
-    # have access to whatever a regular user has access to. If you run as root and 
-    # some hacker breaks your application they will have access to the entire 
-    # container. It sounds like running as a regular user is safer; but in practice 
-    # there is nothing important on the container that the regular user does not 
-    # have access to. Hopefully the hacker does not figure out how to break out 
+    # Speaking in generalities it is not a security problem to run a container as root.
+    # If you run as a regular user and some hacker breaks your application they will
+    # have access to whatever a regular user has access to. If you run as root and
+    # some hacker breaks your application they will have access to the entire
+    # container. It sounds like running as a regular user is safer; but in practice
+    # there is nothing important on the container that the regular user does not
+    # have access to. Hopefully the hacker does not figure out how to break out
     # of the container. [?]
     # https://stackoverflow.com/questions/64271295/runnig-docker-as-nonroot-with-user-id-u-cant-create-var-lib#comment113675767_64272066
     user: root
@@ -338,7 +338,7 @@ services:
     profiles:
       - mosquitto
     ports:
-      - 1883:1883
+      - '1883:1883'
     command: mosquitto -c /mosquitto/config/mosquitto.conf -v # run in verbose mode
     volumes:
       - ../setups/$SETUP/volumes/mosquitto/config:/mosquitto/config # has mosquitto.conf
@@ -476,7 +476,7 @@ services:
     image: timescale/timescaledb:2.7.0-pg13
     # timescaledb 2.8 added time_bucket timezone support - but upgrading timescaledb is a pain
     # see https://docs.timescale.com/timescaledb/latest/how-to-guides/upgrades/upgrade-docker/
-    # image: timescale/timescaledb:2.10.0-pg13 
+    # image: timescale/timescaledb:2.10.0-pg13
     # set max_connections high for grafana pages with lots of queries.
     # and set timezone to match the host - set in client's docker-compose.yaml file, eg
     # command: postgres -c 'max_connections=50' -c 'timezone=America/Chicago'
@@ -484,7 +484,7 @@ services:
     profiles:
       - postgres
     ports:
-      - 127.0.0.1:$PGPORT:5432/tcp # this way, only localhost can access the port
+      - '127.0.0.1:$PGPORT:5432/tcp' # this way, only localhost can access the port
     environment:
       # the PostgreSQL image uses these environment variables.
       # re PGPASSWORD,
@@ -495,9 +495,9 @@ services:
       POSTGRES_DB: $PGDATABASE
       POSTGRES_USERNAME: $PGUSER
       # note: POSTGRES_PASSWORD is REQUIRED.
-      # the first time this is run (and the data directory is empty), it uses 
-      # these envars to initialize the database. 
-      # to change the db password would require an ALTER USER SQL statement, 
+      # the first time this is run (and the data directory is empty), it uses
+      # these env vars to initialize the database.
+      # to change the db password would require an ALTER USER SQL statement,
       # or \password in psql.
       # see https://hub.docker.com/_/postgres
       POSTGRES_PASSWORD: $PGPASSWORD
@@ -592,7 +592,7 @@ services:
   relay:
     container_name: relay
 
-    # note: to build from source, use the 'build' directive instead of 'image', 
+    # note: to build from source, use the 'build' directive instead of 'image',
     # and run 'l99 start --offline' to avoid pulling image
     # see https://hub.docker.com/repository/docker/ladder99/relay
     # image: ladder99/relay:0.11.0
@@ -640,55 +640,6 @@ services:
         max-size: '20m'
 
   # ---------------------------------------------------------------------------
-  # sematext
-  # ---------------------------------------------------------------------------
-  # send system and container metrics to sematext.com
-  sematext:
-    image: sematext/agent:1.20.1 # 2023-01
-    container_name: sematext
-    profiles:
-      - sematext
-    environment:
-      - INFRA_TOKEN # set this in .env file #. INFRA_TOKEN=${SEMATEXT_INFRA_TOKEN}
-      - SERVER_BASE_URL=https://spm-receiver.sematext.com
-      - LOGS_RECEIVER_URL=https://logsene-receiver.sematext.com
-      - EVENT_RECEIVER_URL=https://event-receiver.sematext.com
-      - COMMAND_SERVER_URL=https://command.sematext.com
-    cap_add:
-      - SYS_ADMIN
-    restart: unless-stopped
-    volumes:
-      - /:/hostfs:ro
-      - /etc/passwd:/etc/passwd:ro
-      - /etc/group:/etc/group:ro
-      - /var/run/:/var/run
-      - /sys/kernel/debug:/sys/kernel/debug
-      - /sys:/host/sys:ro
-      - /dev:/hostfs/dev:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-
-  # sends logs to sematext
-  sematext-logs:
-    image: sematext/logagent:3.1.3 # 2022-07
-    container_name: sematext-logs
-    profiles:
-      - sematext-logs
-    environment:
-      - LOGS_TOKEN # set this in .env file #. LOGS_TOKEN=${SEMATEXT_LOGS_TOKEN}
-      - REGION=US
-      # the free tier limits you to logs for 3 containers
-      - MATCH_BY_NAME=(adapter|meter|relay)
-    cap_add:
-      - SYS_ADMIN
-    restart: unless-stopped
-    volumes:
-      - '/var/run/docker.sock:/var/run/docker.sock'
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-
-  # ---------------------------------------------------------------------------
   # simulation
   # ---------------------------------------------------------------------------
   # the built-in mtconnect agent simulation
@@ -711,7 +662,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
     ports:
-      - 5001:5000
+      - '5001:5000'
     restart: unless-stopped
     networks:
       - ladder99
@@ -753,8 +704,8 @@ services:
     profiles:
       - traefik
     ports:
-      - 80:80/tcp
-      - 443:443/tcp
+      - '80:80/tcp'
+      - '443:443/tcp'
     command:
       - --certresolv.myresolver.acme.storage=/etc/traefik/acme.json
     restart: unless-stopped
@@ -766,11 +717,11 @@ services:
       #   touch ../client-oxbox/volumes/traefik/acme.json
       #   chmod 600 ../client-oxbox/volumes/traefik/acme.json
       - /var/run/docker.sock:/var/run/docker.sock
-      # can't do this as docker-compose will create acme.json as a directory - 
-      # "docker-compose only creates folders, acme.json can be a folder name, 
-      # it's impossible for it to know you want it to be a file. So if that file isn't 
+      # can't do this as docker-compose will create acme.json as a directory -
+      # "docker-compose only creates folders, acme.json can be a folder name,
+      # it's impossible for it to know you want it to be a file. So if that file isn't
       # present at that path when you create the container, it will create a folder."
-      # and if you try manually creating a blank file and set chmod 600 on it, 
+      # and if you try manually creating a blank file and set chmod 600 on it,
       # traefik will complain.
       # https://williamhayes.medium.com/traefik-letsencrypt-and-acme-json-configuration-problems-5780c914351d
       # - ../setups/$SETUP/volumes/traefik/acme.json:/acme.json
