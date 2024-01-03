@@ -127,8 +127,7 @@ docker container prune
 ```
 
 ```bash
-docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'ladder99/fanuc-driver')
-docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'ladder99/agent')
+docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep '\(ladder99\|mtconnect\)/agent\|ladder99/fanuc-driver')
 docker image prune
 ```
 
