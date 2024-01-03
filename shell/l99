@@ -7,7 +7,7 @@
 # some discussion here
 # https://unix.stackexchange.com/questions/379464/why-does-this-script-work-in-the-terminal-but-not-from-a-file
 
-repo_root="$(dirname "$(dirname "$(dirname "$(realpath "$0")")")")"
+repo_root="$(dirname "$(dirname "$(realpath "$0")")")"
 
 usage="
 Usage: l99 COMMAND [PARAMS]
