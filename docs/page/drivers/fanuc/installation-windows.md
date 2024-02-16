@@ -224,13 +224,13 @@ Adapters {
 ```
 
 3. Run `c:\fanuc\ladder99\fanuc-driver\user\win_run.bat` to start the adapter.
-4. Once the Fanuc controller comes online, you will see a `service started` message.
+4. Once the Fanuc controller comes online, you will see a `[f_sim] Strategy started` message.
 
 ```
-2024/02/16 10:45:49.803|INFO|[fanuc1] Strategy initializing |l99.driver.fanuc.strategies.FanucMultiStrategy|
-2024/02/16 10:45:52.877|WARN|[fanuc1] Strategy initialization pending (0 min) |l99.driver.fanuc.strategies.FanucMultiStrategy|
-2024/02/16 10:46:22.523|INFO|[fanuc1] Strategy initialized |l99.driver.fanuc.strategies.FanucMultiStrategy|
-2024/02/16 10:46:23.615|INFO|[fanuc1] Strategy started |l99.driver.fanuc.strategies.FanucMultiStrategy|
+2024/02/16 10:45:49.803|INFO|[f_sim] Strategy initializing |l99.driver.fanuc.strategies.FanucMultiStrategy|
+2024/02/16 10:45:52.877|WARN|[f_sim] Strategy initialization pending (0 min) |l99.driver.fanuc.strategies.FanucMultiStrategy|
+2024/02/16 10:46:22.523|INFO|[f_sim] Strategy initialized |l99.driver.fanuc.strategies.FanucMultiStrategy|
+2024/02/16 10:46:23.615|INFO|[f_sim] Strategy started |l99.driver.fanuc.strategies.FanucMultiStrategy|
 ```
 
 5. When the adapter starts it creates a `c:\fanuc\ladder99\fanuc-driver\mtc_device_f_sim.xml` file.  This file contains the MTConnect Device Information model for our `f_sim` device.  Copy the contents of this file into `c:\fanuc\agent-2.2.0.17-win32\bin\devices.xml`, between `<Devices> </Devices>`.
