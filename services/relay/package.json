@@ -8,6 +8,7 @@
   "scripts": {
     "start": "node src/index.js",
     "test": "node src/test/test.js",
+    "test:jest": "NODE_OPTIONS='--experimental-vm-modules' jest **/*.spec.js",
     "test-autoprune": "node src/test/test-autoprune.js"
   },
   "author": "MRIIOT <ladder99@mriiot.com>",
@@ -23,6 +24,7 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
+    "jest": "^29.7.0",
     "nodemon": "^2.0.14"
   }
 }
