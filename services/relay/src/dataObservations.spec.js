@@ -1,12 +1,18 @@
 import { jest } from '@jest/globals'
 
-import { getHistoryRecords } from './dataObservations'
+import { Observations } from './dataObservations'
 
 describe('dataObservations', () => {
+  let observations
+
+  beforeAll(() => {
+    observations = new Observations()
+  })
+
   describe('getHistoryRecords()', () => {
     describe('general tests', () => {
       it('should return an empty array when no observation has `dataitem_id` property', () => {
-        expect(getHistoryRecords([{
+        expect(observations.getHistoryRecords([{
           category: 'CONDITION',
           dataItemId: '48e7290b1184_condition',
           device_id: 751,
@@ -20,7 +26,7 @@ describe('dataObservations', () => {
 
       it('should return an empty array when no observation has `dataitem_id` property', () => {
         const warn = jest.spyOn(console, 'warn').mockImplementation((m) => {})
-        const observations = {
+        const obs = {
           category: 'CONDITION',
           dataItemId: '48e7290b1184_condition',
           dataitem_id: 774,
@@ -32,15 +38,15 @@ describe('dataObservations', () => {
           uid: 'Main/48e7290b1184_condition'
         }
 
-        getHistoryRecords(observations)
+        observations.getHistoryRecords(obs)
 
-        expect(warn).toHaveBeenCalledWith(`[getHistoryRecords] WARN The following value was set to 'observations', but it is not an array:`, observations)
+        expect(warn).toHaveBeenCalledWith(`[getHistoryRecords] WARN The following value was set to 'observations', but it is not an array:`, obs)
       })
     })
 
     describe('test `value` type conversion', () => {
       it('should be converted to number when `category` is `SAMPLE` and `value` is a number stored as a string', () => {
-        expect(getHistoryRecords([{
+        expect(observations.getHistoryRecords([{
           category: 'SAMPLE',
           dataItemId: '409151d72b38_pcc',
           dataitem_id: 771,
@@ -63,7 +69,7 @@ describe('dataObservations', () => {
       })
 
       it('should be converted to JSON string', () => {
-        expect(getHistoryRecords([{
+        expect(observations.getHistoryRecords([{
           dataItemId: 'ox003_sharcs_adapter_uri',
           dataitem_id: 743,
           device_id: 111,
@@ -85,7 +91,7 @@ describe('dataObservations', () => {
 
     describe('test the value for `CONDITION` category', () => {
       it('should be set to the `tag` value', () => {
-        expect(getHistoryRecords([{
+        expect(observations.getHistoryRecords([{
           category: 'CONDITION',
           dataItemId: '48e7290b1184_condition',
           dataitem_id: 1201,
