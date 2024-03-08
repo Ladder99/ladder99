@@ -13,6 +13,28 @@ export class Observations extends Data {
     this.type = type // used by read method - will be 'current' or 'sample'
     this.agent = agent
     this.observations = null // array of dataitems
+
+    /**
+     * List of conditions active in the last processed MTConnect XML per machine
+     *
+     * @type {{
+     *   [k in number]?: ({
+     *     time: Date,
+     *     resolvedTime: Date | null,
+     *     nodeId: number,
+     *     dataitemId: number,
+     *     state: string,
+     *     type: string,
+     *     conditionId: string | null,
+     *     nativeCode: string | null,
+     *     nativeSeverity: string | null,
+     *     qualifier: string | null,
+     *     message: string | null
+     *   })[]
+     * }}
+     * @private
+     */
+    this.conditionCache = {}
   }
 
   // read dataitem values from current/sample endpoints as xml/js tree,
@@ -55,6 +77,69 @@ export class Observations extends Data {
 
     // write all records to db
     return await db.addHistory(records)
+  }
+
+  /**
+   * Cache a condition of a node
+   *
+   * @param {{
+   *     time: Date,
+   *     resolvedTime: Date | null,
+   *     nodeId: number,
+   *     dataitemId: number | string,
+   *     state: string,
+   *     type: string,
+   *     conditionId: string | null,
+   *     nativeCode: string | null,
+   *     nativeSeverity: string | null,
+   *     qualifier: string | null,
+   *     message: string | null
+   *   }} condition - Condition
+   *
+   * @returns {'insert' | 'update' | 'delete' | undefined} - Type of query we need to execute to persist the condition into the database, `undefined` when there is nothing to persist
+   *
+   * @remarks The structure of conditions is the same as the structure of `raw.conditions` table.
+   */
+  cacheConditions(condition) {
+    // Invalid input should be disregarded
+    if (!condition || !Object.keys(condition).some(i => (i === 'conditionId' || i === 'nativeCode') && condition[i])) {
+      return undefined
+    }
+
+    if (!(condition.nodeId in this.conditionCache)) {
+      // If there were no active conditions for a particular node, cache the current list of conditions
+      this.conditionCache[condition.nodeId] = [condition]
+      return 'insert'
+    }
+
+    const conditionIndex = this.getCachedConditionIndex(condition)
+
+    if (!Number.isInteger(conditionIndex)) {
+      // If a particular condition is not yet cached, cache it
+      if (condition.nodeId in this.conditionCache) {
+        // Append the condition to the array
+        this.conditionCache[condition.nodeId].push(condition)
+      } else {
+        // Create a new array with the condition
+        this.conditionCache[condition.nodeId] = [condition]
+      }
+
+      return 'insert'
+    } else if (this.conditionCache[condition.nodeId][conditionIndex].state !== condition.state) {
+      // Update or remove the condition based on whether the `state` of the condition has changed or not
+      if (condition.state === 'Normal') {
+        // The condition is resolved, remove it from cache
+        this.conditionCache[condition.nodeId].splice(conditionIndex, 1)
+      } else {
+        // The condition changed its state to one different from `Normal`, update `time` and `state`
+        this.conditionCache[condition.nodeId][conditionIndex].time = condition.time
+        this.conditionCache[condition.nodeId][conditionIndex].state = condition.state
+      }
+
+      return 'update'
+    }
+
+    return undefined
   }
 
   /**
