@@ -12,13 +12,16 @@ pi.sh
 .venv
 _old
 desktop.ini
+.idea/
 
 *.bak
 
+**/coverage
 **/grafana/var
 **/mosquitto/data
 **/mosquitto/log
 **/pgadmin
+**/pnpm-lock.yaml
 **/portainer/data
 **/postgres/data
 **/volumes/traefik/acme.json
