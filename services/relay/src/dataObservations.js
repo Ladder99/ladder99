@@ -51,7 +51,7 @@ export class Observations extends Data {
     // get history records to write to db
     // observations is now [{ device_id, dataitem_id, tag, dataItemId, name, timestamp, value }, ...]
     //. records is
-    const records = getHistoryRecords(this.observations)
+    const records = this.getHistoryRecords(this.observations)
 
     // write all records to db
     return await db.addHistory(records)
