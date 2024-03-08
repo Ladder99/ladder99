@@ -24,6 +24,7 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
+    "@jest/globals": "^29.7.0",
     "jest": "^29.7.0",
     "nodemon": "^2.0.14"
   }
