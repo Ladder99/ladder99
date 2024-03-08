@@ -58,6 +58,54 @@ export class Observations extends Data {
   }
 
   /**
+   * Get a cached condition index
+   *
+   * @param {{
+   *     time: Date,
+   *     resolvedTime: Date | null,
+   *     nodeId: number,
+   *     dataitemId: number | string,
+   *     state: string,
+   *     type: string,
+   *     conditionId: string | null,
+   *     nativeCode: string | null,
+   *     nativeSeverity: string | null,
+   *     qualifier: string | null,
+   *     message: string | null
+   *   }} condition - Condition of a node
+   *
+   * @returns {number | undefined} - The index of a condition in a node
+   */
+  getCachedConditionIndex(condition) {
+    // Invalid input should return `undefined`
+    !condition || !Object.keys(condition).some(i => (i === 'conditionId' || i === 'nativeCode') && condition[i])
+    if (Object.prototype.toString.call(condition) !== '[object Object]') {
+      return undefined
+    }
+
+    if (condition.nodeId in this.conditionCache) {
+      const cachedConditions = this.conditionCache[condition.nodeId]
+
+      for (const cachedConditionIdx in cachedConditions) {
+        const cachedCondition = cachedConditions[cachedConditionIdx]
+
+        // Check if the condition is already active
+        // Note: In MTConnect model v2.3, `conditionId` was added to identify a condition which should be the preferred. Conditions in older MTConnect model versions, however, still need to be identified using `nativeCode` and `dataitemId`.
+        if (
+          condition?.conditionId === cachedCondition?.conditionId
+          || !('conditionId' in condition)
+          && condition.dataitemId === cachedCondition.dataitemId
+          && condition.nativeCode === cachedCondition.nativeCode
+        ) {
+          return +cachedConditionIdx
+        }
+      }
+    }
+
+    return undefined
+  }
+
+  /**
    * Build up an array of history records to write
    *
    * @remarks This method filters observations down to dataitems we're interested in and converts values to a proper JS datatype.
