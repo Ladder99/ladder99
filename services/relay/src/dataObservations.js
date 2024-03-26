@@ -143,6 +143,40 @@ export class Observations extends Data {
   }
 
   /**
+   * Check whether an observation is a condition
+   *
+   * @todo Improve the type of Observation by allowing only some property values.
+   *
+   * @param {{
+   *          assetType?: string,  // 'UNAVAILABLE'
+   *          category?: string,  // 'CONDITION' | 'EVENT' | 'SAMPLE'
+   *          count?: string,  // `${number}`
+   *          dataItemId: string,  // '*_asset_chg' | '*_asset_count' | '*_asset_rem' | '*_avail' | '*_condition' | '*_pcc' | 'agent_*_asset_chg' | 'agent_*_asset_count' | 'agent_*_asset_rem' | 'agent_avail' | 'device_added' | 'device_changed' | 'device_removed' | 'ox003_sharcs_adapter_software_version' | 'ox003_sharcs_adapter_uri' | 'ox003_sharcs_asset_update_rate' | 'ox003_sharcs_connection_status' | 'ox003_sharcs_mtconnect_version' | 'ox003_sharcs_observation_update_rate'
+   *          dataitem_id?: number,
+   *          device_id?: number,
+   *          name?: string,  // 'availability' | 'partcount'
+   *          sequence: string,  // `${number}`
+   *          statistic?: string,  // 'AVERAGE'
+   *          subType?: string,  // 'COMPLETE'
+   *          tag: string,  // 'AdapterSoftwareVersion' | 'AdapterURI' | 'AssetChanged' | 'AssetCountDataSet' | 'AssetRemoved' | 'AssetUpdateRate' | 'Availability' | 'ConnectionStatus' | 'DeviceAdded' | 'DeviceChanged' | 'DeviceRemoved' | 'MTConnectVersion' | 'Normal' | 'ObservationUpdateRate' | 'PartCount'
+   *          timestamp: string,  // `${Date.toISOString()}`
+   *          type?: string,  // 'SYSTEM'
+   *          uid: string,  // 'Main/*_asset_chg' | 'Main/*_asset_count' | 'Main/*_asset_rem' | 'Main/*_avail' | 'Main/*_condition' | 'Main/*_pcc' | 'Main/agent_*_asset_chg' | 'Main/agent_*_asset_count' | 'Main/agent_*_asset_rem' | 'Main/agent_avail' | 'Main/device_added' | 'Main/device_changed' | 'Main/device_removed' | 'Main/ox003_sharcs_adapter_software_version' | 'Main/ox003_sharcs_adapter_uri' | 'Main/ox003_sharcs_asset_update_rate' | 'Main/ox003_sharcs_connection_status' | 'Main/ox003_sharcs_mtconnect_version' | 'Main/ox003_sharcs_observation_update_rate'
+   *          value?: string  // '00000000-0000-0000-1337-409151d72b38' | 'AVAILABLE' | 'ESTABLISHED' | 'UNAVAILABLE' | 'mqtt://mosquitto:1883'
+   *        }} observation - Observation of a node
+   *
+   * @returns {boolean} - Whether the observation is a condition
+   */
+  isCondition(observation) {
+    // A condition must be an object
+    return Object.prototype.toString.call(observation) === '[object Object]'
+      // The `category` property must have a value of `CONDITION`
+      && observation.category === 'CONDITION'
+      // The `tag` property must have a value set to either `Fault`, `Normal`, `Warning` or `Unavailable`
+      && ['Fault', 'Normal', 'Warning', 'Unavailable'].includes(observation.tag)
+  }
+
+  /**
    * Get a cached condition index
    *
    * @param {{

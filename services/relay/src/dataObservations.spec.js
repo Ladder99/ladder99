@@ -917,4 +917,98 @@ describe('Observations', () => {
       })
     })
   })
+
+  describe('isCondition()', () => {
+    describe('invalid input', () => {
+      it('should return `false` for `null`', () => {
+        expect.assertions(1)
+        expect(observations.isCondition(null)).toBe(false)
+      })
+
+      it('should return `false` for `undefined`', () => {
+        expect.assertions(1)
+        expect(observations.isCondition(undefined)).toBe(false)
+      })
+
+      it('should return `false` for a string', () => {
+        expect.assertions(1)
+        expect(observations.isCondition('test')).toBe(false)
+      })
+
+      it('should return `false` for a number', () => {
+        expect.assertions(1)
+        expect(observations.isCondition(1)).toBe(false)
+      })
+
+      it('should return `false` for a boolean', () => {
+        expect.assertions(1)
+        expect(observations.isCondition(true)).toBe(false)
+      })
+
+      it('should return `false` for an empty object', () => {
+        expect.assertions(1)
+        expect(observations.isCondition({})).toBe(false)
+      })
+
+      it('should return `false` for an empty array', () => {
+        expect.assertions(1)
+        expect(observations.isCondition([])).toBe(false)
+      })
+
+      it('should return `false` when `category` is not `CONDITION`', () => {
+        expect.assertions(1)
+
+        const condition = {
+          category: 'NOT_CONDITION',
+          dataItemId: '48e7290b1184_condition',
+          device_id: 751,
+          sequence: '51',
+          tag: 'Normal',
+          timestamp: '2024-02-25T03:13:36.67177Z',
+          type: 'SYSTEM',
+          uid: 'Main/48e7290b1184_condition',
+        }
+
+        expect(observations.isCondition(condition)).toBe(false)
+      })
+
+      it('should return `false` when `tag` has an unsupported value', () => {
+        expect.assertions(1)
+
+        const condition = {
+          category: 'CONDITION',
+          dataItemId: '48e7290b1184_condition',
+          device_id: 751,
+          sequence: '51',
+          tag: 'Something else',
+          timestamp: '2024-02-25T03:13:36.67177Z',
+          type: 'SYSTEM',
+          uid: 'Main/48e7290b1184_condition',
+        }
+
+        expect(observations.isCondition(condition)).toBe(false)
+      })
+    })
+
+    describe('valid input', () => {
+      ['Fault', 'Normal', 'Warning', 'Unavailable'].forEach(tag => {
+        it(`should return \`true\` for a \`${tag}\``, () => {
+          expect.assertions(1)
+
+          const condition = {
+            category: 'CONDITION',
+            dataItemId: '48e7290b1184_condition',
+            device_id: 751,
+            sequence: '51',
+            tag: `${tag}`,
+            timestamp: '2024-02-25T03:13:36.67177Z',
+            type: 'SYSTEM',
+            uid: 'Main/48e7290b1184_condition',
+          }
+
+          expect(observations.isCondition(condition)).toBe(true)
+        })
+      })
+    })
+  })
 })
