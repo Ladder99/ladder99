@@ -25,6 +25,7 @@ const migrations = {
     7: ['041-schedule'],
     8: ['042-bins-metrics'],
     9: ['043-setup-devices'],
+    10: ['044-conditions'],
   },
 }
 
