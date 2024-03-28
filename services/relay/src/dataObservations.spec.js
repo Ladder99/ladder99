@@ -803,6 +803,79 @@ describe('Observations', () => {
     })
   })
 
+  describe('getConditionIdentifiers()', () => {
+    describe('valid conditions', () => {
+      it('should return condition identifiers for a condition with `conditionId`', () => {
+        expect.assertions(1)
+
+        expect(observations.getConditionIdentifiers({
+          time: new Date('2024-03-02T14:05:34.729Z'),
+          resolvedTime: null,
+          nodeId: 173,
+          dataitemId: 'test_cond',
+          state: 'Fault',
+          type: 'SYSTEM',
+          conditionId: '3',
+          nativeCode: null,
+          nativeSeverity: 'error',
+          qualifier: null,
+          message: 'Test alarm message',
+        })).toStrictEqual(['conditionId', 'nodeId', 'state', 'time', 'type'])
+      })
+
+      it('should return condition identifiers for a condition with only `time`, `nodeId`, `dataitemId`, `state` and `type` defined', () => {
+        expect.assertions(1)
+
+        expect(observations.getConditionIdentifiers({
+          time: new Date('2024-03-02T14:05:34.729Z'),
+          resolvedTime: null,
+          nodeId: 173,
+          dataitemId: 'test_cond',
+          state: 'Normal',
+          type: 'SYSTEM',
+          nativeCode: null,
+          nativeSeverity: null,
+          qualifier: null,
+          message: null,
+        })).toStrictEqual(['dataitemId', 'nodeId', 'state', 'time', 'type'])
+      })
+
+      it('should return condition identifiers for a condition with only `time`, `nativeCode`, `nodeId`, `dataitemId`, `state`, `type` and `message` defined', () => {
+        expect.assertions(1)
+
+        expect(observations.getConditionIdentifiers({
+          time: new Date('2024-03-02T14:05:34.729Z'),
+          resolvedTime: null,
+          nodeId: 173,
+          dataitemId: 'test_cond',
+          state: 'Normal',
+          type: 'SYSTEM',
+          nativeCode: '375',
+          nativeSeverity: null,
+          qualifier: null,
+          message: 'Test alarm message',
+        })).toStrictEqual(['dataitemId', 'message', 'nativeCode', 'nodeId', 'state', 'time', 'type'])
+      })
+
+      it('should return condition identifiers for a condition with only `time`, `nodeId`, `dataitemId`, `state`, `type` and `message` defined', () => {
+        expect.assertions(1)
+
+        expect(observations.getConditionIdentifiers({
+          time: new Date('2024-03-02T14:05:34.729Z'),
+          resolvedTime: null,
+          nodeId: 173,
+          dataitemId: 'test_cond',
+          state: 'Normal',
+          type: 'SYSTEM',
+          nativeCode: null,
+          nativeSeverity: null,
+          qualifier: null,
+          message: 'Test alarm message',
+        })).toStrictEqual(['dataitemId', 'message', 'nodeId', 'state', 'time', 'type'])
+      })
+    })
+  })
+
   describe('getHistoryRecords()', () => {
     describe('invalid observations', () => {
       it('should return an empty array when no observation has `dataitem_id` property', () => {

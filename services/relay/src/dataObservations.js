@@ -177,6 +177,52 @@ export class Observations extends Data {
   }
 
   /**
+   * Get identifier properties of a particular condition
+   *
+   * @param {{
+   *     time: Date,
+   *     resolvedTime: Date | null,
+   *     nodeId: number,
+   *     dataitemId: number | string,
+   *     state: string,
+   *     type: string,
+   *     conditionId: string | null,
+   *     nativeCode: string | null,
+   *     nativeSeverity: string | null,
+   *     qualifier: string | null,
+   *     message: string | null
+   *   }} condition - Condition of a node
+   *
+   * @returns {string[]} - An array of property names which identify the condition
+   *
+   * @remarks
+   *
+   * The returned array could be one of the following arrays or a subset of them without `message` or `type` when their are `undefined`:
+   *
+   * - MTConnect 2.3+: `['conditionId', 'nodeId', 'state', 'time', 'type']`;
+   * - MTConnect 2.2-: `['dataitemId', 'message', 'nodeId', 'state', 'time', 'type']`;
+   * - MTConnect 2.2-: `['message', 'nativeCode', 'nodeId', 'state', 'time', 'type']`.
+   *
+   * Note that this function does not check if the argument is actually a condition to optimize it. It assumes that the argument is a valid `condition` object.
+   */
+  getConditionIdentifiers(condition) {
+    const ids = []
+
+    if (condition.hasOwnProperty('conditionId')) {
+      ids.push('conditionId', 'nodeId', 'state', 'time', 'type')
+      return ids
+    }
+
+    ['dataitemId', 'message', 'nativeCode', 'nodeId', 'state', 'time', 'type'].forEach(i => {
+      if (condition.hasOwnProperty(i) && condition[i]) {
+        ids.push(i)
+      }
+    })
+
+    return ids
+  }
+
+  /**
    * Get a cached condition index
    *
    * @param {{
