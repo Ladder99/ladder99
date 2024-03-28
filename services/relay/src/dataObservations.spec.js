@@ -541,12 +541,12 @@ describe('Observations', () => {
         expect(observations.getCachedConditionIndex(true)).toBe(undefined)
       })
 
-      it('should not cache anything for an empty object', () => {
+      it('should return `undefined` for an empty object', () => {
         expect.assertions(1)
         expect(observations.getCachedConditionIndex({})).toBe(undefined)
       })
 
-      it('should not cache anything for an empty array', () => {
+      it('should return `undefined` for an empty array', () => {
         expect.assertions(1)
         expect(observations.getCachedConditionIndex([])).toBe(undefined)
       })
