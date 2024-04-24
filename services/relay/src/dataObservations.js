@@ -13,6 +13,28 @@ export class Observations extends Data {
     this.type = type // used by read method - will be 'current' or 'sample'
     this.agent = agent
     this.observations = null // array of dataitems
+
+    /**
+     * List of conditions active in the last processed MTConnect XML per machine
+     *
+     * @type {{
+     *   [k in number]?: ({
+     *     time: Date,
+     *     resolvedTime: Date | null,
+     *     nodeId: number,
+     *     dataitemId: number,
+     *     state: string,
+     *     type: string,
+     *     conditionId: string | null,
+     *     nativeCode: string | null,
+     *     nativeSeverity: string | null,
+     *     qualifier: string | null,
+     *     message: string | null
+     *   })[]
+     * }}
+     * @private
+     */
+    this.conditionCache = {}
   }
 
   // read dataitem values from current/sample endpoints as xml/js tree,
@@ -51,10 +73,201 @@ export class Observations extends Data {
     // get history records to write to db
     // observations is now [{ device_id, dataitem_id, tag, dataItemId, name, timestamp, value }, ...]
     //. records is
-    const records = getHistoryRecords(this.observations)
+    const records = this.getHistoryRecords(this.observations)
 
     // write all records to db
     return await db.addHistory(records)
+  }
+
+  /**
+   * Cache a condition of a node
+   *
+   * @param {{
+   *     time: Date,
+   *     resolvedTime: Date | null,
+   *     nodeId: number,
+   *     dataitemId: number | string,
+   *     state: string,
+   *     type: string,
+   *     conditionId: string | null,
+   *     nativeCode: string | null,
+   *     nativeSeverity: string | null,
+   *     qualifier: string | null,
+   *     message: string | null
+   *   }} condition - Condition
+   *
+   * @returns {'insert' | 'update' | 'delete' | undefined} - Type of query we need to execute to persist the condition into the database, `undefined` when there is nothing to persist
+   *
+   * @remarks The structure of conditions is the same as the structure of `raw.conditions` table.
+   */
+  cacheConditions(condition) {
+    // Invalid input should be disregarded
+    if (!condition || !Object.keys(condition).some(i => (i === 'conditionId' || i === 'nativeCode') && condition[i])) {
+      return undefined
+    }
+
+    if (!(condition.nodeId in this.conditionCache)) {
+      // If there were no active conditions for a particular node, cache the current list of conditions
+      this.conditionCache[condition.nodeId] = [condition]
+      return 'insert'
+    }
+
+    const conditionIndex = this.getCachedConditionIndex(condition)
+
+    if (!Number.isInteger(conditionIndex)) {
+      // If a particular condition is not yet cached, cache it
+      if (condition.nodeId in this.conditionCache) {
+        // Append the condition to the array
+        this.conditionCache[condition.nodeId].push(condition)
+      } else {
+        // Create a new array with the condition
+        this.conditionCache[condition.nodeId] = [condition]
+      }
+
+      return 'insert'
+    } else if (this.conditionCache[condition.nodeId][conditionIndex].state !== condition.state) {
+      // Update or remove the condition based on whether the `state` of the condition has changed or not
+      if (condition.state === 'Normal') {
+        // The condition is resolved, remove it from cache
+        this.conditionCache[condition.nodeId].splice(conditionIndex, 1)
+      } else {
+        // The condition changed its state to one different from `Normal`, update `time` and `state`
+        this.conditionCache[condition.nodeId][conditionIndex].time = condition.time
+        this.conditionCache[condition.nodeId][conditionIndex].state = condition.state
+      }
+
+      return 'update'
+    }
+
+    return undefined
+  }
+
+  /**
+   * Check whether an observation is a condition
+   *
+   * @todo Improve the type of Observation by allowing only some property values.
+   *
+   * @param {{
+   *          assetType?: string,  // 'UNAVAILABLE'
+   *          category?: string,  // 'CONDITION' | 'EVENT' | 'SAMPLE'
+   *          count?: string,  // `${number}`
+   *          dataItemId: string,  // '*_asset_chg' | '*_asset_count' | '*_asset_rem' | '*_avail' | '*_condition' | '*_pcc' | 'agent_*_asset_chg' | 'agent_*_asset_count' | 'agent_*_asset_rem' | 'agent_avail' | 'device_added' | 'device_changed' | 'device_removed' | 'ox003_sharcs_adapter_software_version' | 'ox003_sharcs_adapter_uri' | 'ox003_sharcs_asset_update_rate' | 'ox003_sharcs_connection_status' | 'ox003_sharcs_mtconnect_version' | 'ox003_sharcs_observation_update_rate'
+   *          dataitem_id?: number,
+   *          device_id?: number,
+   *          name?: string,  // 'availability' | 'partcount'
+   *          sequence: string,  // `${number}`
+   *          statistic?: string,  // 'AVERAGE'
+   *          subType?: string,  // 'COMPLETE'
+   *          tag: string,  // 'AdapterSoftwareVersion' | 'AdapterURI' | 'AssetChanged' | 'AssetCountDataSet' | 'AssetRemoved' | 'AssetUpdateRate' | 'Availability' | 'ConnectionStatus' | 'DeviceAdded' | 'DeviceChanged' | 'DeviceRemoved' | 'MTConnectVersion' | 'Normal' | 'ObservationUpdateRate' | 'PartCount'
+   *          timestamp: string,  // `${Date.toISOString()}`
+   *          type?: string,  // 'SYSTEM'
+   *          uid: string,  // 'Main/*_asset_chg' | 'Main/*_asset_count' | 'Main/*_asset_rem' | 'Main/*_avail' | 'Main/*_condition' | 'Main/*_pcc' | 'Main/agent_*_asset_chg' | 'Main/agent_*_asset_count' | 'Main/agent_*_asset_rem' | 'Main/agent_avail' | 'Main/device_added' | 'Main/device_changed' | 'Main/device_removed' | 'Main/ox003_sharcs_adapter_software_version' | 'Main/ox003_sharcs_adapter_uri' | 'Main/ox003_sharcs_asset_update_rate' | 'Main/ox003_sharcs_connection_status' | 'Main/ox003_sharcs_mtconnect_version' | 'Main/ox003_sharcs_observation_update_rate'
+   *          value?: string  // '00000000-0000-0000-1337-409151d72b38' | 'AVAILABLE' | 'ESTABLISHED' | 'UNAVAILABLE' | 'mqtt://mosquitto:1883'
+   *        }} observation - Observation of a node
+   *
+   * @returns {boolean} - Whether the observation is a condition
+   */
+  isCondition(observation) {
+    // A condition must be an object
+    return Object.prototype.toString.call(observation) === '[object Object]'
+      // The `category` property must have a value of `CONDITION`
+      && observation.category === 'CONDITION'
+      // The `tag` property must have a value set to either `Fault`, `Normal`, `Warning` or `Unavailable`
+      && ['Fault', 'Normal', 'Warning', 'Unavailable'].includes(observation.tag)
+  }
+
+  /**
+   * Get identifier properties of a particular condition
+   *
+   * @param {{
+   *     time: Date,
+   *     resolvedTime: Date | null,
+   *     nodeId: number,
+   *     dataitemId: number | string,
+   *     state: string,
+   *     type: string,
+   *     conditionId: string | null,
+   *     nativeCode: string | null,
+   *     nativeSeverity: string | null,
+   *     qualifier: string | null,
+   *     message: string | null
+   *   }} condition - Condition of a node
+   *
+   * @returns {string[]} - An array of property names which identify the condition
+   *
+   * @remarks
+   *
+   * The returned array could be one of the following arrays or a subset of them without `message` or `type` when their are `undefined`:
+   *
+   * - MTConnect 2.3+: `['conditionId', 'nodeId', 'state', 'time', 'type']`;
+   * - MTConnect 2.2-: `['dataitemId', 'message', 'nodeId', 'state', 'time', 'type']`;
+   * - MTConnect 2.2-: `['message', 'nativeCode', 'nodeId', 'state', 'time', 'type']`.
+   *
+   * Note that this function does not check if the argument is actually a condition to optimize it. It assumes that the argument is a valid `condition` object.
+   */
+  getConditionIdentifiers(condition) {
+    const ids = []
+
+    if (condition.hasOwnProperty('conditionId')) {
+      ids.push('conditionId', 'nodeId', 'state', 'time', 'type')
+      return ids
+    }
+
+    ['dataitemId', 'message', 'nativeCode', 'nodeId', 'state', 'time', 'type'].forEach(i => {
+      if (condition.hasOwnProperty(i) && condition[i]) {
+        ids.push(i)
+      }
+    })
+
+    return ids
+  }
+
+  /**
+   * Get a cached condition index
+   *
+   * @param {{
+   *     time: Date,
+   *     resolvedTime: Date | null,
+   *     nodeId: number,
+   *     dataitemId: number | string,
+   *     state: string,
+   *     type: string,
+   *     conditionId: string | null,
+   *     nativeCode: string | null,
+   *     nativeSeverity: string | null,
+   *     qualifier: string | null,
+   *     message: string | null
+   *   }} condition - Condition of a node
+   *
+   * @returns {number | undefined} - The index of a condition in a node
+   */
+  getCachedConditionIndex(condition) {
+    // Invalid input should return `undefined`
+    !condition || !Object.keys(condition).some(i => (i === 'conditionId' || i === 'nativeCode') && condition[i])
+    if (Object.prototype.toString.call(condition) !== '[object Object]') {
+      return undefined
+    }
+
+    if (condition.nodeId in this.conditionCache) {
+      const cachedConditions = this.conditionCache[condition.nodeId]
+
+      for (const cachedConditionIdx in cachedConditions) {
+        const cachedCondition = cachedConditions[cachedConditionIdx]
+
+        // Check if the condition is already active
+        // Note: In MTConnect model v2.3, `conditionId` was added to identify a condition which should be the preferred. Conditions in older MTConnect model versions, however, still need to be identified using `nativeCode` and `dataitemId`.
+        if (
+          condition?.conditionId === cachedCondition?.conditionId
+          || !('conditionId' in condition)
+          && condition.dataitemId === cachedCondition.dataitemId
+          && condition.nativeCode === cachedCondition.nativeCode
+        ) {
+          return +cachedConditionIdx
+        }
+      }
+    }
+
+    return undefined
   }
 
   /**
