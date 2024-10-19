@@ -20,7 +20,7 @@ const migrations = {
   2: ['020-utiliz-factors'],
   3: ['030-setup', '031-postgrest'],
   4: ['040-get_rate_pps'],
-  5: ['050-add-device-department'],
+  5: ['050-add-device-department', '051-get-department-availability'],
 }
 
 // handle migrations - use meta table

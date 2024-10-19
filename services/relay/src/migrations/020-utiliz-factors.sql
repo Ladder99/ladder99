@@ -152,11 +152,10 @@ $body$;
 
 --. pass in department name, eg 'Corrugated' - currently we assume all devices are in that dept.
 
--- drop function if exists get_department_availability(text, bigint, bigint);
-drop function if exists get_department_availability(bigint, bigint);
+drop function if exists get_department_availability(text, bigint, bigint);
 
 create or replace function get_department_availability(
-  -- in p_department text, -- the department name, eg 'Corrugated'
+  in p_department text, -- the department name, eg `Corrugated` or `Kitting`
   in p_start bigint, -- start time in milliseconds since 1970-01-01
   in p_stop bigint -- stop time in milliseconds since 1970-01-01
 )
@@ -177,6 +176,7 @@ begin
         resolution = '00:01:00'::interval -- resolution=1min
         and bins.time >= ms2timestamptz(p_start)
         and bins.time < ms2timestamptz(p_stop)
+        and nodes.props->>'department' = p_department
       group by device, time_bin
       order by device, time_bin
     ) as foo
