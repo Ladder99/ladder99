@@ -16,7 +16,7 @@ DROP VIEW IF EXISTS history_all;
 -- and value as the original jsonb object.
 
 CREATE OR REPLACE VIEW history_all AS
-SELECT 
+SELECT
   devices.props->>'name' AS device,
   dataitems.props->>'path' AS path,
   history.time,
@@ -62,14 +62,15 @@ WHERE jsonb_typeof(value) = 'string';
 CREATE OR REPLACE VIEW devices AS
 SELECT
   nodes.node_id,
-  -- needed name to make a unique string when viewing multiple agents 
+  -- needed name to make a unique string when viewing multiple agents
   -- on the same device with the mazak endpoints.
   -- concat(nodes.props->>'name', ' (', nodes.props->>'uuid', ')') as name_uuid,
   nodes.props->>'name' as name,
-  nodes.props->>'uuid' as uuid, 
+  nodes.props->>'uuid' as uuid,
   nodes.props->>'path' as path,
-  nodes.props->>'order' as "order"
-FROM 
+  nodes.props->>'order' as "order",
+  nodes.props->>'department' as department
+FROM
   nodes
 WHERE
   nodes.props->>'node_type'='Device';
@@ -83,13 +84,13 @@ CREATE OR REPLACE VIEW dataitems AS
 SELECT
   nodes.node_id,
   nodes.props->>'path' as path,
-  nodes.props->>'category' as category, 
+  nodes.props->>'category' as category,
   nodes.props->>'type' as type,
   nodes.props->>'subType' as subtype,
   nodes.props->>'units' as units,
   nodes.props->>'nativeUnits' as nativeunits,
   nodes.props->>'statistic' as statistic
-FROM 
+FROM
   nodes
 WHERE
   nodes.props->>'node_type'='DataItem';
