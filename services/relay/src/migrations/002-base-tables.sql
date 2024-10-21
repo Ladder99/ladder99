@@ -36,7 +36,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS nodes_path ON nodes ((props->>'path'));
 ---------------------------------------------------------------------
 -- edges
 ---------------------------------------------------------------------
--- could store relations between nodes here, 
+-- could store relations between nodes here,
 -- but currently encoding that information in the node path -
 -- so this table is unused now.
 
@@ -69,8 +69,8 @@ CREATE INDEX IF NOT EXISTS history_dataitem_id ON history (dataitem_id);
 
 -- make hypertable and add compression/retention schedules.
 -- this adds an index, history_time_idx, on the time column.
--- and by default, clusters the data into week intervals. 
+-- and by default, clusters the data into week intervals.
 --. should adjust that for data volume expected, ideally.
 SELECT create_hypertable('history', 'time', if_not_exists => TRUE);
+SELECT add_retention_policy('history', INTERVAL '1 month', if_not_exists => TRUE);
 -- SELECT add_compression_policy('history', INTERVAL '1d', if_not_exists => TRUE);
--- SELECT add_retention_policy('history', INTERVAL '1 year', if_not_exists => TRUE);
