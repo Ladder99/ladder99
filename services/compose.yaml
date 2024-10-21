@@ -604,55 +604,6 @@ services:
         max-size: '20m'
 
   # ---------------------------------------------------------------------------
-  # sematext
-  # ---------------------------------------------------------------------------
-  # send system and container metrics to sematext.com
-  sematext:
-    image: sematext/agent:1.20.1 # 2023-01
-    container_name: sematext
-    profiles:
-      - sematext
-    environment:
-      - INFRA_TOKEN=$INFRA_TOKEN # set this in .env file
-      - SERVER_BASE_URL=https://spm-receiver.sematext.com
-      - LOGS_RECEIVER_URL=https://logsene-receiver.sematext.com
-      - EVENT_RECEIVER_URL=https://event-receiver.sematext.com
-      - COMMAND_SERVER_URL=https://command.sematext.com
-    cap_add:
-      - SYS_ADMIN
-    restart: always
-    volumes:
-      - /:/hostfs:ro
-      - /etc/passwd:/etc/passwd:ro
-      - /etc/group:/etc/group:ro
-      - /var/run:/var/run
-      - /sys/kernel/debug:/sys/kernel/debug
-      - /sys:/host/sys:ro
-      - /dev:/hostfs/dev:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-
-  # sends logs to sematext
-  sematext-logs:
-    image: sematext/logagent:3.1.3 # 2022-07
-    container_name: sematext-logs
-    profiles:
-      - sematext-logs
-    environment:
-      - LOGS_TOKEN=$LOGS_TOKEN # set this in .env file
-      - REGION=US
-      # the free tier limits you to logs for 3 containers
-      - MATCH_BY_NAME=(adapter|meter|relay)
-    cap_add:
-      - SYS_ADMIN
-    restart: always
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-
-  # ---------------------------------------------------------------------------
   # traefik
   # ---------------------------------------------------------------------------
   # a reverse proxy
