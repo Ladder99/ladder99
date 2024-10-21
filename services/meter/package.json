@@ -1,6 +1,6 @@
 {
   "name": "ladder99-meter",
-  "version": "0.1.0",
+  "version": "0.7.6",
   "description": "Ladder99 Meter - calculates metrics",
   "type": "module",
   "target": "es2021",
