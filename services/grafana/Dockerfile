@@ -12,7 +12,7 @@ FROM grafana/grafana:8.2.2
 # add plugins
 # also try philipsgis-phlowchart-panel
 USER root
-ENV GF_PATHS_PLUGINS /data/grafana/plugins
+ENV GF_PATHS_PLUGINS=/data/grafana/plugins
 RUN mkdir -p "${GF_PATHS_PLUGINS}"
 RUN grafana-cli --pluginsDir "${GF_PATHS_PLUGINS}" plugins install natel-discrete-panel && \
   grafana-cli --pluginsDir "${GF_PATHS_PLUGINS}" plugins install natel-plotly-panel && \
