@@ -28,42 +28,40 @@ if [ $# -eq 0 ]; then
     exit
 fi
 
-SERVICE=$1
-# VERSION=$2
-VERSION=$(cat .l99_version)
+# Service name for which we should build the image
+SERVICE="$1"
+
+# Version that will be used as the Docker image tag
+VERSION="$(cat .l99_version)"
+
+# Platform targets which should be included in the Docker image
 # note: arm/v7 is 32bit for older pi's
 # need arm64/v8 ?
-# PLATFORMS=${3:-"amd64 arm64"}
+platforms=('linux/amd64' 'linux/arm64')
 
-USERNAME=ladder99
+# Docker Hub username used as the image tag prefix
+USERNAME='ladder99'
 
-# create a multiplatform buildx builder
-# do this each time, per answer by guy with 200k rep in 2022-02 -
-# The easy button is to use the binaries from the multiarch image. This is good in 
-# CI if you have a dedicated VM (less ideal if you are modifying the host used by 
-# other builds). However if you reboot, it breaks until you run the container again. 
-# And it requires you to remember to update it for any upstream patches. 
-# So I wouldn't recommend it for a long running build host.
-# from https://stackoverflow.com/questions/60080264/docker-cannot-build-multi-platform-images-with-docker-buildx
+echo "Version is $VERSION"
+
+# Run QEMU hypervisor in a Docker container which enables execution of different multi-architecture containers by QEMU 1 and `binfmt_misc`
+# Note: Do this each time, as it could cause some issues,
+#       cf https://stackoverflow.com/questions/60080264/docker-cannot-build-multi-platform-images-with-docker-buildx
 docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
-docker buildx rm l99builder
+
+# Remove `l99builder` if it exists
+docker buildx rm l99builder || true
+
+# Create new `l99builder`
 docker buildx create --name l99builder --driver docker-container --use
+
+# Inspect the current builder instance
 docker buildx inspect --bootstrap
 
-echo "Version is" $VERSION
-
-for arch in amd64 arm64 ; do
-    echo "Building image for" $arch
-    docker buildx build \
-    --platform linux/$arch \
-    --output type=docker \
-    --tag $USERNAME/$SERVICE:$VERSION-${arch} \
-    services/$SERVICE/
-done
-
-echo "Combining images and pushing to Docker Hub..."
+# Build a multi-arch Docker image and push it to Docker Hub
 docker buildx build \
---platform linux/amd64,linux/arm64 \
---tag $USERNAME/$SERVICE:$VERSION \
---push \
-services/$SERVICE/
+  --platform "$(IFS=,; echo "${platforms[*]}")" \
+  --push \
+  --output type=docker \
+  -t "$USERNAME/$SERVICE:$VERSION" \
+  "services/$SERVICE"
