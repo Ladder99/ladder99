@@ -16,9 +16,9 @@
 # ------------------------------------------------------------------------
 
 # start with an os image
-# Users should look to upgrade to v16 as soon as possible. The currently active 
+# Users should look to upgrade to v16 as soon as possible. The currently active
 # LTS branch, v14, will be maintained through the end of April 2023.
-# The current Node.js v15 release will remain supported until June 1st, 2021. 
+# The current Node.js v15 release will remain supported until June 1st, 2021.
 # FROM node:15  # huge 350mb compressed image
 # FROM node:15-alpine  # smallest, but harder to work with
 # FROM node:15.14-slim
@@ -39,7 +39,7 @@ FROM ubuntu:22.04 AS build
 
 # prevent apt install from getting stuck at timezone info
 # see https://askubuntu.com/questions/909277/avoiding-user-interaction-with-tzdata-when-installing-certbot-in-a-docker-contai
-ENV DEBIAN_FRONTEND=noninteractive 
+ENV DEBIAN_FRONTEND=noninteractive
 
 # need these for dymo driver else get errors -
 # error: libudev.h: No such file or directory
@@ -48,7 +48,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # got prebuild-install WARN install No prebuilt binaries found (target=3 runtime=napi arch=arm64 libc= platform=linux)
 # see https://github.com/node-hid/node-hid#compiling-from-source
 # note: if apt-get update fails on raspberry pi with something about http and returns 100,
-# there might be an issue with libseccomp2 on the host system. 
+# there might be an issue with libseccomp2 on the host system.
 # you can upgrade it with the following -
 #   sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC 648ACFD622F3D138
 #   echo "deb http://deb.debian.org/debian buster-backports main" | sudo tee -a /etc/apt/sources.list.d/buster-backports.list
@@ -60,14 +60,14 @@ RUN apt-get update -y \
   libusb-1.0-0 libusb-1.0-0-dev pkg-config
 
 WORKDIR /usr/app
-ENV NODE_ENV production
+ENV NODE_ENV=production
 COPY package.json /usr/app/
 
 # install javascript dependencies
 
 # 1. generate package-lock from package.json, but don't create node_modules
-# note: With the --only=production flag (or when the NODE_ENV environment 
-# variable is set to production), npm will not install modules listed in 
+# note: With the --only=production flag (or when the NODE_ENV environment
+# variable is set to production), npm will not install modules listed in
 # devDependencies.
 # 2. fix vulnerabilities where able and update package-lock.json.
 # normally audit fix runs a full install under the hood, but we don't want that yet.
@@ -87,7 +87,7 @@ RUN npm install --package-lock-only --only=production \
 # ------------------------------------------------------------------------
 
 FROM node:lts-slim
-ENV NODE_ENV production
+ENV NODE_ENV=production
 #. um, getting read/write errors on cookie files because they're already there as root
 # USER node
 WORKDIR /usr/app
@@ -104,8 +104,8 @@ COPY src /usr/app/src
 # COPY --from=build /usr/app/node_modules /usr/app/node_modules
 
 # base command - can pass params with CMD [?]
-# note: When you run an image that uses the exec form (ie an array), 
-# Docker will run the command as is, without a wrapper process. 
+# note: When you run an image that uses the exec form (ie an array),
+# Docker will run the command as is, without a wrapper process.
 # Your Node.js application will be the first and only running process with PID 1.
 # be sure to run it with --init flag, so can ctrl-c out of it.
 ENTRYPOINT ["node", "/usr/app/src/index.js"]
