@@ -28,11 +28,14 @@ if [ $# -eq 0 ]; then
     exit
 fi
 
+# Get repository root path
+repo_root="$(dirname "$(realpath "$0")")"
+
 # Service name for which we should build the image
 SERVICE="$1"
 
 # Version that will be used as the Docker image tag
-VERSION="$(cat .l99_version)"
+VERSION="$(cat "$repo_root/.l99_version")"
 
 # Platform targets which should be included in the Docker image
 # note: arm/v7 is 32bit for older pi's
@@ -64,4 +67,4 @@ docker buildx build \
   --push \
   --output type=docker \
   -t "$USERNAME/$SERVICE:$VERSION" \
-  "services/$SERVICE"
+  "$repo_root/services/$SERVICE"
